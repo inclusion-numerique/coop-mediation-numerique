@@ -5,7 +5,7 @@ export const LieuxFilterValidations = {
   mediateurs: z
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
-      z.array(z.string().uuid()),
+      z.array(z.guid()),
     ])
     .optional(),
   communes: z

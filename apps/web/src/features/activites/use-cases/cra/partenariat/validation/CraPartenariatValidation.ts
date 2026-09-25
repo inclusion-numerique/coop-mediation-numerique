@@ -39,14 +39,13 @@ export type TypeStructurePartenairesValue =
 
 export const CraPartenariatValidation = z
   .object({
-    id: z.string().uuid().nullish(), // defined if update, nullish if create
-    coordinateurId: z.string().uuid(), // owner of the CRA
+    id: z.guid().nullish(), // defined if update, nullish if create
+    coordinateurId: z.guid(), // owner of the CRA
     date: CraDateValidation,
     nom: z.string().nullish(),
     naturePartenariat: z
       .array(z.enum(natureValues), {
-        required_error:
-          'Veuillez renseigner au moins une nature de partenariat',
+        error: 'Veuillez renseigner au moins une nature de partenariat',
       })
       .min(1, 'Veuillez renseigner au moins une nature de partenariat'),
     naturePartenariatAutre: z.string().nullish(),
@@ -55,18 +54,16 @@ export const CraPartenariatValidation = z
       .array(
         z.object({
           nom: z.string({
-            required_error:
-              'Veuillez renseigner le nom de la structure partenaire',
+            error: 'Veuillez renseigner le nom de la structure partenaire',
           }),
           type: z.enum(typeStructurePartenairesValues, {
-            required_error:
-              'Veuillez renseigner le type de la structure partenaire',
+            error: 'Veuillez renseigner le type de la structure partenaire',
           }),
           typeAutre: z.string().nullish(),
         }),
       )
       .min(1, 'Au moins une structure partenaire est requise'),
-    tags: z.array(z.object({ id: z.string().uuid() })).default([]),
+    tags: z.array(z.object({ id: z.guid() })).default([]),
     notes: z.string().nullish(),
   })
   .superRefine((data, ctx) => {
@@ -75,7 +72,7 @@ export const CraPartenariatValidation = z
       !data.naturePartenariatAutre?.trim()
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['natureAutre'],
         message: 'Veuillez préciser la nature de l’événement',
       })
@@ -84,7 +81,7 @@ export const CraPartenariatValidation = z
     data.structuresPartenaires.forEach((structure, index) => {
       if (structure.type === 'Autre' && !structure.typeAutre?.trim()) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['structuresPartenaires', index, 'typeAutre'],
           message: 'Veuillez préciser le type de structure',
         })

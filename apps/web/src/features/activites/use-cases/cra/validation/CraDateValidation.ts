@@ -7,7 +7,7 @@ import z from 'zod'
 export const debutDispositifConum = '2020-11-17'
 
 export const CraDateValidation = z
-  .string({ required_error: 'Veuillez renseigner une date' })
+  .string({ error: 'Veuillez renseigner une date' })
   .date('Veuillez renseigner une date valide')
   .refine((date) => date >= debutDispositifConum, {
     message:

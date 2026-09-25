@@ -6,11 +6,9 @@ import {
 import z from 'zod'
 
 export const TypesDePublicsAccueillisShape = {
-  priseEnChargeSpecifique: z
-    .array(z.nativeEnum(PriseEnChargeSpecifique))
-    .nullish(),
+  priseEnChargeSpecifique: z.array(z.enum(PriseEnChargeSpecifique)).nullish(),
   toutPublic: CaseCochee,
   publicsSpecifiquementAdresses: z
-    .array(z.nativeEnum(PublicSpecifiquementAdresse))
+    .array(z.enum(PublicSpecifiquementAdresse))
     .nullish(),
 }

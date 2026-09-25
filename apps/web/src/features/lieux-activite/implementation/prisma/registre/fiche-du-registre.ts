@@ -1,11 +1,27 @@
 import {
   Adresse,
-  isValidAddress,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
+  FraisACharge,
+  Itinerances,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
+  Services,
+  Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@prisma/client'
 import type { Fiche } from '../../../domain/fiche'
-import { nonVide, presentationSaisie, urlSaisie } from '../../../domain/saisie'
+import {
+  complementAdresseSaisi,
+  ficheAccesLibreSaisie,
+  horairesDeLaSource,
+  labelsLibres,
+  presentationSaisie,
+  urlSaisie,
+} from '../../../domain/saisie'
 import * as vocabulaire from '../vocabulaire'
 import { contactDuRegistre } from './contact-du-registre'
 import { voieDuRegistre } from './voie-du-registre'
@@ -64,7 +80,7 @@ export const adresseDeLInscription = (
 
   if (adresse == null) return null
 
-  const complement = nonVide(complementAdresse)
+  const complement = complementAdresseSaisi(complementAdresse)
   const candidate = {
     voie: voieDuRegistre(adresse),
     commune: adresse.nomCommune,
@@ -73,7 +89,7 @@ export const adresseDeLInscription = (
     ...(complement == null ? {} : { complement_adresse: complement }),
   }
 
-  return isValidAddress(candidate) ? Adresse(candidate) : null
+  return Adresse.safe(candidate)
 }
 
 export const ficheDuRegistre = (
@@ -84,53 +100,73 @@ export const ficheDuRegistre = (
   pivot: depuisLaCoop.pivot,
   adresse: adresseDeLInscription(inscription) ?? depuisLaCoop.adresse,
   localisation: depuisLaCoop.localisation,
-  typologies: vocabulaire.traduites(
-    inscription.typologies,
-    vocabulaire.typologie.versStandard,
+  typologies: Typologies(
+    vocabulaire.traduites(
+      inscription.typologies,
+      vocabulaire.typologie.versStandard,
+    ),
   ),
   contact: contactDuRegistre(inscription.contact),
-  horaires: nonVide(inscription.horaires),
+  horaires: horairesDeLaSource(inscription.horaires),
   presentation: presentationSaisie(
     inscription.presentationResume,
     inscription.presentationDetail,
   ),
-  services: vocabulaire.traduites(
-    inscription.services,
-    vocabulaire.service.versStandard,
+  services: Services(
+    vocabulaire.traduites(
+      inscription.services,
+      vocabulaire.service.versStandard,
+    ),
   ),
-  publicsSpecifiquementAdresses: vocabulaire.traduites(
-    inscription.publicsSpecifiquementAdresses,
-    vocabulaire.publicSpecifiquementAdresse.versStandard,
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    vocabulaire.traduites(
+      inscription.publicsSpecifiquementAdresses,
+      vocabulaire.publicSpecifiquementAdresse.versStandard,
+    ),
   ),
-  priseEnChargeSpecifique: vocabulaire.traduites(
-    inscription.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique.versStandard,
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    vocabulaire.traduites(
+      inscription.priseEnChargeSpecifique,
+      vocabulaire.priseEnChargeSpecifique.versStandard,
+    ),
   ),
-  modalitesAcces: vocabulaire.traduites(
-    inscription.modalitesAcces,
-    vocabulaire.modaliteAcces.versStandard,
+  modalitesAcces: ModalitesAcces(
+    vocabulaire.traduites(
+      inscription.modalitesAcces,
+      vocabulaire.modaliteAcces.versStandard,
+    ),
   ),
-  fraisACharge: vocabulaire.traduites(
-    inscription.fraisACharge,
-    vocabulaire.fraisACharge.versStandard,
+  fraisACharge: FraisACharge(
+    vocabulaire.traduites(
+      inscription.fraisACharge,
+      vocabulaire.fraisACharge.versStandard,
+    ),
   ),
-  itinerance: vocabulaire.traduites(
-    inscription.itinerance,
-    vocabulaire.itinerance.versStandard,
+  itinerance: Itinerances(
+    vocabulaire.traduites(
+      inscription.itinerance,
+      vocabulaire.itinerance.versStandard,
+    ),
   ),
-  dispositifProgrammesNationaux: vocabulaire.traduites(
-    inscription.dispositifProgrammesNationaux,
-    vocabulaire.dispositifProgrammeNational.versStandard,
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux(
+    vocabulaire.traduites(
+      inscription.dispositifProgrammesNationaux,
+      vocabulaire.dispositifProgrammeNational.versStandard,
+    ),
   ),
-  formationsLabels: vocabulaire.traduites(
-    inscription.formationsLabels,
-    vocabulaire.formationLabel.versStandard,
+  formationsLabels: FormationsLabels(
+    vocabulaire.traduites(
+      inscription.formationsLabels,
+      vocabulaire.formationLabel.versStandard,
+    ),
   ),
-  autresFormationsLabels: inscription.autresFormationsLabels,
-  modalitesAccompagnement: vocabulaire.traduites(
-    inscription.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement.versStandard,
+  autresFormationsLabels: labelsLibres(inscription.autresFormationsLabels),
+  modalitesAccompagnement: ModalitesAccompagnement(
+    vocabulaire.traduites(
+      inscription.modalitesAccompagnement,
+      vocabulaire.modaliteAccompagnement.versStandard,
+    ),
   ),
-  ficheAccesLibre: urlSaisie(inscription.ficheAccesLibre),
+  ficheAccesLibre: ficheAccesLibreSaisie(inscription.ficheAccesLibre),
   priseRdv: urlSaisie(inscription.priseRdv),
 })

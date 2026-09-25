@@ -24,4 +24,17 @@ export const PublicationSansService = (id: LieuId): PublicationSansService => ({
   id,
 })
 
-export type EchecDeModification = FicheIntrouvable | PublicationSansService
+export type PublicationSansAdresse = {
+  readonly _tag: 'PublicationSansAdresse'
+  readonly id: LieuId
+}
+
+export const PublicationSansAdresse = (id: LieuId): PublicationSansAdresse => ({
+  _tag: 'PublicationSansAdresse',
+  id,
+})
+
+export type EchecDeModification =
+  | FicheIntrouvable
+  | PublicationSansService
+  | PublicationSansAdresse

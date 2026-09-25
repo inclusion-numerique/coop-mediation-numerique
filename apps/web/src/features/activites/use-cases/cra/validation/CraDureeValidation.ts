@@ -7,7 +7,7 @@ export const maxHeures = 23
 export const CraDureeValidation = z
   .object({
     duree: z.string({
-      required_error: 'Veuillez renseigner une durée',
+      error: 'Veuillez renseigner une durée',
     }),
     dureePersonnaliseeHeures: z
       .number({ message: `De 0 à ${maxHeures} heures` })

@@ -16,7 +16,7 @@ export const Telephone = defineModel(
     .transform((raw, ctx) => {
       const canonique = telephoneCanonique(raw)
       if (canonique == null) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid' })
+        ctx.addIssue({ code: 'custom', message: 'Invalid' })
         return z.NEVER
       }
       return canonique

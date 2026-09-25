@@ -701,6 +701,7 @@ enum FormationLabel {
   FormeADuplex                         @map("Formé à « DUPLEX » (illettrisme)")
   ArniaMednum                          @map("Arnia/MedNum BFC (Bourgogne-Franche-Comté)")
   CollectifRessourcesEtActeursReemploi @map("Collectif ressources et acteurs réemploi (Normandie)")
+  EtapesNumeriques                     @map("Étapes numériques (La Poste)")
   FabriquesDeTerritoire                @map("Fabriques de Territoire")
   LesEclaireurs                        @map("Les Éclaireurs du numérique (Drôme)")
   MesPapiers                           @map("Mes Papiers (Métropole de Lyon)")
@@ -724,7 +725,7 @@ enum ModaliteAcces {
   Telephoner          @map("Téléphoner")
   ContacterParMail    @map("Contacter par mail")
   PrendreRdvEnLigne   @map("Prendre un RDV en ligne")
-  PasDePublic         @map("Ce lieu n’accueille pas de public")
+  PasDePublic         @map("Ce lieu n'accueille pas de public")
   FicheDePrescription @map("Envoyer un mail avec une fiche de prescription")
 
   @@map("modalite_acces")
@@ -803,7 +804,7 @@ model LieuInclusion {
   typologies                    Typologie[]                   @default([])
   presentationResume            String?                       @map("presentation_resume")
   presentationDetail            String?                       @map("presentation_detail")
-  siteWeb                       String?                       @map("site_web")
+  siteWeb                       String[]                      @default([]) @map("site_web")
   telephone                     String?
   courriels                     String[]                      @default([])
   ficheAccesLibre               String?                       @map("fiche_acces_libre") // url vers fiche accès libre
@@ -1248,7 +1249,7 @@ enum ModaliteAccesMain {
   Telephoner          @map("Téléphoner")
   ContacterParMail    @map("Contacter par mail")
   PrendreRdvEnLigne   @map("Prendre un RDV en ligne")
-  PasDePublic         @map("Ce lieu n’accueille pas de public")
+  PasDePublic         @map("Ce lieu n'accueille pas de public")
   FicheDePrescription @map("Envoyer un mail avec une fiche de prescription")
 
   @@map("modalite_acces")
@@ -1311,6 +1312,7 @@ enum FormationLabelMain {
   FormeADuplex                         @map("Formé à « DUPLEX » (illettrisme)")
   ArniaMednum                          @map("Arnia/MedNum BFC (Bourgogne-Franche-Comté)")
   CollectifRessourcesEtActeursReemploi @map("Collectif ressources et acteurs réemploi (Normandie)")
+  EtapesNumeriques                     @map("Étapes numériques (La Poste)")
   FabriquesDeTerritoire                @map("Fabriques de Territoire")
   LesEclaireurs                        @map("Les Éclaireurs du numérique (Drôme)")
   MesPapiers                           @map("Mes Papiers (Métropole de Lyon)")

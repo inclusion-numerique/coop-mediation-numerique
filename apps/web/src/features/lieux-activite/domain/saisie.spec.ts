@@ -1,15 +1,20 @@
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
+  Horaires,
   Itinerance,
   ModaliteAcces,
+  Service,
+  Services,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import {
   adresseSaisie,
   courrielsSaisis,
   courrielsValides,
+  ficheAccesLibreSaisie,
   horairesSaisis,
   itineranceSaisie,
+  labelsLibres,
   localisationSaisie,
   modalitesAccesSaisies,
   nonVide,
@@ -110,27 +115,117 @@ describe('les horaires', () => {
     expect(horairesSaisis(emptyOpeningHours, null)).toBeNull()
     expect(horairesSaisis(emptyOpeningHours, '   ')).toBeNull()
   })
+
+  /**
+   * Un commentaire seul ne forme pas une valeur OpenStreetMap : la composition
+   * rendait ` "Sur rendez-vous"`, que le standard refuse et que la coop
+   * publiait. Un `Mo-Su off` l'aurait rendue conforme au prix d'une fermeture
+   * que personne n'a déclarée.
+   */
+  it('valent null quand un commentaire n’a aucun créneau où s’adosser', () => {
+    expect(horairesSaisis(emptyOpeningHours, 'Sur rendez-vous')).toBeNull()
+  })
+
+  it.each([[null], ['Fermé le premier lundi']])(
+    'composent une valeur que le standard reconnaît (commentaire : %s)',
+    (commentaire) => {
+      const composes = horairesSaisis(lundiMatin, commentaire)
+
+      expect(composes).not.toBeNull()
+      expect(Horaires.safe(composes ?? '')).not.toBeNull()
+    },
+  )
+})
+
+describe('les listes du domaine', () => {
+  /**
+   * L'ordre d'une liste ne porte aucune information, et une valeur répétée n'en
+   * porte pas davantage. Les modèles du standard le garantissent : la coop ne
+   * peut plus stocker ni doublon ni ordre instable dans ses dix colonnes de
+   * vocabulaire, d'où venaient des republications qui ne différaient que par là.
+   */
+  it('dédoublonne et ordonne un vocabulaire fermé', () => {
+    expect(
+      Services([
+        Service.UtilisationSecuriseeDuNumerique,
+        Service.AideAuxDemarchesAdministratives,
+        Service.UtilisationSecuriseeDuNumerique,
+      ]),
+    ).toEqual([
+      Service.AideAuxDemarchesAdministratives,
+      Service.UtilisationSecuriseeDuNumerique,
+    ])
+  })
+
+  it('range les labels libres comme le reste, en collation française', () => {
+    expect(
+      labelsLibres([
+        'Zone atelier',
+        'Étudiants relais',
+        'Zone atelier',
+        '  ',
+        null,
+      ]),
+    ).toEqual(['Étudiants relais', 'Zone atelier'])
+  })
+})
+
+describe('le complément d’adresse', () => {
+  /**
+   * `complement_adresse` n'était pas validé par la bibliothèque avant la 4.2.0.
+   * Depuis, il l'est — avec le jeu de caractères d'un nom de voie, qui ne
+   * couvre pas ce qu'on écrit dans un complément. Mêlé au reste, un complément
+   * refusé emportait l'adresse entière.
+   */
+  it.each([
+    ['Appt #4'],
+    ['Résidence "Les Tilleuls"'],
+    ['Zone d’activité 50 %'],
+  ])('%s tombe seul, et l’adresse demeure', (complement) => {
+    const adresse = adresseSaisie(ban, complement)
+
+    expect(adresse).not.toBeNull()
+    expect(adresse).not.toHaveProperty('complement_adresse')
+  })
+
+  it.each([
+    ['Bâtiment B'],
+    ['Bât. 3 (entrée côté parking)'],
+    ['1er étage / bureau 12'],
+    ['Hall A — porte gauche'],
+    ['Local n°12 & annexe'],
+  ])('%s est retenu', (complement) => {
+    expect(adresseSaisie(ban, complement)).toHaveProperty(
+      'complement_adresse',
+      complement,
+    )
+  })
+})
+
+describe('la fiche d’accessibilité', () => {
+  it('retient un lien vers Accès Libre', () => {
+    expect(
+      ficheAccesLibreSaisie('https://acceslibre.beta.gouv.fr/app/erp/le-lieu'),
+    ).toBe('https://acceslibre.beta.gouv.fr/app/erp/le-lieu')
+  })
+
+  it.each([
+    ['https://acceslibre.fr/fiche'],
+    ['https://example.fr'],
+    ['pas une url'],
+    [null],
+  ])('vaut null pour %s', (valeur) => {
+    expect(ficheAccesLibreSaisie(valeur)).toBeNull()
+  })
 })
 
 describe('l’immatriculation', () => {
   it('retient le SIRET quand il en est un', () => {
-    expect(pivotSaisi('13002603200016', null)).toBe('13002603200016')
+    expect(pivotSaisi('13002603200016')).toBe('13002603200016')
   })
 
-  it('retombe sur le RNA à défaut de SIRET', () => {
-    expect(pivotSaisi(null, 'W123456789')).toBe('W123456789')
-  })
-
-  it('préfère le SIRET quand les deux sont là', () => {
-    expect(pivotSaisi('13002603200016', 'W123456789')).toBe('13002603200016')
-  })
-
-  it.each([
-    ['123', null],
-    [null, 'pas-un-rna'],
-    [null, null],
-  ])('vaut null pour (%s, %s)', (siret, rna) => {
-    expect(pivotSaisi(siret, rna)).toBeNull()
+  it.each([['123'], ['W123456789'], [null]])('vaut null pour %s', (siret) => {
+    expect(pivotSaisi(siret)).toBeNull()
   })
 })
 

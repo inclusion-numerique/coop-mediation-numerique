@@ -8,7 +8,7 @@ export const structuresRouter = router({
     .input(
       z.object({
         query: z.string(),
-        excludeIds: z.array(z.string().uuid()).optional(),
+        excludeIds: z.array(z.guid()).optional(),
       }),
     )
     .query(({ input: { query, excludeIds }, ctx: { user } }) => {

@@ -108,8 +108,8 @@ describe('la saisie devient un modèle du domaine', () => {
       ).toMatchObject({
         section: 'ModalitesAccesAuService',
         modalitesAcces: [
-          ModaliteAcces.SePresenter,
           ModaliteAcces.ContacterParMail,
+          ModaliteAcces.SePresenter,
         ],
         telephone: null,
         courriels: ['contact@example.fr'],

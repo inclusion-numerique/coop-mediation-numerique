@@ -115,7 +115,7 @@ const erreurDe = (
 }
 
 const analyser = <T>(
-  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
+  schema: z.ZodType<T, unknown>,
   chemin: string,
   donnees: unknown,
 ): Result<T, ErreurRdvApi> => {
@@ -245,7 +245,7 @@ export const rdvServicePublicApi = ({
   const appeler = async <T>(
     compte: CompteRdvUtilisable,
     requete: Requete,
-    schema: z.ZodType<T, z.ZodTypeDef, unknown>,
+    schema: z.ZodType<T, unknown>,
     jetons: JetonsOAuth,
     renouvellementPossible: boolean,
   ): Promise<Result<T, ErreurRdvApi>> => {
@@ -275,7 +275,7 @@ export const rdvServicePublicApi = ({
   const executer = async <T>(
     compte: CompteRdvUtilisable,
     requete: Requete,
-    schema: z.ZodType<T, z.ZodTypeDef, unknown>,
+    schema: z.ZodType<T, unknown>,
   ): Promise<Result<T, ErreurRdvApi>> => {
     const jetons = await jetonsAJour(compte)
 
@@ -301,7 +301,7 @@ export const rdvServicePublicApi = ({
   >(
     compte: CompteRdvUtilisable,
     requete: Requete,
-    schema: z.ZodType<Page, z.ZodTypeDef, unknown>,
+    schema: z.ZodType<Page, unknown>,
     extraire: (page: Page) => readonly Element[],
     premierePageSeulement: boolean,
     page: number,

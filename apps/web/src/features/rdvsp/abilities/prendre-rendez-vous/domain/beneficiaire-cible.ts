@@ -18,12 +18,12 @@ import type { UsagerId } from '../../../domain/usager-id'
  * traduit.
  */
 export const BeneficiaireCibleId = defineModel(
-  z.string().uuid().brand('BeneficiaireCibleId'),
+  z.guid().brand('BeneficiaireCibleId'),
 )
 export type BeneficiaireCibleId = Model.TypeOf<typeof BeneficiaireCibleId>
 
 export const MediateurProprietaireId = defineModel(
-  z.string().uuid().brand('MediateurProprietaireId'),
+  z.guid().brand('MediateurProprietaireId'),
 )
 export type MediateurProprietaireId = Model.TypeOf<
   typeof MediateurProprietaireId

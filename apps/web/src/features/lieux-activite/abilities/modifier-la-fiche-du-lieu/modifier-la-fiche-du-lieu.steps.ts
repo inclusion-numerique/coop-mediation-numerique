@@ -13,6 +13,10 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
+  FormationsLabels,
+  FraisACharge,
+  ModalitesAcces,
+  Presentation,
   Service,
   Typologie,
   Url,
@@ -78,10 +82,10 @@ When(
       par: auteur(),
       modification: {
         section: 'ModalitesAccesAuService',
-        modalitesAcces: [],
+        modalitesAcces: ModalitesAcces([]),
         telephone: null,
         courriels: [],
-        fraisACharge: [],
+        fraisACharge: FraisACharge([]),
       },
     })
   },
@@ -93,8 +97,8 @@ When('un médiateur étranger au lieu enregistre la description', async () => {
     par: UserId(ficheSemee().userIds[1] ?? ''),
     modification: {
       section: 'Description',
-      presentation: { resume: 'Une présentation du lieu' },
-      formationsLabels: [],
+      presentation: Presentation({ resume: 'Une présentation du lieu' }),
+      formationsLabels: FormationsLabels([]),
     },
   })
 })
@@ -212,7 +216,6 @@ When(
       nom: ETABLISSEMENT.nom,
       adresseBan,
       nomUsage: 'La Maison du Port',
-      rna: null,
       lieuItinerant: null,
       complementAdresse: null,
       typologies: [Typologie.TIERS_LIEUX],
@@ -230,7 +233,6 @@ When(
       nom: 'Tiers-lieu du Port',
       adresseBan,
       nomUsage: 'La Maison du Port',
-      rna: null,
       lieuItinerant: null,
       complementAdresse: null,
       typologies: [Typologie.TIERS_LIEUX],
@@ -281,6 +283,50 @@ Given('une fiche de lieu visible sur la cartographie', async () => {
   await prismaClient.lieuInclusion.update({
     where: { id: ficheSemee().lieuId },
     data: { visiblePourCartographieNationale: true },
+  })
+})
+
+Given(
+  'une fiche de lieu sans adresse reconnue par la Base Adresse Nationale',
+  async () => {
+    await semerUneFicheDeLieu()
+
+    await prismaClient.lieuInclusion.update({
+      where: { id: ficheSemee().lieuId },
+      data: { banId: null },
+    })
+  },
+)
+
+Given(
+  'une fiche de lieu visible sans adresse reconnue par la Base Adresse Nationale',
+  async () => {
+    await semerUneFicheDeLieu()
+
+    await prismaClient.lieuInclusion.update({
+      where: { id: ficheSemee().lieuId },
+      data: { banId: null, visiblePourCartographieNationale: true },
+    })
+  },
+)
+
+Given('une fiche de lieu située à la seule commune', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { adresse: 'Reims', banId: '51454' },
+  })
+})
+
+When('le médiateur rattaché retire le lieu de la cartographie', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'VisibiliteCartographie',
+      visiblePourCartographieNationale: false,
+    }),
   })
 })
 
@@ -335,6 +381,11 @@ Then('le lieu annonce les services du socle', async () => {
 Then('le lieu est visible sur la cartographie', async () => {
   const { lieu } = await relire()
   assert.strictEqual(lieu.visibilite, 'Publie')
+})
+
+Then("le lieu n'est pas visible sur la cartographie", async () => {
+  const { lieu } = await relire()
+  assert.notStrictEqual(lieu.visibilite, 'Publie')
 })
 
 Then('la modification est refusée', () => {

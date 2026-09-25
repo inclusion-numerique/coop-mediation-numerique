@@ -10,6 +10,6 @@ import { z } from 'zod'
  * exactement la forme du couple `targetId`/`destinationId` qui avait produit une
  * fusion de doublons silencieuse : ici, le compilateur refuse l'inversion.
  */
-export const AuteurId = defineModel(z.string().uuid().brand('AuteurId'))
+export const AuteurId = defineModel(z.guid().brand('AuteurId'))
 
 export type AuteurId = Model.TypeOf<typeof AuteurId>

@@ -1,19 +1,22 @@
 import {
   type Adresse,
   type Courriel,
-  type FormationLabel,
-  type Frais,
-  type Itinerance,
+  type FicheAccesLibre,
+  type FormationsLabels,
+  type FraisACharge,
+  type Horaires,
+  type Itinerances,
   type Localisation,
-  type ModaliteAcces,
-  type ModaliteAccompagnement,
+  type ModalitesAcces,
+  type ModalitesAccompagnement,
   type Nom,
   type Pivot,
   type Presentation,
-  type PriseEnChargeSpecifique,
-  type PublicSpecifiquementAdresse,
-  type Service,
-  type Typologie,
+  type PrisesEnChargeSpecifiques,
+  type PublicsSpecifiquementAdresses,
+  type Services,
+  type Telephone,
+  type Typologies,
   type Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { BanId } from '../../../domain/ban-id'
@@ -37,8 +40,8 @@ export type ModificationLieu =
       readonly adresse: Adresse | null
       readonly localisation: Localisation | null
       readonly banId: BanId | null
-      readonly itinerance: readonly Itinerance[]
-      readonly typologies: readonly Typologie[]
+      readonly itinerance: Itinerances
+      readonly typologies: Typologies
       readonly pivot: Pivot | null
       readonly nomUsage: NomUsage | null
     }
@@ -49,31 +52,31 @@ export type ModificationLieu =
   | {
       readonly section: 'InformationsPratiques'
       readonly sitesWeb: readonly Url[]
-      readonly ficheAccesLibre: Url | null
+      readonly ficheAccesLibre: FicheAccesLibre | null
       readonly priseRdv: Url | null
-      readonly horaires: string | null
+      readonly horaires: Horaires | null
     }
   | {
       readonly section: 'Description'
       readonly presentation: Presentation | null
-      readonly formationsLabels: readonly FormationLabel[]
+      readonly formationsLabels: FormationsLabels
     }
   | {
       readonly section: 'ServicesEtAccompagnement'
-      readonly services: readonly Service[]
-      readonly modalitesAccompagnement: readonly ModaliteAccompagnement[]
+      readonly services: Services
+      readonly modalitesAccompagnement: ModalitesAccompagnement
     }
   | {
       readonly section: 'ModalitesAccesAuService'
-      readonly modalitesAcces: readonly ModaliteAcces[]
-      readonly telephone: string | null
+      readonly modalitesAcces: ModalitesAcces
+      readonly telephone: Telephone | null
       readonly courriels: readonly Courriel[]
-      readonly fraisACharge: readonly Frais[]
+      readonly fraisACharge: FraisACharge
     }
   | {
       readonly section: 'TypesDePublicsAccueillis'
-      readonly publicsSpecifiquementAdresses: readonly PublicSpecifiquementAdresse[]
-      readonly priseEnChargeSpecifique: readonly PriseEnChargeSpecifique[]
+      readonly publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses
+      readonly priseEnChargeSpecifique: PrisesEnChargeSpecifiques
     }
 
 export type SectionDeLaFiche = ModificationLieu['section']

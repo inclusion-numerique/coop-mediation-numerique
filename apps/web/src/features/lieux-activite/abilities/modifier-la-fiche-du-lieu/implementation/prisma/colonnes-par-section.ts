@@ -26,7 +26,6 @@ const COLONNES_PAR_SECTION = {
       'itinerance',
       'typologies',
       'siret',
-      'rna',
       'nomUsage',
     ],
     registre: [

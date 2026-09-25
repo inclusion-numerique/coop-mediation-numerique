@@ -46,7 +46,7 @@ const ExportActivitesValidation = z
   .object({
     // If you want to filter by a specific mediateur, you can add it here
     // By default this will export for current user if he is a mediateur
-    mediateur: z.string().uuid().optional(),
+    mediateur: z.guid().optional(),
   })
   .extend(ActivitesFilterValidations)
 

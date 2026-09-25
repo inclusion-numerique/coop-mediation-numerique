@@ -59,7 +59,6 @@ import { type ZodError, z } from 'zod'
  *             - fiche_acces_libre
  *             - horaires
  *             - prise_rdv
- *             - structure_parente
  *             - services
  *             - publics_specifiquement_adresses
  *             - prise_en_charge_specifique
@@ -188,10 +187,6 @@ import { type ZodError, z } from 'zod'
  *               nullable: true
  *               description: url vers la prise de rendez-vous
  *               example: "https://exemple.org/rdv"
- *             structure_parente:
- *               type: string
- *               nullable: true
- *               example: "association nationale"
  *             services:
  *               type: array
  *               items:
@@ -347,7 +342,6 @@ type StructureAttributes = {
   fiche_acces_libre: string | null
   horaires: string | null
   prise_rdv: string | null
-  structure_parente: string | null
   services: string[]
   publics_specifiquement_adresses: string[]
   prise_en_charge_specifique: string[]
@@ -379,8 +373,8 @@ export type StructureListResponse = JsonApiListResponse<StructureResource>
  */
 const StructureCursorValidation = z.object({
   creation_id: z.object({
-    creation: z.coerce.string().datetime(),
-    id: z.string().uuid(),
+    creation: z.coerce.string().pipe(z.iso.datetime()),
+    id: z.guid(),
   }),
 })
 
@@ -401,22 +395,22 @@ export const GET = createApiV1Route
         .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
         .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
         .transform((arr) => Array.from(new Set(arr)))
-        .pipe(z.array(z.string().uuid()).max(100))
+        .pipe(z.array(z.guid()).max(100))
         .default([]),
       filter: z
         .object({
           creation: z
             .object({
-              depuis: z.string().datetime().optional(),
+              depuis: z.iso.datetime().optional(),
             })
-            .default({}),
+            .prefault({}),
           modification: z
             .object({
-              depuis: z.string().datetime().optional(),
+              depuis: z.iso.datetime().optional(),
             })
-            .default({}),
+            .prefault({}),
         })
-        .default({}),
+        .prefault({}),
     }),
   )
   .handle(async ({ params }) => {
@@ -527,7 +521,6 @@ export const GET = createApiV1Route
           fiche_acces_libre: s.ficheAccesLibre,
           horaires: s.horaires,
           prise_rdv: s.priseRdv,
-          structure_parente: s.structureParente,
           services: [...s.services],
           publics_specifiquement_adresses: [...s.publicsSpecifiquementAdresses],
           prise_en_charge_specifique: [...s.priseEnChargeSpecifique],

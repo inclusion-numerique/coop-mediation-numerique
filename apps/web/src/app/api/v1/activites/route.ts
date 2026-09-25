@@ -210,8 +210,8 @@ const countBeneficiaires = (
 
 const ActiviteCursorValidation = z.object({
   modification_id: z.object({
-    modification: z.coerce.string().datetime(),
-    id: z.string().uuid(),
+    modification: z.coerce.string().pipe(z.iso.datetime()),
+    id: z.guid(),
   }),
 })
 
@@ -525,16 +525,16 @@ export const GET = createApiV1Route
         .object({
           creation: z
             .object({
-              depuis: z.string().datetime().optional(),
+              depuis: z.iso.datetime().optional(),
             })
-            .default({}),
+            .prefault({}),
           modification: z
             .object({
-              depuis: z.string().datetime().optional(),
+              depuis: z.iso.datetime().optional(),
             })
-            .default({}),
+            .prefault({}),
         })
-        .default({}),
+        .prefault({}),
     }),
   )
   .handle(async ({ params }) => {

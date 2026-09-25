@@ -8,8 +8,8 @@ import InputFormField, { InputFormFieldProps } from './InputFormField'
 const objectFormValidation = z
   .object({
     name: z.string(),
-    email: z.string().email(),
-    email2: z.string().email(),
+    email: z.email(),
+    email2: z.email(),
   })
   .strict()
 type ObjectFormData = z.infer<typeof objectFormValidation>

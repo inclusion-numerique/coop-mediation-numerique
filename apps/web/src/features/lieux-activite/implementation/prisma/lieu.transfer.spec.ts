@@ -3,18 +3,31 @@ import {
   Contact,
   Courriel,
   DispositifProgrammeNational,
+  DispositifProgrammesNationaux,
+  FicheAccesLibre,
   FormationLabel,
+  FormationsLabels,
   Frais,
+  FraisACharge,
+  Horaires,
   Itinerance,
+  Itinerances,
   Localisation,
   ModaliteAcces,
   ModaliteAccompagnement,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   Pivot,
+  Presentation,
   PriseEnChargeSpecifique,
+  PrisesEnChargeSpecifiques,
   PublicSpecifiquementAdresse,
+  PublicsSpecifiquementAdresses,
   Service,
+  Services,
   Typologie,
+  Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { BanId } from '../../domain/ban-id'
@@ -43,11 +56,13 @@ const id = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
 
 /**
- * Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent, et
- * `structureParente` — que rien n'écrit et qu'aucune ligne ne renseigne.
+ * Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent,
+ * `structureParente` — que rien n'écrit et qu'aucune ligne ne renseigne — et
+ * `rna`, que le standard a sorti du pivot et que plus aucune écriture ne touche.
  */
 const horsDomaine = {
   structureParente: null,
+  rna: null,
   nomReferent: null,
   courrielReferent: null,
   telephoneReferent: null,
@@ -88,20 +103,20 @@ const minimal: Lieu = {
     pivot: null,
     adresse: null,
     localisation: null,
-    typologies: [],
+    typologies: Typologies([]),
     contact: Contact({}),
     horaires: null,
     presentation: null,
-    services: [],
-    publicsSpecifiquementAdresses: [],
-    priseEnChargeSpecifique: [],
-    modalitesAcces: [],
-    fraisACharge: [],
-    itinerance: [],
-    dispositifProgrammesNationaux: [],
-    formationsLabels: [],
+    services: Services([]),
+    publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([]),
+    priseEnChargeSpecifique: PrisesEnChargeSpecifiques([]),
+    modalitesAcces: ModalitesAcces([]),
+    fraisACharge: FraisACharge([]),
+    itinerance: Itinerances([]),
+    dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+    formationsLabels: FormationsLabels([]),
     autresFormationsLabels: [],
-    modalitesAccompagnement: [],
+    modalitesAccompagnement: ModalitesAccompagnement([]),
     ficheAccesLibre: null,
     priseRdv: null,
   },
@@ -120,7 +135,7 @@ const maximal: Lieu = {
   id,
   fiche: {
     nom: Nom('La Quincaillerie numérique'),
-    pivot: Pivot('55217862900132'),
+    pivot: Pivot('55217862900135'),
     adresse: Adresse({
       voie: '12 BIS RUE DE LECLERCQ',
       commune: 'Reims',
@@ -129,7 +144,7 @@ const maximal: Lieu = {
       complement_adresse: 'Le patio du bois de l’Aulne',
     }),
     localisation: Localisation({ latitude: 43.52609, longitude: 5.41423 }),
-    typologies: [Typologie.BIB, Typologie.CCAS],
+    typologies: Typologies([Typologie.BIB, Typologie.CCAS]),
     contact: Contact({
       telephone: '+33180059880',
       courriels: [Courriel('contact@example.fr')],
@@ -138,31 +153,40 @@ const maximal: Lieu = {
         Url('https://autre.example.fr'),
       ],
     }),
-    horaires: 'Mo-Fr 09:00-12:00,14:00-18:30; Sa 08:30-12:00',
-    presentation: { resume: 'Un résumé', detail: 'Un détail plus long' },
-    services: [
+    horaires: Horaires('Mo-Fr 09:00-12:00,14:00-18:30; Sa 08:30-12:00'),
+    presentation: Presentation({
+      resume: 'Un résumé',
+      detail: 'Un détail plus long',
+    }),
+    services: Services([
       Service.AideAuxDemarchesAdministratives,
       Service.MaterielInformatiqueAPrixSolidaire,
-    ],
-    publicsSpecifiquementAdresses: [
+    ]),
+    publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([
       PublicSpecifiquementAdresse.Jeunes,
       PublicSpecifiquementAdresse.Femmes,
-    ],
-    priseEnChargeSpecifique: [PriseEnChargeSpecifique.Surdite],
-    modalitesAcces: [
+    ]),
+    priseEnChargeSpecifique: PrisesEnChargeSpecifiques([
+      PriseEnChargeSpecifique.Surdite,
+    ]),
+    modalitesAcces: ModalitesAcces([
       ModaliteAcces.SePresenter,
       ModaliteAcces.PrescriptionParMail,
-    ],
-    fraisACharge: [Frais.GratuitSousCondition],
-    itinerance: [Itinerance.Itinerant],
-    dispositifProgrammesNationaux: [
+    ]),
+    fraisACharge: FraisACharge([Frais.GratuitSousCondition]),
+    itinerance: Itinerances([Itinerance.Itinerant]),
+    dispositifProgrammesNationaux: DispositifProgrammesNationaux([
       DispositifProgrammeNational.CertificationPIX,
       DispositifProgrammeNational.PointNumeriqueCAF,
-    ],
-    formationsLabels: [FormationLabel.FormeAMonEspaceSante],
+    ]),
+    formationsLabels: FormationsLabels([FormationLabel.FormeAMonEspaceSante]),
     autresFormationsLabels: ['Label et la bête'],
-    modalitesAccompagnement: [ModaliteAccompagnement.DansUnAtelier],
-    ficheAccesLibre: Url('https://acceslibre.beta.gouv.fr/app/erp/mediatheque'),
+    modalitesAccompagnement: ModalitesAccompagnement([
+      ModaliteAccompagnement.DansUnAtelier,
+    ]),
+    ficheAccesLibre: FicheAccesLibre(
+      'https://acceslibre.beta.gouv.fr/app/erp/mediatheque',
+    ),
     priseRdv: Url('https://rdv.anct.gouv.fr/'),
   },
   visibilite: VisibiliteCartographie('Publie'),
@@ -193,13 +217,10 @@ describe('transfer du lieu', () => {
     expect(lieuCoopToDomain(ligne(maximal))).toEqual(maximal)
   })
 
-  it('conserve un pivot RNA', () => {
-    const parRna: Lieu = {
-      ...minimal,
-      fiche: { ...minimal.fiche, pivot: Pivot('W123456789') },
-    }
-
-    expect(lieuCoopToDomain(ligne(parRna))).toEqual(parRna)
+  it('ignore un RNA en base, qui n’est plus une immatriculation du lieu', () => {
+    expect(lieuCoopToDomain({ ...ligne(minimal), rna: 'W123456789' })).toEqual(
+      minimal,
+    )
   })
 
   it('conserve une modification par un utilisateur', () => {
@@ -234,12 +255,12 @@ describe('transfer du lieu', () => {
 
   describe('pertes assumées à la relecture de la base', () => {
     it('écarte une adresse que le schéma national refuse', () => {
-      const nonDiffusible: LigneDuLieuCoop = {
+      const commenceParUnTiret: LigneDuLieuCoop = {
         ...ligne(maximal),
-        adresse: '[Non-Diffusible]',
+        adresse: '-12 rue de la Paix',
       }
 
-      expect(lieuCoopToDomain(nonDiffusible).fiche.adresse).toBeNull()
+      expect(lieuCoopToDomain(commenceParUnTiret).fiche.adresse).toBeNull()
     })
 
     it('écarte une adresse dont le code postal est vide', () => {
@@ -254,7 +275,7 @@ describe('transfer du lieu', () => {
     it('ne retient que les sites web que le standard reconnaît', () => {
       const siteWebMixte: LigneDuLieuCoop = {
         ...ligne(maximal),
-        siteWeb: 'https://www.example.fr|pas une url du tout',
+        siteWeb: ['https://www.example.fr', 'pas une url du tout'],
       }
 
       expect(lieuCoopToDomain(siteWebMixte).fiche.contact.site_web).toEqual([

@@ -9,5 +9,6 @@ export {
 } from './differences'
 export * from './errors'
 export * from './modification-lieu'
+export { laisseUnePublicationSansAdresse } from './publication-sans-adresse'
 export { laisseUnePublicationSansService } from './publication-sans-service'
 export { resoudreLesDifferences } from './resoudre-les-differences'

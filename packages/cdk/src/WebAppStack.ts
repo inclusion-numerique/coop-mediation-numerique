@@ -385,16 +385,6 @@ export class WebAppStack extends TerraformStack {
         schedule: '0 3 * * *',
         containerId: container.id,
       })
-
-      // Daily normalize structures employeuses at 4 AM
-      createJobExecutionCron(this, {
-        name: 'normalize-sirets',
-        job: {
-          name: 'normalize-sirets',
-        },
-        schedule: '0 4 * * *',
-        containerId: container.id,
-      })
     }
 
     // Daily sync RDVSP data

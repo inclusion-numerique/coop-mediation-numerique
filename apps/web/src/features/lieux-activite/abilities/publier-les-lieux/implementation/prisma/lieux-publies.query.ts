@@ -1,7 +1,7 @@
 import { conseillersNumeriquesUserIdsSql } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
-import type { LieuMediationNumerique } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { Prisma } from '@prisma/client'
+import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
 
 /**
  * Un médiateur tel que la cartographie nationale l'affiche sur le lieu.
@@ -38,13 +38,13 @@ export const lieuxPublies = async ({
 }: {
   readonly ids: readonly string[]
   readonly dispositifProgrammeNational?: string
-}) => {
-  return prismaClient.$queryRaw<
-    (LieuMediationNumerique & { aidants?: Aidant[] })[]
+}): Promise<(LieuPublie & { aidants?: Aidant[] })[]> => {
+  const lignes = await prismaClient.$queryRaw<
+    (Record<string, unknown> & { aidants?: Aidant[] })[]
   >`
   WITH base AS (
     SELECT structures.id,
-      COALESCE(NULLIF(structures.siret, ''), NULLIF(structures.rna, ''), '00000000000000') AS pivot,
+      NULLIF(structures.siret, '') AS pivot,
       structures.nom,
       jsonb_strip_nulls(
         jsonb_build_object(
@@ -66,7 +66,7 @@ export const lieuxPublies = async ({
         jsonb_build_object(
           'telephone', NULLIF(structures.telephone, ''),
           'courriels', NULLIF(structures.courriels, '{}'),
-          'site_web', CASE WHEN NULLIF(structures.site_web, '') IS NOT NULL THEN ARRAY[structures.site_web] END
+          'site_web', NULLIF(structures.site_web, '{}')
         )
       ) AS contact,
       NULLIF(structures.horaires, '') AS horaires,
@@ -77,17 +77,25 @@ export const lieuxPublies = async ({
         )
       ) AS presentation,
       'Coop numérique' AS source,
-      structures.itinerance,
-      NULLIF(structures.itinerance, '{}') AS itinerance, structures.modification as "date_maj",
+      NULLIF(structures.itinerance, '{}') AS itinerance,
+      structures.modification AS "date_maj",
       NULLIF(structures.services, '{}') AS services,
-      NULLIF(structures.structure_parente, '{}') AS structure_parente,
       NULLIF(structures.publics_specifiquement_adresses, '{}') AS publics_specifiquement_adresses,
       NULLIF(structures.prise_en_charge_specifique, '{}') AS prise_en_charge_specifique,
       NULLIF(structures.frais_a_charge, '{}') AS frais_a_charge,
-        CASE
-          WHEN COUNT(CASE WHEN conseillers.user_id IS NOT NULL THEN 1 END) > 0 THEN ARRAY['Conseillers numériques']
-        END
-      AS dispositif_programmes_nationaux,
+      -- Ce que le lieu porte, plus le dispositif conseiller numérique que la
+      -- coop est seule à savoir dériver. La colonne n'est pas de la saisie mais
+      -- de la donnée de référence, en lecture seule : la jeter ferait dire à la
+      -- carte autre chose que ce que la fiche montre.
+      NULLIF(
+        structures.dispositif_programmes_nationaux
+          || CASE
+               WHEN COUNT(CASE WHEN conseillers.user_id IS NOT NULL THEN 1 END) > 0
+               THEN ARRAY['Conseillers numériques']::"coop"."dispositif_programme_national"[]
+               ELSE '{}'::"coop"."dispositif_programme_national"[]
+             END,
+        '{}'
+      ) AS dispositif_programmes_nationaux,
       NULLIF(structures.formations_labels, '{}') AS formations_labels,
       NULLIF(structures.autres_formations_labels, '{}') AS autres_formations_labels,
       NULLIF(structures.modalites_acces, '{}') AS modalites_acces,
@@ -144,4 +152,14 @@ export const lieuxPublies = async ({
           : Prisma.empty
       }
   `
+
+  return lignes
+    .map(({ aidants, ...lieu }) => {
+      const publie = LieuPublieSchema.safeParse(lieu)
+
+      return publie.success
+        ? { ...publie.data, ...(aidants == null ? {} : { aidants }) }
+        : null
+    })
+    .filter((lieu) => lieu !== null)
 }

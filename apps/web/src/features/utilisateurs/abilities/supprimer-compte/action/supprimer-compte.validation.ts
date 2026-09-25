@@ -6,7 +6,7 @@ import { z } from 'zod'
  * remplace la garde d'appartenance que portait la procédure tRPC.
  */
 export const SupprimerCompteValidation = z.object({
-  utilisateurId: z.string().uuid(),
+  utilisateurId: z.guid(),
 })
 
 export type SupprimerCompteInput = z.infer<typeof SupprimerCompteValidation>

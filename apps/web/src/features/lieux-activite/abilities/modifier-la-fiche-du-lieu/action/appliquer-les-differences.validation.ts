@@ -9,7 +9,7 @@ import { z } from 'zod'
  * rien écrire par ce chemin qui ne soit déjà l'une des deux valeurs en présence.
  */
 export const AppliquerLesDifferencesValidation = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   choix: z.record(z.string(), z.enum(['coop', 'registre'])),
 })
 

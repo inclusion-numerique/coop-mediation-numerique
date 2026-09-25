@@ -19,7 +19,7 @@ export const NomExterne = defineModel(
 export type NomExterne = Model.TypeOf<typeof NomExterne>
 
 export const EmailExterne = defineModel(
-  z.string().trim().toLowerCase().email().brand('EmailExterne'),
+  z.string().trim().toLowerCase().pipe(z.email()).brand('EmailExterne'),
 )
 export type EmailExterne = Model.TypeOf<typeof EmailExterne>
 

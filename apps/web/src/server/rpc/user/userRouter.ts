@@ -325,7 +325,7 @@ export const userRouter = router({
       },
     ),
   logoutUser: protectedProcedure
-    .input(z.object({ userId: z.string().uuid() }))
+    .input(z.object({ userId: z.guid() }))
     .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
       enforceIsAdmin(sessionUser)
 

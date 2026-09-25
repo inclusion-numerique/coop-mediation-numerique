@@ -2,12 +2,23 @@ import {
   Adresse,
   Contact,
   Courriel,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
+  FraisACharge,
+  Horaires,
   Itinerance,
+  Itinerances,
   ModaliteAcces,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   Pivot,
+  PrisesEnChargeSpecifiques,
   PublicSpecifiquementAdresse,
+  PublicsSpecifiquementAdresses,
+  Services,
   Typologie,
+  Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Lieu } from '../../../domain/lieu'
@@ -32,20 +43,20 @@ const lieu: Lieu = {
       code_postal: '51100',
     }),
     localisation: null,
-    typologies: [],
+    typologies: Typologies([]),
     contact: Contact({}),
     horaires: null,
     presentation: null,
-    services: [],
-    publicsSpecifiquementAdresses: [],
-    priseEnChargeSpecifique: [],
-    modalitesAcces: [],
-    fraisACharge: [],
-    itinerance: [],
-    dispositifProgrammesNationaux: [],
-    formationsLabels: [],
+    services: Services([]),
+    publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([]),
+    priseEnChargeSpecifique: PrisesEnChargeSpecifiques([]),
+    modalitesAcces: ModalitesAcces([]),
+    fraisACharge: FraisACharge([]),
+    itinerance: Itinerances([]),
+    dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+    formationsLabels: FormationsLabels([]),
     autresFormationsLabels: [],
-    modalitesAccompagnement: [],
+    modalitesAccompagnement: ModalitesAccompagnement([]),
     ficheAccesLibre: null,
     priseRdv: null,
   },
@@ -129,7 +140,11 @@ describe('mise en forme de la fiche pour l’écran', () => {
     const { repriseExterne } = ficheAffichee({
       lieu: {
         ...lieu,
-        fiche: { ...lieu.fiche, horaires: 'Tu 14:00-18:00', nom: Nom('Autre') },
+        fiche: {
+          ...lieu.fiche,
+          horaires: Horaires('Tu 14:00-18:00'),
+          nom: Nom('Autre'),
+        },
         tracabilite: {
           ...lieu.tracabilite,
           derniereModification: ModifieParSource(
@@ -169,11 +184,11 @@ describe('mise en forme de la fiche pour l’écran', () => {
         ...lieu,
         fiche: {
           ...lieu.fiche,
-          publicsSpecifiquementAdresses: [
+          publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([
             PublicSpecifiquementAdresse.Jeunes,
             PublicSpecifiquementAdresse.Seniors,
-          ],
-          typologies: [Typologie.BIB],
+          ]),
+          typologies: Typologies([Typologie.BIB]),
         },
         tracabilite: {
           ...lieu.tracabilite,
@@ -228,7 +243,9 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('ne dit plus « tout public » dès qu’un public est visé', () => {
     const affichee = afficher({
       ...lieu.fiche,
-      publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
+      publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([
+        PublicSpecifiquementAdresse.Jeunes,
+      ]),
     })
 
     expect(affichee.typesDePublicsAccueillis.toutPublic).toBe(false)
@@ -237,17 +254,15 @@ describe('mise en forme de la fiche pour l’écran', () => {
     ).toEqual(['Jeunes'])
   })
 
-  it('range le pivot du bon côté selon qu’il est SIRET ou RNA', () => {
-    const parSiret = afficher({ ...lieu.fiche, pivot: Pivot('55217862900132') })
-    const parRna = afficher({ ...lieu.fiche, pivot: Pivot('W123456789') })
+  it('affiche le SIRET du pivot, et rien quand il n’y en a pas', () => {
+    const parSiret = afficher({ ...lieu.fiche, pivot: Pivot('55217862900135') })
+    const sansPivot = afficher({ ...lieu.fiche, pivot: null })
 
-    expect(parSiret.informationsGenerales.siret).toBe('55217862900132')
-    expect(parSiret.informationsGenerales.rna).toBeNull()
-    expect(parRna.informationsGenerales.rna).toBe('W123456789')
-    expect(parRna.informationsGenerales.siret).toBeNull()
+    expect(parSiret.informationsGenerales.siret).toBe('55217862900135')
+    expect(sansPivot.informationsGenerales.siret).toBeNull()
   })
 
-  it('rejoint les sites web comme la colonne les stocke', () => {
+  it('rejoint les sites web dans l’ordre que le standard leur donne', () => {
     const affichee = afficher({
       ...lieu.fiche,
       contact: Contact({
@@ -259,18 +274,20 @@ describe('mise en forme de la fiche pour l’écran', () => {
     })
 
     expect(affichee.informationsPratiques.siteWeb).toBe(
-      'https://un.example.fr|https://deux.example.fr',
+      'https://deux.example.fr|https://un.example.fr',
     )
   })
 
   it('rend l’itinérance en tri-état pour la case à cocher', () => {
     expect(afficher(lieu.fiche).informationsGenerales.lieuItinerant).toBeNull()
     expect(
-      afficher({ ...lieu.fiche, itinerance: [Itinerance.Itinerant] })
-        .informationsGenerales.lieuItinerant,
+      afficher({
+        ...lieu.fiche,
+        itinerance: Itinerances([Itinerance.Itinerant]),
+      }).informationsGenerales.lieuItinerant,
     ).toBe(true)
     expect(
-      afficher({ ...lieu.fiche, itinerance: [Itinerance.Fixe] })
+      afficher({ ...lieu.fiche, itinerance: Itinerances([Itinerance.Fixe]) })
         .informationsGenerales.lieuItinerant,
     ).toBe(false)
   })
@@ -278,10 +295,10 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('recompose les cases des modalités d’accès et leurs moyens', () => {
     const affichee = afficher({
       ...lieu.fiche,
-      modalitesAcces: [
+      modalitesAcces: ModalitesAcces([
         ModaliteAcces.Telephoner,
         ModaliteAcces.ContacterParMail,
-      ],
+      ]),
       contact: Contact({
         telephone: '+33180059880',
         courriels: [Courriel('contact@example.fr')],

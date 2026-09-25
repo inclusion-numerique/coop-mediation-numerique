@@ -34,9 +34,9 @@ export const apiClientRouter = router({
       ClientApiValidation.extend({
         id: z
           .string({
-            required_error: 'Veuillez renseigner un id',
+            error: 'Veuillez renseigner un id',
           })
-          .uuid(),
+          .pipe(z.guid()),
       }),
     )
     .mutation(async ({ input, ctx: { user } }) => {
@@ -55,7 +55,7 @@ export const apiClientRouter = router({
       return client
     }),
   rotateApiClientSecret: protectedProcedure
-    .input(z.object({ clientId: z.string().uuid() }))
+    .input(z.object({ clientId: z.guid() }))
     .mutation(async ({ input: { clientId }, ctx: { user } }) => {
       enforceIsAdmin(user)
 

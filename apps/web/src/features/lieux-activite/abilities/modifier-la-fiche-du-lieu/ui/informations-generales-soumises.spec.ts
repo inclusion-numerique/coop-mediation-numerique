@@ -32,7 +32,6 @@ const formulaire = (champs: Partial<Formulaire> = {}): Formulaire => ({
   lieuItinerant: null,
   complementAdresse: null,
   siretSearch: null,
-  rna: null,
   nomUsage: null,
   noSiret: true,
   typologies: [],
@@ -97,23 +96,6 @@ describe('sans SIRET', () => {
       'Tiers-lieu du Port',
     )
   })
-})
-
-/**
- * Aucun champ ne l'édite — il vient des imports cartographiques — et ne pas le
- * renvoyer l'effacerait.
- */
-describe('le RNA', () => {
-  it.each([[true], [false]])(
-    'repart tel qu’il est venu (sans SIRET : %s)',
-    (noSiret) => {
-      expect(
-        informationsGeneralesSoumises(
-          formulaire({ noSiret, rna: 'W123456789' }),
-        ).rna,
-      ).toBe('W123456789')
-    },
-  )
 })
 
 /** Dans les deux cas, l'adresse a été reconnue par la Base Adresse Nationale. */

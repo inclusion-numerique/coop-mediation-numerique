@@ -21,7 +21,6 @@ export type LieuSaisi = {
   readonly commune?: string | null
   readonly codePostal?: string | null
   readonly siret?: string | null
-  readonly rna?: string | null
   readonly typologies?: readonly string[] | null
 }
 
@@ -35,7 +34,7 @@ const libelles = (typologies: readonly string[]): string =>
   typologies.map(libelleDeTypologie).join(', ')
 
 export const SaisieDuLieuCard = ({
-  lieu: { nom, adresse, rna, siret, codePostal, commune, typologies },
+  lieu: { nom, adresse, siret, codePostal, commune, typologies },
   topRight,
   infoLinkHref,
   className,
@@ -45,7 +44,7 @@ export const SaisieDuLieuCard = ({
   topRight?: ReactNode
   infoLinkHref?: string
 }) => {
-  const tooltipId = `tooltip-${nom.replaceAll('"', '')}-${typologies?.join(',')}-${siret}-${rna}-${codePostal}-${commune}-${adresse}`
+  const tooltipId = `tooltip-${nom.replaceAll('"', '')}-${typologies?.join(',')}-${siret}-${codePostal}-${commune}-${adresse}`
 
   // Un lieu peut n'avoir aucune adresse exploitable (établissement non
   // diffusible) : on masque alors la ligne entière plutôt que d'afficher une
@@ -92,18 +91,9 @@ export const SaisieDuLieuCard = ({
         </p>
       )}
 
-      {(siret || rna) && (
+      {siret && (
         <p className="fr-mt-1v fr-text--sm fr-text-mention--grey fr-mb-0">
-          {siret ? (
-            <>
-              <span className="fr-text--medium">SIRET</span>&nbsp;: {siret}
-            </>
-          ) : null}
-          {rna ? (
-            <>
-              <span className="fr-text--medium">RNA</span>&nbsp;: {rna}
-            </>
-          ) : null}
+          <span className="fr-text--medium">SIRET</span>&nbsp;: {siret}
         </p>
       )}
       {!!infoLinkHref && (

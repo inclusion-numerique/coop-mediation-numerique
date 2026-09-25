@@ -82,17 +82,6 @@ describe('la saisie d’une section de fiche', () => {
         expect(informationsGenerales({ siret })).toBe(false)
       },
     )
-
-    it('accepte un RNA', () => {
-      expect(informationsGenerales({ rna: 'W123456789' })).toBe(true)
-    })
-
-    it.each([['W12'], ['W12345678A'], ['123456789']])(
-      'refuse le RNA %s',
-      (rna) => {
-        expect(informationsGenerales({ rna })).toBe(false)
-      },
-    )
   })
 
   describe('adresses web', () => {

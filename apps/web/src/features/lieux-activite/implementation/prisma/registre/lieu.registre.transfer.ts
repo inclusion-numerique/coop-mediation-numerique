@@ -1,7 +1,4 @@
-import {
-  type Contact,
-  isSiret,
-} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Contact } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { serialiserIdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../../domain/lieu'
 import { estPublie } from '../../../domain/visibilite-cartographie'
@@ -47,15 +44,11 @@ const contactDuRegistre = (contact: Contact) => {
 }
 
 /**
- * Le SIRET tel que la coop l'a déclaré. Le registre ne porte pas de RNA et son
- * SIRET n'est qu'une entrée déclarative pour l'enrichissement : le SIRET
- * canonique reste celui de la `structure_administrative` associée. Un pivot qui
- * est un RNA n'a donc pas de colonne où aller, et c'est juste ainsi.
+ * Le SIRET tel que la coop l'a déclaré. Il n'est qu'une entrée déclarative pour
+ * l'enrichissement : le SIRET canonique reste celui de la
+ * `structure_administrative` associée.
  */
-const siretDeclare = (lieu: Lieu): string | null =>
-  lieu.fiche.pivot != null && isSiret(lieu.fiche.pivot)
-    ? lieu.fiche.pivot
-    : null
+const siretDeclare = (lieu: Lieu): string | null => lieu.fiche.pivot
 
 /**
  * Les colonnes que la coop écrit au registre, prises à la ligne réelle : c'est

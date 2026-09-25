@@ -18,18 +18,18 @@ export const ModalitesAccesAuServiceShape = {
     .superRefine((data, refinementContext) => {
       if (data?.parMail && !data.adresseMail) {
         refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: "L'adresse email est obligatoire.",
           path: ['adresseMail'],
         })
       }
       if (data?.parTelephone && !data.numeroTelephone) {
         refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: 'Le numéro de téléphone est obligatoire.',
           path: ['numeroTelephone'],
         })
       }
     }),
-  fraisACharge: z.array(z.nativeEnum(Frais)).nullish(),
+  fraisACharge: z.array(z.enum(Frais)).nullish(),
 }

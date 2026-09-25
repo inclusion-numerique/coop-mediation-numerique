@@ -13,7 +13,7 @@ import { z } from 'zod'
  * l'utilisateur. Elle vit donc dans `depuis-le-panier`.
  */
 const LieuAAjouterValidation = z.object({
-  id: z.string().uuid().nullish(),
+  id: z.guid().nullish(),
   structureCartographieNationaleId: z.string().nullish(),
   nom: z.string().trim().min(1, 'Le lieu doit porter un nom'),
   siret: z.string().nullish(),

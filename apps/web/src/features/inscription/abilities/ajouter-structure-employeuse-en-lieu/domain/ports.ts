@@ -1,3 +1,5 @@
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import type { AdresseAGeocoder } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { UserId } from '@app/web/features/inscription/domain'
 import type { EmployeuseId } from './employeuse-id'
 
@@ -11,6 +13,7 @@ import type { EmployeuseId } from './employeuse-id'
 export type LierStructureEmployeuseEnLieu = (input: {
   readonly userId: UserId
   readonly structureEmployeuseId: EmployeuseId
+  readonly adresseBan: AdresseBanData
 }) => Promise<void>
 
 /**
@@ -34,3 +37,11 @@ export type DelierStructureEmployeuseEnLieu = (input: {
 export type LireEmployeuseActuelle = (
   userId: UserId,
 ) => Promise<EmployeuseId | null>
+
+export type LireLAdresseDeLEmployeuse = (
+  employeuseId: EmployeuseId,
+) => Promise<AdresseAGeocoder | null>
+
+export type GeocoderLAdresse = (
+  adresse: AdresseAGeocoder,
+) => Promise<AdresseBanData | null>

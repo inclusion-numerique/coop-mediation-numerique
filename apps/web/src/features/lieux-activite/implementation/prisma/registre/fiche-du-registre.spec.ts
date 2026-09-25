@@ -1,8 +1,8 @@
 import {
   Adresse,
+  FicheAccesLibre,
   Localisation,
   Nom,
-  Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Fiche } from '../../../domain/fiche'
 import {
@@ -144,14 +144,25 @@ describe('la fiche que le registre décrit', () => {
   it('garde les liens que le standard reconnaît et laisse tomber les autres', () => {
     const fiche = ficheDuRegistre(
       inscription({
-        ficheAccesLibre: 'https://acceslibre.fr/fiche',
+        ficheAccesLibre: 'https://acceslibre.beta.gouv.fr/app/erp/le-lieu',
         priseRdv: 'appelez-nous',
       }),
       depuisLaCoop,
     )
 
-    expect(fiche.ficheAccesLibre).toBe(Url('https://acceslibre.fr/fiche'))
+    expect(fiche.ficheAccesLibre).toBe(
+      FicheAccesLibre('https://acceslibre.beta.gouv.fr/app/erp/le-lieu'),
+    )
     expect(fiche.priseRdv).toBeNull()
+  })
+
+  it('laisse tomber une fiche d’accessibilité qui ne mène pas à Accès Libre', () => {
+    expect(
+      ficheDuRegistre(
+        inscription({ ficheAccesLibre: 'https://acceslibre.fr/fiche' }),
+        depuisLaCoop,
+      ).ficheAccesLibre,
+    ).toBeNull()
   })
 
   it('ne retient pas des horaires qui ne disent rien', () => {

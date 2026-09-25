@@ -41,14 +41,14 @@ const DemiJournee = z
 
     if (startTime == null)
       contexte.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'À renseigner',
         path: ['startTime'],
       })
 
     if (endTime == null)
       contexte.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'À renseigner',
         path: ['endTime'],
       })
@@ -72,6 +72,6 @@ export const HorairesValidation = z.object({
   Fr: Journee,
   Sa: Journee,
   Su: Journee,
-}) satisfies z.ZodType<Schedule, z.ZodTypeDef, unknown>
+}) satisfies z.ZodType<Schedule, unknown>
 
 export type HorairesSaisis = z.input<typeof HorairesValidation>
