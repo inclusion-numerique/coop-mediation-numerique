@@ -18,6 +18,7 @@ import {
   confieeAuLieuSiInactif,
   coordonneesSoumises,
   type ServiceDemande,
+  sansLeLieuDejaConfie,
   serviceDemande,
 } from './adresse-a-reprendre'
 
@@ -199,16 +200,19 @@ export const repriseDeLAdresse = (
       lieu,
       { parLAdresse, parLesCoordonnees, parLeRegistre, parLAnnuaire },
     ) =>
-      confieeAuLieuSiInactif(
+      sansLeLieuDejaConfie(
         lieu,
-        adresseAReprendre(
+        confieeAuLieuSiInactif(
           lieu,
-          parLAdresse.get(lieu.id) ?? [],
-          parLesCoordonnees.get(lieu.id),
-          parLAnnuaire.get(lieu.id) ?? [],
-          parLeRegistre.get(lieu.id),
+          adresseAReprendre(
+            lieu,
+            parLAdresse.get(lieu.id) ?? [],
+            parLesCoordonnees.get(lieu.id),
+            parLAnnuaire.get(lieu.id) ?? [],
+            parLeRegistre.get(lieu.id),
+          ),
+          maintenant,
         ),
-        maintenant,
       ),
     mentions: (aReprendre) => [
       {

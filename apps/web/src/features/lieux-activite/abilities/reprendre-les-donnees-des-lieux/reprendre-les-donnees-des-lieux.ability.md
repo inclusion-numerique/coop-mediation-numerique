@@ -568,7 +568,9 @@ base.
 > Adresse Nationale, qui ne désignait plus son adresse. Il n'est pas supprimé :
 > il a une histoire. Ses médiateurs le retrouvent tel quel, avec un message qui
 > leur demande de choisir son adresse dans la liste proposée ; le partage se
-> débloque dès qu'ils l'ont fait.
+> débloque dès qu'ils l'ont fait. Une fois retiré et privé de son identifiant,
+> il ne paraît plus au relevé : la décision est prise, il n'y a plus rien à
+> écrire.
 
 ### Scenario: Le lieu inactif depuis plus de six mois est retiré de la cartographie
 

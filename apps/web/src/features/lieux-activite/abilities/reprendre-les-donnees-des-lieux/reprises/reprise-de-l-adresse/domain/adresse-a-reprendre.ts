@@ -560,6 +560,17 @@ export const confieeAuLieuSiInactif = (
     ? { verdict: 'a-faire-corriger', motif: aReprendre.motif }
     : aReprendre
 
+const dejaConfiee = (lieu: LieuAReprendre): boolean =>
+  !lieu.publie && lieu.banId == null
+
+export const sansLeLieuDejaConfie = (
+  lieu: LieuAReprendre,
+  aReprendre: AdresseAReprendre | null,
+): AdresseAReprendre | null =>
+  aReprendre?.verdict === 'a-faire-corriger' && dejaConfiee(lieu)
+    ? null
+    : aReprendre
+
 export const adresseAReprendre = (
   lieu: LieuAReprendre,
   rendues: readonly AdresseGeocodee[],

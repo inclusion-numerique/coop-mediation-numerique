@@ -5,6 +5,7 @@ import {
   adresseAReprendre,
   adresseSoumise,
   confieeAuLieuSiInactif,
+  sansLeLieuDejaConfie,
   serviceDesigne,
   voieMuette,
 } from './adresse-a-reprendre'
@@ -883,5 +884,39 @@ describe('le lieu inactif que rien ne situe, confié à ceux qui l’animent', (
         MAINTENANT,
       ),
     ).toEqual(aSupprimer)
+  })
+})
+
+describe('le lieu déjà confié à ceux qui l’animent', () => {
+  const A_FAIRE_CORRIGER = {
+    verdict: 'a-faire-corriger',
+    motif: 'score insuffisant',
+  } as const
+
+  it('ne paraît plus au relevé une fois retiré de la cartographie et privé de son identifiant BAN', () => {
+    expect(
+      sansLeLieuDejaConfie(
+        lieuAReprendre({ publie: false, banId: null }),
+        A_FAIRE_CORRIGER,
+      ),
+    ).toBeNull()
+  })
+
+  it('reste à confier tant qu’il est partagé', () => {
+    expect(
+      sansLeLieuDejaConfie(
+        lieuAReprendre({ publie: true, banId: null }),
+        A_FAIRE_CORRIGER,
+      ),
+    ).toEqual(A_FAIRE_CORRIGER)
+  })
+
+  it('reste à confier tant qu’il porte un identifiant BAN', () => {
+    expect(
+      sansLeLieuDejaConfie(
+        lieuAReprendre({ publie: false, banId: '51454_7160_00012' }),
+        A_FAIRE_CORRIGER,
+      ),
+    ).toEqual(A_FAIRE_CORRIGER)
   })
 })
