@@ -48,6 +48,12 @@ describe('le verdict sur l’adresse d’un lieu', () => {
     expect(adresseAReprendre(lieuAReprendre({}), [doublon, RENDUE])).toBeNull()
   })
 
+  it('garde l’adresse du lieu quand la BAN signale un ex aequo de même libellé', () => {
+    expect(
+      verdict({ type: 'locality', banId: '51454_B079', exAequo: true }),
+    ).toBeNull()
+  })
+
   it('corrige une adresse dont l’identifiant BAN diffère', () => {
     expect(verdict({ banId: '51454_7160_00099' })).toEqual({
       verdict: 'a-corriger',

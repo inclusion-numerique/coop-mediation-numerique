@@ -22,6 +22,7 @@ export type AdresseGeocodee = {
   readonly latitude: number
   readonly longitude: number
   readonly libelle: string
+  readonly exAequo?: boolean
 }
 
 /** Ce que la Base Adresse Nationale trouve au point qu'on lui montre. */
@@ -189,6 +190,15 @@ const dejaConforme = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
   lieu.codeInsee === rendue.codeInsee &&
   lieu.latitude === rendue.latitude &&
   lieu.longitude === rendue.longitude
+
+const exAequoSousLeLibelleDuLieu = (
+  lieu: LieuAReprendre,
+  rendue: AdresseGeocodee,
+): boolean =>
+  rendue.exAequo === true &&
+  lieu.banId != null &&
+  lieu.adresse === rendue.voie &&
+  lieu.codeInsee === rendue.codeInsee
 
 const ecartEnMetres = (
   lieu: LieuAReprendre,
@@ -613,5 +623,8 @@ export const adresseAReprendre = (
       : { verdict: 'a-verifier', motif }
   }
 
-  return dejaConforme(lieu, adresse) ? null : { verdict: 'a-corriger', adresse }
+  return dejaConforme(lieu, adresse) ||
+    exAequoSousLeLibelleDuLieu(lieu, adresse)
+    ? null
+    : { verdict: 'a-corriger', adresse }
 }

@@ -93,6 +93,9 @@ const geocodee = (
       longitude:
         champ('longitude') === '' ? Number.NaN : Number(champ('longitude')),
       libelle: champ('result_label'),
+      exAequo:
+        champ('result_score_next') !== '' &&
+        champ('result_score_next') === champ('result_score'),
     },
   ]
 
