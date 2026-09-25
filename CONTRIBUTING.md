@@ -302,11 +302,8 @@ L'application CLI (`pnpm cli <commande>`) fournit un ensemble d'outils pour le d
 
 Exemples :
 ```bash
-# Verifier les SIRET sans rien ecrire
-pnpm cli job:execute normalize-sirets '{"dryRun":true}'
-
-# Backup de la base de donnees (avec payload)
-pnpm cli job:execute normalize-sirets '{"dryRun":true}'
+# Relever les SIRET des lieux a reprendre sans rien ecrire
+pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 ```
 
 ### Deploiement
@@ -380,7 +377,6 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 | `fix-users-roles` | — | Corrige et repare les attributions de roles utilisateurs |
 | `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
 | `remove-orphan-brevo-contacts` | — | Supprime les contacts Brevo qui n'existent plus en base de donnees |
-| `normalize-sirets` | `{ dryRun?, minDaysSinceLastSync? }` | Verifie les SIRET contre l'annuaire des entreprises (par defaut : sync si 7+ jours depuis la derniere) |
 
 Ne figurent ici que les jobs qui ont encore une raison de tourner. Les campagnes
 de reprise de donnees, les correctifs ponctuels et les backfills accomplis sont
@@ -405,7 +401,6 @@ l'historique git, pas dans le code.
 | `inactive-users-reminders` | `0 0 * * *` | Tous les jours a 00:00 |
 | `appliquer-dispositif-conum` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
-| `normalize-sirets` | `0 4 * * *` | Tous les jours a 04:00 |
 
 #### Dev et production (`dev` + `main`)
 
@@ -579,7 +574,6 @@ Les crons sont configures via `ContainerCron` Scaleway et envoient des requetes 
 | `inactive-users-reminders` | Tous les jours a minuit | Relances inscriptions incompletes |
 | `appliquer-dispositif-conum` | Tous les jours a 2h | Report des affectations conseiller numerique |
 | `remove-orphan-brevo-contacts` | Tous les jours a 3h | Nettoyage contacts Brevo orphelins |
-| `normalize-sirets` | Tous les jours a 4h | Verification des SIRET |
 
 **Dev et production :**
 

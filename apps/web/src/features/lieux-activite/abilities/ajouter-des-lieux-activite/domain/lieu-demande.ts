@@ -27,8 +27,7 @@ type Identite = {
    *
    * Reste une chaîne, à dessein. Ce numéro a transité par le navigateur, et le
    * serveur ne peut pas distinguer celui que l'annuaire a rendu de celui qu'on
-   * lui souffle. Le brander dirait vérifié ce dont on doute — c'est le job
-   * `verifier-les-sirets-des-lieux` qui l'établit.
+   * lui souffle. Le brander dirait vérifié ce dont on doute.
    */
   readonly siret?: string | null
   /**
