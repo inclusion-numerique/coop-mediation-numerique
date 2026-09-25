@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { interroger } from '../../../implementation/http/interroger'
 import type {
   AdresseConsignee,
   AdresseGeocodee,
@@ -59,7 +60,7 @@ export const adresseDuNumero = (reponse: unknown): AdresseGeocodee | null => {
 const consulterParIdentifiant = async (
   banId: string,
 ): Promise<AdresseGeocodee | null> => {
-  const reponse = await fetch(
+  const reponse = await interroger(
     `${CONSULTATION_PAR_IDENTIFIANT}/${encodeURIComponent(banId)}`,
   )
 

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { interroger } from '../../../implementation/http/interroger'
 import type {
   AdresseGeocodee,
   AdresseSoumise,
@@ -59,7 +60,7 @@ const servicesDeLaCommune = async (
     limit: String(SERVICES_PAR_COMMUNE),
   })
 
-  const reponse = await fetch(`${ANNUAIRE}?${parametres.toString()}`)
+  const reponse = await interroger(`${ANNUAIRE}?${parametres.toString()}`)
 
   if (!reponse.ok)
     throw new Error(

@@ -1,6 +1,7 @@
 import { apiAdresseEndpoint } from '@app/web/external-apis/apiAdresse'
 import { distanceEnMetres } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
+import { interroger } from '../../../implementation/http/interroger'
 import type {
   AdresseRetrouvee,
   AdresseSoumise,
@@ -76,7 +77,7 @@ const voieAuPoint = (
 const soumettre = async (
   points: readonly CoordonneesSoumises[],
 ): Promise<readonly VoieAuPoint[]> => {
-  const reponse = await fetch(`${REVERSE}/csv/`, {
+  const reponse = await interroger(`${REVERSE}/csv/`, {
     method: 'POST',
     body: corps(points),
   })
@@ -131,7 +132,9 @@ const centreDeLaCommune = async ({
     type: 'municipality',
     limit: '1',
   })
-  const reponse = await fetch(`${apiAdresseEndpoint}?${parametres.toString()}`)
+  const reponse = await interroger(
+    `${apiAdresseEndpoint}?${parametres.toString()}`,
+  )
 
   if (!reponse.ok)
     throw new Error(

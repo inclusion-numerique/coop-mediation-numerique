@@ -1,6 +1,9 @@
 import { fetchSiretApiData } from '@app/web/external-apis/siret/fetchSiretData'
 import { throttleApiEntreprise } from '@app/web/libraries/siret'
+import { z } from 'zod'
+import { memoriser } from '../../../implementation/http/interroger'
 import type { InterrogerSirene } from '../domain/reprise-du-siret'
+import type { ReponseSirene } from '../domain/siret-a-reprendre'
 
 const SIRET_ABSENT_DES_RESULTATS = 404
 
@@ -15,10 +18,29 @@ const SUFFIXES: Readonly<Record<string, string>> = {
 const suffixe = (indice: string | null | undefined): string | null =>
   indice == null ? null : (SUFFIXES[indice.toUpperCase()] ?? indice)
 
+const ReponseSireneMemorisee: z.ZodType<ReponseSirene> = z.discriminatedUnion(
+  'etat',
+  [
+    z.object({
+      etat: z.literal('ouvert'),
+      etablissement: z.object({
+        nom: z.string(),
+        voie: z.string(),
+        codePostal: z.string(),
+        commune: z.string(),
+        codeInsee: z.string(),
+      }),
+    }),
+    z.object({ etat: z.literal('ferme') }),
+    z.object({ etat: z.literal('inconnu') }),
+    z.object({ etat: z.literal('injoignable') }),
+  ],
+)
+
 const renseigne = (partie: string | null | undefined): partie is string =>
   partie != null && partie !== '' && partie !== 'null'
 
-export const interrogerSirene: InterrogerSirene = async (siret) => {
+const interrogerLAnnuaireDesEntreprises: InterrogerSirene = async (siret) => {
   const reponse = await fetchSiretApiData(siret)
 
   await throttleApiEntreprise()
@@ -52,3 +74,11 @@ export const interrogerSirene: InterrogerSirene = async (siret) => {
     },
   }
 }
+
+export const interrogerSirene: InterrogerSirene = (siret) =>
+  memoriser(
+    `sirene ${siret}`,
+    ReponseSireneMemorisee,
+    () => interrogerLAnnuaireDesEntreprises(siret),
+    ({ etat }) => etat !== 'injoignable',
+  )

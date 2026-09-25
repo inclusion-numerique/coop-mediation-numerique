@@ -1,4 +1,5 @@
 import { apiAdresseEndpoint } from '@app/web/external-apis/apiAdresse'
+import { interroger } from '../../../implementation/http/interroger'
 import type {
   AdresseGeocodee,
   AdresseSoumise,
@@ -104,7 +105,7 @@ const soumettre = async (
 ): Promise<readonly Appariement[]> => {
   if (adresses.length === 0) return []
 
-  const reponse = await fetch(`${apiAdresseEndpoint}/csv/`, {
+  const reponse = await interroger(`${apiAdresseEndpoint}/csv/`, {
     method: 'POST',
     body: corps(adresses, colonnes),
   })
