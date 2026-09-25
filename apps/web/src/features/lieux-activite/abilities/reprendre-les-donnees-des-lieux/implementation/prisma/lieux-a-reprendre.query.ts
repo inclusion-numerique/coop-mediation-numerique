@@ -1,0 +1,54 @@
+import { prismaClient } from '@app/web/prismaClient'
+import type { LieuAReprendre, LireLesLieux } from '../../domain'
+
+export const lireLesLieux: LireLesLieux = async () =>
+  prismaClient.$queryRaw<LieuAReprendre[]>`
+    SELECT
+      id::text                                               AS "id",
+      COALESCE(nom, '')                                      AS "nom",
+      COALESCE(commune, '')                                  AS "commune",
+      COALESCE(code_postal, '')                              AS "codePostal",
+      COALESCE(visible_pour_cartographie_nationale, false)   AS "publie",
+      NULLIF(horaires, '')                                   AS "horaires",
+      COALESCE(adresse, '')                                  AS "adresse",
+      complement_adresse                                     AS "complementAdresse",
+      fiche_acces_libre                                      AS "ficheAccesLibre",
+      prise_rdv                                              AS "priseRdv",
+      NULLIF(code_insee, '')                                 AS "codeInsee",
+      NULLIF(ban_id, '')                                     AS "banId",
+      latitude                                               AS "latitude",
+      longitude                                              AS "longitude",
+      NULLIF(rna, '')                                        AS "rna",
+      siret                                                  AS "siret",
+      NULLIF(nom_usage, '')                                  AS "nomUsage",
+      NULLIF(presentation_resume, '')                        AS "presentationResume",
+      NULLIF(presentation_detail, '')                        AS "presentationDetail",
+      NULLIF(telephone, '')                                  AS "telephone",
+      COALESCE(courriels, '{}')                              AS "courriels",
+      COALESCE(site_web, '{}')                               AS "siteWeb",
+      COALESCE(typologies::text[], '{}')                     AS "typologies",
+      COALESCE(services::text[], '{}')                       AS "services",
+      COALESCE(modalites_acces::text[], '{}')                AS "modalitesAcces",
+      COALESCE(modalites_accompagnement::text[], '{}')       AS "modalitesAccompagnement",
+      COALESCE(publics_specifiquement_adresses::text[], '{}') AS "publicsSpecifiquementAdresses",
+      COALESCE(prise_en_charge_specifique::text[], '{}')     AS "priseEnChargeSpecifique",
+      COALESCE(frais_a_charge::text[], '{}')                 AS "fraisACharge",
+      COALESCE(itinerance::text[], '{}')                     AS "itinerance",
+      COALESCE(dispositif_programmes_nationaux::text[], '{}') AS "dispositifProgrammesNationaux",
+      COALESCE(formations_labels::text[], '{}')              AS "formationsLabels",
+      COALESCE(autres_formations_labels, '{}')               AS "autresFormationsLabels",
+      COALESCE(activite.accompagnements, 0)::int             AS "accompagnements",
+      activite.derniere                                      AS "derniereActivite"
+    FROM coop.lieu_inclusion
+    LEFT JOIN (
+      SELECT
+        structure_id,
+        SUM(accompagnements_count) AS accompagnements,
+        MAX(date)                  AS derniere
+      FROM coop.activites
+      WHERE suppression IS NULL
+      GROUP BY structure_id
+    ) activite ON activite.structure_id = coop.lieu_inclusion.id
+    WHERE suppression IS NULL
+    ORDER BY creation
+  `

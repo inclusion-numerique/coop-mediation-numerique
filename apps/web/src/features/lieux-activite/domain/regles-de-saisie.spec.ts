@@ -226,10 +226,10 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     ['complementAdresse', 'Bâtiment B', true],
     ['complementAdresse', 'Bât. 3 (entrée côté parking)', true],
     ['complementAdresse', '1er étage / bureau 12', true],
+    ['complementAdresse', 'Hall A — porte gauche', true],
+    ['complementAdresse', 'Local n°12 & annexe', true],
     ['complementAdresse', null, true],
     ['complementAdresse', 'Appt #4', false],
-    ['complementAdresse', 'Hall A — porte gauche', false],
-    ['complementAdresse', 'Local n°12 & annexe', false],
     ['complementAdresse', 'Zone d’activité 50 %', false],
 
     ['presentationResume', 'x'.repeat(280), true],
@@ -311,7 +311,7 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     })
 
     it('refuse une voie que le standard ne reconnaît pas', () => {
-      expect(avecAdresse('12 rue Pierre & Marie Curie')).toEqual({
+      expect(avecAdresse('-12 rue de la Paix')).toEqual({
         creation: false,
         modification: false,
       })

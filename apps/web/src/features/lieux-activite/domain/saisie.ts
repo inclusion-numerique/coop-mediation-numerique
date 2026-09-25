@@ -191,7 +191,7 @@ export type AdresseSaisie = {
  * Il se valide seul parce qu'il est facultatif : mêlé au reste, un complément
  * refusé emporterait l'adresse entière (D21, D29.1). Le cas n'existait pas
  * avant que le standard ne se mette à le valider ; il vaut désormais pour
- * `Appt #4` comme pour un tiret cadratin.
+ * `Appt #4` comme pour des guillemets droits.
  */
 export const complementAdresseSaisi = (
   complement: string | null | undefined,

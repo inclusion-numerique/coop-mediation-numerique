@@ -2,8 +2,8 @@ import { z } from 'zod'
 import { AppliquerDispositifConumJobValidation } from './appliquer-dispositif-conum/appliquerDispositifConumJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
-import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
+import { ReprendreLesDonneesDesLieuxJobValidation } from './reprendre-les-donnees-des-lieux/reprendreLesDonneesDesLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
 
 /**
@@ -31,8 +31,8 @@ export const JobValidation = z.discriminatedUnion('name', [
   AppliquerDispositifConumJobValidation,
   FixUsersRolesJobValidation,
   InactiveUsersRemindersJobValidation,
-  NormalizeSiretsJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
+  ReprendreLesDonneesDesLieuxJobValidation,
   SyncRdvspDataJobValidation,
 ])
 

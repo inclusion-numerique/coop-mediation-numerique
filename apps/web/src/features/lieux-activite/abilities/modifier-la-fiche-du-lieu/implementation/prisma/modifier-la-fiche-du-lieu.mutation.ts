@@ -6,9 +6,11 @@ import { appliquerModification } from '../../domain/appliquer-la-modification'
 import {
   type EchecDeModification,
   FicheIntrouvable,
+  PublicationSansAdresse,
   PublicationSansService,
 } from '../../domain/errors'
 import type { ModificationLieu } from '../../domain/modification-lieu'
+import { laisseUnePublicationSansAdresse } from '../../domain/publication-sans-adresse'
 import { laisseUnePublicationSansService } from '../../domain/publication-sans-service'
 import { consulterLaFicheDuLieu } from './consulter-la-fiche-du-lieu.query'
 import { enregistrerLesSections } from './enregistrer-les-sections'
@@ -37,6 +39,9 @@ export const modifierLaFicheDuLieu = async ({
 
   if (laisseUnePublicationSansService(modifie, modification))
     return failure(PublicationSansService(id))
+
+  if (laisseUnePublicationSansAdresse(modifie, modification))
+    return failure(PublicationSansAdresse(id))
 
   await enregistrerLesSections({
     lieu: modifie,

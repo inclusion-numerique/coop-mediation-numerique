@@ -137,6 +137,8 @@ export const semerUneFicheDeLieu = async (): Promise<FicheSemee> => {
       adresse: '12 rue de la Paix',
       commune: 'Reims',
       codePostal: '51100',
+      codeInsee: '51454',
+      banId: '51454_7160_00012',
       siteWeb: ['https://www.exemple-reims.fr'],
       telephone: '+33180059880',
       courriels: ['contact@exemple-reims.fr'],

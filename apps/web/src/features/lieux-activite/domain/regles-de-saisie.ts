@@ -93,12 +93,13 @@ export const SiretSaisi = reconnu(
  * valide seul et le laisse tomber, pour que l'adresse ne tombe pas avec lui.
  * Refuser en le disant vaut mieux qu'enregistrer sans rien enregistrer.
  *
- * Le jeu de caractères est celui d'un nom de voie — c'est le standard qui le
- * pose, et il est probablement trop étroit pour un complément.
+ * Le jeu de caractères est celui d'un nom de voie, auquel le standard ajoute
+ * le numéro seul ; il refuse encore #, %, les guillemets droits et un début
+ * qu'un tableur lirait comme une formule.
  */
 export const ComplementAdresseSaisi = reconnu(
   (valeur) => ComplementAdresse.safe(valeur) != null,
-  'Ce complément contient un caractère que le schéma national n’accepte pas : évitez #, &, %, « " » et les tirets longs',
+  'Ce complément contient un caractère que le schéma national n’accepte pas : évitez #, %, les guillemets droits (") et un tiret ou une arobase en tête',
 )
 
 export const SiteWebSaisi = reconnu(
@@ -175,8 +176,8 @@ export const CaseCochee = z.boolean().nullish()
 /**
  * L'adresse choisie doit être de celles que le standard reconnaît.
  *
- * La Base Adresse Nationale rend des libellés que `Adresse` refuse — une
- * esperluette dans un nom de voie suffit. Sans cette règle, le lieu
+ * La Base Adresse Nationale peut rendre des libellés que `Adresse` refuse —
+ * un caractère hors du jeu du standard suffit. Sans cette règle, le lieu
  * s'enregistrait et revenait **sans adresse du tout**, ce qu'aucun message ne
  * disait. Le prédicat est emprunté au mapper : c'est `adresseSaisie` qui
  * décide, la saisie ne fait que le redire.

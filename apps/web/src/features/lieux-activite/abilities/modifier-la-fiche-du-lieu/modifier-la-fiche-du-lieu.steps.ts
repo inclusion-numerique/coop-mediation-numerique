@@ -286,6 +286,50 @@ Given('une fiche de lieu visible sur la cartographie', async () => {
   })
 })
 
+Given(
+  'une fiche de lieu sans adresse reconnue par la Base Adresse Nationale',
+  async () => {
+    await semerUneFicheDeLieu()
+
+    await prismaClient.lieuInclusion.update({
+      where: { id: ficheSemee().lieuId },
+      data: { banId: null },
+    })
+  },
+)
+
+Given(
+  'une fiche de lieu visible sans adresse reconnue par la Base Adresse Nationale',
+  async () => {
+    await semerUneFicheDeLieu()
+
+    await prismaClient.lieuInclusion.update({
+      where: { id: ficheSemee().lieuId },
+      data: { banId: null, visiblePourCartographieNationale: true },
+    })
+  },
+)
+
+Given('une fiche de lieu située à la seule commune', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { adresse: 'Reims', banId: '51454' },
+  })
+})
+
+When('le médiateur rattaché retire le lieu de la cartographie', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'VisibiliteCartographie',
+      visiblePourCartographieNationale: false,
+    }),
+  })
+})
+
 When(
   'le médiateur rattaché rend le lieu visible sur la cartographie',
   async () => {
@@ -337,6 +381,11 @@ Then('le lieu annonce les services du socle', async () => {
 Then('le lieu est visible sur la cartographie', async () => {
   const { lieu } = await relire()
   assert.strictEqual(lieu.visibilite, 'Publie')
+})
+
+Then("le lieu n'est pas visible sur la cartographie", async () => {
+  const { lieu } = await relire()
+  assert.notStrictEqual(lieu.visibilite, 'Publie')
 })
 
 Then('la modification est refusée', () => {

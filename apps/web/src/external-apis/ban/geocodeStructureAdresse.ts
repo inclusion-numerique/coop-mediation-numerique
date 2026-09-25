@@ -14,12 +14,17 @@ export type AdresseAGeocoder = {
   readonly codeInsee: string | null
 }
 
-export const adresseNonVerifiableMessage = ({
-  adresse,
-  codePostal,
-  commune,
-}: AdresseAGeocoder): string =>
-  `L’adresse « ${adresse} ${codePostal} ${commune} » de cet établissement est introuvable dans la Base Adresse Nationale. Contactez le support pour ajouter ce lieu.`
+export const SANS_SIRET_A_LA_MAIN =
+  'Merci de sélectionner « Il n’y a pas de SIRET pour ce lieu » et de renseigner l’adresse à la main.'
+
+export const CREER_A_LA_MAIN =
+  'Merci de choisir « Créer un lieu d’activité » et de renseigner l’adresse à la main.'
+
+export const adresseNonVerifiableMessage = (
+  { adresse, codePostal, commune }: AdresseAGeocoder,
+  consigne: string,
+): string =>
+  `L’adresse « ${adresse} ${codePostal} ${commune} » de cet établissement est introuvable dans la Base Adresse Nationale. ${consigne}`
 
 // Un résultat de type « municipality » est un repli sur le centre de la
 // commune : la voie n’a pas été trouvée, on le considère comme un échec.

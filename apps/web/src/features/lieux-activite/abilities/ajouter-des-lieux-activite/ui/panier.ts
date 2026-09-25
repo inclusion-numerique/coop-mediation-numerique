@@ -1,6 +1,7 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
   adresseNonVerifiableMessage,
+  CREER_A_LA_MAIN,
   geocodeStructureAdresse,
 } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
@@ -87,7 +88,8 @@ export const selectionner = async (
 ): Promise<Result<LieuAuPanier, string>> => {
   const lieu = await auPanier(resultat)
 
-  if (lieu == null) return failure(adresseNonVerifiableMessage(resultat))
+  if (lieu == null)
+    return failure(adresseNonVerifiableMessage(resultat, CREER_A_LA_MAIN))
 
   return lieux.some((present) => memeLieu(present, lieu))
     ? failure(`${lieu.nom} fait déjà partie de votre sélection.`)

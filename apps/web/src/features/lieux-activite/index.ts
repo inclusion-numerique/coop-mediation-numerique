@@ -107,16 +107,6 @@ export {
 } from './abilities/retirer-un-mediateur-du-lieu'
 export { RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS } from './abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.errors'
 export { RetirerUnMediateurDuLieuValidation } from './abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.validation'
-// Vérifier les SIRET contre l'annuaire des entreprises
-export {
-  type Compte,
-  effacerLeSiret,
-  interrogerSirene,
-  lireLesLieuxASiret,
-  marquerLeSiretVerifie,
-  sansEcriture,
-  verifierLesSiretsDesLieux,
-} from './abilities/verifier-les-sirets-des-lieux'
 // Identité d'un lieu et des personnes qui le manipulent
 export { BanId } from './domain/ban-id'
 export { IdentifiantCartographie } from './domain/ids-cartographie-nationale'

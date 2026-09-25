@@ -179,8 +179,6 @@ describe('le complément d’adresse', () => {
    */
   it.each([
     ['Appt #4'],
-    ['Hall A — porte gauche'],
-    ['Local n°12 & annexe'],
     ['Résidence "Les Tilleuls"'],
     ['Zone d’activité 50 %'],
   ])('%s tombe seul, et l’adresse demeure', (complement) => {
@@ -194,6 +192,8 @@ describe('le complément d’adresse', () => {
     ['Bâtiment B'],
     ['Bât. 3 (entrée côté parking)'],
     ['1er étage / bureau 12'],
+    ['Hall A — porte gauche'],
+    ['Local n°12 & annexe'],
   ])('%s est retenu', (complement) => {
     expect(adresseSaisie(ban, complement)).toHaveProperty(
       'complement_adresse',
