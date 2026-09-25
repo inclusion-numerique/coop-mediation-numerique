@@ -125,7 +125,7 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
     ).toEqual({
       verdict: 'a-effacer',
       efface: SIRET,
-      motif: MOTIFS_SIRET.autreAdresse,
+      motif: MOTIFS_SIRET.autreNumero,
     })
   })
 
@@ -172,7 +172,8 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
         reponsesPourSirene: [],
       }),
     ).toEqual({
-      verdict: 'a-reverifier',
+      verdict: 'a-effacer',
+      efface: SIRET,
       motif: MOTIFS_SIRET.adresseSireneIntrouvable,
     })
   })
@@ -201,7 +202,7 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
     ).toBe('a-effacer')
   })
 
-  it('garde à revérifier un SIRET dont SIRENE ne situe que la voie du lieu', () => {
+  it('efface un SIRET dont SIRENE ne situe que la voie du lieu', () => {
     expect(
       verdict({
         sirene: sireneA('PLACE DE LA PAIX', '51454'),
@@ -215,7 +216,8 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
         ],
       }),
     ).toEqual({
-      verdict: 'a-reverifier',
+      verdict: 'a-effacer',
+      efface: SIRET,
       motif: MOTIFS_SIRET.adresseSireneALaVoie,
     })
   })
@@ -246,11 +248,6 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
 
   it.each([
     [
-      'l’adresse du lieu n’est pas fixée',
-      { adresseRetenue: null },
-      MOTIFS_SIRET.adresseNonFixee,
-    ],
-    [
       'la BAN ne reconnaît pas l’adresse SIRENE',
       {
         sirene: sireneA('MAISON DES SERVICES', '51454'),
@@ -258,11 +255,6 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
         reponsesPourSirene: [],
       },
       MOTIFS_SIRET.adresseSireneIntrouvable,
-    ],
-    [
-      'SIRENE n’a pas répondu',
-      { sirene: { etat: 'injoignable' } as const },
-      MOTIFS_SIRET.injoignable,
     ],
     [
       'le lieu n’est situé qu’à la voie que SIRENE numérote',
@@ -273,8 +265,27 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
       },
       MOTIFS_SIRET.adresseALaVoie,
     ],
-  ])('garde le SIRET à revérifier quand %s', (_cas, champs, motif) => {
-    expect(verdict(champs)).toEqual({ verdict: 'a-reverifier', motif })
+  ])('efface le SIRET quand %s', (_cas, champs, motif) => {
+    expect(verdict(champs)).toEqual({
+      verdict: 'a-effacer',
+      efface: SIRET,
+      motif,
+    })
+  })
+
+  it('efface le SIRET quand la reprise de l’adresse ne fixe pas celle du lieu', () => {
+    expect(verdict({ adresseRetenue: null })).toEqual({
+      verdict: 'a-effacer',
+      efface: SIRET,
+      motif: MOTIFS_SIRET.adresseNonFixee,
+    })
+  })
+
+  it('garde le SIRET à revérifier quand SIRENE n’a pas répondu', () => {
+    expect(verdict({ sirene: { etat: 'injoignable' } })).toEqual({
+      verdict: 'a-reverifier',
+      motif: MOTIFS_SIRET.injoignable,
+    })
   })
 })
 

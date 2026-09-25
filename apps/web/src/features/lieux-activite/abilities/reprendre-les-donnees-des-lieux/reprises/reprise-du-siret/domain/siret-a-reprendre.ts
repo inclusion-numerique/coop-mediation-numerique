@@ -53,9 +53,10 @@ export const MOTIFS_SIRET = {
   ferme: 'établissement fermé',
   autreAdresse: 'SIRENE le situe à une autre adresse',
   autreNom: 'SIRENE lui donne un autre nom',
-  adresseNonFixee: "l'adresse du lieu n'est pas encore fixée",
+  adresseNonFixee: "la reprise de l'adresse ne fixe pas celle du lieu",
   adresseALaVoie: "l'adresse du lieu s'arrête à la voie",
   adresseSireneALaVoie: "l'adresse SIRENE s'arrête à la voie",
+  autreNumero: 'SIRENE lui donne un autre numéro dans la même voie',
   adresseSireneIntrouvable:
     "la Base Adresse Nationale ne reconnaît pas l'adresse SIRENE",
   injoignable: "SIRENE n'a pas répondu",
@@ -89,6 +90,21 @@ export const siretSansConfrontation = (
   return null
 }
 
+const motifDeLAutreAdresse = (
+  adresseSirene: AdresseGeocodee | null,
+  adresseRetenue: string,
+  adresseDuLieuALaVoie: boolean,
+): string => {
+  if (adresseSirene == null) return MOTIFS_SIRET.adresseSireneIntrouvable
+  if (voieDe(adresseSirene.banId) !== voieDe(adresseRetenue))
+    return MOTIFS_SIRET.autreAdresse
+  if (adresseDuLieuALaVoie) return MOTIFS_SIRET.adresseALaVoie
+  if (adresseSirene.type !== 'housenumber')
+    return MOTIFS_SIRET.adresseSireneALaVoie
+
+  return MOTIFS_SIRET.autreNumero
+}
+
 const verdictDeLaConfrontation = (
   lieu: LieuAReprendre,
   {
@@ -107,7 +123,7 @@ const verdictDeLaConfrontation = (
   if (sirene.etat === 'injoignable') return reverifier(MOTIFS_SIRET.injoignable)
   if (sirene.etat === 'inconnu') return effacer(brut, MOTIFS_SIRET.inconnu)
   if (sirene.etat === 'ferme') return effacer(brut, MOTIFS_SIRET.ferme)
-  if (adresseRetenue == null) return reverifier(MOTIFS_SIRET.adresseNonFixee)
+  if (adresseRetenue == null) return effacer(brut, MOTIFS_SIRET.adresseNonFixee)
 
   const etablissement = sirene.etablissement
   const memeAdresse =
@@ -116,23 +132,11 @@ const verdictDeLaConfrontation = (
       inseeRetenu === etablissement.codeInsee &&
       motsDeLaVoie(voieRetenue) === motsDeLaVoie(etablissement.voie))
 
-  if (!memeAdresse && adresseSirene == null)
-    return reverifier(MOTIFS_SIRET.adresseSireneIntrouvable)
-
-  if (
-    !memeAdresse &&
-    adresseDuLieuALaVoie &&
-    voieDe(adresseSirene?.banId ?? '') === voieDe(adresseRetenue)
-  )
-    return reverifier(MOTIFS_SIRET.adresseALaVoie)
-  if (
-    !memeAdresse &&
-    adresseSirene != null &&
-    adresseSirene.type !== 'housenumber' &&
-    voieDe(adresseSirene.banId) === voieDe(adresseRetenue)
-  )
-    return reverifier(MOTIFS_SIRET.adresseSireneALaVoie)
-  if (!memeAdresse) return effacer(brut, MOTIFS_SIRET.autreAdresse)
+  if (!memeAdresse)
+    return effacer(
+      brut,
+      motifDeLAutreAdresse(adresseSirene, adresseRetenue, adresseDuLieuALaVoie),
+    )
 
   const { nom } = etablissement
 

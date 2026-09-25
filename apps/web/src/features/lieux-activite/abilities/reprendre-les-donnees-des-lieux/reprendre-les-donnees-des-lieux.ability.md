@@ -735,15 +735,17 @@ base.
 > libellés normalisés, mots pris dans n'importe quel ordre, dans la même
 > commune. Le nom
 > doit ressembler assez, mots pris dans n'importe quel ordre. Qu'une des deux
-> conditions manque, et le SIRET s'efface.
+> conditions manque, et le SIRET s'efface. Une adresse SIRENE que la BAN ne
+> reconnaît pas ne prouve rien : le SIRET s'efface aussi, comme lorsque l'une
+> des deux adresses s'arrête à la voie que l'autre numérote — le numéro n'est
+> pas le même.
 >
 > L'adresse du lieu comparée est celle que la reprise de l'adresse retient, pas
 > celle qui est enregistrée : la confrontation vaut sur une base jamais
-> corrigée comme sur une base déjà reprise. Quand cette adresse n'est pas encore
-> fixée, quand l'une des deux adresses s'arrête à la voie que l'autre numérote,
-> quand la BAN ne
-> reconnaît pas l'adresse SIRENE ou que SIRENE ne répond pas, on ne sait pas :
-> le SIRET reste, à revérifier à une prochaine passe.
+> corrigée comme sur une base déjà reprise. Quand la reprise de l'adresse ne
+> fixe pas celle du lieu, rien ne prouve le SIRET : il s'efface. Seul un SIRENE
+> qui ne répond pas laisse le SIRET en place, à revérifier à une prochaine
+> passe.
 >
 > Un SIRET légitime sous un autre nom apporte le nom légal : il devient le nom
 > du lieu, et celui que les médiateurs lui donnaient passe en nom d'usage.
