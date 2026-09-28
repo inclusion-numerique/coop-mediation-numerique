@@ -9,6 +9,7 @@ import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
+import { MaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -65,7 +66,7 @@ const LieuActiviteListPage = async ({
               showActionButtons
             />
           )}
-          mediateurEstVisible={user.mediateur.isVisible}
+          visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
           entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
         />
       </div>

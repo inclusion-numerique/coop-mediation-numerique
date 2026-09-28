@@ -14,7 +14,6 @@ import { leaveTeamOf } from '@app/web/mediateurs/leaveTeamOf'
 import { removeMediateurFromTeamOf } from '@app/web/mediateurs/removeMediateurFromTeamOf'
 import { resendInvitation } from '@app/web/mediateurs/resendInvitation'
 import { searchMediateur } from '@app/web/mediateurs/searchMediateurs'
-import { setVisibility } from '@app/web/mediateurs/setVisibility'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -263,25 +262,6 @@ export const mediateursRouter = router({
       if (user.role !== 'Admin') throw forbiddenError()
 
       return addUserToTeam({ userId, coordinateurId })
-    }),
-  setVisibility: protectedProcedure
-    .input(z.object({ isVisible: z.boolean() }))
-    .mutation(async ({ input: { isVisible }, ctx: { user } }) => {
-      const stopwatch = createStopwatch()
-
-      if (!isMediateur(user)) throw forbiddenError('User is not a mediateur')
-
-      await setVisibility(user)(isVisible)
-
-      addMutationLog({
-        userId: user?.id ?? null,
-        nom: 'SetMediateurVisibility',
-        duration: stopwatch.stop().duration,
-        data: {
-          email: user.email,
-          isVisible,
-        },
-      })
     }),
   shareStats: protectedProcedure.mutation(async ({ ctx: { user } }) => {
     const stopwatch = createStopwatch()
