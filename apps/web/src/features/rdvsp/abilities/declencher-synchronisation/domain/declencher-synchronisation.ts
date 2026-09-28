@@ -49,11 +49,22 @@ export type PorteeDeclenchement =
       readonly organisationIds: readonly OrganisationId[]
     }
 
+export const peutRelancerUnCompteEnErreur = (demandeur: Demandeur): boolean =>
+  demandeur.role === 'Admin' || demandeur.role === 'Support'
+
 export const porteePour = (
   compte: CompteRdv,
   seulementSansWebhook: boolean,
+  relanceAutorisee: boolean,
 ): PorteeDeclenchement => {
   if (!estUtilisable(compte)) {
+    return { _tag: 'sansObjet' }
+  }
+
+  if (
+    compte._tag === 'enErreur' &&
+    (seulementSansWebhook || !relanceAutorisee)
+  ) {
     return { _tag: 'sansObjet' }
   }
 

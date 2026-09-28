@@ -36,6 +36,10 @@ export const CONNECTER_COMPTE_RDV_ERRORS: Record<
     error_description:
       'Impossible de récupérer l’identifiant de l’utilisateur RDV Service Public',
   },
+  AccesRefuse: {
+    error: 'invalid_oauth_account',
+    error_description: 'RDV Service Public refuse l’accès à ce compte',
+  },
   ApiIndisponible: {
     error: 'api_error',
     error_description: 'RDV Service Public n’a pas pu être contacté',

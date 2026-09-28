@@ -4,8 +4,12 @@ import {
   bilanVide,
   deriveTotale,
 } from '../../../domain/bilan-synchronisation'
+import { diagnosticErreur } from '../../../domain/errors'
+import { organisationsAccessibles } from '../../../domain/organisation-id'
 import {
   type CloturerJournal,
+  compteVuParLaPasse,
+  type DetacherOrganisations,
   type EchouerJournal,
   type OuvrirJournal,
   type PorteeDemandee,
@@ -21,6 +25,7 @@ export type DependancesSynchroniserCompteRdv = {
   readonly reconcilierOrganisations: ReconcilierOrganisations
   readonly reconcilierRdvs: ReconcilierRdvs
   readonly reconcilierWebhooks: ReconcilierWebhooks
+  readonly detacherOrganisations: DetacherOrganisations
   readonly ouvrirJournal: OuvrirJournal
   readonly cloturerJournal: CloturerJournal
   readonly echouerJournal: EchouerJournal
@@ -48,6 +53,7 @@ export const synchroniserCompteRdv =
     reconcilierOrganisations,
     reconcilierRdvs,
     reconcilierWebhooks,
+    detacherOrganisations,
     ouvrirJournal,
     cloturerJournal,
     echouerJournal,
@@ -86,12 +92,12 @@ export const synchroniserCompteRdv =
 
       const organisations = passe.toutesOrganisations
         ? await reconcilierOrganisations(compte)
-        : success(bilanVide)
+        : success({ bilan: bilanVide, organisationIdsRecues: null })
 
       if (!organisations.success) {
         await echouerJournal({
           journalId,
-          message: organisations.error._tag,
+          message: diagnosticErreur(organisations.error),
           journal: lignes.join('\n'),
         })
         return organisations
@@ -108,24 +114,43 @@ export const synchroniserCompteRdv =
       if (!rdvs.success) {
         await echouerJournal({
           journalId,
-          message: rdvs.error._tag,
+          message: diagnosticErreur(rdvs.error),
           journal: lignes.join('\n'),
         })
         return rdvs
       }
 
       tracer('rendez-vous réconciliés')
+
+      const { organisationIdsInaccessibles } = rdvs.data
+
+      if (organisationIdsInaccessibles.length > 0) {
+        tracer(
+          `organisations inaccessibles détachées : ${organisationIdsInaccessibles.join(', ')}`,
+        )
+        await detacherOrganisations({
+          compte,
+          organisationIds: organisationIdsInaccessibles,
+        })
+      }
+
       tracer('installation des webhooks')
 
       const webhooks = await reconcilierWebhooks({
-        compte,
-        organisationIds: passe.organisationIds,
+        compte: compteVuParLaPasse(
+          compte,
+          organisations.data.organisationIdsRecues,
+        ),
+        organisationIds: organisationsAccessibles(
+          passe.organisationIds,
+          organisationIdsInaccessibles,
+        ),
       })
 
       tracer('webhooks installés')
 
       const bilan = {
-        organisations: organisations.data,
+        organisations: organisations.data.bilan,
         rdvs: rdvs.data.rdvs,
         users: rdvs.data.usagers,
         motifs: rdvs.data.motifs,

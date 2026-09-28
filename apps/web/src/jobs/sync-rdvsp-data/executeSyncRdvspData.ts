@@ -1,8 +1,8 @@
 import { output } from '@app/cli/output'
-import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
+import { declencherSynchronisationBinding as declencher } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { peutEtreSynchronise } from '@app/web/features/rdvsp/domain/sante-compte'
-import { synchroniserCompte } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
+import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 
 export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
@@ -10,8 +10,6 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
 
   const { users } = await getAdministrationRdvspData()
 
-  // Éligibilité décidée par le domaine : un compte en erreur reste synchronisable,
-  // c'est en réessayant qu'il en sort.
   const eligibleUsers = users.filter(
     (utilisateur) =>
       peutEtreSynchronise(utilisateur.sante) && utilisateur.rdvAccount,
@@ -21,30 +19,28 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
     `Found ${users.length} users with RDV account; ${eligibleUsers.length} eligible for sync`,
   )
 
-  let synced = 0
+  const synced = await eligibleUsers.reduce(async (precedent, user) => {
+    const acquis = await precedent
 
-  for (const user of eligibleUsers) {
     output(
       `Syncing user ${user.id} (${user.email ?? user.name ?? 'unknown'})...`,
     )
-    const sessionUser = await getSessionUserFromId(user.id)
-    if (!sessionUser.rdvAccount) {
-      output(`Skipping user ${user.id}: missing rdvAccount in session user`)
-      continue
+
+    const utilisateurId = UtilisateurCoopId(user.id)
+
+    const resultat = await declencher({
+      demandeur: { id: utilisateurId, role: 'User' },
+      utilisateurId,
+      seulementSansWebhook: false,
+    })
+
+    if (!resultat.success) {
+      output(`Error syncing user ${user.id}: ${resultat.error._tag}`)
+      return acquis
     }
 
-    try {
-      await synchroniserCompte({
-        compteId: sessionUser.rdvAccount.id,
-        mediateurId: sessionUser.mediateur?.id,
-      })
-
-      synced += 1
-    } catch (error) {
-      output(`Error syncing user ${user.id}: ${error}`)
-      continue
-    }
-  }
+    return acquis + 1
+  }, Promise.resolve(0))
 
   output(
     `Completed RDVSP sync. Synced ${synced}/${eligibleUsers.length} eligible users`,

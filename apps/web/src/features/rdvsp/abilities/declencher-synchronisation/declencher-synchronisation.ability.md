@@ -51,6 +51,31 @@
 * Then aucune synchronisation n’a été lancée
 * And le déclenchement réussit sans dérive
 
+## Rule: Un compte en erreur n'est plus appelé
+
+Un compte n'est marqué en erreur que sur un échec qu'un nouvel essai ne résout
+pas : jeton révoqué, agent supprimé, accès refusé. Il n'en sort que par une
+reconnexion OAuth du médiateur, ou par une relance de l'assistance.
+
+### Scenario: Le médiateur ne relance pas un compte en erreur
+
+* Given un compte RDV en erreur à synchroniser
+* When je déclenche une synchronisation complète pour moi-même
+* Then aucune synchronisation n’a été lancée
+* And le déclenchement réussit sans dérive
+
+### Scenario: Aucun rattrapage au chargement d'un écran
+
+* Given un compte RDV en erreur à synchroniser
+* When je déclenche un rattrapage pour moi-même
+* Then aucune synchronisation n’a été lancée
+
+### Scenario: L'assistance relance un compte en erreur
+
+* Given un compte RDV en erreur à synchroniser
+* When un administrateur déclenche une synchronisation complète pour moi
+* Then la synchronisation a parcouru toutes les organisations
+
 ## Rule: Un échec est consigné sur le compte
 
 ### Scenario: La passe échoue
