@@ -38,8 +38,12 @@ const CustomTooltip = ({
 
 export const AccompagnementBarChart = ({
   data,
+  height = '100%',
+  isAnimationActive = true,
 }: {
   data: { label: string; count: number }[]
+  height?: number | `${number}%`
+  isAnimationActive?: boolean
 }) => {
   const isEmpty = data.length === 0 || data.every((item) => item.count === 0)
   const emptyData = data.map((item) => ({ ...item, count: 1 }))
@@ -50,7 +54,7 @@ export const AccompagnementBarChart = ({
       : data
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height={height}>
       <BarChart
         data={displayData}
         margin={{ top: 15, right: 10, left: 0, bottom: 0 }}
@@ -90,6 +94,7 @@ export const AccompagnementBarChart = ({
         {!isEmpty && <Tooltip content={CustomTooltip} />}
         <Bar
           dataKey="count"
+          isAnimationActive={isAnimationActive}
           fill={isEmpty ? 'var(--blue-france-975-75)' : '#6a6af4'}
           radius={[4, 4, 0, 0]}
         >
