@@ -1,11 +1,12 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
+import {
+  isConseillerNumerique,
+  isCoordinateur,
+} from '@app/web/auth/userTypeGuards'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { AbcDiagLogo } from '@app/web/features/pictograms/services/AbcDiagLogo'
-import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
-import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
@@ -13,11 +14,17 @@ import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
 import { CardOutil } from './_components/CardOutil'
+import { outilsAccompagnementsVisibles } from './_data/outilsAccompagnements'
 
 export const MesOutils = async () => {
   const user = await getAuthenticatedSessionUser()
 
   const rdvServicePublicStatus = user.rdvAccount?.statut ?? 'jamaisConnecte'
+
+  const profil = {
+    coordinateur: isCoordinateur(user),
+    conseillerNumerique: isConseillerNumerique(user),
+  }
 
   return (
     <CoopPageContainer size={56}>
@@ -62,39 +69,20 @@ export const MesOutils = async () => {
                 Faciliter la gestion des rendez-vous avec vos bénéficiaires.
               </CardOutil>
             </div>
-            <div className="fr-col-xl-6 fr-col-12">
-              <CardOutil
-                pictogram={AidantsConnectLogo}
-                title="Aidants Connect"
-                slug="aidants-connect"
-                accessUrl="https://aidantsconnect.beta.gouv.fr/accounts/login/"
-              >
-                Sécuriser l’aidant et la personne accompagnée dans la
-                réalisation de démarches administratives en ligne.
-              </CardOutil>
-            </div>
-            <div className="fr-col-xl-6 fr-col-12">
-              <CardOutil
-                pictogram={CartographieLogo}
-                title="La Cartographie Nationale des lieux d’inclusion numérique"
-                slug="cartographie-nationale-des-lieux-d-inclusion-numerique"
-                accessUrl="https://cartographie.societenumerique.gouv.fr"
-              >
-                Rendre visible vos lieux et services d’inclusion numérique pour
-                faciliter l’orientation des bénéficiaires.
-              </CardOutil>
-            </div>
-            <div className="fr-col-xl-6 fr-col-12">
-              <CardOutil
-                pictogram={LesBasesLogo}
-                title="Les Bases du numérique d’intérêt général"
-                slug="les-bases-du-numerique-d-interet-general"
-                accessUrl="https://lesbases.anct.gouv.fr/connexion"
-              >
-                La plateforme collaborative de partage de ressources & communs
-                numériques à l’échelle nationale.
-              </CardOutil>
-            </div>
+            {outilsAccompagnementsVisibles(profil).map(
+              ({ pictogram, title, slug, accessUrl, description }) => (
+                <div key={title} className="fr-col-xl-6 fr-col-12">
+                  <CardOutil
+                    pictogram={pictogram}
+                    title={title}
+                    slug={slug}
+                    accessUrl={accessUrl}
+                  >
+                    {description}
+                  </CardOutil>
+                </div>
+              ),
+            )}
           </div>
         </section>
         <section className="fr-mt-6w">
