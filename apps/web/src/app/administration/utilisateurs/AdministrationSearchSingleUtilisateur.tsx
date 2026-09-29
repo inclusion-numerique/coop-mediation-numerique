@@ -41,6 +41,7 @@ const AdministrationSearchSingleUtilisateur = ({
   defaultUser,
   onSelect,
   includeDeleted = false,
+  onlyMediateurs = false,
 }: {
   excludeUserIds?: string[]
   defaultUser?: {
@@ -51,6 +52,7 @@ const AdministrationSearchSingleUtilisateur = ({
   }
   onSelect?: (option: { label: ReactElement; value: string }) => void
   includeDeleted?: boolean
+  onlyMediateurs?: boolean
 }) => {
   const form = useForm<{ utilisateur: string }>()
 
@@ -63,6 +65,7 @@ const AdministrationSearchSingleUtilisateur = ({
       query: search,
       includeDeleted,
       excludeUserIds,
+      onlyMediateurs,
     })
 
     for (const user of result.users) {
