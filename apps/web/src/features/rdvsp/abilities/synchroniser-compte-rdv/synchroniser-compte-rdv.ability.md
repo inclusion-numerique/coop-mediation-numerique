@@ -75,3 +75,33 @@ Aucune organisation à rattraper : il n’y a rien à faire, et surtout pas tout
 * And la pose de webhook échoue sur l’organisation "101"
 * When je synchronise tout le compte
 * Then la passe signale les organisations sans webhook "101"
+
+## Rule: Les webhooks ne visent que ce que la passe a reçu
+
+Le cache des organisations peut garder une organisation que RDV Service Public
+ne renvoie plus : il n’est jamais vidé d’un coup. La pose de webhook, elle, ne
+s’adresse qu’aux organisations que la passe vient de recevoir.
+
+### Scenario: Une organisation gardée en cache n’est plus sollicitée
+
+* Given un compte RDV à réconcilier
+* And RDV Service Public ne renvoie que les organisations "101"
+* When je synchronise tout le compte
+* Then les webhooks ont visé les seules organisations reçues "101"
+
+## Rule: Une organisation qui refuse l’accès est détachée
+
+### Scenario: Refus d’accès pendant un rattrapage
+
+* Given un compte RDV à réconcilier
+* And l’organisation "102" refuse l’accès à ses rendez-vous
+* When je synchronise les organisations "101,102"
+* Then les organisations "102" ont été détachées du compte
+* And les webhooks ont été réconciliés sur les organisations "101"
+* And le journal de la passe est clôturé sans erreur
+
+### Scenario: Aucun refus, aucun détachement
+
+* Given un compte RDV à réconcilier
+* When je synchronise les organisations "101,102"
+* Then aucune organisation n’a été détachée du compte

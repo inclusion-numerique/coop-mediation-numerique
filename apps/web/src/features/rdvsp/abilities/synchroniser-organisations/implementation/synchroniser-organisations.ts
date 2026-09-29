@@ -45,5 +45,8 @@ export const synchroniserOrganisations =
 
     await appliquerPlan({ compte, plan })
 
-    return success(bilanDuPlan(plan, recues.data.length))
+    return success({
+      bilan: bilanDuPlan(plan, recues.data.length),
+      organisationIdsRecues: recues.data.map((organisation) => organisation.id),
+    })
   }

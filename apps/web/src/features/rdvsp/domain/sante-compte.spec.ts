@@ -1,7 +1,11 @@
 import { type CompteRdv, MessageErreurCompte } from './compte-rdv'
 import { JetonAcces, type JetonsOAuth } from './jetons-oauth'
 import { RdvAgentId } from './rdv-agent-id'
-import { santeDuCompte, statutIntegration } from './sante-compte'
+import {
+  peutEtreSynchronise,
+  santeDuCompte,
+  statutIntegration,
+} from './sante-compte'
 import { UtilisateurCoopId } from './utilisateur-coop-id'
 
 const maintenant = new Date('2026-08-17T12:00:00.000Z')
@@ -131,5 +135,17 @@ describe('statutIntegration', () => {
     expect(statutIntegration(santeDuCompte(compte, maintenant))).not.toBe(
       'jamaisConnecte',
     )
+  })
+})
+
+describe('peutEtreSynchronise', () => {
+  it.each([
+    [{ _tag: 'operationnel' } as const, true],
+    [{ _tag: 'jetonExpire', depuis: maintenant } as const, true],
+    [{ _tag: 'enErreur', message: 'x' } as const, false],
+    [{ _tag: 'jamaisLie' } as const, false],
+    [{ _tag: 'deconnecteParUtilisateur', quand: maintenant } as const, false],
+  ])('pour un compte « %o » : %s', (sante, attendu) => {
+    expect(peutEtreSynchronise(sante)).toBe(attendu)
   })
 })

@@ -7,6 +7,7 @@ import {
   type MarquerEchecDeSynchronisation,
   NonAutorise,
   peutDeclencherPour,
+  peutRelancerUnCompteEnErreur,
   porteePour,
   SynchronisationEchouee,
 } from '../domain/declencher-synchronisation'
@@ -66,7 +67,11 @@ export const declencherSynchronisation =
       return failure(CompteRdvIntrouvable())
     }
 
-    const portee = porteePour(compte, seulementSansWebhook)
+    const portee = porteePour(
+      compte,
+      seulementSansWebhook,
+      peutRelancerUnCompteEnErreur(demandeur),
+    )
 
     if (portee._tag === 'sansObjet') {
       return success({ derive: 0, synchroniseeLe: null })

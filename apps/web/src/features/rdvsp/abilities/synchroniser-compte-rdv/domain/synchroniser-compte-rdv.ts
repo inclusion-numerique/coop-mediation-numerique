@@ -60,9 +60,15 @@ export type SynchroniserCompteRdv = (
 ) => Promise<Result<ResultatSynchronisation, ErreurRdvApi>>
 
 /** Chacune des trois réconciliations, déclarée ici et câblée à l'extérieur. */
-export type ReconcilierOrganisations = (
-  compte: CompteRdvUtilisable,
-) => Promise<Result<BilanModele, ErreurRdvApi>>
+export type ReconcilierOrganisations = (compte: CompteRdvUtilisable) => Promise<
+  Result<
+    {
+      readonly bilan: BilanModele
+      readonly organisationIdsRecues: readonly OrganisationId[]
+    },
+    ErreurRdvApi
+  >
+>
 
 export type ReconcilierRdvs = (input: {
   readonly compte: CompteRdvUtilisable
@@ -74,10 +80,24 @@ export type ReconcilierRdvs = (input: {
       readonly usagers: BilanModele
       readonly motifs: BilanModele
       readonly lieux: BilanModele
+      readonly organisationIdsInaccessibles: readonly OrganisationId[]
     },
     ErreurRdvApi
   >
 >
+
+export type DetacherOrganisations = (input: {
+  readonly compte: CompteRdvUtilisable
+  readonly organisationIds: readonly OrganisationId[]
+}) => Promise<void>
+
+export const compteVuParLaPasse = (
+  compte: CompteRdvUtilisable,
+  organisationIdsRecues: readonly OrganisationId[] | null,
+): CompteRdvUtilisable =>
+  organisationIdsRecues === null
+    ? compte
+    : { ...compte, organisationIds: organisationIdsRecues }
 
 export type ReconcilierWebhooks = (input: {
   readonly compte: CompteRdvUtilisable

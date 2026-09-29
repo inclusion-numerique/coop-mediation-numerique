@@ -5,6 +5,7 @@ import {
   JetonRafraichissement,
   type JetonsOAuth,
 } from '../../domain/jetons-oauth'
+import { OrganisationId } from '../../domain/organisation-id'
 import { RdvAgentId } from '../../domain/rdv-agent-id'
 import { RdvId } from '../../domain/rdv-id'
 import { StatutPresenceModifiable } from '../../domain/statut-presence'
@@ -163,5 +164,93 @@ describe('renouvellement des jetons', () => {
 
     expect(resultat.success).toBe(false)
     expect(resultat.success ? null : resultat.error._tag).toBe('JetonRevoque')
+  })
+})
+
+describe('refus de RDV Service Public', () => {
+  const compteFrais: CompteRdvLie = { ...compte, jetons: frais }
+
+  const api = () =>
+    rdvServicePublicApi({
+      hostname: 'rdv.test',
+      clientId: 'client',
+      clientSecret: 'secret',
+      webhookUrl: 'https://coop.test/webhook',
+      webhookSecret: 'secret-webhook',
+      maintenant: () => MAINTENANT,
+      jetonsCourants: async () => frais,
+    })
+
+  const refus = (status: number) => ({
+    response: { status },
+    message: `Request failed with status code ${status}`,
+  })
+
+  it('rend un accès refusé sans tenter de renouvellement sur un 403', async () => {
+    axiosMock.mockRejectedValue(refus(403))
+
+    const resultat = await api().listerOrganisations(compteFrais)
+
+    expect(resultat).toEqual({
+      success: false,
+      error: {
+        _tag: 'AccesRefuse',
+        chemin: '/organisations',
+        organisationId: null,
+      },
+    })
+    expect(axiosMock.post).not.toHaveBeenCalled()
+  })
+
+  it('désigne l’organisation refusée quand l’appel la visait', async () => {
+    axiosMock.mockRejectedValue(refus(403))
+
+    const resultat = await api().listerWebhooksDeLaCoop(
+      compteFrais,
+      OrganisationId(1582),
+    )
+
+    expect(resultat.success ? null : resultat.error).toEqual({
+      _tag: 'AccesRefuse',
+      chemin: '/organisations/1582/webhook_endpoints',
+      organisationId: 1582,
+    })
+  })
+
+  it('désigne l’organisation refusée parmi les rendez-vous demandés par organisation', async () => {
+    axiosMock.mockRejectedValue(refus(403))
+
+    const resultat = await api().listerRdvs(compteFrais, {
+      organisationIds: [OrganisationId(1582)],
+    })
+
+    expect(resultat.success ? null : resultat.error).toEqual({
+      _tag: 'AccesRefuse',
+      chemin: '/rdvs',
+      organisationId: 1582,
+    })
+  })
+
+  it('conclut à la révocation quand l’agent reste refusé après renouvellement', async () => {
+    axiosMock.mockRejectedValue(refus(401))
+    axiosMock.post.mockResolvedValue(reponseJetonsFrais)
+
+    const resultat = await api().listerOrganisations(compteFrais)
+
+    expect(resultat.success ? null : resultat.error._tag).toBe('JetonRevoque')
+    expect(axiosMock.post).toHaveBeenCalledTimes(1)
+    expect(axiosMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('garde le code d’une autre erreur pour le diagnostic', async () => {
+    axiosMock.mockRejectedValue(refus(500))
+
+    const resultat = await api().listerOrganisations(compteFrais)
+
+    expect(resultat.success ? null : resultat.error).toEqual({
+      _tag: 'ApiIndisponible',
+      statusCode: 500,
+      message: 'Request failed with status code 500',
+    })
   })
 })

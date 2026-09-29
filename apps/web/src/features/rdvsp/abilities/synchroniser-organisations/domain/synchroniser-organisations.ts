@@ -19,9 +19,14 @@ export type BilanSynchronisation = {
   readonly count: number
 }
 
+export type OrganisationsSynchronisees = {
+  readonly bilan: BilanSynchronisation
+  readonly organisationIdsRecues: readonly OrganisationId[]
+}
+
 export type SynchroniserOrganisations = (
   compte: CompteRdvUtilisable,
-) => Promise<Result<BilanSynchronisation, ErreurRdvApi>>
+) => Promise<Result<OrganisationsSynchronisees, ErreurRdvApi>>
 
 /** Organisations déjà connues de La Coop, et rattachements actuels du compte. */
 export type EtatOrganisations = (input: {

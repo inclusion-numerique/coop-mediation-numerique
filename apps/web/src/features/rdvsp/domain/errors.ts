@@ -1,3 +1,4 @@
+import type { OrganisationId } from './organisation-id'
 import type { RdvAgentId } from './rdv-agent-id'
 import type { RdvId } from './rdv-id'
 
@@ -73,9 +74,41 @@ export const RdvIntrouvable = (id: RdvId): RdvIntrouvable => ({
   id,
 })
 
+export type AccesRefuse = {
+  readonly _tag: 'AccesRefuse'
+  readonly chemin: string
+  readonly organisationId: OrganisationId | null
+}
+
+export const AccesRefuse = (
+  chemin: string,
+  organisationId: OrganisationId | null,
+): AccesRefuse => ({ _tag: 'AccesRefuse', chemin, organisationId })
+
 export type ErreurRdvApi =
   | JetonRevoque
+  | AccesRefuse
   | ApiIndisponible
   | ReponseInattendue
   | CompteNonLie
   | RdvIntrouvable
+
+const detailErreur = (erreur: ErreurRdvApi): string | null => {
+  if (erreur._tag === 'AccesRefuse') {
+    return erreur.chemin
+  }
+
+  if (erreur._tag === 'ApiIndisponible') {
+    return `${erreur.statusCode} ${erreur.message}`
+  }
+
+  return erreur._tag === 'ReponseInattendue'
+    ? `${erreur.chemin} ${erreur.detail}`
+    : null
+}
+
+export const diagnosticErreur = (erreur: ErreurRdvApi): string => {
+  const detail = detailErreur(erreur)
+
+  return detail === null ? erreur._tag : `${erreur._tag} : ${detail}`
+}

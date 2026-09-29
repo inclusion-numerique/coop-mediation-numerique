@@ -119,17 +119,17 @@ Then('l’organisation {int} n’existe pas', async (numero: number) => {
 
 Then('le bilan compte {int} création', (nombre: number) => {
   assert.ok(resultat?.success, 'La synchronisation a échoué')
-  assert.strictEqual(resultat.data.created, nombre)
+  assert.strictEqual(resultat.data.bilan.created, nombre)
 })
 
 Then('le bilan compte {int} mise à jour', (nombre: number) => {
   assert.ok(resultat?.success, 'La synchronisation a échoué')
-  assert.strictEqual(resultat.data.updated, nombre)
+  assert.strictEqual(resultat.data.bilan.updated, nombre)
 })
 
 Then('le bilan compte {int} organisation inchangée', (nombre: number) => {
   assert.ok(resultat?.success, 'La synchronisation a échoué')
-  assert.strictEqual(resultat.data.noop, nombre)
+  assert.strictEqual(resultat.data.bilan.noop, nombre)
 })
 
 Then(

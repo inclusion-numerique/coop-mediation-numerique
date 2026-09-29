@@ -1,5 +1,6 @@
 import { success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
+import { detacherOrganisations } from '../abilities/synchroniser-compte-rdv/implementation/prisma/detacher-organisations.mutation'
 import {
   cloturerJournal,
   echouerJournal,
@@ -24,6 +25,7 @@ import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/implementation/
 import { compteRdvToDomain } from '../db'
 import { bilanVide } from '../domain/bilan-synchronisation'
 import { estUtilisable } from '../domain/compte-rdv'
+import { diagnosticErreur } from '../domain/errors'
 import { OrganisationId } from '../domain/organisation-id'
 import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
 
@@ -37,24 +39,27 @@ import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
  * s'affichait chez des médiateurs dont le compte fonctionnait.
  */
 export class EchecDeSynchronisation extends Error {
-  constructor(readonly motif: string) {
-    super(`Impossible de synchroniser le compte RDV (${motif})`)
+  constructor(
+    readonly motif: string,
+    diagnostic: string = motif,
+  ) {
+    super(`Impossible de synchroniser le compte RDV (${diagnostic})`)
     this.name = 'EchecDeSynchronisation'
   }
 }
 
-/**
- * Un échec dont un nouvel essai ne viendra pas à bout. Seul le jeton révoqué en
- * est un : il faut que le médiateur repasse par le parcours OAuth.
- */
+const motifsDefinitifs: readonly string[] = ['JetonRevoque', 'AccesRefuse']
+
 export const echecDefinitif = (erreur: unknown): boolean =>
-  erreur instanceof EchecDeSynchronisation && erreur.motif === 'JetonRevoque'
+  erreur instanceof EchecDeSynchronisation &&
+  motifsDefinitifs.includes(erreur.motif)
 
 const bilanRdvsVide = {
   rdvs: bilanVide,
   usagers: bilanVide,
   motifs: bilanVide,
   lieux: bilanVide,
+  organisationIdsInaccessibles: [],
 }
 
 /**
@@ -140,6 +145,7 @@ export const synchroniserCompte = async ({
               ),
       }
     },
+    detacherOrganisations,
     ouvrirJournal,
     cloturerJournal,
     echouerJournal,
@@ -152,7 +158,10 @@ export const synchroniserCompte = async ({
   })
 
   if (!resultat.success) {
-    throw new EchecDeSynchronisation(resultat.error._tag)
+    throw new EchecDeSynchronisation(
+      resultat.error._tag,
+      diagnosticErreur(resultat.error),
+    )
   }
 
   const { organisationIdsSansWebhook } = resultat.data

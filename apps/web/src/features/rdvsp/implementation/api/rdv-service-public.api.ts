@@ -9,6 +9,7 @@ import type { z } from 'zod'
 import type { CompteRdvUtilisable } from '../../domain/compte-rdv'
 import type { DemandeRdv } from '../../domain/demande-rdv'
 import {
+  AccesRefuse,
   ApiIndisponible,
   type ErreurRdvApi,
   JetonRevoque,
@@ -88,6 +89,7 @@ type Requete = {
   readonly methode: 'GET' | 'POST' | 'PATCH'
   readonly params?: Record<string, unknown>
   readonly corps?: unknown
+  readonly organisationId?: OrganisationId
 }
 
 const messageDe = (erreur: unknown): string =>
@@ -103,14 +105,19 @@ const messageDe = (erreur: unknown): string =>
  */
 const erreurDe = (
   agentId: RdvAgentId | null,
+  { chemin, organisationId }: Requete,
   erreur: unknown,
 ): ErreurRdvApi => {
   const statusCode = axios.isAxiosError(erreur)
     ? (erreur.response?.status ?? 0)
     : 0
 
-  return statusCode === 401
-    ? JetonRevoque(agentId)
+  if (statusCode === 401) {
+    return JetonRevoque(agentId)
+  }
+
+  return statusCode === 403
+    ? AccesRefuse(chemin, organisationId ?? null)
     : ApiIndisponible(statusCode === 0 ? 500 : statusCode, messageDe(erreur))
 }
 
@@ -223,9 +230,10 @@ export const rdvServicePublicApi = ({
 
   const requeteHttp = async (
     jetons: JetonsOAuth,
-    { chemin, methode, params, corps }: Requete,
+    requete: Requete,
     agentId: RdvAgentId | null,
   ): Promise<Result<unknown, ErreurRdvApi>> => {
+    const { chemin, methode, params, corps } = requete
     const config: AxiosRequestConfig = {
       url: `https://${hostname}/api/v1${chemin}`,
       method: methode,
@@ -238,7 +246,7 @@ export const rdvServicePublicApi = ({
       const reponse = await axios(config)
       return success(reponse.data)
     } catch (erreur) {
-      return failure(erreurDe(agentId, erreur))
+      return failure(erreurDe(agentId, requete, erreur))
     }
   }
 
@@ -383,19 +391,21 @@ export const rdvServicePublicApi = ({
 
       // Sans organisation ciblée, l'API rend les rendez-vous de l'agent ; sinon
       // il faut une collecte par organisation, l'API n'acceptant qu'un id.
-      const requetes =
+      const requetes: readonly Requete[] =
         organisations.length === 0
-          ? [params]
+          ? [{ chemin: '/rdvs', methode: 'GET', params }]
           : organisations.map((organisationId) => ({
-              ...params,
-              organisation_id: organisationId,
+              chemin: '/rdvs',
+              methode: 'GET',
+              params: { ...params, organisation_id: organisationId },
+              organisationId,
             }))
 
       const resultats = await Promise.all(
-        requetes.map((parametres) =>
+        requetes.map((requete) =>
           collecter(
             compte,
-            { chemin: '/rdvs', methode: 'GET', params: parametres },
+            requete,
             rdvsPagePayload,
             (page) => page.rdvs,
             filtres.premierePageSeulement ?? false,
@@ -523,6 +533,7 @@ export const rdvServicePublicApi = ({
         {
           chemin: `/organisations/${organisationId}/webhook_endpoints`,
           methode: 'GET',
+          organisationId,
           params: { target_url: webhookUrl },
         },
         webhooksPagePayload,
@@ -551,6 +562,7 @@ export const rdvServicePublicApi = ({
         {
           chemin: `/organisations/${organisationId}/webhook_endpoints`,
           methode: 'POST',
+          organisationId,
           corps: {
             target_url: webhookUrl,
             subscriptions: [...abonnements],
@@ -576,6 +588,7 @@ export const rdvServicePublicApi = ({
         {
           chemin: `/organisations/${organisationId}/webhook_endpoints/${webhookId}`,
           methode: 'PATCH',
+          organisationId,
           corps: {
             target_url: webhookUrl,
             subscriptions: [...abonnements],

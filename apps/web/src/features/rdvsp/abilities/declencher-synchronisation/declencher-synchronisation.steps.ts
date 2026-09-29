@@ -65,6 +65,15 @@ Given(
   },
 )
 
+Given('un compte RDV en erreur à synchroniser', async () => {
+  await seedCompteRdv({
+    id: AGENT_ID,
+    accessToken: 'jeton-acces',
+    error: 'Impossible de récupérer les données du compte RDV Service Public',
+    invalidWebhookOrganisationIds: [9920001],
+  })
+})
+
 Given('un compte RDV déconnecté à synchroniser', async () => {
   await seedCompteRdv({
     id: AGENT_ID,
