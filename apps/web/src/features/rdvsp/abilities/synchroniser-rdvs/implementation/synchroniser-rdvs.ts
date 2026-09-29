@@ -1,7 +1,17 @@
-import { success } from '@app/web/libraries/result'
+import { type Result, success } from '@app/web/libraries/result'
+import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
+import type { ErreurRdvApi } from '../../../domain/errors'
+import {
+  type OrganisationId,
+  organisationsAccessibles,
+} from '../../../domain/organisation-id'
 import type { Rdv, RdvSynchronise } from '../../../domain/rdv'
 import type { RdvId } from '../../../domain/rdv-id'
 import type { RdvServicePublicApi } from '../../../domain/rdv-service-public.port'
+import {
+  type RdvsLus,
+  rassemblerLectures,
+} from '../domain/lectures-par-organisation'
 import {
   type BilanModele,
   bilanDuPlan,
@@ -33,6 +43,37 @@ export type DependancesSynchroniserRdvs = {
   readonly supprimerMotifsOrphelins: SupprimerMotifsOrphelins
   readonly rapprocherBeneficiaires: RapprocherBeneficiaires
   readonly tailleLot?: number
+}
+
+const lireRdvs = async (
+  listerRdvs: RdvServicePublicApi['listerRdvs'],
+  compte: CompteRdvUtilisable,
+  organisationIds: readonly OrganisationId[] | undefined,
+): Promise<Result<RdvsLus, ErreurRdvApi>> => {
+  const filtres = {
+    agentId: compte.agentId,
+    debutApres: compte.synchroniserDepuis ?? undefined,
+  }
+
+  if (organisationIds === undefined) {
+    const recus = await listerRdvs(compte, filtres)
+
+    return recus.success
+      ? success({ rdvs: recus.data, organisationIdsInaccessibles: [] })
+      : recus
+  }
+
+  return rassemblerLectures(
+    await Promise.all(
+      organisationIds.map(async (organisationId) => ({
+        organisationId,
+        resultat: await listerRdvs(compte, {
+          ...filtres,
+          organisationIds: [organisationId],
+        }),
+      })),
+    ),
+  )
 }
 
 const decouper = <T>(elements: readonly T[], taille: number): T[][] =>
@@ -79,27 +120,28 @@ export const synchroniserRdvs =
     tailleLot = 250,
   }: DependancesSynchroniserRdvs): SynchroniserRdvs =>
   async (portee) => {
-    const { compte, organisationIds } = portee
+    const { compte } = portee
 
-    const [dejaImportes, recus] = await Promise.all([
-      rdvsDejaImportes(portee),
-      listerRdvs(compte, {
-        agentId: compte.agentId,
-        organisationIds,
-        debutApres: compte.synchroniserDepuis ?? undefined,
-      }),
-    ])
+    const lus = await lireRdvs(listerRdvs, compte, portee.organisationIds)
 
-    if (!recus.success) {
-      return recus
+    if (!lus.success) {
+      return lus
     }
 
-    const rdvsRecus = recus.data.map(({ rdv }) => rdv)
+    const { organisationIdsInaccessibles } = lus.data
+    const organisationIds = organisationsAccessibles(
+      portee.organisationIds,
+      organisationIdsInaccessibles,
+    )
+    const dejaImportes = await rdvsDejaImportes({ compte, organisationIds })
+    const recus = lus.data.rdvs
+
+    const rdvsRecus = recus.map(({ rdv }) => rdv)
     const bruts = new Map<RdvId, unknown>(
-      recus.data.map(({ rdv, brut }: RdvSynchronise) => [rdv.id, brut]),
+      recus.map(({ rdv, brut }: RdvSynchronise) => [rdv.id, brut]),
     )
 
-    const cumul = await decouper(recus.data, tailleLot).reduce(
+    const cumul = await decouper(recus, tailleLot).reduce(
       async (precedent, lot) => {
         const acquis = await precedent
         const rdvsDuLot: Rdv[] = lot.map(({ rdv }) => rdv)
@@ -172,9 +214,15 @@ export const synchroniserRdvs =
       organisationIds ?? compte.organisationIds,
     )
 
-    return success(
-      bilanFinal(cumul, rdvsRecus.length, aSupprimer.length, motifsSupprimes),
-    )
+    return success({
+      ...bilanFinal(
+        cumul,
+        rdvsRecus.length,
+        aSupprimer.length,
+        motifsSupprimes,
+      ),
+      organisationIdsInaccessibles,
+    })
   }
 
 const bilanFinal = (

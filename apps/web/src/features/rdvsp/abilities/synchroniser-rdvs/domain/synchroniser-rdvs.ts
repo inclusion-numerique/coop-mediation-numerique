@@ -23,9 +23,13 @@ export type PortéeSynchronisation = {
   readonly organisationIds?: readonly OrganisationId[]
 }
 
+export type RdvsSynchronises = BilanSynchronisationRdvs & {
+  readonly organisationIdsInaccessibles: readonly OrganisationId[]
+}
+
 export type SynchroniserRdvs = (
   portee: PortéeSynchronisation,
-) => Promise<Result<BilanSynchronisationRdvs, ErreurRdvApi>>
+) => Promise<Result<RdvsSynchronises, ErreurRdvApi>>
 
 /** Identifiants des rendez-vous déjà détenus, dans le périmètre synchronisé. */
 export type RdvsDejaImportes = (

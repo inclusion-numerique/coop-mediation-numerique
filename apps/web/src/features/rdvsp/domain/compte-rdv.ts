@@ -64,10 +64,6 @@ export type CompteRdv =
   | CompteRdvEnErreur
   | CompteRdvDeconnecte
 
-/**
- * Compte disposant de jetons, donc éligible à un appel API. Un compte en erreur
- * en fait partie : c'est précisément en réessayant qu'on sort de l'erreur.
- */
 export type CompteRdvUtilisable = CompteRdvLie | CompteRdvEnErreur
 
 export const estUtilisable = (

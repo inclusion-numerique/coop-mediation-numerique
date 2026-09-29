@@ -54,8 +54,16 @@ export const StatistiquesGeneralesPrint = ({
       </small>
     </p>
     <h3 className="fr-h5 fr-mt-6v">Nombre d’accompagnements par mois</h3>
-    <AccompagnementBarChart data={accompagnementsParMois} />
+    <AccompagnementBarChart
+      data={accompagnementsParMois}
+      height={200}
+      isAnimationActive={false}
+    />
     <h3 className="fr-h5 fr-mt-6v">Nombre d’accompagnements par jour</h3>
-    <AccompagnementBarChart data={accompagnementsParJour} />
+    <AccompagnementBarChart
+      data={accompagnementsParJour}
+      height={200}
+      isAnimationActive={false}
+    />
   </>
 )

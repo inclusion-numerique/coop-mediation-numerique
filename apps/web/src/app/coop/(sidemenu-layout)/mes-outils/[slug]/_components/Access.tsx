@@ -17,18 +17,16 @@ export const Access = ({
     <h2 className="fr-text--sm fr-text-mention--grey fr-text--uppercase">
       Comment accéder à l’outil&nbsp;?
     </h2>
-    {info ? (
-      info.share ? (
-        <AccessInfoShare info={info} how={how} />
-      ) : (
-        <AccessInfoLink
-          info={info}
-          how={how}
-          illustration={illustration}
-          icon={icon}
-        />
-      )
-    ) : null}
+    {info?.share ? (
+      <AccessInfoShare info={info} how={how} />
+    ) : (
+      <AccessInfoLink
+        info={info}
+        how={how}
+        illustration={illustration}
+        icon={icon}
+      />
+    )}
     {(title || description) && (
       <div className="fr-text--center">
         <hr className="fr-mb-0" />

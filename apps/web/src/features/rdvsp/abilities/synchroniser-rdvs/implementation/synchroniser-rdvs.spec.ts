@@ -1,5 +1,6 @@
-import { success } from '@app/web/libraries/result'
+import { failure, success } from '@app/web/libraries/result'
 import type { CompteRdvLie } from '../../../domain/compte-rdv'
+import { AccesRefuse, ApiIndisponible } from '../../../domain/errors'
 import { JetonAcces } from '../../../domain/jetons-oauth'
 import { OrganisationId } from '../../../domain/organisation-id'
 import { RdvAgentId } from '../../../domain/rdv-agent-id'
@@ -78,5 +79,60 @@ describe('ramassage des motifs orphelins', () => {
     })
 
     expect(supprimerMotifsOrphelins).toHaveBeenCalledWith(organisationIds)
+  })
+})
+
+describe('organisation devenue inaccessible pendant un rattrapage', () => {
+  const accessible = OrganisationId(3089)
+  const inaccessible = OrganisationId(3090)
+
+  const listerRdvsRefusant = async (
+    _compte: unknown,
+    filtres?: { organisationIds?: readonly OrganisationId[] },
+  ) =>
+    filtres?.organisationIds?.includes(inaccessible)
+      ? failure(AccesRefuse('/rdvs', inaccessible))
+      : success([])
+
+  it('écarte l’organisation refusée et poursuit la passe sur les autres', async () => {
+    const supprimerMotifsOrphelins = jest.fn().mockResolvedValue(0)
+    const rdvsDejaImportes = jest.fn().mockResolvedValue([])
+
+    const resultat = await synchroniserRdvs({
+      ...dependancesAvec(supprimerMotifsOrphelins),
+      rdvsDejaImportes,
+      listerRdvs: listerRdvsRefusant,
+    })({ compte, organisationIds: [accessible, inaccessible] })
+
+    expect(
+      resultat.success ? resultat.data.organisationIdsInaccessibles : null,
+    ).toEqual([inaccessible])
+    expect(rdvsDejaImportes).toHaveBeenCalledWith({
+      compte,
+      organisationIds: [accessible],
+    })
+    expect(supprimerMotifsOrphelins).toHaveBeenCalledWith([accessible])
+  })
+
+  it('échoue quand une organisation échoue pour une autre raison qu’un refus d’accès', async () => {
+    const resultat = await synchroniserRdvs({
+      ...dependancesAvec(jest.fn().mockResolvedValue(0)),
+      listerRdvs: async () =>
+        failure(ApiIndisponible(503, 'service indisponible')),
+    })({ compte, organisationIds: [accessible, inaccessible] })
+
+    expect(resultat.success ? null : resultat.error._tag).toBe(
+      'ApiIndisponible',
+    )
+  })
+
+  it('ne connaît aucune organisation inaccessible sur une passe complète', async () => {
+    const resultat = await synchroniserRdvs(
+      dependancesAvec(jest.fn().mockResolvedValue(0)),
+    )({ compte })
+
+    expect(
+      resultat.success ? resultat.data.organisationIdsInaccessibles : null,
+    ).toEqual([])
   })
 })

@@ -2,6 +2,7 @@ import abcDiagPageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_dat
 import aidantsConnectPageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/aidantsConnectPageData'
 import cartographieNationalePageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/cartographieNationalePageData'
 import lesBasesPageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/lesBasesPageData'
+import monInclusionNumeriquePageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/monInclusionNumeriquePageData'
 import pixPageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/pixPageData'
 import rdvPageData from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/rdvPageData'
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
@@ -12,6 +13,7 @@ const outilsPageData = {
   'cartographie-nationale-des-lieux-d-inclusion-numerique':
     cartographieNationalePageData,
   'les-bases-du-numerique-d-interet-general': lesBasesPageData,
+  'mon-inclusion-numerique': monInclusionNumeriquePageData,
   pix: pixPageData,
   'rdv-service-public': rdvPageData,
 } satisfies { [key: string]: OutilPageData }

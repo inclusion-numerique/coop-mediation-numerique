@@ -7,3 +7,11 @@ export const OrganisationId = defineModel(
 )
 
 export type OrganisationId = Model.TypeOf<typeof OrganisationId>
+
+export const organisationsAccessibles = (
+  organisationIds: readonly OrganisationId[] | undefined,
+  inaccessibles: readonly OrganisationId[],
+): readonly OrganisationId[] | undefined =>
+  organisationIds?.filter(
+    (organisationId) => !inaccessibles.includes(organisationId),
+  )

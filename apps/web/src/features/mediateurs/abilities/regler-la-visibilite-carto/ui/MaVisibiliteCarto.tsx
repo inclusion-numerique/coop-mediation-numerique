@@ -1,19 +1,30 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { reglerMaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
 
-const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
+export const MaVisibiliteCarto = ({ visible }: { visible: boolean }) => {
   const router = useRouter()
-  const mutation = trpc.mediateur.setVisibility.useMutation()
+  const [enCours, demarrer] = useTransition()
 
-  const handleChange = async () => {
-    try {
-      await mutation.mutateAsync({ isVisible: !isVisible })
+  const basculer = () =>
+    demarrer(async () => {
+      const resultat = await reglerMaVisibiliteCartoAction({
+        visible: !visible,
+      })
+
+      if (!resultat.success) {
+        createToast({
+          priority: 'error',
+          message:
+            'Une erreur est survenue lors de la configuration de la visibilité de vos informations sur la cartographie',
+        })
+        return
+      }
 
       router.refresh()
       createToast({
@@ -21,19 +32,12 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
         message: (
           <>
             Vos informations{' '}
-            <strong>{isVisible ? 'ne seront plus' : 'seront'}</strong> visibles
+            <strong>{visible ? 'ne seront plus' : 'seront'}</strong> visibles
             sur la cartographie sous 24h
           </>
         ),
       })
-    } catch {
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de la configuration de la visibilité de vos informations sur la cartographie',
-      })
-    }
-  }
+    })
 
   return (
     <div className="fr-border fr-border-radius--8 fr-p-4w fr-mb-4v">
@@ -52,8 +56,8 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
       <div className="fr-mb-4v">
         <ToggleSwitch
           inputTitle="Visibilité du lieu d’activité sur la cartographie"
-          disabled={mutation.isPending}
-          checked={isVisible}
+          disabled={enCours}
+          checked={visible}
           label={
             <span className="fr-my-auto">
               Rendre mon profil visible sur la cartographie
@@ -61,7 +65,7 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
           }
           labelPosition="left"
           showCheckedHint
-          onChange={handleChange}
+          onChange={basculer}
         />
       </div>
       <span className="fr-text--xs fr-text-mention--grey">
@@ -73,5 +77,3 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
     </div>
   )
 }
-
-export default withTrpc(VisibiliteMediateur)

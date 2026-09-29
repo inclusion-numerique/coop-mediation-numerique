@@ -9,7 +9,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
 import type { MonLieuActivite } from '../../implementation'
 import { AucunLieu } from '../components/AucunLieu'
-import VisibiliteMediateur from '../components/VisibiliteMediateur'
 
 /**
  * Les lieux où le médiateur exerce.
@@ -22,12 +21,12 @@ import VisibiliteMediateur from '../components/VisibiliteMediateur'
 export const MesLieuxActivitePage = ({
   lieux,
   carte,
-  mediateurEstVisible,
+  visibilite,
   entete,
 }: {
   lieux: readonly MonLieuActivite[]
   carte: (lieu: MonLieuActivite) => ReactNode
-  mediateurEstVisible: boolean
+  visibilite: ReactNode
   entete?: ReactNode
 }) => (
   <div className="fr-container fr-container--medium fr-mb-32v">
@@ -50,7 +49,7 @@ export const MesLieuxActivitePage = ({
           Ajouter un lieu
         </Button>
       </span>
-      <VisibiliteMediateur isVisible={mediateurEstVisible} />
+      {visibilite}
       <div className="fr-flex fr-direction-column fr-pt-4v">
         {lieux.length === 0 ? (
           <AucunLieu />

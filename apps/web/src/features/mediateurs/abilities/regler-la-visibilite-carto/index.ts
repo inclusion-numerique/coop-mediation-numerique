@@ -1,0 +1,1 @@
+export { reglerLaVisibiliteCarto } from './implementation'

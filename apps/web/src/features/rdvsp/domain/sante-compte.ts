@@ -44,15 +44,8 @@ export const santeDuCompte = (
     : { _tag: 'operationnel' }
 }
 
-/**
- * Un compte peut-il être synchronisé ? Il lui faut des jetons, même périmés ou
- * refusés : le renouvellement se tente au moment de l'appel, et c'est en
- * réessayant qu'un compte en erreur en sort.
- */
 export const peutEtreSynchronise = (sante: SanteCompteRdv): boolean =>
-  sante._tag === 'operationnel' ||
-  sante._tag === 'jetonExpire' ||
-  sante._tag === 'enErreur'
+  sante._tag === 'operationnel' || sante._tag === 'jetonExpire'
 
 /**
  * Ce que les écrans montrent de l'intégration.

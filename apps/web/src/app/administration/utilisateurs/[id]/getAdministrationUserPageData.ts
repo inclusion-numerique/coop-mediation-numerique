@@ -15,6 +15,7 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       mediateur: {
         select: {
           id: true,
+          isVisible: true,
           derniereCreationActivite: true,
           creation: true,
           modification: true,

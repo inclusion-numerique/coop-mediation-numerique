@@ -26,6 +26,13 @@ const appels: string[] = []
 
 const echecs = new Set<string>()
 const exceptions = new Set<string>()
+const organisationsRecues: number[] = []
+const organisationsRefusees: number[] = []
+const organisationsDetachees: number[] = []
+const webhooksVises: {
+  organisationsDuCompte: readonly number[]
+  portee: readonly number[] | undefined
+}[] = []
 let organisationIdsRecusParLesRdvs: readonly number[] | undefined
 let organisationsSansWebhook: readonly number[] | undefined
 let resultat: ResultatSynchronisation | undefined
@@ -35,6 +42,10 @@ const reinitialiser = () => {
   appels.length = 0
   echecs.clear()
   exceptions.clear()
+  organisationsRecues.length = 0
+  organisationsRefusees.length = 0
+  organisationsDetachees.length = 0
+  webhooksVises.length = 0
   organisationIdsRecusParLesRdvs = undefined
   organisationsSansWebhook = undefined
   resultat = undefined
@@ -53,7 +64,12 @@ const synchroniser: SynchroniserCompteRdv = synchroniserCompteRdv({
 
     return echecs.has('organisations')
       ? failure(ApiIndisponible(503, 'service indisponible'))
-      : success(unChangement)
+      : success({
+          bilan: unChangement,
+          organisationIdsRecues: organisationsRecues.map((id) =>
+            OrganisationId(id),
+          ),
+        })
   },
   reconcilierRdvs: async ({ organisationIds }) => {
     appels.push('rendez-vous')
@@ -70,10 +86,17 @@ const synchroniser: SynchroniserCompteRdv = synchroniserCompteRdv({
           usagers: unChangement,
           motifs: bilanVide,
           lieux: bilanVide,
+          organisationIdsInaccessibles: (organisationIds ?? [])
+            .filter((id) => organisationsRefusees.includes(id))
+            .map((id) => OrganisationId(id)),
         })
   },
-  reconcilierWebhooks: async () => {
+  reconcilierWebhooks: async ({ compte, organisationIds }) => {
     appels.push('webhooks')
+    webhooksVises.push({
+      organisationsDuCompte: compte.organisationIds,
+      portee: organisationIds,
+    })
 
     return {
       bilan: bilanVide,
@@ -81,6 +104,9 @@ const synchroniser: SynchroniserCompteRdv = synchroniserCompteRdv({
         OrganisationId(id),
       ),
     }
+  },
+  detacherOrganisations: async ({ organisationIds }) => {
+    organisationsDetachees.push(...organisationIds)
   },
   ouvrirJournal,
   cloturerJournal,
@@ -120,6 +146,20 @@ Given('la réconciliation des organisations échoue', () => {
 Given('la réconciliation des rendez-vous échoue', () => {
   echecs.add('rendez-vous')
 })
+
+Given(
+  'RDV Service Public ne renvoie que les organisations {string}',
+  (ids: string) => {
+    organisationsRecues.push(...ids.split(',').map(Number))
+  },
+)
+
+Given(
+  'l’organisation {string} refuse l’accès à ses rendez-vous',
+  (id: string) => {
+    organisationsRefusees.push(Number(id))
+  },
+)
 
 Given('la réconciliation des rendez-vous lève une exception', () => {
   exceptions.add('rendez-vous')
@@ -199,6 +239,37 @@ Then(
   (ids: string) => {
     assert.deepEqual(
       resultat?.organisationIdsSansWebhook?.map(Number),
+      ids.split(',').map(Number),
+    )
+  },
+)
+
+Then(
+  'les organisations {string} ont été détachées du compte',
+  (ids: string) => {
+    assert.deepEqual(organisationsDetachees, ids.split(',').map(Number))
+  },
+)
+
+Then('aucune organisation n’a été détachée du compte', () => {
+  assert.deepEqual(organisationsDetachees, [])
+})
+
+Then(
+  'les webhooks ont été réconciliés sur les organisations {string}',
+  (ids: string) => {
+    assert.deepEqual(
+      webhooksVises[0]?.portee?.map(Number),
+      ids.split(',').map(Number),
+    )
+  },
+)
+
+Then(
+  'les webhooks ont visé les seules organisations reçues {string}',
+  (ids: string) => {
+    assert.deepEqual(
+      webhooksVises[0]?.organisationsDuCompte.map(Number),
       ids.split(',').map(Number),
     )
   },

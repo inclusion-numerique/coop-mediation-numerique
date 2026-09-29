@@ -17,7 +17,7 @@ export const CardOutil = ({
 }: {
   pictogram: Pictogram
   title: string
-  slug: string
+  slug?: string
   accessUrl: string
   children: ReactNode
   isNew?: boolean
@@ -59,16 +59,25 @@ export const CardOutil = ({
       </div>
     </div>
     <hr className="fr-separator-1px" />
-    <div className="fr-px-8v fr-py-6v fr-flex fr-justify-content-space-between">
-      <Button
-        priority="tertiary no outline"
-        size="small"
-        title={`En savoir plus à propos de ${title}`}
-        linkProps={{ href: `/coop/mes-outils/${slug}` }}
-        iconId="fr-icon-information-line"
-        children="En savoir plus"
-        {...actionButton}
-      />
+    <div
+      className={classNames(
+        'fr-px-8v fr-py-6v fr-flex',
+        slug == null
+          ? 'fr-justify-content-end'
+          : 'fr-justify-content-space-between',
+      )}
+    >
+      {slug != null && (
+        <Button
+          priority="tertiary no outline"
+          size="small"
+          title={`En savoir plus à propos de ${title}`}
+          linkProps={{ href: `/coop/mes-outils/${slug}` }}
+          iconId="fr-icon-information-line"
+          children="En savoir plus"
+          {...actionButton}
+        />
+      )}
       <Button
         priority="tertiary no outline"
         size="small"
