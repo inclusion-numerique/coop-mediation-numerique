@@ -294,11 +294,12 @@ export const userRouter = router({
         query: z.string(),
         includeDeleted: z.boolean().optional().default(false),
         excludeUserIds: z.array(z.string()).optional().default([]),
+        onlyMediateurs: z.boolean().optional().default(false),
       }),
     )
     .query(
       ({
-        input: { query, includeDeleted, excludeUserIds },
+        input: { query, includeDeleted, excludeUserIds, onlyMediateurs },
         ctx: { user: sessionUser },
       }) => {
         enforceIsAdmin(sessionUser)
@@ -309,6 +310,7 @@ export const userRouter = router({
           },
           includeDeleted,
           excludeUserIds,
+          onlyMediateurs,
         })
       },
     ),

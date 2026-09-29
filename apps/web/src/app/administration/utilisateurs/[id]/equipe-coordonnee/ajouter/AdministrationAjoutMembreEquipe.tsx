@@ -5,6 +5,7 @@ import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { TRPCClientError } from '@trpc/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import AdministrationSearchSingleUtilisateur from '../../../AdministrationSearchSingleUtilisateur'
@@ -39,10 +40,13 @@ export const AdministrationAjoutMembreEquipe = ({
         `/administration/utilisateurs/${data.coordinateurUser.id}#coordinateur`,
       )
       router.refresh()
-    } catch {
+    } catch (error) {
       createToast({
         priority: 'error',
-        message: `Une erreur est survenue lors de l'ajout de l'utilisateur à l'équipe`,
+        message:
+          error instanceof TRPCClientError
+            ? error.message
+            : `Une erreur est survenue lors de l'ajout de l'utilisateur à l'équipe`,
       })
     }
   }
@@ -56,6 +60,7 @@ export const AdministrationAjoutMembreEquipe = ({
         onSelect={handleSearchUserSelect}
         excludeUserIds={data.userIdsInEquipe}
         includeDeleted
+        onlyMediateurs
       />
       <Button
         type="button"
