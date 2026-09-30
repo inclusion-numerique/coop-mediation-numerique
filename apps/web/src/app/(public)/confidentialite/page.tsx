@@ -123,31 +123,31 @@ const ConfidentialityPage = () => (
             <tr>
               <th>Données relatives aux comptes des médiateurs</th>
               <td>
-                1 an après le dernier contact avec l'utilisateur, puis
+                2 ans après le dernier contact avec l'utilisateur, puis
                 anonymisation totale
               </td>
             </tr>
             <tr>
               <th>Données relatives aux bénéficiaires</th>
               <td>
-                1 an après la dernière mise à jour des données, puis
+                2 ans après la dernière mise à jour des données, puis
                 anonymisation totale
               </td>
             </tr>
             <tr>
               <th>Données d'accompagnement</th>
-              <td>Conservation illimitée (anonymisées après 1 an)</td>
+              <td>Conservation illimitée (anonymisées après 2 ans)</td>
             </tr>
             <tr>
               <th>Données relatives à la lettre d'information</th>
               <td>
-                Jusqu’à la désinscription de l’utilisateur et 1 an après sa
+                Jusqu’à la désinscription de l’utilisateur et 2 ans après sa
                 demande de désinscription
               </td>
             </tr>
             <tr>
               <th>Données relatives au formulaire de contact</th>
-              <td>1 an après l’envoi du message par l’utilisateur</td>
+              <td>2 ans après l’envoi du message par l’utilisateur</td>
             </tr>
           </tbody>
         </table>
