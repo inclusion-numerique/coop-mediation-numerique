@@ -300,9 +300,6 @@ describe('getMesStatistiquesPageData', () => {
         title: 'should compute all data without filters',
         activitesFilters: {},
         expected: createExpectedData((data) => {
-          // Should have 22 activites
-          const totalActivites = 22
-
           // Should have 13 beneficiaires
           const totalBeneficiaires = 13
 
@@ -330,7 +327,7 @@ describe('getMesStatistiquesPageData', () => {
             accompagnements: {
               total: totalAccompagnements,
               collectifs: {
-                total: 2,
+                total: 14,
                 proportion: computeProportion(14, totalAccompagnements),
               },
               individuels: {
@@ -340,7 +337,7 @@ describe('getMesStatistiquesPageData', () => {
             },
           }
 
-          data.activites.total = totalActivites
+          data.activites.total = totalAccompagnements
 
           expectDayCount(data, '28/07', 2)
           expectDayCount(data, '02/08', 2)
@@ -357,7 +354,7 @@ describe('getMesStatistiquesPageData', () => {
           expectEnum(data.activites.typeLieu, 'LieuActivite', 0, 22)
           expectEnum(data.activites.typeLieu, 'Autre', 0, 22)
 
-          expectEnum(data.activites.durees, '120', 22, totalActivites)
+          expectEnum(data.activites.durees, '120', 22, totalAccompagnements)
 
           expectEnum(data.activites.materiels, 'Ordinateur', 4, 13)
           expectEnum(data.activites.materiels, 'Telephone', 2, 13)
@@ -410,13 +407,13 @@ describe('getMesStatistiquesPageData', () => {
             data.activites.typeActivites,
             'Collectif',
             14,
-            totalActivites,
+            totalAccompagnements,
           )
           expectEnum(
             data.activites.typeActivites,
             'Individuel',
             8,
-            totalActivites,
+            totalAccompagnements,
           )
 
           expectEnum(

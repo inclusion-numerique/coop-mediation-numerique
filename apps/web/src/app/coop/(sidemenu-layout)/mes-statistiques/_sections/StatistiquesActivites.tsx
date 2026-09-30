@@ -147,10 +147,10 @@ export const StatistiquesActivites = ({
               <span className="fr-text-mention--grey fr-text--sm fr-mb-0">
                 &nbsp;·&nbsp;sur{' '}
                 <span className="fr-text--bold">
-                  {numberToString(totalCounts.accompagnements.collectifs.total)}
+                  {numberToString(totalCounts.activites.collectifs.total)}
                 </span>{' '}
                 atelier
-                {sPluriel(totalCounts.accompagnements.collectifs.total)}
+                {sPluriel(totalCounts.activites.collectifs.total)}
               </span>
             )}
           </StatistiqueAccompagnement>
