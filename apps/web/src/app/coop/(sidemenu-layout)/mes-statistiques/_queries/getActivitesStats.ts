@@ -41,7 +41,7 @@ import {
 import { snakeCase } from 'change-case'
 
 export type ActivitesStatsRaw = {
-  total_activites: number
+  total_accompagnements: number
   [key: `type_${string}_count`]: number
   [key: `duree_${string}_count`]: number
   [key: `type_lieu_${string}_count`]: number
@@ -49,7 +49,7 @@ export type ActivitesStatsRaw = {
   [key: `materiel_${string}_count`]: number
 }
 
-const EMPTY_ACTIVITES_STATS: ActivitesStatsRaw = { total_activites: 0 }
+const EMPTY_ACTIVITES_STATS: ActivitesStatsRaw = { total_accompagnements: 0 }
 
 export const getActivitesStatsRaw = async ({
   user,
@@ -65,7 +65,7 @@ export const getActivitesStatsRaw = async ({
   // Uses pre-computed accompagnements_count column for weighted aggregations
   // instead of joining with accompagnements table (avoids scanning 6M+ rows)
   return prismaClient.$queryRaw<[ActivitesStatsRaw]>`
-      SELECT COALESCE(SUM(act.accompagnements_count), 0)::integer AS total_activites,
+      SELECT COALESCE(SUM(act.accompagnements_count), 0)::integer AS total_accompagnements,
         -- Aggregate stats weighted by accompagnements_count
         ${createEnumCountSelect({
           enumObj: TypeActivite,
@@ -155,7 +155,7 @@ export const normalizeActivitesStatsRaw = (stats: ActivitesStatsRaw) => {
   }))
 
   return {
-    total: stats.total_activites,
+    total: stats.total_accompagnements,
     typeActivites: allocatePercentagesFromRecords(
       typeActivitesData,
       'count',
