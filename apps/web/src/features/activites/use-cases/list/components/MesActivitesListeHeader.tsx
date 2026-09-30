@@ -1,4 +1,5 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import type { StructureEmployeuseOption } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
@@ -19,6 +20,7 @@ const MesActivitesListeHeader = ({
   initialMediateursOptions,
   tagsOptions,
   lieuxActiviteOptions,
+  structuresEmployeusesOptions,
   searchResultMatchesCount,
   activiteSourceOptions,
   activiteDates,
@@ -30,6 +32,7 @@ const MesActivitesListeHeader = ({
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
+  structuresEmployeusesOptions: StructureEmployeuseOption[]
   departementsOptions: SelectOption[]
   activiteDates: ActiviteDates
   activiteSourceOptions: SelectOption[]
@@ -53,7 +56,7 @@ const MesActivitesListeHeader = ({
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
-        structuresEmployeusesOptions={[]}
+        structuresEmployeusesOptions={structuresEmployeusesOptions}
         tagsOptions={tagsOptions}
         minDate={activiteDates.first}
         maxDate={activiteDates.last}
@@ -69,6 +72,7 @@ const MesActivitesListeHeader = ({
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
+          structuresEmployeusesOptions={structuresEmployeusesOptions}
           beneficiairesOptions={[]}
           mediateursOptions={initialMediateursOptions}
           searchResultMatchesCount={searchResultMatchesCount}
@@ -81,7 +85,7 @@ const MesActivitesListeHeader = ({
       communesOptions={communesOptions}
       departementsOptions={departementsOptions}
       lieuxActiviteOptions={lieuxActiviteOptions}
-      structuresEmployeusesOptions={[]}
+      structuresEmployeusesOptions={structuresEmployeusesOptions}
       beneficiairesOptions={[]}
       mediateursOptions={initialMediateursOptions}
       tagsOptions={tagsOptions}

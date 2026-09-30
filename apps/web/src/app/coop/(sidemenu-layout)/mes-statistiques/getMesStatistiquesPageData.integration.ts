@@ -1,11 +1,7 @@
 import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
 import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import {
-  mediateque,
-  seedStructures,
-  structureEmployeuse,
-} from '@app/fixtures/structures'
+import { mediateque, seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import {
   mediateurAvecActivite,
@@ -223,15 +219,11 @@ const expectEnum = <T extends string>(
   item.proportion = computeProportion(count, total)
 }
 
-// ADR-002 échange final : les options d'employeuse sont lues en PUR MAIN (affectations). L'id de
-// l'option est l'entier `main.structure_administrative.id` (auto-incrément) -> résolu dynamiquement.
-// La SA main de fixture porte l'adresse de son lieu, comme en production : l'option en expose donc
-// la commune.
-const employeuseMainState = { id: 0 }
+const employeuseDesActivitesState = { id: 0 }
 const expectedStructureEmployeuseOption = () => ({
-  id: String(employeuseMainState.id),
-  nom: structureEmployeuse.nom,
-  commune: structureEmployeuse.commune,
+  id: String(employeuseDesActivitesState.id),
+  nom: mediateque.nom,
+  commune: mediateque.commune,
 })
 
 describe('getMesStatistiquesPageData', () => {
@@ -240,14 +232,20 @@ describe('getMesStatistiquesPageData', () => {
     await resetFixtureUser(mediateurAvecActivite, false)
     await resetFixtureUser(mediateurSansActivites, false)
     await resetFixtureUser(conseillerNumerique, false)
-    // Affectations main (personne -> structure_administrative) pour que l'employeuse soit lue en main.
     await seedPersonnesMain(prismaClient)
-    const employeuseMain =
+    const employeuseDesActivites =
       await prismaClient.structureAdministrativeMain.findFirstOrThrow({
-        where: { structureCoopId: structureEmployeuse.id },
+        where: { structureCoopId: mediateque.id },
         select: { id: true },
       })
-    employeuseMainState.id = employeuseMain.id
+    employeuseDesActivitesState.id = employeuseDesActivites.id
+    await prismaClient.activite.updateMany({
+      where: {
+        mediateurId: mediateurAvecActiviteMediateurId,
+        structureEmployeuseId: mediateque.id,
+      },
+      data: { structureEmployeuseMainId: employeuseDesActivites.id },
+    })
     await refreshFixturesComputedFields()
   }, 100_000)
 
@@ -273,7 +271,6 @@ describe('getMesStatistiquesPageData', () => {
       })
       expect(data).toEqual({
         ...emptyData,
-        structuresEmployeusesOptions: [expectedStructureEmployeuseOption()],
         lieuxActiviteOptions: [
           {
             label: mediateque.nom,

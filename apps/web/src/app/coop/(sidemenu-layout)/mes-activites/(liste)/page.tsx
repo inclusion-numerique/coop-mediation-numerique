@@ -46,6 +46,7 @@ const MesActivitesPage = async ({
     departementsOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
     activiteDates, // TODO include rdv dates
     rdvDates,
     activiteSourceOptions,
@@ -82,6 +83,7 @@ const MesActivitesPage = async ({
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
+        structuresEmployeusesOptions={structuresEmployeusesOptions}
         tagsOptions={tagsOptions}
         activiteDates={datesForFilters}
         enableRdvsFilter={enableRdvsFilter}

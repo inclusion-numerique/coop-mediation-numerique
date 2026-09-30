@@ -4,6 +4,11 @@ import {
   SourcesField,
   updateSourcesParams,
 } from '@app/web/components/filters/more-filters/SourceField'
+import type { StructureEmployeuse } from '@app/web/components/filters/more-filters/StructureEmployeuseComboBox'
+import {
+  StructuresEmployeusesField,
+  updateStructuresEmployeusesParams,
+} from '@app/web/components/filters/more-filters/StructuresEmployeusesField'
 import {
   TagsField,
   tagToArray,
@@ -33,11 +38,14 @@ const MoreFiltersModal = createModal({
 
 export const MoreMediateurFilters = ({
   tagsOptions,
+  structuresEmployeusesOptions,
   defaultValues,
   hasCrasV1,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
+  structuresEmployeusesOptions: StructureEmployeuse[]
   defaultValues: {
+    structuresEmployeuses: string[]
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
     tags: string[]
@@ -50,6 +58,7 @@ export const MoreMediateurFilters = ({
   const params = new URLSearchParams(searchParams.toString())
 
   const activeFiltersCount =
+    defaultValues.structuresEmployeuses.length +
     defaultValues.tags.length +
     defaultValues.thematiqueNonAdministratives.length +
     defaultValues.thematiqueAdministratives.length +
@@ -61,12 +70,21 @@ export const MoreMediateurFilters = ({
     form.reset()
   }
 
+  const structuresToArray = (ids: string[]): StructureEmployeuse[] =>
+    ids
+      .map((id) => structuresEmployeusesOptions.find((s) => s.id === id))
+      .filter((s): s is StructureEmployeuse => s !== undefined)
+
   const form = useAppForm({
     defaultValues: {
       ...defaultValues,
+      structuresEmployeuses: structuresToArray(
+        defaultValues.structuresEmployeuses,
+      ),
       tags: tagToArray(tagsOptions)(defaultValues.tags),
     },
     onSubmit: (data) => {
+      updateStructuresEmployeusesParams(params)(data)
       updateThematiqueAdministrativesParams(params)(data)
       updateThematiqueNonAdministrativesParams(params)(data)
       updateTagsParams(params)(data)
@@ -76,6 +94,7 @@ export const MoreMediateurFilters = ({
   })
 
   const clearFilters = () => {
+    params.delete('structuresEmployeuses')
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
     params.delete('tags')
@@ -110,6 +129,18 @@ export const MoreMediateurFilters = ({
           {hasCrasV1 && (
             <>
               <SourcesField form={form as any} isPending={false} />
+              <hr className="fr-separator-8v" />
+            </>
+          )}
+          {structuresEmployeusesOptions.length > 1 && (
+            <>
+              <StructuresEmployeusesField
+                form={form as any}
+                isPending={false}
+                initialStructuresEmployeusesOptions={
+                  structuresEmployeusesOptions
+                }
+              />
               <hr className="fr-separator-8v" />
             </>
           )}
