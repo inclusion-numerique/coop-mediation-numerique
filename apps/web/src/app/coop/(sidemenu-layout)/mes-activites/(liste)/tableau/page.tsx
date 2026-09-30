@@ -51,6 +51,7 @@ const MesActivitesVueTableauPage = async ({
       departementsOptions,
       initialMediateursOptions,
       lieuxActiviteOptions,
+      structuresEmployeusesOptions,
       activiteDates,
       activiteSourceOptions,
       hasCrasV1,
@@ -84,6 +85,7 @@ const MesActivitesVueTableauPage = async ({
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
+          structuresEmployeusesOptions={structuresEmployeusesOptions}
           tagsOptions={tagsOptions}
           activiteDates={filterPeriodDates}
           enableRdvsFilter={includeRdvsFilter}
