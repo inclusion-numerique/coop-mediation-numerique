@@ -40,6 +40,10 @@ export const CONNECTER_COMPTE_RDV_ERRORS: Record<
     error: 'invalid_oauth_account',
     error_description: 'RDV Service Public refuse l’accès à ce compte',
   },
+  AgentSupprime: {
+    error: 'invalid_oauth_account',
+    error_description: 'Ce compte agent n’existe plus sur RDV Service Public',
+  },
   ApiIndisponible: {
     error: 'api_error',
     error_description: 'RDV Service Public n’a pas pu être contacté',
