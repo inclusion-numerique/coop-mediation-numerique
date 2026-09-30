@@ -4,11 +4,10 @@
 #
 # Les tables `main.*` sont possédées par le Dataspace et gérées par Flyway : nos migrations qui les
 # modélisent n'ont pas d'`IF NOT EXISTS` et ne doivent jamais s'exécuter là où `main` existe déjà.
-# Trois situations coexistent :
+# Deux situations coexistent :
 #
-#   - CI / environnements de preview : base vide, `main` est créé par les migrations -> deploy normal.
-#   - docker local (`docker:reset`)  : `docker/initdb/01-dataspace-ddl.sql` pose le vrai DDL Dataspace
-#                                      à la création du volume, avant toute migration.
+#   - CI, environnements de preview et docker local (`docker:reset`) : base vide, `main` est créé par
+#                                      les migrations -> deploy normal.
 #   - restauration locale d'un dump prod (`cli backup:locally-restore-latest-main`) : `main` ET
 #                                      l'historique Prisma de la prod reviennent avec le dump.
 #
