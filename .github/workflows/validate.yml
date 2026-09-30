@@ -1,0 +1,107 @@
+---
+name: Validate
+
+on:
+  push:
+    branches:
+      - 'chore/*'
+      - 'docs/*'
+      - 'feat/*'
+      - 'fix/*'
+      - 'refactor/*'
+      - 'test/*'
+      - 'dev'
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Monorepo manypkg check
+        run: pnpm manypkg check
+      - name: Tsc
+        run: pnpm tsc
+      - name: Lint all packages except @app/web
+        run: pnpm -F '!@app/web' lint
+      - name: Lint @app/web - biome
+        run: pnpm -F '@app/web' lint:biome
+      - name: Generate openapi docs for api v1
+        run: pnpm --silent -F @app/web api-v1-doc:generate
+      - name: Check that openapi spec file is up to date
+        run: |
+          git diff --exit-code apps/web/src/app/api/v1/documentation/v1.openapi.json || {
+            echo "::error::Openapi spec file has changed, please run 'pnpm --silent -F @app/web api-v1-doc:generate' to update the openapi spec file and commit the changes"
+            exit 1
+          }
+      - name: Lint @app/web - api
+        run: pnpm -F '@app/web' lint:api
+
+  test-packages:
+    name: Test packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Create env file
+        run: cp .env.dist .env
+      - name: Test all packages except @app/web with coverage
+        run: pnpm -F '!coop-mediation-numerique' -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
+      - name: List coverage reports
+        id: coverage
+        run: |
+          shopt -s nullglob
+          files=(apps/*/coverage/lcov.info packages/*/coverage/lcov.info)
+          echo "files=${files[*]}" >> "$GITHUB_OUTPUT"
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: ${{ steps.coverage.outputs.files }}
+          flag-name: packages
+          parallel: true
+          fail-on-error: false
+
+  test-web:
+    name: Test web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Create env file
+        run: cp .env.dist .env
+      - name: Test @app/web with coverage
+        run: pnpm --silent -F @app/web exec jest --coverage -c jest.unit.config.ts
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: apps/web/coverage/lcov.info
+          flag-name: web-unit
+          parallel: true
+          fail-on-error: false
+
+  coverage:
+    name: Coverage
+    needs:
+      - test-packages
+      - test-web
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close parallel Coveralls build
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true
+          carryforward: 'packages,web-unit'
+          fail-on-error: false
