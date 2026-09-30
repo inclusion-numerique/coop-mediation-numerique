@@ -12,6 +12,7 @@ type SearchUserOptions = {
   searchParams?: { recherche?: string; page?: string; lignes?: string }
   includeDeleted?: boolean
   excludeUserIds?: string[]
+  onlyMediateurs?: boolean
 }
 
 export const searchUser = async (options: SearchUserOptions) => {
@@ -27,7 +28,8 @@ export const searchUser = async (options: SearchUserOptions) => {
       options.excludeUserIds && options.excludeUserIds.length > 0
         ? { notIn: options.excludeUserIds }
         : undefined,
-    deleted: options.includeDeleted ? undefined : { not: null },
+    deleted: options.includeDeleted ? undefined : null,
+    mediateur: options.onlyMediateurs ? { isNot: null } : undefined,
     AND: toQueryParts(searchParams).map((part) => ({
       OR: [
         { name: { contains: part, mode: 'insensitive' } },

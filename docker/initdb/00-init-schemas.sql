@@ -73,4 +73,5 @@ ALTER SCHEMA min OWNER TO sonum;
 CREATE SCHEMA IF NOT EXISTS audit;
 ALTER SCHEMA audit OWNER TO sonum;
 
-DROP FUNCTION IF EXISTS public.edited_by_column();
+CREATE OR REPLACE FUNCTION public.updated_at_column() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN NEW.updated_at = now(); RETURN NEW; END; $$;
+CREATE OR REPLACE FUNCTION public.edited_by_column() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.edited_by IS NULL THEN NEW.edited_by = current_user; END IF; RETURN NEW; END; $$;

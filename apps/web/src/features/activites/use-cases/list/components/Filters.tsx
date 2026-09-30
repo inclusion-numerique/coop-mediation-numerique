@@ -114,8 +114,10 @@ const Filters = ({
     {!isCoordinateur && (
       <MoreMediateurFilters
         tagsOptions={tagsOptions}
+        structuresEmployeusesOptions={structuresEmployeusesOptions}
         hasCrasV1={hasCrasV1}
         defaultValues={{
+          structuresEmployeuses: defaultFilters.structuresEmployeuses ?? [],
           thematiqueNonAdministratives:
             defaultFilters.thematiqueNonAdministratives ?? [],
           thematiqueAdministratives:

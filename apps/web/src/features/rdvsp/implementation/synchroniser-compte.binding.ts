@@ -48,7 +48,11 @@ export class EchecDeSynchronisation extends Error {
   }
 }
 
-const motifsDefinitifs: readonly string[] = ['JetonRevoque', 'AccesRefuse']
+const motifsDefinitifs: readonly string[] = [
+  'JetonRevoque',
+  'AccesRefuse',
+  'AgentSupprime',
+]
 
 export const echecDefinitif = (erreur: unknown): boolean =>
   erreur instanceof EchecDeSynchronisation &&

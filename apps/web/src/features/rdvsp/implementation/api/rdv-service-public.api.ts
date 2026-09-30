@@ -10,6 +10,7 @@ import type { CompteRdvUtilisable } from '../../domain/compte-rdv'
 import type { DemandeRdv } from '../../domain/demande-rdv'
 import {
   AccesRefuse,
+  AgentSupprime,
   ApiIndisponible,
   type ErreurRdvApi,
   JetonRevoque,
@@ -92,6 +93,8 @@ type Requete = {
   readonly organisationId?: OrganisationId
 }
 
+const cheminsDuCompte: readonly string[] = ['/agents/me', '/organisations']
+
 const messageDe = (erreur: unknown): string =>
   axios.isAxiosError(erreur)
     ? erreur.message
@@ -114,6 +117,10 @@ const erreurDe = (
 
   if (statusCode === 401) {
     return JetonRevoque(agentId)
+  }
+
+  if (statusCode === 404 && cheminsDuCompte.includes(chemin)) {
+    return AgentSupprime(chemin)
   }
 
   return statusCode === 403

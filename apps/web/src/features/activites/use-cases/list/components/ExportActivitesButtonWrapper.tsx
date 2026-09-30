@@ -1,5 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
+import type { StructureEmployeuseOption } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
@@ -9,6 +10,7 @@ import { generateActivitesFiltersLabels } from './generateActivitesFiltersLabels
 
 const ExportActivitesButtonWrapper = async ({
   lieuxActiviteOptions,
+  structuresEmployeusesOptions,
   beneficiairesOptions,
   mediateursOptions,
   departementsOptions,
@@ -23,6 +25,7 @@ const ExportActivitesButtonWrapper = async ({
   mediateursOptions: MediateurOption[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
+  structuresEmployeusesOptions: StructureEmployeuseOption[]
   departementsOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
   activiteSourceOptions: SelectOption[]
@@ -34,7 +37,7 @@ const ExportActivitesButtonWrapper = async ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
-    structuresEmployeusesOptions: [],
+    structuresEmployeusesOptions,
     tagsOptions,
     activiteSourceOptions,
   })

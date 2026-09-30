@@ -146,12 +146,18 @@ export const MoreCoordinateurFilters = ({
           <hr className="fr-separator-8v" />
           <RolesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
-          <StructuresEmployeusesField
-            form={form as any}
-            isPending={false}
-            initialStructuresEmployeusesOptions={structuresEmployeusesOptions}
-          />
-          <hr className="fr-separator-8v" />
+          {structuresEmployeusesOptions.length > 1 && (
+            <>
+              <StructuresEmployeusesField
+                form={form as any}
+                isPending={false}
+                initialStructuresEmployeusesOptions={
+                  structuresEmployeusesOptions
+                }
+              />
+              <hr className="fr-separator-8v" />
+            </>
+          )}
           <TypesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
           <h2 className="fr-h6">Filtrer par thématique et/ou tags&nbsp;:</h2>

@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { invalidError, notFoundError } from '@app/web/server/rpc/trpcErrors'
 
 export const addUserToTeam = async ({
   userId,
@@ -22,9 +23,15 @@ export const addUserToTeam = async ({
     },
   })
 
-  const mediateur = user?.mediateur
+  if (!user) {
+    throw notFoundError('Utilisateur introuvable')
+  }
+
+  const { mediateur } = user
   if (!mediateur) {
-    throw new Error('User not found or is not a mediateur')
+    throw invalidError(
+      `${user.email} n’est pas médiateur : son inscription n’est pas terminée. Vérifiez s’il possède un autre compte.`,
+    )
   }
 
   const coordinateur = await prismaClient.coordinateur.findUnique({
@@ -34,7 +41,7 @@ export const addUserToTeam = async ({
   })
 
   if (!coordinateur) {
-    throw new Error('Coordinateur not found')
+    throw notFoundError('Coordinateur introuvable')
   }
 
   const result = await prismaClient.$transaction(async (transaction) => {

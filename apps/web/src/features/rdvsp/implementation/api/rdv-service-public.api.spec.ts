@@ -9,6 +9,7 @@ import { OrganisationId } from '../../domain/organisation-id'
 import { RdvAgentId } from '../../domain/rdv-agent-id'
 import { RdvId } from '../../domain/rdv-id'
 import { StatutPresenceModifiable } from '../../domain/statut-presence'
+import { UsagerId } from '../../domain/usager-id'
 import { UtilisateurCoopId } from '../../domain/utilisateur-coop-id'
 import { rdvServicePublicApi } from './rdv-service-public.api'
 
@@ -240,6 +241,26 @@ describe('refus de RDV Service Public', () => {
     expect(resultat.success ? null : resultat.error._tag).toBe('JetonRevoque')
     expect(axiosMock.post).toHaveBeenCalledTimes(1)
     expect(axiosMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('conclut à un agent supprimé sur un 404 des organisations, sans renouvellement', async () => {
+    axiosMock.mockRejectedValue(refus(404))
+
+    const resultat = await api().listerOrganisations(compteFrais)
+
+    expect(resultat).toEqual({
+      success: false,
+      error: { _tag: 'AgentSupprime', chemin: '/organisations' },
+    })
+    expect(axiosMock.post).not.toHaveBeenCalled()
+  })
+
+  it('garde un 404 sur un usager pour un usager absent', async () => {
+    axiosMock.mockRejectedValue(refus(404))
+
+    const resultat = await api().recupererUsager(compteFrais, UsagerId(42))
+
+    expect(resultat).toEqual({ success: true, data: null })
   })
 
   it('garde le code d’une autre erreur pour le diagnostic', async () => {

@@ -64,7 +64,10 @@ export const getFiltersOptionsForMediateur = async ({
       mediateurCoordonnesIds,
     }),
     getMediateursLieuxActiviteOptions({ mediateurIds }),
-    getStructuresEmployeusesOptions({ mediateurIds }),
+    getStructuresEmployeusesOptions({
+      mediateurIds,
+      coordinateurId: user.coordinateur?.id,
+    }),
     getFirstAndLastActiviteDate({ mediateurIds }),
     getFirstAndLastRdvDate({
       rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],

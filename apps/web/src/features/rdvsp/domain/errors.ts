@@ -85,16 +85,27 @@ export const AccesRefuse = (
   organisationId: OrganisationId | null,
 ): AccesRefuse => ({ _tag: 'AccesRefuse', chemin, organisationId })
 
+export type AgentSupprime = {
+  readonly _tag: 'AgentSupprime'
+  readonly chemin: string
+}
+
+export const AgentSupprime = (chemin: string): AgentSupprime => ({
+  _tag: 'AgentSupprime',
+  chemin,
+})
+
 export type ErreurRdvApi =
   | JetonRevoque
   | AccesRefuse
+  | AgentSupprime
   | ApiIndisponible
   | ReponseInattendue
   | CompteNonLie
   | RdvIntrouvable
 
 const detailErreur = (erreur: ErreurRdvApi): string | null => {
-  if (erreur._tag === 'AccesRefuse') {
+  if (erreur._tag === 'AccesRefuse' || erreur._tag === 'AgentSupprime') {
     return erreur.chemin
   }
 

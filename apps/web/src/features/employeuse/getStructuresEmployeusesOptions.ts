@@ -1,3 +1,5 @@
+import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -27,28 +29,34 @@ const toOption = (structure: OptionPayload): StructureEmployeuseOption => ({
   commune: structure.adresse?.nomCommune ?? null,
 })
 
-// Employeuses (SA main) des médiateurs donnés, via une affectation active en PUR MAIN
-// (`main.personne_affectations_emploi` -> `main.personne` -> `coop.users` -> `mediateur`).
-const affectationDesMediateurs = (
-  mediateurIds: string[],
-): Prisma.StructureAdministrativeMainWhereInput => ({
-  affectationsEmploi: {
-    some: {
-      estActive: true,
-      personne: { user: { mediateur: { id: { in: mediateurIds } } } },
-    },
-  },
-})
-
-export const getStructuresEmployeusesOptions = async ({
-  mediateurIds,
-}: {
+type PerimetreActivites = {
   mediateurIds: string[]
-}): Promise<StructureEmployeuseOption[]> => {
-  if (mediateurIds.length === 0) return []
+  coordinateurId?: string
+}
+
+const employeusesDesActivites = async ({
+  mediateurIds,
+  coordinateurId,
+}: PerimetreActivites): Promise<number[]> => {
+  const lignes = await prismaClient.$queryRaw<{ id: number }[]>`
+    SELECT DISTINCT act.structure_employeuse_main_id AS id
+    FROM activites act
+    WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
+      AND act.suppression IS NULL
+      AND act.structure_employeuse_main_id IS NOT NULL
+      AND ${activitesEquipeCoordonneeWhereCondition(coordinateurId)}
+  `
+
+  return lignes.map(({ id }) => id)
+}
+
+export const getStructuresEmployeusesOptions = async (
+  perimetre: PerimetreActivites,
+): Promise<StructureEmployeuseOption[]> => {
+  if (perimetre.mediateurIds.length === 0) return []
 
   const structures = await prismaClient.structureAdministrativeMain.findMany({
-    where: affectationDesMediateurs(mediateurIds),
+    where: { id: { in: await employeusesDesActivites(perimetre) } },
     select: optionSelect,
     orderBy: { denominationAntenne: 'asc' },
   })
@@ -58,14 +66,13 @@ export const getStructuresEmployeusesOptions = async ({
 
 export const searchStructuresEmployeuses = async ({
   query,
-  mediateurIds,
   excludeIds = [],
-}: {
+  ...perimetre
+}: PerimetreActivites & {
   query: string
-  mediateurIds: string[]
   excludeIds?: string[]
 }): Promise<{ items: StructureEmployeuseOption[] }> => {
-  if (mediateurIds.length === 0) return { items: [] }
+  if (perimetre.mediateurIds.length === 0) return { items: [] }
 
   const searchTerms = query.toLowerCase().trim()
   const excludeMainIds = excludeIds
@@ -75,7 +82,7 @@ export const searchStructuresEmployeuses = async ({
   const structures = await prismaClient.structureAdministrativeMain.findMany({
     where: {
       AND: [
-        affectationDesMediateurs(mediateurIds),
+        { id: { in: await employeusesDesActivites(perimetre) } },
         { id: { notIn: excludeMainIds } },
         searchTerms
           ? {

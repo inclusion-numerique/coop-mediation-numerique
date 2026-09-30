@@ -83,10 +83,12 @@ import { NextResponse } from 'next/server'
  *
  *     Activites:
  *       type: object
+ *       description: Répartition des accompagnements, un atelier collectif de 10 participants compte pour 10
  *       properties:
  *         total:
  *           type: integer
- *           example: 174140
+ *           description: Nombre d’accompagnements, égal à totaux.accompagnements.total
+ *           example: 324949
  *         type_activites:
  *           type: array
  *           items:
@@ -110,9 +112,11 @@ import { NextResponse } from 'next/server'
  *
  *     TotauxActivites:
  *       type: object
+ *       description: Comptage des activités, un atelier collectif compte pour 1 quel que soit son nombre de participants
  *       properties:
  *         total:
  *           type: integer
+ *           description: Nombre d’activités enregistrées
  *           example: 174140
  *         individuels:
  *           type: object
@@ -150,6 +154,7 @@ import { NextResponse } from 'next/server'
  *
  *     TotauxAccompagnements:
  *       type: object
+ *       description: Comptage des accompagnements, un atelier collectif de 10 participants compte pour 10
  *       properties:
  *         total:
  *           type: integer
@@ -169,6 +174,7 @@ import { NextResponse } from 'next/server'
  *           properties:
  *             total:
  *               type: integer
+ *               description: Nombre de participants aux ateliers collectifs
  *               example: 178210
  *             proportion:
  *               type: number
