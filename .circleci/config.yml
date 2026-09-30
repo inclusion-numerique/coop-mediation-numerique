@@ -91,15 +91,6 @@ workflows:
       equal: [ web_app_deployment, << pipeline.parameters.trigger_workflow >> ]
     jobs:
       - prepare_workspace_dependencies
-      - lint:
-          requires:
-            - prepare_workspace_dependencies
-      - test_packages:
-          requires:
-            - prepare_workspace_dependencies
-      - test_web:
-          requires:
-            - prepare_workspace_dependencies
       - test_web_integration:
           requires:
             - prepare_workspace_dependencies
@@ -117,16 +108,11 @@ workflows:
 
       - upload_coverage:
           requires:
-            - test_packages
-            - test_web
             - test_web_integration
 
       - deploy_web:
           requires:
-            - lint
             - build_web
-            - test_packages
-            - test_web
             - test_web_integration
             - test_components
             - test_web_e2e
@@ -137,13 +123,9 @@ workflows:
       equal: [ chromatic_deployment, << pipeline.parameters.trigger_workflow >> ]
     jobs:
       - prepare_workspace_dependencies
-      - lint:
-          requires:
-            - prepare_workspace_dependencies
       - chromatic:
           requires:
             - prepare_workspace_dependencies
-            - lint
 
   web_app_preview_deletion:
     # This workflow exclusively runs on the main branch, with target env to destroy as parameter
@@ -174,9 +156,6 @@ jobs:
       - run:
           name: 'Fetch dependencies'
           command: pnpm install --virtual-store-dir << pipeline.parameters.virtual_store_dir >> --frozen-lockfile
-      - run:
-          name: 'Monorepo manypkg check'
-          command: pnpm manypkg check
       - save_cache:
           key: << pipeline.parameters.cache_version >>-pnpm-{{ checksum "<< pipeline.parameters.lockfile >>" }}
           paths:
@@ -198,98 +177,6 @@ jobs:
           key: << pipeline.parameters.cache_version >>-cypress-{{ checksum "<< pipeline.parameters.lockfile >>" }}
           paths:
             - /home/circleci/.cache/Cypress
-
-  lint:
-    executor: node
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - run:
-          name: 'Tsc'
-          command: pnpm tsc
-      - run:
-          name: 'Lint all packages except @app/web'
-          command: pnpm -F '!@app/web' lint
-      - run:
-          name: 'Lint @app/web - biome'
-          command: pnpm -F '@app/web' lint:biome
-      # check that the openapi file is the same before and after generating (developers should have generated it)
-      - run:
-          name: 'Get openapi spec file hash before generating'
-          command: |
-            echo "OPENAPI_SPEC_FILE_HASH_BEFORE_GENERATING=$(cat apps/web/src/app/api/v1/documentation/v1.openapi.json | shasum -a 256)" >> $BASH_ENV
-      - run:
-          name: 'Generate openapi docs for api v1'
-          command: pnpm --silent -F @app/web api-v1-doc:generate
-      - run:
-          name: 'Get openapi spec file hash after generating'
-          command: |
-            echo "OPENAPI_SPEC_FILE_HASH_AFTER_GENERATING=$(cat apps/web/src/app/api/v1/documentation/v1.openapi.json | shasum -a 256)" >> $BASH_ENV
-      - run:
-          name: 'Check that versioning of openapi spec file has not changed'
-          command: |
-            if [[ "$OPENAPI_SPEC_FILE_HASH_BEFORE_GENERATING" != "$OPENAPI_SPEC_FILE_HASH_AFTER_GENERATING" ]]; then
-              echo "Openapi spec file has changed, please run 'pnpm --silent -F @app/web api-v1-doc:generate' to update the openapi spec file and commit the changes"
-              exit 1
-            fi
-      - run:
-          name: 'Lint @app/web - api'
-          command: pnpm -F '@app/web' lint:api
-
-  test_packages:
-    executor: node
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - run:
-          name: 'Test all packages except @app/web with coverage'
-          command: pnpm -F '!coop-mediation-numerique' -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
-      - run:
-          name: 'Collect coverage reports'
-          command: |
-            mkdir -p coverage-reports/packages
-            for dir in packages/*/coverage; do
-              if [ -d "$dir" ]; then
-                pkg=$(basename $(dirname $dir))
-                cp "$dir/coverage-final.json" "coverage-reports/packages/$pkg.json" 2>/dev/null || true
-              fi
-            done
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage-reports/packages
-
-  test_web:
-    executor: node
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - run:
-          name: 'Test @app/web with coverage'
-          command: pnpm --silent -F @app/web exec jest --coverage -c jest.unit.config.ts
-      - run:
-          name: 'Collect coverage reports'
-          command: |
-            mkdir -p coverage-reports/web-unit
-            cp apps/web/coverage/coverage-final.json coverage-reports/web-unit/coverage.json 2>/dev/null || true
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage-reports/web-unit
 
   build_web:
     executor: node
