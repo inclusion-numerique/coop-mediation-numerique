@@ -507,13 +507,6 @@ When(
   },
 )
 
-When('je crée un lieu d’activité de même nom, sans adresse', async () => {
-  nomDuNouveauLieu = nomDuLieuDisponible
-  lieuCreeId = await creerEtRattacher(
-    saisieDeCreation(nomDuLieuDisponible, { adresse: '' }),
-  )
-})
-
 When('je crée un lieu d’activité de même nom, avec une adresse', async () => {
   nomDuNouveauLieu = nomDuLieuDisponible
   lieuCreeId = await creerEtRattacher(saisieDeCreation(nomDuLieuDisponible))

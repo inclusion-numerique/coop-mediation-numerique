@@ -206,30 +206,19 @@ diffusibles ne sont pas le même : les rapprocher les fusionnerait tous.
 * Then un second lieu d’activité a été créé
 * And je n’ai qu’un seul lieu d’activité actif
 
-## Rule: Un lieu que rien ne situe n’est reconnu par personne
+## Rule: Un lieu sans adresse n’est jamais reconnu
 
-Une employeuse de `main` sans adresse, un établissement non diffusible, un
-payload de cartographie incomplet : l’adresse manque, et les coordonnées avec.
-Plus rien ne dit OÙ, et un lieu est un endroit — une commune compte plusieurs
-« Association Trait d’Union ». La dénomination seule ne suffit donc pas, et deux
-fiches que rien ne situe restent distinctes.
+Un lieu est un endroit : sans adresse, plus rien ne dit OÙ il se trouve, et une
+commune compte plusieurs « Association Trait d’Union ». Aucun parcours n’en crée
+plus — la création, le renseignement et la matérialisation d’une employeuse
+exigent tous une adresse reconnue.
 
-C’est un doublon assumé : il se détecte et se répare, là où un rapprochement à
-tort rattache quelqu’un à l’établissement d’un autre. Trois lieux de la coop sur
-12 489 sont dans ce cas.
+Ceux qui subsistent en base pour des raisons historiques ne sont exploitables
+nulle part dans la coop, sauf dans le formulaire de modification qui permet de
+leur donner une adresse. Ils ne sont donc jamais candidats au rapprochement :
+un lieu du même nom est créé à part.
 
-Dès qu’un des deux signaux revient — une adresse comparable ou des coordonnées —
-la reconnaissance opère de nouveau.
-
-### Scenario: Deux lieux que rien ne situe restent distincts
-
-* Given je suis un médiateur en cours d’inscription
-* And un lieu d’activité sans adresse est disponible
-* When je crée un lieu d’activité de même nom, sans adresse
-* Then le lieu créé est un de mes lieux d’activité actifs
-* And un second lieu d’activité a été créé
-
-### Scenario: Une adresse absente d’un seul côté ne vaut pas concordance
+### Scenario: Un lieu sans adresse n’est jamais reconnu, même sous le même nom
 
 * Given je suis un médiateur en cours d’inscription
 * And un lieu d’activité sans adresse est disponible
