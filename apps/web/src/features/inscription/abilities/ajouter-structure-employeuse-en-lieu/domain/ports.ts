@@ -42,6 +42,9 @@ export type LireLAdresseDeLEmployeuse = (
   employeuseId: EmployeuseId,
 ) => Promise<AdresseAGeocoder | null>
 
-export type GeocoderLAdresse = (
-  adresse: AdresseAGeocoder,
-) => Promise<AdresseBanData | null>
+export type Geocodage =
+  | { readonly _tag: 'AdresseReconnue'; readonly adresse: AdresseBanData }
+  | { readonly _tag: 'AdresseInconnue' }
+  | { readonly _tag: 'ServiceIndisponible' }
+
+export type GeocoderLAdresse = (adresse: AdresseAGeocoder) => Promise<Geocodage>

@@ -4,6 +4,10 @@ import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
 import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@app/web/external-apis/apiAdresse'
+import {
   adresseNonVerifiableMessage,
   geocodeStructureAdresse,
   SANS_SIRET_A_LA_MAIN,
@@ -63,7 +67,14 @@ export const InformationsGeneralesEditionFields = withForm({
               onSelect={async (item) => {
                 setSiretSearchError(null)
                 form.setFieldValue('adresseBan', null)
-                const adresseBan = await geocodeStructureAdresse(item)
+                const adresseBan = await geocodeStructureAdresse(item).catch(
+                  siIndisponible('indisponible' as const),
+                )
+                if (adresseBan === 'indisponible') {
+                  form.setFieldValue('siretSearch', null)
+                  setSiretSearchError(SERVICE_ADRESSE_INDISPONIBLE)
+                  return
+                }
                 if (!adresseBan) {
                   form.setFieldValue('siretSearch', null)
                   setSiretSearchError(

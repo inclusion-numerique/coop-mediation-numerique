@@ -4,9 +4,10 @@ import {
   AdresseNonReconnue,
   type AjouterStructureEmployeuseEnLieuError,
   EmployeuseIntrouvable,
+  ServiceAdresseIndisponible,
 } from '../domain'
 import type { EmployeuseId } from '../domain/employeuse-id'
-import type { GeocoderLAdresse } from '../domain/ports'
+import type { Geocodage, GeocoderLAdresse } from '../domain/ports'
 import {
   delierStructureEmployeuseEnLieu,
   lierStructureEmployeuseEnLieu,
@@ -33,10 +34,12 @@ export type PortsDeMaterialisation = {
 const adresseDuLieuAMaterialiser = async (
   structureEmployeuseId: EmployeuseId,
   { geocoderLAdresse }: PortsDeMaterialisation,
-) => {
+): Promise<Geocodage> => {
   const adresse = await lireLAdresseDeLEmployeuse(structureEmployeuseId)
 
-  return adresse == null ? null : geocoderLAdresse(adresse)
+  return adresse == null
+    ? { _tag: 'AdresseInconnue' }
+    : geocoderLAdresse(adresse)
 }
 
 /**
@@ -70,18 +73,21 @@ export const ajouterStructureEmployeuseEnLieu = async (
     return success<void>(undefined)
   }
 
-  const adresseBan = await adresseDuLieuAMaterialiser(
+  const geocodage = await adresseDuLieuAMaterialiser(
     structureEmployeuseId,
     ports,
   )
 
-  if (adresseBan == null)
+  if (geocodage._tag === 'ServiceIndisponible')
+    return failure(ServiceAdresseIndisponible(structureEmployeuseId))
+
+  if (geocodage._tag === 'AdresseInconnue')
     return failure(AdresseNonReconnue(structureEmployeuseId))
 
   await lierStructureEmployeuseEnLieu({
     userId,
     structureEmployeuseId,
-    adresseBan,
+    adresseBan: geocodage.adresse,
   })
 
   return success<void>(undefined)

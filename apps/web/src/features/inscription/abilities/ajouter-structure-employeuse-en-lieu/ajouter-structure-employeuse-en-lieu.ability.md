@@ -87,6 +87,15 @@ lieu en saisissant soi-même son adresse, choisie dans la Base Adresse Nationale
 * Then la déclaration m’est refusée faute d’adresse reconnue
 * And aucun lieu d’activité n’a été créé
 
+### Scenario: Une panne du service d’adresse ne passe pas pour une adresse introuvable
+
+* Given je suis médiateur
+* And j’ai une structure employeuse
+* And le service d’adresse est indisponible
+* When je déclare que ma structure employeuse est un lieu d’activité
+* Then la déclaration m’est refusée faute de service d’adresse
+* And aucun lieu d’activité n’a été créé
+
 ### Scenario: Le lieu porte l’adresse que la Base Adresse Nationale rend
 
 * Given je suis médiateur
