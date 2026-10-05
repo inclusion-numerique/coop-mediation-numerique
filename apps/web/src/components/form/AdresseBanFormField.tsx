@@ -4,8 +4,10 @@ import CustomSelectFormField, {
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import {
   Feature,
+  SERVICE_ADRESSE_INDISPONIBLE,
   SearchAdresseOptions,
   searchAdresses,
+  siIndisponible,
 } from '@app/web/external-apis/apiAdresse'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
@@ -40,7 +42,11 @@ const loadOptions = async (
     limit: 10,
     autocomplete: true,
     ...options,
-  })
+  }).catch(siIndisponible(null))
+
+  if (result == null) {
+    return [{ label: SERVICE_ADRESSE_INDISPONIBLE, value: null }]
+  }
 
   return result.map((adresseBan) => ({
     label: getAdresseBanLabel(adresseBan),
