@@ -24,9 +24,9 @@ Project is hosted by Scaleway, provisioning is done via Terraform with CDK.
 
 ### Deployment
 
-Deployment is done via CircleCI, using the configuration in `.circleci/config.yml`.
+Deployment is done via GitHub Actions, using the `Deploy` and `Preview deletion` workflows in `.github/workflows/`.
 
-To enable CircleCI on your project, you need to create a project on CircleCI based on your repository.
+The workflows need the `SCW_ACCESS_KEY` and `SCW_SECRET_KEY` repository secrets, which read the other secrets from the Scaleway Secret Manager.
 
 ### Project Stack
 

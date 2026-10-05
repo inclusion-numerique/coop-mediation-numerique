@@ -20,7 +20,7 @@
 # `prisma migrate deploy` lancé sans baseline préalable : elle est ré-enregistrée comme appliquée.
 #
 # Appelé automatiquement par `pnpm -F web db:migrate-deploy`, avant `prisma migrate deploy`.
-# La prod, elle, déploie via `prisma migrate deploy` en direct (.circleci/config.yml) : elle n'est
+# La prod, elle, déploie via `prisma migrate deploy` en direct (.github/workflows/deploy.yml) : elle n'est
 # pas concernée, son baseline reste la décision humaine décrite par le runbook.
 set -euo pipefail
 

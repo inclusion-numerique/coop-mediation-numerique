@@ -89,7 +89,7 @@ coop-mediation-numerique/
 │   └── ui/                  # Composants UI partages (DSFR)
 ├── docs/                    # Documentation et ADR
 ├── docker/                  # Configuration Docker
-├── .circleci/               # Pipeline CI/CD
+├── .github/                 # Pipeline CI/CD (GitHub Actions)
 ├── .env.dist                # Template des variables d'environnement
 └── docker-compose.dev.yml   # Services Docker pour le dev local
 ```
@@ -329,7 +329,7 @@ pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 | `pnpm cli dotenv:from-secrets` | Recupere tous les secrets depuis Scaleway Secret Manager et peuple le `.env` |
 | `pnpm cli terraform:vars-from-env <stack>` | Genere un fichier tfvars a partir des variables d'environnement (`web` ou `project`) |
 | `pnpm cli infrastructure:create <resource> <names>` | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run` |
-| `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via CircleCI (branches separees par des virgules) |
+| `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Preview deletion` (branches separees par des virgules) |
 | `pnpm cli infrastructure:inventory` | Affiche l'inventaire de l'infrastructure et permet le nettoyage interactif (branches, conteneurs, buckets, bases) |
 | `pnpm cli backup:locally-restore-latest-main` | Restaure le dernier backup de la base `main` en local. Options : `--date <date>`, `--local`, `--list`, `--type <type>` |
 
@@ -653,11 +653,15 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
 
 ### CI/CD
 
-Le pipeline CI/CD est gere par **CircleCI** (`.circleci/config.yml`) :
+Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
-- **Push sur une branche** : deploiement automatique d'un environnement de preview
-- **Merge sur `main`** : deploiement automatique en production
-- **Suppression de branche** : nettoyage de l'environnement de preview
+- **`Validate`** (push sur une branche, `dev` ou `main`) : lint, tests unitaires, d'integration, Cucumber, Cypress et Chromatic. Ces checks sont obligatoires pour fusionner dans `dev` et `main`.
+- **`Deploy`** :
+  - **Branche** : deploiement manuel d'un environnement de preview (bouton « Run workflow » de l'onglet Actions, en choisissant la branche)
+  - **Merge sur `dev`** : deploiement automatique de `dev`
+  - **Merge sur `main`** : deploiement automatique en production, la migration du schema `coop` sur l'Entrepot passant avant le conteneur
+- **`Preview deletion`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main
+- **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---
 
@@ -692,7 +696,7 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
    ```bash
    git push origin feat/nom-de-la-fonctionnalite
    ```
-4. Apres review et merge dans `dev`, le merge dans `main` declenche le deploiement en production.
+4. Apres review et merge dans `dev` (deploiement automatique de `dev`), le merge de `dev` dans `main` declenche le deploiement en production.
 
 ### Migrations de base de donnees
 
@@ -758,7 +762,7 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
 
 - [Scaleway](https://www.scaleway.com/) — Hebergement cloud
 - [CDKTF](https://developer.hashicorp.com/terraform/cdktf) — Infrastructure as Code (Terraform en TypeScript)
-- [CircleCI](https://circleci.com/) — CI/CD
+- [GitHub Actions](https://docs.github.com/actions) — CI/CD
 - [Docker](https://www.docker.com/) — Conteneurisation
 
 ---
