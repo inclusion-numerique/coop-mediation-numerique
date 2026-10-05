@@ -1,12 +1,15 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+import { inject } from '@app/web/libs/injection/client'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../action/rechercher-un-lieu-activite.key'
 import type { LieuActiviteTrouve } from '../implementation'
 
 const loadSuggestions = async (
   input: string,
 ): Promise<{ items: LieuActiviteTrouve[] }> => {
-  const resultat = await rechercherUnLieuActiviteAction({ recherche: input })
+  const resultat = await inject(RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY)({
+    recherche: input,
+  })
 
   // Une recherche qui échoue ne propose rien : le champ reste utilisable, et
   // l'utilisateur peut toujours saisir autre chose.

@@ -2,11 +2,12 @@ import NouvelleFonctionnaliteCard from '../../../components/NouvelleFonctionnali
 import SnoozeNouvelleFonctionnaliteButton from '../../../components/SnoozeNouvelleFonctionnaliteButton'
 import TagsDecouvrirButton from './TagsDecouvrirButton'
 
-const tagsFeatureId = 'tags'
+export const tagsFeatureId = 'tags'
 
-const TagsNouvelleFonctionnaliteCard = () => (
+const TagsNouvelleFonctionnaliteCard = ({ masquee }: { masquee: boolean }) => (
   <NouvelleFonctionnaliteCard
     featureId={tagsFeatureId}
+    masquee={masquee}
     showFrom={new Date('2025-07-15')}
     showUntil={new Date('2025-09-01')}
     featureName={

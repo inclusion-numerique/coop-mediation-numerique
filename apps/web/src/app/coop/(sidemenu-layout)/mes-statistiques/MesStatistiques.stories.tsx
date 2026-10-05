@@ -11,6 +11,10 @@ import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
+import { provide } from '@app/web/libs/injection/client'
+import { testSessionUser } from '@app/web/test/testSessionUser'
 import { Meta, StoryObj } from '@storybook/react'
 import { MesStatistiques } from './MesStatistiques'
 
@@ -261,6 +265,14 @@ const statistiquesPageData = {
 export default {
   title: 'Mes statistiques',
   component: MesStatistiques,
+  decorators: [
+    (Story) => {
+      provide(RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY, async () =>
+        ServerActionSuccess([]),
+      )
+      return <Story />
+    },
+  ],
 } as Meta<typeof MesStatistiques>
 
 type Story = StoryObj<typeof MesStatistiques>
@@ -270,5 +282,6 @@ export const Statistiques: Story = {
   args: {
     ...statistiquesPageData,
     codeInsee: '75101',
+    user: testSessionUser,
   },
 }

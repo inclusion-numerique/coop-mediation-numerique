@@ -1,3 +1,6 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
+import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
@@ -11,6 +14,10 @@ import { getActivitesListPageData } from '@app/web/features/activites/use-cases/
 import { getActivitesTagsOptions } from '@app/web/features/activites/use-cases/list/getActivitesTagsOptions'
 import MesActivitesTableauPage from '@app/web/features/activites/use-cases/list/MesActivitesTableauPage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
 const MesActivitesVueTableauPage = async ({
   searchParams,
@@ -69,38 +76,68 @@ const MesActivitesVueTableauPage = async ({
     )
 
     return (
-      <ActivitesListeLayout
-        vue="tableau"
-        href="/coop/mes-activites"
-        subtitle={
-          isCoordinateur(user) && isMediateur(user)
-            ? 'Médiation numérique'
-            : undefined
-        }
+      <ClientBinder
+        bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+        to={rechercherUnLieuActiviteAction}
       >
-        <MesActivitesListeHeader
-          searchResultMatchesCount={searchResultMatchesCount}
-          defaultFilters={searchParams}
-          initialMediateursOptions={initialMediateursOptions}
-          communesOptions={communesOptions}
-          departementsOptions={departementsOptions}
-          lieuxActiviteOptions={lieuxActiviteOptions}
-          structuresEmployeusesOptions={structuresEmployeusesOptions}
-          tagsOptions={tagsOptions}
-          activiteDates={filterPeriodDates}
-          enableRdvsFilter={includeRdvsFilter}
-          hasCrasV1={hasCrasV1.hasCrasV1}
-          activiteSourceOptions={activiteSourceOptions}
-        />
-        <MesActivitesTableauPage data={data} />
-      </ActivitesListeLayout>
+        <ClientBinder
+          bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+          to={creerActiviteDepuisRdvAction}
+        >
+          <ClientBinder
+            bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+            to={mettreAJourStatutRdvAction}
+          >
+            <ActivitesListeLayout
+              vue="tableau"
+              href="/coop/mes-activites"
+              subtitle={
+                isCoordinateur(user) && isMediateur(user)
+                  ? 'Médiation numérique'
+                  : undefined
+              }
+            >
+              <MesActivitesListeHeader
+                searchResultMatchesCount={searchResultMatchesCount}
+                defaultFilters={searchParams}
+                initialMediateursOptions={initialMediateursOptions}
+                communesOptions={communesOptions}
+                departementsOptions={departementsOptions}
+                lieuxActiviteOptions={lieuxActiviteOptions}
+                structuresEmployeusesOptions={structuresEmployeusesOptions}
+                tagsOptions={tagsOptions}
+                activiteDates={filterPeriodDates}
+                enableRdvsFilter={includeRdvsFilter}
+                hasCrasV1={hasCrasV1.hasCrasV1}
+                activiteSourceOptions={activiteSourceOptions}
+              />
+              <MesActivitesTableauPage data={data} />
+            </ActivitesListeLayout>
+          </ClientBinder>
+        </ClientBinder>
+      </ClientBinder>
     )
   }
 
   return (
-    <ActivitesListeLayout vue="tableau" href="/coop/mes-activites">
-      <MesActivitesListeEmptyPage />
-    </ActivitesListeLayout>
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <ClientBinder
+        bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+        to={creerActiviteDepuisRdvAction}
+      >
+        <ClientBinder
+          bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+          to={mettreAJourStatutRdvAction}
+        >
+          <ActivitesListeLayout vue="tableau" href="/coop/mes-activites">
+            <MesActivitesListeEmptyPage />
+          </ActivitesListeLayout>
+        </ClientBinder>
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

@@ -1,7 +1,9 @@
 import Cookies from 'js-cookie'
 
+export const nouvelleFonctionnaliteCookiePrefix = 'nouvelle-fonctionnalite-'
+
 export const getNouvelleFonctionnaliteCookieName = (featureId: string) =>
-  `nouvelle-fonctionnalite-${featureId}`
+  `${nouvelleFonctionnaliteCookiePrefix}${featureId}`
 
 // If this cookie is set, the new feature card is masked
 export const getNouvelleFonctionnaliteSkipCookie = ({

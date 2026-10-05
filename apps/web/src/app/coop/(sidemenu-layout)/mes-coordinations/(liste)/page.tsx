@@ -1,3 +1,5 @@
+import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
+import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
@@ -13,6 +15,9 @@ import { getCoordinationsListPageData } from '@app/web/features/activites/use-ca
 import { getCoordinationsTagsOptions } from '@app/web/features/activites/use-cases/list/db/getCoordinationsTagsOptions'
 import MesCoordinationsListePage from '@app/web/features/activites/use-cases/list/MesCoordinationsListePage'
 import { validateCoordinationsFilters } from '@app/web/features/activites/use-cases/list/validation/CoordinationsFilters'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { Metadata } from 'next'
 
@@ -65,35 +70,47 @@ const MesCoordinationsPage = async ({
   ]
 
   return (
-    <ActivitesListeLayout
-      vue="liste"
-      href="/coop/mes-coordinations"
-      empty
-      subtitle={
-        isCoordinateur(user) && isMediateur(user) ? 'Coordination' : undefined
-      }
+    <ClientBinder
+      bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+      to={creerActiviteDepuisRdvAction}
     >
-      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-2v fr-mb-6v">
-        <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
-          <ActiviteCoordinationPeriodeFilter
-            minDate={new Date(dateRange._min.date ?? now)}
-            maxDate={new Date(dateRange._max.date ?? now)}
+      <ClientBinder
+        bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+        to={mettreAJourStatutRdvAction}
+      >
+        <ActivitesListeLayout
+          vue="liste"
+          href="/coop/mes-coordinations"
+          empty
+          subtitle={
+            isCoordinateur(user) && isMediateur(user)
+              ? 'Coordination'
+              : undefined
+          }
+        >
+          <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-2v fr-mb-6v">
+            <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
+              <ActiviteCoordinationPeriodeFilter
+                minDate={new Date(dateRange._min.date ?? now)}
+                maxDate={new Date(dateRange._max.date ?? now)}
+              />
+              <ActiviteCoordinationTypeFilter />
+              <ActiviteCoordinationTagFilter tagOptions={tagOptions} />
+            </div>
+            <ExportActivitesCoordinationButton
+              filters={filters}
+              searchParams={rawSearchParams}
+              activitesCount={activitesCount}
+            />
+          </div>
+          <CoordinationFilterTags
+            ignoreParams={['page', 'lignes']}
+            filters={filters}
           />
-          <ActiviteCoordinationTypeFilter />
-          <ActiviteCoordinationTagFilter tagOptions={tagOptions} />
-        </div>
-        <ExportActivitesCoordinationButton
-          filters={filters}
-          searchParams={rawSearchParams}
-          activitesCount={activitesCount}
-        />
-      </div>
-      <CoordinationFilterTags
-        ignoreParams={['page', 'lignes']}
-        filters={filters}
-      />
-      <MesCoordinationsListePage data={data} />
-    </ActivitesListeLayout>
+          <MesCoordinationsListePage data={data} />
+        </ActivitesListeLayout>
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

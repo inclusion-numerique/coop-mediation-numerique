@@ -1,12 +1,13 @@
 'use client'
 
-import { rafraichirAccueilRdvAction } from '@app/web/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
+import { inject } from '@app/web/libs/injection/client'
 import { numberToString } from '@app/web/utils/formatNumber'
 import type { UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { type ReactNode, useEffect, useState } from 'react'
+import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '../../action/rafraichir-accueil-rdv.key'
 import type {
   DonneesAccueilRdv,
   RdvEnUneLigne,
@@ -155,7 +156,7 @@ const RdvsAccueil = ({
 
     setSynchronisationEnCours(true)
 
-    rafraichirAccueilRdvAction().then((resultat) => {
+    inject(RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY)().then((resultat) => {
       setSynchronisationEnCours(false)
 
       if (resultat.success && resultat.data._tag === 'rafraichi') {

@@ -1,3 +1,8 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { afficherRdvsDansActivitesAction } from '@app/web/app/_actions/rdvsp/afficher-rdvs-dans-activites.action'
+import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
+import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
+import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
@@ -10,6 +15,12 @@ import { getActivitesListPageData } from '@app/web/features/activites/use-cases/
 import { getActivitesTagsOptions } from '@app/web/features/activites/use-cases/list/getActivitesTagsOptions'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -67,31 +78,56 @@ const MesActivitesPage = async ({
       showRdvsInList)
 
   return (
-    <ActivitesListeLayout
-      vue="liste"
-      href="/coop/mes-activites"
-      subtitle={
-        isCoordinateur(user) && isMediateur(user)
-          ? 'Médiation numérique'
-          : undefined
-      }
+    <ClientBinder
+      bind={AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY}
+      to={afficherRdvsDansActivitesAction}
     >
-      <MesActivitesListeHeader
-        searchResultMatchesCount={searchResultMatchesCount}
-        defaultFilters={searchParams}
-        initialMediateursOptions={initialMediateursOptions}
-        communesOptions={communesOptions}
-        departementsOptions={departementsOptions}
-        lieuxActiviteOptions={lieuxActiviteOptions}
-        structuresEmployeusesOptions={structuresEmployeusesOptions}
-        tagsOptions={tagsOptions}
-        activiteDates={datesForFilters}
-        enableRdvsFilter={enableRdvsFilter}
-        hasCrasV1={hasCrasV1.hasCrasV1}
-        activiteSourceOptions={activiteSourceOptions}
-      />
-      <MesActivitesListePage data={data} />
-    </ActivitesListeLayout>
+      <ClientBinder
+        bind={RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY}
+        to={rattraperRdvsSansWebhookAction}
+      >
+        <ClientBinder
+          bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+          to={rechercherUnLieuActiviteAction}
+        >
+          <ClientBinder
+            bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+            to={creerActiviteDepuisRdvAction}
+          >
+            <ClientBinder
+              bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+              to={mettreAJourStatutRdvAction}
+            >
+              <ActivitesListeLayout
+                vue="liste"
+                href="/coop/mes-activites"
+                subtitle={
+                  isCoordinateur(user) && isMediateur(user)
+                    ? 'Médiation numérique'
+                    : undefined
+                }
+              >
+                <MesActivitesListeHeader
+                  searchResultMatchesCount={searchResultMatchesCount}
+                  defaultFilters={searchParams}
+                  initialMediateursOptions={initialMediateursOptions}
+                  communesOptions={communesOptions}
+                  departementsOptions={departementsOptions}
+                  lieuxActiviteOptions={lieuxActiviteOptions}
+                  structuresEmployeusesOptions={structuresEmployeusesOptions}
+                  tagsOptions={tagsOptions}
+                  activiteDates={datesForFilters}
+                  enableRdvsFilter={enableRdvsFilter}
+                  hasCrasV1={hasCrasV1.hasCrasV1}
+                  activiteSourceOptions={activiteSourceOptions}
+                />
+                <MesActivitesListePage data={data} />
+              </ActivitesListeLayout>
+            </ClientBinder>
+          </ClientBinder>
+        </ClientBinder>
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

@@ -1,3 +1,4 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import CraCollectifPage from '@app/web/features/activites/use-cases/cra/collectif/CraCollectifPage'
 import { craCollectifDefaultValues } from '@app/web/features/activites/use-cases/cra/collectif/craCollectifDefaultValues'
@@ -6,6 +7,8 @@ import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCra
 import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -53,12 +56,17 @@ const CreateCraCollectifPage = async ({
   )(mediateurId, stateFromUrl)
 
   return (
-    <CraCollectifPage
-      {...craPageData}
-      mediateurId={mediateurId}
-      equipes={equipes}
-      retour={retour}
-    />
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <CraCollectifPage
+        {...craPageData}
+        mediateurId={mediateurId}
+        equipes={equipes}
+        retour={retour}
+      />
+    </ClientBinder>
   )
 }
 

@@ -1,0 +1,16 @@
+{
+  "all": true,
+  "src": ["src"],
+  "extension": [".ts", ".tsx"],
+  "include": ["src/**/*.{ts,tsx}"],
+  "exclude": [
+    "src/**/*.spec.{ts,tsx}",
+    "src/**/*.integration.{ts,tsx}",
+    "src/**/*.stories.{ts,tsx}",
+    "src/**/*.steps.ts",
+    "src/**/*.cucumber.ts",
+    "src/generated/**"
+  ],
+  "reporter": ["lcov", "text-summary"],
+  "reports-dir": "coverage-cucumber"
+}

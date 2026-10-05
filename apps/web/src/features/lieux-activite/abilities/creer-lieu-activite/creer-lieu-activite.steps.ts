@@ -380,6 +380,8 @@ Then("le registre porte l'adresse du lieu créé", async () => {
       select: {
         adresse: {
           select: {
+            numeroVoie: true,
+            repetition: true,
             nomVoie: true,
             codePostal: true,
             nomCommune: true,
@@ -394,7 +396,9 @@ Then("le registre porte l'adresse du lieu créé", async () => {
   // qui l'a créée en premier — l'y attacher ferait dépendre le scénario de son
   // rang d'exécution.
   assert.deepStrictEqual(inscription.adresse, {
-    nomVoie: '12 quai du Port',
+    numeroVoie: 12,
+    repetition: '',
+    nomVoie: 'Quai Du Port',
     codePostal: '17300',
     nomCommune: 'Rochefort',
   })

@@ -18,6 +18,7 @@ import {
   ModalitesAcces,
   Presentation,
   Service,
+  Services,
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -375,7 +376,10 @@ Then('la modification est acceptée', () => {
 
 Then('le lieu annonce les services du socle', async () => {
   const { lieu } = await relire()
-  assert.deepStrictEqual(lieu.fiche.services, [...SERVICES_PAR_DEFAUT])
+  assert.deepStrictEqual(
+    lieu.fiche.services,
+    Services([...SERVICES_PAR_DEFAUT]),
+  )
 })
 
 Then('le lieu est visible sur la cartographie', async () => {

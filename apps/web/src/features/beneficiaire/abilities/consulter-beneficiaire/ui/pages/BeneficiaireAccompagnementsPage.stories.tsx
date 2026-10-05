@@ -2,6 +2,7 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
+import { provideRdvStatusUpdateDefaults } from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/rdv-status-update.story-defaults'
 import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
@@ -37,6 +38,12 @@ const Template = ({
 const meta: Meta<typeof ViewBeneficiaireAccompagnementsPage> = {
   title: 'Mes bénéficiaires/Consultation/Accompagnements',
   component: ViewBeneficiaireAccompagnementsPage,
+  decorators: [
+    (Story) => {
+      provideRdvStatusUpdateDefaults()
+      return <Story />
+    },
+  ],
 }
 
 export default meta

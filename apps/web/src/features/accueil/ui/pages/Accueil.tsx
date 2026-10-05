@@ -1,9 +1,15 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import EquipeVide from '@app/web/equipe/EquipeVide'
-import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
-import RdvNouvelleFonctionnaliteCard from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
-import TagsNouvelleFonctionnaliteCard from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
+import FormationContinueNouvelleFonctionnaliteCard, {
+  formationContinueFeatureId,
+} from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
+import RdvNouvelleFonctionnaliteCard, {
+  rdvFeatureId,
+} from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
+import TagsNouvelleFonctionnaliteCard, {
+  tagsFeatureId,
+} from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { ActivitesCoordination } from '@app/web/features/activites/use-cases/list/components/ActivitesCoordination'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
@@ -33,6 +39,7 @@ export const Accueil = ({
   userId,
   widgetRdv,
   synchroniserRdvsAuChargement,
+  nouvellesFonctionnalitesMasquees,
 }: {
   userId: string
   firstName: string | null
@@ -42,6 +49,7 @@ export const Accueil = ({
   isMediateur: boolean
   isCoordinateur: boolean
   timezone: string
+  nouvellesFonctionnalitesMasquees: readonly string[]
 } & AccueilPageData) => (
   <CoopPageContainer size={56}>
     <SkipLinksPortal />
@@ -49,9 +57,17 @@ export const Accueil = ({
       <h1 className="fr-text-title--blue-france fr-mt-12v fr-mb-0">
         👋 Bonjour {firstName || name || email}
       </h1>
-      <RdvNouvelleFonctionnaliteCard />
-      <FormationContinueNouvelleFonctionnaliteCard />
-      <TagsNouvelleFonctionnaliteCard />
+      <RdvNouvelleFonctionnaliteCard
+        masquee={nouvellesFonctionnalitesMasquees.includes(rdvFeatureId)}
+      />
+      <FormationContinueNouvelleFonctionnaliteCard
+        masquee={nouvellesFonctionnalitesMasquees.includes(
+          formationContinueFeatureId,
+        )}
+      />
+      <TagsNouvelleFonctionnaliteCard
+        masquee={nouvellesFonctionnalitesMasquees.includes(tagsFeatureId)}
+      />
       {!isCoordinateur && (
         <>
           <OnboardingInfo hasSeenOnboarding={hasSeenOnboarding} />
