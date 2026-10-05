@@ -83,7 +83,7 @@ déploient.
 Ce baseline est désormais **automatique** : `prisma/baseline-main.sh` marque appliquée toute
 migration `main` non enregistrée dont les tables existent déjà. Il est branché sur
 `db:migrate-deploy` (docker local, restauration locale d'un dump prod, envs de preview) et sur le
-step tunnel du déploiement prod (`.circleci/config.yml`). Les deux commandes ci-dessous ne restent
+step tunnel du déploiement prod (`.github/workflows/deploy.yml`). Les deux commandes ci-dessous ne restent
 utiles que pour baseliner à la main, hors de ces chemins.
 
 ```bash
