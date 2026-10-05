@@ -283,7 +283,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        conteneur: [0, 1]
+        conteneur: [0, 1, 2]
     services:
       postgres:
         image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
@@ -353,8 +353,9 @@ jobs:
       - name: Run Cypress e2e tests
         uses: cypress-io/github-action@v7
         env:
-          SPLIT: 2
+          SPLIT: 3
           SPLIT_INDEX: ${{ matrix.conteneur }}
+          SPLIT_FILE: timings.json
         with:
           install: false
           working-directory: packages/e2e

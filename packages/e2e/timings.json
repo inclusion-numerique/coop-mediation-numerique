@@ -1,0 +1,68 @@
+{
+  "durations": [
+    {
+      "spec": "cypress/e2e/api/apiDocumentation.cy.ts",
+      "duration": 1000
+    },
+    {
+      "spec": "cypress/e2e/authentication/existingUserCanSigninAndSignout.cy.ts",
+      "duration": 19000
+    },
+    {
+      "spec": "cypress/e2e/beneficiaires/import/importBeneficiaires.cy.ts",
+      "duration": 6000
+    },
+    {
+      "spec": "cypress/e2e/cra/craCollectif.cy.ts",
+      "duration": 6000
+    },
+    {
+      "spec": "cypress/e2e/cra/craIndividuel.cy.ts",
+      "duration": 5000
+    },
+    {
+      "spec": "cypress/e2e/home.cy.ts",
+      "duration": 6000
+    },
+    {
+      "spec": "cypress/e2e/inscription/inscriptionConseillerNumerique.cy.ts",
+      "duration": 11000
+    },
+    {
+      "spec": "cypress/e2e/inscription/inscriptionCoordinateur.cy.ts",
+      "duration": 5000
+    },
+    {
+      "spec": "cypress/e2e/inscription/inscriptionCoordinateurConseillerNumerique.cy.ts",
+      "duration": 5000
+    },
+    {
+      "spec": "cypress/e2e/inscription/inscriptionMediateur.cy.ts",
+      "duration": 8000
+    },
+    {
+      "spec": "cypress/e2e/inscription/inscriptionMediateurSansEmployeuse.cy.ts",
+      "duration": 9000
+    },
+    {
+      "spec": "cypress/e2e/invitation/inviterMembre.cy.ts",
+      "duration": 10000
+    },
+    {
+      "spec": "cypress/e2e/invitation/traiterInvitation.cy.ts",
+      "duration": 20000
+    },
+    {
+      "spec": "cypress/e2e/rdv-service-public/afficherRdvsDansActivites.cy.ts",
+      "duration": 15000
+    },
+    {
+      "spec": "cypress/e2e/rdv-service-public/consulterRdvsAccueil.cy.ts",
+      "duration": 24000
+    },
+    {
+      "spec": "cypress/e2e/rdv-service-public/deconnecterCompteRdv.cy.ts",
+      "duration": 6000
+    }
+  ]
+}
