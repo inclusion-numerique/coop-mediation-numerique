@@ -177,8 +177,16 @@ jobs:
         with:
           scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
           scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
-      - name: Run cucumber
-        run: pnpm -F @app/web test:cucumber
+      - name: Run cucumber with coverage
+        run: pnpm -F @app/web test:cucumber:coverage
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: apps/web/coverage-cucumber/lcov.info
+          base-path: apps/web
+          flag-name: cucumber
+          parallel: true
+          fail-on-error: false
 
   chromatic:
     name: Chromatic
@@ -206,6 +214,7 @@ jobs:
       - test-packages
       - test-web
       - integration-tests
+      - cucumber
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
@@ -213,5 +222,5 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           parallel-finished: true
-          carryforward: 'packages,web-unit,web-integration'
+          carryforward: 'packages,web-unit,web-integration,cucumber'
           fail-on-error: false

@@ -416,6 +416,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.4
         version: 19.2.4(@types/react@19.2.18)
+      c8:
+        specifier: ^12.0.0
+        version: 12.0.0
       identity-obj-proxy:
         specifier: ^3.0.0
         version: 3.0.0
@@ -1635,6 +1638,10 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@bcoe/v8-coverage@1.0.2':
+    resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
+    engines: {node: '>=18'}
 
   '@biomejs/biome@2.5.5':
     resolution: {integrity: sha512-r1S8nFsAG1MY+vJFZALzIvwXAJv6ejDQ0mxP21Tgr9YK3ZFtjrvbBwDdNhx1rUqvccEIeNg20cYCNzl6Cr69pQ==}
@@ -6750,6 +6757,16 @@ packages:
       magicast:
         optional: true
 
+  c8@12.0.0:
+    resolution: {integrity: sha512-4zpJvrd1nKWutnnKC2pXkFmb6iM1l+ffN//o1CzlTNwW7GSOs9a1xrLqkC48nU8oEkjmPZLPiwMsIaOvoF4Pqg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
+    hasBin: true
+    peerDependencies:
+      monocart-coverage-reports: ^2
+    peerDependenciesMeta:
+      monocart-coverage-reports:
+        optional: true
+
   cachedir@2.4.0:
     resolution: {integrity: sha512-9EtFOZR8g22CL7BWjJ9BUx1+A/djkofnyW3aOXZORNW2kxoUpx2h+uN2cOqwPmFhnpVmxg+KW2OjOSgChTEvsQ==}
     engines: {node: '>=6'}
@@ -7031,6 +7048,10 @@ packages:
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
+
+  cliui@9.0.1:
+    resolution: {integrity: sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w==}
+    engines: {node: '>=20'}
 
   clone-stats@0.0.1:
     resolution: {integrity: sha512-dhUqc57gSMCo6TX85FLfe51eC/s+Im2MLkAgJwfaRRexR2tA4dd3eLEW4L6efzHc2iNorrRRXITifnDLlRrhaA==}
@@ -13455,6 +13476,10 @@ packages:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
 
+  yargs-parser@22.0.0:
+    resolution: {integrity: sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
+
   yargs@15.4.1:
     resolution: {integrity: sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==}
     engines: {node: '>=8'}
@@ -13470,6 +13495,10 @@ packages:
   yargs@17.7.3:
     resolution: {integrity: sha512-GZtjxm/J/4TSxuL3FNYjCmLktBTnIw/rVmKSIyKeYAZpmJB2ig9VauCC5xsa82GNKVKDAqpOn3KVzNt0zmrU0g==}
     engines: {node: '>=12'}
+
+  yargs@18.1.0:
+    resolution: {integrity: sha512-2rAgRKu54VsHkqI0/tYkmluGXHD4KW7yZoycuqDQ15QOTnc2VVfy0nN/1eMhnQLO00A+dwtK20xuCnc1YGeUyg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
   yarn@1.22.22:
     resolution: {integrity: sha512-prL3kGtyG7o9Z9Sv8IPfBNrWTDmXB4Qbes8A9rEzt6wkJV8mUvoirjU0Mp3GGAU06Y0XQyA3/2/RQFVuK7MTfg==}
@@ -14644,6 +14673,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.29.7
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@bcoe/v8-coverage@1.0.2': {}
 
   '@biomejs/biome@2.5.5':
     optionalDependencies:
@@ -20248,6 +20279,20 @@ snapshots:
       pkg-types: 2.3.1
       rc9: 2.1.2
 
+  c8@12.0.0:
+    dependencies:
+      '@bcoe/v8-coverage': 1.0.2
+      '@istanbuljs/schema': 0.1.6
+      find-up: 5.0.0
+      foreground-child: 3.3.1
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.2.0
+      test-exclude: 8.0.0
+      v8-to-istanbul: 9.3.0
+      yargs: 18.1.0
+      yargs-parser: 21.1.1
+
   cachedir@2.4.0: {}
 
   caching-transform@4.0.0:
@@ -20576,6 +20621,12 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
+
+  cliui@9.0.1:
+    dependencies:
+      string-width: 7.2.0
+      strip-ansi: 7.2.0
+      wrap-ansi: 9.0.2
 
   clone-stats@0.0.1: {}
 
@@ -28610,6 +28661,8 @@ snapshots:
 
   yargs-parser@21.1.1: {}
 
+  yargs-parser@22.0.0: {}
+
   yargs@15.4.1:
     dependencies:
       cliui: 6.0.0
@@ -28653,6 +28706,15 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
+
+  yargs@18.1.0:
+    dependencies:
+      cliui: 9.0.1
+      escalade: 3.2.0
+      get-caller-file: 2.0.5
+      string-width: 8.2.2
+      y18n: 5.0.8
+      yargs-parser: 22.0.0
 
   yarn@1.22.22: {}
 
