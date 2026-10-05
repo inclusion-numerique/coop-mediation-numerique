@@ -14,8 +14,11 @@ export default {
 
 type Story = StoryObj<typeof PublicFooter>
 
-export const Desktop: Story = {}
+export const Desktop: Story = {
+  args: { initialTheme: 'light' },
+}
 export const Mobile: Story = {
+  args: { initialTheme: 'light' },
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',
