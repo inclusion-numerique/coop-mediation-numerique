@@ -145,7 +145,6 @@ jobs:
   cucumber:
     name: Cucumber
     runs-on: ubuntu-latest
-    continue-on-error: true
     services:
       postgres:
         image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
