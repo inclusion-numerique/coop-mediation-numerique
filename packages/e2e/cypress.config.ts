@@ -15,8 +15,7 @@ export default defineConfig({
       return config
     },
   },
-  video: true,
-  videoCompression: true,
+  video: false,
   viewportWidth: 1024,
   viewportHeight: 768,
 

@@ -261,14 +261,13 @@ jobs:
           install: false
           working-directory: packages/e2e
           command: pnpm cy run --component --reporter junit --reporter-options mochaFile=junit/components-[hash].xml
-      - name: Upload Cypress screenshots and videos
+      - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: components-cypress
           path: |
             packages/e2e/cypress/screenshots
-            packages/e2e/cypress/videos
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}
@@ -362,14 +361,13 @@ jobs:
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           command: pnpm cy run --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
-      - name: Upload Cypress screenshots, videos and server log
+      - name: Upload Cypress screenshots and server log
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-cypress-${{ matrix.conteneur }}
           path: |
             packages/e2e/cypress/screenshots
-            packages/e2e/cypress/videos
             server.log
           retention-days: 30
       - name: Publish test summary
