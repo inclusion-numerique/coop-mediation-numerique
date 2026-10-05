@@ -319,11 +319,10 @@ const semerUnLieu = async (champs: {
       siteWeb: [...(champs.siteWeb ?? [])],
       courriels: [...(champs.courriels ?? [])],
     },
-    select: { id: true, modification: true },
+    select: { id: true },
   })
 
   semis.lieuId = lieu.id
-  semis.modification = lieu.modification
 
   if (champs.sansAccompagnement === true) return
 
@@ -1038,6 +1037,16 @@ Given('il est inscrit au registre avec les mêmes horaires', async () => {
 })
 
 When('on reprend les données des lieux', async () => {
+  semis.modification =
+    semis.lieuId == null
+      ? undefined
+      : (
+          await prismaClient.lieuInclusion.findUniqueOrThrow({
+            where: { id: semis.lieuId },
+            select: { modification: true },
+          })
+        ).modification
+
   semis.releve = (
     await reprendreLesDonneesDesLieux({
       reprises: [
