@@ -628,7 +628,7 @@ Given(
     initiale.voie = '12 QUAI DU PORT'
     await prismaClient.lieuInclusion.update({
       where: { id: lieuSeme() },
-      data: { adresse: initiale.voie, banId: null, latitude: null },
+      data: { adresse: initiale.voie, banId: null },
     })
   },
 )
@@ -638,7 +638,7 @@ Given('un lieu dont la voie ne nomme aucune voie', async () => {
   initiale.voie = 'Le Bourg'
   await prismaClient.lieuInclusion.update({
     where: { id: lieuSeme() },
-    data: { adresse: initiale.voie, banId: null, latitude: null },
+    data: { adresse: initiale.voie, banId: null },
   })
 })
 
