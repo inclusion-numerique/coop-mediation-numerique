@@ -57,27 +57,72 @@ export type SearchAdresseOptions = {
   citycode?: string
 }
 
+export const SERVICE_ADRESSE_INDISPONIBLE =
+  'Le service d’adresse est momentanément indisponible, réessayez dans quelques instants.'
+
+export class AdresseIndisponible extends Error {
+  constructor(cause: string) {
+    super(`Service d’adresse indisponible : ${cause}`)
+    this.name = 'AdresseIndisponible'
+  }
+}
+
+export const siIndisponible =
+  <T>(repli: T, signaler?: (erreur: AdresseIndisponible) => void) =>
+  (erreur: unknown): T => {
+    if (!(erreur instanceof AdresseIndisponible)) throw erreur
+    signaler?.(erreur)
+    return repli
+  }
+
+const LONGUEUR_MINIMALE = 3
+
+const LONGUEUR_MAXIMALE = 200
+
+const COMMENCE_PAR_UNE_LETTRE_OU_UN_CHIFFRE = /^[\p{L}\p{N}]/u
+
+export const requeteGeocodable = (requete: string): boolean =>
+  requete.length >= LONGUEUR_MINIMALE &&
+  requete.length <= LONGUEUR_MAXIMALE &&
+  COMMENCE_PAR_UNE_LETTRE_OU_UN_CHIFFRE.test(requete)
+
+export const urlDeRecherche = (
+  requete: string,
+  options?: SearchAdresseOptions,
+): URL => {
+  const url = new URL(apiAdresseEndpoint)
+
+  url.searchParams.append('q', requete)
+  url.searchParams.append('limit', (options?.limit ?? 1).toString(10))
+  url.searchParams.append('autocomplete', options?.autocomplete ? '1' : '0')
+  if (options?.type) url.searchParams.append('type', options.type)
+  if (options?.citycode) url.searchParams.append('citycode', options.citycode)
+
+  return url
+}
+
+export const lireLaReponse = async (response: Response): Promise<Feature[]> => {
+  if (!response.ok) throw new AdresseIndisponible(`HTTP ${response.status}`)
+
+  const body = (await response.json()) as FeatureCollection
+
+  return body.features ?? []
+}
+
 export const searchAdresses = async (
   adresse: string,
   options?: SearchAdresseOptions,
 ): Promise<Feature[]> => {
-  if (adresse.length < 3) return []
+  const requete = adresse.trim()
 
-  const url = new URL(apiAdresseEndpoint)
+  if (!requeteGeocodable(requete)) return []
 
-  const limit = options?.limit ?? 1
-  const autocomplete = options?.autocomplete ?? false
+  const response = await fetch(urlDeRecherche(requete, options)).catch(
+    (erreur: unknown) =>
+      Promise.reject(new AdresseIndisponible(String(erreur))),
+  )
 
-  url.searchParams.append('q', adresse)
-  url.searchParams.append('limit', limit.toString(10))
-  url.searchParams.append('autocomplete', autocomplete ? '1' : '0')
-  if (options?.type) url.searchParams.append('type', options.type)
-  if (options?.citycode) url.searchParams.append('citycode', options.citycode)
-
-  const response = await fetch(url.toString())
-  const body = (await response.json()) as FeatureCollection
-
-  return body.features || []
+  return lireLaReponse(response)
 }
 
 export const searchAdresse = (adresse: string): Promise<Feature | null> =>
