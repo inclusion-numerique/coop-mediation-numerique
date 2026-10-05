@@ -2,6 +2,7 @@ import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import ActivitesListeLayout from './components/ActivitesListeLayout'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
+import { provideRdvStatusUpdateDefaults } from './components/RdvStatusUpdateModal/rdv-status-update.story-defaults'
 import { ActivitesListPageData } from './getActivitesListPageData'
 import MesActivitesTableauPage from './MesActivitesTableauPage'
 import {
@@ -24,6 +25,12 @@ const TemplateEmpty = () => (
 const meta: Meta<typeof MesActivitesTableauPage> = {
   title: 'Activités/Liste/Tableau',
   component: MesActivitesTableauPage,
+  decorators: [
+    (Story) => {
+      provideRdvStatusUpdateDefaults()
+      return <Story />
+    },
+  ],
 }
 
 export default meta

@@ -1,9 +1,14 @@
+import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
+import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { searchActiviteAndRdvs } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
 import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireAccompagnementsPage from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
 
 // Route hub : lit les données propres du bénéficiaire via l'ability
@@ -42,9 +47,19 @@ const BeneficiaireAccompagnementsPage = async (props: {
 
   // 4. Rendu de la vue
   return (
-    <ViewBeneficiaireAccompagnementsPage
-      data={{ beneficiaire, searchResult, user }}
-    />
+    <ClientBinder
+      bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+      to={creerActiviteDepuisRdvAction}
+    >
+      <ClientBinder
+        bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+        to={mettreAJourStatutRdvAction}
+      >
+        <ViewBeneficiaireAccompagnementsPage
+          data={{ beneficiaire, searchResult, user }}
+        />
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

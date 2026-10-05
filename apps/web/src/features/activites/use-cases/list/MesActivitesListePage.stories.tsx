@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import ActivitesListeLayout from './components/ActivitesListeLayout'
 import { groupActivitesAndRdvsByDate } from './components/groupActivitesAndRdvsByDate'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
+import { provideRdvStatusUpdateDefaults } from './components/RdvStatusUpdateModal/rdv-status-update.story-defaults'
 import { ActivitesListPageData } from './getActivitesListPageData'
 import MesActivitesListePage from './MesActivitesListePage'
 import {
@@ -25,6 +26,12 @@ const TemplateEmpty = () => (
 const meta: Meta<typeof MesActivitesListePage> = {
   title: 'Activités/Liste/Cards',
   component: MesActivitesListePage,
+  decorators: [
+    (Story) => {
+      provideRdvStatusUpdateDefaults()
+      return <Story />
+    },
+  ],
 }
 
 export default meta
