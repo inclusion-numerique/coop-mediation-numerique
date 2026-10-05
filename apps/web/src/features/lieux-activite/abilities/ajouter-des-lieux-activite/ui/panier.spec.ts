@@ -1,3 +1,7 @@
+import {
+  AdresseIndisponible,
+  SERVICE_ADRESSE_INDISPONIBLE,
+} from '@app/web/external-apis/apiAdresse'
 import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '../implementation/searchLieuActiviteCombined'
 import {
@@ -167,6 +171,14 @@ describe('le lieu choisi rejoint la sélection', () => {
     expect(!issue.success && issue.error).toContain(
       'introuvable dans la Base Adresse Nationale',
     )
+  })
+
+  it('sauf si le service d’adresse est indisponible', async () => {
+    geocodage.mockRejectedValue(new AdresseIndisponible('HTTP 503'))
+
+    const issue = await selectionner([], resultat())
+
+    expect(!issue.success && issue.error).toBe(SERVICE_ADRESSE_INDISPONIBLE)
   })
 
   it('sauf s’il fait déjà partie de la sélection', async () => {
