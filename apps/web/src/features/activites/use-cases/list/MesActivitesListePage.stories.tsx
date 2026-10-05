@@ -1,3 +1,7 @@
+import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
+import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
+import { provide } from '@app/web/libs/injection/client'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import ActivitesListeLayout from './components/ActivitesListeLayout'
@@ -29,6 +33,12 @@ const meta: Meta<typeof MesActivitesListePage> = {
   decorators: [
     (Story) => {
       provideRdvStatusUpdateDefaults()
+      provide(AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY, async () =>
+        ServerActionSuccess(),
+      )
+      provide(RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY, async () =>
+        ServerActionSuccess({ derive: 0, synchroniseeLe: null }),
+      )
       return <Story />
     },
   ],

@@ -1,8 +1,9 @@
 'use client'
 
-import { afficherRdvsDansActivitesAction } from '@app/web/app/_actions/rdvsp/afficher-rdvs-dans-activites.action'
-import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
+import { inject } from '@app/web/libs/injection/client'
 import { Spinner } from '@app/web/ui/Spinner'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
@@ -38,7 +39,7 @@ const UpdateIncludeRdvsInActivitesList = ({
     rattrapageLance.current = true
     setSynchronisationEnCours(true)
 
-    rattraperRdvsSansWebhookAction().then((resultat) => {
+    inject(RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY)().then((resultat) => {
       setSynchronisationEnCours(false)
 
       if (resultat.success && resultat.data.derive > 0) {
@@ -50,7 +51,9 @@ const UpdateIncludeRdvsInActivitesList = ({
   const onChange = async (option: ChangeEvent<HTMLInputElement>) => {
     setValue(option.target.checked)
 
-    await afficherRdvsDansActivitesAction({ afficher: option.target.checked })
+    await inject(AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY)({
+      afficher: option.target.checked,
+    })
 
     // Les filtres portés par l'URL cèdent la main au réglage : les garder ferait
     // dépendre l'affichage de deux sources qui peuvent se contredire.
