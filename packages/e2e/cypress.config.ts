@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import cypressSplit from 'cypress-split'
 import { cypressProjectId } from '../config/src/config'
 import { taskManager } from './cypress/support/taskManager'
 
@@ -9,6 +10,10 @@ export default defineConfig({
       framework: 'next',
       bundler: 'webpack',
     },
+    setupNodeEvents(on, config) {
+      cypressSplit(on, config)
+      return config
+    },
   },
   video: true,
   videoCompression: true,
@@ -16,7 +21,7 @@ export default defineConfig({
   viewportHeight: 768,
 
   e2e: {
-    setupNodeEvents(on) {
+    setupNodeEvents(on, config) {
       on('task', taskManager)
       on('before:browser:launch', (browser, launchOptions) => {
         if (browser.family === 'firefox') {
@@ -31,6 +36,8 @@ export default defineConfig({
 
         return launchOptions
       })
+      cypressSplit(on, config)
+      return config
     },
     env: {},
     baseUrl:
