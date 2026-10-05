@@ -14,6 +14,11 @@ const dotenvFile = path.resolve(
   '../../../.env',
 )
 
+const racineDuDepot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../..',
+)
+
 export const testDotenvConfig = () => {
   dotenv.config({ path: dotenvFile })
 }
@@ -117,8 +122,13 @@ export const packageJestConfig = ({
       },
     },
     // Coverage configuration
+    coverageProvider: 'v8',
     coverageDirectory: '<rootDir>/coverage',
-    coverageReporters: ['json', 'lcov', 'text-summary'],
+    coverageReporters: [
+      'json',
+      ['lcov', { projectRoot: racineDuDepot }],
+      'text-summary',
+    ],
     collectCoverageFrom: [
       'src/**/*.{ts,tsx}',
       '!src/**/*.spec.{ts,tsx}',
