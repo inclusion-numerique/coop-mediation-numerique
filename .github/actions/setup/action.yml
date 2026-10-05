@@ -1,6 +1,11 @@
 name: 'Setup Node & pnpm'
 description: 'Install pnpm, Node.js and dependencies'
 
+inputs:
+  cypress:
+    description: 'Also install the Cypress binary'
+    default: 'false'
+
 runs:
   using: 'composite'
   steps:
@@ -18,3 +23,13 @@ runs:
       shell: bash
       env:
         CYPRESS_INSTALL_BINARY: '0'
+    - name: Cache Cypress binary
+      if: inputs.cypress == 'true'
+      uses: actions/cache@v6
+      with:
+        path: ~/.cache/Cypress
+        key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+    - name: Install Cypress binary
+      if: inputs.cypress == 'true'
+      run: pnpm -F @app/e2e exec cypress install
+      shell: bash

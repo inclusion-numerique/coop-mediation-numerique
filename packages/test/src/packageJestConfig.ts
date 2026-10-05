@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as dotenv from 'dotenv'
@@ -18,6 +19,14 @@ const racineDuDepot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../../..',
 )
+
+const rapportJUnit = [
+  createRequire(import.meta.url).resolve('jest-junit'),
+  {
+    outputDirectory: path.join(racineDuDepot, 'junit'),
+    uniqueOutputName: 'true',
+  },
+] as const
 
 export const testDotenvConfig = () => {
   dotenv.config({ path: dotenvFile })
@@ -124,6 +133,7 @@ export const packageJestConfig = ({
     // Coverage configuration
     coverageProvider: 'v8',
     coverageDirectory: '<rootDir>/coverage',
+    reporters: process.env.CI ? ['default', rapportJUnit] : ['default'],
     coverageReporters: [
       'json',
       ['lcov', { projectRoot: racineDuDepot }],
