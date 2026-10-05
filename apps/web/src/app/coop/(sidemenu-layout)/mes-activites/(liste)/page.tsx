@@ -1,3 +1,4 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
@@ -12,6 +13,7 @@ import { getActivitesListPageData } from '@app/web/features/activites/use-cases/
 import { getActivitesTagsOptions } from '@app/web/features/activites/use-cases/list/getActivitesTagsOptions'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
@@ -73,38 +75,43 @@ const MesActivitesPage = async ({
 
   return (
     <ClientBinder
-      bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
-      to={creerActiviteDepuisRdvAction}
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
     >
       <ClientBinder
-        bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
-        to={mettreAJourStatutRdvAction}
+        bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+        to={creerActiviteDepuisRdvAction}
       >
-        <ActivitesListeLayout
-          vue="liste"
-          href="/coop/mes-activites"
-          subtitle={
-            isCoordinateur(user) && isMediateur(user)
-              ? 'Médiation numérique'
-              : undefined
-          }
+        <ClientBinder
+          bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+          to={mettreAJourStatutRdvAction}
         >
-          <MesActivitesListeHeader
-            searchResultMatchesCount={searchResultMatchesCount}
-            defaultFilters={searchParams}
-            initialMediateursOptions={initialMediateursOptions}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
-            structuresEmployeusesOptions={structuresEmployeusesOptions}
-            tagsOptions={tagsOptions}
-            activiteDates={datesForFilters}
-            enableRdvsFilter={enableRdvsFilter}
-            hasCrasV1={hasCrasV1.hasCrasV1}
-            activiteSourceOptions={activiteSourceOptions}
-          />
-          <MesActivitesListePage data={data} />
-        </ActivitesListeLayout>
+          <ActivitesListeLayout
+            vue="liste"
+            href="/coop/mes-activites"
+            subtitle={
+              isCoordinateur(user) && isMediateur(user)
+                ? 'Médiation numérique'
+                : undefined
+            }
+          >
+            <MesActivitesListeHeader
+              searchResultMatchesCount={searchResultMatchesCount}
+              defaultFilters={searchParams}
+              initialMediateursOptions={initialMediateursOptions}
+              communesOptions={communesOptions}
+              departementsOptions={departementsOptions}
+              lieuxActiviteOptions={lieuxActiviteOptions}
+              structuresEmployeusesOptions={structuresEmployeusesOptions}
+              tagsOptions={tagsOptions}
+              activiteDates={datesForFilters}
+              enableRdvsFilter={enableRdvsFilter}
+              hasCrasV1={hasCrasV1.hasCrasV1}
+              activiteSourceOptions={activiteSourceOptions}
+            />
+            <MesActivitesListePage data={data} />
+          </ActivitesListeLayout>
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )
