@@ -110,12 +110,15 @@ jobs:
   integration-tests:
     name: Integration tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     services:
       postgres:
-        image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
         credentials:
-          username: nologin
-          password: ${{ secrets.SCW_SECRET_KEY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           POSTGRES_USER: postgres
         ports:
@@ -168,12 +171,15 @@ jobs:
   cucumber:
     name: Cucumber
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     services:
       postgres:
-        image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
         credentials:
-          username: nologin
-          password: ${{ secrets.SCW_SECRET_KEY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           POSTGRES_USER: postgres
         ports:
@@ -280,16 +286,19 @@ jobs:
   e2e:
     name: E2E ${{ matrix.conteneur }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     strategy:
       fail-fast: false
       matrix:
         conteneur: [0, 1, 2]
     services:
       postgres:
-        image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
         credentials:
-          username: nologin
-          password: ${{ secrets.SCW_SECRET_KEY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           POSTGRES_USER: postgres
         ports:
