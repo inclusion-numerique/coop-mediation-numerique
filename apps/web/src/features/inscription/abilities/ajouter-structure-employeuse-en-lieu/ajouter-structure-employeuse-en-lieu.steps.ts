@@ -1,7 +1,10 @@
 import assert from 'node:assert'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
-import type { GeocoderLAdresse } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
+import type {
+  Geocodage,
+  GeocoderLAdresse,
+} from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
 import type { UserId } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -31,8 +34,13 @@ const ADRESSE_RECONNUE: AdresseBanData = {
   longitude: 2.331_08,
 }
 
-const banReconnait: { reponse: AdresseBanData | null } = {
-  reponse: ADRESSE_RECONNUE,
+const ADRESSE_RECONNUE_PAR_LA_BAN: Geocodage = {
+  _tag: 'AdresseReconnue',
+  adresse: ADRESSE_RECONNUE,
+}
+
+const banReconnait: { reponse: Geocodage } = {
+  reponse: ADRESSE_RECONNUE_PAR_LA_BAN,
 }
 
 const geocoderLAdresse: GeocoderLAdresse = async () => banReconnait.reponse
@@ -46,7 +54,7 @@ let nomCommuneEmployeuse = ''
 // ferait passer une assertion du suivant.
 Before(() => {
   collegueUserId = null
-  banReconnait.reponse = ADRESSE_RECONNUE
+  banReconnait.reponse = ADRESSE_RECONNUE_PAR_LA_BAN
   refus.tag = null
 })
 
@@ -283,7 +291,11 @@ Then('ce lieu d’activité est inscrit au registre', async () => {
 })
 
 Given('la Base Adresse Nationale ne reconnaît pas son adresse', () => {
-  banReconnait.reponse = null
+  banReconnait.reponse = { _tag: 'AdresseInconnue' }
+})
+
+Given('le service d’adresse est indisponible', () => {
+  banReconnait.reponse = { _tag: 'ServiceIndisponible' }
 })
 
 When(
@@ -297,6 +309,10 @@ When(
 
 Then('la déclaration m’est refusée faute d’adresse reconnue', () => {
   assert.strictEqual(refus.tag, 'AdresseNonReconnue')
+})
+
+Then('la déclaration m’est refusée faute de service d’adresse', () => {
+  assert.strictEqual(refus.tag, 'ServiceAdresseIndisponible')
 })
 
 Then('aucun lieu d’activité n’a été créé', async () => {
