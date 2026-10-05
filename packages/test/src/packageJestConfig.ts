@@ -22,7 +22,10 @@ const racineDuDepot = path.resolve(
 
 const rapportJUnit = [
   createRequire(import.meta.url).resolve('jest-junit'),
-  { outputDirectory: '<rootDir>/junit' },
+  {
+    outputDirectory: path.join(racineDuDepot, 'junit'),
+    uniqueOutputName: 'true',
+  },
 ] as const
 
 export const testDotenvConfig = () => {

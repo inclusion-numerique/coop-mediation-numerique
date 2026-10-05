@@ -74,9 +74,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: |
-            apps/*/junit/*.xml
-            packages/*/junit/*.xml
+          report_paths: 'junit/*.xml'
           check_name: 'Packages tests summary'
           annotate_only: true
 
@@ -103,7 +101,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'apps/web/junit/*.xml'
+          report_paths: 'junit/*.xml'
           check_name: 'Unit tests summary'
           annotate_only: true
 
@@ -164,7 +162,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'apps/web/junit/*.xml'
+          report_paths: 'junit/*.xml'
           check_name: 'Integration tests summary'
           annotate_only: true
 
