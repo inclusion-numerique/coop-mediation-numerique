@@ -11,3 +11,5 @@ import type { ProvidePair } from 'piqure'
 export type InjectionKey<T> = ProvidePair<T>[0]
 
 export type Provide = <T>(key: InjectionKey<T>, injected: T) => void
+
+export type ProvideLazy = <T>(key: InjectionKey<T>, factory: () => T) => void
