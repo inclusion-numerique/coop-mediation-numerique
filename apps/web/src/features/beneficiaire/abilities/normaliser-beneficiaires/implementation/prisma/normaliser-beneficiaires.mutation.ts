@@ -1,3 +1,4 @@
+import { siIndisponible } from '@app/web/external-apis/apiAdresse'
 import { scoredCommuneFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import {
   beneficiaireFromDomain,
@@ -5,6 +6,7 @@ import {
 } from '@app/web/features/beneficiaire/db'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { prismaClient } from '@app/web/prismaClient'
+import * as Sentry from '@sentry/nextjs'
 import { chunk } from 'lodash-es'
 import type {
   NormaliserBeneficiaireChange,
@@ -130,7 +132,7 @@ const withGeocodedCommune = async (
   // Un échec BAN (réseau, quota) ne doit pas avorter la normalisation : on
   // préserve alors le partiel tel quel.
   const scored = await scoredCommuneFieldsFromAddress(normalized.adresse).catch(
-    () => null,
+    siIndisponible(null, (erreur) => Sentry.captureException?.(erreur)),
   )
   return scored && scored.score > COMMUNE_SCORE_MIN
     ? {

@@ -1,4 +1,7 @@
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
+import {
+  AdresseIndisponible,
+  searchAdresse,
+} from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import {
@@ -11,6 +14,7 @@ import {
 // Géocodage neutralisé : `searchAdresse -> null` force la branche « api-entreprise » et rend le
 // test déterministe et hors-ligne.
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
+  ...jest.requireActual('@app/web/external-apis/apiAdresse'),
   searchAdresse: jest.fn(),
 }))
 const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
@@ -91,6 +95,23 @@ describe('resolveAdresseMain — codes non conformes des sources amont', () => {
     if (state.adresseId) {
       await prismaClient.adresseMain.delete({ where: { id: state.adresseId } })
     }
+  })
+
+  it('se replie sur l’adresse de la source quand le service d’adresse est indisponible', async () => {
+    mockedSearchAdresse.mockRejectedValueOnce(
+      new AdresseIndisponible('HTTP 503'),
+    )
+
+    const resolved = await resolveAdresseMain({
+      adresse: '1 rue de la Paix',
+      codePostal: '75001',
+      codeInsee: '75101',
+      commune: COMMUNE_DE_TEST,
+    })
+
+    expect(resolved.source).toBe('api-entreprise')
+    expect(resolved.nomVoie).toBe('1 rue de la Paix')
+    expect(resolved.codeBan).toBeNull()
   })
 
   it('vide le code postal `[NON-DIFFUSIBLE]` en conservant commune et code INSEE', async () => {

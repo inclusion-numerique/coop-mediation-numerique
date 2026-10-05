@@ -1,3 +1,7 @@
+import {
+  type AdresseIndisponible,
+  siIndisponible,
+} from '@app/web/external-apis/apiAdresse'
 import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/db/duplicate-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
@@ -13,12 +17,16 @@ import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,
   ExternalUserToMerge,
   MergedBeneficiaire,
 } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
+
+const signalerIndisponibilite = (erreur: AdresseIndisponible) =>
+  Sentry.captureException?.(erreur)
 
 const mergedBeneficiaireSelect = {
   id: true,
@@ -120,7 +128,9 @@ const mergeUpdateData = async (
 ): Promise<Prisma.BeneficiaireUncheckedUpdateInput> => {
   const communeFields =
     usager.adresse && !existingCommune(existing)
-      ? await communeFieldsFromAddress(usager.adresse)
+      ? await communeFieldsFromAddress(usager.adresse).catch(
+          siIndisponible(null, signalerIndisponibilite),
+        )
       : null
 
   return {
@@ -172,7 +182,9 @@ const createBeneficiaire = async (
 ): Promise<MergedBeneficiaire> => {
   identiteRequise(usager)
 
-  const communeFields = await communeFieldsFromAddress(usager.adresse)
+  const communeFields = await communeFieldsFromAddress(usager.adresse).catch(
+    siIndisponible(null, signalerIndisponibilite),
+  )
 
   return prismaClient.beneficiaire.create({
     data: {
