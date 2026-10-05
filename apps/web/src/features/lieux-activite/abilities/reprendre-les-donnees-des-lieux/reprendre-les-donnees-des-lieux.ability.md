@@ -362,6 +362,7 @@ base.
 ### Scenario: L'adresse est réalignée sur celle de la Base Adresse Nationale
 
 * Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And il est inscrit au registre
 * When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "adresse"
 * And l’adresse du lieu est celle que la Base Adresse Nationale rend
@@ -472,6 +473,7 @@ base.
 ### Scenario: Le lieu sans adresse ni accompagnement est supprimé
 
 * Given un lieu qui n’a accompagné personne
+* And il est inscrit au registre
 * And la Base Adresse Nationale ne reconnaît pas la voie
 * When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "adresse"

@@ -1021,6 +1021,12 @@ Given(
   },
 )
 
+Given('il est inscrit au registre', async () => {
+  await prismaClient.lieuInclusionRegistreMain.create({
+    data: { nom: 'Lieu à reprendre', structureCoopId: lieuSeme() },
+  })
+})
+
 Given('il est inscrit au registre avec les mêmes horaires', async () => {
   await prismaClient.lieuInclusionRegistreMain.create({
     data: {
