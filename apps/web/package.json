@@ -79,7 +79,7 @@
     "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
     "exceljs": "^4.4.0",
-    "framer-motion": "^12.43.0",
+    "framer-motion": "^13.4.0",
     "html-minifier": "^4.0.0",
     "html-to-text": "^10.0.1",
     "js-cookie": "^3.0.8",
