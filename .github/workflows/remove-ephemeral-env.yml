@@ -6,7 +6,6 @@ on:
     types:
       - closed
     branches:
-      - 'dev'
       - 'main'
   delete:
   workflow_dispatch:
@@ -45,7 +44,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          ref: dev
+          ref: main
       - name: Setup
         uses: ./.github/actions/setup
         with:

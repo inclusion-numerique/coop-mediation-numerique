@@ -3,14 +3,19 @@ name: Deploy
 
 on:
   workflow_call:
+    inputs:
+      environnement:
+        description: 'Branch whose environment to deploy, instead of the pushed branch'
+        type: string
+        default: ''
 
 concurrency:
-  group: deploy-${{ github.ref_name }}
+  group: deploy-${{ inputs.environnement || github.ref_name }}
   cancel-in-progress: false
 
 env:
   WEB_APP_DOCKER_REGISTRY: rg.fr-par.scw.cloud/coop-mediation-numerique-web-app
-  BRANCHE: ${{ github.ref_name }}
+  BRANCHE: ${{ inputs.environnement || github.ref_name }}
 
 jobs:
   build:
@@ -71,7 +76,7 @@ jobs:
       name: ${{ needs.build.outputs.environnement }}
       url: ${{ steps.status.outputs.url }}
     env:
-      CDK_FORCE_BRANCH: ${{ github.ref_name }}
+      CDK_FORCE_BRANCH: ${{ inputs.environnement || github.ref_name }}
       NAMESPACE: ${{ needs.build.outputs.namespace }}
       WEB_CONTAINER_IMAGE: ${{ needs.build.outputs.image }}
     steps:
