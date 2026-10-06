@@ -655,7 +655,7 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
 
 Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
-- **`Feature branch`** (push sur une branche prefixee, cf. Branches) : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `main`.
+- **`CI`** (push sur une branche prefixee, cf. Branches, et sur `main`) : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `main`. Sur `main`, ces checks tiennent a jour la couverture de reference (Coveralls) et les captures de reference de Chromatic ; `Dependency review` n'y tourne pas.
 - **`Preview`** (evenements de PR) : environnement de preview a la demande, pilote par le label `preview`.
   - Poser le label `preview` sur la PR deploie l'environnement de la branche ; chaque push sur la PR le redeploie tant que le label est present.
   - Retirer le label, ou fermer ou fusionner la PR, detruit l'environnement.
