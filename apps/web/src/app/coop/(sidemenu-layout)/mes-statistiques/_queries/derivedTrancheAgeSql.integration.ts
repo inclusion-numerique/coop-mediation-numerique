@@ -82,7 +82,7 @@ describe('derivedTrancheAgeSql', () => {
   test('mirrors the TS derivation against a real Postgres', async () => {
     const valuesRows = cases.map(
       (testCase, index) =>
-        Prisma.sql`(${index}, ${testCase.annee}::int, ${testCase.stored}::text)`,
+        Prisma.sql`(${index}::int, ${testCase.annee}::int, ${testCase.stored}::text)`,
     )
 
     const rows = await prismaClient.$queryRaw<
