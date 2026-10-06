@@ -4,6 +4,7 @@ import {
   fixtureCrasIndividuels,
 } from '@app/fixtures/activites'
 import { fixtureBeneficiaires } from '@app/fixtures/beneficiaires'
+import { enSerie } from '@app/fixtures/enSerie'
 import {
   equipeCoordonnee,
   equipeCordonneeIds,
@@ -98,19 +99,17 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     ...rdvServicePublicStagingUsers,
   ])
 
-  await Promise.all(
-    fixtureBeneficiaires.map((beneficiaire) =>
-      transaction.beneficiaire
-        .upsert({
-          where: { id: beneficiaire.id },
-          create: beneficiaire,
-          update: beneficiaire,
-        })
-        .catch((error) => {
-          output.error('Error upserting beneficiaire fixture', beneficiaire)
-          throw error
-        }),
-    ),
+  await enSerie(fixtureBeneficiaires, (beneficiaire) =>
+    transaction.beneficiaire
+      .upsert({
+        where: { id: beneficiaire.id },
+        create: beneficiaire,
+        update: beneficiaire,
+      })
+      .catch((error) => {
+        output.error('Error upserting beneficiaire fixture', beneficiaire)
+        throw error
+      }),
   )
 
   await upsertUserFixtures(transaction)('equipe user', equipeCoordonnee)

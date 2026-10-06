@@ -1,3 +1,4 @@
+import { enSerie } from '@app/fixtures/enSerie'
 import type { Prisma } from '@prisma/client'
 
 export type MediateurCoordonneFixture = {
@@ -10,8 +11,9 @@ export type MediateurCoordonneFixture = {
 export const upsertMediateurCoordonneFixtures =
   (transaction: Prisma.TransactionClient) =>
   async (coordinations: MediateurCoordonneFixture[]) => {
-    await Promise.all(
-      coordinations.map(({ id, coordinateurId, mediateurId, suppression }) =>
+    await enSerie(
+      coordinations,
+      ({ id, coordinateurId, mediateurId, suppression }) =>
         transaction.mediateurCoordonne.upsert({
           where: { id },
           create: {
@@ -24,6 +26,5 @@ export const upsertMediateurCoordonneFixtures =
             suppression,
           },
         }),
-      ),
     )
   }
