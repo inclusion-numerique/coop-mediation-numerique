@@ -1,6 +1,6 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
-import { Prisma } from '@prisma/client'
 import { fixtureCras } from './activites'
 import { fixtureBeneficiaires } from './beneficiaires'
 

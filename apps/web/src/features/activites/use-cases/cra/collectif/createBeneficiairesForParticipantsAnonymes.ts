@@ -8,7 +8,7 @@ import type {
   Prisma,
   StatutSocial,
   TrancheAge,
-} from '@prisma/client'
+} from '@app/web/generated/prisma/client'
 import { shuffle } from 'lodash-es' // Replace the 5 last digits of the root uuid with the index.toString(10)
 import { v4 } from 'uuid'
 

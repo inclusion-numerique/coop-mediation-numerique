@@ -1,5 +1,6 @@
+import { enSerie } from '@app/fixtures/enSerie'
 import { output } from '@app/fixtures/output'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * Upsert des utilisateurs de fixtures, tolérant aux comptes déjà présents.
@@ -88,12 +89,10 @@ export const upsertUserFixtures =
   async (libelle: string, fixtures: UserFixture[]) => {
     const idsExistants = await idsExistantsParEmail(transaction, fixtures)
 
-    await Promise.all(
-      fixtures.map((user) =>
-        upsertUserFixture(transaction, libelle)(
-          user,
-          idsExistants.get(user.email),
-        ),
+    await enSerie(fixtures, (user) =>
+      upsertUserFixture(transaction, libelle)(
+        user,
+        idsExistants.get(user.email),
       ),
     )
   }

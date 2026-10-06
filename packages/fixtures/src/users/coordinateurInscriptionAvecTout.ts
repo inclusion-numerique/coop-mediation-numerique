@@ -1,5 +1,5 @@
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { givenUser } from '../givenUser'
 import { centreSocial, mediateque, structureEmployeuse } from '../structures'
 

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * Créé un filtre sur les mediateurs pour les activites.

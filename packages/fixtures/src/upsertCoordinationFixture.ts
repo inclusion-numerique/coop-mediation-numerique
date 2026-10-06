@@ -1,4 +1,5 @@
-import type { Prisma } from '@prisma/client'
+import { enSerie } from '@app/fixtures/enSerie'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { mergeUuids } from './mergeUuids'
 
 export type Coordination = {
@@ -9,19 +10,15 @@ export type Coordination = {
 export const upsertCoordinationFixtures =
   (transaction: Prisma.TransactionClient) =>
   async (coordinations: Coordination[]) => {
-    await Promise.all(
-      coordinations.map(async ({ coordinateurId, mediateurIds }) =>
-        Promise.all(
-          mediateurIds.map((mediateurId) => {
-            const id = mergeUuids(coordinateurId, mediateurId)
+    await enSerie(coordinations, async ({ coordinateurId, mediateurIds }) =>
+      enSerie(mediateurIds, (mediateurId) => {
+        const id = mergeUuids(coordinateurId, mediateurId)
 
-            return transaction.mediateurCoordonne.upsert({
-              where: { id },
-              create: { id, coordinateurId, mediateurId },
-              update: { id, coordinateurId, mediateurId },
-            })
-          }),
-        ),
-      ),
+        return transaction.mediateurCoordonne.upsert({
+          where: { id },
+          create: { id, coordinateurId, mediateurId },
+          update: { id, coordinateurId, mediateurId },
+        })
+      }),
     )
   }

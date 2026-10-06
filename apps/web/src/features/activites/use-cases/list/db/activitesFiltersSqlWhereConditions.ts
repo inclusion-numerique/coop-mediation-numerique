@@ -1,9 +1,9 @@
 import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { Prisma, Thematique } from '@app/web/generated/prisma/client'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
-import { Prisma, Thematique } from '@prisma/client'
-import type { Sql } from '@prisma/client/runtime/library'
+import type { Sql } from '@prisma/client/runtime/client'
 import type {
   ActivitesFilters,
   RdvStatusFilterValue,

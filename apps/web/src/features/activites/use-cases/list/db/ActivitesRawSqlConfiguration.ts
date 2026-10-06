@@ -1,6 +1,6 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import type { RawDataTableSqlConfiguration } from '@app/web/libs/data-table/RawDataTableSqlConfiguration'
 import { SortDirection } from '@app/web/libs/data-table/SortLink'
-import { Prisma } from '@prisma/client'
 import type { ActivitesDataTableConfiguration } from './ActivitesDataTableConfiguration'
 
 export const ActivitesRawSqlConfiguration = {

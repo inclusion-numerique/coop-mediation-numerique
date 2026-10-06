@@ -1,5 +1,5 @@
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { snakeCase } from 'change-case'
 
 export const createEnumCountSelect = <T extends string>({

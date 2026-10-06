@@ -1,7 +1,8 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  moduleFormat    = "cjs"
   previewFeatures = ["fullTextSearchPostgres", "nativeDistinct", "relationJoins"]
-  binaryTargets   = ["native", "debian-openssl-1.1.x"]
 }
 
 generator erd {
@@ -12,7 +13,6 @@ generator erd {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
   // `main` (référence Entrepôt) est possédé par le Dataspace et géré par Flyway, JAMAIS par nos
   // migrations : il est déclaré ici uniquement pour lire/joindre en cross-schéma depuis le client
   // unique. Les tables `main.*` sont posées par une migration baseline `resolve --applied` (ADR-002).

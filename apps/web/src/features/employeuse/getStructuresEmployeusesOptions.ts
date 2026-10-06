@@ -1,7 +1,7 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 
 // Option d'employeuse pour les filtres. `id` = int `main.structure_administrative.id` STRINGIFIÉ
 // (ADR-002 périmètre élargi) : conservé en `string` pour laisser la cascade UI (comboboxes,

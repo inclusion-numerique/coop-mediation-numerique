@@ -3,7 +3,7 @@ import {
   lieuCoopToDomain,
   lieuVersRegistre,
 } from '@app/web/features/lieux-activite/implementation'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 type ContactDuRegistre = ReturnType<typeof lieuVersRegistre>['contact']
 

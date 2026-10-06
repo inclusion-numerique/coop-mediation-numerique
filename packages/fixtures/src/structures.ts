@@ -1,5 +1,6 @@
+import { enSerie } from '@app/fixtures/enSerie'
 import { givenLieuInclusion } from '@app/fixtures/givenLieuInclusion'
-import { type Prisma, Typologie } from '@prisma/client'
+import { type Prisma, Typologie } from '@app/web/generated/prisma/browser'
 
 export const structureEmployeuse = givenLieuInclusion({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
@@ -153,36 +154,30 @@ export const seedStructures = async (transaction: Prisma.TransactionClient) => {
   // Les employeuses (structure_administrative) et les lieux (structures) sont
   // indépendants — pas de lien FK. Le double-rôle (structureEmployeuse, mediateque)
   // partage seulement l'id, comme la migration des données legacy.
-  await Promise.all(
-    fixtureStructuresAdministratives.map((administrative) =>
-      seedStructureAdministrative(transaction, administrative),
-    ),
+  await enSerie(fixtureStructuresAdministratives, (administrative) =>
+    seedStructureAdministrative(transaction, administrative),
   )
 
   // SA main liées (ADR-002 périmètre élargi) : idempotent par id fixe. Le schéma `main` n'est pas
   // truncaté par deleteAll -> upsert.
-  await Promise.all(
-    fixtureStructuresAdministrativesMain.map((main) =>
-      transaction.structureAdministrativeMain.upsert({
-        where: { structureCoopId: main.structureCoopId },
-        create: main.create,
-        update: main.create,
-        select: { id: true },
-      }),
-    ),
+  await enSerie(fixtureStructuresAdministrativesMain, (main) =>
+    transaction.structureAdministrativeMain.upsert({
+      where: { structureCoopId: main.structureCoopId },
+      create: main.create,
+      update: main.create,
+      select: { id: true },
+    }),
   )
 
-  return Promise.all(
-    fixtureStructures.map((structure) =>
-      transaction.lieuInclusion.upsert({
-        where: { id: structure.id },
-        create: structure,
-        update: structure,
-        select: {
-          id: true,
-          nom: true,
-        },
-      }),
-    ),
+  return enSerie(fixtureStructures, (structure) =>
+    transaction.lieuInclusion.upsert({
+      where: { id: structure.id },
+      create: structure,
+      update: structure,
+      select: {
+        id: true,
+        nom: true,
+      },
+    }),
   )
 }

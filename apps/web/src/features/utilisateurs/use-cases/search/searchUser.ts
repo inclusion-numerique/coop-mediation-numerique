@@ -1,3 +1,4 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -6,7 +7,6 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 
 type SearchUserOptions = {
   searchParams?: { recherche?: string; page?: string; lignes?: string }

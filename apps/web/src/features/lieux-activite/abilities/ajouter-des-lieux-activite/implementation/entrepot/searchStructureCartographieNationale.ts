@@ -1,5 +1,5 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import { Prisma } from '@app/web/generated/entrepot'
+import { Prisma } from '@app/web/generated/entrepot/client'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 
 type SearchStructureCartographieNationaleOptions = {

@@ -1,6 +1,6 @@
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { Prisma, Thematique } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma, Thematique } from '@prisma/client'
 import { pascalCase } from 'change-case'
 
 export type ThematiqueCount = {

@@ -15,8 +15,8 @@ import {
 } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import type {

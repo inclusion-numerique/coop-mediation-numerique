@@ -1,5 +1,5 @@
+import type { Prisma, UserRole } from '@app/web/generated/prisma/client'
 import { createSlug } from '@app/web/utils/createSlug'
-import type { Prisma, UserRole } from '@prisma/client'
 import { v4 } from 'uuid'
 
 export const givenUser = <

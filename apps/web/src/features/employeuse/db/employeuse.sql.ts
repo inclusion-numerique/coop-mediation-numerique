@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * Port SQL de la feature : l'employeuse courante d'un utilisateur, jointe à une

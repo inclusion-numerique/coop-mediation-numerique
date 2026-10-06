@@ -1,0 +1,80 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Paris
+    cooldown:
+      default-days: 15
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: chore(deps)
+    groups:
+      securite:
+        applies-to: security-updates
+        patterns:
+          - '*'
+      mineures-et-correctives:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: dotenv
+        update-types:
+          - version-update:semver-major
+      - dependency-name: mongodb
+        update-types:
+          - version-update:semver-major
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
+      - dependency-name: postcss-nested
+        update-types:
+          - version-update:semver-major
+      - dependency-name: cdktf
+      - dependency-name: cdktf-cli
+      - dependency-name: '@cdktf/*'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Paris
+    cooldown:
+      default-days: 15
+    commit-message:
+      prefix: chore(ci)
+    groups:
+      actions:
+        patterns:
+          - '*'
+
+  - package-ecosystem: docker
+    directories:
+      - /docker/web
+      - /docker/postgres
+      - /docker/postgres-ci
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Paris
+    cooldown:
+      default-days: 15
+    commit-message:
+      prefix: chore(docker)
+    groups:
+      images:
+        patterns:
+          - '*'
+    ignore:
+      - dependency-name: node
+        update-types:
+          - version-update:semver-major

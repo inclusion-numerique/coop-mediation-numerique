@@ -28,7 +28,6 @@ trap 'rm -rf "$TMP"' EXIT
 cat > "$TMP/pull.prisma" <<'PRISMA'
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
   schemas  = ["main", "reference"]
 }
 PRISMA

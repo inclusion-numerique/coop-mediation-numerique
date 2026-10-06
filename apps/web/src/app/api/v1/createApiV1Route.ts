@@ -5,7 +5,7 @@ import {
 } from '@app/web/app/api/v1/ApiV1QueryParams'
 import { getApiRequestParams } from '@app/web/app/api/v1/getApiRequestParams'
 import { isAuthenticatedApiClientRequest } from '@app/web/app/api/v1/isAuthenticatedApiClientRequest'
-import type { ApiClientScope } from '@prisma/client'
+import type { ApiClientScope } from '@app/web/generated/prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import { type NextRequest, NextResponse } from 'next/server'
 import { ZodError, infer as ZodInfer } from 'zod'

@@ -42,7 +42,7 @@ MIGRATIONS_MAIN=(
 # Sortie 0 = la migration doit être marquée appliquée.
 baseline_necessaire() {
   local migration="$1" sentinelle="$2"
-  (cd "$WEB_DIR" && pnpm --silent with-env prisma db execute --schema ./prisma/schema.prisma --stdin) >/dev/null 2>&1 <<SQL
+  (cd "$WEB_DIR" && pnpm --silent with-env prisma db execute --stdin) >/dev/null 2>&1 <<SQL
 DO \$\$
 DECLARE
   -- L'historique vit dans \`coop\` (déplacé par move-prisma-migrations-to-coop.sql), dans \`public\`

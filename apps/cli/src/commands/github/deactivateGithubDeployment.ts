@@ -16,7 +16,7 @@ export const deactivateGithubDeployment = new Command()
       environment,
     })
 
-    const deploymentIds = deployments.map(({ id }) => id)
+    const deploymentIds = deployments.map(({ id }) => Number(id))
 
     output(
       `Found ${deploymentIds.length} deployment${

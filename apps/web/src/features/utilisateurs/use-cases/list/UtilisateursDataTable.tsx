@@ -1,3 +1,4 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import CopyToClipboardButton from '@app/web/libs/clipboard/CopyToClipboardButton'
 import type {
   DataTableConfiguration,
@@ -12,7 +13,6 @@ import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import { booleanToYesNo } from '@app/web/utils/yesNoBooleanOptions'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { Prisma } from '@prisma/client'
 import { getUserAccountStatusBadge } from './getUserAccountStatusBadge'
 import { UtilisateurForList } from './queryUtilisateursForList'
 

@@ -10,6 +10,12 @@ import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
+import type {
+  Prisma,
+  Genre as PrismaGenre,
+  StatutSocial as PrismaStatutSocial,
+  TrancheAge as PrismaTrancheAge,
+} from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   DEFAULT_PAGE,
@@ -18,12 +24,6 @@ import {
   type Sort,
   type SortDirection,
 } from '@arckit/resultset'
-import type {
-  Prisma,
-  Genre as PrismaGenre,
-  StatutSocial as PrismaStatutSocial,
-  TrancheAge as PrismaTrancheAge,
-} from '@prisma/client'
 import type {
   BeneficiaireListItem,
   BeneficiaireSortField,

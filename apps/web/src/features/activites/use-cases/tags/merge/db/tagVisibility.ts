@@ -1,7 +1,7 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 import {
   Equipe,
   getEquipeCoordinateurIds,

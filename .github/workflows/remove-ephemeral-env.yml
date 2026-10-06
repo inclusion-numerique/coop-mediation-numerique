@@ -1,5 +1,5 @@
 ---
-name: Preview deletion
+name: Remove ephemeral environment
 
 on:
   pull_request:

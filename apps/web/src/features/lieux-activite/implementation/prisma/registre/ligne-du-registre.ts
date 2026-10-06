@@ -10,7 +10,7 @@ import type {
   PublicSpecifiquementAdresseMain,
   ServiceMain,
   TypologieMain,
-} from '@prisma/client'
+} from '@app/web/generated/prisma/client'
 import type {
   DispositifProgrammeNationalCoop,
   FormationLabelCoop,

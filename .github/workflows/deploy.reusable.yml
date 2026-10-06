@@ -2,18 +2,15 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - 'dev'
-      - 'main'
-  workflow_dispatch:
+  workflow_call:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: deploy-${{ github.ref_name }}
   cancel-in-progress: false
 
 env:
   WEB_APP_DOCKER_REGISTRY: rg.fr-par.scw.cloud/coop-mediation-numerique-web-app
+  BRANCHE: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -30,8 +27,6 @@ jobs:
         uses: ./.github/actions/setup
       - name: Compute deployment names
         id: namespace
-        env:
-          BRANCHE: ${{ github.ref_name }}
         run: |
           NAMESPACE="${BRANCHE//\//-}"
           IMAGE_NAME="coop-mediation-numerique-web-$NAMESPACE"
@@ -39,7 +34,7 @@ jobs:
           {
             echo "namespace=$NAMESPACE"
             echo "environnement=$ENVIRONNEMENT"
-            echo "image=$WEB_APP_DOCKER_REGISTRY/$IMAGE_NAME:${{ github.run_number }}"
+            echo "image=$WEB_APP_DOCKER_REGISTRY/$IMAGE_NAME:${{ github.run_id }}-${{ github.run_attempt }}"
           } >> "$GITHUB_OUTPUT"
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
@@ -105,7 +100,7 @@ jobs:
       - name: Create terraform variables file from environment variables
         run: pnpm --silent cli terraform:vars-from-env web
       - name: Migrate coop schema on the Entrepôt (SSH tunnel)
-        if: github.ref_name == 'main'
+        if: env.BRANCHE == 'main'
         run: |
           set -a
           source .env
@@ -131,14 +126,14 @@ jobs:
       - name: Mask env file values
         uses: ./.github/actions/mask-env
       - name: Migrate database
-        if: github.ref_name != 'main'
+        if: env.BRANCHE != 'main'
         run: |
           set -a
           source .env
           set +a
           pnpm --silent -F @app/web db:migrate-deploy
       - name: Load fixtures
-        if: github.ref_name != 'main'
+        if: env.BRANCHE != 'main'
         run: |
           set -a
           source .env

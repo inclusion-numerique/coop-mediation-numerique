@@ -25,7 +25,7 @@ const nextConfig = {
   // `mjml` et ses satellites ne peuvent pas être empaquetés (ils font des `require`
   // dynamiques), et `xlsx` non plus. Ils étaient jusqu'ici poussés dans les `externals` du
   // hook webpack ; `serverExternalPackages` exprime la même chose pour les deux bundlers.
-  serverExternalPackages: ['html-minifier', 'mjml', 'mjml-core', 'xlsx'],
+  serverExternalPackages: ['html-minifier-terser', 'mjml', 'mjml-core', 'xlsx'],
   // This includes files from the monorepo base two directories up
   outputFileTracingRoot: path.join(dirname, '../../'),
   modularizeImports,

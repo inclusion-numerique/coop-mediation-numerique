@@ -1,5 +1,10 @@
 import assert from 'node:assert'
 import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
+import {
+  FraisACharge as FraisAChargeStockee,
+  ModaliteAcces as ModaliteAccesStockee,
+  Service as ServiceStocke,
+} from '@app/web/generated/prisma/browser'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
@@ -7,11 +12,6 @@ import {
   ModaliteAcces,
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import {
-  FraisACharge as FraisAChargeStockee,
-  ModaliteAcces as ModaliteAccesStockee,
-  Service as ServiceStocke,
-} from '@prisma/client'
 import { v4 } from 'uuid'
 
 const semis: {

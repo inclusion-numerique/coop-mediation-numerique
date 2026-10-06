@@ -1,4 +1,4 @@
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import { canHaveAdministationThematiques } from './canHaveAdministrationThematiques'
 
 describe('can have administration thematique is valid', () => {

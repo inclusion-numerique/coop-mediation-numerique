@@ -1,4 +1,4 @@
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import { clearAdministrativeData } from './clearAdministrativeData'
 
 describe('clear administrative data', () => {

@@ -1,4 +1,4 @@
-import type { Activite } from '@prisma/client'
+import type { Activite } from '@app/web/generated/prisma/client'
 
 export const createModifierActiviteLink = (
   { id, type }: Pick<Activite, 'type' | 'id'>,

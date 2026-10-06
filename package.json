@@ -8,7 +8,7 @@
   "engines": {
     "node": "^24.19"
   },
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@12.5.1",
   "scripts": {
     "build": "turbo build",
     "cli": "dotenv -- ./apps/cli/node_modules/.bin/tsx apps/cli/src/index.ts",
@@ -32,7 +32,6 @@
     "docker:stop": "docker compose -f ./docker-compose.dev.yml -p coop down",
     "docker:reset": "pnpm docker:stop && docker volume rm coop_pgdata && pnpm docker:start && pnpm db:init",
     "coverage:merge": "rm -rf coverage/.nyc_output && mkdir -p coverage/.nyc_output && find coverage-reports -name '*.json' -exec cp {} coverage/.nyc_output/ \\; && nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --reporter=html --reporter=text-summary --report-dir=./coverage",
-    "coverage:upload": "cat ./coverage/lcov.info | coveralls",
     "prepare": "husky"
   },
   "optionalDependencies": {
@@ -43,15 +42,14 @@
     "node": "24.19.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.5",
+    "@biomejs/biome": "^2.5.14",
     "@manypkg/cli": "^0.25.1",
-    "coveralls": "^3.1.1",
     "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.1.0",
+    "lint-staged": "^17.5.1",
     "nyc": "^18.0.0",
-    "prettier": "^3.9.6",
-    "turbo": "^2.10.5"
+    "prettier": "^3.9.8",
+    "turbo": "^2.11.2"
   }
 }

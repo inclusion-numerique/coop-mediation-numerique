@@ -1,5 +1,5 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { NiveauAtelier } from '@prisma/client'
+import { NiveauAtelier } from '@app/web/generated/prisma/browser'
 
 export const niveauAtelierLabels: {
   [key in NiveauAtelier]: string

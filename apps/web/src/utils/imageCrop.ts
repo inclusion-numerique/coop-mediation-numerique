@@ -1,4 +1,4 @@
-import { Image } from '@prisma/client'
+import { Image } from '@app/web/generated/prisma/browser'
 
 export type ImageCropInformation = Pick<
   Image,

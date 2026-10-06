@@ -1,4 +1,4 @@
-import type { Beneficiaire as PrismaBeneficiaire } from '@prisma/client'
+import type { Beneficiaire as PrismaBeneficiaire } from '@app/web/generated/prisma/client'
 import { AnneeNaissance } from '../domain/annee-naissance'
 import type {
   Beneficiaire,

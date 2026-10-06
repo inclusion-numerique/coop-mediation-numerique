@@ -100,8 +100,7 @@ CLAUDE.md
 /apps/web/prisma/ERD.svg
 /apps/web/prisma/ERD.pdf
 
-# prisma entrepôt client (generated, regenerate with `pnpm -F web prisma:entrepot:generate`)
-/apps/web/src/generated/entrepot
+/apps/web/src/generated
 
 # workspace scratch (notes de refacto, scripts one-off, artefacts d'outils)
 /refactor/

@@ -1,8 +1,8 @@
 import type { ProfilInscription } from '@app/web/features/inscription/domain'
 import { UserId } from '@app/web/features/inscription/domain'
+import type { Typologie } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Before, setDefaultTimeout } from '@cucumber/cucumber'
-import type { Typologie } from '@prisma/client'
 import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)

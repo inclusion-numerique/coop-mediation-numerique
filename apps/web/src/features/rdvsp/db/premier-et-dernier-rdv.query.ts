@@ -1,6 +1,6 @@
 import { type ActiviteDates } from '@app/web/features/activites/use-cases/list/db/getFirstAndLastActiviteDate'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 
 export const getFirstAndLastRdvDate = async ({
   rdvAccountIds,

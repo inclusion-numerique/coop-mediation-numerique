@@ -1,6 +1,6 @@
 import { type ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/ParticipantsAnonymesCraCollectifValidation'
 import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
-import { Beneficiaire } from '@prisma/client'
+import { Beneficiaire } from '@app/web/generated/prisma/browser'
 
 export const createParticipantsAnonymesForBeneficiaires = <
   T extends Pick<

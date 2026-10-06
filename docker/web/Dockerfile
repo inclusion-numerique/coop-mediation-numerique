@@ -2,10 +2,10 @@ FROM node:24.19-slim
 
 WORKDIR /app
 
-# openssl + dumb-init for the runtime; autossh + openssh-client to tunnel to the entrepôt
+# dumb-init for the runtime; autossh + openssh-client to tunnel to the entrepôt
 # database through MIN's bastion (see entrypoint.sh). Cleaned up to keep the image small.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openssl dumb-init autossh openssh-client \
+ && apt-get install -y --no-install-recommends dumb-init autossh openssh-client \
  && rm -rf /var/lib/apt/lists/*
 
 ENV PORT 8080
