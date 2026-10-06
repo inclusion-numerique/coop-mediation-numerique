@@ -698,6 +698,10 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
    ```
 4. Le merge dans `main` deploie l'environnement `dev`, puis la production si `dev` a reussi.
 
+### Incidents de securite
+
+Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se traite selon la [Procedure de Reponse et Signalement des Incidents de Securite (PRIS)](https://docs.numerique.gouv.fr/docs/e8f1a2d1-3a6c-4e52-9ffd-639d772e76e7/). Le document est reserve aux agents : il s'ouvre apres connexion a Docs.
+
 ### Migrations de base de donnees
 
 1. Modifier le schema dans `apps/web/prisma/schema.prisma`
