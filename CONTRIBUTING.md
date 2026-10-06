@@ -660,7 +660,7 @@ Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
   - Preview (hors `dev`) : le job « Approve preview » attend une approbation, donnee depuis la PR (« Review deployments ») ; « Deploy preview » deploie alors l'environnement de la branche. Un nouveau push annule les checks et l'approbation en attente, jamais un deploiement en cours. Non obligatoire pour fusionner.
 - **`Release`** (push sur `dev` ou `main`) : deploiement automatique de `dev`, ou de la production, la migration du schema `coop` sur l'Entrepot passant alors avant le conteneur.
 - **`deploy.reusable.yml`** : build de l'image et deploiement, appele par `Feature branch` et `Release`.
-- **`Remove ephemeral environment`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main
+- **`Remove ephemeral environment`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main. Il detruit la stack Scaleway, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---
