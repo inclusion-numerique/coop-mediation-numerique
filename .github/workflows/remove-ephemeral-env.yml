@@ -2,7 +2,12 @@
 name: Remove ephemeral environment
 
 on:
-  delete:
+  workflow_call:
+    inputs:
+      branche:
+        description: 'Branch whose preview environment to delete'
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       branche:
@@ -14,24 +19,19 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.ref || inputs.branche }}
+  group: remove-ephemeral-env-${{ inputs.branche }}
   cancel-in-progress: false
 
 jobs:
   delete-preview:
     name: Delete preview environment
-    if: >-
-      (
-        (github.event_name == 'delete' && github.event.ref_type == 'branch') ||
-        github.event_name == 'workflow_dispatch'
-      ) &&
-      !contains(fromJSON('["main", "dev"]'), github.event.ref || inputs.branche)
+    if: ${{ !contains(fromJSON('["main", "dev"]'), inputs.branche) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: write
     env:
-      CDK_FORCE_BRANCH: ${{ github.event.ref || inputs.branche }}
+      CDK_FORCE_BRANCH: ${{ inputs.branche }}
     steps:
       - name: Refuse to delete a protected branch environment
         if: env.CDK_FORCE_BRANCH == '' || env.CDK_FORCE_BRANCH == 'main' || env.CDK_FORCE_BRANCH == 'dev'
