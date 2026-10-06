@@ -180,7 +180,7 @@ importers:
         version: 0.11.18(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)
       '@sentry/nextjs':
         specifier: ^10.75.0
-        version: 10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+        version: 10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
       '@tanstack/react-form':
         specifier: ^1.33.5
         version: 1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -304,12 +304,6 @@ importers:
       postcss-flexbugs-fixes:
         specifier: ^5.0.2
         version: 5.0.2(postcss@8.5.23)
-      postcss-import:
-        specifier: ^16.2.0
-        version: 16.2.0(postcss@8.5.23)
-      postcss-nested:
-        specifier: ^7.0.2
-        version: 7.0.2(postcss@8.5.23)
       prisma:
         specifier: 6.13.0
         version: 6.13.0(typescript@7.0.2)
@@ -428,6 +422,12 @@ importers:
       modclean:
         specifier: 3.0.0-beta.1
         version: 3.0.0-beta.1
+      postcss-import:
+        specifier: ^17.0.0
+        version: 17.0.0(postcss@8.5.23)
+      postcss-nested:
+        specifier: ^8.0.1
+        version: 8.0.1(postcss@8.5.23)
       postcss-preset-env:
         specifier: ^11.5.3
         version: 11.5.3(postcss@8.5.23)
@@ -11361,9 +11361,9 @@ packages:
     peerDependencies:
       postcss: 8.5.23
 
-  postcss-import@16.2.0:
-    resolution: {integrity: sha512-0mQUGlSp87Zl70K58RNwQAN1WS9plFE6KWGui9nyK6ninduMyjW/Khaoy/BpBoFTBh7ndAvAKrSKVbwy6vd/BA==}
-    engines: {node: '>=18.0.0'}
+  postcss-import@17.0.0:
+    resolution: {integrity: sha512-qzVMJhcq39KweT7Fp0HcjE5YxL5yI854Q3CtufxDuZKO9HLQUp2rptB9+U0MIj3pT1ZEVXoqnpeC1mSkfYuz4Q==}
+    engines: {node: '>=22.0.0'}
     peerDependencies:
       postcss: 8.5.23
 
@@ -11482,9 +11482,9 @@ packages:
     peerDependencies:
       postcss: 8.5.23
 
-  postcss-nested@7.0.2:
-    resolution: {integrity: sha512-5osppouFc0VR9/VYzYxO03VaDa3e8F23Kfd6/9qcZTUI8P58GIYlArOET2Wq0ywSl2o2PjELhYOFI4W7l5QHKw==}
-    engines: {node: '>=18.0'}
+  postcss-nested@8.0.1:
+    resolution: {integrity: sha512-PvSIwDVh1NTw939iu4FBK+oeZfSm0cbErFAjXCTPiStammzobBNE2SiQNezy8Xp+Oud2uLXaLpTauv3UdxWjbQ==}
+    engines: {node: ^22.0.0 || ^24.0.0 || >= 26.0.0}
     peerDependencies:
       postcss: 8.5.23
 
@@ -18280,7 +18280,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/bundler-plugins@10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
+  '@sentry/bundler-plugins@10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@sentry/cli': 2.58.6(encoding@0.1.13)
@@ -18291,7 +18291,7 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       rollup: 4.63.4
-      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
+      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -18362,7 +18362,7 @@ snapshots:
       '@sentry/utils': 7.120.3
       localforage: 1.10.0
 
-  '@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
+  '@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@rollup/plugin-commonjs': 28.0.1(rollup@4.63.4)
@@ -18375,7 +18375,7 @@ snapshots:
       '@sentry/react': 10.75.0(react@19.3.0)
       '@sentry/server-utils': 10.75.0
       '@sentry/vercel-edge': 10.75.0
-      '@sentry/webpack-plugin': 5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+      '@sentry/webpack-plugin': 5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
       next: 16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3)
       rollup: 4.63.4
       stacktrace-parser: 0.1.11
@@ -18465,10 +18465,10 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@sentry/core': 10.75.0
 
-  '@sentry/webpack-plugin@5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
+  '@sentry/webpack-plugin@5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
     dependencies:
-      '@sentry/bundler-plugins': 10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
-      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
+      '@sentry/bundler-plugins': 10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
     transitivePeerDependencies:
       - encoding
       - rollup
@@ -24928,15 +24928,16 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  minimizer-webpack-plugin@5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)):
+  minimizer-webpack-plugin@5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.5.0
       terser: 5.51.2
-      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
+      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
     optionalDependencies:
       '@swc/core': 1.16.2(@swc/helpers@0.5.23)
+      cssnano: 7.1.9(postcss@8.5.23)
       esbuild: 0.28.2
       postcss: 8.5.23
       sharp: 0.35.4(@types/node@24.19.1)
@@ -26370,7 +26371,7 @@ snapshots:
       read-cache: 1.0.2
       resolve: 1.22.12
 
-  postcss-import@16.2.0(postcss@8.5.23):
+  postcss-import@17.0.0(postcss@8.5.23):
     dependencies:
       postcss: 8.5.23
       postcss-value-parser: 4.2.0
@@ -26483,7 +26484,7 @@ snapshots:
       postcss: 8.5.23
       postcss-selector-parser: 6.1.4
 
-  postcss-nested@7.0.2(postcss@8.5.23):
+  postcss-nested@8.0.1(postcss@8.5.23):
     dependencies:
       postcss: 8.5.23
       postcss-selector-parser: 7.1.6
@@ -29065,7 +29066,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23):
+  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -29083,7 +29084,7 @@ snapshots:
       graceful-fs: 4.2.11
       loader-runner: 4.3.2
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23))
+      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
       neo-async: 2.6.2
       schema-utils: 4.5.0
       tapable: 2.3.3
@@ -29107,7 +29108,7 @@ snapshots:
       - svgo
       - uglify-js
 
-  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0):
+  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -29125,7 +29126,7 @@ snapshots:
       graceful-fs: 4.2.11
       loader-runner: 4.3.2
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23))
       neo-async: 2.6.2
       schema-utils: 4.5.0
       tapable: 2.3.3
