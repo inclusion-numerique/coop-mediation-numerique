@@ -660,8 +660,8 @@ Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
   - Poser le label `preview` sur la PR deploie l'environnement de la branche ; chaque push sur la PR le redeploie tant que le label est present.
   - Retirer le label, ou fermer ou fusionner la PR, detruit l'environnement.
   - Les evenements d'une meme PR s'executent l'un apres l'autre, sans jamais interrompre un deploiement en cours.
-- **`Release`** (push sur `main`) : deploiement de l'environnement `dev`, puis de la production si `dev` a reussi ; en production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur.
-- **`deploy.reusable.yml`** : build de l'image et deploiement, appele par `Preview` et `Release`.
+- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele ; l'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur.
+- **`build.reusable.yml`** et **`deploy.reusable.yml`** : construction et publication de l'image d'un environnement, puis son deploiement (un deploiement a la fois par environnement), appeles par `Preview` et `Release`.
 - **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit la stack Scaleway, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 

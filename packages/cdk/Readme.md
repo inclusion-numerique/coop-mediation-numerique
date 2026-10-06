@@ -24,7 +24,7 @@ Project is hosted by Scaleway, provisioning is done via Terraform with CDK.
 
 ### Deployment
 
-Deployment is done via GitHub Actions, using the `Preview`, `Release` and `Remove ephemeral environment` workflows (deployment itself lives in `deploy.reusable.yml`) in `.github/workflows/`.
+Deployment is done via GitHub Actions, using the `Preview`, `Release` and `Remove ephemeral environment` workflows (images are built by `build.reusable.yml` and deployed by `deploy.reusable.yml`) in `.github/workflows/`.
 
 The workflows need the `SCW_ACCESS_KEY` and `SCW_SECRET_KEY` repository secrets, which read the other secrets from the Scaleway Secret Manager.
 
