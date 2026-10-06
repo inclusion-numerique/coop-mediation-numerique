@@ -9,6 +9,9 @@ on:
         type: string
         default: ''
 
+permissions:
+  contents: read
+
 concurrency:
   group: deploy-${{ inputs.environnement || github.ref_name }}
   cancel-in-progress: false

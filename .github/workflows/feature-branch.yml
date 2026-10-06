@@ -16,6 +16,9 @@ on:
       - 'style/*'
       - 'test/*'
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint
