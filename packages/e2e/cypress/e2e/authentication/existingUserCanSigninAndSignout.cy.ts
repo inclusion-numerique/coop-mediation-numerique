@@ -19,16 +19,16 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter 
   // Le poste de développement et la CI n'utilisent pas le même compte : décrire un seul des
   // deux parcours fait échouer l'autre. Le test les couvre donc tous les deux, en se
   // branchant sur l'URL atteinte, jusqu'à ce que les deux environnements soient alignés.
-  const proConnectUser = {
-    email: Cypress.env('PROCONNECT_TEST_USER_EMAIL') as string,
-    password: Cypress.env('PROCONNECT_TEST_USER_PASSWORD') as string,
-  }
+  const identifiantsProConnect = () =>
+    cy.env(['PROCONNECT_TEST_USER_EMAIL', 'PROCONNECT_TEST_USER_PASSWORD'])
 
   const identiteFournisseurSimule = { firstName: 'John', lastName: 'Doe' }
   const identiteSandbox = { firstName: 'Jean', lastName: 'User' }
 
   before(() => {
-    cy.execute('deleteUser', { email: proConnectUser.email })
+    identifiantsProConnect().then(({ PROCONNECT_TEST_USER_EMAIL }) =>
+      cy.execute('deleteUser', { email: PROCONNECT_TEST_USER_EMAIL }),
+    )
   })
 
   it('Préliminaire - Les pages de connexions sont accessibles', () => {
@@ -64,25 +64,31 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter 
       request.headers.cookie = authenticationCookies.join('; ')
     })
 
-    cy.get('#email-input').type(`${proConnectUser.email}{enter}`)
-
     // Renseignée dans le branchement ci-dessous, puis lue au moment des assertions
     // d'identité — jamais à l'empilement des commandes Cypress.
     let identiteAttendue = identiteFournisseurSimule
 
-    cy.url().then((url) => {
-      if (url.includes('test-idp.proconnect.gouv.fr')) {
-        // Fournisseur d'identité simulé : on confirme l'identité (email, sub, niveau ACR)
-        // d'un simple clic, et il n'y a pas d'organisation à choisir.
-        cy.contains('button', 'Se connecter').click()
-        return
-      }
+    identifiantsProConnect().then(
+      ({ PROCONNECT_TEST_USER_EMAIL, PROCONNECT_TEST_USER_PASSWORD }) => {
+        cy.get('#email-input').type(`${PROCONNECT_TEST_USER_EMAIL}{enter}`)
 
-      // identite-sandbox : mot de passe, puis sélection de l'organisation.
-      identiteAttendue = identiteSandbox
-      cy.get('#password-input').type(`${proConnectUser.password}{enter}`)
-      cy.get('.fr-tile__link').first().click()
-    })
+        cy.url().then((url) => {
+          if (url.includes('test-idp.proconnect.gouv.fr')) {
+            // Fournisseur d'identité simulé : on confirme l'identité (email, sub, niveau ACR)
+            // d'un simple clic, et il n'y a pas d'organisation à choisir.
+            cy.contains('button', 'Se connecter').click()
+            return
+          }
+
+          // identite-sandbox : mot de passe, puis sélection de l'organisation.
+          identiteAttendue = identiteSandbox
+          cy.get('#password-input').type(
+            `${PROCONNECT_TEST_USER_PASSWORD}{enter}`,
+          )
+          cy.get('.fr-tile__link').first().click()
+        })
+      },
+    )
 
     // Cookies are lost in redirect (Cypress issue)
     // https://github.com/cypress-io/cypress/issues/20476#issuecomment-1298486439
