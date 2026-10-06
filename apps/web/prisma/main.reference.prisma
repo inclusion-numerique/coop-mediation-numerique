@@ -67,6 +67,7 @@ model lieu_inclusion {
 
   @@index([adresse_id])
   @@index([nom])
+  @@index([visible_pour_cartographie_nationale], map: "lieu_inclusion_visible_idx", where: raw("(visible_pour_cartographie_nationale = true)"))
   @@schema("main")
 }
 model structure_administrative {
