@@ -39,31 +39,19 @@ minimumReleaseAgeExclude:
   # laissait l'install échouer sur le binaire. Remplace l'entrée `@next/env` seule.
   - "@next/*"
   - "@arckit/resultset"
-  # EXCEPTIONS TEMPORAIRES — à retirer après le 15/08/2026.
-  # Ces deux paquets corrigent des failles connues, mais leurs correctifs sont eux-mêmes plus
-  # récents que la quarantaine : undici 7.29.0 date du 24/07, fast-uri 3.1.5 du 31/07. Sans
-  # exclusion, on reste bloqué sur des versions vulnérables et `dependency-review` rejette la
-  # PR. L'exclusion seule rouvrirait la porte à une publication malveillante future : elle est
-  # donc doublée d'un épinglage à la version exacte dans `overrides` ci-dessous, ce qui limite
-  # l'exposition à ces deux versions précisément, et à aucune autre.
-  - undici
-  - fast-uri
-  # Next 16 épingle `postcss` à exactement 8.5.23, publiée le 24/07 : sous quarantaine, la
-  # montée est purement et simplement impossible. Cette version est par ailleurs le correctif
-  # de l'avis modéré qui frappait la 8.5.21 (lecture de fichiers .map arbitraires via un
-  # sourceMappingURL contrôlé), et elle précède la campagne ChainDrop du 04/08.
-  - postcss
 
 # Migré depuis le champ `pnpm` de package.json, que pnpm 10 n'a jamais lu : ces réglages
 # étaient silencieusement inertes (cf. l'avertissement affiché à chaque commande).
 overrides:
   stylus: 0.0.1-security
-  # Versions EXACTES, pas des plages : c'est ce qui borne la levée de quarantaine ci-dessus à
-  # deux artefacts connus. À retirer avec les exclusions correspondantes après le 15/08/2026,
-  # quand les plages semver normales suffiront à les atteindre.
-  undici: 7.29.0
-  fast-uri: 3.1.5
-  postcss: 8.5.23
+  "undici@<7.29.1": ^7.29.1
+  "fast-uri@<3.1.8": ^3.1.8
+  "validator@<13.15.22": ^13.15.22
+  "tmp@<0.2.6": ^0.2.6
+  "glob@>=10.2.0 <10.5.0": ^10.5.0
+  "minimatch@>=5.0.0 <5.1.8": ^5.1.8
+  "follow-redirects@<1.16.0": ^1.16.0
+  "effect@<3.20.0": ^3.20.0
 
 # Seuls ces paquets sont autorisés à exécuter leurs scripts d'installation. Tous les autres
 # sont bloqués par défaut par pnpm 10 — c'est ce qui neutralise le vecteur `preinstall` des
