@@ -143,7 +143,7 @@
     "postcss-import": "^17.0.0",
     "postcss-nested": "^8.0.1",
     "postcss-preset-env": "^11.5.3",
-    "prisma-erd-generator": "^2.5.0",
+    "prisma-erd-generator": "^3.2.1",
     "storybook": "^10.6.0",
     "ts-jest": "^29.4.12",
     "tsx": "^4.23.15",
