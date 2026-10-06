@@ -1,6 +1,6 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
-import type { Prisma } from '@prisma/client'
 
 const LIMITE = 50
 

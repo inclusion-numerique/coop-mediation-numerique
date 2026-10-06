@@ -211,7 +211,7 @@ export class WebAppStack extends TerraformStack {
     const databaseUrl = useEntrepotCoopDatabase
       ? entrepotSensitiveVariables.ENTREPOT_DATABASE_URL.value
       : (Fn.format(
-          'postgres://%s:%s@%s:%s/%s?sslmode=require&options=-c%%20search_path%%3Dcoop,public',
+          'postgres://%s:%s@%s:%s/%s?sslmode=require&uselibpqcompat=true&options=-c%%20search_path%%3Dcoop,public',
           [
             databaseUser,
             databasePasswordVariable.value,

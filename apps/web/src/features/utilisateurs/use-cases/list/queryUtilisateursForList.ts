@@ -3,8 +3,8 @@ import {
   personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 
 export const searchUtilisateurSelect = {
   id: true,

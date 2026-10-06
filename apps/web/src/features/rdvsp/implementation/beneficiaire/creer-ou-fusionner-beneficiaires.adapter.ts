@@ -3,8 +3,8 @@ import {
   type ExternalUserToMerge,
   type MergedBeneficiaire,
 } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import type { RdvUser } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { RdvUser } from '@prisma/client'
 
 // Adaptateur (anti-corruption côté rdvsp) : traduit un usager RDV Service Public
 // en primitifs pour le port bénéficiaire. rdvsp ne connaît ni les value objects

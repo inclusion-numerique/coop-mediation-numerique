@@ -4,7 +4,7 @@ import { HouseIcon } from '@app/web/features/pictograms/buildings/HouseIcon'
 import { SchoolIcon } from '@app/web/features/pictograms/buildings/SchoolIcon'
 import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
 import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { TypeLieu } from '@prisma/client'
+import { TypeLieu } from '@app/web/generated/prisma/browser'
 
 export const typeLieuLabels: { [key in TypeLieu]: string } = {
   LieuActivite: 'Lieu d’activité',

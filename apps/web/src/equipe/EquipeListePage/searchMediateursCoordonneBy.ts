@@ -1,4 +1,5 @@
 import { conseillerNumeriqueExpression } from '@app/web/features/employeuse/server'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -6,7 +7,6 @@ import {
   toNumberOr,
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 
 export type FilterParam = 'actifs' | 'inactifs' | 'invitations' | 'archives'
 export type RoleFiltre = 'conseiller-numerique' | 'mediateur-numerique'

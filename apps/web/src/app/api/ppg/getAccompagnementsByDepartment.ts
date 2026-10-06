@@ -1,7 +1,7 @@
 import { departements } from '@app/web/data/collectivites-territoriales/departements'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 
 export type AccompagnementsByDepartment = {
   count: number

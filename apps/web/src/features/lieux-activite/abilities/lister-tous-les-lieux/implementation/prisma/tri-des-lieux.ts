@@ -1,5 +1,5 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import type { SortReferential } from '@app/web/libs/data-table/getDataTableOrderBy'
-import type { Prisma } from '@prisma/client'
 import type { ColonneTriable } from '../../ui/LieuxDataTable'
 
 /**

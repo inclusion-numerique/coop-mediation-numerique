@@ -1,3 +1,4 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import type {
   DataTableConfiguration,
   DataTableFilterValues,
@@ -6,7 +7,6 @@ import type {
 import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { optionalNumberToString } from '@app/web/utils/formatNumber'
-import type { Prisma } from '@prisma/client'
 import type { EmployeuseAffichee } from './employeuse-affichee.presenter'
 
 export type EmployeusesDataTableConfiguration = DataTableConfiguration<

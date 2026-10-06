@@ -1,4 +1,4 @@
-import type { MediateurEnActivite } from '@prisma/client'
+import type { MediateurEnActivite } from '@app/web/generated/prisma/client'
 import { LieuId } from '../../domain/lieu-id'
 import { MediateurId } from '../../domain/mediateur-id'
 import type { Rattachement } from '../../domain/rattachement'

@@ -1,6 +1,6 @@
 import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import type { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import type { Beneficiaire } from '@prisma/client'
+import type { Beneficiaire } from '@app/web/generated/prisma/client'
 
 /**
  * Projection de lecture des informations propres d'un bénéficiaire (les champs

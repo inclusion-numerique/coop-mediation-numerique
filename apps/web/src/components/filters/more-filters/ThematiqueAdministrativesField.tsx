@@ -1,7 +1,7 @@
 import { thematiqueAdministrativesOptions } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
-import { Thematique } from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 
 export const updateThematiqueAdministrativesParams =

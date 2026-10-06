@@ -4,8 +4,8 @@ import {
   createApiClient,
   rotateApiClientSecret,
 } from '@app/web/api-client/apiClient'
+import { ApiClientScope } from '@app/web/generated/prisma/browser'
 import { prismaClient } from '@app/web/prismaClient'
-import { ApiClientScope } from '@prisma/client'
 
 describe('apiClient', () => {
   const testClient = {

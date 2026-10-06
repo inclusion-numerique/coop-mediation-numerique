@@ -3,8 +3,8 @@ import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 import type { DetecterDoublons } from '../../domain/detecter-doublons'
 
 export const detecterDoublons: DetecterDoublons = async ({

@@ -1,4 +1,4 @@
-import type { Beneficiaire } from '@prisma/client'
+import type { Beneficiaire } from '@app/web/generated/prisma/client'
 
 // Politique de fusion : champs « remplissables ». Pour chacun, on garde la
 // valeur de la destination si elle est présente, sinon on comble depuis la

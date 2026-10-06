@@ -1,4 +1,5 @@
 import { personneConseillerNumeriqueSelect } from '@app/web/features/employeuse/server'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -6,7 +7,6 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 
 type SearchMediateurOptions = {
   coordinateurId?: string

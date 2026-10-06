@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { AdresseEmployeuse } from '../domain/adresse-employeuse'
 import { type Affectation, estConseillerNumerique } from '../domain/affectation'
 import { ContactReferent } from '../domain/contact-referent'

@@ -1,4 +1,4 @@
-import type { RdvAccount } from '@prisma/client'
+import type { RdvAccount } from '@app/web/generated/prisma/client'
 import { type CompteRdv, MessageErreurCompte } from '../domain/compte-rdv'
 import {
   JetonAcces,

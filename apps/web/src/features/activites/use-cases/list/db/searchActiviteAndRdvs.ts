@@ -2,6 +2,7 @@ import {
   getRdvsByIds,
   type RdvListItem,
 } from '@app/web/features/rdvsp/db/rdv-list-item.query'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { getDataTableSortParams } from '@app/web/libs/data-table/getDefaultDataTableSortParams'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
@@ -11,7 +12,6 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
-import { Prisma } from '@prisma/client'
 import {
   ActivitesDataTable,
   ActivitesDataTableSearchParams,

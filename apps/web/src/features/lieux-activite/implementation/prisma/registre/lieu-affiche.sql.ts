@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * De quoi CHERCHER et TRIER sur ce qu'un écran AFFICHE.

@@ -5,9 +5,9 @@ import {
   lieuCorrele,
   preparerCorrele,
 } from '@app/web/features/lieux-activite'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
-import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import type { LierStructureEmployeuseEnLieu } from '../../domain/ports'
 import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'

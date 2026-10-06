@@ -1,6 +1,6 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 import { Equipe, getEquipeInfo } from '../../equipe'
 import { getTagScope, TagScope } from '../../tagScope'
 import {

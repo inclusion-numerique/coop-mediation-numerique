@@ -19,6 +19,7 @@ import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeU
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
 import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
+import { ProfilInscription } from '@app/web/generated/prisma/browser'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -33,7 +34,6 @@ import { ServerUserSignupValidation } from '@app/web/server/rpc/user/userSignup.
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { ProfilInscription } from '@prisma/client'
 import { v4 } from 'uuid'
 import { z } from 'zod'
 

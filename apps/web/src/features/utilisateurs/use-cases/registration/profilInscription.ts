@@ -1,5 +1,5 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import type { ProfilInscription } from '@prisma/client'
+import type { ProfilInscription } from '@app/web/generated/prisma/client'
 
 export const profileInscriptionSlugs = {
   ConseillerNumerique: 'conseiller-numerique',

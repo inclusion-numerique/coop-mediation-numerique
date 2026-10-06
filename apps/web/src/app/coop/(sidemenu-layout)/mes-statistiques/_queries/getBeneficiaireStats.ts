@@ -20,9 +20,14 @@ import {
   trancheAgeLabels,
   tranchesAge as trancheAgeValues,
 } from '@app/web/features/beneficiaire/domain/tranche-age'
+import {
+  Genre,
+  Prisma,
+  StatutSocial,
+  TrancheAge,
+} from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
-import { Genre, Prisma, StatutSocial, TrancheAge } from '@prisma/client'
 import { snakeCase } from 'change-case'
 import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 

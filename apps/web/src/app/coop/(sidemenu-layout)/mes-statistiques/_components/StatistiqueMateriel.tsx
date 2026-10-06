@@ -1,6 +1,6 @@
 import { materielIcons } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { Materiel } from '@app/web/generated/prisma/browser'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
-import { Materiel } from '@prisma/client'
 import classNames from 'classnames'
 
 export const StatistiqueMateriel = ({

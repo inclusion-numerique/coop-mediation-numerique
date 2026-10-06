@@ -1,5 +1,5 @@
 import { ActiviteSource } from '@app/web/features/activites/use-cases/source/activiteSource'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 export const activitesSourceWhereCondition = (source?: ActiviteSource) => {
   if (source === 'v1') {

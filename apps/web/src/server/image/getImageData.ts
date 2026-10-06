@@ -1,3 +1,4 @@
+import { Image } from '@app/web/generated/prisma/browser'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { s3 } from '@app/web/server/s3/s3'
 import { imageCropToRegion, isImageCropped } from '@app/web/utils/imageCrop'
@@ -6,7 +7,6 @@ import {
   NoSuchKey,
   PutObjectCommand,
 } from '@aws-sdk/client-s3'
-import { Image } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import sharp from 'sharp'
 

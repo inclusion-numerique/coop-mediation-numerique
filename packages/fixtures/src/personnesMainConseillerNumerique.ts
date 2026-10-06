@@ -4,7 +4,7 @@ import { fixtureUsers } from '@app/fixtures/users'
 import { conseillerInscriptionSansContrat } from '@app/fixtures/users/conseillerInscriptionSansContrat'
 import { conseillerSansLieuInscription } from '@app/fixtures/users/conseillerSansLieuInscription'
 import { coordinateurInscription } from '@app/fixtures/users/coordinateurInscription'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 // Peuple `main` avec l'employeuse des users de test, comme en prod (où la coop lit l'employeuse depuis
 // `main.personne` + affectations). Deux passes :

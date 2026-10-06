@@ -29,15 +29,15 @@ import {
   getActivitesFiltersWhereConditions,
 } from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { prismaClient } from '@app/web/prismaClient'
-import { UserProfile } from '@app/web/utils/user'
 import {
   Materiel,
   Prisma,
   Thematique,
   TypeActivite,
   TypeLieu,
-} from '@prisma/client'
+} from '@app/web/generated/prisma/client'
+import { prismaClient } from '@app/web/prismaClient'
+import { UserProfile } from '@app/web/utils/user'
 import { snakeCase } from 'change-case'
 
 export type ActivitesStatsRaw = {

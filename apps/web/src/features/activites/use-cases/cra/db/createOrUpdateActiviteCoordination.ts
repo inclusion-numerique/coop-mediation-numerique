@@ -1,7 +1,7 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import { CraAnimationData } from '../animation/validation/CraAnimationValidation'
 import { craDureeDataToMinutes } from '../db/minutesToCraDuree'

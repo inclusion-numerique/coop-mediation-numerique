@@ -1,4 +1,4 @@
-import type { OnboardingStatus, Prisma } from '@prisma/client'
+import type { OnboardingStatus, Prisma } from '@app/web/generated/prisma/client'
 
 export const inscriptionFilter = (
   created: { lt?: Date; gte?: Date },

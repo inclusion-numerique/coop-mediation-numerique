@@ -1,5 +1,5 @@
 import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { RoleSlug } from '../list/role'
 import { StatutSlug } from '../list/statut'
 import { actifFilter } from './db/actif-filter'

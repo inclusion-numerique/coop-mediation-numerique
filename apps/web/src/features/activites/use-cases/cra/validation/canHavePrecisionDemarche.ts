@@ -1,4 +1,4 @@
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 
 export const cannotHavePrecisionDemarcheMessage =
   'La précision de la démarche ne peut être renseignée que si la thématique "Aides aux démarches administratives" est sélectionnée'

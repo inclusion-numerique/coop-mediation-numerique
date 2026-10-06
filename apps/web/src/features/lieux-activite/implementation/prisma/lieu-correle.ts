@@ -1,9 +1,9 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import {
   type Correle,
   correler,
   type LieuAMaterialiser,
 } from '@app/web/libraries/lieu-identite'
-import type { Prisma } from '@prisma/client'
 import { depublierAuRegistre } from './registre/depublier-au-registre'
 
 export type { Correle, LieuAMaterialiser }

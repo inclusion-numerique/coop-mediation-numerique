@@ -1,4 +1,4 @@
-import type { UserRole } from '@prisma/client'
+import type { UserRole } from '@app/web/generated/prisma/client'
 
 // Pendant une maintenance, seuls les médiateurs/coordinateurs (role `User`) sont bloqués.
 // Les administrateurs et le support conservent leur accès en écriture.

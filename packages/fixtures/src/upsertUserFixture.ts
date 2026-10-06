@@ -1,6 +1,6 @@
 import { enSerie } from '@app/fixtures/enSerie'
 import { output } from '@app/fixtures/output'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * Upsert des utilisateurs de fixtures, tolérant aux comptes déjà présents.

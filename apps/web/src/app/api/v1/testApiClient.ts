@@ -2,8 +2,8 @@ import {
   changeApiClientScopes,
   createApiClient,
 } from '@app/web/api-client/apiClient'
+import type { ApiClientScope } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { ApiClientScope } from '@prisma/client'
 
 export const testApiClientName = 'test-api-client'
 

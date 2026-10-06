@@ -5,9 +5,13 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/adresse/combo-box/CommuneComboBox'
+import {
+  Genre,
+  StatutSocial,
+  type TrancheAge,
+} from '@app/web/generated/prisma/browser'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { Genre, StatutSocial, type TrancheAge } from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 import type { DefaultValues } from 'react-hook-form'
 import type { CraIndividuelData } from '../../validation/CraIndividuelValidation'

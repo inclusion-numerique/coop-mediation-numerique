@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 export const actifFilter = (lastActivity: {
   lt?: Date

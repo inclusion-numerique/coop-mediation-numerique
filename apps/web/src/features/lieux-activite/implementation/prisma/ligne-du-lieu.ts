@@ -10,7 +10,7 @@ import type {
   PublicSpecifiquementAdresse,
   Service,
   Typologie,
-} from '@prisma/client'
+} from '@app/web/generated/prisma/client'
 import type { InscriptionPourLaFiche } from './registre/fiche-du-registre'
 import type {
   DispositifProgrammeNationalCoop,

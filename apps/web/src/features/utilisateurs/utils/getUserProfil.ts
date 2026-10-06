@@ -1,4 +1,4 @@
-import type { ProfilInscription } from '@prisma/client'
+import type { ProfilInscription } from '@app/web/generated/prisma/client'
 
 /**
  * Returns a user profile on current data, that can be different from the one from inscription

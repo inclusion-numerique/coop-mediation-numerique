@@ -1,5 +1,5 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 
 type Transaction = Prisma.TransactionClient
 

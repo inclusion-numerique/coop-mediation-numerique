@@ -1,5 +1,5 @@
 import { proConnectProviderId } from '@app/web/auth/proConnect'
-import { prismaClient } from '@app/web/prismaClient'
+import { extendedPrismaClient } from '@app/web/prismaClient'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
@@ -15,7 +15,7 @@ const createAdapter = (): Adapter & {
     account: AdapterAccount,
   ) => Promise<void> | Awaitable<AdapterAccount | null | undefined>
 } => {
-  const prismaAdapter = PrismaAdapter(prismaClient)
+  const prismaAdapter = PrismaAdapter(extendedPrismaClient)
 
   const { createUser, deleteSession, linkAccount } = prismaAdapter
 

@@ -1,7 +1,7 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { Thematique } from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 import { CraData } from '../../validation/CraValidation'
 import styles from '../CraForm.module.css'

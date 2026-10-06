@@ -1,4 +1,4 @@
-import type { OnboardingStatus, Prisma } from '@prisma/client'
+import type { OnboardingStatus, Prisma } from '@app/web/generated/prisma/client'
 
 const noPendingInvitations = { none: { acceptee: null, refusee: null } }
 

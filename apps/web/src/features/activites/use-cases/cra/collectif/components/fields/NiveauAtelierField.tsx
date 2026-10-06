@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import { NiveauAtelier } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { NiveauAtelier } from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 import { CraCollectifData } from '../../validation/CraCollectifValidation'
 
