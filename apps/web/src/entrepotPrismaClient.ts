@@ -1,4 +1,5 @@
 import { PrismaClient } from '@app/web/generated/entrepot/client'
+import { createEnumArrayTypeParser } from '@app/web/prisma/enumArrayTypeParser'
 import { PrismaPg } from '@prisma/adapter-pg'
 
 // Second Prisma client pointing at the entrepôt (Dataspace) database. It is generated
@@ -18,7 +19,10 @@ const entrepotDatabaseUrl = configuredEntrepotUrl?.startsWith('postgres')
 
 const createEntrepotPrismaClient = () =>
   new PrismaClient({
-    adapter: new PrismaPg({ connectionString: entrepotDatabaseUrl }),
+    adapter: new PrismaPg(
+      { connectionString: entrepotDatabaseUrl },
+      { userDefinedTypeParser: createEnumArrayTypeParser() },
+    ),
   })
 
 const globalForEntrepot = global as unknown as {

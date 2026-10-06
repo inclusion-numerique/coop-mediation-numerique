@@ -99,6 +99,7 @@
     "piqure": "^2.3.0",
     "postcss": "8.5.23",
     "postcss-flexbugs-fixes": "^5.0.2",
+    "postgres-array": "3.0.4",
     "prisma": "7.10.0",
     "proj4": "^2.22.0",
     "react": "^19.3.0",

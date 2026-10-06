@@ -1,4 +1,5 @@
 import { PrismaClient } from '@app/web/generated/prisma/client'
+import { createEnumArrayTypeParser } from '@app/web/prisma/enumArrayTypeParser'
 import { timestampExtension } from '@app/web/prisma/timestampExtension'
 import { PrismaPg } from '@prisma/adapter-pg'
 
@@ -6,7 +7,10 @@ const debugLog = process.env.PRISMA_ENABLE_LOGGING === '1'
 
 const createPrismaClient = () =>
   new PrismaClient({
-    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+    adapter: new PrismaPg(
+      { connectionString: process.env.DATABASE_URL },
+      { userDefinedTypeParser: createEnumArrayTypeParser() },
+    ),
     log: debugLog
       ? [
           {
