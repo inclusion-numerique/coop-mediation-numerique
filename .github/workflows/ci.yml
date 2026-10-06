@@ -1,5 +1,5 @@
 ---
-name: Feature branch
+name: CI
 
 on:
   push:
@@ -15,6 +15,7 @@ on:
       - 'revert/*'
       - 'style/*'
       - 'test/*'
+      - 'main'
 
 permissions:
   contents: read
@@ -446,6 +447,7 @@ jobs:
 
   dependency-review:
     name: Dependency review
+    if: github.ref_name != 'main'
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-dependency-review
