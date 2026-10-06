@@ -35,7 +35,7 @@
     "picocolors": "^1.1.1",
     "slugify": "^1.6.9",
     "tsx": "^4.23.1",
-    "undici": "^7.29.0",
+    "undici": "^7.29.1",
     "uuid": "^14.0.1"
   },
   "devDependencies": {
