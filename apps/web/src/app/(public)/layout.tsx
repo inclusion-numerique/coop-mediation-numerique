@@ -1,4 +1,5 @@
 import PublicFooter from '@app/web/app/(public)/PublicFooter'
+import { getServerDsfrTheme } from '@app/web/app/getServerDsfrTheme'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import Header from '@app/web/components/Header'
 import { PropsWithChildren } from 'react'
@@ -14,7 +15,7 @@ const PublicLayout = async ({ children }: PropsWithChildren) => {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {children}
       </div>
-      <PublicFooter />
+      <PublicFooter initialTheme={await getServerDsfrTheme()} />
     </div>
   )
 }

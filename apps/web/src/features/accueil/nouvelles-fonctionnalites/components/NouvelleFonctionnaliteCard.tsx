@@ -1,12 +1,11 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Badge from '@codegouvfr/react-dsfr/Badge'
-import { cookies } from 'next/headers'
 import type { PropsWithChildren, ReactNode } from 'react'
-import { getNouvelleFonctionnaliteCookieName } from '../nouvelleFonctionnaliteCookie'
 import SupprimerNouvelleFonctionnaliteCardButton from './SupprimerNouvelleFonctionnaliteCardButton'
 
-const NouvelleFonctionnaliteCard = async ({
+const NouvelleFonctionnaliteCard = ({
   featureId,
+  masquee,
   showFrom,
   showUntil,
   featureName,
@@ -16,21 +15,17 @@ const NouvelleFonctionnaliteCard = async ({
 }: PropsWithChildren<{
   // Children est le texte du contenu de la carte
   featureId: string // Identifiant unique de la fonctionnalité
+  masquee: boolean
   showFrom: Date // Date de début de l'affichage de la carte (toujours affichée en environnement de développement / preview)
   showUntil: Date // Date de fin de l'affichage de la carte
   featureName: NonNullable<ReactNode> // Nom de la fonctionnalité affichée en haut de la carte
   illustration: ReactNode // Illustration de la fonctionnalité affichée à gauche de la carte
   action: ReactNode // Action(s) à afficher en bas de la carte
 }>) => {
-  const cookieStore = await cookies()
-  const skipCookie = cookieStore.get(
-    getNouvelleFonctionnaliteCookieName(featureId),
-  )
   const now = new Date()
 
   const isVisible =
-    // If the skip cookie is set, the feature card is masked
-    !skipCookie &&
+    !masquee &&
     // Always visible in preview or local environment
     (!PublicWebAppConfig.isMain || now >= showFrom) &&
     now <= showUntil

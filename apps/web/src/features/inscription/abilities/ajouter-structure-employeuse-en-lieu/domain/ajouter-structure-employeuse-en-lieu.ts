@@ -29,6 +29,19 @@ export const AdresseNonReconnue = (
   employeuseId,
 })
 
+export type ServiceAdresseIndisponible = {
+  readonly _tag: 'ServiceAdresseIndisponible'
+  readonly employeuseId: number
+}
+
+export const ServiceAdresseIndisponible = (
+  employeuseId: number,
+): ServiceAdresseIndisponible => ({
+  _tag: 'ServiceAdresseIndisponible',
+  employeuseId,
+})
+
 export type AjouterStructureEmployeuseEnLieuError =
   | EmployeuseIntrouvable
   | AdresseNonReconnue
+  | ServiceAdresseIndisponible

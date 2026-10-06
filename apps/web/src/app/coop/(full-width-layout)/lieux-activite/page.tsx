@@ -1,9 +1,11 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
 import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
@@ -12,6 +14,7 @@ import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
 import { MaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -38,39 +41,46 @@ const LieuActiviteListPage = async ({
   })
 
   return (
-    <>
-      <SkipLinksPortal />
-      <div id={contentId}>
-        <MesLieuxActivitePage
-          lieux={lieux}
-          carte={({ id, lieuInclusion }) => (
-            <LieuActiviteCard
-              key={id}
-              lieu={lieuInclusion}
-              href={getLieuHref(lieuInclusion)}
-              derniereModificationPar={
-                lieuInclusion.derniereModificationPar
-                  ? getActeurDisplayName(lieuInclusion.derniereModificationPar)
-                  : null
-              }
-              retrait={
-                <BoutonDeRetrait
-                  mediateurId={MediateurId(mediateur.id)}
-                  structureId={LieuId(lieuInclusion.id)}
-                  variant="lieu"
-                  mediateurDisplayName=""
-                  structureNom={lieuInclusion.nom}
-                  derniereActiviteDate={null}
-                />
-              }
-              showActionButtons
-            />
-          )}
-          visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
-          entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
-        />
-      </div>
-    </>
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <>
+        <SkipLinksPortal />
+        <div id={contentId}>
+          <MesLieuxActivitePage
+            lieux={lieux}
+            carte={({ id, lieuInclusion }) => (
+              <LieuActiviteCard
+                key={id}
+                lieu={lieuInclusion}
+                href={getLieuHref(lieuInclusion)}
+                derniereModificationPar={
+                  lieuInclusion.derniereModificationPar
+                    ? getActeurDisplayName(
+                        lieuInclusion.derniereModificationPar,
+                      )
+                    : null
+                }
+                retrait={
+                  <BoutonDeRetrait
+                    mediateurId={MediateurId(mediateur.id)}
+                    structureId={LieuId(lieuInclusion.id)}
+                    variant="lieu"
+                    mediateurDisplayName=""
+                    structureNom={lieuInclusion.nom}
+                    derniereActiviteDate={null}
+                  />
+                }
+                showActionButtons
+              />
+            )}
+            visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
+            entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
+          />
+        </div>
+      </>
+    </ClientBinder>
   )
 }
 

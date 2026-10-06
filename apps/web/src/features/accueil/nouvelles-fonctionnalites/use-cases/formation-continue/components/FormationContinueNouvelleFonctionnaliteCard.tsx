@@ -2,11 +2,16 @@ import NouvelleFonctionnaliteCard from '../../../components/NouvelleFonctionnali
 import SnoozeNouvelleFonctionnaliteButton from '../../../components/SnoozeNouvelleFonctionnaliteButton'
 import FormationContinueDecouvrirButton from './FormationContinueDecouvrirButton'
 
-const formationContinueFeatureId = 'formation-continue'
+export const formationContinueFeatureId = 'formation-continue'
 
-const FormationContinueNouvelleFonctionnaliteCard = () => (
+const FormationContinueNouvelleFonctionnaliteCard = ({
+  masquee,
+}: {
+  masquee: boolean
+}) => (
   <NouvelleFonctionnaliteCard
     featureId={formationContinueFeatureId}
+    masquee={masquee}
     showFrom={new Date('2025-09-15')}
     showUntil={new Date('2026-01-01')}
     featureName="Formation continue"

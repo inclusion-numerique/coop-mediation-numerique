@@ -4,6 +4,10 @@ import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@app/web/external-apis/apiAdresse'
+import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
   geocodeStructureAdresse,
@@ -253,7 +257,15 @@ const LieuxActiviteForm = ({
               isPending={isPending}
               onSelect={async (item) => {
                 setRechercheError(null)
-                const lieu = await lieuDepuisResultat(item)
+                const lieu = await lieuDepuisResultat(item).catch(
+                  siIndisponible('indisponible' as const),
+                )
+
+                if (lieu === 'indisponible') {
+                  setRechercheError(SERVICE_ADRESSE_INDISPONIBLE)
+                  form.setFieldValue('recherche', null)
+                  return
+                }
 
                 if (!lieu) {
                   setRechercheError(

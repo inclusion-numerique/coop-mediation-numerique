@@ -1,0 +1,400 @@
+---
+name: Validate
+
+on:
+  push:
+    branches:
+      - 'chore/*'
+      - 'docs/*'
+      - 'feat/*'
+      - 'fix/*'
+      - 'refactor/*'
+      - 'test/*'
+      - 'dev'
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Monorepo manypkg check
+        run: pnpm manypkg check
+      - name: Tsc
+        run: pnpm tsc
+      - name: Lint all packages except @app/web
+        run: pnpm -F '!@app/web' lint
+      - name: Lint @app/web - biome
+        run: pnpm -F '@app/web' lint:biome
+      - name: Generate openapi docs for api v1
+        run: pnpm --silent -F @app/web api-v1-doc:generate
+      - name: Check that openapi spec file is up to date
+        run: |
+          git diff --exit-code apps/web/src/app/api/v1/documentation/v1.openapi.json || {
+            echo "::error::Openapi spec file has changed, please run 'pnpm --silent -F @app/web api-v1-doc:generate' to update the openapi spec file and commit the changes"
+            exit 1
+          }
+      - name: Lint @app/web - api
+        run: pnpm -F '@app/web' lint:api
+
+  test-packages:
+    name: Test packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Create env file
+        run: cp .env.dist .env
+      - name: Test all packages except @app/web with coverage
+        run: pnpm -F '!coop-mediation-numerique' -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
+      - name: List coverage reports
+        id: coverage
+        run: |
+          shopt -s nullglob
+          files=(apps/*/coverage/lcov.info packages/*/coverage/lcov.info)
+          echo "files=${files[*]}" >> "$GITHUB_OUTPUT"
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: ${{ steps.coverage.outputs.files }}
+          flag-name: packages
+          parallel: true
+          fail-on-error: false
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'junit/*.xml'
+          check_name: 'Packages tests summary'
+          annotate_only: true
+
+  test-web:
+    name: Test web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Create env file
+        run: cp .env.dist .env
+      - name: Test @app/web with coverage
+        run: pnpm --silent -F @app/web exec jest --coverage -c jest.unit.config.ts
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: apps/web/coverage/lcov.info
+          flag-name: web-unit
+          parallel: true
+          fail-on-error: false
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'junit/*.xml'
+          check_name: 'Unit tests summary'
+          annotate_only: true
+
+  integration-tests:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    services:
+      postgres:
+        image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      maildev:
+        image: maildev/maildev:2.2.1
+        env:
+          MAILDEV_INCOMING_USER: mailuser
+          MAILDEV_INCOMING_PASS: mailpassword
+        ports:
+          - 1025:1025
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Test environment
+        uses: ./.github/actions/test-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Load fixtures
+        run: pnpm -F @app/fixtures load
+      - name: Run web integration tests with coverage
+        run: |
+          set -a
+          source .env
+          set +a
+          pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts --runInBand
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: apps/web/coverage/lcov.info
+          flag-name: web-integration
+          parallel: true
+          fail-on-error: false
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'junit/*.xml'
+          check_name: 'Integration tests summary'
+          annotate_only: true
+
+  cucumber:
+    name: Cucumber
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    services:
+      postgres:
+        image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      maildev:
+        image: maildev/maildev:2.2.1
+        env:
+          MAILDEV_INCOMING_USER: mailuser
+          MAILDEV_INCOMING_PASS: mailpassword
+        ports:
+          - 1025:1025
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Test environment
+        uses: ./.github/actions/test-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Run cucumber with coverage
+        run: pnpm -F @app/web test:cucumber:coverage --format progress --format junit:junit/cucumber.xml
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          files: apps/web/coverage-cucumber/lcov.info
+          base-path: apps/web
+          flag-name: cucumber
+          parallel: true
+          fail-on-error: false
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'apps/web/junit/*.xml'
+          check_name: 'Cucumber summary'
+          annotate_only: true
+
+  chromatic:
+    name: Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Secrets environment
+        uses: ./.github/actions/secrets-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Build storybook and deploy on chromatic
+        run: pnpm --silent -F @app/storybook chromatic
+
+  components:
+    name: Components
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          cypress: 'true'
+      - name: Secrets environment
+        uses: ./.github/actions/secrets-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Run Cypress component tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          working-directory: packages/e2e
+          command: pnpm cy run --component --reporter junit --reporter-options mochaFile=junit/components-[hash].xml
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: components-cypress
+          path: |
+            packages/e2e/cypress/screenshots
+          retention-days: 30
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'packages/e2e/junit/*.xml'
+          check_name: 'Components tests summary'
+          annotate_only: true
+
+  e2e:
+    name: E2E ${{ matrix.conteneur }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        conteneur: [0, 1, 2]
+    services:
+      postgres:
+        image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      maildev:
+        image: maildev/maildev:2.2.1
+        env:
+          MAILDEV_INCOMING_USER: mailuser
+          MAILDEV_INCOMING_PASS: mailpassword
+        ports:
+          - 1025:1025
+          - 1080:1080
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          cypress: 'true'
+      - name: Test environment
+        uses: ./.github/actions/test-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Add e2e variables to env file
+        run: |
+          cat >> .env <<'DOTENV'
+          IS_E2E=true
+          PROCONNECT_CLIENT_SECRET=$PROCONNECT_LOCAL_CLIENT_SECRET
+          CYPRESS_PROCONNECT_TEST_USER_EMAIL=$PROCONNECT_TEST_USER_EMAIL
+          CYPRESS_PROCONNECT_TEST_USER_PASSWORD=$PROCONNECT_TEST_USER_PASSWORD
+          DOTENV
+      - name: Build cache
+        uses: actions/cache@v6
+        with:
+          path: apps/web/.next/cache
+          key: ${{ runner.os }}-nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**/*.ts', 'apps/web/src/**/*.tsx') }}
+          restore-keys: ${{ runner.os }}-nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-
+      - name: Build next app
+        run: |
+          set -a
+          source .env
+          set +a
+          pnpm --silent -F @app/web build
+      - name: Start standalone server
+        run: |
+          mv apps/web/.next/standalone ~/dist
+          mv apps/web/public ~/dist/apps/web/public
+          mv apps/web/private-static ~/dist/apps/web/private-static
+          mv apps/web/.next/static ~/dist/apps/web/.next/static
+          set -a
+          source .env
+          set +a
+          cd ~/dist
+          NODE_TLS_REJECT_UNAUTHORIZED=0 HOSTNAME=localhost nohup node apps/web/server.js > "$GITHUB_WORKSPACE/server.log" 2>&1 &
+      - name: Run Cypress e2e tests
+        uses: cypress-io/github-action@v7
+        env:
+          SPLIT: 3
+          SPLIT_INDEX: ${{ matrix.conteneur }}
+          SPLIT_FILE: timings.json
+        with:
+          install: false
+          working-directory: packages/e2e
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          command: pnpm cy run --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
+      - name: Upload Cypress screenshots and server log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-cypress-${{ matrix.conteneur }}
+          path: |
+            packages/e2e/cypress/screenshots
+            server.log
+          retention-days: 30
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'packages/e2e/junit/*.xml'
+          check_name: 'E2E tests summary'
+          annotate_only: true
+
+  coverage:
+    name: Coverage
+    needs:
+      - test-packages
+      - test-web
+      - integration-tests
+      - cucumber
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close parallel Coveralls build
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true
+          carryforward: 'packages,web-unit,web-integration,cucumber'
+          fail-on-error: false

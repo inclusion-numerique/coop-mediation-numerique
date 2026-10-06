@@ -1,5 +1,8 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
-import { searchAdresses } from '@app/web/external-apis/apiAdresse'
+import {
+  searchAdresses,
+  siIndisponible,
+} from '@app/web/external-apis/apiAdresse'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 
 export type Commune = {
@@ -21,7 +24,7 @@ const loadSuggestions = async (
     limit: 10,
     autocomplete: true,
     type: 'municipality',
-  })
+  }).catch(siIndisponible([]))
 
   return {
     items: adresses.map((adresse) => ({

@@ -1,0 +1,36 @@
+---
+name: Postgres CI image
+
+on:
+  push:
+    paths:
+      - 'docker/postgres-ci/**'
+      - '.github/workflows/postgres-ci-image.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Publish Postgres CI image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
+      - name: Build image
+        run: |
+          docker build \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            --tag ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis \
+            --tag "ghcr.io/inclusion-numerique/coop-postgres-ci:sha-${{ github.sha }}" \
+            docker/postgres-ci
+      - name: Push image
+        run: docker push --all-tags ghcr.io/inclusion-numerique/coop-postgres-ci

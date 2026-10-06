@@ -10,7 +10,7 @@
 # Version pg17 : ALIGNÉE sur la prod (Entrepôt) et le docker local, contrairement à l'ancienne CI en
 # pg14. Base `pgvector/pgvector:pg17` + postgis-3 — identique à `docker/postgres/Dockerfile`.
 # `POSTGRES_HOST_AUTH_METHOD=trust` : base CI jetable, connexion sans mot de passe (comme l'usage
-# `postgresql://postgres@localhost` de `.circleci/config.yml`).
+# `postgresql://postgres@localhost` de la CI).
 FROM pgvector/pgvector:pg17
 
 RUN apt-get update \

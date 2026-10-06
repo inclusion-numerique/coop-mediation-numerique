@@ -83,7 +83,7 @@ export const WithImage: Story = {
     label: 'Label',
     options: options.map((option) => ({
       ...option,
-      image: 'https://via.placeholder.com/150',
+      image: '/images/paysage.webp',
     })),
   },
 }

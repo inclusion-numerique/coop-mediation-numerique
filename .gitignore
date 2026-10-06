@@ -16,6 +16,8 @@ node_modules
 /coverage
 /coverage-reports
 **/coverage
+**/coverage-cucumber
+**/junit
 
 # production
 /build

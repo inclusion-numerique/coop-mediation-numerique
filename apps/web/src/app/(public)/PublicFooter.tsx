@@ -1,5 +1,4 @@
 import SwitchTheme from '@app/web/app/(public)/SwitchTheme'
-import { getServerDsfrTheme } from '@app/web/app/getServerDsfrTheme'
 import Footer, { type FooterProps } from '@codegouvfr/react-dsfr/Footer'
 
 export const publicFooterProps = {
@@ -44,9 +43,7 @@ export const publicFooterProps = {
   'accessibility' | 'accessibilityLinkProps' | 'bottomItems'
 >
 
-const PublicFooter = async () => {
-  const initialTheme = await getServerDsfrTheme()
-
+const PublicFooter = ({ initialTheme }: { initialTheme: 'light' | 'dark' }) => {
   return (
     <Footer
       accessibility={publicFooterProps.accessibility}

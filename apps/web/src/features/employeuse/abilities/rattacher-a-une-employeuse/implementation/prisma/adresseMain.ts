@@ -1,6 +1,10 @@
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
+import {
+  searchAdresse,
+  siIndisponible,
+} from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
+import * as Sentry from '@sentry/nextjs'
 import { CodeInsee } from '../../../../domain/code-insee'
 import { CodePostal } from '../../../../domain/code-postal'
 
@@ -59,7 +63,7 @@ export const resolveAdresseMain = async (
 ): Promise<ResolvedAdresseMain> => {
   const feature = await searchAdresse(
     `${identity.adresse}, ${identity.codePostal} ${identity.commune}`,
-  )
+  ).catch(siIndisponible(null, (erreur) => Sentry.captureException?.(erreur)))
   const banScore = feature?.properties.score ?? null
 
   if (feature && feature.properties.score > BAN_SCORE_THRESHOLD) {

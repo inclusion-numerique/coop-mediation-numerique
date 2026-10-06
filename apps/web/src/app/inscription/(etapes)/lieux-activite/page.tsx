@@ -1,8 +1,11 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import type { LieuActiviteConnu } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import { lieuxActiviteDuMediateur } from '@app/web/features/lieux-activite'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -43,7 +46,14 @@ const LieuxActivitePageRoute = async () => {
     codeInsee: lieu.codeInsee ?? null,
   }))
 
-  return <LieuxActivitePage lieuxActivite={lieuxExistants} />
+  return (
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <LieuxActivitePage lieuxActivite={lieuxExistants} />
+    </ClientBinder>
+  )
 }
 
 export default LieuxActivitePageRoute

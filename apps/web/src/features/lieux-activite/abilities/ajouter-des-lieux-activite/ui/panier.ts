@@ -1,3 +1,7 @@
+import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@app/web/external-apis/apiAdresse'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
   adresseNonVerifiableMessage,
@@ -77,7 +81,7 @@ export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean =>
  * Ce que devient un lieu choisi dans la recherche : une entrée du panier, ou le
  * refus à opposer à l'utilisateur.
  *
- * Deux refus seulement. L'adresse que la Base Adresse Nationale ne reconnaît
+ * L'adresse que la Base Adresse Nationale ne reconnaît
  * pas : créer le lieu écrirait une adresse que personne n'a validée, et seule
  * la saisie manuelle fait choisir une adresse reconnue. Et le lieu déjà retenu :
  * l'ajouter une seconde fois n'ajoute rien.
@@ -86,7 +90,11 @@ export const selectionner = async (
   lieux: readonly LieuAuPanier[],
   resultat: LieuActiviteSearchResult,
 ): Promise<Result<LieuAuPanier, string>> => {
-  const lieu = await auPanier(resultat)
+  const lieu = await auPanier(resultat).catch(
+    siIndisponible('indisponible' as const),
+  )
+
+  if (lieu === 'indisponible') return failure(SERVICE_ADRESSE_INDISPONIBLE)
 
   if (lieu == null)
     return failure(adresseNonVerifiableMessage(resultat, CREER_A_LA_MAIN))

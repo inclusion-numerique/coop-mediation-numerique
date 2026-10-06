@@ -7,6 +7,7 @@ import { ensureStructureAdministrativeMain } from './ensureStructureAdministrati
 // créer UNE ligne `main.structure_administrative`, et rester idempotente. On neutralise l'appel
 // réseau : searchAdresse -> null rend le géocodage déterministe et hors-ligne.
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
+  ...jest.requireActual('@app/web/external-apis/apiAdresse'),
   searchAdresse: jest.fn(),
 }))
 const mockedSearchAdresse = searchAdresse as jest.MockedFunction<

@@ -2,11 +2,12 @@ import NouvelleFonctionnaliteCard from '../../../components/NouvelleFonctionnali
 import SnoozeNouvelleFonctionnaliteButton from '../../../components/SnoozeNouvelleFonctionnaliteButton'
 import RdvDecouvrirButton from './RdvDecouvrirButton'
 
-const rdvFeatureId = 'rdv'
+export const rdvFeatureId = 'rdv'
 
-const RdvNouvelleFonctionnaliteCard = () => (
+const RdvNouvelleFonctionnaliteCard = ({ masquee }: { masquee: boolean }) => (
   <NouvelleFonctionnaliteCard
     featureId={rdvFeatureId}
+    masquee={masquee}
     showFrom={new Date('2025-12-01')}
     showUntil={new Date('2026-02-01')}
     featureName="Nouveauté&nbsp;: Intégration RDV Service public"

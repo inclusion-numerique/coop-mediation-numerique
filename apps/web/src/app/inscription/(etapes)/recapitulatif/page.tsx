@@ -1,7 +1,10 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { getRecapitulatifPageData } from '@app/web/features/inscription/abilities/valider/queries/getRecapitulatifPageData'
 import RecapitulatifPage from '@app/web/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -24,7 +27,14 @@ const RecapitulatifPageRoute = async () => {
     user,
   })
 
-  return <RecapitulatifPage data={data} />
+  return (
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <RecapitulatifPage data={data} />
+    </ClientBinder>
+  )
 }
 
 export default RecapitulatifPageRoute

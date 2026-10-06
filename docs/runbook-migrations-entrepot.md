@@ -12,7 +12,7 @@ En production (`main`), le schéma `coop` ne vit plus dans une base dédiée mai
 
 La CI ouvre ce tunnel puis lance `prisma migrate deploy` **avant** de déployer le conteneur : si la
 migration échoue, le déploiement est avorté et l'ancien conteneur continue de servir
-(cf. `.circleci/config.yml`, étape « Migrate coop schema on the Entrepôt »).
+(cf. `.github/workflows/deploy.yml`, étape « Migrate coop schema on the Entrepôt (SSH tunnel) »).
 
 `ENTREPOT_DATABASE_URL` porte déjà `search_path=coop`, donc les migrations s'appliquent bien sur
 `coop._prisma_migrations`.

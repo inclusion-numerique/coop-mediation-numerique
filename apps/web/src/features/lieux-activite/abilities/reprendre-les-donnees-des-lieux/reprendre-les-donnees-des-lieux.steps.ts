@@ -319,11 +319,10 @@ const semerUnLieu = async (champs: {
       siteWeb: [...(champs.siteWeb ?? [])],
       courriels: [...(champs.courriels ?? [])],
     },
-    select: { id: true, modification: true },
+    select: { id: true },
   })
 
   semis.lieuId = lieu.id
-  semis.modification = lieu.modification
 
   if (champs.sansAccompagnement === true) return
 
@@ -628,7 +627,7 @@ Given(
     initiale.voie = '12 QUAI DU PORT'
     await prismaClient.lieuInclusion.update({
       where: { id: lieuSeme() },
-      data: { adresse: initiale.voie, banId: null, latitude: null },
+      data: { adresse: initiale.voie, banId: null },
     })
   },
 )
@@ -638,7 +637,7 @@ Given('un lieu dont la voie ne nomme aucune voie', async () => {
   initiale.voie = 'Le Bourg'
   await prismaClient.lieuInclusion.update({
     where: { id: lieuSeme() },
-    data: { adresse: initiale.voie, banId: null, latitude: null },
+    data: { adresse: initiale.voie, banId: null },
   })
 })
 
@@ -1021,6 +1020,12 @@ Given(
   },
 )
 
+Given('il est inscrit au registre', async () => {
+  await prismaClient.lieuInclusionRegistreMain.create({
+    data: { nom: 'Lieu à reprendre', structureCoopId: lieuSeme() },
+  })
+})
+
 Given('il est inscrit au registre avec les mêmes horaires', async () => {
   await prismaClient.lieuInclusionRegistreMain.create({
     data: {
@@ -1032,6 +1037,16 @@ Given('il est inscrit au registre avec les mêmes horaires', async () => {
 })
 
 When('on reprend les données des lieux', async () => {
+  semis.modification =
+    semis.lieuId == null
+      ? undefined
+      : (
+          await prismaClient.lieuInclusion.findUniqueOrThrow({
+            where: { id: semis.lieuId },
+            select: { modification: true },
+          })
+        ).modification
+
   semis.releve = (
     await reprendreLesDonneesDesLieux({
       reprises: [

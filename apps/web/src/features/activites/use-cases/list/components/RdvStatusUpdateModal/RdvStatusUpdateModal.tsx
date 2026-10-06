@@ -3,9 +3,10 @@
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
-import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
 import type { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
+import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
@@ -40,7 +41,9 @@ const RdvStatusUpdateModal = ({
 
   const handleCreateCra = async () => {
     setPreparationCraEnCours(true)
-    const result = await creerActiviteDepuisRdvAction({ rdvId: rdv.id })
+    const result = await inject(CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY)({
+      rdvId: rdv.id,
+    })
 
     if (!result.success) {
       setPreparationCraEnCours(false)
@@ -59,7 +62,10 @@ const RdvStatusUpdateModal = ({
     statut: 'noshow' | 'excused' | 'revoked' | 'seen',
   ) => {
     setMiseAJourEnCours(true)
-    const result = await mettreAJourStatutRdvAction({ rdvId: rdv.id, statut })
+    const result = await inject(METTRE_A_JOUR_STATUT_RDV_ACTION_KEY)({
+      rdvId: rdv.id,
+      statut,
+    })
 
     if (!result.success) {
       setMiseAJourEnCours(false)

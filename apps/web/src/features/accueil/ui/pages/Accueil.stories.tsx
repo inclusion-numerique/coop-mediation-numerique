@@ -16,5 +16,8 @@ export const Statistiques: Story = {
     email: 'john@doe.com',
     activites: [],
     timezone: 'Europe/Paris',
+    nouvellesFonctionnalitesMasquees: [],
+    widgetRdv: { _tag: 'masque' },
+    synchroniserRdvsAuChargement: false,
   },
 }

@@ -1,6 +1,9 @@
 import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
 import { StatutPresence } from '@app/web/features/rdvsp/domain/statut-presence'
+import { success } from '@app/web/libraries/result'
+import { provide } from '@app/web/libs/injection/client'
 import type { Meta, StoryObj } from '@storybook/react'
+import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '../../action/rafraichir-accueil-rdv.key'
 import type {
   DonneesAccueilRdv,
   RdvEnUneLigne,
@@ -12,6 +15,14 @@ import RdvsAccueil from './RdvsAccueil'
 export default {
   title: 'Coop/Accueil/RdvsAccueil',
   component: RdvsAccueil,
+  decorators: [
+    (Story) => {
+      provide(RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY, async () =>
+        success({ _tag: 'inchange' }),
+      )
+      return <Story />
+    },
+  ],
 } as Meta<typeof RdvsAccueil>
 
 type Story = StoryObj<typeof RdvsAccueil>

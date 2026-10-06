@@ -1,3 +1,4 @@
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { getUtilisateursListPageData } from '@app/web/app/administration/utilisateurs/getUtilisateursListPageData'
 import {
   getAccompagnementsCountByDay,
@@ -19,6 +20,8 @@ import {
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),
@@ -59,57 +62,62 @@ const Page = async (props: {
   ])
 
   return (
-    <>
-      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
-        <Filters
-          defaultFilters={activitesFilters}
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <>
+        <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
+          <Filters
+            defaultFilters={activitesFilters}
+            communesOptions={communesOptions}
+            departementsOptions={departementsOptions}
+            lieuxActiviteOptions={lieuxActiviteOptions}
+            structuresEmployeusesOptions={[]}
+            tagsOptions={tagsOptions}
+            initialMediateursOptions={[]}
+            initialBeneficiairesOptions={[]}
+            minDate={new Date('2020-01-01')}
+            beneficiairesFilter={false}
+            isCoordinateur={false}
+            isMediateur={false}
+            hasCrasV1={true}
+          />
+        </div>
+        <FilterTags
+          filters={activitesFilters}
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
           structuresEmployeusesOptions={[]}
-          tagsOptions={tagsOptions}
-          initialMediateursOptions={[]}
-          initialBeneficiairesOptions={[]}
-          minDate={new Date('2020-01-01')}
-          beneficiairesFilter={false}
-          isCoordinateur={false}
-          isMediateur={false}
-          hasCrasV1={true}
+          tagsOptions={[]}
+          mediateursOptions={[]}
+          beneficiairesOptions={[]}
+          activiteSourceOptions={activiteSourceOptions}
         />
-      </div>
-      <FilterTags
-        filters={activitesFilters}
-        communesOptions={communesOptions}
-        departementsOptions={departementsOptions}
-        lieuxActiviteOptions={lieuxActiviteOptions}
-        structuresEmployeusesOptions={[]}
-        tagsOptions={[]}
-        mediateursOptions={[]}
-        beneficiairesOptions={[]}
-        activiteSourceOptions={activiteSourceOptions}
-      />
-      <section className="fr-mb-6w">
-        <StatistiquesGenerales
-          wording="generique"
-          totalCounts={totalCounts}
-          accompagnementsParJour={accompagnementsParJour}
-          accompagnementsParMois={accompagnementsParMois}
-        />
-      </section>
-      <section className="fr-mb-6w">
-        <StatistiquesActivites
-          wording="generique"
-          totalCounts={totalCounts}
-          activites={activites}
-        />
-      </section>
-      <section className="fr-mb-6w">
-        <StatistiquesBeneficiaires
-          beneficiaires={beneficiaires}
-          wording="generique"
-        />
-      </section>
-    </>
+        <section className="fr-mb-6w">
+          <StatistiquesGenerales
+            wording="generique"
+            totalCounts={totalCounts}
+            accompagnementsParJour={accompagnementsParJour}
+            accompagnementsParMois={accompagnementsParMois}
+          />
+        </section>
+        <section className="fr-mb-6w">
+          <StatistiquesActivites
+            wording="generique"
+            totalCounts={totalCounts}
+            activites={activites}
+          />
+        </section>
+        <section className="fr-mb-6w">
+          <StatistiquesBeneficiaires
+            beneficiaires={beneficiaires}
+            wording="generique"
+          />
+        </section>
+      </>
+    </ClientBinder>
   )
 }
 

@@ -1,0 +1,38 @@
+name: 'Test environment'
+description: 'Create the .env file for tests against the CI database, then migrate it'
+
+inputs:
+  scw-access-key:
+    description: 'Scaleway access key reading the Secret Manager'
+    required: true
+  scw-secret-key:
+    description: 'Scaleway secret key reading the Secret Manager'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Secrets environment
+      uses: ./.github/actions/secrets-env
+      with:
+        scw-access-key: ${{ inputs.scw-access-key }}
+        scw-secret-key: ${{ inputs.scw-secret-key }}
+    - name: Add NEXT_PUBLIC variables to env file
+      run: pnpm --silent cli dotenv:add-next-public --local "${GITHUB_REF_NAME//\//-}"
+      shell: bash
+    - name: Add test variables to env file
+      run: |
+        cat >> .env <<'DOTENV'
+        DATABASE_URL=postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
+        SMTP_SERVER=localhost
+        SMTP_PORT=1025
+        SMTP_USERNAME=mailuser
+        SMTP_PASSWORD=mailpassword
+        NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_HOSTNAME="$RDV_SERVICE_PUBLIC_LOCAL_OAUTH_HOSTNAME"
+        NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_CLIENT_ID="$RDV_SERVICE_PUBLIC_LOCAL_OAUTH_CLIENT_ID"
+        RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET="$RDV_SERVICE_PUBLIC_LOCAL_OAUTH_CLIENT_SECRET"
+        DOTENV
+      shell: bash
+    - name: Migrate database
+      run: pnpm --silent -F @app/web db:migrate-deploy
+      shell: bash

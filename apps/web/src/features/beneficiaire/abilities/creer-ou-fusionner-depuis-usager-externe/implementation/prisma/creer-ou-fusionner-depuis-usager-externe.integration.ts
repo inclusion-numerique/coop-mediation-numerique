@@ -4,6 +4,7 @@ import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from '@app/fixtures/users/mediateurAvecActivite'
+import { AdresseIndisponible } from '@app/web/external-apis/apiAdresse'
 import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
@@ -84,6 +85,7 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
 
   beforeEach(() => {
     mockedCommuneFields.mockReset()
+    mockedCommuneFields.mockResolvedValue(null)
   })
 
   afterEach(async () => {
@@ -114,6 +116,26 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
     expect(beneficiaire.commune).toBe('Évreux')
     expect(beneficiaire.communeCodePostal).toBe('27000')
     expect(beneficiaire.communeCodeInsee).toBe('27229')
+  })
+
+  test('crée la fiche sans commune quand le service d’adresse est indisponible', async () => {
+    mockedCommuneFields.mockRejectedValue(new AdresseIndisponible('HTTP 503'))
+    await seedRdvUser()
+
+    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
+      {
+        usagers: [usager],
+        mediateurId,
+      },
+    )
+    trackBeneficiaire(merges[0].id)
+
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: merges[0].id },
+    })
+
+    expect(beneficiaire.commune).toBeNull()
+    expect(beneficiaire.communeCodeInsee).toBeNull()
   })
 
   test('renseigne la commune en fusionnant dans une fiche liée sans commune', async () => {
