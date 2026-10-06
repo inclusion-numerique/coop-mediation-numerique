@@ -13,20 +13,20 @@
     "node": "^24.19"
   },
   "dependencies": {
-    "axios": "^1.18.1",
+    "axios": "^1.20.0",
     "dotenv": "^17.4.2",
     "jest-junit": "^17.0.0"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.46",
+    "@swc/core": "^1.16.2",
     "@swc/jest": "^0.2.39",
-    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/jest-dom": "^7.0.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.13.3",
-    "jest": "^30.4.2",
+    "@types/node": "^24.19.1",
+    "jest": "^30.5.2",
     "jest-extended": "^7.0.0",
-    "ts-jest": "^29.4.11",
-    "tsx": "^4.23.1",
+    "ts-jest": "^29.4.12",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
 }
