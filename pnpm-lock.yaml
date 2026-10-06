@@ -200,8 +200,8 @@ importers:
         specifier: 11.1.2
         version: 11.1.2(typescript@7.0.2)
       '@zumer/snapdom':
-        specifier: ^2.24.18
-        version: 2.24.18
+        specifier: ^3.0.0
+        version: 3.0.0
       axios:
         specifier: ^1.20.0
         version: 1.20.0
@@ -6238,8 +6238,8 @@ packages:
       playwright-core:
         optional: true
 
-  '@zumer/snapdom@2.24.18':
-    resolution: {integrity: sha512-wMw8lNY5l0pyarAv8jbe5ayOmrR2OUnK5KLtCwuhcLhFv88d2Y38Sertb+d9pn5g20Cet4eLCRXd3yFHcWiDIQ==}
+  '@zumer/snapdom@3.0.0':
+    resolution: {integrity: sha512-O+gqKYz+7545JNgG4Hzdy9/i+7/H38bDpF6tUOCJBqAUTm9npbaE3ZxuevFBcRi6cBLpvMqVYIjtywAZIP6OFQ==}
 
   abbrev@5.0.0:
     resolution: {integrity: sha512-/XrFJgzQQQHpti1raDJC6m4ws6aNktmjBlhk8Fdlk7LwCEuDoieEJJY9OFHjfiFJFFRM2tK+Ky/IsfbbmlMu1w==}
@@ -20051,7 +20051,7 @@ snapshots:
       - '@types/react'
       - tailwindcss
 
-  '@zumer/snapdom@2.24.18': {}
+  '@zumer/snapdom@3.0.0': {}
 
   abbrev@5.0.0: {}
 

@@ -64,7 +64,7 @@
     "@trpc/client": "11.1.2",
     "@trpc/react-query": "11.1.2",
     "@trpc/server": "11.1.2",
-    "@zumer/snapdom": "^2.24.18",
+    "@zumer/snapdom": "^3.0.0",
     "axios": "^1.20.0",
     "change-case": "^5.4.4",
     "classnames": "^2.5.1",
