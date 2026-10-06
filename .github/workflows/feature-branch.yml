@@ -441,20 +441,28 @@ jobs:
           head-ref: ${{ github.sha }}
           fail-on-severity: critical
 
-  preview-approval:
-    name: Approve preview
+  preview-request:
+    name: Preview request
     runs-on: ubuntu-latest
-    environment: preview
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-preview-approval
-      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      requested: ${{ steps.label.outputs.requested }}
     steps:
-      - name: Preview approved
-        run: echo "Déploiement de la preview de « $GITHUB_REF_NAME » approuvé"
+      - name: Look for the preview label on the branch pull request
+        id: label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REQUESTED=$(gh api "repos/$GITHUB_REPOSITORY/pulls?head=$GITHUB_REPOSITORY_OWNER:$GITHUB_REF_NAME&state=open" --jq '[.[].labels[].name] | index("preview") != null')
+          echo "requested=$REQUESTED" >> "$GITHUB_OUTPUT"
+          echo "Label preview sur la PR de « $GITHUB_REF_NAME » : $REQUESTED"
 
   preview:
     name: Deploy preview
-    needs: preview-approval
+    needs: preview-request
+    if: needs.preview-request.outputs.requested == 'true'
     uses: ./.github/workflows/deploy.reusable.yml
     permissions:
       contents: read
