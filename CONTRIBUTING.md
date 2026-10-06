@@ -655,12 +655,14 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
 
 Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
-- **`Feature branch`** (push sur une branche prefixee, cf. Branches) : un seul run par push.
-  - Checks : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `main`.
-  - Preview : le job « Approve preview » attend une approbation, donnee depuis la PR (« Review deployments ») ; « Deploy preview » deploie alors l'environnement de la branche. Un nouveau push annule les checks et l'approbation en attente, jamais un deploiement en cours. Non obligatoire pour fusionner.
-- **`Release`** (push sur `main`) : deploiement de l'environnement `dev`, puis de la production si `dev` a reussi ; en production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur.
-- **`deploy.reusable.yml`** : build de l'image et deploiement, appele par `Feature branch` et `Release`.
-- **`Remove ephemeral environment`** : suppression de l'environnement de preview d'une branche a sa suppression (automatique a la fusion de sa PR), ou a la main. Il detruit la stack Scaleway, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry
+- **`Feature branch`** (push sur une branche prefixee, cf. Branches) : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `main`.
+- **`Preview`** (evenements de PR) : environnement de preview a la demande, pilote par le label `preview`.
+  - Poser le label `preview` sur la PR deploie l'environnement de la branche ; chaque push sur la PR le redeploie tant que le label est present.
+  - Retirer le label, ou fermer ou fusionner la PR, detruit l'environnement.
+  - Les evenements d'une meme PR s'executent l'un apres l'autre, sans jamais interrompre un deploiement en cours.
+- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele ; l'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur.
+- **`build.reusable.yml`** et **`deploy.reusable.yml`** : construction et publication de l'image d'un environnement, puis son deploiement (un deploiement a la fois par environnement), appeles par `Preview` et `Release`.
+- **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit la stack Scaleway, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---
