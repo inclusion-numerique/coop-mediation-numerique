@@ -2,20 +2,15 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - 'dev'
-      - 'main'
-  workflow_dispatch:
   workflow_call:
 
 concurrency:
-  group: deploy-${{ github.head_ref || github.ref_name }}
+  group: deploy-${{ github.ref_name }}
   cancel-in-progress: false
 
 env:
   WEB_APP_DOCKER_REGISTRY: rg.fr-par.scw.cloud/coop-mediation-numerique-web-app
-  BRANCHE: ${{ github.head_ref || github.ref_name }}
+  BRANCHE: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -28,8 +23,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Setup
         uses: ./.github/actions/setup
       - name: Compute deployment names
@@ -78,14 +71,12 @@ jobs:
       name: ${{ needs.build.outputs.environnement }}
       url: ${{ steps.status.outputs.url }}
     env:
-      CDK_FORCE_BRANCH: ${{ github.head_ref || github.ref_name }}
+      CDK_FORCE_BRANCH: ${{ github.ref_name }}
       NAMESPACE: ${{ needs.build.outputs.namespace }}
       WEB_CONTAINER_IMAGE: ${{ needs.build.outputs.image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Setup
         uses: ./.github/actions/setup
         with:

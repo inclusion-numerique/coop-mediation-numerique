@@ -1,0 +1,17 @@
+---
+name: Release
+
+on:
+  push:
+    branches:
+      - 'dev'
+      - 'main'
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: ./.github/workflows/deploy.reusable.yml
+    permissions:
+      contents: read
+      deployments: write
+    secrets: inherit

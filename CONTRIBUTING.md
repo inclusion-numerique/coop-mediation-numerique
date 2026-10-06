@@ -329,7 +329,7 @@ pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 | `pnpm cli dotenv:from-secrets` | Recupere tous les secrets depuis Scaleway Secret Manager et peuple le `.env` |
 | `pnpm cli terraform:vars-from-env <stack>` | Genere un fichier tfvars a partir des variables d'environnement (`web` ou `project`) |
 | `pnpm cli infrastructure:create <resource> <names>` | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run` |
-| `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Preview deletion` (branches separees par des virgules) |
+| `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Remove ephemeral environment` (branches separees par des virgules) |
 | `pnpm cli infrastructure:inventory` | Affiche l'inventaire de l'infrastructure et permet le nettoyage interactif (branches, conteneurs, buckets, bases) |
 | `pnpm cli backup:locally-restore-latest-main` | Restaure le dernier backup de la base `main` en local. Options : `--date <date>`, `--local`, `--list`, `--type <type>` |
 
@@ -655,13 +655,12 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
 
 Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
-- **`Validate`** (push sur une branche, `dev` ou `main`) : lint, tests unitaires, d'integration, Cucumber, Cypress et Chromatic. Ces checks sont obligatoires pour fusionner dans `dev` et `main`.
-- **`Preview`** (PR vers `dev` ou `main`) : le job « Approve preview » attend une approbation ; le bouton « Review deployments » de la PR lance alors le deploiement de l'environnement de preview de la branche. Un nouveau commit remplace l'approbation en attente. Ce check n'est pas obligatoire pour fusionner.
-- **`Deploy`** :
-  - **Branche** : deploiement d'une preview, depuis la PR (workflow `Preview`) ou par le bouton « Run workflow » de l'onglet Actions
-  - **Merge sur `dev`** : deploiement automatique de `dev`
-  - **Merge sur `main`** : deploiement automatique en production, la migration du schema `coop` sur l'Entrepot passant avant le conteneur
-- **`Preview deletion`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main
+- **`Feature branch`** (push sur une branche ou sur `dev`) : un seul run par push.
+  - Checks : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `dev` et `main`.
+  - Preview (hors `dev`) : le job « Approve preview » attend une approbation, donnee depuis la PR (« Review deployments ») ; « Deploy preview » deploie alors l'environnement de la branche. Un nouveau push annule les checks et l'approbation en attente, jamais un deploiement en cours. Non obligatoire pour fusionner.
+- **`Release`** (push sur `dev` ou `main`) : deploiement automatique de `dev`, ou de la production, la migration du schema `coop` sur l'Entrepot passant alors avant le conteneur.
+- **`deploy.reusable.yml`** : build de l'image et deploiement, appele par `Feature branch` et `Release`.
+- **`Remove ephemeral environment`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---
