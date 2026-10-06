@@ -138,7 +138,7 @@
     "jest": "^30.5.2",
     "modclean": "3.0.0-beta.1",
     "postcss-import": "^17.0.0",
-    "postcss-nested": "^8.0.1",
+    "postcss-nested": "^7.0.2",
     "postcss-preset-env": "^11.5.3",
     "prisma-erd-generator": "^3.2.1",
     "storybook": "^10.6.0",
