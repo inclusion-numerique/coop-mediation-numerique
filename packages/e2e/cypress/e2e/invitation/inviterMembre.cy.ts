@@ -5,6 +5,9 @@ import { mediateurInscription } from '@app/fixtures/users/mediateurInscription'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 
+const rechercheDuTerme = (search: string) =>
+  new RegExp(`"query":"${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`)
+
 const searchAndInviteUser = ({
   displayName,
   email,
@@ -18,9 +21,11 @@ const searchAndInviteUser = ({
   email: string
 }) => {
   // intercept the search query to avoid timing issues and insure that the search is executed
-  cy.intercept(
-    `/api/trpc/mediateur.search?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22query%22%3A%22${encodeURIComponent(search)}%22%7D%7D%7D`,
-  ).as(`search-${slug}`)
+  cy.intercept({
+    method: 'GET',
+    pathname: /^\/api\/trpc\/(mediateur\.search,)*mediateur\.search$/,
+    query: { input: rechercheDuTerme(search) },
+  }).as(`search-${slug}`)
 
   cy.get('#custom-select-form-field__members').type(search)
 
