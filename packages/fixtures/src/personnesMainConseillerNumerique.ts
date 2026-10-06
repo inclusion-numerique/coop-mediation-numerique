@@ -1,3 +1,4 @@
+import { enSerie } from '@app/fixtures/enSerie'
 import { structureEmployeuse } from '@app/fixtures/structures'
 import { fixtureUsers } from '@app/fixtures/users'
 import { conseillerInscriptionSansContrat } from '@app/fixtures/users/conseillerInscriptionSansContrat'
@@ -122,10 +123,8 @@ export const seedPersonnesMain = async (
     ON CONFLICT (personne_id, structure_administrative_id, source) DO NOTHING`
 
   // Passe 2 — affectation idposte vers la SA main de structureEmployeuse, pour tout CN de fixture.
-  await Promise.all(
-    idsConseillersNumeriques().map((coopId) =>
-      garantirAffectationIdposte(transaction, coopId),
-    ),
+  await enSerie(idsConseillersNumeriques(), (coopId) =>
+    garantirAffectationIdposte(transaction, coopId),
   )
 
   // Passe 3 — le rôle coordinateur, que la coop déclare et que `main` doit porter.

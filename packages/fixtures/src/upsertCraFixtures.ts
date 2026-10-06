@@ -3,6 +3,7 @@ import {
   fixtureCrasDemarchesAdministratives,
   fixtureCrasIndividuels,
 } from '@app/fixtures/activites'
+import { enSerie } from '@app/fixtures/enSerie'
 import type { Prisma } from '@prisma/client'
 
 export const upsertCraFixtures = async ({
@@ -23,14 +24,12 @@ export const upsertCraFixtures = async ({
   ]
 
   // First we upsert all the activites
-  await Promise.all(
-    allCras.map(({ activite }) =>
-      transaction.activite.upsert({
-        where: { id: activite.id },
-        create: activite,
-        update: activite,
-      }),
-    ),
+  await enSerie(allCras, ({ activite }) =>
+    transaction.activite.upsert({
+      where: { id: activite.id },
+      create: activite,
+      update: activite,
+    }),
   )
 
   // Then we delete and recreate the accompagnements
