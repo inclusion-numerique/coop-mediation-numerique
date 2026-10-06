@@ -1,6 +1,6 @@
 import { enSerie } from '@app/fixtures/enSerie'
 import { givenLieuInclusion } from '@app/fixtures/givenLieuInclusion'
-import { type Prisma, Typologie } from '@prisma/client'
+import { type Prisma, Typologie } from '@app/web/generated/prisma/browser'
 
 export const structureEmployeuse = givenLieuInclusion({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',

@@ -1,5 +1,5 @@
 import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
-import { Beneficiaire } from '@prisma/client'
+import { Beneficiaire } from '@app/web/generated/prisma/browser'
 import { createParticipantsAnonymesForBeneficiaires } from './createParticipantsAnonymesForBeneficiaires'
 
 describe('createParticipantsAnonymesForBeneficiaires', () => {

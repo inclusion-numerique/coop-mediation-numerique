@@ -1,6 +1,6 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import type { Lieu } from '../../../../domain/lieu'
 import { LieuId } from '../../../../domain/lieu-id'

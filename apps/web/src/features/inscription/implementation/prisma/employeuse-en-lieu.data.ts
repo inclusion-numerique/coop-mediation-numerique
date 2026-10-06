@@ -3,7 +3,7 @@ import {
   ContactReferent,
   referentAffichage,
 } from '@app/web/features/employeuse/server'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 // Matérialisation d'une employeuse en lieu d'activité : quand une personne déclare que son
 // employeur est aussi l'un de ses lieux, on recopie ses données `main` dans une ligne

@@ -1,5 +1,6 @@
 import { apiClientScopeLabels } from '@app/web/app/administration/clients-api/apiClient'
 import { ApiClientListItem } from '@app/web/app/administration/clients-api/getApiClientsListPageData'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import type {
   DataTableConfiguration,
   DataTableFilterValues,
@@ -7,7 +8,6 @@ import type {
 } from '@app/web/libs/data-table/DataTableConfiguration'
 import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { Prisma } from '@prisma/client'
 
 export type ApiClientsDataTableConfiguration = DataTableConfiguration<
   ApiClientListItem,

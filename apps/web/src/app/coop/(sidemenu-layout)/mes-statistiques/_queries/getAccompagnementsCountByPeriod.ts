@@ -5,13 +5,13 @@ import {
   getActivitesFiltersWhereConditions,
 } from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   MonthShortLabel,
   monthShortLabels,
 } from '@app/web/utils/monthShortLabels'
 import { UserProfile } from '@app/web/utils/user'
-import { Prisma } from '@prisma/client'
 import { LabelAndCount } from '../quantifiedShare'
 import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 

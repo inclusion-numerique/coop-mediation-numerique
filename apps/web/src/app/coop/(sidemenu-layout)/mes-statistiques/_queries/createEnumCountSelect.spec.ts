@@ -3,7 +3,7 @@ import {
   createEnumCountSelect,
   createIntArrayCountSelect,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
-import { Genre } from '@prisma/client'
+import { Genre } from '@app/web/generated/prisma/browser'
 
 describe('createEnumCountSelect', () => {
   it('should return a sum select with the enum values and default value handling', () => {

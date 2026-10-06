@@ -1,5 +1,6 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -7,7 +8,6 @@ import {
   toNumberOr,
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
-import { Prisma } from '@prisma/client'
 import {
   getEquipeCoordinateurIds,
   getEquipeInfo,

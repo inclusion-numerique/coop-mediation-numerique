@@ -1,5 +1,5 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { Autonomie } from '@prisma/client'
+import { Autonomie } from '@app/web/generated/prisma/browser'
 
 export const autonomieLabels: {
   [key in Autonomie]: string

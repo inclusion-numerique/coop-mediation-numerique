@@ -27,7 +27,7 @@ import { UserStatsIcon } from '@app/web/features/pictograms/user/UserStatsIcon'
 import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
 import { ProfessionalIcon } from '@app/web/features/pictograms/work/ProfessionalIcon'
 import { ScolarshipIcon } from '@app/web/features/pictograms/work/ScolarshipIcon'
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 
 export const thematiquesNonAdministrativesInfo = {
   AideAuxDemarchesAdministratives:

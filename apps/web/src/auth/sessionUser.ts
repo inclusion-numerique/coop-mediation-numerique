@@ -5,7 +5,7 @@ import type {
   RdvAccount,
   RdvOrganisation,
   User,
-} from '@prisma/client'
+} from '@app/web/generated/prisma/client'
 
 // Serializable user interface
 export type SessionUser = Pick<

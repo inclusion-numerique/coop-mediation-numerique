@@ -1,5 +1,5 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { Materiel } from '@prisma/client'
+import { Materiel } from '@app/web/generated/prisma/browser'
 
 export const materielLabels: {
   [key in Materiel]: string

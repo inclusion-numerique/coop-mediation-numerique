@@ -3,14 +3,11 @@ import {
   deploymentCanRemoveBrevoContactFromList,
   removeBrevoContactFromList,
 } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { PrismaClient } from '@prisma/client'
 
-type PrismaTransaction = Omit<
-  PrismaClient,
-  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
->
+type PrismaTransaction = Prisma.TransactionClient
 
 const includeCoordinateur = {
   mediateur: {

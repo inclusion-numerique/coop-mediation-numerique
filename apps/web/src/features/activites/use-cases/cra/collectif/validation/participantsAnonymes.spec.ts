@@ -1,4 +1,8 @@
-import { Genre, StatutSocial, TrancheAge } from '@prisma/client'
+import {
+  Genre,
+  StatutSocial,
+  TrancheAge,
+} from '@app/web/generated/prisma/browser'
 import type { ParticipantsAnonymesCraCollectifDataKey } from './ParticipantsAnonymesCraCollectifValidation'
 import {
   countGenreNonCommunique,

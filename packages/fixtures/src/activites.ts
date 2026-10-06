@@ -17,7 +17,7 @@ import { mediateque } from '@app/fixtures/structures'
 import { conseillerNumeriqueMediateurId } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurAvecActiviteMediateurId } from '@app/fixtures/users/mediateurAvecActivite'
 import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import { coordinateurInscritAvecToutMediateurId } from './users/coordinateurInscritAvecTout'
 
 export const mediateurAvecActiviteCrasIndividuels = [

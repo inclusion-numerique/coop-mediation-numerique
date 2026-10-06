@@ -1,4 +1,4 @@
-import type { Sql } from '@prisma/client/runtime/library'
+import type { Sql } from '@prisma/client/runtime/client'
 import type {
   DataTableConfiguration,
   DataTableFilter,

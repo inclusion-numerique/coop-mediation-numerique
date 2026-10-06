@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 import {
   type AccesFournisseur,
   AdresseCourriel,

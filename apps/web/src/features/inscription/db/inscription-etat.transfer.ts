@@ -1,4 +1,4 @@
-import type { User as PrismaUser } from '@prisma/client'
+import type { User as PrismaUser } from '@app/web/generated/prisma/client'
 import { dateDeFranchissement, Franchissement } from '../domain/franchissement'
 import type { InscriptionEtat } from '../domain/inscription-etat'
 import {

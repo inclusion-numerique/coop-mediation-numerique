@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { v4 } from 'uuid'
 
 export const givenBeneficiaire = <

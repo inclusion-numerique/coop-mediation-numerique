@@ -3,6 +3,11 @@ import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
+import {
+  LieuInclusion,
+  Prisma,
+  TypeActivite,
+} from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
@@ -10,7 +15,6 @@ import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
-import { LieuInclusion, Prisma, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
 import { assignPremierAccompagnement } from './assignPremierAccompagnement'
 import { craDureeDataToMinutes } from './minutesToCraDuree'

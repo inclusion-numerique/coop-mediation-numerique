@@ -1,4 +1,4 @@
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import { canHavePrecisionDemarche } from './canHavePrecisionDemarche'
 
 describe('can have precision demarche validation', () => {

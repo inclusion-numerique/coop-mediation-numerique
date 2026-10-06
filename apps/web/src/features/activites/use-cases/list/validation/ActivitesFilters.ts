@@ -14,7 +14,7 @@ import {
   type RdvStatus,
   rdvStatusValues,
 } from '@app/web/features/rdvsp/ui/rdv-status'
-import { Thematique } from '@prisma/client'
+import { Thematique } from '@app/web/generated/prisma/browser'
 import z from 'zod'
 
 const isoDayRegex = /^\d{4}-\d{2}-\d{2}$/

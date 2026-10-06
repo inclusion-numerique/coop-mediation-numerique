@@ -1,5 +1,5 @@
 import { enSerie } from '@app/fixtures/enSerie'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { mergeUuids } from './mergeUuids'
 
 export type Coordination = {

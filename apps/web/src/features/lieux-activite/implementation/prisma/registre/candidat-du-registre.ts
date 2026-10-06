@@ -1,5 +1,5 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import type { LieuCandidat } from '@app/web/libraries/lieu-identite'
-import type { Prisma } from '@prisma/client'
 import { voieDuRegistre } from './voie-du-registre'
 
 export const inscriptionPourLaCorrelation = {

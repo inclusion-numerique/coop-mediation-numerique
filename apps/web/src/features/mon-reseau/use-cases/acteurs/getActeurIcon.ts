@@ -1,4 +1,4 @@
-import { ProfilInscription } from '@prisma/client'
+import { ProfilInscription } from '@app/web/generated/prisma/browser'
 
 export const getActeurIconUrl = (profil: ProfilInscription): string | null => {
   if (profil === 'CoordinateurConseillerNumerique') {

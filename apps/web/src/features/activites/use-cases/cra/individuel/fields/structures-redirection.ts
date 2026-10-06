@@ -1,5 +1,5 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { StructureDeRedirection } from '@prisma/client'
+import { StructureDeRedirection } from '@app/web/generated/prisma/browser'
 
 export const structuresRedirectionLabels: {
   [key in StructureDeRedirection]: string

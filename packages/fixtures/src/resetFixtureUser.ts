@@ -12,8 +12,8 @@ import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
 import { sansDrapeauDispositif } from '@app/fixtures/upsertUserFixture'
 import { coordinations, fixtureUsers } from '@app/fixtures/users'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
+import type { Session } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Session } from '@prisma/client'
 import {
   Coordination,
   upsertCoordinationFixtures,

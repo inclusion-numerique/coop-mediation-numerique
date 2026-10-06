@@ -1,6 +1,6 @@
 import { givenMediateur } from '@app/fixtures/givenMediateur'
 import { givenUser } from '@app/fixtures/givenUser'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { administrateur } from './administrateur'
 import { conseillerInscriptionSansContrat } from './conseillerInscriptionSansContrat'
 import {

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * Regex pattern for extracting department code from INSEE code

@@ -2,8 +2,8 @@ import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiai
 import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 import type {
   BeneficiaireSearchItem,
   GetInitialBeneficiairesOptions,

@@ -18,9 +18,14 @@ import { typeActiviteApiValues } from '@app/web/features/activites/use-cases/cra
 import { typeLieuApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
 import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
+import {
+  Genre,
+  Prisma,
+  StatutSocial,
+  TrancheAge,
+} from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { Genre, Prisma, StatutSocial, TrancheAge } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { type ZodError, z } from 'zod'
 

@@ -6,12 +6,12 @@ import {
   personneEmployeuseSelect,
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
-import { Prisma } from '@prisma/client'
 import type { ActeursSearchParams } from '../validation/ActeursFilters'
 
 const ACTEURS_DEFAULT_PAGE_SIZE = 20

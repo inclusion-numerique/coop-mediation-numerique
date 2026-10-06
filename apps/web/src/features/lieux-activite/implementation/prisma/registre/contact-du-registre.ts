@@ -1,9 +1,9 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import {
   Contact,
   type Courriel,
   Telephone,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Prisma } from '@prisma/client'
 import {
   courrielsValides,
   nonVide,

@@ -5,9 +5,9 @@ import {
   mediateurAvecActiviteMediateurId,
   mediateurAvecActiviteUserId,
 } from '@app/fixtures/users/mediateurAvecActivite'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
-import type { Prisma } from '@prisma/client'
 import { EmailExterne } from './domain/identite'
 import { UtilisateurCoopId } from './domain/utilisateur-coop-id'
 

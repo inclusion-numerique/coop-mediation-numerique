@@ -1,4 +1,5 @@
-import { PrismaClient } from '@app/web/generated/entrepot'
+import { PrismaClient } from '@app/web/generated/entrepot/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 // Second Prisma client pointing at the entrepôt (Dataspace) database. It is generated
 // from its own schema (prisma/entrepot/schema.prisma) and exposes a READ-ONLY, typed
@@ -16,7 +17,9 @@ const entrepotDatabaseUrl = configuredEntrepotUrl?.startsWith('postgres')
   : process.env.DATABASE_URL
 
 const createEntrepotPrismaClient = () =>
-  new PrismaClient({ datasourceUrl: entrepotDatabaseUrl })
+  new PrismaClient({
+    adapter: new PrismaPg({ connectionString: entrepotDatabaseUrl }),
+  })
 
 const globalForEntrepot = global as unknown as {
   entrepotPrismaClient:

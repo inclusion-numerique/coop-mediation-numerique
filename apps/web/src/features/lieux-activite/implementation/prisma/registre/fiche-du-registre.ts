@@ -1,3 +1,4 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import {
   Adresse,
   DispositifProgrammesNationaux,
@@ -12,7 +13,6 @@ import {
   Services,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Prisma } from '@prisma/client'
 import type { Fiche } from '../../../domain/fiche'
 import {
   complementAdresseSaisi,

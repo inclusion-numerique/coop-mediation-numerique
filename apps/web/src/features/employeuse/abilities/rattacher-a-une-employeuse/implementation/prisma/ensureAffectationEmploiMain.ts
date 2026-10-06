@@ -1,5 +1,5 @@
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
 import { ensurePersonneMain } from './ensurePersonneMain'
 
 // Écriture des affectations emploi `source='coop'` dans `main.personne_affectations_emploi` (dual-write,

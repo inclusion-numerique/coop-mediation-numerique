@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * Restreint les activités d'une équipe coordonnée à la période d'appartenance de chaque médiateur.

@@ -1,15 +1,15 @@
 import { CoordinateurUser } from '@app/web/auth/userTypeGuards'
+import {
+  TypeActiviteCoordination,
+  TypeAnimation,
+  TypeEvenement,
+} from '@app/web/generated/prisma/browser'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  TypeActiviteCoordination,
-  TypeAnimation,
-  TypeEvenement,
-} from '@prisma/client'
 import { CoordinationsFilters } from '../validation/CoordinationsFilters'
 
 type TypeStructurePartenaires = {

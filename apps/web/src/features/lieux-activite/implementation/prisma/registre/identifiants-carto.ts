@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 
 /**
  * L'identité cartographique d'un lieu se lit dans son inscription au registre de

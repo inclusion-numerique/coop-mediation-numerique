@@ -2,7 +2,7 @@ import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
-import { TypeActivite } from '@prisma/client'
+import { TypeActivite } from '@app/web/generated/prisma/browser'
 
 export const typeActivitePluralLabels: {
   [key in TypeActivite]: string

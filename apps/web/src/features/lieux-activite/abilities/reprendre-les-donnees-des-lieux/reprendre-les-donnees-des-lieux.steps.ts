@@ -64,9 +64,9 @@ import {
   triDesListes,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
+import type { Service, ServiceMain } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import type { Service, ServiceMain } from '@prisma/client'
 import { v4 } from 'uuid'
 
 const SERVICES_DESORDONNES: readonly Service[] = [

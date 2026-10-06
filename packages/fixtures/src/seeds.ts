@@ -27,7 +27,7 @@ import {
   teamMediateurs,
 } from '@app/fixtures/users'
 import { coordinateurInscritAvecToutCoordinateurId } from '@app/fixtures/users/coordinateurInscritAvecTout'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { upsertCoordinationFixtures } from './upsertCoordinationFixture'
 import { upsertInvitationEquipeFixtures } from './upsertInvitationEquipeFixture'
 import { upsertMediateurCoordonneFixtures } from './upsertMediateurCoordonneFixture'

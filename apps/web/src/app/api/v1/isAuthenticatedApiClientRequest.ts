@@ -3,7 +3,7 @@ import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
 } from '@app/web/app/api/v1/apiV1Headers'
-import { ApiClientScope } from '@prisma/client'
+import { ApiClientScope } from '@app/web/generated/prisma/browser'
 import { NextRequest } from 'next/server'
 
 export const isAuthenticatedApiClientRequest = async (

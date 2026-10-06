@@ -1,7 +1,7 @@
+import { Image } from '@app/web/generated/prisma/browser'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { s3 } from '@app/web/server/s3/s3'
 import { GetObjectCommand } from '@aws-sdk/client-s3'
-import { Image } from '@prisma/client'
 import sharp from 'sharp'
 
 export const computeImageMetadata = async ({

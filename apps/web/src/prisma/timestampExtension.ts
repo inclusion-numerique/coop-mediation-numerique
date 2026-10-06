@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@app/web/generated/prisma/client'
 
 // Extension Prisma qui pose automatiquement la date de dernière modification
 // (`modification` ou `updated` selon le modèle) sur chaque update/updateMany/upsert.

@@ -1,9 +1,9 @@
 import { personneConseillerNumeriqueSelect } from '@app/web/features/employeuse/server'
 import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { UserTimezone } from '@app/web/utils/user'
-import type { Prisma } from '@prisma/client'
 import { addTimezoneToActivite } from './addTimezoneToActivite'
 import { SearchActiviteAndRdvResultItem } from './searchActiviteAndRdvs'
 

@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import { givenUser } from '../givenUser'
 
 export const administrateur = givenUser({

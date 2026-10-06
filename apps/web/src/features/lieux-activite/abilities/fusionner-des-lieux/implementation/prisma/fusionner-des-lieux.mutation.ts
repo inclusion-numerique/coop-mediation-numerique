@@ -1,6 +1,6 @@
+import type { LieuInclusion, Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { unionArrays } from '@app/web/utils/unionArrays'
-import type { LieuInclusion, PrismaClient } from '@prisma/client'
 import {
   ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
@@ -8,10 +8,7 @@ import {
   toutesLesColonnes,
 } from '../../../../implementation'
 
-type PrismaTransaction = Omit<
-  PrismaClient,
-  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
->
+type PrismaTransaction = Prisma.TransactionClient
 
 // "Already on the target" must mean the same thing the UI considers a live
 // link — otherwise a finished record on the target silently swallows the
