@@ -6,7 +6,6 @@ on:
     types:
       - closed
     branches:
-      - 'dev'
       - 'main'
   delete:
   workflow_dispatch:
@@ -45,7 +44,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          ref: dev
+          ref: main
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -68,5 +67,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm --silent cli github:deployment:deactivate "$CDK_FORCE_BRANCH"
+      - name: Compute GitHub environment name
+        id: environnement
+        run: echo "nom=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './packages/cdk/src/utils.ts'; console.log(computeBranchNamespace(process.env.CDK_FORCE_BRANCH ?? ''))")" >> "$GITHUB_OUTPUT"
+      - name: Create GitHub App token
+        id: jeton
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.COOP_CI_APP_CLIENT_ID }}
+          private-key: ${{ secrets.COOP_CI_APP_PRIVATE_KEY }}
+          permission-administration: write
+      - name: Delete GitHub environment
+        env:
+          GH_TOKEN: ${{ steps.jeton.outputs.token }}
+          ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
+        run: |
+          case "$ENVIRONNEMENT" in
+            ''|main|dev|preview)
+              echo "L'environnement « $ENVIRONNEMENT » n'est jamais supprimé"
+              exit 1
+              ;;
+          esac
+          if ! gh api "repos/${{ github.repository }}/environments/$ENVIRONNEMENT" > /dev/null 2>&1; then
+            echo "L'environnement « $ENVIRONNEMENT » n'existe plus"
+            exit 0
+          fi
+          gh api --method DELETE "repos/${{ github.repository }}/environments/$ENVIRONNEMENT"
+          echo "Environnement « $ENVIRONNEMENT » supprimé"
       - name: Delete Sentry environment issues
         run: pnpm --silent cli sentry:delete-environment-issues "$CDK_FORCE_BRANCH"

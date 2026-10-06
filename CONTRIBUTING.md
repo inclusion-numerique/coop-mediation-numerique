@@ -402,7 +402,7 @@ l'historique git, pas dans le code.
 | `appliquer-dispositif-conum` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
 
-#### Dev et production (`dev` + `main`)
+#### Dev et production (environnements `dev` et `main`)
 
 | Job | Schedule | Horaire |
 |---|---|---|
@@ -655,12 +655,12 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
 
 Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
-- **`Feature branch`** (push sur une branche ou sur `dev`) : un seul run par push.
-  - Checks : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `dev` et `main`.
-  - Preview (hors `dev`) : le job « Approve preview » attend une approbation, donnee depuis la PR (« Review deployments ») ; « Deploy preview » deploie alors l'environnement de la branche. Un nouveau push annule les checks et l'approbation en attente, jamais un deploiement en cours. Non obligatoire pour fusionner.
-- **`Release`** (push sur `dev` ou `main`) : deploiement automatique de `dev`, ou de la production, la migration du schema `coop` sur l'Entrepot passant alors avant le conteneur.
+- **`Feature branch`** (push sur une branche prefixee, cf. Branches) : un seul run par push.
+  - Checks : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `main`.
+  - Preview : le job « Approve preview » attend une approbation, donnee depuis la PR (« Review deployments ») ; « Deploy preview » deploie alors l'environnement de la branche. Un nouveau push annule les checks et l'approbation en attente, jamais un deploiement en cours. Non obligatoire pour fusionner.
+- **`Release`** (push sur `main`) : deploiement de l'environnement `dev`, puis de la production si `dev` a reussi ; en production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur.
 - **`deploy.reusable.yml`** : build de l'image et deploiement, appele par `Feature branch` et `Release`.
-- **`Remove ephemeral environment`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main
+- **`Remove ephemeral environment`** : suppression de l'environnement de preview d'une branche a sa fusion dans `main`, a sa suppression, ou a la main. Il detruit la stack Scaleway, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---
@@ -669,7 +669,7 @@ Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
 ### Branches
 
-- Creer les branches a partir de la branche `dev` (a jour)
+- Creer les branches a partir de la branche `main` (a jour)
 - Prefixer les branches selon la nature des modifications :
   `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/`, `test/`
 
@@ -683,20 +683,24 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
 
 ### Workflow de contribution
 
-1. Creer une branche depuis `dev` :
+1. Creer une branche depuis `main` :
    ```bash
-   git checkout dev && git pull
+   git checkout main && git pull
    git checkout -b feat/nom-de-la-fonctionnalite
    ```
 2. Developper et commiter :
    ```bash
    git commit -m "feat: ajoute une fonctionnalite"
    ```
-3. Pousser et ouvrir une Pull Request vers `dev` :
+3. Pousser et ouvrir une Pull Request vers `main` :
    ```bash
    git push origin feat/nom-de-la-fonctionnalite
    ```
-4. Apres review et merge dans `dev` (deploiement automatique de `dev`), le merge de `dev` dans `main` declenche le deploiement en production.
+4. Le merge dans `main` deploie l'environnement `dev`, puis la production si `dev` a reussi.
+
+### Incidents de securite
+
+Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se traite selon la [Procedure de Reponse et Signalement des Incidents de Securite (PRIS)](https://docs.numerique.gouv.fr/docs/e8f1a2d1-3a6c-4e52-9ffd-639d772e76e7/). Le document est reserve aux agents : il s'ouvre apres connexion a Docs.
 
 ### Migrations de base de donnees
 
