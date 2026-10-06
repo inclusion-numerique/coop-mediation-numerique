@@ -111,9 +111,6 @@ importers:
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
-      undici:
-        specifier: 7.29.0
-        version: 7.29.0
       uuid:
         specifier: ^14.0.2
         version: 14.0.2
@@ -340,9 +337,6 @@ importers:
       superjson:
         specifier: 2.2.6
         version: 2.2.6
-      undici:
-        specifier: 7.29.0
-        version: 7.29.0
       usehooks-ts:
         specifier: ^3.1.1
         version: 3.1.1(react@19.3.0)
