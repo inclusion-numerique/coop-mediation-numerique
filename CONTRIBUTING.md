@@ -680,6 +680,7 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
 ### Commits
 
 - Les messages de commit doivent suivre la specification [Commits Conventionnels](https://www.conventionalcommits.org/fr)
+- Ils sont verifies par `commitlint` (configuration `@commitlint/config-conventional`) : en local par le hook `commit-msg`, et en CI par le check « Lint commits » sur tous les commits de la branche depuis `main` (`pnpm lint:commit`)
 - Les commits doivent etre signes (GPG)
 - Les PR se fusionnent dans `main` par « Squash and merge » : le titre de la PR devient le message du commit, il suit donc lui aussi la specification Commits Conventionnels, et le corps reprend les messages des commits de la PR
 - Consultez la [documentation GitHub](https://docs.github.com/en/authentication/managing-commit-signature-verification) pour configurer la signature

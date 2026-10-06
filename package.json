@@ -17,6 +17,7 @@
     "dev": "turbo dev --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
     "lint": "turbo lint",
+    "lint:commit": "commitlint --from origin/main",
     "tsc": "turbo tsc",
     "test": "turbo test",
     "test:integration": "pnpm -F web test:integration",
@@ -43,6 +44,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "@manypkg/cli": "^0.25.1",
     "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
