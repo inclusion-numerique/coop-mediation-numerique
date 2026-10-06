@@ -7,13 +7,15 @@ on:
       - 'dev'
       - 'main'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: deploy-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: false
 
 env:
   WEB_APP_DOCKER_REGISTRY: rg.fr-par.scw.cloud/coop-mediation-numerique-web-app
+  BRANCHE: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build:
@@ -26,12 +28,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Setup
         uses: ./.github/actions/setup
       - name: Compute deployment names
         id: namespace
-        env:
-          BRANCHE: ${{ github.ref_name }}
         run: |
           NAMESPACE="${BRANCHE//\//-}"
           IMAGE_NAME="coop-mediation-numerique-web-$NAMESPACE"
@@ -39,7 +41,7 @@ jobs:
           {
             echo "namespace=$NAMESPACE"
             echo "environnement=$ENVIRONNEMENT"
-            echo "image=$WEB_APP_DOCKER_REGISTRY/$IMAGE_NAME:${{ github.run_number }}"
+            echo "image=$WEB_APP_DOCKER_REGISTRY/$IMAGE_NAME:${{ github.run_id }}-${{ github.run_attempt }}"
           } >> "$GITHUB_OUTPUT"
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
@@ -76,12 +78,14 @@ jobs:
       name: ${{ needs.build.outputs.environnement }}
       url: ${{ steps.status.outputs.url }}
     env:
-      CDK_FORCE_BRANCH: ${{ github.ref_name }}
+      CDK_FORCE_BRANCH: ${{ github.head_ref || github.ref_name }}
       NAMESPACE: ${{ needs.build.outputs.namespace }}
       WEB_CONTAINER_IMAGE: ${{ needs.build.outputs.image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -105,7 +109,7 @@ jobs:
       - name: Create terraform variables file from environment variables
         run: pnpm --silent cli terraform:vars-from-env web
       - name: Migrate coop schema on the Entrepôt (SSH tunnel)
-        if: github.ref_name == 'main'
+        if: env.BRANCHE == 'main'
         run: |
           set -a
           source .env
@@ -131,14 +135,14 @@ jobs:
       - name: Mask env file values
         uses: ./.github/actions/mask-env
       - name: Migrate database
-        if: github.ref_name != 'main'
+        if: env.BRANCHE != 'main'
         run: |
           set -a
           source .env
           set +a
           pnpm --silent -F @app/web db:migrate-deploy
       - name: Load fixtures
-        if: github.ref_name != 'main'
+        if: env.BRANCHE != 'main'
         run: |
           set -a
           source .env

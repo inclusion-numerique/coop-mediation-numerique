@@ -656,8 +656,9 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
 Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
 
 - **`Validate`** (push sur une branche, `dev` ou `main`) : lint, tests unitaires, d'integration, Cucumber, Cypress et Chromatic. Ces checks sont obligatoires pour fusionner dans `dev` et `main`.
+- **`Preview`** (PR vers `dev` ou `main`) : le job « Approve preview » attend une approbation ; le bouton « Review deployments » de la PR lance alors le deploiement de l'environnement de preview de la branche. Un nouveau commit remplace l'approbation en attente. Ce check n'est pas obligatoire pour fusionner.
 - **`Deploy`** :
-  - **Branche** : deploiement manuel d'un environnement de preview (bouton « Run workflow » de l'onglet Actions, en choisissant la branche)
+  - **Branche** : deploiement d'une preview, depuis la PR (workflow `Preview`) ou par le bouton « Run workflow » de l'onglet Actions
   - **Merge sur `dev`** : deploiement automatique de `dev`
   - **Merge sur `main`** : deploiement automatique en production, la migration du schema `coop` sur l'Entrepot passant avant le conteneur
 - **`Preview deletion`** : suppression de l'environnement de preview d'une branche a sa fusion dans `dev` ou `main`, a sa suppression, ou a la main
