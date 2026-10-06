@@ -4,13 +4,25 @@ name: Release
 on:
   push:
     branches:
-      - 'dev'
       - 'main'
 
 jobs:
-  deploy:
-    name: Deploy
+  deploy-dev:
+    name: Deploy dev
     uses: ./.github/workflows/deploy.reusable.yml
+    with:
+      environnement: dev
+    permissions:
+      contents: read
+      deployments: write
+    secrets: inherit
+
+  deploy-production:
+    name: Deploy production
+    needs: deploy-dev
+    uses: ./.github/workflows/deploy.reusable.yml
+    with:
+      environnement: main
     permissions:
       contents: read
       deployments: write

@@ -4,13 +4,17 @@ name: Feature branch
 on:
   push:
     branches:
+      - 'build/*'
       - 'chore/*'
+      - 'ci/*'
       - 'docs/*'
       - 'feat/*'
       - 'fix/*'
+      - 'perf/*'
       - 'refactor/*'
+      - 'revert/*'
+      - 'style/*'
       - 'test/*'
-      - 'dev'
 
 jobs:
   lint:
@@ -433,13 +437,12 @@ jobs:
       - name: Dependency review
         uses: actions/dependency-review-action@v5
         with:
-          base-ref: ${{ github.ref_name == 'dev' && 'main' || 'dev' }}
+          base-ref: main
           head-ref: ${{ github.sha }}
           fail-on-severity: critical
 
   preview-approval:
     name: Approve preview
-    if: github.ref_name != 'dev'
     runs-on: ubuntu-latest
     environment: preview
     concurrency:
