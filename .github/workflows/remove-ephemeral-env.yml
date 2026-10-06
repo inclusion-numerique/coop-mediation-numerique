@@ -80,7 +80,7 @@ jobs:
           ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
         run: |
           case "$ENVIRONNEMENT" in
-            ''|main|dev|preview)
+            ''|main|dev)
               echo "L'environnement « $ENVIRONNEMENT » n'est jamais supprimé"
               exit 1
               ;;
