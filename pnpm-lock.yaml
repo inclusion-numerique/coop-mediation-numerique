@@ -141,10 +141,10 @@ importers:
         version: 2.1.0
       '@auth/core':
         specifier: ^0.41.3
-        version: 0.41.3(nodemailer@9.1.1)
+        version: 0.41.3(nodemailer@10.0.10)
       '@auth/prisma-adapter':
         specifier: ^2.11.3
-        version: 2.11.3(@prisma/client@6.13.0(prisma@6.13.0(typescript@7.0.2))(typescript@7.0.2))(nodemailer@9.1.1)
+        version: 2.11.3(@prisma/client@6.13.0(prisma@6.13.0(typescript@7.0.2))(typescript@7.0.2))(nodemailer@10.0.10)
       '@aws-sdk/client-s3':
         specifier: ^3.1136.0
         version: 3.1136.0
@@ -279,13 +279,13 @@ importers:
         version: 16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3)
       next-auth:
         specifier: ^4.24.15
-        version: 4.24.15(@auth/core@0.41.3(nodemailer@9.1.1))(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(nodemailer@9.1.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 4.24.15(@auth/core@0.41.3(nodemailer@10.0.10))(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(nodemailer@10.0.10)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       next-swagger-doc:
         specifier: ^0.4.1
         version: 0.4.1(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(openapi-types@7.2.3)
       nodemailer:
-        specifier: ^9.1.1
-        version: 9.1.1
+        specifier: ^10.0.10
+        version: 10.0.10
       p-retry:
         specifier: ^8.0.1
         version: 8.0.1
@@ -401,9 +401,6 @@ importers:
       '@types/node':
         specifier: ^24.19.1
         version: 24.19.1
-      '@types/nodemailer':
-        specifier: ^8.0.2
-        version: 8.0.2
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -5786,9 +5783,6 @@ packages:
   '@types/node@24.19.1':
     resolution: {integrity: sha512-aS3/DG0oM05K0RIXXP+hKjinGG5IgSSVGzswZxW3O0sS3pH4/fycXundUC9XsszgKCk4gHXylTEK6hyFxVxnoQ==}
 
-  '@types/nodemailer@8.0.2':
-    resolution: {integrity: sha512-c7M5ox8p0nEOfbJ2E9Qcmt8/QCu/VzsiAhzBiZbvky2PhKZDHpKB3sQHBM5MEZNkCfBOaS6S9//AGPRTNB7IaA==}
-
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
@@ -10759,9 +10753,9 @@ packages:
     resolution: {integrity: sha512-71kFFjYaSshDTA8/a2HiTYPLdASWjLJxUyJxGE+ffxU+KhxSBtM9kiLUX+R2yooFdSFKMFpi4n3PFtDy6qXv8A==}
     engines: {node: '>=18'}
 
-  nodemailer@9.1.1:
-    resolution: {integrity: sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ==}
-    engines: {node: '>=6.0.0'}
+  nodemailer@10.0.10:
+    resolution: {integrity: sha512-He9XskOFms62SyAKkLu8CcGcYHAo+BSHSsORI8s4PJH8qZgZY4L4lDfvyN0twvmbpyG+eGrxpyBlskj9d9rJ8A==}
+    engines: {node: '>=20.0.0'}
 
   nopt@10.0.1:
     resolution: {integrity: sha512-df3sBr/6ax9hSGuC3CspvLlbnX8cP5L5nZwXF8cGN8l0zSWR6BvzmQ6jPUKjvo6+/xdpkNvEcucBNUdBeeV13g==}
@@ -13950,7 +13944,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@auth/core@0.41.3(nodemailer@9.1.1)':
+  '@auth/core@0.41.3(nodemailer@10.0.10)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.2.12
@@ -13958,11 +13952,11 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 9.1.1
+      nodemailer: 10.0.10
 
-  '@auth/prisma-adapter@2.11.3(@prisma/client@6.13.0(prisma@6.13.0(typescript@7.0.2))(typescript@7.0.2))(nodemailer@9.1.1)':
+  '@auth/prisma-adapter@2.11.3(@prisma/client@6.13.0(prisma@6.13.0(typescript@7.0.2))(typescript@7.0.2))(nodemailer@10.0.10)':
     dependencies:
-      '@auth/core': 0.41.3(nodemailer@9.1.1)
+      '@auth/core': 0.41.3(nodemailer@10.0.10)
       '@prisma/client': 6.13.0(prisma@6.13.0(typescript@7.0.2))(typescript@7.0.2)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
@@ -19640,10 +19634,6 @@ snapshots:
   '@types/node@24.19.1':
     dependencies:
       undici-types: 7.24.6
-
-  '@types/nodemailer@8.0.2':
-    dependencies:
-      '@types/node': 24.19.1
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -25513,7 +25503,7 @@ snapshots:
 
   netmask@2.1.1: {}
 
-  next-auth@4.24.15(@auth/core@0.41.3(nodemailer@9.1.1))(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(nodemailer@9.1.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  next-auth@4.24.15(@auth/core@0.41.3(nodemailer@10.0.10))(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(nodemailer@10.0.10)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
       '@babel/runtime': 7.29.7
       '@panva/hkdf': 1.2.1
@@ -25528,8 +25518,8 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       uuid: 11.1.1
     optionalDependencies:
-      '@auth/core': 0.41.3(nodemailer@9.1.1)
-      nodemailer: 9.1.1
+      '@auth/core': 0.41.3(nodemailer@10.0.10)
+      nodemailer: 10.0.10
 
   next-swagger-doc@0.4.1(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(openapi-types@7.2.3):
     dependencies:
@@ -25698,7 +25688,7 @@ snapshots:
     dependencies:
       '@babel/parser': 7.29.9
 
-  nodemailer@9.1.1: {}
+  nodemailer@10.0.10: {}
 
   nopt@10.0.1:
     dependencies:
