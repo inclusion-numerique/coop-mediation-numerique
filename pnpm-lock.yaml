@@ -67,8 +67,8 @@ importers:
         specifier: ^7.0.8
         version: 7.0.8
       '@octokit/plugin-rest-endpoint-methods':
-        specifier: ^17.0.0
-        version: 17.0.0(@octokit/core@7.0.8)
+        specifier: ^18.0.0
+        version: 18.0.0(@octokit/core@7.0.8)
       '@sentry/node':
         specifier: ^10.75.0
         version: 10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))
@@ -180,7 +180,7 @@ importers:
         version: 0.11.18(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)
       '@sentry/nextjs':
         specifier: ^10.75.0
-        version: 10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+        version: 10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
       '@tanstack/react-form':
         specifier: ^1.33.5
         version: 1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -3332,14 +3332,14 @@ packages:
     resolution: {integrity: sha512-bt/hm03LeU6Vy7FwTrkkC9p3XGT/lBwClglMqxBSe5/q0E5CdJTXeAqEI0vlw89/LF/G6tryTIH8HirZ3prMVg==}
     engines: {node: '>= 20'}
 
-  '@octokit/openapi-types@27.0.0':
-    resolution: {integrity: sha512-whrdktVs1h6gtR+09+QsNk2+FO+49j6ga1c55YZudfEG+oKJVvJLQi3zkOm5JjiUXAagWK2tI2kTGKJ2Ys7MGA==}
+  '@octokit/openapi-types@28.0.0':
+    resolution: {integrity: sha512-0rFyLuyHvIj6uuZWuDslxkowFYdPXoNIkeAv4b27dzm2Tf4vGWXnPsMcxs7d65kLdMERgP3wc1AEPlqMz8e1cQ==}
 
   '@octokit/openapi-types@29.0.1':
     resolution: {integrity: sha512-9qWOMFNxxLokERcms42rU0PTLqQmVs7g5E41TI4mCOxmpFayD1rfC7XxOL55cG9MBZLFlC31BrR37myMKardwg==}
 
-  '@octokit/plugin-rest-endpoint-methods@17.0.0':
-    resolution: {integrity: sha512-B5yCyIlOJFPqUUeiD0cnBJwWJO8lkJs5d8+ze9QDP6SvfiXSz1BF+91+0MeI1d2yxgOhU/O+CvtiZ9jSkHhFAw==}
+  '@octokit/plugin-rest-endpoint-methods@18.0.0':
+    resolution: {integrity: sha512-1wM02pQTHEarWYij0Bb4gu8X8fBy2FJdI4HMTSFDxtYLbOkJErGVx5ywmM6jeS8tOmC0iCiRLrn6YsSIecUeOQ==}
     engines: {node: '>= 20'}
     peerDependencies:
       '@octokit/core': '>=6'
@@ -3352,8 +3352,8 @@ packages:
     resolution: {integrity: sha512-A0zWGjHzISIb+9ccG8s0dq7LKO5zVpJLRICjgUb+sJxEWqn8RUHB1rD3AE51+PECvXHIxqZ1VVvs4fHTSD9nUQ==}
     engines: {node: '>= 20'}
 
-  '@octokit/types@16.0.0':
-    resolution: {integrity: sha512-sKq+9r1Mm4efXW1FCk7hFSeJo4QKreL/tTbR0rz/qx/r1Oa2VV83LTA/H/MuCOX7uCIJmQVRKBcbmWoySjAnSg==}
+  '@octokit/types@17.0.0':
+    resolution: {integrity: sha512-ByP1v7YL5SMveFPP7+sj0/ZuWCOOg/Chs4NafOMpq6WNIM/hdGY0S7C0TCGDBWu1aGmOxmUIhMx3cO+IdwYZ1Q==}
 
   '@octokit/types@18.0.0':
     resolution: {integrity: sha512-l6bAF43PNxkJp6g+W4PjoUSSkxHomXw2nOum5CTftJz1NlV3vu93NImgOYtLf6CbBUb5j+fiuzW0PPQ5JTSvZA==}
@@ -16962,14 +16962,14 @@ snapshots:
       '@octokit/types': 18.0.0
       universal-user-agent: 7.0.3
 
-  '@octokit/openapi-types@27.0.0': {}
+  '@octokit/openapi-types@28.0.0': {}
 
   '@octokit/openapi-types@29.0.1': {}
 
-  '@octokit/plugin-rest-endpoint-methods@17.0.0(@octokit/core@7.0.8)':
+  '@octokit/plugin-rest-endpoint-methods@18.0.0(@octokit/core@7.0.8)':
     dependencies:
       '@octokit/core': 7.0.8
-      '@octokit/types': 16.0.0
+      '@octokit/types': 17.0.0
 
   '@octokit/request-error@7.1.2':
     dependencies:
@@ -16984,9 +16984,9 @@ snapshots:
       json-with-bigint: 3.5.12
       universal-user-agent: 7.0.3
 
-  '@octokit/types@16.0.0':
+  '@octokit/types@17.0.0':
     dependencies:
-      '@octokit/openapi-types': 27.0.0
+      '@octokit/openapi-types': 28.0.0
 
   '@octokit/types@18.0.0':
     dependencies:
@@ -18280,7 +18280,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/bundler-plugins@10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
+  '@sentry/bundler-plugins@10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@sentry/cli': 2.58.6(encoding@0.1.13)
@@ -18291,7 +18291,7 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       rollup: 4.63.4
-      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
+      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -18362,7 +18362,7 @@ snapshots:
       '@sentry/utils': 7.120.3
       localforage: 1.10.0
 
-  '@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
+  '@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@rollup/plugin-commonjs': 28.0.1(rollup@4.63.4)
@@ -18375,7 +18375,7 @@ snapshots:
       '@sentry/react': 10.75.0(react@19.3.0)
       '@sentry/server-utils': 10.75.0
       '@sentry/vercel-edge': 10.75.0
-      '@sentry/webpack-plugin': 5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+      '@sentry/webpack-plugin': 5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
       next: 16.3.8(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3)
       rollup: 4.63.4
       stacktrace-parser: 0.1.11
@@ -18465,10 +18465,10 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@sentry/core': 10.75.0
 
-  '@sentry/webpack-plugin@5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
+  '@sentry/webpack-plugin@5.4.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))':
     dependencies:
-      '@sentry/bundler-plugins': 10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
-      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
+      '@sentry/bundler-plugins': 10.75.0(encoding@0.1.13)(rollup@4.63.4)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
     transitivePeerDependencies:
       - encoding
       - rollup
@@ -24928,16 +24928,15 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  minimizer-webpack-plugin@5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)):
+  minimizer-webpack-plugin@5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.5.0
       terser: 5.51.2
-      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
+      webpack: 5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)
     optionalDependencies:
       '@swc/core': 1.16.2(@swc/helpers@0.5.23)
-      cssnano: 7.1.9(postcss@8.5.23)
       esbuild: 0.28.2
       postcss: 8.5.23
       sharp: 0.35.4(@types/node@24.19.1)
@@ -29066,7 +29065,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0):
+  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -29084,7 +29083,7 @@ snapshots:
       graceful-fs: 4.2.11
       loader-runner: 4.3.2
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
+      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23))
       neo-async: 2.6.2
       schema-utils: 4.5.0
       tapable: 2.3.3
@@ -29108,7 +29107,7 @@ snapshots:
       - svgo
       - uglify-js
 
-  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23):
+  webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -29126,7 +29125,7 @@ snapshots:
       graceful-fs: 4.2.11
       loader-runner: 4.3.2
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23))
+      minimizer-webpack-plugin: 5.11.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0))
       neo-async: 2.6.2
       schema-utils: 4.5.0
       tapable: 2.3.3
