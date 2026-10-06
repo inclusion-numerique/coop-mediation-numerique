@@ -54,15 +54,24 @@ overrides:
   "effect@<3.20.0": ^3.20.0
 
 # Seuls ces paquets sont autorisés à exécuter leurs scripts d'installation. Tous les autres
-# sont bloqués par défaut par pnpm 10 — c'est ce qui neutralise le vecteur `preinstall` des
+# sont bloqués par défaut par pnpm — c'est ce qui neutralise le vecteur `preinstall` des
 # vers npm. N'ajouter une entrée qu'avec une raison de compilation native avérée.
-onlyBuiltDependencies:
-  - "@prisma/client"
-  - "@prisma/engines"
-  - "@sentry/cli"
-  - "@swc/core"
-  - aws-crt
-  - cypress
-  - esbuild
-  - prisma
-  - sharp
+allowBuilds:
+  "@prisma/client": true
+  "@prisma/engines": true
+  "@sentry/cli": true
+  "@swc/core": true
+  aws-crt: true
+  cypress: true
+  esbuild: true
+  prisma: true
+  sharp: true
+  "@cdktf/node-pty-prebuilt-multiarch": false
+  "@parcel/watcher": false
+  "@scarf/scarf": false
+  core-js-pure: false
+  puppeteer: false
+  unrs-resolver: false
+  yarn: false
+
+dedupePeerDependents: false
