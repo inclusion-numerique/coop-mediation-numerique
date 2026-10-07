@@ -281,6 +281,9 @@ importers:
         specifier: ^14.0.2
         version: 14.0.2
     devDependencies:
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
