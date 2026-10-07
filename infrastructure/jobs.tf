@@ -1,8 +1,17 @@
-resource "scaleway_container_cron" "job" {
+resource "scaleway_container_trigger" "job" {
   for_each = local.jobs
 
   name         = each.key
-  schedule     = each.value
   container_id = scaleway_container.webContainer.id
-  args         = jsonencode({ name = each.key })
+
+  cron {
+    schedule = each.value
+    timezone = "Etc/UTC"
+    body     = jsonencode({ name = each.key })
+  }
+
+  destination_config {
+    http_path   = "/"
+    http_method = "post"
+  }
 }

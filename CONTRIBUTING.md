@@ -417,8 +417,7 @@ infrastructure/
 ├── database.tf          # Utilisateur, base et privileges sur l'instance partagee
 ├── storage.tf           # Bucket d'uploads
 ├── dns.tf               # Enregistrement DNS et domaine du conteneur
-├── jobs.tf              # Crons des jobs
-├── moved.tf             # Correspondance avec les adresses de l'ancien CDKTF
+├── jobs.tf              # Declencheurs cron des jobs
 ├── outputs.tf           # Sorties lues par le CLI
 └── .terraform.lock.hcl  # Empreintes du fournisseur
 ```
@@ -553,7 +552,7 @@ Le conteneur recoit une quarantaine de variables d'environnement couvrant :
 
 #### Jobs planifies (Cron)
 
-Les crons sont configures via `scaleway_container_cron` et envoient des requetes au conteneur :
+Les crons sont configures via `scaleway_container_trigger` (horaires en UTC) et envoient une requete `POST` au conteneur :
 
 **Production uniquement :**
 

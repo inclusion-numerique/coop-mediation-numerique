@@ -13,7 +13,7 @@ Resources shared by every environment (database instance, container namespace, r
 - Uploads bucket (`storage.tf`)
 - Serverless container and its environment variables (`container.tf`)
 - DNS record and container domain (`dns.tf`)
-- Job crons (`jobs.tf`, schedules in `locals.tf`)
+- Job cron triggers (`jobs.tf`, UTC schedules in `locals.tf`)
 
 The state of each environment is stored in the `coop-mediation-numerique-terraform-state` bucket under the `coop-mediation-numerique-web-<namespace>.tfstate` key, passed to `tofu init` with `-backend-config`.
 
