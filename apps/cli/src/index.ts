@@ -8,6 +8,8 @@ import { createTfVarsFileFromEnvironment } from '@app/cli/commands/infrastructur
 import { deletePreviewEnvironments } from '@app/cli/commands/infrastructure/deletePreviewEnvironments'
 import { infrastructureInventory } from '@app/cli/commands/infrastructure/inventory'
 import { locallyRestoreLatestMainBackup } from '@app/cli/commands/infrastructure/locallyRestoreLatestMainBackup'
+import { deleteRegistryImage } from '@app/cli/commands/infrastructure/registry/deleteRegistryImage'
+import { pruneRegistry } from '@app/cli/commands/infrastructure/registry/pruneRegistry'
 import { executeJobApiCommand } from '@app/cli/commands/jobs/executeJobApiCommand'
 import { executeJobCommand } from '@app/cli/commands/jobs/executeJobCommand'
 import { createDotEnvFromSecrets } from '@app/cli/commands/secrets/createDotEnvFromSecrets'
@@ -58,6 +60,8 @@ const main = async () => {
   program.addCommand(locallyRestoreLatestMainBackup)
   program.addCommand(fetchAccompagnements)
   program.addCommand(deleteSentryEnvironmentIssues)
+  program.addCommand(pruneRegistry)
+  program.addCommand(deleteRegistryImage)
   program.addCommand(deletePreviewEnvironments)
   program.addCommand(infrastructureInventory)
   await program.parseAsync()
