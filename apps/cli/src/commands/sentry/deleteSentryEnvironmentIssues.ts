@@ -1,6 +1,7 @@
 import { output, outputError } from '@app/cli/output'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { Command } from '@commander-js/extra-typings'
+import axios from 'axios'
 import {
   createSentryHttpClient,
   deleteIssuesByIds,
@@ -114,7 +115,10 @@ export const deleteSentryEnvironmentIssues = new Command()
         true,
       )
       output(`Environment "${result.name}" has been hidden from Sentry UI`)
-    } catch {
-      outputError('Failed to hide environment via Sentry API')
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? `${error.response?.status} ${error.response?.statusText} ${JSON.stringify(error.response?.data)}`
+        : String(error)
+      outputError(`Failed to hide environment via Sentry API: ${message}`)
     }
   })
