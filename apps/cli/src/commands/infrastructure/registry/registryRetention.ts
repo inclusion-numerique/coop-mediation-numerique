@@ -13,7 +13,7 @@ export const tagsBeyondTheMostRecent = (
   tags: readonly RegistryTag[],
   kept: number,
 ): RegistryTag[] =>
-  [...tags]
+  [...new Map(tags.map((tag) => [tag.id, tag])).values()]
     .sort((first, second) => second.createdAt.localeCompare(first.createdAt))
     .slice(kept)
 

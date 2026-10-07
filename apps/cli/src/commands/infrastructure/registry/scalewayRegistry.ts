@@ -89,10 +89,22 @@ export const listImageTags = async (
   }))
 }
 
-export const deleteTag = async (tagId: string): Promise<void> => {
-  await registryClient().delete(`/tags/${tagId}`, { params: { force: true } })
-}
+const alreadyGone = (error: unknown): boolean =>
+  axios.isAxiosError(error) && error.response?.status === 404
 
-export const deleteImage = async (imageId: string): Promise<void> => {
-  await registryClient().delete(`/images/${imageId}`)
-}
+const ignoringAlreadyGone = (deletion: Promise<unknown>): Promise<void> =>
+  deletion.then(
+    () => undefined,
+    (error: unknown) => {
+      if (alreadyGone(error)) return
+      throw error
+    },
+  )
+
+export const deleteTag = (tagId: string): Promise<void> =>
+  ignoringAlreadyGone(
+    registryClient().delete(`/tags/${tagId}`, { params: { force: true } }),
+  )
+
+export const deleteImage = (imageId: string): Promise<void> =>
+  ignoringAlreadyGone(registryClient().delete(`/images/${imageId}`))
