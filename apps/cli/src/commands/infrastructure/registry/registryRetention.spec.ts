@@ -48,6 +48,12 @@ describe('registryRetention', () => {
   })
 
   describe('imageNameForBranch', () => {
+    it('lowercases the branch because image names must be lowercase', () => {
+      expect(
+        imageNameForBranch('coop-mediation-numerique-web-', 'fix/filterLieux'),
+      ).toBe('coop-mediation-numerique-web-fix-filterlieux')
+    })
+
     it('replaces the slashes of the branch like the build does', () => {
       expect(
         imageNameForBranch('coop-mediation-numerique-web-', 'feat/export/csv'),

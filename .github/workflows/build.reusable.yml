@@ -45,7 +45,7 @@ jobs:
         id: namespace
         run: |
           NAMESPACE="${BRANCHE//\//-}"
-          IMAGE_NAME="coop-mediation-numerique-web-$NAMESPACE"
+          IMAGE_NAME="coop-mediation-numerique-web-${NAMESPACE,,}"
           ENVIRONNEMENT=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './packages/cdk/src/utils.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")
           {
             echo "namespace=$NAMESPACE"
@@ -66,7 +66,7 @@ jobs:
           key: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**/*.ts', 'apps/web/src/**/*.tsx') }}
           restore-keys: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - name: Build next app
-        run: SENTRY_RELEASE=true pnpm --silent -F @app/web build
+        run: pnpm --silent -F @app/web build
       - name: Build docker image
         run: DOCKER_BUILDKIT=1 docker build --progress=plain -t "${{ steps.namespace.outputs.image }}" -f docker/web/Dockerfile .
       - name: Push docker image

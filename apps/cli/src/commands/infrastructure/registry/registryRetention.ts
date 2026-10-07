@@ -18,7 +18,7 @@ export const tagsBeyondTheMostRecent = (
     .slice(kept)
 
 export const imageNameForBranch = (prefix: string, branch: string): string =>
-  `${prefix}${branch.replaceAll('/', '-')}`
+  `${prefix}${branch.replaceAll('/', '-').toLowerCase()}`
 
 export const orphanImages = ({
   images,

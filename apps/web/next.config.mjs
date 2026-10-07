@@ -66,6 +66,7 @@ export default withBundleAnalyzerConfig(
     silent: false, // Suppresses all logs
     tunnelRoute: '/monitoring',
     widenClientFileUpload: true,
+    release: { create: enableRelease },
     sourcemaps: {
       disable: !enableRelease,
     },
