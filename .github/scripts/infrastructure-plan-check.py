@@ -48,4 +48,4 @@ for change in pending:
     for description in changes:
         print(f"{change['address']} : {description}")
 
-sys.exit(1 if failures else 0)
+sys.exit(10 if failures else 0)
