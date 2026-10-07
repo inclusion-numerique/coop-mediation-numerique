@@ -176,6 +176,9 @@ After(async () => {
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { structureId: semé.lieuId },
   })
+  await prismaClient.activite.deleteMany({
+    where: { structureId: semé.lieuId },
+  })
   await effacerDuRegistre([semé.lieuId])
   await prismaClient.lieuInclusion.deleteMany({ where: { id: semé.lieuId } })
   await prismaClient.mediateur.deleteMany({
