@@ -546,10 +546,10 @@ Chaque environnement deploie un conteneur Scaleway Serverless :
 
 | Parametre | Production (`main`) | Dev (`dev`) | Preview (autres branches) |
 |---|---|---|---|
-| **Min scale** | 2 | 1 | 0 |
-| **Max scale** | 5 | 1 | 1 |
-| **CPU** | 3000 mVPCU | 1120 mVPCU | 1120 mVPCU |
-| **Memoire** | 3072 Mo | 2048 Mo | 2048 Mo |
+| **Min scale** | 2 | 0 | 0 |
+| **Max scale** | 3 | 1 | 1 |
+| **CPU** | 1120 mVPCU | 560 mVPCU | 560 mVPCU |
+| **Memoire** | 2048 Mo | 1024 Mo | 1024 Mo |
 
 Le conteneur recoit une quarantaine de variables d'environnement couvrant :
 - URL de la base de donnees (construite dynamiquement)
