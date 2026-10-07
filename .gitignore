@@ -67,9 +67,6 @@ storybook-static
 /packages/e2e/.next/
 /packages/e2e/cypress/downloads
 
-/packages/cdk/cdktf.out/
-packages/cdk/cdk.out.json
-terraform.*.tfstate
 
 # ui
 /packages/ui/.next

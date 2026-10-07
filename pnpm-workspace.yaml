@@ -1,7 +1,6 @@
 packages:
   - apps/cli
   - apps/web
-  - packages/cdk
   - packages/config
   - packages/e2e
   - packages/emails
@@ -60,12 +59,10 @@ allowBuilds:
   "@prisma/engines": true
   "@sentry/cli": true
   "@swc/core": true
-  aws-crt: true
   cypress: true
   esbuild: true
   prisma: true
   sharp: true
-  "@cdktf/node-pty-prebuilt-multiarch": false
   "@parcel/watcher": false
   "@scarf/scarf": false
   core-js-pure: false
