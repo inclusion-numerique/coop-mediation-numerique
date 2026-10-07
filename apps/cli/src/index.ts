@@ -3,7 +3,7 @@ import { createGithubDeployment } from '@app/cli/commands/github/createGithubDep
 import { deactivateGithubDeployment } from '@app/cli/commands/github/deactivateGithubDeployment'
 import { updateGithubDeployment } from '@app/cli/commands/github/updateGithubDeployment'
 import { addNextPublicVariablesToDotEnv } from '@app/cli/commands/infrastructure/addNextPublicVariablesToDotEnv'
-import { createDotEnvFromCdk } from '@app/cli/commands/infrastructure/createDotEnvFromCdk'
+import { createDotEnvFromInfrastructure } from '@app/cli/commands/infrastructure/createDotEnvFromInfrastructure'
 import { createTfVarsFileFromEnvironment } from '@app/cli/commands/infrastructure/createTfVarsFileFromEnvironment'
 import { deletePreviewEnvironments } from '@app/cli/commands/infrastructure/deletePreviewEnvironments'
 import { infrastructureInventory } from '@app/cli/commands/infrastructure/inventory'
@@ -49,7 +49,7 @@ const main = async () => {
   program.addCommand(getSecretValue)
   program.addCommand(setupDatabaseSecret)
   program.addCommand(getDatabasePasswordSecret)
-  program.addCommand(createDotEnvFromCdk)
+  program.addCommand(createDotEnvFromInfrastructure)
   program.addCommand(createDotEnvFromSecrets)
   program.addCommand(addNextPublicVariablesToDotEnv)
   program.addCommand(createGithubDeployment)

@@ -78,7 +78,6 @@ coop-mediation-numerique/
 │       └── prisma/
 │           └── migrations/  # Fichiers de migration SQL
 ├── packages/
-│   ├── cdk/                 # Infrastructure as Code (CDKTF/Terraform)
 │   ├── config/              # Configuration partagee (constantes, domaines)
 │   ├── e2e/                 # Tests end-to-end (Cypress)
 │   ├── emails/              # Templates d'emails (MJML + React)
@@ -263,15 +262,6 @@ pnpm start:web       # Relancer le serveur
 | `pnpm -F web standalone:configure` | Configure le build standalone |
 | `pnpm -F web standalone:start` | Demarre le serveur standalone |
 
-### Infrastructure (CDK)
-
-| Commande | Description |
-|---|---|
-| `pnpm -F cdk synth` | Synthetise le code Terraform a partir du CDK |
-| `pnpm -F cdk cdktf` | Acces direct au CLI CDKTF |
-| `pnpm -F cdk output` | Recupere les outputs CDK |
-| `pnpm -F cdk tf:web:backend-reconfigure` | Reconfigure le backend Terraform |
-
 ### Storybook
 
 | Commande | Description |
@@ -324,10 +314,10 @@ pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 
 | Commande | Description |
 |---|---|
-| `pnpm cli dotenv:from-cdk <stack>` | Genere un `.env` a partir des outputs CDK (`web` ou `project`) |
+| `pnpm cli dotenv:from-infrastructure` | Ajoute au `.env` les sorties OpenTofu lues dans `infrastructure/outputs.json` |
 | `pnpm cli dotenv:add-next-public <namespace>` | Ajoute les variables `NEXT_PUBLIC_*` au `.env`. Option : `--local` |
 | `pnpm cli dotenv:from-secrets` | Recupere tous les secrets depuis Scaleway Secret Manager et peuple le `.env` |
-| `pnpm cli terraform:vars-from-env <stack>` | Genere un fichier tfvars a partir des variables d'environnement (`web` ou `project`) |
+| `pnpm cli infrastructure:vars-from-env` | Ecrit `infrastructure/.tfvars.json` a partir des variables d'environnement |
 | `pnpm cli infrastructure:create <resource> <names>` | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run` |
 | `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Remove ephemeral environment` (branches separees par des virgules) |
 | `pnpm cli infrastructure:prune-registry` | Supprime du registre Scaleway les images des branches qui n'existent plus et les anciens tags (10 conserves pour `main`, 5 pour `dev`). A blanc par defaut ; `--apply` pour supprimer, `--report <fichier>` pour le releve CSV |
@@ -412,41 +402,38 @@ l'historique git, pas dans le code.
 
 ---
 
-## Infrastructure Terraform
+## Infrastructure
 
-L'infrastructure est entierement geree en **Infrastructure as Code** via [CDKTF](https://developer.hashicorp.com/terraform/cdktf) (CDK for Terraform en TypeScript). Le code se trouve dans `packages/cdk/src/`.
+L'infrastructure de chaque environnement est decrite en HCL dans `infrastructure/` et deployee avec [OpenTofu](https://opentofu.org) 1.13 et le [fournisseur Scaleway](https://search.opentofu.org/provider/scaleway/scaleway/latest). Les ressources partagees par tous les environnements sont gerees par l'infrastructure de l'incubateur.
 
 ### Vue d'ensemble
 
-L'hebergement est assure par **Scaleway** (cloud provider francais). Le CDK genere du code Terraform a partir de deux stacks TypeScript :
-
 ```
-packages/cdk/src/
-├── main.ts                    # Point d'entree : instancie les deux stacks
-├── ProjectStack.ts            # Ressources partagees du projet
-├── WebAppStack.ts             # Ressources par environnement/branche
-├── MaildevInstance.ts         # Instance Scaleway pour MailDev
-├── createJobExecutionCron.ts  # Utilitaire pour les crons de jobs
-├── terraformBackend.ts        # Configuration du backend S3 pour l'etat Terraform
-├── environmentVariable.ts     # Gestion des variables d'environnement Terraform
-├── getCdkOutput.ts            # Typage des outputs CDK
-├── output.ts                  # Helper pour les outputs Terraform
-└── utils.ts                   # Utilitaires (namespace, DNS, URLs)
+infrastructure/
+├── versions.tf          # Versions d'OpenTofu et du fournisseur, backend S3
+├── variables.tf         # Variables d'entree (branche, namespace, secrets)
+├── locals.tf            # Domaines, noms, URL de base de donnees, jobs par environnement
+├── container.tf         # Conteneur serverless et ses variables d'environnement
+├── database.tf          # Utilisateur, base et privileges sur l'instance partagee
+├── storage.tf           # Bucket d'uploads
+├── dns.tf               # Enregistrement DNS et domaine du conteneur
+├── jobs.tf              # Crons des jobs
+├── moved.tf             # Correspondance avec les adresses de l'ancien CDKTF
+├── outputs.tf           # Sorties lues par le CLI
+└── .terraform.lock.hcl  # Empreintes du fournisseur
 ```
 
-### Backend Terraform
+### Etat
 
-L'etat Terraform est stocke dans un bucket S3 Scaleway :
+L'etat est stocke dans un bucket S3 Scaleway :
 
 - **Bucket** : `coop-mediation-numerique-terraform-state`
 - **Endpoint** : `https://s3.fr-par.scw.cloud`
-- **Fichiers d'etat** :
-  - `coop-mediation-numerique-project.tfstate` (stack projet)
-  - `coop-mediation-numerique-web-<namespace>.tfstate` (stack web par branche)
+- **Fichier d'etat** : `coop-mediation-numerique-web-<namespace>.tfstate`, une cle par environnement passee a `tofu init` par `-backend-config`
 
-### ProjectStack — Ressources partagees
+### Ressources partagees (infrastructure de l'incubateur)
 
-La `ProjectStack` (`ProjectStack.ts`) contient les ressources deployees une seule fois et partagees par tous les environnements :
+Ces ressources sont deployees une seule fois et partagees par tous les environnements :
 
 #### Base de donnees managee
 
@@ -516,9 +503,9 @@ Les deux buckets sont configures avec des regles CORS pour `localhost:3000`.
 
 - **Secret Manager** : stockage securise de l'ID de l'instance de base de donnees
 
-### WebAppStack — Ressources par environnement
+### Ressources par environnement
 
-La `WebAppStack` (`WebAppStack.ts`) est deployee pour chaque branche/namespace. Le namespace est derive du nom de la branche Git :
+`infrastructure/` est deployee pour chaque branche/namespace. Le namespace est derive du nom de la branche Git :
 
 ```
 main        → namespace "main"    → domaine : coop-numerique.anct.gouv.fr
@@ -566,7 +553,7 @@ Le conteneur recoit une quarantaine de variables d'environnement couvrant :
 
 #### Jobs planifies (Cron)
 
-Les crons sont configures via `ContainerCron` Scaleway et envoient des requetes au conteneur :
+Les crons sont configures via `scaleway_container_cron` et envoient des requetes au conteneur :
 
 **Production uniquement :**
 
@@ -585,19 +572,16 @@ Les crons sont configures via `ContainerCron` Scaleway et envoient des requetes 
 
 ### Deployer l'infrastructure
 
+Les deploiements passent par GitHub Actions (voir CI/CD). Pour lire un plan en local, avec les secrets du `.env` (`pnpm cli dotenv:from-secrets`) et [OpenTofu](https://opentofu.org/docs/intro/install/) 1.13 :
+
 ```bash
-# Synthetiser le code Terraform
-pnpm -F cdk synth
-
-# Voir les outputs
-pnpm -F cdk output
-
-# Utiliser directement le CLI CDKTF
-pnpm -F cdk cdktf diff    # Voir les changements
-pnpm -F cdk cdktf deploy  # Appliquer les changements
+DATABASE_PASSWORD=$(pnpm --silent cli secrets:database-password <namespace>) \
+  WEB_CONTAINER_IMAGE=<image deployee> pnpm cli infrastructure:vars-from-env
+pnpm with-env tofu -chdir=infrastructure init -backend-config="key=coop-mediation-numerique-web-<namespace>.tfstate"
+pnpm with-env tofu -chdir=infrastructure plan -var-file=.tfvars.json -var "branch=<branche>" -var "namespace=<namespace>"
 ```
 
-Les variables Terraform necessaires sont definies dans `.env.dist` sous la section "CDK Variables".
+Les variables d'entree sont listees dans `infrastructure/variables.tf` et lues par `apps/cli/src/commands/infrastructure/infrastructureVariables.ts`.
 
 ### Schema de l'infrastructure
 
@@ -606,7 +590,7 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
                     │          Scaleway Cloud (fr-par)     │
                     │                                     │
                     │  ┌───────────────────────────────┐  │
-                    │  │       ProjectStack             │  │
+                    │  │       Ressources partagees     │  │
                     │  │                               │  │
                     │  │  ┌─────────────────────────┐  │  │
                     │  │  │  PostgreSQL 14 (HA)     │  │  │
@@ -633,7 +617,7 @@ Les variables Terraform necessaires sont definies dans `.env.dist` sous la secti
                     │  └───────────────────────────────┘  │
                     │                                     │
                     │  ┌───────────────────────────────┐  │
-                    │  │  WebAppStack (par branche)     │  │
+                    │  │  infrastructure/ (par branche) │  │
                     │  │                               │  │
                     │  │  ┌─────────┐ ┌─────────────┐  │  │
                     │  │  │Container│ │ RDB Database │  │  │
@@ -662,9 +646,10 @@ Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
   - Poser le label `preview` sur la PR deploie l'environnement de la branche ; chaque push sur la PR le redeploie tant que le label est present.
   - Retirer le label, ou fermer ou fusionner la PR, detruit l'environnement.
   - Les evenements d'une meme PR s'executent l'un apres l'autre, sans jamais interrompre un deploiement en cours.
-- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele ; l'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur. Le registre est ensuite elague (`infrastructure:prune-registry`).
+- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele, pendant que l'infrastructure de chaque environnement est planifiee contre l'image deployee. Si un plan change autre chose que les marques de sensibilite de l'etat, le deploiement de cet environnement attend l'approbation du job `Approve dev infrastructure` ou `Approve production infrastructure` (environnement GitHub `infrastructure-approval`) ; le plan se lit dans le resume du run. L'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur. Le registre est ensuite elague (`infrastructure:prune-registry`).
+- **`infrastructure-plan.reusable.yml`** : plan OpenTofu d'un environnement contre l'image deployee, publie dans le resume du run ; appele par `Release` et par `CI` (jobs `Infrastructure plan dev` et `main`, quand la branche modifie `infrastructure/`).
 - **`build.reusable.yml`** et **`deploy.reusable.yml`** : construction et publication de l'image d'un environnement, puis son deploiement (un deploiement a la fois par environnement), appeles par `Preview` et `Release`.
-- **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit la stack Scaleway, supprime l'image de la branche du registre, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
+- **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit l'infrastructure de la branche (`tofu destroy`), supprime l'image de la branche du registre, desactive puis supprime les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---
@@ -702,7 +687,7 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
    ```bash
    git push origin feat/nom-de-la-fonctionnalite
    ```
-4. Le merge dans `main` deploie l'environnement `dev`, puis la production si `dev` a reussi.
+4. Le merge dans `main` deploie l'environnement `dev`, puis la production si `dev` a reussi. Un changement d'infrastructure attend d'abord l'approbation de son plan.
 
 ### Incidents de securite
 
@@ -770,7 +755,7 @@ Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se t
 ### Infrastructure
 
 - [Scaleway](https://www.scaleway.com/) — Hebergement cloud
-- [CDKTF](https://developer.hashicorp.com/terraform/cdktf) — Infrastructure as Code (Terraform en TypeScript)
+- [OpenTofu](https://opentofu.org) — Infrastructure as Code (HCL)
 - [GitHub Actions](https://docs.github.com/actions) — CI/CD
 - [Docker](https://www.docker.com/) — Conteneurisation
 

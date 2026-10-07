@@ -2,62 +2,45 @@ import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { output } from '@app/cli/output'
 import { getDirname } from '@app/config/dirname'
-import { Argument, Command } from '@commander-js/extra-typings'
+import { Command } from '@commander-js/extra-typings'
+import {
+  optionalInfrastructureVariables,
+  requiredInfrastructureVariables,
+} from './infrastructureVariables'
 
-const {
-  webAppStackVariables,
-  webAppStackSensitiveVariables,
-  webAppStackEntrepotVariables,
-  webAppStackEntrepotSensitiveVariables,
-} = await import('@app/cdk/WebAppStack')
+export const infrastructureVariablesFile = path.resolve(
+  getDirname(import.meta.url),
+  '../../../../../infrastructure/.tfvars.json',
+)
 
-// See https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files
 export const createTfVarsFileFromEnvironment = new Command()
-  .command('terraform:vars-from-env')
-  .addArgument(new Argument('<stack>', 'CDK Stack').choices(['web']))
-  .action(async (stack) => {
-    const requiredNames =
-      stack === 'web'
-        ? [...webAppStackVariables, ...webAppStackSensitiveVariables]
-        : null
+  .command('infrastructure:vars-from-env')
+  .description(
+    'Write the OpenTofu variables of the infrastructure from the environment',
+  )
+  .action(async () => {
+    const missing = requiredInfrastructureVariables.filter(
+      (name) => !process.env[name],
+    )
 
-    if (!requiredNames) {
-      throw new Error('Invalid stack argument')
+    if (missing.length > 0) {
+      throw new Error(
+        `Variables missing from the environment but needed by the infrastructure: ${missing.join(', ')}`,
+      )
     }
 
-    // Optional variables (e.g. the entrepôt SSH tunnel) are emitted only when set; otherwise the
-    // CDK default ('') applies, so they never block a deployment that hasn't configured them yet.
-    const optionalNames = [
-      ...webAppStackEntrepotVariables,
-      ...webAppStackEntrepotSensitiveVariables,
-    ]
-
-    const requiredVariables = requiredNames.map((name) => {
-      const value = process.env[name]
-      if (!value) {
-        throw new Error(
-          `Variable ${name} is not present in environment but needed as a terraform variable for "${stack}" stack`,
-        )
-      }
-      return [name, value] as const
-    })
-
-    const optionalVariables = optionalNames
-      .map((name) => [name, process.env[name]] as const)
-      .filter(([, value]) => Boolean(value))
-
-    const variables = Object.fromEntries([
-      ...requiredVariables,
-      ...optionalVariables,
-    ])
-
-    const tfVariablesFile = path.resolve(
-      getDirname(import.meta.url),
-      '../../../../../packages/cdk/.tfvars.json',
+    const variables = Object.fromEntries(
+      [...requiredInfrastructureVariables, ...optionalInfrastructureVariables]
+        .map((name) => [name, process.env[name]] as const)
+        .filter(([, value]) => Boolean(value)),
     )
-    await writeFile(tfVariablesFile, JSON.stringify(variables, null, 2))
+
+    await writeFile(
+      infrastructureVariablesFile,
+      JSON.stringify(variables, null, 2),
+    )
 
     output(
-      `The ${Object.keys(variables).length} terraform variables for stack ${stack} have been added to ${tfVariablesFile}`,
+      `${Object.keys(variables).length} infrastructure variables written to ${infrastructureVariablesFile}`,
     )
   })

@@ -1,7 +1,6 @@
 packages:
   - apps/cli
   - apps/web
-  - packages/cdk
   - packages/config
   - packages/e2e
   - packages/emails
@@ -23,9 +22,8 @@ minimumReleaseAgeExclude:
   - zod
   - libphonenumber-js
   - typescript
-  # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme, tirés par
-  # `typescript@next` (tag mobile republié chaque nuit) via downlevel-dts -> jsii -> cdktf-cli.
-  # Sans cette exclusion, tout install à froid échoue dès qu'une nightly a moins de 15 jours.
+  # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme publiés avec
+  # `typescript`. Exclure `typescript` sans les exclure aussi laisse l'install échouer sur le binaire.
   - "@typescript/*"
   - react
   - react-dom
@@ -60,12 +58,10 @@ allowBuilds:
   "@prisma/engines": true
   "@sentry/cli": true
   "@swc/core": true
-  aws-crt: true
   cypress: true
   esbuild: true
   prisma: true
   sharp: true
-  "@cdktf/node-pty-prebuilt-multiarch": false
   "@parcel/watcher": false
   "@scarf/scarf": false
   core-js-pure: false

@@ -48,11 +48,14 @@ Les `Applications` contiennent le code source des éléments propres au projet
 - [cli](apps/cli) : Suite d'outils en ligne de commande qui servent à exécuter des scripts complexes nécessaires lors de processus automatisés tels que l'intégration et le déploiement automatisé.
 - [web](apps/web) : Source du projet web next.js qui permet de faire tourner la stack, front et back en utilisant des servers components.
 
+### Infrastructure
+
+- [infrastructure](infrastructure) : [Définition de l'infrastructure](infrastructure/README.md) de chaque environnement en HCL, déployée avec [OpenTofu](https://opentofu.org) sur [Scaleway](https://www.scaleway.com).
+
 ### Packages
 
 Les `Packages` contiennent des outils de support et des communs dont l'origine provient de la [stack](https://github.com/inclusion-numerique/stack).
 
-- [cdk](packages/cdk) : [Définition de l'infrastructure](packages/cdk/Readme.md) avec Terraform rédigé avec la version TypeScript du [CDKTF](https://developer.hashicorp.com/terraform/cdktf) pour déployer l'application sur [Scaleway](https://www.scaleway.com).
 - [config](packages/config) : [Configuration des services](packages/config/Readme.md) utilisés lors de la génération, le déploiement et l'exécution via des variables d'environnement.
 - [e2e](packages/e2e) : Tests de bout en bout opérés par [Cypress](https://www.cypress.io/).
 - [emails](packages/emails) : Templates pour les emails utilisés par l'application.

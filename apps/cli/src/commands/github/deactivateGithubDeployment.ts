@@ -1,8 +1,7 @@
+import { computeBranchNamespace } from '@app/cli/branchNamespace'
 import { octokit, owner, repo } from '@app/cli/github'
 import { output } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
-
-const { computeBranchNamespace } = await import('@app/cdk/utils')
 
 export const deactivateGithubDeployment = new Command()
   .command('github:deployment:deactivate')
@@ -43,6 +42,18 @@ export const deactivateGithubDeployment = new Command()
 
     output(
       `Deactivated ${deploymentIds.length} deployment${
+        deploymentIds.length === 1 ? '' : 's'
+      }`,
+    )
+
+    await Promise.all(
+      deploymentIds.map((deployment_id) =>
+        octokit.rest.repos.deleteDeployment({ owner, repo, deployment_id }),
+      ),
+    )
+
+    output(
+      `Deleted ${deploymentIds.length} deployment${
         deploymentIds.length === 1 ? '' : 's'
       }`,
     )

@@ -2,10 +2,6 @@
 # ⚠️ Keep in sync with .eslintignore
 
 var
-# artefacts locaux (scratch de refacto, scripts ad-hoc, captures MCP Playwright)
-refactor/
-scripts/
-.playwright-mcp/
 # dependencies
 node_modules
 .pnp
@@ -71,12 +67,6 @@ storybook-static
 /packages/e2e/.next/
 /packages/e2e/cypress/downloads
 
-# cdk
-/packages/cdk/cdktf.out/
-!/packages/cdk/cdktf.out/stacks/web/.terraform.lock.hcl
-terraform.*.tfstate
-.terraform.*
-packages/cdk/cdk.out.json
 
 # ui
 /packages/ui/.next
@@ -108,3 +98,7 @@ CLAUDE.md
 
 # dossiers de travail par sujet (relevés, exports, notes) — jamais dans le home
 /travail/
+/infrastructure/.terraform
+/infrastructure/.tfvars.json
+/infrastructure/*.tfplan
+/infrastructure/outputs.json

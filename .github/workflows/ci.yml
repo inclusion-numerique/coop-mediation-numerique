@@ -461,3 +461,42 @@ jobs:
           base-ref: main
           head-ref: ${{ github.sha }}
           fail-on-severity: critical
+
+  infrastructure-changes:
+    name: Infrastructure changes
+    if: github.ref_name != 'main'
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.changes.outputs.changed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Detect infrastructure changes
+        id: changes
+        run: |
+          if git diff --quiet origin/main...HEAD -- infrastructure/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Aucun changement dans infrastructure/ : rien à planifier"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  infrastructure-plan:
+    name: Infrastructure plan ${{ matrix.environnement }}
+    needs: infrastructure-changes
+    if: needs.infrastructure-changes.outputs.changed == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        environnement:
+          - dev
+          - main
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-infrastructure-plan-${{ matrix.environnement }}
+      cancel-in-progress: true
+    uses: ./.github/workflows/infrastructure-plan.reusable.yml
+    with:
+      environnement: ${{ matrix.environnement }}
+    secrets: inherit
