@@ -26,6 +26,20 @@ describe('registryRetention', () => {
       ])
     })
 
+    it('counts a tag returned twice by the paginated API only once', () => {
+      const tags = [
+        tag('c', '2026-10-03T00:00:00Z'),
+        tag('b', '2026-10-02T00:00:00Z'),
+        tag('b', '2026-10-02T00:00:00Z'),
+        tag('a', '2026-10-01T00:00:00Z'),
+      ]
+
+      expect(tagsBeyondTheMostRecent(tags, 1).map(({ name }) => name)).toEqual([
+        'b',
+        'a',
+      ])
+    })
+
     it('returns nothing when there are fewer tags than kept', () => {
       expect(
         tagsBeyondTheMostRecent([tag('a', '2026-10-01T00:00:00Z')], 5),
