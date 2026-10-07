@@ -32,8 +32,7 @@ resource "scaleway_container" "webContainer" {
     ENTREPOT_TUNNEL_PORT  = "5433"
   }
 
-  secret_environment_variables = {
-    BREVO_API_KEY                          = local.is_main ? var.BREVO_API_KEY : ""
+  secret_environment_variables = merge(local.is_main ? { BREVO_API_KEY = var.BREVO_API_KEY } : {}, {
     DATABASE_URL                           = local.database_url
     PROCONNECT_CLIENT_SECRET               = local.is_main ? var.PROCONNECT_MAIN_CLIENT_SECRET : var.PROCONNECT_PREVIEW_CLIENT_SECRET
     RDV_SERVICE_PUBLIC_OAUTH_CLIENT_ID     = local.is_main ? var.RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_ID : var.RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_ID
@@ -48,5 +47,5 @@ resource "scaleway_container" "webContainer" {
     SMTP_SERVER                            = local.is_main ? var.SMTP_SERVER : "maildev.coop-numerique.anct.gouv.fr"
     ENTREPOT_BASTION_SSH_KEY               = var.ENTREPOT_BASTION_SSH_KEY
     ENTREPOT_DATABASE_URL                  = var.ENTREPOT_DATABASE_URL
-  }
+  })
 }
