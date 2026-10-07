@@ -3,14 +3,13 @@ data "scaleway_container_namespace" "containerNamespace" {
 }
 
 resource "scaleway_container" "webContainer" {
-  name           = local.container_name
-  namespace_id   = data.scaleway_container_namespace.containerNamespace.namespace_id
-  registry_image = var.WEB_CONTAINER_IMAGE
-  min_scale      = local.is_main ? 2 : 0
-  max_scale      = local.is_main ? 3 : 1
-  cpu_limit      = local.is_main ? 1120 : 560
-  memory_limit   = local.is_main ? 2048 : 1024
-  deploy         = true
+  name         = local.container_name
+  namespace_id = data.scaleway_container_namespace.containerNamespace.namespace_id
+  image        = var.WEB_CONTAINER_IMAGE
+  min_scale    = local.is_main ? 2 : 0
+  max_scale    = local.is_main ? 3 : 1
+  cpu_limit    = local.is_main ? 1120 : 560
+  memory_limit = local.is_main ? 2048 : 1024
 
   environment_variables = {
     BREVO_USERS_LIST_ID   = var.BREVO_USERS_LIST_ID
