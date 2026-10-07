@@ -10,16 +10,16 @@
   },
   "packageManager": "pnpm@12.5.1",
   "scripts": {
-    "build": "turbo build",
+    "build": "pnpm -r build",
     "cli": "dotenv -- ./apps/cli/node_modules/.bin/tsx apps/cli/src/index.ts",
     "clean": "rm -rf node_modules",
-    "clean:workspaces": "turbo clean",
-    "dev": "turbo dev --parallel",
+    "clean:workspaces": "pnpm -r exec rm -rf node_modules",
+    "dev": "pnpm -r --parallel dev",
     "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
-    "lint": "turbo lint",
+    "lint": "pnpm -r lint",
     "lint:commit": "commitlint --from origin/main",
-    "tsc": "turbo tsc",
-    "test": "turbo test",
+    "tsc": "pnpm -r tsc",
+    "test": "pnpm -r test",
     "test:integration": "pnpm -F web test:integration",
     "test:e2e": "pnpm -F e2e cy open",
     "with-env": "dotenv --",
@@ -35,10 +35,6 @@
     "coverage:merge": "rm -rf coverage/.nyc_output && mkdir -p coverage/.nyc_output && find coverage-reports -name '*.json' -exec cp {} coverage/.nyc_output/ \\; && nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --reporter=html --reporter=text-summary --report-dir=./coverage",
     "prepare": "husky"
   },
-  "optionalDependencies": {
-    "turbo-linux-64": "^2.8.17",
-    "turbo-linux-arm64": "^2.8.17"
-  },
   "volta": {
     "node": "24.19.0"
   },
@@ -52,7 +48,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
     "nyc": "^18.0.0",
-    "prettier": "^3.9.8",
-    "turbo": "^2.11.2"
+    "prettier": "^3.9.8"
   }
 }

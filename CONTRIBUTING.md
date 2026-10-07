@@ -55,7 +55,7 @@ L'application supporte deux modes d'authentification :
 
 ## Architecture du monorepo
 
-Le projet est organise en monorepo avec pnpm workspaces et Turborepo :
+Le projet est organise en monorepo avec pnpm workspaces :
 
 ```
 coop-mediation-numerique/
@@ -285,7 +285,7 @@ pnpm start:web       # Relancer le serveur
 | Commande | Description |
 |---|---|
 | `pnpm clean` | Supprime `node_modules` a la racine |
-| `pnpm clean:workspaces` | Supprime le cache Turbo |
+| `pnpm clean:workspaces` | Supprime les `node_modules` de tous les paquets |
 
 ---
 
@@ -759,7 +759,6 @@ Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se t
 ### Outils de developpement
 
 - [pnpm](https://pnpm.io/) — Gestionnaire de paquets
-- [Turborepo](https://turbo.build/) — Orchestration monorepo
 - [Biome](https://biomejs.dev/) — Linting et formatage
 - [Prettier](https://prettier.io/) — Formatage complementaire
 - [Jest](https://jestjs.io/) — Tests unitaires et d'integration

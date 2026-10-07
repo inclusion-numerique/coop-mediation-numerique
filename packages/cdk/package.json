@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "clean": "rm -rf .turbo node_modules",
+    "clean": "rm -rf node_modules",
     "with-env": "dotenv -e ../../.env --",
     "lint": "biome check src",
     "tsc": "tsc --noEmit",
