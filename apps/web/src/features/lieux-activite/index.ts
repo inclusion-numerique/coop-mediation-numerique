@@ -69,6 +69,7 @@ export {
 export {
   getCommunesAndDepartementsOptions,
   getLieuxActiviteOptions,
+  getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
   getMediateursLieuxActiviteOptions,
   type LieuActiviteOption,

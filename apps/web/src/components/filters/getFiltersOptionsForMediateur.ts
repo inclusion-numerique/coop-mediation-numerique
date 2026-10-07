@@ -5,8 +5,8 @@ import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { getStructuresEmployeusesOptions } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import {
+  getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-  getMediateursLieuxActiviteOptions,
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
@@ -63,7 +63,11 @@ export const getFiltersOptionsForMediateur = async ({
       coordinateurId: user.coordinateur?.id,
       mediateurCoordonnesIds,
     }),
-    getMediateursLieuxActiviteOptions({ mediateurIds }),
+    getLieuxDesActivitesOptions({
+      mediateurIds,
+      mediateurId: user.mediateur?.id,
+      coordinateurId: user.coordinateur?.id,
+    }),
     getStructuresEmployeusesOptions({
       mediateurIds,
       coordinateurId: user.coordinateur?.id,

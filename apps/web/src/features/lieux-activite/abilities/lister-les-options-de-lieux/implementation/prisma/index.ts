@@ -8,4 +8,5 @@ export {
   getLieuxActiviteOptions,
   mediateurStructureSelect,
 } from './options-de-lieux.query'
+export { getLieuxDesActivitesOptions } from './options-de-lieux-des-activites.query'
 export { getMediateursLieuxActiviteOptions } from './options-de-lieux-du-mediateur.query'
