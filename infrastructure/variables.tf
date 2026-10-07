@@ -10,10 +10,6 @@ variable "BREVO_USERS_LIST_ID" {
   type = string
 }
 
-variable "SCW_DEFAULT_ORGANIZATION_ID" {
-  type = string
-}
-
 variable "SCW_PROJECT_ID" {
   type = string
 }
@@ -63,16 +59,6 @@ variable "SMTP_PORT" {
 }
 
 variable "BREVO_API_KEY" {
-  type      = string
-  sensitive = true
-}
-
-variable "SCW_ACCESS_KEY" {
-  type      = string
-  sensitive = true
-}
-
-variable "SCW_SECRET_KEY" {
   type      = string
   sensitive = true
 }

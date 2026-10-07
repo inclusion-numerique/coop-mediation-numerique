@@ -1,6 +1,5 @@
 export const requiredInfrastructureVariables = [
   'BREVO_USERS_LIST_ID',
-  'SCW_DEFAULT_ORGANIZATION_ID',
   'SCW_PROJECT_ID',
   'WEB_CONTAINER_IMAGE',
   'NEXT_PUBLIC_APP_SLUG',
@@ -14,8 +13,6 @@ export const requiredInfrastructureVariables = [
   'PREVIEW_SUBDOMAIN',
   'SMTP_PORT',
   'BREVO_API_KEY',
-  'SCW_ACCESS_KEY',
-  'SCW_SECRET_KEY',
   'DATABASE_PASSWORD',
   'PROCONNECT_PREVIEW_CLIENT_SECRET',
   'PROCONNECT_MAIN_CLIENT_SECRET',
