@@ -21,7 +21,7 @@ vitrines publiques.
 ### 1.1 Les deux couloirs automatiques
 
 Un seul job nocturne, `inactive-users-reminders` (cron `0 0 * * *`,
-`packages/cdk/src/WebAppStack.ts:397`), pilote deux couloirs parallèles.
+`infrastructure/locals.tf`), pilote deux couloirs parallèles.
 
 **Couloir A — inscription jamais terminée** (`signupReminders.ts`)
 Cible : `inscription_validee IS NULL`, décompte depuis `created`.
@@ -54,7 +54,7 @@ Le compteur se **réarme** si la personne redevient active dans les 7 jours
 
 ### 1.2 Le job de nettoyage des rôles
 
-`fix-users-roles` (cron `0 0 * * *`, `WebAppStack.ts:386`) retire le rôle coordinateur
+`fix-users-roles` (cron `0 0 * * *`, `infrastructure/locals.tf`) retire le rôle coordinateur
 ou médiateur *en trop* d'un compte double-rôle, 30 jours après validation
 d'inscription, à la stricte condition qu'il ne porte **rien** (ni équipe, ni invitation,
 ni activité de coordination, ni bénéficiaire, ni lieu d'activité). C'est un correctif de
@@ -62,7 +62,7 @@ rôle mal choisi à l'inscription, pas un mécanisme de fin de parcours.
 
 ### 1.3 Le job dispositif conseiller numérique
 
-`appliquer-dispositif-conum` (cron `0 2 * * *`, `WebAppStack.ts:377`) répercute chaque
+`appliquer-dispositif-conum` (cron `0 2 * * *`, `infrastructure/locals.tf`) répercute chaque
 nuit ce que l'Entrepôt a changé aux affectations. Il fait deux choses, et **aucune n'est
 un retrait** : il crée la ligne `coop.coordinateurs` manquante, et il notifie Brevo sur
 transition. Le commentaire est explicite : *« on ne supprime jamais »*
@@ -568,7 +568,7 @@ la dépublication automatique (D7, D11), mais elle ressurgira avec les relances 
 
 ## Annexe — crons en production
 
-Extraits de `packages/cdk/src/WebAppStack.ts` :
+Extraits de `packages/cdk/src/WebAppStack.ts` à la date de l'étude (l'infrastructure est depuis décrite dans `infrastructure/`) :
 
 | Job                                        | Cron         | Rôle vis-à-vis des fins de parcours       |
 |--------------------------------------------|--------------|-------------------------------------------|

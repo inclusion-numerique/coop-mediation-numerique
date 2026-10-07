@@ -19,7 +19,7 @@ import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
  * The payload should be serializable to JSON for easily being passed as POST data.
  *
  * Add your jobs here.
- * To add a cron trigger, see WebAppStack Jobs definitions.
+ * To add a cron trigger, see `jobs` in infrastructure/locals.tf.
  *
  * N'y figurent que les jobs qui ont encore une raison de tourner. Les campagnes
  * de reprise de données, les correctifs ponctuels et les backfills accomplis

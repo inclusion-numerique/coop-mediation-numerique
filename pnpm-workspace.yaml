@@ -22,9 +22,8 @@ minimumReleaseAgeExclude:
   - zod
   - libphonenumber-js
   - typescript
-  # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme, tirés par
-  # `typescript@next` (tag mobile republié chaque nuit) via downlevel-dts -> jsii -> cdktf-cli.
-  # Sans cette exclusion, tout install à froid échoue dès qu'une nightly a moins de 15 jours.
+  # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme publiés avec
+  # `typescript`. Exclure `typescript` sans les exclure aussi laisse l'install échouer sur le binaire.
   - "@typescript/*"
   - react
   - react-dom
