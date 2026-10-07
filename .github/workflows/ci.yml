@@ -523,11 +523,6 @@ jobs:
           pnpm --silent with-env tofu -chdir=infrastructure show -json plan.tfplan > plan.json
           jq -r '.resource_changes[]? | "\(.address) : \(.change.actions | join(",")) \(if .previous_address then "(depuis \(.previous_address))" else "" end)"' plan.json
           pip install --quiet argon2-cffi
-          python3 .github/scripts/secret-environment-diff.py plan.json
-          CHANGES=$(jq '[.resource_changes[]? | select(.change.actions != ["no-op"])] | length' plan.json)
+          python3 .github/scripts/infrastructure-plan-check.py plan.json
           rm -f plan.json infrastructure/plan.tfplan
-          if [ "$CHANGES" != "0" ]; then
-            echo "Le plan modifie $CHANGES ressource(s) de $ENVIRONNEMENT"
-            exit 1
-          fi
 
