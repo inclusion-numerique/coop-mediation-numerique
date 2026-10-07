@@ -2,7 +2,6 @@
 # ⚠️ Keep in sync with .eslintignore
 
 var
-.turbo
 # artefacts locaux (scratch de refacto, scripts ad-hoc, captures MCP Playwright)
 refactor/
 scripts/
