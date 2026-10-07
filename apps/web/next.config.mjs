@@ -66,6 +66,7 @@ export default withBundleAnalyzerConfig(
     silent: false, // Suppresses all logs
     tunnelRoute: '/monitoring',
     widenClientFileUpload: true,
+    authToken: process.env.SENTRY_CI_TOKEN,
     release: { create: enableRelease },
     sourcemaps: {
       disable: !enableRelease,
