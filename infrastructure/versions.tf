@@ -21,9 +21,5 @@ terraform {
 }
 
 provider "scaleway" {
-  region          = var.SCW_DEFAULT_REGION
-  access_key      = var.SCW_ACCESS_KEY
-  secret_key      = var.SCW_SECRET_KEY
-  organization_id = var.SCW_DEFAULT_ORGANIZATION_ID
-  project_id      = var.SCW_PROJECT_ID
+  project_id = var.SCW_PROJECT_ID
 }
