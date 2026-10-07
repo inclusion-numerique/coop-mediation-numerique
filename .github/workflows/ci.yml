@@ -461,3 +461,71 @@ jobs:
           base-ref: main
           head-ref: ${{ github.sha }}
           fail-on-severity: critical
+
+  infrastructure-plan:
+    name: Infrastructure plan ${{ matrix.environnement }}
+    if: github.ref_name != 'main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environnement:
+          - dev
+          - main
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-infrastructure-plan-${{ matrix.environnement }}
+      cancel-in-progress: true
+    env:
+      ENVIRONNEMENT: ${{ matrix.environnement }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Detect infrastructure changes
+        id: changes
+        run: |
+          if git diff --quiet origin/main...HEAD -- infrastructure/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Aucun changement dans infrastructure/ : rien à planifier"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Setup
+        if: steps.changes.outputs.changed == 'true'
+        uses: ./.github/actions/setup
+      - name: Secrets environment
+        if: steps.changes.outputs.changed == 'true'
+        uses: ./.github/actions/secrets-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Export database password
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          DATABASE_PASSWORD=$(pnpm --silent cli secrets:database-password "$ENVIRONNEMENT")
+          echo "::add-mask::$DATABASE_PASSWORD"
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> "$GITHUB_ENV"
+      - name: Create infrastructure variables file from environment variables
+        if: steps.changes.outputs.changed == 'true'
+        run: WEB_CONTAINER_IMAGE='placeholder_for_plan' pnpm --silent cli infrastructure:vars-from-env
+      - name: Infrastructure
+        if: steps.changes.outputs.changed == 'true'
+        uses: ./.github/actions/infrastructure
+        with:
+          namespace: ${{ matrix.environnement }}
+      - name: Plan against the deployed image, without any change
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          IMAGE=$(pnpm --silent with-env tofu -chdir=infrastructure output -raw webContainerImage)
+          WEB_CONTAINER_IMAGE="$IMAGE" pnpm --silent cli infrastructure:vars-from-env
+          pnpm --silent with-env tofu -chdir=infrastructure plan -input=false -var-file=.tfvars.json -var "branch=$ENVIRONNEMENT" -var "namespace=$ENVIRONNEMENT" -out=plan.tfplan
+          pnpm --silent with-env tofu -chdir=infrastructure show -json plan.tfplan > plan.json
+          jq -r '.resource_changes[]? | "\(.address) : \(.change.actions | join(",")) \(if .previous_address then "(depuis \(.previous_address))" else "" end)"' plan.json
+          CHANGES=$(jq '[.resource_changes[]? | select(.change.actions != ["no-op"])] | length' plan.json)
+          rm -f plan.json infrastructure/plan.tfplan
+          if [ "$CHANGES" != "0" ]; then
+            echo "Le plan modifie $CHANGES ressource(s) de $ENVIRONNEMENT"
+            exit 1
+          fi
+

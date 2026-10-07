@@ -42,8 +42,8 @@ jobs:
       name: ${{ inputs.environnement-github }}
       url: ${{ steps.status.outputs.url }}
     env:
-      CDK_FORCE_BRANCH: ${{ inputs.environnement }}
       NAMESPACE: ${{ inputs.namespace }}
+      ENVIRONNEMENT: ${{ inputs.environnement-github }}
       WEB_CONTAINER_IMAGE: ${{ inputs.image }}
     steps:
       - name: Checkout repository
@@ -52,13 +52,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Setup
         uses: ./.github/actions/setup
-        with:
-          node-version: '22'
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: 1.5.7
-          terraform_wrapper: false
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
         with:
@@ -70,8 +63,12 @@ jobs:
           DATABASE_PASSWORD=$(pnpm --silent cli secrets:database-password "$NAMESPACE")
           echo "::add-mask::$DATABASE_PASSWORD"
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> "$GITHUB_ENV"
-      - name: Create terraform variables file from environment variables
-        run: pnpm --silent cli terraform:vars-from-env web
+      - name: Create infrastructure variables file from environment variables
+        run: pnpm --silent cli infrastructure:vars-from-env
+      - name: Infrastructure
+        uses: ./.github/actions/infrastructure
+        with:
+          namespace: ${{ inputs.environnement-github }}
       - name: Migrate coop schema on the Entrepôt (SSH tunnel)
         if: env.BRANCHE == 'main'
         run: |
@@ -92,10 +89,12 @@ jobs:
           for _ in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/5433) 2>/dev/null && break; sleep 1; done
           DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web db:baseline-main
           DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web prisma migrate deploy
-      - name: Deploy web app stack
-        run: pnpm --silent -F @app/cdk cdktf deploy web --var-file .tfvars.json --auto-approve --outputs-file=cdk.out.json --outputs-file-include-sensitive-outputs
-      - name: Add web stack outputs to env file
-        run: pnpm --silent cli dotenv:from-cdk web
+      - name: Apply infrastructure
+        run: |
+          pnpm --silent with-env tofu -chdir=infrastructure apply -input=false -auto-approve -var-file=.tfvars.json -var "branch=$BRANCHE" -var "namespace=$ENVIRONNEMENT"
+          pnpm --silent with-env tofu -chdir=infrastructure output -json > infrastructure/outputs.json
+      - name: Add infrastructure outputs to env file
+        run: pnpm --silent cli dotenv:from-infrastructure
       - name: Mask env file values
         uses: ./.github/actions/mask-env
       - name: Migrate database

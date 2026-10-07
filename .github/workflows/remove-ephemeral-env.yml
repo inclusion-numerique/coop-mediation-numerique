@@ -31,12 +31,12 @@ jobs:
       contents: read
       deployments: write
     env:
-      CDK_FORCE_BRANCH: ${{ inputs.branche }}
+      BRANCHE: ${{ inputs.branche }}
     steps:
       - name: Refuse to delete a protected branch environment
-        if: env.CDK_FORCE_BRANCH == '' || env.CDK_FORCE_BRANCH == 'main' || env.CDK_FORCE_BRANCH == 'dev'
+        if: env.BRANCHE == '' || env.BRANCHE == 'main' || env.BRANCHE == 'dev'
         run: |
-          echo "Rien à supprimer pour « $CDK_FORCE_BRANCH » : main et dev ne sont jamais détruits"
+          echo "Rien à supprimer pour « $BRANCHE » : main et dev ne sont jamais détruits"
           exit 1
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -44,31 +44,30 @@ jobs:
           ref: main
       - name: Setup
         uses: ./.github/actions/setup
-        with:
-          node-version: '22'
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: 1.5.7
-          terraform_wrapper: false
+      - name: Compute environment name
+        id: environnement
+        run: echo "nom=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './apps/cli/src/branchNamespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")" >> "$GITHUB_OUTPUT"
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
         with:
           scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
           scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
-      - name: Create terraform variables file from environment variables
-        run: DATABASE_PASSWORD='placeholder_for_destroy' WEB_CONTAINER_IMAGE='placeholder_for_destroy' pnpm --silent cli terraform:vars-from-env web
-      - name: Destroy stack
-        run: pnpm --silent -F @app/cdk cdktf destroy web --auto-approve --var-file .tfvars.json
+      - name: Create infrastructure variables file from environment variables
+        run: DATABASE_PASSWORD='placeholder_for_destroy' WEB_CONTAINER_IMAGE='placeholder_for_destroy' pnpm --silent cli infrastructure:vars-from-env
+      - name: Infrastructure
+        uses: ./.github/actions/infrastructure
+        with:
+          namespace: ${{ steps.environnement.outputs.nom }}
+      - name: Destroy infrastructure
+        env:
+          ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
+        run: pnpm --silent with-env tofu -chdir=infrastructure destroy -input=false -auto-approve -var-file=.tfvars.json -var "branch=$BRANCHE" -var "namespace=$ENVIRONNEMENT"
       - name: Delete container image
-        run: pnpm --silent cli infrastructure:delete-registry-image "$CDK_FORCE_BRANCH"
+        run: pnpm --silent cli infrastructure:delete-registry-image "$BRANCHE"
       - name: Deactivate GitHub deployments
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm --silent cli github:deployment:deactivate "$CDK_FORCE_BRANCH"
-      - name: Compute GitHub environment name
-        id: environnement
-        run: echo "nom=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './packages/cdk/src/utils.ts'; console.log(computeBranchNamespace(process.env.CDK_FORCE_BRANCH ?? ''))")" >> "$GITHUB_OUTPUT"
+        run: pnpm --silent cli github:deployment:deactivate "$BRANCHE"
       - name: Create GitHub App token
         id: jeton
         uses: actions/create-github-app-token@v3
@@ -94,4 +93,4 @@ jobs:
           gh api --method DELETE "repos/${{ github.repository }}/environments/$ENVIRONNEMENT"
           echo "Environnement « $ENVIRONNEMENT » supprimé"
       - name: Delete Sentry environment issues
-        run: pnpm --silent cli sentry:delete-environment-issues "$CDK_FORCE_BRANCH"
+        run: pnpm --silent cli sentry:delete-environment-issues "$BRANCHE"
