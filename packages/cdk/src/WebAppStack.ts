@@ -301,10 +301,10 @@ export class WebAppStack extends TerraformStack {
           entrepotSensitiveVariables.ENTREPOT_DATABASE_URL.value,
       },
       name: containerName,
-      minScale: isMain ? 2 : namespace === 'dev' ? 1 : 0,
-      maxScale: isMain ? 5 : 1,
-      cpuLimit: isMain ? 3000 : 1120, // mVPCU
-      memoryLimit: isMain ? 3072 : 2048, // mB
+      minScale: isMain ? 2 : 0,
+      maxScale: isMain ? 3 : 1,
+      cpuLimit: isMain ? 1120 : 560,
+      memoryLimit: isMain ? 2048 : 1024,
       deploy: true,
     })
 
