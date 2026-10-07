@@ -330,6 +330,8 @@ pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 | `pnpm cli terraform:vars-from-env <stack>` | Genere un fichier tfvars a partir des variables d'environnement (`web` ou `project`) |
 | `pnpm cli infrastructure:create <resource> <names>` | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run` |
 | `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Remove ephemeral environment` (branches separees par des virgules) |
+| `pnpm cli infrastructure:prune-registry` | Supprime du registre Scaleway les images des branches qui n'existent plus et les anciens tags (10 conserves pour `main`, 5 pour `dev`). A blanc par defaut ; `--apply` pour supprimer, `--report <fichier>` pour le releve CSV |
+| `pnpm cli infrastructure:delete-registry-image <branche>` | Supprime l'image de la preview d'une branche (jamais `main` ni `dev`) |
 | `pnpm cli infrastructure:inventory` | Affiche l'inventaire de l'infrastructure et permet le nettoyage interactif (branches, conteneurs, buckets, bases) |
 | `pnpm cli backup:locally-restore-latest-main` | Restaure le dernier backup de la base `main` en local. Options : `--date <date>`, `--local`, `--list`, `--type <type>` |
 
@@ -660,9 +662,9 @@ Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
   - Poser le label `preview` sur la PR deploie l'environnement de la branche ; chaque push sur la PR le redeploie tant que le label est present.
   - Retirer le label, ou fermer ou fusionner la PR, detruit l'environnement.
   - Les evenements d'une meme PR s'executent l'un apres l'autre, sans jamais interrompre un deploiement en cours.
-- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele ; l'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur.
+- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele ; l'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur. Le registre est ensuite elague (`infrastructure:prune-registry`).
 - **`build.reusable.yml`** et **`deploy.reusable.yml`** : construction et publication de l'image d'un environnement, puis son deploiement (un deploiement a la fois par environnement), appeles par `Preview` et `Release`.
-- **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit la stack Scaleway, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
+- **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit la stack Scaleway, supprime l'image de la branche du registre, desactive les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
 - **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
 
 ---

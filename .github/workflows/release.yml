@@ -51,3 +51,22 @@ jobs:
       contents: read
       deployments: write
     secrets: inherit
+
+  prune-registry:
+    name: Prune registry
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Secrets environment
+        uses: ./.github/actions/secrets-env
+        with:
+          scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
+          scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Delete orphan images and old main and dev tags
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: pnpm --silent cli infrastructure:prune-registry --apply
