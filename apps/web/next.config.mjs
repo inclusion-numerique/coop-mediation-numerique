@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import withBundleAnalyzer from '@next/bundle-analyzer'
-import { withSentryConfig } from '@sentry/nextjs'
+import { withSentryConfig } from '@sentry/nextjs/config'
 
 const withBundleAnalyzerConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -66,6 +66,7 @@ export default withBundleAnalyzerConfig(
     silent: false, // Suppresses all logs
     tunnelRoute: '/monitoring',
     widenClientFileUpload: true,
+    authToken: process.env.SENTRY_CI_TOKEN,
     release: { create: enableRelease },
     sourcemaps: {
       disable: !enableRelease,
