@@ -31,7 +31,7 @@ const toStatutFromDateDiff =
 export const statutCompte =
   (now: Date) =>
   ({
-    lastLogin,
+    lastSeen,
     created,
     deleted,
     inscriptionValidee,
@@ -41,7 +41,7 @@ export const statutCompte =
   }: {
     created: Date
     deleted: Date | null
-    lastLogin: Date | null
+    lastSeen: Date | null
     inscriptionValidee: Date | null
     role: string
     mediateur: { derniereCreationActivite: Date | null } | null
@@ -62,13 +62,13 @@ export const statutCompte =
     }
 
     if (
-      lastLogin &&
+      lastSeen &&
       ((coordinateur?._count.mediateursCoordonnes ?? 0) > 0 ||
         coordinateur?.derniereCreationActivite != null)
     ) {
-      const lastLoginDiff = now.getTime() - lastLogin.getTime()
+      const lastSeenDiff = now.getTime() - lastSeen.getTime()
       return INACTIVITE_STATUTS.reduce(
-        toStatutFromDateDiff(lastLoginDiff),
+        toStatutFromDateDiff(lastSeenDiff),
         'Actif',
       )
     }

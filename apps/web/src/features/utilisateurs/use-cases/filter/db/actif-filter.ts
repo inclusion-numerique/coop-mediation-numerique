@@ -9,7 +9,7 @@ export const actifFilter = (lastActivity: {
   inscriptionValidee: { not: null },
   OR: [
     {
-      lastLogin: lastActivity,
+      lastSeen: lastActivity,
       mediateur: { is: null },
       coordinateur: {
         is: {
@@ -25,7 +25,7 @@ export const actifFilter = (lastActivity: {
       mediateur: { is: { derniereCreationActivite: lastActivity } },
     },
     {
-      lastLogin: lastActivity,
+      lastSeen: lastActivity,
       mediateur: { isNot: null },
       coordinateur: {
         is: {

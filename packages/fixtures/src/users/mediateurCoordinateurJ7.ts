@@ -15,6 +15,7 @@ export const mediateurCoordinateurJ7 = givenUser({
   firstName: 'Médiateur-Coordinateur',
   lastName: 'J+7',
   lastLogin: date,
+  lastSeen: date,
   isFixture: true,
   role: 'User',
   mediateur: {
