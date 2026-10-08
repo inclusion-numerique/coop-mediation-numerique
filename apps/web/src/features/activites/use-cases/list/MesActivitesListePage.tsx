@@ -21,11 +21,12 @@ const SuspensedContent = async ({
   const { searchParams, searchResult, isFiltered, activitesByDate, user } =
     await data
 
-  if (activitesByDate.length === 0 && !isFiltered) {
+  const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
+  const aucuneActivite = activitesByDate.length === 0 && !isFiltered
+
+  if (aucuneActivite && !hasRdvIntegration) {
     return <MesActivitesListeEmptyPage />
   }
-
-  const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
 
   const baseHref = '/coop/mes-activites'
   return (
@@ -48,37 +49,43 @@ const SuspensedContent = async ({
           />
         )}
       </div>
-      {activitesByDate.map(({ date, items }) => (
-        <Fragment key={new Date(date).toISOString()}>
-          <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mt-6v fr-mb-4v">
-            {formatActiviteDayDate(date)}
-          </h3>
-          {items.map((item) =>
-            item.kind === 'rdv' ? (
-              <RdvCard
-                key={item.id}
-                rdv={item}
-                user={user}
-                displayBeneficiaire
-              />
-            ) : (
-              <ActiviteCard
-                key={item.id}
-                activite={{ ...item, timezone: user.timezone }}
-                variant="with-beneficiaire"
-              />
-            ),
-          )}
-        </Fragment>
-      ))}
-      <PaginationNavWithPageSizeSelect
-        className="fr-mt-12v"
-        totalPages={searchResult.totalPages}
-        baseHref={baseHref}
-        searchParams={searchParams}
-        defaultPageSize={DEFAULT_PAGE_SIZE}
-        pageSizeOptions={pageSizeOptions}
-      />
+      {aucuneActivite ? (
+        <MesActivitesListeEmptyPage />
+      ) : (
+        <>
+          {activitesByDate.map(({ date, items }) => (
+            <Fragment key={new Date(date).toISOString()}>
+              <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mt-6v fr-mb-4v">
+                {formatActiviteDayDate(date)}
+              </h3>
+              {items.map((item) =>
+                item.kind === 'rdv' ? (
+                  <RdvCard
+                    key={item.id}
+                    rdv={item}
+                    user={user}
+                    displayBeneficiaire
+                  />
+                ) : (
+                  <ActiviteCard
+                    key={item.id}
+                    activite={{ ...item, timezone: user.timezone }}
+                    variant="with-beneficiaire"
+                  />
+                ),
+              )}
+            </Fragment>
+          ))}
+          <PaginationNavWithPageSizeSelect
+            className="fr-mt-12v"
+            totalPages={searchResult.totalPages}
+            baseHref={baseHref}
+            searchParams={searchParams}
+            defaultPageSize={DEFAULT_PAGE_SIZE}
+            pageSizeOptions={pageSizeOptions}
+          />
+        </>
+      )}
     </>
   )
 }
