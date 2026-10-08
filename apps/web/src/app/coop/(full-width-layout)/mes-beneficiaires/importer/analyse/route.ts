@@ -19,7 +19,7 @@ export const POST = async (request: NextRequest) => {
 
     const arrayBuffer = await file.arrayBuffer()
 
-    const sheet = getBeneficiaireImportSheet(arrayBuffer)
+    const sheet = await getBeneficiaireImportSheet(Buffer.from(arrayBuffer))
 
     const analysis = await analyseImportBeneficiairesExcel(sheet)
 
