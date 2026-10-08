@@ -1,5 +1,5 @@
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { isAfter, subMonths } from 'date-fns'
+import { isAfter, subDays } from 'date-fns'
 
 export type UserPublicActivityStatusSlug = 'actif' | 'inactif'
 
@@ -15,7 +15,7 @@ export const getUserPublicActivityStatus = ({
 }): UserPublicActivityStatus => {
   if (lastActivityDate == null) return { status: 'inactif', label: 'Inactif' }
 
-  if (isAfter(lastActivityDate, subMonths(new Date(), 2))) {
+  if (isAfter(lastActivityDate, subDays(new Date(), 30))) {
     return { status: 'actif', label: 'Actif' }
   }
   return {
