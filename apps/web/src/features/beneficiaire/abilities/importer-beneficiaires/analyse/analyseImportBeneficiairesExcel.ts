@@ -6,9 +6,8 @@ import {
 import { anneeNaissanceValidation } from '@app/web/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
 import type { Genre } from '@app/web/generated/prisma/client'
-import type { CellObject, WorkSheet } from 'xlsx'
-import * as XLSX from 'xlsx'
 import { z } from 'zod'
+import { type FeuilleImport, valeurCellule } from './feuille-import'
 
 export const ParsedBeneficiaireRowSchema = z.object({
   values: z.object({
@@ -95,75 +94,50 @@ const parseAnneeNaissance = (anneeNaissanceRaw: number | null | undefined) => {
   return { value: anneeNaissanceRaw }
 }
 
-const getCell = (
-  worksheet: WorkSheet,
+const getCellValueAsString = (
+  feuille: FeuilleImport,
   rowNumber: number,
   colNumber: number,
-): CellObject | undefined => {
-  const cellAddress = XLSX.utils.encode_cell({
-    c: colNumber - 1,
-    r: rowNumber - 1,
-  })
-  return worksheet[cellAddress] as CellObject | undefined
+): string | null => {
+  const valeur = valeurCellule(feuille, rowNumber, colNumber)
+  return valeur !== null && valeur !== 0 ? String(valeur).trim() : null
 }
 
-function getCellValueAsString(
-  worksheet: WorkSheet,
+const getCellValueAsNumber = (
+  feuille: FeuilleImport,
   rowNumber: number,
   colNumber: number,
-): string | null {
-  const cell = getCell(worksheet, rowNumber, colNumber)
-
-  if (cell && cell.v != null && cell.v !== 0) {
-    return cell.v.toString().trim()
+): number | null => {
+  const valeur = valeurCellule(feuille, rowNumber, colNumber)
+  if (typeof valeur === 'number') {
+    return valeur
   }
-  return null
+  const nombre = Number(valeur)
+  return valeur !== null && !Number.isNaN(nombre) ? nombre : null
 }
 
-function getCellValueAsNumber(
-  worksheet: WorkSheet,
-  rowNumber: number,
-  colNumber: number,
-): number | null {
-  const cell = getCell(worksheet, rowNumber, colNumber)
-  if (cell && typeof cell.v === 'number') {
-    return cell.v
-  }
+const nombreDeColonnesImportees = 10
 
-  if (cell && cell.v != null) {
-    const value = Number(cell.v)
-    if (!Number.isNaN(value)) {
-      return value
-    }
-  }
-  return null
-}
-
-const rowIsEmpty = (worksheet: WorkSheet, rowNumber: number): boolean => {
-  for (let colNumber = 1; colNumber <= 10; colNumber++) {
-    const value = getCellValueAsString(worksheet, rowNumber, colNumber)
-    if (value) {
-      return false
-    }
-  }
-  return true
-}
+const rowIsEmpty = (feuille: FeuilleImport, rowNumber: number): boolean =>
+  Array.from({ length: nombreDeColonnesImportees }, (_, index) =>
+    getCellValueAsString(feuille, rowNumber, index + 1),
+  ).every((valeur) => !valeur)
 
 const parseBeneficiaireRow = (
-  worksheet: WorkSheet,
+  feuille: FeuilleImport,
   rowNumber: number,
   communesClient: CommunesClient,
 ) => {
-  const nom = getCellValueAsString(worksheet, rowNumber, 1)
-  const prenom = getCellValueAsString(worksheet, rowNumber, 2)
-  const anneeNaissance = getCellValueAsNumber(worksheet, rowNumber, 3)
-  const communeNom = getCellValueAsString(worksheet, rowNumber, 4)
-  const communeCodeInsee = getCellValueAsString(worksheet, rowNumber, 5)
-  const communeCodePostal = getCellValueAsString(worksheet, rowNumber, 6)
-  const numeroTelephone = getCellValueAsString(worksheet, rowNumber, 7)
-  const email = getCellValueAsString(worksheet, rowNumber, 8)
-  const genre = getCellValueAsString(worksheet, rowNumber, 9)
-  const notesSupplementaires = getCellValueAsString(worksheet, rowNumber, 10)
+  const nom = getCellValueAsString(feuille, rowNumber, 1)
+  const prenom = getCellValueAsString(feuille, rowNumber, 2)
+  const anneeNaissance = getCellValueAsNumber(feuille, rowNumber, 3)
+  const communeNom = getCellValueAsString(feuille, rowNumber, 4)
+  const communeCodeInsee = getCellValueAsString(feuille, rowNumber, 5)
+  const communeCodePostal = getCellValueAsString(feuille, rowNumber, 6)
+  const numeroTelephone = getCellValueAsString(feuille, rowNumber, 7)
+  const email = getCellValueAsString(feuille, rowNumber, 8)
+  const genre = getCellValueAsString(feuille, rowNumber, 9)
+  const notesSupplementaires = getCellValueAsString(feuille, rowNumber, 10)
 
   const errors: ParsedBeneficiaireRow['errors'] = {}
 
@@ -229,41 +203,34 @@ const parseBeneficiaireRow = (
 
 export const importBeneficiaireWorksheetName = 'Bénéficiaires'
 
+const premiereLigneBeneficiaires = 4
+
+const numerosLignesBeneficiaires = (
+  feuille: FeuilleImport,
+): ReadonlyArray<number> => {
+  const numerosLignes = Array.from(
+    { length: Math.max(feuille.length - premiereLigneBeneficiaires + 1, 0) },
+    (_, index) => premiereLigneBeneficiaires + index,
+  )
+  const indexPremiereLigneVide = numerosLignes.findIndex((rowNumber) =>
+    rowIsEmpty(feuille, rowNumber),
+  )
+  return indexPremiereLigneVide === -1
+    ? numerosLignes
+    : numerosLignes.slice(0, indexPremiereLigneVide)
+}
+
 export const analyseImportBeneficiairesExcel = async (
-  beneficiairesWorksheet: WorkSheet,
+  feuille: FeuilleImport,
 ): Promise<Analysis> => {
-  if (!beneficiairesWorksheet) {
-    return {
-      status: 'error',
-      rows: [],
-    }
-  }
-
-  const beneficiairesRowsStart = 4
-
-  const result: ParsedBeneficiaireRow[] = []
-
-  let rowNumber = beneficiairesRowsStart
-
   const communesClient = await createCommunesClient()
 
-  let hasError = false
-
-  while (!rowIsEmpty(beneficiairesWorksheet, rowNumber)) {
-    const parsed = parseBeneficiaireRow(
-      beneficiairesWorksheet,
-      rowNumber,
-      communesClient,
-    )
-    if (parsed.errors) {
-      hasError = true
-    }
-    result.push(parsed)
-    rowNumber += 1
-  }
+  const rows = numerosLignesBeneficiaires(feuille).map((rowNumber) =>
+    parseBeneficiaireRow(feuille, rowNumber, communesClient),
+  )
 
   return {
-    status: hasError ? 'error' : 'ok',
-    rows: result,
+    status: rows.some((row) => row.errors) ? 'error' : 'ok',
+    rows,
   }
 }
