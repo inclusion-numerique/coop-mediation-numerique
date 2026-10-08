@@ -69,7 +69,7 @@
 
 * Given un agent RDV Service Public portant l’e-mail du médiateur
 * When je connecte mon compte RDV Service Public
-* Then le compte affiche les rendez-vous dans les activités
+* Then le compte connecté affiche les rendez-vous dans les activités
 
 ## Rule: Un code d'autorisation refusé interrompt la liaison
 

@@ -204,10 +204,13 @@ Then(
   },
 )
 
-Then('le compte affiche les rendez-vous dans les activités', async () => {
-  const row = await compteRdvEnBase(AGENT_ID)
-  assert.strictEqual(row?.includeRdvsInActivitesList, true)
-})
+Then(
+  'le compte connecté affiche les rendez-vous dans les activités',
+  async () => {
+    const row = await compteRdvEnBase(AGENT_ID)
+    assert.strictEqual(row?.includeRdvsInActivitesList, true)
+  },
+)
 
 Then('la connexion échoue avec l’erreur {string}', (tag: string) => {
   assert.ok(resultat && !resultat.success, 'La connexion aurait dû échouer')
