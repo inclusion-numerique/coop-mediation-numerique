@@ -1,6 +1,6 @@
 import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
-import { subMonths } from 'date-fns'
+import { subDays } from 'date-fns'
 
 export const countMediateursCoordonnesBy = async (
   coordinateur?: { id: string } | null,
@@ -27,7 +27,7 @@ export const countMediateursCoordonnesBy = async (
     }
   }
 
-  const twoMonthsAgo = subMonths(new Date(), 2)
+  const ilYATrenteJours = subDays(new Date(), 30)
 
   const [
     total,
@@ -64,7 +64,7 @@ export const countMediateursCoordonnesBy = async (
         suppression: null,
         mediateur: {
           user: { deleted: null },
-          derniereCreationActivite: { gte: twoMonthsAgo },
+          derniereCreationActivite: { gte: ilYATrenteJours },
         },
       },
     }),
@@ -76,7 +76,7 @@ export const countMediateursCoordonnesBy = async (
           user: { deleted: null },
           OR: [
             { derniereCreationActivite: null },
-            { derniereCreationActivite: { lt: twoMonthsAgo } },
+            { derniereCreationActivite: { lt: ilYATrenteJours } },
           ],
         },
       },

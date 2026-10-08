@@ -1,5 +1,5 @@
 import { findConseillersNumeriquesContractInfoByEmails } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
-import { subMonths } from 'date-fns'
+import { subDays } from 'date-fns'
 import {
   type EquipeSearchParams,
   findAllMediateursCoordonneBy,
@@ -47,7 +47,7 @@ const computeStatut = ({
   if (userDeleted) return `Profil supprimé le ${formatDate(userDeleted)}`
   if (suppression) return `Ancien membre depuis le ${formatDate(suppression)}`
   if (!dateDerniereActivite) return 'Inactif'
-  if (dateDerniereActivite < subMonths(new Date(), 2))
+  if (dateDerniereActivite < subDays(new Date(), 30))
     return `Inactif depuis le ${formatDate(dateDerniereActivite)}`
   return 'Actif'
 }
