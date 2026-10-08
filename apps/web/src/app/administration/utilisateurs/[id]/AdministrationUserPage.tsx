@@ -310,7 +310,7 @@ const AdministrationUserPage = async ({
                 ),
               },
               {
-                label: 'Dernière activité',
+                label: 'Dernière visite',
                 value: lastSeen
                   ? dateAsDayAndTimeInTimeZone(lastSeen, 'Europe/Paris')
                   : 'Jamais',
