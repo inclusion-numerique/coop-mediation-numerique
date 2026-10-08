@@ -59,7 +59,10 @@ describe('compteApresConnexion', () => {
     it('part sans organisation ni synchronisation antérieure', () => {
       expect(compte.organisationIds).toEqual([])
       expect(compte.derniereSynchro).toBeNull()
-      expect(compte.inclureRdvsDansActivites).toBe(false)
+    })
+
+    it('affiche les rendez-vous dans les activités', () => {
+      expect(compte.inclureRdvsDansActivites).toBe(true)
     })
   })
 
@@ -116,6 +119,17 @@ describe('compteApresConnexion', () => {
       expect(compte.organisationIds).toEqual([OrganisationId(10)])
       expect(compte.organisationIdsSansWebhook).toEqual([OrganisationId(10)])
       expect(compte.derniereSynchro).toEqual(compteBase.derniereSynchro)
+    })
+
+    it('préserve l’affichage des rendez-vous désactivé par le médiateur', () => {
+      const compte = reconnecter({
+        ...compteBase,
+        _tag: 'lie',
+        jetons: jetonsPrecedents,
+        inclureRdvsDansActivites: false,
+      })
+
+      expect(compte.inclureRdvsDansActivites).toBe(false)
     })
   })
 })

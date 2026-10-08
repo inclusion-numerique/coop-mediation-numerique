@@ -134,3 +134,33 @@ export const AvecActivitesEtRdvsButton: Story = {
     data: dataAvecActivitesEtRdvs,
   },
 }
+
+const dataSansActivitesAvecRdvServicePublic = {
+  ...dataAvecActivitesEtRdvs,
+  searchResult: {
+    ...dataAvecActivites.searchResult,
+    activitesMatchesCount: 0,
+    accompagnementsMatchesCount: 0,
+    totalPages: 0,
+    items: [],
+    rdvMatchesCount: 0,
+    matchesCount: 0,
+  },
+  activitesByDate: [],
+  user: {
+    ...dataAvecActivitesEtRdvs.user,
+    rdvAccount: {
+      ...dataAvecActivitesEtRdvs.user.rdvAccount,
+      invalidWebhookOrganisationIds: [],
+      includeRdvsInActivitesList: false,
+    },
+  },
+} satisfies ActivitesListPageData
+
+export const SansActivitesAvecRdvServicePublic: Story = {
+  name: 'Sans activités avec RDV Service Public lié',
+  render: (args) => <TemplateListe {...args} />,
+  args: {
+    data: dataSansActivitesAvecRdvServicePublic,
+  },
+}

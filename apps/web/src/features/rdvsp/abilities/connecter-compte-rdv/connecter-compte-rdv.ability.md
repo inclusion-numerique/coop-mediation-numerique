@@ -56,6 +56,21 @@
 * When je connecte mon compte RDV Service Public
 * Then le compte affiche toujours les rendez-vous dans les activités
 
+### Scenario: Reconnexion préservant l'affichage des rendez-vous désactivé
+
+* Given un compte RDV déjà lié masquant les rendez-vous dans les activités
+* And un agent RDV Service Public portant l’e-mail du médiateur
+* When je connecte mon compte RDV Service Public
+* Then le compte masque toujours les rendez-vous dans les activités
+
+## Rule: Une première connexion affiche les rendez-vous dans les activités
+
+### Scenario: Première connexion affichant les rendez-vous
+
+* Given un agent RDV Service Public portant l’e-mail du médiateur
+* When je connecte mon compte RDV Service Public
+* Then le compte affiche les rendez-vous dans les activités
+
 ## Rule: Un code d'autorisation refusé interrompt la liaison
 
 ### Scenario: Code refusé par RDV Service Public
