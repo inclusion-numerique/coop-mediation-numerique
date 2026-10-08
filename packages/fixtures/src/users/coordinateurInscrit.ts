@@ -9,6 +9,7 @@ export const coordinateurInscrit = givenUser({
   firstName: 'Coordinateur',
   lastName: 'Inscrit',
   lastLogin: new Date(),
+  lastSeen: new Date(),
   isFixture: true,
   role: 'User',
   isConseillerNumerique: true,

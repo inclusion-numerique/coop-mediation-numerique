@@ -47,7 +47,7 @@ const statusOrderClause = (direction: string) => `
     WHEN type = 'invited' THEN 1
     WHEN deleted IS NOT NULL THEN 5
     WHEN suppression IS NOT NULL THEN 4
-    WHEN date_derniere_activite IS NULL OR date_derniere_activite < NOW() - INTERVAL '2 months' THEN 3
+    WHEN date_derniere_activite IS NULL OR date_derniere_activite < NOW() - INTERVAL '30 days' THEN 3
     ELSE 2
   END ${direction}`
 
@@ -73,8 +73,8 @@ const getOrderByClause = (
 }
 
 const statutFilterConditions: Record<FilterParam, string> = {
-  actifs: `(type = 'coordinated' AND deleted IS NULL AND suppression IS NULL AND date_derniere_activite IS NOT NULL AND date_derniere_activite >= NOW() - INTERVAL '2 months')`,
-  inactifs: `(type = 'coordinated' AND deleted IS NULL AND suppression IS NULL AND (date_derniere_activite IS NULL OR date_derniere_activite < NOW() - INTERVAL '2 months'))`,
+  actifs: `(type = 'coordinated' AND deleted IS NULL AND suppression IS NULL AND date_derniere_activite IS NOT NULL AND date_derniere_activite >= NOW() - INTERVAL '30 days')`,
+  inactifs: `(type = 'coordinated' AND deleted IS NULL AND suppression IS NULL AND (date_derniere_activite IS NULL OR date_derniere_activite < NOW() - INTERVAL '30 days'))`,
   invitations: `(type = 'invited')`,
   archives: `(deleted IS NOT NULL OR suppression IS NOT NULL)`,
 }

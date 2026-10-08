@@ -12,6 +12,7 @@ export const coordinateurInscritJ110 = givenUser({
   firstName: 'Coordinateur',
   lastName: 'Inscrit J+110',
   lastLogin: date,
+  lastSeen: date,
   isFixture: true,
   role: 'User',
   onboardingStatus: 'warning_j90_sent',

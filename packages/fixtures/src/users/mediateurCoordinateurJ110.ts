@@ -15,6 +15,7 @@ export const mediateurCoordinateurJ110 = givenUser({
   firstName: 'Médiateur-Coordinateur',
   lastName: 'J+110',
   lastLogin: date,
+  lastSeen: date,
   isFixture: true,
   role: 'User',
   onboardingStatus: 'warning_j90_sent',

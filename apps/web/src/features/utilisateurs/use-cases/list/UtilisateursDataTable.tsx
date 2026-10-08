@@ -65,8 +65,8 @@ export const UtilisateursDataTable = {
     },
     {
       name: 'lastSeen',
-      header: 'Dernière activité',
-      csvHeaders: ['Dernière activité'],
+      header: 'Dernière visite',
+      csvHeaders: ['Dernière visite'],
       defaultSortable: true,
       defaultSortableDirection: 'desc',
       csvValues: ({ lastSeen }) => [lastSeen?.toISOString()],
