@@ -12,6 +12,7 @@ export const coordinateurInscritAvecTout = givenUser({
   firstName: 'Coordinateur',
   lastName: 'Inscrit avec tout',
   lastLogin: new Date(),
+  lastSeen: new Date(),
   isFixture: true,
   role: 'User',
   isConseillerNumerique: true,
