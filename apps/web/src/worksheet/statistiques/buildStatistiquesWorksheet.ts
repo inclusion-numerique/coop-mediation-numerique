@@ -131,6 +131,21 @@ const addStatistiquesNombreActivitesParLieux =
     worksheet.addRow([])
   }
 
+const addStatistiquesNombreAccompagnementsParCodePostal =
+  (worksheet: Excel.Worksheet) =>
+  ({ communes }: MesStatistiquesPageData) => {
+    addTitleRow(worksheet)('Nombre d’accompagnements par code postal')
+    worksheet.addRows(
+      communes.map(({ commune, codePostal, count, proportion }) => [
+        commune ?? 'Non communiqué',
+        codePostal ?? '',
+        count,
+        numberToPercentage(proportion),
+      ]),
+    )
+    worksheet.addRow([])
+  }
+
 const addStatistiquesGenre =
   (worksheet: Excel.Worksheet) =>
   ({ beneficiaires: { genres } }: MesStatistiquesPageData) => {
@@ -201,6 +216,7 @@ export const buildStatistiquesWorksheet = ({
   addStatistiquesCanauxActivites(worksheet)(statistiques)
   addStatistiquesDureesActivites(worksheet)(statistiques)
   addStatistiquesNombreActivitesParLieux(worksheet)(statistiques)
+  addStatistiquesNombreAccompagnementsParCodePostal(worksheet)(statistiques)
   addTitleRow(worksheet)('Statistiques sur vos bénéficiaires')
   addStatistiquesGenre(worksheet)(statistiques)
   addStatistiquesTranchesAge(worksheet)(statistiques)
