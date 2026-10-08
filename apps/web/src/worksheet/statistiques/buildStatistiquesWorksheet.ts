@@ -135,7 +135,14 @@ const addStatistiquesNombreAccompagnementsParCodePostal =
   (worksheet: Excel.Worksheet) =>
   ({ communes }: MesStatistiquesPageData) => {
     addTitleRow(worksheet)('Nombre d’accompagnements par code postal')
-    addQuantifiedShareRows(worksheet, communes)
+    worksheet.addRows(
+      communes.map(({ commune, codePostal, count, proportion }) => [
+        commune ?? 'Non communiqué',
+        codePostal ?? '',
+        count,
+        numberToPercentage(proportion),
+      ]),
+    )
     worksheet.addRow([])
   }
 
