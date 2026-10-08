@@ -274,12 +274,12 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     ],
     communes: [
       {
-        commune: 'Paris',
-        codePostal: '75001',
-        codeInsee: '75101',
+        commune: 'Bourg-en-Bresse',
+        codePostal: '01000',
+        codeInsee: '01053',
         count: 3,
         proportion: 75,
-        label: 'Paris · 75001',
+        label: 'Bourg-en-Bresse · 01000',
       },
       {
         commune: null,
@@ -953,10 +953,8 @@ describe('build statistiques worksheet for médiateur', () => {
       ?.map((row) => row.values)
 
     expect(rows).toEqual([
-      ...expectQuantifiedShareRows([
-        ['Paris · 75001', 3],
-        ['Non communiqué', 1],
-      ]),
+      [undefined, 'Bourg-en-Bresse', '01000', 3, numberToPercentage(75)],
+      [undefined, 'Non communiqué', '', 1, numberToPercentage(25)],
       [],
     ])
   })
