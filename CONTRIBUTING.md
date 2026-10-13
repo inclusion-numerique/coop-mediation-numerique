@@ -331,8 +331,9 @@ pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 |---|---|
 | `pnpm cli secrets:list` | Liste tous les noms de secrets disponibles |
 | `pnpm cli secrets:get <name>` | Recupere la valeur d'un secret |
-| `pnpm cli secrets:database:setup <namespace>` | Cree un secret de mot de passe base de donnees pour un namespace de preview |
+| `pnpm cli secrets:database:setup <namespace>` | Cree le secret de mot de passe base de donnees d'un namespace (`DATABASE_PASSWORD_<NAMESPACE>`, un par preview) |
 | `pnpm cli secrets:database-password <namespace>` | Recupere le mot de passe base de donnees d'un namespace |
+| `pnpm cli secrets:database:delete <namespace>` | Supprime le secret de mot de passe base de donnees d'une preview (jamais `main` ni `dev`) ; appele par **Remove ephemeral environment** |
 
 ### RAG (Retrieval-Augmented Generation)
 

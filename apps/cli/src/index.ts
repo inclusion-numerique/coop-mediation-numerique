@@ -13,6 +13,7 @@ import { pruneRegistry } from '@app/cli/commands/infrastructure/registry/pruneRe
 import { executeJobApiCommand } from '@app/cli/commands/jobs/executeJobApiCommand'
 import { executeJobCommand } from '@app/cli/commands/jobs/executeJobCommand'
 import { createDotEnvFromSecrets } from '@app/cli/commands/secrets/createDotEnvFromSecrets'
+import { deleteDatabaseSecret } from '@app/cli/commands/secrets/deleteDatabaseSecret'
 import { getDatabasePasswordSecret } from '@app/cli/commands/secrets/getDatabasePasswordSecret'
 import { getSecretValue } from '@app/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
@@ -48,6 +49,7 @@ const main = async () => {
   program.addCommand(listSecrets)
   program.addCommand(getSecretValue)
   program.addCommand(setupDatabaseSecret)
+  program.addCommand(deleteDatabaseSecret)
   program.addCommand(getDatabasePasswordSecret)
   program.addCommand(createDotEnvFromInfrastructure)
   program.addCommand(createDotEnvFromSecrets)
