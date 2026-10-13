@@ -47,6 +47,16 @@ jobs:
       - name: Compute environment name
         id: environnement
         run: echo "nom=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './apps/cli/src/branchNamespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")" >> "$GITHUB_OUTPUT"
+      - name: Refuse to delete a protected environment
+        env:
+          ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
+        run: |
+          case "$ENVIRONNEMENT" in
+            ''|main|dev)
+              echo "Suppression refusée pour « $BRANCHE » : son namespace « $ENVIRONNEMENT » est celui de main ou de dev"
+              exit 1
+              ;;
+          esac
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
         with:
