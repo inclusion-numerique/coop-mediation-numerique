@@ -62,8 +62,6 @@ jobs:
         env:
           ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
         run: pnpm --silent with-env tofu -chdir=infrastructure destroy -input=false -auto-approve -var-file=.tfvars.json -var "branch=$BRANCHE" -var "namespace=$ENVIRONNEMENT"
-      - name: Delete container image
-        run: pnpm --silent cli infrastructure:delete-registry-image "$BRANCHE"
       - name: Deactivate GitHub deployments
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -94,3 +92,5 @@ jobs:
           echo "Environnement « $ENVIRONNEMENT » supprimé"
       - name: Delete Sentry environment issues
         run: pnpm --silent cli sentry:delete-environment-issues "$BRANCHE"
+      - name: Delete container image
+        run: pnpm --silent cli infrastructure:delete-registry-image "$BRANCHE"
