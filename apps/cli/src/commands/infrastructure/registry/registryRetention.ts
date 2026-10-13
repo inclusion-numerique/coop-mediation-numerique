@@ -9,6 +9,13 @@ export type RegistryImage = {
   readonly name: string
 }
 
+export const retentionCount = (value: string, option: string): number => {
+  if (!/^[1-9]\d*$/.test(value)) {
+    throw new Error(`${option} must be a positive integer, got "${value}"`)
+  }
+  return Number(value)
+}
+
 export const tagsBeyondTheMostRecent = (
   tags: readonly RegistryTag[],
   kept: number,
@@ -19,6 +26,19 @@ export const tagsBeyondTheMostRecent = (
 
 export const imageNameForBranch = (prefix: string, branch: string): string =>
   `${prefix}${branch.replaceAll('/', '-').toLowerCase()}`
+
+export const isProtectedImage = ({
+  prefix,
+  branch,
+  protectedBranches,
+}: {
+  readonly prefix: string
+  readonly branch: string
+  readonly protectedBranches: readonly string[]
+}): boolean =>
+  protectedBranches
+    .map((protectedBranch) => imageNameForBranch(prefix, protectedBranch))
+    .includes(imageNameForBranch(prefix, branch))
 
 export const orphanImages = ({
   images,

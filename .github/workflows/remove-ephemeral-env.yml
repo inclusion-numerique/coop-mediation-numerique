@@ -42,11 +42,22 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: main
+          persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
       - name: Compute environment name
         id: environnement
         run: echo "nom=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './apps/cli/src/branchNamespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")" >> "$GITHUB_OUTPUT"
+      - name: Refuse to delete a protected environment
+        env:
+          ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
+        run: |
+          case "$ENVIRONNEMENT" in
+            ''|main|dev)
+              echo "Suppression refusée pour « $BRANCHE » : son namespace « $ENVIRONNEMENT » est celui de main ou de dev"
+              exit 1
+              ;;
+          esac
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
         with:
@@ -62,8 +73,6 @@ jobs:
         env:
           ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
         run: pnpm --silent with-env tofu -chdir=infrastructure destroy -input=false -auto-approve -var-file=.tfvars.json -var "branch=$BRANCHE" -var "namespace=$ENVIRONNEMENT"
-      - name: Delete container image
-        run: pnpm --silent cli infrastructure:delete-registry-image "$BRANCHE"
       - name: Deactivate GitHub deployments
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,11 +95,17 @@ jobs:
               exit 1
               ;;
           esac
-          if ! gh api "repos/${{ github.repository }}/environments/$ENVIRONNEMENT" > /dev/null 2>&1; then
-            echo "L'environnement « $ENVIRONNEMENT » n'existe plus"
-            exit 0
+          if ! erreur=$(gh api "repos/$GITHUB_REPOSITORY/environments/$ENVIRONNEMENT" 2>&1 > /dev/null); then
+            if [[ "$erreur" == *"HTTP 404"* ]]; then
+              echo "L'environnement « $ENVIRONNEMENT » n'existe plus"
+              exit 0
+            fi
+            echo "Lecture de l'environnement « $ENVIRONNEMENT » impossible : $erreur"
+            exit 1
           fi
-          gh api --method DELETE "repos/${{ github.repository }}/environments/$ENVIRONNEMENT"
+          gh api --method DELETE "repos/$GITHUB_REPOSITORY/environments/$ENVIRONNEMENT"
           echo "Environnement « $ENVIRONNEMENT » supprimé"
       - name: Delete Sentry environment issues
         run: pnpm --silent cli sentry:delete-environment-issues "$BRANCHE"
+      - name: Delete container image
+        run: pnpm --silent cli infrastructure:delete-registry-image "$BRANCHE"
