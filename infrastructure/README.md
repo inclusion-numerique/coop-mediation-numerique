@@ -15,6 +15,8 @@ Resources shared by every environment (database instance, container namespace, r
 - DNS record and container domain (`dns.tf`)
 - Job cron triggers (`jobs.tf`, UTC schedules in `locals.tf`)
 
+The namespace of an environment is `main`, `dev`, or for a preview the slug of its branch followed by six letters derived from the whole branch name (`apps/cli/src/branchNamespace.ts`), which makes it very unlikely that two branches share resources. It is at most 14 characters long, the room left for the preview subdomain under `coop-mediation-numerique.incubateur.anct.gouv.fr`, so that the suffix survives in it. It also names the container image.
+
 The state of each environment is stored in the `coop-mediation-numerique-terraform-state` bucket under the `coop-mediation-numerique-web-<namespace>.tfstate` key, passed to `tofu init` with `-backend-config`.
 
 ## Deployment
