@@ -1,5 +1,6 @@
 import {
   imageNameForBranch,
+  isProtectedImage,
   orphanImages,
   tagsBeyondTheMostRecent,
 } from './registryRetention'
@@ -58,6 +59,23 @@ describe('registryRetention', () => {
       expect(
         imageNameForBranch('coop-mediation-numerique-web-', 'feat/export/csv'),
       ).toBe('coop-mediation-numerique-web-feat-export-csv')
+    })
+  })
+
+  describe('isProtectedImage', () => {
+    const prefix = 'coop-mediation-numerique-web-'
+    const protectedBranches = ['main', 'dev']
+
+    it('protects a branch whose image name is the one of main once normalized', () => {
+      expect(
+        isProtectedImage({ prefix, branch: 'MAIN', protectedBranches }),
+      ).toBe(true)
+    })
+
+    it('does not protect a preview branch', () => {
+      expect(
+        isProtectedImage({ prefix, branch: 'feat/main', protectedBranches }),
+      ).toBe(false)
     })
   })
 
