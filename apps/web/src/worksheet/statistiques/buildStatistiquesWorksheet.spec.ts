@@ -272,6 +272,24 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
         label: 'Exemple de Mediateque',
       },
     ],
+    communes: [
+      {
+        commune: 'Bourg-en-Bresse',
+        codePostal: '01000',
+        codeInsee: '01053',
+        count: 3,
+        proportion: 75,
+        label: 'Bourg-en-Bresse · 01000',
+      },
+      {
+        commune: null,
+        codePostal: null,
+        codeInsee: null,
+        count: 1,
+        proportion: 25,
+        label: 'Non communiqué',
+      },
+    ],
   } as MesStatistiquesPageData,
 }
 
@@ -525,8 +543,20 @@ const nombreActivites = {
   start: nombreActivitesTitle.start + nombreActivitesTitle.length,
   length: 2,
 }
-const beneficiairesTitle = {
+const nombreAccompagnementsParCodePostalTitle = {
   start: nombreActivites.start + nombreActivites.length,
+  length: 1,
+}
+const nombreAccompagnementsParCodePostal = {
+  start:
+    nombreAccompagnementsParCodePostalTitle.start +
+    nombreAccompagnementsParCodePostalTitle.length,
+  length: 3,
+}
+const beneficiairesTitle = {
+  start:
+    nombreAccompagnementsParCodePostal.start +
+    nombreAccompagnementsParCodePostal.length,
   length: 1,
 }
 const beneficiairesGenreTitle = {
@@ -899,6 +929,34 @@ describe('build statistiques worksheet for médiateur', () => {
       ?.map((row) => row.values)
 
     expect(rows).toEqual([[undefined, 'Exemple de Mediateque', 4, '100 %'], []])
+  })
+
+  it(`should contains bold 'Nombre d’accompagnements par code postal' in Statistiques worksheet at position A${nombreAccompagnementsParCodePostalTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(
+      `A${nombreAccompagnementsParCodePostalTitle.start}`,
+    )
+
+    expect(exportTitleCell?.value).toBe(
+      'Nombre d’accompagnements par code postal',
+    )
+    expect(exportTitleCell?.font.bold).toBe(true)
+  })
+
+  it(`should contains Nombre d’accompagnements par code postal ${range(
+    nombreAccompagnementsParCodePostal,
+  )}`, () => {
+    const rows = worksheet
+      .getRows(
+        nombreAccompagnementsParCodePostal.start,
+        nombreAccompagnementsParCodePostal.length,
+      )
+      ?.map((row) => row.values)
+
+    expect(rows).toEqual([
+      [undefined, 'Bourg-en-Bresse', '01000', 3, numberToPercentage(75)],
+      [undefined, 'Non communiqué', '', 1, numberToPercentage(25)],
+      [],
+    ])
   })
 
   it(`should contains bold 'Statistiques sur vos bénéficiaires' in Statistiques worksheet at position A${beneficiairesTitle.start}`, () => {
