@@ -2,6 +2,7 @@ import {
   imageNameForBranch,
   isProtectedImage,
   orphanImages,
+  retentionCount,
   tagsBeyondTheMostRecent,
 } from './registryRetention'
 
@@ -59,6 +60,18 @@ describe('registryRetention', () => {
       expect(
         imageNameForBranch('coop-mediation-numerique-web-', 'feat/export/csv'),
       ).toBe('coop-mediation-numerique-web-feat-export-csv')
+    })
+  })
+
+  describe('retentionCount', () => {
+    it('reads a positive integer', () => {
+      expect(retentionCount('10', '--keep-main')).toBe(10)
+    })
+
+    it.each(['nope', '0', '-1', '1.5', ''])('rejects "%s"', (value) => {
+      expect(() => retentionCount(value, '--keep-main')).toThrow(
+        '--keep-main must be a positive integer',
+      )
     })
   })
 
