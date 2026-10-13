@@ -78,7 +78,7 @@ export const compteApresConnexion = ({
   organisationIdsSansWebhook: existant?.organisationIdsSansWebhook ?? [],
   synchroniserDepuis: existant?.synchroniserDepuis ?? debutDuJour(maintenant),
   derniereSynchro: existant?.derniereSynchro ?? null,
-  inclureRdvsDansActivites: existant?.inclureRdvsDansActivites ?? false,
+  inclureRdvsDansActivites: existant?.inclureRdvsDansActivites ?? true,
 })
 
 /**

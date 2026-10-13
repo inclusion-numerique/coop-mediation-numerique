@@ -11,10 +11,6 @@ import { mediateurAvecActivite } from '@app/fixtures/users/mediateurAvecActivite
  * Le composant porte aussi le rattrapage des rendez-vous au chargement. Il n'est
  * pas armé ici — aucune organisation n'est en défaut de webhook — et c'est
  * volontaire : ce scénario éprouve la bascule, pas la synchronisation.
- *
- * Le médiateur doit avoir des activités : la barre d'outils qui porte la case
- * n'est rendue que si la liste n'est pas vide (`MesActivitesListePage`), et un
- * rendez-vous seul ne la remplit pas tant que la bascule est à faux.
  */
 
 /**

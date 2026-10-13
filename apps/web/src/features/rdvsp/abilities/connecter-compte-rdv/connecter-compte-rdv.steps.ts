@@ -132,6 +132,17 @@ Given(
   },
 )
 
+Given(
+  'un compte RDV déjà lié masquant les rendez-vous dans les activités',
+  async () => {
+    await seedCompteRdv({
+      id: AGENT_ID,
+      accessToken: 'ancien-jeton',
+      includeRdvsInActivitesList: false,
+    })
+  },
+)
+
 When('je connecte mon compte RDV Service Public', async () => {
   suivreCompteRdv(AGENT_ID)
   resultat = await connecter({
@@ -179,6 +190,22 @@ Then('le compte n’est plus marqué déconnecté', async () => {
 
 Then(
   'le compte affiche toujours les rendez-vous dans les activités',
+  async () => {
+    const row = await compteRdvEnBase(AGENT_ID)
+    assert.strictEqual(row?.includeRdvsInActivitesList, true)
+  },
+)
+
+Then(
+  'le compte masque toujours les rendez-vous dans les activités',
+  async () => {
+    const row = await compteRdvEnBase(AGENT_ID)
+    assert.strictEqual(row?.includeRdvsInActivitesList, false)
+  },
+)
+
+Then(
+  'le compte connecté affiche les rendez-vous dans les activités',
   async () => {
     const row = await compteRdvEnBase(AGENT_ID)
     assert.strictEqual(row?.includeRdvsInActivitesList, true)
