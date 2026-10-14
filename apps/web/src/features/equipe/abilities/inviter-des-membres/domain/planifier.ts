@@ -1,0 +1,89 @@
+import { failure, type Result, success } from '@app/web/libraries/result'
+import {
+  type CoordinateurId,
+  type EmailInvitation,
+  type Invitation,
+  type InvitationEnAttente,
+  type MediateurId,
+  ReferenceInvitation,
+} from '../../../domain'
+import { AucuneInvitationAEnvoyer } from './errors'
+
+export type RaisonDEcart = 'DejaMembre' | 'DejaInvitee'
+
+export type Ecart = {
+  readonly email: EmailInvitation
+  readonly raison: RaisonDEcart
+}
+
+export type Existant = {
+  readonly invitations: readonly Invitation[]
+  readonly membresActifs: ReadonlySet<EmailInvitation>
+  readonly mediateursConnus: ReadonlyMap<EmailInvitation, MediateurId>
+}
+
+export type Planification = {
+  readonly aEnvoyer: readonly InvitationEnAttente[]
+  readonly ecartes: readonly Ecart[]
+}
+
+const raisonDEcart =
+  ({ invitations, membresActifs }: Existant) =>
+  (email: EmailInvitation): RaisonDEcart | null => {
+    if (membresActifs.has(email)) return 'DejaMembre'
+    return invitations.some(
+      (invitation) =>
+        invitation.reference.email === email &&
+        invitation.statut === 'EnAttente',
+    )
+      ? 'DejaInvitee'
+      : null
+  }
+
+const nouvelleInvitation =
+  (
+    coordinateurId: CoordinateurId,
+    { mediateursConnus }: Existant,
+    maintenant: Date,
+  ) =>
+  (email: EmailInvitation): InvitationEnAttente => {
+    const mediateurId = mediateursConnus.get(email)
+    return {
+      reference: ReferenceInvitation({ email, coordinateurId }),
+      invite:
+        mediateurId === undefined
+          ? { type: 'SansCompte', email }
+          : { type: 'MediateurInscrit', email, mediateurId },
+      envoyeeLe: maintenant,
+      renvoyeeLe: null,
+      statut: 'EnAttente',
+    }
+  }
+
+export const planifier = ({
+  coordinateurId,
+  candidats,
+  existant,
+  maintenant,
+}: {
+  coordinateurId: CoordinateurId
+  candidats: readonly EmailInvitation[]
+  existant: Existant
+  maintenant: Date
+}): Result<Planification, AucuneInvitationAEnvoyer> => {
+  const uniques = [...new Set(candidats)]
+  const ecarter = raisonDEcart(existant)
+
+  const ecartes = uniques.flatMap((email): Ecart[] => {
+    const raison = ecarter(email)
+    return raison === null ? [] : [{ email, raison }]
+  })
+
+  const aEnvoyer = uniques
+    .filter((email) => ecarter(email) === null)
+    .map(nouvelleInvitation(coordinateurId, existant, maintenant))
+
+  return aEnvoyer.length === 0
+    ? failure(AucuneInvitationAEnvoyer(ecartes))
+    : success({ aEnvoyer, ecartes })
+}
