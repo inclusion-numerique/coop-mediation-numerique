@@ -1,7 +1,7 @@
 import { getDernieresActivitesFor } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import type { ActiviteGrouped } from '@app/web/features/activites/use-cases/list/db/getActivitesCoordinationByQuarter'
 import { getActivitesCoordinationByQuarter } from '@app/web/features/activites/use-cases/list/db/getActivitesCoordinationByQuarter'
-import { compterLesMembres } from '@app/web/features/equipe/abilities/lister-les-membres'
+import { compterLesMembres } from '@app/web/features/equipe'
 import { blocRdvAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import type {
