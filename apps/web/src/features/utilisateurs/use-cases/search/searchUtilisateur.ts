@@ -31,16 +31,7 @@ const utilisateursListWhere = (
 
 const DEFAULT_PAGE_SIZE = 100
 
-const FRAGMENT_D_IDENTIFIANT = /^[0-9a-f-]+$/i
-
-const identifiantsContenant = async (part: string): Promise<string[]> =>
-  FRAGMENT_D_IDENTIFIANT.test(part)
-    ? (
-        await prismaClient.$queryRaw<{ id: string }[]>`
-          SELECT id::text AS id FROM coop.users WHERE id::text ILIKE ${`%${part}%`}
-        `
-      ).map(({ id }) => id)
-    : []
+const estUnIdentifiant = (part: string) => z.guid().safeParse(part).success
 
 export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
   const searchParams = options.searchParams ?? {}
@@ -57,23 +48,16 @@ export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
     pageSize: toNumberOr(searchParams?.lignes)(DEFAULT_PAGE_SIZE),
   })
 
-  const termes = await Promise.all(
-    toQueryParts(searchParams).map(async (part) => ({
-      part,
-      identifiants: await identifiantsContenant(part),
-    })),
-  )
-
   const matchesWhere = {
     AND: [
       {
         ...utilisateursListWhere({ mediateurId }),
-        AND: termes.map(({ part, identifiants }) => ({
+        AND: toQueryParts(searchParams).map((part) => ({
           OR: [
             { firstName: { contains: part, mode: 'insensitive' } },
             { lastName: { contains: part, mode: 'insensitive' } },
             { email: { contains: part, mode: 'insensitive' } },
-            { id: { in: identifiants } },
+            ...(estUnIdentifiant(part) ? [{ id: part }] : []),
           ],
         })),
       },
