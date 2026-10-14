@@ -4,22 +4,22 @@ import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import {
-  InviterMembreData,
-  InviterMembreInput,
-  InviterMembreValidation,
-} from '@app/web/equipe/InviterMembreValidation'
 import { useMediateursSearch } from '@app/web/hooks/useMediateurSearch'
-import { trpc } from '@app/web/trpc'
-import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
+import { inject } from '@app/web/libs/injection/client'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { INVITER_DES_MEMBRES_ACTION_KEY } from '../action/inviter-des-membres.key'
 import { FormatOptionLabel } from './FormatOptionLabel'
-import { MediateurToAddOption } from './MediateurToAddOption'
+import {
+  type InviterMembreData,
+  type InviterMembreInput,
+  InviterMembreValidation,
+} from './inviter-membre.form'
+import type { MediateurToAddOption } from './MediateurToAddOption'
 
 const EMAIL_REGEXP =
   /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/
@@ -51,7 +51,7 @@ const InviterMembreForm = () => {
     defaultValues: { members: [] },
   })
 
-  const mutation = trpc.mediateur.invite.useMutation()
+  const [enCours, setEnCours] = useState(false)
 
   const router = useRouter()
 
@@ -61,42 +61,36 @@ const InviterMembreForm = () => {
   })
 
   const onSubmit = async (data: InviterMembreData) => {
-    try {
-      await mutation.mutateAsync(data)
+    setEnCours(true)
+    const resultat = await inject(INVITER_DES_MEMBRES_ACTION_KEY)({
+      emails: data.members.map(toEmail),
+    })
+    setEnCours(false)
+
+    if (!resultat.success) {
+      createToast({ priority: 'error', message: resultat.error })
+      return
+    }
+
+    if (resultat.data.echecs.length > 0) {
       createToast({
-        priority: 'success',
-        message:
-          data.members.length > 1
-            ? 'Un email d’invitation a été envoyé aux membres que vous souhaitez ajouter à votre équipe'
-            : `Un email d’invitation a été envoyé à ${data.members[0].nom ?? data.members[0].email}`,
+        priority: 'warning',
+        message: `L’invitation est enregistrée, mais l’email n’a pas pu être envoyé à ${resultat.data.echecs.join(', ')} : vous pourrez la relancer depuis votre équipe.`,
       })
       router.push('/coop/mon-equipe')
       router.refresh()
-    } catch (mutationError) {
-      if (
-        applyZodValidationMutationErrorsToForm(mutationError, form.setError)
-      ) {
-        return
-      }
-      if (
-        mutationError instanceof Error &&
-        mutationError.message === 'No new invitations to send'
-      ) {
-        createToast({
-          priority: 'error',
-          message: `Aucune invitation à envoyer pour ${data.members.length > 1 ? 'ces membres' : 'ce membre'}`,
-        })
-        return
-      }
-
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de l’invitation, veuillez réessayer ultérieurement.',
-      })
-
-      throw mutationError
+      return
     }
+
+    createToast({
+      priority: 'success',
+      message:
+        data.members.length > 1
+          ? 'Un email d’invitation a été envoyé aux membres que vous souhaitez ajouter à votre équipe'
+          : `Un email d’invitation a été envoyé à ${data.members[0].nom ?? data.members[0].email}`,
+    })
+    router.push('/coop/mon-equipe')
+    router.refresh()
   }
 
   const onSelectMediateurAInviter = (option: MediateurToAddOption | null) => {
@@ -156,8 +150,8 @@ const InviterMembreForm = () => {
           {
             children: 'Inviter',
             type: 'submit',
-            disabled: fields.length === 0 || mutation.isPending || isMenuOpen,
-            ...buttonLoadingClassname(mutation.isPending),
+            disabled: fields.length === 0 || enCours || isMenuOpen,
+            ...buttonLoadingClassname(enCours),
           },
           {
             children: 'Annuler',

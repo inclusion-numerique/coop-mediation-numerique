@@ -121,6 +121,7 @@ export const getActeurDetailPageData = async ({
 
   const coordinationFeatures = sessionUser.coordinateur
     ? {
+        coordinateurId: sessionUser.coordinateur.id,
         coordinationDetails,
         acteurIsMediateurCoordonnne,
         acteurIsInvitedToTeam,

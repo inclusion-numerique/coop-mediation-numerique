@@ -1,5 +1,5 @@
-import { UserRole } from '@app/web/equipe/UserRole'
 import { MediateurToAddOption } from './MediateurToAddOption'
+import { UserRole } from './UserRole'
 
 export const FormatOptionLabel = ({
   isDisabled,
