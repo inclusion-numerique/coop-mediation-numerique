@@ -1011,4 +1011,73 @@ describe('createOrUpdateActivite', () => {
       })
     })
   })
+
+  describe('lieu without an address recognised by the BAN', () => {
+    const craAtMediateque = (id?: string): CreateOrUpdateActiviteInput => ({
+      type: 'Individuel',
+      data: {
+        id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+        typeLieu: 'LieuActivite',
+        structure: {
+          id: mediateque.id,
+          nom: mediateque.nom,
+          adresse: mediateque.adresse,
+        },
+        thematiques: ['SecuriteNumerique'],
+        tags: [],
+        date: '2024-10-01',
+        materiel: [],
+        duree: { duree: '60' },
+        autonomie: 'EntierementAccompagne',
+      },
+    })
+
+    const save = (input: CreateOrUpdateActiviteInput) =>
+      createOrUpdateActivite({
+        input,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+    const loseBanId = () =>
+      prismaClient.lieuInclusion.update({
+        where: { id: mediateque.id },
+        data: { banId: null },
+      })
+
+    afterEach(async () => {
+      await prismaClient.lieuInclusion.update({
+        where: { id: mediateque.id },
+        data: { banId: mediateque.banId },
+      })
+    })
+
+    it('should refuse a new activite at this lieu', async () => {
+      await loseBanId()
+
+      await expect(save(craAtMediateque())).rejects.toThrow(
+        'Structure not found',
+      )
+    })
+
+    it('should keep this lieu when updating an activite that already has it', async () => {
+      const { id } = await save(craAtMediateque())
+      await loseBanId()
+
+      await save(craAtMediateque(id))
+
+      const updated = await prismaClient.activite.findUniqueOrThrow({
+        where: { id },
+        select: { structureId: true },
+      })
+      expect(updated.structureId).toBe(mediateque.id)
+
+      await prismaClient.activite.update({
+        where: { id },
+        data: { suppression: new Date() },
+      })
+    })
+  })
 })
