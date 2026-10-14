@@ -1,6 +1,7 @@
 import { nomAffiche } from '@app/web/features/lieux-activite/domain/nom-affiche'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
 import { pluriel } from '@app/web/libraries/pluriel'
+import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
@@ -30,6 +31,7 @@ export type LieuEnActivite = {
   readonly derniereModificationSource: string | null
   readonly visiblePourCartographieNationale: boolean
   readonly structureCartographieNationaleId: string | null
+  readonly adresseAPreciser: boolean
   readonly _count: { readonly mediateursEnActivite: number }
 }
 
@@ -149,6 +151,11 @@ const LieuActiviteCard = ({
       </p>
 
       <div className="fr-flex fr-flex-wrap fr-flex-gap-2v fr-align-items-center">
+        {lieu.adresseAPreciser && (
+          <Badge small severity="warning">
+            Adresse à préciser
+          </Badge>
+        )}
         <CartographyIndicator
           status={cartographyStatus}
           structureCartographieNationaleId={

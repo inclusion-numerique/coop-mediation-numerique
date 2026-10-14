@@ -37,6 +37,16 @@
 * When l’administration cherche « 17300 »
 * Then un seul lieu est trouvé
 
+## Rule: Un lieu sans adresse reconnue s'administre, pour qu'on la lui donne
+
+### Scenario: Un lieu sans adresse reconnue par la BAN est signalé à préciser
+
+* Given trois lieux à administrer, dont deux à la même adresse
+* And le premier de ces lieux n'a pas d'adresse reconnue par la BAN
+* When l’administration cherche « 17300 »
+* Then deux lieux sont trouvés
+* And seul le premier lieu est signalé avec une adresse à préciser
+
 ## Rule: Le total ne dépend pas de la recherche
 
 > C'est le repère qui donne son sens au nombre de résultats : « 9 trouvés » ne

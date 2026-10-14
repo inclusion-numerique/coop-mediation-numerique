@@ -20,6 +20,7 @@ export type LigneDeLaListe = {
   readonly typologies: readonly string[]
   readonly visiblePourCartographieNationale: boolean
   readonly structureCartographieNationaleId: string | null
+  readonly adresseAPreciser: boolean
   readonly creation: Date
   readonly modification: Date
   readonly emploisCount: number

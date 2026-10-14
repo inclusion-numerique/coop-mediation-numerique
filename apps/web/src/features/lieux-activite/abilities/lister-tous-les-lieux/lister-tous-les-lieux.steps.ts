@@ -27,6 +27,7 @@ Given('trois lieux à administrer, dont deux à la même adresse', async () => {
         adresse: '12 quai du Port',
         commune: 'Rochefort',
         codePostal: '17300',
+        banId: '17299_0001_00001',
       },
       select: { id: true },
     }),
@@ -36,6 +37,7 @@ Given('trois lieux à administrer, dont deux à la même adresse', async () => {
         adresse: '3 rue des Livres',
         commune: 'Rochefort',
         codePostal: '17300',
+        banId: '17299_0001_00001',
       },
       select: { id: true },
     }),
@@ -45,6 +47,7 @@ Given('trois lieux à administrer, dont deux à la même adresse', async () => {
         adresse: '9 rue Lointaine',
         commune: 'Reims',
         codePostal: '51100',
+        banId: '51454_0001_00001',
       },
       select: { id: true },
     }),
@@ -59,6 +62,16 @@ Given('le premier de ces lieux est supprimé', async () => {
     data: { suppression: new Date() },
   })
 })
+
+Given(
+  "le premier de ces lieux n'a pas d'adresse reconnue par la BAN",
+  async () => {
+    await prismaClient.lieuInclusion.update({
+      where: { id: semis.ids[0] },
+      data: { banId: null },
+    })
+  },
+)
 
 const chercher = async (recherche: string) => {
   semis.trouves = await rechercherDesLieux({ searchParams: { recherche } })
@@ -88,6 +101,16 @@ Then('un seul lieu est trouvé', () => {
 
 Then('deux lieux sont trouvés', () => {
   assert.strictEqual(semesTrouves().length, 2)
+})
+
+Then('seul le premier lieu est signalé avec une adresse à préciser', () => {
+  assert.deepStrictEqual(
+    (semis.trouves?.searchResult.structures ?? [])
+      .filter(({ id }) => semis.ids.includes(id))
+      .filter(({ adresseAPreciser }) => adresseAPreciser)
+      .map(({ id }) => id),
+    [semis.ids[0]],
+  )
 })
 
 Then('le total annoncé dépasse le nombre de lieux trouvés', () => {

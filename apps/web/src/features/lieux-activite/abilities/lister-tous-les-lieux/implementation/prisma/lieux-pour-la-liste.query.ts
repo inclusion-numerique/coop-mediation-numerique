@@ -13,6 +13,7 @@ export const searchStructureSelect = {
   commune: true,
   codePostal: true,
   codeInsee: true,
+  banId: true,
   siret: true,
   typologies: true,
   visiblePourCartographieNationale: true,
@@ -70,7 +71,7 @@ export const lieuxPourLaListe = async ({
   //
   // L'employeuse n'est plus reliée au lieu (ADR-002) : ce compteur n'a plus de
   // quoi se calculer et vaut zéro pour tout le monde.
-  return structures.map(({ inscriptionRegistre, ...coop }) => {
+  return structures.map(({ inscriptionRegistre, banId, ...coop }) => {
     const registre =
       inscriptionRegistre == null ? null : champsDAffichage(inscriptionRegistre)
 
@@ -84,6 +85,7 @@ export const lieuxPourLaListe = async ({
       typologies: registre?.typologies ?? coop.typologies,
       structureCartographieNationaleId:
         registre?.structureCartographieNationaleId ?? null,
+      adresseAPreciser: banId == null,
       emploisCount: 0,
     }
   })

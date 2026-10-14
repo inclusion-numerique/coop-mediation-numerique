@@ -17,6 +17,7 @@ const semis: {
   mediateurId?: string
   userId?: string
   trouves?: string[]
+  aPreciser?: string[]
 } = { ids: [] }
 
 const CODE_INSEE = '17299'
@@ -36,6 +37,7 @@ const semerUnLieu = async ({
       commune: 'Rochefort',
       codePostal: '17300',
       codeInsee,
+      banId: `${codeInsee}_0001_00001`,
       visiblePourCartographieNationale: publie,
     },
     select: { id: true },
@@ -79,6 +81,13 @@ Given('un quatrième lieu publié dans un autre département', async () => {
   })
 })
 
+Given("le lieu fréquenté n'a pas d'adresse reconnue par la BAN", async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.frequente },
+    data: { banId: null },
+  })
+})
+
 Given('le lieu publié est supprimé', async () => {
   await prismaClient.lieuInclusion.update({
     where: { id: semis.publie },
@@ -92,9 +101,12 @@ When('on liste les lieux de ce département', async () => {
     searchParams: { lignes: '1000' },
   })
 
-  semis.trouves = lieux
+  const semes = lieux.filter(({ id }) => semis.ids.includes(id))
+
+  semis.trouves = semes.map(({ id }) => id)
+  semis.aPreciser = semes
+    .filter(({ adresseAPreciser }) => adresseAPreciser)
     .map(({ id }) => id)
-    .filter((id) => semis.ids.includes(id))
 })
 
 const proposes = () => semis.trouves ?? []
@@ -113,6 +125,10 @@ Then('le lieu délaissé n’est pas proposé', () => {
 
 Then('le lieu publié n’est pas proposé', () => {
   assert.ok(!proposes().includes(semis.publie as string))
+})
+
+Then('seul le lieu fréquenté est signalé avec une adresse à préciser', () => {
+  assert.deepStrictEqual(semis.aPreciser, [semis.frequente])
 })
 
 Then('le lieu d’ailleurs n’est pas proposé', () => {
