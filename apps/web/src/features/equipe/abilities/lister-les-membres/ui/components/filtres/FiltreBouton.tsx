@@ -7,17 +7,22 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import type { ReactNode } from 'react'
 import type { FilterParam } from './valeurs-de-filtre'
 
-const parseStatutParam = (param: string | null): FilterParam[] => {
-  if (!param) return []
-  return param.split(',').filter(Boolean) as FilterParam[]
-}
+const statutsConnus: readonly FilterParam[] = [
+  'actifs',
+  'inactifs',
+  'invitations',
+  'archives',
+]
+
+const estUnStatutConnu = (valeur: string): valeur is FilterParam =>
+  statutsConnus.some((statut) => statut === valeur)
+
+const parseStatutParam = (param: string | null): FilterParam[] =>
+  (param ?? '').split(',').filter(estUnStatutConnu)
 
 const updateStatut = (params: URLSearchParams, statuts: FilterParam[]) => {
-  if (statuts.length > 0) {
-    params.set('statut', statuts.join(','))
-  } else {
-    params.delete('statut')
-  }
+  if (statuts.length > 0) params.set('statut', statuts.join(','))
+  if (statuts.length === 0) params.delete('statut')
 }
 
 export const FiltreBouton = ({

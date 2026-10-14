@@ -7,12 +7,11 @@ import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSize
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { ReactNode } from 'react'
-import type { LigneEquipe } from '../../../../domain'
+import { criteresEquipe, type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../implementation'
 import { EquipeDataTable } from '../components/EquipeDataTable'
 import EquipeVide from '../components/EquipeVide'
 import { FiltresEquipe } from '../components/filtres/FiltresEquipe'
-import type { RoleFiltre } from '../components/filtres/valeurs-de-filtre'
 import { lignesAffichees } from '../lister-les-membres.presenter'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
@@ -22,7 +21,7 @@ export type ParametresDeLaListe = {
   page?: string
   recherche?: string
   statut?: string
-  role?: RoleFiltre
+  role?: string
 }
 
 const EquipeListePage = ({
@@ -94,7 +93,7 @@ const EquipeListePage = ({
             inactifs={statistiques.inactifs}
             invitations={statistiques.invitations}
             archives={statistiques.archives}
-            defaultRole={searchParams.role}
+            defaultRole={criteresEquipe(searchParams).role ?? undefined}
           />
           {statistiques.total === 0 &&
           statistiques.archives === 0 &&

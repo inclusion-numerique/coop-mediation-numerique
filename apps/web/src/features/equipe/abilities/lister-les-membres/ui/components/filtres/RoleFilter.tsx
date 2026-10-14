@@ -28,11 +28,8 @@ export const RoleFilter = ({ defaultValue }: { defaultValue?: RoleFiltre }) => {
 
   const closePopover = (close: boolean = false) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (role) {
-      params.set('role', role)
-    } else {
-      params.delete('role')
-    }
+    if (role) params.set('role', role)
+    if (!role) params.delete('role')
     resetPagination(params)
     close && setIsOpen(false)
     router.replace(`?${params}`, { scroll: false })
