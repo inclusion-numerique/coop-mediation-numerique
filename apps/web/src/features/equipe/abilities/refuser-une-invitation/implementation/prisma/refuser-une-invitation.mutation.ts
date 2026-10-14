@@ -2,10 +2,7 @@ import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
-import {
-  cleDeLInvitation,
-  lireUneInvitation,
-} from '../../../../db/invitation.query'
+import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
   exigerEnAttente,
   type InvitationDejaTraitee,
@@ -26,14 +23,14 @@ export const refuserUneInvitation = async ({
   auteurId: UtilisateurId | null
   maintenant?: Date
 }): Promise<Result<void, EchecDeRefus>> => {
-  const invitation = await lireUneInvitation(reference)
-  if (invitation === null) return failure(InvitationIntrouvable())
+  const lue = await lireUneInvitation(reference)
+  if (lue === null) return failure(InvitationIntrouvable())
 
-  const enAttente = exigerEnAttente(invitation)
+  const enAttente = exigerEnAttente(lue.invitation)
   if (!enAttente.success) return enAttente
 
   await prismaClient.invitationEquipe.update({
-    where: cleDeLInvitation(reference),
+    where: lue.cle,
     data: { refusee: maintenant },
   })
 

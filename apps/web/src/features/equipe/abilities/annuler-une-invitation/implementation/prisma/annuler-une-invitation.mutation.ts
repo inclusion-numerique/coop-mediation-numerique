@@ -1,10 +1,7 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
-import {
-  cleDeLInvitation,
-  lireUneInvitation,
-} from '../../../../db/invitation.query'
+import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
   ActionNonAutorisee,
   exigerEnAttente,
@@ -33,14 +30,14 @@ export const annulerUneInvitation = async ({
   if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
     return failure(ActionNonAutorisee())
 
-  const invitation = await lireUneInvitation(reference)
-  if (invitation === null) return failure(InvitationIntrouvable())
+  const lue = await lireUneInvitation(reference)
+  if (lue === null) return failure(InvitationIntrouvable())
 
-  const enAttente = exigerEnAttente(invitation)
+  const enAttente = exigerEnAttente(lue.invitation)
   if (!enAttente.success) return enAttente
 
   await prismaClient.invitationEquipe.delete({
-    where: cleDeLInvitation(reference),
+    where: lue.cle,
   })
 
   addMutationLog({

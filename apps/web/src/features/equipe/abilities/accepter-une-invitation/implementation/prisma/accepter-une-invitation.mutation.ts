@@ -3,10 +3,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { adhesionSelect, toAdhesion } from '../../../../db/adhesion.transfer'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
-import {
-  cleDeLInvitation,
-  lireUneInvitation,
-} from '../../../../db/invitation.query'
+import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
   adhesionActive,
   type InvitationDejaTraitee,
@@ -39,17 +36,17 @@ export const accepterUneInvitation = async ({
   auteurId: UtilisateurId
   maintenant?: Date
 }): Promise<Result<void, EchecDAcceptation>> => {
-  const invitation = await lireUneInvitation(reference)
-  if (invitation === null) return failure(InvitationIntrouvable())
+  const lue = await lireUneInvitation(reference)
+  if (lue === null) return failure(InvitationIntrouvable())
 
-  const acceptation = accepter(invitation, accepteur)
+  const acceptation = accepter(lue.invitation, accepteur)
   if (!acceptation.success) return acceptation
 
   const { mediateurId } = acceptation.data
 
   await prismaClient.$transaction(async (transaction) => {
     await transaction.invitationEquipe.update({
-      where: cleDeLInvitation(reference),
+      where: lue.cle,
       data: { acceptee: maintenant, mediateurId },
     })
 

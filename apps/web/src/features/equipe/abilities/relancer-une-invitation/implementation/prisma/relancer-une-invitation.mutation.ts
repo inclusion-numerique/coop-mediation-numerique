@@ -2,10 +2,7 @@ import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
-import {
-  cleDeLInvitation,
-  lireUneInvitation,
-} from '../../../../db/invitation.query'
+import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
   ActionNonAutorisee,
   CoordinateurIntrouvable,
@@ -53,10 +50,10 @@ export const relancerUneInvitation = async ({
   if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
     return failure(ActionNonAutorisee())
 
-  const invitation = await lireUneInvitation(reference)
-  if (invitation === null) return failure(InvitationIntrouvable())
+  const lue = await lireUneInvitation(reference)
+  if (lue === null) return failure(InvitationIntrouvable())
 
-  const enAttente = exigerEnAttente(invitation)
+  const enAttente = exigerEnAttente(lue.invitation)
   if (!enAttente.success) return enAttente
 
   const coordinateur = await lireLeCoordinateur(reference.coordinateurId)
@@ -70,7 +67,7 @@ export const relancerUneInvitation = async ({
   if (!envoyee) return failure(EnvoiEchoue())
 
   await prismaClient.invitationEquipe.update({
-    where: cleDeLInvitation(reference),
+    where: lue.cle,
     data: { renvoyee: maintenant },
   })
 
