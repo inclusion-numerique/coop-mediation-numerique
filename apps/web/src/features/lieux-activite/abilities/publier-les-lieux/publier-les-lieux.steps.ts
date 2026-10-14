@@ -34,6 +34,7 @@ const semerUnLieu = async (visiblePourCartographieNationale: boolean) => {
       commune: 'Rochefort',
       codePostal: '17300',
       codeInsee: '17299',
+      banId: '17299_0123_00012',
       visiblePourCartographieNationale,
       services: ['AideAuxDemarchesAdministratives'],
     },
@@ -57,6 +58,13 @@ Given("ce lieu n'annonce aucun service", async () => {
   await prismaClient.lieuInclusion.update({
     where: { id: semis.lieuId },
     data: { services: [] },
+  })
+})
+
+Given("l'adresse de ce lieu n'est pas reconnue par la BAN", async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.lieuId },
+    data: { banId: null },
   })
 })
 
