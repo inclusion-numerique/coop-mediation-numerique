@@ -96,14 +96,11 @@ const InviterMembreForm = () => {
   const onSelectMediateurAInviter = (option: MediateurToAddOption | null) => {
     if (option?.value?.email == null) return
 
-    append([
-      ...fields,
-      {
-        email: option.value.email,
-        nom: option.value.mediateurId ? option?.label : undefined,
-        mediateurId: option.value.mediateurId,
-      },
-    ])
+    append({
+      email: option.value.email,
+      nom: option.value.mediateurId ? option?.label : undefined,
+      mediateurId: option.value.mediateurId,
+    })
   }
 
   return (
