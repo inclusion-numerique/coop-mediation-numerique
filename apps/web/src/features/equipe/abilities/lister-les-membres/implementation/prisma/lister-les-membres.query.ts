@@ -58,8 +58,11 @@ export const compterLesMembres = async ({
   coordinateurId: string
   maintenant?: Date
 }): Promise<StatistiquesEquipe> => {
+  const equipe = CoordinateurId.safe(coordinateurId)
+  if (equipe === null) return statistiquesVides
+
   const [statistiques] = await prismaClient.$queryRaw<StatistiquesEquipeRow[]>`
-    ${lignesEquipeCte({ coordinateurId: CoordinateurId(coordinateurId), maintenant })}
+    ${lignesEquipeCte({ coordinateurId: equipe, maintenant })}
     ${statistiquesEquipeSql}`
 
   return statistiques === undefined

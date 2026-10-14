@@ -1,7 +1,11 @@
+import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
+import BackButton from '@app/web/components/BackButton'
 import Card from '@app/web/components/Card'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { contentId } from '@app/web/utils/skipLinks'
 import InviterMembreForm from './InviterMembreForm'
 
-export const InviterMembresPage = () => (
+const CarteDInvitation = () => (
   <Card
     noBorder
     titleAs="div"
@@ -26,4 +30,28 @@ export const InviterMembresPage = () => (
     </span>
     <InviterMembreForm />
   </Card>
+)
+
+export const InviterMembresPage = () => (
+  <div
+    className="fr-flex fr-direction-column fr-background-alt--blue-ecume"
+    style={{ minHeight: '100%' }}
+  >
+    <SkipLinksPortal />
+    <div className="fr-container fr-container--narrow">
+      <CoopBreadcrumbs
+        parents={[
+          {
+            label: 'Mon équipe',
+            linkProps: { href: '/coop/mon-equipe/' },
+          },
+        ]}
+        currentPage="Inviter des membres"
+      />
+      <BackButton />
+      <main id={contentId} className="fr-mb-16w">
+        <CarteDInvitation />
+      </main>
+    </div>
+  </div>
 )

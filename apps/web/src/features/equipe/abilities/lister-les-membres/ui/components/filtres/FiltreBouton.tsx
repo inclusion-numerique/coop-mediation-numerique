@@ -5,20 +5,14 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { ReactNode } from 'react'
+import { FiltreStatut } from '../../../../../domain/criteres-equipe'
 import type { FilterParam } from './valeurs-de-filtre'
 
-const statutsConnus: readonly FilterParam[] = [
-  'actifs',
-  'inactifs',
-  'invitations',
-  'archives',
-]
-
-const estUnStatutConnu = (valeur: string): valeur is FilterParam =>
-  statutsConnus.some((statut) => statut === valeur)
-
 const parseStatutParam = (param: string | null): FilterParam[] =>
-  (param ?? '').split(',').filter(estUnStatutConnu)
+  (param ?? '').split(',').flatMap((valeur) => {
+    const statut = FiltreStatut.schema.safeParse(valeur)
+    return statut.success ? [statut.data] : []
+  })
 
 const updateStatut = (params: URLSearchParams, statuts: FilterParam[]) => {
   if (statuts.length > 0) params.set('statut', statuts.join(','))
