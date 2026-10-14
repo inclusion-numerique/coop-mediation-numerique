@@ -1,57 +1,66 @@
+import { accepterUneInvitationAction } from '@app/web/app/_actions/equipe/accepter-une-invitation.action'
+import { refuserUneInvitationAction } from '@app/web/app/_actions/equipe/refuser-une-invitation.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
-import { Invitation } from '@app/web/equipe/InvitationValidation'
+import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
+import { consulterUneInvitation } from '@app/web/features/equipe/abilities/consulter-une-invitation'
 import {
-  decodeSerializableState,
-  EncodedState,
-} from '@app/web/utils/encodeSerializableState'
+  InvitationEnAttente,
+  InvitationPlusValide,
+} from '@app/web/features/equipe/abilities/consulter-une-invitation/ui'
+import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
+import {
+  EmailInvitation,
+  lienInvitation,
+} from '@app/web/features/equipe/domain'
+import { ReponseAInvitation } from '@app/web/features/equipe/ui'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
+import type { EncodedState } from '@app/web/utils/encodeSerializableState'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { AlreadyProcessed } from './_components/alreadyProcessed'
-import { getInvitationData } from './_components/getInvitationData'
-import { JoinTeam } from './_components/JoinTeam'
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),
 }
 
-const isValid = (invitation: Invitation | null): invitation is Invitation =>
-  invitation?.email != null && invitation?.coordinateurId != null
-
-const isWrongUserFor =
-  ({ email }: Invitation) =>
-  (user: { email: string } | null): user is { email: string } =>
-    user?.email != null && user.email !== email
-
 const InvitationPage = async (props: {
-  params: Promise<{ data: EncodedState<Invitation> }>
+  params: Promise<{ data: EncodedState<unknown> }>
 }) => {
-  const params = await props.params
-
-  const { data } = params
-
-  const invitation = decodeSerializableState(data, null)
-
-  if (!isValid(invitation)) redirect('/')
-
+  const { data } = await props.params
   const user = await getSessionUser()
 
-  if (isWrongUserFor(invitation)(user)) return redirect('/coop/invitation')
+  const vue = await consulterUneInvitation({
+    code: data,
+    session: user == null ? null : EmailInvitation.safe(user.email),
+  })
 
-  const invitationData = await getInvitationData(invitation)
+  if (vue.type === 'Illisible') redirect('/')
+  if (vue.type === 'MauvaisDestinataire') redirect('/coop/invitation')
+  if (vue.type === 'DejaTraitee') return <InvitationPlusValide />
 
-  return invitationData == null ? (
-    <AlreadyProcessed />
-  ) : (
-    <div className="fr-layout__main fr-container-fluid fr-height-full">
-      <JoinTeam
-        data={data}
-        user={invitationData.coordinateur.user}
-        teamMemberCount={
-          invitationData.coordinateur._count.mediateursCoordonnes
-        }
-      />
-    </div>
+  return (
+    <ClientBinder
+      bind={ACCEPTER_UNE_INVITATION_ACTION_KEY}
+      to={accepterUneInvitationAction}
+    >
+      <ClientBinder
+        bind={REFUSER_UNE_INVITATION_ACTION_KEY}
+        to={refuserUneInvitationAction}
+      >
+        <InvitationEnAttente
+          coordinateur={vue.coordinateur}
+          tailleEquipe={vue.tailleEquipe}
+          reponse={
+            <ReponseAInvitation
+              email={vue.reference.email}
+              coordinateurId={vue.reference.coordinateurId}
+              lien={lienInvitation(vue.reference)}
+              connecte={vue.connecte}
+            />
+          }
+        />
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

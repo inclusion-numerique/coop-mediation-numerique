@@ -1,4 +1,4 @@
-export const AlreadyProcessed = () => (
+const InvitationPlusValide = () => (
   <div
     className="fr-flex fr-direction-column fr-background-alt--blue-ecume"
     style={{ minHeight: '100%' }}
@@ -20,3 +20,5 @@ export const AlreadyProcessed = () => (
     </div>
   </div>
 )
+
+export default InvitationPlusValide
