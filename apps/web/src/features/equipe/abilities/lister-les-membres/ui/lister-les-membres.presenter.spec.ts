@@ -16,8 +16,7 @@ describe('affichage d’une ligne de l’équipe', () => {
         {
           email: 'invite@example.com',
           statut: { type: 'Invitation', envoyeeLe: new Date('2026-01-02') },
-          mediateurId: null,
-          profil: null,
+          personne: { type: 'SansCompte' },
           structureEmployeuse: { type: 'Inconnue' },
         },
       ],
@@ -41,8 +40,11 @@ describe('affichage d’une ligne de l’équipe', () => {
         {
           email: 'camille@example.com',
           statut: { type: 'Actif', derniereActivite: new Date() },
-          mediateurId: MediateurId('550e8400-e29b-41d4-a716-446655440062'),
-          profil,
+          personne: {
+            type: 'Inscrite',
+            mediateurId: MediateurId('550e8400-e29b-41d4-a716-446655440062'),
+            profil,
+          },
           structureEmployeuse: {
             type: 'Connue',
             nom: 'Médiathèque',
@@ -74,8 +76,11 @@ describe('affichage d’une ligne de l’équipe', () => {
         {
           email: 'supprime@example.com',
           statut: { type: 'ProfilSupprime', le: new Date('2026-01-02') },
-          mediateurId: null,
-          profil,
+          personne: {
+            type: 'Inscrite',
+            mediateurId: MediateurId('550e8400-e29b-41d4-a716-446655440063'),
+            profil,
+          },
           structureEmployeuse: { type: 'Inconnue' },
         },
       ],

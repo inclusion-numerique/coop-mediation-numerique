@@ -150,7 +150,9 @@ Then('la liste compte {int} ligne(s)', (nombre: number) => {
 
 Then("le médiateur revenu n'apparaît qu'une fois, comme membre actif", () => {
   const lignes = membres().lignes.filter(
-    ({ mediateurId }) => mediateurId === contexte.revenu?.mediateurId,
+    ({ personne }) =>
+      personne.type === 'Inscrite' &&
+      personne.mediateurId === contexte.revenu?.mediateurId,
   )
   assert.strictEqual(lignes.length, 1)
   assert.strictEqual(lignes[0]?.statut.type, 'Actif')

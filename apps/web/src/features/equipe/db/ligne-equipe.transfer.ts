@@ -1,7 +1,7 @@
 import {
   type LigneEquipe,
   MediateurId,
-  type ProfilMembre,
+  type PersonneDeLEquipe,
   type StatutMembre,
   type StructureEmployeuseMembre,
   type TypeDeStatut,
@@ -38,20 +38,26 @@ const statuts: Readonly<
 const estUnStatut = (statut: string): statut is TypeDeStatut =>
   Object.hasOwn(statuts, statut)
 
-const toProfil = (row: LigneEquipeRow): ProfilMembre | null => {
+const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe => {
   const utilisateurId =
     row.user_id === null ? null : UtilisateurId.safe(row.user_id)
-  return utilisateurId === null
-    ? null
+  const mediateurId =
+    row.mediateur_id === null ? null : MediateurId.safe(row.mediateur_id)
+  return utilisateurId === null || mediateurId === null
+    ? { type: 'SansCompte' }
     : {
-        utilisateurId,
-        prenom: row.first_name,
-        nom: row.last_name,
-        telephone: row.phone,
-        role:
-          row.is_conseiller_numerique === true
-            ? 'ConseillerNumerique'
-            : 'MediateurNumerique',
+        type: 'Inscrite',
+        mediateurId,
+        profil: {
+          utilisateurId,
+          prenom: row.first_name,
+          nom: row.last_name,
+          telephone: row.phone,
+          role:
+            row.is_conseiller_numerique === true
+              ? 'ConseillerNumerique'
+              : 'MediateurNumerique',
+        },
       }
 }
 
@@ -78,9 +84,7 @@ export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null =>
     ? {
         email: row.email,
         statut: statuts[row.statut](row),
-        mediateurId:
-          row.mediateur_id === null ? null : MediateurId.safe(row.mediateur_id),
-        profil: toProfil(row),
+        personne: toPersonne(row),
         structureEmployeuse: toStructureEmployeuse(row),
       }
     : null

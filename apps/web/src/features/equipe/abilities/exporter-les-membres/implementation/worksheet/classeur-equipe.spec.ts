@@ -1,7 +1,7 @@
 import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
 import { criteresEquipe } from '../../../../domain'
-import type { MembreExporte } from '../../domain'
 import { classeurEquipe } from './classeur-equipe'
+import type { MembreExporte } from './membre-exporte'
 
 const auteur: WorksheetUser = {
   id: '550e8400-e29b-41d4-a716-446655440071',

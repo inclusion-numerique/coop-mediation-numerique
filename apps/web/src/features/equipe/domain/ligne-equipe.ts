@@ -23,10 +23,20 @@ export type ProfilMembre = {
   readonly role: RoleMembre
 }
 
+export type PersonneDeLEquipe =
+  | { readonly type: 'SansCompte' }
+  | {
+      readonly type: 'Inscrite'
+      readonly mediateurId: MediateurId
+      readonly profil: ProfilMembre
+    }
+
+export const profilDe = ({ personne }: LigneEquipe): ProfilMembre | null =>
+  personne.type === 'Inscrite' ? personne.profil : null
+
 export type LigneEquipe = {
   readonly email: string
   readonly statut: StatutMembre
-  readonly mediateurId: MediateurId | null
-  readonly profil: ProfilMembre | null
+  readonly personne: PersonneDeLEquipe
   readonly structureEmployeuse: StructureEmployeuseMembre
 }

@@ -50,8 +50,7 @@ describe('lecture d’une ligne de l’équipe', () => {
     expect(toLigneEquipe(invitationSansCompte)).toEqual({
       email: 'invite@example.com',
       statut: { type: 'Invitation', envoyeeLe: depuis },
-      mediateurId: null,
-      profil: null,
+      personne: { type: 'SansCompte' },
       structureEmployeuse: { type: 'Inconnue' },
     })
   })
@@ -64,13 +63,16 @@ describe('lecture d’une ligne de l’équipe', () => {
         depuis,
         jusquA: new Date('2026-05-01T09:00:00Z'),
       },
-      mediateurId: '550e8400-e29b-41d4-a716-446655440051',
-      profil: {
-        utilisateurId: '550e8400-e29b-41d4-a716-446655440052',
-        prenom: 'Camille',
-        nom: 'Martin',
-        telephone: '+33102030405',
-        role: 'ConseillerNumerique',
+      personne: {
+        type: 'Inscrite',
+        mediateurId: '550e8400-e29b-41d4-a716-446655440051',
+        profil: {
+          utilisateurId: '550e8400-e29b-41d4-a716-446655440052',
+          prenom: 'Camille',
+          nom: 'Martin',
+          telephone: '+33102030405',
+          role: 'ConseillerNumerique',
+        },
       },
       structureEmployeuse: {
         type: 'Connue',

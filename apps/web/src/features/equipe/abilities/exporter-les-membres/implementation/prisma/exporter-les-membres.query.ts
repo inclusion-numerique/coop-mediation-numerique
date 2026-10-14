@@ -13,9 +13,11 @@ import {
   type CoordinateurId,
   type CriteresEquipe,
   type Lecteur,
+  type LigneEquipe,
   peutConsulterLEquipe,
+  profilDe,
 } from '../../../../domain'
-import { type MembreExporte, membreExporte } from '../../domain'
+import type { MembreAExporter } from '../../domain'
 
 export const exporterLesMembres = async ({
   coordinateurId,
@@ -27,7 +29,9 @@ export const exporterLesMembres = async ({
   lecteur: Lecteur
   criteres: CriteresEquipe
   maintenant?: Date
-}): Promise<Result<readonly MembreExporte[], ConsultationNonAutorisee>> => {
+}): Promise<
+  Result<readonly MembreAExporter<LigneEquipe>[], ConsultationNonAutorisee>
+> => {
   if (!peutConsulterLEquipe(lecteur)(coordinateurId))
     return failure(ConsultationNonAutorisee())
 
@@ -40,19 +44,20 @@ export const exporterLesMembres = async ({
   )
 
   const contrats = await lireContratsConseillerNumerique(
-    lignes.flatMap(({ profil }) =>
-      profil === null ? [] : [profil.utilisateurId],
-    ),
+    lignes.flatMap((ligne) => {
+      const profil = profilDe(ligne)
+      return profil === null ? [] : [profil.utilisateurId]
+    }),
   )
 
   return success(
-    lignes.map((ligne) =>
-      membreExporte(
+    lignes.map((ligne) => {
+      const profil = profilDe(ligne)
+      return {
         ligne,
-        ligne.profil === null
-          ? null
-          : (contrats.get(ligne.profil.utilisateurId) ?? null),
-      ),
-    ),
+        contrat:
+          profil === null ? null : (contrats.get(profil.utilisateurId) ?? null),
+      }
+    }),
   )
 }

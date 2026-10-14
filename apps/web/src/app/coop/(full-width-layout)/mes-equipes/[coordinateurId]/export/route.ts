@@ -1,7 +1,7 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import {
-  classeurEquipe,
+  classeurDesMembres,
   exporterLesMembres,
 } from '@app/web/features/equipe/abilities/exporter-les-membres'
 import { estMembreActif } from '@app/web/features/equipe/abilities/lister-les-membres'
@@ -50,7 +50,7 @@ export const GET = async (
 
   if (!membres.success) return new Response('Forbidden', { status: 403 })
 
-  const donnees = await classeurEquipe({
+  const donnees = await classeurDesMembres({
     membres: membres.data,
     criteres,
     auteur: user,

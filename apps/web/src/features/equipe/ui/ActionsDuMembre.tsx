@@ -2,9 +2,7 @@ import BoutonRetirerUnMembre from '../abilities/retirer-un-membre/ui/BoutonRetir
 import BoutonSupprimerUnAncienMembre from '../abilities/supprimer-un-ancien-membre/ui/BoutonSupprimerUnAncienMembre'
 import type { LigneEquipe } from '../domain'
 import GererUneInvitation from './GererUneInvitation'
-
-const nomAffiche = ({ profil, email }: LigneEquipe): string =>
-  [profil?.prenom, profil?.nom].filter(Boolean).join(' ') || email
+import { nomAffiche } from './membre.presenter'
 
 const ActionsDuMembre = ({
   ligne,
@@ -13,7 +11,7 @@ const ActionsDuMembre = ({
   ligne: LigneEquipe
   coordinateurId: string
 }) => {
-  const { statut, mediateurId } = ligne
+  const { statut, personne } = ligne
 
   if (statut.type === 'Invitation')
     return (
@@ -24,12 +22,12 @@ const ActionsDuMembre = ({
       />
     )
 
-  if (mediateurId === null) return null
+  if (personne.type === 'SansCompte') return null
 
   if (statut.type === 'Actif' || statut.type === 'Inactif')
     return (
       <BoutonRetirerUnMembre
-        mediateurId={mediateurId}
+        mediateurId={personne.mediateurId}
         coordinateurId={coordinateurId}
         nomAffiche={nomAffiche(ligne)}
       />
@@ -37,7 +35,7 @@ const ActionsDuMembre = ({
 
   return statut.type === 'AncienMembre' ? (
     <BoutonSupprimerUnAncienMembre
-      mediateurId={mediateurId}
+      mediateurId={personne.mediateurId}
       coordinateurId={coordinateurId}
       nomAffiche={nomAffiche(ligne)}
       depuis={statut.depuis}

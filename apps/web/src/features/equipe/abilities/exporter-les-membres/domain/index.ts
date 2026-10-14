@@ -1,1 +1,1 @@
-export * from './membre-exporte'
+export * from './contrat-membre'

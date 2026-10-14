@@ -7,8 +7,9 @@ import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import Excel from 'exceljs'
-import type { CriteresEquipe } from '../../../../domain'
-import type { MembreExporte } from '../../domain'
+import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
+import type { MembreAExporter } from '../../domain'
+import { type MembreExporte, membreExporte } from './membre-exporte'
 
 const libellesDeStatut = new Map<string, string>([
   ['actifs', 'Actifs'],
@@ -115,3 +116,14 @@ export const classeurEquipe = ({
 
   return classeur
 }
+
+export const classeurDesMembres = ({
+  membres,
+  ...reste
+}: Omit<Parameters<typeof classeurEquipe>[0], 'membres'> & {
+  membres: readonly MembreAExporter<LigneEquipe>[]
+}) =>
+  classeurEquipe({
+    ...reste,
+    membres: membres.map(({ ligne, contrat }) => membreExporte(ligne, contrat)),
+  })

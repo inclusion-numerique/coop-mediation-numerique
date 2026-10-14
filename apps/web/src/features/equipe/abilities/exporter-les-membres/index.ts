@@ -1,2 +1,2 @@
-export type { MembreExporte } from './domain'
+export type { ContratMembre, MembreAExporter } from './domain'
 export * from './implementation'

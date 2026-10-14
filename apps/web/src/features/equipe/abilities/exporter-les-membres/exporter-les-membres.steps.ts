@@ -86,7 +86,7 @@ Then("l'export compte {int} membre(s)", (nombre: number) => {
 
 Then('ce membre exporté est un ancien membre', () => {
   assert.ok(contexte.issue?.success)
-  assert.ok(contexte.issue.data[0]?.statut.startsWith('Ancien membre'))
+  assert.strictEqual(contexte.issue.data[0]?.ligne.statut.type, 'AncienMembre')
 })
 
 Then("l'export est refusé", () => {

@@ -1,8 +1,5 @@
-import {
-  type LigneEquipe,
-  libelleStatutMembre,
-  type RoleMembre,
-} from '../../../domain'
+import { type LigneEquipe, profilDe, type RoleMembre } from '../../../domain'
+import { libelleStatutMembre } from '../../../ui/statut-membre.presenter'
 
 export type SeveriteDuStatut = 'info' | 'success' | 'warning' | 'neutre'
 
@@ -31,14 +28,15 @@ const severites = new Map<string, SeveriteDuStatut>([
   ['Inactif', 'warning'],
 ])
 
-const nomComplet = ({ profil }: LigneEquipe): string | null => {
+const nomComplet = (ligne: LigneEquipe): string | null => {
+  const profil = profilDe(ligne)
   const nom = [profil?.prenom, profil?.nom].filter(Boolean).join(' ')
   return nom === '' ? null : nom
 }
 
-const icone = ({ statut, profil }: LigneEquipe): LigneAffichee['icone'] => {
-  if (statut.type === 'Invitation') return 'invitation'
-  return profil?.role === 'ConseillerNumerique'
+const icone = (ligne: LigneEquipe): LigneAffichee['icone'] => {
+  if (ligne.statut.type === 'Invitation') return 'invitation'
+  return profilDe(ligne)?.role === 'ConseillerNumerique'
     ? 'conseiller-numerique'
     : 'mediateur'
 }
@@ -50,10 +48,10 @@ const activite = ({ statut }: LigneEquipe): LigneAffichee['activite'] => {
 
 const lienProfil =
   (departementCode: string) =>
-  ({ statut, profil }: LigneEquipe): string | null =>
-    statut.type === 'Invitation' || profil === null
+  ({ statut, personne }: LigneEquipe): string | null =>
+    statut.type === 'Invitation' || personne.type === 'SansCompte'
       ? null
-      : `/coop/mon-reseau/${departementCode}/acteurs/${profil.utilisateurId}`
+      : `/coop/mon-reseau/${departementCode}/acteurs/${personne.profil.utilisateurId}`
 
 export const lignesAffichees = (
   lignes: readonly LigneEquipe[],
@@ -67,7 +65,7 @@ export const lignesAffichees = (
     role:
       ligne.statut.type === 'Invitation'
         ? 'Invitation en attente'
-        : libellesDeRole[ligne.profil?.role ?? 'MediateurNumerique'],
+        : libellesDeRole[profilDe(ligne)?.role ?? 'MediateurNumerique'],
     email: ligne.statut.type === 'ProfilSupprime' ? null : ligne.email,
     structureEmployeuse:
       ligne.structureEmployeuse.type === 'Connue'

@@ -41,18 +41,19 @@ export {
   lienInvitation,
   referenceDuCode,
 } from './lien-invitation'
-export type {
-  LigneEquipe,
-  ProfilMembre,
-  RoleMembre,
-  StructureEmployeuseMembre,
+export {
+  type LigneEquipe,
+  type PersonneDeLEquipe,
+  type ProfilMembre,
+  profilDe,
+  type RoleMembre,
+  type StructureEmployeuseMembre,
 } from './ligne-equipe'
 export { MediateurId } from './mediateur-id'
 export { memeNom, NomTag, NomTagCanonique } from './nom-tag'
 export { ReferenceInvitation } from './reference-invitation'
 export {
   type DerniereActivite,
-  libelleStatutMembre,
   SEUIL_INACTIVITE_EN_JOURS,
   type StatutMembre,
   type TypeDeStatut,
