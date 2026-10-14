@@ -47,7 +47,7 @@ const AdministrationSearchUtilisateur = ({
           id="recherche"
           type="recherche"
           name="recherche"
-          placeholder="Rechercher un utilisateur par nom ou email"
+          placeholder="Rechercher un utilisateur par nom, email ou identifiant"
         />
 
         <Button type="submit">Rechercher</Button>

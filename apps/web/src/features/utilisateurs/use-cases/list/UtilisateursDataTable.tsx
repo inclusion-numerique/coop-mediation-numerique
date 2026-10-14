@@ -28,6 +28,11 @@ export const UtilisateursDataTable = {
   rowLink: ({ id }) => ({ href: `/administration/utilisateurs/${id}` }),
   columns: [
     {
+      name: 'id',
+      csvHeaders: ['ID utilisateur'],
+      csvValues: ({ id }) => [id],
+    },
+    {
       name: 'statut',
       header: 'Statut',
       csvHeaders: ['Statut'],

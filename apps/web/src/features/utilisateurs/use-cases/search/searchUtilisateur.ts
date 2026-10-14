@@ -31,6 +31,8 @@ const utilisateursListWhere = (
 
 const DEFAULT_PAGE_SIZE = 100
 
+const estUnIdentifiant = (part: string) => z.guid().safeParse(part).success
+
 export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
   const searchParams = options.searchParams ?? {}
   const { mediateurId } = options
@@ -55,6 +57,7 @@ export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
             { firstName: { contains: part, mode: 'insensitive' } },
             { lastName: { contains: part, mode: 'insensitive' } },
             { email: { contains: part, mode: 'insensitive' } },
+            ...(estUnIdentifiant(part) ? [{ id: part }] : []),
           ],
         })),
       },
