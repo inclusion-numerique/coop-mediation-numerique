@@ -24,12 +24,12 @@ const MonProfilPage = async () => {
   }
 
   const contratCoordinateur = user.coordinateur
-    ? await getContractInfo(user.email)
+    ? await getContractInfo(user.id)
     : null
 
   const contratConum = !user.isConseillerNumerique
     ? null
-    : await getContractInfo(user.email)
+    : await getContractInfo(user.id)
 
   return (
     <>

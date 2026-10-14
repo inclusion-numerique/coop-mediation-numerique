@@ -138,7 +138,6 @@ Editer `.env` avec vos valeurs locales. Les variables marquees `<secret>` doiven
 
 - `PROCONNECT_LOCAL_CLIENT_SECRET` : pour l'authentification ProConnect en local
 - `SCW_ACCESS_KEY` / `SCW_SECRET_KEY` : credentials Scaleway personnels
-- `CONSEILLER_NUMERIQUE_MONGODB_URL` : acces a la base MongoDB Conseiller Numerique
 
 ### 5. Demarrer les services Docker
 

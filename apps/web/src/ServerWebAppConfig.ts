@@ -50,9 +50,6 @@ export const ServerWebAppConfig = {
     apiKey: process.env.BREVO_API_KEY ?? '',
     usersListId: Number.parseInt(process.env.BREVO_USERS_LIST_ID ?? '', 10),
   },
-  ConseillerNumerique: {
-    mongodbUrl: process.env.CONSEILLER_NUMERIQUE_MONGODB_URL ?? '',
-  },
   // Local development only
   Sudo: {
     usurpation: process.env.SUDO_USURPATION === '1' || false,

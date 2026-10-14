@@ -1,5 +1,5 @@
 import Card from '@app/web/components/Card'
-import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
+import { AlerteFinContrat } from '@app/web/conseiller-numerique/contratConseillerNumerique'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 

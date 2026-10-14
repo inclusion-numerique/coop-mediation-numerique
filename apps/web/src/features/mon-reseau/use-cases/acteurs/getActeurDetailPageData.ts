@@ -137,7 +137,7 @@ export const getActeurDetailPageData = async ({
 
   const contract =
     coordinationFeatures && coordinationFeatures.showContract
-      ? await getContractInfo(acteur.email)
+      ? await getContractInfo(userId)
       : null
 
   // Get statistics only if showStats

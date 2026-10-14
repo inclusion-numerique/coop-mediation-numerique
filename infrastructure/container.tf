@@ -39,7 +39,6 @@ resource "scaleway_container" "webContainer" {
     RDV_SERVICE_PUBLIC_WEBHOOK_SECRET      = var.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET
     RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG       = local.is_main ? "0" : "1"
     INTERNAL_API_PRIVATE_KEY               = var.INTERNAL_API_PRIVATE_KEY
-    CONSEILLER_NUMERIQUE_MONGODB_URL       = var.CONSEILLER_NUMERIQUE_MONGODB_URL
     HMAC_SECRET_KEY                        = var.HMAC_SECRET_KEY
     SMTP_USERNAME                          = local.is_main ? var.SMTP_USERNAME : var.SMTP_MAILDEV_USERNAME
     SMTP_PASSWORD                          = local.is_main ? var.SMTP_PASSWORD : var.SMTP_MAILDEV_PASSWORD

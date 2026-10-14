@@ -1,4 +1,5 @@
-import { findConseillersNumeriquesContractInfoByEmails } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
+import type { ContratConseillerNumerique } from '@app/web/conseiller-numerique/contratConseillerNumerique'
+import { lireContratsConseillerNumerique } from '@app/web/conseiller-numerique/lireContratsConseillerNumerique'
 import { getUserPublicActivityStatus } from '@app/web/features/utilisateurs/utils/getUserPublicActivityStatus'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
@@ -68,25 +69,10 @@ const statusForMembre = (
     null,
   ) ?? { label: '', memberStatus: 'autre' }
 
-const toUserEmail = ({ email }: { email: string }) => email
-
-const finDeContratFor =
-  (userEmail: string) =>
-  (
-    contracts: {
-      email: string | null
-      contractInfo: { dateFinDeContrat: Date | null } | null
-    }[],
-  ) => {
-    const contractInfo = contracts.find(
-      ({ email }) => email === userEmail.toLowerCase(),
-    )?.contractInfo
-
-    return contractInfo?.dateFinDeContrat &&
-      isBefore(contractInfo.dateFinDeContrat, addMonths(new Date(), 3))
-      ? `${format(new Date(contractInfo.dateFinDeContrat), 'dd.MM.yyyy')}`
-      : undefined
-  }
+const finDeContrat = (contrat: ContratConseillerNumerique | undefined) =>
+  contrat?.fin && isBefore(contrat.fin, addMonths(new Date(), 3))
+    ? format(contrat.fin, 'dd.MM.yyyy')
+    : undefined
 
 export const getEquipePageData = async ({
   searchParams,
@@ -101,10 +87,9 @@ export const getEquipePageData = async ({
   const { mediateurs, matchesCount, totalPages } =
     await searchMediateursCoordonneBy(coordinateur)(searchParams)
 
-  const conseillersNumeriquesWithContrats =
-    await findConseillersNumeriquesContractInfoByEmails(
-      mediateurs.map(toUserEmail),
-    )
+  const contrats = await lireContratsConseillerNumerique(
+    mediateurs.flatMap(({ user_id }) => (user_id == null ? [] : [user_id])),
+  )
 
   const stats = await countMediateursCoordonnesBy(coordinateur)
 
@@ -143,8 +128,8 @@ export const getEquipePageData = async ({
           status: status.label,
           memberStatus: status.memberStatus,
           lastActivityDate: date_derniere_activite,
-          finDeContrat: finDeContratFor(email)(
-            conseillersNumeriquesWithContrats,
+          finDeContrat: finDeContrat(
+            user_id == null ? undefined : contrats.get(user_id),
           ),
           type,
           structureEmployeuse: structure_employeuse ?? undefined,

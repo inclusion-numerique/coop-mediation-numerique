@@ -83,11 +83,6 @@ variable "INTERNAL_API_PRIVATE_KEY" {
   sensitive = true
 }
 
-variable "CONSEILLER_NUMERIQUE_MONGODB_URL" {
-  type      = string
-  sensitive = true
-}
-
 variable "HMAC_SECRET_KEY" {
   type      = string
   sensitive = true
