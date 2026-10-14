@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream'
-import type { Cell, CellValue, Worksheet } from 'exceljs'
+import type { CellValue, Row, stream } from 'exceljs'
 import Excel from 'exceljs'
 import { importBeneficiaireWorksheetName } from './analyseImportBeneficiairesExcel'
 import type { FeuilleImport, ValeurCellule } from './feuille-import'
@@ -9,9 +9,19 @@ type ValeurStructuree = Exclude<
   null | undefined | number | string | boolean | Date
 >
 
+type FeuilleEnFlux = stream.xlsx.WorksheetReader
+
 const millisecondesParJour = 86_400_000
 
 const numeroSerieExcelDuPremierJanvier1970 = 25_569
+
+const optionsDeLecture = {
+  worksheets: 'emit',
+  sharedStrings: 'cache',
+  styles: 'cache',
+  hyperlinks: 'ignore',
+  entries: 'ignore',
+} satisfies stream.xlsx.WorkbookStreamReaderOptions
 
 const numeroSerieExcel = (date: Date): number =>
   date.getTime() / millisecondesParJour + numeroSerieExcelDuPremierJanvier1970
@@ -42,34 +52,59 @@ const normaliserValeurCellule = (valeur: CellValue): ValeurCellule => {
   return valeur
 }
 
-const estMasqueeParUneFusion = (cellule: Cell): boolean =>
-  cellule.isMerged && cellule.master.address !== cellule.address
+const lireLigne = (ligne: Row): ValeurCellule[] =>
+  Array.from({ length: ligne.cellCount }, (_, indexColonne) =>
+    normaliserValeurCellule(ligne.getCell(indexColonne + 1).value),
+  )
 
-const lireCellule = (cellule: Cell): ValeurCellule =>
-  estMasqueeParUneFusion(cellule)
-    ? null
-    : normaliserValeurCellule(cellule.value)
+const lireFeuille = (lignes: Row[]): FeuilleImport => {
+  const lignesParNumero = new Map(lignes.map((ligne) => [ligne.number, ligne]))
+  const nombreDeLignes = lignes.reduce(
+    (dernier, { number }) => Math.max(dernier, number),
+    0,
+  )
 
-const lireFeuille = (worksheet: Worksheet): FeuilleImport =>
-  Array.from({ length: worksheet.rowCount }, (_, indexLigne) => {
-    const ligne = worksheet.getRow(indexLigne + 1)
-    return Array.from({ length: ligne.cellCount }, (__, indexColonne) =>
-      lireCellule(ligne.getCell(indexColonne + 1)),
-    )
+  return Array.from({ length: nombreDeLignes }, (_, indexLigne) => {
+    const ligne = lignesParNumero.get(indexLigne + 1)
+    return ligne == null ? [] : lireLigne(ligne)
   })
+}
+
+const porteLeNom = (feuille: FeuilleEnFlux, nom: string): boolean =>
+  'name' in feuille && feuille.name === nom
+
+const feuilleNommee = async (
+  feuilles: AsyncGenerator<FeuilleEnFlux>,
+  nom: string,
+): Promise<FeuilleEnFlux | null> => {
+  const suivante = await feuilles.next()
+  if (suivante.done) {
+    return null
+  }
+  if (porteLeNom(suivante.value, nom)) {
+    return suivante.value
+  }
+  await Array.fromAsync(suivante.value)
+  return feuilleNommee(feuilles, nom)
+}
 
 export const getBeneficiaireImportSheet = async (
   data: Buffer,
 ): Promise<FeuilleImport> => {
-  const workbook = new Excel.Workbook()
-  await workbook.xlsx.read(Readable.from([data]))
+  const feuilles = new Excel.stream.xlsx.WorkbookReader(
+    Readable.from([data]),
+    optionsDeLecture,
+  )[Symbol.asyncIterator]()
 
-  const worksheet = workbook.getWorksheet(importBeneficiaireWorksheetName)
-  if (!worksheet) {
+  const feuille = await feuilleNommee(feuilles, importBeneficiaireWorksheetName)
+  if (!feuille) {
     throw new Error(
       `Le fichier n'a pas de feuille "${importBeneficiaireWorksheetName}"`,
     )
   }
 
-  return lireFeuille(worksheet)
+  const lignes = await Array.fromAsync(feuille)
+  await feuilles.return(undefined)
+
+  return lireFeuille(lignes)
 }

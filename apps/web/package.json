@@ -50,7 +50,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1136.0",
     "@codegouvfr/react-dsfr": "^1.35.0",
     "@gouvfr-anct/lieux-de-mediation-numerique": "^4.4.0",
-    "@gouvfr-anct/timetable-to-osm-opening-hours": "^2.1.0",
+    "@gouvfr-anct/timetable-to-osm-opening-hours": "^2.1.1",
     "@gouvfr/dsfr": "~1.14.4",
     "@hookform/resolvers": "^5.9.1",
     "@next/bundle-analyzer": "^16.3.8",

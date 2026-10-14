@@ -1,4 +1,7 @@
-import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
+import {
+  emptyOpeningHours,
+  safeToTimetableOpeningHours,
+} from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Horaires,
   Itinerance,
@@ -124,6 +127,50 @@ describe('les horaires', () => {
    */
   it('valent null quand un commentaire n’a aucun créneau où s’adosser', () => {
     expect(horairesSaisis(emptyOpeningHours, 'Sur rendez-vous')).toBeNull()
+  })
+
+  it('gardent ouverts le jeudi et le vendredi après-midi d’une semaine qui ferme ces matins-là', () => {
+    const apresMidi = {
+      am: { startTime: null, endTime: null, isOpen: false },
+      pm: { startTime: '14:00', endTime: '18:00', isOpen: true },
+    } as const
+    const journeeContinue = {
+      am: { startTime: '10:00', endTime: '18:00', isOpen: true },
+      pm: { startTime: null, endTime: null, isOpen: false },
+    } as const
+    const grille: Schedule = {
+      ...emptyOpeningHours,
+      Mo: apresMidi,
+      Tu: journeeContinue,
+      We: journeeContinue,
+      Th: apresMidi,
+      Fr: apresMidi,
+      Sa: journeeContinue,
+    }
+
+    const relue = safeToTimetableOpeningHours(new Date('2026-10-14'))(
+      horairesSaisis(grille, null),
+    )
+
+    expect(relue).toStrictEqual(grille)
+  })
+
+  it('nomment les jours d’une semaine ouverte tous les jours aux mêmes horaires', () => {
+    const matin = {
+      am: { startTime: '09:00', endTime: '12:00', isOpen: true },
+      pm: { startTime: null, endTime: null, isOpen: false },
+    } as const
+    const grille: Schedule = {
+      Mo: matin,
+      Tu: matin,
+      We: matin,
+      Th: matin,
+      Fr: matin,
+      Sa: matin,
+      Su: matin,
+    }
+
+    expect(horairesSaisis(grille, null)).toBe('Mo-Su 09:00-12:00')
   })
 
   it.each([[null], ['Fermé le premier lundi']])(
