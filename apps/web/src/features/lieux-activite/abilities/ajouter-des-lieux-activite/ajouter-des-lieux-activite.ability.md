@@ -20,6 +20,28 @@
 * Then le lieu « Tiers-lieu du Port » existe
 * And ce médiateur exerce dans le lieu « Tiers-lieu du Port »
 
+## Rule: La recherche ne trouve dans la coop que des lieux exploitables
+
+### Scenario: Un lieu référencé est trouvé par son nom
+
+* Given un lieu référencé dans la coop
+* When on cherche « Médiathèque du Centre » parmi les lieux de la coop
+* Then la recherche trouve ce lieu référencé
+
+### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas trouvé
+
+* Given un lieu référencé dans la coop
+* And ce lieu référencé n'a pas d'adresse reconnue par la BAN
+* When on cherche « Médiathèque du Centre » parmi les lieux de la coop
+* Then la recherche ne trouve pas ce lieu référencé
+
+### Scenario: Un lieu supprimé n'est pas trouvé
+
+* Given un lieu référencé dans la coop
+* And ce lieu référencé est supprimé
+* When on cherche « Médiathèque du Centre » parmi les lieux de la coop
+* Then la recherche ne trouve pas ce lieu référencé
+
 ## Rule: On n'ajoute pas deux fois le même lieu
 
 ### Scenario: Un lieu où l'on exerce déjà n'est pas ajouté une seconde fois

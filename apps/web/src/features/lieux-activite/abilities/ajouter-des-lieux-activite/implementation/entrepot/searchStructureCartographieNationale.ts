@@ -22,6 +22,7 @@ export const searchStructureCartographieNationale = async (
   const matchesWhere = {
     structureCartographieNationaleId:
       except.length > 0 ? { not: null, notIn: except } : { not: null },
+    adresse: { isNot: null },
     AND: queryParts.map((part) => ({
       OR: [
         { nom: { contains: part, mode: 'insensitive' } },
