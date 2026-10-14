@@ -41,3 +41,15 @@ export type ActionNonAutorisee = { readonly _tag: 'ActionNonAutorisee' }
 export const ActionNonAutorisee = (): ActionNonAutorisee => ({
   _tag: 'ActionNonAutorisee',
 })
+
+export type EnvoiEchoue = { readonly _tag: 'EnvoiEchoue' }
+
+export const EnvoiEchoue = (): EnvoiEchoue => ({ _tag: 'EnvoiEchoue' })
+
+export type CoordinateurIntrouvable = {
+  readonly _tag: 'CoordinateurIntrouvable'
+}
+
+export const CoordinateurIntrouvable = (): CoordinateurIntrouvable => ({
+  _tag: 'CoordinateurIntrouvable',
+})
