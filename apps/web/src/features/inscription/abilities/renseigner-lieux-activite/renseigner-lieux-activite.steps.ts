@@ -221,6 +221,7 @@ Given('un lieu d’activité sans adresse est disponible', async () => {
       codePostal: '75001',
       codeInsee: '75101',
     },
+    banId: null,
   })
 })
 

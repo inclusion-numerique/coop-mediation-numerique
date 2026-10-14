@@ -36,6 +36,7 @@ export type { Correle, LieuAMaterialiser }
  * Le code postal élargit donc la moisson ; `memeCommune` resserre ensuite.
  */
 const auMemeEndroit = ({ codeInsee, codePostal }: LieuAMaterialiser) => ({
+  banId: { not: null },
   OR: [...(codeInsee ? [{ codeInsee }] : []), { codePostal }],
 })
 

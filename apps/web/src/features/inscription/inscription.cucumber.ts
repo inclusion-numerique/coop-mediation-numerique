@@ -109,6 +109,7 @@ export const seedLieuActivite = async (
       codeInsee: string | null
     }
     position?: { latitude: number; longitude: number }
+    banId?: string | null
   } = {},
 ): Promise<string> => {
   const id = v4()
@@ -128,6 +129,7 @@ export const seedLieuActivite = async (
       typologies: data.typologies ?? ['ASSO'],
       ...(data.adresse ?? adresseDeTest),
       ...(data.position ?? {}),
+      banId: data.banId === undefined ? '75101_0001_00001' : data.banId,
     },
   })
 

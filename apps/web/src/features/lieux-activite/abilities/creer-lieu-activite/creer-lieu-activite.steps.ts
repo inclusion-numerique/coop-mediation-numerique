@@ -79,6 +79,13 @@ When('ce médiateur ressaisit le même lieu', async () => {
   await creer(ficheSemee().mediateurRattacheId)
 })
 
+When('le lieu créé perd son adresse reconnue par la BAN', async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuCree(1) ?? '' },
+    data: { banId: null },
+  })
+})
+
 When("quelqu'un sans médiateur tente de créer un lieu", async () => {
   await creer(null)
 })
@@ -121,6 +128,11 @@ Then('le lieu créé ne vise aucun public en particulier', async () => {
 Then('les deux créations désignent le même lieu', () => {
   assert.strictEqual(dernier.lieuxCreesIds.length, 2)
   assert.strictEqual(lieuCree(1), lieuCree(2))
+})
+
+Then('les deux créations désignent deux lieux distincts', () => {
+  assert.strictEqual(dernier.lieuxCreesIds.length, 2)
+  assert.notStrictEqual(lieuCree(1), lieuCree(2))
 })
 
 Then("ce médiateur n'exerce qu'une fois dans le lieu créé", async () => {
