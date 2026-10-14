@@ -3,14 +3,9 @@ import {
   DeploymentTargetOption,
 } from '@app/cli/deploymentTarget'
 import { output } from '@app/cli/output'
-import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { executeJob, jobExecutors } from '@app/web/jobs/jobExecutors'
 import { JobValidation } from '@app/web/jobs/jobs'
 import { Argument, Command } from '@commander-js/extra-typings'
-
-const cleanupAfterJob = async () => {
-  await closeMongoClient()
-}
 
 export const executeJobCommand = new Command()
   .command('job:execute')
@@ -42,11 +37,9 @@ export const executeJobCommand = new Command()
       output('Job failed')
       output(result.error.message)
       output(result.error.stack)
-      await cleanupAfterJob()
       process.exit(1)
       return
     }
     output('Job executed successfully')
     output(JSON.stringify(result, null, 2))
-    await cleanupAfterJob()
   })

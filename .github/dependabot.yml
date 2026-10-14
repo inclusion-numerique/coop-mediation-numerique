@@ -27,9 +27,6 @@ updates:
       - dependency-name: dotenv
         update-types:
           - version-update:semver-major
-      - dependency-name: mongodb
-        update-types:
-          - version-update:semver-major
       - dependency-name: '@types/node'
         update-types:
           - version-update:semver-major

@@ -1,4 +1,5 @@
-import { findConseillersNumeriquesContractInfoByEmails } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
+import type { ContratConseillerNumerique } from '@app/web/conseiller-numerique/contratConseillerNumerique'
+import { lireContratsConseillerNumerique } from '@app/web/conseiller-numerique/lireContratsConseillerNumerique'
 import { subDays } from 'date-fns'
 import {
   type EquipeSearchParams,
@@ -54,17 +55,8 @@ const computeStatut = ({
 
 const toExportMembre = (
   membre: MediateurFound,
-  getContractInfo: (email: string | null) =>
-    | {
-        typeDeContrat: string | null
-        dateDebutDeContrat: Date | null
-        dateFinDeContrat: Date | null
-      }
-    | null
-    | undefined,
+  contrat: ContratConseillerNumerique | undefined,
 ): EquipeExportMembre => {
-  const contractInfo = getContractInfo(membre.email)
-
   const hasStructure =
     membre.structure_employeuse ||
     membre.structure_employeuse_adresse ||
@@ -78,9 +70,9 @@ const toExportMembre = (
     role: membre.is_conseiller_numerique
       ? 'Conseiller numérique'
       : 'Médiateur numérique',
-    typeContrat: contractInfo?.typeDeContrat ?? null,
-    dateDebutContrat: contractInfo?.dateDebutDeContrat ?? null,
-    dateFinContrat: contractInfo?.dateFinDeContrat ?? null,
+    typeContrat: contrat?.type ?? null,
+    dateDebutContrat: contrat?.debut ?? null,
+    dateFinContrat: contrat?.fin ?? null,
     email: membre.email,
     telephone: membre.phone,
     structureEmployeuse: hasStructure
@@ -113,12 +105,14 @@ export const getEquipeExportData = async ({
     searchParams,
   )
 
-  const emails = mediateurs.map((m) => m.email).filter(Boolean)
-  const conseillersContractInfo =
-    await findConseillersNumeriquesContractInfoByEmails(emails)
+  const contrats = await lireContratsConseillerNumerique(
+    mediateurs.flatMap(({ user_id }) => (user_id == null ? [] : [user_id])),
+  )
 
-  const getContractInfo = (email: string | null) =>
-    conseillersContractInfo.find((c) => c.email === email)?.contractInfo
-
-  return mediateurs.map((membre) => toExportMembre(membre, getContractInfo))
+  return mediateurs.map((membre) =>
+    toExportMembre(
+      membre,
+      membre.user_id == null ? undefined : contrats.get(membre.user_id),
+    ),
+  )
 }

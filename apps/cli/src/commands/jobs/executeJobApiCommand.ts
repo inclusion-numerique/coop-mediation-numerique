@@ -2,15 +2,10 @@ import { DeploymentTargetOption } from '@app/cli/deploymentTarget'
 import { output } from '@app/cli/output'
 import { mainRootDomain, previewRootDomain } from '@app/config/config'
 import { executeJobApiTokenHeader } from '@app/web/app/api/jobs/executeJobApiTokenHeader'
-import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { jobExecutors } from '@app/web/jobs/jobExecutors'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { Argument, Command } from '@commander-js/extra-typings'
 import axios from 'axios'
-
-const cleanupAfterJob = async () => {
-  await closeMongoClient()
-}
 
 export const executeJobApiCommand = new Command()
   .command('job:api:execute')
@@ -52,11 +47,9 @@ export const executeJobApiCommand = new Command()
       output(result.status)
       output(result.statusText)
       output(result.data)
-      await cleanupAfterJob()
       process.exit(1)
       return
     }
     output('Job executed successfully')
     output(JSON.stringify(result.data, null, 2))
-    await cleanupAfterJob()
   })

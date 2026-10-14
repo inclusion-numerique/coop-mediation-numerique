@@ -1,4 +1,3 @@
-import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
 import {
   addMonths,
   differenceInMonths,
@@ -6,62 +5,49 @@ import {
   isBefore,
   isValid,
 } from 'date-fns'
+import {
+  AlerteFinContrat,
+  type ContratConseillerNumerique,
+} from './contratConseillerNumerique'
+import { lireContratsConseillerNumerique } from './lireContratsConseillerNumerique'
 
-const formatDate = (date?: string | number | Date | null) =>
+const formatDate = (date: Date | null) =>
   date && isValid(date) ? format(date, 'dd/MM/yyyy') : null
 
-export enum AlerteFinContrat {
-  prochainement = 'prochainement',
-  termine = 'termine',
-}
-
 const typeWithDuration = ({
-  typeDeContrat,
-  dateDebutDeContrat,
-  dateFinDeContrat,
-}: {
-  // Some of those data are actually missing from v1 data and were causing a crash
-  // that's why we add null and undefined in this type
-  typeDeContrat?: string | null
-  dateDebutDeContrat?: Date | null
-  dateFinDeContrat?: Date | null
-}): string =>
-  dateDebutDeContrat &&
-  isValid(dateDebutDeContrat) &&
-  dateFinDeContrat &&
-  isValid(dateFinDeContrat)
-    ? `${typeDeContrat} - Durée ${differenceInMonths(dateFinDeContrat, dateDebutDeContrat)} mois`
-    : (typeDeContrat ?? '')
+  type,
+  debut,
+  fin,
+}: ContratConseillerNumerique): string =>
+  debut && isValid(debut) && fin && isValid(fin)
+    ? `${type} - Durée ${differenceInMonths(fin, debut)} mois`
+    : (type ?? '')
 
-const alerteFinDeContrat = (miseEnRelationActive: {
-  dateFinDeContrat: Date | null
-}) => {
-  if (miseEnRelationActive.dateFinDeContrat == null) {
+const alerteFinDeContrat = ({ fin }: ContratConseillerNumerique) => {
+  if (fin == null) {
     return null
   }
-  if (isBefore(miseEnRelationActive.dateFinDeContrat, new Date())) {
+  if (isBefore(fin, new Date())) {
     return AlerteFinContrat.termine
   }
-  if (
-    isBefore(miseEnRelationActive.dateFinDeContrat, addMonths(new Date(), 3))
-  ) {
+  if (isBefore(fin, addMonths(new Date(), 3))) {
     return AlerteFinContrat.prochainement
   }
 
   return null
 }
 
-export const getContractInfo = async (email: string) =>
-  fetchConseillerNumeriqueV1Data({ email }).then((conseiller) => {
-    const miseEnRelationActive = conseiller?.miseEnRelationActive
-    if (!miseEnRelationActive) {
+export const getContractInfo = async (userId: string) =>
+  lireContratsConseillerNumerique([userId]).then((contrats) => {
+    const contrat = contrats.get(userId)
+    if (!contrat) {
       return null
     }
 
     return {
-      type: typeWithDuration(miseEnRelationActive).replaceAll('_', ' '),
-      debut: formatDate(miseEnRelationActive.dateDebutDeContrat),
-      fin: formatDate(miseEnRelationActive.dateFinDeContrat),
-      finDeContrat: alerteFinDeContrat(miseEnRelationActive),
+      type: typeWithDuration(contrat),
+      debut: formatDate(contrat.debut),
+      fin: formatDate(contrat.fin),
+      finDeContrat: alerteFinDeContrat(contrat),
     }
   })
