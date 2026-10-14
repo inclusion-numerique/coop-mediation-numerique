@@ -43,6 +43,14 @@
 * And ce médiateur ressaisit le même lieu
 * Then ce médiateur n'exerce qu'une fois dans le lieu créé
 
+### Scenario: Un lieu sans adresse reconnue par la BAN n'est jamais rejoint
+
+* Given un médiateur qui exerce dans un lieu
+* When ce médiateur crée un lieu « Tiers-lieu du Port »
+* And le lieu créé perd son adresse reconnue par la BAN
+* And ce médiateur ressaisit le même lieu
+* Then les deux créations désignent deux lieux distincts
+
 ## Rule: « Tout public » se traduit par l'absence de public visé
 
 ### Scenario: Un lieu tout public ne vise personne en particulier

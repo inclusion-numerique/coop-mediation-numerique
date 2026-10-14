@@ -28,6 +28,7 @@ export type LieuAffiche = {
   readonly derniereModificationSource: string | null
   readonly visiblePourCartographieNationale: boolean
   readonly structureCartographieNationaleId: string | null
+  readonly adresseAPreciser: boolean
   readonly _count: { readonly mediateursEnActivite: number }
 }
 

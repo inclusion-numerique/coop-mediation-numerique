@@ -16,6 +16,7 @@ export const projectionDuLieuEnListe = {
   commune: true,
   codePostal: true,
   codeInsee: true,
+  banId: true,
   modification: true,
   derniereModificationPar: {
     select: {
@@ -78,10 +79,11 @@ const depuisLInscription = (
 }
 
 export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
-  const { inscriptionRegistre, ...reste } = ligne
+  const { inscriptionRegistre, banId, ...reste } = ligne
 
   return {
     ...reste,
+    adresseAPreciser: banId == null,
     ...(inscriptionRegistre == null
       ? { structureCartographieNationaleId: null }
       : depuisLInscription(ligne, inscriptionRegistre)),

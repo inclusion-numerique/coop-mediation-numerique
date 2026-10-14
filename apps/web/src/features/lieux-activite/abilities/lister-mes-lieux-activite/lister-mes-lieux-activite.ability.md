@@ -20,6 +20,25 @@
 * When un médiateur étranger liste ses lieux d'activité
 * Then la liste est vide
 
+## Rule: Un lieu sans adresse reconnue reste listé, pour qu'on la lui donne
+
+> La liste mène à la fiche, seul endroit où l'on corrige une adresse : le lieu y
+> figure, signalé.
+
+### Scenario: Un lieu sans adresse reconnue par la BAN est signalé à préciser
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu n'a pas d'adresse reconnue par la BAN
+* When ce médiateur liste ses lieux d'activité
+* Then la liste contient ce lieu
+* And ce lieu est signalé avec une adresse à préciser
+
+### Scenario: Un lieu reconnu par la BAN n'est pas signalé
+
+* Given un médiateur qui exerce dans un lieu
+* When ce médiateur liste ses lieux d'activité
+* Then ce lieu n'est pas signalé avec une adresse à préciser
+
 ## Rule: Un tri inconnu retombe sur l'ordre alphabétique
 
 > L'ordre vient de l'URL : un lien périmé ne doit pas casser la page.

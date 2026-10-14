@@ -8,6 +8,7 @@ export const givenLieuInclusion = <
     commune: string
     codePostal: string
     codeInsee: string
+    banId: string
   },
 >(
   data: T,

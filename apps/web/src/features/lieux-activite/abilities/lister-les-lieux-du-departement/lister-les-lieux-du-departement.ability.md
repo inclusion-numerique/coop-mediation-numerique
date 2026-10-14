@@ -34,6 +34,19 @@
 * When on liste les lieux de ce département
 * Then le lieu publié n’est pas proposé
 
+## Rule: Un lieu sans adresse reconnue reste à l'annuaire, pour qu'on la lui donne
+
+> L'annuaire mène à la fiche, seul endroit où l'on corrige une adresse : le lieu
+> y figure, signalé.
+
+### Scenario: Un lieu sans adresse reconnue par la BAN est signalé à préciser
+
+* Given trois lieux dans le même département
+* And le lieu fréquenté n'a pas d'adresse reconnue par la BAN
+* When on liste les lieux de ce département
+* Then le lieu fréquenté est proposé
+* And seul le lieu fréquenté est signalé avec une adresse à préciser
+
 ## Rule: L'annuaire s'arrête aux frontières du département
 
 > Le code INSEE porte le département, y compris outre-mer et en Corse, où il ne

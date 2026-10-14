@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { lieuExploitableSql } from '../../../../implementation'
 import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
 
 type LieuActiviteQueryResult = {
@@ -39,6 +40,7 @@ export const getMediateursLieuxActiviteOptions = async ({
       WHERE mea.mediateur_id = ANY(${mediateurIds}::uuid[])
         AND mea.suppression IS NULL
         AND mea.fin_activite IS NULL
+        AND ${lieuExploitableSql('s')}
     )
     SELECT * FROM lieux
     ORDER BY activites_count DESC, nom ASC

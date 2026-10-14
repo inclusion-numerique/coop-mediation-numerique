@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import {
+  getLieuxActiviteOptions,
   getLieuxDesActivitesOptions,
   getMediateursLieuxActiviteOptions,
   type LieuActiviteOption,
@@ -38,6 +39,10 @@ Given('ce médiateur a quitté ce lieu', async () => {
   })
 })
 
+When("on demande les lieux pour filtrer dans l'administration", async () => {
+  proposees.options = await getLieuxActiviteOptions()
+})
+
 When(
   'on demande les lieux pour filtrer les activités de ce médiateur',
   async () => {
@@ -69,4 +74,16 @@ Then('ce lieu est proposé', () => {
 
 Then("aucun lieu n'est proposé", () => {
   assert.deepStrictEqual(proposees.options, [])
+})
+
+Then('ce lieu figure parmi les lieux proposés', () => {
+  assert.ok(
+    proposees.options?.some(({ value }) => value === ficheSemee().lieuId),
+  )
+})
+
+Then('ce lieu ne figure pas parmi les lieux proposés', () => {
+  assert.ok(
+    !proposees.options?.some(({ value }) => value === ficheSemee().lieuId),
+  )
 })

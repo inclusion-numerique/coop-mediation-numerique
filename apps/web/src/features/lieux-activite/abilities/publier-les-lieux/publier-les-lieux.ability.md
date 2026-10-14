@@ -1,6 +1,6 @@
 # Feature: Publier les lieux sur la cartographie nationale
 
-> Ce que la coop verse au bien commun. Trois conditions se cumulent, et
+> Ce que la coop verse au bien commun. Quatre conditions se cumulent, et
 > l'absence d'une seule retire le lieu de la moisson.
 
 ## Rule: Un lieu ne se publie que s'il est déclaré visible
@@ -9,6 +9,18 @@
 
 * Given un lieu où exerce un médiateur visible
 * And ce lieu n'est pas partagé sur la cartographie
+* When la cartographie nationale moissonne les lieux
+* Then ce lieu n'est pas publié
+
+## Rule: Un lieu sans adresse reconnue par la BAN n'est pas publié
+
+> La carte situe les lieux : un lieu que la Base Adresse Nationale ne reconnaît
+> pas enverrait l'usager nulle part.
+
+### Scenario: Le lieu partagé sans adresse reconnue reste hors de la cartographie
+
+* Given un lieu partagé où exerce un médiateur visible
+* And l'adresse de ce lieu n'est pas reconnue par la BAN
 * When la cartographie nationale moissonne les lieux
 * Then ce lieu n'est pas publié
 

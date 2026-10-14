@@ -1,5 +1,6 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
+import { lieuExploitable } from '../../../../implementation'
 
 /**
  * Les lieux que la coop connaît déjà, cherchés mot à mot sur ce qui permet de
@@ -16,7 +17,7 @@ export const lieuxDeLaCoop = async (
   const mots = recherche.split(' ')
 
   const correspondances = {
-    suppression: null,
+    ...lieuExploitable,
     AND: mots.map((mot) => ({
       OR: [
         { siret: { contains: mot, mode: 'insensitive' } },

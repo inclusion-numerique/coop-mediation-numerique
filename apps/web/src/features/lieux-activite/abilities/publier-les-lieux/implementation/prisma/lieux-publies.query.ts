@@ -1,6 +1,7 @@
 import { conseillersNumeriquesUserIdsSql } from '@app/web/features/employeuse/server'
 import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
+import { lieuExploitableSql } from '../../../../implementation'
 import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
 
 /**
@@ -121,7 +122,7 @@ export const lieuxPublies = async ({
         -- ensemble d'identifiants distincts, donc une jointure qui ne démultiplie aucune ligne
         -- de l'agrégat.
         LEFT JOIN (${conseillersNumeriquesUserIdsSql}) conseillers ON conseillers.user_id = users.id
-    WHERE structures.suppression IS NULL
+    WHERE ${lieuExploitableSql('structures')}
       AND mediateurs_en_activite.suppression IS NULL AND mediateurs_en_activite.fin_activite IS NULL
       AND structures.visible_pour_cartographie_nationale IS true
       -- Un lieu qui n'annonce aucun service n'oriente personne : la carte le

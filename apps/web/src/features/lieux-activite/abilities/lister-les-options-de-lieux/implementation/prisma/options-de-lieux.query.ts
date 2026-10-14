@@ -1,5 +1,6 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
+import { lieuExploitable } from '../../../../implementation'
 import { type LieuActiviteOption } from './option-de-lieu'
 
 export const mediateurStructureSelect = () =>
@@ -21,6 +22,7 @@ export const getLieuxActiviteOptions = async (): Promise<
     where: {
       suppression: null,
       fin: null,
+      lieuInclusion: lieuExploitable,
     },
     select: {
       id: true,

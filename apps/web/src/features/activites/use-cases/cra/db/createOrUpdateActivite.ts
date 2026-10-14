@@ -3,6 +3,7 @@ import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
+import { lieuExploitable } from '@app/web/features/lieux-activite'
 import {
   LieuInclusion,
   Prisma,
@@ -105,9 +106,11 @@ export const getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite =
 const getExistingStructure = async ({
   structureId,
   mediateurId,
+  structureIdActuelle,
 }: {
   structureId: string | null | undefined
   mediateurId: string
+  structureIdActuelle: string | null
 }) => {
   if (!structureId) {
     return null
@@ -120,6 +123,7 @@ const getExistingStructure = async ({
           mediateurId,
         },
       },
+      ...(structureId === structureIdActuelle ? {} : lieuExploitable),
     },
   })
 
@@ -270,6 +274,7 @@ export const createOrUpdateActivite = async ({
       ? await getExistingStructure({
           structureId: structure?.id,
           mediateurId,
+          structureIdActuelle: existingActivite?.structureId ?? null,
         })
       : null
 

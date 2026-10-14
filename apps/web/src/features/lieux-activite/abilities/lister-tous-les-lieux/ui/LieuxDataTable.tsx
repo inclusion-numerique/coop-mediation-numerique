@@ -82,12 +82,17 @@ export const LieuxDataTable = {
         codePostal,
         commune,
       ],
-      cell: ({ adresse, codePostal, commune }) => (
+      cell: ({ adresse, codePostal, commune, adresseAPreciser }) => (
         <div>
           <div className="fr-text--sm fr-mb-0">{adresse}</div>
           <div className="fr-text--xs fr-text-mention--grey fr-mb-0">
             {codePostal} {commune}
           </div>
+          {adresseAPreciser && (
+            <Badge small severity="warning" className="fr-mt-1v">
+              Adresse à préciser
+            </Badge>
+          )}
         </div>
       ),
     },

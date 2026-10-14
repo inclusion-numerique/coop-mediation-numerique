@@ -9,6 +9,7 @@ export const structureEmployeuse = givenLieuInclusion({
   codePostal: '75001',
   codeInsee: '75101',
   commune: 'Paris 1er',
+  banId: '75101_0001_00001',
 }) satisfies Prisma.LieuInclusionCreateInput
 
 export const mediateque = givenLieuInclusion({
@@ -18,6 +19,7 @@ export const mediateque = givenLieuInclusion({
   codePostal: '69002',
   codeInsee: '69382',
   commune: 'Lyon 2eme',
+  banId: '69382_0001_00002',
   typologies: [Typologie.BIB, Typologie.MUNI, Typologie.CIDFF],
 })
 
@@ -28,6 +30,7 @@ export const centreSocial = givenLieuInclusion({
   codePostal: '75003',
   commune: 'Paris 3eme',
   codeInsee: '75103',
+  banId: '75103_0001_00003',
   typologies: [
     Typologie.PREVENTION,
     Typologie.REG,

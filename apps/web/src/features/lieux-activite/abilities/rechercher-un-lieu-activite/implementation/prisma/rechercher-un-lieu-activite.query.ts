@@ -2,6 +2,7 @@ import type { Prisma } from '@app/web/generated/prisma/client'
 import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
 import type { MediateurId } from '../../../../domain/mediateur-id'
+import { lieuExploitable } from '../../../../implementation'
 
 /**
  * Un lieu tel qu'il s'affiche dans une liste de suggestions : de quoi le
@@ -33,6 +34,7 @@ export const rechercherUnLieuActivite = async ({
     mediateurId,
     suppression: null,
     fin: null,
+    lieuInclusion: lieuExploitable,
     AND: toQueryParts({ recherche }).map((part) => ({
       OR: [{ lieuInclusion: { nom: { contains: part, mode: 'insensitive' } } }],
     })),

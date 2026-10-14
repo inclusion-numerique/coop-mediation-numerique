@@ -26,6 +26,44 @@
 * When on demande les options de lieux de personne
 * Then aucun lieu n'est proposé
 
+## Rule: Seuls les lieux exploitables sont proposés à la saisie
+
+### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à la saisie
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu n'a pas d'adresse reconnue par la BAN
+* When on demande les options de lieux de ce médiateur
+* Then aucun lieu n'est proposé
+
+### Scenario: Un lieu supprimé n'est pas proposé à la saisie
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu est supprimé
+* When on demande les options de lieux de ce médiateur
+* Then aucun lieu n'est proposé
+
+## Rule: Le filtre de l'administration ne propose que des lieux exploitables
+
+### Scenario: Un lieu exploitable est proposé à l'administration
+
+* Given un médiateur qui exerce dans un lieu
+* When on demande les lieux pour filtrer dans l'administration
+* Then ce lieu figure parmi les lieux proposés
+
+### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à l'administration
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu n'a pas d'adresse reconnue par la BAN
+* When on demande les lieux pour filtrer dans l'administration
+* Then ce lieu ne figure pas parmi les lieux proposés
+
+### Scenario: Un lieu supprimé n'est pas proposé à l'administration
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu est supprimé
+* When on demande les lieux pour filtrer dans l'administration
+* Then ce lieu ne figure pas parmi les lieux proposés
+
 ## Rule: Pour filtrer, on propose les lieux des activités comptées dans les statistiques et les lieux actuels du médiateur
 
 > Les statistiques comptent toutes les activités du médiateur, y compris celles

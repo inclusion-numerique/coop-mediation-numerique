@@ -52,6 +52,20 @@ Then('la liste contient ce lieu', () => {
   )
 })
 
+Then('ce lieu est signalé avec une adresse à préciser', () => {
+  assert.deepStrictEqual(
+    liste.lieux?.map(({ lieuInclusion }) => lieuInclusion.adresseAPreciser),
+    [true],
+  )
+})
+
+Then("ce lieu n'est pas signalé avec une adresse à préciser", () => {
+  assert.deepStrictEqual(
+    liste.lieux?.map(({ lieuInclusion }) => lieuInclusion.adresseAPreciser),
+    [false],
+  )
+})
+
 Then('la liste est vide', () => {
   assert.deepStrictEqual(liste.lieux, [])
 })
