@@ -18,6 +18,22 @@
 * When ce médiateur se retire de ce lieu puis cherche « Maison »
 * Then la recherche ne propose rien
 
+## Rule: Seuls les lieux exploitables sont proposés
+
+### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu n'a pas d'adresse reconnue par la BAN
+* When ce médiateur cherche « Maison »
+* Then la recherche ne propose rien
+
+### Scenario: Un lieu supprimé n'est pas proposé
+
+* Given un médiateur qui exerce dans un lieu
+* And ce lieu est supprimé
+* When ce médiateur cherche « Maison »
+* Then la recherche ne propose rien
+
 ## Rule: La recherche porte sur le nom du lieu
 
 ### Scenario: Une recherche sans correspondance ne propose rien
