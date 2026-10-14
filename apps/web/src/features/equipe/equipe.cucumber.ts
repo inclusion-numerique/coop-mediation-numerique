@@ -235,9 +235,11 @@ const retenir = (ajout: Partial<Semis>): void => {
 const semerUnePersonne = async ({
   email,
   inscriptionValidee,
+  profilSupprime = false,
 }: {
   email?: string
   inscriptionValidee: boolean
+  profilSupprime?: boolean
 }): Promise<Personne> => {
   const userId = v4()
   const adresse = email ?? `equipe-${userId}@example.com`
@@ -249,6 +251,7 @@ const semerUnePersonne = async ({
       lastName: userId.slice(0, 8),
       name: `Prénom ${userId.slice(0, 8)}`,
       inscriptionValidee: inscriptionValidee ? new Date() : null,
+      deleted: profilSupprime ? new Date() : null,
     },
   })
   retenir({ userIds: [userId] })
@@ -268,13 +271,24 @@ export const semerUnCoordinateur = async (): Promise<CoordinateurSeme> => {
 export const semerUnMediateurDEquipe = async ({
   email,
   inscriptionValidee = true,
+  derniereActivite,
+  profilSupprime,
 }: {
   email?: string
   inscriptionValidee?: boolean
+  derniereActivite?: Date
+  profilSupprime?: boolean
 } = {}): Promise<MediateurSeme> => {
-  const personne = await semerUnePersonne({ email, inscriptionValidee })
+  const personne = await semerUnePersonne({
+    email,
+    inscriptionValidee,
+    profilSupprime,
+  })
   const mediateur = await prismaClient.mediateur.create({
-    data: { userId: personne.userId },
+    data: {
+      userId: personne.userId,
+      derniereCreationActivite: derniereActivite ?? null,
+    },
     select: { id: true },
   })
   retenir({ mediateurIds: [mediateur.id] })

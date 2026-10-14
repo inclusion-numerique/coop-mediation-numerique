@@ -1,9 +1,9 @@
 import { getDernieresActivitesFor } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import type { ActiviteGrouped } from '@app/web/features/activites/use-cases/list/db/getActivitesCoordinationByQuarter'
 import { getActivitesCoordinationByQuarter } from '@app/web/features/activites/use-cases/list/db/getActivitesCoordinationByQuarter'
+import { compterLesMembres } from '@app/web/features/equipe/abilities/lister-les-membres'
 import { blocRdvAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import type {
   UserDisplayName,
   UserId,
@@ -27,7 +27,11 @@ export const getAccueilPageDataFor = async (
 ) => {
   const [mediateurs, blocRdv, activites, activitesCoordinationByQuarter] =
     await Promise.all([
-      countMediateursCoordonnesBy(user.coordinateur),
+      user.coordinateur?.id == null
+        ? { total: 0, actifs: 0, inactifs: 0, invitations: 0 }
+        : compterLesMembres({
+            coordinateurId: user.coordinateur.id,
+          }),
       blocRdvAccueil(UtilisateurCoopId(user.id), new Date()),
       user.mediateur?.id != null
         ? getDernieresActivitesFor({ mediateurId: user.mediateur.id, user })

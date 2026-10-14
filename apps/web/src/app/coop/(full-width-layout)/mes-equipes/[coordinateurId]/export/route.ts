@@ -1,10 +1,16 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { isCoordinateur } from '@app/web/auth/userTypeGuards'
-import type { EquipeSearchParams } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
-import { buildEquipeWorksheet } from '@app/web/equipe/export/buildEquipeWorksheet'
-import { getEquipeExportData } from '@app/web/equipe/export/getEquipeExportData'
-import { prismaClient } from '@app/web/prismaClient'
+import {
+  classeurEquipe,
+  exporterLesMembres,
+} from '@app/web/features/equipe/abilities/exporter-les-membres'
+import { estMembreActif } from '@app/web/features/equipe/abilities/lister-les-membres'
+import {
+  CoordinateurId,
+  criteresEquipe,
+  MediateurId,
+} from '@app/web/features/equipe/domain'
+import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -12,69 +18,50 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ coordinateurId: string }> },
 ) => {
-  const { coordinateurId } = await params
+  const coordinateurId = CoordinateurId.safe((await params).coordinateurId)
+  if (coordinateurId === null) return new Response('Not found', { status: 404 })
 
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const user = await getSessionUserFromSessionToken(
+    getSessionTokenFromNextRequestCookies(request.cookies),
+  )
+  if (!user) return new Response('Unauthorized', { status: 401 })
 
-  if (!user) {
-    return new Response('Unauthorized', { status: 401 })
-  }
-
-  const coordinateur = await prismaClient.coordinateur.findUnique({
-    where: { id: coordinateurId },
-    select: { id: true },
+  const recherche = new URL(request.url).searchParams
+  const criteres = criteresEquipe({
+    recherche: recherche.get('recherche') ?? undefined,
+    statut: recherche.get('statut') ?? undefined,
+    role: recherche.get('role') ?? undefined,
+    tri: recherche.get('tri') ?? undefined,
+    ordre: recherche.get('ordre') ?? undefined,
   })
 
-  if (!coordinateur) {
-    return new Response('Coordinateur not found', { status: 404 })
-  }
-
-  const isAdmin = user.role === 'Admin'
-  const isOwner =
-    isCoordinateur(user) && user.coordinateur.id === coordinateurId
-  const isMemberOfTeam = await prismaClient.mediateurCoordonne.findFirst({
-    where: {
-      coordinateurId,
-      mediateur: { userId: user.id },
-      suppression: null,
+  const membres = await exporterLesMembres({
+    coordinateurId,
+    lecteur: {
+      gestionnaire: gestionnaireDe(user),
+      membreActifDeLEquipe: await estMembreActif({
+        mediateurId:
+          user.mediateur == null ? null : MediateurId(user.mediateur.id),
+        coordinateurId,
+      }),
     },
+    criteres,
   })
 
-  if (!isAdmin && !isOwner && !isMemberOfTeam) {
-    return new Response('Forbidden', { status: 403 })
-  }
+  if (!membres.success) return new Response('Forbidden', { status: 403 })
 
-  const url = new URL(request.url)
-  const searchParams: EquipeSearchParams = {
-    recherche: url.searchParams.get('recherche') ?? undefined,
-    statut: url.searchParams.get('statut') ?? undefined,
-    role:
-      (url.searchParams.get('role') as EquipeSearchParams['role']) ?? undefined,
-    tri:
-      (url.searchParams.get('tri') as EquipeSearchParams['tri']) ?? undefined,
-    ordre:
-      (url.searchParams.get('ordre') as EquipeSearchParams['ordre']) ??
-      undefined,
-  }
+  const donnees = await classeurEquipe({
+    membres: membres.data,
+    criteres,
+    auteur: user,
+  }).xlsx.writeBuffer()
 
-  const membres = await getEquipeExportData({ coordinateurId, searchParams })
-
-  const workbook = buildEquipeWorksheet({
-    membres,
-    filters: searchParams,
-    user,
-  })
-
-  const data = await workbook.xlsx.writeBuffer()
-  const filename = `coop-numerique_export-equipe_${dateAsIsoDay(new Date())}.xlsx`
-
-  return new Response(data, {
+  return new Response(donnees, {
     status: 200,
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Disposition': `attachment; filename="coop-numerique_export-equipe_${dateAsIsoDay(new Date())}.xlsx"`,
     },
   })
 }

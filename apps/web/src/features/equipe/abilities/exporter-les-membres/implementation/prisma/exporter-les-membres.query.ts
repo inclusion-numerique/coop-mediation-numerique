@@ -1,0 +1,58 @@
+import { lireContratsConseillerNumerique } from '@app/web/conseiller-numerique/lireContratsConseillerNumerique'
+import { failure, type Result, success } from '@app/web/libraries/result'
+import { prismaClient } from '@app/web/prismaClient'
+import {
+  filtresEquipe,
+  type LigneEquipeRow,
+  lignesEquipeCte,
+  triEquipe,
+} from '../../../../db/ligne-equipe.sql'
+import { toLignesEquipe } from '../../../../db/ligne-equipe.transfer'
+import {
+  ConsultationNonAutorisee,
+  type CoordinateurId,
+  type CriteresEquipe,
+  type Lecteur,
+  peutConsulterLEquipe,
+} from '../../../../domain'
+import { type MembreExporte, membreExporte } from '../../domain'
+
+export const exporterLesMembres = async ({
+  coordinateurId,
+  lecteur,
+  criteres,
+  maintenant = new Date(),
+}: {
+  coordinateurId: CoordinateurId
+  lecteur: Lecteur
+  criteres: CriteresEquipe
+  maintenant?: Date
+}): Promise<Result<readonly MembreExporte[], ConsultationNonAutorisee>> => {
+  if (!peutConsulterLEquipe(lecteur)(coordinateurId))
+    return failure(ConsultationNonAutorisee())
+
+  const lignes = toLignesEquipe(
+    await prismaClient.$queryRaw<LigneEquipeRow[]>`
+      ${lignesEquipeCte({ coordinateurId, maintenant })}
+      SELECT * FROM lignes
+      ${filtresEquipe(criteres)}
+      ${triEquipe(criteres)}`,
+  )
+
+  const contrats = await lireContratsConseillerNumerique(
+    lignes.flatMap(({ profil }) =>
+      profil === null ? [] : [profil.utilisateurId],
+    ),
+  )
+
+  return success(
+    lignes.map((ligne) =>
+      membreExporte(
+        ligne,
+        ligne.profil === null
+          ? null
+          : (contrats.get(ligne.profil.utilisateurId) ?? null),
+      ),
+    ),
+  )
+}

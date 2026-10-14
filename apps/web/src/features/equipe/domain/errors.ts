@@ -53,3 +53,11 @@ export type CoordinateurIntrouvable = {
 export const CoordinateurIntrouvable = (): CoordinateurIntrouvable => ({
   _tag: 'CoordinateurIntrouvable',
 })
+
+export type ConsultationNonAutorisee = {
+  readonly _tag: 'ConsultationNonAutorisee'
+}
+
+export const ConsultationNonAutorisee = (): ConsultationNonAutorisee => ({
+  _tag: 'ConsultationNonAutorisee',
+})

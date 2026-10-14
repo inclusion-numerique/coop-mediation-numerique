@@ -1,6 +1,5 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import EquipeVide from '@app/web/equipe/EquipeVide'
 import FormationContinueNouvelleFonctionnaliteCard, {
   formationContinueFeatureId,
 } from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
@@ -13,6 +12,7 @@ import TagsNouvelleFonctionnaliteCard, {
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { ActivitesCoordination } from '@app/web/features/activites/use-cases/list/components/ActivitesCoordination'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
+import { EquipeVide } from '@app/web/features/equipe/abilities/lister-les-membres/ui'
 import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { contentId } from '@app/web/utils/skipLinks'
