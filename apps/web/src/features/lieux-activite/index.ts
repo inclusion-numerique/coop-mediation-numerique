@@ -137,6 +137,10 @@ export {
   projectionDuLieuEnListe,
 } from './implementation/prisma/lieu-en-liste'
 export {
+  lieuExploitable,
+  lieuExploitableSql,
+} from './implementation/prisma/lieu-exploitable'
+export {
   type LieuDuMediateur,
   lieuxActiviteDuMediateur,
   visibiliteDesLieuxDuMediateur,

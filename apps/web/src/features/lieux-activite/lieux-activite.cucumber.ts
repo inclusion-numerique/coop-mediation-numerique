@@ -1,5 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { After, setDefaultTimeout } from '@cucumber/cucumber'
+import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
@@ -167,6 +167,13 @@ export const semerUneFicheDeLieu = async (): Promise<FicheSemee> => {
 
   return semis.fiche
 }
+
+Given("ce lieu n'a pas d'adresse reconnue par la BAN", async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { banId: null },
+  })
+})
 
 After(async () => {
   const semé = semis.fiche

@@ -23,6 +23,10 @@ export {
   projectionDuLieuEnListe,
 } from './prisma/lieu-en-liste'
 export {
+  lieuExploitable,
+  lieuExploitableSql,
+} from './prisma/lieu-exploitable'
+export {
   rattachementFromDomain,
   rattachementToDomain,
 } from './prisma/rattachement.transfer'
