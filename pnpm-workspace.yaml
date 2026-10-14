@@ -19,6 +19,7 @@ minimumReleaseAgeExclude:
   # Bibliothèque du standard, publiée par nos soins depuis notre CI avec attestation de
   # provenance : la quarantaine protège d'une publication compromise en amont, pas de la nôtre.
   - "@gouvfr-anct/lieux-de-mediation-numerique"
+  - "@gouvfr-anct/timetable-to-osm-opening-hours"
   - zod
   - libphonenumber-js
   - typescript
