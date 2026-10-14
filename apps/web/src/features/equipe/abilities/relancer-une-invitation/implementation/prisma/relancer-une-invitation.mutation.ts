@@ -1,6 +1,7 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import * as Sentry from '@sentry/nextjs'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
@@ -31,7 +32,8 @@ const envoyer = async (
   try {
     await envoyerUneInvitation(envoi)
     return true
-  } catch {
+  } catch (erreur) {
+    Sentry.captureException?.(erreur)
     return false
   }
 }

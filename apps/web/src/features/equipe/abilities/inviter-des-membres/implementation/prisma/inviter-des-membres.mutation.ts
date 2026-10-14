@@ -1,6 +1,7 @@
 import { type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import * as Sentry from '@sentry/nextjs'
 import {
   fromInvitation,
   invitationSelect,
@@ -125,7 +126,8 @@ const envoyer =
         de,
       })
       return null
-    } catch {
+    } catch (erreur) {
+      Sentry.captureException?.(erreur)
       return invitation.reference.email
     }
   }
