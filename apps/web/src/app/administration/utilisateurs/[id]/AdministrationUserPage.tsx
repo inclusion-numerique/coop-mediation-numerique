@@ -449,8 +449,8 @@ const AdministrationUserPage = async ({
                         </thead>
                         <tbody>
                           {coordinateur.mediateursCoordonnes.map(
-                            ({ mediateur, creation, suppression }) => (
-                              <tr key={mediateur.id}>
+                            ({ id, mediateur, creation, suppression }) => (
+                              <tr key={id}>
                                 <td>
                                   <a
                                     href={`/administration/utilisateurs/${mediateur.userId}`}

@@ -1,6 +1,9 @@
+import { ajouterUnMembreAction } from '@app/web/app/_actions/equipe/ajouter-un-membre.action'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { AJOUTER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -45,7 +48,12 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           <AdministrationTitle icon="fr-icon-user-add-line">
             Ajouter un membre à l’équipe de {data.coordinateurUser.name}
           </AdministrationTitle>
-          <AdministrationAjoutMembreEquipe data={data} />
+          <ClientBinder
+            bind={AJOUTER_UN_MEMBRE_ACTION_KEY}
+            to={ajouterUnMembreAction}
+          >
+            <AdministrationAjoutMembreEquipe data={data} />
+          </ClientBinder>
         </main>
       </CoopPageContainer>
     </>

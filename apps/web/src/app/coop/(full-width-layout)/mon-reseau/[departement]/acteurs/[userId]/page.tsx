@@ -1,6 +1,10 @@
+import { inviterDesMembresAction } from '@app/web/app/_actions/equipe/inviter-des-membres.action'
+import { retirerUnMembreAction } from '@app/web/app/_actions/equipe/retirer-un-membre.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
+import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { lieuxEnListeDuMediateur } from '@app/web/features/lieux-activite/implementation'
 import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
@@ -59,7 +63,17 @@ const Page = async ({
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <ActeurDetailPage data={data} departementCode={departementCode} />
+      <ClientBinder
+        bind={RETIRER_UN_MEMBRE_ACTION_KEY}
+        to={retirerUnMembreAction}
+      >
+        <ClientBinder
+          bind={INVITER_DES_MEMBRES_ACTION_KEY}
+          to={inviterDesMembresAction}
+        >
+          <ActeurDetailPage data={data} departementCode={departementCode} />
+        </ClientBinder>
+      </ClientBinder>
     </ClientBinder>
   )
 }

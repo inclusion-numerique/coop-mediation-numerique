@@ -13,7 +13,7 @@ export const getMediateurCoordinationDetails = async ({
       orderBy: [{ suppression: 'desc' }, { creation: 'desc' }],
     }),
     prismaClient.invitationEquipe.findFirst({
-      where: { mediateurId, coordinateurId },
+      where: { mediateurId, coordinateurId, acceptee: null, refusee: null },
       orderBy: { creation: 'desc' },
     }),
   ])

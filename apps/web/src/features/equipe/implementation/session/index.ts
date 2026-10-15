@@ -1,0 +1,1 @@
+export { gestionnaireDe } from './gestionnaire'
