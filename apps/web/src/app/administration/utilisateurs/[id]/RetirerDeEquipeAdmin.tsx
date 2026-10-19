@@ -2,8 +2,8 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -34,24 +34,28 @@ const RetirerDeEquipeAdminComponent = ({
   })
 
   const router = useRouter()
-  const removeFromTeamMutation = trpc.mediateur.removeFromTeam.useMutation()
+  const [etat, setEtat] = useState<'aucun' | 'en-cours' | 'fait'>('aucun')
 
   const onRemoveFromTeam = async () => {
-    try {
-      await removeFromTeamMutation.mutateAsync({ mediateurId, coordinateurId })
-      closeRemoveFromTeamModal()
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: `${displayName} a bien été retiré de l'équipe`,
-      })
-    } catch {
-      closeRemoveFromTeamModal()
-      createToast({
-        priority: 'error',
-        message: `Une erreur est survenue lors de la suppression de ${displayName} de l'équipe, veuillez réessayer ultérieurement.`,
-      })
+    setEtat('en-cours')
+    const resultat = await inject(RETIRER_UN_MEMBRE_ACTION_KEY)({
+      mediateurId,
+      coordinateurId,
+    })
+    closeRemoveFromTeamModal()
+
+    if (!resultat.success) {
+      setEtat('aucun')
+      createToast({ priority: 'error', message: resultat.error })
+      return
     }
+
+    setEtat('fait')
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: `${displayName} a bien été retiré de l'équipe`,
+    })
   }
 
   return (
@@ -69,7 +73,7 @@ const RetirerDeEquipeAdminComponent = ({
               {
                 children: "Retirer de l'équipe",
                 onClick: onRemoveFromTeam,
-                ...buttonLoadingClassname(removeFromTeamMutation.isPending),
+                ...buttonLoadingClassname(etat === 'en-cours'),
               },
             ]}
           >
@@ -100,7 +104,7 @@ const RetirerDeEquipeAdminComponent = ({
         priority="tertiary"
         {...removeFromTeamModalNativeButtonProps}
         {...buttonLoadingClassname(
-          removeFromTeamMutation.isPending || removeFromTeamMutation.isSuccess,
+          etat !== 'aucun',
           'fr-text-default--error fr-position-relative fr-index-10',
         )}
       >
@@ -110,4 +114,4 @@ const RetirerDeEquipeAdminComponent = ({
   )
 }
 
-export const RetirerDeEquipeAdmin = withTrpc(RetirerDeEquipeAdminComponent)
+export const RetirerDeEquipeAdmin = RetirerDeEquipeAdminComponent

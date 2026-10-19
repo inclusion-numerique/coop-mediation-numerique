@@ -3,9 +3,9 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { AJOUTER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.key'
+import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { TRPCClientError } from '@trpc/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import AdministrationSearchSingleUtilisateur from '../../../AdministrationSearchSingleUtilisateur'
@@ -16,7 +16,7 @@ export const AdministrationAjoutMembreEquipe = ({
 }: {
   data: AdministrationAjouterMembreEquipePageData
 }) => {
-  const mutation = trpc.mediateur.addToTeam.useMutation()
+  const [etat, setEtat] = useState<'aucun' | 'en-cours' | 'fait'>('aucun')
   const router = useRouter()
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
@@ -27,31 +27,30 @@ export const AdministrationAjoutMembreEquipe = ({
 
   const onAdd = async () => {
     if (!selectedUserId) return
-    try {
-      await mutation.mutateAsync({
-        userId: selectedUserId,
-        coordinateurId: data.coordinateurUser.coordinateur.id,
-      })
-      createToast({
-        priority: 'success',
-        message: `L'utilisateur a été ajouté à l'équipe`,
-      })
-      router.push(
-        `/administration/utilisateurs/${data.coordinateurUser.id}#coordinateur`,
-      )
-      router.refresh()
-    } catch (error) {
-      createToast({
-        priority: 'error',
-        message:
-          error instanceof TRPCClientError
-            ? error.message
-            : `Une erreur est survenue lors de l'ajout de l'utilisateur à l'équipe`,
-      })
+    setEtat('en-cours')
+    const resultat = await inject(AJOUTER_UN_MEMBRE_ACTION_KEY)({
+      utilisateurId: selectedUserId,
+      coordinateurId: data.coordinateurUser.coordinateur.id,
+    })
+
+    if (!resultat.success) {
+      setEtat('aucun')
+      createToast({ priority: 'error', message: resultat.error })
+      return
     }
+
+    setEtat('fait')
+    createToast({
+      priority: 'success',
+      message: `L'utilisateur a été ajouté à l'équipe`,
+    })
+    router.push(
+      `/administration/utilisateurs/${data.coordinateurUser.id}#coordinateur`,
+    )
+    router.refresh()
   }
 
-  const isLoading = mutation.isPending || mutation.isSuccess
+  const isLoading = etat !== 'aucun'
 
   return (
     <div className="fr-border-radius--8 fr-border fr-p-8v fr-mb-6v">

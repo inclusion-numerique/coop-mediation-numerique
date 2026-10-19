@@ -80,11 +80,7 @@ describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équi
       email: 'leo@med.fr',
     })
 
-    cy.intercept('/api/trpc/mediateur.invite*').as('mutation')
-
     cy.get('form').submit()
-
-    cy.wait('@mutation')
 
     cy.findByRole('status').should(
       'contain',

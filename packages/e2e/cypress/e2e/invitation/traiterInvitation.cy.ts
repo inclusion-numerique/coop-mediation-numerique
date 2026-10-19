@@ -8,8 +8,27 @@ import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
 } from '@app/fixtures/users/mediateurInscription'
-import { createInvitationUrl } from '@app/web/features/invitation/createInvitationUrl'
+import {
+  CoordinateurId,
+  EmailInvitation,
+  lienInvitation,
+  ReferenceInvitation,
+} from '@app/web/features/equipe/domain'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
+
+const createInvitationUrl = ({
+  email,
+  coordinateurId,
+}: {
+  email: string
+  coordinateurId: string
+}) =>
+  lienInvitation(
+    ReferenceInvitation({
+      email: EmailInvitation(email),
+      coordinateurId: CoordinateurId(coordinateurId),
+    }),
+  )
 
 describe('ETQ visiteur, je peux donner suite à une invitation', () => {
   const invitationData = {
@@ -31,13 +50,7 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
       ),
     )
 
-    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as('mutation')
-
-    cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
-
-    cy.wait('@mutation')
-
-    cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
+    cy.findByText('Accepter l’invitation').click()
 
     cy.get('main').should(
       'contain',
@@ -48,11 +61,7 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
   it('En la refusant', () => {
     cy.visit(appUrl(createInvitationUrl(invitationData)))
 
-    cy.intercept('/api/trpc/mediateur.declineInvitation*').as('mutation')
-
     cy.findByText('Refuser l’invitation').click()
-
-    cy.wait('@mutation')
 
     cy.get('h1').should(
       'contain',
@@ -89,11 +98,7 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
       ),
     )
 
-    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as('mutation')
-
     cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
-
-    cy.wait('@mutation')
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
@@ -121,7 +126,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
     cy.execute('createInvitation', invitationData)
   })
 
-  it("En l'acceptant", () => {
+  it("En l'acceptant, il est invité à finaliser son inscription", () => {
     cy.signin(mediateurInscription)
     cy.visit(
       appUrl(
@@ -132,13 +137,12 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
       ),
     )
 
-    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as('mutation')
+    cy.findByText('Accepter l’invitation').click()
 
-    cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
-
-    cy.wait('@mutation')
-
-    cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
+    cy.findByRole('status').should(
+      'contain',
+      'Finalisez votre inscription : vous rejoindrez cette équipe dès sa validation',
+    )
   })
 
   it("En tentant de l'accepter, mais en étant authentifié avec le mauvais compte", () => {

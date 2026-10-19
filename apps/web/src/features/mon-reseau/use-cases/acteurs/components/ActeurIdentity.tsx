@@ -3,17 +3,19 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import BackButton from '@app/web/components/BackButton'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
+import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import UserPublicActivityStatusBadge from '@app/web/features/utilisateurs/components/UserPublicActivityStatusBadge'
 import { getUserPublicActivityStatus } from '@app/web/features/utilisateurs/utils/getUserPublicActivityStatus'
-import { trpc } from '@app/web/trpc'
+import { inject } from '@app/web/libs/injection/client'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { ActeurDetailPageData } from '../getActeurDetailPageData'
 import ActeurProfilAndContact from './ActeurProfilAndContact'
 
@@ -62,54 +64,58 @@ const ActeurIdentity = ({
   })
 
   const router = useRouter()
-  const removeFromTeamMutation = trpc.mediateur.removeFromTeam.useMutation()
-  const inviteToTeamMutation = trpc.mediateur.invite.useMutation()
+  const [retrait, setRetrait] = useState<'aucun' | 'en-cours' | 'fait'>('aucun')
+  const [invitation, setInvitation] = useState<'aucune' | 'en-cours' | 'faite'>(
+    'aucune',
+  )
 
   const mediateurId = mediateur?.id
 
   const onRemoveFromTeam = async () => {
-    if (!mediateurId) {
+    if (!mediateurId || !coordinationFeatures) {
       return
     }
-    try {
-      await removeFromTeamMutation.mutateAsync({ mediateurId })
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: `${displayName} a bien été retiré de votre équipe`,
-      })
-    } catch {
+    setRetrait('en-cours')
+    const resultat = await inject(RETIRER_UN_MEMBRE_ACTION_KEY)({
+      mediateurId,
+      coordinateurId: coordinationFeatures.coordinateurId,
+    })
+    if (!resultat.success) {
+      setRetrait('aucun')
       createToast({
         priority: 'error',
-        message: `Une erreur est survenue lors de la suppression de ${displayName} de votre équipe, veuillez réessayer ultérieurement.`,
+        message: `Une erreur est survenue lors de la suppression de ${displayName} de votre équipe : ${resultat.error}`,
       })
+      return
     }
+    setRetrait('fait')
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: `${displayName} a bien été retiré de votre équipe`,
+    })
   }
 
   const onInviteToTeam = async () => {
-    try {
-      await inviteToTeamMutation.mutateAsync({
-        members: [
-          {
-            email,
-            mediateurId,
-            nom: displayName,
-          },
-        ],
-      })
-      closeInviteToTeamModal()
-      createToast({
-        priority: 'success',
-        message: `${displayName} a bien été invité à votre équipe`,
-      })
-      router.refresh()
-    } catch {
-      closeInviteToTeamModal()
+    setInvitation('en-cours')
+    const resultat = await inject(INVITER_DES_MEMBRES_ACTION_KEY)({
+      emails: [email],
+    })
+    closeInviteToTeamModal()
+    if (!resultat.success) {
+      setInvitation('aucune')
       createToast({
         priority: 'error',
-        message: `Une erreur est survenue lors de l'invitation de ${displayName} à votre équipe, veuillez réessayer ultérieurement.`,
+        message: `Une erreur est survenue lors de l'invitation de ${displayName} à votre équipe : ${resultat.error}`,
       })
+      return
     }
+    setInvitation('faite')
+    createToast({
+      priority: 'success',
+      message: `${displayName} a bien été invité à votre équipe`,
+    })
+    router.refresh()
   }
 
   const actionButtons: [ButtonProps, ...ButtonProps[]] = [
@@ -138,10 +144,7 @@ const ActeurIdentity = ({
       ),
       priority: 'tertiary' as const,
       ...removeFromTeamModalNativeButtonProps,
-      ...buttonLoadingClassname(
-        removeFromTeamMutation.isPending || removeFromTeamMutation.isSuccess,
-        'fr-mb-0',
-      ),
+      ...buttonLoadingClassname(retrait !== 'aucun', 'fr-mb-0'),
     })
   }
 
@@ -156,10 +159,7 @@ const ActeurIdentity = ({
       ),
       priority: 'primary' as const,
       ...inviteToTeamModalNativeButtonProps,
-      ...buttonLoadingClassname(
-        inviteToTeamMutation.isPending || inviteToTeamMutation.isSuccess,
-        'fr-mb-0',
-      ),
+      ...buttonLoadingClassname(invitation !== 'aucune', 'fr-mb-0'),
     })
   }
 
@@ -232,7 +232,7 @@ const ActeurIdentity = ({
           {
             children: "Envoyer l'invitation",
             onClick: onInviteToTeam,
-            ...buttonLoadingClassname(inviteToTeamMutation.isPending),
+            ...buttonLoadingClassname(invitation === 'en-cours'),
           },
         ]}
       >
@@ -269,4 +269,4 @@ const ActeurIdentity = ({
   )
 }
 
-export default withTrpc(ActeurIdentity)
+export default ActeurIdentity

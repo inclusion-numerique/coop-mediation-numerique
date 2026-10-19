@@ -2,10 +2,11 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
+import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 const RenvoyerInvitationButton = ({
   email,
@@ -14,25 +15,27 @@ const RenvoyerInvitationButton = ({
   email: string
   coordinateurId: string
 }) => {
-  const mutation = trpc.mediateur.resendInvitation.useMutation()
+  const [enCours, setEnCours] = useState(false)
   const router = useRouter()
 
   const onClick = async () => {
-    try {
-      await mutation.mutateAsync({ email, coordinateurId })
-      router.refresh()
+    setEnCours(true)
+    const resultat = await inject(RELANCER_UNE_INVITATION_ACTION_KEY)({
+      email,
+      coordinateurId,
+    })
+    setEnCours(false)
 
-      createToast({
-        priority: 'success',
-        message: `L'invitation a été renvoyée à ${email}`,
-      })
-    } catch {
-      createToast({
-        priority: 'error',
-        message:
-          "Erreur lors de l'envoi de l'invitation, veuillez réessayer ultérieurement.",
-      })
+    if (!resultat.success) {
+      createToast({ priority: 'error', message: resultat.error })
+      return
     }
+
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: `L'invitation a été renvoyée à ${email}`,
+    })
   }
 
   return (
@@ -42,11 +45,11 @@ const RenvoyerInvitationButton = ({
       size="small"
       priority="tertiary"
       onClick={onClick}
-      {...buttonLoadingClassname(mutation.isPending)}
+      {...buttonLoadingClassname(enCours)}
     >
       Renvoyer l'invitation
     </Button>
   )
 }
 
-export default withTrpc(RenvoyerInvitationButton)
+export default RenvoyerInvitationButton

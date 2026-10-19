@@ -15,7 +15,7 @@ import Invitation from '../components/Invitation'
 
 export const inviteNewMediateur = {
   text: ({ url, from }: { url: string; from: string }): string =>
-    `Pour accepter l'invitation à rejoindre l’équipe de coordination de ${from}, merci d'utiliser le lien suivant :\n${url}\n\n`,
+    `Pour accepter l'invitation à rejoindre l’équipe de coordination de ${from}, merci d'utiliser le lien suivant :\n${emailAssetUrl(url)}\n\n`,
   mjml: ({ url, from }: { url: string; from: string }): string =>
     renderToMjml(
       <LayoutWithFooter
