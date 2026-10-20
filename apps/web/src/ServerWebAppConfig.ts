@@ -14,7 +14,6 @@ const emailServer = `smtp://${process.env.SMTP_USERNAME ?? ''}:${
 export const ServerWebAppConfig = {
   NodeEnv: NodeEnvironment,
   Namespace: process.env.NAMESPACE ?? '',
-  internalApiPrivateKey: process.env.INTERNAL_API_PRIVATE_KEY ?? '',
   debug: process.env.DEBUG === 'true' || process.env.DEBUG === '1',
   Email: {
     server: emailServer,

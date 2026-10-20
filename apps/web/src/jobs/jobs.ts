@@ -9,18 +9,17 @@ import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
- * It can be triggered by a POST to /api/jobs
- * It could also be triggered by a cli or as a side effect of a mutation.
+ * It is run by a Scaleway Serverless Job (see `jobs` in infrastructure/locals.tf)
+ * or by the cli.
  *
  * Each job must have an executor defined in jobExecutors.ts
  *
  * A job result should be serializable to JSON and never include sensitive data as it can be logged or stored for audit purposes.
  *
  * It is defined by a name and a payload (that can be optional).
- * The payload should be serializable to JSON for easily being passed as POST data.
+ * The payload should be serializable to JSON.
  *
  * Add your jobs here.
- * To add a cron trigger, see `jobs` in infrastructure/locals.tf.
  *
  * N'y figurent que les jobs qui ont encore une raison de tourner. Les campagnes
  * de reprise de données, les correctifs ponctuels et les backfills accomplis

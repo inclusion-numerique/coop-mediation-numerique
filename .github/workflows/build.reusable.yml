@@ -74,6 +74,8 @@ jobs:
           restore-keys: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - name: Build next app
         run: SENTRY_ENABLE_RELEASE=true pnpm --silent -F @app/web build
+      - name: Build jobs runner
+        run: pnpm --silent -F @app/web build:jobs
       - name: Build docker image
         env:
           IMAGE: ${{ steps.namespace.outputs.image }}

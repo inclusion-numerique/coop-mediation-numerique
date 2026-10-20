@@ -26,6 +26,8 @@ COPY apps/web/private-static ./apps/web/private-static
 # Copy static built assets (js and css)
 COPY apps/web/.next/static ./apps/web/.next/static
 
+COPY apps/web/dist/run-job.js ./apps/web/run-job.js
+
 EXPOSE $PORT
 
 # Entrypoint opens the entrepôt SSH tunnel (when configured) before exec-ing the CMD below.

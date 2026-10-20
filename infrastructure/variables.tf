@@ -78,11 +78,6 @@ variable "PROCONNECT_MAIN_CLIENT_SECRET" {
   sensitive = true
 }
 
-variable "INTERNAL_API_PRIVATE_KEY" {
-  type      = string
-  sensitive = true
-}
-
 variable "HMAC_SECRET_KEY" {
   type      = string
   sensitive = true
