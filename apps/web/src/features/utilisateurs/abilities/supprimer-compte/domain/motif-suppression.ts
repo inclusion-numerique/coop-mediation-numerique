@@ -7,6 +7,7 @@ export const motifsSuppression = [
   'DemandeDuTitulaire',
   'DecisionAdministrateur',
   'InactiviteApresInscription',
+  'InactiviteProlongee',
 ] as const
 
 export const MotifSuppression = defineModel(
@@ -39,6 +40,7 @@ const MOTIF_PAR_AUTEUR: Record<
  */
 const MOTIF_PAR_POLICY: Record<NomRetentionPolicy, MotifSuppression> = {
   InscritJamaisActif: MotifSuppression('InactiviteApresInscription'),
+  InactifDepuisDeuxAns: MotifSuppression('InactiviteProlongee'),
 }
 
 /** La marque ne peut pas servir d'index : le paramètre reçoit le nom nu. */

@@ -2,6 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
+import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
 import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/executeAppliquerDispositifConum'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
@@ -19,6 +20,7 @@ export type JobExecutor<Name extends JobName, Result = unknown> = (
 export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
+  'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,
   'appliquer-dispositif-conum': executeAppliquerDispositifConum,
   'fix-users-roles': executeFixUsersRoles,
   'inactive-users-reminders': executeInactiveUsersReminders,

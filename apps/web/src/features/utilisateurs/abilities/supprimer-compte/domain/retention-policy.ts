@@ -9,7 +9,10 @@ import { z } from 'zod'
  * « inscription jamais terminée » n'y figure pas : elle fait un DELETE physique
  * et ne passe donc pas par cet effacement.
  */
-export const retentionPolicies = ['InscritJamaisActif'] as const
+export const retentionPolicies = [
+  'InscritJamaisActif',
+  'InactifDepuisDeuxAns',
+] as const
 
 export type NomRetentionPolicy = (typeof retentionPolicies)[number]
 

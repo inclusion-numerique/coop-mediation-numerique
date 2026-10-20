@@ -208,3 +208,72 @@ After(async () => {
     await prismaClient.user.deleteMany({ where: { id: compte.userId } })
   }, Promise.resolve())
 })
+
+export type CompteInactifSeme = {
+  readonly userId: string
+  readonly courriel: string
+}
+
+const comptesInactifsSemes: CompteInactifSeme[] = []
+
+export const semerUnCompteInactif = async ({
+  role,
+  inscriptionValidee,
+  dernierCompteRendu = null,
+  derniereConnexion = null,
+  derniereVisite = null,
+  avertiLe = null,
+}: {
+  role: 'mediateur' | 'coordinateur'
+  inscriptionValidee: Date
+  dernierCompteRendu?: Date | null
+  derniereConnexion?: Date | null
+  derniereVisite?: Date | null
+  avertiLe?: Date | null
+}): Promise<CompteInactifSeme> => {
+  const userId = v4()
+  const courriel = `inactif-${userId}@example.com`
+
+  await prismaClient.user.create({
+    data: {
+      id: userId,
+      email: courriel,
+      firstName: 'Jeanne',
+      inscriptionValidee,
+      lastLogin: derniereConnexion,
+      lastSeen: derniereVisite,
+      avertissementInactiviteLe: avertiLe,
+    },
+  })
+
+  if (role === 'mediateur') {
+    await prismaClient.mediateur.create({
+      data: { userId, derniereCreationActivite: dernierCompteRendu },
+    })
+  }
+
+  if (role === 'coordinateur') {
+    await prismaClient.coordinateur.create({ data: { userId } })
+  }
+
+  const seme = { userId, courriel }
+  comptesInactifsSemes.push(seme)
+
+  return seme
+}
+
+After(async () => {
+  const userIds = comptesInactifsSemes
+    .splice(0, comptesInactifsSemes.length)
+    .map(({ userId }) => userId)
+
+  if (userIds.length === 0) return
+
+  await prismaClient.mediateur.deleteMany({
+    where: { userId: { in: userIds } },
+  })
+  await prismaClient.coordinateur.deleteMany({
+    where: { userId: { in: userIds } },
+  })
+  await prismaClient.user.deleteMany({ where: { id: { in: userIds } } })
+})
