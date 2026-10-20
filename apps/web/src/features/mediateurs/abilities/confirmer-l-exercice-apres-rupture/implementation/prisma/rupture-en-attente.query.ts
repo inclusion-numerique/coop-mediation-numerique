@@ -18,7 +18,7 @@ export const lireLaRuptureEnAttente = async ({
     ? null
     : ruptureEnAttente({
         contrats: mediateur.contrats,
-        derniereModification: mediateur.modification,
+        visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
         maintenant,
       })
 }

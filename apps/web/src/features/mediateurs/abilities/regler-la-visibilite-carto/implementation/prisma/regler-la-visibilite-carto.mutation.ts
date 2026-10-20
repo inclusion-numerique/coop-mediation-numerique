@@ -29,6 +29,7 @@ export const reglerLaVisibiliteCarto = async ({
     where: { id: mediateur.id },
     data: {
       isVisible: visible,
+      visibiliteChoisieLe: maintenant,
       modification: maintenant,
       user: { update: { updated: maintenant } },
     },

@@ -5,7 +5,7 @@ import { type Contrat, etatContrat } from '../../domain/rupture-en-attente'
 export type MediateurEtContrats = {
   readonly id: string
   readonly isVisible: boolean
-  readonly modification: Date
+  readonly visibiliteChoisieLe: Date | null
   readonly contrats: readonly Contrat[]
 }
 
@@ -17,7 +17,7 @@ export const lireMediateurEtContrats = async (
     select: {
       id: true,
       isVisible: true,
-      modification: true,
+      visibiliteChoisieLe: true,
       user: {
         select: {
           personneMain: {
@@ -35,7 +35,7 @@ export const lireMediateurEtContrats = async (
     : {
         id: mediateur.id,
         isVisible: mediateur.isVisible,
-        modification: mediateur.modification,
+        visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
         contrats: (mediateur.user.personneMain?.contrats ?? []).map(
           ({ dateDebut, dateRupture }) => ({
             debut: dateDebut,

@@ -12,6 +12,7 @@
 * When ce médiateur se rend invisible sur la cartographie
 * Then le profil de ce médiateur n'est plus visible sur la cartographie
 * And la date de modification de ce médiateur est celle du réglage
+* And le choix de visibilité de ce médiateur est daté du réglage
 
 ### Scenario: Le médiateur masqué par un administrateur se rend de nouveau visible
 
@@ -31,6 +32,7 @@
 * When un administrateur rend ce médiateur invisible sur la cartographie
 * Then le profil de ce médiateur n'est plus visible sur la cartographie
 * And la date de modification de ce médiateur est celle du réglage
+* And le choix de visibilité de ce médiateur est daté du réglage
 
 ## Rule: Le réglage ne porte que sur un médiateur dont le compte existe
 

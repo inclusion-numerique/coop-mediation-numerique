@@ -38,6 +38,7 @@ const mediateurSeme = () =>
     select: {
       isVisible: true,
       modification: true,
+      visibiliteChoisieLe: true,
       user: { select: { updated: true } },
     },
   })
@@ -95,6 +96,13 @@ Then(
     assert.deepStrictEqual(user.updated, momentDuReglage)
   },
 )
+
+Then('le choix de visibilité de ce médiateur est daté du réglage', async () => {
+  assert.deepStrictEqual(
+    (await mediateurSeme()).visibiliteChoisieLe,
+    momentDuReglage,
+  )
+})
 
 Then(
   'le réglage de la visibilité échoue car le médiateur est introuvable',

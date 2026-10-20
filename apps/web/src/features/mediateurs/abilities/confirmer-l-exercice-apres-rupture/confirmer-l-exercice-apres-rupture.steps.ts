@@ -40,7 +40,7 @@ const repondre = async (reponse: ReponseApresRupture) => {
 const mediateurSeme = () =>
   prismaClient.mediateur.findUniqueOrThrow({
     where: { id: exConseillerSeme().mediateurId },
-    select: { isVisible: true, modification: true },
+    select: { isVisible: true, visibiliteChoisieLe: true },
   })
 
 const ruptureEnAttente = () =>
@@ -60,6 +60,13 @@ Given(
 )
 
 Given(
+  'un ex-conseiller visible sur la cartographie, sans réglage de visibilité',
+  async () => {
+    await semerUnExConseiller({ visible: true, reglageLe: null })
+  },
+)
+
+Given(
   /^son contrat débuté le (\d{2}\/\d{2}\/\d{4}) (?:a été|sera) rompu le (\d{2}\/\d{2}\/\d{4})$/,
   async (debut: string, rupture: string) => {
     await semerUnContratDeLExConseiller({
@@ -70,7 +77,7 @@ Given(
 )
 
 Given(
-  /^un nouveau contrat a débuté le (\d{2}\/\d{2}\/\d{4})$/,
+  /^un nouveau contrat (?:a débuté|débutera) le (\d{2}\/\d{2}\/\d{4})$/,
   async (debut: string) => {
     await semerUnContratDeLExConseiller({ debut: date(debut), rupture: null })
   },
@@ -104,10 +111,10 @@ Then("il n'est plus visible sur la cartographie", async () => {
   assert.strictEqual((await mediateurSeme()).isVisible, false)
 })
 
-Then('sa date de modification est celle de sa réponse', async () => {
+Then('son choix de visibilité est daté de sa réponse', async () => {
   assert.strictEqual(derniere.reponse?.success, true)
   assert.deepStrictEqual(
-    (await mediateurSeme()).modification,
+    (await mediateurSeme()).visibiliteChoisieLe,
     momentDeLaReponse,
   )
 })

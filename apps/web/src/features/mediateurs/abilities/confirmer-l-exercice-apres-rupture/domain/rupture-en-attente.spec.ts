@@ -20,7 +20,7 @@ describe('rupture en attente', () => {
     expect(
       ruptureEnAttente({
         contrats: [],
-        derniereModification: avantLaRupture,
+        visibiliteChoisieLe: null,
         maintenant,
       }),
     ).toBeNull()
@@ -30,17 +30,27 @@ describe('rupture en attente', () => {
     expect(
       ruptureEnAttente({
         contrats: [contrat({ debut: '2025-01-01' })],
-        derniereModification: avantLaRupture,
+        visibiliteChoisieLe: null,
         maintenant,
       }),
     ).toBeNull()
   })
 
-  it('attend une réponse quand la rupture est passée et postérieure à la dernière modification', () => {
+  it('attend une réponse quand la rupture est passée et la visibilité réglée avant elle', () => {
     expect(
       ruptureEnAttente({
         contrats: [contrat({ debut: '2025-01-01', rupture: '2026-09-01' })],
-        derniereModification: avantLaRupture,
+        visibiliteChoisieLe: avantLaRupture,
+        maintenant,
+      }),
+    ).toEqual({ dateRupture: new Date('2026-09-01') })
+  })
+
+  it('attend une réponse quand la visibilité n’a jamais été réglée', () => {
+    expect(
+      ruptureEnAttente({
+        contrats: [contrat({ debut: '2025-01-01', rupture: '2026-09-01' })],
+        visibiliteChoisieLe: null,
         maintenant,
       }),
     ).toEqual({ dateRupture: new Date('2026-09-01') })
@@ -50,17 +60,47 @@ describe('rupture en attente', () => {
     expect(
       ruptureEnAttente({
         contrats: [contrat({ debut: '2025-01-01', rupture: '2026-09-01' })],
-        derniereModification: apresLaRupture,
+        visibiliteChoisieLe: apresLaRupture,
         maintenant,
       }),
     ).toBeNull()
+  })
+
+  it('tient pour postérieur un choix fait le jour de la rupture, heure de Paris', () => {
+    expect(
+      ruptureEnAttente({
+        contrats: [contrat({ debut: '2025-01-01', rupture: '2026-09-01' })],
+        visibiliteChoisieLe: new Date('2026-08-31T22:30:00.000Z'),
+        maintenant,
+      }),
+    ).toBeNull()
+  })
+
+  it('tient pour antérieur un choix fait la veille de la rupture, heure de Paris', () => {
+    expect(
+      ruptureEnAttente({
+        contrats: [contrat({ debut: '2025-01-01', rupture: '2026-09-01' })],
+        visibiliteChoisieLe: new Date('2026-08-31T21:30:00.000Z'),
+        maintenant,
+      }),
+    ).toEqual({ dateRupture: new Date('2026-09-01') })
+  })
+
+  it('tient la rupture pour passée dès minuit, heure de Paris', () => {
+    expect(
+      ruptureEnAttente({
+        contrats: [contrat({ debut: '2025-01-01', rupture: '2026-10-21' })],
+        visibiliteChoisieLe: null,
+        maintenant: new Date('2026-10-20T22:30:00.000Z'),
+      }),
+    ).toEqual({ dateRupture: new Date('2026-10-21') })
   })
 
   it('n’existe pas tant que la rupture est à venir', () => {
     expect(
       ruptureEnAttente({
         contrats: [contrat({ debut: '2025-01-01', rupture: '2026-11-01' })],
-        derniereModification: avantLaRupture,
+        visibiliteChoisieLe: null,
         maintenant,
       }),
     ).toBeNull()
@@ -73,20 +113,33 @@ describe('rupture en attente', () => {
           contrat({ debut: '2024-01-01', rupture: '2026-09-01' }),
           contrat({ debut: '2026-09-10' }),
         ],
-        derniereModification: avantLaRupture,
+        visibiliteChoisieLe: null,
         maintenant,
       }),
     ).toBeNull()
   })
 
-  it('retient la rupture du contrat le plus récent', () => {
+  it('attend une réponse tant qu’un nouveau contrat n’a pas commencé', () => {
+    expect(
+      ruptureEnAttente({
+        contrats: [
+          contrat({ debut: '2024-01-01', rupture: '2026-09-01' }),
+          contrat({ debut: '2026-12-01' }),
+        ],
+        visibiliteChoisieLe: null,
+        maintenant,
+      }),
+    ).toEqual({ dateRupture: new Date('2026-09-01') })
+  })
+
+  it('retient la dernière rupture passée', () => {
     expect(
       ruptureEnAttente({
         contrats: [
           contrat({ debut: '2024-01-01', rupture: '2025-06-01' }),
           contrat({ debut: '2025-07-01', rupture: '2026-09-01' }),
         ],
-        derniereModification: new Date('2025-08-01T10:00:00.000Z'),
+        visibiliteChoisieLe: new Date('2025-08-01T10:00:00.000Z'),
         maintenant,
       }),
     ).toEqual({ dateRupture: new Date('2026-09-01') })

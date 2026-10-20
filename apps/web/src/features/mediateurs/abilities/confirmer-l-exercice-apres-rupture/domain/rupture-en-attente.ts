@@ -1,4 +1,5 @@
 import { isAfter, isBefore } from 'date-fns'
+import { fromZonedTime } from 'date-fns-tz'
 
 export type EtatContrat =
   | { readonly _tag: 'EnCours' }
@@ -16,25 +17,43 @@ export type RuptureEnAttente = {
 export const etatContrat = (rupture: Date | null): EtatContrat =>
   rupture == null ? { _tag: 'EnCours' } : { _tag: 'Rompu', le: rupture }
 
-const plusRecent = (contrats: readonly Contrat[]): Contrat | null =>
-  contrats.toSorted(
-    (a, b) => (b.debut?.getTime() ?? 0) - (a.debut?.getTime() ?? 0),
-  )[0] ?? null
+const debutDuJourAParis = (jour: Date): Date =>
+  fromZonedTime(`${jour.toISOString().slice(0, 10)}T00:00:00`, 'Europe/Paris')
+
+const rupturePassee = (contrat: Contrat, maintenant: Date): Date | null =>
+  contrat.etat._tag === 'Rompu' &&
+  !isAfter(debutDuJourAParis(contrat.etat.le), maintenant)
+    ? contrat.etat.le
+    : null
+
+const estActif = (contrat: Contrat, maintenant: Date): boolean =>
+  (contrat.debut == null || !isAfter(contrat.debut, maintenant)) &&
+  rupturePassee(contrat, maintenant) == null
+
+const derniereRupture = (
+  contrats: readonly Contrat[],
+  maintenant: Date,
+): Date | null =>
+  contrats
+    .map((contrat) => rupturePassee(contrat, maintenant))
+    .filter((rupture) => rupture != null)
+    .toSorted((a, b) => b.getTime() - a.getTime())[0] ?? null
 
 export const ruptureEnAttente = ({
   contrats,
-  derniereModification,
+  visibiliteChoisieLe,
   maintenant,
 }: {
   readonly contrats: readonly Contrat[]
-  readonly derniereModification: Date
+  readonly visibiliteChoisieLe: Date | null
   readonly maintenant: Date
 }): RuptureEnAttente | null => {
-  const etat = plusRecent(contrats)?.etat
+  const rupture = derniereRupture(contrats, maintenant)
 
-  return etat?._tag === 'Rompu' &&
-    isBefore(etat.le, maintenant) &&
-    isAfter(etat.le, derniereModification)
-    ? { dateRupture: etat.le }
+  return rupture != null &&
+    !contrats.some((contrat) => estActif(contrat, maintenant)) &&
+    (visibiliteChoisieLe == null ||
+      isBefore(visibiliteChoisieLe, debutDuJourAParis(rupture)))
+    ? { dateRupture: rupture }
     : null
 }

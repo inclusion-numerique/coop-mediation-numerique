@@ -259,7 +259,7 @@ export const semerUnExConseiller = async ({
   reglageLe,
 }: {
   visible: boolean
-  reglageLe: Date
+  reglageLe: Date | null
 }): Promise<ExConseillerSeme> => {
   const userId = v4()
 
@@ -268,7 +268,7 @@ export const semerUnExConseiller = async ({
   })
 
   const mediateur = await prismaClient.mediateur.create({
-    data: { userId, isVisible: visible, modification: reglageLe },
+    data: { userId, isVisible: visible, visibiliteChoisieLe: reglageLe },
     select: { id: true },
   })
 

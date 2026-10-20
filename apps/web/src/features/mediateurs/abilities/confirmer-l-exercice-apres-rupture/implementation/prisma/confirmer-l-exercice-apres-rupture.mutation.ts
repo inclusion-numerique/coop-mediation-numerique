@@ -35,7 +35,7 @@ export const confirmerLExerciceApresRupture = async ({
 
   const rupture = ruptureEnAttente({
     contrats: mediateur.contrats,
-    derniereModification: mediateur.modification,
+    visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
     maintenant,
   })
 
@@ -45,8 +45,11 @@ export const confirmerLExerciceApresRupture = async ({
 
   const { count } = await prismaClient.$transaction(async (transaction) => {
     const ecriture = await transaction.mediateur.updateMany({
-      where: { id: mediateur.id, modification: mediateur.modification },
-      data: { isVisible: visible, modification: maintenant },
+      where: {
+        id: mediateur.id,
+        visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
+      },
+      data: { isVisible: visible, visibiliteChoisieLe: maintenant },
     })
 
     if (ecriture.count > 0) {

@@ -323,6 +323,7 @@ model Mediateur {
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
 
   isVisible Boolean @default(false) @map("is_visible")
+  visibiliteChoisieLe DateTime? @map("visibilite_choisie_le")
 
   // pre computed counts to avoid joins and counts on big tables
   activitesCount       Int @default(0) @map("activites_count")
