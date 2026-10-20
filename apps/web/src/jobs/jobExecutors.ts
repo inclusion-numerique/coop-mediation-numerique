@@ -6,6 +6,7 @@ import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/ex
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
+import { executeRattraperLesComptesSupprimes } from './rattraper-les-comptes-supprimes/executeRattraperLesComptesSupprimes'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
@@ -21,6 +22,7 @@ export const jobExecutors: {
   'appliquer-dispositif-conum': executeAppliquerDispositifConum,
   'fix-users-roles': executeFixUsersRoles,
   'inactive-users-reminders': executeInactiveUsersReminders,
+  'rattraper-les-comptes-supprimes': executeRattraperLesComptesSupprimes,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
   'sync-rdvsp-data': executeSyncRdvspData,
