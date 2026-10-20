@@ -2,9 +2,9 @@
 
 ## Rule: Le rattachement est supprimé, pas daté
 
-> Le contrat de résurrection dit que les rattachements ne reviennent pas : une
-> personne qui revient redéclare où elle exerce, ce qui est de toute façon la
-> seule information à jour.
+> Les rattachements ne reviennent pas : une personne qui revient recrée un
+> compte et redéclare où elle exerce, ce qui est de toute façon la seule
+> information à jour.
 
 ### Scenario: Tous les rattachements du médiateur sont coupés
 

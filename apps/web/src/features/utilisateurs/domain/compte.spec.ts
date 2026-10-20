@@ -62,7 +62,6 @@ describe('compte supprimé', () => {
     role: RoleUtilisateur('User'),
     etat,
     rattachements: aucun,
-    liaisons: [],
   })
 
   it('l’est quand une date de suppression le dit', () => {

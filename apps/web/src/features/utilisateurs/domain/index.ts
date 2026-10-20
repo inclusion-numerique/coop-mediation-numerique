@@ -23,14 +23,6 @@ export {
   NOM_ANONYME,
   PRENOM_ANONYME,
 } from './identite-anonyme'
-export {
-  type AccesFournisseur,
-  estRevoquee,
-  FournisseurIdentite,
-  IdentifiantFournisseur,
-  type LiaisonProConnect,
-  revoquer,
-} from './liaison-proconnect'
 export { MediateurId } from './mediateur-id'
 export {
   estRoleProtege,

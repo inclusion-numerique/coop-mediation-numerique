@@ -17,7 +17,6 @@ const compte = (
   role: RoleUtilisateur('User'),
   etat: { _tag: 'actif' },
   rattachements: { _tag: 'aucun' },
-  liaisons: [],
   ...surcharge,
 })
 

@@ -9,7 +9,6 @@ import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
 import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { importStructureEmployeuseFromProConnect } from '@app/web/features/utilisateurs/use-cases/import-structure-from-proconnect/importStructureEmployeuseFromProConnect'
-import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
@@ -105,7 +104,7 @@ export const nextAuthOptions = {
       // The rest of this function will execute for ProConnect flow
 
       const { user, profile, account } = params as unknown as {
-        user: SessionUser & { deleted?: Date | null }
+        user: SessionUser
         profile: {
           email: string
           given_name: string
@@ -121,22 +120,6 @@ export const nextAuthOptions = {
           id_token?: string
           scope?: string
         }
-      }
-
-      // Reactivate soft-deleted user on ProConnect reconnection
-      if (user.deleted) {
-        await prismaClient.user.update({
-          where: { id: user.id },
-          data: {
-            deleted: null,
-            email: profile.email,
-            firstName: profile.given_name,
-            lastName: profile.usual_name,
-            name: `${profile.given_name} ${profile.usual_name}`,
-            phone: profile.phone_number,
-            siret: profile.siret ?? undefined,
-          },
-        })
       }
 
       // Update account tokens if this is a ProConnect signin

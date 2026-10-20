@@ -163,17 +163,12 @@ Then('les sessions du compte sont supprimées', async () => {
   )
 })
 
-Then('les jetons du compte sont révoqués', async () => {
+Then("la liaison au fournisseur d'identité est supprimée", async () => {
   assert.ok(compte)
-  const liaison = await prismaClient.account.findFirstOrThrow({
-    where: { userId: compte.userId },
-  })
-
-  assert.strictEqual(liaison.access_token, null)
-  assert.strictEqual(liaison.refresh_token, null)
-  assert.strictEqual(liaison.id_token, null)
-  assert.strictEqual(liaison.expires_at, null)
-  assert.strictEqual(liaison.session_state, null)
+  assert.strictEqual(
+    await prismaClient.account.count({ where: { userId: compte.userId } }),
+    0,
+  )
 })
 
 Then("le constat d'effacement est complet", () => {
@@ -181,22 +176,17 @@ Then("le constat d'effacement est complet", () => {
   assert.strictEqual(effacement.data.report._tag, 'complete')
 })
 
-Then("la liaison au fournisseur d'identité existe toujours", async () => {
+Then('une reconnexion ProConnect ne retrouve plus le compte', async () => {
   assert.ok(compte)
   assert.strictEqual(
-    await prismaClient.account.count({ where: { userId: compte.userId } }),
-    1,
+    await prismaClient.account.count({
+      where: {
+        provider: 'proconnect',
+        providerAccountId: `sub-${compte.userId}`,
+      },
+    }),
+    0,
   )
-})
-
-Then("la liaison au fournisseur d'identité a conservé sa clé", async () => {
-  assert.ok(compte)
-  const liaison = await prismaClient.account.findFirstOrThrow({
-    where: { userId: compte.userId },
-  })
-
-  assert.strictEqual(liaison.provider, 'proconnect')
-  assert.strictEqual(liaison.providerAccountId, `sub-${compte.userId}`)
 })
 
 Then('le portefeuille de bénéficiaires est anonymisé', async () => {

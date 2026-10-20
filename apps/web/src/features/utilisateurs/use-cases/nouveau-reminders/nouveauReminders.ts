@@ -31,7 +31,7 @@ const daysAgo = (now: Date, days: number) =>
  *
  * L'effacement lui-même est délégué à l'ability `supprimer-compte`, comme pour
  * une suppression demandée par le titulaire ou décidée par un administrateur :
- * même étape, même contrat de résurrection, un seul endroit à faire évoluer.
+ * même étape, un seul endroit à faire évoluer.
  * Cette politique n'apporte que son critère — l'inactivité — et le courriel qui
  * l'annonce.
  *

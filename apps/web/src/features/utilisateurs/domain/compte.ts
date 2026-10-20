@@ -1,6 +1,5 @@
 import type { AdresseCourriel } from './adresse-courriel'
 import type { CoordinateurId } from './coordinateur-id'
-import type { LiaisonProConnect } from './liaison-proconnect'
 import type { MediateurId } from './mediateur-id'
 import type { RoleUtilisateur } from './role-utilisateur'
 import type { UtilisateurId } from './utilisateur-id'
@@ -37,8 +36,7 @@ export type RattachementsDuCompte =
  *
  * Les champs d'identité (nom, téléphone, avatar, SIRET…) n'y figurent pas : ils
  * ne sont jamais lus, seulement écrasés. Les charger reviendrait à ramener en
- * mémoire l'identité qu'on cherche à effacer. Même raison pour les jetons :
- * `AccesFournisseur` est un état dérivé au transfert, pas un porteur de secret.
+ * mémoire l'identité qu'on cherche à effacer.
  */
 export type CompteASupprimer = {
   readonly id: UtilisateurId
@@ -46,7 +44,6 @@ export type CompteASupprimer = {
   readonly role: RoleUtilisateur
   readonly etat: EtatCompte
   readonly rattachements: RattachementsDuCompte
-  readonly liaisons: readonly LiaisonProConnect[]
 }
 
 export const mediateurDe = (

@@ -6,8 +6,7 @@ import { prismaClient } from '@app/web/prismaClient'
  *
  * Les notes sont saisies à la main : c'est là que l'identité d'un bénéficiaire
  * finit par se retrouver, malgré les champs prévus pour elle. Les lignes, elles,
- * restent — ce sont elles qui portent l'historique statistique que la
- * résurrection d'un compte promet de rendre.
+ * restent — ce sont elles qui portent l'historique statistique.
  *
  * Les activités de coordination sont traitées de la même façon : un coordinateur
  * n'a pas moins de texte libre qu'un médiateur.

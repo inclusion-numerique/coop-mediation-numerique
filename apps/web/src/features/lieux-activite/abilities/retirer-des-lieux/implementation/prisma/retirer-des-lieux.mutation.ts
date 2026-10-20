@@ -3,9 +3,9 @@ import { prismaClient } from '@app/web/prismaClient'
 /**
  * Coupe les rattachements d'un médiateur à ses lieux d'activité.
  *
- * Suppression et non pose d'une date de fin : le contrat de résurrection dit que
- * les rattachements ne reviennent pas. Une personne qui revient redéclare où
- * elle exerce, ce qui est de toute façon la seule information à jour.
+ * Suppression et non pose d'une date de fin : les rattachements ne reviennent
+ * pas. Une personne qui revient recrée un compte et redéclare où elle exerce,
+ * ce qui est de toute façon la seule information à jour.
  *
  * Effet à connaître : si le compte portait le dernier rattachement vivant d'un
  * lieu, ce lieu sort de la cartographie nationale — la requête de publication
