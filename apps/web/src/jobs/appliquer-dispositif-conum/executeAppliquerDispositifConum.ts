@@ -2,6 +2,7 @@ import { output } from '@app/cli/output'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { prismaClient } from '@app/web/prismaClient'
+import * as Sentry from '@sentry/nextjs'
 import type { AppliquerDispositifConumJob } from './appliquerDispositifConumJob'
 
 /**
@@ -109,7 +110,12 @@ export const executeAppliquerDispositifConum = async (
     ? 0
     : await comptes.reduce<Promise<number>>(async (precedent, compte) => {
         const total = await precedent
-        const notifie = await updateBrevoContact(compte.user_id)
+        const notifie = await updateBrevoContact(compte.user_id).catch(
+          (error: unknown) => {
+            Sentry.captureException?.(error)
+            return false
+          },
+        )
         return notifie ? total + 1 : total
       }, Promise.resolve(0))
 

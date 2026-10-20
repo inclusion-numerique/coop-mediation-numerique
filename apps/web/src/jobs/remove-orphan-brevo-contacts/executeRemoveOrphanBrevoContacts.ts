@@ -10,13 +10,13 @@ import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
 
-const isAnonymizedEmail = (email: string): boolean =>
-  email.startsWith('deleted+') && email.includes('@')
+const isAnonymizedEmail = (email: string | undefined): boolean =>
+  email != null && email.startsWith('deleted+') && email.includes('@')
 
 type BrevoContactsResponse = {
   contacts: {
     id: number
-    email: string
+    email?: string
     ext_id?: string
     attributes: Record<string, unknown>
   }[]
@@ -86,6 +86,7 @@ export const executeRemoveOrphanBrevoContacts = async () => {
   let anonymizedErrorCount = 0
 
   for (const { email } of anonymizedContacts) {
+    if (email == null) continue
     try {
       await deleteBrevoContact(email)
       anonymizedDeletedCount++
@@ -110,7 +111,7 @@ export const executeRemoveOrphanBrevoContacts = async () => {
   const contactsByExtId = new Map<string, string>()
   for (const contact of nonAnonymizedContacts) {
     const extId = contact.attributes.EXT_ID
-    if (typeof extId === 'string') {
+    if (typeof extId === 'string' && contact.email != null) {
       contactsByExtId.set(extId, contact.email)
     }
   }

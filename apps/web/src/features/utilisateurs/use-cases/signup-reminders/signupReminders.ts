@@ -5,6 +5,7 @@ import {
 } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import * as Sentry from '@sentry/nextjs'
 import { countTotalActifUsers } from '../filter/db/count-total-actif-users'
 import { inscriptionFilter } from '../filter/db/inscription-filter'
 import { sendAccountDeletedEmail } from './emails/account-deleted/sendAccountDeletedEmail'
@@ -47,46 +48,59 @@ const deleteAndNotify = async (now: Date) => {
     },
   })
 
-  for (const user of usersToDelete) {
-    const { id: userId, mediateur, coordinateur } = user
+  await usersToDelete.reduce<Promise<void>>(async (precedent, user) => {
+    await precedent
+    await supprimerEtNotifier(user).catch((error: unknown) => {
+      Sentry.captureException?.(error)
+    })
+  }, Promise.resolve())
+}
 
-    if (deploymentCanRemoveBrevoContactFromList()) {
-      await removeBrevoContactFromList(
-        user.email,
-        ServerWebAppConfig.Brevo.usersListId,
-      )
-      await deleteBrevoContactIfOrphan(user.email)
-    }
+const supprimerEtNotifier = async (user: {
+  id: string
+  email: string
+  firstName: string | null
+  mediateur: { id: string } | null
+  coordinateur: { id: string } | null
+}) => {
+  const { id: userId, mediateur, coordinateur } = user
 
-    await prismaClient.$transaction(async (tx) => {
-      await tx.employeStructure.deleteMany({
-        where: { userId: userId },
+  if (deploymentCanRemoveBrevoContactFromList()) {
+    await removeBrevoContactFromList(
+      user.email,
+      ServerWebAppConfig.Brevo.usersListId,
+    )
+    await deleteBrevoContactIfOrphan(user.email)
+  }
+
+  await prismaClient.$transaction(async (tx) => {
+    await tx.employeStructure.deleteMany({
+      where: { userId: userId },
+    })
+
+    if (mediateur) {
+      await tx.mediateurCoordonne.deleteMany({
+        where: { mediateurId: mediateur.id },
       })
 
-      if (mediateur) {
-        await tx.mediateurCoordonne.deleteMany({
-          where: { mediateurId: mediateur.id },
-        })
+      await tx.mediateurEnActivite.deleteMany({
+        where: { mediateurId: mediateur.id },
+      })
 
-        await tx.mediateurEnActivite.deleteMany({
-          where: { mediateurId: mediateur.id },
-        })
+      await tx.mediateur.delete({ where: { id: mediateur.id } })
+    }
 
-        await tx.mediateur.delete({ where: { id: mediateur.id } })
-      }
+    if (coordinateur) {
+      await tx.coordinateur.delete({ where: { id: coordinateur.id } })
+    }
 
-      if (coordinateur) {
-        await tx.coordinateur.delete({ where: { id: coordinateur.id } })
-      }
+    await tx.user.delete({ where: { id: userId } })
+  })
 
-      await tx.user.delete({ where: { id: userId } })
-    })
-
-    await sendAccountDeletedEmail({
-      email: user.email,
-      firstname: user.firstName,
-    })
-  }
+  await sendAccountDeletedEmail({
+    email: user.email,
+    firstname: user.firstName,
+  })
 }
 
 const warnBeforeDeletion = async (now: Date) => {
