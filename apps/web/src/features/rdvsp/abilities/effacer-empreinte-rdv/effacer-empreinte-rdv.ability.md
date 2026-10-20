@@ -17,6 +17,30 @@
 * And le compte RDV n'est plus en base
 * And le rendez-vous n'est plus en base
 
+## Rule: Les jetons OAuth sont révoqués chez RDV Service Public
+
+> Effacer les jetons de notre base ne suffit pas : ils resteraient valides chez
+> RDV Service Public jusqu'à leur expiration. Une révocation impossible ne doit
+> pas pour autant bloquer la suppression du compte, qui ne dépend pas d'un
+> service externe : l'échec est signalé et l'effacement continue.
+
+### Scenario: Le jeton de rafraîchissement est révoqué avant l'effacement
+
+* Given un compte RDV connecté avec un rendez-vous et un usager
+* When j'efface l'empreinte RDV de ce compte
+* Then RDV Service Public a reçu la révocation du jeton de rafraîchissement
+* And les jetons RDV sont révoqués
+* And le compte RDV n'est plus en base
+
+### Scenario: Une révocation impossible n'empêche pas l'effacement
+
+* Given un compte RDV connecté avec un rendez-vous et un usager
+* And RDV Service Public est indisponible
+* When j'efface l'empreinte RDV de ce compte
+* Then les jetons RDV ne sont pas révoqués
+* And le compte RDV n'est plus en base
+* And le rendez-vous n'est plus en base
+
 ## Rule: Un usager n'est supprimé que s'il ne sert plus à personne
 
 > 565 usagers servent de deux à quatre médiateurs. Supprimer parce qu'un seul

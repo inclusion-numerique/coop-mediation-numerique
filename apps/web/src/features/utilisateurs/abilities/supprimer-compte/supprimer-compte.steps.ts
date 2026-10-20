@@ -4,7 +4,7 @@ import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities
 import { detacherDesEquipes } from '@app/web/features/equipe'
 import { retirerDesLieux } from '@app/web/features/lieux-activite'
 import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { effacerEmpreinteRdvAvec } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
 import {
   AuteurId,
   identifiantsDe,
@@ -14,6 +14,7 @@ import {
   type CompteSeme,
   semerCompte,
 } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
+import { success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
@@ -30,7 +31,7 @@ import { hash } from './implementation'
  */
 const ports: SupprimerComptePorts = {
   anonymiserPortefeuille,
-  effacerEmpreinteRdv,
+  effacerEmpreinteRdv: effacerEmpreinteRdvAvec(async () => success(undefined)),
   retirerDesLieux,
 
   effacerNotes: ({ rattachements }) =>
