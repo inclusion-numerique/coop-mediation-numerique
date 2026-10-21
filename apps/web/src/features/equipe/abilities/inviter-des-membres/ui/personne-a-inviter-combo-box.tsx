@@ -45,7 +45,7 @@ const renderItem = ({ item }: { item: PersonneAInviter }) =>
     <span className="fr-flex fr-direction-column">
       <span>{item.nom}</span>
       <span className="fr-flex fr-direction-row fr-flex-wrap fr-flex-gap-2v fr-text-mention--grey fr-text--sm fr-mb-0">
-        <UserRole isConseillerNumerique={item.conseillerNumerique} />
+        <UserRole isConseillerNumerique={item.role === 'ConseillerNumerique'} />
         <span className="fr-hidden fr-unhidden-md" aria-hidden>
           ·
         </span>

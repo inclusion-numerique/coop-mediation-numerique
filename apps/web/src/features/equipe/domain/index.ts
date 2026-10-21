@@ -47,7 +47,6 @@ export {
   type PersonneDeLEquipe,
   type ProfilMembre,
   profilDe,
-  type RoleMembre,
   type StructureEmployeuseMembre,
 } from './ligne-equipe'
 export { MediateurId } from './mediateur-id'
@@ -56,6 +55,7 @@ export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
 export { memeNom, NomTag, NomTagCanonique } from './nom-tag'
 export { Prenom } from './prenom'
 export { ReferenceInvitation } from './reference-invitation'
+export { RoleMembre, roleMembre } from './role-membre'
 export {
   type DerniereActivite,
   SEUIL_INACTIVITE_EN_JOURS,

@@ -2,11 +2,10 @@ import type { Email } from './email'
 import type { MediateurId } from './mediateur-id'
 import type { Nom } from './nom'
 import type { Prenom } from './prenom'
+import type { RoleMembre } from './role-membre'
 import type { StatutMembre } from './statut-membre'
 import type { Telephone } from './telephone'
 import type { UtilisateurId } from './utilisateur-id'
-
-export type RoleMembre = 'ConseillerNumerique' | 'MediateurNumerique'
 
 export type StructureEmployeuseMembre =
   | { readonly type: 'Inconnue' }

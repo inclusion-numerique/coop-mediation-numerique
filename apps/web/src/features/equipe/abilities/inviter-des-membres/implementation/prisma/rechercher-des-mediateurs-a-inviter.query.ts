@@ -5,8 +5,17 @@ import {
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
-import { getUserDisplayName } from '@app/web/utils/user'
-import { type CoordinateurId, Email, MediateurId } from '../../../../domain'
+import { lue } from '../../../../db/lue'
+import {
+  type CoordinateurId,
+  Email,
+  MediateurId,
+  Nom,
+  NomAffiche,
+  nomAffiche,
+  Prenom,
+  roleMembre,
+} from '../../../../domain'
 import type { MediateursAInviter } from '../../domain'
 
 const motsDe = (recherche: string): readonly string[] =>
@@ -61,10 +70,15 @@ export const rechercherDesMediateursAInviter = async ({
         : [
             {
               mediateurId: MediateurId(id),
-              nom: getUserDisplayName(user),
+              nom: nomAffiche({
+                prenom: lue(Prenom, user.firstName),
+                nom: lue(Nom, user.lastName),
+                nomComplet: lue(NomAffiche, user.name),
+                email,
+              }),
               email,
-              conseillerNumerique: personneEstConseillerNumerique(
-                user.personneMain,
+              role: roleMembre(
+                personneEstConseillerNumerique(user.personneMain),
               ),
             },
           ]

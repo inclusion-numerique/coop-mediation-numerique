@@ -3,6 +3,7 @@ import {
   MediateurId,
   Nom,
   Prenom,
+  RoleMembre,
   Telephone,
   UtilisateurId,
 } from '../../../../domain'
@@ -51,7 +52,7 @@ describe('membre exporté', () => {
               prenom: Prenom('Camille'),
               nom: Nom('Martin'),
               telephone: Telephone('+33102030405'),
-              role: 'ConseillerNumerique',
+              role: RoleMembre('ConseillerNumerique'),
             },
           },
           structureEmployeuse: {

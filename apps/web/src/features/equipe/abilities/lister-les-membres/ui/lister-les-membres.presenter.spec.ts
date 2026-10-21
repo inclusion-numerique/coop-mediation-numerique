@@ -1,4 +1,11 @@
-import { Email, MediateurId, Nom, Prenom, UtilisateurId } from '../../../domain'
+import {
+  Email,
+  MediateurId,
+  Nom,
+  Prenom,
+  RoleMembre,
+  UtilisateurId,
+} from '../../../domain'
 import { lignesAffichees } from './lister-les-membres.presenter'
 
 const profil = {
@@ -6,7 +13,7 @@ const profil = {
   prenom: Prenom('Camille'),
   nom: Nom('Martin'),
   telephone: null,
-  role: 'ConseillerNumerique' as const,
+  role: RoleMembre('ConseillerNumerique'),
 }
 
 describe('affichage d’une ligne de l’équipe', () => {

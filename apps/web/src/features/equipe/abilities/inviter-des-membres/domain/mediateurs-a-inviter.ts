@@ -1,10 +1,15 @@
-import type { Email, MediateurId } from '../../../domain'
+import type {
+  Email,
+  MediateurId,
+  NomAffiche,
+  RoleMembre,
+} from '../../../domain'
 
 export type MediateurAInviter = {
   readonly mediateurId: MediateurId
-  readonly nom: string
+  readonly nom: NomAffiche
   readonly email: Email
-  readonly conseillerNumerique: boolean
+  readonly role: RoleMembre
 }
 
 export type MediateursAInviter = {

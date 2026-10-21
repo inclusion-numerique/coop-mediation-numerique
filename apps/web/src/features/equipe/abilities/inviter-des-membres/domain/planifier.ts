@@ -8,8 +8,7 @@ import {
   ReferenceInvitation,
 } from '../../../domain'
 import { AucuneInvitationAEnvoyer } from './errors'
-
-export type RaisonDEcart = 'DejaMembre' | 'DejaInvitee'
+import { RaisonDEcart } from './raison-d-ecart'
 
 export type Ecart = {
   readonly email: Email
@@ -30,13 +29,13 @@ export type Planification = {
 const raisonDEcart =
   ({ invitations, membresActifs }: Existant) =>
   (email: Email): RaisonDEcart | null => {
-    if (membresActifs.has(email)) return 'DejaMembre'
+    if (membresActifs.has(email)) return RaisonDEcart('DejaMembre')
     return invitations.some(
       (invitation) =>
         invitation.reference.email === email &&
         invitation.statut === 'EnAttente',
     )
-      ? 'DejaInvitee'
+      ? RaisonDEcart('DejaInvitee')
       : null
   }
 

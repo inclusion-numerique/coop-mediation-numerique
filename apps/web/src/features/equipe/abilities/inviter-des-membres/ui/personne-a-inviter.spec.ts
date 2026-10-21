@@ -1,12 +1,12 @@
-import { Email, MediateurId } from '../../../domain'
+import { Email, MediateurId, NomAffiche, RoleMembre } from '../../../domain'
 import { ajouter, type PersonneAInviter } from './personne-a-inviter'
 
 const edith: PersonneAInviter = {
   _tag: 'Mediateur',
   mediateurId: MediateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8'),
-  nom: 'Edith Piaf',
+  nom: NomAffiche('Edith Piaf'),
   email: Email('edith@piaf.com'),
-  conseillerNumerique: false,
+  role: RoleMembre('MediateurNumerique'),
 }
 
 describe('ajouter', () => {

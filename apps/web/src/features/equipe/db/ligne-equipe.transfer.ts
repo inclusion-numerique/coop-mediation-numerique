@@ -5,6 +5,7 @@ import {
   Nom,
   type PersonneDeLEquipe,
   Prenom,
+  roleMembre,
   type StatutMembre,
   type StructureEmployeuseMembre,
   Telephone,
@@ -58,10 +59,7 @@ const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe => {
           prenom: lue(Prenom, row.first_name),
           nom: lue(Nom, row.last_name),
           telephone: lue(Telephone, row.phone),
-          role:
-            row.is_conseiller_numerique === true
-              ? 'ConseillerNumerique'
-              : 'MediateurNumerique',
+          role: roleMembre(row.is_conseiller_numerique === true),
         },
       }
 }
