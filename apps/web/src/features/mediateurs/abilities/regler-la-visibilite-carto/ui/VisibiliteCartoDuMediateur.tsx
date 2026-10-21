@@ -1,10 +1,11 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { reglerLaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/regler-la-visibilite-carto.action'
+import { inject } from '@app/web/libs/injection/client'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '../action/regler-la-visibilite-carto.key'
 
 export const VisibiliteCartoDuMediateur = ({
   mediateurId,
@@ -18,7 +19,7 @@ export const VisibiliteCartoDuMediateur = ({
 
   const basculer = () =>
     demarrer(async () => {
-      const resultat = await reglerLaVisibiliteCartoAction({
+      const resultat = await inject(REGLER_LA_VISIBILITE_CARTO_ACTION_KEY)({
         mediateurId,
         visible: !visible,
       })

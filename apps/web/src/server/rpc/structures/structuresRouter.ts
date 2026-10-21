@@ -1,5 +1,5 @@
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
 import { searchStructuresEmployeuses } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { z } from 'zod'
 

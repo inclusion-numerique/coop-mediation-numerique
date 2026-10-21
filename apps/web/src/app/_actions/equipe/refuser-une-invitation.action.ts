@@ -6,7 +6,7 @@ import { REFUSER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abilitie
 import { RefuserUneInvitationValidation } from '@app/web/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.validation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   ReferenceInvitation,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
@@ -20,7 +20,7 @@ export const refuserUneInvitationAction = actionBuilder()
         const user = await getSessionUser()
         return refuserUneInvitation({
           reference: ReferenceInvitation({
-            email: EmailInvitation(input.email),
+            email: Email(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           auteurId: user == null ? null : UtilisateurId(user.id),

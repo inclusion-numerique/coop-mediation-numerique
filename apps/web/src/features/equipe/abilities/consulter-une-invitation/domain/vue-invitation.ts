@@ -1,14 +1,9 @@
 import type {
-  EmailInvitation,
+  CoordinateurDeLEquipe,
+  Email,
   Invitation,
   ReferenceInvitation,
 } from '../../../domain'
-
-export type CoordinateurInvitant = {
-  readonly nom: string
-  readonly email: string
-  readonly telephone: string | null
-}
 
 export type VueInvitation =
   | { readonly type: 'Illisible' }
@@ -17,7 +12,7 @@ export type VueInvitation =
   | {
       readonly type: 'EnAttente'
       readonly reference: ReferenceInvitation
-      readonly coordinateur: CoordinateurInvitant
+      readonly coordinateur: CoordinateurDeLEquipe
       readonly tailleEquipe: number
       readonly connecte: boolean
     }
@@ -29,8 +24,8 @@ export const vueInvitation = ({
   tailleEquipe,
 }: {
   invitation: Invitation | null
-  session: EmailInvitation | null
-  coordinateur: CoordinateurInvitant | null
+  session: Email | null
+  coordinateur: CoordinateurDeLEquipe | null
   tailleEquipe: number
 }): VueInvitation => {
   if (invitation === null || coordinateur === null)

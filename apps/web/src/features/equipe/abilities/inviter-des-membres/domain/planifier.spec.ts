@@ -1,4 +1,4 @@
-import { EmailInvitation, MediateurId } from '../../../domain'
+import { Email, MediateurId } from '../../../domain'
 import {
   coordinateurId,
   invitationAcceptee,
@@ -8,15 +8,15 @@ import {
 import { planifier } from './planifier'
 
 const maintenant = new Date('2026-10-14T09:00:00Z')
-const nouveau = EmailInvitation('nouveau@example.com')
-const inscrit = EmailInvitation('inscrit@example.com')
-const membre = EmailInvitation('membre@example.com')
+const nouveau = Email('nouveau@example.com')
+const inscrit = Email('inscrit@example.com')
+const membre = Email('membre@example.com')
 const mediateurInscrit = MediateurId('550e8400-e29b-41d4-a716-446655440041')
 
 const existant = {
   invitations: [],
-  membresActifs: new Set<EmailInvitation>(),
-  mediateursConnus: new Map<EmailInvitation, MediateurId>(),
+  membresActifs: new Set<Email>(),
+  mediateursConnus: new Map<Email, MediateurId>(),
 }
 
 const emailsPlanifies = (resultat: ReturnType<typeof planifier>) =>
@@ -26,7 +26,7 @@ describe('planifier des invitations', () => {
   it('invite chaque adresse une seule fois, même saisie deux fois', () => {
     const resultat = planifier({
       coordinateurId,
-      candidats: [nouveau, EmailInvitation('NOUVEAU@example.com')],
+      candidats: [nouveau, Email('NOUVEAU@example.com')],
       existant,
       maintenant,
     })
@@ -47,7 +47,6 @@ describe('planifier des invitations', () => {
 
     expect(resultat.success && resultat.data.aEnvoyer[0]?.invite).toEqual({
       type: 'MediateurInscrit',
-      email: inscrit,
       mediateurId: mediateurInscrit,
     })
   })

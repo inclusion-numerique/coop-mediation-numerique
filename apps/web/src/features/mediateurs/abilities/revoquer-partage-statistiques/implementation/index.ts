@@ -1,1 +1,1 @@
-export { revoquerPartageStatistiques } from './prisma/revoquer-partage-statistiques.mutation'
+export * from './prisma'

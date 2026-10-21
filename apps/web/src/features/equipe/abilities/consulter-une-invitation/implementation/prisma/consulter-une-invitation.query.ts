@@ -2,7 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import type { EncodedState } from '@app/web/utils/encodeSerializableState'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import { lireUneInvitation } from '../../../../db/invitation.query'
-import { type EmailInvitation, referenceDuCode } from '../../../../domain'
+import { type Email, referenceDuCode } from '../../../../domain'
 import { type VueInvitation, vueInvitation } from '../../domain'
 
 export const consulterUneInvitation = async ({
@@ -10,7 +10,7 @@ export const consulterUneInvitation = async ({
   session,
 }: {
   code: EncodedState<unknown>
-  session: EmailInvitation | null
+  session: Email | null
 }): Promise<VueInvitation> => {
   const reference = referenceDuCode(code)
   if (reference === null) return { type: 'Illisible' }

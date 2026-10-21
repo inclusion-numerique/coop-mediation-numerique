@@ -1,9 +1,9 @@
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { personneEstConseillerNumerique } from '@app/web/features/employeuse/server'
-import { userFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/userFromShareId'
+import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
 import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'
@@ -21,16 +21,8 @@ export const GET = async (
   { params }: { params: Promise<{ shareId: string }> },
 ) => {
   const shareId = (await params).shareId
-  const shareStatsUser = await userFromShareId(shareId)
-  const mediateurUser = shareStatsUser?.mediateur?.user
-  const coordinateurUser = shareStatsUser?.coordinateur?.user
-  const user = mediateurUser ?? coordinateurUser
-
-  if (
-    user == null ||
-    (shareStatsUser?.mediateur == null && shareStatsUser?.coordinateur == null)
-  )
-    return notFound()
+  const partage = await resoudreUnLienDePartage(shareId)
+  if (!partage.success) return notFound()
 
   const parsedQueryParams = ExportActivitesValidation.safeParse(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
@@ -42,14 +34,17 @@ export const GET = async (
 
   const filters = parsedQueryParams.data as ActivitesFilters
 
+  const { proprietaire, utilisateurId } = partage.data
+  const user = await getSessionUserFromId(utilisateurId)
+
   const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
     user: {
       ...user,
-      isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
       emplois: [],
       rdvAccount: null,
-      coordinateur: shareStatsUser.coordinateur ?? null,
-      mediateur: shareStatsUser.mediateur ?? null,
+      mediateur: proprietaire._tag === 'Mediateur' ? user.mediateur : null,
+      coordinateur:
+        proprietaire._tag === 'Coordinateur' ? user.coordinateur : null,
     },
     filters,
   })

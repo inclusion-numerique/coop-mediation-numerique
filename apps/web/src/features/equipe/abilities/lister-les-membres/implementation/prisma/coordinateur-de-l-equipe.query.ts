@@ -5,19 +5,13 @@ import {
 } from '@app/web/features/employeuse/server'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  type CoordinateurDeLEquipe,
-  lireLeCoordinateur,
-} from '../../../../db/coordinateur.query'
-import type { CoordinateurId } from '../../../../domain'
-
-export type CoordinateurDeLaListe = CoordinateurDeLEquipe & {
-  readonly departementCode: string
-}
+import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
+import { CodeDepartement, type CoordinateurId } from '../../../../domain'
+import type { CoordinateurDeLaListe } from '../../domain'
 
 const departementDuCoordinateur = async (
   coordinateurId: CoordinateurId,
-): Promise<string> => {
+): Promise<CodeDepartement | null> => {
   const coordinateur = await prismaClient.coordinateur.findUnique({
     where: { id: coordinateurId },
     select: {
@@ -25,11 +19,13 @@ const departementDuCoordinateur = async (
     },
   })
 
-  return getDepartementCodeForActeur({
-    emplois: employeuseSessionEmplois(
-      personneToEmployeuseActuelle(coordinateur?.user.personneMain ?? null),
-    ),
-  })
+  return CodeDepartement.safe(
+    getDepartementCodeForActeur({
+      emplois: employeuseSessionEmplois(
+        personneToEmployeuseActuelle(coordinateur?.user.personneMain ?? null),
+      ),
+    }),
+  )
 }
 
 export const coordinateurDeLEquipe = async (

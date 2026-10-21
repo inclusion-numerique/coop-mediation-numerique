@@ -1,15 +1,15 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { getMesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { personneEstConseillerNumerique } from '@app/web/features/employeuse/server'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { userFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/userFromShareId'
-import { StatistiquesPage } from '@app/web/features/mediateurs/use-cases/partage-statistiques/page/statistiques'
+import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
+import { StatistiquesPage } from './StatistiquesPage'
 
 type PageProps = {
   params: Promise<{
@@ -31,24 +31,20 @@ const Page = async ({ params, searchParams }: PageProps) => {
     au: searchParamsResolved.au ?? new Date().toISOString().slice(0, 10),
   }
 
-  const shareStatsUser = await userFromShareId(shareId)
-  const mediateurUser = shareStatsUser?.mediateur?.user
-  const coordinateurUser = shareStatsUser?.coordinateur?.user
-  const user = mediateurUser ?? coordinateurUser
+  const partage = await resoudreUnLienDePartage(shareId)
+  if (!partage.success) return notFound()
 
-  if (
-    user == null ||
-    (shareStatsUser?.mediateur == null && shareStatsUser?.coordinateur == null)
-  )
-    return notFound()
+  const { proprietaire, utilisateurId } = partage.data
+  const user = await getSessionUserFromId(utilisateurId)
 
   const mesStatistiquesProps = await getMesStatistiquesPageData({
     user: {
       ...user,
-      isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
+      emplois: [],
       rdvAccount: null,
-      mediateur: shareStatsUser?.mediateur ?? null,
-      coordinateur: shareStatsUser?.coordinateur ?? null,
+      mediateur: user.mediateur,
+      coordinateur:
+        proprietaire._tag === 'Coordinateur' ? user.coordinateur : null,
     },
     activitesFilters: validateActivitesFilters(search),
     graphOptions: {

@@ -5,7 +5,11 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'
 import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
-import type { Invite, LienInvitation } from '../../domain'
+import {
+  type InvitationEnAttente,
+  lienInvitation,
+  type NomAffiche,
+} from '../../domain'
 
 const gabarits = {
   SansCompte: inviteNewMediateur,
@@ -13,18 +17,17 @@ const gabarits = {
 } as const
 
 export const envoyerUneInvitation = async ({
-  invite,
-  lien,
+  invitation,
   de,
 }: {
-  invite: Invite
-  lien: LienInvitation
-  de: string
+  invitation: InvitationEnAttente
+  de: NomAffiche
 }): Promise<void> => {
-  const gabarit = gabarits[invite.type]
+  const gabarit = gabarits[invitation.invite.type]
+  const lien = lienInvitation(invitation.reference)
 
   const resultat = await emailTransport.sendMail({
-    to: invite.email,
+    to: invitation.reference.email,
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
     subject:

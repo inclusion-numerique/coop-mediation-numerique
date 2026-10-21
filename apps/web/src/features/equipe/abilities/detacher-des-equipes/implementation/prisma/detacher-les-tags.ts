@@ -9,13 +9,6 @@ import { ensureTag, type TagTemplate } from './ensure-tag'
 
 type Transaction = Prisma.TransactionClient
 
-/**
- * Le sort des tags d'un compte qui quitte ses équipes.
- *
- * Les règles — qui hérite, chez qui un tag essaime — vivent dans `domain/`. Ce
- * fichier lit les faits qu'elles réclament, puis exécute ce qu'elles décident.
- */
-
 const softDeleteTags = async (
   transaction: Transaction,
   where: Prisma.TagWhereInput,
@@ -73,7 +66,6 @@ export const detacherLesTagsDuCoordinateur = async (
     Promise.resolve(0),
   )
 
-  // L'original s'en va dans les deux cas — essaimer, c'est recopier puis retirer.
   return {
     transferes,
     supprimes: await softDeleteTags(
@@ -84,11 +76,6 @@ export const detacherLesTagsDuCoordinateur = async (
   }
 }
 
-/**
- * Les tags d'un médiateur lui sont propres : ils partent avec lui, qu'il ait un
- * coordinateur ou non. Les liens vers les comptes rendus subsistent, si bien que
- * l'historique reste lisible.
- */
 export const detacherLesTagsDuMediateur = async (
   transaction: Transaction,
   mediateurId: MediateurId,

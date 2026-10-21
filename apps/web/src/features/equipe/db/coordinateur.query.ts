@@ -1,23 +1,15 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { CoordinateurId } from '../domain'
-
-export type CoordinateurDeLEquipe = {
-  readonly nom: string
-  readonly email: string
-  readonly telephone: string | null
-}
-
-const nomAffiche = ({
-  name,
-  firstName,
-  lastName,
-  email,
-}: {
-  name: string | null
-  firstName: string | null
-  lastName: string | null
-  email: string
-}): string => name ?? ([firstName, lastName].filter(Boolean).join(' ') || email)
+import {
+  type CoordinateurDeLEquipe,
+  type CoordinateurId,
+  Email,
+  Nom,
+  NomAffiche,
+  nomAffiche,
+  Prenom,
+  Telephone,
+} from '../domain'
+import { lue } from './lue'
 
 export const lireLeCoordinateur = async (
   coordinateurId: CoordinateurId,
@@ -36,12 +28,21 @@ export const lireLeCoordinateur = async (
       },
     },
   })
+  if (coordinateur === null) return null
 
-  return coordinateur === null
+  const { user } = coordinateur
+  const email = Email.safe(user.email)
+
+  return email === null
     ? null
     : {
-        nom: nomAffiche(coordinateur.user),
-        email: coordinateur.user.email,
-        telephone: coordinateur.user.phone,
+        nom: nomAffiche({
+          prenom: lue(Prenom, user.firstName),
+          nom: lue(Nom, user.lastName),
+          nomComplet: lue(NomAffiche, user.name),
+          email,
+        }),
+        email,
+        telephone: lue(Telephone, user.phone),
       }
 }

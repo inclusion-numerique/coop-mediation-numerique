@@ -1,72 +1,179 @@
+import {
+  CoordinateurId,
+  MediateurId,
+  type Rattachements,
+} from '@app/web/features/mediateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
-import { After, setDefaultTimeout } from '@cucumber/cucumber'
+import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
-type PartagesSemes = {
+type Role = 'mediateur' | 'coordinateur'
+
+type CompteSeme = {
   readonly userId: string
-  readonly mediateurId: string
-  readonly coordinateurId: string
+  readonly mediateurId: string | null
+  readonly coordinateurId: string | null
+  readonly partages: Partial<Record<Role, string>>
 }
 
-let partages: PartagesSemes | undefined
+const compte: { seme?: CompteSeme } = {}
 
-export const partagesSemes = (): PartagesSemes => {
-  if (!partages) throw new Error('Aucun partage semé')
-  return partages
+export const compteSeme = (): CompteSeme => {
+  if (!compte.seme) throw new Error('Aucun compte semé')
+  return compte.seme
 }
 
-export const semerPartagesStatistiques = async (): Promise<PartagesSemes> => {
+export const rattachementsSemes = (): Rattachements => {
+  const { mediateurId, coordinateurId } = compteSeme()
+  return {
+    mediateurId: mediateurId === null ? null : MediateurId(mediateurId),
+    coordinateurId:
+      coordinateurId === null ? null : CoordinateurId(coordinateurId),
+  }
+}
+
+const semerUnPartage = async (
+  role: Role,
+  proprietaireId: string,
+): Promise<string> => {
+  const partage = await prismaClient.partageStatistiques.create({
+    data:
+      role === 'mediateur'
+        ? { mediateurId: proprietaireId }
+        : { coordinateurId: proprietaireId },
+    select: { id: true },
+  })
+  return partage.id
+}
+
+const semerUnCompte = async ({
+  roles,
+  partages,
+}: {
+  readonly roles: readonly Role[]
+  readonly partages: readonly Role[]
+}): Promise<CompteSeme> => {
   const userId = v4()
 
   await prismaClient.user.create({
     data: { id: userId, email: `partage-${userId}@example.com` },
   })
 
-  const mediateur = await prismaClient.mediateur.create({
-    data: { userId },
-    select: { id: true },
-  })
-  const coordinateur = await prismaClient.coordinateur.create({
-    data: { userId },
-    select: { id: true },
-  })
+  const mediateur = roles.includes('mediateur')
+    ? await prismaClient.mediateur.create({
+        data: { userId },
+        select: { id: true },
+      })
+    : null
+  const coordinateur = roles.includes('coordinateur')
+    ? await prismaClient.coordinateur.create({
+        data: { userId },
+        select: { id: true },
+      })
+    : null
 
-  await prismaClient.partageStatistiques.create({
-    data: { mediateurId: mediateur.id },
-  })
-  await prismaClient.partageStatistiques.create({
-    data: { coordinateurId: coordinateur.id },
-  })
+  const partageMediateur =
+    mediateur !== null && partages.includes('mediateur')
+      ? await semerUnPartage('mediateur', mediateur.id)
+      : undefined
+  const partageCoordinateur =
+    coordinateur !== null && partages.includes('coordinateur')
+      ? await semerUnPartage('coordinateur', coordinateur.id)
+      : undefined
 
-  partages = {
+  compte.seme = {
     userId,
-    mediateurId: mediateur.id,
-    coordinateurId: coordinateur.id,
+    mediateurId: mediateur?.id ?? null,
+    coordinateurId: coordinateur?.id ?? null,
+    partages: {
+      ...(partageMediateur === undefined
+        ? {}
+        : { mediateur: partageMediateur }),
+      ...(partageCoordinateur === undefined
+        ? {}
+        : { coordinateur: partageCoordinateur }),
+    },
   }
 
-  return partages
+  return compte.seme
 }
 
-After(async () => {
-  const semé = partages
-  partages = undefined
-  if (!semé) return
+Given('un médiateur qui partage ses statistiques', async () => {
+  await semerUnCompte({ roles: ['mediateur'], partages: ['mediateur'] })
+})
 
+Given('un coordinateur qui partage ses statistiques', async () => {
+  await semerUnCompte({ roles: ['coordinateur'], partages: ['coordinateur'] })
+})
+
+Given('un médiateur qui ne partage pas ses statistiques', async () => {
+  await semerUnCompte({ roles: ['mediateur'], partages: [] })
+})
+
+Given('un coordinateur qui ne partage pas ses statistiques', async () => {
+  await semerUnCompte({ roles: ['coordinateur'], partages: [] })
+})
+
+Given(
+  'un compte médiateur et coordinateur qui partage ses statistiques des deux côtés',
+  async () => {
+    await semerUnCompte({
+      roles: ['mediateur', 'coordinateur'],
+      partages: ['mediateur', 'coordinateur'],
+    })
+  },
+)
+
+Given(
+  'un compte médiateur et coordinateur qui ne partage pas ses statistiques',
+  async () => {
+    await semerUnCompte({ roles: ['mediateur', 'coordinateur'], partages: [] })
+  },
+)
+
+Given("un compte qui n'est ni médiateur ni coordinateur", async () => {
+  await semerUnCompte({ roles: [], partages: [] })
+})
+
+Given('ce partage est désactivé', async () => {
+  await prismaClient.partageStatistiques.updateMany({
+    where: { id: { in: Object.values(compteSeme().partages) } },
+    data: { deleted: new Date('2026-01-01T00:00:00.000Z') },
+  })
+})
+
+Given('le compte de ce partage est supprimé', async () => {
+  await prismaClient.user.update({
+    where: { id: compteSeme().userId },
+    data: { deleted: new Date('2026-01-01T00:00:00.000Z') },
+  })
+})
+
+After(async () => {
+  const seme = compte.seme
+  compte.seme = undefined
+  if (!seme) return
+
+  await prismaClient.mutation.deleteMany({ where: { userId: seme.userId } })
   await prismaClient.partageStatistiques.deleteMany({
     where: {
       OR: [
-        { mediateurId: semé.mediateurId },
-        { coordinateurId: semé.coordinateurId },
+        ...(seme.mediateurId === null
+          ? []
+          : [{ mediateurId: seme.mediateurId }]),
+        ...(seme.coordinateurId === null
+          ? []
+          : [{ coordinateurId: seme.coordinateurId }]),
       ],
     },
   })
   await prismaClient.coordinateur.deleteMany({
-    where: { id: semé.coordinateurId },
+    where: { userId: seme.userId },
   })
-  await prismaClient.mediateur.deleteMany({ where: { id: semé.mediateurId } })
-  await prismaClient.user.deleteMany({ where: { id: semé.userId } })
+  await prismaClient.mediateur.deleteMany({ where: { userId: seme.userId } })
+  await prismaClient.user.deleteMany({ where: { id: seme.userId } })
 })
 
 type VisibiliteSemee = {

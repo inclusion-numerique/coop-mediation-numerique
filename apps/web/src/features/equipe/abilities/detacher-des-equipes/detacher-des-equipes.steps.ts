@@ -12,7 +12,6 @@ type Bilan = Awaited<ReturnType<typeof detacherDesEquipes>>
 
 let bilan: Bilan | undefined
 
-/** Le porteur du scénario est toujours le premier médiateur semé. */
 const porteur = () => equipeSemee().mediateurIds[0] as string
 const utilisateurs = () => equipeSemee().mediateurIds.slice(1)
 

@@ -4,13 +4,6 @@ import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber de la feature équipe.
- *
- * Les scénarios éprouvent l'essaimage des tags, qui traverse coordinateurs,
- * médiateurs et comptes rendus : chacun sème son propre petit réseau et le
- * retire derrière lui, plutôt que de s'appuyer sur les fixtures partagées.
- */
 type EquipeSemee = {
   readonly userIds: readonly string[]
   readonly mediateurIds: readonly string[]
@@ -62,7 +55,6 @@ const semerComptteRenduTague = async (
   })
 }
 
-/** Un coordinateur dont le tag est utilisé par `nombreUtilisateurs` médiateurs. */
 export const semerTagDeCoordinateur = async ({
   nombreUtilisateurs,
 }: {
@@ -104,7 +96,6 @@ export const semerTagDeCoordinateur = async ({
   return equipe
 }
 
-/** Un médiateur avec un tag, coordonné ou non. */
 export const semerTagDeMediateur = async ({
   avecCoordinateur,
 }: {

@@ -369,10 +369,21 @@ jobs:
         run: |
           cat >> .env <<'DOTENV'
           IS_E2E=true
-          PROCONNECT_CLIENT_SECRET=$PROCONNECT_LOCAL_CLIENT_SECRET
-          CYPRESS_PROCONNECT_TEST_USER_EMAIL=$PROCONNECT_TEST_USER_EMAIL
-          CYPRESS_PROCONNECT_TEST_USER_PASSWORD=$PROCONNECT_TEST_USER_PASSWORD
+          NEXT_PUBLIC_PROCONNECT_HOSTNAME=localhost:8443
+          NEXT_PUBLIC_PROCONNECT_CLIENT_ID=coop-e2e
+          PROCONNECT_CLIENT_SECRET=proconnect-simule
           DOTENV
+      - name: Start simulated ProConnect
+        run: |
+          mkdir -p "$RUNNER_TEMP/proconnect-simule"
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj "/CN=localhost" \
+            -addext "subjectAltName=DNS:localhost" \
+            -keyout "$RUNNER_TEMP/proconnect-simule/cle.pem" \
+            -out "$RUNNER_TEMP/proconnect-simule/certificat.pem"
+          PROCONNECT_SIMULE_PORT=8443 \
+          PROCONNECT_SIMULE_CERTIFICAT="$RUNNER_TEMP/proconnect-simule/certificat.pem" \
+          PROCONNECT_SIMULE_CLE="$RUNNER_TEMP/proconnect-simule/cle.pem" \
+            nohup node packages/e2e/cypress/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
       - name: Build cache
         uses: actions/cache@v6
         with:
@@ -416,6 +427,7 @@ jobs:
           path: |
             packages/e2e/cypress/screenshots
             server.log
+            proconnect-simule.log
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}

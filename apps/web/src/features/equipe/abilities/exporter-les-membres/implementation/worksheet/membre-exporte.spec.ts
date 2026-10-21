@@ -1,4 +1,17 @@
-import { MediateurId, UtilisateurId } from '../../../../domain'
+import {
+  CodeInsee,
+  CodePostal,
+  Commune,
+  Email,
+  MediateurId,
+  Nom,
+  NomStructure,
+  Prenom,
+  RoleMembre,
+  Telephone,
+  UtilisateurId,
+} from '../../../../domain'
+import { TypeContrat } from '../../domain'
 import { membreExporte } from './membre-exporte'
 
 const depuis = new Date('2026-01-01T09:00:00Z')
@@ -8,7 +21,7 @@ describe('membre exporté', () => {
     expect(
       membreExporte(
         {
-          email: 'invite@example.com',
+          email: Email('invite@example.com'),
           statut: { type: 'Invitation', envoyeeLe: depuis },
           personne: { type: 'SansCompte' },
           structureEmployeuse: { type: 'Inconnue' },
@@ -28,11 +41,11 @@ describe('membre exporté', () => {
   })
 
   it('un conseiller numérique porte son rôle, son contrat et sa structure', () => {
-    const contrat = { type: 'CDD', debut: depuis, fin: null }
+    const contrat = { type: TypeContrat('CDD'), debut: depuis, fin: null }
     expect(
       membreExporte(
         {
-          email: 'camille@example.com',
+          email: Email('camille@example.com'),
           statut: { type: 'Actif', derniereActivite: depuis },
           personne: {
             type: 'Inscrite',
@@ -41,19 +54,22 @@ describe('membre exporté', () => {
               utilisateurId: UtilisateurId(
                 '550e8400-e29b-41d4-a716-446655440082',
               ),
-              prenom: 'Camille',
-              nom: 'Martin',
-              telephone: '+33102030405',
-              role: 'ConseillerNumerique',
+              prenom: Prenom('Camille'),
+              nom: Nom('Martin'),
+              telephone: Telephone('+33102030405'),
+              role: RoleMembre('ConseillerNumerique'),
             },
           },
           structureEmployeuse: {
             type: 'Connue',
-            nom: 'Médiathèque',
-            adresse: null,
-            commune: 'Lyon',
-            codePostal: '69001',
-            codeInsee: '69381',
+            nom: NomStructure('Médiathèque'),
+            adresse: {
+              type: 'Connue',
+              voie: null,
+              commune: Commune('Lyon'),
+              codePostal: CodePostal('69001'),
+              codeInsee: CodeInsee('69381'),
+            },
           },
         },
         contrat,

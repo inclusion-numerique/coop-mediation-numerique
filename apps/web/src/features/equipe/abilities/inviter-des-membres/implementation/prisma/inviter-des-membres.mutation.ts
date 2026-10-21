@@ -1,7 +1,8 @@
-import { type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import * as Sentry from '@sentry/nextjs'
+import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import {
   fromInvitation,
   invitationSelect,
@@ -9,31 +10,26 @@ import {
 } from '../../../../db/invitation.transfer'
 import {
   type CoordinateurId,
-  EmailInvitation,
+  CoordinateurIntrouvable,
+  Email,
   type InvitationEnAttente,
-  lienInvitation,
   MediateurId,
+  type NomAffiche,
   type UtilisateurId,
 } from '../../../../domain'
 import { envoyerUneInvitation } from '../../../../implementation/email'
 import {
   type AucuneInvitationAEnvoyer,
-  type Ecart,
   type Existant,
+  type InvitationsEnvoyees,
   planifier,
 } from '../../domain'
 
-export type InvitationsEnvoyees = {
-  readonly envoyees: readonly EmailInvitation[]
-  readonly ecartees: readonly Ecart[]
-  readonly echecs: readonly EmailInvitation[]
-}
-
-type EmailStocke = ReadonlyMap<EmailInvitation, string>
+type EmailStocke = ReadonlyMap<Email, string>
 
 const lireLExistant = async (
   coordinateurId: CoordinateurId,
-  candidats: readonly EmailInvitation[],
+  candidats: readonly Email[],
 ): Promise<{ existant: Existant; emailsStockes: EmailStocke }> => {
   const [invitations, membres, mediateurs] = await Promise.all([
     prismaClient.invitationEquipe.findMany({
@@ -71,13 +67,13 @@ const lireLExistant = async (
     invitations: lues.map(({ invitation }) => invitation),
     membresActifs: new Set(
       membres.flatMap(({ mediateur }) => {
-        const email = EmailInvitation.safe(mediateur.user.email)
+        const email = Email.safe(mediateur.user.email)
         return email === null ? [] : [email]
       }),
     ),
     mediateursConnus: new Map(
       mediateurs.flatMap(({ email, mediateur }) => {
-        const canonique = EmailInvitation.safe(email)
+        const canonique = Email.safe(email)
         return canonique === null || mediateur === null
           ? []
           : [[canonique, MediateurId(mediateur.id)] as const]
@@ -117,12 +113,11 @@ const enregistrer = (
   )
 
 const envoyer =
-  (de: string) =>
-  async (invitation: InvitationEnAttente): Promise<EmailInvitation | null> => {
+  (de: NomAffiche) =>
+  async (invitation: InvitationEnAttente): Promise<Email | null> => {
     try {
       await envoyerUneInvitation({
-        invite: invitation.invite,
-        lien: lienInvitation(invitation.reference),
+        invitation,
         de,
       })
       return null
@@ -133,22 +128,30 @@ const envoyer =
   }
 
 export const inviterDesMembres = async ({
-  coordinateur,
+  coordinateurId,
   candidats,
   auteurId,
   maintenant = new Date(),
 }: {
-  coordinateur: { readonly id: CoordinateurId; readonly nom: string }
-  candidats: readonly EmailInvitation[]
+  coordinateurId: CoordinateurId
+  candidats: readonly Email[]
   auteurId: UtilisateurId
   maintenant?: Date
-}): Promise<Result<InvitationsEnvoyees, AucuneInvitationAEnvoyer>> => {
+}): Promise<
+  Result<
+    InvitationsEnvoyees,
+    AucuneInvitationAEnvoyer | CoordinateurIntrouvable
+  >
+> => {
+  const coordinateur = await lireLeCoordinateur(coordinateurId)
+  if (coordinateur === null) return failure(CoordinateurIntrouvable())
+
   const { existant, emailsStockes } = await lireLExistant(
-    coordinateur.id,
+    coordinateurId,
     candidats,
   )
   const planification = planifier({
-    coordinateurId: coordinateur.id,
+    coordinateurId: coordinateurId,
     candidats,
     existant,
     maintenant,
@@ -164,14 +167,14 @@ export const inviterDesMembres = async ({
     nom: 'InviterMediateursCoordonnes',
     duration: 0,
     data: {
-      coordinateurId: coordinateur.id,
+      coordinateurId: coordinateurId,
       emails: aEnvoyer.map(({ reference }) => reference.email),
     },
   })
 
   const echecs = (
     await Promise.all(aEnvoyer.map(envoyer(coordinateur.nom)))
-  ).filter((email): email is EmailInvitation => email !== null)
+  ).filter((email): email is Email => email !== null)
 
   return success({
     envoyees: aEnvoyer

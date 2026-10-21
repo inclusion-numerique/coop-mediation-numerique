@@ -2,13 +2,13 @@ import type {
   PrismaSessionUser,
   PrismaSessionUsupper,
 } from '@app/web/auth/getSessionUserFromSessionToken'
+import { splitMediateursCoordonnes } from '@app/web/auth/mediateursCoordonnes'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
   employeuseSessionEmplois,
   personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
-import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
 import { statutIntegrationDeLaSession } from '@app/web/features/rdvsp/db/statut-integration'
 
 /**

@@ -1,25 +1,24 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import {
   type CoordinateurId,
-  type EmailInvitation,
+  type Email,
   type Invitation,
   type InvitationEnAttente,
   type MediateurId,
   ReferenceInvitation,
 } from '../../../domain'
 import { AucuneInvitationAEnvoyer } from './errors'
-
-export type RaisonDEcart = 'DejaMembre' | 'DejaInvitee'
+import { RaisonDEcart } from './raison-d-ecart'
 
 export type Ecart = {
-  readonly email: EmailInvitation
+  readonly email: Email
   readonly raison: RaisonDEcart
 }
 
 export type Existant = {
   readonly invitations: readonly Invitation[]
-  readonly membresActifs: ReadonlySet<EmailInvitation>
-  readonly mediateursConnus: ReadonlyMap<EmailInvitation, MediateurId>
+  readonly membresActifs: ReadonlySet<Email>
+  readonly mediateursConnus: ReadonlyMap<Email, MediateurId>
 }
 
 export type Planification = {
@@ -29,14 +28,14 @@ export type Planification = {
 
 const raisonDEcart =
   ({ invitations, membresActifs }: Existant) =>
-  (email: EmailInvitation): RaisonDEcart | null => {
-    if (membresActifs.has(email)) return 'DejaMembre'
+  (email: Email): RaisonDEcart | null => {
+    if (membresActifs.has(email)) return RaisonDEcart('DejaMembre')
     return invitations.some(
       (invitation) =>
         invitation.reference.email === email &&
         invitation.statut === 'EnAttente',
     )
-      ? 'DejaInvitee'
+      ? RaisonDEcart('DejaInvitee')
       : null
   }
 
@@ -46,14 +45,14 @@ const nouvelleInvitation =
     { mediateursConnus }: Existant,
     maintenant: Date,
   ) =>
-  (email: EmailInvitation): InvitationEnAttente => {
+  (email: Email): InvitationEnAttente => {
     const mediateurId = mediateursConnus.get(email)
     return {
       reference: ReferenceInvitation({ email, coordinateurId }),
       invite:
         mediateurId === undefined
-          ? { type: 'SansCompte', email }
-          : { type: 'MediateurInscrit', email, mediateurId },
+          ? { type: 'SansCompte' }
+          : { type: 'MediateurInscrit', mediateurId },
       envoyeeLe: maintenant,
       renvoyeeLe: null,
       statut: 'EnAttente',
@@ -67,7 +66,7 @@ export const planifier = ({
   maintenant,
 }: {
   coordinateurId: CoordinateurId
-  candidats: readonly EmailInvitation[]
+  candidats: readonly Email[]
   existant: Existant
   maintenant: Date
 }): Result<Planification, AucuneInvitationAEnvoyer> => {

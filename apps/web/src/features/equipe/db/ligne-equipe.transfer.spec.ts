@@ -77,10 +77,13 @@ describe('lecture d’une ligne de l’équipe', () => {
       structureEmployeuse: {
         type: 'Connue',
         nom: 'Médiathèque',
-        adresse: '1 rue de la Paix',
-        commune: 'Lyon',
-        codePostal: '69001',
-        codeInsee: '69381',
+        adresse: {
+          type: 'Connue',
+          voie: '1 rue de la Paix',
+          commune: 'Lyon',
+          codePostal: '69001',
+          codeInsee: '69381',
+        },
       },
     })
   })
@@ -93,6 +96,55 @@ describe('lecture d’une ligne de l’équipe', () => {
         derniere_activite: null,
       })?.statut,
     ).toEqual({ type: 'Inactif', derniereActivite: { type: 'Aucune' } })
+  })
+
+  it('ramène le téléphone au format E.164', () => {
+    const ligne = toLigneEquipe({
+      ...ancienMembreComplet,
+      phone: '01 02 03 04 05',
+    })
+
+    expect(
+      ligne?.personne.type === 'Inscrite' && ligne.personne.profil.telephone,
+    ).toBe('+33102030405')
+  })
+
+  it('tient pour absents un téléphone inexploitable et un nom vide', () => {
+    const ligne = toLigneEquipe({
+      ...ancienMembreComplet,
+      phone: 'inconnu',
+      first_name: '  ',
+    })
+
+    expect(
+      ligne?.personne.type === 'Inscrite' && ligne.personne.profil,
+    ).toMatchObject({ prenom: null, telephone: null })
+  })
+
+  it('connaît une structure sans nom par sa seule adresse', () => {
+    expect(
+      toLigneEquipe({ ...ancienMembreComplet, structure_employeuse: ' ' })
+        ?.structureEmployeuse,
+    ).toEqual(expect.objectContaining({ type: 'Connue', nom: null }))
+  })
+
+  it('ignore une localisation incomplète', () => {
+    expect(
+      toLigneEquipe({
+        ...ancienMembreComplet,
+        structure_employeuse_code_insee: null,
+      })?.structureEmployeuse,
+    ).toEqual({
+      type: 'Connue',
+      nom: 'Médiathèque',
+      adresse: { type: 'Inconnue' },
+    })
+  })
+
+  it('écarte une ligne dont l’email est inexploitable', () => {
+    expect(
+      toLigneEquipe({ ...invitationSansCompte, email: 'pas-un-email' }),
+    ).toBeNull()
   })
 
   it('écarte un statut inconnu', () => {

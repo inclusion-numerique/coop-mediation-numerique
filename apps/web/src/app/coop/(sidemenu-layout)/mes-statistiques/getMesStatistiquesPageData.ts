@@ -18,7 +18,6 @@ import {
 } from './_queries/getActivitesStats'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
 import { getHasCrasV1 } from './_queries/getHasCrasV1'
-import { getPartageStatistiquesId } from './_queries/getPartageStatistiquesId'
 import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 
 export type MesStatistiquesGraphOptions = {
@@ -76,7 +75,6 @@ export const getMesStatistiquesPageData = async ({
     communes,
     totalCounts,
     hasCrasV1,
-    partageStatistiquesId,
   ] = await Promise.all([
     getAccompagnementsCountByDay({
       user,
@@ -102,7 +100,6 @@ export const getMesStatistiquesPageData = async ({
     getActivitesCommunesStats({ user, mediateurIds, activitesFilters }),
     getTotalCountsStats({ user, mediateurIds, activitesFilters }),
     getHasCrasV1({ user, mediateurIds, activitesFilters }),
-    getPartageStatistiquesId({ user }),
   ])
 
   const {
@@ -140,7 +137,6 @@ export const getMesStatistiquesPageData = async ({
     activiteSourceOptions,
     activiteDates,
     hasCrasV1,
-    partageStatistiquesId,
   }
 }
 

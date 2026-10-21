@@ -1,16 +1,13 @@
-import { EmailInvitation } from '../../../domain'
+import { Email } from '../../../domain'
 import {
+  coordinateurDeLEquipe,
   email,
   invitationEnAttente,
   invitationRefusee,
 } from '../../../domain/fixtures'
 import { vueInvitation } from './vue-invitation'
 
-const coordinateur = {
-  nom: 'Camille Coordinatrice',
-  email: 'camille@example.com',
-  telephone: null,
-}
+const coordinateur = coordinateurDeLEquipe
 
 describe('ce que voit une personne qui ouvre son invitation', () => {
   it('l’invitation en attente, connectée avec la bonne adresse', () => {
@@ -45,7 +42,7 @@ describe('ce que voit une personne qui ouvre son invitation', () => {
     expect(
       vueInvitation({
         invitation: invitationEnAttente,
-        session: EmailInvitation('autre@example.com'),
+        session: Email('autre@example.com'),
         coordinateur,
         tailleEquipe: 3,
       }),

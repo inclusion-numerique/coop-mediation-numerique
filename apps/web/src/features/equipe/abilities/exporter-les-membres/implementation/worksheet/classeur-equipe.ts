@@ -8,7 +8,7 @@ import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import Excel from 'exceljs'
 import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
-import type { MembreAExporter } from '../../domain'
+import type { ContratMembre, MembreAExporter } from '../../domain'
 import { type MembreExporte, membreExporte } from './membre-exporte'
 
 const libellesDeStatut = new Map<string, string>([
@@ -49,11 +49,19 @@ const enTetes = [
   'Statut',
 ]
 
+const libellesDeContrat: ReadonlyMap<string, string> = new Map([
+  ['CDP', 'Contrat de projet'],
+  ['NonCommunique', '-'],
+])
+
+const libelleDuContrat = (contrat: ContratMembre | null): string =>
+  contrat === null ? '-' : (libellesDeContrat.get(contrat.type) ?? contrat.type)
+
 const ligneDuTableau = (membre: MembreExporte) => [
   membre.prenom || '-',
   membre.nom || '-',
   membre.role,
-  membre.contrat?.type || '-',
+  libelleDuContrat(membre.contrat),
   date(membre.contrat?.debut ?? null),
   date(membre.contrat?.fin ?? null),
   membre.email || '-',

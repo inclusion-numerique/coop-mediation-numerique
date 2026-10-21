@@ -6,7 +6,7 @@ import {
 import {
   CoordinateurId,
   codeInvitation,
-  EmailInvitation,
+  Email,
   ReferenceInvitation,
 } from '@app/web/features/equipe/domain'
 import {
@@ -63,11 +63,11 @@ const ouvrir = async (session: string | null) => {
   contexte.vue = await consulterUneInvitation({
     code: codeInvitation(
       ReferenceInvitation({
-        email: EmailInvitation(emailInvite()),
+        email: Email(emailInvite()),
         coordinateurId: CoordinateurId(coordinateur().coordinateurId),
       }),
     ),
-    session: session === null ? null : EmailInvitation(session),
+    session: session === null ? null : Email(session),
   })
 }
 

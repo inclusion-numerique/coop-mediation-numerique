@@ -1,4 +1,2 @@
-export {
-  type InvitationsEnvoyees,
-  inviterDesMembres,
-} from './inviter-des-membres.mutation'
+export { inviterDesMembres } from './inviter-des-membres.mutation'
+export { rechercherDesMediateursAInviter } from './rechercher-des-mediateurs-a-inviter.query'

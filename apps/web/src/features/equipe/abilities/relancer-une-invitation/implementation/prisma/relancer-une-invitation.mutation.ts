@@ -12,7 +12,6 @@ import {
   type Gestionnaire,
   type InvitationDejaTraitee,
   InvitationIntrouvable,
-  lienInvitation,
   peutGererLEquipe,
   type ReferenceInvitation,
   type UtilisateurId,
@@ -62,8 +61,7 @@ export const relancerUneInvitation = async ({
   if (coordinateur === null) return failure(CoordinateurIntrouvable())
 
   const envoyee = await envoyer({
-    invite: enAttente.data.invite,
-    lien: lienInvitation(reference),
+    invitation: enAttente.data,
     de: coordinateur.nom,
   })
   if (!envoyee) return failure(EnvoiEchoue())

@@ -1,5 +1,6 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
@@ -8,7 +9,7 @@ import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { ReactNode } from 'react'
 import { criteresEquipe, type LigneEquipe } from '../../../../domain'
-import type { MembresDeLEquipe } from '../../implementation'
+import type { MembresDeLEquipe } from '../../domain'
 import { EquipeDataTable } from '../components/EquipeDataTable'
 import EquipeVide from '../components/EquipeVide'
 import { FiltresEquipe } from '../components/filtres/FiltresEquipe'
@@ -72,7 +73,7 @@ const EquipeListePage = ({
                   </span>
                   <span>
                     <span className="ri-phone-line fr-mr-2v" aria-hidden />
-                    {coordinateur.telephone}
+                    {telephoneDisplayString(coordinateur.telephone)}
                   </span>
                 </>
               )}

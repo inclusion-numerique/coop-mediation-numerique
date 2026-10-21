@@ -17,9 +17,6 @@ describe('identité d’un nom de tag', () => {
     )
   })
 
-  // Les accents ne sont PAS normalisés : « Accès » et « Acces » restent deux
-  // tags distincts. C'est le comportement actuel, pinné pour qu'un changement
-  // soit un choix et non une surprise.
   it('distingue un nom accentué de sa forme sans accent', () => {
     expect(memeNom(NomTag('Accès'), NomTag('Acces'))).toBe(false)
   })

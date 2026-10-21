@@ -1,4 +1,9 @@
-import { type LigneEquipe, profilDe, type RoleMembre } from '../../../domain'
+import {
+  type CodeDepartement,
+  type LigneEquipe,
+  profilDe,
+} from '../../../domain'
+import { libelleDuRole } from '../../../ui/role-membre.presenter'
 import { libelleStatutMembre } from '../../../ui/statut-membre.presenter'
 
 export type SeveriteDuStatut = 'info' | 'success' | 'warning' | 'neutre'
@@ -15,11 +20,6 @@ export type LigneAffichee = {
   readonly severite: SeveriteDuStatut
   readonly activite: 'actif' | 'inactif' | null
   readonly lienProfil: string | null
-}
-
-const libellesDeRole: Readonly<Record<RoleMembre, string>> = {
-  ConseillerNumerique: 'Conseiller numérique',
-  MediateurNumerique: 'Médiateur numérique',
 }
 
 const severites = new Map<string, SeveriteDuStatut>([
@@ -47,15 +47,17 @@ const activite = ({ statut }: LigneEquipe): LigneAffichee['activite'] => {
 }
 
 const lienProfil =
-  (departementCode: string) =>
+  (departementCode: CodeDepartement | null) =>
   ({ statut, personne }: LigneEquipe): string | null =>
-    statut.type === 'Invitation' || personne.type === 'SansCompte'
+    departementCode === null ||
+    statut.type === 'Invitation' ||
+    personne.type === 'SansCompte'
       ? null
       : `/coop/mon-reseau/${departementCode}/acteurs/${personne.profil.utilisateurId}`
 
 export const lignesAffichees = (
   lignes: readonly LigneEquipe[],
-  departementCode: string,
+  departementCode: CodeDepartement | null,
 ): readonly LigneAffichee[] =>
   lignes.map((ligne) => ({
     cle: `${ligne.statut.type}-${ligne.email}`,
@@ -65,7 +67,7 @@ export const lignesAffichees = (
     role:
       ligne.statut.type === 'Invitation'
         ? 'Invitation en attente'
-        : libellesDeRole[profilDe(ligne)?.role ?? 'MediateurNumerique'],
+        : libelleDuRole(profilDe(ligne)?.role ?? null),
     email: ligne.statut.type === 'ProfilSupprime' ? null : ligne.email,
     structureEmployeuse:
       ligne.structureEmployeuse.type === 'Connue'

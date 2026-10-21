@@ -6,7 +6,7 @@ import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'
 import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
 import * as Sentry from '@sentry/nextjs'
-import type { EmailInvitation } from '../../domain'
+import type { Email } from '../../domain'
 
 const reponses = {
   Acceptee: {
@@ -27,7 +27,7 @@ const envoyer = async ({
   reponse,
 }: {
   coordinateur: string
-  invite: EmailInvitation
+  invite: Email
   reponse: keyof typeof reponses
 }): Promise<void> => {
   const { gabarit, sujet } = reponses[reponse]

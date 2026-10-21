@@ -14,16 +14,6 @@ type Bilan = {
 
 const aucunTag = { transferes: 0, supprimes: 0 }
 
-/**
- * Détache un compte de tout ce qui l'attache à une équipe.
- *
- * Un seul port, et non trois, parce que l'ORDRE compte : les tags d'un médiateur
- * ne peuvent revenir à son coordinateur qu'avant que le lien de coordination ne
- * soit coupé. C'est un invariant qu'un appelant extérieur ne saurait pas tenir,
- * donc il vit ici.
- *
- * Idempotent : chaque écriture est filtrée sur ce qui est encore vivant.
- */
 export const detacherDesEquipes = ({
   mediateurId,
   coordinateurId,

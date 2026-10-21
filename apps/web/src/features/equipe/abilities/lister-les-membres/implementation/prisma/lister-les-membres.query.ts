@@ -16,31 +16,11 @@ import {
   CoordinateurIntrouvable,
   type CriteresEquipe,
   type Lecteur,
-  type LigneEquipe,
   type MediateurId,
   peutConsulterLEquipe,
 } from '../../../../domain'
-import {
-  type CoordinateurDeLaListe,
-  coordinateurDeLEquipe,
-} from './coordinateur-de-l-equipe.query'
-
-export type StatistiquesEquipe = {
-  readonly total: number
-  readonly actifs: number
-  readonly inactifs: number
-  readonly invitations: number
-  readonly archives: number
-  readonly conseillersNumeriques: number
-}
-
-export type MembresDeLEquipe = {
-  readonly coordinateur: CoordinateurDeLaListe
-  readonly lignes: readonly LigneEquipe[]
-  readonly statistiques: StatistiquesEquipe
-  readonly nombreDeResultats: number
-  readonly nombreDePages: number
-}
+import type { MembresDeLEquipe, StatistiquesEquipe } from '../../domain'
+import { coordinateurDeLEquipe } from './coordinateur-de-l-equipe.query'
 
 const statistiquesVides: StatistiquesEquipe = {
   total: 0,

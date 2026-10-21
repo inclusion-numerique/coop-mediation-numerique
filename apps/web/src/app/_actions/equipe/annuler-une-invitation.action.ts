@@ -6,7 +6,7 @@ import { ANNULER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abilitie
 import { AnnulerUneInvitationValidation } from '@app/web/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.validation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   ReferenceInvitation,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
@@ -21,7 +21,7 @@ export const annulerUneInvitationAction = actionBuilder()
       async ({ user, input }) =>
         annulerUneInvitation({
           reference: ReferenceInvitation({
-            email: EmailInvitation(input.email),
+            email: Email(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           gestionnaire: gestionnaireDe(user),
