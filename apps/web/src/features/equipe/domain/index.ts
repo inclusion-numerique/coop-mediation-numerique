@@ -51,7 +51,10 @@ export {
   type StructureEmployeuseMembre,
 } from './ligne-equipe'
 export { MediateurId } from './mediateur-id'
+export { Nom } from './nom'
+export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
 export { memeNom, NomTag, NomTagCanonique } from './nom-tag'
+export { Prenom } from './prenom'
 export { ReferenceInvitation } from './reference-invitation'
 export {
   type DerniereActivite,
@@ -61,4 +64,5 @@ export {
 } from './statut-membre'
 export { type TagExistant, tagDAccueil } from './tag-daccueil'
 export { TagId } from './tag-id'
+export { Telephone } from './telephone'
 export { UtilisateurId } from './utilisateur-id'

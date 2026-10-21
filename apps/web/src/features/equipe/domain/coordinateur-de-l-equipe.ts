@@ -1,5 +1,9 @@
+import type { Email } from './email'
+import type { NomAffiche } from './nom-affiche'
+import type { Telephone } from './telephone'
+
 export type CoordinateurDeLEquipe = {
-  readonly nom: string
-  readonly email: string
-  readonly telephone: string | null
+  readonly nom: NomAffiche
+  readonly email: Email
+  readonly telephone: Telephone | null
 }

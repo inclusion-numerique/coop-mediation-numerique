@@ -1,14 +1,15 @@
 import LogoCoop from '@app/web/components/LogoCoop'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import type { CoordinateurInvitant } from '../../domain'
+import type { CoordinateurDeLEquipe } from '../../../../domain'
 
 const InvitationEnAttente = ({
   coordinateur,
   tailleEquipe,
   reponse,
 }: {
-  coordinateur: CoordinateurInvitant
+  coordinateur: CoordinateurDeLEquipe
   tailleEquipe: number
   reponse: ReactNode
 }) => (
@@ -86,7 +87,7 @@ const InvitationEnAttente = ({
               {coordinateur.telephone != null && (
                 <div className="fr-text--sm fr-mb-0 fr-text-mention--grey">
                   <span className="ri-phone-line fr-mr-1w" aria-hidden />
-                  {coordinateur.telephone}
+                  {telephoneDisplayString(coordinateur.telephone)}
                 </div>
               )}
             </div>

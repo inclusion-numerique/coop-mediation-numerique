@@ -1,5 +1,6 @@
 import type { AdhesionActive, AdhesionArchivee } from './adhesion'
 import { AdhesionId } from './adhesion-id'
+import type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
 import { CoordinateurId } from './coordinateur-id'
 import { Email } from './email'
 import type {
@@ -8,6 +9,7 @@ import type {
   InvitationRefusee,
 } from './invitation'
 import { MediateurId } from './mediateur-id'
+import { NomAffiche } from './nom-affiche'
 import { ReferenceInvitation } from './reference-invitation'
 
 export const coordinateurId = CoordinateurId(
@@ -54,4 +56,10 @@ export const adhesionArchivee: AdhesionArchivee = {
   depuis: new Date('2025-02-01T09:00:00Z'),
   statut: 'Archivee',
   archiveeLe: new Date('2025-06-01T09:00:00Z'),
+}
+
+export const coordinateurDeLEquipe: CoordinateurDeLEquipe = {
+  nom: NomAffiche('Camille Coordinatrice'),
+  email: Email('camille@example.com'),
+  telephone: null,
 }
