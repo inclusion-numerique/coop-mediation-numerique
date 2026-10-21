@@ -11,9 +11,10 @@ import { lireLesComptesAExaminer, noterLAvertissement } from '../implementation'
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId
   readonly etape: EtapeInactivite['_tag']
-  readonly issue: 'simule' | 'fait' | 'echec'
-  readonly cause?: string
-}
+} & (
+  | { readonly issue: 'simule' | 'fait' }
+  | { readonly issue: 'echec'; readonly cause: string }
+)
 
 const agir = async (
   compte: CompteAExaminer,

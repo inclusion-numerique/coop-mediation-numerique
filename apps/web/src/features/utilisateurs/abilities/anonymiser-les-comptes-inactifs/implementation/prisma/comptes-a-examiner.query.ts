@@ -1,5 +1,8 @@
 import {
   AdresseCourriel,
+  jalon,
+  Prenom,
+  rattachements,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
@@ -44,19 +47,22 @@ export const lireLesComptesAExaminer = async (
           {
             id: UtilisateurId(compte.id),
             courriel: AdresseCourriel(compte.email),
-            prenom: compte.firstName,
-            inscriptionValidee: compte.inscriptionValidee,
-            mediateur:
-              compte.mediateur == null
+            prenom: Prenom.safe(compte.firstName ?? ''),
+            inscritLe: compte.inscriptionValidee,
+            presence: rattachements(
+              compte.mediateur === null
                 ? null
                 : {
-                    dernierCompteRendu:
+                    dernierCompteRendu: jalon(
                       compte.mediateur.derniereCreationActivite,
+                    ),
+                    derniereConnexion: jalon(compte.lastLogin),
                   },
-            estCoordinateur: compte.coordinateur != null,
-            derniereConnexion: compte.lastLogin,
-            derniereVisite: compte.lastSeen,
-            avertiLe: compte.avertissementInactiviteLe,
+              compte.coordinateur === null
+                ? null
+                : { derniereVisite: jalon(compte.lastSeen) },
+            ),
+            avertiLe: jalon(compte.avertissementInactiviteLe),
           },
         ],
   )

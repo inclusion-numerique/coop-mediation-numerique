@@ -19,8 +19,8 @@ const date = (jour: string): Date => {
 
 const etat: {
   compte?: CompteInactifSeme
-  avertissements: { courriel: string; dateDeSuppression: Date }[]
-  suppressions: string[]
+  avertissements: readonly { courriel: string; dateDeSuppression: Date }[]
+  suppressions: readonly string[]
   examines: readonly CompteExamine[]
 } = { avertissements: [], suppressions: [], examines: [] }
 
@@ -37,10 +37,13 @@ const examiner = async (simuler: boolean) => {
     simuler,
     ports: {
       avertirDeLaSuppression: async ({ courriel, dateDeSuppression }) => {
-        etat.avertissements.push({ courriel, dateDeSuppression })
+        etat.avertissements = [
+          ...etat.avertissements,
+          { courriel, dateDeSuppression },
+        ]
       },
       supprimerLeCompte: async (utilisateurId) => {
-        etat.suppressions.push(utilisateurId)
+        etat.suppressions = [...etat.suppressions, utilisateurId]
       },
     },
   })

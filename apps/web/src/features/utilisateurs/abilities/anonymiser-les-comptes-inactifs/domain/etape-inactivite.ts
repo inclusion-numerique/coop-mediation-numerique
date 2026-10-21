@@ -1,3 +1,4 @@
+import type { Jalon } from '@app/web/features/utilisateurs/domain'
 import { addDays, addYears, isBefore, max, subDays } from 'date-fns'
 
 export const ANNEES_AVANT_SUPPRESSION = 2
@@ -16,7 +17,7 @@ export const etapeInactivite = ({
   maintenant,
 }: {
   readonly derniereActivite: Date
-  readonly avertiLe: Date | null
+  readonly avertiLe: Jalon
   readonly maintenant: Date
 }): EtapeInactivite => {
   const echeance = addYears(derniereActivite, ANNEES_AVANT_SUPPRESSION)
@@ -25,14 +26,17 @@ export const etapeInactivite = ({
     return { _tag: 'actif' }
   }
 
-  if (avertiLe == null || isBefore(avertiLe, derniereActivite)) {
+  if (avertiLe._tag === 'Jamais' || isBefore(avertiLe.date, derniereActivite)) {
     return {
       _tag: 'aAvertir',
       dateDeSuppression: max([echeance, addDays(maintenant, JOURS_DE_PREAVIS)]),
     }
   }
 
-  const dateDeSuppression = max([echeance, addDays(avertiLe, JOURS_DE_PREAVIS)])
+  const dateDeSuppression = max([
+    echeance,
+    addDays(avertiLe.date, JOURS_DE_PREAVIS),
+  ])
 
   return isBefore(maintenant, dateDeSuppression)
     ? { _tag: 'enAttente', dateDeSuppression }

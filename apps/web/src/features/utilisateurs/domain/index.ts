@@ -29,6 +29,7 @@ export {
 } from './identite-anonyme'
 export { JAMAIS, type Jalon, jalon, plusRecent } from './jalon'
 export { MediateurId } from './mediateur-id'
+export { Prenom } from './prenom'
 export {
   aProduit,
   coordinateurEstVierge,
