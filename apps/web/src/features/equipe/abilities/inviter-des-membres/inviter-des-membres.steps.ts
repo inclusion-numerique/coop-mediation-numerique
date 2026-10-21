@@ -43,10 +43,7 @@ const unique = (email: string): string =>
 
 const inviter = async (emails: readonly string[]) => {
   contexte.issue = await inviterDesMembres({
-    coordinateur: {
-      id: CoordinateurId(coordinateur().coordinateurId),
-      nom: 'Coordinateur de test',
-    },
+    coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     candidats: emails.map(Email),
     auteurId: UtilisateurId(coordinateur().userId),
   })

@@ -51,8 +51,8 @@ const nouvelleInvitation =
       reference: ReferenceInvitation({ email, coordinateurId }),
       invite:
         mediateurId === undefined
-          ? { type: 'SansCompte', email }
-          : { type: 'MediateurInscrit', email, mediateurId },
+          ? { type: 'SansCompte' }
+          : { type: 'MediateurInscrit', mediateurId },
       envoyeeLe: maintenant,
       renvoyeeLe: null,
       statut: 'EnAttente',

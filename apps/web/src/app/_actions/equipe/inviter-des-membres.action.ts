@@ -1,6 +1,5 @@
 'use server'
 
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import { withAuth } from '@app/web/features/authentification'
 import {
   type InvitationsEnvoyees,
@@ -12,15 +11,12 @@ import type { AucuneInvitationAEnvoyer } from '@app/web/features/equipe/abilitie
 import {
   ActionNonAutorisee,
   CoordinateurId,
+  type CoordinateurIntrouvable,
   Email,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 import { failure, type Result } from '@app/web/libraries/result'
-
-const nomAffiche = (user: SessionUser): string =>
-  user.name ??
-  ([user.firstName, user.lastName].filter(Boolean).join(' ') || user.email)
 
 export const inviterDesMembresAction = actionBuilder()
   .use(withAuth())
@@ -33,16 +29,15 @@ export const inviterDesMembresAction = actionBuilder()
       }): Promise<
         Result<
           InvitationsEnvoyees,
-          ActionNonAutorisee | AucuneInvitationAEnvoyer
+          | ActionNonAutorisee
+          | AucuneInvitationAEnvoyer
+          | CoordinateurIntrouvable
         >
       > =>
         user.coordinateur == null
           ? failure(ActionNonAutorisee())
           : inviterDesMembres({
-              coordinateur: {
-                id: CoordinateurId(user.coordinateur.id),
-                nom: nomAffiche(user),
-              },
+              coordinateurId: CoordinateurId(user.coordinateur.id),
               candidats: input.emails.map(Email),
               auteurId: UtilisateurId(user.id),
             }),

@@ -47,7 +47,6 @@ describe('planifier des invitations', () => {
 
     expect(resultat.success && resultat.data.aEnvoyer[0]?.invite).toEqual({
       type: 'MediateurInscrit',
-      email: inscrit,
       mediateurId: mediateurInscrit,
     })
   })

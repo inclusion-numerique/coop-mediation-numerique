@@ -1,7 +1,8 @@
-import { type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import * as Sentry from '@sentry/nextjs'
+import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import {
   fromInvitation,
   invitationSelect,
@@ -9,10 +10,11 @@ import {
 } from '../../../../db/invitation.transfer'
 import {
   type CoordinateurId,
+  CoordinateurIntrouvable,
   Email,
   type InvitationEnAttente,
-  lienInvitation,
   MediateurId,
+  type NomAffiche,
   type UtilisateurId,
 } from '../../../../domain'
 import { envoyerUneInvitation } from '../../../../implementation/email'
@@ -111,12 +113,11 @@ const enregistrer = (
   )
 
 const envoyer =
-  (de: string) =>
+  (de: NomAffiche) =>
   async (invitation: InvitationEnAttente): Promise<Email | null> => {
     try {
       await envoyerUneInvitation({
-        invite: invitation.invite,
-        lien: lienInvitation(invitation.reference),
+        invitation,
         de,
       })
       return null
@@ -127,22 +128,30 @@ const envoyer =
   }
 
 export const inviterDesMembres = async ({
-  coordinateur,
+  coordinateurId,
   candidats,
   auteurId,
   maintenant = new Date(),
 }: {
-  coordinateur: { readonly id: CoordinateurId; readonly nom: string }
+  coordinateurId: CoordinateurId
   candidats: readonly Email[]
   auteurId: UtilisateurId
   maintenant?: Date
-}): Promise<Result<InvitationsEnvoyees, AucuneInvitationAEnvoyer>> => {
+}): Promise<
+  Result<
+    InvitationsEnvoyees,
+    AucuneInvitationAEnvoyer | CoordinateurIntrouvable
+  >
+> => {
+  const coordinateur = await lireLeCoordinateur(coordinateurId)
+  if (coordinateur === null) return failure(CoordinateurIntrouvable())
+
   const { existant, emailsStockes } = await lireLExistant(
-    coordinateur.id,
+    coordinateurId,
     candidats,
   )
   const planification = planifier({
-    coordinateurId: coordinateur.id,
+    coordinateurId: coordinateurId,
     candidats,
     existant,
     maintenant,
@@ -158,7 +167,7 @@ export const inviterDesMembres = async ({
     nom: 'InviterMediateursCoordonnes',
     duration: 0,
     data: {
-      coordinateurId: coordinateur.id,
+      coordinateurId: coordinateurId,
       emails: aEnvoyer.map(({ reference }) => reference.email),
     },
   })

@@ -21,7 +21,7 @@ export const reference = ReferenceInvitation({ email, coordinateurId })
 
 export const invitationEnAttente: InvitationEnAttente = {
   reference,
-  invite: { type: 'SansCompte', email },
+  invite: { type: 'SansCompte' },
   envoyeeLe: new Date('2026-01-01T09:00:00Z'),
   renvoyeeLe: null,
   statut: 'EnAttente',
@@ -29,7 +29,7 @@ export const invitationEnAttente: InvitationEnAttente = {
 
 export const invitationAcceptee: InvitationAcceptee = {
   ...invitationEnAttente,
-  invite: { type: 'MediateurInscrit', email, mediateurId },
+  invite: { type: 'MediateurInscrit', mediateurId },
   renvoyeeLe: new Date('2026-01-05T09:00:00Z'),
   statut: 'Acceptee',
   accepteeLe: new Date('2026-01-06T09:00:00Z'),
