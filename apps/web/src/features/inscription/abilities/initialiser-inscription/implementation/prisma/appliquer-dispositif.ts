@@ -1,6 +1,6 @@
 import type { AppliquerDispositif } from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
 import { profilDepuisDispositif } from '@app/web/features/inscription/domain'
-import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
+import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { prismaClient } from '@app/web/prismaClient'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
@@ -52,7 +52,7 @@ export const appliquerDispositif: AppliquerDispositif = async ({ userId }) => {
   // Le rôle coordinateur suit la même règle qu'avant : coordinateur ET dans le
   // dispositif. La garantie est celle de la connexion et du job nocturne — une
   // seule définition, plusieurs appelants.
-  await garantirCoordinateurDuDispositif(userId)
+  await garantirLeRoleCoordinateurDuDispositif(userId)
 
   if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur) {
     await garantirMediateur(userId)

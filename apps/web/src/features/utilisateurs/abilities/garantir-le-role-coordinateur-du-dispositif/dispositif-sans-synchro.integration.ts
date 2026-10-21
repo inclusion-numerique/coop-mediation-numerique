@@ -5,7 +5,7 @@ import { profilDepuisDispositif } from '@app/web/features/inscription'
 import { dispositifDepuisMain } from '@app/web/features/inscription/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
-import { garantirCoordinateurDuDispositif } from './garantirCoordinateurDuDispositif'
+import { garantirLeRoleCoordinateurDuDispositif } from './implementation'
 
 /**
  * Ce que la synchro nocturne faisait, et qui doit tenir sans elle.
@@ -136,19 +136,25 @@ describe('le dispositif conseiller numérique sans synchro', () => {
   // Remplace : `upsertCoordinateur`, le seul effet que la dérivation ne peut pas produire.
   describe('la garantie du rôle coordinateur', () => {
     it('crée la ligne coop, puis ne la recrée pas', async () => {
-      expect(await garantirCoordinateurDuDispositif(coordinateur)).toEqual({
+      expect(
+        await garantirLeRoleCoordinateurDuDispositif(coordinateur),
+      ).toEqual({
         cree: true,
       })
-      expect(await garantirCoordinateurDuDispositif(coordinateur)).toEqual({
+      expect(
+        await garantirLeRoleCoordinateurDuDispositif(coordinateur),
+      ).toEqual({
         cree: false,
       })
     })
 
     it('ne crée rien pour qui ne coordonne pas dans le dispositif', async () => {
-      expect(await garantirCoordinateurDuDispositif(conseiller)).toEqual({
+      expect(await garantirLeRoleCoordinateurDuDispositif(conseiller)).toEqual({
         cree: false,
       })
-      expect(await garantirCoordinateurDuDispositif(horsDispositif)).toEqual({
+      expect(
+        await garantirLeRoleCoordinateurDuDispositif(horsDispositif),
+      ).toEqual({
         cree: false,
       })
     })
