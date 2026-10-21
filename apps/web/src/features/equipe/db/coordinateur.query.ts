@@ -1,11 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { CoordinateurId } from '../domain'
-
-export type CoordinateurDeLEquipe = {
-  readonly nom: string
-  readonly email: string
-  readonly telephone: string | null
-}
+import type { CoordinateurDeLEquipe, CoordinateurId } from '../domain'
 
 const nomAffiche = ({
   name,

@@ -5,15 +5,9 @@ import {
 } from '@app/web/features/employeuse/server'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  type CoordinateurDeLEquipe,
-  lireLeCoordinateur,
-} from '../../../../db/coordinateur.query'
+import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import type { CoordinateurId } from '../../../../domain'
-
-export type CoordinateurDeLaListe = CoordinateurDeLEquipe & {
-  readonly departementCode: string
-}
+import type { CoordinateurDeLaListe } from '../../domain'
 
 const departementDuCoordinateur = async (
   coordinateurId: CoordinateurId,
