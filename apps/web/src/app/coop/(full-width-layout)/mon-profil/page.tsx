@@ -1,96 +1,74 @@
+import { activerLaMediationNumeriqueAction } from '@app/web/app/_actions/utilisateurs/activer-la-mediation-numerique.action'
 import { supprimerMonCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-mon-compte.action'
-import FonctionnalitesDeMediationNumeriqueCoordinateur from '@app/web/app/coop/(full-width-layout)/mon-profil/_components/FonctionnalitesDeMediationNumeriqueCoordinateur'
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Contract from '@app/web/components/conseiller-numerique/Contract'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
+import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.key'
+import { CarteMediationNumerique } from '@app/web/features/utilisateurs/abilities/activer-la-mediation-numerique/ui'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
 import { CarteSupprimerMonCompte } from '@app/web/features/utilisateurs/abilities/supprimer-compte/ui'
+import { MonProfilPage } from '@app/web/features/utilisateurs/ui/pages/MonProfilPage'
 import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import ProfileEditCard from './_components/ProfileEditCard'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon profil'),
 }
 
-const MonProfilPage = async () => {
+const MonProfil = async () => {
   const user = await authenticateUser()
 
-  if (!user) {
-    return redirect('/')
-  }
+  if (!user) return redirect('/')
 
-  const contratCoordinateur = user.coordinateur
-    ? await getContractInfo(user.id)
-    : null
-
-  const contratConum = !user.isConseillerNumerique
-    ? null
-    : await getContractInfo(user.id)
+  const contrat =
+    user.coordinateur || user.isConseillerNumerique
+      ? await getContractInfo(user.id)
+      : null
 
   return (
-    <>
-      <SkipLinksPortal />
-      <div className="fr-container fr-container--800 fr-pb-16w">
-        <CoopBreadcrumbs currentPage="Mon profil" />
-        <main id={contentId}>
-          <div className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v fr-my-12v">
-            <span
-              className="ri-account-circle-line ri-lg fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
-              aria-hidden
-            />
-            <h1 className="fr-page-title fr-m-0">Mon profil</h1>
-          </div>
-          <section className="fr-mb-4v">
-            <ProfileEditCard
-              name={user.name}
-              email={user.email}
-              // Le téléphone est stocké en E.164 (`+33430444879`) : forme
-              // canonique, pas forme lisible. La mise au format national se
-              // fait ici, à la frontière qui prépare les props, et non dans la
-              // vue, qui reste purement présentationnelle.
-              phone={user.phone ? telephoneDisplayString(user.phone) : null}
-            />
-          </section>
-          {user.coordinateur ? (
-            <>
-              {!!contratCoordinateur && (
+    <ClientBinder
+      bind={ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY}
+      to={activerLaMediationNumeriqueAction}
+    >
+      <ClientBinder
+        bind={SUPPRIMER_MON_COMPTE_ACTION_KEY}
+        to={supprimerMonCompteAction}
+      >
+        <MonProfilPage
+          identite={{
+            nom: user.name,
+            courriel: user.email,
+            telephone: user.phone ? telephoneDisplayString(user.phone) : null,
+          }}
+          sections={{
+            contrats:
+              contrat === null ? null : (
                 <section className="fr-mb-4v">
-                  <Contract isCoordinateur {...contratCoordinateur} />
+                  <Contract
+                    isCoordinateur={user.coordinateur !== null}
+                    {...contrat}
+                  />
                 </section>
-              )}
+              ),
+            mediation:
+              user.coordinateur === null ? null : (
+                <section className="fr-mb-4v">
+                  <CarteMediationNumerique active={user.mediateur !== null} />
+                </section>
+              ),
+            suppression: user.isConseillerNumerique ? null : (
               <section className="fr-mb-4v">
-                <FonctionnalitesDeMediationNumeriqueCoordinateur
-                  isActive={user.mediateur?.id != null}
-                />
-              </section>
-            </>
-          ) : null}
-          {!!contratConum && (
-            <section className="fr-mb-4v">
-              <Contract isCoordinateur={false} {...contratConum} />
-            </section>
-          )}
-          {!user.isConseillerNumerique && (
-            <section className="fr-mb-4v">
-              <ClientBinder
-                bind={SUPPRIMER_MON_COMPTE_ACTION_KEY}
-                to={supprimerMonCompteAction}
-              >
                 <CarteSupprimerMonCompte />
-              </ClientBinder>
-            </section>
-          )}
-        </main>
-      </div>
-    </>
+              </section>
+            ),
+          }}
+        />
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 
-export default MonProfilPage
+export default MonProfil

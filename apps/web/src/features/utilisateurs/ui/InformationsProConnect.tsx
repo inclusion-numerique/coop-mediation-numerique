@@ -1,7 +1,7 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 
-export const ProfileView = ({
+export const InformationsProConnect = ({
   email,
   name,
   phone,

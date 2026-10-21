@@ -4,7 +4,7 @@ import Card from '@app/web/components/Card'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { signOut } from 'next-auth/react'
-import { ProfileView } from './ProfileView'
+import { InformationsProConnect } from './InformationsProConnect'
 
 const {
   Component: UpdateProfileWithProConnectModal,
@@ -23,7 +23,7 @@ const signoutAndGoToProconnectProfilePage = async () => {
   })
 }
 
-const ProfileEditCard = (profileData: {
+export const CarteInformationsProConnect = (informations: {
   email: string
   name?: string | null
   phone?: string | null
@@ -66,7 +66,7 @@ const ProfileEditCard = (profileData: {
         </Button>
       }
     >
-      <ProfileView {...profileData} />
+      <InformationsProConnect {...informations} />
     </Card>
     <UpdateProfileWithProConnectModal
       title={
@@ -96,5 +96,3 @@ const ProfileEditCard = (profileData: {
     </UpdateProfileWithProConnectModal>
   </>
 )
-
-export default ProfileEditCard
