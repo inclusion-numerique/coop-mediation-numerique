@@ -6,7 +6,7 @@ import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/features/equipe/domain'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'

@@ -50,6 +50,11 @@ export {
   type StructureEmployeuseMembre,
 } from './ligne-equipe'
 export { MediateurId } from './mediateur-id'
+export {
+  mediateurCoordonnesEtAnciensIdsFor,
+  mediateurCoordonnesIdsFor,
+  splitMediateursCoordonnes,
+} from './membres-coordonnes'
 export { memeNom, NomTag, NomTagCanonique } from './nom-tag'
 export { ReferenceInvitation } from './reference-invitation'
 export {

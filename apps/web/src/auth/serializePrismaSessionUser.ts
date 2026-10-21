@@ -8,7 +8,7 @@ import {
   personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
-import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
+import { splitMediateursCoordonnes } from '@app/web/features/equipe/domain'
 import { statutIntegrationDeLaSession } from '@app/web/features/rdvsp/db/statut-integration'
 
 /**

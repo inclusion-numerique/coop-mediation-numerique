@@ -1,7 +1,7 @@
 import type { ExportDebugLogger } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/export/route'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/features/equipe/domain'
 import { generateActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
 import { addTimezoneToActivite } from '../db/addTimezoneToActivite'
 import {

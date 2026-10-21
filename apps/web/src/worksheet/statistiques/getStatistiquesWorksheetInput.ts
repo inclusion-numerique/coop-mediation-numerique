@@ -2,8 +2,8 @@ import { getMesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import { generateActivitesFiltersLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/features/equipe/domain'
 import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import type {
   UserDisplayName,
   UserProfile,

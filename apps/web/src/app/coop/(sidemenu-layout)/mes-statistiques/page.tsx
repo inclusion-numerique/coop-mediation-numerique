@@ -10,6 +10,7 @@ import {
   consulterEmployeuseAUneDate,
   employeuseCodeInsee,
 } from '@app/web/features/employeuse/server'
+import { mediateurCoordonnesIdsFor } from '@app/web/features/equipe/domain'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { consulterMonLienDePartage } from '@app/web/features/mediateurs/abilities/consulter-mon-lien-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
@@ -18,7 +19,6 @@ import {
   MediateurId,
 } from '@app/web/features/mediateurs/domain'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import type { Metadata } from 'next'
 import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
 import { MesStatistiques } from './MesStatistiques'
