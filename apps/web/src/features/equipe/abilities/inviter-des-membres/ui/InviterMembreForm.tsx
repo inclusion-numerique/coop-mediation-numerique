@@ -3,8 +3,7 @@
 import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { useMediateursSearch } from '@app/web/hooks/useMediateurSearch'
+import { pluriel } from '@app/web/libraries/pluriel'
 import { inject } from '@app/web/libs/injection/client'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import Tag from '@codegouvfr/react-dsfr/Tag'
@@ -13,6 +12,8 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { INVITER_DES_MEMBRES_ACTION_KEY } from '../action/inviter-des-membres.key'
+import { RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY } from '../action/rechercher-des-mediateurs-a-inviter.key'
+import type { MediateurAInviter } from '../implementation'
 import { FormatOptionLabel } from './FormatOptionLabel'
 import {
   type InviterMembreData,
@@ -38,12 +39,60 @@ const emailNotIn =
     isEmail(data.value.email) &&
     !alreadyAddedIn(fields)(data.value.email)
 
-const InviterMembreForm = () => {
-  const { loadOptions } = useMediateursSearch({
-    initialMediateursOptions: [],
-    allowTextValue: true,
-  })
+const RECHERCHE_MINIMALE = 3
 
+const indisponible = (label: string): MediateurToAddOption => ({
+  label,
+  value: null,
+  isDisabled: true,
+})
+
+const optionDe = ({
+  mediateurId,
+  nom,
+  email,
+  conseillerNumerique,
+}: MediateurAInviter): MediateurToAddOption => ({
+  label: nom,
+  value: { mediateurId, email, isConseillerNumerique: conseillerNumerique },
+})
+
+const nonAffiches = (nombre: number): MediateurToAddOption[] =>
+  nombre > 0
+    ? [
+        indisponible(
+          `Veuillez préciser votre recherche - ${nombre} ${pluriel(nombre, 'médiateur n’est pas affiché', 'médiateurs ne sont pas affichés')}`,
+        ),
+      ]
+    : []
+
+const chargerLesOptions = async (
+  recherche: string,
+): Promise<MediateurToAddOption[]> => {
+  if (recherche.trim().length < RECHERCHE_MINIMALE)
+    return [
+      indisponible(
+        `La recherche doit contenir au moins ${RECHERCHE_MINIMALE} caractères`,
+      ),
+    ]
+
+  const resultat = await inject(RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY)(
+    { recherche },
+  )
+
+  const { mediateurs, total } = resultat.success
+    ? resultat.data
+    : { mediateurs: [], total: 0 }
+
+  return [
+    indisponible(`${total} ${pluriel(total, 'résultat', 'résultats')}`),
+    ...mediateurs.map(optionDe),
+    { label: recherche, value: { email: recherche, mediateurId: recherche } },
+    ...nonAffiches(total - mediateurs.length),
+  ]
+}
+
+const InviterMembreForm = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const form = useForm<InviterMembreInput, unknown, InviterMembreData>({
@@ -118,7 +167,7 @@ const InviterMembreForm = () => {
         control={form.control}
         placeholder="Nom ou adresse e-mail"
         className="fr-mb-2v fr-mt-3v"
-        loadOptions={loadOptions}
+        loadOptions={chargerLesOptions}
         filterOption={emailNotIn(fields)}
         onChange={onSelectMediateurAInviter}
         clearInputOnChange
@@ -164,4 +213,4 @@ const InviterMembreForm = () => {
   )
 }
 
-export default withTrpc(InviterMembreForm)
+export default InviterMembreForm

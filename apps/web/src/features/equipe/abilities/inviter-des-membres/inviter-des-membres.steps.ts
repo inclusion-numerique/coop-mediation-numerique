@@ -1,5 +1,9 @@
 import assert from 'node:assert'
-import { inviterDesMembres } from '@app/web/features/equipe/abilities/inviter-des-membres'
+import {
+  inviterDesMembres,
+  type MediateursAInviter,
+  rechercherDesMediateursAInviter,
+} from '@app/web/features/equipe/abilities/inviter-des-membres'
 import {
   CoordinateurId,
   EmailInvitation,
@@ -14,12 +18,14 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@app/web/features/equipe/equipe.cucumber'
+import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   mediateur?: MediateurSeme
   issue?: Awaited<ReturnType<typeof inviterDesMembres>>
+  proposes?: MediateursAInviter
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -126,4 +132,77 @@ Then("l'invitation désigne ce médiateur", async () => {
     email: mediateur().email,
   })
   assert.strictEqual(invitation?.mediateurId, mediateur().mediateurId)
+})
+
+const rechercher = async (recherche: string) => {
+  contexte.proposes = await rechercherDesMediateursAInviter({
+    coordinateurId: CoordinateurId(coordinateur().coordinateurId),
+    recherche,
+  })
+}
+
+const nomDe = async ({ userId }: MediateurSeme): Promise<string> => {
+  const { lastName } = await prismaClient.user.findUniqueOrThrow({
+    where: { id: userId },
+    select: { lastName: true },
+  })
+  assert.ok(lastName)
+  return lastName
+}
+
+const estPropose = (): boolean =>
+  (contexte.proposes?.mediateurs ?? []).some(
+    ({ mediateurId }) => mediateurId === mediateur().mediateurId,
+  )
+
+Given('un ancien membre de cette équipe', async () => {
+  contexte.mediateur = await semerUnMediateurDEquipe()
+  await semerUneAdhesion({
+    coordinateurId: coordinateur().coordinateurId,
+    mediateurId: mediateur().mediateurId,
+    archivee: true,
+  })
+})
+
+Given("un médiateur membre de l'équipe d'un autre coordinateur", async () => {
+  const autre = await semerUnCoordinateur()
+  contexte.mediateur = await semerUnMediateurDEquipe()
+  await semerUneAdhesion({
+    coordinateurId: autre.coordinateurId,
+    mediateurId: mediateur().mediateurId,
+  })
+})
+
+Given('un médiateur dont le compte est supprimé', async () => {
+  contexte.mediateur = await semerUnMediateurDEquipe({ profilSupprime: true })
+})
+
+When('le coordinateur recherche ce médiateur par son nom', async () => {
+  await rechercher(await nomDe(mediateur()))
+})
+
+When(
+  'le coordinateur recherche ce médiateur par son nom en majuscules',
+  async () => {
+    await rechercher((await nomDe(mediateur())).toUpperCase())
+  },
+)
+
+When('le coordinateur recherche ce médiateur par son email', async () => {
+  await rechercher(mediateur().email)
+})
+
+When(
+  "le coordinateur recherche ce médiateur par son nom et un prénom qui n'est pas le sien",
+  async () => {
+    await rechercher(`Inconnu ${await nomDe(mediateur())}`)
+  },
+)
+
+Then('ce médiateur est proposé', () => {
+  assert.ok(estPropose())
+})
+
+Then("ce médiateur n'est pas proposé", () => {
+  assert.ok(!estPropose())
 })
