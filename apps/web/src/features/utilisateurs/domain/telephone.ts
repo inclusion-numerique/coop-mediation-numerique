@@ -17,3 +17,10 @@ export const Telephone = defineModel(
 )
 
 export type Telephone = Model.TypeOf<typeof Telephone>
+
+export const telephoneEnregistrable = (
+  saisi: string | null | undefined,
+): Telephone | null =>
+  saisi === null || saisi === undefined || saisi.trim() === ''
+    ? null
+    : Telephone.safe(saisi)

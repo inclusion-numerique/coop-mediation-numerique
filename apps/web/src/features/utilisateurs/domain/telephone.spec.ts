@@ -1,4 +1,4 @@
-import { Telephone } from './telephone'
+import { Telephone, telephoneEnregistrable } from './telephone'
 
 describe('téléphone d’un compte', () => {
   it.each([
@@ -11,5 +11,17 @@ describe('téléphone d’un compte', () => {
 
   it.each(['1234', 'pas un numéro', ''])('refuse %s', (saisi) => {
     expect(Telephone.safe(saisi)).toBeNull()
+  })
+})
+
+describe('téléphone enregistrable', () => {
+  it.each([
+    [null, null],
+    [undefined, null],
+    ['', null],
+    ['1234', null],
+    ['06 12 34 56 78', '+33612345678'],
+  ])('%s devient %s', (saisi, attendu) => {
+    expect(telephoneEnregistrable(saisi)).toBe(attendu)
   })
 })

@@ -9,6 +9,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
 import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
+import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
@@ -29,7 +30,7 @@ const sessionUserHasOutdatedData = ({
 }) =>
   user.firstName !== profile.given_name ||
   user.lastName !== profile.usual_name ||
-  user.phone !== profile.phone_number ||
+  user.phone !== telephoneEnregistrable(profile.phone_number) ||
   (profile.siret && user.siret !== profile.siret)
 
 export const nextAuthOptions = {

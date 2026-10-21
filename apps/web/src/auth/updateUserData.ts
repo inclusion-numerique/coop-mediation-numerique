@@ -1,5 +1,5 @@
+import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
-import { fixTelephone } from '@app/web/utils/clean-operations'
 
 export const updateUserData = async ({
   userId,
@@ -18,7 +18,7 @@ export const updateUserData = async ({
     data: {
       firstName,
       lastName,
-      phone: fixTelephone(phone),
+      phone: telephoneEnregistrable(phone),
       name: `${firstName} ${lastName}`,
       siret: siret ?? undefined,
       updated: new Date(),

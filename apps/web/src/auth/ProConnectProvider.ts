@@ -1,4 +1,5 @@
 import { proConnectProviderId } from '@app/web/auth/proConnect'
+import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
@@ -108,7 +109,7 @@ export const ProConnectProvider = () =>
       firstName: given_name,
       lastName: usual_name,
       email: email.toLowerCase(),
-      phone: phone_number,
+      phone: telephoneEnregistrable(phone_number),
       siret: siret || null,
       provider: proConnectProviderId,
     }),
