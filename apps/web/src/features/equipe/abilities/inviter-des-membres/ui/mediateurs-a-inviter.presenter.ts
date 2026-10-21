@@ -1,5 +1,5 @@
 import { pluriel } from '@app/web/libraries/pluriel'
-import type { MediateurAInviter, MediateursAInviter } from '../implementation'
+import type { MediateurAInviter, MediateursAInviter } from '../domain'
 import type { MediateurToAddOption } from './MediateurToAddOption'
 
 const RECHERCHE_MINIMALE = 3

@@ -18,16 +18,10 @@ import {
 import { envoyerUneInvitation } from '../../../../implementation/email'
 import {
   type AucuneInvitationAEnvoyer,
-  type Ecart,
   type Existant,
+  type InvitationsEnvoyees,
   planifier,
 } from '../../domain'
-
-export type InvitationsEnvoyees = {
-  readonly envoyees: readonly EmailInvitation[]
-  readonly ecartees: readonly Ecart[]
-  readonly echecs: readonly EmailInvitation[]
-}
 
 type EmailStocke = ReadonlyMap<EmailInvitation, string>
 

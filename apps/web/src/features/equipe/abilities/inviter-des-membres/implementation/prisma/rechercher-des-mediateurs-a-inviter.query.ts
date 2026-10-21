@@ -7,18 +7,7 @@ import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { type CoordinateurId, MediateurId } from '../../../../domain'
-
-export type MediateurAInviter = {
-  readonly mediateurId: MediateurId
-  readonly nom: string
-  readonly email: string
-  readonly conseillerNumerique: boolean
-}
-
-export type MediateursAInviter = {
-  readonly mediateurs: readonly MediateurAInviter[]
-  readonly total: number
-}
+import type { MediateursAInviter } from '../../domain'
 
 const motsDe = (recherche: string): readonly string[] =>
   recherche.split(/\s+/).filter((mot) => mot.length > 0)
