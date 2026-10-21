@@ -47,9 +47,6 @@ describe('effacementPlan', () => {
     expect(effacementPlan(aucun)).not.toContain('AppartenancesEquipe')
   })
 
-  // L'invariant d'ordre : l'anonymisation du portefeuille détache `rdvUserId`,
-  // et c'est elle qui rend les usagers RDV orphelins. Inversé, le balayage RDV
-  // ne supprimerait rien — sans que rien ne le signale.
   it('anonymise le portefeuille AVANT de balayer RDV Service Public', () => {
     const plan = effacementPlan(lesDeux)
 

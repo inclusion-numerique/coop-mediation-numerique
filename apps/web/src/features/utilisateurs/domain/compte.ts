@@ -1,4 +1,5 @@
 import type { AdresseCourriel } from './adresse-courriel'
+import type { Dispositif } from './dispositif'
 import type { RattachementsDuCompte } from './rattachements'
 import type { RoleUtilisateur } from './role-utilisateur'
 import type { UtilisateurId } from './utilisateur-id'
@@ -13,6 +14,7 @@ export type CompteASupprimer = {
   readonly role: RoleUtilisateur
   readonly etat: EtatCompte
   readonly rattachements: RattachementsDuCompte
+  readonly dispositif: Dispositif
 }
 
 export const etatDuCompte = (supprimeLe: Date | null): EtatCompte =>

@@ -1,23 +1,13 @@
-import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
-import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { detacherDesEquipes } from '@app/web/features/equipe'
-import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
-import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
 import {
   anonymiserLesComptesInactifs,
   avertirDeLaSuppression,
 } from '@app/web/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
 import {
-  hash,
   RetentionPolicy,
-  retirerDesListesDeDiffusion,
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import {
-  identifiantsDe,
-  type UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+import { type UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
 import { output } from '@app/web/jobs/output'
 
@@ -33,19 +23,7 @@ const supprimerLeCompte =
         },
         maintenant,
       },
-      ports: {
-        anonymiserPortefeuille,
-        effacerEmpreinteRdv,
-        retirerDesLieux,
-        effacerNotes: ({ rattachements }) =>
-          effacerNotes(identifiantsDe(rattachements)),
-        detacherDesEquipes: ({ rattachements }) =>
-          detacherDesEquipes(identifiantsDe(rattachements)),
-        revoquerPartageStatistiques: ({ rattachements }) =>
-          revoquerPartageStatistiques(identifiantsDe(rattachements)),
-        retirerDesListesDeDiffusion,
-        hash,
-      },
+      ports: supprimerComptePorts,
     })
 
     if (!resultat.success) throw new Error(resultat.error._tag)

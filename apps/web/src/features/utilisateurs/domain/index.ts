@@ -18,6 +18,7 @@ export {
   CourrielHash,
 } from './courriel-hash'
 export { type CycleDeVie, cycleDeVie } from './cycle-de-vie'
+export { Dispositif, dispositifDe, dispositifs } from './dispositif'
 export {
   DOMAINE_COURRIEL_ANONYME,
   estCourrielAnonymise,

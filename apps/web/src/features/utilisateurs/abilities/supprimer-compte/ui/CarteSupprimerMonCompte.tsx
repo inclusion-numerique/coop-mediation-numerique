@@ -1,40 +1,39 @@
 'use client'
 
-import { supprimerMonCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-mon-compte.action'
+import { createToast } from '@app/ui/toast/createToast'
 import Card from '@app/web/components/Card'
+import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import * as Sentry from '@sentry/nextjs'
 import { signOut } from 'next-auth/react'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '../action/supprimer-compte.key'
 
-const {
-  Component: DeleteProfile,
-  close: closeDeleteProfile,
-  buttonProps: deleteProfileNativeButtonProps,
-} = createModal({
+const SuppressionModal = createModal({
   id: 'delete-profile-modal',
   isOpenedByDefault: false,
 })
 
-const ProfileDeleteCard = () => {
-  const [deleteProfileConfirmation, setDeleteProfileConfirmation] = useState('')
+export const CarteSupprimerMonCompte = () => {
+  const [enCours, demarrer] = useTransition()
+  const [confirmation, setConfirmation] = useState('')
+  const estConfirme = confirmation.trim().toLowerCase() === 'oui'
 
-  const isDeleteConfirmed =
-    deleteProfileConfirmation.trim().toLowerCase() === 'oui'
+  const supprimer = () =>
+    demarrer(async () => {
+      if (!estConfirme) return
 
-  const deleteProfile = async () => {
-    if (!isDeleteConfirmed) return
+      const resultat = await inject(SUPPRIMER_MON_COMPTE_ACTION_KEY)()
 
-    const result = await supprimerMonCompteAction()
+      if (!resultat.success) {
+        SuppressionModal.close()
+        createToast({ priority: 'error', message: resultat.error })
+        return
+      }
 
-    if (!result.success) {
-      Sentry.captureException(new Error(result.error))
-      return
-    }
+      await signOut()
+    })
 
-    await signOut()
-  }
   return (
     <>
       <Card
@@ -58,27 +57,27 @@ const ProfileDeleteCard = () => {
               className="fr-btn--danger"
               data-testid="open-delete-profile-modal"
               title="Supprimer"
-              {...deleteProfileNativeButtonProps}
+              {...SuppressionModal.buttonProps}
             >
               Supprimer
             </Button>
           </div>
         </div>
       </Card>
-      <DeleteProfile
+      <SuppressionModal.Component
         title="Supprimer le profil"
         buttons={[
           {
             type: 'button',
             children: 'Annuler',
-            onClick: closeDeleteProfile,
+            onClick: SuppressionModal.close,
           },
           {
             type: 'button',
             children: 'Supprimer',
             className: 'fr-btn--danger',
-            disabled: !isDeleteConfirmed,
-            onClick: deleteProfile,
+            disabled: !estConfirme || enCours,
+            onClick: supprimer,
           },
         ]}
       >
@@ -92,14 +91,12 @@ const ProfileDeleteCard = () => {
         <input
           id="delete-profile-confirmation"
           type="text"
-          value={deleteProfileConfirmation}
-          onChange={(e) => setDeleteProfileConfirmation(e.target.value)}
+          value={confirmation}
+          onChange={(event) => setConfirmation(event.target.value)}
           className="fr-input"
           aria-label="Confirmation de suppression"
         />
-      </DeleteProfile>
+      </SuppressionModal.Component>
     </>
   )
 }
-
-export default ProfileDeleteCard

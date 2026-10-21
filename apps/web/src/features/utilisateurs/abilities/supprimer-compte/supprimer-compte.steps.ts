@@ -1,15 +1,7 @@
 import assert from 'node:assert'
-import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
-import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { detacherDesEquipes } from '@app/web/features/equipe'
-import { retirerDesLieux } from '@app/web/features/lieux-activite'
-import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
 import { effacerEmpreinteRdvAvec } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
-import {
-  AuteurId,
-  identifiantsDe,
-  UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+import { AuteurId, UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import {
   type CompteSeme,
   semerCompte,
@@ -19,127 +11,119 @@ import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { supprimerCompte } from './commands/supprimer-compte'
-import type { SupprimerComptePorts } from './domain'
-import { hash } from './implementation'
+import {
+  type AuteurSuppression,
+  RetentionPolicy,
+  type SupprimerComptePorts,
+} from './domain'
 
-/**
- * Le scénario compose lui-même les étapes, comme le fait la couche
- * application : la feature `utilisateurs` ne connaît toujours aucune des
- * features qui exécutent. Seules les listes de diffusion sont remplacées — un
- * test d'intégration n'appelle pas Brevo, et s'abstenir est un succès sans
- * effet.
- */
 const ports: SupprimerComptePorts = {
-  anonymiserPortefeuille,
+  ...supprimerComptePorts,
   effacerEmpreinteRdv: effacerEmpreinteRdvAvec(async () => success(undefined)),
-  retirerDesLieux,
-
-  effacerNotes: ({ rattachements }) =>
-    effacerNotes(identifiantsDe(rattachements)),
-
-  detacherDesEquipes: ({ rattachements }) =>
-    detacherDesEquipes(identifiantsDe(rattachements)),
-
-  revoquerPartageStatistiques: ({ rattachements }) =>
-    revoquerPartageStatistiques(identifiantsDe(rattachements)),
-
   retirerDesListesDeDiffusion: async () => false,
-  hash,
 }
 
 type Effacement = Awaited<ReturnType<typeof supprimerCompte>>
 
-let compte: CompteSeme | undefined
-let effacement: Effacement | undefined
-let courrielAvantRejeu: string | undefined
+const scenario: {
+  compte?: CompteSeme
+  effacement?: Effacement
+  courrielAvantRejeu?: string
+} = {}
+
+const compteSeme = (): CompteSeme => {
+  assert.ok(scenario.compte, 'Aucun compte semé')
+  return scenario.compte
+}
+
+const administrateur = (): AuteurSuppression => ({
+  _tag: 'administrateur',
+  administrateurId: AuteurId(v4()),
+})
+
+const supprimer = async (cible: string, auteur: AuteurSuppression) => {
+  scenario.effacement = await supprimerCompte({
+    command: { cible: UtilisateurId(cible), auteur, maintenant: new Date() },
+    ports,
+  })
+}
 
 Given('un compte médiateur avec des données rattachées', async () => {
-  compte = await semerCompte()
+  scenario.compte = await semerCompte()
 })
 
 Given('un compte administrateur', async () => {
-  compte = await semerCompte({ role: 'Admin' })
+  scenario.compte = await semerCompte({ role: 'Admin' })
+})
+
+Given('un compte conseiller numérique sous contrat', async () => {
+  scenario.compte = await semerCompte({ conseillerNumerique: true })
 })
 
 Given('le compte a déjà été supprimé', async () => {
-  assert.ok(compte)
   await prismaClient.user.update({
-    where: { id: compte.userId },
+    where: { id: compteSeme().userId },
     data: { deleted: new Date('2026-08-01') },
   })
 })
 
 When('le titulaire supprime son compte', async () => {
-  assert.ok(compte)
-  effacement = await supprimerCompte({
-    command: {
-      cible: UtilisateurId(compte.userId),
-      auteur: { _tag: 'titulaire' },
-      maintenant: new Date(),
-    },
-    ports,
-  })
+  await supprimer(compteSeme().userId, { _tag: 'titulaire' })
 })
 
 When('un administrateur supprime ce compte', async () => {
-  assert.ok(compte)
-  effacement = await supprimerCompte({
-    command: {
-      cible: UtilisateurId(compte.userId),
-      auteur: { _tag: 'administrateur', administrateurId: AuteurId(v4()) },
-      maintenant: new Date(),
-    },
-    ports,
+  await supprimer(compteSeme().userId, administrateur())
+})
+
+When('la politique de rétention supprime ce compte', async () => {
+  await supprimer(compteSeme().userId, {
+    _tag: 'systeme',
+    policy: RetentionPolicy('InscritJamaisActif'),
   })
 })
 
+When('un administrateur supprime un compte qui n’existe pas', async () => {
+  await supprimer(v4(), administrateur())
+})
+
 When("un administrateur rejoue l'effacement de ce compte", async () => {
-  assert.ok(compte)
-  courrielAvantRejeu = (
+  scenario.courrielAvantRejeu = (
     await prismaClient.user.findUniqueOrThrow({
-      where: { id: compte.userId },
+      where: { id: compteSeme().userId },
       select: { email: true },
     })
   ).email
 
-  effacement = await supprimerCompte({
-    command: {
-      cible: UtilisateurId(compte.userId),
-      auteur: { _tag: 'administrateur', administrateurId: AuteurId(v4()) },
-      maintenant: new Date(),
-    },
-    ports,
-  })
+  await supprimer(compteSeme().userId, administrateur())
 })
 
 Then("l'identité anonyme du compte est inchangée", async () => {
-  assert.ok(compte)
-  assert.ok(courrielAvantRejeu, 'Aucun rejeu observé')
+  assert.ok(scenario.courrielAvantRejeu, 'Aucun rejeu observé')
 
   const utilisateur = await prismaClient.user.findUniqueOrThrow({
-    where: { id: compte.userId },
+    where: { id: compteSeme().userId },
     select: { email: true },
   })
 
-  assert.strictEqual(utilisateur.email, courrielAvantRejeu)
+  assert.strictEqual(utilisateur.email, scenario.courrielAvantRejeu)
 })
 
 Then("l'effacement du compte aboutit", () => {
-  assert.ok(effacement?.success, "L'effacement a échoué")
+  assert.ok(scenario.effacement?.success, "L'effacement a échoué")
 })
 
 Then(
   "l'effacement du compte échoue avec l'erreur {string}",
   (attendu: string) => {
+    const { effacement } = scenario
     assert.ok(effacement && !effacement.success, "L'effacement a abouti")
     assert.strictEqual(effacement.error._tag, attendu)
   },
 )
 
 Then("l'identité du compte est anonymisée", async () => {
-  assert.ok(compte)
   const utilisateur = await prismaClient.user.findUniqueOrThrow({
-    where: { id: compte.userId },
+    where: { id: compteSeme().userId },
     select: {
       email: true,
       name: true,
@@ -156,34 +140,46 @@ Then("l'identité du compte est anonymisée", async () => {
   assert.ok(utilisateur.deleted)
 })
 
+Then("l'identité du compte est intacte", async () => {
+  const utilisateur = await prismaClient.user.findUniqueOrThrow({
+    where: { id: compteSeme().userId },
+    select: { email: true, deleted: true },
+  })
+
+  assert.strictEqual(utilisateur.email, compteSeme().courriel)
+  assert.strictEqual(utilisateur.deleted, null)
+})
+
 Then('les sessions du compte sont supprimées', async () => {
-  assert.ok(compte)
   assert.strictEqual(
-    await prismaClient.session.count({ where: { userId: compte.userId } }),
+    await prismaClient.session.count({
+      where: { userId: compteSeme().userId },
+    }),
     0,
   )
 })
 
 Then("la liaison au fournisseur d'identité est supprimée", async () => {
-  assert.ok(compte)
   assert.strictEqual(
-    await prismaClient.account.count({ where: { userId: compte.userId } }),
+    await prismaClient.account.count({
+      where: { userId: compteSeme().userId },
+    }),
     0,
   )
 })
 
 Then("le constat d'effacement est complet", () => {
+  const { effacement } = scenario
   assert.ok(effacement?.success)
   assert.strictEqual(effacement.data.report._tag, 'complete')
 })
 
 Then('une reconnexion ProConnect ne retrouve plus le compte', async () => {
-  assert.ok(compte)
   assert.strictEqual(
     await prismaClient.account.count({
       where: {
         provider: 'proconnect',
-        providerAccountId: `sub-${compte.userId}`,
+        providerAccountId: `sub-${compteSeme().userId}`,
       },
     }),
     0,
@@ -191,9 +187,8 @@ Then('une reconnexion ProConnect ne retrouve plus le compte', async () => {
 })
 
 Then('le portefeuille de bénéficiaires est anonymisé', async () => {
-  assert.ok(compte)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: compte.beneficiaireId },
+    where: { id: compteSeme().beneficiaireId },
     select: {
       prenom: true,
       nom: true,
@@ -213,14 +208,12 @@ Then('le portefeuille de bénéficiaires est anonymisé', async () => {
   assert.strictEqual(beneficiaire.notes, null)
   assert.strictEqual(beneficiaire.anonyme, true)
   assert.ok(beneficiaire.suppression)
-  // La valeur statistique survit à l'anonymisation.
   assert.strictEqual(beneficiaire.anneeNaissance, 1980)
 })
 
 Then('le texte libre des comptes rendus est effacé', async () => {
-  assert.ok(compte)
   const activite = await prismaClient.activite.findUniqueOrThrow({
-    where: { id: compte.activiteId },
+    where: { id: compteSeme().activiteId },
     select: { notes: true },
   })
 
@@ -228,29 +221,26 @@ Then('le texte libre des comptes rendus est effacé', async () => {
 })
 
 Then('les comptes rendus du compte existent toujours', async () => {
-  assert.ok(compte)
   assert.strictEqual(
     await prismaClient.activite.count({
-      where: { mediateurId: compte.mediateurId },
+      where: { mediateurId: compteSeme().mediateurId },
     }),
     1,
   )
 })
 
 Then("les rattachements aux lieux d'activité sont coupés", async () => {
-  assert.ok(compte)
   assert.strictEqual(
     await prismaClient.mediateurEnActivite.count({
-      where: { mediateurId: compte.mediateurId },
+      where: { mediateurId: compteSeme().mediateurId },
     }),
     0,
   )
 })
 
 Then('le partage de statistiques est révoqué', async () => {
-  assert.ok(compte)
   const partage = await prismaClient.partageStatistiques.findFirstOrThrow({
-    where: { mediateurId: compte.mediateurId },
+    where: { mediateurId: compteSeme().mediateurId },
     select: { deleted: true },
   })
 

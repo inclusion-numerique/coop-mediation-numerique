@@ -1,3 +1,4 @@
+import { supprimerMonCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-mon-compte.action'
 import FonctionnalitesDeMediationNumeriqueCoordinateur from '@app/web/app/coop/(full-width-layout)/mon-profil/_components/FonctionnalitesDeMediationNumeriqueCoordinateur'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
@@ -5,11 +6,13 @@ import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Contract from '@app/web/components/conseiller-numerique/Contract'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
+import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
+import { CarteSupprimerMonCompte } from '@app/web/features/utilisateurs/abilities/supprimer-compte/ui'
 import { telephoneDisplayString } from '@app/web/libraries/telephone'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import ProfileDeleteCard from './_components/ProfileDeleteCard'
 import ProfileEditCard from './_components/ProfileEditCard'
 
 export const metadata: Metadata = {
@@ -76,7 +79,12 @@ const MonProfilPage = async () => {
           )}
           {!user.isConseillerNumerique && (
             <section className="fr-mb-4v">
-              <ProfileDeleteCard />
+              <ClientBinder
+                bind={SUPPRIMER_MON_COMPTE_ACTION_KEY}
+                to={supprimerMonCompteAction}
+              >
+                <CarteSupprimerMonCompte />
+              </ClientBinder>
             </section>
           )}
         </main>

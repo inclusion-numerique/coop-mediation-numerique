@@ -4,12 +4,12 @@ import AdministrationInlineLabelsValues, {
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
 import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]/ChangeUserRolesButton'
-import DeleteUserButton from '@app/web/app/administration/utilisateurs/[id]/DeleteUserButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { AvertissementsEtatInscription } from '@app/web/features/inscription/components/AvertissementsEtatInscription'
 import { VisibiliteCartoDuMediateur } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
+import { BoutonSupprimerLeCompte } from '@app/web/features/utilisateurs/abilities/supprimer-compte/ui'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
@@ -205,7 +205,7 @@ const AdministrationUserPage = async ({
                 canRemoveCoordinateur={canRemoveCoordinateur}
               />
               {user.role === 'User' && !user.deleted && (
-                <DeleteUserButton userId={user.id} userName={name} />
+                <BoutonSupprimerLeCompte utilisateurId={user.id} nom={name} />
               )}
             </div>
           }

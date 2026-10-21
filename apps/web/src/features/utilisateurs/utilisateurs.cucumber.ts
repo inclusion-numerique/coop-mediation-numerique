@@ -4,14 +4,6 @@ import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber de la feature utilisateurs.
- *
- * Les hooks vivent ici une seule fois ; les fichiers `.steps.ts` ne définissent
- * que des Given/When/Then. Le nettoyage suit les identifiants créés pendant le
- * scénario plutôt que de vider des tables : la base d'intégration est partagée.
- */
-
 export type CompteSeme = {
   readonly userId: string
   readonly mediateurId: string
@@ -21,15 +13,18 @@ export type CompteSeme = {
   readonly activiteId: string
   readonly tagId: string
   readonly lieuId: string
+  readonly employeuseId: number | null
 }
 
-const comptesSemes: CompteSeme[] = []
+const semes: { comptes: readonly CompteSeme[] } = { comptes: [] }
 
 export const semerCompte = async ({
   avecCoordinateur = false,
+  conseillerNumerique = false,
   role = 'User',
 }: {
   avecCoordinateur?: boolean
+  conseillerNumerique?: boolean
   role?: 'User' | 'Admin' | 'Support'
 } = {}): Promise<CompteSeme> => {
   const userId = v4()
@@ -137,6 +132,10 @@ export const semerCompte = async ({
     data: { mediateurId: mediateur.id },
   })
 
+  const employeuseId = conseillerNumerique
+    ? await semerUneAffectationConseillerNumerique(userId)
+    : null
+
   const seme: CompteSeme = {
     userId,
     mediateurId: mediateur.id,
@@ -146,15 +145,39 @@ export const semerCompte = async ({
     activiteId: activite.id,
     tagId: tag.id,
     lieuId: lieu.id,
+    employeuseId,
   }
 
-  comptesSemes.push(seme)
+  semes.comptes = [...semes.comptes, seme]
 
   return seme
 }
 
+const semerUneAffectationConseillerNumerique = async (
+  userId: string,
+): Promise<number> => {
+  const employeuse = await prismaClient.structureAdministrativeMain.create({
+    data: { denominationAntenne: 'Employeuse conseiller numérique' },
+    select: { id: true },
+  })
+  const personne = await prismaClient.personneMain.create({
+    data: { coopId: userId },
+    select: { id: true },
+  })
+  await prismaClient.personneAffectationEmploiMain.create({
+    data: {
+      personneId: personne.id,
+      structureAdministrativeId: employeuse.id,
+      source: 'idposte',
+      estActive: true,
+    },
+  })
+  return employeuse.id
+}
+
 After(async () => {
-  const aNettoyer = comptesSemes.splice(0, comptesSemes.length)
+  const aNettoyer = semes.comptes
+  semes.comptes = []
 
   await aNettoyer.reduce<Promise<void>>(async (precedent, compte) => {
     await precedent
@@ -205,6 +228,16 @@ After(async () => {
     await prismaClient.session.deleteMany({ where: { userId: compte.userId } })
     await prismaClient.account.deleteMany({ where: { userId: compte.userId } })
     await prismaClient.mutation.deleteMany({ where: { userId: compte.userId } })
+    await prismaClient.personneAffectationEmploiMain.deleteMany({
+      where: { personne: { coopId: compte.userId } },
+    })
+    await prismaClient.personneMain.deleteMany({
+      where: { coopId: compte.userId },
+    })
+    if (compte.employeuseId !== null)
+      await prismaClient.structureAdministrativeMain.deleteMany({
+        where: { id: compte.employeuseId },
+      })
     await prismaClient.user.deleteMany({ where: { id: compte.userId } })
   }, Promise.resolve())
 })
@@ -214,7 +247,7 @@ export type CompteInactifSeme = {
   readonly courriel: string
 }
 
-const comptesInactifsSemes: CompteInactifSeme[] = []
+const inactifs: { comptes: readonly CompteInactifSeme[] } = { comptes: [] }
 
 export const semerUnCompteInactif = async ({
   role,
@@ -257,15 +290,14 @@ export const semerUnCompteInactif = async ({
   }
 
   const seme = { userId, courriel }
-  comptesInactifsSemes.push(seme)
+  inactifs.comptes = [...inactifs.comptes, seme]
 
   return seme
 }
 
 After(async () => {
-  const userIds = comptesInactifsSemes
-    .splice(0, comptesInactifsSemes.length)
-    .map(({ userId }) => userId)
+  const userIds = inactifs.comptes.map(({ userId }) => userId)
+  inactifs.comptes = []
 
   if (userIds.length === 0) return
 

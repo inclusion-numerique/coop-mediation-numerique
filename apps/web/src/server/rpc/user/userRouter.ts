@@ -1,19 +1,9 @@
+import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
-import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
-import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
-import { detacherDesEquipes } from '@app/web/features/equipe'
-import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
-import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
-import {
-  hash,
-  retirerDesListesDeDiffusion,
-} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import { identifiantsDe } from '@app/web/features/utilisateurs/domain'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
@@ -42,19 +32,7 @@ export const userRouter = router({
       enforceIsAdmin(sessionUser)
 
       await nouveauReminders({
-        ports: {
-          anonymiserPortefeuille,
-          effacerEmpreinteRdv,
-          retirerDesLieux,
-          effacerNotes: ({ rattachements }) =>
-            effacerNotes(identifiantsDe(rattachements)),
-          detacherDesEquipes: ({ rattachements }) =>
-            detacherDesEquipes(identifiantsDe(rattachements)),
-          revoquerPartageStatistiques: ({ rattachements }) =>
-            revoquerPartageStatistiques(identifiantsDe(rattachements)),
-          retirerDesListesDeDiffusion,
-          hash,
-        },
+        ports: supprimerComptePorts,
       })
     },
   ),

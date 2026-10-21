@@ -9,6 +9,7 @@ import type { EffacementReport } from './effacement-report'
 import {
   CompteDejaSupprime,
   RoleProtege,
+  SuppressionReserveeAuDispositif,
   type SupprimerCompteError,
 } from './errors'
 import type { MotifSuppression } from './motif-suppression'
@@ -20,22 +21,6 @@ export type CompteSupprime = {
   readonly report: EffacementReport
 }
 
-/**
- * La décision d'effacer, seule règle métier de l'ability.
- *
- * Deux refus, pour deux raisons différentes :
- *
- * Un rôle protégé n'est jamais effacé — se priver silencieusement d'un
- * administrateur ou d'un support est une panne d'exploitation. La garde ne
- * dépend pas de qui clique : elle vaut aussi quand l'administrateur supprime son
- * propre compte, ce que l'ancienne procédure autorisait sans le vouloir.
- *
- * Un compte déjà supprimé ne l'est pas deux fois pour son titulaire — il n'a
- * rien à y gagner et ne comprendrait pas. Un administrateur ou le politique
- * automatique, eux, peuvent rejouer : c'est ce qui permet de rattraper les
- * comptes effacés par l'ancien code, dont les jetons sont toujours vivants.
- * L'empreinte étant déterministe, le rejeu ne heurte pas l'unicité du courriel.
- */
 export const autoriserSuppression = (
   compte: CompteASupprimer,
   auteur: AuteurSuppression,
@@ -46,6 +31,13 @@ export const autoriserSuppression = (
 
   if (compte.etat._tag === 'supprime' && auteur._tag === 'titulaire') {
     return failure(CompteDejaSupprime(compte.id, compte.etat.depuis))
+  }
+
+  if (
+    auteur._tag === 'titulaire' &&
+    compte.dispositif === 'ConseillerNumerique'
+  ) {
+    return failure(SuppressionReserveeAuDispositif(compte.id))
   }
 
   return success(compte)

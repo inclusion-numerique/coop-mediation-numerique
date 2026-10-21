@@ -5,26 +5,6 @@ import type {
 } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 
-/**
- * Le noyau de l'effacement : couper l'accès et effacer l'identité, en une seule
- * transaction.
- *
- * Il vient EN PREMIER, avant toute étape satellite, et pour une raison de
- * correction et non de confort : tant qu'une session reste ouverte, la personne
- * peut recréer pendant l'effacement ce qu'on vient d'effacer.
- *
- * Les trois écritures sont indissociables. Révoquer les jetons sans anonymiser
- * laisserait un compte identifiable qui ne peut plus se connecter ; anonymiser
- * sans révoquer laisserait des accès vivants sur une identité effacée — c'est
- * exactement le défaut d'aujourd'hui.
- *
- * L'identité n'est écrite QU'UNE FOIS. Sur un compte déjà supprimé — le rejeu
- * par un administrateur, qui sert à finir un effacement laissé incomplet — elle
- * est déjà anonyme, et la réécrire lui donnerait une nouvelle adresse à chaque
- * passage : l'empreinte se calcule sur le courriel courant, lequel vaut déjà
- * `deleted+…` au second tour. Les sessions et les liaisons, elles, sont toujours
- * reprises : c'est précisément ce que l'ancien code ne faisait pas.
- */
 export const couperAcces = ({
   utilisateurId,
   identite,

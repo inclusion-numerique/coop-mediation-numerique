@@ -26,6 +26,7 @@ const row = (
   deleted: null,
   mediateur: null,
   coordinateur: null,
+  personneMain: null,
   ...surcharge,
 })
 

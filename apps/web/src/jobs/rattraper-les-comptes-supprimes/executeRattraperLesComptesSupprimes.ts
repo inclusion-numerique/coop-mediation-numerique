@@ -1,23 +1,12 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
-import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { detacherDesEquipes } from '@app/web/features/equipe'
-import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
-import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
-import {
-  hash,
-  retirerDesListesDeDiffusion,
-  type SupprimerComptePorts,
-  supprimerCompte,
-} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
+import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
+import { supprimerCompte } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
 import {
   AdresseCourriel,
   AuteurId,
   estCourrielAnonymise,
   estRoleProtege,
-  identifiantsDe,
   RoleUtilisateur,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -36,20 +25,6 @@ const EN_TETE = [
   'resultat',
   'etapes',
 ]
-
-const ports: SupprimerComptePorts = {
-  anonymiserPortefeuille,
-  effacerEmpreinteRdv,
-  retirerDesLieux,
-  effacerNotes: ({ rattachements }) =>
-    effacerNotes(identifiantsDe(rattachements)),
-  detacherDesEquipes: ({ rattachements }) =>
-    detacherDesEquipes(identifiantsDe(rattachements)),
-  revoquerPartageStatistiques: ({ rattachements }) =>
-    revoquerPartageStatistiques(identifiantsDe(rattachements)),
-  retirerDesListesDeDiffusion,
-  hash,
-}
 
 type Issue = {
   readonly resultat: string
@@ -105,7 +80,7 @@ const rejouer = async (
       auteur: { _tag: 'administrateur', administrateurId },
       maintenant: new Date(),
     },
-    ports,
+    ports: supprimerComptePorts,
   })
 
   if (!resultat.success) {
