@@ -42,7 +42,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
       ...user,
       emplois: [],
       rdvAccount: null,
-      mediateur: proprietaire._tag === 'Mediateur' ? user.mediateur : null,
+      mediateur: user.mediateur,
       coordinateur:
         proprietaire._tag === 'Coordinateur' ? user.coordinateur : null,
     },
