@@ -56,6 +56,7 @@ export type {
   MediateurDeLaLigne,
 } from './ligne-utilisateur'
 export { MediateurId } from './mediateur-id'
+export { nomAffiche } from './nom-affiche'
 export { Prenom } from './prenom'
 export {
   aProduit,

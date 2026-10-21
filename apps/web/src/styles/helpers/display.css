@@ -47,6 +47,14 @@
   grid-template-columns: repeat(5, 1fr);
 }
 
+.fr-grid-cols-auto-1fr {
+  grid-template-columns: auto 1fr;
+}
+
+.fr-grid-gap-2v-4v {
+  gap: 0.5rem 1rem;
+}
+
 /* Grid rows */
 .fr-grid-rows-1 {
   grid-template-rows: repeat(1, 1fr);
