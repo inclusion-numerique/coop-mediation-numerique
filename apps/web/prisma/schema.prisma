@@ -2310,6 +2310,7 @@ enum MutationName {
   SupprimerMediateurEnActivite              @map("supprimer_mediateur_en_activite")
   ChangerRoles                              @map("changer_roles")
   SupprimerCompte                           @map("supprimer_compte")
+  ReglerPartageStatistiques                 @map("regler_partage_statistiques")
 
   @@map("mutation_name")
   @@schema("coop")

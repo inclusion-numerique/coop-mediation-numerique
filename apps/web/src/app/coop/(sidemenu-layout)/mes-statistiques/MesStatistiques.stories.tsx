@@ -12,6 +12,7 @@ import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
 import { provide } from '@app/web/libs/injection/client'
 import { testSessionUser } from '@app/web/test/testSessionUser'
@@ -259,7 +260,6 @@ const statistiquesPageData = {
     hasCrasV1: false,
   },
   activiteSourceOptions: [],
-  partageStatistiquesId: undefined,
 } satisfies MesStatistiquesPageData
 
 export default {
@@ -269,6 +269,9 @@ export default {
     (Story) => {
       provide(RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY, async () =>
         ServerActionSuccess([]),
+      )
+      provide(REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY, async () =>
+        ServerActionSuccess(undefined),
       )
       return <Story />
     },
@@ -283,5 +286,6 @@ export const Statistiques: Story = {
     ...statistiquesPageData,
     codeInsee: '75101',
     user: testSessionUser,
+    lienDePartage: null,
   },
 }

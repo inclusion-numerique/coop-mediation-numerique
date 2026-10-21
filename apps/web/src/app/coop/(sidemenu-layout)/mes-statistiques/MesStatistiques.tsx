@@ -5,7 +5,8 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
-import PartageStatistiques from '@app/web/features/mediateurs/use-cases/partage-statistiques/components/PartageStatistiques'
+import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
+import type { LienDePartageId } from '@app/web/features/mediateurs/domain'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -24,6 +25,7 @@ export const MesStatistiques = (
     user: SessionUser
     codeInsee?: string | null
     mediateurCoordonnesCount: number
+    lienDePartage: LienDePartageId | null
   },
 ) => {
   const {
@@ -39,7 +41,7 @@ export const MesStatistiques = (
     user,
     hasCrasV1,
     activiteSourceOptions,
-    partageStatistiquesId,
+    lienDePartage,
   } = mesStatistiquesProps
 
   return (
@@ -69,7 +71,7 @@ export const MesStatistiques = (
             hasCrasV1={hasCrasV1.hasCrasV1}
           />
           <div className="fr-flex fr-flex-gap-2v">
-            <PartageStatistiques shareId={partageStatistiquesId} />
+            <PartageStatistiques lien={lienDePartage} />
             <ExportStatistiques
               filters={activitesFilters}
               communesOptions={communesOptions}

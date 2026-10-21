@@ -1,48 +1,58 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import type { LienDePartageId } from '@app/web/features/mediateurs/domain'
+import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
+import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '../action/regler-le-partage-statistiques.key'
 
 const PartageStatistiquesModal = createModal({
   id: 'partage-statistiques',
   isOpenedByDefault: false,
 })
 
-const PartageStatistiques = ({ shareId }: { shareId?: string }) => {
+export const PartageStatistiques = ({
+  lien,
+}: {
+  lien: LienDePartageId | null
+}) => {
   const router = useRouter()
-  const mutation = trpc.mediateur.shareStats.useMutation()
-  const shared = shareId != null
+  const [enCours, demarrer] = useTransition()
+  const shared = lien !== null
 
-  const handleTogglePartage = async () => {
-    try {
-      const isActive = await mutation.mutateAsync()
+  const handleTogglePartage = () =>
+    demarrer(async () => {
+      const actif = !shared
+      const resultat = await inject(REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY)({
+        actif,
+      })
+
+      if (!resultat.success) {
+        createToast({
+          priority: 'error',
+          message:
+            'Erreur lors de la modification du partage des statistiques. Veuillez réessayer.',
+        })
+        return
+      }
+
       router.refresh()
 
       createToast({
         priority: 'success',
-        message: isActive
-          ? 'Lien de partage activé'
-          : 'Lien de partage désactivé',
+        message: actif ? 'Lien de partage activé' : 'Lien de partage désactivé',
       })
 
-      if (!isActive) PartageStatistiquesModal.close()
-    } catch {
-      createToast({
-        priority: 'error',
-        message:
-          'Erreur lors de la modification du partage des statistiques. Veuillez réessayer.',
-      })
-    }
-  }
+      if (!actif) PartageStatistiquesModal.close()
+    })
 
   const handleCopy = async () => {
     try {
-      const url = `${window.location.origin}/statistiques/${shareId}`
+      const url = `${window.location.origin}/statistiques/${lien}`
       await navigator.clipboard.writeText(url)
       createToast({
         priority: 'success',
@@ -111,7 +121,7 @@ const PartageStatistiques = ({ shareId }: { shareId?: string }) => {
             </>
           )}
           <ToggleSwitch
-            disabled={mutation.isPending}
+            disabled={enCours}
             label={null}
             checked={shared}
             labelPosition="left"
@@ -133,5 +143,3 @@ const PartageStatistiques = ({ shareId }: { shareId?: string }) => {
     </>
   )
 }
-
-export default withTrpc(PartageStatistiques)

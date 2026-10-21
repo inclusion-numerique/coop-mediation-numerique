@@ -1,7 +1,6 @@
 import assert from 'node:assert'
 import { reglerLaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto'
-import { AuteurId } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/domain'
-import { MediateurId } from '@app/web/features/mediateurs/domain'
+import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
 import {
   semerUnMediateurVisible,
   visibiliteSemee,

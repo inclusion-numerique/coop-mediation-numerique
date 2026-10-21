@@ -1,2 +1,5 @@
+export * from './auteur-id'
 export * from './coordinateur-id'
+export * from './lien-de-partage-id'
 export * from './mediateur-id'
+export * from './proprietaire-partage'

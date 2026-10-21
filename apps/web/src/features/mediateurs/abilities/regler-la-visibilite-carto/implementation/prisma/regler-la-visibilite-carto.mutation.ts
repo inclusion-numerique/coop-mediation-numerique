@@ -1,9 +1,8 @@
-import type { MediateurId } from '@app/web/features/mediateurs/domain'
+import type { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import type { AuteurId } from '../../domain/auteur-id'
 import { MediateurIntrouvable } from '../../domain/errors'
 
 export const reglerLaVisibiliteCarto = async ({
