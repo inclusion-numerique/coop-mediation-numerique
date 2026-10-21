@@ -6,7 +6,11 @@ import type { Prisma } from '@app/web/generated/prisma/client'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { getUserDisplayName } from '@app/web/utils/user'
-import { type CoordinateurId, MediateurId } from '../../../../domain'
+import {
+  type CoordinateurId,
+  EmailInvitation,
+  MediateurId,
+} from '../../../../domain'
 import type { MediateursAInviter } from '../../domain'
 
 const motsDe = (recherche: string): readonly string[] =>
@@ -54,12 +58,21 @@ export const rechercherDesMediateursAInviter = async ({
   ])
 
   return {
-    mediateurs: trouves.map(({ id, user }) => ({
-      mediateurId: MediateurId(id),
-      nom: getUserDisplayName(user),
-      email: user.email,
-      conseillerNumerique: personneEstConseillerNumerique(user.personneMain),
-    })),
+    mediateurs: trouves.flatMap(({ id, user }) => {
+      const email = EmailInvitation.safe(user.email)
+      return email === null
+        ? []
+        : [
+            {
+              mediateurId: MediateurId(id),
+              nom: getUserDisplayName(user),
+              email,
+              conseillerNumerique: personneEstConseillerNumerique(
+                user.personneMain,
+              ),
+            },
+          ]
+    }),
     total,
   }
 }

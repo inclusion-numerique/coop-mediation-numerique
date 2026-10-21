@@ -1,9 +1,9 @@
-import type { MediateurId } from '../../../domain'
+import type { EmailInvitation, MediateurId } from '../../../domain'
 
 export type MediateurAInviter = {
   readonly mediateurId: MediateurId
   readonly nom: string
-  readonly email: string
+  readonly email: EmailInvitation
   readonly conseillerNumerique: boolean
 }
 

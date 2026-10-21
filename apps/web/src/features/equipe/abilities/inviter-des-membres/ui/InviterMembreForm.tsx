@@ -1,177 +1,144 @@
 'use client'
 
-import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
+import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import { inject } from '@app/web/libs/injection/client'
-import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
+import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useFieldArray, useForm } from 'react-hook-form'
+import type { KeyboardEvent } from 'react'
+import { z } from 'zod'
 import { INVITER_DES_MEMBRES_ACTION_KEY } from '../action/inviter-des-membres.key'
-import { RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY } from '../action/rechercher-des-mediateurs-a-inviter.key'
-import { FormatOptionLabel } from './FormatOptionLabel'
+import { issueDeLInvitation } from './mediateurs-a-inviter.presenter'
 import {
-  type InviterMembreData,
-  type InviterMembreInput,
-  InviterMembreValidation,
-} from './inviter-membre.form'
-import type { MediateurToAddOption } from './MediateurToAddOption'
-import {
-  optionsDeRecherche,
-  optionsRechercheTropCourte,
-  rechercheTropCourte,
-} from './mediateurs-a-inviter.presenter'
+  ajouter,
+  cleDe,
+  libelleDe,
+  type PersonneAInviter,
+} from './personne-a-inviter'
+import { personneAInviterComboBox } from './personne-a-inviter-combo-box'
+import { RechercheDePersonne } from './RechercheDePersonne'
 
-const EMAIL_REGEXP =
-  /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/
+type Valeurs = {
+  membres: readonly PersonneAInviter[]
+  recherche: PersonneAInviter | null
+}
 
-const toEmail = ({ email }: { email: string }) => email
+const auMoinsUnMembre = z
+  .custom<Valeurs>()
+  .refine((valeurs) => valeurs.membres.length > 0, {
+    message: 'Veuillez choisir au moins une personne à inviter',
+    path: ['membres'],
+  })
 
-const isEmail = (email: string) => EMAIL_REGEXP.test(email)
+const valeursInitiales: Valeurs = { membres: [], recherche: null }
 
-const alreadyAddedIn = (fields: { email: string }[]) => (email: string) =>
-  fields.map(toEmail).includes(email)
-
-const emailNotIn =
-  (fields: { email: string }[]) =>
-  ({ data }: { data: MediateurToAddOption }) =>
-    data.value != null &&
-    isEmail(data.value.email) &&
-    !alreadyAddedIn(fields)(data.value.email)
-
-const chargerLesOptions = async (
-  recherche: string,
-): Promise<MediateurToAddOption[]> => {
-  if (rechercheTropCourte(recherche)) return optionsRechercheTropCourte()
-
-  const resultat = await inject(RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY)(
-    { recherche },
-  )
-
-  return optionsDeRecherche(recherche, resultat.success ? resultat.data : null)
+const pasDeSoumissionDepuisLaRecherche = (
+  evenement: KeyboardEvent<HTMLFormElement>,
+) => {
+  if (evenement.key === 'Enter' && evenement.target instanceof HTMLInputElement)
+    evenement.preventDefault()
 }
 
 const InviterMembreForm = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
-  const form = useForm<InviterMembreInput, unknown, InviterMembreData>({
-    resolver: zodResolver(InviterMembreValidation),
-    defaultValues: { members: [] },
-  })
-
-  const [enCours, setEnCours] = useState(false)
-
   const router = useRouter()
 
-  const { append, fields, remove } = useFieldArray({
-    control: form.control,
-    name: 'members',
-  })
-
-  const onSubmit = async (data: InviterMembreData) => {
-    setEnCours(true)
-    const resultat = await inject(INVITER_DES_MEMBRES_ACTION_KEY)({
-      emails: data.members.map(toEmail),
-    })
-    setEnCours(false)
-
-    if (!resultat.success) {
-      createToast({ priority: 'error', message: resultat.error })
-      return
-    }
-
-    if (resultat.data.echecs.length > 0) {
-      createToast({
-        priority: 'warning',
-        message: `L’invitation est enregistrée, mais l’email n’a pas pu être envoyé à ${resultat.data.echecs.join(', ')} : vous pourrez la relancer depuis votre équipe.`,
+  const form = useAppForm({
+    validators: { onSubmit: auMoinsUnMembre },
+    defaultValues: valeursInitiales,
+    onSubmit: async ({ value }) => {
+      const resultat = await inject(INVITER_DES_MEMBRES_ACTION_KEY)({
+        emails: value.membres.map(({ email }) => email),
       })
+
+      if (!resultat.success) {
+        createToast({ priority: 'error', message: resultat.error })
+        return
+      }
+
+      createToast(issueDeLInvitation(value.membres, resultat.data))
       router.push('/coop/mon-equipe')
       router.refresh()
-      return
-    }
+    },
+  })
 
-    createToast({
-      priority: 'success',
-      message:
-        data.members.length > 1
-          ? 'Un email d’invitation a été envoyé aux membres que vous souhaitez ajouter à votre équipe'
-          : `Un email d’invitation a été envoyé à ${data.members[0].nom ?? data.members[0].email}`,
-    })
-    router.push('/coop/mon-equipe')
-    router.refresh()
-  }
-
-  const onSelectMediateurAInviter = (option: MediateurToAddOption | null) => {
-    if (option?.value?.email == null) return
-
-    append([
-      ...fields,
-      {
-        email: option.value.email,
-        nom: option.value.mediateurId ? option?.label : undefined,
-        mediateurId: option.value.mediateurId,
-      },
-    ])
-  }
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
+  const aucunMembre = useSelector(
+    form.store,
+    (state) => state.values.membres.length === 0,
+  )
+  const isHydrated = useHydrated()
+  const isPending = isSubmitting || !isHydrated
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <CustomSelectFormField
-        label={
-          <span className="fr-display-block fr-mt-12v fr-mb-4v">
-            Rechercher par nom ou adresse e-mail
-          </span>
-        }
-        path="members"
-        control={form.control}
-        placeholder="Nom ou adresse e-mail"
-        className="fr-mb-2v fr-mt-3v"
-        loadOptions={chargerLesOptions}
-        filterOption={emailNotIn(fields)}
-        onChange={onSelectMediateurAInviter}
-        clearInputOnChange
-        getOptionLabel={FormatOptionLabel}
-        onMenuOpen={() => setIsMenuOpen(true)}
-        onMenuClose={() => setIsMenuOpen(false)}
-      />
-      {fields.length > 0 && (
-        <ul className="fr-list-group fr-flex fr-flex-wrap fr-flex-gap-1v fr-mt-6v">
-          {fields.map((mediateurToAdd, index) => (
-            <li key={mediateurToAdd.email}>
-              <Tag
-                nativeButtonProps={{
-                  type: 'button',
-                  onClick: () => remove(index),
+    <form.AppForm>
+      <form
+        onSubmit={handleSubmit(form)}
+        onKeyDown={pasDeSoumissionDepuisLaRecherche}
+      >
+        <div className="fr-mt-12v fr-mb-2v">
+          <form.AppField name="recherche">
+            {(field) => (
+              <field.ComboBox
+                isPending={isPending}
+                onSelect={(personne) => {
+                  form.setFieldValue('membres', (membres) =>
+                    ajouter(membres, personne),
+                  )
+                  queueMicrotask(() => form.setFieldValue('recherche', null))
                 }}
+                {...personneAInviterComboBox(() =>
+                  form.getFieldValue('membres'),
+                )}
               >
-                {mediateurToAdd.nom ?? mediateurToAdd.email}&nbsp;
-                <span className="fr-icon-close-line fr-icon--sm" aria-hidden />
-              </Tag>
-            </li>
-          ))}
-        </ul>
-      )}
-      <hr className="fr-separator-12v" />
-      <ButtonsGroup
-        buttonsSize="large"
-        buttons={[
-          {
-            children: 'Inviter',
-            type: 'submit',
-            disabled: fields.length === 0 || enCours || isMenuOpen,
-            ...buttonLoadingClassname(enCours),
-          },
-          {
-            children: 'Annuler',
-            priority: 'secondary',
-            linkProps: { href: '/coop/mon-equipe' },
-          },
-        ]}
-      />
-    </form>
+                {(rendu) => (
+                  <RechercheDePersonne {...rendu} isPending={isPending} />
+                )}
+              </field.ComboBox>
+            )}
+          </form.AppField>
+        </div>
+        <form.Field name="membres" mode="array">
+          {(field) =>
+            field.state.value.length > 0 && (
+              <ul className="fr-list-group fr-flex fr-flex-wrap fr-flex-gap-1v fr-mt-6v">
+                {field.state.value.map((membre, index) => (
+                  <li key={cleDe(membre)}>
+                    <Tag
+                      nativeButtonProps={{
+                        type: 'button',
+                        onClick: () => field.removeValue(index),
+                      }}
+                    >
+                      {libelleDe(membre)}&nbsp;
+                      <span
+                        className="fr-icon-close-line fr-icon--sm"
+                        aria-hidden
+                      />
+                    </Tag>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </form.Field>
+        <hr className="fr-separator-12v" />
+        <div className="fr-btns-group fr-btns-group--lg">
+          <form.Submit
+            isPending={isPending}
+            disabled={isPending || aucunMembre}
+          >
+            Inviter
+          </form.Submit>
+          <Button linkProps={{ href: '/coop/mon-equipe' }} priority="secondary">
+            Annuler
+          </Button>
+        </div>
+      </form>
+    </form.AppForm>
   )
 }
 

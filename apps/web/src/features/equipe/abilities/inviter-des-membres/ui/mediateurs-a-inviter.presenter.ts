@@ -1,62 +1,99 @@
 import { pluriel } from '@app/web/libraries/pluriel'
-import type { MediateurAInviter, MediateursAInviter } from '../domain'
-import type { MediateurToAddOption } from './MediateurToAddOption'
+import { EmailInvitation } from '../../../domain'
+import type { InvitationsEnvoyees, MediateursAInviter } from '../domain'
+import { horsDe, libelleDe, type PersonneAInviter } from './personne-a-inviter'
 
 const RECHERCHE_MINIMALE = 3
 
-const indisponible = (label: string): MediateurToAddOption => ({
-  label,
-  value: null,
-  isDisabled: true,
-})
-
-const optionDe = ({
-  mediateurId,
-  nom,
-  email,
-  conseillerNumerique,
-}: MediateurAInviter): MediateurToAddOption => ({
-  label: nom,
-  value: { mediateurId, email, isConseillerNumerique: conseillerNumerique },
-})
-
-const texteLibre = (recherche: string): MediateurToAddOption => ({
-  label: recherche,
-  value: { email: recherche, mediateurId: recherche },
-})
-
-const nonAffiches = (nombre: number): MediateurToAddOption[] =>
-  nombre > 0
-    ? [
-        indisponible(
-          `Veuillez préciser votre recherche - ${nombre} ${pluriel(nombre, 'médiateur n’est pas affiché', 'médiateurs ne sont pas affichés')}`,
-        ),
-      ]
-    : []
+export type EtatDeLaRecherche = {
+  readonly recherche: string
+  readonly enCours: boolean
+  readonly enEchec: boolean
+  readonly total: number
+  readonly affiches: number
+}
 
 export const rechercheTropCourte = (recherche: string): boolean =>
   recherche.trim().length < RECHERCHE_MINIMALE
 
-export const optionsRechercheTropCourte = (): MediateurToAddOption[] => [
-  indisponible(
-    `La recherche doit contenir au moins ${RECHERCHE_MINIMALE} caractères`,
-  ),
-]
+const saisieLibre = (recherche: string): PersonneAInviter[] => {
+  const email = EmailInvitation.safe(recherche)
+  return email === null ? [] : [{ _tag: 'Email', email }]
+}
 
-export const optionsDeRecherche = (
-  recherche: string,
-  trouves: MediateursAInviter | null,
-): MediateurToAddOption[] =>
-  trouves === null
-    ? [
-        indisponible('La recherche est indisponible, veuillez réessayer'),
-        texteLibre(recherche),
-      ]
-    : [
-        indisponible(
-          `${trouves.total} ${pluriel(trouves.total, 'résultat', 'résultats')}`,
-        ),
-        ...trouves.mediateurs.map(optionDe),
-        texteLibre(recherche),
-        ...nonAffiches(trouves.total - trouves.mediateurs.length),
-      ]
+const mediateursDe = (trouves: MediateursAInviter | null): PersonneAInviter[] =>
+  (trouves?.mediateurs ?? []).map((mediateur) => ({
+    _tag: 'Mediateur',
+    ...mediateur,
+  }))
+
+export const suggestionsDe = ({
+  recherche,
+  trouves,
+  dejaChoisis,
+}: {
+  recherche: string
+  trouves: MediateursAInviter | null
+  dejaChoisis: readonly PersonneAInviter[]
+}): { items: PersonneAInviter[] } & EtatDeLaRecherche => {
+  const mediateurs = mediateursDe(trouves)
+  const aProposer = mediateurs.filter(horsDe(dejaChoisis))
+  return {
+    items: [
+      ...aProposer,
+      ...saisieLibre(recherche)
+        .filter(horsDe(mediateurs))
+        .filter(horsDe(dejaChoisis)),
+    ],
+    recherche,
+    enCours: false,
+    enEchec: trouves === null && !rechercheTropCourte(recherche),
+    total: (trouves?.total ?? 0) - (mediateurs.length - aProposer.length),
+    affiches: aProposer.length,
+  }
+}
+
+export const messagesDe = ({
+  recherche,
+  enCours,
+  enEchec,
+  total,
+  affiches,
+}: EtatDeLaRecherche): readonly string[] => {
+  if (enCours) return []
+  if (rechercheTropCourte(recherche))
+    return [
+      `La recherche doit contenir au moins ${RECHERCHE_MINIMALE} caractères`,
+    ]
+  if (enEchec) return ['La recherche est indisponible, veuillez réessayer']
+  const nonAffiches = total - affiches
+  return [
+    `${total} ${pluriel(total, 'médiateur trouvé', 'médiateurs trouvés')}`,
+    ...(nonAffiches > 0
+      ? [
+          `Veuillez préciser votre recherche - ${nonAffiches} ${pluriel(nonAffiches, 'médiateur n’est pas affiché', 'médiateurs ne sont pas affichés')}`,
+        ]
+      : []),
+  ]
+}
+
+export const issueDeLInvitation = (
+  membres: readonly PersonneAInviter[],
+  { echecs }: InvitationsEnvoyees,
+): { priority: 'success' | 'warning'; message: string } => {
+  if (echecs.length > 0)
+    return {
+      priority: 'warning',
+      message: `L’invitation est enregistrée, mais l’email n’a pas pu être envoyé à ${echecs.join(', ')} : vous pourrez la relancer depuis votre équipe.`,
+    }
+  if (membres.length === 1)
+    return {
+      priority: 'success',
+      message: `Un email d’invitation a été envoyé à ${libelleDe(membres[0])}`,
+    }
+  return {
+    priority: 'success',
+    message:
+      'Un email d’invitation a été envoyé aux membres que vous souhaitez ajouter à votre équipe',
+  }
+}
