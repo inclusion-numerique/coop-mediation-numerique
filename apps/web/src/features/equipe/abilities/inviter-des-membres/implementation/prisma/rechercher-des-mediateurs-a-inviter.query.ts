@@ -6,10 +6,10 @@ import type { Prisma } from '@app/web/generated/prisma/client'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { getUserDisplayName } from '@app/web/utils/user'
-import type { CoordinateurId } from '../../../../domain'
+import { type CoordinateurId, MediateurId } from '../../../../domain'
 
 export type MediateurAInviter = {
-  readonly mediateurId: string
+  readonly mediateurId: MediateurId
   readonly nom: string
   readonly email: string
   readonly conseillerNumerique: boolean
@@ -66,7 +66,7 @@ export const rechercherDesMediateursAInviter = async ({
 
   return {
     mediateurs: trouves.map(({ id, user }) => ({
-      mediateurId: id,
+      mediateurId: MediateurId(id),
       nom: getUserDisplayName(user),
       email: user.email,
       conseillerNumerique: personneEstConseillerNumerique(user.personneMain),
