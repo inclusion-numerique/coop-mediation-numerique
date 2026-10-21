@@ -19,6 +19,7 @@ export {
 } from './courriel-hash'
 export { type CycleDeVie, cycleDeVie } from './cycle-de-vie'
 export { Dispositif, dispositifDe, dispositifs } from './dispositif'
+export { CompteSupprime, UtilisateurIntrouvable } from './errors'
 export {
   type CritereStatut,
   critereDuStatut,

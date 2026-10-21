@@ -489,6 +489,7 @@ After(async () => {
   await prismaClient.lieuInclusion.deleteMany({
     where: { id: { in: [...lieux] } },
   })
+  await prismaClient.mutation.deleteMany({ where: parUtilisateur })
   await prismaClient.coordinateur.deleteMany({ where: parUtilisateur })
   await prismaClient.mediateur.deleteMany({ where: parUtilisateur })
   await prismaClient.user.deleteMany({
