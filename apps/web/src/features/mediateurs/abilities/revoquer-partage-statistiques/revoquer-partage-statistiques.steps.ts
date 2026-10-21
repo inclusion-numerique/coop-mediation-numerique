@@ -1,6 +1,10 @@
 import assert from 'node:assert'
 import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
 import {
+  CoordinateurId,
+  MediateurId,
+} from '@app/web/features/mediateurs/domain'
+import {
   partagesSemes,
   semerPartagesStatistiques,
 } from '@app/web/features/mediateurs/mediateurs.cucumber'
@@ -10,8 +14,8 @@ import { Given, Then, When } from '@cucumber/cucumber'
 const revocation: { partagesRevoques?: number } = {}
 
 const cible = () => ({
-  mediateurId: partagesSemes().mediateurId,
-  coordinateurId: partagesSemes().coordinateurId,
+  mediateurId: MediateurId(partagesSemes().mediateurId),
+  coordinateurId: CoordinateurId(partagesSemes().coordinateurId),
 })
 
 Given('un compte qui partage ses statistiques des deux côtés', async () => {

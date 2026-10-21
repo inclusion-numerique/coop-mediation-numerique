@@ -1,3 +1,7 @@
+import type {
+  CoordinateurId,
+  MediateurId,
+} from '@app/web/features/mediateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const revoquerPartageStatistiques = async ({
@@ -5,8 +9,8 @@ export const revoquerPartageStatistiques = async ({
   coordinateurId,
   maintenant = new Date(),
 }: {
-  readonly mediateurId: string | null
-  readonly coordinateurId: string | null
+  readonly mediateurId: MediateurId | null
+  readonly coordinateurId: CoordinateurId | null
   readonly maintenant?: Date
 }): Promise<{ readonly partagesRevoques: number }> => {
   const proprietaires = [
