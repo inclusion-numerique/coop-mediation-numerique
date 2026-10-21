@@ -3,6 +3,7 @@ import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comp
 import { AppliquerDispositifConumJobValidation } from './appliquer-dispositif-conum/appliquerDispositifConumJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
+import { NormaliserLesTelephonesJobValidation } from './normaliser-les-telephones/normaliserLesTelephonesJob'
 import { RattraperLesComptesSupprimesJobValidation } from './rattraper-les-comptes-supprimes/rattraperLesComptesSupprimesJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { ReprendreLesDonneesDesLieuxJobValidation } from './reprendre-les-donnees-des-lieux/reprendreLesDonneesDesLieuxJob'
@@ -33,6 +34,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   AppliquerDispositifConumJobValidation,
   FixUsersRolesJobValidation,
   InactiveUsersRemindersJobValidation,
+  NormaliserLesTelephonesJobValidation,
   RattraperLesComptesSupprimesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
   ReprendreLesDonneesDesLieuxJobValidation,

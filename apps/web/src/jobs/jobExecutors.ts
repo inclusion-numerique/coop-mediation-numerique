@@ -7,6 +7,7 @@ import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/ex
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
+import { executeNormaliserLesTelephones } from './normaliser-les-telephones/executeNormaliserLesTelephones'
 import { executeRattraperLesComptesSupprimes } from './rattraper-les-comptes-supprimes/executeRattraperLesComptesSupprimes'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
@@ -24,6 +25,7 @@ export const jobExecutors: {
   'appliquer-dispositif-conum': executeAppliquerDispositifConum,
   'fix-users-roles': executeFixUsersRoles,
   'inactive-users-reminders': executeInactiveUsersReminders,
+  'normaliser-les-telephones': executeNormaliserLesTelephones,
   'rattraper-les-comptes-supprimes': executeRattraperLesComptesSupprimes,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
