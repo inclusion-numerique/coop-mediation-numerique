@@ -1,8 +1,10 @@
 import { output } from '@app/cli/output'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
+import { updateBrevoContratAttributes } from '@app/web/external-apis/brevo/updateBrevoContratAttributes'
 import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { prismaClient } from '@app/web/prismaClient'
 import type { AppliquerDispositifConumJob } from './appliquerDispositifConumJob'
+import { comptesANotifier } from './comptesANotifier'
 
 /**
  * Répercute dans la coop ce que l'Entrepôt vient de changer au dispositif conseiller numérique.
@@ -25,9 +27,17 @@ import type { AppliquerDispositifConumJob } from './appliquerDispositifConumJob'
  *    endroit où supprimer la synchro faisait perdre une capacité, et non un simple intermédiaire.
  *
  * Ce qui rend la transition détectable sans stocker d'état : `main.personne_affectations_emploi`
- * porte un `updated_at` maintenu par trigger côté Entrepôt. Le job n'a donc pas besoin de mémoriser
- * le statut d'hier — il demande à `main` ce qui a bougé. Effet de bord bienvenu : il ne balaie plus
- * toute la population chaque nuit, seulement les comptes concernés.
+ * porte un `updated_at` maintenu par trigger côté Entrepôt, qui ne bouge que si la ligne change
+ * réellement. Le job n'a donc pas besoin de mémoriser le statut d'hier — il demande à `main` ce qui
+ * a bougé. Effet de bord bienvenu : il ne balaie plus toute la population chaque nuit, seulement
+ * les comptes concernés.
+ *
+ * Les CONTRATS font exception : l'ETL idposte (toutes les deux semaines) vide `main.contrat` puis la
+ * recharge entièrement, si bien que son horodatage ne distingue rien. Le job repère donc l'import
+ * lui-même — `main.poste`, rechargée en dernier, date sa fin — et renvoie alors à Brevo les dates de
+ * fin et de rupture de tous les comptes liés à un contrat, et ces dates SEULES : le reste du contact
+ * n'a pas de raison de changer. La nuit qui suit l'import en profite ; si l'import n'est pas fini au
+ * passage du cron, c'est le suivant.
  */
 
 type CompteImpacte = {
@@ -68,6 +78,31 @@ const comptesImpactes = (depuis: Date): Promise<CompteImpacte[]> =>
     ORDER BY u.id`
 
 /**
+ * Un import idposte s'est-il TERMINÉ dans la fenêtre ? `main.poste` est vidée puis rechargée en
+ * dernier par l'ETL (après les contrats et les affectations) : son `created_at` le plus récent date
+ * la fin de l'import. Table vide (import en cours entre TRUNCATE et INSERT) → `false`, le cron
+ * suivant prendra le relais.
+ */
+const importIdposteTermine = async (depuis: Date): Promise<boolean> => {
+  const [{ termine }] = await prismaClient.$queryRaw<{ termine: boolean }[]>`
+    SELECT COALESCE(max(created_at) >= ${depuis}, false) AS termine
+    FROM main.poste`
+  return termine
+}
+
+/** Comptes coop non supprimés liés à au moins un contrat : ceux dont Brevo porte les dates. */
+const comptesAvecContrat = async (): Promise<string[]> => {
+  const rows = await prismaClient.$queryRaw<{ user_id: string }[]>`
+    SELECT u.id AS user_id
+    FROM main.personne p
+    JOIN coop.users u ON u.id = p.coop_id
+    WHERE u.deleted IS NULL
+      AND EXISTS (SELECT 1 FROM main.contrat ct WHERE ct.personne_id = p.id)
+    ORDER BY u.id`
+  return rows.map((row) => row.user_id)
+}
+
+/**
  * Le rôle coordinateur suit la même règle qu'avant : il faut être coordinateur ET relever du
  * dispositif. Et il ne se retire jamais — un coordinateur qui perd le dispositif garde ses
  * rattachements, sans quoi on orphelinerait des équipes entières.
@@ -92,6 +127,16 @@ export const executeAppliquerDispositifConum = async (
     `[dispositif] ${comptes.length} compte(s) dont une affectation a bougé depuis ${depuis.toISOString()}`,
   )
 
+  const importTermine = await importIdposteTermine(depuis)
+  const avecContrat = importTermine ? await comptesAvecContrat() : []
+
+  if (importTermine) {
+    output(
+      `[dispositif] import idposte terminé depuis ${depuis.toISOString()} : ` +
+        `dates de contrat renvoyées pour ${avecContrat.length} compte(s)`,
+    )
+  }
+
   // Séquentiel et idempotent : le volume attendu se compte en dizaines, et la garantie est partagée
   // avec la connexion — une seule définition de « qui doit avoir une ligne coordinateur ».
   const coordinateursCrees = await comptes
@@ -102,16 +147,32 @@ export const executeAppliquerDispositifConum = async (
       return cree ? total + 1 : total
     }, Promise.resolve(0))
 
-  // Brevo ne reçoit que les comptes réellement touchés — c'est la transition qui l'intéresse.
-  const brevoBorne = comptes.length > limiteBrevo && !forcerBrevo
+  const {
+    contactsComplets,
+    datesContrat,
+    borne: brevoBorne,
+  } = comptesANotifier({
+    impactes: comptes.map((compte) => compte.user_id),
+    avecContrat,
+    importTermine,
+    limite: limiteBrevo,
+    forcer: forcerBrevo,
+  })
 
-  const brevoNotifies = brevoBorne
-    ? 0
-    : await comptes.reduce<Promise<number>>(async (precedent, compte) => {
-        const total = await precedent
-        const notifie = await updateBrevoContact(compte.user_id)
-        return notifie ? total + 1 : total
-      }, Promise.resolve(0))
+  const envoyer = (
+    userIds: readonly string[],
+    envoi: (userId: string) => Promise<boolean>,
+  ) =>
+    userIds.reduce<Promise<number>>(async (precedent, userId) => {
+      const total = await precedent
+      return (await envoi(userId)) ? total + 1 : total
+    }, Promise.resolve(0))
+
+  const brevoNotifies = await envoyer(contactsComplets, updateBrevoContact)
+  const brevoDatesContrat = await envoyer(
+    datesContrat,
+    updateBrevoContratAttributes,
+  )
 
   if (brevoBorne) {
     output(
@@ -127,14 +188,20 @@ export const executeAppliquerDispositifConum = async (
     conseillersNumeriques: comptes.filter((c) => c.est_conseiller_numerique)
       .length,
     coordinateursCrees,
+    importIdposteTermine: importTermine,
+    comptesAvecContrat: avecContrat.length,
     brevoNotifies,
+    brevoDatesContrat,
     brevoBorne,
   }
 
   output(
     `[dispositif] terminé : ${results.comptesImpactes} impactés ; ` +
       `coordinateurs créés ${results.coordinateursCrees} ; ` +
-      `Brevo ${brevoBorne ? 'borné' : `notifiés ${results.brevoNotifies}`}`,
+      `Brevo ${brevoBorne ? 'borné' : `notifiés ${results.brevoNotifies}`}` +
+      (importTermine
+        ? ` ; dates de contrat mises à jour ${results.brevoDatesContrat}`
+        : ''),
   )
 
   return results

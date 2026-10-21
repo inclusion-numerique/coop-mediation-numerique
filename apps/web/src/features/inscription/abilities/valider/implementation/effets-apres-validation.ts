@@ -1,4 +1,8 @@
 import {
+  attributsContratBrevo,
+  contratsBrevoSelect,
+} from '@app/web/external-apis/brevo/contratBrevo'
+import {
   createBrevoContact,
   deploymentCanCreateBrevoContact,
   toBrevoContact,
@@ -33,7 +37,12 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
       phone: true,
       coordinateur: true,
       mediateur: { select: { id: true } },
-      personneMain: { select: personneConseillerNumeriqueSelect },
+      personneMain: {
+        select: {
+          ...personneConseillerNumeriqueSelect,
+          ...contratsBrevoSelect,
+        },
+      },
     },
   })
 
@@ -47,6 +56,7 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
         isConseillerNumerique: personneEstConseillerNumerique(
           user.personneMain,
         ),
+        contrat: attributsContratBrevo(user.personneMain),
       }),
       listIds: [ServerWebAppConfig.Brevo.usersListId],
     })

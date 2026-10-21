@@ -1,11 +1,6 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import {
-  createBrevoContact,
-  deploymentCanCreateBrevoContact,
-  toBrevoContact,
-} from '@app/web/external-apis/brevo/createBrevoContact'
+import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import { prismaClient } from '@app/web/prismaClient'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
@@ -31,23 +26,16 @@ export const inscriptionRouter = router({
 
       const stopwatch = createStopwatch()
 
-      const upsertedMediateur = await prismaClient.mediateur.upsert({
+      await prismaClient.mediateur.upsert({
         where: { userId: sessionUser.id },
         create: { userId: sessionUser.id },
         update: {},
       })
 
-      if (
-        sessionUser.inscriptionValidee != null &&
-        deploymentCanCreateBrevoContact()
-      ) {
-        await createBrevoContact({
-          contact: toBrevoContact({
-            ...sessionUser,
-            mediateur: { ...upsertedMediateur },
-          }),
-          listIds: [ServerWebAppConfig.Brevo.usersListId],
-        })
+      // Relit le compte en base : la session ne porte pas les contrats bruts. Coordinateur ET
+      // médiateur ici, le contact a toujours un rôle — même effet que l'upsert direct d'avant.
+      if (sessionUser.inscriptionValidee != null) {
+        await updateBrevoContact(sessionUser.id)
       }
 
       // V1 import logic removed - Dataspace is now source of truth
