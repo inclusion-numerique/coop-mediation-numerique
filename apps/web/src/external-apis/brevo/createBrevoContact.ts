@@ -2,6 +2,7 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios, { AxiosResponse } from 'axios'
 import pThrottle from 'p-throttle'
+import type { AttributsContratBrevo } from './contratBrevo'
 
 type User = {
   id: string
@@ -12,6 +13,7 @@ type User = {
   isConseillerNumerique: boolean
   mediateur: { id: string | null } | null
   coordinateur: { id: string | null } | null
+  contrat: AttributsContratBrevo
 }
 
 type BrevoContactAttibutes = {
@@ -19,7 +21,7 @@ type BrevoContactAttibutes = {
   LASTNAME: string
   SMS: string
   ROLES: string[]
-}
+} & AttributsContratBrevo
 
 export type BrevoContact = {
   ext_id: string
@@ -39,6 +41,7 @@ export const toBrevoContact = (user: User): BrevoContact => ({
       ...(user.isConseillerNumerique ? ['Conseiller numérique'] : []),
       ...(user.coordinateur?.id != null ? ['Coordinateur'] : []),
     ],
+    ...user.contrat,
   },
 })
 

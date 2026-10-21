@@ -4,6 +4,7 @@ import {
 } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { attributsContratBrevo, contratsBrevoSelect } from './contratBrevo'
 import {
   createBrevoContact,
   deploymentCanCreateBrevoContact,
@@ -25,7 +26,12 @@ export const updateBrevoContact = async (userId: string): Promise<boolean> => {
       firstName: true,
       lastName: true,
       phone: true,
-      personneMain: { select: personneConseillerNumeriqueSelect },
+      personneMain: {
+        select: {
+          ...personneConseillerNumeriqueSelect,
+          ...contratsBrevoSelect,
+        },
+      },
       mediateur: { select: { id: true } },
       coordinateur: { select: { id: true } },
     },
@@ -38,6 +44,7 @@ export const updateBrevoContact = async (userId: string): Promise<boolean> => {
   const contact = toBrevoContact({
     ...user,
     isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
+    contrat: attributsContratBrevo(user.personneMain),
   })
 
   if (!onlyWithBrevoRole(contact)) {
