@@ -54,8 +54,8 @@ describe('compteASupprimerToDomain', () => {
     expect(compte.etat).toEqual({ _tag: 'supprime', depuis })
     expect(compte.rattachements).toEqual({
       _tag: 'mediateurEtCoordinateur',
-      mediateurId: MediateurId(MEDIATEUR),
-      coordinateurId: CoordinateurId(COORDINATEUR),
+      mediateur: MediateurId(MEDIATEUR),
+      coordinateur: CoordinateurId(COORDINATEUR),
     })
   })
 

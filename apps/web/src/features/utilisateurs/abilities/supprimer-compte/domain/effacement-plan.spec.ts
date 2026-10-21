@@ -12,16 +12,16 @@ const COORDINATEUR = CoordinateurId('2b3c4d5e-6f70-4819-92a3-b4c5d6e7f809')
 const aucun: RattachementsDuCompte = { _tag: 'aucun' }
 const mediateur: RattachementsDuCompte = {
   _tag: 'mediateur',
-  mediateurId: MEDIATEUR,
+  mediateur: MEDIATEUR,
 }
 const coordinateur: RattachementsDuCompte = {
   _tag: 'coordinateur',
-  coordinateurId: COORDINATEUR,
+  coordinateur: COORDINATEUR,
 }
 const lesDeux: RattachementsDuCompte = {
   _tag: 'mediateurEtCoordinateur',
-  mediateurId: MEDIATEUR,
-  coordinateurId: COORDINATEUR,
+  mediateur: MEDIATEUR,
+  coordinateur: COORDINATEUR,
 }
 
 describe('effacementPlan', () => {

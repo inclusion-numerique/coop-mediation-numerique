@@ -14,8 +14,6 @@ describe('identité anonyme', () => {
     })
   })
 
-  // La détermination est ce qui rend le rejeu sûr : une seconde suppression ne
-  // doit pas donner une nouvelle adresse.
   it('rend le même courriel pour la même empreinte', () => {
     expect(identiteAnonyme(EMPREINTE).courriel).toBe(
       identiteAnonyme(EMPREINTE).courriel,
@@ -34,9 +32,6 @@ describe('courriel déjà anonymisé', () => {
     )
   })
 
-  // Deux pièges symétriques : le préfixe seul ne suffit pas, le domaine non
-  // plus. Les confondre rattraperait des comptes vivants, ou en laisserait
-  // d'effacés sans identité.
   it('exige le domaine, pas seulement le préfixe', () => {
     expect(
       estCourrielAnonymise(AdresseCourriel('deleted+abc@example.com')),
