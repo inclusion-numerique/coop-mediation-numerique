@@ -7,29 +7,41 @@ import {
 } from '@app/web/features/mediateurs/mediateurs.cucumber'
 import { Then, When } from '@cucumber/cucumber'
 
-type Role = 'mediateur' | 'coordinateur'
-
-const perimetres = {
-  mediateur: 'Mediateur',
-  coordinateur: 'Coordinateur',
+const roles = {
+  médiateur: { perimetre: 'Mediateur', partage: 'mediateur' },
+  coordinateur: { perimetre: 'Coordinateur', partage: 'coordinateur' },
 } as const
+
+type Role = keyof typeof roles
+
+const estUnRole = (role: string): role is Role => Object.hasOwn(roles, role)
 
 const consultation: { liens: readonly LienDuPerimetre[] } = { liens: [] }
 
-const lienDu = (role: Role) =>
-  consultation.liens.find(({ perimetre }) => perimetre === perimetres[role])
+const lienDu = (role: string): LienDuPerimetre => {
+  if (!estUnRole(role)) throw new Error(`Rôle inconnu : ${role}`)
+  const trouve = consultation.liens.find(
+    ({ perimetre }) => perimetre === roles[role].perimetre,
+  )
+  if (trouve === undefined) throw new Error(`Aucun périmètre ${role} proposé`)
+  return trouve
+}
+
+const partageSemeDu = (role: string): string | undefined =>
+  estUnRole(role) ? compteSeme().partages[roles[role].partage] : undefined
 
 When('ce compte consulte ses liens de partage', async () => {
   consultation.liens = await consulterMesLiensDePartage(rattachementsSemes())
 })
 
-Then('le lien du périmètre {word} est celui de son partage', (role: Role) => {
-  assert.strictEqual(lienDu(role)?.lien, compteSeme().partages[role])
+Then('le lien du périmètre {word} est celui de son partage', (role: string) => {
+  const attendu = partageSemeDu(role)
+  assert.notStrictEqual(attendu, undefined)
+  assert.strictEqual(lienDu(role).lien, attendu)
 })
 
-Then("le périmètre {word} n'a pas de lien", (role: Role) => {
-  assert.notStrictEqual(lienDu(role), undefined)
-  assert.strictEqual(lienDu(role)?.lien, null)
+Then("le périmètre {word} n'a pas de lien", (role: string) => {
+  assert.strictEqual(lienDu(role).lien, null)
 })
 
 Then("aucun périmètre de partage n'est proposé", () => {
