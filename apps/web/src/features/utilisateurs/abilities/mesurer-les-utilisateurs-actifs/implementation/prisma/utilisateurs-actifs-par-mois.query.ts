@@ -14,30 +14,39 @@ type UtilisateursActifsParMois = {
   coordinateursActifs: number
 }
 
-const formatDataForGraph = (
-  data: UtilisateursActifsRaw[],
-): UtilisateursActifsParMois[] => {
-  const grouped: Record<string, UtilisateursActifsParMois> = {}
-
-  for (const { role, month, value } of data) {
-    if (!grouped[month]) {
-      grouped[month] = {
-        mois: month,
-        mediateursActifs: 0,
-        conseillersActifs: 0,
-        coordinateursActifs: 0,
-      }
-    }
-
-    if (role === 'mediateurs') grouped[month].mediateursActifs = value
-    else if (role === 'conseillers') grouped[month].conseillersActifs = value
-    else grouped[month].coordinateursActifs = value
-  }
-
-  return Object.values(grouped).sort((a, b) => a.mois.localeCompare(b.mois))
+const cleParRole: Record<
+  UtilisateursActifsRaw['role'],
+  'mediateursActifs' | 'conseillersActifs' | 'coordinateursActifs'
+> = {
+  mediateurs: 'mediateursActifs',
+  conseillers: 'conseillersActifs',
+  coordinateurs: 'coordinateursActifs',
 }
 
-export const getUtilisateursActifsPerMonth = async (): Promise<
+const moisVide = (mois: string): UtilisateursActifsParMois => ({
+  mois,
+  mediateursActifs: 0,
+  conseillersActifs: 0,
+  coordinateursActifs: 0,
+})
+
+const parMois = (
+  lignes: readonly UtilisateursActifsRaw[],
+): UtilisateursActifsParMois[] =>
+  Object.values(
+    lignes.reduce<Readonly<Record<string, UtilisateursActifsParMois>>>(
+      (mois, { role, month, value }) => ({
+        ...mois,
+        [month]: {
+          ...(mois[month] ?? moisVide(month)),
+          [cleParRole[role]]: value,
+        },
+      }),
+      {},
+    ),
+  ).toSorted((premier, second) => premier.mois.localeCompare(second.mois))
+
+export const utilisateursActifsParMois = async (): Promise<
   UtilisateursActifsParMois[]
 > => {
   const rawData = await prismaClient.$queryRawUnsafe<UtilisateursActifsRaw[]>(
@@ -116,9 +125,5 @@ export const getUtilisateursActifsPerMonth = async (): Promise<
     `,
   )
 
-  return formatDataForGraph(rawData)
+  return parMois(rawData)
 }
-
-export const getUtilisateursActifsData = async () => ({
-  perMonth: await getUtilisateursActifsPerMonth(),
-})

@@ -1,10 +1,10 @@
 import { getUtilisateursActifs } from '@app/web/features/legal/use-cases/statistiques/db/utilisateurs/get-utilisateurs-actifs'
+import { mesurerLesUtilisateursActifs } from '@app/web/features/utilisateurs/abilities/mesurer-les-utilisateurs-actifs'
 import { debugPromiseTiming } from '@app/web/utils/debugPromiseTiming'
 import { unstable_cache } from 'next/cache'
 import { getAccompagnements } from './db/accompagnements/get-accompagnements'
 import { getBeneficiaires } from './db/beneficiaires/get-beneficiaires'
 import { getSuiviBeneficiaires } from './db/beneficiaires/get-suivi-beneficiaires'
-import { getTotalUtilisateursActifs } from './db/utilisateurs/get-total-utilisateurs-actifs'
 
 const getStatistiquesPubliquesPageDataUncached = async () => {
   const [
@@ -14,8 +14,8 @@ const getStatistiquesPubliquesPageDataUncached = async () => {
     suiviBeneficiaires,
     utilisateursActifs,
   ] = await Promise.all([
-    debugPromiseTiming(getTotalUtilisateursActifs(), {
-      name: 'getTotalUtilisateursActifs',
+    debugPromiseTiming(mesurerLesUtilisateursActifs(new Date()), {
+      name: 'mesurerLesUtilisateursActifs',
     }),
     debugPromiseTiming(getAccompagnements(), {
       name: 'getAccompagnements',

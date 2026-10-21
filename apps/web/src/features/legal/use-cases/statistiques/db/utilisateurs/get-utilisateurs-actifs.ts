@@ -1,14 +1,14 @@
-import { getUtilisateursActifsData } from '@app/web/features/legal/use-cases/statistiques/db/utilisateurs/get-utilisateurs-actifs-data'
-import { getTotalUtilisateursActifs } from './get-total-utilisateurs-actifs'
+import {
+  mesurerLesUtilisateursActifs,
+  utilisateursActifsParMois,
+} from '@app/web/features/utilisateurs/abilities/mesurer-les-utilisateurs-actifs'
 
 export const getUtilisateursActifs = async () => {
-  const [totalUtilisateursActifs, utilisateursActifsData] = await Promise.all([
-    getTotalUtilisateursActifs(),
-    getUtilisateursActifsData(),
-  ])
-
-  const { total, mediateurs, conseillers, coordinateurs } =
-    totalUtilisateursActifs
+  const [{ total, mediateurs, conseillers, coordinateurs }, perMonth] =
+    await Promise.all([
+      mesurerLesUtilisateursActifs(new Date()),
+      utilisateursActifsParMois(),
+    ])
 
   return {
     total,
@@ -32,6 +32,6 @@ export const getUtilisateursActifs = async () => {
         ...coordinateurs,
       },
     ],
-    ...utilisateursActifsData,
+    perMonth,
   }
 }
