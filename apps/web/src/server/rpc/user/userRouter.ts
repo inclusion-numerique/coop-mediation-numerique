@@ -1,4 +1,3 @@
-import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
 import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
@@ -21,40 +20,16 @@ import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/sear
 import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
 import { ProfilInscription } from '@app/web/generated/prisma/browser'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  protectedProcedure,
-  publicProcedure,
-  router,
-} from '@app/web/server/rpc/createRouter'
+import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { ChangeUserRolesValidation } from '@app/web/server/rpc/user/ChangeUserRolesValidation'
 import { UserMergeValidation } from '@app/web/server/rpc/user/userMerge'
-import { ServerUserSignupValidation } from '@app/web/server/rpc/user/userSignup.server'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
-import { fixTelephone } from '@app/web/utils/clean-operations'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { v4 } from 'uuid'
 import { z } from 'zod'
 
 export const userRouter = router({
-  signup: publicProcedure
-    .input(ServerUserSignupValidation)
-    .mutation(({ input: { firstName, lastName, email } }) =>
-      prismaClient.user.create({
-        data: {
-          id: v4(),
-          firstName,
-          lastName,
-          name: `${firstName} ${lastName}`,
-          email,
-        },
-        select: {
-          id: true,
-          email: true,
-        },
-      }),
-    ),
   signupReminders: protectedProcedure.mutation(
     async ({ ctx: { user: sessionUser } }) => {
       enforceIsAdmin(sessionUser)
@@ -83,34 +58,6 @@ export const userRouter = router({
       })
     },
   ),
-  updateProfile: protectedProcedure
-    .input(UpdateProfileValidation)
-    .mutation(
-      async ({ input: { firstName, lastName, phone }, ctx: { user } }) => {
-        const stopwatch = createStopwatch()
-        const updated = await prismaClient.user.update({
-          where: { id: user.id },
-          data: {
-            firstName,
-            lastName,
-            phone: fixTelephone(phone ?? null),
-            name: `${firstName} ${lastName}`,
-          },
-        })
-        addMutationLog({
-          userId: user.id,
-          nom: 'ModifierUtilisateur',
-          duration: stopwatch.stop().duration,
-          data: {
-            id: user.id,
-            firstName,
-            lastName,
-            phone,
-          },
-        })
-        return updated
-      },
-    ),
   markOnboardingAsSeen: protectedProcedure.mutation(({ ctx: { user } }) =>
     prismaClient.user.update({
       where: { id: user.id },
