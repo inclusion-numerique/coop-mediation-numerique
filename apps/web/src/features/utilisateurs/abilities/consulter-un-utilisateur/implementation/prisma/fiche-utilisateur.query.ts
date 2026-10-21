@@ -4,9 +4,11 @@ import {
 } from '@app/web/features/employeuse/server'
 import {
   AdresseCourriel,
+  coordinateurEstVierge,
   cycleDeVie,
   dispositifDe,
   jalon,
+  mediateurEstVierge,
   nomAffiche,
   RoleUtilisateur,
   rattachements,
@@ -42,7 +44,9 @@ const ficheSelect = {
       activitesCount: true,
       derniereCreationActivite: true,
       derniereCreationBeneficiaire: true,
-      _count: { select: { enActivite: true } },
+      _count: {
+        select: { enActivite: true, activites: true, beneficiaires: true },
+      },
       coordinations: {
         where: { suppression: null },
         select: {
@@ -60,7 +64,11 @@ const ficheSelect = {
       modification: true,
       derniereCreationActivite: true,
       _count: {
-        select: { mediateursCoordonnes: { where: { suppression: null } } },
+        select: {
+          mediateursCoordonnes: { where: { suppression: null } },
+          ActiviteCoordination: true,
+          invitations: { where: { acceptee: null, refusee: null } },
+        },
       },
     },
   },
@@ -148,6 +156,10 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
             activites: row.mediateur.activitesCount,
             lieuxActivite: row.mediateur._count.enActivite,
             visible: row.mediateur.isVisible,
+            retirable: mediateurEstVierge({
+              activites: row.mediateur._count.activites > 0,
+              beneficiaires: row.mediateur._count.beneficiaires > 0,
+            }),
             coordinations: row.mediateur.coordinations.map(
               ({ coordinateur }) => ({
                 coordinateurUtilisateurId: UtilisateurId(coordinateur.user.id),
@@ -162,6 +174,12 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
             creeLe: row.coordinateur.creation,
             modifieLe: row.coordinateur.modification,
             mediateursCoordonnes: row.coordinateur._count.mediateursCoordonnes,
+            retirable: coordinateurEstVierge({
+              equipe: row.coordinateur._count.mediateursCoordonnes > 0,
+              activitesCoordination:
+                row.coordinateur._count.ActiviteCoordination > 0,
+              invitationsEnAttente: row.coordinateur._count.invitations > 0,
+            }),
           },
     ),
     liaisons: row.accounts.map(({ provider, providerAccountId }) => ({

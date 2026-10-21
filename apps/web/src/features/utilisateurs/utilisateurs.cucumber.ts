@@ -490,6 +490,22 @@ After(async () => {
     where: { id: { in: [...lieux] } },
   })
   await prismaClient.mutation.deleteMany({ where: parUtilisateur })
+  await prismaClient.tag.deleteMany({
+    where: {
+      OR: [{ mediateur: parUtilisateur }, { coordinateur: parUtilisateur }],
+    },
+  })
+  await prismaClient.activite.deleteMany({
+    where: { mediateur: parUtilisateur },
+  })
+  await prismaClient.activiteCoordination.deleteMany({
+    where: { coordinateur: parUtilisateur },
+  })
+  await prismaClient.partageStatistiques.deleteMany({
+    where: {
+      OR: [{ mediateur: parUtilisateur }, { coordinateur: parUtilisateur }],
+    },
+  })
   await prismaClient.coordinateur.deleteMany({ where: parUtilisateur })
   await prismaClient.mediateur.deleteMany({ where: parUtilisateur })
   await prismaClient.user.deleteMany({

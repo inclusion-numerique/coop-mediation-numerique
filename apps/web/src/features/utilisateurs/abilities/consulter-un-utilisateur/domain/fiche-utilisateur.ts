@@ -21,6 +21,7 @@ export type MediateurDeLaFiche = {
   readonly activites: number
   readonly lieuxActivite: number
   readonly visible: boolean
+  readonly retirable: boolean
   readonly coordinations: readonly CoordinationDuMediateur[]
 }
 
@@ -29,6 +30,7 @@ export type CoordinateurDeLaFiche = {
   readonly creeLe: Date
   readonly modifieLe: Date
   readonly mediateursCoordonnes: number
+  readonly retirable: boolean
 }
 
 export type LiaisonDeLaFiche = {
