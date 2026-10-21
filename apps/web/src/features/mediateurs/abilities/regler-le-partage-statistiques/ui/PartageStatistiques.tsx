@@ -1,7 +1,10 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import type { LienDePartageId } from '@app/web/features/mediateurs/domain'
+import type {
+  LienDuPerimetre,
+  PerimetrePartage,
+} from '@app/web/features/mediateurs/domain'
 import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
@@ -15,20 +18,28 @@ const PartageStatistiquesModal = createModal({
   isOpenedByDefault: false,
 })
 
-export const PartageStatistiques = ({
-  lien,
+const titreDuPerimetre = (perimetre: PerimetrePartage): string =>
+  perimetre === 'Coordinateur'
+    ? 'Statistiques de mon équipe, mes activités incluses'
+    : 'Mes statistiques'
+
+const LigneDePartage = ({
+  lienDuPerimetre: { perimetre, lien },
+  titre,
 }: {
-  lien: LienDePartageId | null
+  lienDuPerimetre: LienDuPerimetre
+  titre: string | null
 }) => {
   const router = useRouter()
   const [enCours, demarrer] = useTransition()
-  const shared = lien !== null
+  const partage = lien !== null
 
-  const handleTogglePartage = () =>
+  const basculer = () =>
     demarrer(async () => {
-      const actif = !shared
+      const actif = !partage
       const resultat = await inject(REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY)({
         actif,
+        perimetre,
       })
 
       if (!resultat.success) {
@@ -46,14 +57,13 @@ export const PartageStatistiques = ({
         priority: 'success',
         message: actif ? 'Lien de partage activé' : 'Lien de partage désactivé',
       })
-
-      if (!actif) PartageStatistiquesModal.close()
     })
 
-  const handleCopy = async () => {
+  const copier = async () => {
     try {
-      const url = `${window.location.origin}/statistiques/${lien}`
-      await navigator.clipboard.writeText(url)
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/statistiques/${lien}`,
+      )
       createToast({
         priority: 'success',
         message: 'Lien copié dans le presse-papier.',
@@ -68,15 +78,82 @@ export const PartageStatistiques = ({
   }
 
   return (
+    <div className="fr-my-8v">
+      {titre !== null && <h2 className="fr-h6 fr-mb-2v">{titre}</h2>}
+      <div className="fr-flex fr-flex-gap-6v fr-align-items-center fr-border fr-border-radius--4 fr-mb-4v fr-px-6v fr-py-4v">
+        {partage ? (
+          <>
+            <div
+              className="fr-background-contrast--success fr-p-4v fr-border-radius--8 fr-display-inline-block"
+              aria-hidden
+            >
+              <span className="ri-earth-fill ri-lg fr-line-height-1 fr-text-default--success" />
+            </div>
+            <div>
+              Lien de partage public activé
+              <p className="fr-text--xs fr-text-mention--grey fr-mb-0">
+                Tous les internautes disposant du lien peuvent consulter ces
+                statistiques et utiliser les filtres et les exports
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className="fr-background-contrast--grey fr-p-4v fr-border-radius--8 fr-display-inline-block"
+              aria-hidden
+            >
+              <span className="ri-link-unlink ri-lg fr-line-height-1 fr-text-disabled-grey" />
+            </div>
+            <div className="fr-flex-1">
+              Lien de partage public désactivé
+              <p className="fr-text--xs fr-text-mention--grey fr-mb-0">
+                Ces statistiques ne sont pas consultables par lien
+              </p>
+            </div>
+          </>
+        )}
+        <ToggleSwitch
+          disabled={enCours}
+          label={null}
+          checked={partage}
+          labelPosition="left"
+          showCheckedHint={false}
+          onChange={basculer}
+        />
+      </div>
+      <Button
+        disabled={!partage}
+        iconId="fr-icon-link"
+        iconPosition="right"
+        size="large"
+        className="fr-width-full fr-justify-content-center"
+        onClick={copier}
+      >
+        Copier le lien
+      </Button>
+    </div>
+  )
+}
+
+export const PartageStatistiques = ({
+  liens,
+}: {
+  liens: readonly LienDuPerimetre[]
+}) => {
+  const unPartageEstActif = liens.some(({ lien }) => lien !== null)
+  const plusieursPerimetres = liens.length > 1
+
+  return (
     <>
       <div className="fr-position-relative">
         <Button
           {...PartageStatistiquesModal.buttonProps}
-          title={`${shared ? 'Desactiver' : 'Activer'} le partage de mes statistiques`}
+          title="Partager mes statistiques"
           priority="secondary"
           iconId="fr-icon-link"
         ></Button>
-        {shared && (
+        {unPartageEstActif && (
           <div
             aria-hidden={true}
             className="fr-background-default--grey fr-position-absolute fr-top-0 fr-right-0 fr-icon fr-mr-n2v fr-mt-n2v fr-flex fr-align-items-center fr-border-radius--8"
@@ -87,58 +164,17 @@ export const PartageStatistiques = ({
         )}
       </div>
       <PartageStatistiquesModal.Component title="Partager vos statistiques via un lien">
-        <div className="fr-flex fr-flex-gap-6v fr-align-items-center fr-border fr-border-radius--4 fr-my-8v fr-px-6v fr-py-4v">
-          {shared ? (
-            <>
-              <div
-                className="fr-background-contrast--success fr-p-4v fr-border-radius--8 fr-display-inline-block"
-                aria-hidden
-              >
-                <span className="ri-earth-fill ri-lg fr-line-height-1 fr-text-default--success" />
-              </div>
-              <div>
-                Lien de partage public activé
-                <p className="fr-text--xs fr-text-mention--grey fr-mb-0">
-                  Tous les internautes disposant du lien peuvent consulter vos
-                  statistiques et utiliser les filtres et les exports
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <div
-                className="fr-background-contrast--grey fr-p-4v fr-border-radius--8 fr-display-inline-block"
-                aria-hidden
-              >
-                <span className="ri-link-unlink ri-lg fr-line-height-1 fr-text-disabled-grey" />
-              </div>
-              <div className="fr-flex-1">
-                Lien de partage public désactivé
-                <p className="fr-text--xs fr-text-mention--grey fr-mb-0">
-                  Vos statistiques ne sont pas consultables par lien
-                </p>
-              </div>
-            </>
-          )}
-          <ToggleSwitch
-            disabled={enCours}
-            label={null}
-            checked={shared}
-            labelPosition="left"
-            showCheckedHint={false}
-            onChange={handleTogglePartage}
+        {liens.map((lienDuPerimetre) => (
+          <LigneDePartage
+            key={lienDuPerimetre.perimetre}
+            lienDuPerimetre={lienDuPerimetre}
+            titre={
+              plusieursPerimetres
+                ? titreDuPerimetre(lienDuPerimetre.perimetre)
+                : null
+            }
           />
-        </div>
-        <Button
-          disabled={!shared}
-          iconId="fr-icon-link"
-          iconPosition="right"
-          size="large"
-          className="fr-width-full fr-justify-content-center"
-          onClick={handleCopy}
-        >
-          Copier le lien
-        </Button>
+        ))}
       </PartageStatistiquesModal.Component>
     </>
   )

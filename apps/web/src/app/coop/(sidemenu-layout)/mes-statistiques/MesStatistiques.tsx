@@ -6,7 +6,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
-import type { LienDePartageId } from '@app/web/features/mediateurs/domain'
+import type { LienDuPerimetre } from '@app/web/features/mediateurs/domain'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -25,7 +25,7 @@ export const MesStatistiques = (
     user: SessionUser
     codeInsee?: string | null
     mediateurCoordonnesCount: number
-    lienDePartage: LienDePartageId | null
+    liensDePartage: readonly LienDuPerimetre[]
   },
 ) => {
   const {
@@ -41,7 +41,7 @@ export const MesStatistiques = (
     user,
     hasCrasV1,
     activiteSourceOptions,
-    lienDePartage,
+    liensDePartage,
   } = mesStatistiquesProps
 
   return (
@@ -71,7 +71,7 @@ export const MesStatistiques = (
             hasCrasV1={hasCrasV1.hasCrasV1}
           />
           <div className="fr-flex fr-flex-gap-2v">
-            <PartageStatistiques lien={lienDePartage} />
+            <PartageStatistiques liens={liensDePartage} />
             <ExportStatistiques
               filters={activitesFilters}
               communesOptions={communesOptions}

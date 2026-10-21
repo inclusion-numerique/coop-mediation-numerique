@@ -1,5 +1,6 @@
 import type { CoordinateurId } from './coordinateur-id'
 import type { MediateurId } from './mediateur-id'
+import type { PerimetrePartage } from './perimetre-partage'
 
 export type ProprietairePartage =
   | { readonly _tag: 'Mediateur'; readonly mediateurId: MediateurId }
@@ -10,11 +11,28 @@ export type Rattachements = {
   readonly coordinateurId: CoordinateurId | null
 }
 
-export const proprietairePartageDe = ({
+const enTantQueMediateur = (
+  mediateurId: MediateurId | null,
+): ProprietairePartage[] =>
+  mediateurId === null ? [] : [{ _tag: 'Mediateur', mediateurId }]
+
+const enTantQueCoordinateur = (
+  coordinateurId: CoordinateurId | null,
+): ProprietairePartage[] =>
+  coordinateurId === null ? [] : [{ _tag: 'Coordinateur', coordinateurId }]
+
+export const proprietairesPossibles = ({
   mediateurId,
   coordinateurId,
-}: Rattachements): ProprietairePartage | null => {
-  if (mediateurId !== null) return { _tag: 'Mediateur', mediateurId }
-  if (coordinateurId !== null) return { _tag: 'Coordinateur', coordinateurId }
-  return null
-}
+}: Rattachements): readonly ProprietairePartage[] => [
+  ...enTantQueMediateur(mediateurId),
+  ...enTantQueCoordinateur(coordinateurId),
+]
+
+export const proprietaireDuPerimetre = (
+  rattachements: Rattachements,
+  perimetre: PerimetrePartage,
+): ProprietairePartage | null =>
+  proprietairesPossibles(rattachements).find(
+    (proprietaire) => proprietaire._tag === perimetre,
+  ) ?? null

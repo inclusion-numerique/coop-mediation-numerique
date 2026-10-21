@@ -286,6 +286,6 @@ export const Statistiques: Story = {
     ...statistiquesPageData,
     codeInsee: '75101',
     user: testSessionUser,
-    lienDePartage: null,
+    liensDePartage: [],
   },
 }

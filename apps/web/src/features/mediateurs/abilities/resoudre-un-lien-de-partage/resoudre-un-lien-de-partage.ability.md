@@ -18,6 +18,12 @@
 * When un internaute ouvre le lien de ce partage
 * Then le lien désigne le coordinateur de ce compte
 
+### Scenario: Le lien médiateur d'un compte qui a les deux rôles désigne le médiateur
+
+* Given un compte médiateur et coordinateur qui partage ses statistiques des deux côtés
+* When un internaute ouvre le lien du partage du médiateur
+* Then le lien désigne le médiateur de ce compte
+
 ### Scenario: Le lien coordinateur d'un compte qui a les deux rôles désigne le coordinateur
 
 * Given un compte médiateur et coordinateur qui partage ses statistiques des deux côtés

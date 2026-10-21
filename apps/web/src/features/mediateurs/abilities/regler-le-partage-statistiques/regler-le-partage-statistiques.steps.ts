@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { reglerLePartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques'
-import { AuteurId } from '@app/web/features/mediateurs/domain'
+import { AuteurId, PerimetrePartage } from '@app/web/features/mediateurs/domain'
 import {
   compteSeme,
   rattachementsSemes,
@@ -29,10 +29,19 @@ const partageDu = (role: 'mediateur' | 'coordinateur') => {
   })
 }
 
-const regler = async (actif: boolean) => {
+const perimetreDuCompte = (): PerimetrePartage =>
+  PerimetrePartage(
+    compteSeme().mediateurId === null ? 'Coordinateur' : 'Mediateur',
+  )
+
+const regler = async (
+  actif: boolean,
+  perimetre: PerimetrePartage = perimetreDuCompte(),
+) => {
   dernier.avant = await partageDu('mediateur')
   dernier.reglage = await reglerLePartageStatistiques({
     rattachements: rattachementsSemes(),
+    perimetre,
     actif,
     auteurId: AuteurId(compteSeme().userId),
     maintenant: momentDuReglage,
@@ -41,6 +50,10 @@ const regler = async (actif: boolean) => {
 
 When('ce compte active le partage de ses statistiques', async () => {
   await regler(true)
+})
+
+When('ce compte active le partage des statistiques de son équipe', async () => {
+  await regler(true, PerimetrePartage('Coordinateur'))
 })
 
 When('ce compte désactive le partage de ses statistiques', async () => {
@@ -78,6 +91,10 @@ Then("ce compte n'a aucun partage", async () => {
   assert.strictEqual(await partageDu('mediateur'), null)
 })
 
+Then("le médiateur n'a aucun partage", async () => {
+  assert.strictEqual(await partageDu('mediateur'), null)
+})
+
 Then("le coordinateur n'a aucun partage", async () => {
   assert.strictEqual(await partageDu('coordinateur'), null)
 })
@@ -88,6 +105,16 @@ Then(
     assert.deepStrictEqual(dernier.reglage, {
       success: false,
       error: { _tag: 'AucuneStatistiqueAPartager' },
+    })
+  },
+)
+
+Then(
+  "le réglage du partage échoue car le compte n'est pas rattaché à ce périmètre",
+  () => {
+    assert.deepStrictEqual(dernier.reglage, {
+      success: false,
+      error: { _tag: 'PerimetreNonRattache' },
     })
   },
 )

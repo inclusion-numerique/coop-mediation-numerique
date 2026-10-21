@@ -28,6 +28,7 @@ export const reglerLePartageStatistiquesAction = actionBuilder()
       ({ input, user }) =>
         reglerLePartageStatistiques({
           rattachements: rattachementsDe(user),
+          perimetre: input.perimetre,
           actif: input.actif,
           auteurId: AuteurId(user.id),
         }),

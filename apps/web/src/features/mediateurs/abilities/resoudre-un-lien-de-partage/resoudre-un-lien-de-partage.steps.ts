@@ -18,6 +18,10 @@ When('un internaute ouvre le lien de ce partage', async () => {
   await ouvrir(lien)
 })
 
+When('un internaute ouvre le lien du partage du médiateur', async () => {
+  await ouvrir(compteSeme().partages.mediateur)
+})
+
 When('un internaute ouvre le lien du partage du coordinateur', async () => {
   await ouvrir(compteSeme().partages.coordinateur)
 })

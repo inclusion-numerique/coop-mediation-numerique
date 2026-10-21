@@ -4,7 +4,7 @@ import {
   CoordinateurId,
   LienDePartageId,
   MediateurId,
-  proprietairePartageDe,
+  type ProprietairePartage,
   UtilisateurId,
 } from '../../../../domain'
 import { LienIntrouvable, type PartageResolu } from '../../domain'
@@ -26,20 +26,26 @@ const lirePartage = (id: LienDePartageId) =>
 
 type PartageLu = NonNullable<Awaited<ReturnType<typeof lirePartage>>>
 
+const resolu = (
+  proprietaire: ProprietairePartage,
+  userId: string,
+): PartageResolu => ({ proprietaire, utilisateurId: UtilisateurId(userId) })
+
 const partageResolu = ({
   mediateur,
   coordinateur,
 }: PartageLu): PartageResolu | null => {
-  const proprietaire = proprietairePartageDe({
-    mediateurId: mediateur === null ? null : MediateurId(mediateur.id),
-    coordinateurId:
-      coordinateur === null ? null : CoordinateurId(coordinateur.id),
-  })
-  const compte = mediateur ?? coordinateur
-
-  return proprietaire === null || compte === null
-    ? null
-    : { proprietaire, utilisateurId: UtilisateurId(compte.userId) }
+  if (mediateur !== null)
+    return resolu(
+      { _tag: 'Mediateur', mediateurId: MediateurId(mediateur.id) },
+      mediateur.userId,
+    )
+  if (coordinateur !== null)
+    return resolu(
+      { _tag: 'Coordinateur', coordinateurId: CoordinateurId(coordinateur.id) },
+      coordinateur.userId,
+    )
+  return null
 }
 
 export const resoudreUnLienDePartage = async (

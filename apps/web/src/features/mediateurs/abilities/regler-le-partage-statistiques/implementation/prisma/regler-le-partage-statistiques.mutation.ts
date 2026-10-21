@@ -1,14 +1,18 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
-import {
-  type AuteurId,
-  proprietairePartageDe,
-  type Rattachements,
+import type {
+  AuteurId,
+  PerimetrePartage,
+  Rattachements,
 } from '../../../../domain'
-import { AucuneStatistiqueAPartager } from '../../domain'
+import {
+  type AucuneStatistiqueAPartager,
+  type PerimetreNonRattache,
+  proprietaireChoisi,
+} from '../../domain'
 
 type Partage = ReturnType<typeof partageDuProprietaire>
 
@@ -27,21 +31,25 @@ const desactiver = (partage: Partage, maintenant: Date) =>
 
 export const reglerLePartageStatistiques = async ({
   rattachements,
+  perimetre,
   actif,
   auteurId,
   maintenant = new Date(),
 }: {
   readonly rattachements: Rattachements
+  readonly perimetre: PerimetrePartage
   readonly actif: boolean
   readonly auteurId: AuteurId
   readonly maintenant?: Date
-}): Promise<Result<void, AucuneStatistiqueAPartager>> => {
+}): Promise<
+  Result<void, AucuneStatistiqueAPartager | PerimetreNonRattache>
+> => {
   const stopwatch = createStopwatch()
 
-  const proprietaire = proprietairePartageDe(rattachements)
-  if (proprietaire === null) return failure(AucuneStatistiqueAPartager())
+  const proprietaire = proprietaireChoisi(rattachements, perimetre)
+  if (!proprietaire.success) return proprietaire
 
-  const partage = partageDuProprietaire(proprietaire)
+  const partage = partageDuProprietaire(proprietaire.data)
   await (actif ? activer(partage) : desactiver(partage, maintenant))
 
   addMutationLog({

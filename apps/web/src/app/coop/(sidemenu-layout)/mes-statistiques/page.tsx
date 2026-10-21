@@ -12,7 +12,7 @@ import {
   employeuseCodeInsee,
 } from '@app/web/features/employeuse/server'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { consulterMonLienDePartage } from '@app/web/features/mediateurs/abilities/consulter-mon-lien-de-partage'
+import { consulterMesLiensDePartage } from '@app/web/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import {
   CoordinateurId,
@@ -53,7 +53,7 @@ const MesStatistiquesPage = async (props: {
     date: new Date(),
   })
 
-  const lienDePartage = await consulterMonLienDePartage({
+  const liensDePartage = await consulterMesLiensDePartage({
     mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
     coordinateurId: user.coordinateur?.id
       ? CoordinateurId(user.coordinateur.id)
@@ -73,7 +73,7 @@ const MesStatistiquesPage = async (props: {
           user={user}
           mediateurCoordonnesCount={mediateurCoordonnesIds.length}
           codeInsee={employeuse ? employeuseCodeInsee(employeuse) : undefined}
-          lienDePartage={lienDePartage}
+          liensDePartage={liensDePartage}
           {...mesStatistiques}
         />
       </ClientBinder>
