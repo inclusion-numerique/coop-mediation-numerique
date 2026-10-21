@@ -1,4 +1,5 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { reglerMaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
@@ -11,6 +12,7 @@ import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
+import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
@@ -45,7 +47,10 @@ const LieuActiviteListPage = async ({
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <>
+      <ClientBinder
+        bind={REGLER_MA_VISIBILITE_CARTO_ACTION_KEY}
+        to={reglerMaVisibiliteCartoAction}
+      >
         <SkipLinksPortal />
         <div id={contentId}>
           <MesLieuxActivitePage
@@ -79,7 +84,7 @@ const LieuActiviteListPage = async ({
             entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
           />
         </div>
-      </>
+      </ClientBinder>
     </ClientBinder>
   )
 }

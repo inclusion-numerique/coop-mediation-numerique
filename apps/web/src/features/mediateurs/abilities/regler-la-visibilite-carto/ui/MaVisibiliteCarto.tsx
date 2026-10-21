@@ -1,11 +1,12 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { reglerMaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
+import { inject } from '@app/web/libs/injection/client'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '../action/regler-la-visibilite-carto.key'
 
 export const MaVisibiliteCarto = ({ visible }: { visible: boolean }) => {
   const router = useRouter()
@@ -13,7 +14,7 @@ export const MaVisibiliteCarto = ({ visible }: { visible: boolean }) => {
 
   const basculer = () =>
     demarrer(async () => {
-      const resultat = await reglerMaVisibiliteCartoAction({
+      const resultat = await inject(REGLER_MA_VISIBILITE_CARTO_ACTION_KEY)({
         visible: !visible,
       })
 

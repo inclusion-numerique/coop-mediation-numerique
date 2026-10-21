@@ -1,8 +1,10 @@
 import { relancerUneInvitationAction } from '@app/web/app/_actions/equipe/relancer-une-invitation.action'
 import { retirerUnMembreAction } from '@app/web/app/_actions/equipe/retirer-un-membre.action'
+import { reglerLaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/regler-la-visibilite-carto.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { statutCompte } from '@app/web/features/utilisateurs/use-cases/list/statut-compte'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
@@ -34,15 +36,20 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
         bind={RETIRER_UN_MEMBRE_ACTION_KEY}
         to={retirerUnMembreAction}
       >
-        <AdministrationUserPage
-          data={{
-            ...data,
-            user: {
-              ...data.user,
-              statutCompte: statutCompte(new Date())(data.user),
-            },
-          }}
-        />
+        <ClientBinder
+          bind={REGLER_LA_VISIBILITE_CARTO_ACTION_KEY}
+          to={reglerLaVisibiliteCartoAction}
+        >
+          <AdministrationUserPage
+            data={{
+              ...data,
+              user: {
+                ...data.user,
+                statutCompte: statutCompte(new Date())(data.user),
+              },
+            }}
+          />
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )
