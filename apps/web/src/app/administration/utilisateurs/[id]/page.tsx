@@ -6,7 +6,7 @@ import { reglerLaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/
 import { changerLesRolesAction } from '@app/web/app/_actions/utilisateurs/changer-les-roles.action'
 import { deconnecterUnUtilisateurAction } from '@app/web/app/_actions/utilisateurs/deconnecter-un-utilisateur.action'
 import { supprimerCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-compte.action'
-import UsurpUserButton from '@app/web/app/administration/usurpation/UsurpUserButton'
+import { usurperUnUtilisateurAction } from '@app/web/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { historiqueEmployeusesAffichage } from '@app/web/features/employeuse'
@@ -41,6 +41,8 @@ import { DECONNECTER_UN_UTILISATEUR_ACTION_KEY } from '@app/web/features/utilisa
 import { BoutonDeconnecter } from '@app/web/features/utilisateurs/abilities/deconnecter-un-utilisateur/ui'
 import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
 import { BoutonSupprimerLeCompte } from '@app/web/features/utilisateurs/abilities/supprimer-compte/ui'
+import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
+import { BoutonUsurper } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
 import {
   coordinateurDe,
   mediateurDe,
@@ -184,89 +186,94 @@ const Page = async (props: {
                     bind={CHANGER_LES_ROLES_ACTION_KEY}
                     to={changerLesRolesAction}
                   >
-                    <FicheUtilisateurPage
-                      fiche={fiche}
-                      sections={{
-                        actions: (
-                          <div className="fr-flex fr-flex-gap-2v">
-                            <BoutonChangerLesRoles
-                              utilisateurId={fiche.id}
-                              mediateur={{
-                                actuel: mediateur !== null,
-                                retirable: mediateur?.retirable ?? true,
-                              }}
-                              coordinateur={{
-                                actuel: coordinateur !== null,
-                                retirable: coordinateur?.retirable ?? true,
-                              }}
-                            />
-                            {fiche.role === 'User' &&
-                              fiche.supprimeLe === null && (
-                                <BoutonSupprimerLeCompte
-                                  utilisateurId={fiche.id}
-                                  nom={fiche.nomAffiche}
-                                />
-                              )}
-                          </div>
-                        ),
-                        avertissements: (
-                          <AvertissementsEtatInscription
-                            user={{
-                              role: fiche.role,
-                              inscriptionValidee: fiche.inscritLe,
-                              mediateur:
-                                mediateur === null
-                                  ? null
-                                  : { id: mediateur.id },
-                              coordinateur:
-                                coordinateur === null
-                                  ? null
-                                  : { id: coordinateur.id },
-                            }}
-                          />
-                        ),
-                        outils: (
-                          <div>
-                            {ServerWebAppConfig.Sudo.usurpation && (
-                              <UsurpUserButton
-                                userId={fiche.id}
-                                size="small"
-                                className="fr-mr-2v"
+                    <ClientBinder
+                      bind={USURPER_UN_UTILISATEUR_ACTION_KEY}
+                      to={usurperUnUtilisateurAction}
+                    >
+                      <FicheUtilisateurPage
+                        fiche={fiche}
+                        sections={{
+                          actions: (
+                            <div className="fr-flex fr-flex-gap-2v">
+                              <BoutonChangerLesRoles
+                                utilisateurId={fiche.id}
+                                mediateur={{
+                                  actuel: mediateur !== null,
+                                  retirable: mediateur?.retirable ?? true,
+                                }}
+                                coordinateur={{
+                                  actuel: coordinateur !== null,
+                                  retirable: coordinateur?.retirable ?? true,
+                                }}
                               />
-                            )}
-                            <Button
-                              iconId="fr-icon-git-merge-line"
-                              priority="tertiary"
-                              size="small"
-                              linkProps={{
-                                href: `/administration/utilisateurs/${fiche.id}/merge`,
+                              {fiche.role === 'User' &&
+                                fiche.supprimeLe === null && (
+                                  <BoutonSupprimerLeCompte
+                                    utilisateurId={fiche.id}
+                                    nom={fiche.nomAffiche}
+                                  />
+                                )}
+                            </div>
+                          ),
+                          avertissements: (
+                            <AvertissementsEtatInscription
+                              user={{
+                                role: fiche.role,
+                                inscriptionValidee: fiche.inscritLe,
+                                mediateur:
+                                  mediateur === null
+                                    ? null
+                                    : { id: mediateur.id },
+                                coordinateur:
+                                  coordinateur === null
+                                    ? null
+                                    : { id: coordinateur.id },
                               }}
-                            >
-                              Fusionner avec un autre utilisateur
-                            </Button>
-                          </div>
-                        ),
-                        deconnexion: (
-                          <BoutonDeconnecter utilisateurId={fiche.id} />
-                        ),
-                        visibiliteCarto:
-                          mediateur === null ? null : (
-                            <VisibiliteCartoDuMediateur
-                              mediateurId={mediateur.id}
-                              visible={mediateur.visible}
                             />
                           ),
-                        equipe,
-                        employeuses: (
-                          <HistoriqueDesEmployeuses
-                            emplois={historiqueEmployeusesAffichage(
-                              employeuses,
-                            )}
-                          />
-                        ),
-                        lieux,
-                      }}
-                    />
+                          outils: (
+                            <div>
+                              {ServerWebAppConfig.Sudo.usurpation && (
+                                <BoutonUsurper
+                                  utilisateurId={fiche.id}
+                                  taille="small"
+                                  className="fr-mr-2v"
+                                />
+                              )}
+                              <Button
+                                iconId="fr-icon-git-merge-line"
+                                priority="tertiary"
+                                size="small"
+                                linkProps={{
+                                  href: `/administration/utilisateurs/${fiche.id}/merge`,
+                                }}
+                              >
+                                Fusionner avec un autre utilisateur
+                              </Button>
+                            </div>
+                          ),
+                          deconnexion: (
+                            <BoutonDeconnecter utilisateurId={fiche.id} />
+                          ),
+                          visibiliteCarto:
+                            mediateur === null ? null : (
+                              <VisibiliteCartoDuMediateur
+                                mediateurId={mediateur.id}
+                                visible={mediateur.visible}
+                              />
+                            ),
+                          equipe,
+                          employeuses: (
+                            <HistoriqueDesEmployeuses
+                              emplois={historiqueEmployeusesAffichage(
+                                employeuses,
+                              )}
+                            />
+                          ),
+                          lieux,
+                        }}
+                      />
+                    </ClientBinder>
                   </ClientBinder>
                 </ClientBinder>
               </ClientBinder>
