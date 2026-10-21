@@ -15,13 +15,6 @@
 * And la session est celle du compte usurpé
 * And la session retient l'administrateur usurpateur
 
-### Scenario: Terminer l'usurpation
-
-* Given un administrateur connecté et un compte de test à usurper
-* And l'administrateur usurpe ce compte, usurpation limitée aux comptes de test
-* When l'administrateur termine l'usurpation
-* Then la session est rendue à l'administrateur
-
 ## Rule: Un compte réel ne s'usurpe que si l'instance le permet
 
 ### Scenario: Un compte réel ne s'usurpe pas en production

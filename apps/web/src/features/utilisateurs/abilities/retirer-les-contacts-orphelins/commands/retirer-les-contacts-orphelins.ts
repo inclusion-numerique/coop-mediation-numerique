@@ -1,4 +1,6 @@
+import type { AdresseCourriel } from '@app/web/features/utilisateurs/domain'
 import {
+  comptesRattaches,
   contactsAReconcilier,
   orphelinsParmi,
   type RetirerLesContactsOrphelinsPorts,
@@ -9,15 +11,21 @@ export type BilanDesContacts = {
   readonly contacts: number
   readonly anonymisesSupprimes: number
   readonly orphelinsRetires: number
-  readonly echecs: readonly string[]
+  readonly echecs: readonly AdresseCourriel[]
 }
 
 const appliquer = (
-  courriels: readonly string[],
-  action: (courriel: string) => Promise<void>,
-): Promise<{ readonly faits: number; readonly echecs: readonly string[] }> =>
+  courriels: readonly AdresseCourriel[],
+  action: (courriel: AdresseCourriel) => Promise<void>,
+): Promise<{
+  readonly faits: number
+  readonly echecs: readonly AdresseCourriel[]
+}> =>
   courriels.reduce<
-    Promise<{ readonly faits: number; readonly echecs: readonly string[] }>
+    Promise<{
+      readonly faits: number
+      readonly echecs: readonly AdresseCourriel[]
+    }>
   >(
     async (precedent, courriel) => {
       const bilan = await precedent
@@ -36,9 +44,7 @@ export const retirerLesContactsOrphelins = async (
   const { anonymises, rattaches } = contactsAReconcilier(contacts)
   const orphelins = orphelinsParmi(
     rattaches,
-    await inscritsVivantsParmi(
-      rattaches.map(({ utilisateurId }) => utilisateurId),
-    ),
+    await inscritsVivantsParmi(comptesRattaches(rattaches)),
   )
 
   const suppressions = await appliquer(anonymises, ports.supprimerLeContact)

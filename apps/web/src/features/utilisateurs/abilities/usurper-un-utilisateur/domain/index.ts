@@ -1,6 +1,6 @@
 export {
   autoriserUsurpation,
   type CibleUsurpation,
-  type PorteeUsurpation,
+  PorteeUsurpation,
   UsurpationHorsFixtures,
 } from './usurpation'

@@ -1,5 +1,7 @@
 import {
+  CoordinateurId,
   Dispositif,
+  MediateurId,
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
@@ -13,12 +15,12 @@ import {
 import { rolesDemandes } from './roles-demandes'
 
 const mediateurVierge: MediateurAReaffecter = {
-  id: 'med',
+  id: MediateurId('8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d'),
   activites: false,
   beneficiaires: false,
 }
 const coordinateurVierge: CoordinateurAReaffecter = {
-  id: 'coord',
+  id: CoordinateurId('9b2c3d4e-5f6a-4b7c-9d8e-0f1a2b3c4d5e'),
   equipe: false,
   activitesCoordination: false,
   invitationsEnAttente: false,
@@ -70,7 +72,7 @@ describe('plan de changement des rôles', () => {
     )
     expect(plan.success && plan.data.operations).toEqual([
       { _tag: 'AjouterCoordinateur' },
-      { _tag: 'RetirerMediateur', mediateurId: 'med' },
+      { _tag: 'RetirerMediateur', mediateurId: mediateurVierge.id },
     ])
   })
 

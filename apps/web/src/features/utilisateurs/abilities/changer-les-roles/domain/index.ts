@@ -11,7 +11,6 @@ export {
   type MediateurAReaffecter,
   type OperationRole,
   type PlanDeChangement,
-  type ProfilApresChangement,
   planDeChangement,
 } from './plan-de-changement'
 export { type RolesDemandes, rolesDemandes } from './roles-demandes'

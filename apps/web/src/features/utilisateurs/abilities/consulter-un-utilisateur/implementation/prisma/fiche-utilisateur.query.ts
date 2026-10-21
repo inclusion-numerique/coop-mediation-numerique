@@ -2,17 +2,22 @@ import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
+import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   AdresseCourriel,
+  CoordinateurId,
   coordinateurEstVierge,
   cycleDeVie,
   dispositifDe,
   jalon,
+  MediateurId,
   mediateurEstVierge,
   nomAffiche,
+  Prenom,
   RoleUtilisateur,
   rattachements,
   statutDe,
+  telephoneEnregistrable,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import type { Prisma } from '@app/web/generated/prisma/client'
@@ -99,17 +104,20 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
       nomComplet: row.name,
       courriel: row.email,
     }),
-    prenom: row.firstName,
+    prenom: Prenom.safe(row.firstName ?? ''),
     nom: row.lastName,
     courriel: AdresseCourriel(row.email),
-    telephone: row.phone,
+    telephone: telephoneEnregistrable(row.phone),
     role,
     dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
     siret: row.siret,
     creeLe: row.created,
     inscritLe: row.inscriptionValidee,
     supprimeLe: row.deleted,
-    profilInscription: row.profilInscription,
+    profilInscription:
+      row.profilInscription === null
+        ? null
+        : ProfilInscription(row.profilInscription),
     derniereConnexion: jalon(row.lastLogin),
     derniereVisite,
     statut: statutDe(
@@ -149,7 +157,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
       row.mediateur === null
         ? null
         : {
-            id: row.mediateur.id,
+            id: MediateurId(row.mediateur.id),
             creeLe: row.mediateur.creation,
             modifieLe: row.mediateur.modification,
             beneficiaires: row.mediateur.beneficiairesCount,
@@ -170,7 +178,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
       row.coordinateur === null
         ? null
         : {
-            id: row.coordinateur.id,
+            id: CoordinateurId(row.coordinateur.id),
             creeLe: row.coordinateur.creation,
             modifieLe: row.coordinateur.modification,
             mediateursCoordonnes: row.coordinateur._count.mediateursCoordonnes,

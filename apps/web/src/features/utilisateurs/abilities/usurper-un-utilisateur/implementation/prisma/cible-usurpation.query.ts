@@ -1,7 +1,10 @@
 import {
+  CoordinateurId,
+  MediateurId,
   nomAffiche,
   origineDuCompte,
   RoleUtilisateur,
+  rattachements,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
@@ -41,8 +44,12 @@ export const cibleUsurpation = async (
         origine: origineDuCompte(row.isFixture),
         role: RoleUtilisateur(row.role),
         inscritLe: row.inscriptionValidee,
-        mediateurId: row.mediateur?.id ?? null,
-        coordinateurId: row.coordinateur?.id ?? null,
+        rattachements: rattachements(
+          row.mediateur === null ? null : MediateurId(row.mediateur.id),
+          row.coordinateur === null
+            ? null
+            : CoordinateurId(row.coordinateur.id),
+        ),
       }
 }
 

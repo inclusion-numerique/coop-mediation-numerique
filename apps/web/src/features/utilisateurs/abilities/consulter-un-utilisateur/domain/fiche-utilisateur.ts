@@ -1,10 +1,15 @@
+import type { ProfilInscription } from '@app/web/features/inscription/domain'
 import type {
   AdresseCourriel,
+  CoordinateurId,
   Dispositif,
   Jalon,
+  MediateurId,
+  Prenom,
   Rattachements,
   RoleUtilisateur,
   StatutCompte,
+  Telephone,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 
@@ -14,7 +19,7 @@ export type CoordinationDuMediateur = {
 }
 
 export type MediateurDeLaFiche = {
-  readonly id: string
+  readonly id: MediateurId
   readonly creeLe: Date
   readonly modifieLe: Date
   readonly beneficiaires: number
@@ -26,7 +31,7 @@ export type MediateurDeLaFiche = {
 }
 
 export type CoordinateurDeLaFiche = {
-  readonly id: string
+  readonly id: CoordinateurId
   readonly creeLe: Date
   readonly modifieLe: Date
   readonly mediateursCoordonnes: number
@@ -46,17 +51,17 @@ export type Evenement = {
 export type FicheUtilisateur = {
   readonly id: UtilisateurId
   readonly nomAffiche: string
-  readonly prenom: string | null
+  readonly prenom: Prenom | null
   readonly nom: string | null
   readonly courriel: AdresseCourriel
-  readonly telephone: string | null
+  readonly telephone: Telephone | null
   readonly role: RoleUtilisateur
   readonly dispositif: Dispositif
   readonly siret: string | null
   readonly creeLe: Date
   readonly inscritLe: Date | null
   readonly supprimeLe: Date | null
-  readonly profilInscription: string | null
+  readonly profilInscription: ProfilInscription | null
   readonly derniereConnexion: Jalon
   readonly derniereVisite: Jalon
   readonly statut: StatutCompte

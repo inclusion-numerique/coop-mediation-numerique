@@ -1,9 +1,11 @@
+import { failure, success } from '@app/web/libraries/result'
 import { AdresseCourriel } from './adresse-courriel'
 import {
   type CompteARelancer,
   deroulerLesRelances,
   type PortsDeRelance,
 } from './derouler-les-relances'
+import { Prenom } from './prenom'
 import { Relance } from './relance'
 import { UtilisateurId } from './utilisateur-id'
 
@@ -17,7 +19,7 @@ const compte = (
 ): CompteARelancer => ({
   utilisateurId: UtilisateurId(id),
   courriel: AdresseCourriel(`${id.slice(0, 4)}@example.com`),
-  prenom: 'Jeanne',
+  prenom: Prenom('Jeanne'),
   estMediateur: true,
   estCoordinateur: false,
   situation: {
@@ -43,7 +45,12 @@ const journal = () => {
       consigner(`relance ${palier}`)
     },
     avertir: async () => consigner('avertissement'),
-    effacer: async () => consigner('effacement'),
+    effacer: async (destinataire) => {
+      if (destinataire.utilisateurId === UN)
+        return failure({ _tag: 'RoleProtege' })
+      consigner('effacement')
+      return success(undefined)
+    },
     noter: async (_, relance) => consigner(`note ${relance}`),
   }
   return { etat, ports }
@@ -80,6 +87,30 @@ describe('dérouler les relances', () => {
       MAINTENANT,
     )
 
+    expect(etat.evenements).toEqual(['effacement'])
+  })
+
+  it('signale un effacement refusé sans interrompre les suivants', async () => {
+    const { etat, ports } = journal()
+
+    const rapports = await deroulerLesRelances(
+      [
+        compte(UN, 106, 'AvertissementJ90'),
+        compte(DEUX, 106, 'AvertissementJ90'),
+      ],
+      ports,
+      MAINTENANT,
+    )
+
+    expect(rapports).toEqual([
+      {
+        utilisateurId: UN,
+        action: 'Effacer',
+        issue: 'echec',
+        cause: 'RoleProtege',
+      },
+      { utilisateurId: DEUX, action: 'Effacer', issue: 'fait' },
+    ])
     expect(etat.evenements).toEqual(['effacement'])
   })
 

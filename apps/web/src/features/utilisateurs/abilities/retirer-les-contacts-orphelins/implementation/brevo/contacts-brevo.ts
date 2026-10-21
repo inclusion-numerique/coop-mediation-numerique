@@ -2,9 +2,14 @@ import { brevoApiThrottle } from '@app/web/external-apis/brevo/createBrevoContac
 import { deleteBrevoContact } from '@app/web/external-apis/brevo/deleteBrevoContact'
 import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
 import { removeBrevoContactFromList } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
+import {
+  AdresseCourriel,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
 import type {
+  CompteDuContact,
   ContactBrevo,
   RetirerLesContactsOrphelinsPorts,
 } from '../../domain'
@@ -34,20 +39,29 @@ const lirePage = brevoApiThrottle(async (offset: number) => {
   return reponse.data
 })
 
-const versContact = ({
+const compteDuContact = (identifiantExterne: unknown): CompteDuContact => {
+  if (typeof identifiantExterne !== 'string') return { _tag: 'Aucun' }
+  const utilisateurId = UtilisateurId.safe(identifiantExterne)
+  return utilisateurId === null
+    ? { _tag: 'Inconnu' }
+    : { _tag: 'Compte', utilisateurId }
+}
+
+const versContacts = ({
   email,
   attributes,
-}: PageDeContacts['contacts'][number]): ContactBrevo => ({
-  courriel: email ?? null,
-  identifiantExterne:
-    typeof attributes.EXT_ID === 'string' ? attributes.EXT_ID : null,
-})
+}: PageDeContacts['contacts'][number]): readonly ContactBrevo[] => {
+  const courriel = email === undefined ? null : AdresseCourriel.safe(email)
+  return courriel === null
+    ? []
+    : [{ courriel, compte: compteDuContact(attributes.EXT_ID) }]
+}
 
 const lireAPartirDe = async (
   offset: number,
 ): Promise<readonly ContactBrevo[]> => {
   const page = await lirePage(offset)
-  const contacts = page.contacts.map(versContact)
+  const contacts = page.contacts.flatMap(versContacts)
   return page.contacts.length < TAILLE_DE_PAGE
     ? contacts
     : [...contacts, ...(await lireAPartirDe(offset + TAILLE_DE_PAGE))]

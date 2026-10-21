@@ -1,9 +1,12 @@
+import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   CompteSupprime,
+  type CoordinateurId,
   coordinateurDe,
   coordinateurEstVierge,
   type Dispositif,
   estRoleProtege,
+  type MediateurId,
   mediateurDe,
   mediateurEstVierge,
   type ProductionCoordinateur,
@@ -17,11 +20,11 @@ import { type ChangerLesRolesError, RoleNonVierge, RoleProtege } from './errors'
 import type { RolesDemandes } from './roles-demandes'
 
 export type MediateurAReaffecter = ProductionMediateur & {
-  readonly id: string
+  readonly id: MediateurId
 }
 
 export type CoordinateurAReaffecter = ProductionCoordinateur & {
-  readonly id: string
+  readonly id: CoordinateurId
 }
 
 export type CompteAReaffecter = {
@@ -38,27 +41,27 @@ export type CompteAReaffecter = {
 export type OperationRole =
   | { readonly _tag: 'AjouterMediateur' }
   | { readonly _tag: 'AjouterCoordinateur' }
-  | { readonly _tag: 'RetirerMediateur'; readonly mediateurId: string }
-  | { readonly _tag: 'RetirerCoordinateur'; readonly coordinateurId: string }
-
-export type ProfilApresChangement =
-  | 'Mediateur'
-  | 'ConseillerNumerique'
-  | 'Coordinateur'
-  | 'CoordinateurConseillerNumerique'
+  | { readonly _tag: 'RetirerMediateur'; readonly mediateurId: MediateurId }
+  | {
+      readonly _tag: 'RetirerCoordinateur'
+      readonly coordinateurId: CoordinateurId
+    }
 
 export type PlanDeChangement = {
   readonly operations: readonly OperationRole[]
-  readonly profil: ProfilApresChangement
+  readonly profil: ProfilInscription
 }
 
 const profilApres = (
   demande: RolesDemandes,
   dispositif: Dispositif,
-): ProfilApresChangement => {
+): ProfilInscription => {
   const conseiller = dispositif === 'ConseillerNumerique'
-  if (demande.mediateur) return conseiller ? 'ConseillerNumerique' : 'Mediateur'
-  return conseiller ? 'CoordinateurConseillerNumerique' : 'Coordinateur'
+  if (demande.mediateur)
+    return ProfilInscription(conseiller ? 'ConseillerNumerique' : 'Mediateur')
+  return ProfilInscription(
+    conseiller ? 'CoordinateurConseillerNumerique' : 'Coordinateur',
+  )
 }
 
 const operationsDuMediateur = (

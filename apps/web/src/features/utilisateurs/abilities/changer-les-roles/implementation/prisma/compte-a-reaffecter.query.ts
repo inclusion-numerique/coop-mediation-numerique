@@ -3,7 +3,9 @@ import {
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
 import {
+  CoordinateurId,
   dispositifDe,
+  MediateurId,
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
@@ -56,14 +58,14 @@ export const compteAReaffecter = async (
       row.mediateur === null
         ? null
         : {
-            id: row.mediateur.id,
+            id: MediateurId(row.mediateur.id),
             activites: row.mediateur._count.activites > 0,
             beneficiaires: row.mediateur._count.beneficiaires > 0,
           },
       row.coordinateur === null
         ? null
         : {
-            id: row.coordinateur.id,
+            id: CoordinateurId(row.coordinateur.id),
             equipe: row.coordinateur._count.mediateursCoordonnes > 0,
             activitesCoordination:
               row.coordinateur._count.ActiviteCoordination > 0,

@@ -6,7 +6,6 @@ import {
   mediateurDe,
 } from '@app/web/features/utilisateurs/domain'
 import { BadgeStatutCompte } from '@app/web/features/utilisateurs/ui'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@app/web/libs/ui/administration/AdministrationInlineLabelsValues'
@@ -20,15 +19,21 @@ import {
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import Badge from '@codegouvfr/react-dsfr/Badge'
+import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { Evenement, FicheUtilisateur } from '../../domain'
+import {
+  etiquettesDuCompte,
+  renseigne,
+  telephoneAffiche,
+} from '../fiche-utilisateur.presenter'
 
 export type SectionsDeLaFiche = {
   readonly actions: ReactNode
   readonly avertissements: ReactNode
-  readonly outils: ReactNode
+  readonly usurpation: ReactNode
   readonly deconnexion: ReactNode
   readonly visibiliteCarto: ReactNode
   readonly equipe: ReactNode
@@ -93,32 +98,42 @@ export const FicheUtilisateurPage = ({
         </AdministrationTitle>
         {sections.avertissements}
         <div className="fr-flex fr-flex-gap-2v fr-mb-6v">
-          {fiche.role === 'Admin' && <Tag small>Administrateur</Tag>}
-          {fiche.role === 'Support' && <Tag small>Support</Tag>}
-          {mediateur !== null && <Tag small>Médiateur</Tag>}
-          {fiche.dispositif === 'ConseillerNumerique' && (
-            <Tag small>Conseiller numérique</Tag>
-          )}
-          {coordinateur !== null && <Tag small>Coordinateur</Tag>}
+          {etiquettesDuCompte(fiche).map((etiquette) => (
+            <Tag key={etiquette} small>
+              {etiquette}
+            </Tag>
+          ))}
         </div>
         <AdministrationInfoCard
           title="Détails de l'utilisateur"
-          actions={sections.outils}
+          actions={
+            <div>
+              {sections.usurpation}
+              <Button
+                iconId="fr-icon-git-merge-line"
+                priority="tertiary"
+                size="small"
+                linkProps={{
+                  href: `/administration/utilisateurs/${fiche.id}/merge`,
+                }}
+              >
+                Fusionner avec un autre utilisateur
+              </Button>
+            </div>
+          }
         >
           <AdministrationInlineLabelsValues
             items={[
               { label: 'Id', value: fiche.id },
-              { label: 'Prénom', value: fiche.prenom || 'Non renseigné' },
-              { label: 'Nom de famille', value: fiche.nom || 'Non renseigné' },
+              { label: 'Prénom', value: renseigne(fiche.prenom) },
+              { label: 'Nom de famille', value: renseigne(fiche.nom) },
               {
                 label: 'Email',
                 value: <AdministrationMailtoLink email={fiche.courriel} />,
               },
               {
                 label: 'Téléphone',
-                value: fiche.telephone
-                  ? telephoneDisplayString(fiche.telephone)
-                  : 'Non renseigné',
+                value: telephoneAffiche(fiche),
               },
               { label: 'Rôle sécurité', value: fiche.role },
               {
@@ -150,7 +165,7 @@ export const FicheUtilisateurPage = ({
               { label: 'Dernière visite', value: aParis(fiche.derniereVisite) },
               {
                 label: 'Profil d’inscription',
-                value: fiche.profilInscription || 'Non renseigné',
+                value: renseigne(fiche.profilInscription),
               },
               {
                 label: 'Inscription validée',
@@ -221,7 +236,24 @@ export const FicheUtilisateurPage = ({
                 },
               ]}
             />
-            {sections.equipe}
+            {sections.equipe !== null && (
+              <>
+                <div className="fr-flex fr-mt-8v fr-mb-6v fr-align-items-center fr-justify-content-space-between">
+                  <h5 className="fr-mb-0">Équipe</h5>
+                  <Button
+                    iconId="fr-icon-user-add-line"
+                    priority="secondary"
+                    size="small"
+                    linkProps={{
+                      href: `/administration/utilisateurs/${fiche.id}/equipe-coordonnee/ajouter`,
+                    }}
+                  >
+                    Ajouter un membre
+                  </Button>
+                </div>
+                {sections.equipe}
+              </>
+            )}
           </AdministrationInfoCard>
         )}
         {(mediateur !== null || coordinateur !== null) && sections.employeuses}

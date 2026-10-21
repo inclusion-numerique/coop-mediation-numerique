@@ -1,18 +1,29 @@
 import assert from 'node:assert'
+import {
+  AdresseCourriel,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { retirerLesContactsOrphelins } from './commands/retirer-les-contacts-orphelins'
-import type { ContactBrevo } from './domain'
+import type { CompteDuContact, ContactBrevo } from './domain'
 
-const ANONYMISE = 'deleted+abcdef012345@coop-numerique.anct.gouv.fr'
-const SANS_COMPTE = `parti-${v4()}@example.com`
-const VIVANT = `vivant-${v4()}@example.com`
+const compte = (identifiant: string): CompteDuContact => ({
+  _tag: 'Compte',
+  utilisateurId: UtilisateurId(identifiant),
+})
+
+const ANONYMISE = AdresseCourriel(
+  'deleted+abcdef012345@coop-numerique.anct.gouv.fr',
+)
+const SANS_COMPTE = AdresseCourriel(`parti-${v4()}@example.com`)
+const VIVANT = AdresseCourriel(`vivant-${v4()}@example.com`)
 
 const reconciliation: {
   contacts: readonly ContactBrevo[]
-  supprimes: readonly string[]
-  retires: readonly string[]
+  supprimes: readonly AdresseCourriel[]
+  retires: readonly AdresseCourriel[]
 } = { contacts: [], supprimes: [], retires: [] }
 
 Given('un inscrit vivant présent dans la liste de diffusion', async () => {
@@ -23,15 +34,15 @@ Given('un inscrit vivant présent dans la liste de diffusion', async () => {
     inscritLe: new Date('2026-01-02'),
   })
   reconciliation.contacts = [
-    { courriel: VIVANT, identifiantExterne: utilisateurId },
+    { courriel: VIVANT, compte: compte(utilisateurId) },
   ]
 })
 
 Given("un contact anonymisé et un contact dont le compte n'existe plus", () => {
   reconciliation.contacts = [
     ...reconciliation.contacts,
-    { courriel: ANONYMISE, identifiantExterne: v4() },
-    { courriel: SANS_COMPTE, identifiantExterne: v4() },
+    { courriel: ANONYMISE, compte: compte(v4()) },
+    { courriel: SANS_COMPTE, compte: compte(v4()) },
   ]
 })
 

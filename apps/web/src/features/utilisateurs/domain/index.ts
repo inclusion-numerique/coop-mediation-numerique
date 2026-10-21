@@ -21,6 +21,7 @@ export { type CycleDeVie, cycleDeVie } from './cycle-de-vie'
 export {
   type CompteARelancer,
   deroulerLesRelances,
+  type EffacementImpossible,
   type PortsDeRelance,
 } from './derouler-les-relances'
 export type {

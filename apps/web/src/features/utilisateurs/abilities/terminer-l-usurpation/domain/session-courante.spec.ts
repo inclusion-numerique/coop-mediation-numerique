@@ -1,4 +1,7 @@
+import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import { type SessionCourante, usurpateurARetrouver } from './session-courante'
+
+const administrateur = UtilisateurId('1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f')
 
 const session = (
   usurpation: SessionCourante['usurpation'],
@@ -13,11 +16,11 @@ describe('terminer une usurpation', () => {
       usurpateurARetrouver(
         session({
           _tag: 'EnCours',
-          usurpateurId: 'admin',
+          usurpateurId: administrateur,
           usurpateurEstAdministrateur: true,
         }),
       ),
-    ).toEqual({ success: true, data: 'admin' })
+    ).toEqual({ success: true, data: administrateur })
   })
 
   it('refuse sans usurpation en cours', () => {
@@ -32,7 +35,7 @@ describe('terminer une usurpation', () => {
       usurpateurARetrouver(
         session({
           _tag: 'EnCours',
-          usurpateurId: 'ancien-admin',
+          usurpateurId: administrateur,
           usurpateurEstAdministrateur: false,
         }),
       ),

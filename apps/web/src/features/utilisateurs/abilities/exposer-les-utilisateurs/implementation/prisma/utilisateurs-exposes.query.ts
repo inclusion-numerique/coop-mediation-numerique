@@ -3,14 +3,22 @@ import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import type { CriteresDExposition } from '../../domain'
 
-const suppressionSelon: Record<
-  CriteresDExposition['supprimes'],
-  Prisma.DateTimeNullableFilter | undefined
-> = {
+const filtresDeSuppression = {
   Exclus: { equals: null },
   Seuls: { not: null },
   Inclus: undefined,
 }
+
+const suppressionSelon = (
+  selection: keyof typeof filtresDeSuppression,
+): Prisma.DateTimeNullableFilter | undefined => filtresDeSuppression[selection]
+
+const conseillersSelon = (
+  selection: CriteresDExposition['conseillersNumeriques'],
+): Prisma.UserWhereInput =>
+  selection === 'Indifferent'
+    ? {}
+    : conseillerNumeriqueWhere(selection === 'Seuls')
 
 const exposeWhere = (criteres: CriteresDExposition): Prisma.UserWhereInput => ({
   role: 'User',
@@ -18,12 +26,10 @@ const exposeWhere = (criteres: CriteresDExposition): Prisma.UserWhereInput => ({
     { inscriptionValidee: { not: null } },
     { mediateur: { is: { activites: { some: {} } } } },
   ],
-  ...(suppressionSelon[criteres.supprimes] === undefined
+  ...(suppressionSelon(criteres.supprimes) === undefined
     ? {}
-    : { deleted: suppressionSelon[criteres.supprimes] }),
-  ...(criteres.conseillerNumerique === null
-    ? {}
-    : conseillerNumeriqueWhere(criteres.conseillerNumerique)),
+    : { deleted: suppressionSelon(criteres.supprimes) }),
+  ...conseillersSelon(criteres.conseillersNumeriques),
   AND: [
     ...(criteres.identifiantsConseillerNumerique.length === 0
       ? []
@@ -49,7 +55,7 @@ const exposeWhere = (criteres: CriteresDExposition): Prisma.UserWhereInput => ({
 })
 
 const exposeSelect = (criteres: CriteresDExposition) => {
-  const suppression = suppressionSelon[criteres.supprimes]
+  const suppression = suppressionSelon(criteres.supprimes)
   const lienWhere = suppression === undefined ? {} : { suppression }
 
   return {

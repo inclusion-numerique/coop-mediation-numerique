@@ -3,6 +3,7 @@ import {
   deroulerLesRelances,
   type RapportDeRelance,
 } from '@app/web/features/utilisateurs/domain'
+import { success } from '@app/web/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
 import { inscritsSansProduction } from '../implementation'
 
@@ -19,8 +20,12 @@ export const relancerLesInscritsInactifs = async ({
       relancer: ports.envoyerLaRelance,
       avertir: ports.envoyerLAvertissement,
       effacer: async (destinataire) => {
-        await ports.supprimerLeCompte(destinataire.utilisateurId)
+        const suppression = await ports.supprimerLeCompte(
+          destinataire.utilisateurId,
+        )
+        if (!suppression.success) return suppression
         await ports.envoyerLAvisDEffacement(destinataire)
+        return success(undefined)
       },
       noter: noterLaRelance('Nouveau'),
     },

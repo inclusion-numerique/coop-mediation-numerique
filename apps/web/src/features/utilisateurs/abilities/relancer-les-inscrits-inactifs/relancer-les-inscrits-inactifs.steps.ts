@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@app/web/generated/prisma/client'
+import { success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
@@ -51,7 +52,10 @@ When('les inscrits inactifs sont relancés', async () => {
         consigner(id, 'avertissement'),
       envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
         consigner(id, 'avis de suppression'),
-      supprimerLeCompte: async (id) => consigner(id, 'suppression'),
+      supprimerLeCompte: async (id) => {
+        consigner(id, 'suppression')
+        return success(undefined)
+      },
     },
   })
 })

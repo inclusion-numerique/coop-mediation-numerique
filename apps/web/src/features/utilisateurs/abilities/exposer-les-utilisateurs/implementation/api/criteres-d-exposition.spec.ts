@@ -4,7 +4,7 @@ describe('critères d’exposition des utilisateurs', () => {
   it('expose tout sans filtre', () => {
     expect(criteresDExposition({})).toEqual({
       supprimes: 'Inclus',
-      conseillerNumerique: null,
+      conseillersNumeriques: 'Indifferent',
       identifiantsConseillerNumerique: [],
       identifiantsDataspace: [],
     })
@@ -20,7 +20,7 @@ describe('critères d’exposition des utilisateurs', () => {
       }),
     ).toEqual({
       supprimes: 'Exclus',
-      conseillerNumerique: true,
+      conseillersNumeriques: 'Seuls',
       identifiantsConseillerNumerique: [12],
       identifiantsDataspace: [7],
     })

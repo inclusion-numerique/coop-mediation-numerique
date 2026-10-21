@@ -3,8 +3,7 @@ import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateur
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { criteresDExposition } from './domain'
-import { utilisateursExposes } from './implementation'
+import { criteresDExposition, utilisateursExposes } from './implementation'
 
 const exposition: {
   utilisateurId?: string

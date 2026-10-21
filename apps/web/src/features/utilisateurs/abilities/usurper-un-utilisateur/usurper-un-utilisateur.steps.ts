@@ -1,11 +1,10 @@
 import assert from 'node:assert'
-import { terminerLUsurpation } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation'
 import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { usurperUnUtilisateur } from './commands/usurper-un-utilisateur'
-import type { PorteeUsurpation } from './domain'
+import { PorteeUsurpation } from './domain'
 
 const usurpation: {
   administrateurId?: string
@@ -75,21 +74,16 @@ Given('un administrateur connecté et un compte réel à usurper', async () => {
 When(
   "l'administrateur usurpe ce compte, usurpation limitée aux comptes de test",
   async () => {
-    await usurper('FixturesSeulement')
+    await usurper(PorteeUsurpation('FixturesSeulement'))
   },
 )
 
 When(
   "l'administrateur usurpe ce compte, usurpation ouverte à tous les comptes",
   async () => {
-    await usurper('TousLesComptes')
+    await usurper(PorteeUsurpation('TousLesComptes'))
   },
 )
-
-When("l'administrateur termine l'usurpation", async () => {
-  const resultat = await terminerLUsurpation(exiger(usurpation.jeton))
-  assert.ok(resultat.success, "La fin de l'usurpation a échoué")
-})
 
 Then("l'usurpation aboutit", () => {
   assert.ok(usurpation.resultat?.success, "L'usurpation a échoué")
@@ -107,11 +101,4 @@ Then('la session est celle du compte usurpé', async () => {
 
 Then("la session retient l'administrateur usurpateur", async () => {
   assert.strictEqual((await session()).usurperId, usurpation.administrateurId)
-})
-
-Then("la session est rendue à l'administrateur", async () => {
-  assert.deepStrictEqual(await session(), {
-    userId: usurpation.administrateurId,
-    usurperId: null,
-  })
 })

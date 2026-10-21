@@ -1,3 +1,4 @@
+import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import { failure, type Result, success } from '@app/web/libraries/result'
 
 export type SessionCourante = {
@@ -6,7 +7,7 @@ export type SessionCourante = {
     | { readonly _tag: 'Aucune' }
     | {
         readonly _tag: 'EnCours'
-        readonly usurpateurId: string
+        readonly usurpateurId: UtilisateurId
         readonly usurpateurEstAdministrateur: boolean
       }
 }
@@ -25,7 +26,7 @@ export type TerminerLUsurpationError =
 
 export const usurpateurARetrouver = ({
   usurpation,
-}: SessionCourante): Result<string, TerminerLUsurpationError> => {
+}: SessionCourante): Result<UtilisateurId, TerminerLUsurpationError> => {
   if (usurpation._tag === 'Aucune')
     return failure({ _tag: 'AucuneUsurpationEnCours' })
   if (!usurpation.usurpateurEstAdministrateur)

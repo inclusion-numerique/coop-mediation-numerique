@@ -1,4 +1,7 @@
-import { nomAffiche } from '@app/web/features/utilisateurs/domain'
+import {
+  nomAffiche,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { SessionCourante } from '../../domain'
 
@@ -19,7 +22,7 @@ export const sessionCourante = async (
         ? { _tag: 'Aucune' }
         : {
             _tag: 'EnCours',
-            usurpateurId: session.usurper.id,
+            usurpateurId: UtilisateurId(session.usurper.id),
             usurpateurEstAdministrateur: session.usurper.role === 'Admin',
           },
   }
@@ -30,7 +33,7 @@ export const rendreLaSession = async ({
   usurpateurId,
 }: {
   readonly jeton: string
-  readonly usurpateurId: string
+  readonly usurpateurId: UtilisateurId
 }): Promise<string> => {
   const session = await prismaClient.session.update({
     where: { sessionToken: jeton },

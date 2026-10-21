@@ -20,6 +20,7 @@ import {
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
 import { compterLesInscrits } from '@app/web/features/utilisateurs/db/compter-les-inscrits.query'
+import { success } from '@app/web/libraries/result'
 import { supprimerComptePorts } from './supprimer-compte.ports'
 
 const dateFrancaise = (date: Date): string => date.toLocaleDateString('fr-FR')
@@ -99,7 +100,7 @@ export const relancesDesInscritsPorts = (
       },
       ports: supprimerComptePorts,
     })
-    if (!resultat.success) throw new Error(resultat.error._tag)
+    return resultat.success ? success(undefined) : resultat
   },
 })
 

@@ -1,4 +1,8 @@
-import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
+import type {
+  CoordinateurId,
+  MediateurId,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import type { OperationRole, PlanDeChangement } from '../../domain'
@@ -8,7 +12,7 @@ type Transaction = Prisma.TransactionClient
 const retirerLeMediateur = async (
   tx: Transaction,
   utilisateurId: UtilisateurId,
-  mediateurId: string,
+  mediateurId: MediateurId,
 ) => {
   const coordinateur = await tx.coordinateur.findUniqueOrThrow({
     where: { userId: utilisateurId },
@@ -28,7 +32,7 @@ const retirerLeMediateur = async (
 const retirerLeCoordinateur = async (
   tx: Transaction,
   utilisateurId: UtilisateurId,
-  coordinateurId: string,
+  coordinateurId: CoordinateurId,
 ) => {
   const mediateur = await tx.mediateur.findUniqueOrThrow({
     where: { userId: utilisateurId },

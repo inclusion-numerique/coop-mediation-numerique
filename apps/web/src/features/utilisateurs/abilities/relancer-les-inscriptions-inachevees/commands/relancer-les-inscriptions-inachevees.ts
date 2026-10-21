@@ -3,6 +3,7 @@ import {
   deroulerLesRelances,
   type RapportDeRelance,
 } from '@app/web/features/utilisateurs/domain'
+import { success } from '@app/web/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
 import { inscriptionsInachevees } from '../implementation'
 
@@ -22,6 +23,7 @@ export const relancerLesInscriptionsInachevees = async ({
         await ports.effacerLInscription(destinataire.utilisateurId)
         await ports.retirerDesListes(destinataire.courriel)
         await ports.envoyerLAvisDEffacement(destinataire)
+        return success(undefined)
       },
       noter: noterLaRelance('Inscription'),
     },

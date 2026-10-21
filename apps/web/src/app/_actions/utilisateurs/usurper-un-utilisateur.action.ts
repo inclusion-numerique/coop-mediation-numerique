@@ -2,9 +2,13 @@
 
 import { getAuthenticatedSessionToken } from '@app/web/auth/getSessionUser'
 import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { usurperUnUtilisateur } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur'
+import {
+  PorteeUsurpation,
+  usurperUnUtilisateur,
+} from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur'
 import { USURPER_UN_UTILISATEUR_ERRORS } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.errors'
 import { UsurperUnUtilisateurValidation } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.validation'
+import { identifiantsDe } from '@app/web/features/utilisateurs/domain'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 import { success } from '@app/web/libraries/result'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
@@ -21,25 +25,27 @@ export const usurperUnUtilisateurAction = actionBuilder()
           utilisateurId: input.utilisateurId,
           usurpateurId: user.id,
           jetonDeSession: await getAuthenticatedSessionToken(),
-          portee: ServerWebAppConfig.Sudo.usurpation
-            ? 'TousLesComptes'
-            : 'FixturesSeulement',
+          portee: PorteeUsurpation(
+            ServerWebAppConfig.Sudo.usurpation
+              ? 'TousLesComptes'
+              : 'FixturesSeulement',
+          ),
         })
 
         if (!resultat.success) return resultat
 
         const cible = resultat.data
+        const { mediateurId, coordinateurId } = identifiantsDe(
+          cible.rattachements,
+        )
         return success({
           nom: cible.nom,
           redirection: getLoginRedirectUrl({
             role: cible.role,
             inscriptionValidee: cible.inscritLe,
-            mediateur:
-              cible.mediateurId === null ? null : { id: cible.mediateurId },
+            mediateur: mediateurId === null ? null : { id: mediateurId },
             coordinateur:
-              cible.coordinateurId === null
-                ? null
-                : { id: cible.coordinateurId },
+              coordinateurId === null ? null : { id: coordinateurId },
           }),
         })
       },

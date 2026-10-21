@@ -1,5 +1,4 @@
-export { criteresDExposition } from './domain'
-export { utilisateursExposes } from './implementation'
+export { criteresDExposition, utilisateursExposes } from './implementation'
 export {
   type UtilisateurAttributes,
   utilisateurExpose,

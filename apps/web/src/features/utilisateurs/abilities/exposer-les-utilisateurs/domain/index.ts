@@ -1,4 +1,5 @@
 export {
   type CriteresDExposition,
-  criteresDExposition,
+  SelectionDesConseillers,
+  SelectionDesSupprimes,
 } from './criteres-d-exposition'

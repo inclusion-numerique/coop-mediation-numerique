@@ -1,8 +1,10 @@
 import type {
   DestinataireDeRelance,
+  EffacementImpossible,
   PalierDeRelance,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import type { Result } from '@app/web/libraries/result'
 
 export type RelancerLesInscritsInactifsPorts = {
   readonly envoyerLaRelance: (
@@ -16,5 +18,7 @@ export type RelancerLesInscritsInactifsPorts = {
   readonly envoyerLAvisDEffacement: (
     destinataire: DestinataireDeRelance,
   ) => Promise<void>
-  readonly supprimerLeCompte: (utilisateurId: UtilisateurId) => Promise<void>
+  readonly supprimerLeCompte: (
+    utilisateurId: UtilisateurId,
+  ) => Promise<Result<void, EffacementImpossible>>
 }

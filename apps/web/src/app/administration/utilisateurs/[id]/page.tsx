@@ -54,7 +54,6 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 
@@ -86,30 +85,15 @@ const sectionEquipe = async (
   if (!membres.success) return null
 
   return (
-    <>
-      <div className="fr-flex fr-mt-8v fr-mb-6v fr-align-items-center fr-justify-content-space-between">
-        <h5 className="fr-mb-0">Équipe</h5>
-        <Button
-          iconId="fr-icon-user-add-line"
-          priority="secondary"
-          size="small"
-          linkProps={{
-            href: `/administration/utilisateurs/${fiche.id}/equipe-coordonnee/ajouter`,
-          }}
-        >
-          Ajouter un membre
-        </Button>
-      </div>
-      <ListeDeLEquipe
-        membres={membres.data}
-        searchParams={searchParams}
-        baseHref={`/administration/utilisateurs/${fiche.id}`}
-        exporter={null}
-        actions={(ligne) => (
-          <ActionsDuMembre ligne={ligne} coordinateurId={coordinateur.id} />
-        )}
-      />
-    </>
+    <ListeDeLEquipe
+      membres={membres.data}
+      searchParams={searchParams}
+      baseHref={`/administration/utilisateurs/${fiche.id}`}
+      exporter={null}
+      actions={(ligne) => (
+        <ActionsDuMembre ligne={ligne} coordinateurId={coordinateur.id} />
+      )}
+    />
   )
 }
 
@@ -231,27 +215,13 @@ const Page = async (props: {
                               }}
                             />
                           ),
-                          outils: (
-                            <div>
-                              {ServerWebAppConfig.Sudo.usurpation && (
-                                <BoutonUsurper
-                                  utilisateurId={fiche.id}
-                                  taille="small"
-                                  className="fr-mr-2v"
-                                />
-                              )}
-                              <Button
-                                iconId="fr-icon-git-merge-line"
-                                priority="tertiary"
-                                size="small"
-                                linkProps={{
-                                  href: `/administration/utilisateurs/${fiche.id}/merge`,
-                                }}
-                              >
-                                Fusionner avec un autre utilisateur
-                              </Button>
-                            </div>
-                          ),
+                          usurpation: ServerWebAppConfig.Sudo.usurpation ? (
+                            <BoutonUsurper
+                              utilisateurId={fiche.id}
+                              taille="small"
+                              className="fr-mr-2v"
+                            />
+                          ) : null,
                           deconnexion: (
                             <BoutonDeconnecter utilisateurId={fiche.id} />
                           ),
