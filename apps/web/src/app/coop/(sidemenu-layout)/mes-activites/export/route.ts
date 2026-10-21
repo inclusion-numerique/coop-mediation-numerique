@@ -1,12 +1,12 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
 import { buildAccompagnementsWorksheet } from '@app/web/features/activites/use-cases/list/export/buildAccompagnementsWorksheet'
 import { getAccompagenmentsWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getAccompagenmentsWorksheetInput'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/features/equipe/domain'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'

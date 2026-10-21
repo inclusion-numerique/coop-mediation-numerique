@@ -2,6 +2,7 @@ import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-acti
 import { reglerLePartageStatistiquesAction } from '@app/web/app/_actions/mediateurs/regler-le-partage-statistiques.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { mediateurCoordonnesIdsFor } from '@app/web/auth/mediateursCoordonnes'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
@@ -10,7 +11,6 @@ import {
   consulterEmployeuseAUneDate,
   employeuseCodeInsee,
 } from '@app/web/features/employeuse/server'
-import { mediateurCoordonnesIdsFor } from '@app/web/features/equipe/domain'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { consulterMonLienDePartage } from '@app/web/features/mediateurs/abilities/consulter-mon-lien-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'

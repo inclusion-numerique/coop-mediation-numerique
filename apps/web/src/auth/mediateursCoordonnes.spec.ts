@@ -2,7 +2,7 @@ import {
   mediateurCoordonnesEtAnciensIdsFor,
   mediateurCoordonnesIdsFor,
   splitMediateursCoordonnes,
-} from './membres-coordonnes'
+} from './mediateursCoordonnes'
 
 const ACTUEL = 'mediateur-actuel'
 const ANCIEN = 'mediateur-ancien'
