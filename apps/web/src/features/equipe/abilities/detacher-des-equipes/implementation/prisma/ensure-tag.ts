@@ -9,7 +9,6 @@ import {
 
 type Transaction = Prisma.TransactionClient
 
-/** Ce qu'un tag emporte avec lui quand il essaime. */
 export type TagTemplate = {
   readonly id: string
   readonly nom: string
@@ -17,14 +16,6 @@ export type TagTemplate = {
   readonly departement: string | null
 }
 
-/**
- * Le tag chez le médiateur qui accueillera les comptes rendus repris, créé s'il
- * n'en détient pas encore d'équivalent.
- *
- * Le domaine dit LEQUEL réutiliser — c'est `tagDAccueil`, et c'est là que vit la
- * règle d'identité par le nom. Ici on lit ce qu'il détient et on écrit ce qui
- * manque, rien d'autre.
- */
 export const ensureTag = async (
   transaction: Transaction,
   mediateurId: MediateurId,

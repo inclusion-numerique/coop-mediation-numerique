@@ -7,8 +7,6 @@ const EXISTANT = TagId('55555555-5555-4555-8555-555555555555')
 const detenus = [{ id: EXISTANT, nom: NomTag('Accès aux droits') }]
 
 describe('tag d’accueil', () => {
-  // Règle qu'aucun scénario ne couvrait : sans elle, l'essaimage laisse deux
-  // entrées indiscernables dans la liste du médiateur.
   it('réutilise un tag de même nom', () => {
     expect(tagDAccueil(detenus, NomTag('Accès aux droits'))).toBe(EXISTANT)
   })
