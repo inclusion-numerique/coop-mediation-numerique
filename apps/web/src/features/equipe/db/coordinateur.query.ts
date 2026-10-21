@@ -9,11 +9,7 @@ import {
   Prenom,
   Telephone,
 } from '../domain'
-
-const renseigne = <T>(
-  constructeur: { safe: (valeur: string) => T | null },
-  valeur: string | null,
-): T | null => (valeur === null ? null : constructeur.safe(valeur))
+import { lue } from './lue'
 
 export const lireLeCoordinateur = async (
   coordinateurId: CoordinateurId,
@@ -41,12 +37,12 @@ export const lireLeCoordinateur = async (
     ? null
     : {
         nom: nomAffiche({
-          prenom: renseigne(Prenom, user.firstName),
-          nom: renseigne(Nom, user.lastName),
-          nomComplet: renseigne(NomAffiche, user.name),
+          prenom: lue(Prenom, user.firstName),
+          nom: lue(Nom, user.lastName),
+          nomComplet: lue(NomAffiche, user.name),
           email,
         }),
         email,
-        telephone: renseigne(Telephone, user.phone),
+        telephone: lue(Telephone, user.phone),
       }
 }

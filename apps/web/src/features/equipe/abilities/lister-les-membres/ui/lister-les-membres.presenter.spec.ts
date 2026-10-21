@@ -1,10 +1,10 @@
-import { MediateurId, UtilisateurId } from '../../../domain'
+import { Email, MediateurId, Nom, Prenom, UtilisateurId } from '../../../domain'
 import { lignesAffichees } from './lister-les-membres.presenter'
 
 const profil = {
   utilisateurId: UtilisateurId('550e8400-e29b-41d4-a716-446655440061'),
-  prenom: 'Camille',
-  nom: 'Martin',
+  prenom: Prenom('Camille'),
+  nom: Nom('Martin'),
   telephone: null,
   role: 'ConseillerNumerique' as const,
 }
@@ -14,7 +14,7 @@ describe('affichage d’une ligne de l’équipe', () => {
     const [ligne] = lignesAffichees(
       [
         {
-          email: 'invite@example.com',
+          email: Email('invite@example.com'),
           statut: { type: 'Invitation', envoyeeLe: new Date('2026-01-02') },
           personne: { type: 'SansCompte' },
           structureEmployeuse: { type: 'Inconnue' },
@@ -38,7 +38,7 @@ describe('affichage d’une ligne de l’équipe', () => {
     const [ligne] = lignesAffichees(
       [
         {
-          email: 'camille@example.com',
+          email: Email('camille@example.com'),
           statut: { type: 'Actif', derniereActivite: new Date() },
           personne: {
             type: 'Inscrite',
@@ -74,7 +74,7 @@ describe('affichage d’une ligne de l’équipe', () => {
     const [ligne] = lignesAffichees(
       [
         {
-          email: 'supprime@example.com',
+          email: Email('supprime@example.com'),
           statut: { type: 'ProfilSupprime', le: new Date('2026-01-02') },
           personne: {
             type: 'Inscrite',

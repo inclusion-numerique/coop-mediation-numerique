@@ -95,6 +95,35 @@ describe('lecture d’une ligne de l’équipe', () => {
     ).toEqual({ type: 'Inactif', derniereActivite: { type: 'Aucune' } })
   })
 
+  it('ramène le téléphone au format E.164', () => {
+    const ligne = toLigneEquipe({
+      ...ancienMembreComplet,
+      phone: '01 02 03 04 05',
+    })
+
+    expect(
+      ligne?.personne.type === 'Inscrite' && ligne.personne.profil.telephone,
+    ).toBe('+33102030405')
+  })
+
+  it('tient pour absents un téléphone inexploitable et un nom vide', () => {
+    const ligne = toLigneEquipe({
+      ...ancienMembreComplet,
+      phone: 'inconnu',
+      first_name: '  ',
+    })
+
+    expect(
+      ligne?.personne.type === 'Inscrite' && ligne.personne.profil,
+    ).toMatchObject({ prenom: null, telephone: null })
+  })
+
+  it('écarte une ligne dont l’email est inexploitable', () => {
+    expect(
+      toLigneEquipe({ ...invitationSansCompte, email: 'pas-un-email' }),
+    ).toBeNull()
+  })
+
   it('écarte un statut inconnu', () => {
     expect(
       toLigneEquipe({ ...invitationSansCompte, statut: 'Autre' }),

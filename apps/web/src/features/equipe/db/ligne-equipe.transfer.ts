@@ -1,13 +1,18 @@
 import {
+  Email,
   type LigneEquipe,
   MediateurId,
+  Nom,
   type PersonneDeLEquipe,
+  Prenom,
   type StatutMembre,
   type StructureEmployeuseMembre,
+  Telephone,
   type TypeDeStatut,
   UtilisateurId,
 } from '../domain'
 import type { LigneEquipeRow } from './ligne-equipe.sql'
+import { lue } from './lue'
 
 const statuts: Readonly<
   Record<TypeDeStatut, (row: LigneEquipeRow) => StatutMembre>
@@ -50,9 +55,9 @@ const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe => {
         mediateurId,
         profil: {
           utilisateurId,
-          prenom: row.first_name,
-          nom: row.last_name,
-          telephone: row.phone,
+          prenom: lue(Prenom, row.first_name),
+          nom: lue(Nom, row.last_name),
+          telephone: lue(Telephone, row.phone),
           role:
             row.is_conseiller_numerique === true
               ? 'ConseillerNumerique'
@@ -79,15 +84,17 @@ const toStructureEmployeuse = (
     : { type: 'Connue', ...structure }
 }
 
-export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null =>
-  estUnStatut(row.statut)
+export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null => {
+  const email = Email.safe(row.email)
+  return email !== null && estUnStatut(row.statut)
     ? {
-        email: row.email,
+        email,
         statut: statuts[row.statut](row),
         personne: toPersonne(row),
         structureEmployeuse: toStructureEmployeuse(row),
       }
     : null
+}
 
 export const toLignesEquipe = (
   rows: readonly LigneEquipeRow[],

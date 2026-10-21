@@ -1,4 +1,11 @@
-import { MediateurId, UtilisateurId } from '../../../../domain'
+import {
+  Email,
+  MediateurId,
+  Nom,
+  Prenom,
+  Telephone,
+  UtilisateurId,
+} from '../../../../domain'
 import { membreExporte } from './membre-exporte'
 
 const depuis = new Date('2026-01-01T09:00:00Z')
@@ -8,7 +15,7 @@ describe('membre exporté', () => {
     expect(
       membreExporte(
         {
-          email: 'invite@example.com',
+          email: Email('invite@example.com'),
           statut: { type: 'Invitation', envoyeeLe: depuis },
           personne: { type: 'SansCompte' },
           structureEmployeuse: { type: 'Inconnue' },
@@ -32,7 +39,7 @@ describe('membre exporté', () => {
     expect(
       membreExporte(
         {
-          email: 'camille@example.com',
+          email: Email('camille@example.com'),
           statut: { type: 'Actif', derniereActivite: depuis },
           personne: {
             type: 'Inscrite',
@@ -41,9 +48,9 @@ describe('membre exporté', () => {
               utilisateurId: UtilisateurId(
                 '550e8400-e29b-41d4-a716-446655440082',
               ),
-              prenom: 'Camille',
-              nom: 'Martin',
-              telephone: '+33102030405',
+              prenom: Prenom('Camille'),
+              nom: Nom('Martin'),
+              telephone: Telephone('+33102030405'),
               role: 'ConseillerNumerique',
             },
           },
