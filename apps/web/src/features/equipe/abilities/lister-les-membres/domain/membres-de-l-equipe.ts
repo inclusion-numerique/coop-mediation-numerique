@@ -1,4 +1,8 @@
-import type { CoordinateurDeLEquipe, LigneEquipe } from '../../../domain'
+import type {
+  CodeDepartement,
+  CoordinateurDeLEquipe,
+  LigneEquipe,
+} from '../../../domain'
 
 export type StatistiquesEquipe = {
   readonly total: number
@@ -10,7 +14,7 @@ export type StatistiquesEquipe = {
 }
 
 export type CoordinateurDeLaListe = CoordinateurDeLEquipe & {
-  readonly departementCode: string
+  readonly departementCode: CodeDepartement | null
 }
 
 export type MembresDeLEquipe = {

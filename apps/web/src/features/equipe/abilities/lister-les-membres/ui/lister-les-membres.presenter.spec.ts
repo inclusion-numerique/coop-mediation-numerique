@@ -1,4 +1,5 @@
 import {
+  CodeDepartement,
   Email,
   MediateurId,
   Nom,
@@ -28,7 +29,7 @@ describe('affichage d’une ligne de l’équipe', () => {
           structureEmployeuse: { type: 'Inconnue' },
         },
       ],
-      '69',
+      CodeDepartement('69'),
     )
 
     expect(ligne).toEqual(
@@ -60,7 +61,7 @@ describe('affichage d’une ligne de l’équipe', () => {
           },
         },
       ],
-      '69',
+      CodeDepartement('69'),
     )
 
     expect(ligne).toEqual(
@@ -89,7 +90,7 @@ describe('affichage d’une ligne de l’équipe', () => {
           structureEmployeuse: { type: 'Inconnue' },
         },
       ],
-      '69',
+      CodeDepartement('69'),
     )
 
     expect(ligne?.email).toBeNull()
