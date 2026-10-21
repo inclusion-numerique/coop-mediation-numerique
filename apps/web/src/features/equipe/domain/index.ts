@@ -8,6 +8,9 @@ export {
   type NouvelleAdhesion,
 } from './adhesion'
 export { AdhesionId } from './adhesion-id'
+export { CodeInsee } from './code-insee'
+export { CodePostal } from './code-postal'
+export { Commune } from './commune'
 export type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
 export { CoordinateurId } from './coordinateur-id'
 export {
@@ -43,6 +46,7 @@ export {
   referenceDuCode,
 } from './lien-invitation'
 export {
+  type AdresseStructure,
   type LigneEquipe,
   type PersonneDeLEquipe,
   type ProfilMembre,
@@ -52,6 +56,7 @@ export {
 export { MediateurId } from './mediateur-id'
 export { Nom } from './nom'
 export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
+export { NomStructure } from './nom-structure'
 export { memeNom, NomTag, NomTagCanonique } from './nom-tag'
 export { Prenom } from './prenom'
 export { ReferenceInvitation } from './reference-invitation'
@@ -66,3 +71,4 @@ export { type TagExistant, tagDAccueil } from './tag-daccueil'
 export { TagId } from './tag-id'
 export { Telephone } from './telephone'
 export { UtilisateurId } from './utilisateur-id'
+export { Voie } from './voie'

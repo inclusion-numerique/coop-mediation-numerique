@@ -1,4 +1,9 @@
-import { type LigneEquipe, profilDe } from '../../../../domain'
+import {
+  type AdresseStructure,
+  type LigneEquipe,
+  profilDe,
+  type StructureEmployeuseMembre,
+} from '../../../../domain'
 import { libelleDuRole } from '../../../../ui/role-membre.presenter'
 import { libelleStatutMembre } from '../../../../ui/statut-membre.presenter'
 import type { ContratMembre } from '../../domain'
@@ -20,6 +25,23 @@ export type MembreExporte = {
   readonly statut: string
 }
 
+const adresseExportee = (adresse: AdresseStructure) =>
+  adresse.type === 'Connue'
+    ? {
+        adresse: adresse.voie,
+        commune: adresse.commune,
+        codePostal: adresse.codePostal,
+        codeInsee: adresse.codeInsee,
+      }
+    : { adresse: null, commune: null, codePostal: null, codeInsee: null }
+
+const structureExportee = (
+  structure: StructureEmployeuseMembre,
+): MembreExporte['structureEmployeuse'] =>
+  structure.type === 'Connue'
+    ? { nom: structure.nom, ...adresseExportee(structure.adresse) }
+    : null
+
 export const membreExporte = (
   ligne: LigneEquipe,
   contrat: ContratMembre | null,
@@ -32,16 +54,7 @@ export const membreExporte = (
     contrat,
     email: ligne.email,
     telephone: profil?.telephone ?? null,
-    structureEmployeuse:
-      ligne.structureEmployeuse.type === 'Connue'
-        ? {
-            nom: ligne.structureEmployeuse.nom,
-            adresse: ligne.structureEmployeuse.adresse,
-            commune: ligne.structureEmployeuse.commune,
-            codePostal: ligne.structureEmployeuse.codePostal,
-            codeInsee: ligne.structureEmployeuse.codeInsee,
-          }
-        : null,
+    structureEmployeuse: structureExportee(ligne.structureEmployeuse),
     statut: libelleStatutMembre(ligne.statut),
   }
 }

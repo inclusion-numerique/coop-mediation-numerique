@@ -1,8 +1,13 @@
 import {
+  type AdresseStructure,
+  CodeInsee,
+  CodePostal,
+  Commune,
   Email,
   type LigneEquipe,
   MediateurId,
   Nom,
+  NomStructure,
   type PersonneDeLEquipe,
   Prenom,
   roleMembre,
@@ -11,6 +16,7 @@ import {
   Telephone,
   type TypeDeStatut,
   UtilisateurId,
+  Voie,
 } from '../domain'
 import type { LigneEquipeRow } from './ligne-equipe.sql'
 import { lue } from './lue'
@@ -64,22 +70,29 @@ const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe => {
       }
 }
 
-const renseigne = (valeur: string | null): string | null =>
-  valeur === null || valeur.trim() === '' ? null : valeur
+const toAdresse = (row: LigneEquipeRow): AdresseStructure => {
+  const commune = lue(Commune, row.structure_employeuse_commune)
+  const codePostal = lue(CodePostal, row.structure_employeuse_code_postal)
+  const codeInsee = lue(CodeInsee, row.structure_employeuse_code_insee)
+  return commune === null || codePostal === null || codeInsee === null
+    ? { type: 'Inconnue' }
+    : {
+        type: 'Connue',
+        voie: lue(Voie, row.structure_employeuse_adresse),
+        commune,
+        codePostal,
+        codeInsee,
+      }
+}
 
 const toStructureEmployeuse = (
   row: LigneEquipeRow,
 ): StructureEmployeuseMembre => {
-  const structure = {
-    nom: renseigne(row.structure_employeuse),
-    adresse: renseigne(row.structure_employeuse_adresse),
-    commune: renseigne(row.structure_employeuse_commune),
-    codePostal: renseigne(row.structure_employeuse_code_postal),
-    codeInsee: renseigne(row.structure_employeuse_code_insee),
-  }
-  return Object.values(structure).every((valeur) => valeur === null)
+  const nom = lue(NomStructure, row.structure_employeuse)
+  const adresse = toAdresse(row)
+  return nom === null && adresse.type === 'Inconnue'
     ? { type: 'Inconnue' }
-    : { type: 'Connue', ...structure }
+    : { type: 'Connue', nom, adresse }
 }
 
 export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null => {

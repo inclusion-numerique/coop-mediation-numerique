@@ -77,10 +77,13 @@ describe('lecture d’une ligne de l’équipe', () => {
       structureEmployeuse: {
         type: 'Connue',
         nom: 'Médiathèque',
-        adresse: '1 rue de la Paix',
-        commune: 'Lyon',
-        codePostal: '69001',
-        codeInsee: '69381',
+        adresse: {
+          type: 'Connue',
+          voie: '1 rue de la Paix',
+          commune: 'Lyon',
+          codePostal: '69001',
+          codeInsee: '69381',
+        },
       },
     })
   })
@@ -116,6 +119,26 @@ describe('lecture d’une ligne de l’équipe', () => {
     expect(
       ligne?.personne.type === 'Inscrite' && ligne.personne.profil,
     ).toMatchObject({ prenom: null, telephone: null })
+  })
+
+  it('connaît une structure sans nom par sa seule adresse', () => {
+    expect(
+      toLigneEquipe({ ...ancienMembreComplet, structure_employeuse: ' ' })
+        ?.structureEmployeuse,
+    ).toEqual(expect.objectContaining({ type: 'Connue', nom: null }))
+  })
+
+  it('ignore une localisation incomplète', () => {
+    expect(
+      toLigneEquipe({
+        ...ancienMembreComplet,
+        structure_employeuse_code_insee: null,
+      })?.structureEmployeuse,
+    ).toEqual({
+      type: 'Connue',
+      nom: 'Médiathèque',
+      adresse: { type: 'Inconnue' },
+    })
   })
 
   it('écarte une ligne dont l’email est inexploitable', () => {
