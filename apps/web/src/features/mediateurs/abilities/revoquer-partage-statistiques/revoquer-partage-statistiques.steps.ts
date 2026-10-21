@@ -7,7 +7,7 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-let revoques: number | undefined
+const revocation: { partagesRevoques?: number } = {}
 
 const cible = () => ({
   mediateurId: partagesSemes().mediateurId,
@@ -19,22 +19,26 @@ Given('un compte qui partage ses statistiques des deux côtés', async () => {
 })
 
 When('je révoque le partage de statistiques de ce compte', async () => {
-  revoques = (await revoquerPartageStatistiques(cible())).partagesRevoques
+  revocation.partagesRevoques = (
+    await revoquerPartageStatistiques(cible())
+  ).partagesRevoques
 })
 
 When(
   'je révoque à nouveau le partage de statistiques de ce compte',
   async () => {
-    revoques = (await revoquerPartageStatistiques(cible())).partagesRevoques
+    revocation.partagesRevoques = (
+      await revoquerPartageStatistiques(cible())
+    ).partagesRevoques
   },
 )
 
 Then('la révocation porte sur {int} partages', (attendu: number) => {
-  assert.strictEqual(revoques, attendu)
+  assert.strictEqual(revocation.partagesRevoques, attendu)
 })
 
 Then('la révocation porte sur {int} partage', (attendu: number) => {
-  assert.strictEqual(revoques, attendu)
+  assert.strictEqual(revocation.partagesRevoques, attendu)
 })
 
 Then("plus aucun partage de ce compte n'est actif", async () => {

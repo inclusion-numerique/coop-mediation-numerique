@@ -10,11 +10,11 @@ type PartagesSemes = {
   readonly coordinateurId: string
 }
 
-let partages: PartagesSemes | undefined
+const partage: { semes?: PartagesSemes } = {}
 
 export const partagesSemes = (): PartagesSemes => {
-  if (!partages) throw new Error('Aucun partage semé')
-  return partages
+  if (!partage.semes) throw new Error('Aucun partage semé')
+  return partage.semes
 }
 
 export const semerPartagesStatistiques = async (): Promise<PartagesSemes> => {
@@ -40,18 +40,18 @@ export const semerPartagesStatistiques = async (): Promise<PartagesSemes> => {
     data: { coordinateurId: coordinateur.id },
   })
 
-  partages = {
+  partage.semes = {
     userId,
     mediateurId: mediateur.id,
     coordinateurId: coordinateur.id,
   }
 
-  return partages
+  return partage.semes
 }
 
 After(async () => {
-  const semé = partages
-  partages = undefined
+  const semé = partage.semes
+  partage.semes = undefined
   if (!semé) return
 
   await prismaClient.partageStatistiques.deleteMany({
