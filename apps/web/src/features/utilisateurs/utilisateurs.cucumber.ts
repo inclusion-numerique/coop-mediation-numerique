@@ -1,3 +1,4 @@
+import type { OnboardingStatus } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
@@ -313,6 +314,8 @@ export type CompteDeListe = {
   readonly employeuseId?: number | null
   readonly conseillerNumerique?: boolean
   readonly lieuId?: string | null
+  readonly relance?: OnboardingStatus | null
+  readonly avecUnBeneficiaire?: boolean
 }
 
 const listes: {
@@ -387,6 +390,7 @@ export const semerUnCompteDeListe = async (
     inscriptionValidee: compte.inscritLe,
     deleted: compte.supprimeLe ?? null,
     lastSeen: compte.derniereVisite ?? null,
+    onboardingStatus: compte.relance ?? null,
   })
 
   const mediateur = compte.mediateur
@@ -430,6 +434,11 @@ export const semerUnCompteDeListe = async (
       },
     })
   }
+
+  if (compte.avecUnBeneficiaire && mediateur)
+    await prismaClient.beneficiaire.create({
+      data: { mediateurId: mediateur.id, prenom: 'Paul', nom: 'Durand' },
+    })
 
   if (compte.lieuId && mediateur)
     await prismaClient.mediateurEnActivite.create({
@@ -480,6 +489,9 @@ After(async () => {
     },
   })
   await prismaClient.activite.deleteMany({
+    where: { mediateur: parUtilisateur },
+  })
+  await prismaClient.beneficiaire.deleteMany({
     where: { mediateur: parUtilisateur },
   })
   await prismaClient.activiteCoordination.deleteMany({

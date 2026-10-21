@@ -15,6 +15,7 @@ export const enregistrerValidation: EnregistrerValidation = async ({
     where: { id: userId },
     data: {
       inscriptionValidee,
+      onboardingStatus: null,
       ...(cguAPoser === null ? {} : { acceptationCgu: cguAPoser }),
     },
   })

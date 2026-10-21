@@ -18,6 +18,15 @@ export {
   CourrielHash,
 } from './courriel-hash'
 export { type CycleDeVie, cycleDeVie } from './cycle-de-vie'
+export {
+  type CompteARelancer,
+  deroulerLesRelances,
+  type PortsDeRelance,
+} from './derouler-les-relances'
+export type {
+  DestinataireDeRelance,
+  RapportDeRelance,
+} from './destinataire-de-relance'
 export { Dispositif, dispositifDe, dispositifs } from './dispositif'
 export { CompteSupprime, UtilisateurIntrouvable } from './errors'
 export {
@@ -77,6 +86,16 @@ export {
   type RattachementsDuCompte,
   rattachements,
 } from './rattachements'
+export {
+  type ActionDeRelance,
+  actionDeRelance,
+  type PalierDeRelance,
+  type PhaseDeRelance,
+  Relance,
+  relanceApres,
+  relances,
+  type SituationDeRelance,
+} from './relance'
 export {
   estRoleProtege,
   RoleUtilisateur,
