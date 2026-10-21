@@ -1,6 +1,6 @@
+import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
-import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { prismaClient } from '@app/web/prismaClient'
 import { TagScope } from '../../tagScope'
 

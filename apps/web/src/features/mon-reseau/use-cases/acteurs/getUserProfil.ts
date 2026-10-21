@@ -1,8 +1,5 @@
 import type { ProfilInscription } from '@app/web/generated/prisma/client'
 
-/**
- * Returns a user profile on current data, that can be different from the one from inscription
- */
 export const getUserProfil = ({
   isConseillerNumerique,
   mediateur,

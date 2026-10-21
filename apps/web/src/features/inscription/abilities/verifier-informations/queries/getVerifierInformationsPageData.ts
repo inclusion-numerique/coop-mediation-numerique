@@ -6,9 +6,9 @@ import {
   InscriptionFlowType,
   InscriptionStep,
   ProfilInscription,
+  profilInscriptionLabels,
 } from '@app/web/features/inscription/domain'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
-import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 // Une employeuse peut n'avoir aucune dénomination en base, mais la carte attend
 // un libellé : la projection porte le contrat d'affichage et décide du repli,
@@ -66,7 +66,7 @@ export const getVerifierInformationsPageData = (
 
   return {
     profilLabel: user.profilInscription
-      ? allProfileInscriptionLabels[user.profilInscription]
+      ? profilInscriptionLabels[user.profilInscription]
       : 'Non renseigné',
     name: user.name,
     email: user.email,

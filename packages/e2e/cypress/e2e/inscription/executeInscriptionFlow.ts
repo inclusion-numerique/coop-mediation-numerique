@@ -1,15 +1,12 @@
 import { appUrl } from '@app/e2e/support/helpers'
 import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
+import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
-import {
-  lowerCaseProfileInscriptionLabels,
-  profileInscriptionLabels,
-} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 export type InscriptionFlowE2eExpectedStep =
   | {
       step: 'choisir-role'
-      role: keyof typeof profileInscriptionLabels
+      role: 'Mediateur' | 'Coordinateur'
       acceptCgu: boolean
       check?: () => void
     }
@@ -61,7 +58,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       .first()
       .should('be.enabled', { timeout: mutationAndNavigationTimeout })
 
-    cy.contains(profileInscriptionLabels[step.role]).click()
+    cy.contains(profilInscriptionLabels[step.role]).click()
 
     if (step.acceptCgu) {
       cy.findByRole('checkbox', { name: cguLabelMatch }).check({ force: true })
@@ -184,13 +181,13 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
 
     if (step.conseillerNumeriqueRoleNotice === 'conseiller-numerique') {
       cy.contains(
-        `Vous avez été identifié en tant que ${lowerCaseProfileInscriptionLabels.ConseillerNumerique}`,
+        `Vous avez été identifié en tant que ${profilInscriptionLabels.ConseillerNumerique.toLowerCase()}`,
       ).should('be.visible')
     } else if (
       step.conseillerNumeriqueRoleNotice === 'coordinateur-conseiller-numerique'
     ) {
       cy.contains(
-        `Vous avez été identifié en tant que ${lowerCaseProfileInscriptionLabels.CoordinateurConseillerNumerique}`,
+        `Vous avez été identifié en tant que ${profilInscriptionLabels.CoordinateurConseillerNumerique.toLowerCase()}`,
       ).should('be.visible')
     } else {
       cy.contains('Vous avez été identifié en tant que').should('not.exist')

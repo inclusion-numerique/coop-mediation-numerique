@@ -1,4 +1,5 @@
 import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
+import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { getFirstAndLastActiviteDate } from '@app/web/features/activites/use-cases/list/db/getFirstAndLastActiviteDate'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db/getMediateursTags'
@@ -9,7 +10,6 @@ import {
   getMediateurCommunesAndDepartementsOptions,
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
-import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import type {
   UserDisplayName,

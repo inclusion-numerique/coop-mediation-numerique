@@ -50,6 +50,7 @@ export {
 } from './prochaine-etape'
 export {
   computeUserProfile,
+  libelleDuProfil,
   ProfilInscription,
   profilInscriptionLabels,
   profilInscriptionSlugs,

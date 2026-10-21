@@ -1,7 +1,7 @@
 'use client'
 
 import TooltipIcon from '@app/ui/components/TooltipIcon'
-import type { UserPublicActivityStatus } from '@app/web/features/utilisateurs/utils/getUserPublicActivityStatus'
+import type { UserPublicActivityStatus } from '@app/web/features/mon-reseau/use-cases/acteurs/getUserPublicActivityStatus'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
 

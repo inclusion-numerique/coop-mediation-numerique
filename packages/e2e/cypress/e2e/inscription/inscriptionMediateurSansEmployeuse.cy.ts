@@ -2,7 +2,7 @@ import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscript
 import { shouldBeOnCoopHomepage } from '@app/e2e/support/helpers'
 import { structureEmployeuse } from '@app/fixtures/structures'
 import { mediateurSansEmployeuseInscription } from '@app/fixtures/users/mediateurSansEmployeuseInscription'
-import { profileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
 
 /**
  * Seul parcours qui emprunte l'étape « renseigner votre structure employeuse » :
@@ -76,7 +76,7 @@ describe("ETQ médiateur sans employeuse, je la renseigne pendant l'inscription"
           step: 'recapitulatif',
           conseillerNumeriqueRoleNotice: 'none',
           check: () => {
-            cy.contains(profileInscriptionLabels.Mediateur).should('be.visible')
+            cy.contains(profilInscriptionLabels.Mediateur).should('be.visible')
             cy.get('main')
               .contains('Ma structure employeuse')
               .should('be.visible')

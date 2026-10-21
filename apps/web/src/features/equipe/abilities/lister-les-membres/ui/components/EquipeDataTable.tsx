@@ -1,9 +1,9 @@
-import UserPublicActivityStatusBadge from '@app/web/features/utilisateurs/components/UserPublicActivityStatusBadge'
 import type { DataTableConfiguration } from '@app/web/libs/data-table/DataTableConfiguration'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import type { ReactNode } from 'react'
 import type { LigneEquipe } from '../../../../domain'
 import type { LigneAffichee } from '../lister-les-membres.presenter'
+import { BadgeActivite } from './BadgeActivite'
 
 const Icone = ({ icone }: Pick<LigneAffichee, 'icone'>) => {
   if (icone === 'invitation')
@@ -59,10 +59,7 @@ const Statut = ({ activite, libelleStatut, severite }: LigneAffichee) =>
       {libelleStatut}
     </Badge>
   ) : (
-    <UserPublicActivityStatusBadge
-      status={{ status: activite, label: libelleStatut }}
-      size="sm"
-    />
+    <BadgeActivite activite={activite} libelle={libelleStatut} />
   )
 
 export const EquipeDataTable = (

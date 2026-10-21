@@ -25,6 +25,9 @@ export const profilInscriptionLabels: Record<ProfilInscriptionValue, string> = {
   Coordinateur: 'Coordinateur·rice',
 }
 
+export const libelleDuProfil = (profil: ProfilInscriptionValue): string =>
+  profilInscriptionLabels[profil]
+
 export const profilInscriptionSlugs: Record<ProfilInscriptionValue, string> = {
   ConseillerNumerique: 'conseiller-numerique',
   CoordinateurConseillerNumerique: 'coordinateur-conseiller-numerique',

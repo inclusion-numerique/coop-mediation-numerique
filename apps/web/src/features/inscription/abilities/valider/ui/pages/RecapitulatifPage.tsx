@@ -7,11 +7,11 @@ import StructureAdministrativeCard from '@app/web/features/employeuse/ui/Structu
 import ValiderInscriptionForm from '@app/web/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
-import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
 import {
-  allProfileInscriptionLabels,
   computeUserProfile,
-} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+  libelleDuProfil,
+} from '@app/web/features/inscription/domain'
+import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
@@ -53,7 +53,12 @@ const RecapitulatifPage = ({
     <div className="fr-width-full fr-border-radius--8 fr-p-6v fr-p-md-8v fr-border fr-mt-6v">
       <InfoLabelValue
         label="Profession"
-        value={allProfileInscriptionLabels[computeUserProfile(user)]}
+        value={libelleDuProfil(
+          computeUserProfile({
+            isConseillerNumerique: user.isConseillerNumerique,
+            isCoordinateur: user.coordinateur != null,
+          }),
+        )}
       />
       {!!user.name && (
         <InfoLabelValue
