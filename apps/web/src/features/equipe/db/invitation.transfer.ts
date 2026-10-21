@@ -1,6 +1,6 @@
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   type Invitation,
   type Invite,
   MediateurId,
@@ -27,10 +27,7 @@ export type InvitationRow = {
   readonly renvoyee: Date | null
 }
 
-const toInvite = (
-  email: EmailInvitation,
-  mediateurId: string | null,
-): Invite | null => {
+const toInvite = (email: Email, mediateurId: string | null): Invite | null => {
   if (mediateurId == null) return { type: 'SansCompte', email }
   const id = MediateurId.safe(mediateurId)
   return id === null
@@ -39,7 +36,7 @@ const toInvite = (
 }
 
 export const toInvitation = (row: InvitationRow): Invitation | null => {
-  const email = EmailInvitation.safe(row.email)
+  const email = Email.safe(row.email)
   const coordinateurId = CoordinateurId.safe(row.coordinateurId)
   if (email === null || coordinateurId === null) return null
 

@@ -1,5 +1,5 @@
 import { pluriel } from '@app/web/libraries/pluriel'
-import { EmailInvitation } from '../../../domain'
+import { Email } from '../../../domain'
 import type { InvitationsEnvoyees, MediateursAInviter } from '../domain'
 import { horsDe, libelleDe, type PersonneAInviter } from './personne-a-inviter'
 
@@ -17,7 +17,7 @@ export const rechercheTropCourte = (recherche: string): boolean =>
   recherche.trim().length < RECHERCHE_MINIMALE
 
 const saisieLibre = (recherche: string): PersonneAInviter[] => {
-  const email = EmailInvitation.safe(recherche)
+  const email = Email.safe(recherche)
   return email === null ? [] : [{ _tag: 'Email', email }]
 }
 

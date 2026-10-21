@@ -1,14 +1,14 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
-import type { EmailInvitation } from './email-invitation'
+import type { Email } from './email'
 import { InvitationDejaTraitee } from './errors'
 import type { MediateurId } from './mediateur-id'
 import type { ReferenceInvitation } from './reference-invitation'
 
 export type Invite =
-  | { readonly type: 'SansCompte'; readonly email: EmailInvitation }
+  | { readonly type: 'SansCompte'; readonly email: Email }
   | {
       readonly type: 'MediateurInscrit'
-      readonly email: EmailInvitation
+      readonly email: Email
       readonly mediateurId: MediateurId
     }
 

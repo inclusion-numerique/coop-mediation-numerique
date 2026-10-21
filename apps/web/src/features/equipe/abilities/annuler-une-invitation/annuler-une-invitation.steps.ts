@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { annulerUneInvitation } from '@app/web/features/equipe/abilities/annuler-une-invitation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   ReferenceInvitation,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
@@ -43,7 +43,7 @@ const inviter = async (statut: 'EnAttente' | 'Acceptee') => {
 const annulerPar = async (auteur: CoordinateurSeme) => {
   contexte.issue = await annulerUneInvitation({
     reference: ReferenceInvitation({
-      email: EmailInvitation(emailInvite()),
+      email: Email(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     gestionnaire: {

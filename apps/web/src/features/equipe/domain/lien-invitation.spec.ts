@@ -1,6 +1,6 @@
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { CoordinateurId } from './coordinateur-id'
-import { EmailInvitation } from './email-invitation'
+import { Email } from './email'
 import {
   codeInvitation,
   lienInvitation,
@@ -9,7 +9,7 @@ import {
 import { ReferenceInvitation } from './reference-invitation'
 
 const reference = ReferenceInvitation({
-  email: EmailInvitation('Invite@Example.com'),
+  email: Email('Invite@Example.com'),
   coordinateurId: CoordinateurId('550e8400-e29b-41d4-a716-446655440001'),
 })
 

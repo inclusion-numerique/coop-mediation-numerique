@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { relancerUneInvitation } from '@app/web/features/equipe/abilities/relancer-une-invitation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   ReferenceInvitation,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
@@ -43,7 +43,7 @@ const inviter = async (statut: 'EnAttente' | 'Refusee') => {
 const relancerPar = async (auteur: CoordinateurSeme) => {
   contexte.issue = await relancerUneInvitation({
     reference: ReferenceInvitation({
-      email: EmailInvitation(emailInvite()),
+      email: Email(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     gestionnaire: {

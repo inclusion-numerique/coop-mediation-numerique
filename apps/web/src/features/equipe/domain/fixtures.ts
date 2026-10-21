@@ -1,7 +1,7 @@
 import type { AdhesionActive, AdhesionArchivee } from './adhesion'
 import { AdhesionId } from './adhesion-id'
 import { CoordinateurId } from './coordinateur-id'
-import { EmailInvitation } from './email-invitation'
+import { Email } from './email'
 import type {
   InvitationAcceptee,
   InvitationEnAttente,
@@ -14,7 +14,7 @@ export const coordinateurId = CoordinateurId(
   '550e8400-e29b-41d4-a716-446655440001',
 )
 export const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440011')
-export const email = EmailInvitation('invite@example.com')
+export const email = Email('invite@example.com')
 export const reference = ReferenceInvitation({ email, coordinateurId })
 
 export const invitationEnAttente: InvitationEnAttente = {

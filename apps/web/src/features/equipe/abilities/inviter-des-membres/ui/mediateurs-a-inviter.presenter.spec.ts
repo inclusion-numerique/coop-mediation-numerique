@@ -1,4 +1,4 @@
-import { EmailInvitation, MediateurId } from '../../../domain'
+import { Email, MediateurId } from '../../../domain'
 import {
   issueDeLInvitation,
   messagesDe,
@@ -9,7 +9,7 @@ import {
 const mediateur = {
   mediateurId: MediateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8'),
   nom: 'Edith Piaf',
-  email: EmailInvitation('edith@piaf.com'),
+  email: Email('edith@piaf.com'),
   conseillerNumerique: true,
 }
 
@@ -65,9 +65,7 @@ describe('suggestionsDe', () => {
       suggestionsDe({
         recherche: 'edith',
         trouves: { mediateurs: [mediateur], total: 1 },
-        dejaChoisis: [
-          { _tag: 'Email', email: EmailInvitation('edith@piaf.com') },
-        ],
+        dejaChoisis: [{ _tag: 'Email', email: Email('edith@piaf.com') }],
       }),
     ).toMatchObject({ items: [], total: 0, affiches: 0 })
   })
@@ -147,7 +145,7 @@ describe('issueDeLInvitation', () => {
       issueDeLInvitation(
         [
           { _tag: 'Mediateur', ...mediateur },
-          { _tag: 'Email', email: EmailInvitation('leo@med.fr') },
+          { _tag: 'Email', email: Email('leo@med.fr') },
         ],
         sansEchec,
       ),
@@ -162,7 +160,7 @@ describe('issueDeLInvitation', () => {
     expect(
       issueDeLInvitation([{ _tag: 'Mediateur', ...mediateur }], {
         ...sansEchec,
-        echecs: [EmailInvitation('edith@piaf.com')],
+        echecs: [Email('edith@piaf.com')],
       }),
     ).toEqual({
       priority: 'warning',

@@ -9,10 +9,7 @@ import {
   InvitationPlusValide,
 } from '@app/web/features/equipe/abilities/consulter-une-invitation/ui'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
-import {
-  EmailInvitation,
-  lienInvitation,
-} from '@app/web/features/equipe/domain'
+import { Email, lienInvitation } from '@app/web/features/equipe/domain'
 import { ReponseAInvitation } from '@app/web/features/equipe/ui'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { EncodedState } from '@app/web/utils/encodeSerializableState'
@@ -31,7 +28,7 @@ const InvitationPage = async (props: {
 
   const vue = await consulterUneInvitation({
     code: data,
-    session: user == null ? null : EmailInvitation.safe(user.email),
+    session: user == null ? null : Email.safe(user.email),
   })
 
   if (vue.type === 'Illisible') redirect('/')

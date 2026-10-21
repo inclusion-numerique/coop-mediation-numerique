@@ -6,7 +6,7 @@ import {
 } from '@app/web/features/equipe/abilities/inviter-des-membres'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
 import {
@@ -47,7 +47,7 @@ const inviter = async (emails: readonly string[]) => {
       id: CoordinateurId(coordinateur().coordinateurId),
       nom: 'Coordinateur de test',
     },
-    candidats: emails.map(EmailInvitation),
+    candidats: emails.map(Email),
     auteurId: UtilisateurId(coordinateur().userId),
   })
 }

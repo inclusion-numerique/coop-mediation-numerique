@@ -1,8 +1,4 @@
-import type {
-  EmailInvitation,
-  Invitation,
-  ReferenceInvitation,
-} from '../../../domain'
+import type { Email, Invitation, ReferenceInvitation } from '../../../domain'
 
 export type CoordinateurInvitant = {
   readonly nom: string
@@ -29,7 +25,7 @@ export const vueInvitation = ({
   tailleEquipe,
 }: {
   invitation: Invitation | null
-  session: EmailInvitation | null
+  session: Email | null
   coordinateur: CoordinateurInvitant | null
   tailleEquipe: number
 }): VueInvitation => {

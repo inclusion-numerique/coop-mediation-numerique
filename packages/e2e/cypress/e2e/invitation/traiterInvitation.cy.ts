@@ -10,7 +10,7 @@ import {
 } from '@app/fixtures/users/mediateurInscription'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   lienInvitation,
   ReferenceInvitation,
 } from '@app/web/features/equipe/domain'
@@ -25,7 +25,7 @@ const createInvitationUrl = ({
 }) =>
   lienInvitation(
     ReferenceInvitation({
-      email: EmailInvitation(email),
+      email: Email(email),
       coordinateurId: CoordinateurId(coordinateurId),
     }),
   )

@@ -9,7 +9,7 @@ import {
 } from '../../../../db/invitation.transfer'
 import {
   type CoordinateurId,
-  EmailInvitation,
+  Email,
   type InvitationEnAttente,
   lienInvitation,
   MediateurId,
@@ -23,11 +23,11 @@ import {
   planifier,
 } from '../../domain'
 
-type EmailStocke = ReadonlyMap<EmailInvitation, string>
+type EmailStocke = ReadonlyMap<Email, string>
 
 const lireLExistant = async (
   coordinateurId: CoordinateurId,
-  candidats: readonly EmailInvitation[],
+  candidats: readonly Email[],
 ): Promise<{ existant: Existant; emailsStockes: EmailStocke }> => {
   const [invitations, membres, mediateurs] = await Promise.all([
     prismaClient.invitationEquipe.findMany({
@@ -65,13 +65,13 @@ const lireLExistant = async (
     invitations: lues.map(({ invitation }) => invitation),
     membresActifs: new Set(
       membres.flatMap(({ mediateur }) => {
-        const email = EmailInvitation.safe(mediateur.user.email)
+        const email = Email.safe(mediateur.user.email)
         return email === null ? [] : [email]
       }),
     ),
     mediateursConnus: new Map(
       mediateurs.flatMap(({ email, mediateur }) => {
-        const canonique = EmailInvitation.safe(email)
+        const canonique = Email.safe(email)
         return canonique === null || mediateur === null
           ? []
           : [[canonique, MediateurId(mediateur.id)] as const]
@@ -112,7 +112,7 @@ const enregistrer = (
 
 const envoyer =
   (de: string) =>
-  async (invitation: InvitationEnAttente): Promise<EmailInvitation | null> => {
+  async (invitation: InvitationEnAttente): Promise<Email | null> => {
     try {
       await envoyerUneInvitation({
         invite: invitation.invite,
@@ -133,7 +133,7 @@ export const inviterDesMembres = async ({
   maintenant = new Date(),
 }: {
   coordinateur: { readonly id: CoordinateurId; readonly nom: string }
-  candidats: readonly EmailInvitation[]
+  candidats: readonly Email[]
   auteurId: UtilisateurId
   maintenant?: Date
 }): Promise<Result<InvitationsEnvoyees, AucuneInvitationAEnvoyer>> => {
@@ -165,7 +165,7 @@ export const inviterDesMembres = async ({
 
   const echecs = (
     await Promise.all(aEnvoyer.map(envoyer(coordinateur.nom)))
-  ).filter((email): email is EmailInvitation => email !== null)
+  ).filter((email): email is Email => email !== null)
 
   return success({
     envoyees: aEnvoyer

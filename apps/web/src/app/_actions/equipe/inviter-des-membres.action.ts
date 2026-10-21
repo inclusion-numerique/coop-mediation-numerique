@@ -12,7 +12,7 @@ import type { AucuneInvitationAEnvoyer } from '@app/web/features/equipe/abilitie
 import {
   ActionNonAutorisee,
   CoordinateurId,
-  EmailInvitation,
+  Email,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
@@ -43,7 +43,7 @@ export const inviterDesMembresAction = actionBuilder()
                 id: CoordinateurId(user.coordinateur.id),
                 nom: nomAffiche(user),
               },
-              candidats: input.emails.map(EmailInvitation),
+              candidats: input.emails.map(Email),
               auteurId: UtilisateurId(user.id),
             }),
       { onError: INVITER_DES_MEMBRES_ERRORS },

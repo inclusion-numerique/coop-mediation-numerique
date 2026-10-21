@@ -5,7 +5,7 @@ import {
 } from '@app/web/features/equipe/abilities/accepter-une-invitation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
@@ -75,10 +75,10 @@ const accepteurDe = (
   inscriptionValidee
     ? {
         type: 'InscriptionValidee',
-        email: EmailInvitation(mediateur.email),
+        email: Email(mediateur.email),
         mediateurId: MediateurId(mediateur.mediateurId),
       }
-    : { type: 'InscriptionEnCours', email: EmailInvitation(mediateur.email) }
+    : { type: 'InscriptionEnCours', email: Email(mediateur.email) }
 
 const accepterPar = async (
   mediateur: MediateurSeme,
@@ -86,7 +86,7 @@ const accepterPar = async (
 ) => {
   contexte.issue = await accepterUneInvitation({
     reference: ReferenceInvitation({
-      email: EmailInvitation(invite().email),
+      email: Email(invite().email),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     accepteur: accepteurDe(mediateur, inscriptionValidee),

@@ -20,7 +20,7 @@ export {
   Recherche,
   TriEquipe,
 } from './criteres-equipe'
-export { EmailInvitation } from './email-invitation'
+export { Email } from './email'
 export * from './errors'
 export {
   type EssaimageCoordinateur,

@@ -1,4 +1,4 @@
-import { EmailInvitation } from '../../../domain'
+import { Email } from '../../../domain'
 import {
   email,
   invitationEnAttente,
@@ -45,7 +45,7 @@ describe('ce que voit une personne qui ouvre son invitation', () => {
     expect(
       vueInvitation({
         invitation: invitationEnAttente,
-        session: EmailInvitation('autre@example.com'),
+        session: Email('autre@example.com'),
         coordinateur,
         tailleEquipe: 3,
       }),

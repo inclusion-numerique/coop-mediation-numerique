@@ -1,8 +1,8 @@
-import type { EmailInvitation } from '../../../domain'
+import type { Email } from '../../../domain'
 import type { Ecart } from './planifier'
 
 export type InvitationsEnvoyees = {
-  readonly envoyees: readonly EmailInvitation[]
+  readonly envoyees: readonly Email[]
   readonly ecartees: readonly Ecart[]
-  readonly echecs: readonly EmailInvitation[]
+  readonly echecs: readonly Email[]
 }

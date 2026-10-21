@@ -10,7 +10,7 @@ import { ACCEPTER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abiliti
 import { AccepterUneInvitationValidation } from '@app/web/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.validation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
@@ -18,7 +18,7 @@ import {
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 const accepteurDe = (user: SessionUser): Accepteur => {
-  const email = EmailInvitation(user.email)
+  const email = Email(user.email)
   return user.inscriptionValidee != null && user.mediateur?.id != null
     ? {
         type: 'InscriptionValidee',
@@ -36,7 +36,7 @@ export const accepterUneInvitationAction = actionBuilder()
       async ({ user, input }) =>
         accepterUneInvitation({
           reference: ReferenceInvitation({
-            email: EmailInvitation(input.email),
+            email: Email(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           accepteur: accepteurDe(user),

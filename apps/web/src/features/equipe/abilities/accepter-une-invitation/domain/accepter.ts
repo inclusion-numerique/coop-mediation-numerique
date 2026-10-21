@@ -1,6 +1,6 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import {
-  type EmailInvitation,
+  type Email,
   exigerEnAttente,
   type Invitation,
   type InvitationDejaTraitee,
@@ -12,10 +12,10 @@ import { InscriptionNonValidee, MauvaisDestinataire } from './errors'
 export type Accepteur =
   | {
       readonly type: 'InscriptionValidee'
-      readonly email: EmailInvitation
+      readonly email: Email
       readonly mediateurId: MediateurId
     }
-  | { readonly type: 'InscriptionEnCours'; readonly email: EmailInvitation }
+  | { readonly type: 'InscriptionEnCours'; readonly email: Email }
 
 export type Acceptation = {
   readonly invitation: InvitationEnAttente

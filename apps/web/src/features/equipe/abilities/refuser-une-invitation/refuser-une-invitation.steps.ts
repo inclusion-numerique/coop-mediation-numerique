@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { refuserUneInvitation } from '@app/web/features/equipe/abilities/refuser-une-invitation'
 import {
   CoordinateurId,
-  EmailInvitation,
+  Email,
   ReferenceInvitation,
 } from '@app/web/features/equipe/domain'
 import {
@@ -56,7 +56,7 @@ Given('une personne qui a déjà accepté de rejoindre une équipe', async () =>
 When("cette personne refuse l'invitation", async () => {
   contexte.issue = await refuserUneInvitation({
     reference: ReferenceInvitation({
-      email: EmailInvitation(emailInvite()),
+      email: Email(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     auteurId: null,

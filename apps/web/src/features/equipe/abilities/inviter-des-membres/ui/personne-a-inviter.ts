@@ -1,15 +1,14 @@
-import type { EmailInvitation } from '../../../domain'
+import type { Email } from '../../../domain'
 import type { MediateurAInviter } from '../domain'
 
 export type PersonneAInviter =
   | ({ readonly _tag: 'Mediateur' } & MediateurAInviter)
-  | { readonly _tag: 'Email'; readonly email: EmailInvitation }
+  | { readonly _tag: 'Email'; readonly email: Email }
 
 export const libelleDe = (personne: PersonneAInviter): string =>
   personne._tag === 'Mediateur' ? personne.nom : personne.email
 
-export const cleDe = (personne: PersonneAInviter): EmailInvitation =>
-  personne.email
+export const cleDe = (personne: PersonneAInviter): Email => personne.email
 
 const parmi =
   (personnes: readonly PersonneAInviter[]) => (personne: PersonneAInviter) =>
