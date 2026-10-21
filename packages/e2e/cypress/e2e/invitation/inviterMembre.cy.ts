@@ -14,7 +14,7 @@ const searchAndInviteUser = ({
   displayName: string
   email: string
 }) => {
-  cy.findByLabelText('Rechercher par nom ou adresse e-mail').type(search)
+  cy.findByRole('combobox').type(search)
 
   cy.contains('[role="option"]', email, { timeout: 10_000 }).click()
 
