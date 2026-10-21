@@ -1,4 +1,3 @@
-import { lireContratsConseillerNumerique } from '@app/web/conseiller-numerique/lireContratsConseillerNumerique'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import {
@@ -18,6 +17,7 @@ import {
   profilDe,
 } from '../../../../domain'
 import type { MembreAExporter } from '../../domain'
+import { contratsDesMembres } from './contrats-des-membres.query'
 
 export const exporterLesMembres = async ({
   coordinateurId,
@@ -43,11 +43,12 @@ export const exporterLesMembres = async ({
       ${triEquipe(criteres)}`,
   )
 
-  const contrats = await lireContratsConseillerNumerique(
+  const contrats = await contratsDesMembres(
     lignes.flatMap((ligne) => {
       const profil = profilDe(ligne)
       return profil === null ? [] : [profil.utilisateurId]
     }),
+    maintenant,
   )
 
   return success(

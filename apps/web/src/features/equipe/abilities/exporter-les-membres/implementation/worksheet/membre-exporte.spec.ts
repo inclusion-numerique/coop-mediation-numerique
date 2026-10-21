@@ -11,6 +11,7 @@ import {
   Telephone,
   UtilisateurId,
 } from '../../../../domain'
+import { TypeContrat } from '../../domain'
 import { membreExporte } from './membre-exporte'
 
 const depuis = new Date('2026-01-01T09:00:00Z')
@@ -40,7 +41,7 @@ describe('membre exporté', () => {
   })
 
   it('un conseiller numérique porte son rôle, son contrat et sa structure', () => {
-    const contrat = { type: 'CDD', debut: depuis, fin: null }
+    const contrat = { type: TypeContrat('CDD'), debut: depuis, fin: null }
     expect(
       membreExporte(
         {
