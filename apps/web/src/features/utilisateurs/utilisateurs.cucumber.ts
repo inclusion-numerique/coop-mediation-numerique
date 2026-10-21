@@ -179,67 +179,51 @@ After(async () => {
   const aNettoyer = semes.comptes
   semes.comptes = []
 
-  await aNettoyer.reduce<Promise<void>>(async (precedent, compte) => {
-    await precedent
+  if (aNettoyer.length === 0) return
 
-    await prismaClient.partageStatistiques.deleteMany({
-      where: { mediateurId: compte.mediateurId },
-    })
-    await prismaClient.mediateurEnActivite.deleteMany({
-      where: { mediateurId: compte.mediateurId },
-    })
-    await prismaClient.activitesTags.deleteMany({
-      where: { activiteId: compte.activiteId },
-    })
-    await prismaClient.tag.deleteMany({
-      where: {
-        OR: [
-          { mediateurId: compte.mediateurId },
-          ...(compte.coordinateurId
-            ? [{ coordinateurId: compte.coordinateurId }]
-            : []),
-        ],
+  const utilisateurs = aNettoyer.map(({ userId }) => userId)
+  const parUtilisateur = { userId: { in: utilisateurs } }
+  const mediateurs = { mediateur: parUtilisateur }
+  const coordinateurs = { coordinateur: parUtilisateur }
+  const deLUnOuLAutre = { OR: [mediateurs, coordinateurs] }
+
+  await prismaClient.partageStatistiques.deleteMany({ where: deLUnOuLAutre })
+  await prismaClient.mediateurEnActivite.deleteMany({ where: mediateurs })
+  await prismaClient.activitesTags.deleteMany({
+    where: { activite: mediateurs },
+  })
+  await prismaClient.tag.deleteMany({ where: deLUnOuLAutre })
+  await prismaClient.activite.deleteMany({ where: mediateurs })
+  await prismaClient.beneficiaire.deleteMany({ where: mediateurs })
+  await prismaClient.invitationEquipe.deleteMany({
+    where: { OR: [{ mediateurInvite: parUtilisateur }, coordinateurs] },
+  })
+  await prismaClient.mediateurCoordonne.deleteMany({ where: deLUnOuLAutre })
+  await prismaClient.coordinateur.deleteMany({ where: parUtilisateur })
+  await prismaClient.mediateur.deleteMany({ where: parUtilisateur })
+  await prismaClient.lieuInclusion.deleteMany({
+    where: { id: { in: aNettoyer.map(({ lieuId }) => lieuId) } },
+  })
+  await prismaClient.rdvAccount.deleteMany({ where: parUtilisateur })
+  await prismaClient.session.deleteMany({ where: parUtilisateur })
+  await prismaClient.account.deleteMany({ where: parUtilisateur })
+  await prismaClient.mutation.deleteMany({ where: parUtilisateur })
+  await prismaClient.personneAffectationEmploiMain.deleteMany({
+    where: { personne: { coopId: { in: utilisateurs } } },
+  })
+  await prismaClient.personneMain.deleteMany({
+    where: { coopId: { in: utilisateurs } },
+  })
+  await prismaClient.structureAdministrativeMain.deleteMany({
+    where: {
+      id: {
+        in: aNettoyer.flatMap(({ employeuseId }) =>
+          employeuseId === null ? [] : [employeuseId],
+        ),
       },
-    })
-    await prismaClient.activite.deleteMany({
-      where: { mediateurId: compte.mediateurId },
-    })
-    await prismaClient.beneficiaire.deleteMany({
-      where: { mediateurId: compte.mediateurId },
-    })
-    await prismaClient.invitationEquipe.deleteMany({
-      where: compte.coordinateurId
-        ? { coordinateurId: compte.coordinateurId }
-        : { mediateurId: compte.mediateurId },
-    })
-    await prismaClient.mediateurCoordonne.deleteMany({
-      where: { mediateurId: compte.mediateurId },
-    })
-    if (compte.coordinateurId)
-      await prismaClient.coordinateur.deleteMany({
-        where: { id: compte.coordinateurId },
-      })
-    await prismaClient.mediateur.deleteMany({
-      where: { id: compte.mediateurId },
-    })
-    await prismaClient.lieuInclusion.deleteMany({
-      where: { id: compte.lieuId },
-    })
-    await prismaClient.session.deleteMany({ where: { userId: compte.userId } })
-    await prismaClient.account.deleteMany({ where: { userId: compte.userId } })
-    await prismaClient.mutation.deleteMany({ where: { userId: compte.userId } })
-    await prismaClient.personneAffectationEmploiMain.deleteMany({
-      where: { personne: { coopId: compte.userId } },
-    })
-    await prismaClient.personneMain.deleteMany({
-      where: { coopId: compte.userId },
-    })
-    if (compte.employeuseId !== null)
-      await prismaClient.structureAdministrativeMain.deleteMany({
-        where: { id: compte.employeuseId },
-      })
-    await prismaClient.user.deleteMany({ where: { id: compte.userId } })
-  }, Promise.resolve())
+    },
+  })
+  await prismaClient.user.deleteMany({ where: { id: { in: utilisateurs } } })
 })
 
 export type CompteInactifSeme = {

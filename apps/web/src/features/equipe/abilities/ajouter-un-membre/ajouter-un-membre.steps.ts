@@ -1,5 +1,8 @@
 import assert from 'node:assert'
-import { ajouterUnMembre } from '@app/web/features/equipe/abilities/ajouter-un-membre'
+import {
+  ajouterUnMembre,
+  mediateursAAjouter,
+} from '@app/web/features/equipe/abilities/ajouter-un-membre'
 import { CoordinateurId, UtilisateurId } from '@app/web/features/equipe/domain'
 import {
   adhesionsDe,
@@ -18,6 +21,9 @@ const contexte: {
   seconde?: CoordinateurSeme
   mediateur?: MediateurSeme
   issue?: Awaited<ReturnType<typeof ajouterUnMembre>>
+  exterieur?: MediateurSeme
+  supprime?: MediateurSeme
+  proposes?: Awaited<ReturnType<typeof mediateursAAjouter>>
 } = {}
 
 const premiere = (): CoordinateurSeme => {
@@ -112,3 +118,48 @@ Then(
     assert.strictEqual(invitation.acceptee, null)
   },
 )
+
+Given(
+  'une équipe à compléter, avec un membre, un médiateur extérieur et un médiateur supprimé',
+  async () => {
+    contexte.premiere = await semerUnCoordinateur()
+    contexte.mediateur = await semerUnMediateurDEquipe()
+    contexte.exterieur = await semerUnMediateurDEquipe()
+    contexte.supprime = await semerUnMediateurDEquipe({ profilSupprime: true })
+    await semerUneAdhesion({
+      coordinateurId: premiere().coordinateurId,
+      mediateurId: mediateur().mediateurId,
+    })
+  },
+)
+
+const chercher = async (personne: MediateurSeme | undefined) => {
+  assert.ok(personne)
+  contexte.proposes = await mediateursAAjouter({
+    coordinateurId: premiere().coordinateurId,
+    recherche: personne.email,
+  })
+}
+
+When('un administrateur cherche le médiateur extérieur', async () => {
+  await chercher(contexte.exterieur)
+})
+
+When("un administrateur cherche le membre de l'équipe", async () => {
+  await chercher(contexte.mediateur)
+})
+
+When('un administrateur cherche le médiateur supprimé', async () => {
+  await chercher(contexte.supprime)
+})
+
+Then("ce médiateur est proposé à l'ajout", () => {
+  assert.deepStrictEqual(
+    contexte.proposes?.map(({ email }) => email),
+    [contexte.exterieur?.email],
+  )
+})
+
+Then("aucun médiateur n'est proposé à l'ajout", () => {
+  assert.deepStrictEqual(contexte.proposes, [])
+})

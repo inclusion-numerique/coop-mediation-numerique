@@ -1,57 +1,42 @@
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
+import { fusionnerDesComptesAction } from '@app/web/app/_actions/utilisateurs/fusionner-des-comptes.action'
+import { rechercherDesComptesAFusionnerAction } from '@app/web/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
-import { prismaClient } from '@app/web/prismaClient'
-import { contentId } from '@app/web/utils/skipLinks'
-import { getUserDisplayName } from '@app/web/utils/user'
+import { ficheUtilisateur } from '@app/web/features/utilisateurs/abilities/consulter-un-utilisateur'
+import {
+  FUSIONNER_DES_COMPTES_ACTION_KEY,
+  RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY,
+} from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
+import { FusionPage } from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes/ui'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
-import { MergeWithUser } from './MergeWithUser'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Fusion'),
 }
 
 const Page = async (props: { params: Promise<{ id: string }> }) => {
-  const params = await props.params
-
-  const { id } = params
-
-  const user = await prismaClient.user.findUnique({
-    where: { id },
+  const { id } = await props.params
+  const cible = await ficheUtilisateur({
+    utilisateurId: id,
+    maintenant: new Date(),
   })
-
-  if (!user) {
-    notFound()
-    return null
-  }
-
-  const name = getUserDisplayName(user)
+  if (cible === null) notFound()
 
   return (
-    <CoopPageContainer>
-      <SkipLinksPortal />
-      <AdministrationBreadcrumbs
-        currentPage="Fusionner"
-        parents={[
-          {
-            label: 'Utilisateurs',
-            linkProps: { href: '/administration/utilisateurs' },
-          },
-          {
-            label: name,
-            linkProps: { href: `/administration/utilisateurs/${id}` },
-          },
-        ]}
-      />
-      <main id={contentId}>
-        <AdministrationTitle icon="fr-icon-git-merge-line">
-          Fusionner {name} avec un autre utilisateur
-        </AdministrationTitle>
-        <MergeWithUser userId={id} />
-      </main>
-    </CoopPageContainer>
+    <ClientBinder
+      bind={RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY}
+      to={rechercherDesComptesAFusionnerAction}
+    >
+      <ClientBinder
+        bind={FUSIONNER_DES_COMPTES_ACTION_KEY}
+        to={fusionnerDesComptesAction}
+      >
+        <FusionPage
+          cible={{ id: cible.id, nom: cible.nomAffiche }}
+          apercu={null}
+        />
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

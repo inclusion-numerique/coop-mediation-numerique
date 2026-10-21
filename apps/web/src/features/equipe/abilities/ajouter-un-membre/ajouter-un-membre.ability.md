@@ -18,3 +18,23 @@
 * Given un médiateur déjà membre d'une équipe
 * When un administrateur ajoute ce médiateur à cette équipe
 * Then l'ajout du membre est refusé
+
+## Rule: La recherche ne propose que des médiateurs vivants, hors de l'équipe
+
+### Scenario: Un médiateur hors de l'équipe est proposé
+
+* Given une équipe à compléter, avec un membre, un médiateur extérieur et un médiateur supprimé
+* When un administrateur cherche le médiateur extérieur
+* Then ce médiateur est proposé à l'ajout
+
+### Scenario: Un membre de l'équipe n'est pas proposé
+
+* Given une équipe à compléter, avec un membre, un médiateur extérieur et un médiateur supprimé
+* When un administrateur cherche le membre de l'équipe
+* Then aucun médiateur n'est proposé à l'ajout
+
+### Scenario: Un médiateur supprimé n'est pas proposé
+
+* Given une équipe à compléter, avec un membre, un médiateur extérieur et un médiateur supprimé
+* When un administrateur cherche le médiateur supprimé
+* Then aucun médiateur n'est proposé à l'ajout
