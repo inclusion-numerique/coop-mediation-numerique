@@ -309,3 +309,189 @@ After(async () => {
   })
   await prismaClient.user.deleteMany({ where: { id: { in: userIds } } })
 })
+
+export type CompteDeListe = {
+  readonly prenom: string
+  readonly marqueur: string
+  readonly role?: 'User' | 'Admin' | 'Support'
+  readonly creeLe: Date
+  readonly inscritLe: Date | null
+  readonly supprimeLe?: Date | null
+  readonly derniereVisite?: Date | null
+  readonly mediateur?: {
+    readonly derniereActivite: Date | null
+    readonly dernierBeneficiaire: Date | null
+  } | null
+  readonly coordinateur?: {
+    readonly aUneEquipe: boolean
+    readonly aCoordonne: boolean
+  } | null
+  readonly employeuseId?: number | null
+  readonly conseillerNumerique?: boolean
+  readonly lieuId?: string | null
+}
+
+const listes: {
+  utilisateurs: readonly string[]
+  employeuses: readonly number[]
+  lieux: readonly string[]
+} = { utilisateurs: [], employeuses: [], lieux: [] }
+
+const suivre = (cle: 'utilisateurs', id: string) => {
+  listes[cle] = [...listes[cle], id]
+}
+
+const semerUnUtilisateurBrut = async (
+  data: Parameters<typeof prismaClient.user.create>[0]['data'],
+): Promise<string> => {
+  const { id } = await prismaClient.user.create({ data, select: { id: true } })
+  suivre('utilisateurs', id)
+  return id
+}
+
+const semerUnMediateurCoordonne = async (
+  coordinateurId: string,
+  marqueur: string,
+): Promise<void> => {
+  const userId = await semerUnUtilisateurBrut({
+    email: `membre-${v4()}@example.com`,
+    lastName: `Membre de ${marqueur.slice(0, 4)}`,
+    inscriptionValidee: new Date(),
+  })
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId },
+    select: { id: true },
+  })
+  await prismaClient.mediateurCoordonne.create({
+    data: { mediateurId: mediateur.id, coordinateurId },
+  })
+}
+
+export const semerUneEmployeuse = async (nom: string): Promise<number> => {
+  const { id } = await prismaClient.structureAdministrativeMain.create({
+    data: { denominationAntenne: nom },
+    select: { id: true },
+  })
+  listes.employeuses = [...listes.employeuses, id]
+  return id
+}
+
+export const semerUnLieu = async (nom: string): Promise<string> => {
+  const { id } = await prismaClient.lieuInclusion.create({
+    data: {
+      nom,
+      adresse: '1 rue de la Paix',
+      commune: 'Reims',
+      codePostal: '51100',
+    },
+    select: { id: true },
+  })
+  listes.lieux = [...listes.lieux, id]
+  return id
+}
+
+export const semerUnCompteDeListe = async (
+  compte: CompteDeListe,
+): Promise<string> => {
+  const userId = await semerUnUtilisateurBrut({
+    email: `liste-${v4()}@example.com`,
+    firstName: compte.prenom,
+    lastName: compte.marqueur,
+    name: `${compte.prenom} ${compte.marqueur}`,
+    role: compte.role ?? 'User',
+    created: compte.creeLe,
+    inscriptionValidee: compte.inscritLe,
+    deleted: compte.supprimeLe ?? null,
+    lastSeen: compte.derniereVisite ?? null,
+  })
+
+  const mediateur = compte.mediateur
+    ? await prismaClient.mediateur.create({
+        data: {
+          userId,
+          derniereCreationActivite: compte.mediateur.derniereActivite,
+          derniereCreationBeneficiaire: compte.mediateur.dernierBeneficiaire,
+        },
+        select: { id: true },
+      })
+    : null
+
+  if (compte.coordinateur) {
+    const coordinateur = await prismaClient.coordinateur.create({
+      data: {
+        userId,
+        derniereCreationActivite: compte.coordinateur.aCoordonne
+          ? new Date()
+          : null,
+      },
+      select: { id: true },
+    })
+    if (compte.coordinateur.aUneEquipe)
+      await semerUnMediateurCoordonne(coordinateur.id, compte.marqueur)
+  }
+
+  if (compte.employeuseId != null || compte.conseillerNumerique) {
+    const employeuseId =
+      compte.employeuseId ?? (await semerUneEmployeuse('Employeuse CN'))
+    const personne = await prismaClient.personneMain.create({
+      data: { coopId: userId },
+      select: { id: true },
+    })
+    await prismaClient.personneAffectationEmploiMain.create({
+      data: {
+        personneId: personne.id,
+        structureAdministrativeId: employeuseId,
+        source: compte.conseillerNumerique ? 'idposte' : 'coop',
+        estActive: true,
+      },
+    })
+  }
+
+  if (compte.lieuId && mediateur)
+    await prismaClient.mediateurEnActivite.create({
+      data: {
+        mediateurId: mediateur.id,
+        structureId: compte.lieuId,
+        debut: new Date('2026-01-01'),
+      },
+    })
+
+  return userId
+}
+
+After(async () => {
+  const { utilisateurs, employeuses, lieux } = listes
+  listes.utilisateurs = []
+  listes.employeuses = []
+  listes.lieux = []
+
+  if (utilisateurs.length === 0) return
+
+  const parUtilisateur = { userId: { in: [...utilisateurs] } }
+
+  await prismaClient.mediateurCoordonne.deleteMany({
+    where: {
+      OR: [{ mediateur: parUtilisateur }, { coordinateur: parUtilisateur }],
+    },
+  })
+  await prismaClient.mediateurEnActivite.deleteMany({
+    where: { mediateur: parUtilisateur },
+  })
+  await prismaClient.personneAffectationEmploiMain.deleteMany({
+    where: { personne: { coopId: { in: [...utilisateurs] } } },
+  })
+  await prismaClient.personneMain.deleteMany({
+    where: { coopId: { in: [...utilisateurs] } },
+  })
+  await prismaClient.structureAdministrativeMain.deleteMany({
+    where: { id: { in: [...employeuses] } },
+  })
+  await prismaClient.lieuInclusion.deleteMany({
+    where: { id: { in: [...lieux] } },
+  })
+  await prismaClient.coordinateur.deleteMany({ where: parUtilisateur })
+  await prismaClient.mediateur.deleteMany({ where: parUtilisateur })
+  await prismaClient.user.deleteMany({
+    where: { id: { in: [...utilisateurs] } },
+  })
+})

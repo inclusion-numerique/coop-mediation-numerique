@@ -1,8 +1,13 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { buildUtilisateursWorksheet } from '@app/web/features/utilisateurs/use-cases/export/buildUtilisateursWorksheet'
-import { getUtilisateursWorksheetInput } from '@app/web/features/utilisateurs/use-cases/export/getUtilisateursWorksheetInput'
-import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
+import { optionsDesFiltres } from '@app/web/composition/utilisateurs/options-des-filtres'
+import {
+  classeurDesUtilisateurs,
+  utilisateursAExporter,
+} from '@app/web/features/utilisateurs/abilities/exporter-les-utilisateurs'
+import { filtresUtilisateurs } from '@app/web/features/utilisateurs/domain'
+import { libellesDesFiltres } from '@app/web/features/utilisateurs/ui'
+import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -10,30 +15,38 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const GET = async (request: NextRequest) => {
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const auteur = await getSessionUserFromSessionToken(
+    getSessionTokenFromNextRequestCookies(request.cookies),
+  )
 
-  enforceIsAdmin(user)
+  if (auteur?.role !== 'Admin') return new Response(null, { status: 403 })
 
-  const filters = Object.fromEntries(request.nextUrl.searchParams.entries())
+  const parametres = Object.fromEntries(request.nextUrl.searchParams.entries())
+  const filtres = filtresUtilisateurs(parametres)
+  const maintenant = new Date()
 
-  const utilisateursWorksheetInput = await getUtilisateursWorksheetInput({
-    user,
-    filters,
+  const [utilisateurs, options] = await Promise.all([
+    utilisateursAExporter({
+      mots: toQueryParts(parametres).filter((mot) => mot !== ''),
+      filtres,
+      maintenant,
+    }),
+    optionsDesFiltres(filtres),
+  ])
+
+  const classeur = classeurDesUtilisateurs({
+    utilisateurs,
+    auteur,
+    filtres: libellesDesFiltres(filtres, options),
+    genereLe: maintenant,
   })
 
-  const workbook = buildUtilisateursWorksheet(utilisateursWorksheetInput)
-
-  const data = await workbook.xlsx.writeBuffer()
-
-  const filename = `coop-numerique_utilisateurs_${dateAsIsoDay(new Date())}.xlsx`
-
-  return new Response(data, {
+  return new Response(await classeur.xlsx.writeBuffer(), {
     status: 200,
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Disposition': `attachment; filename="coop-numerique_utilisateurs_${dateAsIsoDay(maintenant)}.xlsx"`,
     },
   })
 }

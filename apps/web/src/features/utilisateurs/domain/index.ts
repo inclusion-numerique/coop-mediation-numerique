@@ -20,6 +20,27 @@ export {
 export { type CycleDeVie, cycleDeVie } from './cycle-de-vie'
 export { Dispositif, dispositifDe, dispositifs } from './dispositif'
 export {
+  type CritereStatut,
+  critereDuStatut,
+  FiltreStatut,
+  filtresStatut,
+  type Intervalle,
+  statutDuFiltre,
+} from './filtre-statut'
+export {
+  AUCUN_FILTRE,
+  CodeCommune,
+  CodeDepartement,
+  EmployeuseId,
+  type FiltresUtilisateurs,
+  filtresUtilisateurs,
+  LieuActiviteId,
+  type ParametresDeFiltres,
+  parametresDesFiltres,
+  RoleFiltre,
+  rolesFiltres,
+} from './filtres-utilisateurs'
+export {
   DOMAINE_COURRIEL_ANONYME,
   estCourrielAnonymise,
   IdentiteAnonyme,
@@ -28,6 +49,12 @@ export {
   PRENOM_ANONYME,
 } from './identite-anonyme'
 export { JAMAIS, type Jalon, jalon, plusRecent } from './jalon'
+export type {
+  CoordinateurDeLaLigne,
+  EmployeuseDeLaLigne,
+  LigneUtilisateur,
+  MediateurDeLaLigne,
+} from './ligne-utilisateur'
 export { MediateurId } from './mediateur-id'
 export { Prenom } from './prenom'
 export {
