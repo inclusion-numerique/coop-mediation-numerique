@@ -1,11 +1,14 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
+import type { Prisma } from '@app/web/generated/prisma/client'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 
 const DOSSIER = 'output/normalisation-telephones'
+
+const DELAI_DE_LA_TRANSACTION_MS = 5 * 60 * 1000
 
 const EN_TETE = [
   'utilisateur_id',
@@ -90,11 +93,24 @@ const deposerLeReleve = (lignes: readonly string[]): string => {
   return fichier
 }
 
-const enregistrer = ({ utilisateurId, normalise }: Correction) =>
-  prismaClient.user.update({
-    where: { id: utilisateurId },
-    data: { phone: normalise },
-  })
+const enregistrer =
+  (transaction: Prisma.TransactionClient) =>
+  ({ utilisateurId, normalise }: Correction) =>
+    transaction.user.update({
+      where: { id: utilisateurId },
+      data: { phone: normalise },
+    })
+
+const enregistrerToutes = (corrections: readonly Correction[]) =>
+  prismaClient.$transaction(
+    (transaction) =>
+      corrections.reduce<Promise<unknown>>(
+        (precedente, correction) =>
+          precedente.then(() => enregistrer(transaction)(correction)),
+        Promise.resolve(),
+      ),
+    { timeout: DELAI_DE_LA_TRANSACTION_MS },
+  )
 
 export const executeNormaliserLesTelephones: JobExecutor<
   'normaliser-les-telephones'
@@ -108,7 +124,7 @@ export const executeNormaliserLesTelephones: JobExecutor<
   )
 
   if (appliquer) {
-    await prismaClient.$transaction(corrections.map(enregistrer))
+    await enregistrerToutes(corrections)
   }
 
   const fichier = deposerLeReleve(
