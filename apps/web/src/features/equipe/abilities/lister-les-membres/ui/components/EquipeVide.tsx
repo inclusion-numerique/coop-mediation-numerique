@@ -10,7 +10,7 @@ const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
       </p>
       <p className="fr-mb-8v">
         Invitez les médiateurs et médiatrices numériques que vous souhaitez
-        coordonnez à rejoindre votre équipe.
+        coordonner à rejoindre votre équipe.
       </p>
       <Button
         linkProps={{
