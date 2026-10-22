@@ -19,5 +19,6 @@ export const listSecrets = () =>
     url: '/',
     params: {
       page_size: 100,
+      path: '/',
     },
   }).then(({ data }) => data)
