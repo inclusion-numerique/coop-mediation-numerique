@@ -45,6 +45,7 @@ import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@app/web/features/utilisateur
 import { BoutonUsurper } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
 import {
   coordinateurDe,
+  inscription,
   mediateurDe,
 } from '@app/web/features/utilisateurs/domain'
 import {
@@ -56,6 +57,11 @@ import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
+
+const dateDInscription = (fiche: FicheUtilisateur): Date | null => {
+  const jalon = inscription(fiche.cycle)
+  return jalon._tag === 'Le' ? jalon.date : null
+}
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Détails'),
@@ -191,7 +197,7 @@ const Page = async (props: {
                                 }}
                               />
                               {fiche.role === 'User' &&
-                                fiche.supprimeLe === null && (
+                                fiche.cycle._tag !== 'Supprime' && (
                                   <BoutonSupprimerLeCompte
                                     utilisateurId={fiche.id}
                                     nom={fiche.nomAffiche}
@@ -203,7 +209,7 @@ const Page = async (props: {
                             <AvertissementsEtatInscription
                               user={{
                                 role: fiche.role,
-                                inscriptionValidee: fiche.inscritLe,
+                                inscriptionValidee: dateDInscription(fiche),
                                 mediateur:
                                   mediateur === null
                                     ? null

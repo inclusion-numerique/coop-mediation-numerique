@@ -1,5 +1,6 @@
 import type {
   AdresseCourriel,
+  EtatCompte,
   NomAffiche,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -27,7 +28,7 @@ export type CompteApercu = {
   readonly id: UtilisateurId
   readonly nom: NomAffiche
   readonly courriel: AdresseCourriel
-  readonly supprimeLe: Date | null
+  readonly etat: EtatCompte
   readonly contenu: ContenuDuCompte
 }
 

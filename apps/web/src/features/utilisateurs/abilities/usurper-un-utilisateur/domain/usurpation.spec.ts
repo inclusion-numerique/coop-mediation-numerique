@@ -1,4 +1,5 @@
 import {
+  JAMAIS,
   NomAffiche,
   OrigineCompte,
   RoleUtilisateur,
@@ -15,7 +16,7 @@ const cible = (origine: 'Reel' | 'Fixture'): CibleUsurpation => ({
   nom: NomAffiche('Jeanne Martin'),
   origine: OrigineCompte(origine),
   role: RoleUtilisateur('User'),
-  inscritLe: null,
+  inscription: JAMAIS,
   rattachements: { _tag: 'aucun' },
 })
 

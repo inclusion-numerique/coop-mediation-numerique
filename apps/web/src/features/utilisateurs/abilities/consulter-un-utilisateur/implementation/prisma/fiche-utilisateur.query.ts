@@ -105,6 +105,11 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
   const role = RoleUtilisateur(row.role)
   const derniereVisite = jalon(row.lastSeen)
   const identite = identiteToDomain(row)
+  const cycle = cycleDeVie({
+    creeLe: row.created,
+    inscritLe: row.inscriptionValidee,
+    supprimeLe: row.deleted,
+  })
 
   return {
     id: UtilisateurId(row.id),
@@ -117,8 +122,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
     siret: row.siret,
     creeLe: row.created,
-    inscritLe: row.inscriptionValidee,
-    supprimeLe: row.deleted,
+    cycle,
     profilInscription:
       row.profilInscription === null
         ? null
@@ -128,11 +132,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     statut: statutDe(
       {
         role,
-        cycle: cycleDeVie({
-          creeLe: row.created,
-          inscritLe: row.inscriptionValidee,
-          supprimeLe: row.deleted,
-        }),
+        cycle,
         activite: {
           rattachements: rattachements(
             row.mediateur === null

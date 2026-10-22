@@ -1,4 +1,5 @@
 import type {
+  Jalon,
   NomAffiche,
   OrigineCompte,
   RattachementsDuCompte,
@@ -20,7 +21,7 @@ export type CibleUsurpation = {
   readonly nom: NomAffiche
   readonly origine: OrigineCompte
   readonly role: RoleUtilisateur
-  readonly inscritLe: Date | null
+  readonly inscription: Jalon
   readonly rattachements: RattachementsDuCompte
 }
 

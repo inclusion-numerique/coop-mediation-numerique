@@ -2,6 +2,7 @@ import type { ProfilInscription } from '@app/web/features/inscription/domain'
 import type {
   AdresseCourriel,
   CoordinateurId,
+  CycleDeVie,
   Dispositif,
   Jalon,
   MediateurId,
@@ -61,8 +62,7 @@ export type FicheUtilisateur = {
   readonly dispositif: Dispositif
   readonly siret: string | null
   readonly creeLe: Date
-  readonly inscritLe: Date | null
-  readonly supprimeLe: Date | null
+  readonly cycle: CycleDeVie
   readonly profilInscription: ProfilInscription | null
   readonly derniereConnexion: Jalon
   readonly derniereVisite: Jalon

@@ -21,9 +21,9 @@ const Compte = ({ item }: { item: CompteTrouve }) => (
   <span className="fr-flex fr-direction-column">
     <span>
       {item.nom}{' '}
-      {item.supprimeLe !== null && (
+      {item.etat._tag === 'supprime' && (
         <Badge small severity="warning">
-          Supprimé le {dateAsDay(item.supprimeLe)}
+          Supprimé le {dateAsDay(item.etat.depuis)}
         </Badge>
       )}
     </span>

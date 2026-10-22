@@ -1,5 +1,6 @@
 import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
+  etatDuCompte,
   nomAffiche,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -68,7 +69,7 @@ const versApercu = (row: ApercuRow): CompteApercu => {
     id: UtilisateurId(row.id),
     nom: nomAffiche(identite),
     courriel: identite.courriel,
-    supprimeLe: row.deleted,
+    etat: etatDuCompte(row.deleted),
     contenu: {
       beneficiaires: row.mediateur?.beneficiaires.map(({ id }) => id) ?? [],
       activites: row.mediateur?.activites.map(({ id }) => id) ?? [],

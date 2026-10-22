@@ -17,7 +17,12 @@ export {
   COURRIEL_HASH_LENGTH,
   CourrielHash,
 } from './courriel-hash'
-export { type CycleDeVie, cycleDeVie } from './cycle-de-vie'
+export {
+  type CycleAvantSuppression,
+  type CycleDeVie,
+  cycleDeVie,
+  inscription,
+} from './cycle-de-vie'
 export {
   type CompteARelancer,
   deroulerLesRelances,

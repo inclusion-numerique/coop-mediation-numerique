@@ -43,7 +43,7 @@ export const FusionPage = ({
                 id: apercu.source.id,
                 nom: apercu.source.nom,
                 courriel: apercu.source.courriel,
-                supprimeLe: apercu.source.supprimeLe,
+                etat: apercu.source.etat,
               }
         }
       />

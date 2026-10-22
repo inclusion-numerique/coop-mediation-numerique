@@ -2,6 +2,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import {
   coordinateurDe,
+  inscription,
   type Jalon,
   mediateurDe,
 } from '@app/web/features/utilisateurs/domain'
@@ -45,6 +46,9 @@ const aParis = (jalon: Jalon): string =>
   jalon._tag === 'Le'
     ? dateAsDayAndTimeInTimeZone(jalon.date, 'Europe/Paris')
     : 'Jamais'
+
+const inscriptionValidee = (jalon: Jalon): string =>
+  jalon._tag === 'Le' ? dateAsDayAndTime(jalon.date) : 'Non'
 
 const Evenements = ({
   evenements,
@@ -169,9 +173,7 @@ export const FicheUtilisateurPage = ({
               },
               {
                 label: 'Inscription validée',
-                value: fiche.inscritLe
-                  ? dateAsDayAndTime(fiche.inscritLe)
-                  : 'Non',
+                value: inscriptionValidee(inscription(fiche.cycle)),
               },
             ]}
           />

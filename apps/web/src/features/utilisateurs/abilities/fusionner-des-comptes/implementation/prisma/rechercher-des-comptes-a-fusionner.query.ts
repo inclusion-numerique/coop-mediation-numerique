@@ -1,5 +1,6 @@
 import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
+  etatDuCompte,
   nomAffiche,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -50,7 +51,7 @@ export const rechercherDesComptesAFusionner = async ({
       id: UtilisateurId(compte.id),
       nom: nomAffiche(identite),
       courriel: identite.courriel,
-      supprimeLe: compte.deleted,
+      etat: etatDuCompte(compte.deleted),
     }
   })
 }

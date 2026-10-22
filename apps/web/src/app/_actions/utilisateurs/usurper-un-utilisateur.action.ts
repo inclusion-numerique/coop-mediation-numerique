@@ -42,7 +42,8 @@ export const usurperUnUtilisateurAction = actionBuilder()
           nom: cible.nom,
           redirection: getLoginRedirectUrl({
             role: cible.role,
-            inscriptionValidee: cible.inscritLe,
+            inscriptionValidee:
+              cible.inscription._tag === 'Le' ? cible.inscription.date : null,
             mediateur: mediateurId === null ? null : { id: mediateurId },
             coordinateur:
               coordinateurId === null ? null : { id: coordinateurId },

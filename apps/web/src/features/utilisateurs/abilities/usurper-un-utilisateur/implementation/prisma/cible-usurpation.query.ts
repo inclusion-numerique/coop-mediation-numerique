@@ -1,6 +1,7 @@
 import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
+  jalon,
   MediateurId,
   nomAffiche,
   origineDuCompte,
@@ -39,7 +40,7 @@ export const cibleUsurpation = async (
         nom: nomAffiche(identiteToDomain(row)),
         origine: origineDuCompte(row.isFixture),
         role: RoleUtilisateur(row.role),
-        inscritLe: row.inscriptionValidee,
+        inscription: jalon(row.inscriptionValidee),
         rattachements: rattachements(
           row.mediateur === null ? null : MediateurId(row.mediateur.id),
           row.coordinateur === null
