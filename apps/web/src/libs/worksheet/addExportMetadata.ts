@@ -35,12 +35,16 @@ export const addExportMetadata =
         ['Prénom', user.firstName ?? '-'],
         ['Rôle', getUserRoleLabel(user)],
         total != null ? ['Total', total] : undefined,
-        ["Date d'export", date.toLocaleDateString('fr-FR')],
+        [
+          "Date d'export",
+          date.toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }),
+        ],
         [
           "Heure d'export",
           date.toLocaleTimeString('fr-FR', {
             hour: '2-digit',
             minute: '2-digit',
+            timeZone: 'Europe/Paris',
           }),
         ],
         [],
