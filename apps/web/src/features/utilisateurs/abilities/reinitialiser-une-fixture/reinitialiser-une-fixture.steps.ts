@@ -18,6 +18,19 @@ Given('un compte réel à réinitialiser', async () => {
   })
 })
 
+Given(
+  'un compte marqué de test absent des fixtures à réinitialiser',
+  async () => {
+    reinitialisation.compteId = await semerUnCompteDeListe({
+      prenom: 'Test',
+      marqueur: `Reinitialisation${v4().slice(0, 8)}`,
+      creeLe: new Date('2026-01-01'),
+      inscritLe: new Date('2026-01-02'),
+      fixture: true,
+    })
+  },
+)
+
 When('ce compte est réinitialisé', async () => {
   assert.ok(reinitialisation.compteId, 'Aucun compte semé')
   reinitialisation.resultat = await reinitialiserUneFixture(

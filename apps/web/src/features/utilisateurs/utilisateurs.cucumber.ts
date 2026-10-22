@@ -316,6 +316,7 @@ export type CompteDeListe = {
   readonly lieuId?: string | null
   readonly relance?: OnboardingStatus | null
   readonly avecUnBeneficiaire?: boolean
+  readonly fixture?: boolean
 }
 
 const listes: {
@@ -391,6 +392,7 @@ export const semerUnCompteDeListe = async (
     deleted: compte.supprimeLe ?? null,
     lastSeen: compte.derniereVisite ?? null,
     onboardingStatus: compte.relance ?? null,
+    isFixture: compte.fixture ?? false,
   })
 
   const mediateur = compte.mediateur
