@@ -113,16 +113,18 @@ export const FicheUtilisateurPage = ({
           actions={
             <div>
               {sections.usurpation}
-              <Button
-                iconId="fr-icon-git-merge-line"
-                priority="tertiary"
-                size="small"
-                linkProps={{
-                  href: `/administration/utilisateurs/${fiche.id}/merge`,
-                }}
-              >
-                Fusionner avec un autre utilisateur
-              </Button>
+              {fiche.cycle._tag !== 'Supprime' && (
+                <Button
+                  iconId="fr-icon-git-merge-line"
+                  priority="tertiary"
+                  size="small"
+                  linkProps={{
+                    href: `/administration/utilisateurs/${fiche.id}/merge`,
+                  }}
+                >
+                  Fusionner avec un autre utilisateur
+                </Button>
+              )}
             </div>
           }
         >
@@ -196,7 +198,9 @@ export const FicheUtilisateurPage = ({
                 { label: 'Lieux d’activité', value: mediateur.lieuxActivite },
                 {
                   label: 'Visible sur la cartographie',
-                  value: sections.visibiliteCarto,
+                  value:
+                    sections.visibiliteCarto ??
+                    (mediateur.visible ? 'Visible' : 'Non visible'),
                 },
                 {
                   label: 'Coordonné(e) par',

@@ -136,6 +136,7 @@ const Page = async (props: {
 
   const mediateur = mediateurDe(fiche.rattachements)
   const coordinateur = coordinateurDe(fiche.rattachements)
+  const compteSupprime = fiche.cycle._tag === 'Supprime'
 
   const [equipe, lieux, employeuses] = await Promise.all([
     sectionEquipe(fiche, searchParams),
@@ -183,7 +184,7 @@ const Page = async (props: {
                       <FicheUtilisateurPage
                         fiche={fiche}
                         sections={{
-                          actions: (
+                          actions: compteSupprime ? null : (
                             <div className="fr-flex fr-flex-gap-2v">
                               <BoutonChangerLesRoles
                                 utilisateurId={fiche.id}
@@ -196,13 +197,12 @@ const Page = async (props: {
                                   retirable: coordinateur?.retirable ?? true,
                                 }}
                               />
-                              {fiche.role === 'User' &&
-                                fiche.cycle._tag !== 'Supprime' && (
-                                  <BoutonSupprimerLeCompte
-                                    utilisateurId={fiche.id}
-                                    nom={fiche.nomAffiche}
-                                  />
-                                )}
+                              {fiche.role === 'User' && (
+                                <BoutonSupprimerLeCompte
+                                  utilisateurId={fiche.id}
+                                  nom={fiche.nomAffiche}
+                                />
+                              )}
                             </div>
                           ),
                           avertissements: (
@@ -228,11 +228,11 @@ const Page = async (props: {
                               className="fr-mr-2v"
                             />
                           ) : null,
-                          deconnexion: (
+                          deconnexion: compteSupprime ? null : (
                             <BoutonDeconnecter utilisateurId={fiche.id} />
                           ),
                           visibiliteCarto:
-                            mediateur === null ? null : (
+                            mediateur === null || compteSupprime ? null : (
                               <VisibiliteCartoDuMediateur
                                 mediateurId={mediateur.id}
                                 visible={mediateur.visible}
