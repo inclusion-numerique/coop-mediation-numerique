@@ -86,18 +86,28 @@ export const equipeAComplementer = async (
   const coordinateur = await prismaClient.user.findUnique({
     where: { id },
     select: {
-      id: true,
+      firstName: true,
+      lastName: true,
       name: true,
       email: true,
       coordinateur: { select: { id: true } },
     },
   })
 
-  return coordinateur?.coordinateur == null
+  if (coordinateur?.coordinateur == null) return null
+
+  const email = Email.safe(coordinateur.email)
+
+  return email === null
     ? null
     : {
-        coordinateurId: coordinateur.coordinateur.id,
-        utilisateurId: coordinateur.id,
-        nom: coordinateur.name ?? coordinateur.email,
+        coordinateurId: CoordinateurId(coordinateur.coordinateur.id),
+        utilisateurId: id,
+        nom: nomAffiche({
+          prenom: lue(Prenom, coordinateur.firstName),
+          nom: lue(Nom, coordinateur.lastName),
+          nomComplet: lue(NomAffiche, coordinateur.name),
+          email,
+        }),
       }
 }
