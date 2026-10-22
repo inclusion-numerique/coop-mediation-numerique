@@ -199,7 +199,7 @@ export const FicheUtilisateurPage = ({
                   value: sections.visibiliteCarto,
                 },
                 {
-                  label: 'Coordoné(e) par',
+                  label: 'Coordonné(e) par',
                   value:
                     mediateur.coordinations.length > 0 ? (
                       mediateur.coordinations.map(
