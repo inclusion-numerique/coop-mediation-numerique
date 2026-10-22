@@ -1,6 +1,11 @@
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { fixtureUsers } from '@app/fixtures/users'
-import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
+import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
+import {
+  type NomAffiche,
+  nomAffiche,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 
 const estDansLesFixtures = (id: string): boolean =>
@@ -17,7 +22,7 @@ export const estUneFixture = async (
   )
 }
 
-export const reinitialiser = async (utilisateurId: string): Promise<string> => {
-  const compte = await resetFixtureUser({ id: utilisateurId })
-  return compte.name ?? compte.email
-}
+export const reinitialiser = async (
+  utilisateurId: string,
+): Promise<NomAffiche> =>
+  nomAffiche(identiteToDomain(await resetFixtureUser({ id: utilisateurId })))

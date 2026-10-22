@@ -5,6 +5,7 @@ import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationT
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import type { ReactNode } from 'react'
+import type { CompteDeTest } from '../../domain'
 import { BoutonUsurper } from '../BoutonUsurper'
 import { UsurpationLibre } from '../UsurpationLibre'
 
@@ -14,7 +15,7 @@ export const UsurpationPage = ({
   enProduction,
   reinitialiser,
 }: {
-  comptesDeTest: readonly { readonly id: string; readonly nom: string }[]
+  comptesDeTest: readonly CompteDeTest[]
   usurpationLibre: boolean
   enProduction: boolean
   reinitialiser: (utilisateurId: string) => ReactNode

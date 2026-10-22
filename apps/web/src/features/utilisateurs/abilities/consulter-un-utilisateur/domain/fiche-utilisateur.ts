@@ -5,6 +5,8 @@ import type {
   Dispositif,
   Jalon,
   MediateurId,
+  Nom,
+  NomAffiche,
   Prenom,
   Rattachements,
   RoleUtilisateur,
@@ -15,7 +17,7 @@ import type {
 
 export type CoordinationDuMediateur = {
   readonly coordinateurUtilisateurId: UtilisateurId
-  readonly nom: string | null
+  readonly nom: NomAffiche
 }
 
 export type MediateurDeLaFiche = {
@@ -50,9 +52,9 @@ export type Evenement = {
 
 export type FicheUtilisateur = {
   readonly id: UtilisateurId
-  readonly nomAffiche: string
+  readonly nomAffiche: NomAffiche
   readonly prenom: Prenom | null
-  readonly nom: string | null
+  readonly nom: Nom | null
   readonly courriel: AdresseCourriel
   readonly telephone: Telephone | null
   readonly role: RoleUtilisateur

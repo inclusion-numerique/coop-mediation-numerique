@@ -1,6 +1,9 @@
 import type { AdresseCourriel } from './adresse-courriel'
 import type { Dispositif } from './dispositif'
 import type { Jalon } from './jalon'
+import type { Nom } from './nom'
+import type { NomAffiche } from './nom-affiche'
+import type { Prenom } from './prenom'
 import type { Rattachements } from './rattachements'
 import type { RoleUtilisateur } from './role-utilisateur'
 import type { StatutCompte } from './statut-compte'
@@ -26,9 +29,9 @@ export type EmployeuseDeLaLigne = {
 
 export type LigneUtilisateur = {
   readonly id: UtilisateurId
-  readonly nomComplet: string | null
-  readonly prenom: string | null
-  readonly nom: string | null
+  readonly nomAffiche: NomAffiche
+  readonly prenom: Prenom | null
+  readonly nom: Nom | null
   readonly courriel: AdresseCourriel
   readonly role: RoleUtilisateur
   readonly creeLe: Date

@@ -1,4 +1,6 @@
+import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
+  type NomAffiche,
   nomAffiche,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -34,7 +36,7 @@ export const rendreLaSession = async ({
 }: {
   readonly jeton: string
   readonly usurpateurId: UtilisateurId
-}): Promise<string> => {
+}): Promise<NomAffiche> => {
   const session = await prismaClient.session.update({
     where: { sessionToken: jeton },
     data: { userId: usurpateurId, usurperId: null },
@@ -45,10 +47,5 @@ export const rendreLaSession = async ({
     },
   })
 
-  return nomAffiche({
-    prenom: session.user.firstName,
-    nom: session.user.lastName,
-    nomComplet: session.user.name,
-    courriel: session.user.email,
-  })
+  return nomAffiche(identiteToDomain(session.user))
 }

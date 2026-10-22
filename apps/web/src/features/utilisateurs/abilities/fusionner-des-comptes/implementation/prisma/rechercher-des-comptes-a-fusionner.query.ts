@@ -1,4 +1,8 @@
-import { nomAffiche } from '@app/web/features/utilisateurs/domain'
+import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
+import {
+  nomAffiche,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { CompteTrouve } from '../../domain'
 
@@ -39,15 +43,14 @@ export const rechercherDesComptesAFusionner = async ({
     take: 20,
   })
 
-  return comptes.map((compte) => ({
-    id: compte.id,
-    nom: nomAffiche({
-      prenom: compte.firstName,
-      nom: compte.lastName,
-      nomComplet: compte.name,
-      courriel: compte.email,
-    }),
-    courriel: compte.email,
-    supprimeLe: compte.deleted,
-  }))
+  return comptes.map((compte) => {
+    const identite = identiteToDomain(compte)
+
+    return {
+      id: UtilisateurId(compte.id),
+      nom: nomAffiche(identite),
+      courriel: identite.courriel,
+      supprimeLe: compte.deleted,
+    }
+  })
 }

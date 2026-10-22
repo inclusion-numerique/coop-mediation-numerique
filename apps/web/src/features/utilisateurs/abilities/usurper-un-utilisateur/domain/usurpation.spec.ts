@@ -1,4 +1,5 @@
 import {
+  NomAffiche,
   OrigineCompte,
   RoleUtilisateur,
   UtilisateurId,
@@ -11,7 +12,7 @@ import {
 
 const cible = (origine: 'Reel' | 'Fixture'): CibleUsurpation => ({
   id: UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'),
-  nom: 'Jeanne Martin',
+  nom: NomAffiche('Jeanne Martin'),
   origine: OrigineCompte(origine),
   role: RoleUtilisateur('User'),
   inscritLe: null,

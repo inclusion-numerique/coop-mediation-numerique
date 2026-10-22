@@ -1,3 +1,4 @@
+import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
   MediateurId,
@@ -8,7 +9,7 @@ import {
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
-import type { CibleUsurpation } from '../../domain'
+import type { CibleUsurpation, CompteDeTest } from '../../domain'
 
 export const cibleUsurpation = async (
   utilisateurId: string,
@@ -35,12 +36,7 @@ export const cibleUsurpation = async (
     ? null
     : {
         id,
-        nom: nomAffiche({
-          prenom: row.firstName,
-          nom: row.lastName,
-          nomComplet: row.name,
-          courriel: row.email,
-        }),
+        nom: nomAffiche(identiteToDomain(row)),
         origine: origineDuCompte(row.isFixture),
         role: RoleUtilisateur(row.role),
         inscritLe: row.inscriptionValidee,
@@ -53,13 +49,20 @@ export const cibleUsurpation = async (
       }
 }
 
-export const comptesDeTest = async (): Promise<
-  readonly { readonly id: string; readonly nom: string }[]
-> =>
+export const comptesDeTest = async (): Promise<readonly CompteDeTest[]> =>
   (
     await prismaClient.user.findMany({
       where: { isFixture: true },
-      select: { id: true, name: true, email: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        name: true,
+        email: true,
+      },
       orderBy: { name: 'asc' },
     })
-  ).map(({ id, name, email }) => ({ id, nom: name ?? email }))
+  ).map((compte) => ({
+    id: UtilisateurId(compte.id),
+    nom: nomAffiche(identiteToDomain(compte)),
+  }))

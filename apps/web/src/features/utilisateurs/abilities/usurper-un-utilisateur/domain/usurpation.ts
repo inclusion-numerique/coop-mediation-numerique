@@ -1,4 +1,5 @@
 import type {
+  NomAffiche,
   OrigineCompte,
   RattachementsDuCompte,
   RoleUtilisateur,
@@ -16,11 +17,16 @@ export type PorteeUsurpation = Model.TypeOf<typeof PorteeUsurpation>
 
 export type CibleUsurpation = {
   readonly id: UtilisateurId
-  readonly nom: string
+  readonly nom: NomAffiche
   readonly origine: OrigineCompte
   readonly role: RoleUtilisateur
   readonly inscritLe: Date | null
   readonly rattachements: RattachementsDuCompte
+}
+
+export type CompteDeTest = {
+  readonly id: UtilisateurId
+  readonly nom: NomAffiche
 }
 
 export type UsurpationHorsFixtures = { readonly _tag: 'UsurpationHorsFixtures' }

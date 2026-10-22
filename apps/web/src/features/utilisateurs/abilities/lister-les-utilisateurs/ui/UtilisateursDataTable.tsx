@@ -97,7 +97,7 @@ export const UtilisateursDataTable = {
       name: 'nom',
       header: 'Nom',
       sortable: true,
-      cell: ({ nomComplet }) => nomComplet,
+      cell: ({ nomAffiche }) => nomAffiche,
     },
     {
       name: 'courriel',

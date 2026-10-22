@@ -1,4 +1,8 @@
-import { nomAffiche } from '@app/web/features/utilisateurs/domain'
+import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
+import {
+  nomAffiche,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { type ApercuDeFusion, type CompteApercu, communs } from '../../domain'
@@ -57,42 +61,41 @@ const invitation = ({
   coordinateurId: string
 }) => `${email}-${coordinateurId}`
 
-const versApercu = (row: ApercuRow): CompteApercu => ({
-  id: row.id,
-  nom: nomAffiche({
-    prenom: row.firstName,
-    nom: row.lastName,
-    nomComplet: row.name,
-    courriel: row.email,
-  }),
-  courriel: row.email,
-  supprimeLe: row.deleted,
-  contenu: {
-    beneficiaires: row.mediateur?.beneficiaires.map(({ id }) => id) ?? [],
-    activites: row.mediateur?.activites.map(({ id }) => id) ?? [],
-    structuresEmployeuses:
-      row.personneMain?.affectationsEmploi.map(
-        ({ structureAdministrativeId }) => String(structureAdministrativeId),
-      ) ?? [],
-    lieuxActivite:
-      row.mediateur?.enActivite.map(({ structureId }) => structureId) ?? [],
-    equipesRejointes:
-      row.mediateur?.coordinations.map(
-        ({ coordinateurId }) => coordinateurId,
-      ) ?? [],
-    mediateursCoordonnes:
-      row.coordinateur?.mediateursCoordonnes.map(
-        ({ mediateurId }) => mediateurId,
-      ) ?? [],
-    invitationsRecues: row.mediateur?.invitations.map(invitation) ?? [],
-    invitationsEnvoyees: row.coordinateur?.invitations.map(invitation) ?? [],
-    mutations: row.mutations.map(({ id }) => id),
-    tags: [
-      ...(row.mediateur?.tags.map(({ id }) => id) ?? []),
-      ...(row.coordinateur?.Tag.map(({ id }) => id) ?? []),
-    ],
-  },
-})
+const versApercu = (row: ApercuRow): CompteApercu => {
+  const identite = identiteToDomain(row)
+
+  return {
+    id: UtilisateurId(row.id),
+    nom: nomAffiche(identite),
+    courriel: identite.courriel,
+    supprimeLe: row.deleted,
+    contenu: {
+      beneficiaires: row.mediateur?.beneficiaires.map(({ id }) => id) ?? [],
+      activites: row.mediateur?.activites.map(({ id }) => id) ?? [],
+      structuresEmployeuses:
+        row.personneMain?.affectationsEmploi.map(
+          ({ structureAdministrativeId }) => String(structureAdministrativeId),
+        ) ?? [],
+      lieuxActivite:
+        row.mediateur?.enActivite.map(({ structureId }) => structureId) ?? [],
+      equipesRejointes:
+        row.mediateur?.coordinations.map(
+          ({ coordinateurId }) => coordinateurId,
+        ) ?? [],
+      mediateursCoordonnes:
+        row.coordinateur?.mediateursCoordonnes.map(
+          ({ mediateurId }) => mediateurId,
+        ) ?? [],
+      invitationsRecues: row.mediateur?.invitations.map(invitation) ?? [],
+      invitationsEnvoyees: row.coordinateur?.invitations.map(invitation) ?? [],
+      mutations: row.mutations.map(({ id }) => id),
+      tags: [
+        ...(row.mediateur?.tags.map(({ id }) => id) ?? []),
+        ...(row.coordinateur?.Tag.map(({ id }) => id) ?? []),
+      ],
+    },
+  }
+}
 
 export const apercuDeFusion = async ({
   sourceId,

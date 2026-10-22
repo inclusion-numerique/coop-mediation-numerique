@@ -67,7 +67,8 @@ export type {
   MediateurDeLaLigne,
 } from './ligne-utilisateur'
 export { MediateurId } from './mediateur-id'
-export { nomAffiche } from './nom-affiche'
+export { Nom } from './nom'
+export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
 export { OrigineCompte, origineDuCompte } from './origine-compte'
 export { Prenom } from './prenom'
 export {

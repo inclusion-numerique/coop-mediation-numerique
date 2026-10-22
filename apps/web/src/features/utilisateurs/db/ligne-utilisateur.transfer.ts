@@ -5,7 +5,6 @@ import {
 } from '@app/web/features/employeuse/server'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import {
-  AdresseCourriel,
   type CoordinateurDeLaLigne,
   cycleDeVie,
   dispositifDe,
@@ -13,11 +12,13 @@ import {
   jalon,
   type LigneUtilisateur,
   type MediateurDeLaLigne,
+  nomAffiche,
   RoleUtilisateur,
   rattachements,
   statutDe,
   UtilisateurId,
 } from '../domain'
+import { identiteToDomain } from './identite.transfer'
 
 export const ligneUtilisateurSelect = {
   id: true,
@@ -96,13 +97,14 @@ export const ligneUtilisateurToDomain = (
   )
   const role = RoleUtilisateur(row.role)
   const derniereVisite = jalon(row.lastSeen)
+  const identite = identiteToDomain(row)
 
   return {
     id: UtilisateurId(row.id),
-    nomComplet: row.name,
-    prenom: row.firstName,
-    nom: row.lastName,
-    courriel: AdresseCourriel(row.email),
+    nomAffiche: nomAffiche(identite),
+    prenom: identite.prenom,
+    nom: identite.nom,
+    courriel: identite.courriel,
     role,
     creeLe: row.created,
     derniereConnexion: jalon(row.lastLogin),

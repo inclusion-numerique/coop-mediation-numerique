@@ -1,3 +1,9 @@
+import type {
+  AdresseCourriel,
+  NomAffiche,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
+
 export const categoriesDeFusion = [
   'beneficiaires',
   'activites',
@@ -18,9 +24,9 @@ export type ContenuDuCompte = Readonly<
 >
 
 export type CompteApercu = {
-  readonly id: string
-  readonly nom: string
-  readonly courriel: string
+  readonly id: UtilisateurId
+  readonly nom: NomAffiche
+  readonly courriel: AdresseCourriel
   readonly supprimeLe: Date | null
   readonly contenu: ContenuDuCompte
 }

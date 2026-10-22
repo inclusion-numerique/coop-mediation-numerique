@@ -3,8 +3,8 @@ import {
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
+import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
-  AdresseCourriel,
   CoordinateurId,
   coordinateurEstVierge,
   cycleDeVie,
@@ -13,7 +13,6 @@ import {
   MediateurId,
   mediateurEstVierge,
   nomAffiche,
-  Prenom,
   RoleUtilisateur,
   rattachements,
   statutDe,
@@ -56,7 +55,17 @@ const ficheSelect = {
         where: { suppression: null },
         select: {
           coordinateur: {
-            select: { user: { select: { id: true, name: true } } },
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
           },
         },
       },
@@ -95,18 +104,14 @@ type FicheRow = Prisma.UserGetPayload<{ select: typeof ficheSelect }>
 const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
   const role = RoleUtilisateur(row.role)
   const derniereVisite = jalon(row.lastSeen)
+  const identite = identiteToDomain(row)
 
   return {
     id: UtilisateurId(row.id),
-    nomAffiche: nomAffiche({
-      prenom: row.firstName,
-      nom: row.lastName,
-      nomComplet: row.name,
-      courriel: row.email,
-    }),
-    prenom: Prenom.safe(row.firstName ?? ''),
-    nom: row.lastName,
-    courriel: AdresseCourriel(row.email),
+    nomAffiche: nomAffiche(identite),
+    prenom: identite.prenom,
+    nom: identite.nom,
+    courriel: identite.courriel,
     telephone: telephoneEnregistrable(row.phone),
     role,
     dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
@@ -171,7 +176,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
             coordinations: row.mediateur.coordinations.map(
               ({ coordinateur }) => ({
                 coordinateurUtilisateurId: UtilisateurId(coordinateur.user.id),
-                nom: coordinateur.user.name,
+                nom: nomAffiche(identiteToDomain(coordinateur.user)),
               }),
             ),
           },
