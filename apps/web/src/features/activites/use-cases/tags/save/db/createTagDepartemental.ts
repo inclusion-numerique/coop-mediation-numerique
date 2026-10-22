@@ -1,5 +1,5 @@
+import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { prismaClient } from '@app/web/prismaClient'
 import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
 

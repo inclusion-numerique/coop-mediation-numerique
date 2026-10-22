@@ -17,6 +17,7 @@ export {
   CompteDejaSupprime,
   CompteIntrouvable,
   RoleProtege,
+  SuppressionReserveeAuDispositif,
   type SupprimerCompteError,
 } from './errors'
 export {

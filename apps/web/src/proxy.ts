@@ -1,7 +1,3 @@
-import {
-  jobTriggerInfoFromRequest,
-  rewriteTriggerToJobEndpoint,
-} from '@app/web/jobs/jobTriggerMiddleware'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { NextRequest, NextResponse } from 'next/server'
@@ -86,14 +82,6 @@ const proxy = (request: NextRequest) => {
   const forwardedProto = request.headers.get('X-Forwarded-Proto')
   const requestHost = request.headers.get('host')
   const baseUrl = process.env.BASE_URL ?? ''
-
-  const jobTriggerInfo = jobTriggerInfoFromRequest({
-    request,
-    requestHost,
-  })
-  if (jobTriggerInfo) {
-    return rewriteTriggerToJobEndpoint({ baseUrl, request })
-  }
 
   /**
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security

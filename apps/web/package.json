@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "pnpm --silent with-env next dev",
     "build": "pnpm --silent with-env next build",
+    "build:jobs": "pnpm --silent with-env node build-jobs.mjs",
     "build:analyze": "ANALYZE=true pnpm --silent with-env next build --webpack",
     "modclean": "modclean -Pr",
     "modclean:root": "modclean -Pr -p ./../..",
@@ -134,6 +135,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "c8": "^12.0.0",
+    "esbuild": "^0.28.2",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.5.2",
     "modclean": "3.0.0-beta.1",

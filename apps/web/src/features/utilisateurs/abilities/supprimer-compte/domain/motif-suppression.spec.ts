@@ -16,9 +16,6 @@ describe('motif de suppression', () => {
     ).toBe('DecisionAdministrateur')
   })
 
-  // Le motif d'un effacement automatique vient de la POLITIQUE, pas du fait
-  // qu'il soit automatique : c'est ce qui empêchera la prochaine politique de
-  // se journaliser sous celle-ci.
   it('attribue au système le motif de la politique qui l’a déclenché', () => {
     expect(
       motifDe({

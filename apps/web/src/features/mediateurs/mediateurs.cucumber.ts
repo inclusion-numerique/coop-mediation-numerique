@@ -240,3 +240,78 @@ After(async () => {
   await prismaClient.mediateur.deleteMany({ where: { id: semee.mediateurId } })
   await prismaClient.user.deleteMany({ where: { id: { in: userIds } } })
 })
+
+type ExConseillerSeme = {
+  readonly userId: string
+  readonly mediateurId: string
+  readonly personneId: number
+}
+
+const exConseiller: { seme?: ExConseillerSeme } = {}
+
+export const exConseillerSeme = (): ExConseillerSeme => {
+  if (!exConseiller.seme) throw new Error('Aucun ex-conseiller semé')
+  return exConseiller.seme
+}
+
+export const semerUnExConseiller = async ({
+  visible,
+  reglageLe,
+}: {
+  visible: boolean
+  reglageLe: Date | null
+}): Promise<ExConseillerSeme> => {
+  const userId = v4()
+
+  await prismaClient.user.create({
+    data: { id: userId, email: `rupture-${userId}@example.com` },
+  })
+
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId, isVisible: visible, visibiliteChoisieLe: reglageLe },
+    select: { id: true },
+  })
+
+  const personne = await prismaClient.personneMain.create({
+    data: { coopId: userId },
+    select: { id: true },
+  })
+
+  exConseiller.seme = {
+    userId,
+    mediateurId: mediateur.id,
+    personneId: personne.id,
+  }
+
+  return exConseiller.seme
+}
+
+export const semerUnContratDeLExConseiller = async ({
+  debut,
+  rupture,
+}: {
+  debut: Date
+  rupture: Date | null
+}): Promise<void> => {
+  await prismaClient.contratMain.create({
+    data: {
+      personneId: exConseillerSeme().personneId,
+      dateDebut: debut,
+      dateRupture: rupture,
+    },
+  })
+}
+
+After(async () => {
+  const seme = exConseiller.seme
+  exConseiller.seme = undefined
+  if (!seme) return
+
+  await prismaClient.contratMain.deleteMany({
+    where: { personneId: seme.personneId },
+  })
+  await prismaClient.personneMain.deleteMany({ where: { id: seme.personneId } })
+  await prismaClient.mutation.deleteMany({ where: { userId: seme.userId } })
+  await prismaClient.mediateur.deleteMany({ where: { id: seme.mediateurId } })
+  await prismaClient.user.deleteMany({ where: { id: seme.userId } })
+})

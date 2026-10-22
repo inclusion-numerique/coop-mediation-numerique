@@ -4,20 +4,14 @@ import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
 import { craRouter } from '@app/web/server/rpc/cra/craRouter'
 import { router } from '@app/web/server/rpc/createRouter'
 import { imageRouter } from '@app/web/server/rpc/image/imageRouter'
-import { inscriptionRouter } from '@app/web/server/rpc/inscription/inscriptionRouter'
 import { structuresRouter } from '@app/web/server/rpc/structures/structuresRouter'
 import { uploadRouter } from '@app/web/server/rpc/upload/uploadRouter'
-import { userRouter } from '@app/web/server/rpc/user/userRouter'
-import { usurpationRouter } from '@app/web/server/rpc/usurpation/usurpationRouter'
 
 export const appRouter = router({
-  user: userRouter,
-  inscription: inscriptionRouter,
   upload: uploadRouter,
   image: imageRouter,
   structures: structuresRouter,
   cra: craRouter,
-  usurpation: usurpationRouter,
   apiClient: apiClientRouter,
   tags: tagsRouter,
   maintenance: maintenanceRouter,

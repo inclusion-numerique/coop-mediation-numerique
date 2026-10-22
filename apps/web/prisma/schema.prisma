@@ -135,6 +135,8 @@ model User {
   lastLogin DateTime? @map("last_login")
   lastSeen  DateTime? @map("last_seen")
 
+  avertissementInactiviteLe DateTime? @map("avertissement_inactivite_le")
+
   // User can be created from v1 data
   v1Imported DateTime? @map("v1_imported")
 
@@ -323,6 +325,7 @@ model Mediateur {
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
 
   isVisible Boolean @default(false) @map("is_visible")
+  visibiliteChoisieLe DateTime? @map("visibilite_choisie_le")
 
   // pre computed counts to avoid joins and counts on big tables
   activitesCount       Int @default(0) @map("activites_count")

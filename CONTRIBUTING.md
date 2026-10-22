@@ -377,11 +377,12 @@ l'historique git, pas dans le code.
 
 ### Mecanisme d'execution des crons
 
-1. **Scaleway Container Cron** declenche un POST vers le conteneur
-2. Le middleware `jobTriggerMiddleware` detecte la requete interne (origine `svc.cluster.local`)
-3. La requete est reecrite vers `/api/jobs` avec un token d'API interne
-4. Le job est valide puis execute via `executeJob()`
-5. Les details d'execution sont sauvegardes en base (`jobExecution`)
+1. **Scaleway Serverless Jobs** demarre, a l'heure du cron, un conteneur dedie a partir de l'image web
+2. Ce conteneur execute `node ./apps/web/run-job.js <job>` : un script autonome, produit par `pnpm -F @app/web build:jobs` (esbuild), qui ne passe ni par HTTP ni par le serveur Next
+3. Le job est valide puis execute via `executeJob()`
+4. Les details d'execution sont sauvegardes en base (`jobExecution`), et un job en echec sort en erreur : l'execution apparait en echec dans la console Scaleway (historique et journaux conserves 60 jours)
+
+En local, un job se lance avec `pnpm cli job:execute <job> [payload]`.
 
 ### Planning des crons
 
@@ -552,7 +553,7 @@ Le conteneur recoit une quarantaine de variables d'environnement couvrant :
 
 #### Jobs planifies (Cron)
 
-Les crons sont configures via `scaleway_container_trigger` (horaires en UTC) et envoient une requete `POST` au conteneur :
+Les crons sont des `scaleway_job_definition` (horaires en UTC, duree maximale 3 h) qui reutilisent l'image et les variables d'environnement du conteneur web. Les secrets leur parviennent par Secret Manager (`scaleway_secret`, chemin `/jobs/<namespace>`) :
 
 **Production uniquement :**
 

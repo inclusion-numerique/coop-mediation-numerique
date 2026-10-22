@@ -30,11 +30,12 @@ locals {
   )
 
   jobs = local.is_main ? {
-    "appliquer-dispositif-conum"   = "0 2 * * *"
-    "fix-users-roles"              = "0 0 * * *"
-    "inactive-users-reminders"     = "0 0 * * *"
-    "remove-orphan-brevo-contacts" = "0 3 * * *"
-    "sync-rdvsp-data"              = "0 2 * * *"
+    "anonymiser-les-comptes-inactifs" = "0 1 * * *"
+    "appliquer-dispositif-conum"      = "0 2 * * *"
+    "fix-users-roles"                 = "0 0 * * *"
+    "inactive-users-reminders"        = "0 0 * * *"
+    "remove-orphan-brevo-contacts"    = "0 3 * * *"
+    "sync-rdvsp-data"                 = "0 2 * * *"
     } : var.namespace == "dev" ? {
     "sync-rdvsp-data" = "0 2 * * *"
   } : {}

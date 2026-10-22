@@ -2,6 +2,7 @@ import {
   AdresseCourriel,
   AuteurId,
   type CompteASupprimer,
+  Dispositif,
   RoleUtilisateur,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -17,7 +18,7 @@ const compte = (
   role: RoleUtilisateur('User'),
   etat: { _tag: 'actif' },
   rattachements: { _tag: 'aucun' },
-  liaisons: [],
+  dispositif: Dispositif('HorsDispositif'),
   ...surcharge,
 })
 
@@ -49,8 +50,6 @@ describe('autoriserSuppression', () => {
     },
   )
 
-  // La garde vaut aussi pour l'auto-suppression : se priver d'un administrateur
-  // est une panne d'exploitation, que le clic vienne de lui ou d'un autre.
   it("refuse à un administrateur d'effacer son propre compte", () => {
     const result = autoriserSuppression(
       compte({ role: RoleUtilisateur('Admin') }),
@@ -71,8 +70,29 @@ describe('autoriserSuppression', () => {
     )
   })
 
-  // Le rejeu est ce qui permettra de rattraper les comptes effacés par l'ancien
-  // code, dont les jetons OAuth sont toujours vivants.
+  it('refuse à un conseiller numérique sous contrat de supprimer son compte', () => {
+    const result = autoriserSuppression(
+      compte({ dispositif: Dispositif('ConseillerNumerique') }),
+      titulaire,
+    )
+
+    expect(result.success === false && result.error._tag).toBe(
+      'SuppressionReserveeAuDispositif',
+    )
+  })
+
+  it.each([
+    ['un administrateur', administrateur],
+    ['la politique de rétention', systeme],
+  ])('laisse %s supprimer le compte d’un conseiller numérique', (_, auteur) => {
+    expect(
+      autoriserSuppression(
+        compte({ dispositif: Dispositif('ConseillerNumerique') }),
+        auteur,
+      ).success,
+    ).toBe(true)
+  })
+
   it.each([
     ['un administrateur', administrateur],
     ['la politique de rétention', systeme],

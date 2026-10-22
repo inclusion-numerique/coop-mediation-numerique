@@ -5,13 +5,13 @@ import {
   employeuseSessionEmplois,
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse'
+import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import type { ActeurIdentityData } from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurIconUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurIcon'
 import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurPageUrl'
-import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
-import { getUserProfil } from '@app/web/features/utilisateurs/utils/getUserProfil'
+import { getUserProfil } from '@app/web/features/mon-reseau/use-cases/acteurs/getUserProfil'
 import classNames from 'classnames'
 import Link from 'next/link'
 
@@ -75,7 +75,7 @@ const ActeurProfilAndContact = ({
   const profilLabel =
     profil === 'Coordinateur'
       ? 'Coordinateur·rice hors dispositif'
-      : allProfileInscriptionLabels[profil]
+      : profilInscriptionLabels[profil]
 
   return (
     <div className={className}>

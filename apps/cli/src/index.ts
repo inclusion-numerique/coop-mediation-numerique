@@ -10,7 +10,6 @@ import { infrastructureInventory } from '@app/cli/commands/infrastructure/invent
 import { locallyRestoreLatestMainBackup } from '@app/cli/commands/infrastructure/locallyRestoreLatestMainBackup'
 import { deleteRegistryImage } from '@app/cli/commands/infrastructure/registry/deleteRegistryImage'
 import { pruneRegistry } from '@app/cli/commands/infrastructure/registry/pruneRegistry'
-import { executeJobApiCommand } from '@app/cli/commands/jobs/executeJobApiCommand'
 import { executeJobCommand } from '@app/cli/commands/jobs/executeJobCommand'
 import { createDotEnvFromSecrets } from '@app/cli/commands/secrets/createDotEnvFromSecrets'
 import { deleteDatabaseSecret } from '@app/cli/commands/secrets/deleteDatabaseSecret'
@@ -45,7 +44,6 @@ const main = async () => {
   const program = new Command()
 
   program.addCommand(executeJobCommand)
-  program.addCommand(executeJobApiCommand)
   program.addCommand(listSecrets)
   program.addCommand(getSecretValue)
   program.addCommand(setupDatabaseSecret)

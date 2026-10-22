@@ -27,6 +27,7 @@ import { coordinateurInscritJ90 } from './coordinateurInscritJ90'
 import { coordinateurInscritJ100 } from './coordinateurInscritJ100'
 import { coordinateurInscritJ110 } from './coordinateurInscritJ110'
 import { coordinateurInscritJ180 } from './coordinateurInscritJ180'
+import { exConseillerApresRupture } from './exConseillerApresRupture'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
@@ -93,6 +94,7 @@ export const fixtureUsers = [
   coordinateurInscritJ110,
   coordinateurInscritJ180,
   coordinateurInscritAvecTout,
+  exConseillerApresRupture,
 ]
 
 export const coordinations = [

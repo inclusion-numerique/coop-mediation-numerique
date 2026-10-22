@@ -1,14 +1,6 @@
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import type { CompteSupprime } from '../../domain'
 
-/**
- * Trace de l'effacement dans le journal d'audit.
- *
- * Le constat y va en `data` sans aucune donnée personnelle — noms d'étapes et
- * ampleurs seulement, conformément à la règle du journal. C'est un événement
- * daté et non un état du compte, d'où le journal plutôt qu'une colonne : et
- * c'est lui que relira la reprise des effacements laissés incomplets.
- */
 export const logEffacementReport = (compte: CompteSupprime): void => {
   addMutationLog({
     userId: compte.id,

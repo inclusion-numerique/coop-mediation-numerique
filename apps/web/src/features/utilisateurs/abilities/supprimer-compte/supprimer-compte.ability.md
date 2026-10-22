@@ -9,20 +9,20 @@
 * Then l'effacement du compte aboutit
 * And l'identité du compte est anonymisée
 * And les sessions du compte sont supprimées
-* And les jetons du compte sont révoqués
+* And la liaison au fournisseur d'identité est supprimée
 * And le constat d'effacement est complet
 
-## Rule: La liaison au fournisseur d'identité survit à l'effacement
+## Rule: Une personne dont le compte est supprimé ne peut plus le retrouver
 
-> C'est elle qui permet à une reconnexion ProConnect de retrouver le compte :
-> l'adaptateur cherche par fournisseur et identifiant, jamais par courriel.
+> L'identifiant ProConnect permet de retrouver l'adresse mail, donc la
+> personne : le garder rendrait l'anonymisation incomplète. Une personne qui
+> revient recrée un compte et repasse par l'inscription.
 
-### Scenario: La clé de reconnexion n'est pas effacée
+### Scenario: Une reconnexion ProConnect ne retrouve pas le compte supprimé
 
 * Given un compte médiateur avec des données rattachées
 * When le titulaire supprime son compte
-* Then la liaison au fournisseur d'identité existe toujours
-* And la liaison au fournisseur d'identité a conservé sa clé
+* Then une reconnexion ProConnect ne retrouve plus le compte
 
 ## Rule: Les données rattachées au compte sont effacées chez leur propriétaire
 
@@ -44,6 +44,42 @@
 * When le titulaire supprime son compte
 * Then l'effacement du compte échoue avec l'erreur "RoleProtege"
 
+## Rule: Un conseiller numérique ne supprime pas lui-même son compte tant que son contrat court
+
+> Un conseiller numérique est tenu d'utiliser la Coop pendant son contrat.
+> Après la rupture, il ne relève plus du dispositif et peut supprimer son compte.
+
+### Scenario: Le conseiller numérique sous contrat ne peut pas supprimer son compte
+
+* Given un compte conseiller numérique sous contrat
+* When le titulaire supprime son compte
+* Then l'effacement du compte échoue avec l'erreur "SuppressionReserveeAuDispositif"
+* And l'identité du compte est intacte
+
+### Scenario: Un administrateur peut supprimer le compte d'un conseiller numérique
+
+* Given un compte conseiller numérique sous contrat
+* When un administrateur supprime ce compte
+* Then l'effacement du compte aboutit
+* And l'identité du compte est anonymisée
+
+## Rule: La politique de rétention efface comme l'administration
+
+### Scenario: La politique de rétention supprime un compte
+
+* Given un compte médiateur avec des données rattachées
+* When la politique de rétention supprime ce compte
+* Then l'effacement du compte aboutit
+* And l'identité du compte est anonymisée
+* And la liaison au fournisseur d'identité est supprimée
+
+## Rule: On ne supprime que ce qui existe
+
+### Scenario: Un compte introuvable n'est pas supprimé
+
+* When un administrateur supprime un compte qui n’existe pas
+* Then l'effacement du compte échoue avec l'erreur "CompteIntrouvable"
+
 ## Rule: Le titulaire n'efface pas deux fois, l'administration peut reprendre
 
 ### Scenario: Le titulaire ne peut pas supprimer un compte déjà supprimé
@@ -60,6 +96,7 @@
 * When un administrateur supprime ce compte
 * Then l'effacement du compte aboutit
 * And l'identité du compte est anonymisée
+* And la liaison au fournisseur d'identité est supprimée
 
 ### Scenario: Le rejeu ne réattribue pas une nouvelle identité anonyme
 
@@ -70,4 +107,4 @@
 * When le titulaire supprime son compte
 * And un administrateur rejoue l'effacement de ce compte
 * Then l'identité anonyme du compte est inchangée
-* And les jetons du compte sont révoqués
+* And la liaison au fournisseur d'identité est supprimée

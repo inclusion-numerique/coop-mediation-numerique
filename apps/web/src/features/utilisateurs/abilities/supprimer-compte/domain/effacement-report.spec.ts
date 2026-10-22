@@ -64,15 +64,10 @@ describe('cause d’un rejet', () => {
     expect(failureReasonOf('rupture de connexion')).toBe('rupture de connexion')
   })
 
-  // Le modèle plafonne à 500 caractères : une trace non tronquée ferait échouer
-  // le constructeur, donc l'effacement, pour un message trop long.
   it('tronque un message qui dépasse la longueur du modèle', () => {
     expect(failureReasonOf(new Error('x'.repeat(600)))).toHaveLength(500)
   })
 
-  // Le modèle refuse le vide : sans repli, un rejet sans message ferait échouer
-  // la construction du constat lui-même. Le repli couvre aussi bien une valeur
-  // vide qu'une `Error` au message vide — les deux passent par le même `||`.
   it('se replie sur un texte quand le rejet n’en porte aucun', () => {
     expect(failureReasonOf('')).toBe('Erreur sans message')
   })

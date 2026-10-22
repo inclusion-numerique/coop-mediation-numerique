@@ -1,16 +1,14 @@
-import ResetUserFixtureButton from '@app/web/app/administration/usurpation/ResetUserFixtureButton'
-import SudoUsurpation from '@app/web/app/administration/usurpation/SudoUsurpation'
-import UsurpUserButton from '@app/web/app/administration/usurpation/UsurpUserButton'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
+import { reinitialiserUneFixtureAction } from '@app/web/app/_actions/utilisateurs/reinitialiser-une-fixture.action'
+import { usurperUnUtilisateurAction } from '@app/web/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
+import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
+import { BoutonReinitialiser } from '@app/web/features/utilisateurs/abilities/reinitialiser-une-fixture/ui'
+import { comptesDeTest } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur'
+import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
+import { UsurpationPage } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { contentId } from '@app/web/utils/skipLinks'
-import Notice from '@codegouvfr/react-dsfr/Notice'
 
 export const metadata = {
   title: metadataTitle('Usurpation'),
@@ -19,77 +17,25 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async () => {
-  const fixtureUsers = await prismaClient.user.findMany({
-    where: {
-      isFixture: true,
-    },
-    orderBy: {
-      name: 'asc',
-    },
-  })
-
-  return (
-    <CoopPageContainer>
-      <SkipLinksPortal />
-      <AdministrationBreadcrumbs currentPage="Usurpation" />
-      <main id={contentId}>
-        <AdministrationTitle icon="ri-spy-line">
-          Usurpation d’utilisateurs de test
-        </AdministrationTitle>
-        <p>
-          Sur les instances de preview, vous pouvez vous connecter en tant
-          qu’utilisateur de test (fixture) pour tester différent parcours.
-        </p>
-        {ServerWebAppConfig.Sudo.usurpation && <SudoUsurpation />}
-        {PublicWebAppConfig.isMain && (
-          <Notice
-            title="Cette fonctionnalité n’est pas disponible en production.
-          Vous pouvez tester cette fonctionnalité en local ou sur une autre
-          instance de l’application"
-          />
+const Page = async () => (
+  <ClientBinder
+    bind={USURPER_UN_UTILISATEUR_ACTION_KEY}
+    to={usurperUnUtilisateurAction}
+  >
+    <ClientBinder
+      bind={REINITIALISER_UNE_FIXTURE_ACTION_KEY}
+      to={reinitialiserUneFixtureAction}
+    >
+      <UsurpationPage
+        comptesDeTest={await comptesDeTest()}
+        usurpationLibre={ServerWebAppConfig.Sudo.usurpation}
+        enProduction={PublicWebAppConfig.isMain}
+        reinitialiser={(utilisateurId) => (
+          <BoutonReinitialiser utilisateurId={utilisateurId} />
         )}
-        {!PublicWebAppConfig.isMain && (
-          <div className="fr-table" data-fr-js-table="true">
-            <div className="fr-table__wrapper">
-              <div className="fr-table__container">
-                <div className="fr-table__content">
-                  <table data-fr-js-table-element="true">
-                    <thead>
-                      <tr>
-                        <th scope="col">Utilisateur</th>
-                        <th scope="col" colSpan={2} />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {fixtureUsers.map((row) => (
-                        <tr key={row.id}>
-                          <th>{row.name}</th>
-                          <td>
-                            <UsurpUserButton size="small" userId={row.id} />
-                          </td>
-                          <td>
-                            <ResetUserFixtureButton userId={row.id} />
-                          </td>
-                        </tr>
-                      ))}
-                      {fixtureUsers.length === 0 && (
-                        <tr>
-                          <td colSpan={4}>
-                            Aucun utilisateur de test n’a été chargé
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-    </CoopPageContainer>
-  )
-}
+      />
+    </ClientBinder>
+  </ClientBinder>
+)
 
 export default Page

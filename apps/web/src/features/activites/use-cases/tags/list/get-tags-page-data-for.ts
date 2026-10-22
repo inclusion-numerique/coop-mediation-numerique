@@ -1,5 +1,5 @@
+import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {

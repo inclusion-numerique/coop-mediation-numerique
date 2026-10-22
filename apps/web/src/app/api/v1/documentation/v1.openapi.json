@@ -2213,7 +2213,7 @@
     "/utilisateurs": {
       "get": {
         "summary": "liste des utilisateurs",
-        "description": "Retourne la liste des utilisateurs dont l'inscription est terminée. Les utilisateurs sont triés par date de création décroissante.\n",
+        "description": "Retourne la liste des utilisateurs dont l'inscription est terminée, ainsi que ceux qui ont déjà saisi au moins une activité. Les utilisateurs sont triés par date de création décroissante.\n",
         "tags": ["Utilisateurs"],
         "parameters": [
           {

@@ -1,17 +1,5 @@
-data "scaleway_container_namespace" "containerNamespace" {
-  name = var.CONTAINER_NAMESPACE_NAME
-}
-
-resource "scaleway_container" "webContainer" {
-  name               = local.container_name
-  namespace_id       = data.scaleway_container_namespace.containerNamespace.namespace_id
-  image              = var.WEB_CONTAINER_IMAGE
-  min_scale          = local.is_main ? 2 : 0
-  max_scale          = local.is_main ? 3 : 1
-  cpu_limit          = local.is_main ? 1120 : 560
-  memory_limit_bytes = local.is_main ? 2048000000 : 1024000000
-
-  environment_variables = {
+locals {
+  environnement_web = {
     BREVO_USERS_LIST_ID   = var.BREVO_USERS_LIST_ID
     EMAIL_FROM_ADDRESS    = local.email_from_address
     EMAIL_FROM_NAME       = local.email_from_name
@@ -31,14 +19,13 @@ resource "scaleway_container" "webContainer" {
     ENTREPOT_TUNNEL_PORT  = "5433"
   }
 
-  secret_environment_variables = merge(local.is_main ? { BREVO_API_KEY = var.BREVO_API_KEY } : {}, {
+  secrets_web = merge(local.is_main ? { BREVO_API_KEY = var.BREVO_API_KEY } : {}, {
     DATABASE_URL                           = local.database_url
     PROCONNECT_CLIENT_SECRET               = local.is_main ? var.PROCONNECT_MAIN_CLIENT_SECRET : var.PROCONNECT_PREVIEW_CLIENT_SECRET
     RDV_SERVICE_PUBLIC_OAUTH_CLIENT_ID     = local.is_main ? var.RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_ID : var.RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_ID
     RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET = local.is_main ? var.RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_SECRET : var.RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_SECRET
     RDV_SERVICE_PUBLIC_WEBHOOK_SECRET      = var.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET
     RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG       = local.is_main ? "0" : "1"
-    INTERNAL_API_PRIVATE_KEY               = var.INTERNAL_API_PRIVATE_KEY
     HMAC_SECRET_KEY                        = var.HMAC_SECRET_KEY
     SMTP_USERNAME                          = local.is_main ? var.SMTP_USERNAME : var.SMTP_MAILDEV_USERNAME
     SMTP_PASSWORD                          = local.is_main ? var.SMTP_PASSWORD : var.SMTP_MAILDEV_PASSWORD
@@ -46,4 +33,21 @@ resource "scaleway_container" "webContainer" {
     ENTREPOT_BASTION_SSH_KEY               = var.ENTREPOT_BASTION_SSH_KEY
     ENTREPOT_DATABASE_URL                  = var.ENTREPOT_DATABASE_URL
   })
+}
+
+data "scaleway_container_namespace" "containerNamespace" {
+  name = var.CONTAINER_NAMESPACE_NAME
+}
+
+resource "scaleway_container" "webContainer" {
+  name               = local.container_name
+  namespace_id       = data.scaleway_container_namespace.containerNamespace.namespace_id
+  image              = var.WEB_CONTAINER_IMAGE
+  min_scale          = local.is_main ? 2 : 0
+  max_scale          = local.is_main ? 3 : 1
+  cpu_limit          = local.is_main ? 1120 : 560
+  memory_limit_bytes = local.is_main ? 2048000000 : 1024000000
+
+  environment_variables        = local.environnement_web
+  secret_environment_variables = local.secrets_web
 }

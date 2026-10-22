@@ -1,10 +1,10 @@
-import AdministrationInfoCard from '@app/web/app/administration/AdministrationInfoCard'
 import ClientApiForm from '@app/web/app/administration/clients-api/ClientApiForm'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
 

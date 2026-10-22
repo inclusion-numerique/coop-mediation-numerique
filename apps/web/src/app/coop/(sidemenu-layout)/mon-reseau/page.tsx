@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
+import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 

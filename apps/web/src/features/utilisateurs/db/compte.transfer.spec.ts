@@ -11,25 +11,11 @@ import {
   type CompteASupprimerRow,
   compteASupprimerToDomain,
   identiteAnonymeFromDomain,
-  liaisonRevoqueeFromDomain,
 } from './compte.transfer'
 
 const UTILISATEUR = '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'
 const MEDIATEUR = '1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8'
 const COORDINATEUR = '2b3c4d5e-6f70-4819-92a3-b4c5d6e7f809'
-
-const liaisonRow = (
-  jetons: Partial<CompteASupprimerRow['accounts'][number]> = {},
-): CompteASupprimerRow['accounts'][number] => ({
-  provider: 'proconnect',
-  providerAccountId: 'sub-123',
-  access_token: null,
-  refresh_token: null,
-  id_token: null,
-  expires_at: null,
-  session_state: null,
-  ...jetons,
-})
 
 const row = (
   surcharge: Partial<CompteASupprimerRow> = {},
@@ -40,12 +26,12 @@ const row = (
   deleted: null,
   mediateur: null,
   coordinateur: null,
-  accounts: [],
+  personneMain: null,
   ...surcharge,
 })
 
 describe('compteASupprimerToDomain', () => {
-  it('lit le compte minimal : actif, sans rattachement, sans liaison', () => {
+  it('lit le compte minimal : actif, sans rattachement', () => {
     const compte = compteASupprimerToDomain(row())
 
     expect(compte.id).toBe(UtilisateurId(UTILISATEUR))
@@ -53,10 +39,9 @@ describe('compteASupprimerToDomain', () => {
     expect(compte.role).toBe(RoleUtilisateur('User'))
     expect(compte.etat).toEqual({ _tag: 'actif' })
     expect(compte.rattachements).toEqual({ _tag: 'aucun' })
-    expect(compte.liaisons).toEqual([])
   })
 
-  it('lit le compte maximal : supprimé, double rôle, deux liaisons', () => {
+  it('lit le compte maximal : supprimé, double rôle', () => {
     const depuis = new Date('2026-08-01T10:00:00.000Z')
 
     const compte = compteASupprimerToDomain(
@@ -64,23 +49,15 @@ describe('compteASupprimerToDomain', () => {
         deleted: depuis,
         mediateur: { id: MEDIATEUR },
         coordinateur: { id: COORDINATEUR },
-        accounts: [
-          liaisonRow({ access_token: 'vivant' }),
-          liaisonRow({ provider: 'email', providerAccountId: 'sub-456' }),
-        ],
       }),
     )
 
     expect(compte.etat).toEqual({ _tag: 'supprime', depuis })
     expect(compte.rattachements).toEqual({
       _tag: 'mediateurEtCoordinateur',
-      mediateurId: MediateurId(MEDIATEUR),
-      coordinateurId: CoordinateurId(COORDINATEUR),
+      mediateur: MediateurId(MEDIATEUR),
+      coordinateur: CoordinateurId(COORDINATEUR),
     })
-    expect(compte.liaisons.map(({ acces }) => acces._tag)).toEqual([
-      'actif',
-      'revoque',
-    ])
   })
 
   it.each([
@@ -93,20 +70,6 @@ describe('compteASupprimerToDomain', () => {
       compteASupprimerToDomain(row({ mediateur, coordinateur })).rattachements
         ._tag,
     ).toBe(attendu)
-  })
-
-  it.each([
-    ['access_token', { access_token: 'x' }],
-    ['refresh_token', { refresh_token: 'x' }],
-    ['id_token', { id_token: 'x' }],
-    ['expires_at', { expires_at: 42 }],
-    ['session_state', { session_state: 'x' }],
-  ])('tient la liaison pour active si %s survit', (_, jeton) => {
-    const [liaison] = compteASupprimerToDomain(
-      row({ accounts: [liaisonRow(jeton)] }),
-    ).liaisons
-
-    expect(liaison?.acces).toEqual({ _tag: 'actif' })
   })
 })
 
@@ -131,24 +94,5 @@ describe('identiteAnonymeFromDomain', () => {
       description: null,
       image: { disconnect: true },
     })
-  })
-})
-
-describe('liaisonRevoqueeFromDomain', () => {
-  // Le test qui protège le contrat de résurrection : si quelqu'un ajoute un
-  // jour `provider` ou `providerAccountId` à ce payload, une reconnexion
-  // ProConnect ne retrouverait plus jamais le compte.
-  it('ne touche que les jetons, jamais la clé du fournisseur', () => {
-    const payload = liaisonRevoqueeFromDomain()
-
-    expect(payload).toEqual({
-      access_token: null,
-      refresh_token: null,
-      id_token: null,
-      expires_at: null,
-      session_state: null,
-    })
-    expect(Object.keys(payload)).not.toContain('provider')
-    expect(Object.keys(payload)).not.toContain('providerAccountId')
   })
 })

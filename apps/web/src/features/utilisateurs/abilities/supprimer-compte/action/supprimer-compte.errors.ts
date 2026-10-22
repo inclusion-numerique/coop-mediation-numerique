@@ -3,6 +3,8 @@ export const SUPPRIMER_COMPTE_ERRORS = {
   CompteDejaSupprime: 'Ce compte est déjà supprimé',
   RoleProtege:
     'Un compte administrateur ou support ne peut pas être supprimé. Retirez-lui d’abord ce rôle.',
+  SuppressionReserveeAuDispositif:
+    'Un conseiller numérique ne peut pas supprimer son compte tant que son contrat est en cours.',
   AccesNonCoupe:
     'La suppression n’a pas pu aboutir, aucune donnée n’a été modifiée. Réessayez dans un instant.',
 } as const

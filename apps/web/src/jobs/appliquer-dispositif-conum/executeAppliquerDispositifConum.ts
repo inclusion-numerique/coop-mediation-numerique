@@ -1,7 +1,8 @@
 import { output } from '@app/cli/output'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
-import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
+import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { prismaClient } from '@app/web/prismaClient'
+import * as Sentry from '@sentry/nextjs'
 import type { AppliquerDispositifConumJob } from './appliquerDispositifConumJob'
 
 /**
@@ -98,7 +99,9 @@ export const executeAppliquerDispositifConum = async (
     .filter(aCreerCoordinateur)
     .reduce<Promise<number>>(async (precedent, compte) => {
       const total = await precedent
-      const { cree } = await garantirCoordinateurDuDispositif(compte.user_id)
+      const { cree } = await garantirLeRoleCoordinateurDuDispositif(
+        compte.user_id,
+      )
       return cree ? total + 1 : total
     }, Promise.resolve(0))
 
@@ -109,7 +112,12 @@ export const executeAppliquerDispositifConum = async (
     ? 0
     : await comptes.reduce<Promise<number>>(async (precedent, compte) => {
         const total = await precedent
-        const notifie = await updateBrevoContact(compte.user_id)
+        const notifie = await updateBrevoContact(compte.user_id).catch(
+          (error: unknown) => {
+            Sentry.captureException?.(error)
+            return false
+          },
+        )
         return notifie ? total + 1 : total
       }, Promise.resolve(0))
 

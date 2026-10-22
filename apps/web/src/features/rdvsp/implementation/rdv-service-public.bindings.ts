@@ -3,7 +3,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import { jetonsCompteToDomain } from '../db'
-import { rdvServicePublicApi } from './api'
+import { rdvServicePublicApi, revoquerJetons } from './api'
 
 /**
  * Composition de l'adaptateur RDV Service Public avec la configuration de
@@ -49,4 +49,10 @@ export const rdvServicePublicApiBinding = rdvServicePublicApi({
 
     return compte === null ? null : jetonsCompteToDomain(compte)
   },
+})
+
+export const revoquerJetonsBinding = revoquerJetons({
+  hostname: PublicWebAppConfig.RdvServicePublic.OAuth.hostname,
+  clientId: PublicWebAppConfig.RdvServicePublic.OAuth.clientId,
+  clientSecret: ServerWebAppConfig.RdvServicePublic.OAuth.clientSecret,
 })

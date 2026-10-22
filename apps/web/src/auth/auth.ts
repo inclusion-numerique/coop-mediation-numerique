@@ -1,4 +1,5 @@
 import { authenticationViaProconnect } from '@app/web/auth/authenticationProvider'
+import { importStructureEmployeuseFromProConnect } from '@app/web/auth/importStructureEmployeuseFromProConnect'
 import { nextAuthAdapter } from '@app/web/auth/nextAuthAdapter'
 import { ProConnectProvider } from '@app/web/auth/ProConnectProvider'
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
@@ -7,9 +8,8 @@ import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
-import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
-import { importStructureEmployeuseFromProConnect } from '@app/web/features/utilisateurs/use-cases/import-structure-from-proconnect/importStructureEmployeuseFromProConnect'
-import { prismaClient } from '@app/web/prismaClient'
+import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
+import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
@@ -30,7 +30,7 @@ const sessionUserHasOutdatedData = ({
 }) =>
   user.firstName !== profile.given_name ||
   user.lastName !== profile.usual_name ||
-  user.phone !== profile.phone_number ||
+  user.phone !== telephoneEnregistrable(profile.phone_number) ||
   (profile.siret && user.siret !== profile.siret)
 
 export const nextAuthOptions = {
@@ -92,9 +92,11 @@ export const nextAuthOptions = {
         // recopier ici. Ne subsiste que la ligne `coop.coordinateurs`, qu'aucune dérivation ne peut
         // produire — et la connexion est le bon moment pour la garantir, plutôt que d'attendre le
         // passage nocturne.
-        garantirCoordinateurDuDispositif(user.id).catch((error: unknown) => {
-          Sentry.captureException(error)
-        })
+        garantirLeRoleCoordinateurDuDispositif(user.id).catch(
+          (error: unknown) => {
+            Sentry.captureException(error)
+          },
+        )
 
         registerLastLogin({ userId: params.user.id }).catch((error) => {
           Sentry.captureException(error)
@@ -105,7 +107,7 @@ export const nextAuthOptions = {
       // The rest of this function will execute for ProConnect flow
 
       const { user, profile, account } = params as unknown as {
-        user: SessionUser & { deleted?: Date | null }
+        user: SessionUser
         profile: {
           email: string
           given_name: string
@@ -121,22 +123,6 @@ export const nextAuthOptions = {
           id_token?: string
           scope?: string
         }
-      }
-
-      // Reactivate soft-deleted user on ProConnect reconnection
-      if (user.deleted) {
-        await prismaClient.user.update({
-          where: { id: user.id },
-          data: {
-            deleted: null,
-            email: profile.email,
-            firstName: profile.given_name,
-            lastName: profile.usual_name,
-            name: `${profile.given_name} ${profile.usual_name}`,
-            phone: profile.phone_number,
-            siret: profile.siret ?? undefined,
-          },
-        })
       }
 
       // Update account tokens if this is a ProConnect signin
@@ -171,7 +157,7 @@ export const nextAuthOptions = {
       // Même chose côté ProConnect : plus rien à recopier depuis l'API, seule la ligne coordinateur
       // reste à garantir. L'enchaînement est conservé — l'import ProConnect s'abstient pour un
       // conseiller numérique, il doit donc passer APRÈS.
-      garantirCoordinateurDuDispositif(user.id)
+      garantirLeRoleCoordinateurDuDispositif(user.id)
         .catch((error: unknown) => {
           Sentry.captureException(error)
         })

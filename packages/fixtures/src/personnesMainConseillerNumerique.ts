@@ -4,6 +4,7 @@ import { fixtureUsers } from '@app/fixtures/users'
 import { conseillerInscriptionSansContrat } from '@app/fixtures/users/conseillerInscriptionSansContrat'
 import { conseillerSansLieuInscription } from '@app/fixtures/users/conseillerSansLieuInscription'
 import { coordinateurInscription } from '@app/fixtures/users/coordinateurInscription'
+import { contratRompuDeLExConseiller } from '@app/fixtures/users/exConseillerApresRupture'
 import type { Prisma } from '@app/web/generated/prisma/client'
 
 // Peuple `main` avec l'employeuse des users de test, comme en prod (où la coop lit l'employeuse depuis
@@ -101,6 +102,44 @@ export const garantirAffectationIdposte = async (
   })
 }
 
+const contratsRompus = [contratRompuDeLExConseiller]
+
+export const garantirContratRompu = async (
+  transaction: Prisma.TransactionClient,
+  coopId: string,
+): Promise<void> => {
+  const contratRompu = contratsRompus.find(
+    (contrat) => contrat.coopId === coopId,
+  )
+  if (contratRompu === undefined) return
+
+  const structureAdministrativeMain =
+    await transaction.structureAdministrativeMain.findFirst({
+      where: { structureCoopId: structureEmployeuse.id },
+      select: { id: true },
+    })
+
+  const personne = await transaction.personneMain.upsert({
+    where: { coopId },
+    create: { coopId },
+    update: {},
+    select: { id: true },
+  })
+
+  await transaction.contratMain.deleteMany({
+    where: { personneId: personne.id },
+  })
+
+  await transaction.contratMain.create({
+    data: {
+      personneId: personne.id,
+      structureId: structureAdministrativeMain?.id ?? null,
+      dateDebut: contratRompu.dateDebut,
+      dateRupture: contratRompu.dateRupture,
+    },
+  })
+}
+
 export const seedPersonnesMain = async (
   transaction: Prisma.TransactionClient,
 ) => {
@@ -129,4 +168,8 @@ export const seedPersonnesMain = async (
 
   // Passe 3 — le rôle coordinateur, que la coop déclare et que `main` doit porter.
   await refleterCoordinateurDansMain(transaction)
+
+  await enSerie(contratsRompus, ({ coopId }) =>
+    garantirContratRompu(transaction, coopId),
+  )
 }

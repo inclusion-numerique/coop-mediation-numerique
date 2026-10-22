@@ -8,11 +8,6 @@ import {
 } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 
-/**
- * Lecture par identifiant seul : la garde d'appartenance ne se joue pas ici mais
- * dans la décision du domaine, qui reçoit l'auteur. Les trois chemins lisent le
- * même compte ; ils n'ont pas les mêmes droits dessus.
- */
 export const compteASupprimer = async (
   utilisateurId: UtilisateurId,
 ): Promise<CompteASupprimer | null> => {

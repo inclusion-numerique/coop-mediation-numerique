@@ -21,21 +21,22 @@ export type RoleProtege = {
   readonly role: RoleUtilisateur
 }
 
-/**
- * Le noyau transactionnel a échoué : ni sessions coupées, ni jetons révoqués,
- * ni identité effacée. Aucune étape satellite n'a été lancée, l'état est
- * inchangé — c'est le seul échec possible une fois le compte lu.
- */
 export type AccesNonCoupe = {
   readonly _tag: 'AccesNonCoupe'
   readonly utilisateurId: UtilisateurId
   readonly cause: FailureReason
 }
 
+export type SuppressionReserveeAuDispositif = {
+  readonly _tag: 'SuppressionReserveeAuDispositif'
+  readonly utilisateurId: UtilisateurId
+}
+
 export type SupprimerCompteError =
   | CompteIntrouvable
   | CompteDejaSupprime
   | RoleProtege
+  | SuppressionReserveeAuDispositif
   | AccesNonCoupe
 
 export const CompteIntrouvable = (
@@ -51,6 +52,13 @@ export const RoleProtege = (
   utilisateurId: UtilisateurId,
   role: RoleUtilisateur,
 ): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })
+
+export const SuppressionReserveeAuDispositif = (
+  utilisateurId: UtilisateurId,
+): SuppressionReserveeAuDispositif => ({
+  _tag: 'SuppressionReserveeAuDispositif',
+  utilisateurId,
+})
 
 export const AccesNonCoupe = (
   utilisateurId: UtilisateurId,

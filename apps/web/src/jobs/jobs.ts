@@ -1,25 +1,27 @@
 import { z } from 'zod'
+import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comptes-inactifs/anonymiserLesComptesInactifsJob'
 import { AppliquerDispositifConumJobValidation } from './appliquer-dispositif-conum/appliquerDispositifConumJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
+import { NormaliserLesTelephonesJobValidation } from './normaliser-les-telephones/normaliserLesTelephonesJob'
+import { RattraperLesComptesSupprimesJobValidation } from './rattraper-les-comptes-supprimes/rattraperLesComptesSupprimesJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { ReprendreLesDonneesDesLieuxJobValidation } from './reprendre-les-donnees-des-lieux/reprendreLesDonneesDesLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
- * It can be triggered by a POST to /api/jobs
- * It could also be triggered by a cli or as a side effect of a mutation.
+ * It is run by a Scaleway Serverless Job (see `jobs` in infrastructure/locals.tf)
+ * or by the cli.
  *
  * Each job must have an executor defined in jobExecutors.ts
  *
  * A job result should be serializable to JSON and never include sensitive data as it can be logged or stored for audit purposes.
  *
  * It is defined by a name and a payload (that can be optional).
- * The payload should be serializable to JSON for easily being passed as POST data.
+ * The payload should be serializable to JSON.
  *
  * Add your jobs here.
- * To add a cron trigger, see `jobs` in infrastructure/locals.tf.
  *
  * N'y figurent que les jobs qui ont encore une raison de tourner. Les campagnes
  * de reprise de données, les correctifs ponctuels et les backfills accomplis
@@ -28,9 +30,12 @@ import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
+  AnonymiserLesComptesInactifsJobValidation,
   AppliquerDispositifConumJobValidation,
   FixUsersRolesJobValidation,
   InactiveUsersRemindersJobValidation,
+  NormaliserLesTelephonesJobValidation,
+  RattraperLesComptesSupprimesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
   ReprendreLesDonneesDesLieuxJobValidation,
   SyncRdvspDataJobValidation,

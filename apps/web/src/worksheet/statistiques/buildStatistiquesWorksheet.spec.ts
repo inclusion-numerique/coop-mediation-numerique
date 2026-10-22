@@ -632,7 +632,7 @@ describe('build statistiques worksheet for médiateur', () => {
       [undefined, 'Prénom', 'John'],
       [undefined, 'Rôle', 'Conseiller Numérique'],
       [undefined, "Date d'export", '11/09/2024'],
-      [undefined, "Heure d'export", '17:42'],
+      [undefined, "Heure d'export", '19:42'],
       [],
     ])
   })

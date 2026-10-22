@@ -1,1 +1,4 @@
-export { effacerEmpreinteRdv } from './implementation'
+export {
+  effacerEmpreinteRdv,
+  effacerEmpreinteRdvAvec,
+} from './implementation'

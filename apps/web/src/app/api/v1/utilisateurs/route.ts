@@ -11,14 +11,14 @@ import type {
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
 import {
-  conseillerNumeriqueWhere,
-  contratPourEmployeuse,
-  personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
-import { prismaClient } from '@app/web/prismaClient'
+  criteresDExposition,
+  type UtilisateurAttributes,
+  utilisateurExpose,
+  utilisateursExposes,
+} from '@app/web/features/utilisateurs/abilities/exposer-les-utilisateurs'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { NextResponse } from 'next/server'
-import { type ZodError, z } from 'zod'
+import { z } from 'zod'
 
 /**
  * @openapi
@@ -235,7 +235,8 @@ import { type ZodError, z } from 'zod'
  *   get:
  *     summary: liste des utilisateurs
  *     description: >
- *       Retourne la liste des utilisateurs dont l'inscription est terminée.
+ *       Retourne la liste des utilisateurs dont l'inscription est terminée, ainsi que
+ *       ceux qui ont déjà saisi au moins une activité.
  *       Les utilisateurs sont triés par date de création décroissante.
  *     tags:
  *       - Utilisateurs
@@ -320,86 +321,28 @@ import { type ZodError, z } from 'zod'
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-export type UtilisateurAttributes = {
-  email: string
-  prenom: string | null
-  nom: string | null
-  inscription_validee: string | null
-  telephone: string | null
-  creation: string
-  modification: string
-  suppression: string | null
-  dataspace_id: number | null
-  emplois: Array<{
-    id: string
-    structure_id: number | null
-    debut: string | null
-    fin: string | null
-    creation: string
-    modification: string
-    suppression: string | null
-  }>
-  mediateur: {
-    id: string
-    creation: string
-    modification: string
-    is_visible: boolean
-    en_activite: Array<{
-      id: string
-      structure_id: string
-      debut: string
-      fin: string | null
-      creation: string
-      modification: string
-      suppression: string | null
-    }>
-    coordinations: Array<{
-      id: string
-      creation: string
-      modification: string
-      suppression: string | null
-      coordinateur_id: string
-    }>
-  } | null
-  coordinateur: {
-    id: string
-    creation: string
-    modification: string
-    mediateurs_coordonnes: Array<{
-      id: string
-      creation: string
-      modification: string
-      suppression: string | null
-      mediateur_id: string
-    }>
-  } | null
-  conseiller_numerique: {
-    is_conseiller_numerique: boolean
-    id_pg: number | null
-  }
-}
-
-type UtilisateurRelationships = never
+export type { UtilisateurAttributes }
 
 export type UtilisateurResource = JsonApiResource<
   'utilisateur',
   UtilisateurAttributes,
-  UtilisateurRelationships
+  never
 >
 
 export type UtilisateurListResponse = JsonApiListResponse<UtilisateurResource>
 
-/**
- * for consistent cursor-based pagination, we reuse the approach from structures:
- * we'll combine the "created" + "id" fields into a single base64-coded composite cursor
- * ensure you have a unique composite index on (created, id) in your prisma model
- */
-const UserCursorValidation = z.object({
-  creation_id: z.object({
-    // 'created' is a DateTime in 'User' model
-    created: z.coerce.string().pipe(z.iso.datetime()),
-    id: z.guid(),
-  }),
+const CurseurValidation = z.object({
+  created: z.coerce.string().pipe(z.iso.datetime()),
+  id: z.guid(),
+})
+
+const lienDePage = (
+  sens: 'after' | 'before',
+  curseur: string,
+): { readonly href: string } => ({
+  href: apiV1Url(
+    `/utilisateurs?page[${sens}]=${encodeSerializableState(curseur)}`,
+  ),
 })
 
 export const GET = createApiV1Route
@@ -416,363 +359,68 @@ export const GET = createApiV1Route
           conseiller_numerique_id_pg: z
             .union([z.string(), z.array(z.string())])
             .optional()
-            .transform((value) => {
-              if (typeof value === 'string') {
-                return [value]
-              }
-              return value
-            }),
+            .transform((value) =>
+              typeof value === 'string' ? [value] : value,
+            ),
           dataspace_id: z
             .union([z.string(), z.array(z.string())])
             .optional()
-            .transform((value) => {
-              if (typeof value === 'string') {
-                return [value]
-              }
-              return value
-            }),
+            .transform((value) =>
+              typeof value === 'string' ? [value] : value,
+            ),
           soft_deleted: z.union([z.literal('0'), z.literal('1')]).optional(),
         })
         .prefault({}),
     }),
   )
   .handle(async ({ params }) => {
-    const cursorPagination = prismaCursorPagination(params)
-
-    const parsedCursor = cursorPagination.cursor
-      ? parseCompositeCursor(cursorPagination.cursor)
+    const pagination = prismaCursorPagination(params)
+    const curseurLu = pagination.cursor
+      ? parseCompositeCursor(pagination.cursor)
       : undefined
+    const curseur = curseurLu
+      ? CurseurValidation.parse({ created: curseurLu[0], id: curseurLu[1] })
+      : null
 
-    const validatedCursor = parsedCursor
-      ? UserCursorValidation.safeParse({
-          creation_id: {
-            created: parsedCursor[0],
-            id: parsedCursor[1],
-          },
-        })
-      : undefined
-
-    if (validatedCursor && !validatedCursor.success) {
-      throw validatedCursor.error as ZodError
-    }
-
-    const supressionFilter =
-      params.filter.soft_deleted === '0'
-        ? { suppression: null }
-        : params.filter.soft_deleted === '1'
-          ? { suppression: { not: null } }
-          : undefined
-
-    const deletedFilter =
-      params.filter.soft_deleted === '0'
-        ? {
-            deleted: null,
-          }
-        : params.filter.soft_deleted === '1'
-          ? {
-              deleted: { not: null },
-            }
-          : undefined
-
-    // Filter by conseiller numérique boolean status
-    const conseillerNumeriqueFilter =
-      params.filter.conseiller_numerique === '1'
-        ? conseillerNumeriqueWhere(true)
-        : params.filter.conseiller_numerique === '0'
-          ? conseillerNumeriqueWhere(false)
-          : undefined
-
-    // Filter by conseiller numérique id_pg (parse as integers)
-    const conseillerNumeriqueIdPgValues =
-      params.filter.conseiller_numerique_id_pg
-        ?.map((v) => Number.parseInt(v, 10))
-        .filter((v) => !Number.isNaN(v)) ?? []
-
-    const conseillerNumeriqueIdPgFilter =
-      conseillerNumeriqueIdPgValues.length > 0
-        ? { personneMain: { cnPgId: { in: conseillerNumeriqueIdPgValues } } }
-        : undefined
-
-    // Filter by dataspace_id (parse as integers)
-    const dataspaceIdValues =
-      params.filter.dataspace_id
-        ?.map((v) => Number.parseInt(v, 10))
-        .filter((v) => !Number.isNaN(v)) ?? []
-
-    const dataspaceIdFilter =
-      dataspaceIdValues.length > 0
-        ? { personneMain: { id: { in: dataspaceIdValues } } }
-        : undefined
-
-    const users = await prismaClient.user.findMany({
-      where: {
-        OR: [
-          {
-            inscriptionValidee: {
-              not: null,
-            },
-          },
-          {
-            mediateur: {
-              activitesCount: {
-                gt: 0,
-              },
-            },
-          },
-        ],
-        role: 'User',
-        ...deletedFilter,
-        ...conseillerNumeriqueFilter,
-        ...conseillerNumeriqueIdPgFilter,
-        ...dataspaceIdFilter,
-      },
-      orderBy: [{ created: 'desc' }, { id: 'desc' }],
-      take: cursorPagination.take,
-      skip: cursorPagination.skip,
-      cursor: validatedCursor
-        ? {
-            created_id: {
-              created: validatedCursor.data.creation_id.created,
-              id: validatedCursor.data.creation_id.id,
-            },
-          }
-        : undefined,
-      include: {
-        // ADR-002 échange final : les « emplois » exposés sont les affectations MAIN actives (source
-        // de vérité), plus la copie coop gelée. Dates best-effort depuis `main.contrat`.
-        personneMain: {
-          select: {
-            // `id` et `cnPgId` alimentent `dataspace_id` et `conseiller_numerique.id_pg`, que la
-            // synchro nocturne recopiait dans `coop.users`. Même valeur, lue à la source.
-            id: true,
-            cnPgId: true,
-            affectationsEmploi: {
-              where: { estActive: true },
-              select: {
-                id: true,
-                // `source` + `estActive` : de quoi dériver le dispositif sans seconde requête. Le
-                // filtre `estActive` reste celui des emplois exposés, il ne fausse pas la règle.
-                source: true,
-                estActive: true,
-                structureAdministrativeId: true,
-                createdAt: true,
-              },
-            },
-            contrats: {
-              select: {
-                structureId: true,
-                dateDebut: true,
-                dateFin: true,
-                dateRupture: true,
-              },
-            },
-          },
-        },
-        mediateur: {
-          include: {
-            enActivite: {
-              where: {
-                ...supressionFilter,
-              },
-            },
-            coordinations: {
-              include: {
-                mediateur: true,
-              },
-              where: {
-                ...supressionFilter,
-              },
-            },
-          },
-        },
-        coordinateur: {
-          include: {
-            mediateursCoordonnes: {
-              include: {
-                mediateur: true,
-              },
-              where: {
-                ...supressionFilter,
-              },
-            },
-          },
-        },
-      },
+    const { utilisateurs, total } = await utilisateursExposes({
+      criteres: criteresDExposition(params.filter),
+      take: pagination.take,
+      skip: pagination.skip,
+      cursor: curseur,
     })
 
-    const totalCount = await prismaClient.user.count({
-      where: {
-        OR: [
-          {
-            inscriptionValidee: {
-              not: null,
-            },
-          },
-          {
-            mediateur: {
-              activitesCount: {
-                gt: 0,
-              },
-            },
-          },
-        ],
-
-        role: 'User',
-        ...deletedFilter,
-        ...conseillerNumeriqueFilter,
-        ...conseillerNumeriqueIdPgFilter,
-        ...dataspaceIdFilter,
-      },
-    })
-
-    const lastItem = users.at(-1)
-    const firstItem = users.at(0)
-
-    const nextCursor = lastItem
-      ? createCompositeCursor(lastItem.created.toISOString(), lastItem.id)
+    const dernier = utilisateurs.at(-1)
+    const premier = utilisateurs.at(0)
+    const suivant = dernier
+      ? createCompositeCursor(dernier.created.toISOString(), dernier.id)
       : undefined
-    const previousCursor =
-      parsedCursor && firstItem
-        ? createCompositeCursor(firstItem.created.toISOString(), firstItem.id)
+    const precedent =
+      curseurLu && premier
+        ? createCompositeCursor(premier.created.toISOString(), premier.id)
         : undefined
 
-    const response: UtilisateurListResponse = {
-      data: users.map((u) => ({
-        type: 'utilisateur',
-        id: u.id,
-        attributes: {
-          email: u.email,
-          prenom: u.firstName ?? null,
-          nom: u.lastName ?? null,
-          inscription_validee: u.inscriptionValidee
-            ? u.inscriptionValidee.toISOString()
-            : null,
-          telephone: u.phone ?? null,
-          creation: u.created.toISOString(),
-          modification: u.updated.toISOString(),
-          suppression: u.deleted?.toISOString() ?? null,
-          // `dataspace_id` EST l'identifiant de `main.personne` : la colonne coop n'en était qu'une
-          // copie, entretenue par la synchro nocturne. Le contrat public ne change pas.
-          dataspace_id: u.personneMain?.id ?? null,
-          emplois: (u.personneMain?.affectationsEmploi ?? []).map(
-            (affectation) => {
-              const contrat = contratPourEmployeuse(
-                u.personneMain?.contrats ?? [],
-                affectation.structureAdministrativeId,
-              )
-              const creation = affectation.createdAt ?? new Date(0)
-              return {
-                id: String(affectation.id),
-                structure_id: affectation.structureAdministrativeId,
-                debut: contrat?.dateDebut?.toISOString() ?? null,
-                fin:
-                  (contrat?.dateFin ?? contrat?.dateRupture)?.toISOString() ??
-                  null,
-                creation: creation.toISOString(),
-                modification: creation.toISOString(),
-                suppression: null,
-              }
-            },
-          ),
-          mediateur: u.mediateur
-            ? {
-                id: u.mediateur.id,
-                user_id: u.id,
-                creation: u.mediateur.creation.toISOString(),
-                modification: u.mediateur.modification.toISOString(),
-                is_visible: u.mediateur.isVisible,
-                en_activite: u.mediateur.enActivite.map((ma) => ({
-                  id: ma.id,
-                  structure_id: ma.structureId,
-                  debut: ma.debut.toISOString(),
-                  fin: ma.fin?.toISOString() ?? null,
-                  creation: ma.creation.toISOString(),
-                  modification: ma.modification.toISOString(),
-                  suppression: ma.suppression
-                    ? ma.suppression.toISOString()
-                    : null,
-                })),
-                coordinations: u.mediateur.coordinations.map((mc) => ({
-                  id: mc.id,
-                  user_id: mc.mediateur.userId,
-                  creation: mc.creation.toISOString(),
-                  modification: mc.modification.toISOString(),
-                  suppression: mc.suppression
-                    ? mc.suppression.toISOString()
-                    : null,
-                  coordinateur_id: mc.coordinateurId,
-                })),
-              }
-            : null,
-          coordinateur: u.coordinateur
-            ? {
-                id: u.coordinateur.id,
-                user_id: u.id,
-                creation: u.coordinateur.creation.toISOString(),
-                modification: u.coordinateur.modification.toISOString(),
-                mediateurs_coordonnes: u.coordinateur.mediateursCoordonnes.map(
-                  (mc) => ({
-                    id: mc.id,
-                    user_id: mc.mediateur.userId,
-                    creation: mc.creation.toISOString(),
-                    modification: mc.modification.toISOString(),
-                    suppression: mc.suppression?.toISOString() ?? null,
-                    mediateur_id: mc.mediateurId,
-                  }),
-                ),
-              }
-            : null,
-          conseiller_numerique: {
-            is_conseiller_numerique: personneEstConseillerNumerique(
-              u.personneMain,
-            ),
-            id_pg: u.personneMain?.cnPgId ?? null,
-          },
-        },
+    return NextResponse.json({
+      data: utilisateurs.map((utilisateur) => ({
+        type: 'utilisateur' as const,
+        id: utilisateur.id,
+        attributes: utilisateurExpose(utilisateur),
       })),
       links: {
-        self: {
-          href: cursorPagination.cursor
-            ? cursorPagination.isBefore
-              ? apiV1Url(
-                  `/utilisateurs?page[before]=${encodeSerializableState(
-                    cursorPagination.cursor,
-                  )}`,
-                )
-              : apiV1Url(
-                  `/utilisateurs?page[after]=${encodeSerializableState(
-                    cursorPagination.cursor,
-                  )}`,
-                )
-            : apiV1Url('/utilisateurs'),
-        },
-        next: nextCursor
-          ? {
-              href: apiV1Url(
-                `/utilisateurs?page[after]=${encodeSerializableState(
-                  nextCursor,
-                )}`,
-              ),
-            }
-          : undefined,
-        prev: previousCursor
-          ? {
-              href: apiV1Url(
-                `/utilisateurs?page[before]=${encodeSerializableState(
-                  previousCursor,
-                )}`,
-              ),
-            }
-          : undefined,
+        self: pagination.cursor
+          ? lienDePage(
+              pagination.isBefore ? 'before' : 'after',
+              pagination.cursor,
+            )
+          : { href: apiV1Url('/utilisateurs') },
+        next: suivant ? lienDePage('after', suivant) : undefined,
+        prev: precedent ? lienDePage('before', precedent) : undefined,
       },
       meta: {
-        total_count: totalCount,
-        items_per_page: cursorPagination.take,
-        total_pages: Math.ceil(totalCount / cursorPagination.take),
-        has_next_page: !!nextCursor,
-        has_prev_page: !!previousCursor,
+        total_count: total,
+        items_per_page: pagination.take,
+        total_pages: Math.ceil(total / pagination.take),
+        has_next_page: !!suivant,
+        has_prev_page: !!precedent,
       },
-    }
-
-    return NextResponse.json(response)
+    } satisfies UtilisateurListResponse)
   })

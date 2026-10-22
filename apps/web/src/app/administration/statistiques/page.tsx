@@ -1,5 +1,4 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { getUtilisateursListPageData } from '@app/web/app/administration/utilisateurs/getUtilisateursListPageData'
 import {
   getAccompagnementsCountByDay,
   getAccompagnementsCountByMonth,
@@ -20,6 +19,10 @@ import {
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
@@ -42,10 +45,11 @@ const Page = async (props: {
   const user = await authenticateUser()
   const tagsOptions = await getTagsCollectifs()
 
-  const { communesOptions, departementsOptions, lieuxActiviteOptions } =
-    await getUtilisateursListPageData({
-      searchParams,
-    })
+  const [{ communesOptions, departementsOptions }, lieuxActiviteOptions] =
+    await Promise.all([
+      getCommunesAndDepartementsOptions(),
+      getLieuxActiviteOptions(),
+    ])
 
   const [
     accompagnementsParJour,

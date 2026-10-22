@@ -4,6 +4,9 @@ import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import InscriptionStepsLayout from '@app/web/features/inscription/components/InscriptionStepsLayout'
 import { MaintenanceModeBanner } from '@app/web/features/maintenance-mode/components/MaintenanceModeBanner'
+import { lireLaRuptureEnAttente } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture'
+import { ConfirmationApresRupture } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/ui'
+import { MediateurId } from '@app/web/features/mediateurs/domain'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -47,6 +50,26 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (!hasInscriptionComplete(user)) {
     redirect('/inscription')
+  }
+
+  const ruptureEnAttente =
+    user.mediateur == null
+      ? null
+      : await lireLaRuptureEnAttente({
+          mediateurId: MediateurId(user.mediateur.id),
+        })
+
+  if (ruptureEnAttente != null) {
+    return (
+      <div className="fr-layout">
+        <div id="skip-links" />
+        <Header user={user} fullWidth variant="coop" />
+        <InscriptionStepsLayout>
+          <ConfirmationApresRupture />
+        </InscriptionStepsLayout>
+        <PublicFooter initialTheme={await getServerDsfrTheme()} />
+      </div>
+    )
   }
 
   return (

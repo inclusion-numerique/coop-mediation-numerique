@@ -1,7 +1,7 @@
 import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
 import { shouldBeOnCoopHomepage } from '@app/e2e/support/helpers'
 import { mediateurInscription } from '@app/fixtures/users/mediateurInscription'
-import { profileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
 
 describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {
@@ -27,8 +27,8 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
             cy.contains(
               'Choisissez votre rôle afin de profiter d’un espace adapté à vos besoins.',
             ).should('be.visible')
-            cy.contains(profileInscriptionLabels.Mediateur).should('be.visible')
-            cy.contains(profileInscriptionLabels.Coordinateur).should(
+            cy.contains(profilInscriptionLabels.Mediateur).should('be.visible')
+            cy.contains(profilInscriptionLabels.Coordinateur).should(
               'be.visible',
             )
           },
@@ -41,8 +41,8 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
             cy.contains('Étape 1 sur 3').should('be.visible')
             cy.contains('Mes informations').should('be.visible')
             cy.contains('Profession').should('be.visible')
-            cy.contains(profileInscriptionLabels.Mediateur).should('be.visible')
-            cy.contains(profileInscriptionLabels.Coordinateur).should(
+            cy.contains(profilInscriptionLabels.Mediateur).should('be.visible')
+            cy.contains(profilInscriptionLabels.Coordinateur).should(
               'not.exist',
             )
             cy.contains('Nom').should('be.visible')
@@ -102,7 +102,7 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
             ).should('be.visible')
             cy.contains('Mes informations').should('be.visible')
             cy.contains('Profession').should('be.visible')
-            cy.contains(profileInscriptionLabels.Mediateur).should('be.visible')
+            cy.contains(profilInscriptionLabels.Mediateur).should('be.visible')
             cy.contains('Nom').should('be.visible')
             cy.contains(mediateurInscription.name).should('be.visible')
             cy.contains('Adresse e-mail').should('be.visible')

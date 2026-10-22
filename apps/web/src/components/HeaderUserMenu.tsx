@@ -2,7 +2,6 @@
 
 import { SessionUser } from '@app/web/auth/sessionUser'
 import TerminerUsurpationHeaderUserMenuItem from '@app/web/components/TerminerUsurpationHeaderUserMenuItem'
-import { isLimitedToInscription } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycle'
 import { getUserDisplayName } from '@app/web/utils/user'
 import classNames from 'classnames'
 import Link from 'next/link'
@@ -14,6 +13,10 @@ import {
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import styles from './HeaderUserMenu.module.css'
+
+const isLimitedToInscription = (
+  user: Pick<SessionUser, 'role' | 'inscriptionValidee'>,
+) => user.role === 'User' && !user.inscriptionValidee
 
 const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
 

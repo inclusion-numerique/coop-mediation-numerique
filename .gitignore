@@ -58,6 +58,7 @@ storybook-static
 # next
 /.next/
 /apps/web/.next/
+/apps/web/dist/
 
 /apps/web/public/dsfr
 

@@ -68,8 +68,8 @@ export const Options = <T,>({
       const rect = anchorRef.current?.getBoundingClientRect()
       if (rect) {
         setPosition({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX,
+          top: rect.bottom,
+          left: rect.left,
           width: rect.width,
         })
       }

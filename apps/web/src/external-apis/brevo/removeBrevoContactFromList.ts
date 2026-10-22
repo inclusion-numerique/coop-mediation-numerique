@@ -4,6 +4,15 @@ import * as Sentry from '@sentry/nextjs'
 import axios from 'axios'
 import { brevoApiThrottle } from './createBrevoContact'
 
+const CONTACT_ABSENT_DE_LA_LISTE =
+  'Contact already removed from list and/or does not exist'
+
+const estAbsentDeLaListe = (error: unknown): boolean =>
+  axios.isAxiosError(error) &&
+  (error.response?.status === 404 ||
+    (error.response?.status === 400 &&
+      error.response.data?.message === CONTACT_ABSENT_DE_LA_LISTE))
+
 const removeContactFromListImmediate = async (
   email: string,
   listId: number,
@@ -22,8 +31,12 @@ const removeContactFromListImmediate = async (
       },
     )
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) return
-    Sentry.captureException?.(error)
+    if (estAbsentDeLaListe(error)) return
+    Sentry.captureException?.(error, {
+      extra: {
+        reponseBrevo: axios.isAxiosError(error) ? error.response?.data : null,
+      },
+    })
     throw error
   }
 }
