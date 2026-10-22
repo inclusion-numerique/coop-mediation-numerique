@@ -5,6 +5,7 @@ import {
 } from '@app/web/features/employeuse/server'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import {
+  CodeCommune,
   type CoordinateurDeLaLigne,
   cycleDeVie,
   dispositifDe,
@@ -12,6 +13,7 @@ import {
   jalon,
   type LigneUtilisateur,
   type MediateurDeLaLigne,
+  NomEmployeuse,
   nomAffiche,
   RoleUtilisateur,
   rattachements,
@@ -82,8 +84,10 @@ const employeuseToDomain = (
   return actuelle === null
     ? null
     : {
-        nom: actuelle.employeuse.denomination,
-        codeInsee: actuelle.employeuse.adresse?.codeInsee ?? null,
+        nom: NomEmployeuse.safe(actuelle.employeuse.denomination ?? ''),
+        codeInsee: CodeCommune.safe(
+          actuelle.employeuse.adresse?.codeInsee ?? '',
+        ),
       }
 }
 

@@ -74,6 +74,7 @@ export type {
 export { MediateurId } from './mediateur-id'
 export { Nom } from './nom'
 export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
+export { NomEmployeuse } from './nom-employeuse'
 export { OrigineCompte, origineDuCompte } from './origine-compte'
 export { Prenom } from './prenom'
 export {
@@ -108,6 +109,7 @@ export {
   RoleUtilisateur,
   rolesUtilisateur,
 } from './role-utilisateur'
+export { Siret } from './siret'
 export {
   type PalierInactivite,
   type PalierInscription,

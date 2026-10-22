@@ -1,15 +1,20 @@
 import {
   type CriteresDExposition,
+  IdentifiantConseillerNumerique,
+  IdentifiantDataspace,
   SelectionDesConseillers,
   SelectionDesSupprimes,
 } from '../../domain'
 
 type Drapeau = '0' | '1'
 
-const entiers = (valeurs: readonly string[] | undefined): readonly number[] =>
-  (valeurs ?? [])
-    .map((valeur) => Number.parseInt(valeur, 10))
-    .filter((valeur) => !Number.isNaN(valeur))
+const identifiants =
+  <T>(lire: (valeur: string) => T | null) =>
+  (valeurs: readonly string[] | undefined): readonly T[] =>
+    (valeurs ?? []).flatMap((valeur) => {
+      const identifiant = lire(valeur)
+      return identifiant === null ? [] : [identifiant]
+    })
 
 const supprimesSelon = (drapeau: Drapeau | undefined): SelectionDesSupprimes =>
   SelectionDesSupprimes(
@@ -40,6 +45,8 @@ export const criteresDExposition = ({
 }): CriteresDExposition => ({
   supprimes: supprimesSelon(soft_deleted),
   conseillersNumeriques: conseillersSelon(conseiller_numerique),
-  identifiantsConseillerNumerique: entiers(conseiller_numerique_id_pg),
-  identifiantsDataspace: entiers(dataspace_id),
+  identifiantsConseillerNumerique: identifiants(
+    IdentifiantConseillerNumerique.safe,
+  )(conseiller_numerique_id_pg),
+  identifiantsDataspace: identifiants(IdentifiantDataspace.safe)(dataspace_id),
 })

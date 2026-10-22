@@ -15,7 +15,7 @@ describe('critères d’exposition des utilisateurs', () => {
       criteresDExposition({
         soft_deleted: '0',
         conseiller_numerique: '1',
-        conseiller_numerique_id_pg: ['12', 'abc'],
+        conseiller_numerique_id_pg: ['12', 'abc', '0'],
         dataspace_id: ['7'],
       }),
     ).toEqual({

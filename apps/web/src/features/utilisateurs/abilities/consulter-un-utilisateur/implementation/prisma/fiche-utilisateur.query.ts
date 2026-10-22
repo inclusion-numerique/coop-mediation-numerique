@@ -15,6 +15,7 @@ import {
   nomAffiche,
   RoleUtilisateur,
   rattachements,
+  Siret,
   statutDe,
   telephoneEnregistrable,
   UtilisateurId,
@@ -120,7 +121,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     telephone: telephoneEnregistrable(row.phone),
     role,
     dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
-    siret: row.siret,
+    siret: Siret.safe(row.siret ?? ''),
     creeLe: row.created,
     cycle,
     profilInscription:

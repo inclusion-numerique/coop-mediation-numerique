@@ -11,6 +11,7 @@ import type {
   Prenom,
   Rattachements,
   RoleUtilisateur,
+  Siret,
   StatutCompte,
   Telephone,
   UtilisateurId,
@@ -60,7 +61,7 @@ export type FicheUtilisateur = {
   readonly telephone: Telephone | null
   readonly role: RoleUtilisateur
   readonly dispositif: Dispositif
-  readonly siret: string | null
+  readonly siret: Siret | null
   readonly creeLe: Date
   readonly cycle: CycleDeVie
   readonly profilInscription: ProfilInscription | null

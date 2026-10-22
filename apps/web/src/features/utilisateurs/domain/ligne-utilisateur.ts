@@ -1,8 +1,10 @@
 import type { AdresseCourriel } from './adresse-courriel'
 import type { Dispositif } from './dispositif'
+import type { CodeCommune } from './filtres-utilisateurs'
 import type { Jalon } from './jalon'
 import type { Nom } from './nom'
 import type { NomAffiche } from './nom-affiche'
+import type { NomEmployeuse } from './nom-employeuse'
 import type { Prenom } from './prenom'
 import type { Rattachements } from './rattachements'
 import type { RoleUtilisateur } from './role-utilisateur'
@@ -23,8 +25,8 @@ export type CoordinateurDeLaLigne = {
 }
 
 export type EmployeuseDeLaLigne = {
-  readonly nom: string | null
-  readonly codeInsee: string | null
+  readonly nom: NomEmployeuse | null
+  readonly codeInsee: CodeCommune | null
 }
 
 export type LigneUtilisateur = {
