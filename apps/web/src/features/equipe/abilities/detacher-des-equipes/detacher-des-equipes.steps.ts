@@ -104,12 +104,21 @@ Then('le tag du médiateur est marqué supprimé', async () => {
   assert.ok(tag.suppression)
 })
 
-Then("ce médiateur n'appartient plus à aucune équipe", async () => {
+Then("ce médiateur n'est plus membre actif d'aucune équipe", async () => {
   assert.strictEqual(
     await prismaClient.mediateurCoordonne.count({
-      where: { mediateurId: porteur() },
+      where: { mediateurId: porteur(), suppression: null },
     }),
     0,
+  )
+})
+
+Then('ce médiateur reste ancien membre de son équipe', async () => {
+  assert.strictEqual(
+    await prismaClient.mediateurCoordonne.count({
+      where: { mediateurId: porteur(), suppression: { not: null } },
+    }),
+    1,
   )
 })
 

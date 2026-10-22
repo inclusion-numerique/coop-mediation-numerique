@@ -39,14 +39,14 @@ const effacerLesNotes: FabriqueRunner = (compte, ports) => async () => {
 const detacherDesEquipes: FabriqueRunner = (compte, ports) => async () => {
   const {
     invitationsSupprimees,
-    appartenancesSupprimees,
+    appartenancesRetirees,
     tagsTransferes,
     tagsSupprimes,
   } = await ports.detacherDesEquipes({ rattachements: compte.rattachements })
 
   return (
     invitationsSupprimees +
-    appartenancesSupprimees +
+    appartenancesRetirees +
     tagsTransferes +
     tagsSupprimes
   )
