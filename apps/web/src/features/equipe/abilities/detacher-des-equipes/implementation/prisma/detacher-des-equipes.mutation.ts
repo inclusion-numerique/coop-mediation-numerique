@@ -7,7 +7,7 @@ import {
 
 type Bilan = {
   readonly invitationsSupprimees: number
-  readonly appartenancesSupprimees: number
+  readonly appartenancesRetirees: number
   readonly tagsTransferes: number
   readonly tagsSupprimes: number
 }
@@ -57,13 +57,14 @@ export const detacherDesEquipes = ({
     const appartenances =
       proprietaires.length === 0
         ? { count: 0 }
-        : await transaction.mediateurCoordonne.deleteMany({
-            where: { OR: proprietaires },
+        : await transaction.mediateurCoordonne.updateMany({
+            where: { OR: proprietaires, suppression: null },
+            data: { suppression: maintenant },
           })
 
     return {
       invitationsSupprimees: invitations.count,
-      appartenancesSupprimees: appartenances.count,
+      appartenancesRetirees: appartenances.count,
       tagsTransferes: tagsMediateur.transferes + tagsCoordinateur.transferes,
       tagsSupprimes: tagsMediateur.supprimes + tagsCoordinateur.supprimes,
     }

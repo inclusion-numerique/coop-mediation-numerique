@@ -25,7 +25,7 @@ export type DetacherDesEquipes = (input: {
   readonly rattachements: RattachementsDuCompte
 }) => Promise<{
   readonly invitationsSupprimees: number
-  readonly appartenancesSupprimees: number
+  readonly appartenancesRetirees: number
   readonly tagsTransferes: number
   readonly tagsSupprimes: number
 }>
