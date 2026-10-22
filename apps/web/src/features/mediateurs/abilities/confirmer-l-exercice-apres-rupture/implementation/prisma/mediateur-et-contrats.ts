@@ -1,9 +1,9 @@
+import { MediateurId } from '@app/web/features/mediateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
-import type { MediateurId } from '../../domain/mediateur-id'
 import { type Contrat, etatContrat } from '../../domain/rupture-en-attente'
 
 export type MediateurEtContrats = {
-  readonly id: string
+  readonly id: MediateurId
   readonly isVisible: boolean
   readonly visibiliteChoisieLe: Date | null
   readonly contrats: readonly Contrat[]
@@ -33,7 +33,7 @@ export const lireMediateurEtContrats = async (
   return mediateur == null
     ? null
     : {
-        id: mediateur.id,
+        id: MediateurId(mediateur.id),
         isVisible: mediateur.isVisible,
         visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
         contrats: (mediateur.user.personneMain?.contrats ?? []).map(

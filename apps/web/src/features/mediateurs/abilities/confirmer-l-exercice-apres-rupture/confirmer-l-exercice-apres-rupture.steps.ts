@@ -3,11 +3,8 @@ import {
   confirmerLExerciceApresRupture,
   lireLaRuptureEnAttente,
 } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture'
-import {
-  AuteurId,
-  MediateurId,
-  ReponseApresRupture,
-} from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/domain'
+import { ReponseApresRupture } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/domain'
+import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
 import {
   exConseillerSeme,
   semerUnContratDeLExConseiller,

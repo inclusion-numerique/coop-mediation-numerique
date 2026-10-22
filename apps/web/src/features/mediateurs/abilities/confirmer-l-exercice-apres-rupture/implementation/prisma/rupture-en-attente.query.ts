@@ -1,4 +1,4 @@
-import type { MediateurId } from '../../domain/mediateur-id'
+import type { MediateurId } from '@app/web/features/mediateurs/domain'
 import {
   type RuptureEnAttente,
   ruptureEnAttente,
