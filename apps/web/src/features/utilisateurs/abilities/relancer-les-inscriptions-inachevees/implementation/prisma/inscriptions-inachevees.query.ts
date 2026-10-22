@@ -7,7 +7,10 @@ import {
   AdresseCourriel,
   aProduit,
   type CompteARelancer,
+  CoordinateurId,
+  MediateurId,
   Prenom,
+  rattachements,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
@@ -36,8 +39,14 @@ export const inscriptionsInachevees = async (): Promise<
             utilisateurId: UtilisateurId(compte.id),
             courriel,
             prenom: Prenom.safe(compte.firstName ?? ''),
-            estMediateur: compte.mediateur !== null,
-            estCoordinateur: compte.coordinateur !== null,
+            rattachements: rattachements(
+              compte.mediateur === null
+                ? null
+                : MediateurId(compte.mediateur.id),
+              compte.coordinateur === null
+                ? null
+                : CoordinateurId(compte.coordinateur.id),
+            ),
             situation: {
               phase: 'Inscription' as const,
               depuis: compte.created,

@@ -1,4 +1,9 @@
-import { UtilisateurIntrouvable } from '@app/web/features/utilisateurs/domain'
+import {
+  CoordinateurId,
+  MediateurId,
+  rattachements,
+  UtilisateurIntrouvable,
+} from '@app/web/features/utilisateurs/domain'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { type Activation, activationDe, type NonCoordinateur } from '../domain'
@@ -16,10 +21,14 @@ export const activerLaMediationNumerique = async (
   const compte = await compteQuiActive(utilisateurId)
   if (compte === null) return failure(UtilisateurIntrouvable(utilisateurId))
 
-  const activation = activationDe({
-    estCoordinateur: compte.coordinateur !== null,
-    estMediateur: compte.mediateur !== null,
-  })
+  const activation = activationDe(
+    rattachements(
+      compte.mediateur === null ? null : MediateurId(compte.mediateur.id),
+      compte.coordinateur === null
+        ? null
+        : CoordinateurId(compte.coordinateur.id),
+    ),
+  )
   if (!activation.success || activation.data === 'DejaActivee')
     return activation
 

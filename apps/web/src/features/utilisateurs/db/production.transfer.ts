@@ -3,10 +3,14 @@ import { type Production, rattachements } from '../domain'
 
 export const productionSelect = {
   mediateur: {
-    select: { _count: { select: { activites: true, beneficiaires: true } } },
+    select: {
+      id: true,
+      _count: { select: { activites: true, beneficiaires: true } },
+    },
   },
   coordinateur: {
     select: {
+      id: true,
       _count: {
         select: {
           mediateursCoordonnes: { where: { suppression: null } },

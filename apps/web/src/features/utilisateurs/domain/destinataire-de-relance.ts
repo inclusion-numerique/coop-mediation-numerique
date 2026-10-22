@@ -1,5 +1,6 @@
 import type { AdresseCourriel } from './adresse-courriel'
 import type { Prenom } from './prenom'
+import type { RattachementsDuCompte } from './rattachements'
 import type { ActionDeRelance } from './relance'
 import type { UtilisateurId } from './utilisateur-id'
 
@@ -7,8 +8,7 @@ export type DestinataireDeRelance = {
   readonly utilisateurId: UtilisateurId
   readonly courriel: AdresseCourriel
   readonly prenom: Prenom | null
-  readonly estMediateur: boolean
-  readonly estCoordinateur: boolean
+  readonly rattachements: RattachementsDuCompte
 }
 
 export type RapportDeRelance = {

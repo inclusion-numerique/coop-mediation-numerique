@@ -20,6 +20,10 @@ import {
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
 import { compterLesInscrits } from '@app/web/features/utilisateurs/db/compter-les-inscrits.query'
+import {
+  coordinateurDe,
+  mediateurDe,
+} from '@app/web/features/utilisateurs/domain'
 import { success } from '@app/web/libraries/result'
 import { supprimerComptePorts } from './supprimer-compte.ports'
 
@@ -61,16 +65,16 @@ export const relancesDesInscritsPorts = (
           email: destinataire.courriel,
           firstname: destinataire.prenom,
           matomoCampaignId: 'nouveau_j7',
-          isMediateur: destinataire.estMediateur,
-          isCoordinateur: destinataire.estCoordinateur,
+          isMediateur: mediateurDe(destinataire.rattachements) !== null,
+          isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
         })
       : sendNouveauAccountEmail({
           email: destinataire.courriel,
           firstname: destinataire.prenom,
           totalUsers: totalInscrits,
           matomoCampaignId: `nouveau_j${palier}`,
-          isMediateur: destinataire.estMediateur,
-          isCoordinateur: destinataire.estCoordinateur,
+          isMediateur: mediateurDe(destinataire.rattachements) !== null,
+          isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
           monthsCount: palier === 30 ? 1 : 2,
         }),
   envoyerLAvertissement: (destinataire, echeance) =>
@@ -80,13 +84,13 @@ export const relancesDesInscritsPorts = (
       deletionDate: dateFrancaise(echeance.suppressionLe),
       daysRemaining: echeance.joursRestants,
       matomoCampaignId: 'nouveau_j90',
-      isMediateur: destinataire.estMediateur,
-      isCoordinateur: destinataire.estCoordinateur,
+      isMediateur: mediateurDe(destinataire.rattachements) !== null,
+      isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
     }),
   envoyerLAvisDEffacement: (destinataire) =>
     sendNouveauAccountDeletedEmail({
       email: destinataire.courriel,
-      isMediateur: destinataire.estMediateur,
+      isMediateur: mediateurDe(destinataire.rattachements) !== null,
     }),
   supprimerLeCompte: async (utilisateurId) => {
     const resultat = await supprimerCompte({

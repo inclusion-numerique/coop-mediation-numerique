@@ -5,6 +5,7 @@ import {
   deroulerLesRelances,
   type PortsDeRelance,
 } from './derouler-les-relances'
+import { MediateurId } from './mediateur-id'
 import { Prenom } from './prenom'
 import { Relance } from './relance'
 import { UtilisateurId } from './utilisateur-id'
@@ -20,8 +21,10 @@ const compte = (
   utilisateurId: UtilisateurId(id),
   courriel: AdresseCourriel(`${id.slice(0, 4)}@example.com`),
   prenom: Prenom('Jeanne'),
-  estMediateur: true,
-  estCoordinateur: false,
+  rattachements: {
+    _tag: 'mediateur',
+    mediateur: MediateurId('2b3c4d5e-6f70-4819-92a3-b4c5d6e7f809'),
+  },
   situation: {
     phase: 'Inscription',
     depuis: new Date(MAINTENANT.getTime() - jours * UN_JOUR),
