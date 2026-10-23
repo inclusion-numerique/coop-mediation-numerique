@@ -42,10 +42,6 @@ export const toBrevoContact = (user: User): BrevoContact => ({
   },
 })
 
-export const onlyWithBrevoRole = (contact: {
-  attributes: BrevoContactAttibutes
-}) => contact.attributes.ROLES.length > 0
-
 export const brevoApiThrottle = pThrottle({
   limit: 10,
   interval: 1100, // 10/1000 but adding a margin of error

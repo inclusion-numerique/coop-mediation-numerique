@@ -1,4 +1,3 @@
-import { personneConseillerNumeriqueSelect } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 
@@ -7,18 +6,10 @@ export const compteQuiActive = (utilisateurId: string) =>
     where: { id: utilisateurId },
     select: {
       id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      inscriptionValidee: true,
       mediateur: { select: { id: true } },
       coordinateur: { select: { id: true } },
-      personneMain: { select: personneConseillerNumeriqueSelect },
     },
   })
-
-export type CompteLu = NonNullable<Awaited<ReturnType<typeof compteQuiActive>>>
 
 export const activer = async ({
   utilisateurId,

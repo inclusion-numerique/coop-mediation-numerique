@@ -3,13 +3,13 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
-import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/executeAppliquerDispositifConum'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
+import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/executeSynchroniserLesRolesBrevo'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
@@ -20,12 +20,12 @@ export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
   'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,
-  'appliquer-dispositif-conum': executeAppliquerDispositifConum,
   'fix-users-roles': executeFixUsersRoles,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
   'sync-rdvsp-data': executeSyncRdvspData,
+  'synchroniser-les-roles-brevo': executeSynchroniserLesRolesBrevo,
 }
 
 export const executeJob = async (job: Job) => {

@@ -1,3 +1,4 @@
+import { inscritVivantWhere } from '@app/web/features/utilisateurs/db/inscrit-vivant.where'
 import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -7,11 +8,7 @@ export const inscritsVivantsParmi = async (
   new Set(
     (
       await prismaClient.user.findMany({
-        where: {
-          id: { in: [...identifiants] },
-          deleted: null,
-          inscriptionValidee: { not: null },
-        },
+        where: { id: { in: [...identifiants] }, ...inscritVivantWhere },
         select: { id: true },
       })
     ).map(({ id }) => UtilisateurId(id)),

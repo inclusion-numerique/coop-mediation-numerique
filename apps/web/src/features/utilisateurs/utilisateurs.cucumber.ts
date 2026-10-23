@@ -317,6 +317,8 @@ export type CompteDeListe = {
   readonly relance?: OnboardingStatus | null
   readonly avecUnBeneficiaire?: boolean
   readonly fixture?: boolean
+  readonly coordinateurDeclare?: boolean
+  readonly telephone?: string | null
 }
 
 const listes: {
@@ -393,6 +395,7 @@ export const semerUnCompteDeListe = async (
     lastSeen: compte.derniereVisite ?? null,
     onboardingStatus: compte.relance ?? null,
     isFixture: compte.fixture ?? false,
+    phone: compte.telephone ?? null,
   })
 
   const mediateur = compte.mediateur
@@ -420,13 +423,19 @@ export const semerUnCompteDeListe = async (
       await semerUnMediateurCoordonne(coordinateur.id, compte.marqueur)
   }
 
-  if (compte.employeuseId != null || compte.conseillerNumerique) {
+  const avecEmploi = compte.employeuseId != null || compte.conseillerNumerique
+
+  const personne =
+    avecEmploi || compte.coordinateurDeclare
+      ? await prismaClient.personneMain.create({
+          data: { coopId: userId, isCoordinateur: compte.coordinateurDeclare },
+          select: { id: true },
+        })
+      : null
+
+  if (personne && avecEmploi) {
     const employeuseId =
       compte.employeuseId ?? (await semerUneEmployeuse('Employeuse CN'))
-    const personne = await prismaClient.personneMain.create({
-      data: { coopId: userId },
-      select: { id: true },
-    })
     await prismaClient.personneAffectationEmploiMain.create({
       data: {
         personneId: personne.id,

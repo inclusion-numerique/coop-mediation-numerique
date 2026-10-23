@@ -12,6 +12,17 @@ export {
   estSupprime,
   etatDuCompte,
 } from './compte'
+export {
+  type ContactAImporter,
+  type ContactASynchroniser,
+  contactASynchroniser,
+  type InscritDeLaListe,
+  RoleBrevo,
+  type RolesBrevo,
+  rolesBrevoDe,
+  SituationDansLeDispositif,
+  situationDansLeDispositif,
+} from './contact-brevo'
 export { CoordinateurId } from './coordinateur-id'
 export {
   COURRIEL_HASH_LENGTH,

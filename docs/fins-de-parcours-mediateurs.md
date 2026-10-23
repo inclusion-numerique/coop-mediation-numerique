@@ -62,11 +62,10 @@ rôle mal choisi à l'inscription, pas un mécanisme de fin de parcours.
 
 ### 1.3 Le job dispositif conseiller numérique
 
-`appliquer-dispositif-conum` (cron `0 2 * * *`, `infrastructure/locals.tf`) répercute chaque
-nuit ce que l'Entrepôt a changé aux affectations. Il fait deux choses, et **aucune n'est
-un retrait** : il crée la ligne `coop.coordinateurs` manquante, et il notifie Brevo sur
-transition. Le commentaire est explicite : *« on ne supprime jamais »*
-(`executeAppliquerDispositifConum.ts:22`), et
+`appliquer-dispositif-conum` a été remplacé le 23/10/2026 par `synchroniser-les-roles-brevo`
+(cron `0 2 * * *`, `infrastructure/locals.tf`), qui recalcule chaque nuit les rôles Brevo de
+tous les inscrits vivants. La ligne `coop.coordinateurs` manquante est désormais garantie à la
+connexion et à l'inscription, et **aucun de ces mécanismes n'est un retrait** :
 `garantirCoordinateurDuDispositif.ts:15-17` le redit : retirer le rôle
 « orphelinerait les équipes ».
 
