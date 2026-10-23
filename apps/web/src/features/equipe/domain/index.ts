@@ -8,7 +8,6 @@ export {
   type NouvelleAdhesion,
 } from './adhesion'
 export { AdhesionId } from './adhesion-id'
-export { CodeDepartement } from './code-departement'
 export { CodeInsee } from './code-insee'
 export { CodePostal } from './code-postal'
 export { Commune } from './commune'

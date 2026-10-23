@@ -1,5 +1,8 @@
 import assert from 'node:assert'
-import { lieuxDuDepartement } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-departement'
+import {
+  lieuxDuDepartement,
+  nombreDeLieuxDuDepartement,
+} from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-departement'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
@@ -17,6 +20,7 @@ const semis: {
   mediateurId?: string
   userId?: string
   trouves?: string[]
+  nombre?: number
   aPreciser?: string[]
 } = { ids: [] }
 
@@ -109,6 +113,18 @@ When('on liste les lieux de ce département', async () => {
     .map(({ id }) => id)
 })
 
+When('on compte les lieux de ce département', async () => {
+  semis.nombre = await nombreDeLieuxDuDepartement('17')
+})
+
+Then('le nombre de lieux est celui de l’annuaire du département', async () => {
+  const { totalCount } = await lieuxDuDepartement({
+    departementCode: '17',
+    searchParams: {},
+  })
+  assert.strictEqual(semis.nombre, totalCount)
+})
+
 const proposes = () => semis.trouves ?? []
 
 Then('le lieu publié est proposé', () => {
@@ -154,4 +170,5 @@ After(async () => {
   }
   semis.ids = []
   semis.trouves = undefined
+  semis.nombre = undefined
 })

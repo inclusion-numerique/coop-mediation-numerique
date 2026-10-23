@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs'
 import { output } from '@app/cli/output'
 import { varFile } from '@app/config/varDirectory'
-import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
+import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
 import { Command } from '@commander-js/extra-typings'
 
 // const BASE_URL = 'http://localhost:3000/api/v1/statistiques'

@@ -1,5 +1,5 @@
+import { CodeDepartement } from '@app/web/libraries/departement'
 import {
-  CodeDepartement,
   Email,
   MediateurId,
   Nom,

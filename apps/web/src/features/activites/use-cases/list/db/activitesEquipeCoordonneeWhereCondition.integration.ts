@@ -1,5 +1,5 @@
 import { getAccompagnementsCountByMonth } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getAccompagnementsCountByPeriod'
-import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
+import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
 import { prismaClient } from '@app/web/prismaClient'
 import type { UserProfile } from '@app/web/utils/user'
 import { searchActivite } from './searchActivite'

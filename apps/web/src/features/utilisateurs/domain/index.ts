@@ -57,7 +57,6 @@ export {
 export {
   AUCUN_FILTRE,
   CodeCommune,
-  CodeDepartement,
   EmployeuseId,
   type FiltresUtilisateurs,
   filtresUtilisateurs,

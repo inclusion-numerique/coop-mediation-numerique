@@ -58,3 +58,14 @@
 * And un quatrième lieu publié dans un autre département
 * When on liste les lieux de ce département
 * Then le lieu d’ailleurs n’est pas proposé
+
+## Rule: Le nombre de lieux d'un département est celui de son annuaire
+
+> Le réseau du département annonce un nombre de lieux : c'est le nombre de lieux
+> que son annuaire propose, ni plus ni moins.
+
+### Scenario: Le nombre de lieux compte les lieux que l'annuaire propose
+
+* Given trois lieux dans le même département
+* When on compte les lieux de ce département
+* Then le nombre de lieux est celui de l’annuaire du département

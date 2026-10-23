@@ -2,7 +2,6 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { CreerLieuActivitePageContent } from '../../../formulaire/CreerLieuActivitePageContent'
@@ -10,6 +9,7 @@ import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '../../../formulaire/creerLieuActiviteFormData'
+import { hrefDuLieu } from '../../../ui/href-du-lieu'
 
 const erreurEnregistrement = () =>
   createToast({
@@ -39,7 +39,7 @@ const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
     })
 
     router.push(
-      `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(adresseBan.codeInsee)}/lieux/${resultat.data.id}`,
+      hrefDuLieu({ id: resultat.data.id, codeInsee: adresseBan.codeInsee }),
     )
   }
 

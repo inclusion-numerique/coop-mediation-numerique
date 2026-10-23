@@ -12,7 +12,6 @@ import {
   mediateurSansActivites,
   mediateurSansActivitesUserId,
 } from '@app/fixtures/users/mediateurSansActivites'
-import { computeProportion } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import {
   getMesStatistiquesPageData,
   MesStatistiquesGraphOptions,
@@ -34,6 +33,7 @@ import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/benef
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
+import { computeProportion } from '@app/web/features/statistiques/allocatePercentages'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   UserDisplayName,
