@@ -1,33 +1,27 @@
 'use client'
 
 import Card from '@app/web/components/Card'
-import ActeurCard from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurCard'
-import type { MediateurEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
+import type { MediateurDuLieu } from '../domain'
+import { CarteDuMediateur } from './CarteDuMediateur'
 
-const initialMediateurCount = 3
+const NOMBRE_AFFICHE_AU_DEPART = 3
 
-/**
- * Le bouton de retrait est reçu déjà construit, un par médiateur : il appartient
- * aux lieux d'activité, et ce composant s'exécute dans le navigateur — il ne
- * peut donc pas recevoir de fonction pour le fabriquer.
- */
-export const LieuMediateursEnActivite = ({
+export const MediateursDuLieu = ({
   mediateurs,
-  departementCode,
+  departement,
   retraits,
 }: {
-  mediateurs: MediateurEnActiviteDuLieu[]
-  departementCode: string
-  retraits?: Record<string, ReactNode>
+  mediateurs: readonly MediateurDuLieu[]
+  departement: string
+  retraits?: Readonly<Record<string, ReactNode>>
 }) => {
-  const [showMore, setShowMore] = useState(false)
+  const [tousAffiches, afficherTous] = useState(false)
 
-  const mediateursToDisplay = showMore
+  const affiches = tousAffiches
     ? mediateurs
-    : mediateurs.slice(0, initialMediateurCount)
-  const showMoreButton = mediateurs.length > initialMediateurCount
+    : mediateurs.slice(0, NOMBRE_AFFICHE_AU_DEPART)
 
   return (
     <Card
@@ -51,34 +45,34 @@ export const LieuMediateursEnActivite = ({
         <>
           <hr className="fr-separator-1px" />
           <ul className="fr-list-group fr-my-0">
-            {mediateursToDisplay.map((acteur) => (
-              <ActeurCard
-                key={acteur.id}
-                acteur={acteur.mediateur.user}
-                departementCode={departementCode}
-                retrait={retraits?.[acteur.id]}
+            {affiches.map((mediateur) => (
+              <CarteDuMediateur
+                key={mediateur.rattachementId}
+                mediateur={mediateur}
+                departement={departement}
+                retrait={retraits?.[mediateur.rattachementId]}
               />
             ))}
           </ul>
         </>
       )}
-      {showMoreButton && (
+      {mediateurs.length > NOMBRE_AFFICHE_AU_DEPART && (
         <div className="fr-pt-6v">
           <Button
             title="Afficher tous les médiateurs numériques référencés sur ce lieu"
             priority="tertiary no outline"
             iconId={
-              showMore ? 'fr-icon-arrow-up-s-line' : 'fr-icon-arrow-down-s-line'
+              tousAffiches
+                ? 'fr-icon-arrow-up-s-line'
+                : 'fr-icon-arrow-down-s-line'
             }
             iconPosition="right"
-            onClick={() => setShowMore(!showMore)}
+            onClick={() => afficherTous(!tousAffiches)}
           >
-            {showMore ? 'Voir moins' : 'Voir tous'}
+            {tousAffiches ? 'Voir moins' : 'Voir tous'}
           </Button>
         </div>
       )}
     </Card>
   )
 }
-
-export default LieuMediateursEnActivite
