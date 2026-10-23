@@ -1,7 +1,30 @@
+import type * as Excel from 'exceljs'
+import {
+  activiteCollectifInfosDepliees,
+  activiteIndividuelleInfosMinimum,
+} from '../storybook/ActiviteDetailsStoriesData'
 import {
   BuildActivitesWorksheetInput,
   buildAccompagnementsWorksheet,
 } from './buildAccompagnementsWorksheet'
+
+const premierAccompagnementColumn = (worksheet: Excel.Worksheet) => {
+  const headerRow = worksheet
+    .getRows(1, worksheet.rowCount)
+    ?.find((row) => row.getCell(1).value === 'Date')
+
+  if (!headerRow) throw new Error('Header row not found')
+
+  const headers = (headerRow.values as Excel.CellValue[]).slice(1)
+  const columnNumber = headers.indexOf('Premier accompagnement') + 1
+
+  return {
+    columnNumber,
+    values: worksheet
+      .getRows(headerRow.number + 1, worksheet.rowCount - headerRow.number)
+      ?.map((row) => row.getCell(columnNumber).value),
+  }
+}
 
 describe('buildActivitesWorksheet', () => {
   let mockInput: BuildActivitesWorksheetInput
@@ -140,5 +163,70 @@ describe('buildActivitesWorksheet', () => {
       (row) => row.getCell(1).value === 'Médiateur',
     )
     expect(mediateurRow).toBeUndefined()
+  })
+
+  it.each([true, false])(
+    'should include the premier accompagnement column when self export is %s',
+    (isSelfExport) => {
+      const workbook = buildAccompagnementsWorksheet(mockInput, isSelfExport)
+      const worksheet = workbook.getWorksheet('Activités')
+      if (!worksheet) throw new Error('Worksheet not found')
+
+      expect(
+        premierAccompagnementColumn(worksheet).columnNumber,
+      ).toBeGreaterThan(0)
+    },
+  )
+
+  it('should export Oui for a premier accompagnement', () => {
+    const workbook = buildAccompagnementsWorksheet(
+      {
+        ...mockInput,
+        activites: [
+          {
+            ...activiteIndividuelleInfosMinimum,
+            accompagnements:
+              activiteIndividuelleInfosMinimum.accompagnements.map(
+                (accompagnement) => ({
+                  ...accompagnement,
+                  premierAccompagnement: true,
+                }),
+              ),
+          },
+        ],
+      },
+      false,
+    )
+    const worksheet = workbook.getWorksheet('Activités')
+    if (!worksheet) throw new Error('Worksheet not found')
+
+    expect(premierAccompagnementColumn(worksheet).values).toEqual(['Oui'])
+  })
+
+  it('should export one premier accompagnement value per participant of a collectif', () => {
+    const workbook = buildAccompagnementsWorksheet(
+      {
+        ...mockInput,
+        activites: [
+          {
+            ...activiteCollectifInfosDepliees,
+            accompagnements: activiteCollectifInfosDepliees.accompagnements
+              .slice(0, 2)
+              .map((accompagnement, index) => ({
+                ...accompagnement,
+                premierAccompagnement: index === 0,
+              })),
+          },
+        ],
+      },
+      false,
+    )
+    const worksheet = workbook.getWorksheet('Activités')
+    if (!worksheet) throw new Error('Worksheet not found')
+
+    expect(premierAccompagnementColumn(worksheet).values).toEqual([
+      'Oui',
+      'Non',
+    ])
   })
 })
