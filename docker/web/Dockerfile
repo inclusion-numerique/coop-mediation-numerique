@@ -26,7 +26,7 @@ COPY apps/web/private-static ./apps/web/private-static
 # Copy static built assets (js and css)
 COPY apps/web/.next/static ./apps/web/.next/static
 
-COPY apps/web/dist/run-job.js ./apps/web/run-job.js
+COPY apps/web/dist/run-job.cjs ./apps/web/run-job.cjs
 
 EXPOSE $PORT
 

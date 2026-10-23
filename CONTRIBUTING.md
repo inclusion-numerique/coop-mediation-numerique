@@ -378,7 +378,7 @@ l'historique git, pas dans le code.
 ### Mecanisme d'execution des crons
 
 1. **Scaleway Serverless Jobs** demarre, a l'heure du cron, un conteneur dedie a partir de l'image web
-2. Ce conteneur execute `node ./apps/web/run-job.js <job>` : un script autonome, produit par `pnpm -F @app/web build:jobs` (esbuild), qui ne passe ni par HTTP ni par le serveur Next
+2. Ce conteneur execute `node ./apps/web/run-job.cjs <job>` : un script autonome, produit par `pnpm -F @app/web build:jobs` (esbuild), qui ne passe ni par HTTP ni par le serveur Next
 3. Le job est valide puis execute via `executeJob()`
 4. Les details d'execution sont sauvegardes en base (`jobExecution`), et un job en echec sort en erreur : l'execution apparait en echec dans la console Scaleway (historique et journaux conserves 60 jours)
 

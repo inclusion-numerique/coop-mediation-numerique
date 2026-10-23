@@ -27,7 +27,7 @@ resource "scaleway_job_definition" "job" {
   cpu_limit              = 1120
   memory_limit           = 2048
   local_storage_capacity = 1024
-  args                   = ["node", "./apps/web/run-job.js", each.key]
+  args                   = ["node", "./apps/web/run-job.cjs", each.key]
   timeout                = "3h"
   env                    = local.environnement_web
 

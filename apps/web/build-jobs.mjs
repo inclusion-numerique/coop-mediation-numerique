@@ -8,7 +8,7 @@ const variablesPubliques = Object.fromEntries(
 
 await build({
   entryPoints: ['src/jobs/run-job.ts'],
-  outfile: 'dist/run-job.js',
+  outfile: 'dist/run-job.cjs',
   bundle: true,
   platform: 'node',
   target: 'node24',
