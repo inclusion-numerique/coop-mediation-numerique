@@ -1,8 +1,5 @@
-import {
-  type CodeDepartement,
-  type LigneEquipe,
-  profilDe,
-} from '../../../domain'
+import type { CodeDepartement } from '@app/web/libraries/departement'
+import { type LigneEquipe, profilDe } from '../../../domain'
 import { libelleDuRole } from '../../../ui/role-membre.presenter'
 import { libelleStatutMembre } from '../../../ui/statut-membre.presenter'
 
@@ -47,17 +44,15 @@ const activite = ({ statut }: LigneEquipe): LigneAffichee['activite'] => {
 }
 
 const lienProfil =
-  (departementCode: CodeDepartement | null) =>
+  (departementCode: CodeDepartement) =>
   ({ statut, personne }: LigneEquipe): string | null =>
-    departementCode === null ||
-    statut.type === 'Invitation' ||
-    personne.type === 'SansCompte'
+    statut.type === 'Invitation' || personne.type === 'SansCompte'
       ? null
       : `/coop/mon-reseau/${departementCode}/acteurs/${personne.profil.utilisateurId}`
 
 export const lignesAffichees = (
   lignes: readonly LigneEquipe[],
-  departementCode: CodeDepartement | null,
+  departementCode: CodeDepartement,
 ): readonly LigneAffichee[] =>
   lignes.map((ligne) => ({
     cle: `${ligne.statut.type}-${ligne.email}`,
