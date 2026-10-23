@@ -1,5 +1,6 @@
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type {
@@ -18,7 +19,6 @@ import {
 } from './_queries/getActivitesStats'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
 import { getHasCrasV1 } from './_queries/getHasCrasV1'
-import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date

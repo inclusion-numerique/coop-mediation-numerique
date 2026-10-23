@@ -1,7 +1,7 @@
 import {
   allocatePercentages,
   allocatePercentagesFromRecords,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
+} from '@app/web/features/statistiques/allocatePercentages'
 
 describe('allocatePercentages', () => {
   it('should allocate percentages correctly for an array of numbers', () => {

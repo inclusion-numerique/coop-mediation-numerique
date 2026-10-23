@@ -1,4 +1,3 @@
-import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
@@ -13,6 +12,7 @@ import {
   getActeurCoordinateurType,
 } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
+import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
 import { prismaClient } from '@app/web/prismaClient'
 import { getLastUserActivityDate } from '@app/web/security/getLastUserActivityDate'
 import { getMediateurCoordinationDetails } from './db/getMediateurCoordinationDetails'
