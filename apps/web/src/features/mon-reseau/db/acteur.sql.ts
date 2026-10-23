@@ -1,9 +1,10 @@
 import {
+  conseillerNumeriqueSql,
   employeuseCourante,
   employeuseCouranteJoin,
 } from '@app/web/features/employeuse/server'
 import { Prisma } from '@app/web/generated/prisma/client'
-import type { CodeDepartement } from '@app/web/libraries/departement'
+import type { CodeDepartement, CodeInsee } from '@app/web/libraries/departement'
 import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 
 export const ACTEUR = {
@@ -36,10 +37,15 @@ export const acteurDuDepartement = (code: CodeDepartement) => Prisma.sql`(
   OR SUBSTRING(s2.code_insee FROM ${departementCodeFromInseeRegex}) = ${code}
 )`
 
-export const acteurDesCommunes = (codesInsee: readonly string[]) => Prisma.sql`(
+export const acteurDesCommunes = (
+  codesInsee: readonly CodeInsee[],
+) => Prisma.sql`(
   ${employeuseCourante().codeInsee} = ANY(${[...codesInsee]}::TEXT[])
   OR s2.code_insee = ANY(${[...codesInsee]}::TEXT[])
 )`
+
+export const acteurConseillerNumerique = (releve: boolean) =>
+  conseillerNumeriqueSql('u.id', releve)
 
 export const acteurVisibleWhere = {
   deleted: null,

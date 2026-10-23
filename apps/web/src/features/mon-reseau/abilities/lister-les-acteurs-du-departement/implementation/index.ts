@@ -1,4 +1,4 @@
 export {
   type ActeursDuDepartementConsultes,
-  consulterLesActeursDuDepartement,
-} from './consulter-les-acteurs-du-departement'
+  listerLesActeursDuDepartement,
+} from './lister-les-acteurs-du-departement'

@@ -5,7 +5,9 @@ import {
   communesLues,
   LignesParPage,
   NumeroDePage,
+  premiereValeur,
   Recherche,
+  type ValeurDeParametre,
 } from '../../../domain'
 
 export const filtresDeRole = [
@@ -37,12 +39,12 @@ export type CriteresActeurs = {
 }
 
 export type ParametresDesActeurs = {
-  readonly recherche?: string
-  readonly role?: string
-  readonly communes?: string
-  readonly tri?: string
-  readonly page?: string
-  readonly lignes?: string
+  readonly recherche?: ValeurDeParametre
+  readonly role?: ValeurDeParametre
+  readonly communes?: ValeurDeParametre
+  readonly tri?: ValeurDeParametre
+  readonly page?: ValeurDeParametre
+  readonly lignes?: ValeurDeParametre
 }
 
 const roleLu = (role: string | undefined): FiltreRole | null => {
@@ -58,12 +60,12 @@ export const criteresActeurs = ({
   page,
   lignes,
 }: ParametresDesActeurs): CriteresActeurs => ({
-  recherche: Recherche.safe(recherche ?? ''),
-  role: roleLu(role),
+  recherche: Recherche.safe(premiereValeur(recherche) ?? ''),
+  role: roleLu(premiereValeur(role)),
   communes: communesLues(communes),
-  tri: TriActeurs(tri),
-  page: NumeroDePage(page),
-  lignes: LignesParPage(lignes),
+  tri: TriActeurs(premiereValeur(tri)),
+  page: NumeroDePage(premiereValeur(page)),
+  lignes: LignesParPage(premiereValeur(lignes)),
 })
 
 export const estFiltre = ({ recherche, role, communes }: CriteresActeurs) =>

@@ -11,6 +11,8 @@ import type {
   StatutDActivitePublic,
 } from './statut-d-activite-public'
 
+export const FENETRE_DES_STATISTIQUES_EN_JOURS = 30
+
 export type StatistiquesSur30Jours = {
   readonly beneficiairesAccompagnes: Effectif
   readonly accompagnements: Effectif
@@ -60,6 +62,7 @@ export type LireLaDerniereActivite = (
 export type LireLesStatistiquesSur30Jours = (
   coordinateurId: CoordinateurId,
   mediateurId: MediateurId,
+  maintenant: Date,
 ) => Promise<StatistiquesSur30Jours>
 
 export type LireLeContrat = (

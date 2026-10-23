@@ -37,6 +37,7 @@ const lecteurDe = ({ id, coordinateur }: QuiConsulte): Lecteur => {
 const relationAvec = async (
   lecteur: Extract<Lecteur, { _tag: 'Coordinateur' }>,
   acteur: Acteur,
+  maintenant: Date,
 ): Promise<RelationDEquipe> => {
   const mediation = acteur.profil.mediation
   const liens =
@@ -52,6 +53,7 @@ const relationAvec = async (
     lireLesStatistiquesSur30Jours(
       lecteur.coordinateurId,
       mediation.mediateurId,
+      maintenant,
     ),
     acteur.profil.dispositif === 'ConseillerNumerique'
       ? lireLeContrat(acteur.acteurId)
@@ -63,13 +65,14 @@ const relationAvec = async (
 const regardDe = async (
   lecteur: Lecteur,
   acteur: Acteur,
+  maintenant: Date,
 ): Promise<RegardDuLecteur> =>
   lecteur._tag === 'Mediateur'
     ? { _tag: 'Mediateur' }
     : {
         _tag: 'Coordinateur',
         coordinateurId: lecteur.coordinateurId,
-        relation: await relationAvec(lecteur, acteur),
+        relation: await relationAvec(lecteur, acteur, maintenant),
       }
 
 export const consulterUnActeur = async ({
@@ -90,7 +93,7 @@ export const consulterUnActeur = async ({
 
   const [derniereActivite, regard] = await Promise.all([
     lireLaDerniereActivite(id),
-    regardDe(lecteurDe(quiConsulte), lu.acteur),
+    regardDe(lecteurDe(quiConsulte), lu.acteur, maintenant),
   ])
 
   return success({

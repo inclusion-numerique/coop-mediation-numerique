@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import {
   adresseCompleteAffichage,
   type EmploiEmployeuseAffichage,
-} from '../abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
+} from '../abilities/consulter-employeuse-a-une-date/ui'
 import ActeurStructureEmployeuse from './ActeurStructureEmployeuse'
 
 const structure = (
@@ -43,7 +43,6 @@ export const Complet: Story = {
     showIsLieuActiviteNotice: true,
     showReferentStructure: true,
     showReferentStructureConseillerNumeriqueSupportNotice: true,
-    canUpdateStructure: true,
   },
 }
 
@@ -69,7 +68,6 @@ export const Minimal: Story = {
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
     showReferentStructureConseillerNumeriqueSupportNotice: false,
-    canUpdateStructure: false,
   },
 }
 
@@ -95,7 +93,6 @@ export const MinimalAvecSiret: Story = {
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
     showReferentStructureConseillerNumeriqueSupportNotice: false,
-    canUpdateStructure: false,
   },
 }
 
@@ -121,7 +118,6 @@ export const MinimalAvecTypologies: Story = {
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
     showReferentStructureConseillerNumeriqueSupportNotice: false,
-    canUpdateStructure: false,
   },
 }
 
@@ -147,6 +143,5 @@ export const ContactSansNom: Story = {
     showIsLieuActiviteNotice: false,
     showReferentStructure: true,
     showReferentStructureConseillerNumeriqueSupportNotice: false,
-    canUpdateStructure: false,
   },
 }

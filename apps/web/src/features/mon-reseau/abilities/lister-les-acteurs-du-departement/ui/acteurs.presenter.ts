@@ -66,3 +66,19 @@ export const etiquettesDesFiltres = (
       })),
   ]
 }
+
+export const parametresDeLURL = ({
+  recherche,
+  role,
+  communes,
+  tri,
+  page,
+  lignes,
+}: CriteresActeurs) => ({
+  recherche: recherche ?? undefined,
+  role: role ?? undefined,
+  communes: communes.length === 0 ? undefined : communes.join(','),
+  tri,
+  page: String(page),
+  lignes: String(lignes),
+})

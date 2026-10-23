@@ -8,6 +8,7 @@ import {
   etiquettesDesFiltres,
   groupesDActeurs,
   libelleDesResultats,
+  parametresDeLURL,
 } from './acteurs.presenter'
 
 const coordinateurHorsDispositif = {
@@ -56,5 +57,18 @@ describe('présentation de l’annuaire des acteurs', () => {
         libelle: 'Commune : Aurillac · 15000',
       },
     ])
+  })
+
+  it('remet les critères lus dans l’URL', () => {
+    expect(
+      parametresDeLURL(criteresActeurs({ role: 'coordinateur', page: '2' })),
+    ).toEqual({
+      recherche: undefined,
+      role: 'coordinateur',
+      communes: undefined,
+      tri: 'nomaz',
+      page: '2',
+      lignes: '20',
+    })
   })
 })

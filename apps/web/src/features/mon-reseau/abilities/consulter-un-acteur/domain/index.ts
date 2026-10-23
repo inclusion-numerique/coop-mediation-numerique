@@ -1,14 +1,15 @@
-export type {
-  ActeurLu,
-  ContratAffiche,
-  FicheActeur,
-  LireLActeur,
-  LireLaDerniereActivite,
-  LireLeContrat,
-  LireLesStatistiquesSur30Jours,
-  RegardDuLecteur,
-  RelationDEquipe,
-  StatistiquesSur30Jours,
+export {
+  type ActeurLu,
+  type ContratAffiche,
+  FENETRE_DES_STATISTIQUES_EN_JOURS,
+  type FicheActeur,
+  type LireLActeur,
+  type LireLaDerniereActivite,
+  type LireLeContrat,
+  type LireLesStatistiquesSur30Jours,
+  type RegardDuLecteur,
+  type RelationDEquipe,
+  type StatistiquesSur30Jours,
 } from './fiche-acteur'
 export type { Lecteur } from './lecteur'
 export {

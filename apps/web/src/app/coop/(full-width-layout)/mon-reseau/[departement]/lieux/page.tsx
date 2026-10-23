@@ -24,10 +24,9 @@ const Page = async ({
 }) => {
   await authenticateMediateurOrCoordinateur()
 
-  const parametres = await searchParams
   const consultation = await consulterLesLieuxDuDepartement(
     (await params).departement,
-    parametres,
+    await searchParams,
   )
 
   return consultation.success ? (
@@ -35,7 +34,7 @@ const Page = async ({
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <LieuxDuDepartementPage {...consultation.data} parametres={parametres} />
+      <LieuxDuDepartementPage {...consultation.data} />
     </ClientBinder>
   ) : (
     notFound()

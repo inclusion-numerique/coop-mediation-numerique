@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { consulterLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { listerLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 import {
   exercerDansLeLieu,
   semerUnActeur,
@@ -7,7 +7,7 @@ import {
 } from '@app/web/features/mon-reseau/mon-reseau.cucumber'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 
-type Consultation = Awaited<ReturnType<typeof consulterLesActeursDuDepartement>>
+type Consultation = Awaited<ReturnType<typeof listerLesActeursDuDepartement>>
 
 const etat: { consultation?: Consultation } = {}
 
@@ -19,16 +19,20 @@ const nomsProposes = (): readonly string[] => {
   return consultation.data.acteurs.acteurs.map(({ nomAffiche }) => nomAffiche)
 }
 
+const SAINT_FLOUR = '15187'
+
 const semerDansLeCantal = async ({
   prenom,
   nom,
   coordinateur = false,
   supprime = false,
+  codeInsee,
 }: {
   prenom: string
   nom: string
   coordinateur?: boolean
   supprime?: boolean
+  codeInsee?: string
 }) => {
   const { mediateurId } = await semerUnActeur({
     prenom,
@@ -37,11 +41,14 @@ const semerDansLeCantal = async ({
     supprime,
   })
   if (mediateurId === null) throw new Error('Médiateur non semé')
-  await exercerDansLeLieu({ mediateurId, lieuId: await semerUnLieu() })
+  await exercerDansLeLieu({
+    mediateurId,
+    lieuId: await semerUnLieu({ codeInsee }),
+  })
 }
 
 const consulter = async (parametres: Record<string, string>) => {
-  etat.consultation = await consulterLesActeursDuDepartement('15', {
+  etat.consultation = await listerLesActeursDuDepartement('15', {
     lignes: '100',
     ...parametres,
   })
@@ -58,6 +65,13 @@ Given(
   'le médiateur supprimé {word} {word} qui exerce dans le Cantal',
   async (prenom: string, nom: string) => {
     await semerDansLeCantal({ prenom, nom, supprime: true })
+  },
+)
+
+Given(
+  'le médiateur {word} {word} qui exerce à Saint-Flour',
+  async (prenom: string, nom: string) => {
+    await semerDansLeCantal({ prenom, nom, codeInsee: SAINT_FLOUR })
   },
 )
 
@@ -83,6 +97,20 @@ When(
 )
 
 When(
+  'on cherche « {word} » à Saint-Flour dans l’annuaire des acteurs du Cantal',
+  async (recherche: string) => {
+    await consulter({ recherche, communes: SAINT_FLOUR })
+  },
+)
+
+When(
+  'on cherche « {word} » parmi les médiateurs numériques du Cantal',
+  async (recherche: string) => {
+    await consulter({ recherche, role: 'mediateur_numerique' })
+  },
+)
+
+When(
   'on cherche « {word} » de Z à A dans l’annuaire des acteurs du Cantal',
   async (recherche: string) => {
     await consulter({ recherche, tri: 'nomza' })
@@ -92,7 +120,7 @@ When(
 When(
   'on consulte l’annuaire des acteurs du département « {word} »',
   async (code: string) => {
-    etat.consultation = await consulterLesActeursDuDepartement(code, {})
+    etat.consultation = await listerLesActeursDuDepartement(code, {})
   },
 )
 

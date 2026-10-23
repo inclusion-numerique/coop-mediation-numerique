@@ -2,15 +2,14 @@ import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalC
 import { format, subDays } from 'date-fns'
 import { Effectif } from '../../../../domain'
 import {
+  FENETRE_DES_STATISTIQUES_EN_JOURS,
   type LireLesStatistiquesSur30Jours,
-  SEUIL_D_INACTIVITE_EN_JOURS,
 } from '../../domain'
 
 const jour = (date: Date): string => format(date, 'yyyy-MM-dd')
 
 export const lireLesStatistiquesSur30Jours: LireLesStatistiquesSur30Jours =
-  async (coordinateurId, mediateurId) => {
-    const maintenant = new Date()
+  async (coordinateurId, mediateurId, maintenant) => {
     const { beneficiaires, accompagnements } = await getTotalCountsStats({
       user: {
         coordinateur: {
@@ -21,7 +20,7 @@ export const lireLesStatistiquesSur30Jours: LireLesStatistiquesSur30Jours =
       },
       mediateurIds: [mediateurId],
       activitesFilters: {
-        du: jour(subDays(maintenant, SEUIL_D_INACTIVITE_EN_JOURS)),
+        du: jour(subDays(maintenant, FENETRE_DES_STATISTIQUES_EN_JOURS)),
         au: jour(maintenant),
       },
     })

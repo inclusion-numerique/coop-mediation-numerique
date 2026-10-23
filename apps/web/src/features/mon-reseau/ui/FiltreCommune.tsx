@@ -14,7 +14,7 @@ import {
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export const FiltreCommune = ({
   defaultValue = [],
@@ -36,11 +36,6 @@ export const FiltreCommune = ({
   )
 
   const [communes, setCommunes] = useState(filteredCommunesOptions)
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when props options change
-  useEffect(() => {
-    setCommunes(filteredCommunesOptions)
-  }, [communesOptions])
 
   const hasFilters = communes.length > 0
 

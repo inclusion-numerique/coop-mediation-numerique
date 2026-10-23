@@ -51,7 +51,6 @@ const MaStructureEmployeusePage = async () => {
               showIsLieuActiviteNotice={false}
               showReferentStructure={true}
               showReferentStructureConseillerNumeriqueSupportNotice={false}
-              canUpdateStructure={user.isConseillerNumerique}
             />
           ) : (
             <div className="fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
