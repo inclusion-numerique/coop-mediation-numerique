@@ -6,19 +6,17 @@ import {
   departements,
 } from '@app/web/data/collectivites-territoriales/departements'
 import { useRouter } from 'next/navigation'
+import { hrefDuReseau } from '../../../../ui/liens'
 
 const itemToString = (departement: Departement | null): string =>
   departement ? `${departement.nom} · ${departement.code}` : ''
 
-/**
- * Normalize string for search: lowercase, remove accents and dashes
- */
 const normalizeForSearch = (value: string): string =>
   value
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritical marks
-    .replace(/[-']/g, '') // Remove dashes and apostrophes
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[-']/g, '')
 
 const filterDepartements = (inputValue: string): Departement[] => {
   const normalizedInput = normalizeForSearch(inputValue)
@@ -43,7 +41,7 @@ const DepartementComboBox = ({
   const router = useRouter()
 
   const handleSelect = (departement: Departement) => {
-    router.push(`/coop/mon-reseau/${departement.code}`)
+    router.push(hrefDuReseau(departement.code))
   }
 
   return (

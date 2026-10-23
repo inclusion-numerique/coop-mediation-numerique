@@ -3,7 +3,7 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import Button from '@codegouvfr/react-dsfr/Button'
 
-const MonReseauCountStatCard = ({
+const CompteurDuReseau = ({
   count,
   label,
   iconId,
@@ -45,4 +45,4 @@ const MonReseauCountStatCard = ({
   </div>
 )
 
-export default MonReseauCountStatCard
+export default CompteurDuReseau

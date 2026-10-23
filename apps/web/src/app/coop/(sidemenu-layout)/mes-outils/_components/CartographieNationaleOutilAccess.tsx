@@ -1,7 +1,9 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { departementsRegionByCode } from '@app/web/data/collectivites-territoriales/departementsRegion'
-import { visibiliteDesLieuxDuMediateur } from '@app/web/features/lieux-activite'
-import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
+import {
+  nombreDeLieuxDuDepartement,
+  visibiliteDesLieuxDuMediateur,
+} from '@app/web/features/lieux-activite'
 import { getCartographieDepartementLink } from '@app/web/libraries/cartographie-nationale'
 import {
   CodeInsee,
@@ -63,7 +65,7 @@ const CartographieNationaleOutilAccess = async () => {
     }) ?? DEPARTEMENT_PAR_DEFAUT
 
   const departementRegion = departementsRegionByCode.get(departementCode)
-  const { lieuxCount } = await getMonReseauPageData({ departementCode })
+  const lieuxCount = await nombreDeLieuxDuDepartement(departementCode)
 
   const cartographieLink = departementRegion
     ? getCartographieDepartementLink({

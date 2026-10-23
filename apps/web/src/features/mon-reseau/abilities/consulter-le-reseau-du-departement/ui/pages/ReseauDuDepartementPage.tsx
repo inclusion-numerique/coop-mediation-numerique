@@ -3,33 +3,28 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import Card from '@app/web/components/Card'
 import { CommunicationConum } from '@app/web/components/CommunicationConum'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { Departement } from '@app/web/data/collectivites-territoriales/departements'
-import MonReseauCountStatCard from '@app/web/features/mon-reseau/components/MonReseauCountStatCard'
-import DepartementComboBox from '@app/web/features/mon-reseau/DepartementComboBox'
-import { getInclusionNumeriqueDepartementDataUrl } from '@app/web/features/mon-reseau/getInclusionNumeriqueDepartementDataUrl'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getMonReseauBreadcrumbLabel } from '../getMonReseauBreadcrumbParents'
+import { libelleDuReseau } from '../../../../ui/fil-d-ariane'
+import { hrefDesActeurs, hrefDesLieux } from '../../../../ui/liens'
+import type { ReseauDuDepartement } from '../../domain'
+import CompteurDuReseau from '../components/CompteurDuReseau'
+import DepartementComboBox from '../components/DepartementComboBox'
+import { urlDesDonneesTerritoriales } from '../donnees-territoriales'
 
 const mattermostHref = 'https://discussion.coop-numerique.anct.gouv.fr'
 
-const MonReseauPage = ({
-  departement,
-  acteursCount,
-  lieuxCount,
-  isConseillerNumerique,
+const ReseauDuDepartementPage = ({
+  reseau: { departement, acteurs, lieux },
+  estConseillerNumerique,
 }: {
-  departement: Departement
-  acteursCount: number
-  lieuxCount: number
-  isConseillerNumerique: boolean
+  reseau: ReseauDuDepartement
+  estConseillerNumerique: boolean
 }) => (
   <CoopPageContainer size={56}>
     <SkipLinksPortal />
-    <CoopBreadcrumbs
-      currentPage={getMonReseauBreadcrumbLabel({ code: departement.code })}
-    />
+    <CoopBreadcrumbs currentPage={libelleDuReseau(departement.code)} />
     <main id={contentId}>
       <div className="fr-flex fr-flex-wrap fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v fr-mt-8v fr-mb-4v">
         <h1 className="fr-text-title--blue-france fr-mb-0">Mon réseau</h1>
@@ -45,26 +40,26 @@ const MonReseauPage = ({
 
       <div className="fr-grid-row fr-grid-row--gutters fr-my-12v">
         <div className="fr-col-lg-6 fr-col-12">
-          <MonReseauCountStatCard
-            count={acteursCount}
+          <CompteurDuReseau
+            count={acteurs}
             label="Acteurs de l'inclusion numérique"
             iconId="fr-icon-account-line"
-            href={`/coop/mon-reseau/${departement.code}/acteurs`}
+            href={hrefDesActeurs(departement.code)}
             linkLabel="Voir l’annuaire des acteurs"
           />
         </div>
         <div className="fr-col-lg-6 fr-col-12">
-          <MonReseauCountStatCard
-            count={lieuxCount}
+          <CompteurDuReseau
+            count={lieux}
             label="Lieux d'inclusion numérique"
             iconId="ri-home-office-line"
-            href={`/coop/mon-reseau/${departement.code}/lieux`}
+            href={hrefDesLieux(departement.code)}
             linkLabel="Voir l’annuaire des lieux"
           />
         </div>
       </div>
 
-      {isConseillerNumerique ? (
+      {estConseillerNumerique ? (
         <section className="fr-mb-8v">
           <CommunicationConum />
         </section>
@@ -141,7 +136,7 @@ const MonReseauPage = ({
               </p>
               <Link
                 className="fr-btn fr-btn--secondary"
-                href={getInclusionNumeriqueDepartementDataUrl(departement.code)}
+                href={urlDesDonneesTerritoriales(departement.code)}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -155,4 +150,4 @@ const MonReseauPage = ({
   </CoopPageContainer>
 )
 
-export default MonReseauPage
+export default ReseauDuDepartementPage
