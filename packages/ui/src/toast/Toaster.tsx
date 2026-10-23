@@ -6,6 +6,7 @@ const Toaster = () => (
   <BaseToaster
     position="top-center"
     reverseOrder={false}
+    containerClassName="fr-no-print"
     gutter={8}
     toastOptions={{
       duration: 10_000,
