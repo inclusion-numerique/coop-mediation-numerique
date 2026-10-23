@@ -1,11 +1,11 @@
 import { z } from 'zod'
 import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comptes-inactifs/anonymiserLesComptesInactifsJob'
-import { AppliquerDispositifConumJobValidation } from './appliquer-dispositif-conum/appliquerDispositifConumJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { ReprendreLesDonneesDesLieuxJobValidation } from './reprendre-les-donnees-des-lieux/reprendreLesDonneesDesLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
+import { SynchroniserLesRolesBrevoJobValidation } from './synchroniser-les-roles-brevo/synchroniserLesRolesBrevoJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -29,12 +29,12 @@ import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
 
 export const JobValidation = z.discriminatedUnion('name', [
   AnonymiserLesComptesInactifsJobValidation,
-  AppliquerDispositifConumJobValidation,
   FixUsersRolesJobValidation,
   InactiveUsersRemindersJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
   ReprendreLesDonneesDesLieuxJobValidation,
   SyncRdvspDataJobValidation,
+  SynchroniserLesRolesBrevoJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

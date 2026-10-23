@@ -32,12 +32,12 @@ export const activerLaMediationNumerique = async (
   if (!activation.success || activation.data === 'DejaActivee')
     return activation
 
-  const mediateurId = await activer({
+  await activer({
     utilisateurId: compte.id,
     coordinateurId: compte.coordinateur?.id ?? '',
     duree: () => chrono.stop().duration,
   })
-  await inscrireLeMediateur(compte, mediateurId)
+  await inscrireLeMediateur(compte.id)
 
   return success(activation.data)
 }

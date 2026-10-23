@@ -90,8 +90,7 @@ export const nextAuthOptions = {
 
         // Le dispositif conseiller numérique se DÉRIVE désormais à la lecture : plus rien à
         // recopier ici. Ne subsiste que la ligne `coop.coordinateurs`, qu'aucune dérivation ne peut
-        // produire — et la connexion est le bon moment pour la garantir, plutôt que d'attendre le
-        // passage nocturne.
+        // produire — et la connexion est le bon moment pour la garantir.
         garantirLeRoleCoordinateurDuDispositif(user.id).catch(
           (error: unknown) => {
             Sentry.captureException(error)

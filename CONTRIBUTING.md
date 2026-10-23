@@ -364,7 +364,7 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 
 | Job | Payload | Description |
 |---|---|---|
-| `appliquer-dispositif-conum` | `{ fenetreHeures? }` | Reporte les affectations d'emploi conseiller numerique modifiees dans l'Entrepot |
+| `synchroniser-les-roles-brevo` | — | Recalcule les roles Brevo (Mediateur, Conseiller numerique, Coordinateur) de tous les inscrits vivants et les envoie en lot |
 | `sync-rdvsp-data` | — | Synchronise les donnees de rendez-vous depuis RDV Service Public |
 | `fix-users-roles` | — | Corrige et repare les attributions de roles utilisateurs |
 | `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
@@ -392,7 +392,7 @@ En local, un job se lance avec `pnpm cli job:execute <job> [payload]`.
 |---|---|---|
 | `fix-users-roles` | `0 0 * * *` | Tous les jours a 00:00 |
 | `inactive-users-reminders` | `0 0 * * *` | Tous les jours a 00:00 |
-| `appliquer-dispositif-conum` | `0 2 * * *` | Tous les jours a 02:00 |
+| `synchroniser-les-roles-brevo` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
 
 #### Dev et production (environnements `dev` et `main`)
@@ -561,7 +561,7 @@ Les crons sont des `scaleway_job_definition` (horaires en UTC, duree maximale 3 
 |---|---|---|
 | `fix-users-roles` | Tous les jours a minuit | Correction des roles utilisateurs |
 | `inactive-users-reminders` | Tous les jours a minuit | Relances inscriptions incompletes |
-| `appliquer-dispositif-conum` | Tous les jours a 2h | Report des affectations conseiller numerique |
+| `synchroniser-les-roles-brevo` | Tous les jours a 2h | Roles Brevo des inscrits vivants |
 | `remove-orphan-brevo-contacts` | Tous les jours a 3h | Nettoyage contacts Brevo orphelins |
 
 **Dev et production :**

@@ -2,8 +2,8 @@
 
 > Le statut de coordinateur conseiller numérique se lit dans main ; la ligne
 > coordinateur de la coop, elle, ne se calcule pas : elle porte l'équipe, les
-> invitations, les tags et les activités de coordination. La connexion et le
-> job nocturne la garantissent ; ils ne la retirent jamais.
+> invitations, les tags et les activités de coordination. La connexion et
+> l'inscription la garantissent ; elles ne la retirent jamais.
 
 ## Rule: Un coordinateur du dispositif a son rôle coordinateur dans la coop
 
