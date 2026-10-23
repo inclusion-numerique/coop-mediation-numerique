@@ -18,12 +18,12 @@ import {
   type CriteresActeurs,
   estFiltre,
   type PageDActeurs,
-  type ParametresDesActeurs,
 } from '../../domain'
 import {
   etiquettesDesFiltres,
   groupesDActeurs,
   libelleDesResultats,
+  parametresDeLURL,
 } from '../acteurs.presenter'
 import Filtres from '../components/Filtres'
 
@@ -54,17 +54,16 @@ const GroupeDActeurs = ({
 const ActeursDuDepartementPage = ({
   departement,
   criteres,
-  parametres,
   acteurs,
   communes,
 }: {
   departement: Departement
   criteres: CriteresActeurs
-  parametres: ParametresDesActeurs
   acteurs: PageDActeurs
   communes: SelectOption[]
 }) => {
   const baseHref = hrefDesActeurs(departement.code)
+  const parametres = parametresDeLURL(criteres)
   const groupes = groupesDActeurs(acteurs.acteurs)
   const sansCoordinateur =
     groupes.coordinateursDuDispositif.length === 0 &&
@@ -103,6 +102,7 @@ const ActeursDuDepartementPage = ({
               className="fr-flex-grow-1"
             />
             <Filtres
+              key={`${departement.code}-${criteres.communes.join()}-${criteres.role}`}
               communes={criteres.communes}
               role={criteres.role}
               options={communes}

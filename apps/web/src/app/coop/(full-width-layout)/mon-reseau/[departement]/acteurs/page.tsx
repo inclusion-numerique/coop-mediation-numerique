@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
 import {
-  consulterLesActeursDuDepartement,
+  listerLesActeursDuDepartement,
   type ParametresDesActeurs,
 } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 import { ActeursDuDepartementPage } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui'
@@ -21,17 +21,15 @@ const Page = async ({
 }) => {
   await authenticateMediateurOrCoordinateur()
 
-  const parametres = await searchParams
-  const consultation = await consulterLesActeursDuDepartement(
+  const consultation = await listerLesActeursDuDepartement(
     (await params).departement,
-    parametres,
+    await searchParams,
   )
 
   return consultation.success ? (
     <ActeursDuDepartementPage
       {...consultation.data}
       communes={[...consultation.data.communes]}
-      parametres={parametres}
     />
   ) : (
     notFound()

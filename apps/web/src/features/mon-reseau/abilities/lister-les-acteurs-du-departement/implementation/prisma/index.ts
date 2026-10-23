@@ -1,1 +1,1 @@
-export { listerLesActeursDuDepartement } from './acteurs-du-departement.query'
+export { acteursDuDepartement } from './acteurs-du-departement.query'

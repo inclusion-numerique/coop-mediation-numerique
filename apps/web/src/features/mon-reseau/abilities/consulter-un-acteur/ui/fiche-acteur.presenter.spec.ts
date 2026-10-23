@@ -1,7 +1,13 @@
 import { CoordinateurId, Effectif } from '../../../domain'
+import {
+  coordinateurConseillerNumerique,
+  mediateurHorsDispositif,
+} from '../../../domain/fixtures'
 import type { RegardDuLecteur } from '../domain'
 import {
   actionsDEquipe,
+  ancienMembreDe,
+  encartDeLEmployeuse,
   membreDeLEquipe,
   statutAffiche,
 } from './fiche-acteur.presenter'
@@ -85,5 +91,36 @@ describe('présentation de la fiche d’un acteur', () => {
     expect(
       actionsDEquipe(regardDuCoordinateur({ _tag: 'NonCoordonnable' })),
     ).toMatchObject({ inviter: false, retirer: false })
+  })
+
+  it('donne de quoi supprimer un ancien membre des archives', () => {
+    expect(
+      ancienMembreDe(
+        regardDuCoordinateur({
+          _tag: 'AncienMembre',
+          depuis: new Date('2026-01-01'),
+          fin: new Date('2026-03-01'),
+        }),
+      ),
+    ).toEqual({
+      coordinateurId,
+      depuis: new Date('2026-01-01'),
+      fin: new Date('2026-03-01'),
+    })
+    expect(ancienMembreDe({ _tag: 'Mediateur' })).toBeNull()
+  })
+
+  it('montre le référent de la structure aux seuls membres de l’équipe', () => {
+    expect(
+      encartDeLEmployeuse(
+        mediateurHorsDispositif,
+        regardDuCoordinateur(membre),
+      ),
+    ).toEqual({ referentVisible: true, avisAuxConseillersNumeriques: false })
+    expect(
+      encartDeLEmployeuse(coordinateurConseillerNumerique, {
+        _tag: 'Mediateur',
+      }),
+    ).toEqual({ referentVisible: false, avisAuxConseillersNumeriques: true })
   })
 })

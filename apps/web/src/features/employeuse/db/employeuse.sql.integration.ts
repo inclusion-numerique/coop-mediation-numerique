@@ -1,5 +1,5 @@
 import { consulterLeReseauDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
-import { consulterLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { listerLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 
 /**
  * Le port SQL ne se vérifie qu'à l'exécution : un fragment mal composé passe le
@@ -15,7 +15,7 @@ describe('port SQL employeuse — composition contre la base', () => {
   })
 
   it('la recherche d’acteurs joint l’employeuse courante, liste et total', async () => {
-    const consultation = await consulterLesActeursDuDepartement('75', {})
+    const consultation = await listerLesActeursDuDepartement('75', {})
 
     if (!consultation.success) throw new Error('Département inconnu')
     expect(consultation.data.acteurs.acteurs.length).toBeLessThanOrEqual(

@@ -1,5 +1,6 @@
 import { AlerteFinContrat } from '@app/web/conseiller-numerique/contratConseillerNumerique'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
+import type { Acteur } from '../../../domain'
 import type {
   ContratAffiche,
   RegardDuLecteur,
@@ -64,6 +65,24 @@ export const membreDeLEquipe = (regard: RegardDuLecteur) =>
   regard._tag === 'Coordinateur' && regard.relation._tag === 'Membre'
     ? regard.relation
     : null
+
+export const ancienMembreDe = (regard: RegardDuLecteur) =>
+  regard._tag === 'Coordinateur' && regard.relation._tag === 'AncienMembre'
+    ? {
+        coordinateurId: regard.coordinateurId,
+        depuis: regard.relation.depuis,
+        fin: regard.relation.fin,
+      }
+    : null
+
+export const encartDeLEmployeuse = (
+  acteur: Acteur,
+  regard: RegardDuLecteur,
+) => ({
+  referentVisible: membreDeLEquipe(regard) !== null,
+  avisAuxConseillersNumeriques:
+    acteur.profil.dispositif === 'ConseillerNumerique',
+})
 
 const ALERTE_DE_FIN = {
   prochainement: AlerteFinContrat.prochainement,

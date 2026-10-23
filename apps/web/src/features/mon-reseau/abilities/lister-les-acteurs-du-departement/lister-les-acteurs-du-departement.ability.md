@@ -35,6 +35,20 @@
 * Then l’annuaire propose Gamma Reseauzz
 * And l’annuaire ne propose pas Alpha Reseauzz
 
+### Scenario: Le filtre par commune ne retient que les acteurs qui y exercent
+
+* Given le médiateur Alpha Reseauzz qui exerce dans le Cantal
+* And le médiateur Beta Reseauzz qui exerce à Saint-Flour
+* When on cherche « reseauzz » à Saint-Flour dans l’annuaire des acteurs du Cantal
+* Then l’annuaire propose Beta Reseauzz
+* And l’annuaire ne propose pas Alpha Reseauzz
+
+### Scenario: Le filtre des médiateurs numériques retient les médiateurs hors dispositif
+
+* Given le médiateur Alpha Reseauzz qui exerce dans le Cantal
+* When on cherche « reseauzz » parmi les médiateurs numériques du Cantal
+* Then l’annuaire propose Alpha Reseauzz
+
 ## Rule: L'annuaire se trie par nom
 
 ### Scenario: L'annuaire trié de Z à A commence par le dernier nom

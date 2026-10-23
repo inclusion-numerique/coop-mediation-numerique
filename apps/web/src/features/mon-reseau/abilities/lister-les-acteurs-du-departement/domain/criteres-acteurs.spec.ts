@@ -36,4 +36,11 @@ describe('critères de l’annuaire des acteurs', () => {
     expect(estFiltre(criteresActeurs({ page: '2', tri: 'nomza' }))).toBe(false)
     expect(estFiltre(criteresActeurs({ role: 'coordinateur' }))).toBe(true)
   })
+
+  it('lit des communes passées en paramètres répétés', () => {
+    expect(criteresActeurs({ communes: ['15014', '15187'] }).communes).toEqual([
+      '15014',
+      '15187',
+    ])
+  })
 })

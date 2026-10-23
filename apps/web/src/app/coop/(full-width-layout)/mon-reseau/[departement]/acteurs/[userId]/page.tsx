@@ -13,16 +13,17 @@ import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abiliti
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/ui'
+import { lieuxEnListeDuMediateur } from '@app/web/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { lieuxEnListeDuMediateur } from '@app/web/features/lieux-activite/implementation'
 import {
   consulterUnActeur,
   nomDeLActeur,
 } from '@app/web/features/mon-reseau/abilities/consulter-un-acteur'
 import {
+  ancienMembreDe,
+  encartDeLEmployeuse,
   FicheActeurPage,
   LieuxDeLActeur,
-  membreDeLEquipe,
   TitreDeSection,
 } from '@app/web/features/mon-reseau/abilities/consulter-un-acteur/ui'
 import { derniereActiviteDeLUtilisateur } from '@app/web/features/utilisateurs'
@@ -66,10 +67,8 @@ const Page = async ({ params }: Parametres) => {
       ? null
       : lieuxEnListeDuMediateur({ mediateurId: mediation.mediateurId }),
   ])
-  const ancienMembre =
-    regard._tag === 'Coordinateur' && regard.relation._tag === 'AncienMembre'
-      ? { coordinateurId: regard.coordinateurId, ...regard.relation }
-      : null
+  const ancienMembre = ancienMembreDe(regard)
+  const encart = encartDeLEmployeuse(acteur, regard)
 
   return (
     <ClientBinder
@@ -98,9 +97,9 @@ const Page = async ({ params }: Parametres) => {
                       structure: emploiEmployeuseAffichage(employeuse),
                     }}
                     showIsLieuActiviteNotice={false}
-                    showReferentStructure={membreDeLEquipe(regard) !== null}
+                    showReferentStructure={encart.referentVisible}
                     showReferentStructureConseillerNumeriqueSupportNotice={
-                      acteur.profil.dispositif === 'ConseillerNumerique'
+                      encart.avisAuxConseillersNumeriques
                     }
                     title={
                       <TitreDeSection icone="ri-home-smile-2-line">

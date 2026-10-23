@@ -7,12 +7,12 @@ import {
   LieuActiviteCard,
 } from '@app/web/features/lieux-activite/ui'
 import type { Departement } from '@app/web/libraries/departement'
-import { pluriel } from '@app/web/libraries/pluriel'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { contentId } from '@app/web/utils/skipLinks'
+import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
 import { hrefDesLieux } from '../../../../ui/liens'
@@ -20,39 +20,29 @@ import {
   auteurDeLaDerniereModification,
   type LieuxTrouves,
 } from '../../../../ui/lieu-affiche'
-import {
-  type CriteresDesLieux,
-  estFiltre,
-  type ParametresDesLieux,
-} from '../../domain'
+import { type CriteresDesLieux, estFiltre } from '../../domain'
 import Filtres from '../components/Filtres'
-import { etiquettesDesCommunes } from '../libelles-des-filtres.presenter'
+import {
+  etiquettesDesCommunes,
+  libelleDesResultats,
+  parametresDeLURL,
+} from '../libelles-des-filtres.presenter'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
-
-const LIGNES_PAR_DEFAUT = 20
-
-const libelleDesResultats = (total: number, filtre: boolean): string =>
-  total > 0
-    ? `${total} ${pluriel(total, 'lieu', 'lieux')}`
-    : filtre
-      ? 'Aucun lieu ne correspond à votre recherche'
-      : 'Aucun lieu référencé'
 
 const LieuxDuDepartementPage = ({
   departement,
   criteres,
-  parametres,
   lieux,
   communes,
 }: {
   departement: Departement
   criteres: CriteresDesLieux
-  parametres: ParametresDesLieux
   lieux: LieuxTrouves
   communes: SelectOption[]
 }) => {
   const baseHref = hrefDesLieux(departement.code)
+  const parametres = parametresDeLURL(criteres)
 
   const departementLabel = `${departement.nom} (${departement.code})`
 
@@ -90,7 +80,11 @@ const LieuxDuDepartementPage = ({
               placeholder="Nom du lieu, adresse ou SIRET..."
               className="fr-flex-grow-1"
             />
-            <Filtres communes={criteres.communes} options={communes} />
+            <Filtres
+              key={`${departement.code}-${criteres.communes.join()}`}
+              communes={criteres.communes}
+              options={communes}
+            />
           </div>
 
           <EtiquettesDeFiltres

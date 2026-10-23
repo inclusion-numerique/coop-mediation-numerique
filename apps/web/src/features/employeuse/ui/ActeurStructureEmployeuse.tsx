@@ -2,7 +2,7 @@ import Card from '@app/web/components/Card'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import type { EmploiEmployeuseAffichage } from '../abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
+import type { EmploiEmployeuseAffichage } from '../abilities/consulter-employeuse-a-une-date/ui'
 import { ReferentStructure } from './ReferentStructure'
 
 export type ActeurEmploi = { structure: EmploiEmployeuseAffichage }
@@ -12,14 +12,12 @@ export type ActeurStructureEmployeuseProps = {
   showIsLieuActiviteNotice: boolean
   showReferentStructure: boolean
   showReferentStructureConseillerNumeriqueSupportNotice: boolean
-  canUpdateStructure?: boolean
   title?: ReactNode
 }
 
 const ActeurStructureEmployeuse = ({
   emploi: {
     structure: {
-      id: _structureId,
       nom,
       adresseComplete,
       siret,
@@ -33,7 +31,6 @@ const ActeurStructureEmployeuse = ({
   showIsLieuActiviteNotice,
   showReferentStructure,
   showReferentStructureConseillerNumeriqueSupportNotice,
-  canUpdateStructure,
   title,
 }: ActeurStructureEmployeuseProps) => (
   <Card noBorder className="fr-border fr-border-radius--8" titleAs="div">

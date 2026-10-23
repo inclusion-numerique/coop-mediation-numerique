@@ -7,7 +7,6 @@ export {
   type ProfilMediateur,
 } from './acteur'
 export { ActeurId } from './acteur-id'
-export { communesLues } from './communes'
 export { CoordinateurId } from './coordinateur-id'
 export { Courriel } from './courriel'
 export { Dispositif, dispositifDe } from './dispositif'
@@ -19,5 +18,10 @@ export {
   LignesParPage,
   NumeroDePage,
 } from './pagination'
+export {
+  communesLues,
+  premiereValeur,
+  type ValeurDeParametre,
+} from './parametres-de-recherche'
 export { ProfilAffiche, profilAffiche } from './profil-affiche'
 export { Recherche } from './recherche'

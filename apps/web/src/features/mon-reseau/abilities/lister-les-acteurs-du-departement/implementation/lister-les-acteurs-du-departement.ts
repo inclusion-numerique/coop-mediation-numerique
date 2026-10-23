@@ -5,9 +5,9 @@ import {
 import { failure, success } from '@app/web/libraries/result'
 import { criteresActeurs, type ParametresDesActeurs } from '../domain'
 import { communesDuDepartement } from './lieux-activite'
-import { listerLesActeursDuDepartement } from './prisma'
+import { acteursDuDepartement } from './prisma'
 
-export const consulterLesActeursDuDepartement = async (
+export const listerLesActeursDuDepartement = async (
   code: string,
   parametres: ParametresDesActeurs,
 ) => {
@@ -18,7 +18,7 @@ export const consulterLesActeursDuDepartement = async (
 
   const criteres = criteresActeurs(parametres)
   const [acteurs, communes] = await Promise.all([
-    listerLesActeursDuDepartement(departement.data.code, criteres),
+    acteursDuDepartement(departement.data.code, criteres),
     communesDuDepartement(departement.data.code),
   ])
 
@@ -26,6 +26,6 @@ export const consulterLesActeursDuDepartement = async (
 }
 
 export type ActeursDuDepartementConsultes = Extract<
-  Awaited<ReturnType<typeof consulterLesActeursDuDepartement>>,
+  Awaited<ReturnType<typeof listerLesActeursDuDepartement>>,
   { success: true }
 >['data']

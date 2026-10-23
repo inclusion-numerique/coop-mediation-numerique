@@ -4,7 +4,7 @@ import { Popover } from '@app/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { filtresDeRole } from '../../domain'
 import { LIBELLE_DU_ROLE } from '../acteurs.presenter'
 
@@ -21,10 +21,6 @@ export const FiltreRole = ({ role: roleRetenu }: { role: string | null }) => {
   const searchParams = useSearchParams()
   const [ouvert, ouvrir] = useState(false)
   const [role, choisir] = useState(roleRetenu ?? '')
-
-  useEffect(() => {
-    choisir(roleRetenu ?? '')
-  }, [roleRetenu])
 
   const appliquer = (valeur: string, fermer: boolean) => {
     const autres = [...searchParams.entries()].filter(

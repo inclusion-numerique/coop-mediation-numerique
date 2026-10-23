@@ -23,7 +23,7 @@ describe('critères de l’annuaire des lieux', () => {
     expect(criteresDesLieux({})).toEqual({
       recherche: null,
       communes: [],
-      tri: null,
+      tri: 'nomaz',
       page: 1,
       lignes: 20,
     })
@@ -32,5 +32,14 @@ describe('critères de l’annuaire des lieux', () => {
   it('n’est filtré que par une recherche ou des communes', () => {
     expect(estFiltre(criteresDesLieux({ tri: 'nomza', page: '3' }))).toBe(false)
     expect(estFiltre(criteresDesLieux({ communes: '15014' }))).toBe(true)
+  })
+
+  it('ne lit que la première valeur d’un paramètre répété', () => {
+    expect(
+      criteresDesLieux({
+        recherche: ['médiathèque', 'mairie'],
+        tri: ['inconnu'],
+      }),
+    ).toMatchObject({ recherche: 'médiathèque', tri: 'nomaz' })
   })
 })
