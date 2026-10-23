@@ -366,7 +366,7 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 |---|---|---|
 | `synchroniser-les-roles-brevo` | — | Recalcule les roles Brevo (Mediateur, Conseiller numerique, Coordinateur) de tous les inscrits vivants et les envoie en lot |
 | `sync-rdvsp-data` | — | Synchronise les donnees de rendez-vous depuis RDV Service Public |
-| `fix-users-roles` | — | Corrige et repare les attributions de roles utilisateurs |
+| `retirer-les-roles-vacants` | — | Retire le role jamais utilise d'un double role inscrit depuis plus de 30 jours |
 | `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
 | `remove-orphan-brevo-contacts` | — | Supprime les contacts Brevo qui n'existent plus en base de donnees |
 
@@ -390,7 +390,7 @@ En local, un job se lance avec `pnpm cli job:execute <job> [payload]`.
 
 | Job | Schedule | Horaire |
 |---|---|---|
-| `fix-users-roles` | `0 0 * * *` | Tous les jours a 00:00 |
+| `retirer-les-roles-vacants` | `0 0 * * *` | Tous les jours a 00:00 |
 | `inactive-users-reminders` | `0 0 * * *` | Tous les jours a 00:00 |
 | `synchroniser-les-roles-brevo` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
@@ -559,7 +559,7 @@ Les crons sont des `scaleway_job_definition` (horaires en UTC, duree maximale 3 
 
 | Job | Frequence | Description |
 |---|---|---|
-| `fix-users-roles` | Tous les jours a minuit | Correction des roles utilisateurs |
+| `retirer-les-roles-vacants` | Tous les jours a minuit | Retrait des roles vacants |
 | `inactive-users-reminders` | Tous les jours a minuit | Relances inscriptions incompletes |
 | `synchroniser-les-roles-brevo` | Tous les jours a 2h | Roles Brevo des inscrits vivants |
 | `remove-orphan-brevo-contacts` | Tous les jours a 3h | Nettoyage contacts Brevo orphelins |

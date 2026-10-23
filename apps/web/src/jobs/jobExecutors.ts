@@ -3,11 +3,11 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
-import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
+import { executeRetirerLesRolesVacants } from './retirer-les-roles-vacants/executeRetirerLesRolesVacants'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/executeSynchroniserLesRolesBrevo'
 
@@ -20,10 +20,10 @@ export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
   'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,
-  'fix-users-roles': executeFixUsersRoles,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
+  'retirer-les-roles-vacants': executeRetirerLesRolesVacants,
   'sync-rdvsp-data': executeSyncRdvspData,
   'synchroniser-les-roles-brevo': executeSynchroniserLesRolesBrevo,
 }

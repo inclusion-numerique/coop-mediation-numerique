@@ -54,7 +54,8 @@ Le compteur se **réarme** si la personne redevient active dans les 7 jours
 
 ### 1.2 Le job de nettoyage des rôles
 
-`fix-users-roles` (cron `0 0 * * *`, `infrastructure/locals.tf`) retire le rôle coordinateur
+`retirer-les-roles-vacants` (ex-`fix-users-roles`, renommé le 23/10/2026, qui ne se limite plus
+aux comptes hors dispositif ; cron `0 0 * * *`, `infrastructure/locals.tf`) retire le rôle coordinateur
 ou médiateur *en trop* d'un compte double-rôle, 30 jours après validation
 d'inscription, à la stricte condition qu'il ne porte **rien** (ni équipe, ni invitation,
 ni activité de coordination, ni bénéficiaire, ni lieu d'activité). C'est un correctif de

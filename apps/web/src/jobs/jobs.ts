@@ -1,9 +1,9 @@
 import { z } from 'zod'
 import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comptes-inactifs/anonymiserLesComptesInactifsJob'
-import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { ReprendreLesDonneesDesLieuxJobValidation } from './reprendre-les-donnees-des-lieux/reprendreLesDonneesDesLieuxJob'
+import { RetirerLesRolesVacantsJobValidation } from './retirer-les-roles-vacants/retirerLesRolesVacantsJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
 import { SynchroniserLesRolesBrevoJobValidation } from './synchroniser-les-roles-brevo/synchroniserLesRolesBrevoJob'
 
@@ -29,10 +29,10 @@ import { SynchroniserLesRolesBrevoJobValidation } from './synchroniser-les-roles
 
 export const JobValidation = z.discriminatedUnion('name', [
   AnonymiserLesComptesInactifsJobValidation,
-  FixUsersRolesJobValidation,
   InactiveUsersRemindersJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
   ReprendreLesDonneesDesLieuxJobValidation,
+  RetirerLesRolesVacantsJobValidation,
   SyncRdvspDataJobValidation,
   SynchroniserLesRolesBrevoJobValidation,
 ])

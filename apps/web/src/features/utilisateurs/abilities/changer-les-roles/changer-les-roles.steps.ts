@@ -26,11 +26,15 @@ const semer = async ({
   coordinateur,
   role = 'User',
   inscritIlYA = 1,
+  conseillerNumerique = false,
+  coordinateurDeclare = false,
 }: {
   mediateur: boolean
   coordinateur: boolean
   role?: 'User' | 'Admin'
   inscritIlYA?: number
+  conseillerNumerique?: boolean
+  coordinateurDeclare?: boolean
 }) => {
   changement.utilisateurId = await semerUnCompteDeListe({
     prenom: 'Romane',
@@ -44,6 +48,8 @@ const semer = async ({
     coordinateur: coordinateur
       ? { aUneEquipe: false, aCoordonne: false }
       : null,
+    conseillerNumerique,
+    coordinateurDeclare,
   })
 }
 
@@ -91,6 +97,43 @@ Given(
   'un médiateur coordinateur hors dispositif inscrit depuis {int} jours',
   async (jours: number) => {
     await semer({ mediateur: true, coordinateur: true, inscritIlYA: jours })
+  },
+)
+
+Given(
+  'un médiateur coordinateur conseiller numérique inscrit depuis {int} jours',
+  async (jours: number) => {
+    await semer({
+      mediateur: true,
+      coordinateur: true,
+      inscritIlYA: jours,
+      conseillerNumerique: true,
+    })
+  },
+)
+
+Given(
+  'un coordinateur du dispositif médiateur inscrit depuis {int} jours',
+  async (jours: number) => {
+    await semer({
+      mediateur: true,
+      coordinateur: true,
+      inscritIlYA: jours,
+      conseillerNumerique: true,
+      coordinateurDeclare: true,
+    })
+  },
+)
+
+Given(
+  'un médiateur coordinateur déclaré coordinateur sans affectation au dispositif inscrit depuis {int} jours',
+  async (jours: number) => {
+    await semer({
+      mediateur: true,
+      coordinateur: true,
+      inscritIlYA: jours,
+      coordinateurDeclare: true,
+    })
   },
 )
 
@@ -184,6 +227,20 @@ Then('le rôle coordinateur de ce compte est repéré comme vacant', () => {
       (id) => id === utilisateurId(),
     ),
   )
+})
+
+Then("le rôle coordinateur de ce compte n'est pas repéré comme vacant", () => {
+  assert.ok(
+    !changement.vacants?.coordinateursVacants.some(
+      (id) => id === utilisateurId(),
+    ),
+  )
+})
+
+Then("aucun rôle de ce compte n'est repéré comme vacant", () => {
+  const estCeCompte = (id: string) => id === utilisateurId()
+  assert.ok(!changement.vacants?.coordinateursVacants.some(estCeCompte))
+  assert.ok(!changement.vacants?.mediateursVacants.some(estCeCompte))
 })
 
 Then("son rôle médiateur n'est pas repéré comme vacant", () => {
