@@ -7,7 +7,7 @@ import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
 } from '@app/web/features/employeuse/server'
-import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
+import ActeurStructureEmployeuse from '@app/web/features/employeuse/ui/ActeurStructureEmployeuse'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'

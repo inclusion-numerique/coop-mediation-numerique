@@ -1,0 +1,79 @@
+import { AlerteFinContrat } from '@app/web/conseiller-numerique/contratConseillerNumerique'
+import { dateAsDay } from '@app/web/utils/dateAsDay'
+import type {
+  ContratAffiche,
+  RegardDuLecteur,
+  StatutDActivitePublic,
+} from '../domain'
+
+export type StatutAffiche = {
+  readonly libelle: string
+  readonly severite: 'success' | 'warning'
+  readonly infobulle: boolean
+}
+
+export const statutAffiche = (statut: StatutDActivitePublic): StatutAffiche => {
+  if (statut._tag === 'Actif') {
+    return { libelle: 'Actif', severite: 'success', infobulle: false }
+  }
+  return {
+    libelle:
+      statut._tag === 'InactifDepuis'
+        ? `Inactif depuis le ${dateAsDay(statut.derniereActivite)}`
+        : 'Inactif',
+    severite: 'warning',
+    infobulle: true,
+  }
+}
+
+export type ActionsDEquipe = {
+  readonly inviter: boolean
+  readonly retirer: boolean
+  readonly invitationEnvoyeeLe: Date | null
+  readonly archive: { readonly depuis: Date; readonly fin: Date } | null
+}
+
+const AUCUNE_ACTION: ActionsDEquipe = {
+  inviter: false,
+  retirer: false,
+  invitationEnvoyeeLe: null,
+  archive: null,
+}
+
+export const actionsDEquipe = (regard: RegardDuLecteur): ActionsDEquipe => {
+  if (regard._tag === 'Mediateur') return AUCUNE_ACTION
+
+  const { relation } = regard
+  if (relation._tag === 'HorsEquipe') return { ...AUCUNE_ACTION, inviter: true }
+  if (relation._tag === 'Invite') {
+    return { ...AUCUNE_ACTION, invitationEnvoyeeLe: relation.invitationLe }
+  }
+  if (relation._tag === 'AncienMembre') {
+    return {
+      ...AUCUNE_ACTION,
+      inviter: true,
+      archive: { depuis: relation.depuis, fin: relation.fin },
+    }
+  }
+  return relation._tag === 'Membre'
+    ? { ...AUCUNE_ACTION, retirer: true }
+    : AUCUNE_ACTION
+}
+
+export const membreDeLEquipe = (regard: RegardDuLecteur) =>
+  regard._tag === 'Coordinateur' && regard.relation._tag === 'Membre'
+    ? regard.relation
+    : null
+
+const ALERTE_DE_FIN = {
+  prochainement: AlerteFinContrat.prochainement,
+  termine: AlerteFinContrat.termine,
+} as const
+
+export const contratPourLAffichage = ({
+  echeance,
+  ...contrat
+}: ContratAffiche) => ({
+  ...contrat,
+  finDeContrat: echeance === null ? null : ALERTE_DE_FIN[echeance],
+})

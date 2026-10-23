@@ -1,11 +1,9 @@
-import type { ActeurId } from './acteur-id'
-
 export type ActeurIntrouvable = {
   readonly _tag: 'ActeurIntrouvable'
-  readonly acteurId: ActeurId
+  readonly acteurId: string
 }
 
-export const ActeurIntrouvable = (acteurId: ActeurId): ActeurIntrouvable => ({
+export const ActeurIntrouvable = (acteurId: string): ActeurIntrouvable => ({
   _tag: 'ActeurIntrouvable',
   acteurId,
 })
