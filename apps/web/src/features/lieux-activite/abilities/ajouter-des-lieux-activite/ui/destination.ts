@@ -1,4 +1,4 @@
-import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
+import { hrefDuLieu } from '../../../ui/href-du-lieu'
 import type { LieuAuPanier } from './panier'
 
 /**
@@ -15,8 +15,6 @@ export const destination = (
   const premier = lieux.at(0)
 
   return lieux.length === 1 && rejoints.length === 1 && premier != null
-    ? `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(
-        premier.codeInsee ?? '',
-      )}/lieux/${rejoints[0]}`
+    ? hrefDuLieu({ id: rejoints[0], codeInsee: premier.codeInsee ?? null })
     : retourHref
 }

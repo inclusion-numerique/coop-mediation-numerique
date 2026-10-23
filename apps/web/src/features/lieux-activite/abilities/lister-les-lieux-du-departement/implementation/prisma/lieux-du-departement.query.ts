@@ -2,7 +2,6 @@ import { Prisma } from '@app/web/generated/prisma/client'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
-import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
@@ -34,17 +33,9 @@ const EXPRESSION_DE_TRI = {
   ReturnType<typeof normaliseePourLaRecherche>
 >
 
-/**
- * Ce que l'annuaire peut demander : un département, un texte libre, des
- * communes, des départements de repli, des médiateurs, un tri et une page.
- * Déclaré ici plutôt qu'emprunté à la page qui les lit dans l'URL — la requête
- * ne dépend pas de l'écran qui la déclenche.
- */
 export type RechercheDeLieuxDuDepartement = {
   readonly recherche?: string
   readonly communes?: readonly string[]
-  readonly departements?: readonly string[]
-  readonly mediateurs?: readonly string[]
   readonly tri?: TriDesLieux
   readonly page?: string
   readonly lignes?: string
@@ -111,18 +102,6 @@ export const lieuxDuDepartement = async ({
       ? Prisma.sql`s.code_insee = ANY(${[...searchParams.communes]}::TEXT[])`
       : Prisma.sql`TRUE`
 
-  // Departements filter (within location, not the main department context)
-  const departementsFilterCondition =
-    searchParams.departements && searchParams.departements.length > 0
-      ? Prisma.sql`SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ANY(${[...searchParams.departements]}::TEXT[])`
-      : Prisma.sql`TRUE`
-
-  // Build mediateurs filter condition
-  const mediateursCondition =
-    searchParams.mediateurs && searchParams.mediateurs.length > 0
-      ? Prisma.sql`mea.mediateur_id = ANY(${[...searchParams.mediateurs]}::UUID[])`
-      : Prisma.sql`TRUE`
-
   const { champ, sens } = ordonnancement(TriDesLieux(searchParams.tri))
   const sortColumn = EXPRESSION_DE_TRI[champ]
   const sortDirection = Prisma.raw(sens.toUpperCase())
@@ -134,13 +113,10 @@ export const lieuxDuDepartement = async ({
         s.id,
         ${sortColumn} AS tri
       FROM lieu_inclusion s
-      LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
       ${JOINTURE_DE_L_INSCRIPTION}
       WHERE ${lieuALAnnuaireDuDepartement(departementCode)}
         AND ${searchCondition}
         AND ${communesCondition}
-        AND ${departementsFilterCondition}
-        AND ${mediateursCondition}
     )
     SELECT id FROM distinct_lieux
     ORDER BY tri ${sortDirection}, id ASC
@@ -153,13 +129,10 @@ export const lieuxDuDepartement = async ({
   const countResult = await prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(DISTINCT s.id)::integer AS count
     FROM lieu_inclusion s
-    LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     ${JOINTURE_DE_L_INSCRIPTION}
     WHERE ${lieuALAnnuaireDuDepartement(departementCode)}
       AND ${searchCondition}
       AND ${communesCondition}
-      AND ${departementsFilterCondition}
-      AND ${mediateursCondition}
   `
 
   const totalCount = countResult[0]?.count ?? 0

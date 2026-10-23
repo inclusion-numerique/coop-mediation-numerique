@@ -29,6 +29,7 @@ export {
   toCreerLieuData,
 } from '../formulaire/creerLieuActiviteFormData'
 export { DisplayOnCartography } from './DisplayOnCartography'
+export { departementDuLieu, hrefDuLieu } from './href-du-lieu'
 export {
   default as LieuActiviteCard,
   type LieuEnActivite,

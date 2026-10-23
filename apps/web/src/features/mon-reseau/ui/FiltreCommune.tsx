@@ -16,7 +16,7 @@ import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export const CommuneFilter = ({
+export const FiltreCommune = ({
   defaultValue = [],
   communesOptions = [],
 }: {

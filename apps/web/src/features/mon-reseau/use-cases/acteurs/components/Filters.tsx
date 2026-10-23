@@ -2,9 +2,9 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import classNames from 'classnames'
+import { FiltreCommune as CommuneFilter } from '../../../ui/FiltreCommune'
 import type { ActeursFilters } from '../validation/ActeursFilters'
 import { ActeurRoleFilter } from './ActeurRoleFilter'
-import { CommuneFilter } from './CommuneFilter'
 
 const Filters = ({
   defaultFilters,
