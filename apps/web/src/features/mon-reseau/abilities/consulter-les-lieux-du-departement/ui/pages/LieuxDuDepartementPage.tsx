@@ -13,6 +13,7 @@ import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/Pagination
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { contentId } from '@app/web/utils/skipLinks'
+import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
 import { hrefDesLieux } from '../../../../ui/liens'
 import {
@@ -24,7 +25,6 @@ import {
   estFiltre,
   type ParametresDesLieux,
 } from '../../domain'
-import { EtiquettesDeFiltres } from '../components/EtiquettesDeFiltres'
 import Filtres from '../components/Filtres'
 import { etiquettesDesCommunes } from '../libelles-des-filtres.presenter'
 
