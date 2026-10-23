@@ -36,6 +36,10 @@ resource "scaleway_job_definition" "job" {
     timezone = "Etc/UTC"
   }
 
+  retry_policy {
+    max_retries = 0
+  }
+
   dynamic "secret_reference" {
     for_each = local.secrets_jobs
 
