@@ -103,6 +103,7 @@ export const buildAccompagnementsWorksheet = (
     'Genre du bénéficiaire',
     'Tranche d’âge du bénéficiaire',
     'Statut du bénéficiaire',
+    'Premier accompagnement',
     ...(isSelfExport ? ['Notes supplémentaires'] : []),
     ...(hasCraV1 ? ['Source de la donnée'] : []),
     'ID CRA',
@@ -208,6 +209,7 @@ export const buildAccompagnementsWorksheet = (
           statutSocialLabels[
             accompagnement.beneficiaire.statutSocial ?? 'NonCommunique'
           ],
+          booleanToYesNoLabel(accompagnement.premierAccompagnement),
           ...(isSelfExport
             ? [notes && index === 0 ? htmlToText(notes) : '']
             : []),
