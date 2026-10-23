@@ -1,14 +1,12 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
-import { z } from 'zod'
+import {
+  NomAffiche,
+  nomAffiche as nomAfficheDeLaPersonne,
+} from '@app/web/libraries/nom-affiche'
 import type { Email } from './email'
 import type { Nom } from './nom'
 import type { Prenom } from './prenom'
 
-export const NomAffiche = defineModel(
-  z.string().trim().min(1).brand('NomAffiche'),
-)
-
-export type NomAffiche = Model.TypeOf<typeof NomAffiche>
+export { NomAffiche }
 
 export type Identite = {
   readonly prenom: Prenom | null
@@ -23,7 +21,4 @@ export const nomAffiche = ({
   nomComplet,
   email,
 }: Identite): NomAffiche =>
-  NomAffiche(
-    [prenom, nom].filter((partie) => partie !== null).join(' ') ||
-      (nomComplet ?? email),
-  )
+  nomAfficheDeLaPersonne({ prenom, nom, nomComplet, courriel: email })

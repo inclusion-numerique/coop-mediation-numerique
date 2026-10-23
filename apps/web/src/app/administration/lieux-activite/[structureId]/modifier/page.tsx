@@ -12,9 +12,9 @@ import {
 } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
 import { mediateursEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
+import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import { contentId } from '@app/web/utils/skipLinks'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
@@ -84,9 +84,12 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
                       key={rattachement.id}
                       structureId={LieuId(fiche.id)}
                       mediateurId={MediateurId(rattachement.mediateur.id)}
-                      mediateurDisplayName={getActeurDisplayName(
-                        rattachement.mediateur.user,
-                      )}
+                      mediateurDisplayName={nomAffiche({
+                        prenom: rattachement.mediateur.user.firstName,
+                        nom: rattachement.mediateur.user.lastName,
+                        nomComplet: rattachement.mediateur.user.name,
+                        courriel: rattachement.mediateur.user.email,
+                      })}
                       structureNom={fiche.nom}
                       derniereActiviteDate={
                         rattachement.mediateur.derniereActivite.date
