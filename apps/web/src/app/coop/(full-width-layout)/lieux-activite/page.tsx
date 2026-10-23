@@ -15,7 +15,7 @@ import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
-import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
@@ -62,9 +62,12 @@ const LieuActiviteListPage = async ({
                 href={getLieuHref(lieuInclusion)}
                 derniereModificationPar={
                   lieuInclusion.derniereModificationPar
-                    ? getActeurDisplayName(
-                        lieuInclusion.derniereModificationPar,
-                      )
+                    ? nomAffiche({
+                        prenom: lieuInclusion.derniereModificationPar.firstName,
+                        nom: lieuInclusion.derniereModificationPar.lastName,
+                        nomComplet: lieuInclusion.derniereModificationPar.name,
+                        courriel: lieuInclusion.derniereModificationPar.email,
+                      })
                     : null
                 }
                 retrait={
