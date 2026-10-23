@@ -1,10 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import type { EtiquetteDeFiltre } from '../../../ui/etiquette-de-filtre'
 import type { CriteresDesLieux } from '../domain'
-
-export type EtiquetteDeFiltre = {
-  readonly cle: string
-  readonly libelle: string
-}
 
 export const etiquettesDesCommunes = (
   { communes }: CriteresDesLieux,
@@ -12,4 +8,8 @@ export const etiquettesDesCommunes = (
 ): readonly EtiquetteDeFiltre[] =>
   options
     .filter(({ value }) => communes.some((commune) => commune === value))
-    .map(({ label, value }) => ({ cle: value, libelle: `Commune : ${label}` }))
+    .map(({ label, value }) => ({
+      parametre: 'communes',
+      valeur: value,
+      libelle: `Commune : ${label}`,
+    }))
