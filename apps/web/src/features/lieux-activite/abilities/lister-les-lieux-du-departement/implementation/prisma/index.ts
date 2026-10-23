@@ -5,3 +5,4 @@ export {
   lieuxDuDepartement,
   type RechercheDeLieuxDuDepartement,
 } from './lieux-du-departement.query'
+export { nombreDeLieuxDuDepartement } from './nombre-de-lieux-du-departement.query'

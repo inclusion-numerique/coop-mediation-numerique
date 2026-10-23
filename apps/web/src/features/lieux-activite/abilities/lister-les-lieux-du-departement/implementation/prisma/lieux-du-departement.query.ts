@@ -17,6 +17,7 @@ import {
   normaliseePourLaRecherche,
   VOIE_DU_REGISTRE,
 } from '../../../../implementation/prisma/registre/lieu-affiche.sql'
+import { lieuALAnnuaireDuDepartement } from './lieu-a-l-annuaire.sql'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
 
@@ -135,22 +136,11 @@ export const lieuxDuDepartement = async ({
       FROM lieu_inclusion s
       LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
       ${JOINTURE_DE_L_INSCRIPTION}
-      WHERE s.suppression IS NULL
-        AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+      WHERE ${lieuALAnnuaireDuDepartement(departementCode)}
         AND ${searchCondition}
         AND ${communesCondition}
         AND ${departementsFilterCondition}
         AND ${mediateursCondition}
-        AND (
-          s.visible_pour_cartographie_nationale = true
-          OR EXISTS (
-            SELECT 1
-            FROM mediateurs_en_activite mea2
-            WHERE mea2.structure_id = s.id
-              AND mea2.suppression IS NULL
-              AND mea2.fin_activite IS NULL
-          )
-        )
     )
     SELECT id FROM distinct_lieux
     ORDER BY tri ${sortDirection}, id ASC
@@ -165,22 +155,11 @@ export const lieuxDuDepartement = async ({
     FROM lieu_inclusion s
     LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     ${JOINTURE_DE_L_INSCRIPTION}
-    WHERE s.suppression IS NULL
-      AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+    WHERE ${lieuALAnnuaireDuDepartement(departementCode)}
       AND ${searchCondition}
       AND ${communesCondition}
       AND ${departementsFilterCondition}
       AND ${mediateursCondition}
-      AND (
-        s.visible_pour_cartographie_nationale = true
-        OR EXISTS (
-          SELECT 1
-          FROM mediateurs_en_activite mea2
-          WHERE mea2.structure_id = s.id
-            AND mea2.suppression IS NULL
-            AND mea2.fin_activite IS NULL
-        )
-      )
   `
 
   const totalCount = countResult[0]?.count ?? 0

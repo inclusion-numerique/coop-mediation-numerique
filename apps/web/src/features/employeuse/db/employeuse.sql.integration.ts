@@ -1,4 +1,4 @@
-import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
+import { consulterLeReseauDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
 import { searchActeurs } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 
 /**
@@ -9,9 +9,9 @@ import { searchActeurs } from '@app/web/features/mon-reseau/use-cases/acteurs/db
  */
 describe('port SQL employeuse — composition contre la base', () => {
   it('le comptage de mon-réseau joint l’employeuse courante', async () => {
-    const data = await getMonReseauPageData({ departementCode: '75' })
+    const reseau = await consulterLeReseauDuDepartement('75')
 
-    expect(typeof data.acteursCount).toBe('number')
+    expect(reseau.success && typeof reseau.data.acteurs).toBe('number')
   })
 
   it('la recherche d’acteurs joint l’employeuse courante, liste et total', async () => {

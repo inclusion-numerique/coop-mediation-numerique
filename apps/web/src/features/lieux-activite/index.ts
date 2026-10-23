@@ -64,6 +64,7 @@ export {
   communesDesLieux,
   type LieuxDuDepartement,
   lieuxDuDepartement,
+  nombreDeLieuxDuDepartement,
   type RechercheDeLieuxDuDepartement,
 } from './abilities/lister-les-lieux-du-departement'
 export {
