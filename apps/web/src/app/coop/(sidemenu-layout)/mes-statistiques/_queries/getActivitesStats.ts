@@ -1,5 +1,3 @@
-import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
-import { allocatePercentagesFromRecords } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import {
   createDureesRangesSelect,
   createEnumArrayCountSelect,
@@ -29,6 +27,8 @@ import {
   getActivitesFiltersWhereConditions,
 } from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { allocatePercentagesFromRecords } from '@app/web/features/statistiques/allocatePercentages'
+import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
 import {
   Materiel,
   Prisma,

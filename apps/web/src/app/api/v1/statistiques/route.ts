@@ -18,12 +18,12 @@ import {
   BeneficiaireStats,
   getBeneficiaireStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
+import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import {
   getTotalCountsStats,
   TotalCountsStats,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
-import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+} from '@app/web/features/statistiques/db/getTotalCountsStats'
 import {
   type ChangeObjectKeysCaseRecursive,
   changeObjectKeysCaseRecursive,
