@@ -7,5 +7,10 @@
     height: auto;
     visibility: visible;
     print-color-adjust: exact;
+
+    & .recharts-responsive-container > div,
+    & .recharts-wrapper {
+      width: 100% !important;
+    }
   }
 }

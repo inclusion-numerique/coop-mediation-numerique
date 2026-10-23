@@ -76,7 +76,7 @@ export const AccompagnementBarChart = ({
           interval={displayData.length > 12 ? 2 : 0}
         />
         <YAxis
-          width={22}
+          width="auto"
           tickCount={5}
           tickLine={false}
           axisLine={false}
