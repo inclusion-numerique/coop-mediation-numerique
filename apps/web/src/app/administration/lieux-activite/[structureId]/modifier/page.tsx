@@ -1,6 +1,11 @@
 import { modifierLaFicheDuLieuAction } from '@app/web/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { listerLesMediateursDuLieu } from '@app/web/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
+import {
+  dateDeDerniereActivite,
+  MediateursDuLieu,
+} from '@app/web/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
 import { consulterLaFicheDuLieu } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
 import {
   FicheDuLieuPage,
@@ -11,10 +16,6 @@ import {
   ModaleDeRetrait,
 } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
-import { mediateursEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
-import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import { contentId } from '@app/web/utils/skipLinks'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
@@ -28,14 +29,16 @@ export const metadata: Metadata = {
 
 const Page = async (props: { params: Promise<{ structureId: string }> }) => {
   const params = await props.params
-  const consultee = await consulterLaFicheDuLieu(LieuId(params.structureId))
+  const lieuId = LieuId.safe(params.structureId)
+  const consultee =
+    lieuId === null ? null : await consulterLaFicheDuLieu(lieuId)
 
-  if (consultee == null) {
+  if (lieuId === null || consultee === null) {
     return notFound()
   }
 
   const fiche = ficheAffichee(consultee)
-  const mediateurs = await mediateursEnActiviteDuLieu(params.structureId)
+  const mediateurs = await listerLesMediateursDuLieu(lieuId)
 
   return (
     <>
@@ -74,26 +77,21 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
           enregistrer={modifierLaFicheDuLieuAction}
           mediateurs={
             <>
-              <LieuMediateursEnActivite
+              <MediateursDuLieu
                 mediateurs={mediateurs}
-                departementCode={fiche.departementCode}
+                departement={fiche.departementCode}
                 retraits={Object.fromEntries(
-                  mediateurs.map((rattachement) => [
-                    rattachement.id,
+                  mediateurs.map((mediateur) => [
+                    mediateur.rattachementId,
                     <BoutonDeRetrait
-                      key={rattachement.id}
-                      structureId={LieuId(fiche.id)}
-                      mediateurId={MediateurId(rattachement.mediateur.id)}
-                      mediateurDisplayName={nomAffiche({
-                        prenom: rattachement.mediateur.user.firstName,
-                        nom: rattachement.mediateur.user.lastName,
-                        nomComplet: rattachement.mediateur.user.name,
-                        courriel: rattachement.mediateur.user.email,
-                      })}
+                      key={mediateur.rattachementId}
+                      structureId={lieuId}
+                      mediateurId={mediateur.mediateurId}
+                      mediateurDisplayName={mediateur.nomAffiche}
                       structureNom={fiche.nom}
-                      derniereActiviteDate={
-                        rattachement.mediateur.derniereActivite.date
-                      }
+                      derniereActiviteDate={dateDeDerniereActivite(
+                        mediateur.derniereActiviteIci,
+                      )}
                       variant="mediateur"
                     />,
                   ]),

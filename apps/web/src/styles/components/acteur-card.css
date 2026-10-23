@@ -1,0 +1,12 @@
+.fr-acteur-card {
+  cursor: pointer;
+}
+
+.fr-acteur-card:hover {
+  background-color: var(--background-alt-grey);
+}
+
+.fr-acteur-card__au-dessus {
+  position: relative;
+  z-index: 2;
+}
