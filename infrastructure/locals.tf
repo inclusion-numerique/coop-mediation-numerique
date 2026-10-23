@@ -31,9 +31,9 @@ locals {
 
   jobs = local.is_main ? {
     "anonymiser-les-comptes-inactifs" = "0 1 * * *"
-    "fix-users-roles"                 = "0 0 * * *"
     "inactive-users-reminders"        = "0 0 * * *"
     "remove-orphan-brevo-contacts"    = "0 3 * * *"
+    "retirer-les-roles-vacants"       = "0 0 * * *"
     "sync-rdvsp-data"                 = "0 2 * * *"
     "synchroniser-les-roles-brevo"    = "0 2 * * *"
     } : var.namespace == "dev" ? {
