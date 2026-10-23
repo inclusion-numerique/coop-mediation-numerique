@@ -111,6 +111,22 @@ Given(
   },
 )
 
+Given('Alex Martin est coordonné par un coordinateur non inscrit', async () => {
+  const { coordinateurId } = await semerUnActeur({
+    prenom: 'Cam',
+    nom: 'Noninscrit',
+    mediateur: false,
+    coordinateur: true,
+    inscrit: false,
+  })
+  await prismaClient.mediateurCoordonne.create({
+    data: {
+      coordinateurId: coordinateurId ?? '',
+      mediateurId: lActeur().mediateurId ?? '',
+    },
+  })
+})
+
 Given('un médiateur qui consulte l’annuaire', async () => {
   etat.lecteur = await semerUnActeur({ prenom: 'Lou', nom: 'Lecteur' })
 })
@@ -156,6 +172,10 @@ When('il consulte sa propre fiche', async () => {
 
 Then('la fiche présente Alex Martin', () => {
   assert.strictEqual(laFiche().acteur.nomAffiche, 'Alex Martin')
+})
+
+Then('Alex Martin n’est coordonné par personne', () => {
+  assert.deepStrictEqual(laFiche().acteur.profil.mediation?.coordinateurs, [])
 })
 
 Then('la fiche ne dit rien de l’équipe', () => {

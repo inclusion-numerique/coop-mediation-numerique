@@ -61,3 +61,10 @@
 * And le médiateur est coordonné par un coordinateur sans structure employeuse
 * When on liste les médiateurs du lieu
 * Then le médiateur est coordonné depuis le département 75
+
+### Scenario: Un coordinateur dont l'inscription n'est pas validée n'est pas nommé
+
+* Given un lieu où exerce un médiateur
+* And le médiateur est coordonné par un coordinateur dont l’inscription n’est pas validée
+* When on liste les médiateurs du lieu
+* Then le médiateur n’est coordonné par personne
