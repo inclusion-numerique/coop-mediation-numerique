@@ -6,12 +6,12 @@ import {
   emploiEmployeuseAffichage,
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
+import type { LieuAffiche } from '@app/web/features/mon-reseau/ui/lieu-affiche'
 import {
   acteurCoordinationSelect,
   acteurSelectForList,
   getActeurCoordinateurType,
 } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
-import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
 import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
 import { prismaClient } from '@app/web/prismaClient'
 import { getLastUserActivityDate } from '@app/web/security/getLastUserActivityDate'

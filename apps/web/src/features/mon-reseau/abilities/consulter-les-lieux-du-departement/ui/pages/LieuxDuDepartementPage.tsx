@@ -2,56 +2,57 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { Departement } from '@app/web/data/collectivites-territoriales/departements'
-import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
-import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
-import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
-import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import {
+  hrefDuLieu,
+  LieuActiviteCard,
+} from '@app/web/features/lieux-activite/ui'
+import type { Departement } from '@app/web/libraries/departement'
+import { pluriel } from '@app/web/libraries/pluriel'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
-import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { contentId } from '@app/web/utils/skipLinks'
-import Filters from './components/Filters'
-import { FilterTags } from './components/FilterTags'
-import type { LieuxTrouves } from './contrat'
-import type { LieuxSearchParams } from './validation/LieuxFilters'
+import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
+import { hrefDesLieux } from '../../../../ui/liens'
+import {
+  auteurDeLaDerniereModification,
+  type LieuxTrouves,
+} from '../../../../ui/lieu-affiche'
+import {
+  type CriteresDesLieux,
+  estFiltre,
+  type ParametresDesLieux,
+} from '../../domain'
+import { EtiquettesDeFiltres } from '../components/EtiquettesDeFiltres'
+import Filtres from '../components/Filtres'
+import { etiquettesDesCommunes } from '../libelles-des-filtres.presenter'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
 
-const LIEUX_DEFAULT_PAGE_SIZE = 20
+const LIGNES_PAR_DEFAUT = 20
 
-const getResultsLabel = ({
-  totalCount,
-  isFiltered,
-}: {
-  totalCount: number
-  isFiltered: boolean
-}) => {
-  if (totalCount === 0) {
-    return isFiltered
+const libelleDesResultats = (total: number, filtre: boolean): string =>
+  total > 0
+    ? `${total} ${pluriel(total, 'lieu', 'lieux')}`
+    : filtre
       ? 'Aucun lieu ne correspond à votre recherche'
       : 'Aucun lieu référencé'
-  }
 
-  return `${totalCount} ${totalCount === 1 ? 'lieu' : 'lieux'}`
-}
-
-const LieuxPage = ({
+const LieuxDuDepartementPage = ({
   departement,
-  searchResult,
-  searchParams,
-  isFiltered,
-  communesOptions,
+  criteres,
+  parametres,
+  lieux,
+  communes,
 }: {
   departement: Departement
-  searchResult: LieuxTrouves
-  searchParams: LieuxSearchParams
-  isFiltered: boolean
-  communesOptions: SelectOption[]
+  criteres: CriteresDesLieux
+  parametres: ParametresDesLieux
+  lieux: LieuxTrouves
+  communes: SelectOption[]
 }) => {
-  const baseHref = `/coop/mon-reseau/${departement.code}/lieux`
+  const baseHref = hrefDesLieux(departement.code)
 
   const departementLabel = `${departement.nom} (${departement.code})`
 
@@ -63,7 +64,7 @@ const LieuxPage = ({
       <div className="fr-container fr-container--medium">
         <CoopBreadcrumbs
           currentPage={breadcrumbLabel}
-          parents={getMonReseauBreadcrumbParents({ code: departement.code })}
+          parents={filDArianeDuReseau(departement.code)}
         />
         <main id={contentId} className="fr-mb-16w fr-mt-8v">
           <BackButton />
@@ -85,29 +86,22 @@ const LieuxPage = ({
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
             <DataSearchBar
               baseHref={baseHref}
-              searchParams={searchParams as DataTableSearchParams}
+              searchParams={parametres}
               placeholder="Nom du lieu, adresse ou SIRET..."
               className="fr-flex-grow-1"
             />
-            <Filters
-              defaultFilters={searchParams}
-              communesOptions={communesOptions}
-            />
+            <Filtres communes={criteres.communes} options={communes} />
           </div>
 
-          <FilterTags
-            filters={searchParams}
-            communesOptions={communesOptions}
+          <EtiquettesDeFiltres
+            etiquettes={etiquettesDesCommunes(criteres, communes)}
           />
 
           <hr className="fr-separator-1px" />
 
           <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-my-6v">
             <h2 className="fr-text--bold fr-text--xs fr-text--uppercase fr-mb-0">
-              {getResultsLabel({
-                totalCount: searchResult.totalCount,
-                isFiltered,
-              })}
+              {libelleDesResultats(lieux.totalCount, estFiltre(criteres))}
             </h2>
             <SortSelect
               options={[
@@ -128,25 +122,21 @@ const LieuxPage = ({
 
           <hr className="fr-separator-1px" />
 
-          {searchResult.lieux.map((lieu) => (
+          {lieux.lieux.map((lieu) => (
             <LieuActiviteCard
               key={lieu.id}
               lieu={lieu}
-              href={getLieuHref(lieu)}
-              derniereModificationPar={
-                lieu.derniereModificationPar
-                  ? getActeurDisplayName(lieu.derniereModificationPar)
-                  : null
-              }
+              href={hrefDuLieu(lieu)}
+              derniereModificationPar={auteurDeLaDerniereModification(lieu)}
             />
           ))}
 
           <PaginationNavWithPageSizeSelect
             className="fr-mt-12v"
-            totalPages={searchResult.totalPages}
+            totalPages={lieux.totalPages}
             baseHref={baseHref}
-            searchParams={searchParams as DataTableSearchParams}
-            defaultPageSize={LIEUX_DEFAULT_PAGE_SIZE}
+            searchParams={parametres}
+            defaultPageSize={LIGNES_PAR_DEFAUT}
             pageSizeOptions={pageSizeOptions}
           />
         </main>
@@ -155,4 +145,4 @@ const LieuxPage = ({
   )
 }
 
-export default LieuxPage
+export default LieuxDuDepartementPage

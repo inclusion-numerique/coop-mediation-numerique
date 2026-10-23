@@ -28,16 +28,23 @@ export type ActeurASemer = {
   readonly supprime?: boolean
 }
 
-export const semerUnLieu = async (
-  codeInsee: string = CODE_INSEE_DU_CANTAL,
-): Promise<string> => {
+export const semerUnLieu = async ({
+  codeInsee = CODE_INSEE_DU_CANTAL,
+  commune = 'Aurillac',
+  publie = false,
+}: {
+  codeInsee?: string
+  commune?: string
+  publie?: boolean
+} = {}): Promise<string> => {
   const { id } = await prismaClient.lieuInclusion.create({
     data: {
       nom: `Lieu du réseau ${v4()}`,
       adresse: '1 place de l’Hôtel de Ville',
-      commune: 'Aurillac',
+      commune,
       codePostal: '15000',
       codeInsee,
+      visiblePourCartographieNationale: publie,
     },
     select: { id: true },
   })

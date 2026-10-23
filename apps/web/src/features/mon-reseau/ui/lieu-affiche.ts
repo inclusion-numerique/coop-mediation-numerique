@@ -1,13 +1,5 @@
-/**
- * Ce que l'annuaire a besoin de savoir d'un lieu pour l'afficher.
- *
- * Le contrat est déclaré ici, chez celui qui affiche, et non emprunté à la
- * feature qui interroge la base : `mon-reseau` dit de quoi ses cartes ont
- * besoin, `lieux-activite` sait le produire, et c'est la route qui les met en
- * présence. Aucune des deux features n'importe l'autre ; c'est la compatibilité
- * structurelle des deux formes qui les tient, et le typage la vérifie à
- * l'endroit où elles se rencontrent.
- */
+import { type NomAffiche, nomAffiche } from '@app/web/libraries/nom-affiche'
+
 export type LieuAffiche = {
   readonly id: string
   readonly nom: string
@@ -32,7 +24,6 @@ export type LieuAffiche = {
   readonly _count: { readonly mediateursEnActivite: number }
 }
 
-/** Une page de résultats de l'annuaire. */
 export type LieuxTrouves = {
   readonly lieux: readonly LieuAffiche[]
   readonly totalCount: number
@@ -40,3 +31,15 @@ export type LieuxTrouves = {
   readonly page: number
   readonly pageSize: number
 }
+
+export const auteurDeLaDerniereModification = ({
+  derniereModificationPar,
+}: Pick<LieuAffiche, 'derniereModificationPar'>): NomAffiche | null =>
+  derniereModificationPar === null
+    ? null
+    : nomAffiche({
+        prenom: derniereModificationPar.firstName,
+        nom: derniereModificationPar.lastName,
+        nomComplet: derniereModificationPar.name,
+        courriel: derniereModificationPar.email,
+      })
