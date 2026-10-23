@@ -47,7 +47,12 @@ export const mediateurDuLieuSelect = (lieuId: string) =>
           },
         },
         coordinations: {
-          where: { suppression: null },
+          where: {
+            suppression: null,
+            coordinateur: {
+              user: { deleted: null, inscriptionValidee: { not: null } },
+            },
+          },
           select: {
             coordinateur: {
               select: {

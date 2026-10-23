@@ -120,6 +120,27 @@ Given(
   },
 )
 
+Given(
+  'le médiateur est coordonné par un coordinateur dont l’inscription n’est pas validée',
+  async () => {
+    const userId = await semerUnCompte()
+    await prismaClient.user.update({
+      where: { id: userId },
+      data: { inscriptionValidee: null },
+    })
+    const coordinateur = await prismaClient.coordinateur.create({
+      data: { userId },
+      select: { id: true },
+    })
+    await prismaClient.mediateurCoordonne.create({
+      data: {
+        coordinateurId: coordinateur.id,
+        mediateurId: etat.mediateurId ?? '',
+      },
+    })
+  },
+)
+
 When('on liste les médiateurs du lieu', async () => {
   etat.trouves = await listerLesMediateursDuLieu(LieuId(etat.lieuId ?? ''))
 })
@@ -130,6 +151,10 @@ Then('le médiateur est référencé sur le lieu', () => {
 
 Then('aucun médiateur n’est référencé sur le lieu', () => {
   assert.deepStrictEqual(etat.trouves, [])
+})
+
+Then('le médiateur n’est coordonné par personne', () => {
+  assert.deepStrictEqual(leMediateur().coordinateurs, [])
 })
 
 Then('le médiateur n’a jamais eu d’activité dans le lieu', () => {

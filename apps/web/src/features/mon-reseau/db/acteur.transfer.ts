@@ -25,6 +25,7 @@ import {
   type Mediation,
   type ProfilActeur,
 } from '../domain'
+import { acteurVisibleWhere } from './acteur.sql'
 
 const identiteSelect = {
   id: true,
@@ -42,7 +43,10 @@ export const acteurSelect = {
     select: {
       id: true,
       coordinations: {
-        where: { suppression: null },
+        where: {
+          suppression: null,
+          coordinateur: { user: acteurVisibleWhere },
+        },
         select: {
           coordinateur: {
             select: {

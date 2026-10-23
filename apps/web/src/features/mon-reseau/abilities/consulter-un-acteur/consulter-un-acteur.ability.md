@@ -33,6 +33,17 @@
 * When il consulte la fiche « pas-un-identifiant »
 * Then la fiche est introuvable
 
+### Scenario: Un coordinateur introuvable n'apparaît pas parmi les coordinateurs de l'acteur
+
+> Chaque coordinateur nommé mène à sa fiche : un coordinateur dont la fiche est
+> introuvable n'est pas nommé.
+
+* Given un médiateur Alex Martin
+* And Alex Martin est coordonné par un coordinateur non inscrit
+* And un médiateur qui consulte l’annuaire
+* When il consulte la fiche d’Alex Martin
+* Then Alex Martin n’est coordonné par personne
+
 ## Rule: Le statut public suit la règle d'activité des utilisateurs
 
 > Un médiateur est actif s'il a créé une activité ou un bénéficiaire dans les
