@@ -1,9 +1,13 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { departementsRegionByCode } from '@app/web/data/collectivites-territoriales/departementsRegion'
 import { visibiliteDesLieuxDuMediateur } from '@app/web/features/lieux-activite'
-import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
 import { getCartographieDepartementLink } from '@app/web/libraries/cartographie-nationale'
+import {
+  CodeInsee,
+  DEPARTEMENT_PAR_DEFAUT,
+  departementDeLActeur,
+} from '@app/web/libraries/departement'
 import Link from 'next/link'
 
 const declareVisible = ({
@@ -48,14 +52,15 @@ const CartographieNationaleOutilAccess = async () => {
     ? await visibiliteDesLieuxDuMediateur({ mediateurId: user.mediateur.id })
     : null
 
-  const departementCode = getDepartementCodeForActeur({
-    emplois: user?.emplois,
-    mediateur: lieuxActivite
-      ? {
-          enActivite: lieuxActivite.map((lieuInclusion) => ({ lieuInclusion })),
-        }
-      : null,
-  })
+  const departementCode =
+    departementDeLActeur({
+      employeuse: CodeInsee.safe(
+        user?.emplois?.at(0)?.structure.codeInsee ?? '',
+      ),
+      lieux: (lieuxActivite ?? [])
+        .map(({ codeInsee }) => CodeInsee.safe(codeInsee ?? ''))
+        .filter((codeInsee) => codeInsee !== null),
+    }) ?? DEPARTEMENT_PAR_DEFAUT
 
   const departementRegion = departementsRegionByCode.get(departementCode)
   const { lieuxCount } = await getMonReseauPageData({ departementCode })
