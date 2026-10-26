@@ -34,7 +34,7 @@ export const inscritDeLaListeSelect = {
       isCoordinateur: true,
       // Fin et rupture séparées : Brevo a un attribut pour chacune.
       contrats: {
-        select: { dateDebut: true, dateFin: true, dateRupture: true },
+        select: { id: true, dateDebut: true, dateFin: true, dateRupture: true },
       },
     },
   },
@@ -48,15 +48,16 @@ type ContratRow = NonNullable<
   InscritDeLaListeRow['personneMain']
 >['contrats'][number]
 
-/**
- * Contrat le plus récent par date de début : c'est le contrat actuel de la personne.
- * Les lignes sans date de début sont classées en dernier : ce sont des ruptures de postes
- * antérieurs, qui ne décrivent pas le contrat actuel.
- */
+const departageAEgaliteDeDebut = (a: ContratRow, b: ContratRow): number =>
+  Number(b.dateRupture !== null) - Number(a.dateRupture !== null) || b.id - a.id
+
 export const datesDuContratLePlusRecent = (
   contrats: readonly ContratRow[],
 ): DatesDeContrat => {
-  const contrat = contratLePlusRecent(contrats, (row) => row.dateDebut)
+  const contrat = contratLePlusRecent(
+    contrats.toSorted(departageAEgaliteDeDebut),
+    (row) => row.dateDebut,
+  )
   return contrat === null
     ? SANS_CONTRAT
     : { fin: contrat.dateFin, rupture: contrat.dateRupture }

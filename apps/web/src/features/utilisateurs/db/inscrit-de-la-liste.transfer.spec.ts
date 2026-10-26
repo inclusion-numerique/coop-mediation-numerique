@@ -48,6 +48,7 @@ describe('inscrit de la liste lu en base', () => {
           affectationsEmploi: [{ source: 'idposte', estActive: true }],
           contrats: [
             {
+              id: 1,
               dateDebut: new Date('2025-01-01'),
               dateFin: new Date('2026-12-15'),
               dateRupture: null,
@@ -86,14 +87,17 @@ describe('inscrit de la liste lu en base', () => {
 })
 
 const contrat = ({
+  id = 1,
   debut = null,
   fin = null,
   rupture = null,
 }: {
+  id?: number
   debut?: string | null
   fin?: string | null
   rupture?: string | null
 }) => ({
+  id,
   dateDebut: debut ? new Date(debut) : null,
   dateFin: fin ? new Date(fin) : null,
   dateRupture: rupture ? new Date(rupture) : null,
@@ -150,9 +154,33 @@ describe('dates du contrat le plus récent', () => {
   it('réembauche en CDI ailleurs : la rupture du poste précédent est écartée', () => {
     expect(
       datesDuContratLePlusRecent([
-        contrat({ rupture: '2024-01-02' }),
-        contrat({ debut: '2024-01-03' }),
+        contrat({ id: 1, rupture: '2024-01-02' }),
+        contrat({ id: 2, debut: '2024-01-03' }),
       ]),
     ).toEqual({ fin: null, rupture: null })
+  })
+
+  it('à égalité de début, la ligne qui porte une rupture gagne', () => {
+    expect(
+      datesDuContratLePlusRecent([
+        contrat({ id: 2, debut: '2025-01-01', fin: '2026-12-15' }),
+        // id plus petit : seule la règle de la rupture peut la faire gagner.
+        contrat({
+          id: 1,
+          debut: '2025-01-01',
+          fin: '2026-02-01',
+          rupture: '2025-06-30',
+        }),
+      ]),
+    ).toEqual({ fin: new Date('2026-02-01'), rupture: new Date('2025-06-30') })
+  })
+
+  it('à égalité complète, l’id le plus récent départage', () => {
+    expect(
+      datesDuContratLePlusRecent([
+        contrat({ id: 1, debut: '2025-01-01', fin: '2026-02-01' }),
+        contrat({ id: 2, debut: '2025-01-01', fin: '2026-12-15' }),
+      ]),
+    ).toEqual({ fin: new Date('2026-12-15'), rupture: null })
   })
 })
