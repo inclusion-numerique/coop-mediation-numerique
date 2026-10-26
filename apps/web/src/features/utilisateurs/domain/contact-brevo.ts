@@ -42,6 +42,17 @@ export const situationDansLeDispositif = (
         : 'ConseillerNumerique',
   )
 
+/**
+ * Dates du contrat le plus récent, séparées car Brevo a un attribut pour chacune.
+ * `null` = date absente (CDI, contrat non rompu, aucun contrat) : elle est effacée chez Brevo.
+ */
+export type DatesDeContrat = {
+  readonly fin: Date | null
+  readonly rupture: Date | null
+}
+
+export const SANS_CONTRAT: DatesDeContrat = { fin: null, rupture: null }
+
 export type InscritDeLaListe = {
   readonly id: UtilisateurId
   readonly courriel: AdresseCourriel
@@ -50,6 +61,7 @@ export type InscritDeLaListe = {
   readonly telephone: Telephone | null
   readonly rattachements: RattachementsDuCompte
   readonly dispositif: SituationDansLeDispositif
+  readonly contrat: DatesDeContrat
 }
 
 export type RolesBrevo = readonly [RoleBrevo, ...RoleBrevo[]]
@@ -61,6 +73,7 @@ export type ContactAImporter = {
   readonly nom: Nom | null
   readonly telephone: Telephone | null
   readonly roles: RolesBrevo
+  readonly contrat: DatesDeContrat
 }
 
 export type ContactASynchroniser =
@@ -108,6 +121,7 @@ export const contactASynchroniser = (
           nom: inscrit.nom,
           telephone: inscrit.telephone,
           roles: [premier, ...autres],
+          contrat: inscrit.contrat,
         },
       }
 }

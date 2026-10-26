@@ -3,6 +3,7 @@ import {
   contactASynchroniser,
   type InscritDeLaListe,
   rolesBrevoDe,
+  SANS_CONTRAT,
   type SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
@@ -44,6 +45,7 @@ const inscrit = (
   telephone: null,
   rattachements: rattache,
   dispositif,
+  contrat: SANS_CONTRAT,
 })
 
 describe('rôles Brevo d’un inscrit', () => {

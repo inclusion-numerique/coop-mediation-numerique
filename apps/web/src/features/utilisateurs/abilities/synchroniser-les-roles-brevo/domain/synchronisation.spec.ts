@@ -6,6 +6,7 @@ import {
   MediateurId,
   type RattachementsDuCompte,
   rattachements,
+  SANS_CONTRAT,
   situationDansLeDispositif,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
@@ -29,6 +30,7 @@ const inscrit = (
   telephone: null,
   rattachements: rattachementsDuMediateur(mediateur),
   dispositif: hors,
+  contrat: SANS_CONTRAT,
 })
 
 describe('contacts à synchroniser', () => {

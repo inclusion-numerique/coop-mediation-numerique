@@ -59,6 +59,30 @@
 * When les rôles Brevo sont synchronisés
 * Then son contact est importé sans téléphone
 
+## Rule: Les dates du contrat le plus récent accompagnent le contact
+
+> L'équipe communication segmente aussi la liste selon les fins de contrat,
+> pour adresser des campagnes aux conseillers en fin de contrat ou en rupture.
+> Le contact porte donc la date de fin et la date de rupture du contrat le plus
+> récent ; une date absente est effacée chez Brevo, la coop faisant foi.
+
+### Scenario Outline: Un conseiller « <situation> » porte la fin « <fin> » et la rupture « <rupture> »
+
+* Given un conseiller numérique vivant "<situation>"
+* When les rôles Brevo sont synchronisés
+* Then son contact porte la date de fin "<fin>" et la date de rupture "<rupture>"
+
+#### Examples:
+
+| situation                                  | fin        | rupture    |
+| ------------------------------------------ | ---------- | ---------- |
+| en CDD                                     | 2026-12-15 | aucune     |
+| en CDI                                     | aucune     | aucune     |
+| dont le CDD a été rompu                    | 2026-12-15 | 2026-07-10 |
+| dont le CDI a été rompu                    | aucune     | 2026-06-30 |
+| réembauché en CDI après une rupture        | aucune     | aucune     |
+| sans contrat connu                         | aucune     | aucune     |
+
 ## Rule: Les contacts partent par lots bornés
 
 ### Scenario: Aucun lot ne dépasse la taille maximale

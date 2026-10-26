@@ -1,4 +1,5 @@
 import {
+  contratLePlusRecent,
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
@@ -6,12 +7,14 @@ import type { Prisma } from '@app/web/generated/prisma/client'
 import {
   AdresseCourriel,
   CoordinateurId,
+  type DatesDeContrat,
   dispositifDe,
   type InscritDeLaListe,
   MediateurId,
   Nom,
   Prenom,
   rattachements,
+  SANS_CONTRAT,
   situationDansLeDispositif,
   telephoneEnregistrable,
   UtilisateurId,
@@ -26,13 +29,38 @@ export const inscritDeLaListeSelect = {
   mediateur: { select: { id: true } },
   coordinateur: { select: { id: true } },
   personneMain: {
-    select: { ...personneConseillerNumeriqueSelect, isCoordinateur: true },
+    select: {
+      ...personneConseillerNumeriqueSelect,
+      isCoordinateur: true,
+      // Fin et rupture séparées : Brevo a un attribut pour chacune.
+      contrats: {
+        select: { dateDebut: true, dateFin: true, dateRupture: true },
+      },
+    },
   },
 } satisfies Prisma.UserSelect
 
 export type InscritDeLaListeRow = Prisma.UserGetPayload<{
   select: typeof inscritDeLaListeSelect
 }>
+
+type ContratRow = NonNullable<
+  InscritDeLaListeRow['personneMain']
+>['contrats'][number]
+
+/**
+ * Contrat le plus récent par date de début : c'est le contrat actuel de la personne.
+ * Les lignes sans date de début sont classées en dernier : ce sont des ruptures de postes
+ * antérieurs, qui ne décrivent pas le contrat actuel.
+ */
+export const datesDuContratLePlusRecent = (
+  contrats: readonly ContratRow[],
+): DatesDeContrat => {
+  const contrat = contratLePlusRecent(contrats, (row) => row.dateDebut)
+  return contrat === null
+    ? SANS_CONTRAT
+    : { fin: contrat.dateFin, rupture: contrat.dateRupture }
+}
 
 export const inscritDeLaListeToDomain = (
   row: InscritDeLaListeRow,
@@ -57,5 +85,6 @@ export const inscritDeLaListeToDomain = (
           dispositifDe(personneEstConseillerNumerique(row.personneMain)),
           row.personneMain?.isCoordinateur ?? false,
         ),
+        contrat: datesDuContratLePlusRecent(row.personneMain?.contrats ?? []),
       }
 }
