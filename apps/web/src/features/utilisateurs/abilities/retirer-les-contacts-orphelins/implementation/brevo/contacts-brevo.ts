@@ -25,11 +25,10 @@ const TAILLE_DE_PAGE = 500
 
 const lirePage = brevoApiThrottle(async (offset: number) => {
   const reponse = await axios.get<PageDeContacts>(
-    'https://api.brevo.com/v3/contacts',
+    `https://api.brevo.com/v3/contacts/lists/${ServerWebAppConfig.Brevo.usersListId}/contacts`,
     {
       headers: { 'api-key': ServerWebAppConfig.Brevo.apiKey },
       params: {
-        listId: ServerWebAppConfig.Brevo.usersListId,
         offset,
         limit: TAILLE_DE_PAGE,
         sort: 'asc',
@@ -73,10 +72,11 @@ export const contactsBrevoPorts: RetirerLesContactsOrphelinsPorts = {
     await deleteBrevoContact(courriel)
   },
   retirerLeContactDeLaListe: async (courriel) => {
-    await removeBrevoContactFromList(
+    const retire = await removeBrevoContactFromList(
       courriel,
       ServerWebAppConfig.Brevo.usersListId,
     )
     await deleteBrevoContactIfOrphan(courriel)
+    return retire ? { _tag: 'Retire' } : { _tag: 'DejaAbsent' }
   },
 }

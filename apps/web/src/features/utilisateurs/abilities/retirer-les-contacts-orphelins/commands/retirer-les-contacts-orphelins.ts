@@ -16,7 +16,7 @@ export type BilanDesContacts = {
 
 const appliquer = (
   courriels: readonly AdresseCourriel[],
-  action: (courriel: AdresseCourriel) => Promise<void>,
+  action: (courriel: AdresseCourriel) => Promise<boolean>,
 ): Promise<{
   readonly faits: number
   readonly echecs: readonly AdresseCourriel[]
@@ -30,7 +30,7 @@ const appliquer = (
     async (precedent, courriel) => {
       const bilan = await precedent
       return action(courriel).then(
-        () => ({ ...bilan, faits: bilan.faits + 1 }),
+        (fait) => (fait ? { ...bilan, faits: bilan.faits + 1 } : bilan),
         () => ({ ...bilan, echecs: [...bilan.echecs, courriel] }),
       )
     },
@@ -47,8 +47,15 @@ export const retirerLesContactsOrphelins = async (
     await inscritsVivantsParmi(comptesRattaches(rattaches)),
   )
 
-  const suppressions = await appliquer(anonymises, ports.supprimerLeContact)
-  const retraits = await appliquer(orphelins, ports.retirerLeContactDeLaListe)
+  const suppressions = await appliquer(anonymises, async (courriel) => {
+    await ports.supprimerLeContact(courriel)
+    return true
+  })
+  const retraits = await appliquer(
+    orphelins,
+    async (courriel) =>
+      (await ports.retirerLeContactDeLaListe(courriel))._tag === 'Retire',
+  )
 
   return {
     contacts: contacts.length,

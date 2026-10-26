@@ -19,6 +19,10 @@ export type ContactRattache = {
   readonly compte: Exclude<CompteDuContact, { readonly _tag: 'Aucun' }>
 }
 
+export type RetraitDeLaListe =
+  | { readonly _tag: 'Retire' }
+  | { readonly _tag: 'DejaAbsent' }
+
 export type ContactsAReconcilier = {
   readonly anonymises: readonly AdresseCourriel[]
   readonly rattaches: readonly ContactRattache[]
