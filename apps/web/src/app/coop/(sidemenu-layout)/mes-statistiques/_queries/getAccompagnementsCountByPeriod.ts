@@ -1,10 +1,10 @@
-import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
 } from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
 import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import {

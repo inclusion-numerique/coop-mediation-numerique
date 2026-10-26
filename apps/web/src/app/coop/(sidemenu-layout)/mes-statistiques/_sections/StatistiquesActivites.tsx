@@ -8,7 +8,7 @@ import type {
   ActivitesStats,
   ActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
-import type { TotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
+import type { TotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'

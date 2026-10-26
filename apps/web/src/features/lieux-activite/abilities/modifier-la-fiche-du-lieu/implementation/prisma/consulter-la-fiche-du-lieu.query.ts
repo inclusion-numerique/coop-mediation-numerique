@@ -1,3 +1,4 @@
+import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
@@ -25,22 +26,6 @@ export type FicheDuLieu = {
   readonly ficheCoop: Fiche
 }
 
-/**
- * Le nom d'affichage de l'auteur, recomposé ici plutôt qu'emprunté à
- * `mon-reseau` : trois lignes dupliquées valent mieux qu'une dépendance entre
- * features (IS-1).
- */
-const nomAffiche = (auteur: {
-  name: string | null
-  firstName: string | null
-  lastName: string | null
-  email: string
-}): string =>
-  auteur.name ??
-  (auteur.firstName && auteur.lastName
-    ? `${auteur.firstName} ${auteur.lastName}`
-    : auteur.email)
-
 export const consulterLaFicheDuLieu = async (
   id: LieuId,
 ): Promise<FicheDuLieu | null> => {
@@ -65,6 +50,11 @@ export const consulterLaFicheDuLieu = async (
     auteurDerniereModification:
       derniereModificationPar == null
         ? null
-        : nomAffiche(derniereModificationPar),
+        : nomAffiche({
+            prenom: derniereModificationPar.firstName,
+            nom: derniereModificationPar.lastName,
+            nomComplet: derniereModificationPar.name,
+            courriel: derniereModificationPar.email,
+          }),
   }
 }

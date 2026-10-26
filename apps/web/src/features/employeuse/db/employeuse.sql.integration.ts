@@ -1,5 +1,5 @@
-import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
-import { searchActeurs } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
+import { consulterLeReseauDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
+import { listerLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 
 /**
  * Le port SQL ne se vérifie qu'à l'exécution : un fragment mal composé passe le
@@ -9,21 +9,17 @@ import { searchActeurs } from '@app/web/features/mon-reseau/use-cases/acteurs/db
  */
 describe('port SQL employeuse — composition contre la base', () => {
   it('le comptage de mon-réseau joint l’employeuse courante', async () => {
-    const data = await getMonReseauPageData({ departementCode: '75' })
+    const reseau = await consulterLeReseauDuDepartement('75')
 
-    expect(typeof data.acteursCount).toBe('number')
+    expect(reseau.success && typeof reseau.data.acteurs).toBe('number')
   })
 
   it('la recherche d’acteurs joint l’employeuse courante, liste et total', async () => {
-    const resultat = await searchActeurs({
-      departementCode: '75',
-      searchParams: {},
-    })
+    const consultation = await listerLesActeursDuDepartement('75', {})
 
-    expect(Array.isArray(resultat.acteurs)).toBe(true)
-    expect(typeof resultat.totalCount).toBe('number')
-    // Liste et total sortent de deux requêtes distinctes : elles doivent voir la
-    // même population, donc porter la même jointure.
-    expect(resultat.acteurs.length).toBeLessThanOrEqual(resultat.totalCount)
+    if (!consultation.success) throw new Error('Département inconnu')
+    expect(consultation.data.acteurs.acteurs.length).toBeLessThanOrEqual(
+      consultation.data.acteurs.total,
+    )
   })
 })

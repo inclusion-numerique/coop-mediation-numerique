@@ -1,3 +1,4 @@
+import { CodeDepartement } from '@app/web/libraries/departement'
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 import { Dispositif } from './dispositif'
@@ -27,14 +28,6 @@ export const CodeCommune = defineModel(
     .brand('CodeCommune'),
 )
 export type CodeCommune = Model.TypeOf<typeof CodeCommune>
-
-export const CodeDepartement = defineModel(
-  z
-    .string()
-    .regex(/^[0-9][0-9AB][0-9]?$/)
-    .brand('CodeDepartement'),
-)
-export type CodeDepartement = Model.TypeOf<typeof CodeDepartement>
 
 export type FiltresUtilisateurs = {
   readonly roles: readonly RoleFiltre[]

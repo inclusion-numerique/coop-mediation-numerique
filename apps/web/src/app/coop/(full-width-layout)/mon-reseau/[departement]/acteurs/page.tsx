@@ -1,14 +1,12 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
-import ActeursPage from '@app/web/features/mon-reseau/use-cases/acteurs/ActeursPage'
-import { getActeursFiltersOptions } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeursFiltersOptions'
-import { getActeursPageData } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeursPageData'
 import {
-  type ActeursSearchParams,
-  validateActeursFilters,
-} from '@app/web/features/mon-reseau/use-cases/acteurs/validation/ActeursFilters'
+  listerLesActeursDuDepartement,
+  type ParametresDesActeurs,
+} from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { ActeursDuDepartementPage } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: metadataTitle('Annuaire des acteurs'),
@@ -16,35 +14,25 @@ export const metadata: Metadata = {
 
 const Page = async ({
   params,
-  searchParams: rawSearchParams,
+  searchParams,
 }: {
   params: Promise<{ departement: string }>
-  searchParams: Promise<ActeursSearchParams>
+  searchParams: Promise<ParametresDesActeurs>
 }) => {
   await authenticateMediateurOrCoordinateur()
 
-  const { departement: departementCode } = await params
-  const departement = getDepartementFromCodeOrThrowNotFound(departementCode)
+  const consultation = await listerLesActeursDuDepartement(
+    (await params).departement,
+    await searchParams,
+  )
 
-  const unvalidatedSearchParams = await rawSearchParams
-  const searchParams = validateActeursFilters(unvalidatedSearchParams)
-
-  const [pageData, filtersOptions] = await Promise.all([
-    getActeursPageData({
-      departementCode,
-      searchParams,
-    }),
-    getActeursFiltersOptions({ departementCode }),
-  ])
-
-  return (
-    <ActeursPage
-      departement={departement}
-      searchResult={pageData.searchResult}
-      searchParams={searchParams}
-      isFiltered={pageData.isFiltered}
-      communesOptions={filtersOptions.communesOptions}
+  return consultation.success ? (
+    <ActeursDuDepartementPage
+      {...consultation.data}
+      communes={[...consultation.data.communes]}
     />
+  ) : (
+    notFound()
   )
 }
 
