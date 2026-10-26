@@ -19,7 +19,6 @@
 **/next-env.d.ts
 
 # generated files
-apps/web/test
 apps/web/data
 
 # Unused package in docker app

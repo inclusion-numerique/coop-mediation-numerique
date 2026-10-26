@@ -21,13 +21,6 @@ export const ServerWebAppConfig = {
       process.env.EMAIL_FROM_ADDRESS ?? ''
     }>`,
   },
-  S3: {
-    uploadsBucket: process.env.UPLOADS_BUCKET ?? '',
-    host: process.env.S3_HOST ?? '',
-    region: process.env.SCW_DEFAULT_REGION ?? '',
-    accessKey: process.env.SCW_ACCESS_KEY ?? '',
-    secretKey: process.env.SCW_SECRET_KEY ?? '',
-  },
   Scaleway: {
     region: process.env.SCW_DEFAULT_REGION ?? '',
     accessKey: process.env.SCW_ACCESS_KEY ?? '',
