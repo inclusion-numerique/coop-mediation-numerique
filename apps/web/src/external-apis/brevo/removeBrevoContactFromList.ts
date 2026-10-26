@@ -16,7 +16,7 @@ const estAbsentDeLaListe = (error: unknown): boolean =>
 const removeContactFromListImmediate = async (
   email: string,
   listId: number,
-): Promise<void> => {
+): Promise<boolean> => {
   try {
     await axios.post(
       `https://api.brevo.com/v3/contacts/lists/${listId}/contacts/remove`,
@@ -30,8 +30,9 @@ const removeContactFromListImmediate = async (
         },
       },
     )
+    return true
   } catch (error) {
-    if (estAbsentDeLaListe(error)) return
+    if (estAbsentDeLaListe(error)) return false
     Sentry.captureException?.(error, {
       extra: {
         reponseBrevo: axios.isAxiosError(error) ? error.response?.data : null,

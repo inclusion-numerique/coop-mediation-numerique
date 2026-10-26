@@ -14,3 +14,9 @@
 * Then le contact anonymisé est supprimé
 * And le contact sans compte est retiré de la liste
 * And le contact de l'inscrit vivant reste dans la liste
+
+### Scenario: Un contact déjà sorti de la liste n'est pas compté comme retiré
+
+* Given un contact dont le compte n'existe plus, déjà sorti de la liste
+* When les contacts orphelins sont retirés
+* Then aucun contact n'est compté comme retiré

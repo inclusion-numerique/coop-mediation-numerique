@@ -6,5 +6,6 @@ export {
   comptesRattaches,
   contactsAReconcilier,
   orphelinsParmi,
+  type RetraitDeLaListe,
 } from './contacts'
 export type { RetirerLesContactsOrphelinsPorts } from './ports'

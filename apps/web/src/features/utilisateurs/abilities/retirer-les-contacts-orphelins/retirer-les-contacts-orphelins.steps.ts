@@ -6,7 +6,10 @@ import {
 import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { retirerLesContactsOrphelins } from './commands/retirer-les-contacts-orphelins'
+import {
+  type BilanDesContacts,
+  retirerLesContactsOrphelins,
+} from './commands/retirer-les-contacts-orphelins'
 import type { CompteDuContact, ContactBrevo } from './domain'
 
 const compte = (identifiant: string): CompteDuContact => ({
@@ -19,12 +22,21 @@ const ANONYMISE = AdresseCourriel(
 )
 const SANS_COMPTE = AdresseCourriel(`parti-${v4()}@example.com`)
 const VIVANT = AdresseCourriel(`vivant-${v4()}@example.com`)
+const DEJA_SORTI = AdresseCourriel(`deja-sorti-${v4()}@example.com`)
 
 const reconciliation: {
   contacts: readonly ContactBrevo[]
+  horsDeLaListe: readonly AdresseCourriel[]
   supprimes: readonly AdresseCourriel[]
   retires: readonly AdresseCourriel[]
-} = { contacts: [], supprimes: [], retires: [] }
+  bilan: BilanDesContacts | null
+} = {
+  contacts: [],
+  horsDeLaListe: [],
+  supprimes: [],
+  retires: [],
+  bilan: null,
+}
 
 Given('un inscrit vivant présent dans la liste de diffusion', async () => {
   const utilisateurId = await semerUnCompteDeListe({
@@ -46,14 +58,23 @@ Given("un contact anonymisé et un contact dont le compte n'existe plus", () => 
   ]
 })
 
+Given("un contact dont le compte n'existe plus, déjà sorti de la liste", () => {
+  reconciliation.contacts = [{ courriel: DEJA_SORTI, compte: compte(v4()) }]
+  reconciliation.horsDeLaListe = [DEJA_SORTI]
+})
+
 When('les contacts orphelins sont retirés', async () => {
-  await retirerLesContactsOrphelins({
+  reconciliation.bilan = await retirerLesContactsOrphelins({
     listerLesContacts: async () => reconciliation.contacts,
     supprimerLeContact: async (courriel) => {
       reconciliation.supprimes = [...reconciliation.supprimes, courriel]
     },
     retirerLeContactDeLaListe: async (courriel) => {
+      if (reconciliation.horsDeLaListe.includes(courriel)) {
+        return { _tag: 'DejaAbsent' }
+      }
       reconciliation.retires = [...reconciliation.retires, courriel]
+      return { _tag: 'Retire' }
     },
   })
 })
@@ -69,4 +90,9 @@ Then('le contact sans compte est retiré de la liste', () => {
 Then("le contact de l'inscrit vivant reste dans la liste", () => {
   assert.ok(!reconciliation.retires.includes(VIVANT))
   assert.ok(!reconciliation.supprimes.includes(VIVANT))
+})
+
+Then("aucun contact n'est compté comme retiré", () => {
+  assert.equal(reconciliation.bilan?.orphelinsRetires, 0)
+  assert.deepEqual(reconciliation.bilan?.echecs, [])
 })
