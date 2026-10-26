@@ -1,10 +1,10 @@
 import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
 import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { getFirstAndLastActiviteDate } from '@app/web/features/activites/use-cases/list/db/getFirstAndLastActiviteDate'
+import { getStructuresEmployeusesOptions } from '@app/web/features/activites/use-cases/list/db/getStructuresEmployeusesOptions'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db/getMediateursTags'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { getStructuresEmployeusesOptions } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,

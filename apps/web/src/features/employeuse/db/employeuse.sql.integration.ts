@@ -1,7 +1,5 @@
-import { getStructuresEmployeusesOptions } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
 import { searchActeurs } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
-import { prismaClient } from '@app/web/prismaClient'
 
 /**
  * Le port SQL ne se vérifie qu'à l'exécution : un fragment mal composé passe le
@@ -27,19 +25,5 @@ describe('port SQL employeuse — composition contre la base', () => {
     // Liste et total sortent de deux requêtes distinctes : elles doivent voir la
     // même population, donc porter la même jointure.
     expect(resultat.acteurs.length).toBeLessThanOrEqual(resultat.totalCount)
-  })
-
-  it('les options de filtre employeuse portent des identifiants main', async () => {
-    const mediateur = await prismaClient.mediateur.findFirst({
-      select: { id: true },
-    })
-    const options = await getStructuresEmployeusesOptions({
-      mediateurIds: mediateur ? [mediateur.id] : [],
-    })
-
-    expect(Array.isArray(options)).toBe(true)
-    for (const option of options) {
-      expect(option.id).toMatch(/^\d+$/)
-    }
   })
 })

@@ -1,8 +1,9 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import type { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
-import type { StructureEmployeuseOption } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
+import type { StructureEmployeuseOption } from '@app/web/features/activites/use-cases/list/db/getStructuresEmployeusesOptions'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { vanillaTrpc } from '@app/web/trpc'
+import { inject } from '@app/web/libs/injection/client'
+import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from './rechercher-employeuses-des-activites.key'
 
 export type StructureEmployeuse = StructureEmployeuseOption
 
@@ -13,11 +14,16 @@ const onlyDefinedIds = (item?: { id?: string }): item is { id: string } =>
 
 const loadSuggestions =
   (selectedStructures: ({ id?: string } | undefined)[]) =>
-  (input: string): Promise<{ items: StructureEmployeuse[] }> =>
-    vanillaTrpc.structures.searchStructuresEmployeuses.query({
-      query: input,
-      excludeIds: selectedStructures.filter(onlyDefinedIds).map(itemToKey),
+  async (input: string): Promise<{ items: StructureEmployeuse[] }> => {
+    const resultat = await inject(
+      RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY,
+    )({
+      recherche: input,
+      exclues: selectedStructures.filter(onlyDefinedIds).map(itemToKey),
     })
+
+    return { items: resultat.success ? [...resultat.data] : [] }
+  }
 
 const itemToString = (item: StructureEmployeuse | null): string =>
   item?.nom ?? ''

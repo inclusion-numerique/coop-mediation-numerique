@@ -4,13 +4,11 @@ import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
 import { craRouter } from '@app/web/server/rpc/cra/craRouter'
 import { router } from '@app/web/server/rpc/createRouter'
 import { imageRouter } from '@app/web/server/rpc/image/imageRouter'
-import { structuresRouter } from '@app/web/server/rpc/structures/structuresRouter'
 import { uploadRouter } from '@app/web/server/rpc/upload/uploadRouter'
 
 export const appRouter = router({
   upload: uploadRouter,
   image: imageRouter,
-  structures: structuresRouter,
   cra: craRouter,
   apiClient: apiClientRouter,
   tags: tagsRouter,
