@@ -15,12 +15,16 @@ import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/
 import { BoutonSupprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/ui'
 import { lieuxEnListeDuMediateur } from '@app/web/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { consulterLeContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat'
+import { CarteContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat/ui'
+import { UtilisateurId } from '@app/web/features/mediateurs/domain'
 import {
   consulterUnActeur,
   nomDeLActeur,
 } from '@app/web/features/mon-reseau/abilities/consulter-un-acteur'
 import {
   ancienMembreDe,
+  contratVisible,
   encartDeLEmployeuse,
   FicheActeurPage,
   LieuxDeLActeur,
@@ -61,11 +65,17 @@ const Page = async ({ params }: Parametres) => {
   const fiche = consultation.data
   const { acteur, regard } = fiche
   const mediation = acteur.profil.mediation
-  const [employeuse, lieux] = await Promise.all([
+  const [employeuse, lieux, contrat] = await Promise.all([
     consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
     mediation === null
       ? null
       : lieuxEnListeDuMediateur({ mediateurId: mediation.mediateurId }),
+    contratVisible(acteur, regard)
+      ? consulterLeContrat({
+          utilisateurId: UtilisateurId(acteur.acteurId),
+          maintenant,
+        })
+      : null,
   ])
   const ancienMembre = ancienMembreDe(regard)
   const encart = encartDeLEmployeuse(acteur, regard)
@@ -90,6 +100,11 @@ const Page = async ({ params }: Parametres) => {
             <FicheActeurPage
               fiche={fiche}
               departement={departement.data}
+              contrat={
+                contrat === null ? undefined : (
+                  <CarteContrat contrat={contrat} coordinateur={false} />
+                )
+              }
               employeuse={
                 employeuse === null ? undefined : (
                   <ActeurStructureEmployeuse

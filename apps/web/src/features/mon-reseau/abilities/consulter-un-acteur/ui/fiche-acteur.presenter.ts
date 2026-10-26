@@ -1,11 +1,6 @@
-import { AlerteFinContrat } from '@app/web/conseiller-numerique/contratConseillerNumerique'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import type { Acteur } from '../../../domain'
-import type {
-  ContratAffiche,
-  RegardDuLecteur,
-  StatutDActivitePublic,
-} from '../domain'
+import type { RegardDuLecteur, StatutDActivitePublic } from '../domain'
 
 export type StatutAffiche = {
   readonly libelle: string
@@ -84,15 +79,6 @@ export const encartDeLEmployeuse = (
     acteur.profil.dispositif === 'ConseillerNumerique',
 })
 
-const ALERTE_DE_FIN = {
-  prochainement: AlerteFinContrat.prochainement,
-  termine: AlerteFinContrat.termine,
-} as const
-
-export const contratPourLAffichage = ({
-  echeance,
-  ...contrat
-}: ContratAffiche) => ({
-  ...contrat,
-  finDeContrat: echeance === null ? null : ALERTE_DE_FIN[echeance],
-})
+export const contratVisible = (acteur: Acteur, regard: RegardDuLecteur) =>
+  membreDeLEquipe(regard) !== null &&
+  acteur.profil.dispositif === 'ConseillerNumerique'
