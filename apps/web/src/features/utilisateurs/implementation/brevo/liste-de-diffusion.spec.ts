@@ -3,6 +3,7 @@ import {
   Nom,
   Prenom,
   RoleBrevo,
+  SANS_CONTRAT,
   Telephone,
   UtilisateurId,
 } from '../../domain'
@@ -21,6 +22,7 @@ describe('contact Brevo d’un inscrit', () => {
         nom: null,
         telephone: null,
         roles: [RoleBrevo('Mediateur')],
+        contrat: SANS_CONTRAT,
       }),
     ).toEqual({
       email: 'jeanne@example.com',
@@ -30,6 +32,8 @@ describe('contact Brevo d’un inscrit', () => {
         LASTNAME: '',
         SMS: '',
         ROLES: ['Médiateur'],
+        COOP_DATE_FIN_CONTRAT: '',
+        COOP_DATE_RUPTURE: '',
       },
     })
   })
@@ -47,6 +51,7 @@ describe('contact Brevo d’un inscrit', () => {
           RoleBrevo('ConseillerNumerique'),
           RoleBrevo('Coordinateur'),
         ],
+        contrat: SANS_CONTRAT,
       }).attributes,
     ).toEqual({
       EXT_ID: utilisateurId,
@@ -54,6 +59,62 @@ describe('contact Brevo d’un inscrit', () => {
       LASTNAME: 'Martin',
       SMS: '+33612345678',
       ROLES: ['Médiateur', 'Conseiller numérique', 'Coordinateur'],
+      COOP_DATE_FIN_CONTRAT: '',
+      COOP_DATE_RUPTURE: '',
+    })
+  })
+
+  it('envoie les dates de contrat au format AAAA-MM-JJ', () => {
+    expect(
+      versContactBrevo({
+        utilisateurId,
+        courriel,
+        prenom: null,
+        nom: null,
+        telephone: null,
+        roles: [RoleBrevo('ConseillerNumerique')],
+        contrat: {
+          fin: new Date('2026-12-15'),
+          rupture: new Date('2026-07-10'),
+        },
+      }).attributes,
+    ).toMatchObject({
+      COOP_DATE_FIN_CONTRAT: '2026-12-15',
+      COOP_DATE_RUPTURE: '2026-07-10',
+    })
+  })
+
+  it('envoie la rupture d’un CDI sans date de fin', () => {
+    expect(
+      versContactBrevo({
+        utilisateurId,
+        courriel,
+        prenom: null,
+        nom: null,
+        telephone: null,
+        roles: [RoleBrevo('ConseillerNumerique')],
+        contrat: { fin: null, rupture: new Date('2026-06-30') },
+      }).attributes,
+    ).toMatchObject({
+      COOP_DATE_FIN_CONTRAT: '',
+      COOP_DATE_RUPTURE: '2026-06-30',
+    })
+  })
+
+  it('efface une date absente par une chaîne vide, Brevo ignorant null', () => {
+    expect(
+      versContactBrevo({
+        utilisateurId,
+        courriel,
+        prenom: null,
+        nom: null,
+        telephone: null,
+        roles: [RoleBrevo('ConseillerNumerique')],
+        contrat: { fin: new Date('2026-12-15'), rupture: null },
+      }).attributes,
+    ).toMatchObject({
+      COOP_DATE_FIN_CONTRAT: '2026-12-15',
+      COOP_DATE_RUPTURE: '',
     })
   })
 })

@@ -27,8 +27,15 @@ export type ContactBrevoJson = {
     readonly LASTNAME: string
     readonly SMS: string
     readonly ROLES: readonly string[]
+    readonly COOP_DATE_FIN_CONTRAT: string
+    readonly COOP_DATE_RUPTURE: string
   }
 }
+
+// AAAA-MM-JJ : dates stockées à minuit UTC, le slice garde le bon jour.
+// Date absente → '' : seule valeur qui efface une date dans Brevo (null est ignoré).
+const dateBrevo = (date: Date | null): string =>
+  date?.toISOString().slice(0, 10) ?? ''
 
 export const versContactBrevo = (
   contact: ContactAImporter,
@@ -40,6 +47,8 @@ export const versContactBrevo = (
     LASTNAME: contact.nom ?? '',
     SMS: contact.telephone ?? '',
     ROLES: contact.roles.map(libelleDuRole),
+    COOP_DATE_FIN_CONTRAT: dateBrevo(contact.contrat.fin),
+    COOP_DATE_RUPTURE: dateBrevo(contact.contrat.rupture),
   },
 })
 

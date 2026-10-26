@@ -319,6 +319,11 @@ export type CompteDeListe = {
   readonly fixture?: boolean
   readonly coordinateurDeclare?: boolean
   readonly telephone?: string | null
+  readonly contrats?: readonly {
+    readonly debut: Date | null
+    readonly fin: Date | null
+    readonly rupture: Date | null
+  }[]
 }
 
 const listes: {
@@ -425,8 +430,10 @@ export const semerUnCompteDeListe = async (
 
   const avecEmploi = compte.employeuseId != null || compte.conseillerNumerique
 
+  const avecContrats = (compte.contrats?.length ?? 0) > 0
+
   const personne =
-    avecEmploi || compte.coordinateurDeclare
+    avecEmploi || compte.coordinateurDeclare || avecContrats
       ? await prismaClient.personneMain.create({
           data: { coopId: userId, isCoordinateur: compte.coordinateurDeclare },
           select: { id: true },
@@ -445,6 +452,16 @@ export const semerUnCompteDeListe = async (
       },
     })
   }
+
+  if (personne && avecContrats)
+    await prismaClient.contratMain.createMany({
+      data: (compte.contrats ?? []).map(({ debut, fin, rupture }) => ({
+        personneId: personne.id,
+        dateDebut: debut,
+        dateFin: fin,
+        dateRupture: rupture,
+      })),
+    })
 
   if (compte.avecUnBeneficiaire && mediateur)
     await prismaClient.beneficiaire.create({
@@ -482,6 +499,9 @@ After(async () => {
     where: { mediateur: parUtilisateur },
   })
   await prismaClient.personneAffectationEmploiMain.deleteMany({
+    where: { personne: { coopId: { in: [...utilisateurs] } } },
+  })
+  await prismaClient.contratMain.deleteMany({
     where: { personne: { coopId: { in: [...utilisateurs] } } },
   })
   await prismaClient.personneMain.deleteMany({

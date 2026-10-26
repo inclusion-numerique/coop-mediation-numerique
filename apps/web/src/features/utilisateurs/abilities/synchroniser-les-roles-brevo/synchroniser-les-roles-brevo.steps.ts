@@ -52,6 +52,39 @@ const situations: Readonly<
   'déclaré coordinateur hors dispositif': { coordinateurDeclare: true },
 }
 
+const contratsDesConseillers: Readonly<
+  Record<string, NonNullable<CompteDeListe['contrats']>>
+> = {
+  'en CDD': [
+    {
+      debut: new Date('2025-01-01'),
+      fin: new Date('2026-12-15'),
+      rupture: null,
+    },
+  ],
+  'en CDI': [{ debut: new Date('2025-01-01'), fin: null, rupture: null }],
+  'dont le CDD a été rompu': [
+    {
+      debut: new Date('2025-01-01'),
+      fin: new Date('2026-12-15'),
+      rupture: new Date('2026-07-10'),
+    },
+  ],
+  'dont le CDI a été rompu': [
+    {
+      debut: new Date('2024-01-03'),
+      fin: null,
+      rupture: new Date('2026-06-30'),
+    },
+  ],
+  // Ligne « rupture seule » d'un poste antérieur, telle que l'Entrepôt la porte.
+  'réembauché en CDI après une rupture': [
+    { debut: null, fin: null, rupture: new Date('2024-01-02') },
+    { debut: new Date('2024-01-03'), fin: null, rupture: null },
+  ],
+  'sans contrat connu': [],
+}
+
 const synchro: {
   semes: readonly string[]
   tailleMax: number
@@ -108,6 +141,13 @@ Given('un inscrit vivant {string}', async (situation: string) => {
   assert.ok(options, `Situation « ${situation} » inconnue`)
   synchro.semes = []
   await semer(options)
+})
+
+Given('un conseiller numérique vivant {string}', async (situation: string) => {
+  const contrats = contratsDesConseillers[situation]
+  assert.ok(contrats, `Situation « ${situation} » inconnue`)
+  synchro.semes = []
+  await semer({ mediateur: vierge, conseillerNumerique: true, contrats })
 })
 
 Given(
@@ -225,6 +265,19 @@ Then(
     assert.strictEqual(attributes.FIRSTNAME, 'Jeanne')
     assert.ok(attributes.LASTNAME.startsWith('Roles'))
     assert.strictEqual(attributes.SMS, '+33612345678')
+  },
+)
+
+Then(
+  'son contact porte la date de fin {string} et la date de rupture {string}',
+  (fin: string, rupture: string) => {
+    const [id] = synchro.semes
+    const contact = id === undefined ? undefined : contactDe(id)
+    assert.ok(contact, 'Contact non importé')
+    const { attributes } = versContactBrevo(contact)
+    const attendue = (date: string) => (date === 'aucune' ? '' : date)
+    assert.strictEqual(attributes.COOP_DATE_FIN_CONTRAT, attendue(fin))
+    assert.strictEqual(attributes.COOP_DATE_RUPTURE, attendue(rupture))
   },
 )
 

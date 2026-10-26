@@ -91,6 +91,7 @@ export {
   ContactReferent,
   type Contrat,
   type CourrielReferent,
+  contratLePlusRecent,
   contratPourEmployeuse,
   type DenominationEmployeuse,
   debutEmploi,

@@ -16,10 +16,12 @@ export {
   type ContactAImporter,
   type ContactASynchroniser,
   contactASynchroniser,
+  type DatesDeContrat,
   type InscritDeLaListe,
   RoleBrevo,
   type RolesBrevo,
   rolesBrevoDe,
+  SANS_CONTRAT,
   SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
