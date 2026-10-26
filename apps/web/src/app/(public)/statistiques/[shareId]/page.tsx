@@ -1,6 +1,8 @@
+import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { getMesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/components/filters/more-filters/rechercher-employeuses-des-activites.key'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
@@ -54,14 +56,19 @@ const Page = async ({ params, searchParams }: PageProps) => {
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY}
+      to={rechercherEmployeusesDesActivitesAction}
     >
-      <StatistiquesPage
-        {...mesStatistiquesProps}
-        username={user.name ?? ''}
-        shareId={shareId}
-      />
+      <ClientBinder
+        bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+        to={rechercherUnLieuActiviteAction}
+      >
+        <StatistiquesPage
+          {...mesStatistiquesProps}
+          username={user.name ?? ''}
+          shareId={shareId}
+        />
+      </ClientBinder>
     </ClientBinder>
   )
 }

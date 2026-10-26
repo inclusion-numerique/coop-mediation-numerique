@@ -1,5 +1,5 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { StructureEmployeuseOption } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
+import type { StructureEmployeuseOption } from '@app/web/features/activites/use-cases/list/db/getStructuresEmployeusesOptions'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
