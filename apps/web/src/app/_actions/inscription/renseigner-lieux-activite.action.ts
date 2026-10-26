@@ -13,11 +13,13 @@ import type {
 } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/domain'
 import { trouverStructuresCarto } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { UserId } from '@app/web/features/inscription/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 import type { Result } from '@app/web/libraries/result'
 
 export const renseignerLieuxActiviteAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(RenseignerLieuxActiviteValidation))
   .execute(
     fromResult(

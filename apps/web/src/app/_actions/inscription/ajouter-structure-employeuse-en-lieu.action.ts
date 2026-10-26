@@ -8,10 +8,12 @@ import {
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import { geocoderLAdresse } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementation'
 import { UserId } from '@app/web/features/inscription/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(StructureEmployeuseLieuValidation))
   .execute(
     fromResult(

@@ -1,6 +1,7 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { declencherSynchronisationBinding as declencher } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
@@ -16,6 +17,7 @@ import { actionBuilder, fromResult } from '@app/web/libraries/nextjs'
  */
 export const rattraperRdvsSansWebhookAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .execute(
     fromResult(
       async ({ user }) =>

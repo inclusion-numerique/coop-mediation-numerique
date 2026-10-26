@@ -10,10 +10,12 @@ import {
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
 import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const supprimerUnAncienMembreAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(SupprimerUnAncienMembreValidation))
   .execute(
     fromResult(

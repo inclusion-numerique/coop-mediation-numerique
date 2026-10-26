@@ -2,6 +2,7 @@
 
 import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
 import { withAuth } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import {
   SUPPRIMER_COMPTE_ERRORS,
   supprimerCompte,
@@ -11,6 +12,7 @@ import { actionBuilder, fromResult } from '@app/web/libraries/nextjs'
 
 export const supprimerMonCompteAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .execute(
     fromResult(
       ({ user }) =>

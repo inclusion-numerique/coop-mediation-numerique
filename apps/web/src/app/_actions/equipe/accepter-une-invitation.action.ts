@@ -15,6 +15,7 @@ import {
   ReferenceInvitation,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 const accepteurDe = (user: SessionUser): Accepteur => {
@@ -30,6 +31,7 @@ const accepteurDe = (user: SessionUser): Accepteur => {
 
 export const accepterUneInvitationAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(AccepterUneInvitationValidation))
   .execute(
     fromResult(

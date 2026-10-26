@@ -2,6 +2,7 @@
 
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { withAuth } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { reglerLePartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'
 import { ReglerLePartageStatistiquesValidation } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.validation'
@@ -22,6 +23,7 @@ const rattachementsDe = (user: SessionUser): Rattachements => ({
 
 export const reglerLePartageStatistiquesAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(ReglerLePartageStatistiquesValidation))
   .execute(
     fromResult(

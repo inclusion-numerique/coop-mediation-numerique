@@ -1,6 +1,7 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import type { RafraichissementAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/domain/rafraichissement-accueil'
 import { consulterRdvsAccueilBinding as consulter } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
@@ -21,6 +22,7 @@ import { success } from '@app/web/libraries/result'
  */
 export const rafraichirAccueilRdvAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .execute(
     fromResult(
       async ({ user }) => {

@@ -1,3 +1,4 @@
+import { reglerLaMaintenanceAction } from '@app/web/app/_actions/maintenance-mode/regler-la-maintenance.action'
 import { relancerLesInscriptionsInacheveesAction } from '@app/web/app/_actions/utilisateurs/relancer-les-inscriptions-inachevees.action'
 import { relancerLesInscritsInactifsAction } from '@app/web/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
@@ -5,7 +6,12 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import Card from '@app/web/components/Card'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import NormaliserBeneficiaires from '@app/web/features/beneficiaire/abilities/normaliser-beneficiaires/ui/NormaliserBeneficiaires'
-import MaintenanceMode from '@app/web/features/maintenance-mode/use-cases/administration/MaintenanceMode'
+import {
+  consulterLaMaintenance,
+  consulterLHistoriqueDesMaintenances,
+} from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance'
+import { REGLER_LA_MAINTENANCE_ACTION_KEY } from '@app/web/features/maintenance-mode/abilities/regler-la-maintenance/action/regler-la-maintenance.key'
+import { ReglageDeLaMaintenance } from '@app/web/features/maintenance-mode/abilities/regler-la-maintenance/ui'
 import { RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/action/relancer-les-inscriptions-inachevees.key'
 import { LancerLesRelancesDInscription } from '@app/web/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/ui'
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/action/relancer-les-inscrits-inactifs.key'
@@ -23,7 +29,12 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = () => {
+const Page = async () => {
+  const [maintenance, historique] = await Promise.all([
+    consulterLaMaintenance(),
+    consulterLHistoriqueDesMaintenances(),
+  ])
+
   return (
     <CoopPageContainer>
       <SkipLinksPortal />
@@ -36,7 +47,15 @@ const Page = () => {
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-12">
               <Card title="Mode maintenance">
-                <MaintenanceMode />
+                <ClientBinder
+                  bind={REGLER_LA_MAINTENANCE_ACTION_KEY}
+                  to={reglerLaMaintenanceAction}
+                >
+                  <ReglageDeLaMaintenance
+                    etat={maintenance}
+                    historique={historique}
+                  />
+                </ClientBinder>
               </Card>
             </div>
             <div className="fr-col-12">

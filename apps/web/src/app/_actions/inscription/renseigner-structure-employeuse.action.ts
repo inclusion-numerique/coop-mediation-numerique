@@ -8,6 +8,7 @@ import {
 import { renseignerStructureEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
 import { rattacherEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/implementation'
 import { UserId } from '@app/web/features/inscription/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /**
@@ -22,6 +23,7 @@ import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
  */
 export const renseignerStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(RenseignerStructureEmployeuseValidation))
   .execute(
     fromResult(

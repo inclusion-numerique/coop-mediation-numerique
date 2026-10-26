@@ -7,10 +7,12 @@ import {
 } from '@app/web/features/inscription/abilities/valider'
 import { validerInscription } from '@app/web/features/inscription/abilities/valider/commands/valider'
 import { UserId } from '@app/web/features/inscription/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const validerAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(ValiderValidation))
   .execute(
     fromResult(

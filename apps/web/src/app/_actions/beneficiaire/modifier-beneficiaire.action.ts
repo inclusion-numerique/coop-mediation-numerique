@@ -7,10 +7,12 @@ import {
 } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire'
 import { modifierBeneficiaire } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const modifierBeneficiaireAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withMediateur())
   .use(withInput(ModifierBeneficiaireValidation))
   .execute(

@@ -1,6 +1,7 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { DECONNECTER_COMPTE_RDV_ERRORS } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/action/deconnecter-compte-rdv.errors'
 import { deconnecterCompteRdv } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/implementation'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
@@ -14,6 +15,7 @@ const deconnecter = deconnecterCompteRdv()
  */
 export const deconnecterCompteRdvAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .execute(
     fromResult(
       async ({ user }) => {

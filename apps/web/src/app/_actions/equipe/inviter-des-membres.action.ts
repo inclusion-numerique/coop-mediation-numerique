@@ -15,11 +15,13 @@ import {
   Email,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 import { failure, type Result } from '@app/web/libraries/result'
 
 export const inviterDesMembresAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(InviterDesMembresValidation))
   .execute(
     fromResult(

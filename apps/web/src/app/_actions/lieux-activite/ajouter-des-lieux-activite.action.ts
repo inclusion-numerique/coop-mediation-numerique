@@ -13,6 +13,7 @@ import {
 } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /**
@@ -22,6 +23,7 @@ import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
  */
 export const ajouterDesLieuxActiviteAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(LieuxAAjouterValidation))
   .execute(
     fromResult(

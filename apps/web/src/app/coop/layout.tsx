@@ -3,7 +3,9 @@ import { getServerDsfrTheme } from '@app/web/app/getServerDsfrTheme'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import InscriptionStepsLayout from '@app/web/features/inscription/components/InscriptionStepsLayout'
-import { MaintenanceModeBanner } from '@app/web/features/maintenance-mode/components/MaintenanceModeBanner'
+import { consulterLaMaintenance } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance'
+import { BanniereDeMaintenance } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance/ui'
+import { messageAffiche } from '@app/web/features/maintenance-mode/domain'
 import { lireLaRuptureEnAttente } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture'
 import { ConfirmationApresRupture } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/ui'
 import { MediateurId } from '@app/web/features/mediateurs/domain'
@@ -72,10 +74,14 @@ const Layout = async ({ children }: PropsWithChildren) => {
     )
   }
 
+  const maintenance = await consulterLaMaintenance()
+
   return (
     <div className="fr-layout">
       <div id="skip-links" />
-      <MaintenanceModeBanner />
+      {maintenance._tag === 'Active' && (
+        <BanniereDeMaintenance message={messageAffiche(maintenance)} />
+      )}
       {children}
     </div>
   )

@@ -1,6 +1,7 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { METTRE_A_JOUR_STATUT_RDV_ERRORS } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.errors'
 import { MettreAJourStatutRdvValidation } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.validation'
 import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
@@ -9,6 +10,7 @@ import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const mettreAJourStatutRdvAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(MettreAJourStatutRdvValidation))
   .execute(
     fromResult(

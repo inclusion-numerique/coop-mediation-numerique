@@ -1,6 +1,7 @@
 'use server'
 
 import { withAuth, withMediateur } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { confirmerLExerciceApresRupture } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture'
 import { CONFIRMER_L_EXERCICE_APRES_RUPTURE_ERRORS } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/action/confirmer-l-exercice-apres-rupture.errors'
 import { ConfirmerLExerciceApresRuptureValidation } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/action/confirmer-l-exercice-apres-rupture.validation'
@@ -10,6 +11,7 @@ import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const confirmerLExerciceApresRuptureAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withMediateur())
   .use(withInput(ConfirmerLExerciceApresRuptureValidation))
   .execute(
