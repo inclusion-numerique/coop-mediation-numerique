@@ -2,8 +2,9 @@ import { activerLaMediationNumeriqueAction } from '@app/web/app/_actions/utilisa
 import { supprimerMonCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-mon-compte.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import Contract from '@app/web/components/conseiller-numerique/Contract'
-import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
+import { consulterLeContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat'
+import { CarteContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat/ui'
+import { UtilisateurId } from '@app/web/features/mediateurs/domain'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.key'
 import { CarteMediationNumerique } from '@app/web/features/utilisateurs/abilities/activer-la-mediation-numerique/ui'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
@@ -25,7 +26,7 @@ const MonProfil = async () => {
 
   const contrat =
     user.coordinateur || user.isConseillerNumerique
-      ? await getContractInfo(user.id)
+      ? await consulterLeContrat({ utilisateurId: UtilisateurId(user.id) })
       : null
 
   return (
@@ -47,9 +48,9 @@ const MonProfil = async () => {
             contrats:
               contrat === null ? null : (
                 <section className="fr-mb-4v">
-                  <Contract
-                    isCoordinateur={user.coordinateur !== null}
-                    {...contrat}
+                  <CarteContrat
+                    contrat={contrat}
+                    coordinateur={user.coordinateur !== null}
                   />
                 </section>
               ),

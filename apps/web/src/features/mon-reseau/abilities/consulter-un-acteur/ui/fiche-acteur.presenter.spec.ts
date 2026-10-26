@@ -7,6 +7,7 @@ import type { RegardDuLecteur } from '../domain'
 import {
   actionsDEquipe,
   ancienMembreDe,
+  contratVisible,
   encartDeLEmployeuse,
   membreDeLEquipe,
   statutAffiche,
@@ -24,7 +25,6 @@ const membre = {
     beneficiairesAccompagnes: Effectif(4),
     accompagnements: Effectif(9),
   },
-  contrat: null,
 } as const
 
 describe('présentation de la fiche d’un acteur', () => {
@@ -122,5 +122,20 @@ describe('présentation de la fiche d’un acteur', () => {
         _tag: 'Mediateur',
       }),
     ).toEqual({ referentVisible: false, avisAuxConseillersNumeriques: true })
+  })
+
+  it('montre le contrat des seuls conseillers numériques membres de l’équipe', () => {
+    expect(
+      contratVisible(
+        coordinateurConseillerNumerique,
+        regardDuCoordinateur(membre),
+      ),
+    ).toBe(true)
+    expect(
+      contratVisible(mediateurHorsDispositif, regardDuCoordinateur(membre)),
+    ).toBe(false)
+    expect(
+      contratVisible(coordinateurConseillerNumerique, { _tag: 'Mediateur' }),
+    ).toBe(false)
   })
 })

@@ -204,7 +204,6 @@ Then(
     assert.deepStrictEqual(laRelation(), {
       _tag: 'Membre',
       statistiques: { beneficiairesAccompagnes: 0, accompagnements: 0 },
-      contrat: null,
     })
   },
 )

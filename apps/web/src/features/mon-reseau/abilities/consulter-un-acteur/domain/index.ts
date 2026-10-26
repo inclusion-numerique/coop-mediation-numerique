@@ -1,11 +1,9 @@
 export {
   type ActeurLu,
-  type ContratAffiche,
   FENETRE_DES_STATISTIQUES_EN_JOURS,
   type FicheActeur,
   type LireLActeur,
   type LireLaDerniereActivite,
-  type LireLeContrat,
   type LireLesStatistiquesSur30Jours,
   type RegardDuLecteur,
   type RelationDEquipe,

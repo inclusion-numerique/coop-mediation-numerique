@@ -1,5 +1,4 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import Contract from '@app/web/components/conseiller-numerique/Contract'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { Departement } from '@app/web/libraries/departement'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -11,7 +10,6 @@ import { IdentiteDeLActeur } from '../components/IdentiteDeLActeur'
 import { StatistiquesDeLActeur } from '../components/StatistiquesDeLActeur'
 import {
   actionsDEquipe,
-  contratPourLAffichage,
   membreDeLEquipe,
   statutAffiche,
 } from '../fiche-acteur.presenter'
@@ -19,12 +17,14 @@ import {
 export const FicheActeurPage = ({
   fiche: { acteur, profilCreeLe, statut, regard },
   departement,
+  contrat,
   employeuse,
   lieux,
   suppressionDesArchives,
 }: {
   fiche: FicheActeur
   departement: Departement
+  contrat?: ReactNode
   employeuse?: ReactNode
   lieux?: ReactNode
   suppressionDesArchives?: ReactNode
@@ -68,13 +68,8 @@ export const FicheActeurPage = ({
               />
             </section>
           )}
-          {membre?.contrat != null && (
-            <section className="fr-mt-6v">
-              <Contract
-                isCoordinateur={false}
-                {...contratPourLAffichage(membre.contrat)}
-              />
-            </section>
+          {contrat !== undefined && (
+            <section className="fr-mt-6v">{contrat}</section>
           )}
           {employeuse !== undefined && (
             <section className="fr-mt-6v" id="structure-employeuse">

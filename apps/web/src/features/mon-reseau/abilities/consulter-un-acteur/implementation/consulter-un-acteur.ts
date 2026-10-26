@@ -14,7 +14,6 @@ import {
   type RelationDEquipe,
   statutDActivitePublic,
 } from '../domain'
-import { lireLeContrat } from './conseiller-numerique'
 import { lireLActeur, lireLesLiensDEquipe } from './prisma'
 import { lireLesStatistiquesSur30Jours } from './statistiques'
 
@@ -49,17 +48,12 @@ const relationAvec = async (
   if (lien._tag !== 'Membre') return lien
   if (mediation === null) return { _tag: 'NonCoordonnable' }
 
-  const [statistiques, contrat] = await Promise.all([
-    lireLesStatistiquesSur30Jours(
-      lecteur.coordinateurId,
-      mediation.mediateurId,
-      maintenant,
-    ),
-    acteur.profil.dispositif === 'ConseillerNumerique'
-      ? lireLeContrat(acteur.acteurId)
-      : null,
-  ])
-  return { _tag: 'Membre', statistiques, contrat }
+  const statistiques = await lireLesStatistiquesSur30Jours(
+    lecteur.coordinateurId,
+    mediation.mediateurId,
+    maintenant,
+  )
+  return { _tag: 'Membre', statistiques }
 }
 
 const regardDe = async (

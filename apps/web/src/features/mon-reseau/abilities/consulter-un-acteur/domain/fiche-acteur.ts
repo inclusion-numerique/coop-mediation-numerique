@@ -18,19 +18,11 @@ export type StatistiquesSur30Jours = {
   readonly accompagnements: Effectif
 }
 
-export type ContratAffiche = {
-  readonly type: string
-  readonly debut: string | null
-  readonly fin: string | null
-  readonly echeance: 'prochainement' | 'termine' | null
-}
-
 export type RelationDEquipe =
   | Exclude<LienDEquipe, { _tag: 'Membre' }>
   | {
       readonly _tag: 'Membre'
       readonly statistiques: StatistiquesSur30Jours
-      readonly contrat: ContratAffiche | null
     }
 
 export type RegardDuLecteur =
@@ -64,7 +56,3 @@ export type LireLesStatistiquesSur30Jours = (
   mediateurId: MediateurId,
   maintenant: Date,
 ) => Promise<StatistiquesSur30Jours>
-
-export type LireLeContrat = (
-  acteurId: ActeurId,
-) => Promise<ContratAffiche | null>
