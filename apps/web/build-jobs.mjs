@@ -7,12 +7,14 @@ const variablesPubliques = Object.fromEntries(
 )
 
 await build({
-  entryPoints: ['src/jobs/run-job.ts'],
-  outfile: 'dist/run-job.cjs',
+  entryPoints: ['src/jobs/run-job.ts', 'src/jobs/verifier-le-bundle.ts'],
+  outdir: 'dist',
+  outExtension: { '.js': '.cjs' },
   bundle: true,
   platform: 'node',
   target: 'node24',
   format: 'cjs',
+  jsx: 'automatic',
   tsconfig: 'tsconfig.json',
   alias: { 'server-only': './node_modules/server-only/empty.js' },
   define: variablesPubliques,

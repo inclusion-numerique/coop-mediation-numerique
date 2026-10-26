@@ -133,6 +133,24 @@ jobs:
           check_name: 'Unit tests summary'
           annotate_only: true
 
+  jobs-runner:
+    name: Jobs runner
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-jobs-runner
+      cancel-in-progress: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Create env file
+        run: cp .env.dist .env
+      - name: Build jobs runner
+        run: pnpm --silent -F @app/web build:jobs
+      - name: Check jobs runner
+        run: node apps/web/dist/verifier-le-bundle.cjs
+
   integration-tests:
     name: Integration tests
     runs-on: ubuntu-latest
