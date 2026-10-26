@@ -1,12 +1,9 @@
-import ClientApiForm from '@app/web/app/administration/clients-api/ClientApiForm'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
+import { creerUnClientApiAction } from '@app/web/app/_actions/clients-api/creer-un-client-api.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
-import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@app/web/utils/skipLinks'
+import { CREER_UN_CLIENT_API_ACTION_KEY } from '@app/web/features/clients-api/abilities/creer-un-client-api/action/creer-un-client-api.key'
+import { CreerUnClientApiPage } from '@app/web/features/clients-api/abilities/creer-un-client-api/ui'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 
 export const metadata = {
   title: metadataTitle('Clients API - Créer'),
@@ -14,31 +11,13 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async () => {
-  await authenticateUser()
-
-  return (
-    <CoopPageContainer>
-      <SkipLinksPortal />
-      <AdministrationBreadcrumbs
-        currentPage="Créer un client API"
-        parents={[
-          {
-            label: 'Clients API',
-            linkProps: { href: '/administration/clients-api' },
-          },
-        ]}
-      />
-      <main id={contentId}>
-        <AdministrationTitle icon="ri-key-2-line">
-          Créer un client API
-        </AdministrationTitle>
-        <AdministrationInfoCard>
-          <ClientApiForm />
-        </AdministrationInfoCard>
-      </main>
-    </CoopPageContainer>
-  )
-}
+const Page = () => (
+  <ClientBinder
+    bind={CREER_UN_CLIENT_API_ACTION_KEY}
+    to={creerUnClientApiAction}
+  >
+    <CreerUnClientApiPage aujourdHui={dateAsIsoDay(new Date())} />
+  </ClientBinder>
+)
 
 export default Page
