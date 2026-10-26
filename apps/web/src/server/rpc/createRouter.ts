@@ -1,5 +1,8 @@
-import { getMaintenanceMode } from '@app/web/features/maintenance-mode/db/getMaintenanceMode'
-import { canMutateDuringMaintenance } from '@app/web/features/maintenance-mode/domain/canMutateDuringMaintenance'
+import { consulterLaMaintenance } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance'
+import {
+  messageAffiche,
+  peutModifierPendantLaMaintenance,
+} from '@app/web/features/maintenance-mode/domain'
 import { AppContext } from '@app/web/server/rpc/createContext'
 import { transformer } from '@app/web/utils/serialization'
 import { initTRPC, TRPCError } from '@trpc/server'
@@ -69,10 +72,10 @@ const enforceMaintenanceMode = middleware(async ({ ctx, next, type }) => {
     return next()
   }
 
-  const { active, message } = await getMaintenanceMode()
+  const etat = await consulterLaMaintenance()
 
-  if (!canMutateDuringMaintenance({ role: ctx.user.role, active })) {
-    throw new TRPCError({ code: 'FORBIDDEN', message })
+  if (!peutModifierPendantLaMaintenance({ role: ctx.user.role, etat })) {
+    throw new TRPCError({ code: 'FORBIDDEN', message: messageAffiche(etat) })
   }
 
   return next()

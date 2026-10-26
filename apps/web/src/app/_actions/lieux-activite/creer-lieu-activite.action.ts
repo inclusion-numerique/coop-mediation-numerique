@@ -7,10 +7,12 @@ import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-li
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const creerUnLieuActiviteAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(CreerLieuActiviteValidation))
   .execute(
     fromResult(

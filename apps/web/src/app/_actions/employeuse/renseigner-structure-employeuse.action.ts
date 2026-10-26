@@ -6,6 +6,7 @@ import {
   IdentiteEmployeuse,
   rattacherAUneEmployeuse,
 } from '@app/web/features/employeuse/server'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -22,6 +23,7 @@ import { prismaClient } from '@app/web/prismaClient'
  */
 export const renseignerStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(RenseignerStructureEmployeuseValidation))
   .execute(async ({ input: { structure }, user }) => {
     // Forme totale : une structure enregistrée sans adresse exploitable ne peut

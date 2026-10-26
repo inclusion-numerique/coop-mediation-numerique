@@ -9,10 +9,12 @@ import {
   MediateurId,
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const quitterUneEquipeAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withMediateur())
   .use(withInput(QuitterUneEquipeValidation))
   .execute(

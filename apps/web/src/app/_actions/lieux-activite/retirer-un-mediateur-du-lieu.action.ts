@@ -7,6 +7,7 @@ import { RetirerUnMediateurDuLieuValidation } from '@app/web/features/lieux-acti
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /** Le nom sous lequel l'auteur du retrait apparaît dans l'e-mail envoyé. */
@@ -23,6 +24,7 @@ const nomAffiche = (user: {
 
 export const retirerUnMediateurDuLieuAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withInput(RetirerUnMediateurDuLieuValidation))
   .execute(
     fromResult(

@@ -1,6 +1,7 @@
 'use server'
 
 import { withAuth, withMediateur } from '@app/web/features/authentification'
+import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
 import { CreerActiviteDepuisRdvValidation } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
 import { MediateurRedacteurId } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
@@ -10,6 +11,7 @@ import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const creerActiviteDepuisRdvAction = actionBuilder()
   .use(withAuth())
+  .use(withMaintenance())
   .use(withMediateur())
   .use(withInput(CreerActiviteDepuisRdvValidation))
   .execute(
