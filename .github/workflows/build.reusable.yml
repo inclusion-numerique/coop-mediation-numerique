@@ -76,6 +76,8 @@ jobs:
         run: SENTRY_ENABLE_RELEASE=true pnpm --silent -F @app/web build
       - name: Build jobs runner
         run: pnpm --silent -F @app/web build:jobs
+      - name: Check jobs runner
+        run: node apps/web/dist/verifier-le-bundle.cjs
       - name: Build docker image
         env:
           IMAGE: ${{ steps.namespace.outputs.image }}
