@@ -1,8 +1,0 @@
-import { Image } from '@app/web/generated/prisma/browser'
-
-export const defaultCropValues = {
-  cropHeight: 1,
-  cropWidth: 1,
-  cropTop: 0,
-  cropLeft: 0,
-} satisfies Pick<Image, 'cropHeight' | 'cropWidth' | 'cropTop' | 'cropLeft'>

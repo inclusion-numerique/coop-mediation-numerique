@@ -1,5 +1,4 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { NextRequest, NextResponse } from 'next/server'
 
 const nodeEnvironment = process.env.NODE_ENV
@@ -14,9 +13,7 @@ const contentSecurityPolicy = `
   img-src 'self' data: *;
   frame-src https://www.youtube-nocookie.com/;
   object-src 'none';
-  connect-src 'self' https://${ServerWebAppConfig.S3.uploadsBucket}.${
-    ServerWebAppConfig.S3.host
-  } https://${PublicWebAppConfig.ProConnect.hostname} ${PublicWebAppConfig.isMain ? '' : 'https://cdn.jsdelivr.net '}https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://recherche-entreprises.api.gouv.fr https://data.geopf.fr https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr https://coop-numerique.anct.gouv.fr;
+  connect-src 'self' https://${PublicWebAppConfig.ProConnect.hostname} ${PublicWebAppConfig.isMain ? '' : 'https://cdn.jsdelivr.net '}https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://recherche-entreprises.api.gouv.fr https://data.geopf.fr https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr https://coop-numerique.anct.gouv.fr;
   worker-src 'self' blob:;
   font-src 'self' https: data:;
   frame-ancestors 'self' https://matomo.incubateur.anct.gouv.fr;
