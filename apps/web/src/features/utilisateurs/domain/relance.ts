@@ -32,12 +32,14 @@ export type SituationDeRelance = {
   readonly phase: PhaseDeRelance
   readonly depuis: Date
   readonly relance: Relance
+  readonly suppressionAnnoncee: Date | null
   readonly aProduit: boolean
 }
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 const AVERTISSEMENT = 90
 const EFFACEMENT = 105
+const PREAVIS = 14
 
 type Regle = {
   readonly action: (
@@ -52,20 +54,16 @@ const avertir = (
   { depuis }: SituationDeRelance,
   maintenant: Date,
 ): ActionDeRelance => {
-  const echeance = depuis.getTime() + EFFACEMENT * UN_JOUR
-  const reste = echeance - maintenant.getTime()
+  const echeance = Math.max(
+    depuis.getTime() + EFFACEMENT * UN_JOUR,
+    maintenant.getTime() + PREAVIS * UN_JOUR,
+  )
 
-  return reste < 0
-    ? {
-        _tag: 'Avertir',
-        suppressionLe: new Date(maintenant.getTime() + UN_JOUR),
-        joursRestants: 1,
-      }
-    : {
-        _tag: 'Avertir',
-        suppressionLe: new Date(echeance),
-        joursRestants: Math.ceil(reste / UN_JOUR),
-      }
+  return {
+    _tag: 'Avertir',
+    suppressionLe: new Date(echeance),
+    joursRestants: Math.ceil((echeance - maintenant.getTime()) / UN_JOUR),
+  }
 }
 
 const relancer = (palier: PalierDeRelance) => (): ActionDeRelance => ({
@@ -73,14 +71,23 @@ const relancer = (palier: PalierDeRelance) => (): ActionDeRelance => ({
   palier,
 })
 
-const effacer = (): ActionDeRelance => ({ _tag: 'Effacer' })
+const effacerALEcheance = (
+  situation: SituationDeRelance,
+  maintenant: Date,
+): ActionDeRelance => {
+  if (situation.suppressionAnnoncee === null)
+    return avertir(situation, maintenant)
+  return maintenant.getTime() >= situation.suppressionAnnoncee.getTime()
+    ? { _tag: 'Effacer' }
+    : { _tag: 'Rien' }
+}
 
 const R = (valeur: (typeof relances)[number]): Relance => Relance(valeur)
 
 const reglesParPhase: Record<PhaseDeRelance, readonly Regle[]> = {
   Inscription: [
     {
-      action: effacer,
+      action: effacerALEcheance,
       apresJours: EFFACEMENT,
       relancesAttendues: [R('AvertissementJ90')],
     },
@@ -95,7 +102,7 @@ const reglesParPhase: Record<PhaseDeRelance, readonly Regle[]> = {
   ],
   Nouveau: [
     {
-      action: effacer,
+      action: effacerALEcheance,
       apresJours: EFFACEMENT,
       relancesAttendues: [R('AvertissementJ90')],
     },
@@ -149,3 +156,7 @@ export const relanceApres = (action: ActionDeRelance): Relance | null => {
   if (action._tag === 'Reinitialiser') return Relance('Aucune')
   return null
 }
+
+export const suppressionAnnonceeApres = (
+  action: ActionDeRelance,
+): Date | null => (action._tag === 'Avertir' ? action.suppressionLe : null)

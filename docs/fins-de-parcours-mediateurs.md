@@ -30,7 +30,7 @@ Cible : `inscription_validee IS NULL`, décompte depuis `created`.
 |-----------------|-----------------------------------------------------------------|
 | J+7, J+30, J+60 | e-mail « finalisez votre inscription »                          |
 | J+90            | e-mail d'avertissement avant suppression                        |
-| J+105           | **suppression dure** (`DELETE`) du user et de ses rattachements |
+| J+105           | **suppression dure** (`DELETE`) du user et de ses rattachements, jamais moins de 14 jours après l'avertissement |
 
 La suppression est physique et en cascade : `mediateurCoordonne`,
 `mediateurEnActivite`, `mediateur`, `coordinateur`, `user`
@@ -51,6 +51,12 @@ Cible : `inscription_validee IS NOT NULL` **et** `derniereCreationActivite IS NU
 
 Le compteur se **réarme** si la personne redevient active dans les 7 jours
 (`resetOnboardingStatus`).
+
+Dans les deux couloirs, la date de suppression annoncée dans l'avertissement est enregistrée
+(`users.suppression_annoncee_le`) : un avertissement envoyé en retard annonce une suppression
+quatorze jours plus tard, et rien n'est supprimé avant cette date, même par un lancement manuel
+depuis l'administration. Seules les activités, bénéficiaires et activités de coordination **non
+supprimés** gardent un compte : en créer puis les supprimer ne le protège plus.
 
 ### 1.2 Le job de nettoyage des rôles
 

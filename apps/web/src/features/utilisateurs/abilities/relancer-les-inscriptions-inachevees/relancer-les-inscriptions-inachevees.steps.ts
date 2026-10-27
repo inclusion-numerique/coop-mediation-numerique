@@ -27,8 +27,13 @@ const consigner = (destinataire: string, evenement: string) => {
 }
 
 Given(
-  /^une inscription commencée il y a (\d+) jours, relance "([^"]+)"(, avec un bénéficiaire)?$/,
-  async (jours: string, statut: string, avecUnBeneficiaire: string | null) => {
+  /^une inscription commencée il y a (\d+) jours, relance "([^"]+)"(, avec un bénéficiaire)?(, avertie d'une suppression pour demain)?$/,
+  async (
+    jours: string,
+    statut: string,
+    avecUnBeneficiaire: string | null,
+    suppressionDemain: string | null,
+  ) => {
     relance.evenements = []
     relance.utilisateurId = await semerUnCompteDeListe({
       prenom: 'Ines',
@@ -40,6 +45,9 @@ Given(
         null,
       mediateur: { derniereActivite: null, dernierBeneficiaire: null },
       avecUnBeneficiaire: avecUnBeneficiaire !== null,
+      ...(suppressionDemain === null
+        ? {}
+        : { suppressionAnnonceeLe: new Date(Date.now() + UN_JOUR) }),
     })
   },
 )
@@ -91,3 +99,22 @@ Then("cette inscription n'est pas effacée", async () => {
 Then("la personne est prévenue de l'effacement", () => {
   assert.ok(relance.evenements.includes('avis d’effacement'))
 })
+
+Then('cette inscription reçoit un avertissement', () => {
+  assert.ok(relance.evenements.includes('avertissement'))
+})
+
+Then(
+  /^sa suppression est annoncée dans (\d+) jours$/,
+  async (jours: string) => {
+    const { suppressionAnnonceeLe } = await prismaClient.user.findUniqueOrThrow(
+      {
+        where: { id: utilisateurId() },
+        select: { suppressionAnnonceeLe: true },
+      },
+    )
+    assert.ok(suppressionAnnonceeLe, 'Aucune suppression annoncée')
+    const ecart = suppressionAnnonceeLe.getTime() - Date.now()
+    assert.ok(Math.abs(ecart - Number(jours) * UN_JOUR) < UN_JOUR)
+  },
+)

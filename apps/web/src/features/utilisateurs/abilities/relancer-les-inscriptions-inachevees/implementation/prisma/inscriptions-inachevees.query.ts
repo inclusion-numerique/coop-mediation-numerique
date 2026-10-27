@@ -26,6 +26,7 @@ export const inscriptionsInachevees = async (): Promise<
       firstName: true,
       created: true,
       onboardingStatus: true,
+      suppressionAnnonceeLe: true,
       ...productionSelect,
     },
   })
@@ -51,6 +52,7 @@ export const inscriptionsInachevees = async (): Promise<
               phase: 'Inscription' as const,
               depuis: compte.created,
               relance: relanceToDomain('Inscription', compte.onboardingStatus),
+              suppressionAnnoncee: compte.suppressionAnnonceeLe,
               aProduit: aProduit(productionToDomain(compte)),
             },
           },
