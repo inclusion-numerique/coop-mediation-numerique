@@ -231,7 +231,7 @@ const fusionnerLesCoordinateurs = async (
   })
 }
 
-const fusionnerLesAffectations = async (
+const fusionnerLesPersonnes = async (
   tx: Tx,
   sourceId: string,
   cibleId: string,
@@ -283,6 +283,30 @@ const fusionnerLesAffectations = async (
   await tx.personneAffectationEmploiMain.deleteMany({
     where: { personneId: personneSource.id },
   })
+
+  await tx.contratMain.updateMany({
+    where: { personneId: personneSource.id },
+    data: { personneId: personneCible.id },
+  })
+  await tx.$executeRaw`
+    UPDATE main.formation
+    SET personne_id = ${personneCible.id}
+    WHERE personne_id = ${personneSource.id}`
+  await tx.$executeRaw`
+    UPDATE main.poste source
+    SET personne_id = ${personneCible.id}
+    WHERE source.personne_id = ${personneSource.id}
+      AND NOT EXISTS (
+        SELECT 1 FROM main.poste cible
+        WHERE cible.personne_id = ${personneCible.id}
+          AND cible.poste_conum_id = source.poste_conum_id
+          AND cible.structure_id = source.structure_id
+      )`
+  await tx.$executeRaw`
+    UPDATE main.poste
+    SET personne_id = NULL
+    WHERE personne_id = ${personneSource.id}`
+  await tx.personneMain.delete({ where: { id: personneSource.id } })
 }
 
 const reattribuerLesTraces = async (
@@ -417,7 +441,7 @@ export const fusionner = async ({
           rolesCible.coordinateur,
         )
 
-      await fusionnerLesAffectations(tx, source.id, cible.id)
+      await fusionnerLesPersonnes(tx, source.id, cible.id)
       await reattribuerLesTraces(tx, source.id, cible.id)
       await transfererLesLiaisons(tx, source.id, cible.id)
       await retirerLaSource(tx, source.id)
