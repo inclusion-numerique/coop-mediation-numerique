@@ -11,6 +11,7 @@ const fusion: {
   source?: CompteSeme
   cible?: CompteSeme
   resultat?: Awaited<ReturnType<typeof fusionnerDesComptes>>
+  contratId?: number
 } = {}
 
 const source = (): CompteSeme => {
@@ -50,6 +51,22 @@ Given("la source a modifié un lieu d'activité", async () => {
     where: { id: cible().lieuId },
     data: { derniereModificationParId: source().userId },
   })
+})
+
+Given("la source est connue de l'Entrepôt avec un contrat", async () => {
+  const personne = await prismaClient.personneMain.create({
+    data: { coopId: source().userId },
+    select: { id: true },
+  })
+  const { id } = await prismaClient.contratMain.create({
+    data: { personneId: personne.id, dateDebut: new Date('2024-01-01') },
+    select: { id: true },
+  })
+  fusion.contratId = id
+})
+
+Given("la cible est connue de l'Entrepôt", async () => {
+  await prismaClient.personneMain.create({ data: { coopId: cible().userId } })
 })
 
 Given('la cible est supprimée', async () => {
@@ -142,4 +159,22 @@ Then('la dernière modification du lieu est attribuée à la cible', async () =>
     select: { derniereModificationParId: true },
   })
   assert.strictEqual(lieu.derniereModificationParId, cible().userId)
+})
+
+Then('le contrat de la source appartient à la cible', async () => {
+  assert.ok(fusion.contratId, 'Aucun contrat semé')
+  const contrat = await prismaClient.contratMain.findUniqueOrThrow({
+    where: { id: fusion.contratId },
+    select: { personne: { select: { coopId: true } } },
+  })
+  assert.strictEqual(contrat.personne.coopId, cible().userId)
+})
+
+Then("l'Entrepôt ne connaît plus qu'une personne pour la cible", async () => {
+  assert.strictEqual(
+    await prismaClient.personneMain.count({
+      where: { coopId: { in: [source().userId, cible().userId] } },
+    }),
+    1,
+  )
 })

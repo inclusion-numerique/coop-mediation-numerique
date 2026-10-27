@@ -839,6 +839,7 @@ model StructureAdministrativeMain {
   // Cible du périmètre élargi (ADR-002 révision 2026-07-23) : affectations emploi + contrats main.
   affectationsEmploi PersonneAffectationEmploiMain[]
   contrats           ContratMain[]
+  postes             PosteMain[]
 
   @@unique([siret, denominationAntenne], map: "structure_administrative_siret_antenne_ukey")
   @@map("structure_administrative")
@@ -895,6 +896,8 @@ model PersonneMain {
   user               User?                           @relation(fields: [coopId], references: [id])
   affectationsEmploi PersonneAffectationEmploiMain[]
   contrats           ContratMain[]
+  formations         FormationMain[]
+  postes             PosteMain[]
 
   @@map("personne")
   @@schema("main")
@@ -939,6 +942,31 @@ model ContratMain {
   structureAdministrative StructureAdministrativeMain? @relation(fields: [structureId], references: [id])
 
   @@map("contrat")
+  @@schema("main")
+}
+
+model FormationMain {
+  id         Int @id @default(autoincrement())
+  personneId Int @map("personne_id")
+
+  personne PersonneMain @relation(fields: [personneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([personneId])
+  @@map("formation")
+  @@schema("main")
+}
+
+model PosteMain {
+  id           Int  @id @default(autoincrement())
+  posteConumId Int  @map("poste_conum_id")
+  structureId  Int? @map("structure_id")
+  personneId   Int? @map("personne_id")
+
+  personne                PersonneMain?                @relation(fields: [personneId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  structureAdministrative StructureAdministrativeMain? @relation(fields: [structureId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([posteConumId, structureId, personneId], map: "poste_ukey")
+  @@map("poste")
   @@schema("main")
 }
 
