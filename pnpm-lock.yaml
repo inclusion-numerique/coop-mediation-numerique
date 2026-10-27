@@ -289,9 +289,18 @@ importers:
       '@app/emails':
         specifier: workspace:^
         version: link:../../packages/emails
+      '@arckit/nextjs':
+        specifier: ^2.2.2
+        version: 2.2.2(6b64b0a1ea24c976f1fb8f4f17ac4666)
+      '@arckit/pipeline':
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.3.0)
       '@arckit/resultset':
         specifier: ^2.1.0
         version: 2.1.0
+      '@arckit/telemetry':
+        specifier: ^1.5.0
+        version: 1.5.0(@opentelemetry/api@1.9.1)(@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(supports-color@8.1.1)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.23))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(uglify-js@3.19.3)))
       '@auth/core':
         specifier: ^0.41.3
         version: 0.41.3(nodemailer@10.0.10)
@@ -988,9 +997,79 @@ packages:
     peerDependencies:
       '@cucumber/cucumber': '>=12'
 
+  '@arckit/daisyui@1.2.2':
+    resolution: {integrity: sha512-aIOrgsDUOa33BTvoQkKFobiCDqMXQvHDUM6Vi/dqnpAqJ/j4aXqEEJfAlXk6PMzAGTK5oQ7cqArFPMW0ajM7gA==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      '@dnd-kit/core': '>=6'
+      '@dnd-kit/sortable': '>=10'
+      '@dnd-kit/utilities': '>=3'
+      '@radix-ui/react-dropdown-menu': '>=2'
+      '@radix-ui/react-popover': '>=1'
+      '@radix-ui/react-slot': '>=1'
+      '@radix-ui/react-tooltip': '>=1'
+      clsx: '>=2'
+      downshift: '>=9'
+      next-themes: '>=0.4'
+      react: '>=19'
+      react-dom: '>=19'
+      react-hot-toast: '>=2'
+      react-icons: '>=5'
+      tailwind-merge: '>=3'
+
+  '@arckit/nextjs@2.2.2':
+    resolution: {integrity: sha512-5MzzPOrE6Cj1dKJM+igqtLsqNuPLn/Jcx9V5gY3lt6IGnKECSpzWVZw4MuzccqUf+go/IODHFTNMCaYcmfhnrA==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      '@arckit/daisyui': '>=1'
+      '@arckit/i18n': '>=1'
+      '@arckit/pipeline': '>=1'
+      '@arckit/resultset': '>=1'
+      '@arckit/telemetry': '>=1'
+      effect: ^3.20.0
+      i18next: '>=25'
+      next: '>=15'
+      piqure: '>=2'
+      react: '>=19'
+      react-dom: '>=19'
+      react-hot-toast: '>=2'
+      react-icons: '>=5'
+    peerDependenciesMeta:
+      '@arckit/i18n':
+        optional: true
+      '@arckit/resultset':
+        optional: true
+      '@arckit/telemetry':
+        optional: true
+      effect:
+        optional: true
+      i18next:
+        optional: true
+
+  '@arckit/pipeline@1.0.0':
+    resolution: {integrity: sha512-5ergda8PIVLso62h5M1IlNy7c8iyTJz5B42GcAFyM6j4Xvn2z55isMk07zsFBYY+WlHx+viY7I6F2CQTjhvqEQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      react: '>=19'
+
   '@arckit/resultset@2.1.0':
     resolution: {integrity: sha512-9jl9IRk17rnX3MOTioZu777+w9lfAdVeurXT7QNhyp618NhJJUNCSHNkaDK9u/rkIBiwtCDe59pEM8L/AguhMg==}
     engines: {node: '>=22'}
+
+  '@arckit/telemetry@1.5.0':
+    resolution: {integrity: sha512-SMtInOV+57MHdtvfmnm9tso8E0zQ0sDVn/69UOX3O6jIKOTPsXAS19kJXl0BaQtpEiDBCImcFLkqjLoOxssSxg==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1'
+      '@sentry/nextjs': '>=8'
+      pino: '>=9'
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@sentry/nextjs':
+        optional: true
+      pino:
+        optional: true
 
   '@asyncapi/specs@6.11.1':
     resolution: {integrity: sha512-A3WBLqAKGoJ2+6FWFtpjBlCQ1oFCcs4GxF7zsIGvNqp/klGUHjlA3aAcZ9XMMpLGE8zPeYDz2x9FmO6DSuKraQ==}
@@ -2330,6 +2409,28 @@ packages:
   '@discoveryjs/json-ext@1.1.0':
     resolution: {integrity: sha512-Xc3VhU02wqZ1HvHRJUwL09HkZSTvidqY5Ya0NXBSYOxAp+Ln9dcJr9fySI+CkONzP3PekQo9WdzCv0PGER/mOA==}
     engines: {node: '>=14.17.0'}
+
+  '@dnd-kit/accessibility@3.1.1':
+    resolution: {integrity: sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==}
+    peerDependencies:
+      react: '>=16.8.0'
+
+  '@dnd-kit/core@6.3.1':
+    resolution: {integrity: sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
+  '@dnd-kit/sortable@10.0.0':
+    resolution: {integrity: sha512-+xqhmIIzvAYMGfBYYnbKuNicfSsk4RksY2XdmJhT+HAC01nix6fHCztU68jooFiMUB01Ky3F0FyOvhG/BZrWkg==}
+    peerDependencies:
+      '@dnd-kit/core': ^6.3.0
+      react: '>=16.8.0'
+
+  '@dnd-kit/utilities@3.2.2':
+    resolution: {integrity: sha512-+MKAJEOfaBe5SmV6t34p80MMKhjvUz0vRrvVJbPT0WElzaOJ/1xs+D+KDv+tD/NE5ujfrChEcshd4fLn0wpiqg==}
+    peerDependencies:
+      react: '>=16.8.0'
 
   '@electric-sql/pglite-socket@0.1.3':
     resolution: {integrity: sha512-LAciWM0M1dCL8hlsxu2venbVZcdxema0BtDfpWYVqr+Y468UADw0pFWidhKw1M8sfJ8rdLT71tjMmnirf/IZRQ==}
@@ -10587,6 +10688,12 @@ packages:
     peerDependencies:
       next: '>=9'
 
+  next-themes@0.4.6:
+    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+
   next@16.3.8:
     resolution: {integrity: sha512-U7QEZaTini6wKrb8A8hqLLqYQyCetegKjCpJOyxk642vWoMoU1x5PyZCJFvgYgiptA8xc5j/9xYlZFO7w9Sjmw==}
     engines: {node: '>=20.9.0'}
@@ -11851,6 +11958,11 @@ packages:
         optional: true
       '@types/react-dom':
         optional: true
+
+  react-icons@5.7.0:
+    resolution: {integrity: sha512-LBLy340Rzqy6+/yVhZKT3B/QpP1BZaesGqasf09HPOBzRarcDIFH0WwXlXQfE7q7ipxK4MSiC5DIBWURCny6fw==}
+    peerDependencies:
+      react: '*'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -13651,7 +13763,51 @@ snapshots:
     dependencies:
       '@cucumber/cucumber': 13.2.1
 
+  '@arckit/daisyui@1.2.2(a2aeef772ef4a3b98e163541c55df8fd)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      '@radix-ui/react-dropdown-menu': 2.1.24(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-popover': 1.1.23(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
+      '@radix-ui/react-tooltip': 1.2.16(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      clsx: 2.1.1
+      downshift: 9.4.0(react@19.3.0)
+      next-themes: 0.4.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      react-hot-toast: 2.6.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react-icons: 5.7.0(react@19.3.0)
+      tailwind-merge: 3.7.0
+
+  '@arckit/nextjs@2.2.2(6b64b0a1ea24c976f1fb8f4f17ac4666)':
+    dependencies:
+      '@arckit/daisyui': 1.2.2(a2aeef772ef4a3b98e163541c55df8fd)
+      '@arckit/pipeline': 1.0.0(react@19.3.0)
+      '@standard-schema/spec': 1.1.0
+      next: 16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3)
+      piqure: 2.3.0
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      react-hot-toast: 2.6.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react-icons: 5.7.0(react@19.3.0)
+    optionalDependencies:
+      '@arckit/resultset': 2.1.0
+      '@arckit/telemetry': 1.5.0(@opentelemetry/api@1.9.1)(@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(supports-color@8.1.1)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.23))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(uglify-js@3.19.3)))
+      effect: 3.22.2
+      i18next: 26.4.2(typescript@7.0.2)
+
+  '@arckit/pipeline@1.0.0(react@19.3.0)':
+    dependencies:
+      react: 19.3.0
+
   '@arckit/resultset@2.1.0': {}
+
+  '@arckit/telemetry@1.5.0(@opentelemetry/api@1.9.1)(@sentry/nextjs@10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(supports-color@8.1.1)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.23))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(uglify-js@3.19.3)))':
+    optionalDependencies:
+      '@opentelemetry/api': 1.9.1
+      '@sentry/nextjs': 10.75.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3))(react@19.3.0)(supports-color@8.1.1)(webpack@5.108.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.23))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(postcss@8.5.23)(sharp@0.35.4(@types/node@24.19.1))(svgo@4.1.0)(uglify-js@3.19.3))
 
   '@asyncapi/specs@6.11.1':
     dependencies:
@@ -15463,6 +15619,31 @@ snapshots:
   '@discoveryjs/json-ext@0.5.7': {}
 
   '@discoveryjs/json-ext@1.1.0': {}
+
+  '@dnd-kit/accessibility@3.1.1(react@19.3.0)':
+    dependencies:
+      react: 19.3.0
+      tslib: 2.8.1
+
+  '@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      '@dnd-kit/accessibility': 3.1.1(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      tslib: 2.8.1
+
+  '@dnd-kit/sortable@10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      react: 19.3.0
+      tslib: 2.8.1
+
+  '@dnd-kit/utilities@3.2.2(react@19.3.0)':
+    dependencies:
+      react: 19.3.0
+      tslib: 2.8.1
 
   '@electric-sql/pglite-socket@0.1.3(@electric-sql/pglite@0.4.3)':
     dependencies:
@@ -25333,6 +25514,11 @@ snapshots:
     transitivePeerDependencies:
       - openapi-types
 
+  next-themes@0.4.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+    dependencies:
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+
   next@16.3.8(@babel/core@7.29.7(supports-color@11.0.0))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.101.3):
     dependencies:
       '@next/env': 16.3.8
@@ -27115,6 +27301,10 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
+
+  react-icons@5.7.0(react@19.3.0):
+    dependencies:
+      react: 19.3.0
 
   react-is@16.13.1: {}
 

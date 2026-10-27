@@ -1,88 +1,26 @@
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import {
+  cursorListMeta,
+  cursorPageHref,
   JsonApiCursorPaginationQueryParamsValidation,
   prismaCursorPagination,
 } from '@app/web/app/api/v1/CursorPagination'
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { prismaClient } from '@app/web/prismaClient'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
+import {
+  type CraV1Attributes,
+  crasV1Exposes,
+  craV1Expose,
+} from '@app/web/features/activites/abilities/exposer-les-cras-v1'
+import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 
-/**
- * API response types MUST be manually defined to NOT be infered
- * so API response are stable even if the database schema or transformations changes
- */
-
-type CraV1Attributes = {
-  imported_at: string
-  conseiller_numerique_id: string
-  canal: string
-  activite: string
-  nb_participants: number
-  nb_participants_recurrents: number
-
-  age_moins_12_ans: number
-  age_de_12_a_18_ans: number
-  age_de_18_a_35_ans: number
-  age_de_35_a_60_ans: number
-  age_plus_60_ans: number
-
-  statut_etudiant: number
-  statut_sans_emploi: number
-  statut_en_emploi: number
-  statut_retraite: number
-  statut_heterogene: number
-
-  themes: string[]
-
-  sous_themes_equipement_informatique: string[]
-  sous_themes_sante: string[]
-  sous_themes_accompagner: string[]
-  sous_themes_traitement_texte: string[]
-
-  duree: string
-  duree_minutes: number
-
-  accompagnement_individuel: number
-  accompagnement_atelier: number
-  accompagnement_redirection: number
-
-  code_postal: string
-  nom_commune: string
-  date_accompagnement: string
-  code_commune: string
-  organismes: Record<string, number> | null // e.g. { PAN_ANTS: 1, CAF: 2}
-  annotation: string | null
-
-  created_at: string
-  updated_at: string | null
-
-  structure_id: string | null
-  structure_id_pg: number | null
-  structure_type: string | null
-  structure_statut: string | null
-  structure_nom: string | null
-  structure_siret: string | null
-  structure_code_postal: string | null
-  structure_nom_commune: string | null
-  structure_code_commune: string | null
-  structure_code_departement: string | null
-  structure_code_region: string | null
-}
-
-type CraV1Relationships = 'user'
-
-export type CraV1Resource = JsonApiResource<
-  'craV1',
-  CraV1Attributes,
-  CraV1Relationships
->
-
-export type CraV1ListResponse = JsonApiListResponse<CraV1Resource>
 /**
  * @openapi
  * components:
@@ -357,187 +295,71 @@ export type CraV1ListResponse = JsonApiListResponse<CraV1Resource>
  *                 meta:
  *                   $ref: '#/components/schemas/ListMetadata'
  */
-export const GET = createApiV1Route
-  .configure<CraV1ListResponse>({
-    scopes: ['Activites'],
-  })
-  .queryParams(JsonApiCursorPaginationQueryParamsValidation)
-  .handle(async ({ params }) => {
-    const cursorPagination = prismaCursorPagination(params)
 
-    const cras = await prismaClient.craConseillerNumeriqueV1.findMany({
-      orderBy: [{ createdAt: 'desc' }],
-      take: cursorPagination.take,
-      skip: cursorPagination.skip,
-      cursor: cursorPagination.cursor
-        ? {
-            createdAt: cursorPagination.cursor,
-          }
-        : undefined,
-    })
+type CraV1Relationships = 'user'
 
-    const totalCount = await prismaClient.craConseillerNumeriqueV1.count()
+export type CraV1Resource = JsonApiResource<
+  'craV1',
+  CraV1Attributes,
+  CraV1Relationships
+>
 
-    const nextCursor = cras.at(-1)?.createdAt.toISOString()
-    const previousCursor = cras.at(0)?.createdAt.toISOString()
+export type CraV1ListResponse = JsonApiListResponse<CraV1Resource>
 
-    const response: CraV1ListResponse = {
-      data: cras.map(
-        ({
-          id,
-          importedAt,
-          v1ConseillerNumeriqueId,
-          canal,
-          activite,
-          nbParticipants,
-          nbParticipantsRecurrents,
+export const GET = routeBuilder()
+  .use(withClientApi(['Activites']))
+  .use(withQueryParams(JsonApiCursorPaginationQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async ({ queryParams }) => {
+      const cursorPagination = prismaCursorPagination(queryParams)
 
-          ageMoins12Ans,
-          ageDe12a18Ans,
-          ageDe18a35Ans,
-          ageDe35a60Ans,
-          agePlus60Ans,
+      const { cras, total } = await crasV1Exposes({
+        take: cursorPagination.take,
+        skip: cursorPagination.skip,
+        creeLe: cursorPagination.cursor,
+      })
 
-          statutEtudiant,
-          statutSansEmploi,
-          statutEnEmploi,
-          statutRetraite,
-          statutHeterogene,
+      const nextCursor = cras.at(-1)?.createdAt.toISOString()
+      const previousCursor = cras.at(0)?.createdAt.toISOString()
 
-          themes,
-
-          sousThemesEquipementInformatique,
-          sousThemesSante,
-          sousThemesAccompagner,
-          sousThemesTraitementTexte,
-
-          duree,
-          dureeMinutes,
-
-          accompagnementIndividuel,
-          accompagnementAtelier,
-          accompagnementRedirection,
-
-          codePostal,
-          nomCommune,
-          dateAccompagnement,
-          codeCommune,
-          organismes,
-          annotation,
-
-          createdAt,
-          updatedAt,
-
-          structureId,
-          structureIdPg,
-          structureType,
-          structureStatut,
-          structureNom,
-          structureSiret,
-          structureCodePostal,
-          structureNomCommune,
-          structureCodeCommune,
-          structureCodeDepartement,
-          structureCodeRegion,
-        }) =>
-          ({
-            type: 'craV1',
-            id,
-            attributes: {
-              imported_at: importedAt.toISOString(),
-              conseiller_numerique_id: v1ConseillerNumeriqueId,
-              canal,
-              activite,
-              nb_participants: nbParticipants,
-              nb_participants_recurrents: nbParticipantsRecurrents,
-
-              age_moins_12_ans: ageMoins12Ans,
-              age_de_12_a_18_ans: ageDe12a18Ans,
-              age_de_18_a_35_ans: ageDe18a35Ans,
-              age_de_35_a_60_ans: ageDe35a60Ans,
-              age_plus_60_ans: agePlus60Ans,
-
-              statut_etudiant: statutEtudiant,
-              statut_sans_emploi: statutSansEmploi,
-              statut_en_emploi: statutEnEmploi,
-              statut_retraite: statutRetraite,
-              statut_heterogene: statutHeterogene,
-
-              themes,
-
-              sous_themes_equipement_informatique:
-                sousThemesEquipementInformatique,
-              sous_themes_sante: sousThemesSante,
-              sous_themes_accompagner: sousThemesAccompagner,
-              sous_themes_traitement_texte: sousThemesTraitementTexte,
-
-              duree,
-              duree_minutes: dureeMinutes,
-
-              accompagnement_individuel: accompagnementIndividuel,
-              accompagnement_atelier: accompagnementAtelier,
-              accompagnement_redirection: accompagnementRedirection,
-
-              code_postal: codePostal,
-              nom_commune: nomCommune,
-              date_accompagnement: dateAccompagnement.toISOString(),
-              code_commune: codeCommune,
-              organismes: organismes as Record<string, number> | null,
-              annotation,
-
-              created_at: createdAt.toISOString(),
-              updated_at: updatedAt?.toISOString() ?? null,
-
-              structure_id: structureId,
-              structure_id_pg: structureIdPg,
-              structure_type: structureType,
-              structure_statut: structureStatut,
-              structure_nom: structureNom,
-              structure_siret: structureSiret,
-              structure_code_postal: structureCodePostal,
-              structure_nom_commune: structureNomCommune,
-              structure_code_commune: structureCodeCommune,
-              structure_code_departement: structureCodeDepartement,
-              structure_code_region: structureCodeRegion,
-            },
-          }) satisfies CraV1Resource,
-      ),
-      links: {
-        self: {
-          href: cursorPagination.cursor
-            ? cursorPagination.isBefore
-              ? apiV1Url(
-                  `/archives-v1/cras?page[before]=${encodeSerializableState(cursorPagination.cursor)}`,
-                )
-              : apiV1Url(
-                  `/archives-v1/cras?page[after]=${encodeSerializableState(cursorPagination.cursor)}`,
-                )
-            : apiV1Url('/archives-v1/cras'),
+      return NextResponse.json({
+        data: cras.map((cra) => ({
+          type: 'craV1' as const,
+          id: cra.id,
+          attributes: craV1Expose(cra),
+        })),
+        links: {
+          self: {
+            href: cursorPageHref('/archives-v1/cras', {
+              cursor: cursorPagination.cursor
+                ? {
+                    direction: cursorPagination.isBefore ? 'before' : 'after',
+                    value: cursorPagination.cursor,
+                  }
+                : undefined,
+            }),
+          },
+          next: nextCursor
+            ? {
+                href: cursorPageHref('/archives-v1/cras', {
+                  cursor: { direction: 'after', value: nextCursor },
+                }),
+              }
+            : undefined,
+          prev: previousCursor
+            ? {
+                href: cursorPageHref('/archives-v1/cras', {
+                  cursor: { direction: 'before', value: previousCursor },
+                }),
+              }
+            : undefined,
         },
-        next: nextCursor
-          ? {
-              href: apiV1Url(
-                `/archives-v1/cras?page[after]=${encodeSerializableState(nextCursor)}`,
-              ),
-            }
-          : undefined,
-        prev: previousCursor
-          ? {
-              href: apiV1Url(
-                `/archives-v1/cras?page[before]=${encodeSerializableState(previousCursor)}`,
-              ),
-            }
-          : undefined,
-      },
-      meta: {
-        // TODO helper function for meta for lists ?
-        total_count: totalCount,
-        items_per_page: cursorPagination.take,
-        total_pages: Math.ceil(totalCount / cursorPagination.take),
-        has_next_page: !!nextCursor,
-        has_prev_page: !!previousCursor,
-      },
-    }
-
-    return NextResponse.json(response)
-  })
+        meta: cursorListMeta({
+          totalCount: total,
+          take: cursorPagination.take,
+          nextCursor,
+          previousCursor,
+        }),
+      } satisfies CraV1ListResponse)
+    }),
+  )

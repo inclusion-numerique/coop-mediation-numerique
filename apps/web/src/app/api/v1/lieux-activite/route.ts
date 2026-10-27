@@ -1,13 +1,15 @@
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import {
-  type Aidant,
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
+import {
+  type LieuPublieExpose,
+  lieuPublieExpose,
   lieuxPublies,
 } from '@app/web/features/lieux-activite/abilities/publier-les-lieux'
-import {
-  DispositifProgrammeNational,
-  SchemaLieuMediationNumerique,
-  toSchemaLieuMediationNumerique,
-} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { routeBuilder } from '@arckit/nextjs/route'
+import { DispositifProgrammeNational } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -202,57 +204,38 @@ export const revalidate = 0
  *               items:
  *                 $ref: '#/components/schemas/LieuInclusionNumerique'
  */
-export const GET = createApiV1Route
-  .configure<(SchemaLieuMediationNumerique & { aidants?: Aidant[] })[]>({
-    scopes: ['LieuxActivite'],
-  })
-  .queryParams(
-    z.object({
-      /**
-       * Liste d'identifiants de structures (uuid) séparés par des virgules.
-       * Exemple: ids=uuid1,uuid2
-       * Maximum 100 ids.
-       */
-      ids: z
-        .union([z.string(), z.array(z.string())])
-        .optional()
-        .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
-        .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
-        .transform((arr) => Array.from(new Set(arr)))
-        .pipe(z.array(z.guid()).max(100))
-        .default([]),
-      filter: z
-        .object({
-          dispositif_programmes_nationaux: z
-            .enum(
-              Object.values(DispositifProgrammeNational) as [
-                string,
-                ...string[],
-              ],
-            )
-            .optional(),
-        })
-        .default({}),
+
+const LieuxActiviteQueryParamsValidation = z.object({
+  ids: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
+    .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
+    .transform((arr) => Array.from(new Set(arr)))
+    .pipe(z.array(z.guid()).max(100))
+    .default([]),
+  filter: z
+    .object({
+      dispositif_programmes_nationaux: z
+        .enum(DispositifProgrammeNational)
+        .optional(),
+    })
+    .default({}),
+})
+
+export const GET = routeBuilder()
+  .use(withClientApi(['LieuxActivite']))
+  .use(withQueryParams(LieuxActiviteQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async ({ queryParams }) => {
+      const lieux = await lieuxPublies({
+        ids: queryParams.ids,
+        dispositifProgrammeNational:
+          queryParams.filter.dispositif_programmes_nationaux,
+      })
+
+      return NextResponse.json(
+        lieux.map(lieuPublieExpose) satisfies LieuPublieExpose[],
+      )
     }),
   )
-  .handle(async ({ params }) => {
-    const lieux = await lieuxPublies({
-      ids: params.ids as string[],
-      dispositifProgrammeNational:
-        params.filter.dispositif_programmes_nationaux,
-    })
-
-    // La projection vers le schéma national reste ici : c'est le contrat
-    // publié, documenté juste au-dessus, et il se lit mieux à côté de sa
-    // documentation qu'à côté de la requête qui l'alimente.
-    return NextResponse.json(
-      lieux.map((lieu) => {
-        const aidants = lieu.aidants ?? []
-
-        return {
-          ...toSchemaLieuMediationNumerique(lieu),
-          ...(aidants.length > 0 ? { aidants } : {}),
-        }
-      }),
-    )
-  })

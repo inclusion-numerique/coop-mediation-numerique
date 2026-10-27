@@ -1,6 +1,9 @@
+import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
+import type { JsonApiListMeta } from '@app/web/app/api/v1/JsonApiTypes'
 import {
   decodeSerializableState,
   EncodedState,
+  encodeSerializableState,
 } from '@app/web/utils/encodeSerializableState'
 /**
  * We use cursor pagination for the v1 list endpoints
@@ -111,3 +114,43 @@ export const createCompositeCursor = (...cursorParts: string[]) =>
 
 export const parseCompositeCursor = (compositeCursor: string) =>
   compositeCursor.split('###')
+
+export type CursorDirection = 'after' | 'before'
+
+export const cursorPageHref = (
+  path: string,
+  {
+    cursor,
+    query = '',
+  }: {
+    cursor?: { direction: CursorDirection; value: string }
+    query?: string
+  } = {},
+) => {
+  const parts = [
+    ...(cursor
+      ? [`page[${cursor.direction}]=${encodeSerializableState(cursor.value)}`]
+      : []),
+    ...(query ? [query] : []),
+  ]
+
+  return apiV1Url(parts.length > 0 ? `${path}?${parts.join('&')}` : path)
+}
+
+export const cursorListMeta = ({
+  totalCount,
+  take,
+  nextCursor,
+  previousCursor,
+}: {
+  totalCount: number
+  take: number
+  nextCursor: string | undefined
+  previousCursor: string | undefined
+}): JsonApiListMeta => ({
+  total_count: totalCount,
+  items_per_page: take,
+  total_pages: Math.ceil(totalCount / take),
+  has_next_page: !!nextCursor,
+  has_prev_page: !!previousCursor,
+})

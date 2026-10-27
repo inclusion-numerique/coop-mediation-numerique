@@ -44,7 +44,10 @@
   },
   "dependencies": {
     "@app/emails": "workspace:^",
+    "@arckit/nextjs": "^2.2.2",
+    "@arckit/pipeline": "^1.0.0",
     "@arckit/resultset": "^2.1.0",
+    "@arckit/telemetry": "^1.5.0",
     "@auth/core": "^0.41.3",
     "@auth/prisma-adapter": "^2.11.3",
     "@codegouvfr/react-dsfr": "^1.35.0",

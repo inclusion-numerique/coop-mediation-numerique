@@ -1,22 +1,27 @@
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import {
   createCompositeCursor,
+  cursorListMeta,
+  cursorPageHref,
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
 } from '@app/web/app/api/v1/CursorPagination'
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
 import {
   criteresDExposition,
   type UtilisateurAttributes,
   utilisateurExpose,
   utilisateursExposes,
 } from '@app/web/features/utilisateurs/abilities/exposer-les-utilisateurs'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -331,96 +336,99 @@ export type UtilisateurResource = JsonApiResource<
 
 export type UtilisateurListResponse = JsonApiListResponse<UtilisateurResource>
 
+const UtilisateursQueryParamsValidation =
+  JsonApiCursorPaginationQueryParamsValidation.extend({
+    filter: z
+      .object({
+        conseiller_numerique: z
+          .union([z.literal('0'), z.literal('1')])
+          .optional(),
+        conseiller_numerique_id_pg: z
+          .union([z.string(), z.array(z.string())])
+          .optional()
+          .transform((value) => (typeof value === 'string' ? [value] : value)),
+        dataspace_id: z
+          .union([z.string(), z.array(z.string())])
+          .optional()
+          .transform((value) => (typeof value === 'string' ? [value] : value)),
+        soft_deleted: z.union([z.literal('0'), z.literal('1')]).optional(),
+      })
+      .prefault({}),
+  })
+
 const CurseurValidation = z.object({
   created: z.coerce.string().pipe(z.iso.datetime()),
   id: z.guid(),
 })
 
-const lienDePage = (
-  sens: 'after' | 'before',
-  curseur: string,
-): { readonly href: string } => ({
-  href: apiV1Url(
-    `/utilisateurs?page[${sens}]=${encodeSerializableState(curseur)}`,
-  ),
-})
+export const GET = routeBuilder()
+  .use(withClientApi(['Utilisateurs']))
+  .use(withQueryParams(UtilisateursQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async ({ queryParams }) => {
+      const pagination = prismaCursorPagination(queryParams)
+      const curseurLu = pagination.cursor
+        ? parseCompositeCursor(pagination.cursor)
+        : undefined
+      const curseur = curseurLu
+        ? CurseurValidation.parse({ created: curseurLu[0], id: curseurLu[1] })
+        : null
 
-export const GET = createApiV1Route
-  .configure<UtilisateurListResponse>({
-    scopes: ['Utilisateurs'],
-  })
-  .queryParams(
-    JsonApiCursorPaginationQueryParamsValidation.extend({
-      filter: z
-        .object({
-          conseiller_numerique: z
-            .union([z.literal('0'), z.literal('1')])
-            .optional(),
-          conseiller_numerique_id_pg: z
-            .union([z.string(), z.array(z.string())])
-            .optional()
-            .transform((value) =>
-              typeof value === 'string' ? [value] : value,
-            ),
-          dataspace_id: z
-            .union([z.string(), z.array(z.string())])
-            .optional()
-            .transform((value) =>
-              typeof value === 'string' ? [value] : value,
-            ),
-          soft_deleted: z.union([z.literal('0'), z.literal('1')]).optional(),
-        })
-        .prefault({}),
+      const { utilisateurs, total } = await utilisateursExposes({
+        criteres: criteresDExposition(queryParams.filter),
+        take: pagination.take,
+        skip: pagination.skip,
+        cursor: curseur,
+      })
+
+      const dernier = utilisateurs.at(-1)
+      const premier = utilisateurs.at(0)
+      const suivant = dernier
+        ? createCompositeCursor(dernier.created.toISOString(), dernier.id)
+        : undefined
+      const precedent =
+        curseurLu && premier
+          ? createCompositeCursor(premier.created.toISOString(), premier.id)
+          : undefined
+
+      return NextResponse.json({
+        data: utilisateurs.map((utilisateur) => ({
+          type: 'utilisateur' as const,
+          id: utilisateur.id,
+          attributes: utilisateurExpose(utilisateur),
+        })),
+        links: {
+          self: {
+            href: cursorPageHref('/utilisateurs', {
+              cursor: pagination.cursor
+                ? {
+                    direction: pagination.isBefore ? 'before' : 'after',
+                    value: pagination.cursor,
+                  }
+                : undefined,
+            }),
+          },
+          next: suivant
+            ? {
+                href: cursorPageHref('/utilisateurs', {
+                  cursor: { direction: 'after', value: suivant },
+                }),
+              }
+            : undefined,
+          prev: precedent
+            ? {
+                href: cursorPageHref('/utilisateurs', {
+                  cursor: { direction: 'before', value: precedent },
+                }),
+              }
+            : undefined,
+        },
+        meta: cursorListMeta({
+          totalCount: total,
+          take: pagination.take,
+          nextCursor: suivant,
+          previousCursor: precedent,
+        }),
+      } satisfies UtilisateurListResponse)
     }),
   )
-  .handle(async ({ params }) => {
-    const pagination = prismaCursorPagination(params)
-    const curseurLu = pagination.cursor
-      ? parseCompositeCursor(pagination.cursor)
-      : undefined
-    const curseur = curseurLu
-      ? CurseurValidation.parse({ created: curseurLu[0], id: curseurLu[1] })
-      : null
-
-    const { utilisateurs, total } = await utilisateursExposes({
-      criteres: criteresDExposition(params.filter),
-      take: pagination.take,
-      skip: pagination.skip,
-      cursor: curseur,
-    })
-
-    const dernier = utilisateurs.at(-1)
-    const premier = utilisateurs.at(0)
-    const suivant = dernier
-      ? createCompositeCursor(dernier.created.toISOString(), dernier.id)
-      : undefined
-    const precedent =
-      curseurLu && premier
-        ? createCompositeCursor(premier.created.toISOString(), premier.id)
-        : undefined
-
-    return NextResponse.json({
-      data: utilisateurs.map((utilisateur) => ({
-        type: 'utilisateur' as const,
-        id: utilisateur.id,
-        attributes: utilisateurExpose(utilisateur),
-      })),
-      links: {
-        self: pagination.cursor
-          ? lienDePage(
-              pagination.isBefore ? 'before' : 'after',
-              pagination.cursor,
-            )
-          : { href: apiV1Url('/utilisateurs') },
-        next: suivant ? lienDePage('after', suivant) : undefined,
-        prev: precedent ? lienDePage('before', precedent) : undefined,
-      },
-      meta: {
-        total_count: total,
-        items_per_page: pagination.take,
-        total_pages: Math.ceil(total / pagination.take),
-        has_next_page: !!suivant,
-        has_prev_page: !!precedent,
-      },
-    } satisfies UtilisateurListResponse)
-  })

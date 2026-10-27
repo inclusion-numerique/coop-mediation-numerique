@@ -1,224 +1,31 @@
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import {
+  type CursorDirection,
   createCompositeCursor,
+  cursorListMeta,
   defaultJsonApiCursorPaginationSize,
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
 } from '@app/web/app/api/v1/CursorPagination'
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { niveauAtelierApiValues } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
-import { materielApiValues } from '@app/web/features/activites/use-cases/cra/fields/materiel'
-import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeActiviteApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import { typeLieuApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
-import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
-import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import {
-  Genre,
-  Prisma,
-  StatutSocial,
-  TrancheAge,
-} from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
+import {
+  type ActiviteAttributes,
+  activiteExposee,
+  activitesExposees,
+} from '@app/web/features/activites/abilities/exposer-les-activites'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { type ZodError, z } from 'zod'
-
-/**
- * API value mappings for beneficiaire attributes
- */
-const genreApiValues = {
-  Masculin: 'masculin',
-  Feminin: 'feminin',
-  NonCommunique: 'non_communique',
-} as const satisfies { [key in Genre]: string }
-
-const trancheAgeApiValues = {
-  MoinsDeDouze: 'moins_de_douze',
-  DouzeDixHuit: 'douze_dix_huit',
-  DixHuitVingtQuatre: 'dix_huit_vingt_quatre',
-  VingtCinqTrenteNeuf: 'vingt_cinq_trente_neuf',
-  QuaranteCinquanteNeuf: 'quarante_cinquante_neuf',
-  SoixanteSoixanteNeuf: 'soixante_soixante_neuf',
-  SoixanteDixPlus: 'soixante_dix_plus',
-  NonCommunique: 'non_communique',
-} as const satisfies { [key in TrancheAge]: string }
-
-const statutSocialApiValues = {
-  Scolarise: 'scolarise',
-  SansEmploi: 'sans_emploi',
-  EnEmploi: 'en_emploi',
-  Retraite: 'retraite',
-  NonCommunique: 'non_communique',
-} as const satisfies { [key in StatutSocial]: string }
-
-type GenreApiValue = (typeof genreApiValues)[Genre]
-type TrancheAgeApiValue = (typeof trancheAgeApiValues)[TrancheAge]
-type StatutSocialApiValue = (typeof statutSocialApiValues)[StatutSocial]
-
-/**
- * API response types MUST be manually defined to NOT be infered
- * so API response are stable even if the database schema or transformations changes
- */
-
-type BeneficiairesAttributes = {
-  total: number
-  genres: { [key in GenreApiValue]: number }
-  tranches_age: { [key in TrancheAgeApiValue]: number }
-  statuts: { [key in StatutSocialApiValue]: number }
-}
-
-type ActiviteAttributes = {
-  type: 'individuel' | 'demarche_administrative' | 'collectif'
-  mediateur_id: string
-  user_id: string
-  accompagnements: number
-  date: string
-  duree: number // minutes
-
-  type_lieu: 'lieu_activite' | 'domicile' | 'a_distance' | 'autre'
-  structure_id: string | null // renseigné si type_lieu = lieu_activite
-
-  // lieu* est renseigné si type_lieu = domicile ou a_distance ou autre
-  lieu_code_postal: string | null
-  lieu_commune: string | null
-  lieu_code_insee: string | null
-  creation: string
-  modification: string
-  suppression: string | null
-  autonomie:
-    | 'entierement_accompagne'
-    | 'partiellement_autonome'
-    | 'autonome'
-    | null
-
-  oriente_vers_structure: boolean | null
-  structure_de_redirection:
-    | 'operateur_ou_organisme_en_charge'
-    | 'aide_aux_demarches_administratives'
-    | 'administration'
-    | 'mediation_numerique'
-    | 'aide_sociale'
-    | 'insertion_professionnelle'
-    | 'autre'
-    | null
-
-  materiel: ('ordinateur' | 'telephone' | 'tablette' | 'autre' | 'aucun')[]
-
-  thematiques: (
-    | 'diagnostic_numerique'
-    | 'prendre_en_main_du_materiel'
-    | 'maintenance_de_materiel'
-    | 'gere_ses_contenus_numeriques'
-    | 'navigation_sur_internet'
-    | 'email'
-    | 'bureautique'
-    | 'reseaux_sociaux'
-    | 'sante'
-    | 'banque_et_achats_en_ligne'
-    | 'entrepreneuriat'
-    | 'insertion_professionnelle'
-    | 'securite_numerique'
-    | 'parentalite'
-    | 'scolarite_et_numerique'
-    | 'creer_avec_le_numerique'
-    | 'culture_numerique'
-    | 'intelligence_artificielle'
-    | 'aide_aux_demarches_administratives'
-    | 'papiers_elections_citoyennete'
-    | 'famille_scolarite'
-    | 'social_sante'
-    | 'travail_formation'
-    | 'logement'
-    | 'transports_mobilite'
-    | 'argent_impots'
-    | 'justice'
-    | 'etrangers_europe'
-    | 'loisirs_sports_culture'
-    | 'associations'
-  )[]
-
-  tags: string[]
-
-  precisions_demarche: string | null
-
-  titre_atelier: string | null
-
-  niveau_atelier: 'debutant' | 'intermediaire' | 'avance' | null // pour un atelier collectif uniquement
-
-  beneficiaires: BeneficiairesAttributes
-}
-
-type ActiviteRelationships = 'mediateur'
-
-export type ActiviteResource = JsonApiResource<
-  'activite',
-  ActiviteAttributes,
-  ActiviteRelationships
->
-
-export type ActiviteListResponse = JsonApiListResponse<ActiviteResource>
-
-const emptyBeneficiairesAttributes: BeneficiairesAttributes = {
-  total: 0,
-  genres: { masculin: 0, feminin: 0, non_communique: 0 },
-  tranches_age: {
-    moins_de_douze: 0,
-    douze_dix_huit: 0,
-    dix_huit_vingt_quatre: 0,
-    vingt_cinq_trente_neuf: 0,
-    quarante_cinquante_neuf: 0,
-    soixante_soixante_neuf: 0,
-    soixante_dix_plus: 0,
-    non_communique: 0,
-  },
-  statuts: {
-    scolarise: 0,
-    sans_emploi: 0,
-    en_emploi: 0,
-    retraite: 0,
-    non_communique: 0,
-  },
-}
-
-const countBeneficiaires = (
-  accompagnements: {
-    beneficiaire: {
-      genre: Genre | null
-      trancheAge: TrancheAge | null
-      statutSocial: StatutSocial | null
-    }
-  }[],
-): BeneficiairesAttributes =>
-  accompagnements.reduce<BeneficiairesAttributes>((acc, { beneficiaire }) => {
-    acc.genres[
-      beneficiaire.genre ? genreApiValues[beneficiaire.genre] : 'non_communique'
-    ]++
-    acc.tranches_age[
-      beneficiaire.trancheAge
-        ? trancheAgeApiValues[beneficiaire.trancheAge]
-        : 'non_communique'
-    ]++
-    acc.statuts[
-      beneficiaire.statutSocial
-        ? statutSocialApiValues[beneficiaire.statutSocial]
-        : 'non_communique'
-    ]++
-    acc.total++
-    return acc
-  }, structuredClone(emptyBeneficiairesAttributes))
-
-const ActiviteCursorValidation = z.object({
-  modification_id: z.object({
-    modification: z.coerce.string().pipe(z.iso.datetime()),
-    id: z.guid(),
-  }),
-})
+import { z } from 'zod'
 
 /**
  * @openapi
@@ -520,300 +327,167 @@ const ActiviteCursorValidation = z.object({
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-export const GET = createApiV1Route
-  .configure<ActiviteListResponse>({
-    scopes: ['Activites'],
+type ActiviteRelationships = 'mediateur'
+
+export type ActiviteResource = JsonApiResource<
+  'activite',
+  ActiviteAttributes,
+  ActiviteRelationships
+>
+
+export type ActiviteListResponse = JsonApiListResponse<ActiviteResource>
+
+const ActivitesQueryParamsValidation =
+  JsonApiCursorPaginationQueryParamsValidation.extend({
+    filter: z
+      .object({
+        creation: z
+          .object({ depuis: z.iso.datetime().optional() })
+          .prefault({}),
+        modification: z
+          .object({ depuis: z.iso.datetime().optional() })
+          .prefault({}),
+      })
+      .prefault({}),
   })
-  .queryParams(
-    JsonApiCursorPaginationQueryParamsValidation.extend({
-      filter: z
-        .object({
-          creation: z
-            .object({
-              depuis: z.iso.datetime().optional(),
-            })
-            .prefault({}),
-          modification: z
-            .object({
-              depuis: z.iso.datetime().optional(),
-            })
-            .prefault({}),
-        })
-        .prefault({}),
-    }),
-  )
-  .handle(async ({ params }) => {
-    const cursorPagination = prismaCursorPagination(params)
 
-    /**
-     * We use a composite cursor to paginate results for API queries
-     * using the modification date and id of the activite to ensure unicity
-     */
-    const parsedCursor = cursorPagination.cursor
-      ? parseCompositeCursor(cursorPagination.cursor)
-      : undefined
+const ActiviteCursorValidation = z.object({
+  modification_id: z.object({
+    modification: z.coerce.string().pipe(z.iso.datetime()),
+    id: z.guid(),
+  }),
+})
 
-    // validate that parsedCursor 0 is a valid date and parsedCursor 1 is a valid id
-    const validatedCursor = parsedCursor
-      ? ActiviteCursorValidation.safeParse({
-          modification_id: {
-            modification: parsedCursor[0],
-            id: parsedCursor[1],
-          },
-        })
-      : undefined
+const dateDepuis = (depuis: string | undefined): Date | undefined =>
+  depuis ? new Date(depuis) : undefined
 
-    if (validatedCursor && !validatedCursor.success) {
-      throw validatedCursor.error as ZodError
-    }
-
-    const where: Prisma.ActiviteWhereInput = {}
-
-    // filters: creation/modification depuis (inclusive)
-    const creationSinceInput = params.filter?.creation?.depuis
-    const modificationSinceInput = params.filter?.modification?.depuis
-
-    const creationSinceDate = creationSinceInput
-      ? new Date(creationSinceInput)
-      : undefined
-    const modificationSinceDate = modificationSinceInput
-      ? new Date(modificationSinceInput)
-      : undefined
-
-    if (creationSinceDate) where.creation = { gte: creationSinceDate }
-    if (modificationSinceDate)
-      where.modification = { gte: modificationSinceDate }
-
-    if (validatedCursor) {
-      // We manually recreate cursor pagination as the prisma way
-      // does not work with the indexes and times out
-      where.OR = [
-        {
-          modification: {
-            lt: validatedCursor.data.modification_id.modification,
-          },
-        },
-        {
-          AND: [
-            { modification: validatedCursor.data.modification_id.modification },
-            { id: { lt: validatedCursor.data.modification_id.id } },
-          ],
-        },
+const parametresDeLaPage = ({
+  take,
+  creationDepuis,
+  modificationDepuis,
+}: {
+  take: number
+  creationDepuis: string | undefined
+  modificationDepuis: string | undefined
+}): [string, string][] => [
+  ...(take === defaultJsonApiCursorPaginationSize
+    ? []
+    : [['page[size]', String(Math.abs(take))] satisfies [string, string]]),
+  ...(creationDepuis
+    ? [['filter[creation][depuis]', creationDepuis] satisfies [string, string]]
+    : []),
+  ...(modificationDepuis
+    ? [
+        ['filter[modification][depuis]', modificationDepuis] satisfies [
+          string,
+          string,
+        ],
       ]
-    }
+    : []),
+]
 
-    const cras = await prismaClient.activite.findMany({
-      where,
-      orderBy: [{ modification: 'desc' }, { id: 'desc' }],
-      select: {
-        id: true,
-        type: true,
-        suppression: true,
-        modification: true,
-        creation: true,
-        date: true,
-        duree: true,
-        structureId: true,
-        lieuCodePostal: true,
-        lieuCommune: true,
-        lieuCodeInsee: true,
-        mediateurId: true,
-        typeLieu: true,
-        mediateur: {
-          select: {
-            userId: true,
-          },
-        },
-        autonomie: true,
-        structureDeRedirection: true,
-        materiel: true,
-        thematiques: true,
-        orienteVersStructure: true,
-        precisionsDemarche: true,
-        titreAtelier: true,
-        niveau: true,
-        accompagnementsCount: true,
-        tags: {
-          select: {
-            tag: {
-              select: {
-                nom: true,
-              },
+const lienDesActivites =
+  (parametres: [string, string][]) =>
+  (cursor?: { direction: CursorDirection; value: string }) =>
+    apiV1Url(
+      '/activites',
+      new URLSearchParams([
+        ...parametres,
+        ...(cursor
+          ? [
+              [
+                `page[${cursor.direction}]`,
+                encodeSerializableState(cursor.value),
+              ] satisfies [string, string],
+            ]
+          : []),
+      ]),
+    )
+
+export const GET = routeBuilder()
+  .use(withClientApi(['Activites']))
+  .use(withQueryParams(ActivitesQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async ({ queryParams }) => {
+      const cursorPagination = prismaCursorPagination(queryParams)
+      const parsedCursor = cursorPagination.cursor
+        ? parseCompositeCursor(cursorPagination.cursor)
+        : undefined
+      const validatedCursor = parsedCursor
+        ? ActiviteCursorValidation.parse({
+            modification_id: {
+              modification: parsedCursor[0],
+              id: parsedCursor[1],
             },
-          },
-        },
-        accompagnements: {
-          select: {
-            beneficiaire: {
-              select: {
-                genre: true,
-                trancheAge: true,
-                statutSocial: true,
-              },
-            },
-          },
-        },
-      },
-      take: cursorPagination.take,
-    })
-
-    // The prisma.count() was slower than the raw query
-    const sqlConditions = [Prisma.sql`TRUE`] as Prisma.Sql[]
-
-    if (creationSinceDate)
-      sqlConditions.push(Prisma.sql`activites.creation >= ${creationSinceDate}`)
-
-    if (modificationSinceDate)
-      sqlConditions.push(
-        Prisma.sql`activites.modification >= ${modificationSinceDate}`,
-      )
-
-    const whereSql = Prisma.join(sqlConditions, ' AND ')
-
-    const totalCountResult = await prismaClient.$queryRaw<{ count: number }[]>`
-      SELECT COUNT(*)::INT AS count FROM activites WHERE ${whereSql}
-    `
-    const totalCount = totalCountResult.at(0)?.count ?? 0
-
-    const lastItem = cras.at(-1)
-    const firstItem = cras.at(0)
-
-    const nextCursor = lastItem
-      ? createCompositeCursor(lastItem.modification.toISOString(), lastItem.id)
-      : undefined
-    const previousCursor =
-      parsedCursor && firstItem
-        ? createCompositeCursor(
-            firstItem.modification.toISOString(),
-            firstItem.id,
-          )
+          })
         : undefined
 
-    const currentQueryParams = new URLSearchParams()
-    if (cursorPagination.take !== defaultJsonApiCursorPaginationSize) {
-      currentQueryParams.set(
-        'page[size]',
-        String(Math.abs(cursorPagination.take)),
-      )
-    }
-    if (creationSinceInput)
-      currentQueryParams.set('filter[creation][depuis]', creationSinceInput)
-    if (modificationSinceInput)
-      currentQueryParams.set(
-        'filter[modification][depuis]',
-        modificationSinceInput,
-      )
+      const creationDepuis = queryParams.filter.creation.depuis
+      const modificationDepuis = queryParams.filter.modification.depuis
 
-    const buildHref = (cursor?: {
-      direction: 'after' | 'before'
-      value: string
-    }) => {
-      const params = new URLSearchParams(currentQueryParams)
-      if (cursor) {
-        params.set(
-          `page[${cursor.direction}]`,
-          encodeSerializableState(cursor.value),
-        )
-      }
-      return apiV1Url('/activites', params)
-    }
-
-    const response: ActiviteListResponse = {
-      data: cras.map(
-        ({
-          id,
-          type,
-          mediateur,
-          mediateurId,
-          date,
-          duree,
-          structureId,
-          lieuCodePostal,
-          lieuCommune,
-          lieuCodeInsee,
-          creation,
-          modification,
-          suppression,
-          typeLieu,
-          autonomie,
-          structureDeRedirection,
-          materiel,
-          thematiques,
-          tags,
-          orienteVersStructure,
-          precisionsDemarche,
-          titreAtelier,
-          niveau,
-          accompagnementsCount,
-          accompagnements,
-        }) =>
-          ({
-            type: 'activite',
-            id,
-            attributes: {
-              type: typeActiviteApiValues[type],
-              mediateur_id: mediateurId,
-              user_id: mediateur.userId,
-              date: date.toISOString().slice(0, 10),
-              duree,
-              structure_id: structureId,
-              lieu_code_postal: lieuCodePostal,
-              lieu_commune: lieuCommune,
-              lieu_code_insee: lieuCodeInsee,
-              creation: creation.toISOString(),
-              modification: modification.toISOString(),
-              suppression: suppression ? suppression.toISOString() : null,
-              type_lieu: typeLieuApiValues[typeLieu],
-              autonomie: autonomie ? autonomieApiValues[autonomie] : null,
-              structure_de_redirection: structureDeRedirection
-                ? structureDeRedirectionApiValues[structureDeRedirection]
-                : null,
-              thematiques: thematiques.map(
-                (thematique) => thematiqueApiValues[thematique],
-              ),
-              tags: tags.map(({ tag: { nom } }) => nom),
-              materiel: materiel.map(
-                (materielItem) => materielApiValues[materielItem],
-              ),
-              oriente_vers_structure: orienteVersStructure,
-              precisions_demarche: precisionsDemarche,
-              titre_atelier: titreAtelier,
-              niveau_atelier: niveau ? niveauAtelierApiValues[niveau] : null,
-              accompagnements: accompagnementsCount,
-              beneficiaires: countBeneficiaires(accompagnements),
-            },
-          }) satisfies ActiviteResource,
-      ),
-      links: {
-        self: {
-          href: buildHref(
-            cursorPagination.cursor
-              ? {
-                  direction: cursorPagination.isBefore ? 'before' : 'after',
-                  value: cursorPagination.cursor,
-                }
-              : undefined,
-          ),
+      const { activites, total } = await activitesExposees({
+        criteres: {
+          creeDepuis: dateDepuis(creationDepuis),
+          modifieDepuis: dateDepuis(modificationDepuis),
         },
-        next: nextCursor
-          ? {
-              href: buildHref({ direction: 'after', value: nextCursor }),
-            }
-          : undefined,
-        prev: previousCursor
-          ? {
-              href: buildHref({ direction: 'before', value: previousCursor }),
-            }
-          : undefined,
-      },
-      meta: {
-        total_count: totalCount,
-        items_per_page: cursorPagination.take,
-        total_pages: Math.ceil(totalCount / cursorPagination.take),
-        has_next_page: !!nextCursor,
-        has_prev_page: !!previousCursor,
-      },
-    }
+        take: cursorPagination.take,
+        curseur: validatedCursor ? validatedCursor.modification_id : null,
+      })
 
-    return NextResponse.json(response)
-  })
+      const lastItem = activites.at(-1)
+      const firstItem = activites.at(0)
+      const nextCursor = lastItem
+        ? createCompositeCursor(
+            lastItem.modification.toISOString(),
+            lastItem.id,
+          )
+        : undefined
+      const previousCursor =
+        parsedCursor && firstItem
+          ? createCompositeCursor(
+              firstItem.modification.toISOString(),
+              firstItem.id,
+            )
+          : undefined
+
+      const lien = lienDesActivites(
+        parametresDeLaPage({
+          take: cursorPagination.take,
+          creationDepuis,
+          modificationDepuis,
+        }),
+      )
+
+      return NextResponse.json({
+        data: activites.map((activite) => ({
+          type: 'activite' as const,
+          id: activite.id,
+          attributes: activiteExposee(activite),
+        })),
+        links: {
+          self: {
+            href: lien(
+              cursorPagination.cursor
+                ? {
+                    direction: cursorPagination.isBefore ? 'before' : 'after',
+                    value: cursorPagination.cursor,
+                  }
+                : undefined,
+            ),
+          },
+          next: nextCursor
+            ? { href: lien({ direction: 'after', value: nextCursor }) }
+            : undefined,
+          prev: previousCursor
+            ? { href: lien({ direction: 'before', value: previousCursor }) }
+            : undefined,
+        },
+        meta: cursorListMeta({
+          totalCount: total,
+          take: cursorPagination.take,
+          nextCursor,
+          previousCursor,
+        }),
+      } satisfies ActiviteListResponse)
+    }),
+  )

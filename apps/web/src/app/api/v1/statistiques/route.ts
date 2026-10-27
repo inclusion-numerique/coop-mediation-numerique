@@ -1,35 +1,23 @@
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import type {
   JsonApiItemResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
 import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
-import { ApiV1StatistiquesQueryParamsValidation } from '@app/web/app/api/v1/statistiques/ApiV1StatistiquesQueryParams'
 import {
-  getAccompagnementsCountByDay,
-  getAccompagnementsCountByMonth,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getAccompagnementsCountByPeriod'
-import {
-  ActivitesStats,
-  getActivitesStats,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
-import {
-  BeneficiaireStats,
-  getBeneficiaireStats,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
-import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import {
-  getTotalCountsStats,
-  TotalCountsStats,
-} from '@app/web/features/statistiques/db/getTotalCountsStats'
-import {
-  type ChangeObjectKeysCaseRecursive,
-  changeObjectKeysCaseRecursive,
-} from '@app/web/utils/changeObjectKeysCaseRecursive'
-import { debugPromiseTiming } from '@app/web/utils/debugPromiseTiming'
+  FiltresDesStatistiquesValidation,
+  type StatistiquesAttributes,
+  statistiquesAttributes,
+  statistiquesExposees,
+} from '@app/web/features/statistiques/abilities/exposer-les-statistiques'
+import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 /**
  * @openapi
@@ -372,86 +360,41 @@ import { NextResponse } from 'next/server'
  *                   example: {}
  */
 
-type StatistiquesAttributes = {
-  accompagnements_par_jour: LabelAndCount[]
-  accompagnements_par_mois: LabelAndCount[]
-  beneficiaires: ChangeObjectKeysCaseRecursive<BeneficiaireStats, 'snake'>
-  activites: ChangeObjectKeysCaseRecursive<ActivitesStats, 'snake'>
-  totaux: ChangeObjectKeysCaseRecursive<TotalCountsStats, 'snake'>
-}
-
-type StructureRelationships = never
-
 export type StatistiqueResource = JsonApiResource<
   'statistiques',
   StatistiquesAttributes,
-  StructureRelationships
+  never
 >
 
 export type StatistiquesResponse = JsonApiItemResponse<StatistiqueResource>
 
-export const GET = createApiV1Route
-  .configure<StatistiquesResponse>({
-    scopes: ['Statistiques'],
-  })
-  .queryParams(ApiV1StatistiquesQueryParamsValidation)
-  .handle(async ({ params }) => {
-    const activitesFilters = params.filter as ActivitesFilters
+const StatistiquesQueryParamsValidation = z.object({
+  filter: FiltresDesStatistiquesValidation,
+})
 
-    const [
-      accompagnementsParJour,
-      accompagnementsParMois,
-      beneficiaires,
-      activites,
-      totalCounts,
-    ] = await Promise.all([
-      debugPromiseTiming(getAccompagnementsCountByDay({ activitesFilters }), {
-        name: '/api/v1/statistiques: getAccompagnementsCountByDay',
-      }),
-      debugPromiseTiming(getAccompagnementsCountByMonth({ activitesFilters }), {
-        name: '/api/v1/statistiques: getAccompagnementsCountByMonth',
-      }),
-      debugPromiseTiming(getBeneficiaireStats({ activitesFilters }), {
-        name: '/api/v1/statistiques: getBeneficiaireStats',
-      }),
-      debugPromiseTiming(getActivitesStats({ activitesFilters }), {
-        name: '/api/v1/statistiques: getActivitesStats',
-      }),
-      debugPromiseTiming(getTotalCountsStats({ activitesFilters }), {
-        name: '/api/v1/statistiques: getTotalCountsStats',
-      }),
-    ])
+export const GET = routeBuilder()
+  .use(withClientApi(['Statistiques']))
+  .use(withQueryParams(StatistiquesQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async ({ queryParams }) => {
+      const requete = serializeApiRequestParams(queryParams)
 
-    const attributes = changeObjectKeysCaseRecursive(
-      {
-        accompagnementsParJour,
-        accompagnementsParMois,
-        beneficiaires,
-        activites,
-        totaux: totalCounts,
-      },
-      'snake',
-    ) satisfies StatistiquesAttributes
-
-    const currentUrlSearchParams = serializeApiRequestParams(params)
-
-    const response: StatistiquesResponse = {
-      data: {
-        type: 'statistiques',
-        id: 'statistiques',
-        attributes,
-      },
-      links: {
-        self: {
-          href: apiV1Url(
-            currentUrlSearchParams.length > 0
-              ? `/statistiques?${currentUrlSearchParams}`
-              : '/statistiques',
+      return NextResponse.json({
+        data: {
+          type: 'statistiques',
+          id: 'statistiques',
+          attributes: statistiquesAttributes(
+            await statistiquesExposees(queryParams.filter),
           ),
         },
-      },
-      meta: {},
-    }
-
-    return NextResponse.json(response)
-  })
+        links: {
+          self: {
+            href: apiV1Url(
+              requete.length > 0 ? `/statistiques?${requete}` : '/statistiques',
+            ),
+          },
+        },
+        meta: {},
+      } satisfies StatistiquesResponse)
+    }),
+  )

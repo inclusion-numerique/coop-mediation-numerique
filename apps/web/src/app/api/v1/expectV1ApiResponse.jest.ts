@@ -1,7 +1,5 @@
-import { NextResponse } from 'next/server'
-
 export const expectV1ApiResponseJest = async (
-  response: NextResponse | Response,
+  response: Response,
   options?: {
     status?: number
     data?: unknown
@@ -17,7 +15,7 @@ export const expectV1ApiResponseJest = async (
   expect(json).toEqual(options?.data)
 }
 
-export const expect403ApiResponse = (response: NextResponse) =>
+export const expect403ApiResponse = (response: Response) =>
   expectV1ApiResponseJest(response, {
     status: 403,
     data: { error: 'Forbidden' },
