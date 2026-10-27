@@ -73,6 +73,17 @@ jobs:
         env:
           ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
         run: pnpm --silent with-env tofu -chdir=infrastructure destroy -input=false -auto-approve -var-file=.tfvars.json -var "branch=$BRANCHE" -var "namespace=$ENVIRONNEMENT"
+      - name: Delete infrastructure state
+        env:
+          ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
+        run: |
+          case "$ENVIRONNEMENT" in
+            ''|main|dev)
+              echo "L'état de « $ENVIRONNEMENT » n'est jamais supprimé"
+              exit 1
+              ;;
+          esac
+          pnpm --silent with-env aws --endpoint-url https://s3.fr-par.scw.cloud s3 rm "s3://coop-mediation-numerique-terraform-state/coop-mediation-numerique-web-$ENVIRONNEMENT.tfstate"
       - name: Delete database password secret
         env:
           ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}
