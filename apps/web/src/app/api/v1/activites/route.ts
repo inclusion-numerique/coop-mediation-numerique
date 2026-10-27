@@ -21,6 +21,8 @@ import {
   type ActiviteAttributes,
   activiteExposee,
   activitesExposees,
+  criteresDExposition,
+  curseurDActivite,
 } from '@app/web/features/activites/abilities/exposer-les-activites'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { routeBuilder } from '@arckit/nextjs/route'
@@ -351,16 +353,6 @@ const ActivitesQueryParamsValidation =
       .prefault({}),
   })
 
-const ActiviteCursorValidation = z.object({
-  modification_id: z.object({
-    modification: z.coerce.string().pipe(z.iso.datetime()),
-    id: z.guid(),
-  }),
-})
-
-const dateDepuis = (depuis: string | undefined): Date | undefined =>
-  depuis ? new Date(depuis) : undefined
-
 const parametresDeLaPage = ({
   take,
   creationDepuis,
@@ -413,25 +405,14 @@ export const GET = routeBuilder()
       const parsedCursor = cursorPagination.cursor
         ? parseCompositeCursor(cursorPagination.cursor)
         : undefined
-      const validatedCursor = parsedCursor
-        ? ActiviteCursorValidation.parse({
-            modification_id: {
-              modification: parsedCursor[0],
-              id: parsedCursor[1],
-            },
-          })
-        : undefined
 
       const creationDepuis = queryParams.filter.creation.depuis
       const modificationDepuis = queryParams.filter.modification.depuis
 
       const { activites, total } = await activitesExposees({
-        criteres: {
-          creeDepuis: dateDepuis(creationDepuis),
-          modifieDepuis: dateDepuis(modificationDepuis),
-        },
+        criteres: criteresDExposition(queryParams.filter),
         take: cursorPagination.take,
-        curseur: validatedCursor ? validatedCursor.modification_id : null,
+        curseur: parsedCursor ? curseurDActivite(parsedCursor) : null,
       })
 
       const lastItem = activites.at(-1)

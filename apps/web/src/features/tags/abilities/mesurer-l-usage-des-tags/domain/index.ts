@@ -1,0 +1,8 @@
+export { DescriptionDuTag } from './description-du-tag'
+export { Effectif } from './effectif'
+export { NomDuTag } from './nom-du-tag'
+export { PorteeDuTag } from './portee-du-tag'
+export { Pourcentage } from './pourcentage'
+export { type Proportion, proportion } from './proportion'
+export { TagId } from './tag-id'
+export type { TagLePlusUtilise, UsageDesTags } from './usage-des-tags'

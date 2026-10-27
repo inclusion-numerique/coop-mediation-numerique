@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { semerUnCraV1 } from '@app/web/features/activites/activites.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { Horodatage } from './domain'
 import { crasV1Exposes } from './implementation'
 
 const exposition: {
@@ -33,7 +34,7 @@ When("l'API liste les CRA v1", async () => {
   const { cras } = await crasV1Exposes({
     take: 500,
     skip: undefined,
-    creeLe: undefined,
+    creeLe: null,
   })
   exposition.exposes = cras.map(({ id }) => id)
 })
@@ -42,7 +43,7 @@ When("l'API liste les CRA v1 après le plus récent des deux", async () => {
   const { cras } = await crasV1Exposes({
     take: 1,
     skip: 1,
-    creeLe: seme(1).createdAt.toISOString(),
+    creeLe: Horodatage(seme(1).createdAt),
   })
   exposition.exposes = cras.map(({ id }) => id)
 })

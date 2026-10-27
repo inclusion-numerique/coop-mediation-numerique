@@ -87,7 +87,7 @@ After(async () => {
   await prismaClient.user.deleteMany({ where: { id: semé.userId } })
 })
 
-let crasV1Semes: readonly string[] = []
+const crasV1Semes = new Set<string>()
 
 export const semerUnCraV1 = async (
   createdAt: Date,
@@ -110,17 +110,82 @@ export const semerUnCraV1 = async (
       createdAt,
     },
   })
-  crasV1Semes = [...crasV1Semes, id]
+  crasV1Semes.add(id)
 
   return { id, createdAt }
 }
 
 After(async () => {
-  const semes = crasV1Semes
-  crasV1Semes = []
+  const semes = [...crasV1Semes]
+  crasV1Semes.clear()
   if (semes.length === 0) return
 
   await prismaClient.craConseillerNumeriqueV1.deleteMany({
-    where: { id: { in: [...semes] } },
+    where: { id: { in: semes } },
+  })
+})
+
+const accompagnementsSemes = new Set<{
+  readonly userId: string
+  readonly mediateurId: string
+}>()
+
+export const semerUnAccompagnementDansLaCommune = async ({
+  codeInsee,
+  date,
+}: {
+  codeInsee: string
+  date: Date
+}): Promise<void> => {
+  const userId = v4()
+
+  await prismaClient.user.create({
+    data: { id: userId, email: `accompagnement-${userId}@example.com` },
+  })
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId },
+    select: { id: true },
+  })
+  const beneficiaire = await prismaClient.beneficiaire.create({
+    data: { mediateurId: mediateur.id },
+    select: { id: true },
+  })
+  await prismaClient.activite.create({
+    data: {
+      mediateurId: mediateur.id,
+      type: 'Individuel',
+      typeLieu: 'Domicile',
+      lieuCodeInsee: codeInsee,
+      date,
+      duree: 60,
+      accompagnementsCount: 1,
+      accompagnements: { create: { beneficiaireId: beneficiaire.id } },
+    },
+  })
+
+  accompagnementsSemes.add({ userId, mediateurId: mediateur.id })
+}
+
+After(async () => {
+  const semes = [...accompagnementsSemes]
+  accompagnementsSemes.clear()
+  if (semes.length === 0) return
+
+  const mediateurIds = semes.map(({ mediateurId }) => mediateurId)
+
+  await prismaClient.accompagnement.deleteMany({
+    where: { activite: { mediateurId: { in: mediateurIds } } },
+  })
+  await prismaClient.activite.deleteMany({
+    where: { mediateurId: { in: mediateurIds } },
+  })
+  await prismaClient.beneficiaire.deleteMany({
+    where: { mediateurId: { in: mediateurIds } },
+  })
+  await prismaClient.mediateur.deleteMany({
+    where: { id: { in: mediateurIds } },
+  })
+  await prismaClient.user.deleteMany({
+    where: { id: { in: semes.map(({ userId }) => userId) } },
   })
 })

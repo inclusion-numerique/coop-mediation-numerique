@@ -17,6 +17,7 @@ import {
   type CraV1Attributes,
   crasV1Exposes,
   craV1Expose,
+  curseurDeCraV1,
 } from '@app/web/features/activites/abilities/exposer-les-cras-v1'
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
@@ -316,7 +317,9 @@ export const GET = routeBuilder()
       const { cras, total } = await crasV1Exposes({
         take: cursorPagination.take,
         skip: cursorPagination.skip,
-        creeLe: cursorPagination.cursor,
+        creeLe: cursorPagination.cursor
+          ? curseurDeCraV1(cursorPagination.cursor)
+          : null,
       })
 
       const nextCursor = cras.at(-1)?.createdAt.toISOString()
