@@ -41,49 +41,6 @@ export const centreSocial = givenLieuInclusion({
 
 export const fixtureStructures = [structureEmployeuse, mediateque, centreSocial]
 
-/**
- * Depuis le split 1a.2, le rôle EMPLOYEUSE (emplois.structureId, activites.structureEmployeuseId)
- * pointe vers `structure_administrative`, plus `structures`. On crée donc une SA (même id que la
- * structure, pour ne pas toucher les ~30 fixtures qui référencent `structure.id`) pour les
- * structures fixtures jouant ce rôle :
- *  - structureEmployeuse : employeuse pure (cible des emplois)
- *  - mediateque : double-rôle lieu + employeuse (cf. activites.ts structureEmployeuseId)
- * centreSocial reste un lieu pur → pas de SA.
- */
-export const givenStructureAdministrative = (structure: {
-  id: string
-  nom: string
-  adresse: string
-  commune: string
-  codePostal: string
-  codeInsee?: string | null
-  siret?: string | null
-}): Prisma.StructureAdministrativeCreateInput & { id: string } => ({
-  id: structure.id,
-  nom: structure.nom,
-  adresse: structure.adresse,
-  commune: structure.commune,
-  codePostal: structure.codePostal,
-  codeInsee: structure.codeInsee ?? null,
-  siret: structure.siret ?? null,
-  source: 'coop',
-})
-
-export const structureEmployeuseAdministrative =
-  givenStructureAdministrative(structureEmployeuse)
-
-export const mediatequeAdministrative = givenStructureAdministrative(mediateque)
-
-export const fixtureStructuresAdministratives = [
-  structureEmployeuseAdministrative,
-  mediatequeAdministrative,
-]
-
-// SA côté Entrepôt (`main.structure_administrative`) pour les employeuses fixtures : le périmètre
-// élargi ADR-002 fait lire l'employeuse depuis `main` (via `structure_main_id` / affectations). On
-// seede donc une main SA liée par `structure_coop_id` (id int auto) ; les emplois fixtures sont
-// ensuite backfillés dans le seed via cette jointure. Sans ça, l'employeuse est invisible dans les
-// parcours d'inscription seedés (coordinateur…).
 type StructureAdministrativeMainFixture = {
   structureCoopId: string
   create: Prisma.StructureAdministrativeMainCreateInput
@@ -142,25 +99,10 @@ export const fixtureStructuresAdministrativesMain = [
   givenStructureAdministrativeMain(mediateque),
 ]
 
-export const seedStructureAdministrative = (
-  transaction: Prisma.TransactionClient,
-  administrative: Prisma.StructureAdministrativeCreateInput & { id: string },
-) =>
-  transaction.structureAdministrative.upsert({
-    where: { id: administrative.id },
-    create: administrative,
-    update: administrative,
-    select: { id: true },
-  })
-
 export const seedStructures = async (transaction: Prisma.TransactionClient) => {
   // Les employeuses (structure_administrative) et les lieux (structures) sont
   // indépendants — pas de lien FK. Le double-rôle (structureEmployeuse, mediateque)
   // partage seulement l'id, comme la migration des données legacy.
-  await enSerie(fixtureStructuresAdministratives, (administrative) =>
-    seedStructureAdministrative(transaction, administrative),
-  )
-
   // SA main liées (ADR-002 périmètre élargi) : idempotent par id fixe. Le schéma `main` n'est pas
   // truncaté par deleteAll -> upsert.
   await enSerie(fixtureStructuresAdministrativesMain, (main) =>

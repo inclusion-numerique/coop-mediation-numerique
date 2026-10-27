@@ -5,6 +5,7 @@ import {
 } from '@app/fixtures/activites'
 import { fixtureBeneficiaires } from '@app/fixtures/beneficiaires'
 import {
+  garantirAffectationEmployeuse,
   garantirAffectationIdposte,
   garantirContratRompu,
   refleterCoordinateurDansMain,
@@ -76,12 +77,6 @@ export const resetFixtureUser = async (
     sessions = await prismaClient.session.findMany({
       where: {
         userId: user.id,
-      },
-    })
-
-    await prismaClient.employeStructure.deleteMany({
-      where: {
-        userId,
       },
     })
 
@@ -188,6 +183,10 @@ export const resetFixtureUser = async (
   // retrouver son affectation `idposte`, sans quoi la dérivation la voit hors dispositif.
   if (userFixture.isConseillerNumerique) {
     await garantirAffectationIdposte(prismaClient, userFixture.id)
+  }
+
+  if (userFixture.employeDeLaStructureEmployeuse) {
+    await garantirAffectationEmployeuse(prismaClient, userFixture.id)
   }
 
   // Le rôle coordinateur vient de `main` depuis ADR-002 : une fixture qui le déclare côté coop doit

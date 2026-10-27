@@ -12,15 +12,11 @@ const apiClientId = '00000000-0000-0000-0000-00000000a001'
 const userId = '00000000-0000-0000-0000-00000000a002'
 const mediateurId = '00000000-0000-0000-0000-00000000a003'
 const lieuInclusionId = '00000000-0000-0000-0000-00000000a004'
-const structureAdministrativeId = '00000000-0000-0000-0000-00000000a005'
 
 const cleanup = async () => {
   await prismaClient.mediateur.deleteMany({ where: { id: mediateurId } })
   await prismaClient.lieuInclusion.deleteMany({
     where: { id: lieuInclusionId },
-  })
-  await prismaClient.structureAdministrative.deleteMany({
-    where: { id: structureAdministrativeId },
   })
   await prismaClient.user.deleteMany({ where: { id: userId } })
   await prismaClient.apiClient.deleteMany({ where: { id: apiClientId } })
@@ -45,15 +41,6 @@ describe('timestampExtension', () => {
       data: {
         id: lieuInclusionId,
         nom: 'Lieu test timestamp',
-        adresse: '1 rue du Test',
-        commune: 'Testville',
-        codePostal: '75001',
-      },
-    })
-    await prismaClient.structureAdministrative.create({
-      data: {
-        id: structureAdministrativeId,
-        nom: 'Employeuse test timestamp',
         adresse: '1 rue du Test',
         commune: 'Testville',
         codePostal: '75001',
@@ -212,40 +199,6 @@ describe('timestampExtension', () => {
       })
 
       expect(updated.updated.getTime()).toBe(before.updated.getTime())
-    })
-  })
-
-  describe('modèle employeuse suivi via `modification` (StructureAdministrative)', () => {
-    it('bumpe `modification` sur un update de contenu', async () => {
-      const before =
-        await prismaClient.structureAdministrative.findUniqueOrThrow({
-          where: { id: structureAdministrativeId },
-        })
-
-      await wait(50)
-      const updated = await prismaClient.structureAdministrative.update({
-        where: { id: structureAdministrativeId },
-        data: { nom: 'Employeuse renommée' },
-      })
-
-      expect(updated.modification.getTime()).toBeGreaterThan(
-        before.modification.getTime(),
-      )
-    })
-
-    it('ne bumpe PAS `modification` si seul `synchronisationSiret` change', async () => {
-      const before =
-        await prismaClient.structureAdministrative.findUniqueOrThrow({
-          where: { id: structureAdministrativeId },
-        })
-
-      await wait(50)
-      const updated = await prismaClient.structureAdministrative.update({
-        where: { id: structureAdministrativeId },
-        data: { synchronisationSiret: new Date() },
-      })
-
-      expect(updated.modification.getTime()).toBe(before.modification.getTime())
     })
   })
 

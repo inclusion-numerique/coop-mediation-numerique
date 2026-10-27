@@ -297,15 +297,6 @@ export const FicheUtilisateurPage = ({
             vide="Aucune mutation enregistrée."
           />
         </AdministrationInfoCard>
-        {fiche.fichiers.length > 0 && (
-          <AdministrationInfoCard title="Uploads">
-            <Evenements
-              evenements={fiche.fichiers}
-              prefixe="Uploadé le:"
-              vide=""
-            />
-          </AdministrationInfoCard>
-        )}
       </main>
     </CoopPageContainer>
   )

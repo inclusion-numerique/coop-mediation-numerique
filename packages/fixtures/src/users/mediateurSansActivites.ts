@@ -1,5 +1,5 @@
 import { givenUser } from '../givenUser'
-import { mediateque, structureEmployeuse } from '../structures'
+import { mediateque } from '../structures'
 
 export const mediateurSansActivitesUserId =
   'd3378267-18cf-4b5f-ae1e-9f63c7093ac2'
@@ -42,16 +42,5 @@ export const mediateurSansActivites = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: 'b32c0dea-0ca7-4a52-917a-77663ecc65f9',
-      },
-      create: {
-        id: 'b32c0dea-0ca7-4a52-917a-77663ecc65f9',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })

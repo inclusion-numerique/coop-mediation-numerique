@@ -1,7 +1,6 @@
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { givenUser } from '../givenUser'
-import { structureEmployeuse } from '../structures'
 
 export const coordinateurInscriptionEmail =
   'coordinateur-inscription@coop-numerique.anct.gouv.fr'
@@ -25,16 +24,5 @@ export const coordinateurInscription = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: 'c9501fea-d9de-4020-9763-59e5ccd41275',
-      },
-      create: {
-        id: 'c9501fea-d9de-4020-9763-59e5ccd41275',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 }) satisfies Prisma.UserCreateInput

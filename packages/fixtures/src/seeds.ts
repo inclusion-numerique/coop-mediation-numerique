@@ -13,10 +13,7 @@ import {
 } from '@app/fixtures/equipeCoordonnee'
 import { output } from '@app/fixtures/output'
 import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
-import {
-  fixtureStructuresAdministrativesMain,
-  seedStructures,
-} from '@app/fixtures/structures'
+import { seedStructures } from '@app/fixtures/structures'
 import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
 import { upsertUserFixtures } from '@app/fixtures/upsertUserFixture'
 import {
@@ -51,15 +48,6 @@ const deleteFixturePersonnesMain = async (
   await transaction.personneMain.deleteMany({ where: { coopId } })
 }
 
-/**
- * Vide le schéma coop. `structure_administrative` en faisait exception : la
- * colonne `structures.structure_administrative_id` la référençait, et le
- * CASCADE emportait la table `structures` qu'on préserve. Cette colonne
- * n'existe plus — les deux seules tables qui la référencent encore, `activites`
- * et `employes_structures`, sont truncatées ici même. Sans quoi les lignes
- * survivaient d'une exécution à l'autre, et un test qui sème un id fixe
- * échouait au second passage.
- */
 export const deleteAll = async (transaction: Prisma.TransactionClient) => {
   await deleteFixturePersonnesMain(transaction)
 
@@ -134,34 +122,11 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     crasCollectifs: fixtureCrasCollectifs,
   })
 
-  // Employeuse des users de test dans `main` (personne + affectations) -> nécessaire aux reads
-  // pur-main (sessionUser, CRA, admin, récap…). Miroir des backfills prod. Après users + structures.
-  await seedPersonnesMain(transaction)
-
-  // Backfill `structure_main_id` / `structure_employeuse_main_id` sur les emplois et activités seedés
-  // (les fixtures ne portent que l'uuid coop) : le périmètre élargi ADR-002 fait lire l'employeuse
-  // depuis `main`. Jointure par `structure_coop_id` sur les SA main fixtures (cf. seedStructures).
-  //
-  // La restriction aux structures de fixtures n'est pas cosmétique : sans elle, ces UPDATE balaient
-  // les tables entières. Sur une base de fixtures c'est équivalent (tout est fixture), mais sur une
-  // base restaurée depuis la prod, la colonne vient d'être créée par la migration — donc NULLE
-  // partout — et le seed réécrivait plusieurs millions de lignes qui ne lui appartiennent pas.
-  const structuresCoopDesFixtures = fixtureStructuresAdministrativesMain.map(
-    ({ structureCoopId }) => structureCoopId,
-  )
-
-  await transaction.$executeRaw`
-    UPDATE coop.employes_structures es
-    SET structure_main_id = m.id
-    FROM main.structure_administrative m
-    WHERE m.structure_coop_id = es.structure_id
-      AND es.structure_main_id IS NULL
-      AND es.structure_id = ANY(ARRAY[${Prisma.join(structuresCoopDesFixtures)}]::uuid[])`
-  await transaction.$executeRaw`
-    UPDATE coop.activites a
-    SET structure_employeuse_main_id = m.id
-    FROM main.structure_administrative m
-    WHERE m.structure_coop_id = a.structure_employeuse_id
-      AND a.structure_employeuse_main_id IS NULL
-      AND a.structure_employeuse_id = ANY(ARRAY[${Prisma.join(structuresCoopDesFixtures)}]::uuid[])`
+  await seedPersonnesMain(transaction, [
+    ...fixtureUsers,
+    ...teamAdministrateurs,
+    ...teamMediateurs,
+    ...rdvServicePublicStagingUsers,
+    ...equipeCoordonnee,
+  ])
 }

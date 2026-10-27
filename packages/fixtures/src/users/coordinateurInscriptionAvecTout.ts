@@ -1,7 +1,7 @@
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { givenUser } from '../givenUser'
-import { centreSocial, mediateque, structureEmployeuse } from '../structures'
+import { centreSocial, mediateque } from '../structures'
 
 export const coordinateurInscriptionAvecToutCoordinateurId =
   'b0ebe56a-b1eb-49c0-9963-26dbbaa1c15e'
@@ -65,16 +65,5 @@ export const coordinateurInscriptionAvecTout = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: '39c2e445-6eec-4964-aea3-0b7c6b20caef',
-      },
-      create: {
-        id: '39c2e445-6eec-4964-aea3-0b7c6b20caef',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 }) satisfies Prisma.UserCreateInput

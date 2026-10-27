@@ -23,14 +23,35 @@ export const upsertCraFixtures = async ({
     ...crasCollectifs,
   ]
 
-  // First we upsert all the activites
-  await enSerie(allCras, ({ activite }) =>
-    transaction.activite.upsert({
-      where: { id: activite.id },
-      create: activite,
-      update: activite,
-    }),
+  const employeusesMain = new Map(
+    (
+      await transaction.structureAdministrativeMain.findMany({
+        where: {
+          structureCoopId: {
+            in: [
+              ...new Set(
+                allCras.map(({ employeuseCoopId }) => employeuseCoopId),
+              ),
+            ],
+          },
+        },
+        select: { id: true, structureCoopId: true },
+      })
+    ).map(({ id, structureCoopId }) => [structureCoopId, id]),
   )
+
+  // First we upsert all the activites
+  await enSerie(allCras, ({ activite, employeuseCoopId }) => {
+    const donnees = {
+      ...activite,
+      structureEmployeuseMainId: employeusesMain.get(employeuseCoopId) ?? null,
+    }
+    return transaction.activite.upsert({
+      where: { id: activite.id },
+      create: donnees,
+      update: donnees,
+    })
+  })
 
   // Then we delete and recreate the accompagnements
   const activiteIds = allCras.map(({ activite }) => activite.id)

@@ -294,10 +294,6 @@ const reattribuerLesTraces = async (
     where: { userId: sourceId },
     data: { userId: cibleId },
   })
-  await tx.upload.updateMany({
-    where: { uploadedById: sourceId },
-    data: { uploadedById: cibleId },
-  })
   await tx.lieuInclusion.updateMany({
     where: { creationParId: sourceId },
     data: { creationParId: cibleId },
@@ -322,19 +318,6 @@ const reattribuerLesTraces = async (
     where: { suppressionParId: sourceId },
     data: { suppressionParId: cibleId },
   })
-  await tx.employeStructure.updateMany({
-    where: { creationParId: sourceId },
-    data: { creationParId: cibleId },
-  })
-  await tx.employeStructure.updateMany({
-    where: { modificationParId: sourceId },
-    data: { modificationParId: cibleId },
-  })
-  await tx.employeStructure.updateMany({
-    where: { suppressionParId: sourceId },
-    data: { suppressionParId: cibleId },
-  })
-  await tx.employeStructure.deleteMany({ where: { userId: sourceId } })
   await tx.session.updateMany({
     where: { usurperId: sourceId },
     data: { usurperId: null },

@@ -14,7 +14,6 @@ setDefaultTimeout(60_000)
  */
 let inscriptionUserId = ''
 
-const trackedStructureEmployeuseIds = new Set<string>()
 const trackedLieuActiviteIds = new Set<string>()
 const trackedEmployeuseMainIds = new Set<number>()
 const trackedAdresseMainIds = new Set<number>()
@@ -66,22 +65,6 @@ export const seedInscriptionValidee = async (
       inscriptionValidee: new Date(),
     },
   })
-}
-
-/**
- * Structure employeuse de test (suivie pour nettoyage). Depuis le split, un
- * emploi pointe sur `StructureAdministrative` — à ne pas confondre avec le lieu
- * d'activité, qui est un `LieuInclusion`.
- */
-export const seedStructureEmployeuse = async (
-  data: { nom?: string } = {},
-): Promise<string> => {
-  const id = v4()
-  await prismaClient.structureAdministrative.create({
-    data: { id, nom: data.nom ?? 'Structure de test', ...adresseDeTest },
-  })
-  trackedStructureEmployeuseIds.add(id)
-  return id
 }
 
 /** Lieu d'activité de test (suivi pour nettoyage) : cible de `MediateurEnActivite`. */
@@ -158,8 +141,7 @@ export const trackLieuActivite = (id: string): void => {
 /**
  * Employeuse de test dans `main` (suivie pour nettoyage). Depuis l'échange final
  * de l'ADR-002, l'employeuse est une `main.structure_administrative` et c'est son
- * identifiant entier que reçoivent les écrans d'inscription — à ne pas confondre
- * avec la `coop.structure_administrative` de `seedStructureEmployeuse`.
+ * identifiant entier que reçoivent les écrans d'inscription.
  */
 export const seedEmployeuseMain = async (
   data: { nom?: string } = {},
@@ -247,7 +229,6 @@ export const seedCollegueMediateur = async (): Promise<UserId> => {
 Before(async () => {
   inscriptionUserId = v4()
   trackedAutresUserIds.clear()
-  trackedStructureEmployeuseIds.clear()
   trackedLieuActiviteIds.clear()
   trackedEmployeuseMainIds.clear()
   trackedAdresseMainIds.clear()
@@ -262,9 +243,6 @@ Before(async () => {
 
 After(async () => {
   const userIds = [inscriptionUserId, ...trackedAutresUserIds]
-  await prismaClient.employeStructure.deleteMany({
-    where: { userId: { in: userIds } },
-  })
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateur: { userId: { in: userIds } } },
   })
@@ -281,9 +259,6 @@ After(async () => {
     where: { coopId: { in: userIds } },
   })
   await prismaClient.user.deleteMany({ where: { id: { in: userIds } } })
-  await prismaClient.structureAdministrative.deleteMany({
-    where: { id: { in: [...trackedStructureEmployeuseIds] } },
-  })
   // Inclut les employeuses matérialisées en lieu par l'ability « structure
   // employeuse en lieu d'activité » : elles ne reprennent plus l'id de la
   // structure, on les retrouve donc par leur dénomination.
@@ -291,7 +266,7 @@ After(async () => {
     OR: [
       {
         id: {
-          in: [...trackedLieuActiviteIds, ...trackedStructureEmployeuseIds],
+          in: [...trackedLieuActiviteIds],
         },
       },
       { nom: { in: [...trackedEmployeuseMainNoms] } },

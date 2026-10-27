@@ -102,12 +102,6 @@ describe('renseignerStructureEmployeuseAction', () => {
       })
     expect(structureEmployeuseRenseignee).not.toBeNull()
 
-    // Aucun emploi coop n'est créé (échange final : plus de `coop.employes_structures`).
-    const emploisCount = await prismaClient.employeStructure.count({
-      where: { userId },
-    })
-    expect(emploisCount).toBe(0)
-
     // Côté main : personne reliée par coop_id + affectation active sur la structure attendue.
     const personne = await prismaClient.personneMain.findUniqueOrThrow({
       where: { coopId: userId },

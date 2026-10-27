@@ -17,8 +17,6 @@ const transformIgnorePackages = [
   'data-uri-to-buffer',
   'fetch-blob',
   'formdata-polyfill',
-  '@aws-sdk/middleware-retry',
-  '@aws-sdk/client-s3',
   'axios',
 ]
 

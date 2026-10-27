@@ -93,10 +93,6 @@ const ficheSelect = {
     select: { nom: true, timestamp: true },
     orderBy: { timestamp: 'desc' },
   },
-  uploads: {
-    select: { name: true, created: true },
-    orderBy: { created: 'desc' },
-  },
   personneMain: { select: personneConseillerNumeriqueSelect },
 } satisfies Prisma.UserSelect
 
@@ -207,10 +203,6 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     mutations: row.mutations.map(({ nom, timestamp }) => ({
       libelle: nom,
       le: timestamp,
-    })),
-    fichiers: row.uploads.map(({ name, created }) => ({
-      libelle: name,
-      le: created,
     })),
   }
 }

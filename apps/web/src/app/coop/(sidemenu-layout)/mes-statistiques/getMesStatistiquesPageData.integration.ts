@@ -231,20 +231,17 @@ describe('getMesStatistiquesPageData', () => {
     await resetFixtureUser(mediateurAvecActivite, false)
     await resetFixtureUser(mediateurSansActivites, false)
     await resetFixtureUser(conseillerNumerique, false)
-    await seedPersonnesMain(prismaClient)
+    await seedPersonnesMain(prismaClient, [
+      mediateurAvecActivite,
+      mediateurSansActivites,
+      conseillerNumerique,
+    ])
     const employeuseDesActivites =
       await prismaClient.structureAdministrativeMain.findFirstOrThrow({
         where: { structureCoopId: mediateque.id },
         select: { id: true },
       })
     employeuseDesActivitesState.id = employeuseDesActivites.id
-    await prismaClient.activite.updateMany({
-      where: {
-        mediateurId: mediateurAvecActiviteMediateurId,
-        structureEmployeuseId: mediateque.id,
-      },
-      data: { structureEmployeuseMainId: employeuseDesActivites.id },
-    })
     await refreshFixturesComputedFields()
   }, 100_000)
 
@@ -255,11 +252,6 @@ describe('getMesStatistiquesPageData', () => {
         select: {
           mediateur: true,
           rdvAccount: true,
-          emplois: {
-            include: {
-              structure: true,
-            },
-          },
         },
       })
 
@@ -597,11 +589,6 @@ describe('getMesStatistiquesPageData', () => {
         select: {
           mediateur: true,
           rdvAccount: true,
-          emplois: {
-            include: {
-              structure: true,
-            },
-          },
         },
       })
 

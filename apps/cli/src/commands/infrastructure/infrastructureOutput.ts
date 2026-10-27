@@ -11,8 +11,6 @@ export type InfrastructureOutput = {
   databaseUser: string
   databaseHost: string
   databasePort: number
-  uploadsBucketEndpoint: string
-  uploadsBucketName: string
   webContainerId: string
   webContainerImage: string
   webContainerStatus: 'ready' | 'error'

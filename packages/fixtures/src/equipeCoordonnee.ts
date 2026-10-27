@@ -1,6 +1,6 @@
 import { givenUser } from './givenUser'
 import { mergeUuids } from './mergeUuids'
-import { mediateque, structureEmployeuse } from './structures'
+import { mediateque } from './structures'
 import { coordinateurInscritAvecToutCoordinateurId } from './users/coordinateurInscritAvecTout'
 
 const mediateurInviteEnAttenteId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -35,16 +35,7 @@ const mediateurInviteEnAttente = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'd4e5f6a7-b8c9-0123-def0-234567890123' },
-      create: {
-        id: 'd4e5f6a7-b8c9-0123-def0-234567890123',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 export const conseillerNumeriqueActifId = 'e5f6a7b8-c9d0-1234-ef01-345678901234'
@@ -82,16 +73,7 @@ const conseillerNumeriqueActif = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'b8c9d0e1-f2a3-4567-1234-678901234567' },
-      create: {
-        id: 'b8c9d0e1-f2a3-4567-1234-678901234567',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 export const mediateurActifId = 'c9d0e1f2-a3b4-5678-2345-789012345678'
@@ -128,16 +110,7 @@ const mediateurActif = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'f2a3b4c5-d6e7-8901-5678-012345678901' },
-      create: {
-        id: 'f2a3b4c5-d6e7-8901-5678-012345678901',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 const sixMonthsAgo = new Date()
@@ -182,17 +155,7 @@ const conseillerNumeriqueInactif = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'd6e7f8a9-b0c1-2345-9012-456789012345' },
-      create: {
-        id: 'd6e7f8a9-b0c1-2345-9012-456789012345',
-        creation: sixMonthsAgo,
-        structureId: structureEmployeuse.id,
-        debut: sixMonthsAgo,
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 const mediateurInactifMediateurId = 'e7f8a9b0-c1d2-3456-0123-567890123456'
@@ -232,17 +195,7 @@ const mediateurInactif = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'b0c1d2e3-f4a5-6789-3456-890123456789' },
-      create: {
-        id: 'b0c1d2e3-f4a5-6789-3456-890123456789',
-        creation: sixMonthsAgo,
-        structureId: structureEmployeuse.id,
-        debut: sixMonthsAgo,
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 const mediateurAQuitteId = 'c1d2e3f4-a5b6-7890-4567-901234567890'
@@ -278,16 +231,7 @@ const mediateurAQuitte = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'f4a5b6c7-d8e9-0123-7890-234567890123' },
-      create: {
-        id: 'f4a5b6c7-d8e9-0123-7890-234567890123',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 const conseillerNumeriqueAQuitteId = 'a5b6c7d8-e9f0-1234-8901-345678901234'
@@ -324,16 +268,7 @@ const conseillerNumeriqueAQuitte = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'd8e9f0a1-b2c3-4567-1234-678901234567' },
-      create: {
-        id: 'd8e9f0a1-b2c3-4567-1234-678901234567',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 const mediateurProfilSupprimeId = 'e9f0a1b2-c3d4-5678-2345-789012345678'
@@ -372,16 +307,7 @@ const mediateurProfilSupprime = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'b2c3d4e5-f6a7-8901-5678-012345678901' },
-      create: {
-        id: 'b2c3d4e5-f6a7-8901-5678-012345678901',
-        structureId: structureEmployeuse.id,
-        debut: sixMonthsAgo,
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 const conseillerNumeriqueProfilSupprimeId =
@@ -422,16 +348,7 @@ const conseillerNumeriqueProfilSupprime = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: { id: 'f6a7b8c9-d0e1-2345-9012-345678901234' },
-      create: {
-        id: 'f6a7b8c9-d0e1-2345-9012-345678901234',
-        structureId: structureEmployeuse.id,
-        debut: sixMonthsAgo,
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 export const equipeCoordonnee = [

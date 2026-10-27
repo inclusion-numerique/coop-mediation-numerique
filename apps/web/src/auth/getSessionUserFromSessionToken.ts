@@ -14,7 +14,6 @@ export const sessionUserSelect = {
   lastName: true,
   name: true,
   emailVerified: true,
-  image: true,
   title: true,
   location: true,
   description: true,

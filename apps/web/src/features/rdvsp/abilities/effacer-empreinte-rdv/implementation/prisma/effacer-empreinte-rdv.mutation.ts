@@ -123,7 +123,6 @@ export const effacerEmpreinteRdvAvec =
         id: { in: usagersTouches },
         participations: { none: {} },
         beneficiaires: { none: {} },
-        userProfiles: { none: {} },
         dependents: { none: {} },
       },
       select: { id: true },

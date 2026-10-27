@@ -115,8 +115,6 @@ model User {
   email             String            @unique
   phone             String?
   emailVerified     DateTime?         @map("email_verified")
-  image             Image?            @relation(fields: [imageId], references: [id])
-  imageId           String?           @unique @map("image_id") @db.Uuid
   location          String?
   title             String?
   description       String?
@@ -164,18 +162,12 @@ model User {
   lieuxActiviteRenseignes       DateTime? @map("lieux_activite_renseignes")
   inscriptionValidee            DateTime? @map("inscription_validee")
 
-  uploads Upload[]
-
   mediateur    Mediateur?
   coordinateur Coordinateur?
   mutations    Mutation[]
 
-  emplois          EmployeStructure[] @relation(name: "employe_structure")
-  emploisCrees     EmployeStructure[] @relation(name: "emplois_crees")
-  emploisModifies  EmployeStructure[] @relation(name: "emplois_modifies")
-  emploisSupprimes EmployeStructure[] @relation(name: "emplois_supprimes")
   // Rattachement à main.personne via personne.coop_id (ADR-002 périmètre élargi 2026-07-23).
-  personneMain     PersonneMain?
+  personneMain PersonneMain?
 
   usurpateur Session?    @relation(name: "usurper")
   rdvAccount RdvAccount?
@@ -203,60 +195,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
-  @@schema("coop")
-}
-
-model Image {
-  id       String @id @default(uuid()) @db.Uuid
-  legacyId Int?   @unique @map("legacy_id")
-
-  altText String? @map("alt_text")
-
-  blurUrl String? @map("blur_url")
-
-  // Original dimensions in pixel (before cropping)
-  originalHeight Int? @map("original_height")
-  originalWidth  Int? @map("original_width")
-
-  // Relative height crop (0-1)
-  cropHeight Float @default(1) @map("crop_height")
-  // Relative width crop
-  cropWidth  Float @default(1) @map("crop_width")
-  // Relative top crop
-  cropTop    Float @default(0) @map("crop_top")
-  // Relative left crop
-  cropLeft   Float @default(0) @map("crop_left")
-
-  // Cropped dimensions in pixels
-  height Int?
-  width  Int?
-
-  upload    Upload @relation(fields: [uploadKey], references: [key])
-  uploadKey String @unique @map("upload_key")
-  user      User?
-
-  @@map("images")
-  @@schema("coop")
-}
-
-model Upload {
-  key       String  @id
-  legacyKey String? @unique @map("legacy_key")
-  mimeType  String  @map("mime_type")
-  name      String
-
-  // Size in bytes
-  size Int?
-
-  uploadedBy   User?   @relation(fields: [uploadedById], references: [id])
-  uploadedById String? @map("uploaded_by_id") @db.Uuid
-
-  created DateTime @default(now())
-
-  // Is an image
-  image Image?
-
-  @@map("uploads")
   @@schema("coop")
 }
 
@@ -324,7 +262,7 @@ model Mediateur {
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
 
-  isVisible Boolean @default(false) @map("is_visible")
+  isVisible           Boolean   @default(false) @map("is_visible")
   visibiliteChoisieLe DateTime? @map("visibilite_choisie_le")
 
   // pre computed counts to avoid joins and counts on big tables
@@ -861,48 +799,6 @@ model LieuInclusion {
 /// Identité légale employeuse, extraite de `structures` lors du split
 /// `lieu_inclusion` (profil de médiation) / `structure_administrative` (identité légale).
 /// Cible côté Entrepôt : `main.structure_administrative` (lecture/écriture partagée à terme).
-model StructureAdministrative {
-  id String @id @default(uuid()) @db.Uuid
-
-  // Identité légale (extraite des colonnes correspondantes de `structures`)
-  siret                String?
-  rna                  String?
-  denomination         String? // ← issu de structures.nom_usage
-  synchronisationSiret DateTime? @map("synchronisation_siret")
-
-  // Nom + adresse "employeuse" (alignée API Entreprise) + contacts référent, lus par le
-  // code employeuse (emplois, activités à distance, exports équipe). Inline pendant la phase
-  // in-coop ; mappés vers main.structure_administrative (denomination/adresse_id/contact) au reroute.
-  nom               String
-  adresse           String
-  commune           String
-  codePostal        String  @map("code_postal") @db.VarChar(5)
-  codeInsee         String? @map("code_insee") @db.VarChar(5)
-  complementAdresse String? @map("complement_adresse")
-  nomReferent       String? @map("nom_referent")
-  courrielReferent  String? @map("courriel_referent")
-  telephoneReferent String? @map("telephone_referent")
-
-  // Provenance, aligné sur `main.structure_administrative.source` (valeur `coop` côté Entrepôt)
-  source String?
-
-  creation     DateTime  @default(now())
-  modification DateTime  @default(now())
-  suppression  DateTime?
-
-  // Emplois rattachés à cette identité légale employeuse (repointés depuis Structure)
-  emplois   EmployeStructure[]
-  // Inverse (requis par Prisma) du champ collecté `activite.structureEmployeuseId` :
-  // chaque CRA estampille l'employeuse du médiateur au moment de l'acte, pour les
-  // statistiques « activités par structure employeuse ». L'employeuse ne « possède »
-  // pas d'activités — seuls les lieux en ont (Activite.structureId).
-  activites Activite[]         @relation(name: "activite_structure_employeuse")
-
-  @@index([siret])
-  @@map("structure_administrative")
-  @@schema("coop")
-}
-
 /// Structure administrative (identité légale employeuse) côté Entrepôt : table de référence
 /// partagée `main.structure_administrative`, possédée par le Dataspace et gérée par Flyway —
 /// JAMAIS par nos migrations. Modélisée ici pour lire/joindre en cross-schéma depuis le client
@@ -939,7 +835,6 @@ model StructureAdministrativeMain {
 
   adresse            AdresseMain?                    @relation(fields: [adresseId], references: [id])
   // Inverses des FK coop repointées vers main pendant la bascule (ADR-002 étape 6).
-  emplois            EmployeStructure[]              @relation("employe_structure_main")
   activites          Activite[]                      @relation("activite_structure_employeuse_main")
   // Cible du périmètre élargi (ADR-002 révision 2026-07-23) : affectations emploi + contrats main.
   affectationsEmploi PersonneAffectationEmploiMain[]
@@ -1343,43 +1238,6 @@ enum DispositifProgrammeNationalMain {
   @@schema("main")
 }
 
-model EmployeStructure {
-  id String @id @default(uuid()) @db.Uuid
-
-  userId String @map("user_id") @db.Uuid // Employé de la structure
-  user   User   @relation(name: "employe_structure", fields: [userId], references: [id])
-
-  structureId     String                       @map("structure_id") @db.Uuid
-  structure       StructureAdministrative      @relation(fields: [structureId], references: [id])
-  // Colonne cible de la bascule coop->main (ADR-002 étape 6), remplie par le backfill ; coexiste avec
-  // structureId (uuid) jusqu'à l'échange final. Nullable pendant la transition.
-  structureMainId Int?                         @map("structure_main_id")
-  structureMain   StructureAdministrativeMain? @relation(fields: [structureMainId], references: [id], name: "employe_structure_main")
-
-  // debut est nullable car il peut être null lors de l'import des données dataspace (contrat sans informations de dates)
-  debut DateTime? @map("debut_emploi") // date de début de l'emploi dans la structure 
-  // fin est nullable pour un contrat en cours / sans date définie de fin de contrat
-  fin   DateTime? @map("fin_emploi") // date de fin de l'emploi dans la structure
-
-  creation      DateTime @default(now()) // Représente la date de début de l'emploi
-  creationParId String?  @map("creation_par_id") @db.Uuid
-  creationPar   User?    @relation(name: "emplois_crees", fields: [creationParId], references: [id])
-
-  modification      DateTime @default(now())
-  modificationParId String?  @map("modification_par_id") @db.Uuid
-  modificationPar   User?    @relation(name: "emplois_modifies", fields: [modificationParId], references: [id])
-
-  suppression      DateTime? // Représente la date de fin de l'emploi
-  suppressionParId String?   @map("suppression_par_id") @db.Uuid
-  suppressionPar   User?     @relation(name: "emplois_supprimes", fields: [suppressionParId], references: [id])
-
-  @@index([userId])
-  @@index([structureId])
-  @@index([structureMainId])
-  @@map("employes_structures")
-  @@schema("coop")
-}
-
 model MediateurEnActivite {
   id String @id @default(uuid()) @db.Uuid
 
@@ -1697,8 +1555,6 @@ model Activite {
   // Nullable (ADR-002 périmètre élargi) : l'employeuse d'une activité passe désormais par main
   // (structureEmployeuseMain). Le nouveau code n'écrit plus le coop ; la colonne + FK coop restent
   // (nullable) le temps de la transition, drop à l'échange final.
-  structureEmployeuseId     String?                      @map("structure_employeuse_id") @db.Uuid
-  structureEmployeuse       StructureAdministrative?     @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
   // Cible main de la bascule coop->main : remplie par le backfill + écrite par le nouveau code.
   structureEmployeuseMainId Int?                         @map("structure_employeuse_main_id")
   structureEmployeuseMain   StructureAdministrativeMain? @relation(fields: [structureEmployeuseMainId], references: [id], name: "activite_structure_employeuse_main")
@@ -1750,7 +1606,6 @@ model Activite {
   // index relations
   @@index([structureId])
   @@index([mediateurId])
-  @@index([structureEmployeuseId])
   @@index([structureEmployeuseMainId])
   @@index([rdvId])
   // descending sort on this cursor for api query performances
@@ -2044,12 +1899,10 @@ model RdvOrganisation {
   phoneNumber String? @map("phone_number")
   verticale   String?
 
-  lieux            RdvLieu[]
-  rdvs             Rdv[]
-  userProfiles     RdvUserProfile[]
-  webhookEndpoints RdvWebhookEndpoint[]
-  accounts         RdvAccountOrganisation[]
-  motifs           RdvMotif[]
+  lieux    RdvLieu[]
+  rdvs     Rdv[]
+  accounts RdvAccountOrganisation[]
+  motifs   RdvMotif[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -2126,27 +1979,12 @@ model RdvUser {
   dependents  RdvUser[] @relation("RdvUserResponsible")
 
   beneficiaires  Beneficiaire[]
-  userProfiles   RdvUserProfile[]
   participations RdvParticipation[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
   @@index([responsibleId])
   @@map("rdv_users")
-  @@schema("coop")
-}
-
-model RdvUserProfile {
-  organisationId Int @map("organisation_id")
-  userId         Int @map("user_id")
-
-  organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  user         RdvUser         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@id([organisationId, userId])
-  @@map("rdv_user_profiles")
   @@schema("coop")
 }
 
@@ -2253,23 +2091,6 @@ model RdvParticipation {
   @@index([rdvId])
   @@index([userId])
   @@map("rdv_participations")
-  @@schema("coop")
-}
-
-model RdvWebhookEndpoint {
-  id            Int      @id
-  targetUrl     String   @map("target_url")
-  secret        String?
-  subscriptions String[]
-
-  organisationId Int @map("organisation_id")
-
-  organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@index([organisationId])
-  @@map("rdv_webhook_endpoints")
   @@schema("coop")
 }
 

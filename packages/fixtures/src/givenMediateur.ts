@@ -1,5 +1,5 @@
 import { givenUser } from '@app/fixtures/givenUser'
-import { mediateque, structureEmployeuse } from '@app/fixtures/structures'
+import { mediateque } from '@app/fixtures/structures'
 import type { Prisma } from '@app/web/generated/prisma/client'
 
 export type GivenMediateurInput = {
@@ -52,16 +52,5 @@ export const givenMediateur = ({
         },
       },
     },
-    emplois: {
-      connectOrCreate: {
-        where: {
-          id: emploiId,
-        },
-        create: {
-          id: emploiId,
-          structureId: structureEmployeuse.id,
-          debut: new Date(),
-        },
-      },
-    },
+    employeDeLaStructureEmployeuse: true,
   }) satisfies Prisma.UserCreateInput

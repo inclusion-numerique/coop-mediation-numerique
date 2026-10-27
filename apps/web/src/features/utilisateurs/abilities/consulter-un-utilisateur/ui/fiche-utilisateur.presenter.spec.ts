@@ -60,7 +60,6 @@ const fiche = (surcharge: Partial<FicheUtilisateur>): FicheUtilisateur => ({
   liaisons: [],
   sessions: [],
   mutations: [],
-  fichiers: [],
   ...surcharge,
 })
 

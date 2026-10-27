@@ -32,7 +32,7 @@ Cible : `inscription_validee IS NULL`, décompte depuis `created`.
 | J+90            | e-mail d'avertissement avant suppression                        |
 | J+105           | **suppression dure** (`DELETE`) du user et de ses rattachements |
 
-La suppression est physique et en cascade : `employeStructure`, `mediateurCoordonne`,
+La suppression est physique et en cascade : `mediateurCoordonne`,
 `mediateurEnActivite`, `mediateur`, `coordinateur`, `user`
 (`signupReminders.ts:60-85`). Elle est gardée par deux conditions de sécurité — aucune
 activité médiateur, aucun médiateur coordonné vivant (`signupReminders.ts:38-47`).

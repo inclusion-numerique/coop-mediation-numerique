@@ -10,7 +10,6 @@ Resources shared by every environment (database instance, container namespace, r
 ## Resources of an environment
 
 - Database user, database and privileges on the shared instance (`database.tf`)
-- Uploads bucket (`storage.tf`)
 - Serverless container and its environment variables (`container.tf`)
 - DNS record and container domain (`dns.tf`)
 - Job cron triggers (`jobs.tf`, UTC schedules in `locals.tf`)
