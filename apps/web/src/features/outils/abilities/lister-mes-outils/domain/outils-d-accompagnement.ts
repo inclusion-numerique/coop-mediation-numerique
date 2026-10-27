@@ -1,57 +1,57 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
-
-export const outilsDAccompagnement = [
-  'AidantsConnect',
-  'CartographieNationale',
-  'MonInclusionNumerique',
-  'LesBases',
-  'BaseConseillerNumeriqueContributions',
-  'BaseConseillersNumeriquesCoordinateurs',
-  'Mattermost',
-  'CentreDAideConseillerNumerique',
-] as const
-
-export type ValeurDOutilDAccompagnement = (typeof outilsDAccompagnement)[number]
+import type { ProfilOutils } from './profil-outils'
 
 export const OutilDAccompagnement = defineModel(
-  z.enum(outilsDAccompagnement).brand('OutilDAccompagnement'),
+  z
+    .enum([
+      'AidantsConnect',
+      'CartographieNationale',
+      'MonInclusionNumerique',
+      'LesBases',
+      'BaseConseillerNumeriqueContributions',
+      'BaseConseillersNumeriquesCoordinateurs',
+      'Mattermost',
+      'CentreDAideConseillerNumerique',
+    ])
+    .brand('OutilDAccompagnement'),
 )
 
 export type OutilDAccompagnement = Model.TypeOf<typeof OutilDAccompagnement>
 
-export type ProfilOutils = {
-  readonly coordinateur: boolean
-  readonly conseillerNumerique: boolean
-}
-
 const pourTous = () => true
 
-const pourLesCoordinateurs = ({ coordinateur }: ProfilOutils) => coordinateur
+const pourLesCoordinateurs = ({ coordination }: ProfilOutils) =>
+  coordination === 'Coordinateur'
 
-const pourLeDispositifConseillerNumerique = ({
-  conseillerNumerique,
-}: ProfilOutils) => conseillerNumerique
+const pourLeDispositifConseillerNumerique = ({ dispositif }: ProfilOutils) =>
+  dispositif === 'ConseillerNumerique'
 
 const pourLesCoordinateursDuDispositifConseillerNumerique = (
   profil: ProfilOutils,
 ) => pourLesCoordinateurs(profil) && pourLeDispositifConseillerNumerique(profil)
 
 const visibilites: readonly (readonly [
-  ValeurDOutilDAccompagnement,
+  OutilDAccompagnement,
   (profil: ProfilOutils) => boolean,
 ])[] = [
-  ['AidantsConnect', pourTous],
-  ['CartographieNationale', pourTous],
-  ['MonInclusionNumerique', pourLesCoordinateurs],
-  ['LesBases', pourTous],
-  ['BaseConseillerNumeriqueContributions', pourLeDispositifConseillerNumerique],
+  [OutilDAccompagnement('AidantsConnect'), pourTous],
+  [OutilDAccompagnement('CartographieNationale'), pourTous],
+  [OutilDAccompagnement('MonInclusionNumerique'), pourLesCoordinateurs],
+  [OutilDAccompagnement('LesBases'), pourTous],
   [
-    'BaseConseillersNumeriquesCoordinateurs',
+    OutilDAccompagnement('BaseConseillerNumeriqueContributions'),
+    pourLeDispositifConseillerNumerique,
+  ],
+  [
+    OutilDAccompagnement('BaseConseillersNumeriquesCoordinateurs'),
     pourLesCoordinateursDuDispositifConseillerNumerique,
   ],
-  ['Mattermost', pourTous],
-  ['CentreDAideConseillerNumerique', pourLeDispositifConseillerNumerique],
+  [OutilDAccompagnement('Mattermost'), pourTous],
+  [
+    OutilDAccompagnement('CentreDAideConseillerNumerique'),
+    pourLeDispositifConseillerNumerique,
+  ],
 ]
 
 export const outilsDAccompagnementVisibles = (
@@ -59,4 +59,4 @@ export const outilsDAccompagnementVisibles = (
 ): readonly OutilDAccompagnement[] =>
   visibilites
     .filter(([, visiblePour]) => visiblePour(profil))
-    .map(([outil]) => OutilDAccompagnement(outil))
+    .map(([outil]) => outil)

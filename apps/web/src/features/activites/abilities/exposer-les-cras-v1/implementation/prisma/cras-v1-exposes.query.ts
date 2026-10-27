@@ -1,5 +1,6 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
+import type { Horodatage } from '../../domain'
 
 const craV1ExposeSelect = {
   id: true,
@@ -61,7 +62,7 @@ export const crasV1Exposes = async ({
 }: {
   readonly take: number
   readonly skip: number | undefined
-  readonly creeLe: string | undefined
+  readonly creeLe: Horodatage | null
 }): Promise<{
   readonly cras: readonly CraV1Expose[]
   readonly total: number
@@ -71,7 +72,7 @@ export const crasV1Exposes = async ({
       orderBy: [{ createdAt: 'desc' }],
       take,
       skip,
-      cursor: creeLe === undefined ? undefined : { createdAt: creeLe },
+      cursor: creeLe === null ? undefined : { createdAt: creeLe },
       select: craV1ExposeSelect,
     }),
     prismaClient.craConseillerNumeriqueV1.count(),

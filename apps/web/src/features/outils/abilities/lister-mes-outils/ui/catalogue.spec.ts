@@ -1,9 +1,25 @@
+import { Coordination, Dispositif } from '../domain'
 import { outilsAccompagnementsVisibles } from './catalogue'
 
-const titresVisibles = (profil: {
+const profil = ({
+  coordinateur,
+  conseillerNumerique,
+}: {
   coordinateur: boolean
   conseillerNumerique: boolean
-}) => outilsAccompagnementsVisibles(profil).map(({ title }) => title)
+}) => ({
+  coordination: Coordination(
+    coordinateur ? 'Coordinateur' : 'SansCoordination',
+  ),
+  dispositif: Dispositif(
+    conseillerNumerique ? 'ConseillerNumerique' : 'HorsDispositif',
+  ),
+})
+
+const titresVisibles = (options: {
+  coordinateur: boolean
+  conseillerNumerique: boolean
+}) => outilsAccompagnementsVisibles(profil(options)).map(({ title }) => title)
 
 describe('outilsAccompagnementsVisibles', () => {
   it('montre au médiateur hors dispositif les outils communs à tous', () => {
@@ -59,10 +75,9 @@ describe('outilsAccompagnementsVisibles', () => {
 
   it('ne propose « En savoir plus » que pour les outils qui ont une page dédiée', () => {
     expect(
-      outilsAccompagnementsVisibles({
-        coordinateur: true,
-        conseillerNumerique: true,
-      })
+      outilsAccompagnementsVisibles(
+        profil({ coordinateur: true, conseillerNumerique: true }),
+      )
         .filter(({ slug }) => slug === undefined)
         .map(({ title }) => title),
     ).toEqual([

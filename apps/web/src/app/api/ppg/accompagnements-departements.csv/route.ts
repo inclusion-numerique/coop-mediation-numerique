@@ -3,7 +3,10 @@ import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFrom
 import {
   accompagnementsParDepartement,
   exportDesAccompagnementsCsv,
+  Jour,
+  lignesDExport,
   nomDuFichierDExport,
+  PopulationDeMediateurs,
 } from '@app/web/features/activites/abilities/exporter-les-accompagnements-par-departement'
 import {
   csvResponse,
@@ -14,7 +17,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const ExportQueryParamsValidation = z.object({
-  date: z.iso.date().optional(),
+  date: Jour.schema.optional(),
 })
 
 const withAdministrateur = async (
@@ -34,19 +37,21 @@ export const GET = routeBuilder()
   .use(withAdministrateur)
   .use(withSearchParams((raw) => ExportQueryParamsValidation.parse(raw)))
   .handle(async ({ searchParams }) => {
-    const jusquAu = searchParams.date ? new Date(searchParams.date) : undefined
+    const jusquAu = searchParams.date ?? null
 
     const conseillersNumeriques = await accompagnementsParDepartement({
-      conseillersNumeriques: true,
+      population: PopulationDeMediateurs('ConseillersNumeriques'),
       jusquAu,
     })
-    const mediateurs = await accompagnementsParDepartement({
-      conseillersNumeriques: false,
+    const autresMediateurs = await accompagnementsParDepartement({
+      population: PopulationDeMediateurs('AutresMediateurs'),
       jusquAu,
     })
 
     return csvResponse(
-      exportDesAccompagnementsCsv({ conseillersNumeriques, mediateurs }),
+      exportDesAccompagnementsCsv(
+        lignesDExport({ conseillersNumeriques, autresMediateurs }),
+      ),
       { filename: nomDuFichierDExport(jusquAu), withDate: false },
     )
   })

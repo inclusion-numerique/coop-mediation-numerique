@@ -1,28 +1,41 @@
-import { departementsRegionByCode } from '@app/web/data/collectivites-territoriales/departementsRegion'
 import { Prisma } from '@app/web/generated/prisma/client'
-import { getCartographieDepartementLink } from '@app/web/libraries/cartographie-nationale'
-import {
-  CodeInsee,
-  DEPARTEMENT_PAR_DEFAUT,
-  departementDeLActeur,
-} from '@app/web/libraries/departement'
+import { type CodeDepartement, CodeInsee } from '@app/web/libraries/departement'
 import { prismaClient } from '@app/web/prismaClient'
 import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
+import type { MediateurId } from '../../../../domain/mediateur-id'
 import { visibiliteDesLieuxDuMediateur } from '../../../../implementation/prisma/lieux-du-mediateur'
-import type { VisibiliteSurLaCartographie } from '../../domain'
+import {
+  departementDeReference,
+  type LieuDuMediateur,
+  lieuxVisibles,
+  NombreDeLieux,
+  VisibiliteDuLieu,
+  type VisibiliteSurLaCartographie,
+} from '../../domain'
 
-const CARTOGRAPHIE_NATIONALE =
-  'https://cartographie.societenumerique.gouv.fr/cartographie'
+const lieuxDuMediateur = async (
+  mediateurId: MediateurId | null,
+): Promise<readonly LieuDuMediateur[]> =>
+  mediateurId === null
+    ? []
+    : (await visibiliteDesLieuxDuMediateur({ mediateurId })).map(
+        ({ codeInsee, visiblePourCartographieNationale }) => ({
+          codeInsee: CodeInsee.safe(codeInsee ?? ''),
+          visibilite: VisibiliteDuLieu(
+            visiblePourCartographieNationale ? 'Visible' : 'Masque',
+          ),
+        }),
+      )
 
-const nombreDeLieuxDuDepartement = async (
-  departementCode: string,
-): Promise<number> => {
+const lieuxDuDepartement = async (
+  departement: CodeDepartement,
+): Promise<NombreDeLieux> => {
   const [resultat] = await prismaClient.$queryRaw<[{ nombre: number }]>`
     SELECT COUNT(*)::integer AS nombre
     FROM lieu_inclusion s
     WHERE ${Prisma.sql`(
       s.suppression IS NULL
-      AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+      AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departement}
       AND (
         s.visible_pour_cartographie_nationale = true
         OR EXISTS (
@@ -35,45 +48,22 @@ const nombreDeLieuxDuDepartement = async (
       )
     )`}
   `
-  return resultat?.nombre ?? 0
-}
-
-const lienDuDepartement = (departementCode: string): string => {
-  const departementRegion = departementsRegionByCode.get(departementCode)
-
-  return departementRegion
-    ? getCartographieDepartementLink({
-        region: departementRegion.region,
-        departement: departementRegion.nom,
-      })
-    : CARTOGRAPHIE_NATIONALE
+  return NombreDeLieux(resultat?.nombre ?? 0)
 }
 
 export const visibiliteSurLaCartographie = async ({
   mediateurId,
-  codeInseeEmployeuse,
+  employeuse,
 }: {
-  readonly mediateurId: string | undefined
-  readonly codeInseeEmployeuse: string | undefined
+  readonly mediateurId: MediateurId | null
+  readonly employeuse: CodeInsee | null
 }): Promise<VisibiliteSurLaCartographie> => {
-  const lieux = mediateurId
-    ? await visibiliteDesLieuxDuMediateur({ mediateurId })
-    : []
-
-  const departementCode =
-    departementDeLActeur({
-      employeuse: CodeInsee.safe(codeInseeEmployeuse ?? ''),
-      lieux: lieux
-        .map(({ codeInsee }) => CodeInsee.safe(codeInsee ?? ''))
-        .filter((codeInsee) => codeInsee !== null),
-    }) ?? DEPARTEMENT_PAR_DEFAUT
+  const lieux = await lieuxDuMediateur(mediateurId)
+  const departement = departementDeReference({ employeuse, lieux })
 
   return {
-    lieuxVisiblesDuMediateur: lieux.filter(
-      ({ visiblePourCartographieNationale }) =>
-        visiblePourCartographieNationale,
-    ).length,
-    lieuxDuDepartement: await nombreDeLieuxDuDepartement(departementCode),
-    lienCartographie: lienDuDepartement(departementCode),
+    departement,
+    lieuxVisiblesDuMediateur: lieuxVisibles(lieux),
+    lieuxDuDepartement: await lieuxDuDepartement(departement),
   }
 }

@@ -1,18 +1,22 @@
 import assert from 'node:assert'
+import type { Model } from '@app/web/libraries/model'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
+  Coordination,
+  Dispositif,
   OutilDAccompagnement,
   outilsDAccompagnementVisibles,
   type ProfilOutils,
-  type ValeurDOutilDAccompagnement,
 } from './domain'
+
+type Outil = Model.InputOf<typeof OutilDAccompagnement>
 
 const consultation: {
   profil?: ProfilOutils
   outils: readonly OutilDAccompagnement[]
 } = { outils: [] }
 
-const voit = (...outils: ValeurDOutilDAccompagnement[]) => {
+const voit = (...outils: Outil[]) => {
   assert.ok(
     outils.every((outil) =>
       consultation.outils.includes(OutilDAccompagnement(outil)),
@@ -20,20 +24,29 @@ const voit = (...outils: ValeurDOutilDAccompagnement[]) => {
   )
 }
 
-const neVoitPas = (outil: ValeurDOutilDAccompagnement) => {
+const neVoitPas = (outil: Outil) => {
   assert.ok(!consultation.outils.includes(OutilDAccompagnement(outil)))
 }
 
 Given('un médiateur hors dispositif', () => {
-  consultation.profil = { coordinateur: false, conseillerNumerique: false }
+  consultation.profil = {
+    coordination: Coordination('SansCoordination'),
+    dispositif: Dispositif('HorsDispositif'),
+  }
 })
 
 Given('un médiateur du dispositif Conseiller numérique', () => {
-  consultation.profil = { coordinateur: false, conseillerNumerique: true }
+  consultation.profil = {
+    coordination: Coordination('SansCoordination'),
+    dispositif: Dispositif('ConseillerNumerique'),
+  }
 })
 
 Given('un coordinateur du dispositif Conseiller numérique', () => {
-  consultation.profil = { coordinateur: true, conseillerNumerique: true }
+  consultation.profil = {
+    coordination: Coordination('Coordinateur'),
+    dispositif: Dispositif('ConseillerNumerique'),
+  }
 })
 
 When('il consulte ses outils', () => {

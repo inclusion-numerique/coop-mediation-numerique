@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { VisibiliteSurLaCartographie } from '../domain'
+import { lienDeLaCartographie } from './lien-de-la-cartographie.presenter'
 
 const pluralizeLieuxActiviteUser = (count: number): string => {
   switch (count) {
@@ -31,9 +32,9 @@ const pluralizeLieuxActiviteDepartement = (count: number) => {
 }
 
 export const AccesCartographieNationale = ({
+  departement,
   lieuxVisiblesDuMediateur,
   lieuxDuDepartement,
-  lienCartographie,
 }: VisibiliteSurLaCartographie) => (
   <div className="fr-flex fr-direction-column fr-flex-gap-6v">
     <div className="fr-text-label--blue-france fr-background-alt--blue-france fr-p-8v fr-border-radius--8">
@@ -67,7 +68,11 @@ export const AccesCartographieNationale = ({
       <p className="fr-mb-4v">
         {pluralizeLieuxActiviteDepartement(lieuxDuDepartement)}
       </p>
-      <Link href={lienCartographie} target="_blank" rel="noreferrer">
+      <Link
+        href={lienDeLaCartographie(departement)}
+        target="_blank"
+        rel="noreferrer"
+      >
         Voir sur la cartographie
       </Link>
     </div>

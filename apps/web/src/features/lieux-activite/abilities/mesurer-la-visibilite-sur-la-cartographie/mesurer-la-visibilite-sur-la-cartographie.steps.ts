@@ -2,10 +2,12 @@ import assert from 'node:assert'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { MediateurId } from '../../domain/mediateur-id'
 import type { VisibiliteSurLaCartographie } from './domain'
 import { visibiliteSurLaCartographie } from './implementation'
 
 const ROCHEFORT = '17299'
+const CHARENTE_MARITIME = '17'
 
 const lieuxSemes = new Set<string>()
 const utilisateursSemes = new Set<string>()
@@ -55,8 +57,9 @@ const semerUnMediateurDansUnLieu = async (visible: boolean) => {
 
 const mesurer = () =>
   visibiliteSurLaCartographie({
-    mediateurId: mesure.mediateurId,
-    codeInseeEmployeuse: undefined,
+    mediateurId:
+      mesure.mediateurId === undefined ? null : MediateurId(mesure.mediateurId),
+    employeuse: null,
   })
 
 Given(
@@ -89,12 +92,8 @@ Then('{int} de ses lieux est visible', (attendu: number) => {
   assert.strictEqual(mesure.apres?.lieuxVisiblesDuMediateur, attendu)
 })
 
-Then('le lien mène à la cartographie de son département', () => {
-  assert.ok(
-    mesure.apres?.lienCartographie.startsWith(
-      'https://cartographie.societenumerique.gouv.fr/cartographie/regions/',
-    ),
-  )
+Then('son département de référence est la Charente-Maritime', () => {
+  assert.strictEqual(mesure.apres?.departement, CHARENTE_MARITIME)
 })
 
 Then('son département compte {int} lieu de plus', (attendu: number) => {

@@ -7,11 +7,12 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { UsageDesTags } from '../../domain'
 import { CounterCard } from '../CounterCard'
+import { tagsDeLaListe } from '../usage-des-tags.presenter'
 
 export const UsageDesTagsPage = ({
-  tagsCreators,
-  tagsUsedInCRAs,
-  mostUsedTags,
+  createursDeTagsUtilises,
+  comptesRendusTagues,
+  tagsLesPlusUtilises,
 }: UsageDesTags) => (
   <CoopPageContainer>
     <SkipLinksPortal />
@@ -35,12 +36,12 @@ export const UsageDesTagsPage = ({
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-user-line">
-                {numberToString(tagsCreators.total)}
+                {numberToString(createursDeTagsUtilises.effectif)}
               </CounterCard>
             </div>
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-percent-line">
-                {numberToString(tagsCreators.percentage)}
+                {numberToString(createursDeTagsUtilises.pourcentage)}
               </CounterCard>
             </div>
           </div>
@@ -50,21 +51,22 @@ export const UsageDesTagsPage = ({
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-service-line">
-                {numberToString(tagsUsedInCRAs.total)}
+                {numberToString(comptesRendusTagues.effectif)}
               </CounterCard>
             </div>
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-percent-line">
-                {numberToString(tagsUsedInCRAs.percentage)}
+                {numberToString(comptesRendusTagues.pourcentage)}
               </CounterCard>
             </div>
           </div>
         </section>
         <section className="fr-mb-12v">
           <h2 className="fr-h5">
-            Les {numberToString(mostUsedTags.length)} tags les plus utilisés
+            Les {numberToString(tagsLesPlusUtilises.length)} tags les plus
+            utilisés
           </h2>
-          <TagList tags={[...mostUsedTags]} />
+          <TagList tags={tagsDeLaListe(tagsLesPlusUtilises)} />
         </section>
       </div>
     </main>

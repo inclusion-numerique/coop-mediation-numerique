@@ -1,2 +1,2 @@
-export type { VisibiliteSurLaCartographie } from './domain'
+export { type VisibiliteSurLaCartographie } from './domain'
 export { visibiliteSurLaCartographie } from './implementation'

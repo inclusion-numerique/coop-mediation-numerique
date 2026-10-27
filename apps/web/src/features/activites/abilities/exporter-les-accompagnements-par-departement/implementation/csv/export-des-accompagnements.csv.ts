@@ -1,6 +1,5 @@
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { stringify } from 'csv-stringify/sync'
-import type { AccompagnementsDuDepartement } from '../prisma/accompagnements-par-departement.query'
+import type { Jour, LigneDExport } from '../../domain'
 
 const enTete = [
   'Département',
@@ -9,24 +8,20 @@ const enTete = [
   'Accompagnements médiateur',
 ]
 
-export const exportDesAccompagnementsCsv = ({
-  conseillersNumeriques,
-  mediateurs,
-}: {
-  readonly conseillersNumeriques: readonly AccompagnementsDuDepartement[]
-  readonly mediateurs: readonly AccompagnementsDuDepartement[]
-}): string =>
+export const exportDesAccompagnementsCsv = (
+  lignes: readonly LigneDExport[],
+): string =>
   stringify([
     enTete,
-    ...conseillersNumeriques.map(({ departement, accompagnements }) => [
-      departement.code,
-      departement.nom,
-      accompagnements,
-      mediateurs.find(
-        (mediateur) => mediateur.departement.code === departement.code,
-      )?.accompagnements ?? 0,
-    ]),
+    ...lignes.map(
+      ({ departement, conseillersNumeriques, autresMediateurs }) => [
+        departement.code,
+        departement.nom,
+        conseillersNumeriques,
+        autresMediateurs,
+      ],
+    ),
   ])
 
-export const nomDuFichierDExport = (jusquAu: Date | undefined): string =>
-  jusquAu ? `accompagnements_${dateAsIsoDay(jusquAu)}` : 'accompagnements'
+export const nomDuFichierDExport = (jusquAu: Jour | null): string =>
+  jusquAu === null ? 'accompagnements' : `accompagnements_${jusquAu}`

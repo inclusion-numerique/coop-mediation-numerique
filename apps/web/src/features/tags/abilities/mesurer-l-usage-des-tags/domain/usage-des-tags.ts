@@ -1,21 +1,21 @@
-import type { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
-
-export type Proportion = {
-  readonly total: number
-  readonly percentage: number
-}
+import type { DescriptionDuTag } from './description-du-tag'
+import type { Effectif } from './effectif'
+import type { NomDuTag } from './nom-du-tag'
+import type { PorteeDuTag } from './portee-du-tag'
+import type { Proportion } from './proportion'
+import type { TagId } from './tag-id'
 
 export type TagLePlusUtilise = {
-  readonly id: string
-  readonly nom: string
-  readonly scope: TagScope
-  readonly description?: string
-  readonly usageCount: number
-  readonly accompagnementsCount: number
+  readonly id: TagId
+  readonly nom: NomDuTag
+  readonly portee: PorteeDuTag
+  readonly description: DescriptionDuTag | null
+  readonly utilisations: Effectif
+  readonly accompagnements: Effectif
 }
 
 export type UsageDesTags = {
-  readonly tagsCreators: Proportion
-  readonly tagsUsedInCRAs: Proportion
-  readonly mostUsedTags: readonly TagLePlusUtilise[]
+  readonly createursDeTagsUtilises: Proportion
+  readonly comptesRendusTagues: Proportion
+  readonly tagsLesPlusUtilises: readonly TagLePlusUtilise[]
 }

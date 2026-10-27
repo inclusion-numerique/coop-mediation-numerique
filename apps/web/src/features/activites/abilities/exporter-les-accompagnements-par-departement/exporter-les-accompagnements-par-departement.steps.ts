@@ -1,20 +1,21 @@
 import assert from 'node:assert'
 import { semerUnAccompagnementDansLaCommune } from '@app/web/features/activites/activites.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { Jour, PopulationDeMediateurs } from './domain'
 import { accompagnementsParDepartement } from './implementation'
 
 const AJACCIO = '2A004'
 const CORSE_DU_SUD = '2A'
-const FIN_SEPTEMBRE = new Date('2026-09-30')
+const FIN_SEPTEMBRE = Jour('2026-09-30')
 
 const exportation: { avant?: number; apres?: number } = {}
 
 const accompagnementsDeMediateursEnCorseDuSud = async (
-  jusquAu: Date | undefined,
+  jusquAu: Jour | null,
 ): Promise<number> =>
   (
     await accompagnementsParDepartement({
-      conseillersNumeriques: false,
+      population: PopulationDeMediateurs('AutresMediateurs'),
       jusquAu,
     })
   ).find(({ departement }) => departement.code === CORSE_DU_SUD)
@@ -23,7 +24,7 @@ const accompagnementsDeMediateursEnCorseDuSud = async (
 Given(
   'le décompte des accompagnements de médiateurs en Corse-du-Sud',
   async () => {
-    exportation.avant = await accompagnementsDeMediateursEnCorseDuSud(undefined)
+    exportation.avant = await accompagnementsDeMediateursEnCorseDuSud(null)
   },
 )
 
@@ -46,7 +47,7 @@ Given(
 )
 
 When("l'administration exporte les accompagnements", async () => {
-  exportation.apres = await accompagnementsDeMediateursEnCorseDuSud(undefined)
+  exportation.apres = await accompagnementsDeMediateursEnCorseDuSud(null)
 })
 
 When(

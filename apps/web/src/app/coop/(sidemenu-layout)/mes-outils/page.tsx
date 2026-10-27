@@ -4,6 +4,10 @@ import {
   isConseillerNumerique,
   isCoordinateur,
 } from '@app/web/auth/userTypeGuards'
+import {
+  Coordination,
+  Dispositif,
+} from '@app/web/features/outils/abilities/lister-mes-outils'
 import { MesOutilsPage } from '@app/web/features/outils/abilities/lister-mes-outils/ui'
 import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
 import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
@@ -20,8 +24,14 @@ const Page = async () => {
   return (
     <MesOutilsPage
       profil={{
-        coordinateur: isCoordinateur(user),
-        conseillerNumerique: isConseillerNumerique(user),
+        coordination: Coordination(
+          isCoordinateur(user) ? 'Coordinateur' : 'SansCoordination',
+        ),
+        dispositif: Dispositif(
+          isConseillerNumerique(user)
+            ? 'ConseillerNumerique'
+            : 'HorsDispositif',
+        ),
       }}
       rdvServicePublic={{
         lien: rdvWebsiteLink,

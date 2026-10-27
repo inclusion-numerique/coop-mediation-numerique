@@ -1,40 +1,37 @@
+import { CodeDepartement, NomDepartement } from '@app/web/libraries/departement'
+import { Jour, NombreDAccompagnements } from '../../domain'
 import {
   exportDesAccompagnementsCsv,
   nomDuFichierDExport,
 } from './export-des-accompagnements.csv'
 
 describe('exportDesAccompagnementsCsv', () => {
-  it('aligne les accompagnements des conseillers numériques et des médiateurs par département', () => {
+  it('écrit une ligne par département sous l’en-tête', () => {
     expect(
-      exportDesAccompagnementsCsv({
-        conseillersNumeriques: [
-          { departement: { code: '01', nom: 'Ain' }, accompagnements: 3 },
-          {
-            departement: { code: '2A', nom: 'Corse-du-Sud' },
-            accompagnements: 0,
+      exportDesAccompagnementsCsv([
+        {
+          departement: {
+            code: CodeDepartement('2A'),
+            nom: NomDepartement('Corse-du-Sud'),
           },
-        ],
-        mediateurs: [
-          {
-            departement: { code: '2A', nom: 'Corse-du-Sud' },
-            accompagnements: 5,
-          },
-        ],
-      }),
+          conseillersNumeriques: NombreDAccompagnements(0),
+          autresMediateurs: NombreDAccompagnements(5),
+        },
+      ]),
     ).toBe(
-      'Département,Code,Accompagnements conum,Accompagnements médiateur\n01,Ain,3,0\n2A,Corse-du-Sud,0,5\n',
+      'Département,Code,Accompagnements conum,Accompagnements médiateur\n2A,Corse-du-Sud,0,5\n',
     )
   })
 })
 
 describe('nomDuFichierDExport', () => {
   it('porte la date de fin quand elle est donnée', () => {
-    expect(nomDuFichierDExport(new Date('2026-10-01'))).toBe(
+    expect(nomDuFichierDExport(Jour('2026-10-01'))).toBe(
       'accompagnements_2026-10-01',
     )
   })
 
   it('reste générique sans date', () => {
-    expect(nomDuFichierDExport(undefined)).toBe('accompagnements')
+    expect(nomDuFichierDExport(null)).toBe('accompagnements')
   })
 })

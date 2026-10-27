@@ -1,5 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
+import { MediateurId } from '@app/web/features/lieux-activite'
 import { visibiliteSurLaCartographie } from '@app/web/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
 import { AccesCartographieNationale } from '@app/web/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
 import { SlugOutil } from '@app/web/features/outils/abilities/consulter-un-outil'
@@ -10,6 +11,7 @@ import {
 } from '@app/web/features/outils/abilities/consulter-un-outil/ui'
 import RdvServicePublicAccessCard from '@app/web/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@app/web/features/rdvsp/ui/RdvServicePublicMigrationNotice'
+import { CodeInsee } from '@app/web/libraries/departement'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -27,9 +29,10 @@ const accesALaCartographie = async (): Promise<EmplacementsDeLaFiche> => {
     acces: (
       <AccesCartographieNationale
         {...(await visibiliteSurLaCartographie({
-          mediateurId: user?.mediateur?.id,
-          codeInseeEmployeuse:
-            user?.emplois?.at(0)?.structure.codeInsee ?? undefined,
+          mediateurId: user?.mediateur ? MediateurId(user.mediateur.id) : null,
+          employeuse: CodeInsee.safe(
+            user?.emplois?.at(0)?.structure.codeInsee ?? '',
+          ),
         }))}
       />
     ),

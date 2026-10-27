@@ -5,6 +5,7 @@ import {
 } from '@app/web/features/activites/activites.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { ActiviteId, Horodatage } from './domain'
 import { activitesExposees } from './implementation'
 
 const exposition: {
@@ -27,7 +28,10 @@ const activitesSemees = async (): Promise<readonly string[]> =>
 
 const lister = async (modifieDepuis: Date) => {
   const { activites } = await activitesExposees({
-    criteres: { creeDepuis: undefined, modifieDepuis },
+    criteres: {
+      creeesDepuis: null,
+      modifieesDepuis: Horodatage(modifieDepuis),
+    },
     take: 500,
     curseur: null,
   })
@@ -48,7 +52,10 @@ When("l'API liste les activités modifiées depuis demain", async () => {
 })
 
 When("l'API liste une activité par page depuis leur saisie", async () => {
-  const criteres = { creeDepuis: undefined, modifieDepuis: saisieLe() }
+  const criteres = {
+    creeesDepuis: null,
+    modifieesDepuis: Horodatage(saisieLe()),
+  }
   const premiere = await activitesExposees({
     criteres,
     take: 1,
@@ -60,8 +67,8 @@ When("l'API liste une activité par page depuis leur saisie", async () => {
     criteres,
     take: 1,
     curseur: {
-      modification: derniere.modification.toISOString(),
-      id: derniere.id,
+      modification: Horodatage(derniere.modification),
+      id: ActiviteId(derniere.id),
     },
   })
   exposition.pages = [premiere, suivante].map(({ activites }) =>

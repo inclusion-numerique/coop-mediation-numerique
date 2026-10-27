@@ -1,4 +1,4 @@
-import type { SlugOutil, ValeurDeSlugOutil } from '../../domain'
+import type { ValeurDeSlugOutil } from '../../domain'
 import type { FicheOutil } from '../fiche-outil'
 import abcDiag from './abcDiag'
 import aidantsConnect from './aidantsConnect'
@@ -19,7 +19,5 @@ const fiches: Record<ValeurDeSlugOutil, FicheOutil> = {
   'rdv-service-public': rdv,
 }
 
-const valeurDuSlug = (slug: SlugOutil): ValeurDeSlugOutil => slug
-
-export const ficheDeLOutil = (slug: SlugOutil): FicheOutil =>
-  fiches[valeurDuSlug(slug)]
+export const ficheDeLOutil = (slug: ValeurDeSlugOutil): FicheOutil =>
+  fiches[slug]

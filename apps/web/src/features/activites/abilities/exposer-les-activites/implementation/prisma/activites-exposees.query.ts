@@ -1,15 +1,6 @@
 import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-
-export type CriteresDExposition = {
-  readonly creeDepuis: Date | undefined
-  readonly modifieDepuis: Date | undefined
-}
-
-export type CurseurDActivite = {
-  readonly modification: string
-  readonly id: string
-}
+import type { CriteresDExposition, CurseurDActivite } from '../../domain'
 
 const activiteExposeeSelect = {
   id: true,
@@ -67,25 +58,29 @@ const apresLeCurseur = (
       }
 
 const exposeesWhere = (
-  { creeDepuis, modifieDepuis }: CriteresDExposition,
+  { creeesDepuis, modifieesDepuis }: CriteresDExposition,
   curseur: CurseurDActivite | null,
 ): Prisma.ActiviteWhereInput => ({
-  ...(creeDepuis ? { creation: { gte: creeDepuis } } : {}),
-  ...(modifieDepuis ? { modification: { gte: modifieDepuis } } : {}),
+  ...(creeesDepuis === null ? {} : { creation: { gte: creeesDepuis } }),
+  ...(modifieesDepuis === null
+    ? {}
+    : { modification: { gte: modifieesDepuis } }),
   ...apresLeCurseur(curseur),
 })
 
 const exposeesSql = ({
-  creeDepuis,
-  modifieDepuis,
+  creeesDepuis,
+  modifieesDepuis,
 }: CriteresDExposition): Prisma.Sql =>
   Prisma.join(
     [
       Prisma.sql`TRUE`,
-      ...(creeDepuis ? [Prisma.sql`activites.creation >= ${creeDepuis}`] : []),
-      ...(modifieDepuis
-        ? [Prisma.sql`activites.modification >= ${modifieDepuis}`]
-        : []),
+      ...(creeesDepuis === null
+        ? []
+        : [Prisma.sql`activites.creation >= ${creeesDepuis}`]),
+      ...(modifieesDepuis === null
+        ? []
+        : [Prisma.sql`activites.modification >= ${modifieesDepuis}`]),
     ],
     ' AND ',
   )

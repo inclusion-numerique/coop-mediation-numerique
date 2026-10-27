@@ -11,7 +11,7 @@
 * Given un médiateur qui exerce dans un lieu visible de Charente-Maritime
 * When on mesure sa visibilité sur la cartographie
 * Then 1 de ses lieux est visible
-* And le lien mène à la cartographie de son département
+* And son département de référence est la Charente-Maritime
 
 ### Scenario: Le lieu non visible où il exerce ne compte pas
 

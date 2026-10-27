@@ -1,6 +1,5 @@
 export {
   OutilDAccompagnement,
   outilsDAccompagnementVisibles,
-  type ProfilOutils,
-  type ValeurDOutilDAccompagnement,
 } from './outils-d-accompagnement'
+export { Coordination, Dispositif, type ProfilOutils } from './profil-outils'

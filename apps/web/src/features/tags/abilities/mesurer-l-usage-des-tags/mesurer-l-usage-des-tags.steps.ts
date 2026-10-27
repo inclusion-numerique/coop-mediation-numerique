@@ -25,7 +25,7 @@ When("l'administration mesure à nouveau l'usage des tags", async () => {
 
 Then('les créateurs de tags utilisés sont {int} de plus', (attendu: number) => {
   assert.strictEqual(
-    ecart(({ tagsCreators }) => tagsCreators.total),
+    ecart(({ createursDeTagsUtilises }) => createursDeTagsUtilises.effectif),
     attendu,
   )
 })
@@ -34,7 +34,7 @@ Then(
   'les comptes rendus portant un tag sont {int} de plus',
   (attendu: number) => {
     assert.strictEqual(
-      ecart(({ tagsUsedInCRAs }) => tagsUsedInCRAs.total),
+      ecart(({ comptesRendusTagues }) => comptesRendusTagues.effectif),
       attendu,
     )
   },

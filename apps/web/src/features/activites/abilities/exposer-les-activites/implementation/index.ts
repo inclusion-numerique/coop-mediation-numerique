@@ -3,8 +3,10 @@ export {
   activiteExposee,
 } from './api/activite-exposee.transfer'
 export {
+  criteresDExposition,
+  curseurDActivite,
+} from './api/criteres-d-exposition'
+export {
   type ActiviteExposee,
   activitesExposees,
-  type CriteresDExposition,
-  type CurseurDActivite,
 } from './prisma/activites-exposees.query'
