@@ -11,7 +11,7 @@ import { tagsDeLaListe } from '../usage-des-tags.presenter'
 
 export const UsageDesTagsPage = ({
   createursDeTagsUtilises,
-  comptesRendusTagues,
+  activitesAvecUnTag,
   tagsLesPlusUtilises,
 }: UsageDesTags) => (
   <CoopPageContainer>
@@ -51,12 +51,12 @@ export const UsageDesTagsPage = ({
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-service-line">
-                {numberToString(comptesRendusTagues.effectif)}
+                {numberToString(activitesAvecUnTag.effectif)}
               </CounterCard>
             </div>
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-percent-line">
-                {numberToString(comptesRendusTagues.pourcentage)}
+                {numberToString(activitesAvecUnTag.pourcentage)}
               </CounterCard>
             </div>
           </div>

@@ -27,7 +27,7 @@ const createursDeTagsUtilises = async (): Promise<Proportion> => {
   return proportion(Effectif(createurs.length), Effectif(mediateurs))
 }
 
-const comptesRendusTagues = async (): Promise<Proportion> => {
+const activitesAvecUnTag = async (): Promise<Proportion> => {
   const [activitesTaguees, activites] = await Promise.all([
     prismaClient.activitesTags.findMany({
       select: { activiteId: true },
@@ -106,15 +106,15 @@ const tagsLesPlusUtilises = async (): Promise<TagLePlusUtilise[]> => {
 }
 
 export const usageDesTags = async (): Promise<UsageDesTags> => {
-  const [createurs, comptesRendus, tags] = await Promise.all([
+  const [createurs, activites, tags] = await Promise.all([
     createursDeTagsUtilises(),
-    comptesRendusTagues(),
+    activitesAvecUnTag(),
     tagsLesPlusUtilises(),
   ])
 
   return {
     createursDeTagsUtilises: createurs,
-    comptesRendusTagues: comptesRendus,
+    activitesAvecUnTag: activites,
     tagsLesPlusUtilises: tags,
   }
 }

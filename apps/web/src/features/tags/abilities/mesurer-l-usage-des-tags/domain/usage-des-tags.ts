@@ -16,6 +16,6 @@ export type TagLePlusUtilise = {
 
 export type UsageDesTags = {
   readonly createursDeTagsUtilises: Proportion
-  readonly comptesRendusTagues: Proportion
+  readonly activitesAvecUnTag: Proportion
   readonly tagsLesPlusUtilises: readonly TagLePlusUtilise[]
 }

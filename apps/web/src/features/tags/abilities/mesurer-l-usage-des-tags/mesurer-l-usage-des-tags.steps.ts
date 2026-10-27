@@ -15,7 +15,7 @@ Given("la mesure de l'usage des tags", async () => {
   mesures.avant = await usageDesTags()
 })
 
-Given('un médiateur qui a utilisé son tag dans un compte rendu', async () => {
+Given('un médiateur qui a utilisé son tag dans une activité', async () => {
   await semerUnTagUtiliseDansUneActivite()
 })
 
@@ -30,12 +30,9 @@ Then('les créateurs de tags utilisés sont {int} de plus', (attendu: number) =>
   )
 })
 
-Then(
-  'les comptes rendus portant un tag sont {int} de plus',
-  (attendu: number) => {
-    assert.strictEqual(
-      ecart(({ comptesRendusTagues }) => comptesRendusTagues.effectif),
-      attendu,
-    )
-  },
-)
+Then('les activités portant un tag sont {int} de plus', (attendu: number) => {
+  assert.strictEqual(
+    ecart(({ activitesAvecUnTag }) => activitesAvecUnTag.effectif),
+    attendu,
+  )
+})
