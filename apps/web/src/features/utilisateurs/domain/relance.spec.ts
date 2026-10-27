@@ -15,10 +15,19 @@ const action = (
   phase: PhaseDeRelance,
   jours: number,
   relance: Parameters<typeof Relance>[0],
-  aProduit = false,
+  {
+    aProduit = false,
+    suppressionAnnoncee = relance === 'AvertissementJ90' ? ilYA(1) : null,
+  }: { aProduit?: boolean; suppressionAnnoncee?: Date | null } = {},
 ) =>
   actionDeRelance(
-    { phase, depuis: ilYA(jours), relance: Relance(relance), aProduit },
+    {
+      phase,
+      depuis: ilYA(jours),
+      relance: Relance(relance),
+      suppressionAnnoncee,
+      aProduit,
+    },
     MAINTENANT,
   )
 
@@ -43,11 +52,31 @@ describe('relances d’une inscription inachevée', () => {
     })
   })
 
-  it('laisse au moins un jour à un compte averti en retard', () => {
+  it('laisse quatorze jours de préavis à un compte averti en retard', () => {
     expect(action('Inscription', 200, 'Aucune')).toEqual({
       _tag: 'Avertir',
-      suppressionLe: new Date(MAINTENANT.getTime() + UN_JOUR),
-      joursRestants: 1,
+      suppressionLe: new Date(MAINTENANT.getTime() + 14 * UN_JOUR),
+      joursRestants: 14,
+    })
+  })
+
+  it('n’efface pas avant la date annoncée', () => {
+    expect(
+      action('Inscription', 200, 'AvertissementJ90', {
+        suppressionAnnoncee: new Date(MAINTENANT.getTime() + UN_JOUR),
+      }),
+    ).toEqual({ _tag: 'Rien' })
+  })
+
+  it('avertit de nouveau un compte averti sans date annoncée', () => {
+    expect(
+      action('Inscription', 200, 'AvertissementJ90', {
+        suppressionAnnoncee: null,
+      }),
+    ).toEqual({
+      _tag: 'Avertir',
+      suppressionLe: new Date(MAINTENANT.getTime() + 14 * UN_JOUR),
+      joursRestants: 14,
     })
   })
 })
@@ -63,7 +92,9 @@ describe('relances d’un inscrit qui n’a rien produit', () => {
   })
 
   it('ne relance jamais un compte qui a produit', () => {
-    expect(action('Nouveau', 106, 'AvertissementJ90', true)).toEqual({
+    expect(
+      action('Nouveau', 106, 'AvertissementJ90', { aProduit: true }),
+    ).toEqual({
       _tag: 'Rien',
     })
   })

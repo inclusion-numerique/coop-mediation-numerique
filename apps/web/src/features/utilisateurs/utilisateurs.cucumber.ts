@@ -324,7 +324,9 @@ export type CompteDeListe = {
   readonly conseillerNumerique?: boolean
   readonly lieuId?: string | null
   readonly relance?: OnboardingStatus | null
+  readonly suppressionAnnonceeLe?: Date | null
   readonly avecUnBeneficiaire?: boolean
+  readonly avecUneActiviteSupprimee?: boolean
   readonly fixture?: boolean
   readonly coordinateurDeclare?: boolean
   readonly telephone?: string | null
@@ -408,6 +410,12 @@ export const semerUnCompteDeListe = async (
     deleted: compte.supprimeLe ?? null,
     lastSeen: compte.derniereVisite ?? null,
     onboardingStatus: compte.relance ?? null,
+    suppressionAnnonceeLe:
+      compte.suppressionAnnonceeLe === undefined
+        ? compte.relance === 'warning_j90_sent'
+          ? new Date(Date.now() - 24 * 60 * 60 * 1000)
+          : null
+        : compte.suppressionAnnonceeLe,
     isFixture: compte.fixture ?? false,
     phone: compte.telephone ?? null,
   })
@@ -475,6 +483,19 @@ export const semerUnCompteDeListe = async (
   if (compte.avecUnBeneficiaire && mediateur)
     await prismaClient.beneficiaire.create({
       data: { mediateurId: mediateur.id, prenom: 'Paul', nom: 'Durand' },
+    })
+
+  if (compte.avecUneActiviteSupprimee && mediateur)
+    await prismaClient.activite.create({
+      data: {
+        mediateurId: mediateur.id,
+        type: 'Individuel',
+        typeLieu: 'Autre',
+        date: new Date('2026-06-01'),
+        duree: 60,
+        accompagnementsCount: 0,
+        suppression: new Date(),
+      },
     })
 
   if (compte.lieuId && mediateur)

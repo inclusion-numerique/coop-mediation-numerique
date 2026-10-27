@@ -23,27 +23,6 @@ export const inscritsSansProduction = async (): Promise<
       role: 'User',
       deleted: null,
       inscriptionValidee: { not: null },
-      AND: [
-        {
-          OR: [
-            { mediateur: { is: null } },
-            {
-              mediateur: {
-                is: {
-                  derniereCreationActivite: null,
-                  derniereCreationBeneficiaire: null,
-                },
-              },
-            },
-          ],
-        },
-        {
-          OR: [
-            { coordinateur: { is: null } },
-            { coordinateur: { is: { derniereCreationActivite: null } } },
-          ],
-        },
-      ],
     },
     select: {
       id: true,
@@ -51,6 +30,7 @@ export const inscritsSansProduction = async (): Promise<
       firstName: true,
       inscriptionValidee: true,
       onboardingStatus: true,
+      suppressionAnnonceeLe: true,
       ...productionSelect,
     },
   })
@@ -76,6 +56,7 @@ export const inscritsSansProduction = async (): Promise<
               phase: 'Nouveau' as const,
               depuis: compte.inscriptionValidee,
               relance: relanceToDomain('Nouveau', compte.onboardingStatus),
+              suppressionAnnoncee: compte.suppressionAnnonceeLe,
               aProduit: aProduit(productionToDomain(compte)),
             },
           },

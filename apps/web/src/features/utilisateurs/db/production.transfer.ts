@@ -5,7 +5,12 @@ export const productionSelect = {
   mediateur: {
     select: {
       id: true,
-      _count: { select: { activites: true, beneficiaires: true } },
+      _count: {
+        select: {
+          activites: { where: { suppression: null } },
+          beneficiaires: { where: { suppression: null } },
+        },
+      },
     },
   },
   coordinateur: {
@@ -14,7 +19,7 @@ export const productionSelect = {
       _count: {
         select: {
           mediateursCoordonnes: { where: { suppression: null } },
-          ActiviteCoordination: true,
+          ActiviteCoordination: { where: { suppression: null } },
           invitations: { where: { acceptee: null, refusee: null } },
         },
       },

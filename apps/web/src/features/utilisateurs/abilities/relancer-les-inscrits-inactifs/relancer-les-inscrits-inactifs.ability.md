@@ -36,3 +36,11 @@
 * Given un inscrit depuis 106 jours, relance "warning_j90_sent", avec un bénéficiaire
 * When les inscrits inactifs sont relancés
 * Then cet inscrit ne reçoit rien
+
+## Rule: Seule la production non supprimée protège le compte
+
+### Scenario: Une activité créée puis supprimée ne protège plus l'inscrit
+
+* Given un inscrit depuis 106 jours, relance "warning_j90_sent", avec une activité supprimée
+* When les inscrits inactifs sont relancés
+* Then cet inscrit est supprimé

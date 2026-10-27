@@ -29,6 +29,10 @@ const compte = (
     phase: 'Inscription',
     depuis: new Date(MAINTENANT.getTime() - jours * UN_JOUR),
     relance: Relance(relance),
+    suppressionAnnoncee:
+      relance === 'AvertissementJ90'
+        ? new Date(MAINTENANT.getTime() - UN_JOUR)
+        : null,
     aProduit: false,
   },
 })
@@ -54,7 +58,12 @@ const journal = () => {
       consigner('effacement')
       return success(undefined)
     },
-    noter: async (_, relance) => consigner(`note ${relance}`),
+    noter: async (_, relance, suppressionAnnoncee) =>
+      consigner(
+        suppressionAnnoncee === null
+          ? `note ${relance}`
+          : `note ${relance} ${suppressionAnnoncee.toISOString().slice(0, 10)}`,
+      ),
   }
   return { etat, ports }
 }
@@ -79,6 +88,17 @@ describe('dérouler les relances', () => {
       { utilisateurId: DEUX, action: 'Relancer', issue: 'fait' },
     ])
     expect(etat.evenements).toEqual(['relance 7', 'note J7'])
+  })
+
+  it('note la date de suppression annoncée avec l’avertissement', async () => {
+    const { etat, ports } = journal()
+
+    await deroulerLesRelances([compte(DEUX, 200, 'J60')], ports, MAINTENANT)
+
+    expect(etat.evenements).toEqual([
+      'avertissement',
+      'note AvertissementJ90 2026-11-04',
+    ])
   })
 
   it('ne note pas de relance après un effacement', async () => {

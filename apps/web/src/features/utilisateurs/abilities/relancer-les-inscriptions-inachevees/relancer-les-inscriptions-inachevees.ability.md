@@ -21,6 +21,25 @@
 * Then cette inscription est effacée
 * And la personne est prévenue de l'effacement
 
+## Rule: L'effacement laisse toujours deux semaines de préavis
+
+> Quand les relances ont pris du retard, l'avertissement part après J+90 :
+> l'effacement est alors annoncé quatorze jours plus tard, et n'a lieu qu'à
+> la date annoncée.
+
+### Scenario: Une inscription avertie en retard garde deux semaines
+
+* Given une inscription commencée il y a 200 jours, relance "-"
+* When les inscriptions inachevées sont relancées
+* Then cette inscription reçoit un avertissement
+* And sa suppression est annoncée dans 14 jours
+
+### Scenario: Une inscription n'est pas effacée avant la date annoncée
+
+* Given une inscription commencée il y a 200 jours, relance "warning_j90_sent", avertie d'une suppression pour demain
+* When les inscriptions inachevées sont relancées
+* Then cette inscription n'est pas effacée
+
 ## Rule: Un compte qui porte de l'activité n'est jamais effacé
 
 ### Scenario: Une inscription inachevée qui suit un bénéficiaire reste en place
