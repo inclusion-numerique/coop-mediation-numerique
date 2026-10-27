@@ -147,7 +147,7 @@ export const lieuxPublies = async ({
                 : Prisma.empty
             } ${
               dispositifProgrammeNational
-                ? Prisma.sql`${dispositifProgrammeNational}::text = ANY(dispositif_programmes_nationaux)`
+                ? Prisma.sql`${dispositifProgrammeNational}::"coop"."dispositif_programme_national" = ANY(dispositif_programmes_nationaux)`
                 : Prisma.empty
             }`
           : Prisma.empty

@@ -95,3 +95,19 @@
 * When la cartographie nationale moissonne les lieux
 * Then ce lieu est publié
 * And il annonce ses deux sites web
+
+## Rule: La moisson se restreint à un dispositif
+
+### Scenario: Le lieu du dispositif demandé est publié
+
+* Given un lieu partagé où exerce un médiateur visible
+* And ce lieu relève de France Services
+* When la cartographie nationale moissonne les lieux du dispositif "France Services"
+* Then ce lieu est publié
+
+### Scenario: Le lieu d'un autre dispositif n'est pas publié
+
+* Given un lieu partagé où exerce un médiateur visible
+* And ce lieu relève de France Services
+* When la cartographie nationale moissonne les lieux du dispositif "Aidants Connect"
+* Then ce lieu n'est pas publié
