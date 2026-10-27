@@ -1,8 +1,8 @@
-import { authenticateApiCient } from '@app/web/api-client/apiClient'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
 } from '@app/web/app/api/v1/apiV1Headers'
+import { authentifierUnClientApi } from '@app/web/features/clients-api/abilities/authentifier-un-client-api'
 import { ApiClientScope } from '@app/web/generated/prisma/browser'
 import { NextRequest } from 'next/server'
 
@@ -33,17 +33,9 @@ export const isAuthenticatedApiClientRequest = async (
     return false
   }
 
-  const client = await authenticateApiCient(clientId, clientSecret)
-  if (!client) {
-    return false
-  }
-
-  // Ensure that all scopes in parameters are present in the client scopes
-  for (const scope of scopes) {
-    if (!client.scopes.includes(scope)) {
-      return false
-    }
-  }
-
-  return true
+  return authentifierUnClientApi({
+    clientApiId: clientId,
+    secret: clientSecret,
+    portees: scopes,
+  })
 }
