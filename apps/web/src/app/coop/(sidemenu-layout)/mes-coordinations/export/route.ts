@@ -1,11 +1,14 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { isCoordinateur } from '@app/web/auth/userTypeGuards'
-import { TYPE_ACTIVITE_OPTIONS } from '@app/web/features/activites/use-cases/cra/coordination/labels'
-import { getCoordinationsTagsOptions } from '@app/web/features/activites/use-cases/list/db/getCoordinationsTagsOptions'
-import { buildActivitesCoordinationWorksheet } from '@app/web/features/activites/use-cases/list/export/buildActivitesCoordinationWorksheet'
-import { getActivitesCoordinationWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getActivitesCoordinationWorksheetInput'
-import { validateCoordinationsFilters } from '@app/web/features/activites/use-cases/list/validation/CoordinationsFilters'
+import {
+  classeurDesCoordinations,
+  exporterLesActivitesDeCoordination,
+  tagsDesCriteres,
+} from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination'
+import {
+  CoordinateurId,
+  criteresDesCoordinations,
+} from '@app/web/features/activites/domain'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -13,67 +16,40 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const GET = async (request: NextRequest) => {
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
-
-  if (!user || !isCoordinateur(user)) {
-    return new Response('Unauthorized', {
-      status: 401,
-    })
-  }
-
-  const searchParams = validateCoordinationsFilters(
-    Object.fromEntries(request.nextUrl.searchParams.entries()),
+  const user = await getSessionUserFromSessionToken(
+    getSessionTokenFromNextRequestCookies(request.cookies),
   )
+  if (!user?.coordinateur) return new Response('Unauthorized', { status: 401 })
 
-  const tagOptions = await getCoordinationsTagsOptions({ user })
+  const recherche = request.nextUrl.searchParams
+  const criteres = criteresDesCoordinations({
+    du: recherche.get('du') ?? undefined,
+    au: recherche.get('au') ?? undefined,
+    types: recherche.get('types') ?? undefined,
+    tags: recherche.get('tags') ?? undefined,
+  })
 
-  const filters = [
-    {
-      label: 'Période',
-      value:
-        searchParams.du != null && searchParams.au != null
-          ? `${dateAsIsoDay(searchParams.du)} - ${dateAsIsoDay(searchParams.au)}`
-          : undefined,
-    },
-    {
-      label: 'Type d’activité',
-      value: searchParams.types
-        .map(
-          (type) =>
-            TYPE_ACTIVITE_OPTIONS.find(({ value }) => type === value)?.label,
-        )
-        .join(', '),
-    },
-    {
-      label: 'Tags',
-      value: searchParams.tags
-        .map((type) => tagOptions.find(({ value }) => type === value)?.label)
-        .join(', '),
-    },
-  ]
+  const [activites, tags] = await Promise.all([
+    exporterLesActivitesDeCoordination({
+      coordinateurId: CoordinateurId(user.coordinateur.id),
+      criteres,
+    }),
+    tagsDesCriteres(criteres),
+  ])
 
-  const coordinationsWorksheetInput =
-    await getActivitesCoordinationWorksheetInput({
-      user,
-      searchParams,
-    })
+  const donnees = await classeurDesCoordinations({
+    activites,
+    criteres,
+    tags,
+    auteur: user,
+  }).xlsx.writeBuffer()
 
-  const workbook = buildActivitesCoordinationWorksheet(
-    coordinationsWorksheetInput,
-    filters,
-  )
-
-  const data = await workbook.xlsx.writeBuffer()
-
-  const filename = `coop-numerique_coordinations_${dateAsIsoDay(new Date())}.xlsx`
-
-  return new Response(data, {
+  return new Response(donnees, {
     status: 200,
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Disposition': `attachment; filename="coop-numerique_coordinations_${dateAsIsoDay(new Date())}.xlsx"`,
     },
   })
 }

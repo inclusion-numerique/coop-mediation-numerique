@@ -1,7 +1,7 @@
 'use client'
 
-import { CoordinationEmptyState } from '@app/web/features/activites/use-cases/list/components/CoordinationEmptyState'
 import { useState } from 'react'
+import { CoordinationEmptyState } from '../../../../ui/CoordinationEmptyState'
 import type { ActivitesDeCoordinationPresentees } from '../activites-de-coordination.presenter'
 
 export const ActivitesDeCoordination = ({
