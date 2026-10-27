@@ -1,19 +1,28 @@
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import {
   createCompositeCursor,
+  cursorListMeta,
+  cursorPageHref,
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
 } from '@app/web/app/api/v1/CursorPagination'
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
+import {
+  inventaireDesLieux,
+  lieuInventorie,
+  type StructureAttributes,
+} from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
+import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { type ZodError, z } from 'zod'
+import { z } from 'zod'
 
 /**
  * @openapi
@@ -316,61 +325,36 @@ import { type ZodError, z } from 'zod'
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-type StructureAttributes = {
-  id_pg: number | null
-  structure_cartographie_nationale_id: string | null
-  creation: string
-  modification: string
-  suppression: string | null
-  nom: string
-  adresse: string
-  commune: string
-  code_postal: string
-  code_insee: string | null
-  complement_adresse: string | null
-  latitude: number | null
-  longitude: number | null
-  siret: string | null
-  rna: string | null
-  visible_pour_cartographie_nationale: boolean
-  typologies: string[]
-  presentation_resume: string | null
-  presentation_detail: string | null
-  site_web: string | null
-  telephone: string | null
-  courriels: string[]
-  fiche_acces_libre: string | null
-  horaires: string | null
-  prise_rdv: string | null
-  services: string[]
-  publics_specifiquement_adresses: string[]
-  prise_en_charge_specifique: string[]
-  frais_a_charge: string[]
-  dispositif_programmes_nationaux: string[]
-  formations_labels: string[]
-  autres_formations_labels: string[]
-  itinerance: string[]
-  modalites_acces: string[]
-  modalites_accompagnement: string[]
-  mediateurs_en_activite: number
-  emplois: number
-}
-
-type StructureRelationships = never
-
 export type StructureResource = JsonApiResource<
   'structure',
   StructureAttributes,
-  StructureRelationships
+  never
 >
 
 export type StructureListResponse = JsonApiListResponse<StructureResource>
 
-/**
- * for consistent cursor-based pagination, we reuse the approach from cras:
- * we'll combine the "creation" + "id" fields into a single base64-coded composite cursor
- * ensure you have a unique composite index on (creation, id) in your prisma model
- */
+const StructuresQueryParamsValidation =
+  JsonApiCursorPaginationQueryParamsValidation.extend({
+    ids: z
+      .union([z.string(), z.array(z.string())])
+      .optional()
+      .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
+      .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
+      .transform((arr) => Array.from(new Set(arr)))
+      .pipe(z.array(z.guid()).max(100))
+      .default([]),
+    filter: z
+      .object({
+        creation: z
+          .object({ depuis: z.iso.datetime().optional() })
+          .prefault({}),
+        modification: z
+          .object({ depuis: z.iso.datetime().optional() })
+          .prefault({}),
+      })
+      .prefault({}),
+  })
+
 const StructureCursorValidation = z.object({
   creation_id: z.object({
     creation: z.coerce.string().pipe(z.iso.datetime()),
@@ -378,208 +362,115 @@ const StructureCursorValidation = z.object({
   }),
 })
 
-export const GET = createApiV1Route
-  .configure<StructureListResponse>({
-    scopes: ['Structures'],
-  })
-  .queryParams(
-    JsonApiCursorPaginationQueryParamsValidation.extend({
-      /**
-       * Liste d'identifiants de structures, séparés par des virgules (CSV).
-       * Exemple : ids=uuid1,uuid2
-       * Maximum 100 ids.
-       */
-      ids: z
-        .union([z.string(), z.array(z.string())])
-        .optional()
-        .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
-        .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
-        .transform((arr) => Array.from(new Set(arr)))
-        .pipe(z.array(z.guid()).max(100))
-        .default([]),
-      filter: z
-        .object({
-          creation: z
-            .object({
-              depuis: z.iso.datetime().optional(),
-            })
-            .prefault({}),
-          modification: z
-            .object({
-              depuis: z.iso.datetime().optional(),
-            })
-            .prefault({}),
-        })
-        .prefault({}),
+const dateDepuis = (depuis: string | undefined): Date | undefined =>
+  depuis ? new Date(depuis) : undefined
+
+const requeteDesStructures = ({
+  ids,
+  creationDepuis,
+  modificationDepuis,
+}: {
+  ids: string[]
+  creationDepuis: string | undefined
+  modificationDepuis: string | undefined
+}): string =>
+  new URLSearchParams([
+    ...(ids.length > 0 ? [['ids', ids.join(',')]] : []),
+    ...(creationDepuis ? [['filter[creation][depuis]', creationDepuis]] : []),
+    ...(modificationDepuis
+      ? [['filter[modification][depuis]', modificationDepuis]]
+      : []),
+  ]).toString()
+
+export const GET = routeBuilder()
+  .use(withClientApi(['Structures']))
+  .use(withQueryParams(StructuresQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async ({ queryParams }) => {
+      const cursorPagination = prismaCursorPagination(queryParams)
+      const { ids } = queryParams
+      const creationDepuis = queryParams.filter.creation.depuis
+      const modificationDepuis = queryParams.filter.modification.depuis
+
+      const parsedCursor = cursorPagination.cursor
+        ? parseCompositeCursor(cursorPagination.cursor)
+        : undefined
+      const validatedCursor = parsedCursor
+        ? StructureCursorValidation.parse({
+            creation_id: { creation: parsedCursor[0], id: parsedCursor[1] },
+          })
+        : undefined
+
+      const { lieux, totalCount } = await inventaireDesLieux({
+        ids,
+        creeDepuis: dateDepuis(creationDepuis),
+        modifieDepuis: dateDepuis(modificationDepuis),
+        take: cursorPagination.take,
+        skip: cursorPagination.skip,
+        curseur: validatedCursor?.creation_id,
+      })
+
+      const lastItem = lieux.at(-1)
+      const firstItem = lieux.at(0)
+      const nextCursor =
+        lieux.length === cursorPagination.take && lastItem
+          ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
+          : undefined
+      const previousCursor =
+        parsedCursor && firstItem
+          ? createCompositeCursor(
+              firstItem.creation.toISOString(),
+              firstItem.id,
+            )
+          : undefined
+
+      const query = requeteDesStructures({
+        ids,
+        creationDepuis,
+        modificationDepuis,
+      })
+
+      return NextResponse.json({
+        data: lieux.map((lieu) => ({
+          type: 'structure' as const,
+          id: lieu.id,
+          attributes: lieuInventorie(lieu),
+        })),
+        links: {
+          self: {
+            href: cursorPageHref('/structures', {
+              cursor: cursorPagination.cursor
+                ? {
+                    direction: cursorPagination.isBefore ? 'before' : 'after',
+                    value: cursorPagination.cursor,
+                  }
+                : undefined,
+              query,
+            }),
+          },
+          next: nextCursor
+            ? {
+                href: cursorPageHref('/structures', {
+                  cursor: { direction: 'after', value: nextCursor },
+                  query,
+                }),
+              }
+            : undefined,
+          prev: previousCursor
+            ? {
+                href: cursorPageHref('/structures', {
+                  cursor: { direction: 'before', value: previousCursor },
+                  query,
+                }),
+              }
+            : undefined,
+        },
+        meta: cursorListMeta({
+          totalCount,
+          take: cursorPagination.take,
+          nextCursor,
+          previousCursor,
+        }),
+      } satisfies StructureListResponse)
     }),
   )
-  .handle(async ({ params }) => {
-    const cursorPagination = prismaCursorPagination(params)
-    const ids = params.ids as string[]
-
-    const parsedCursor = cursorPagination.cursor
-      ? parseCompositeCursor(cursorPagination.cursor)
-      : undefined
-
-    const validatedCursor = parsedCursor
-      ? StructureCursorValidation.safeParse({
-          creation_id: {
-            creation: parsedCursor[0],
-            id: parsedCursor[1],
-          },
-        })
-      : undefined
-
-    if (validatedCursor && !validatedCursor.success) {
-      throw validatedCursor.error as ZodError
-    }
-
-    // filters: creation/modification depuis (inclusive)
-    const creationSinceInput = params.filter?.creation?.depuis
-    const modificationSinceInput = params.filter?.modification?.depuis
-
-    const creationSinceDate = creationSinceInput
-      ? new Date(creationSinceInput)
-      : undefined
-    const modificationSinceDate = modificationSinceInput
-      ? new Date(modificationSinceInput)
-      : undefined
-
-    const { lieux, totalCount } = await inventaireDesLieux({
-      ids,
-      creeDepuis: creationSinceDate,
-      modifieDepuis: modificationSinceDate,
-      take: cursorPagination.take,
-      skip: cursorPagination.skip,
-      curseur: validatedCursor
-        ? {
-            creation: validatedCursor.data.creation_id.creation,
-            id: validatedCursor.data.creation_id.id,
-          }
-        : undefined,
-    })
-
-    const lastItem = lieux.at(-1)
-    const firstItem = lieux.at(0)
-
-    // next page exists only if we filled the page size
-    const nextCursor =
-      lieux.length === cursorPagination.take && lastItem
-        ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
-        : undefined
-    const previousCursor =
-      parsedCursor && firstItem
-        ? createCompositeCursor(firstItem.creation.toISOString(), firstItem.id)
-        : undefined
-
-    const currentQueryParams = new URLSearchParams()
-    if (ids.length > 0) {
-      currentQueryParams.set('ids', ids.join(','))
-    }
-    if (creationSinceInput) {
-      currentQueryParams.set('filter[creation][depuis]', creationSinceInput)
-    }
-    if (modificationSinceInput) {
-      currentQueryParams.set(
-        'filter[modification][depuis]',
-        modificationSinceInput,
-      )
-    }
-
-    const queryString = currentQueryParams.toString()
-    const queryIdsSuffix = queryString ? `&${queryString}` : ''
-
-    const response: StructureListResponse = {
-      data: lieux.map((s) => ({
-        type: 'structure',
-        id: s.id,
-        attributes: {
-          id_pg: s.v1StructureIdPg,
-          structure_cartographie_nationale_id:
-            s.structureCartographieNationaleId,
-          creation: s.creation.toISOString(),
-          modification: s.modification.toISOString(),
-          suppression: s.suppression ? s.suppression.toISOString() : null,
-          nom: s.nom,
-          adresse: s.adresse,
-          commune: s.commune,
-          code_postal: s.codePostal,
-          code_insee: s.codeInsee,
-          complement_adresse: s.complementAdresse,
-          latitude: s.latitude,
-          longitude: s.longitude,
-          siret: s.siret,
-          rna: s.rna,
-          visible_pour_cartographie_nationale:
-            s.visiblePourCartographieNationale,
-          typologies: [...s.typologies],
-          presentation_resume: s.presentationResume,
-          presentation_detail: s.presentationDetail,
-          site_web: s.siteWeb,
-          telephone: s.telephone,
-          courriels: s.courriels,
-          fiche_acces_libre: s.ficheAccesLibre,
-          horaires: s.horaires,
-          prise_rdv: s.priseRdv,
-          services: [...s.services],
-          publics_specifiquement_adresses: [...s.publicsSpecifiquementAdresses],
-          prise_en_charge_specifique: [...s.priseEnChargeSpecifique],
-          frais_a_charge: [...s.fraisACharge],
-          dispositif_programmes_nationaux: [...s.dispositifProgrammesNationaux],
-          formations_labels: [...s.formationsLabels],
-          autres_formations_labels: s.autresFormationsLabels,
-          itinerance: [...s.itinerance],
-          modalites_acces: [...s.modalitesAcces],
-          modalites_accompagnement: [...s.modalitesAccompagnement],
-          mediateurs_en_activite: s._count.mediateursEnActivite,
-          // L'employeuse ne se relie plus au lieu (ADR-002) : ce compteur n'a
-          // plus de quoi se calculer. Le champ reste au contrat, à zéro.
-          emplois: 0,
-        },
-      })),
-      links: {
-        self: {
-          href: cursorPagination.cursor
-            ? cursorPagination.isBefore
-              ? apiV1Url(
-                  `/structures?page[before]=${encodeSerializableState(
-                    cursorPagination.cursor,
-                  )}${queryIdsSuffix}`,
-                )
-              : apiV1Url(
-                  `/structures?page[after]=${encodeSerializableState(
-                    cursorPagination.cursor,
-                  )}${queryIdsSuffix}`,
-                )
-            : apiV1Url(
-                `/structures${queryIdsSuffix ? `?${queryIdsSuffix.slice(1)}` : ''}`,
-              ),
-        },
-        next: nextCursor
-          ? {
-              href: apiV1Url(
-                `/structures?page[after]=${encodeSerializableState(nextCursor)}${queryIdsSuffix}`,
-              ),
-            }
-          : undefined,
-        prev: previousCursor
-          ? {
-              href: apiV1Url(
-                `/structures?page[before]=${encodeSerializableState(
-                  previousCursor,
-                )}${queryIdsSuffix}`,
-              ),
-            }
-          : undefined,
-      },
-      meta: {
-        total_count: totalCount,
-        items_per_page: cursorPagination.take,
-        total_pages: Math.ceil(totalCount / cursorPagination.take),
-        has_next_page: !!nextCursor,
-        has_prev_page: !!previousCursor,
-      },
-    }
-
-    return NextResponse.json(response)
-  })

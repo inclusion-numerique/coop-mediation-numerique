@@ -1,1 +1,6 @@
-export { inventaireDesLieux, type LieuInventorie } from './implementation'
+export {
+  inventaireDesLieux,
+  type LieuInventorie,
+  lieuInventorie,
+  type StructureAttributes,
+} from './implementation'

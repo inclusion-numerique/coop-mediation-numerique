@@ -107,6 +107,23 @@ Given('ce médiateur a choisi de ne pas être visible', async () => {
   })
 })
 
+Given('ce lieu relève de France Services', async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.lieuId },
+    data: { dispositifProgrammesNationaux: ['FranceServices'] },
+  })
+})
+
+When(
+  'la cartographie nationale moissonne les lieux du dispositif {string}',
+  async (dispositifProgrammeNational: string) => {
+    semis.moisson = await lieuxPublies({
+      ids: [semis.lieuId ?? ''],
+      dispositifProgrammeNational,
+    })
+  },
+)
+
 When('la cartographie nationale moissonne les lieux', async () => {
   semis.moisson = await lieuxPublies({ ids: [semis.lieuId ?? ''] })
 })

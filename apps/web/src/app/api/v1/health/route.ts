@@ -1,4 +1,10 @@
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
+import { NoQueryParamsValidation } from '@app/web/app/api/v1/ApiV1QueryParams'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@app/web/app/api/v1/middlewares'
+import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 
 export type HealthResponse = {
@@ -25,12 +31,11 @@ export type HealthResponse = {
  *                   type: string
  *                   example: ok
  */
-export const GET = createApiV1Route
-  .configure<HealthResponse>({
-    scopes: [],
-  })
-  .handle(() =>
-    NextResponse.json({
-      status: 'ok',
-    }),
+export const GET = routeBuilder()
+  .use(withClientApi([]))
+  .use(withQueryParams(NoQueryParamsValidation))
+  .handle(
+    withApiV1Errors(async () =>
+      NextResponse.json({ status: 'ok' } satisfies HealthResponse),
+    ),
   )

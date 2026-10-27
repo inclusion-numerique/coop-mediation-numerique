@@ -86,3 +86,41 @@ After(async () => {
   await prismaClient.mediateur.deleteMany({ where: { id: semé.mediateurId } })
   await prismaClient.user.deleteMany({ where: { id: semé.userId } })
 })
+
+let crasV1Semes: readonly string[] = []
+
+export const semerUnCraV1 = async (
+  createdAt: Date,
+): Promise<{ readonly id: string; readonly createdAt: Date }> => {
+  const id = v4()
+
+  await prismaClient.craConseillerNumeriqueV1.create({
+    data: {
+      id,
+      importedAt: new Date(),
+      v1ConseillerNumeriqueId: v4(),
+      canal: 'rattachement',
+      activite: 'individuel',
+      duree: '0-30',
+      dureeMinutes: 30,
+      codePostal: '69007',
+      nomCommune: 'Lyon',
+      dateAccompagnement: new Date(),
+      codeCommune: '69387',
+      createdAt,
+    },
+  })
+  crasV1Semes = [...crasV1Semes, id]
+
+  return { id, createdAt }
+}
+
+After(async () => {
+  const semes = crasV1Semes
+  crasV1Semes = []
+  if (semes.length === 0) return
+
+  await prismaClient.craConseillerNumeriqueV1.deleteMany({
+    where: { id: { in: [...semes] } },
+  })
+})
