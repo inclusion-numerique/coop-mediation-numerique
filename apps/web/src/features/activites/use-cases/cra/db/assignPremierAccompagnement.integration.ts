@@ -6,19 +6,6 @@ import { assignPremierAccompagnement } from './assignPremierAccompagnement'
 const createTestMediateur = async () => {
   const userId = v4()
   const mediateurId = v4()
-  const structureId = v4()
-
-  // Rôle employeuse (split 1a.2) : activite.structureEmployeuseId pointe structure_administrative.
-  await prismaClient.structureAdministrative.create({
-    data: {
-      id: structureId,
-      nom: 'Test Structure',
-      adresse: '1 rue Test',
-      commune: 'Paris',
-      codePostal: '75001',
-      source: 'coop',
-    },
-  })
 
   await prismaClient.user.create({
     data: {
@@ -32,7 +19,7 @@ const createTestMediateur = async () => {
     },
   })
 
-  return { userId, mediateurId, structureId }
+  return { userId, mediateurId }
 }
 
 const createTestBeneficiaire = async (mediateurId: string) => {
@@ -51,14 +38,12 @@ const createTestBeneficiaire = async (mediateurId: string) => {
 
 const createTestActiviteWithAccompagnement = async ({
   mediateurId,
-  structureId,
   beneficiaireId,
   date,
   premierAccompagnement,
   suppression,
 }: {
   mediateurId: string
-  structureId: string
   beneficiaireId: string
   date: Date
   premierAccompagnement: boolean
@@ -71,7 +56,6 @@ const createTestActiviteWithAccompagnement = async ({
     data: {
       id: activiteId,
       mediateurId,
-      structureEmployeuseId: structureId,
       type: 'Individuel',
       typeLieu: 'Domicile',
       date,
@@ -103,13 +87,11 @@ const getAccompagnement = async (id: string) =>
 const cleanupTestData = async ({
   userIds,
   mediateurIds,
-  structureIds,
   beneficiaireIds,
   activiteIds,
 }: {
   userIds: string[]
   mediateurIds: string[]
-  structureIds: string[]
   beneficiaireIds: string[]
   activiteIds: string[]
 }) => {
@@ -128,9 +110,6 @@ const cleanupTestData = async ({
   await prismaClient.user.deleteMany({
     where: { id: { in: userIds } },
   })
-  await prismaClient.structureAdministrative.deleteMany({
-    where: { id: { in: structureIds } },
-  })
 }
 
 describe('assignPremierAccompagnement', () => {
@@ -140,7 +119,7 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should do nothing when beneficiaire has no accompagnements', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId = await createTestBeneficiaire(mediateurId)
 
     try {
@@ -152,7 +131,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId],
         activiteIds: [],
       })
@@ -160,13 +138,12 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should do nothing when premier is already correct', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId = await createTestBeneficiaire(mediateurId)
 
     const { activiteId: activiteId1, accompagnementId: accompagnementId1 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-01-01'),
         premierAccompagnement: true, // Correctly set as premier (earliest)
@@ -175,7 +152,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: activiteId2, accompagnementId: accompagnementId2 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-02-01'),
         premierAccompagnement: false,
@@ -198,7 +174,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId],
         activiteIds: [activiteId1, activiteId2],
       })
@@ -206,13 +181,12 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should set premier on earliest when none is set', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId = await createTestBeneficiaire(mediateurId)
 
     const { activiteId: activiteId1, accompagnementId: accompagnementId1 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-01-01'), // Earliest
         premierAccompagnement: false,
@@ -221,7 +195,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: activiteId2, accompagnementId: accompagnementId2 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-02-01'),
         premierAccompagnement: false,
@@ -244,7 +217,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId],
         activiteIds: [activiteId1, activiteId2],
       })
@@ -252,13 +224,12 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should reassign premier from wrong to correct accompagnement', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId = await createTestBeneficiaire(mediateurId)
 
     const { activiteId: activiteId1, accompagnementId: accompagnementId1 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-01-01'), // Earliest - should be premier
         premierAccompagnement: false, // But incorrectly set to false
@@ -267,7 +238,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: activiteId2, accompagnementId: accompagnementId2 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-02-01'),
         premierAccompagnement: true, // Incorrectly set as premier
@@ -290,7 +260,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId],
         activiteIds: [activiteId1, activiteId2],
       })
@@ -298,14 +267,13 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should remove premier when activite is soft-deleted', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId = await createTestBeneficiaire(mediateurId)
 
     // Create first activite (earliest) but soft-deleted
     const { activiteId: activiteId1, accompagnementId: accompagnementId1 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-01-01'),
         premierAccompagnement: true, // Still marked as premier
@@ -315,7 +283,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: activiteId2, accompagnementId: accompagnementId2 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-02-01'),
         premierAccompagnement: false,
@@ -339,7 +306,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId],
         activiteIds: [activiteId1, activiteId2],
       })
@@ -347,7 +313,7 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should handle multiple beneficiaires at once', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId1 = await createTestBeneficiaire(mediateurId)
     const beneficiaireId2 = await createTestBeneficiaire(mediateurId)
 
@@ -355,7 +321,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: a1Act1, accompagnementId: a1Acc1 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId: beneficiaireId1,
         date: new Date('2024-01-01'),
         premierAccompagnement: false, // Should be true
@@ -363,7 +328,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: a1Act2, accompagnementId: a1Acc2 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId: beneficiaireId1,
         date: new Date('2024-02-01'),
         premierAccompagnement: true, // Should be false
@@ -373,7 +337,6 @@ describe('assignPremierAccompagnement', () => {
     const { activiteId: a2Act1, accompagnementId: a2Acc1 } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId: beneficiaireId2,
         date: new Date('2024-03-01'),
         premierAccompagnement: false, // Should be true
@@ -401,7 +364,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId1, beneficiaireId2],
         activiteIds: [a1Act1, a1Act2, a2Act1],
       })
@@ -409,13 +371,12 @@ describe('assignPremierAccompagnement', () => {
   })
 
   it('should work with transactionClient', async () => {
-    const { userId, mediateurId, structureId } = await createTestMediateur()
+    const { userId, mediateurId } = await createTestMediateur()
     const beneficiaireId = await createTestBeneficiaire(mediateurId)
 
     const { activiteId, accompagnementId } =
       await createTestActiviteWithAccompagnement({
         mediateurId,
-        structureId,
         beneficiaireId,
         date: new Date('2024-01-01'),
         premierAccompagnement: false,
@@ -439,7 +400,6 @@ describe('assignPremierAccompagnement', () => {
       await cleanupTestData({
         userIds: [userId],
         mediateurIds: [mediateurId],
-        structureIds: [structureId],
         beneficiaireIds: [beneficiaireId],
         activiteIds: [activiteId],
       })

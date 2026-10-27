@@ -75,5 +75,4 @@ export type FicheUtilisateur = {
   readonly liaisons: readonly LiaisonDeLaFiche[]
   readonly sessions: readonly Evenement[]
   readonly mutations: readonly Evenement[]
-  readonly fichiers: readonly Evenement[]
 }

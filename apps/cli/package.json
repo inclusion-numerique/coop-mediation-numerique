@@ -16,7 +16,6 @@
     "node": "^24.19"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1136.0",
     "@commander-js/extra-typings": "^15.0.0",
     "@inquirer/prompts": "^8.7.2",
     "@octokit/core": "^7.0.8",

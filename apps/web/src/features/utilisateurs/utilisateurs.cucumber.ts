@@ -212,6 +212,15 @@ After(async () => {
   await prismaClient.personneAffectationEmploiMain.deleteMany({
     where: { personne: { coopId: { in: utilisateurs } } },
   })
+  await prismaClient.contratMain.deleteMany({
+    where: { personne: { coopId: { in: utilisateurs } } },
+  })
+  await prismaClient.formationMain.deleteMany({
+    where: { personne: { coopId: { in: utilisateurs } } },
+  })
+  await prismaClient.posteMain.deleteMany({
+    where: { personne: { coopId: { in: utilisateurs } } },
+  })
   await prismaClient.personneMain.deleteMany({
     where: { coopId: { in: utilisateurs } },
   })

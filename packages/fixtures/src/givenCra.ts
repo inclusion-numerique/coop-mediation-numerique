@@ -23,8 +23,8 @@ export const givenCraIndividuel = <
     date: string | Date
     typeLieu: TypeLieu
     accompagnementsCount: number
-    structureEmployeuseId: string
   }
+  employeuseCoopId: string
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
 } => {
   const { id, beneficiaireId, structureEmployeuseId, ...rest } = data
@@ -43,7 +43,6 @@ export const givenCraIndividuel = <
     date,
     typeLieu,
     accompagnementsCount: 1,
-    structureEmployeuseId,
   } satisfies Omit<T, 'id' | 'beneficiaireId' | 'structureEmployeuseId'> & {
     id: string
     duree: number
@@ -61,6 +60,7 @@ export const givenCraIndividuel = <
 
   return {
     activite,
+    employeuseCoopId: structureEmployeuseId,
     accompagnements,
   }
 }
@@ -84,8 +84,8 @@ export const givenCraDemarcheAdministrative = <
     date: string | Date
     typeLieu: TypeLieu
     accompagnementsCount: number
-    structureEmployeuseId: string
   }
+  employeuseCoopId: string
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
 } => {
   const { id, beneficiaireId, structureEmployeuseId, ...rest } = data
@@ -104,13 +104,11 @@ export const givenCraDemarcheAdministrative = <
     date,
     typeLieu,
     accompagnementsCount: 1,
-    structureEmployeuseId,
   } satisfies Omit<T, 'id' | 'beneficiaireId' | 'structureEmployeuseId'> & {
     id: string
     duree: number
     date: string | Date
     typeLieu: TypeLieu
-    structureEmployeuseId: string
   }
 
   const accompagnements = [
@@ -123,6 +121,7 @@ export const givenCraDemarcheAdministrative = <
 
   return {
     activite,
+    employeuseCoopId: structureEmployeuseId,
     accompagnements,
   }
 }
@@ -150,8 +149,8 @@ export const givenCraCollectif = <
     typeLieu: TypeLieu
     date: string | Date
     accompagnementsCount: number
-    structureEmployeuseId: string
   }
+  employeuseCoopId: string
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
   beneficiairesAnonymes: Prisma.BeneficiaireUncheckedCreateInput[]
 } => {
@@ -201,7 +200,6 @@ export const givenCraCollectif = <
     date,
     typeLieu,
     accompagnementsCount: accompagnements.length,
-    structureEmployeuseId,
   } satisfies Omit<
     T,
     'id' | 'participantsAnonymes' | 'beneficiaireIds' | 'structureEmployeuseId'
@@ -211,6 +209,7 @@ export const givenCraCollectif = <
 
   return {
     activite,
+    employeuseCoopId: structureEmployeuseId,
     accompagnements,
     beneficiairesAnonymes,
   }

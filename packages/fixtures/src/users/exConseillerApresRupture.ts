@@ -1,5 +1,5 @@
 import { givenUser } from '../givenUser'
-import { mediateque, structureEmployeuse } from '../structures'
+import { mediateque } from '../structures'
 
 export const exConseillerApresRuptureMediateurId =
   '594f05c4-47d8-4d4a-9d52-26396da59e5a'
@@ -38,18 +38,7 @@ export const exConseillerApresRupture = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: '177d782e-5212-4b83-a94e-5a9e358816fb',
-      },
-      create: {
-        id: '177d782e-5212-4b83-a94e-5a9e358816fb',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })
 
 export const contratRompuDeLExConseiller = {

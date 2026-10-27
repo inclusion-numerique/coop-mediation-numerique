@@ -320,8 +320,6 @@ export const createOrUpdateActivite = async ({
     accompagnementsCount,
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
-    // Employeuse de l'activité en PUR MAIN (ADR-002 périmètre élargi) : on ne connecte plus la
-    // relation coop (`structure_employeuse_id` devenu nullable), seulement main.
     structureEmployeuseMain: employeuse
       ? { connect: { id: employeuse.id } }
       : undefined,

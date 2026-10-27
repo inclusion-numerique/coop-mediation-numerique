@@ -1,5 +1,5 @@
 import { givenUser } from '../givenUser'
-import { centreSocial, mediateque, structureEmployeuse } from '../structures'
+import { centreSocial, mediateque } from '../structures'
 
 export const coordinateurHorsDispositifInscritAvecToutCoordinateurId =
   'aa792475-7201-473a-af4a-7d3236539bfd'
@@ -59,18 +59,7 @@ export const coordinateurHorsDispositifInscritAvecTout = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: 'aeb106f5-72b2-4a1b-8cb4-844c1fd85f95',
-      },
-      create: {
-        id: 'aeb106f5-72b2-4a1b-8cb4-844c1fd85f95',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
   profilInscription: 'Coordinateur',
   acceptationCgu: new Date(),
   inscriptionValidee: new Date(),

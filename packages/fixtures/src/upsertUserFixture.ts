@@ -22,11 +22,13 @@ export type UserFixture = Prisma.UserCreateInput & {
   email: string
   /** Intention de fixture, écartée avant l'écriture : voir `givenUser` et `seedPersonnesMain`. */
   isConseillerNumerique?: boolean
+  employeDeLaStructureEmployeuse?: boolean
 }
 
 /** La ligne `coop.users` telle qu'elle s'écrit, sans le drapeau de fixture. */
 export const sansDrapeauDispositif = ({
   isConseillerNumerique: _drapeau,
+  employeDeLaStructureEmployeuse: _employe,
   ...user
 }: UserFixture): Prisma.UserCreateInput & { id: string; email: string } => user
 

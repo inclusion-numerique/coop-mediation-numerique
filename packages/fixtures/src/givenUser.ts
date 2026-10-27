@@ -5,6 +5,7 @@ import { v4 } from 'uuid'
 export const givenUser = <
   T extends Partial<Prisma.UserCreateInput> & {
     isConseillerNumerique?: boolean
+    employeDeLaStructureEmployeuse?: boolean
   },
 >(
   data: T,
@@ -19,6 +20,7 @@ export const givenUser = <
   | 'role'
   | 'timezone'
   | 'isConseillerNumerique'
+  | 'employeDeLaStructureEmployeuse'
 > & {
   id: string
   email: string
@@ -35,6 +37,7 @@ export const givenUser = <
    * d'écrire la ligne.
    */
   isConseillerNumerique: boolean
+  employeDeLaStructureEmployeuse: boolean
 } => {
   const {
     role,
@@ -46,6 +49,7 @@ export const givenUser = <
     id,
     timezone,
     isConseillerNumerique,
+    employeDeLaStructureEmployeuse,
     ...rest
   } = data
 
@@ -71,5 +75,6 @@ export const givenUser = <
     timezone: givenTimezone,
     ...rest,
     isConseillerNumerique: givenIsConseillerNumerique,
+    employeDeLaStructureEmployeuse: employeDeLaStructureEmployeuse ?? false,
   }
 }

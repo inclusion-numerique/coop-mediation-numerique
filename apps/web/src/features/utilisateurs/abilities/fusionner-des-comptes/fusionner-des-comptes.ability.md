@@ -33,6 +33,24 @@
 * When l'administration fusionne la source dans la cible
 * Then le compte RDV Service Public appartient à la cible
 
+## Rule: La personne connue de l'Entrepôt suit le compte qu'on garde
+
+### Scenario: La personne de la source passe à une cible qui n'en a pas
+
+* Given un compte source et un compte cible à fusionner
+* And la source est connue de l'Entrepôt avec un contrat
+* When l'administration fusionne la source dans la cible
+* Then le contrat de la source appartient à la cible
+
+### Scenario: Les contrats de la source rejoignent la personne de la cible
+
+* Given un compte source et un compte cible à fusionner
+* And la source est connue de l'Entrepôt avec un contrat
+* And la cible est connue de l'Entrepôt
+* When l'administration fusionne la source dans la cible
+* Then le contrat de la source appartient à la cible
+* And l'Entrepôt ne connaît plus qu'une personne pour la cible
+
 ## Rule: Les traces laissées par la source ne bloquent pas la fusion
 
 ### Scenario: Une source qui a modifié un lieu se fusionne

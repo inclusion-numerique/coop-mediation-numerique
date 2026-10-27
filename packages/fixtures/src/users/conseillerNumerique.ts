@@ -1,5 +1,5 @@
 import { givenUser } from '../givenUser'
-import { centreSocial, mediateque, structureEmployeuse } from '../structures'
+import { centreSocial, mediateque } from '../structures'
 
 export const conseillerNumeriqueMediateurId =
   '1ae07d95-316c-489f-893a-d17052c883b7'
@@ -53,16 +53,5 @@ export const conseillerNumerique = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: '4ee97bab-74eb-4776-b222-0ac40ed0f445',
-      },
-      create: {
-        id: '4ee97bab-74eb-4776-b222-0ac40ed0f445',
-        structureId: structureEmployeuse.id,
-        debut: new Date(),
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
 })

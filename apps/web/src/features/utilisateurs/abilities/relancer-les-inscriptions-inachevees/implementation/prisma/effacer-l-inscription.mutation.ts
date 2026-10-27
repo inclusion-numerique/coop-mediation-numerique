@@ -13,8 +13,6 @@ export const effacerLInscription = async (
       },
     })
 
-    await tx.employeStructure.deleteMany({ where: { userId: utilisateurId } })
-
     if (compte.mediateur !== null) {
       const mediateurId = compte.mediateur.id
       await tx.mediateurCoordonne.deleteMany({ where: { mediateurId } })

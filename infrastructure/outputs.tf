@@ -32,14 +32,6 @@ output "databasePassword" {
   sensitive = true
 }
 
-output "uploadsBucketName" {
-  value = scaleway_object_bucket.uploads.name
-}
-
-output "uploadsBucketEndpoint" {
-  value = scaleway_object_bucket.uploads.endpoint
-}
-
 output "webContainerStatus" {
   value = scaleway_container.webContainer.status
 }

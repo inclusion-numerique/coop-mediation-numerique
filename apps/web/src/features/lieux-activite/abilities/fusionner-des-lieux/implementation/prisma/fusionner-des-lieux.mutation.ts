@@ -15,33 +15,6 @@ type PrismaTransaction = Prisma.TransactionClient
 // source link (hard-deleted by deleteMany below) and the user ends up with
 // nothing visible. Align the visibility filter with the listing query.
 
-const mergeEmployes =
-  (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
-    const targetEmplois = await prisma.employeStructure.findMany({
-      where: {
-        structureId: targetStructureId,
-        suppression: null,
-        OR: [{ fin: null }, { fin: { gte: new Date() } }],
-      },
-      select: { userId: true },
-    })
-    const targetUserIds = targetEmplois.map((e) => e.userId)
-
-    await prisma.employeStructure.updateMany({
-      where: {
-        structureId: sourceStructureId,
-        suppression: null,
-        userId: { notIn: targetUserIds },
-      },
-      data: { structureId: targetStructureId },
-    })
-
-    await prisma.employeStructure.deleteMany({
-      where: { structureId: sourceStructureId },
-    })
-  }
-
 const mergeMediateursEnActivite =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
@@ -66,15 +39,6 @@ const mergeMediateursEnActivite =
 
     await prisma.mediateurEnActivite.deleteMany({
       where: { structureId: sourceStructureId },
-    })
-  }
-
-const mergeActivitesEmployeur =
-  (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
-    await prisma.activite.updateMany({
-      where: { structureEmployeuseId: sourceStructureId },
-      data: { structureEmployeuseId: targetStructureId },
     })
   }
 
@@ -225,12 +189,7 @@ export const fusionnerDesLieux = async (
         throw new Error('Une ou les deux structures sont introuvables')
       }
 
-      await mergeEmployes(prisma)(sourceStructureId, targetStructureId)
       await mergeMediateursEnActivite(prisma)(
-        sourceStructureId,
-        targetStructureId,
-      )
-      await mergeActivitesEmployeur(prisma)(
         sourceStructureId,
         targetStructureId,
       )

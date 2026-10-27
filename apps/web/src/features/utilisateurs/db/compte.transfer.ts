@@ -58,5 +58,4 @@ export const identiteAnonymeFromDomain = (
   location: null,
   title: null,
   description: null,
-  image: { disconnect: true },
 })

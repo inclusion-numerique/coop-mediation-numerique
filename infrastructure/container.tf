@@ -4,7 +4,6 @@ locals {
     EMAIL_FROM_ADDRESS    = local.email_from_address
     EMAIL_FROM_NAME       = local.email_from_name
     STACK_WEB_IMAGE       = var.WEB_CONTAINER_IMAGE
-    UPLOADS_BUCKET        = scaleway_object_bucket.uploads.name
     BASE_URL              = local.hostname
     NEXTAUTH_URL          = local.hostname
     BRANCH                = var.branch

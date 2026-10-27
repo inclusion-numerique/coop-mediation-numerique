@@ -11,11 +11,6 @@ import {
   projectSlug,
   region,
 } from '@app/config/config'
-import {
-  ListBucketsCommand,
-  ListObjectsV2Command,
-  S3Client,
-} from '@aws-sdk/client-s3'
 import { Command } from '@commander-js/extra-typings'
 import { select } from '@inquirer/prompts'
 import axios from 'axios'
@@ -50,12 +45,6 @@ type ScalewayNamespace = {
   name: string
 }
 
-type PreviewBucket = {
-  name: string
-  namespace: string
-  sizeBytes: number | null
-}
-
 type PreviewDatabase = {
   name: string
   namespace: string
@@ -70,7 +59,6 @@ type BranchDetail = {
   lastCommitDate: string
   lastCommitAuthor: string
   deployedContainer: boolean
-  bucket: PreviewBucket | null
   stale: boolean
   mergedInDev: boolean
   deletable: boolean
@@ -79,7 +67,6 @@ type BranchDetail = {
 type NoGitBranchResource = {
   namespace: string
   container: ScalewayContainer | null
-  bucket: PreviewBucket | null
 }
 
 const fetchScalewayContainers = async () => {
@@ -136,7 +123,6 @@ const formatBytes = (value: number | null) => {
   return `${normalized.toFixed(digits)} ${units[exponent]}`
 }
 
-const bucketPrefix = `${projectSlug}-uploads-`
 const toDatabaseName = (namespace: string) => `${projectSlug}-${namespace}`
 const databasePrefix = `${projectSlug}-`
 const getContainerNameForNamespace = (namespace: string) =>
@@ -156,9 +142,6 @@ const formatStorageStatusCell = (
   if (sizeBytes === 0) return `${pc.yellow('empty')}\n${pc.yellow('0 B')}`
   return `${pc.green('in use')}\n${pc.green(formatBytes(sizeBytes))}`
 }
-
-const bucketCell = (bucket: PreviewBucket | null) =>
-  formatStorageStatusCell(bucket?.sizeBytes ?? null, Boolean(bucket))
 
 const databaseCell = (database: PreviewDatabase | null) => {
   return formatStorageStatusCell(database?.sizeBytes ?? null, Boolean(database))
@@ -212,17 +195,6 @@ const getMissingEnvValidationErrors = () => {
   if (!scwSecretConfigured) {
     errors.push(
       'SCW_SECRET_KEY is required to query Scaleway container/database inventory.',
-    )
-  }
-
-  const hasScwAccess = hasValue(process.env.SCW_ACCESS_KEY)
-  const hasAwsAccess = hasValue(process.env.AWS_ACCESS_KEY_ID)
-  const hasAwsSecret = hasValue(process.env.AWS_SECRET_ACCESS_KEY)
-  const hasBucketCredentials =
-    (hasScwAccess && scwSecretConfigured) || (hasAwsAccess && hasAwsSecret)
-  if (!hasBucketCredentials) {
-    errors.push(
-      'S3 credentials are required for bucket inventory (either SCW_ACCESS_KEY+SCW_SECRET_KEY or AWS_ACCESS_KEY_ID+AWS_SECRET_ACCESS_KEY).',
     )
   }
 
@@ -280,111 +252,13 @@ const getContainerForNamespace = (
 const hasEnvironmentResources = ({
   deployedContainer,
   database,
-  bucket,
 }: {
   deployedContainer: boolean
   database: PreviewDatabase | null
-  bucket: PreviewBucket | null
-}) => Boolean(deployedContainer || database || bucket)
+}) => Boolean(deployedContainer || database)
 
 const isProtectedBranch = (branchName: string) =>
   PROTECTED_BRANCHES.includes(branchName as (typeof PROTECTED_BRANCHES)[number])
-
-const parsePreviewBucketNamespace = (bucketName: string) => {
-  if (!bucketName.startsWith(bucketPrefix)) return null
-  const namespace = bucketName.slice(bucketPrefix.length)
-  return namespace || null
-}
-
-const fetchBucketSizeBytes = async (client: S3Client, bucketName: string) => {
-  let continuationToken: string | undefined
-  let totalSize = 0
-
-  do {
-    const response = await client.send(
-      new ListObjectsV2Command({
-        Bucket: bucketName,
-        ContinuationToken: continuationToken,
-        MaxKeys: 1000,
-      }),
-    )
-
-    for (const item of response.Contents ?? []) {
-      totalSize += item.Size ?? 0
-    }
-
-    continuationToken = response.IsTruncated
-      ? response.NextContinuationToken
-      : undefined
-  } while (continuationToken)
-
-  return totalSize
-}
-
-const fetchPreviewBuckets = async (): Promise<PreviewBucket[]> => {
-  const accessKey =
-    process.env.SCW_ACCESS_KEY ?? process.env.AWS_ACCESS_KEY_ID ?? ''
-  const secretKey =
-    process.env.SCW_SECRET_KEY ?? process.env.AWS_SECRET_ACCESS_KEY ?? ''
-
-  if (!accessKey || !secretKey) {
-    outputError(
-      'Missing SCW_ACCESS_KEY/SCW_SECRET_KEY env variables, skipping preview buckets check',
-    )
-    return []
-  }
-
-  const scwRegion =
-    region || process.env.AWS_DEFAULT_REGION || DEFAULT_SCW_REGION
-  const s3Host = process.env.S3_HOST || `s3.${scwRegion}.scw.cloud`
-
-  const client = new S3Client({
-    region: scwRegion,
-    endpoint: `https://${s3Host}`,
-    forcePathStyle: false,
-    credentials: {
-      accessKeyId: accessKey,
-      secretAccessKey: secretKey,
-    },
-  })
-
-  try {
-    const listBucketsResponse = await client.send(new ListBucketsCommand({}))
-    const bucketNames = (listBucketsResponse.Buckets ?? [])
-      .map((bucket) => bucket.Name)
-      .filter((bucketName): bucketName is string => Boolean(bucketName))
-
-    const previewBucketNames = bucketNames.filter((bucketName) =>
-      bucketName.startsWith(bucketPrefix),
-    )
-
-    const previewBuckets = await Promise.all(
-      previewBucketNames.map(async (bucketName): Promise<PreviewBucket> => {
-        const namespace = parsePreviewBucketNamespace(bucketName)
-        if (!namespace) {
-          return { name: bucketName, namespace: '', sizeBytes: null }
-        }
-
-        try {
-          const sizeBytes = await fetchBucketSizeBytes(client, bucketName)
-          return { name: bucketName, namespace, sizeBytes }
-        } catch (error) {
-          outputError(
-            `Could not compute size for bucket "${bucketName}": ${error instanceof Error ? error.message : String(error)}`,
-          )
-          return { name: bucketName, namespace, sizeBytes: null }
-        }
-      }),
-    )
-
-    return previewBuckets.filter((bucket) => bucket.namespace)
-  } catch (error) {
-    outputError(
-      `Failed to list S3 buckets: ${error instanceof Error ? error.message : String(error)}`,
-    )
-    return []
-  }
-}
 
 const parsePreviewDatabaseNamespace = (databaseName: string) => {
   if (!databaseName.startsWith(databasePrefix)) return null
@@ -510,10 +384,10 @@ export const infrastructureInventory = new Command()
       }
 
       output(
-        'Fetching branches, pull requests, Scaleway containers, and preview buckets...\n',
+        'Fetching branches, pull requests, Scaleway containers, and preview databases...\n',
       )
 
-      const [branches, openPRs, containers, previewBuckets, previewDatabases] =
+      const [branches, openPRs, containers, previewDatabases] =
         await Promise.all([
           octokit.rest.repos
             .listBranches({ owner, repo, per_page: 100 })
@@ -522,15 +396,11 @@ export const infrastructureInventory = new Command()
             .list({ owner, repo, state: 'open', per_page: 100 })
             .then((r) => r.data),
           fetchScalewayContainers(),
-          fetchPreviewBuckets(),
           fetchPreviewDatabases(),
         ])
 
       const prByBranch = new Map(openPRs.map((pr) => [pr.head.ref, pr]))
       const containerByName = new Map(containers.map((c) => [c.name, c]))
-      const bucketByNamespace = new Map(
-        previewBuckets.map((bucket) => [bucket.namespace, bucket]),
-      )
       const databaseByNamespace = new Map(
         previewDatabases.map((database) => [database.namespace, database]),
       )
@@ -556,7 +426,6 @@ export const infrastructureInventory = new Command()
           branchNamespaceToGitBranch.set(namespace, branch.name)
 
           const deployedContainer = containerByName.has(containerName)
-          const bucket = bucketByNamespace.get(namespace) ?? null
           const isProtected = isProtectedBranch(branch.name)
           const days =
             lastCommitDate !== 'unknown' ? daysAgo(lastCommitDate) : 0
@@ -592,7 +461,6 @@ export const infrastructureInventory = new Command()
             lastCommitAuthor:
               commit.commit.author?.name ?? commit.author?.login ?? 'unknown',
             deployedContainer,
-            bucket,
             stale,
             mergedInDev,
             deletable,
@@ -606,27 +474,12 @@ export const infrastructureInventory = new Command()
           !branchNamespaceToGitBranch.has(container.name)
         )
       })
-      const noGitBranchBuckets = previewBuckets.filter((bucket) => {
-        return (
-          !isProtectedBranch(bucket.namespace) &&
-          !branchNamespaceToGitBranch.has(bucket.namespace)
-        )
-      })
 
       const noGitBranchByNamespace = new Map<string, NoGitBranchResource>()
       for (const container of noGitBranchContainers) {
         noGitBranchByNamespace.set(container.name, {
           namespace: container.name,
           container,
-          bucket: null,
-        })
-      }
-      for (const bucket of noGitBranchBuckets) {
-        const existing = noGitBranchByNamespace.get(bucket.namespace)
-        noGitBranchByNamespace.set(bucket.namespace, {
-          namespace: bucket.namespace,
-          container: existing?.container ?? null,
-          bucket,
         })
       }
       const noGitBranchResources = [...noGitBranchByNamespace.values()].sort(
@@ -641,10 +494,6 @@ export const infrastructureInventory = new Command()
       const deletableNames = new Set(deletable.map((branch) => branch.name))
 
       // Overview
-      const knownBucketSizeTotal = previewBuckets.reduce((sum, bucket) => {
-        return bucket.sizeBytes == null ? sum : sum + bucket.sizeBytes
-      }, 0)
-
       const inventorySummaryTable = new Table()
       inventorySummaryTable.push(
         { 'Total branches': String(branches.length) },
@@ -654,23 +503,13 @@ export const infrastructureInventory = new Command()
         { 'With open PR': String(nonProtected.filter((b) => b.pr).length) },
         { Deletable: String(deletable.length) },
         { 'Deployed containers': String(containers.length) },
-        { 'Deployed preview buckets': String(previewBuckets.length) },
         { 'No git branch containers': String(noGitBranchContainers.length) },
-        { 'No git branch buckets': String(noGitBranchBuckets.length) },
-        { 'Preview buckets size (total)': formatBytes(knownBucketSizeTotal) },
       )
       output('SUMMARY:')
       output(inventorySummaryTable.toString())
 
       const inventoryTable = new Table({
-        head: [
-          'Target',
-          'Container status',
-          'Database status',
-          'Bucket status',
-          'PR',
-          'Flags',
-        ],
+        head: ['Target', 'Container status', 'Database status', 'PR', 'Flags'],
         wordWrap: true,
       })
 
@@ -681,7 +520,6 @@ export const infrastructureInventory = new Command()
             getContainerForNamespace(containerByName, branch.namespace),
           ),
           databaseCell(databaseByNamespace.get(branch.namespace) ?? null),
-          bucketCell(branch.bucket),
           branch.pr ? `#${branch.pr.number}` : '-',
           formatBranchFlags(branch),
         ])
@@ -715,7 +553,6 @@ export const infrastructureInventory = new Command()
           '',
           '',
           '',
-          '',
         ])
       }
 
@@ -730,7 +567,6 @@ export const infrastructureInventory = new Command()
           databaseCell(
             databaseByNamespace.get(noGitBranchResource.namespace) ?? null,
           ),
-          bucketCell(noGitBranchResource.bucket),
           '-',
           pc.red('no-git-branch'),
         ])
@@ -761,7 +597,6 @@ export const infrastructureInventory = new Command()
         const canDeleteEnvironment = hasEnvironmentResources({
           deployedContainer: branch.deployedContainer,
           database,
-          bucket: branch.bucket,
         })
         const staleStatus = branch.stale
           ? pc.yellow(`stale (${days}d ago)`)
@@ -785,7 +620,6 @@ export const infrastructureInventory = new Command()
               getContainerForNamespace(containerByName, branch.namespace),
             ),
           },
-          { 'Bucket status': bucketCell(branch.bucket) },
           { 'Merged in dev': yesNo(branch.mergedInDev) },
           {
             'Last commit': `${coloredCommitDate} by ${branch.lastCommitAuthor}\n${staleStatus}`,
@@ -857,7 +691,6 @@ export const infrastructureInventory = new Command()
           { Namespace: noGitBranchResource.namespace },
           { Database: `${databaseName}\n${databaseCell(database)}` },
           { Container: containerStatusCell(noGitBranchResource.container) },
-          { Bucket: bucketCell(noGitBranchResource.bucket) },
           { 'Git branch': pc.red('No git branch') },
         )
 

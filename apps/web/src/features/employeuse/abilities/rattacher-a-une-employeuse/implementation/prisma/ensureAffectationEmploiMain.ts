@@ -2,13 +2,6 @@ import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { ensurePersonneMain } from './ensurePersonneMain'
 
-// Écriture des affectations emploi `source='coop'` dans `main.personne_affectations_emploi` (dual-write,
-// ADR-002 périmètre élargi 2026-07-23) : la coop pose `est_active` comme signal d'employeuse courante,
-// en remplacement (à terme) de `coop.employes_structures`. Upsert idempotent sur la clé métier
-// `(personne, structure, source)`.
-//
-// Accepte un client de transaction pour rester atomique avec l'écriture `employes_structures`.
-
 const COOP_SOURCE = 'coop'
 
 type PrismaLike = Prisma.TransactionClient
@@ -44,8 +37,6 @@ export const ensureAffectationEmploiMain = async (
     select: { id: true },
   })
 
-// Désactive (`est_active = false`) toutes les affectations coop de la personne SAUF celles conservées.
-// Reflète la clôture des emplois `coop.employes_structures` (fin/suppression/changement d'employeuse).
 export const deactivateCoopAffectationsExcept = async (
   {
     personneId,
@@ -67,10 +58,6 @@ export const deactivateCoopAffectationsExcept = async (
   })
 }
 
-// Dual-write d'un rattachement user↔employeuse : garantit la `main.personne` (par email) et pose son
-// affectation active. À appeler en miroir de chaque écriture `coop.employes_structures` (ADR-002
-// périmètre élargi). Ne clôture PAS les autres affectations (à la charge de l'appelant si besoin).
-// Ne fait rien côté affectation si `structureMainId` est null (couverture main best-effort échouée).
 export const dualWriteEmployeuseAffectation = async (
   {
     coopUserId,

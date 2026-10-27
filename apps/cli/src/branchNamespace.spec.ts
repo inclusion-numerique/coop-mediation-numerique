@@ -74,13 +74,6 @@ describe('computeBranchNamespace', () => {
     expect(namespace.endsWith(branchSuffix(branch))).toBe(true)
   })
 
-  it('never overflows the 63 characters of the uploads bucket name', () => {
-    expect(
-      `coop-mediation-numerique-uploads-${computeBranchNamespace('feat/une-branche-au-nom-deraisonnablement-long')}`
-        .length,
-    ).toBeLessThanOrEqual(63)
-  })
-
   it('removes the trailing hyphen left by the truncation', () => {
     const branch = 'fix/ab-cd'
 

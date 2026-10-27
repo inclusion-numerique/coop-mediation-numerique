@@ -36,8 +36,6 @@ export type SessionUser = Pick<
   structureEmployeuseRenseignee: string | null
   lieuxActiviteRenseignes: string | null
   usurper: { id: string } | null
-  // Employeuse courante (0 ou 1 élément), lue dans `main` : la forme n'est plus dérivée des
-  // modèles coop `EmployeStructure`/`StructureAdministrative`, qui disparaissent à l'échange final.
   // Une employeuse peut n'avoir aucune dénomination — d'où `nom: string | null`.
   emplois: {
     id: string

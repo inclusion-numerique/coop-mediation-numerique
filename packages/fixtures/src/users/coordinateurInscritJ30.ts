@@ -1,5 +1,4 @@
 import { givenUser } from '../givenUser'
-import { structureEmployeuse } from '../structures'
 
 const day = 24 * 60 * 60 * 1000
 const date = new Date(Date.now() - 30 * day)
@@ -25,18 +24,7 @@ export const coordinateurInscritJ30 = givenUser({
       },
     },
   },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: 'b341c0b3-c2aa-4979-9b9a-f704cb7f5d96',
-      },
-      create: {
-        id: 'b341c0b3-c2aa-4979-9b9a-f704cb7f5d96',
-        structureId: structureEmployeuse.id,
-        debut: date,
-      },
-    },
-  },
+  employeDeLaStructureEmployeuse: true,
   profilInscription: 'Coordinateur',
   acceptationCgu: date,
   inscriptionValidee: date,

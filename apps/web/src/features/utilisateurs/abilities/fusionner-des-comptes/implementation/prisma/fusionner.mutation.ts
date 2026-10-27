@@ -231,7 +231,7 @@ const fusionnerLesCoordinateurs = async (
   })
 }
 
-const fusionnerLesAffectations = async (
+const fusionnerLesPersonnes = async (
   tx: Tx,
   sourceId: string,
   cibleId: string,
@@ -283,6 +283,46 @@ const fusionnerLesAffectations = async (
   await tx.personneAffectationEmploiMain.deleteMany({
     where: { personneId: personneSource.id },
   })
+
+  await tx.contratMain.updateMany({
+    where: { personneId: personneSource.id },
+    data: { personneId: personneCible.id },
+  })
+  await tx.formationMain.updateMany({
+    where: { personneId: personneSource.id },
+    data: { personneId: personneCible.id },
+  })
+
+  const postesCible = new Set(
+    (
+      await tx.posteMain.findMany({
+        where: { personneId: personneCible.id, structureId: { not: null } },
+        select: { posteConumId: true, structureId: true },
+      })
+    ).map(({ posteConumId, structureId }) => `${posteConumId}:${structureId}`),
+  )
+
+  const postesDeplacables = (
+    await tx.posteMain.findMany({
+      where: { personneId: personneSource.id },
+      select: { id: true, posteConumId: true, structureId: true },
+    })
+  )
+    .filter(
+      ({ posteConumId, structureId }) =>
+        !postesCible.has(`${posteConumId}:${structureId}`),
+    )
+    .map(({ id }) => id)
+
+  await tx.posteMain.updateMany({
+    where: { id: { in: postesDeplacables } },
+    data: { personneId: personneCible.id },
+  })
+  await tx.posteMain.updateMany({
+    where: { personneId: personneSource.id },
+    data: { personneId: null },
+  })
+  await tx.personneMain.delete({ where: { id: personneSource.id } })
 }
 
 const reattribuerLesTraces = async (
@@ -294,10 +334,6 @@ const reattribuerLesTraces = async (
     where: { userId: sourceId },
     data: { userId: cibleId },
   })
-  await tx.upload.updateMany({
-    where: { uploadedById: sourceId },
-    data: { uploadedById: cibleId },
-  })
   await tx.lieuInclusion.updateMany({
     where: { creationParId: sourceId },
     data: { creationParId: cibleId },
@@ -322,19 +358,6 @@ const reattribuerLesTraces = async (
     where: { suppressionParId: sourceId },
     data: { suppressionParId: cibleId },
   })
-  await tx.employeStructure.updateMany({
-    where: { creationParId: sourceId },
-    data: { creationParId: cibleId },
-  })
-  await tx.employeStructure.updateMany({
-    where: { modificationParId: sourceId },
-    data: { modificationParId: cibleId },
-  })
-  await tx.employeStructure.updateMany({
-    where: { suppressionParId: sourceId },
-    data: { suppressionParId: cibleId },
-  })
-  await tx.employeStructure.deleteMany({ where: { userId: sourceId } })
   await tx.session.updateMany({
     where: { usurperId: sourceId },
     data: { usurperId: null },
@@ -417,7 +440,7 @@ export const fusionner = async ({
           rolesCible.coordinateur,
         )
 
-      await fusionnerLesAffectations(tx, source.id, cible.id)
+      await fusionnerLesPersonnes(tx, source.id, cible.id)
       await reattribuerLesTraces(tx, source.id, cible.id)
       await transfererLesLiaisons(tx, source.id, cible.id)
       await retirerLaSource(tx, source.id)
