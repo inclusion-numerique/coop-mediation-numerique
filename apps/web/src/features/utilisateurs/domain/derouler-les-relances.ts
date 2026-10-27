@@ -10,6 +10,7 @@ import {
   type Relance,
   relanceApres,
   type SituationDeRelance,
+  suppressionAnnonceeApres,
 } from './relance'
 import type { UtilisateurId } from './utilisateur-id'
 
@@ -32,6 +33,7 @@ export type PortsDeRelance = {
   readonly noter: (
     utilisateurId: UtilisateurId,
     relance: Relance,
+    suppressionAnnoncee: Date | null,
   ) => Promise<void>
 }
 
@@ -49,7 +51,12 @@ const executer = async (
   if (action._tag === 'Avertir') await ports.avertir(compte, action)
 
   const relance = relanceApres(action)
-  if (relance !== null) await ports.noter(compte.utilisateurId, relance)
+  if (relance !== null)
+    await ports.noter(
+      compte.utilisateurId,
+      relance,
+      suppressionAnnonceeApres(action),
+    )
   return success(undefined)
 }
 

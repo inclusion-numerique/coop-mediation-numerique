@@ -25,8 +25,13 @@ const consigner = (destinataire: string, evenement: string) => {
 }
 
 Given(
-  /^un inscrit depuis (\d+) jours, relance "([^"]+)"(, avec un bénéficiaire)?$/,
-  async (jours: string, statut: string, avecUnBeneficiaire: string | null) => {
+  /^un inscrit depuis (\d+) jours, relance "([^"]+)"(, avec un bénéficiaire)?(, avec une activité supprimée)?$/,
+  async (
+    jours: string,
+    statut: string,
+    avecUnBeneficiaire: string | null,
+    avecUneActiviteSupprimee: string | null,
+  ) => {
     relance.evenements = []
     relance.utilisateurId = await semerUnCompteDeListe({
       prenom: 'Noe',
@@ -38,6 +43,7 @@ Given(
         null,
       mediateur: { derniereActivite: null, dernierBeneficiaire: null },
       avecUnBeneficiaire: avecUnBeneficiaire !== null,
+      avecUneActiviteSupprimee: avecUneActiviteSupprimee !== null,
     })
   },
 )
