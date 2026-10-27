@@ -5,6 +5,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import Card from '@app/web/components/Card'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { ExportDesAccompagnementsParDepartement } from '@app/web/features/activites/abilities/exporter-les-accompagnements-par-departement/ui'
 import NormaliserBeneficiaires from '@app/web/features/beneficiaire/abilities/normaliser-beneficiaires/ui/NormaliserBeneficiaires'
 import {
   consulterLaMaintenance,
@@ -20,7 +21,6 @@ import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
-import DatePickerDownload from './DatePickerDownload'
 
 export const metadata = {
   title: metadataTitle('Outils administrateur'),
@@ -60,7 +60,7 @@ const Page = async () => {
             </div>
             <div className="fr-col-12">
               <Card title="Export des accompagnements">
-                <DatePickerDownload />
+                <ExportDesAccompagnementsParDepartement />
               </Card>
             </div>
             <div className="fr-col-12">

@@ -1,0 +1,35 @@
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
+import type { FicheOutil } from '../fiche-outil'
+
+export default {
+  title: 'RDV Service Public',
+  description:
+    'Un outil de prise de rendez-vous en ligne, simplifiant votre organisation et rappelant aux usagers leurs rendez-vous par SMS.',
+  website: rdvWebsiteLink,
+  pictogram: RDVServicePublicLogo,
+  illustration: '/images/illustrations/mes-outils/rdv-service-public.webp',
+  features: [
+    {
+      title: 'Définir vos plages de disponibilités',
+      description:
+        'Informez vos apprenants et vos collègues des créneaux disponibles.',
+      icon: 'ri-calendar-2-line',
+    },
+    {
+      title: 'Envoyer une notification de rappel',
+      description:
+        'Vos apprenants recevront un SMS et/ou un e-mail de rappel de RDV. Ils pourront également modifier ou annuler le RDV.',
+      icon: 'ri-notification-3-line',
+    },
+    {
+      title: 'Importer vos RDVs sur votre agenda',
+      description:
+        'Synchronisez RDV Service Public et votre agenda du quotidien.',
+      icon: 'ri-loop-right-line',
+    },
+  ],
+  classes: {
+    access: 'fr-background-alt--blue-ecume fr-border-none',
+  },
+} satisfies FicheOutil

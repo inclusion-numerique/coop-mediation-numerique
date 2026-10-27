@@ -1,22 +1,11 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { AdministrationTagsPage } from '@app/web/features/activites/use-cases/tags/administration/AdministrationTagsPage'
-import { getAdministrationTagsData } from '@app/web/features/activites/use-cases/tags/administration/getAdministrationTagsData'
+import { usageDesTags } from '@app/web/features/tags/abilities/mesurer-l-usage-des-tags'
+import { UsageDesTagsPage } from '@app/web/features/tags/abilities/mesurer-l-usage-des-tags/ui'
 
 export const metadata = {
   title: metadataTitle('Tags'),
 }
 
-const Page = async () => {
-  const { tagsCreators, tagsUsedInCRAs, mostUsedTags } =
-    await getAdministrationTagsData()
-
-  return (
-    <AdministrationTagsPage
-      tagsCreators={tagsCreators}
-      tagsUsedInCRAs={tagsUsedInCRAs}
-      mostUsedTags={mostUsedTags}
-    />
-  )
-}
+const Page = async () => <UsageDesTagsPage {...(await usageDesTags())} />
 
 export default Page
