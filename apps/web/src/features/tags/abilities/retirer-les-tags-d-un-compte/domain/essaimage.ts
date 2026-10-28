@@ -1,4 +1,4 @@
-import type { MediateurId } from './mediateur-id'
+import type { MediateurId } from '../../../domain'
 
 export type EssaimageCoordinateur =
   | { readonly _tag: 'essaime'; readonly vers: readonly MediateurId[] }

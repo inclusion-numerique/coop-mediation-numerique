@@ -1,5 +1,5 @@
-import { essaimageDesTagsDuCoordinateur } from './essaimage-tags'
-import { MediateurId } from './mediateur-id'
+import { MediateurId } from '../../../domain'
+import { essaimageDesTagsDuCoordinateur } from './essaimage'
 
 const MEDIATEUR = MediateurId('33333333-3333-4333-8333-333333333333')
 const AUTRE_MEDIATEUR = MediateurId('44444444-4444-4444-8444-444444444444')

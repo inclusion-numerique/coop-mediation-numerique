@@ -9,7 +9,7 @@ export {
 } from './errors'
 export { MediateurId } from './mediateur-id'
 export { NomDuCoordinateur } from './nom-du-coordinateur'
-export { NomDuTag } from './nom-du-tag'
+export { memeNom, NomDuTag, NomDuTagCanonique } from './nom-du-tag'
 export {
   auMoinsAussiLarge,
   type Portee,
