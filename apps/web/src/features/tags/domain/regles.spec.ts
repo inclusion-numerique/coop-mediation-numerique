@@ -1,5 +1,6 @@
 import { CodeDepartement } from '@app/web/libraries/departement'
 import type { Acteur } from './acteur'
+import { role } from './acteur'
 import { CoordinateurId } from './coordinateur-id'
 import { MediateurId } from './mediateur-id'
 import { NomDuCoordinateur } from './nom-du-coordinateur'
@@ -15,8 +16,7 @@ const monCoordinateur = CoordinateurId('00000000-0000-4000-8000-000000000003')
 const autreCoordinateur = CoordinateurId('00000000-0000-4000-8000-000000000004')
 
 const mediateur: Acteur = {
-  mediateurId: moi,
-  coordinateurId: null,
+  ...role(moi, null),
   equipes: [
     {
       coordinateurId: monCoordinateur,
@@ -27,8 +27,7 @@ const mediateur: Acteur = {
 }
 
 const coordinateur: Acteur = {
-  mediateurId: null,
-  coordinateurId: monCoordinateur,
+  ...role(null, monCoordinateur),
   equipes: [
     {
       coordinateurId: monCoordinateur,

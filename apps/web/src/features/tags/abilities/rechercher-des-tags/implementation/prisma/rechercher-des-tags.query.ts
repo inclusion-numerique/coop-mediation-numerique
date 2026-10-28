@@ -6,7 +6,13 @@ import {
   TAGS,
   tagVisiblePar,
 } from '../../../../db/visibilite.sql'
-import type { Acteur, Tag, TagId } from '../../../../domain'
+import {
+  type Acteur,
+  coordinateurDe,
+  mediateurDe,
+  type Tag,
+  type TagId,
+} from '../../../../domain'
 
 const utilisationsPar = (acteur: Acteur): Prisma.Sql =>
   Prisma.sql`
@@ -14,12 +20,12 @@ const utilisationsPar = (acteur: Acteur): Prisma.Sql =>
       JOIN activites a ON a.id = at.activite_id
       WHERE at.tag_id = t.id
         AND a.suppression IS NULL
-        AND a.mediateur_id = ${acteur.mediateurId}::UUID)
+        AND a.mediateur_id = ${mediateurDe(acteur)}::UUID)
     + (SELECT COUNT(*) FROM activite_coordination_tags act
       JOIN activite_coordination ac ON ac.id = act.activite_coordination_id
       WHERE act.tag_id = t.id
         AND ac.suppression IS NULL
-        AND ac.coordinateur_id = ${acteur.coordinateurId}::UUID)`
+        AND ac.coordinateur_id = ${coordinateurDe(acteur)}::UUID)`
 
 export const rechercherDesTags = async ({
   acteur,

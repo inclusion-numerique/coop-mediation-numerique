@@ -1,4 +1,12 @@
-export { type Acteur, type Equipe, equipeDe } from './acteur'
+export {
+  type Acteur,
+  coordinateurDe,
+  type Equipe,
+  equipeDe,
+  mediateurDe,
+  type Role,
+  role,
+} from './acteur'
 export { CoordinateurId } from './coordinateur-id'
 export { DescriptionDuTag } from './description-du-tag'
 export { Effectif } from './effectif'

@@ -1,4 +1,4 @@
-import type { Acteur } from '../../../domain'
+import { type Acteur, coordinateurDe } from '../../../domain'
 import { nomDeLEquipe } from '../../../ui/nom-de-l-equipe.presenter'
 
 export type OptionDeVisibilite =
@@ -23,7 +23,7 @@ export const visibilitesProposees = (
       coordonneePar: nomDeLEquipe(acteur, equipe),
     }),
   ),
-  ...(acteur.coordinateurId !== null && acteur.departement !== null
+  ...(coordinateurDe(acteur) !== null && acteur.departement !== null
     ? [{ _tag: 'Departemental' } as const]
     : []),
 ]

@@ -3,6 +3,7 @@ import {
   CoordinateurId,
   MediateurId,
   NomDuCoordinateur,
+  role,
 } from '../domain'
 import { equipeAffichee } from './equipe-affichee.presenter'
 
@@ -10,8 +11,7 @@ const premiere = CoordinateurId('00000000-0000-4000-8000-000000000001')
 const seconde = CoordinateurId('00000000-0000-4000-8000-000000000002')
 
 const acteur = (equipes: readonly CoordinateurId[]): Acteur => ({
-  mediateurId: MediateurId('00000000-0000-4000-8000-000000000003'),
-  coordinateurId: null,
+  ...role(MediateurId('00000000-0000-4000-8000-000000000003'), null),
   equipes: equipes.map((coordinateurId, index) => ({
     coordinateurId,
     coordonneePar: NomDuCoordinateur(`Coordinateur ${index + 1}`),

@@ -8,6 +8,7 @@ import {
   CoordinateurId,
   MediateurId,
   NomDuCoordinateur,
+  role,
 } from './domain'
 
 setDefaultTimeout(60_000)
@@ -249,8 +250,7 @@ export const acteurMediateur = ({
   readonly equipes?: readonly string[]
   readonly departement?: string | null
 }): Acteur => ({
-  mediateurId: MediateurId(mediateurId),
-  coordinateurId: null,
+  ...role(MediateurId(mediateurId), null),
   equipes: equipes.map((coordinateurId) => ({
     coordinateurId: CoordinateurId(coordinateurId),
     coordonneePar: NomDuCoordinateur('Coordinateur'),
@@ -265,8 +265,7 @@ export const acteurCoordinateur = ({
   readonly coordinateurId: string
   readonly departement?: string | null
 }): Acteur => ({
-  mediateurId: null,
-  coordinateurId: CoordinateurId(coordinateurId),
+  ...role(null, CoordinateurId(coordinateurId)),
   equipes: [
     {
       coordinateurId: CoordinateurId(coordinateurId),

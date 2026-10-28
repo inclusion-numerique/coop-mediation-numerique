@@ -3,6 +3,7 @@ import {
   Effectif,
   MediateurId,
   NomDuTag,
+  role,
   TagId,
 } from '../../../domain'
 import { lignesDeLaListe, nombreDePages } from './liste-des-tags.presenter'
@@ -10,8 +11,7 @@ import { lignesDeLaListe, nombreDePages } from './liste-des-tags.presenter'
 const mediateurId = MediateurId('00000000-0000-4000-8000-000000000001')
 
 const acteur: Acteur = {
-  mediateurId,
-  coordinateurId: null,
+  ...role(mediateurId, null),
   equipes: [],
   departement: null,
 }

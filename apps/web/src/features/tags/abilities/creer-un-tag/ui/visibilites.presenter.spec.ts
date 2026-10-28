@@ -4,18 +4,26 @@ import {
   CoordinateurId,
   MediateurId,
   NomDuCoordinateur,
+  type Role,
+  role,
 } from '../../../domain'
 import { visibilitesProposees } from './visibilites.presenter'
 
 const premiere = CoordinateurId('00000000-0000-4000-8000-000000000001')
 const seconde = CoordinateurId('00000000-0000-4000-8000-000000000002')
 
-const acteur = (surcharge: Partial<Acteur>): Acteur => ({
-  mediateurId: MediateurId('00000000-0000-4000-8000-000000000003'),
-  coordinateurId: null,
-  equipes: [],
+const mediateur = MediateurId('00000000-0000-4000-8000-000000000003')
+
+const acteur = ({
+  roleDeLActeur = role(mediateur, null),
+  equipes = [],
+}: {
+  roleDeLActeur?: Role
+  equipes?: Acteur['equipes']
+}): Acteur => ({
+  ...roleDeLActeur,
+  equipes,
   departement: CodeDepartement('69'),
-  ...surcharge,
 })
 
 describe('visibilitesProposees', () => {
@@ -60,8 +68,7 @@ describe('visibilitesProposees', () => {
     expect(
       visibilitesProposees(
         acteur({
-          mediateurId: null,
-          coordinateurId: premiere,
+          roleDeLActeur: role(null, premiere),
           equipes: [
             {
               coordinateurId: premiere,

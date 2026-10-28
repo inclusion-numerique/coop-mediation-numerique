@@ -7,6 +7,7 @@ import {
   type Equipe,
   MediateurId,
   NomDuCoordinateur,
+  role,
 } from '../../domain'
 
 const equipe = (coordinateurId: string, nom: string | null): Equipe => ({
@@ -32,9 +33,10 @@ const equipesDe = (user: SessionUser): readonly Equipe[] => {
 }
 
 export const acteurDe = (user: SessionUser): Acteur => ({
-  mediateurId: user.mediateur == null ? null : MediateurId(user.mediateur.id),
-  coordinateurId:
+  ...role(
+    user.mediateur == null ? null : MediateurId(user.mediateur.id),
     user.coordinateur == null ? null : CoordinateurId(user.coordinateur.id),
+  ),
   equipes: equipesDe(user),
   departement: CodeDepartement.safe(getUserDepartement(user)?.code ?? ''),
 })

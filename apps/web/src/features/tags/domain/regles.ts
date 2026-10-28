@@ -1,4 +1,4 @@
-import type { Acteur } from './acteur'
+import { type Acteur, coordinateurDe, mediateurDe } from './acteur'
 import type { CoordinateurId } from './coordinateur-id'
 import { auMoinsAussiLarge, type Portee, type Proprietaire } from './portee'
 import type { Tag } from './tag'
@@ -7,7 +7,7 @@ const estDeSesEquipes = (
   acteur: Acteur,
   coordinateurId: CoordinateurId,
 ): boolean =>
-  acteur.coordinateurId === coordinateurId ||
+  coordinateurDe(acteur) === coordinateurId ||
   acteur.equipes.some((equipe) => equipe.coordinateurId === coordinateurId)
 
 const estLeProprietaire = (
@@ -15,8 +15,8 @@ const estLeProprietaire = (
   proprietaire: Proprietaire,
 ): boolean =>
   proprietaire._tag === 'Mediateur'
-    ? acteur.mediateurId === proprietaire.mediateurId
-    : acteur.coordinateurId === proprietaire.coordinateurId
+    ? mediateurDe(acteur) === proprietaire.mediateurId
+    : coordinateurDe(acteur) === proprietaire.coordinateurId
 
 export const peutGerer =
   (acteur: Acteur) =>
@@ -27,7 +27,7 @@ export const peutGerer =
       return estDeSesEquipes(acteur, portee.coordinateurId)
     if (portee._tag === 'Departemental')
       return (
-        acteur.coordinateurId !== null &&
+        coordinateurDe(acteur) !== null &&
         acteur.departement === portee.departement
       )
     return false

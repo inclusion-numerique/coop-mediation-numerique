@@ -1,12 +1,11 @@
-import { type Acteur, CoordinateurId, NomDuCoordinateur } from '../domain'
+import { type Acteur, CoordinateurId, NomDuCoordinateur, role } from '../domain'
 import { nomDeLEquipe } from './nom-de-l-equipe.presenter'
 
 const sienne = CoordinateurId('00000000-0000-4000-8000-000000000001')
 const autre = CoordinateurId('00000000-0000-4000-8000-000000000002')
 
 const coordinateur: Acteur = {
-  mediateurId: null,
-  coordinateurId: sienne,
+  ...role(null, sienne),
   equipes: [],
   departement: null,
 }

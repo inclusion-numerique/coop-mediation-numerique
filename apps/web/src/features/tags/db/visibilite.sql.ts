@@ -1,5 +1,10 @@
 import { Prisma } from '@app/web/generated/prisma/client'
-import type { Acteur, TypeDePortee } from '../domain'
+import {
+  type Acteur,
+  coordinateurDe,
+  mediateurDe,
+  type TypeDePortee,
+} from '../domain'
 
 export const TAGS = Prisma.raw('tags t')
 
@@ -15,21 +20,23 @@ export const sansProprietaire = Prisma.sql`t.mediateur_id IS NULL AND t.coordina
 const equipesDe = (acteur: Acteur): readonly string[] => [
   ...new Set([
     ...acteur.equipes.map(({ coordinateurId }) => coordinateurId),
-    ...(acteur.coordinateurId === null ? [] : [acteur.coordinateurId]),
+    ...[coordinateurDe(acteur)].flatMap((id) => (id === null ? [] : [id])),
   ]),
 ]
 
 export const tagVisiblePar = (acteur: Acteur): Prisma.Sql => {
   const equipes = equipesDe(acteur)
+  const mediateurId = mediateurDe(acteur)
+  const coordinateurId = coordinateurDe(acteur)
 
   const conditions = [
-    ...(acteur.mediateurId === null
+    ...(mediateurId === null
       ? []
-      : [Prisma.sql`t.mediateur_id = ${acteur.mediateurId}::UUID`]),
-    ...(acteur.coordinateurId === null
+      : [Prisma.sql`t.mediateur_id = ${mediateurId}::UUID`]),
+    ...(coordinateurId === null
       ? []
       : [
-          Prisma.sql`(t.mediateur_id IS NULL AND t.coordinateur_id = ${acteur.coordinateurId}::UUID AND t.equipe IS NOT TRUE)`,
+          Prisma.sql`(t.mediateur_id IS NULL AND t.coordinateur_id = ${coordinateurId}::UUID AND t.equipe IS NOT TRUE)`,
         ]),
     ...(equipes.length === 0
       ? []
