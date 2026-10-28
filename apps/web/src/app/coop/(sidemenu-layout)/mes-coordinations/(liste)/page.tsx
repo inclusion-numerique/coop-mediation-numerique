@@ -1,73 +1,77 @@
+import { supprimerUneActiviteDeCoordinationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-coordination.action'
 import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
-import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
-import { TYPE_ACTIVITE_OPTIONS } from '@app/web/features/activites/use-cases/cra/coordination/labels'
-import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/ActivitesListeLayout'
-import { CoordinationFilterTags } from '@app/web/features/activites/use-cases/list/components/CoordinationFilterTags'
-import ExportActivitesCoordinationButton from '@app/web/features/activites/use-cases/list/components/ExportActivitesCoordinationButton'
-import { ActiviteCoordinationPeriodeFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationPeriodeFilter'
-import { ActiviteCoordinationTagFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationTagFilter'
-import { ActiviteCoordinationTypeFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationTypeFilter'
-import { getCoordinationsDateRange } from '@app/web/features/activites/use-cases/list/db/getCoordinationsDateRange'
-import { getCoordinationsListPageData } from '@app/web/features/activites/use-cases/list/db/getCoordinationsListPageData'
-import { getCoordinationsTagsOptions } from '@app/web/features/activites/use-cases/list/db/getCoordinationsTagsOptions'
-import MesCoordinationsListePage from '@app/web/features/activites/use-cases/list/MesCoordinationsListePage'
-import { validateCoordinationsFilters } from '@app/web/features/activites/use-cases/list/validation/CoordinationsFilters'
+import { isMediateur } from '@app/web/auth/userTypeGuards'
+import { BoutonExporter } from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination/ui'
+import {
+  listerLesActivitesDeCoordination,
+  optionsDeFiltre,
+} from '@app/web/features/activites/abilities/lister-les-activites-de-coordination'
+import {
+  listeDesCoordinations,
+  MesCoordinationsPage,
+  optionsDeFiltrePresentees,
+} from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui'
+import { SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.key'
+import {
+  CoordinateurId,
+  criteresDesCoordinations,
+  estFiltre,
+} from '@app/web/features/activites/domain'
+import { filtresActifsDesCoordinations } from '@app/web/features/activites/ui/filtres-actifs-des-coordinations'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  toNumberOr,
+} from '@app/web/libs/data-table/toNumberOr'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités de coordination'),
 }
 
-const MesCoordinationsPage = async ({
-  searchParams: rawSearchParams,
+type Parametres = {
+  page?: string
+  lignes?: string
+  du?: string
+  au?: string
+  types?: string
+  tags?: string
+}
+
+const requeteDeLExport = ({ du, au, types, tags }: Parametres): string =>
+  new URLSearchParams(
+    Object.entries({ du, au, types, tags }).flatMap(([cle, valeur]) =>
+      valeur === undefined ? [] : [[cle, valeur]],
+    ),
+  ).toString()
+
+const MesCoordinationsRoute = async ({
+  searchParams,
 }: {
-  searchParams: Promise<{ lignes?: string; page?: string; types?: string }>
+  searchParams: Promise<Parametres>
 }) => {
   const user = await authenticateCoordinateur()
+  const parametres = await searchParams
+  const coordinateurId = CoordinateurId(user.coordinateur.id)
+  const criteres = criteresDesCoordinations(parametres)
 
-  const searchParams = validateCoordinationsFilters(await rawSearchParams)
+  const [listees, options] = await Promise.all([
+    listerLesActivitesDeCoordination({
+      coordinateurId,
+      criteres,
+      page: toNumberOr(parametres.page)(DEFAULT_PAGE),
+      lignesParPage: toNumberOr(parametres.lignes)(DEFAULT_PAGE_SIZE),
+    }),
+    optionsDeFiltre({ coordinateurId }),
+  ])
 
-  const data = getCoordinationsListPageData({
-    user,
-    searchParams,
-  })
-
-  const activitesCount = await data.then(
-    ({ searchResult: { totalCount } }) => totalCount,
-  )
-
-  const tagOptions = await getCoordinationsTagsOptions({ user })
-  const dateRange = await getCoordinationsDateRange({ user })
-  const now = new Date()
-
-  const filters = [
-    ...(searchParams.du != null && searchParams.au != null
-      ? [
-          {
-            params: ['du', 'au'],
-            label: `${dateAsIsoDay(searchParams.du)} - ${dateAsIsoDay(searchParams.au)}`,
-          },
-        ]
-      : []),
-    ...searchParams.types.map((type) => ({
-      params: ['types'],
-      value: type,
-      label:
-        TYPE_ACTIVITE_OPTIONS.find(({ value }) => type === value)?.label ?? '',
-    })),
-    ...searchParams.tags.map((tag) => ({
-      params: ['tags'],
-      value: tag,
-      label: `Tag : ${tagOptions.find(({ value }) => value === tag)?.label ?? tag}`,
-    })),
-  ]
+  const filtresActifs = filtresActifsDesCoordinations(criteres, options.tags)
 
   return (
     <ClientBinder
@@ -78,40 +82,33 @@ const MesCoordinationsPage = async ({
         bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
         to={mettreAJourStatutRdvAction}
       >
-        <ActivitesListeLayout
-          vue="liste"
-          href="/coop/mes-coordinations"
-          empty
-          subtitle={
-            isCoordinateur(user) && isMediateur(user)
-              ? 'Coordination'
-              : undefined
-          }
+        <ClientBinder
+          bind={SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY}
+          to={supprimerUneActiviteDeCoordinationAction}
         >
-          <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-2v fr-mb-6v">
-            <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
-              <ActiviteCoordinationPeriodeFilter
-                minDate={new Date(dateRange._min.date ?? now)}
-                maxDate={new Date(dateRange._max.date ?? now)}
+          <MesCoordinationsPage
+            sousTitre={isMediateur(user) ? 'Coordination' : undefined}
+            options={optionsDeFiltrePresentees(options, new Date())}
+            filtresActifs={filtresActifs}
+            liste={listeDesCoordinations({
+              listees,
+              filtre: estFiltre(criteres),
+              timezone: user.timezone,
+            })}
+            filtre={estFiltre(criteres)}
+            pagination={{ page: parametres.page, lignes: parametres.lignes }}
+            exporter={
+              <BoutonExporter
+                filters={filtresActifs}
+                requete={requeteDeLExport(parametres)}
+                activitesCount={listees.total}
               />
-              <ActiviteCoordinationTypeFilter />
-              <ActiviteCoordinationTagFilter tagOptions={tagOptions} />
-            </div>
-            <ExportActivitesCoordinationButton
-              filters={filters}
-              searchParams={rawSearchParams}
-              activitesCount={activitesCount}
-            />
-          </div>
-          <CoordinationFilterTags
-            ignoreParams={['page', 'lignes']}
-            filters={filters}
+            }
           />
-          <MesCoordinationsListePage data={data} />
-        </ActivitesListeLayout>
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )
 }
 
-export default MesCoordinationsPage
+export default MesCoordinationsRoute

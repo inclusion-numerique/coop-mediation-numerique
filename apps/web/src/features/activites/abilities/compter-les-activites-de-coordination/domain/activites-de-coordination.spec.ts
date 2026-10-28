@@ -1,5 +1,5 @@
+import { TypeDActiviteDeCoordination } from '../../../domain'
 import { decompterParTrimestre } from './activites-de-coordination'
-import { TypeDActiviteDeCoordination } from './type-d-activite-de-coordination'
 
 const activite = (
   type: 'Animation' | 'Evenement' | 'Partenariat',

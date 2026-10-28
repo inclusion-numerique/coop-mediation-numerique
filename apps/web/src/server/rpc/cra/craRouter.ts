@@ -10,14 +10,9 @@ import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/m
 import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
 import { StatutPresenceModifiable } from '@app/web/features/rdvsp/domain/statut-presence'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
-import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
-import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import z from 'zod'
 
@@ -161,56 +156,5 @@ export const craRouter = router({
         sessionUserId: user.id,
         mediateurId: user.mediateur.id,
       })
-    }),
-  deleteActiviteCoordination: protectedProcedure
-    .input(
-      z.object({
-        activiteId: z.guid(),
-      }),
-    )
-    .mutation(async ({ input: { activiteId }, ctx: { user } }) => {
-      enforceIsCoordinateur(user)
-
-      const stopwatch = createStopwatch()
-
-      const activite = await prismaClient.activiteCoordination.findUnique({
-        where: { id: activiteId, suppression: null },
-      })
-
-      if (!activite) {
-        throw invalidError('Cra not found')
-      }
-
-      if (activite.coordinateurId !== user.coordinateur.id) {
-        throw forbiddenError('Cannot delete CRA for another coordinateur')
-      }
-
-      const now = new Date()
-
-      await prismaClient.$transaction(
-        [
-          prismaClient.activitesCoordinationTags.deleteMany({
-            where: {
-              activiteCoordinationId: activiteId,
-            },
-          }),
-          prismaClient.activiteCoordination.update({
-            where: { id: activiteId },
-            data: { suppression: now, modification: now },
-          }),
-        ].filter(onlyDefinedAndNotNull),
-      )
-
-      addMutationLog({
-        userId: user.id,
-        nom: 'SupprimerActiviteCoordination',
-        duration: stopwatch.stop().duration,
-        data: {
-          type: activite.type,
-          id: activiteId,
-        },
-      })
-
-      return true
     }),
 })
