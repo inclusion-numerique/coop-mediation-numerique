@@ -189,3 +189,121 @@ After(async () => {
     where: { id: { in: semes.map(({ userId }) => userId) } },
   })
 })
+
+type CoordinationsSemees = {
+  readonly userIds: readonly string[]
+  readonly coordinateurId: string
+  readonly autreCoordinateurId: string
+  readonly tags: { readonly reseau: string; readonly elus: string }
+}
+
+let coordinations: CoordinationsSemees | undefined
+
+export const coordinationsSemees = (): CoordinationsSemees => {
+  if (!coordinations) throw new Error('Aucune coordination semée')
+  return coordinations
+}
+
+const semerUnCoordinateur = async (userId: string) => {
+  await prismaClient.user.create({
+    data: { id: userId, email: `coordinations-${userId}@example.com` },
+  })
+  return (
+    await prismaClient.coordinateur.create({
+      data: { userId },
+      select: { id: true },
+    })
+  ).id
+}
+
+export const semerDesCoordinations = async (): Promise<CoordinationsSemees> => {
+  const userIds = [v4(), v4()]
+  const coordinateurId = await semerUnCoordinateur(userIds[0])
+  const autreCoordinateurId = await semerUnCoordinateur(userIds[1])
+  const [reseau, elus] = await Promise.all(
+    ['Réseau', 'Élus'].map((nom) =>
+      prismaClient.tag.create({
+        data: { nom: `${nom} ${v4()}`, coordinateurId },
+        select: { id: true },
+      }),
+    ),
+  )
+
+  await prismaClient.activiteCoordination.create({
+    data: {
+      coordinateurId,
+      type: 'Animation',
+      date: new Date('2026-02-10'),
+      mediateurs: 3,
+      tags: { create: { tagId: reseau.id } },
+    },
+  })
+  await prismaClient.activiteCoordination.create({
+    data: {
+      coordinateurId,
+      type: 'Evenement',
+      date: new Date('2026-05-04'),
+      nom: 'Forum',
+      participants: 40,
+    },
+  })
+  await prismaClient.activiteCoordination.create({
+    data: {
+      coordinateurId,
+      type: 'Partenariat',
+      date: new Date('2026-06-30'),
+      nom: 'Convention',
+      naturePartenariat: ['RDVElu'],
+      structuresPartenaires: [{ nom: 'Mairie', type: 'Commune' }],
+      tags: { create: { tagId: elus.id } },
+    },
+  })
+  await prismaClient.activiteCoordination.createMany({
+    data: [
+      {
+        coordinateurId,
+        type: 'Animation',
+        date: new Date('2026-06-15'),
+        suppression: new Date('2026-06-16'),
+      },
+      {
+        coordinateurId: autreCoordinateurId,
+        type: 'Animation',
+        date: new Date('2026-06-15'),
+      },
+    ],
+  })
+
+  coordinations = {
+    userIds,
+    coordinateurId,
+    autreCoordinateurId,
+    tags: { reseau: reseau.id, elus: elus.id },
+  }
+  return coordinations
+}
+
+After(async () => {
+  const semees = coordinations
+  coordinations = undefined
+  if (!semees) return
+
+  const coordinateurIds = [semees.coordinateurId, semees.autreCoordinateurId]
+  await prismaClient.activitesCoordinationTags.deleteMany({
+    where: {
+      activiteCoordination: { coordinateurId: { in: coordinateurIds } },
+    },
+  })
+  await prismaClient.activiteCoordination.deleteMany({
+    where: { coordinateurId: { in: coordinateurIds } },
+  })
+  await prismaClient.tag.deleteMany({
+    where: { id: { in: [semees.tags.reseau, semees.tags.elus] } },
+  })
+  await prismaClient.coordinateur.deleteMany({
+    where: { id: { in: coordinateurIds } },
+  })
+  await prismaClient.user.deleteMany({
+    where: { id: { in: [...semees.userIds] } },
+  })
+})

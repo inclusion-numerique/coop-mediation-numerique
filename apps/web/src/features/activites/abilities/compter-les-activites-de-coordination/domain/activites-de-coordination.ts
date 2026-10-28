@@ -1,3 +1,7 @@
+import {
+  type TypeDActiviteDeCoordination,
+  typesDActiviteDeCoordination,
+} from '../../../domain'
 import { NombreDActivites } from './nombre-d-activites'
 import {
   memeTrimestre,
@@ -5,12 +9,8 @@ import {
   type Trimestre,
   trimestreDe,
 } from './trimestre'
-import {
-  type TypeDActiviteDeCoordination,
-  typesDActiviteDeCoordination,
-} from './type-d-activite-de-coordination'
 
-export type ActiviteDeCoordination = {
+export type ActiviteADecompter = {
   readonly type: TypeDActiviteDeCoordination
   readonly date: Date
 }
@@ -30,9 +30,7 @@ export type ActivitesDeCoordination = {
   readonly trimestres: readonly DecompteDuTrimestre[]
 }
 
-const decompter = (
-  activites: readonly ActiviteDeCoordination[],
-): DecompteParType =>
+const decompter = (activites: readonly ActiviteADecompter[]): DecompteParType =>
   typesDActiviteDeCoordination.map((type) => ({
     type,
     nombre: NombreDActivites(
@@ -41,7 +39,7 @@ const decompter = (
   }))
 
 const trimestresDistincts = (
-  activites: readonly ActiviteDeCoordination[],
+  activites: readonly ActiviteADecompter[],
 ): readonly Trimestre[] =>
   activites
     .map(({ date }) => trimestreDe(date))
@@ -53,7 +51,7 @@ const trimestresDistincts = (
     .toSorted(plusRecentDAbord)
 
 export const decompterParTrimestre = (
-  activites: readonly ActiviteDeCoordination[],
+  activites: readonly ActiviteADecompter[],
 ): ActivitesDeCoordination => ({
   cumul: decompter(activites),
   trimestres: trimestresDistincts(activites).map((trimestre) => ({
