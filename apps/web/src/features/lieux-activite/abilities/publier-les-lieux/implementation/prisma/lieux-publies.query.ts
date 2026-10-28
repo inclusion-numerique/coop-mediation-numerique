@@ -20,10 +20,9 @@ export type Aidant = {
 /**
  * Les lieux que la coop publie sur la cartographie nationale.
  *
- * Quatre conditions, et elles se cumulent : le lieu n'est pas supprimé, il est
- * déclaré visible pour la cartographie, il annonce au moins un service, et au
- * moins un médiateur visible y exerce encore. Un lieu sans personne n'est pas un
- * lieu d'accueil ; un lieu sans service n'oriente personne.
+ * Trois conditions, et elles se cumulent : le lieu n'est pas supprimé, il est
+ * déclaré visible pour la cartographie, et il annonce au moins un service. Un
+ * lieu sans service n'oriente personne.
  *
  * La requête est écrite en SQL brut parce qu'elle produit directement la forme
  * du schéma national — objets d'adresse, de localisation, de contact, de
@@ -115,11 +114,11 @@ export const lieuxPublies = async ({
           '[]'::jsonb
         ) AS aidants
       FROM lieu_inclusion structures
-        JOIN mediateurs_en_activite ON structures.id = mediateurs_en_activite.structure_id
+        LEFT JOIN mediateurs_en_activite ON structures.id = mediateurs_en_activite.structure_id
           AND mediateurs_en_activite.suppression IS NULL
           AND mediateurs_en_activite.fin_activite IS NULL
         LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
-        LEFT JOIN users ON mediateurs.user_id = users.id
+        LEFT JOIN users ON mediateurs.user_id = users.id AND users.deleted IS NULL
         -- Dispositif conseiller numérique dérivé de main (affectation idposte active) : un
         -- ensemble d'identifiants distincts, donc une jointure qui ne démultiplie aucune ligne
         -- de l'agrégat.
@@ -131,7 +130,6 @@ export const lieuxPublies = async ({
       -- qu'à la saisie, où exiger un service avant de rendre le lieu visible
       -- fermait la seule porte menant aux champs qui les renseignent.
       AND COALESCE(array_length(structures.services, 1), 0) > 0
-      AND users.deleted IS NULL
     GROUP BY structures.id
   )
   SELECT *

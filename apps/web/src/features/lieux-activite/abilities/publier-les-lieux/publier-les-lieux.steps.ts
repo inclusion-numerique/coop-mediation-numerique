@@ -97,6 +97,13 @@ Given("ce médiateur s'est retiré du lieu", async () => {
   })
 })
 
+Given('ce médiateur a supprimé son compte', async () => {
+  await prismaClient.user.update({
+    where: { id: semis.userId },
+    data: { deleted: new Date() },
+  })
+})
+
 Given('ce lieu déclare deux sites web', async () => {
   await prismaClient.lieuInclusion.update({
     where: { id: semis.lieuId },

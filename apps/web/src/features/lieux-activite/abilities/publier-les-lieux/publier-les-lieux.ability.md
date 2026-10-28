@@ -1,6 +1,6 @@
 # Feature: Publier les lieux sur la cartographie nationale
 
-> Ce que la coop verse au bien commun. Quatre conditions se cumulent, et
+> Ce que la coop verse au bien commun. Trois conditions se cumulent, et
 > l'absence d'une seule retire le lieu de la moisson.
 
 ## Rule: Un lieu ne se publie que s'il est déclaré visible
@@ -42,23 +42,34 @@
 * When la cartographie nationale moissonne les lieux
 * Then ce lieu n'est pas publié
 
-## Rule: Un lieu où plus personne n'exerce n'est pas un lieu d'accueil
+## Rule: Un lieu sans médiateur reste publié
 
-> La cartographie oriente des usagers vers quelqu'un. Un lieu que plus personne
-> ne fait vivre les enverrait devant une porte close.
+> La règle commune aux sources de la cartographie : tout lieu est affiché, sauf
+> si quelqu'un a décidé de le masquer. Qu'aucun médiateur de la coop n'y exerce
+> ne dit pas que le lieu a fermé ; seule sa visibilité en décide.
 
-### Scenario: Le lieu dont le médiateur s'est retiré n'est plus publié
+### Scenario: Le lieu dont le médiateur s'est retiré reste publié
 
 * Given un lieu partagé où exerce un médiateur visible
 * And ce médiateur s'est retiré du lieu
 * When la cartographie nationale moissonne les lieux
-* Then ce lieu n'est pas publié
+* Then ce lieu est publié
+* And il n'annonce aucun aidant
 
-### Scenario: Le lieu où aucun médiateur n'a jamais exercé n'est pas publié
+### Scenario: Le lieu où aucun médiateur n'a jamais exercé est publié
 
 * Given un lieu partagé où aucun médiateur n'a jamais exercé
 * When la cartographie nationale moissonne les lieux
-* Then ce lieu n'est pas publié
+* Then ce lieu est publié
+* And il n'annonce aucun aidant
+
+### Scenario: Le lieu dont le seul médiateur a supprimé son compte reste publié
+
+* Given un lieu partagé où exerce un médiateur visible
+* And ce médiateur a supprimé son compte
+* When la cartographie nationale moissonne les lieux
+* Then ce lieu est publié
+* And il n'annonce aucun aidant
 
 ## Rule: Se rendre invisible retire son nom, pas le lieu
 
