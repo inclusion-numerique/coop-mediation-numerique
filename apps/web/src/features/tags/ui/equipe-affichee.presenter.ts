@@ -1,4 +1,5 @@
 import type { Acteur, Portee } from '../domain'
+import { nomDeLEquipe } from './nom-de-l-equipe.presenter'
 import type { EquipeAffichee } from './tag-affiche'
 
 export const equipeAffichee =
@@ -14,6 +15,6 @@ export const equipeAffichee =
       ? null
       : {
           numero: index + 1,
-          coordonneePar: acteur.equipes[index].coordonneePar,
+          coordonneePar: nomDeLEquipe(acteur, acteur.equipes[index]),
         }
   }

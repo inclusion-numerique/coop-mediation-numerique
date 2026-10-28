@@ -9,23 +9,18 @@ import {
   NomDuCoordinateur,
 } from '../../domain'
 
-const equipe = (
-  coordinateurId: string,
-  nom: string | null,
-  parDefaut: string,
-): Equipe => ({
+const equipe = (coordinateurId: string, nom: string | null): Equipe => ({
   coordinateurId: CoordinateurId(coordinateurId),
-  coordonneePar:
-    NomDuCoordinateur.safe(nom ?? '') ?? NomDuCoordinateur(parDefaut),
+  coordonneePar: NomDuCoordinateur.safe(nom ?? ''),
 })
 
 const equipesDe = (user: SessionUser): readonly Equipe[] => {
   const equipes = [
     ...(user.coordinateur == null
       ? []
-      : [equipe(user.coordinateur.id, user.name, 'Mon équipe')]),
+      : [equipe(user.coordinateur.id, user.name)]),
     ...(user.mediateur?.coordinations.map(({ coordinateur }) =>
-      equipe(coordinateur.id, coordinateur.user.name, 'Équipe'),
+      equipe(coordinateur.id, coordinateur.user.name),
     ) ?? []),
   ]
 

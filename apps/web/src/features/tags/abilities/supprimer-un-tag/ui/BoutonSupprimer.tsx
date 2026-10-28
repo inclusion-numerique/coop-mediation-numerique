@@ -1,7 +1,6 @@
 'use client'
 
-import { ElementDuMenu } from '../../../ui/ElementDuMenu'
-import type { TagAffiche } from '../../../ui/tag-affiche'
+import { ElementDuMenu, type TagAffiche } from '../../../ui'
 import { SuppressionDuTag } from './ModaleDeSuppression'
 
 export const BoutonSupprimer = ({ tag }: { tag: TagAffiche }) => {

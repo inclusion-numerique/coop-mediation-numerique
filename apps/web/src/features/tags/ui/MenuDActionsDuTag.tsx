@@ -1,8 +1,7 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { type ReactNode, type RefObject, useRef } from 'react'
-import { useOnClickOutside } from 'usehooks-ts'
+import { type ReactNode, useEffect, useRef } from 'react'
 
 export const MenuDActionsDuTag = ({
   tagId,
@@ -19,10 +18,19 @@ export const MenuDActionsDuTag = ({
       boutonRef.current.click()
   }
 
-  useOnClickOutside(menuRef as RefObject<HTMLDivElement>, (event) => {
-    if (event.target === boutonRef.current) return
-    fermer()
-  })
+  useEffect(() => {
+    const fermerSiExterieur = (event: MouseEvent) => {
+      const cible = event.target
+      if (!(cible instanceof Node)) return
+      if (boutonRef.current?.contains(cible)) return
+      if (menuRef.current?.contains(cible)) return
+      if (boutonRef.current?.getAttribute('aria-expanded') === 'true')
+        boutonRef.current.click()
+    }
+
+    document.addEventListener('mousedown', fermerSiExterieur)
+    return () => document.removeEventListener('mousedown', fermerSiExterieur)
+  }, [])
 
   return (
     <div className="fr-position-relative">

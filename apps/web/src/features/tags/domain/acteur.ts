@@ -5,7 +5,7 @@ import type { NomDuCoordinateur } from './nom-du-coordinateur'
 
 export type Equipe = {
   readonly coordinateurId: CoordinateurId
-  readonly coordonneePar: NomDuCoordinateur
+  readonly coordonneePar: NomDuCoordinateur | null
 }
 
 export type Acteur = {

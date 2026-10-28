@@ -9,12 +9,13 @@ import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import type { z } from 'zod'
 import {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,
   NOM_DU_TAG_LONGUEUR_MAX,
 } from '../../../domain'
-import { APPARENCE_DE_VISIBILITE } from '../../../ui/ApparenceDeVisibilite'
+import { APPARENCE_DE_VISIBILITE } from '../../../ui'
 import { CREER_UN_TAG_ACTION_KEY } from '../action/creer-un-tag.key'
 import { CreerUnTagValidation } from '../action/creer-un-tag.validation'
 import {
@@ -84,6 +85,10 @@ export const ModaleDeCreation = ({
   })
 
   const enCours = useStore(form.store, (state) => state.isSubmitting)
+
+  useEffect(() => {
+    form.reset({ nom, description: null, visibilite: { _tag: 'Personnel' } })
+  }, [form, nom])
   const visibilite = useStore(form.store, (state) => state.values.visibilite)
 
   return (

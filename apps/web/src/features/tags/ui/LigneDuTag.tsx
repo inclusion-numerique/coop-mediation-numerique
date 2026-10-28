@@ -2,14 +2,9 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
+import { infobulleDesAccompagnements } from './accompagnements.presenter'
 import { BadgeDePortee } from './BadgeDePortee'
 import type { TagAffiche } from './tag-affiche'
-
-const infobulleDesAccompagnements = (accompagnements: number) => {
-  if (accompagnements === 0) return 'Aucun accompagnement n’est lié à ce tag'
-  if (accompagnements === 1) return '1 accompagnement est lié à ce tag'
-  return `${numberToString(accompagnements)} accompagnements sont liés à ce tag`
-}
 
 export const LigneDuTag = ({
   tag,

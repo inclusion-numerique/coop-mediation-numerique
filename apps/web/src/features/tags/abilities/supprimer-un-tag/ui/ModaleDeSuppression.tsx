@@ -7,7 +7,7 @@ import { inject } from '@app/web/libs/injection/client'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { TagAffiche } from '../../../ui/tag-affiche'
+import type { TagAffiche } from '../../../ui'
 import { SUPPRIMER_UN_TAG_ACTION_KEY } from '../action/supprimer-un-tag.key'
 import { texteDeSuppression } from './suppression.presenter'
 

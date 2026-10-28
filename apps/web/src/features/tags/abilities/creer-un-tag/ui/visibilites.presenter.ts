@@ -1,4 +1,5 @@
 import type { Acteur } from '../../../domain'
+import { nomDeLEquipe } from '../../../ui/nom-de-l-equipe.presenter'
 
 export type OptionDeVisibilite =
   | { readonly _tag: 'Personnel' }
@@ -15,11 +16,11 @@ export const visibilitesProposees = (
 ): readonly OptionDeVisibilite[] => [
   { _tag: 'Personnel' },
   ...acteur.equipes.map(
-    ({ coordinateurId, coordonneePar }, index): OptionDeVisibilite => ({
+    (equipe, index): OptionDeVisibilite => ({
       _tag: 'Equipe',
-      coordinateurId,
+      coordinateurId: equipe.coordinateurId,
       numero: acteur.equipes.length === 1 ? null : index + 1,
-      coordonneePar,
+      coordonneePar: nomDeLEquipe(acteur, equipe),
     }),
   ),
   ...(acteur.coordinateurId !== null && acteur.departement !== null
