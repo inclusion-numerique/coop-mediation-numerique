@@ -1,3 +1,4 @@
+export { APPARENCE_DE_VISIBILITE } from './ApparenceDeVisibilite'
 export { BadgeDePortee } from './BadgeDePortee'
 export { ElementDuMenu } from './ElementDuMenu'
 export { equipeAffichee } from './equipe-affichee.presenter'
