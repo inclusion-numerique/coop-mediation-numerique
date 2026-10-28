@@ -115,7 +115,9 @@ export const lieuxPublies = async ({
           '[]'::jsonb
         ) AS aidants
       FROM lieu_inclusion structures
-        LEFT JOIN mediateurs_en_activite mediateurs_en_activite  ON structures.id = mediateurs_en_activite.structure_id
+        JOIN mediateurs_en_activite ON structures.id = mediateurs_en_activite.structure_id
+          AND mediateurs_en_activite.suppression IS NULL
+          AND mediateurs_en_activite.fin_activite IS NULL
         LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
         LEFT JOIN users ON mediateurs.user_id = users.id
         -- Dispositif conseiller numérique dérivé de main (affectation idposte active) : un
@@ -123,7 +125,6 @@ export const lieuxPublies = async ({
         -- de l'agrégat.
         LEFT JOIN (${conseillersNumeriquesUserIdsSql}) conseillers ON conseillers.user_id = users.id
     WHERE ${lieuExploitableSql('structures')}
-      AND mediateurs_en_activite.suppression IS NULL AND mediateurs_en_activite.fin_activite IS NULL
       AND structures.visible_pour_cartographie_nationale IS true
       -- Un lieu qui n'annonce aucun service n'oriente personne : la carte le
       -- retient jusqu'à ce qu'il en déclare un. La garde se tient ici plutôt

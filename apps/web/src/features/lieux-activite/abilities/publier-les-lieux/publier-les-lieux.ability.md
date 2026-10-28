@@ -54,6 +54,12 @@
 * When la cartographie nationale moissonne les lieux
 * Then ce lieu n'est pas publié
 
+### Scenario: Le lieu où aucun médiateur n'a jamais exercé n'est pas publié
+
+* Given un lieu partagé où aucun médiateur n'a jamais exercé
+* When la cartographie nationale moissonne les lieux
+* Then ce lieu n'est pas publié
+
 ## Rule: Se rendre invisible retire son nom, pas le lieu
 
 > Le réglage porte sur le PROFIL — nom, courriel, téléphone —, pas sur le lieu
