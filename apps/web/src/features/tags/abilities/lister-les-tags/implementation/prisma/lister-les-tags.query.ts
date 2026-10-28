@@ -3,16 +3,16 @@ import { prismaClient } from '@app/web/prismaClient'
 import { type TagRow, tagToDomain } from '../../../../db/tag.transfer'
 import {
   COLONNES_DU_TAG,
+  ORDRE_ALPHABETIQUE,
+  ORDRE_DE_VISIBILITE,
   TAGS,
   tagVisiblePar,
 } from '../../../../db/visibilite.sql'
-import type { Acteur } from '../../../../domain'
+import { type Acteur, Effectif } from '../../../../domain'
 import type { ListeDesTags, TriDesTags } from '../../domain'
 
 const ordre = (tri: TriDesTags): Prisma.Sql =>
-  tri === 'visibilite'
-    ? Prisma.sql`t.departement ASC, t.mediateur_id ASC, t.coordinateur_id ASC, t.nom ASC`
-    : Prisma.sql`t.nom ASC`
+  tri === 'visibilite' ? ORDRE_DE_VISIBILITE : ORDRE_ALPHABETIQUE
 
 export const listerLesTags = async ({
   acteur,
@@ -54,8 +54,8 @@ export const listerLesTags = async ({
       const tag = tagToDomain(ligne)
       return tag === null
         ? []
-        : [{ tag, accompagnements: Number(ligne.accompagnements) }]
+        : [{ tag, accompagnements: Effectif(Number(ligne.accompagnements)) }]
     }),
-    total: Number(total),
+    total: Effectif(Number(total)),
   }
 }

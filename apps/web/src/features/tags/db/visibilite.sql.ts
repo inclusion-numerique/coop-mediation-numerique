@@ -1,5 +1,5 @@
 import { Prisma } from '@app/web/generated/prisma/client'
-import type { Acteur } from '../domain'
+import type { Acteur, TypeDePortee } from '../domain'
 
 export const TAGS = Prisma.raw('tags t')
 
@@ -10,7 +10,7 @@ export const COLONNES_DU_TAG = Prisma.raw(
 const uuids = (ids: readonly string[]): Prisma.Sql =>
   Prisma.join(ids.map((id) => Prisma.sql`${id}::UUID`))
 
-const sansProprietaire = Prisma.sql`t.mediateur_id IS NULL AND t.coordinateur_id IS NULL`
+export const sansProprietaire = Prisma.sql`t.mediateur_id IS NULL AND t.coordinateur_id IS NULL`
 
 const equipesDe = (acteur: Acteur): readonly string[] => [
   ...new Set([
@@ -46,3 +46,17 @@ export const tagVisiblePar = (acteur: Acteur): Prisma.Sql => {
 
   return Prisma.sql`(${Prisma.join(conditions, ' OR ')})`
 }
+
+const AU_MOINS_AUSSI_LARGE: Record<TypeDePortee, Prisma.Sql> = {
+  Personnel: Prisma.sql`TRUE`,
+  Equipe: Prisma.sql`t.mediateur_id IS NULL AND (t.coordinateur_id IS NULL OR t.equipe = true)`,
+  Departemental: sansProprietaire,
+  National: Prisma.sql`${sansProprietaire} AND t.departement IS NULL`,
+}
+
+export const porteeAuMoinsAussiLargeQue = (portee: TypeDePortee): Prisma.Sql =>
+  AU_MOINS_AUSSI_LARGE[portee]
+
+export const ORDRE_ALPHABETIQUE = Prisma.sql`t.nom ASC`
+
+export const ORDRE_DE_VISIBILITE = Prisma.sql`t.departement ASC, t.mediateur_id ASC, t.coordinateur_id ASC, t.nom ASC`

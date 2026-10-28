@@ -13,11 +13,8 @@ import {
   tagsDeLActiviteDeCoordination,
 } from '@app/web/features/tags/tags.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  type DestinationDeFusion,
-  destinationsDeFusion,
-  fusionnerUnTag,
-} from './implementation'
+import type { DestinationDeFusion } from './domain'
+import { destinationsDeFusion, fusionnerUnTag } from './implementation'
 
 const contexte: {
   acteur?: Acteur

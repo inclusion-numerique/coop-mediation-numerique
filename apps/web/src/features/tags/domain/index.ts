@@ -1,6 +1,7 @@
 export { type Acteur, type Equipe, equipeDe } from './acteur'
 export { CoordinateurId } from './coordinateur-id'
 export { DescriptionDuTag } from './description-du-tag'
+export { Effectif } from './effectif'
 export {
   ActionNonAutorisee,
   DestinationNonAutorisee,

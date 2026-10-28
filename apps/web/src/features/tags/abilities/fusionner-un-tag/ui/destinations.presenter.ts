@@ -1,6 +1,6 @@
 import type { Acteur } from '../../../domain'
 import { tagAffiche } from '../../../ui/tag-affiche.presenter'
-import type { DestinationDeFusion } from '../implementation'
+import type { DestinationDeFusion } from '../domain'
 import type { DestinationAffichee } from './destination-affichee'
 
 export const destinationsAffichees = (

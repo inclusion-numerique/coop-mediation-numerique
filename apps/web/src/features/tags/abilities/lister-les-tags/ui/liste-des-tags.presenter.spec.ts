@@ -1,4 +1,10 @@
-import { type Acteur, MediateurId, NomDuTag, TagId } from '../../../domain'
+import {
+  type Acteur,
+  Effectif,
+  MediateurId,
+  NomDuTag,
+  TagId,
+} from '../../../domain'
 import { lignesDeLaListe, nombreDePages } from './liste-des-tags.presenter'
 
 const mediateurId = MediateurId('00000000-0000-4000-8000-000000000001')
@@ -14,7 +20,7 @@ describe('lignesDeLaListe', () => {
   it('rend gérable le tag personnel du médiateur, pas un tag national', () => {
     expect(
       lignesDeLaListe(acteur, {
-        total: 2,
+        total: Effectif(2),
         tags: [
           {
             tag: {
@@ -26,7 +32,7 @@ describe('lignesDeLaListe', () => {
                 proprietaire: { _tag: 'Mediateur', mediateurId },
               },
             },
-            accompagnements: 4,
+            accompagnements: Effectif(4),
           },
           {
             tag: {
@@ -35,7 +41,7 @@ describe('lignesDeLaListe', () => {
               description: null,
               portee: { _tag: 'National' },
             },
-            accompagnements: 0,
+            accompagnements: Effectif(0),
           },
         ],
       }).map(({ gerable }) => gerable),

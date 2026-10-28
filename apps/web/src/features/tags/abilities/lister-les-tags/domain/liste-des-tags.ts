@@ -1,11 +1,11 @@
-import type { Tag } from '../../../domain'
+import type { Effectif, Tag } from '../../../domain'
 
 export type TagListe = {
   readonly tag: Tag
-  readonly accompagnements: number
+  readonly accompagnements: Effectif
 }
 
 export type ListeDesTags = {
   readonly tags: readonly TagListe[]
-  readonly total: number
+  readonly total: Effectif
 }
