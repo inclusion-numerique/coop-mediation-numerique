@@ -1,18 +1,10 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
 import { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { vanillaTrpc } from '@app/web/trpc'
-import { TagScope } from '../tagScope'
-import TagScopeBadge from './TagScopeBadge'
-
-export type Tag = {
-  id: string
-  nom: string
-  description?: string
-  scope: TagScope
-  equipeNumber?: number
-  equipeCoordinateurNom?: string
-}
+import { inject } from '@app/web/libs/injection/client'
+import TagScopeBadge from '../../tags/components/TagScopeBadge'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from './rechercher-des-tags.key'
+import { type Tag, tagDuFormulaire } from './tag-du-cra'
 
 const itemToKey = (item: { id: string }): string => item.id
 
@@ -21,11 +13,13 @@ const onlyDefinedIds = (tag?: { id?: string }): tag is { id: string } =>
 
 const loadSuggestions =
   (selectedTags: ({ id?: string } | undefined)[]) =>
-  (input: string): Promise<{ items: Tag[] }> =>
-    vanillaTrpc.tags.search.query({
-      query: input,
-      excludeIds: selectedTags.filter(onlyDefinedIds).map(itemToKey),
+  async (input: string): Promise<{ items: Tag[] }> => {
+    const resultat = await inject(RECHERCHER_DES_TAGS_DU_CRA_KEY)({
+      recherche: input,
+      exclus: selectedTags.filter(onlyDefinedIds).map(itemToKey),
     })
+    return { items: resultat.success ? resultat.data.map(tagDuFormulaire) : [] }
+  }
 
 const itemToString = (item: Tag | null): string => item?.nom ?? ''
 

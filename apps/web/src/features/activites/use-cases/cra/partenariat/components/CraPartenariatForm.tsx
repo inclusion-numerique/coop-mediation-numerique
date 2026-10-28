@@ -11,9 +11,9 @@ import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutR
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
-import { Tag } from '../../../tags/components/TagsComboBox'
 import styles from '../../components/CraForm.module.css'
 import { TagsFields } from '../../components/fields/TagsFields'
+import type { Tag } from '../../tags/tag-du-cra'
 import { debutDispositifConum } from '../../validation/CraDateValidation'
 import {
   ECHELON_TERRITORIAL_OPTIONS,

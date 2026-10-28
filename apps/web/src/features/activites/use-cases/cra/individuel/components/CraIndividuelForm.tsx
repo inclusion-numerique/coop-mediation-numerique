@@ -20,7 +20,6 @@ import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
-import { Tag } from '../../../tags/components/TagsComboBox'
 import { clearAdministrativeData } from '../../components/clearAdministrativeData'
 import { MaterielField } from '../../components/fields/MaterielField'
 import { RendezVousFields } from '../../components/fields/RendezVousFields'
@@ -31,6 +30,7 @@ import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '../../fields/thematique'
+import type { Tag } from '../../tags/tag-du-cra'
 import { autonomieOptionsWithExtras } from '../fields/autonomie'
 import { structuresRedirectionOptions } from '../fields/structures-redirection'
 import {
