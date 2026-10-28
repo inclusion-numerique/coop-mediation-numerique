@@ -3,13 +3,12 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { Equipe } from '@app/web/features/activites/use-cases/tags/equipe'
 import type { MostUsedBeneficiairesForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
-import { Tag } from '../../tags/components/TagsComboBox'
-import SaveTagModal from '../../tags/save/SaveTagModal'
+import { ModaleDeCreationDeTag } from '../tags/ModaleDeCreationDeTag'
+import type { Tag, VisibiliteDuTagDuCra } from '../tags/tag-du-cra'
 import CraCollectifForm from './components/CraCollectifForm'
 import type { CraCollectifData } from './validation/CraCollectifValidation'
 
@@ -20,7 +19,7 @@ export type CraCollectifPageData = {
   initialTagsOptions: Tag[]
   initialBeneficiairesOptions: MostUsedBeneficiairesForSearch
   dureeOptions: SelectOption[]
-  equipes: Equipe[]
+  visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
   retour?: string
 }
 
@@ -31,7 +30,7 @@ const CraCollectifPage = ({
   dureeOptions,
   lieuxActiviteOptions,
   mediateurId,
-  equipes,
+  visibilitesDeTag,
   retour,
 }: CraCollectifPageData) => (
   <div className="fr-container fr-container--800">
@@ -52,7 +51,7 @@ const CraCollectifPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur isCoordinateur={false} equipes={equipes} />
+      <ModaleDeCreationDeTag visibilites={visibilitesDeTag} />
       <CraCollectifForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}

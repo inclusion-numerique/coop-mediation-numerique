@@ -7,15 +7,14 @@ setDefaultTimeout(60_000)
 type EquipeSemee = {
   readonly userIds: readonly string[]
   readonly mediateurIds: readonly string[]
-  readonly coordinateurId: string | null
-  readonly tagId: string
+  readonly coordinateurId: string
 }
 
-let equipe: EquipeSemee | undefined
+const equipeCourante: { semee: EquipeSemee | null } = { semee: null }
 
 export const equipeSemee = (): EquipeSemee => {
-  if (!equipe) throw new Error('Aucune équipe semée')
-  return equipe
+  if (equipeCourante.semee === null) throw new Error('Aucune équipe semée')
+  return equipeCourante.semee
 }
 
 const semerMediateur = async (): Promise<{
@@ -34,159 +33,57 @@ const semerMediateur = async (): Promise<{
   return { userId, mediateurId: mediateur.id }
 }
 
-const semerComptteRenduTague = async (
-  mediateurId: string,
-  tagId: string,
-): Promise<void> => {
-  const activite = await prismaClient.activite.create({
-    data: {
-      mediateurId,
-      type: 'Individuel',
-      typeLieu: 'Autre',
-      date: new Date('2026-06-01'),
-      duree: 60,
-      accompagnementsCount: 0,
-    },
-    select: { id: true },
-  })
-
-  await prismaClient.activitesTags.create({
-    data: { activiteId: activite.id, tagId },
-  })
-}
-
-export const semerTagDeCoordinateur = async ({
-  nombreUtilisateurs,
-}: {
-  nombreUtilisateurs: number
-}): Promise<EquipeSemee> => {
+export const semerUnMediateurCoordonne = async (): Promise<EquipeSemee> => {
   const porteur = await semerMediateur()
+  const autre = await semerMediateur()
   const coordinateur = await prismaClient.coordinateur.create({
-    data: { userId: porteur.userId },
+    data: { userId: autre.userId },
     select: { id: true },
   })
-
-  const tag = await prismaClient.tag.create({
+  await prismaClient.mediateurCoordonne.create({
     data: {
-      nom: `Tag partagé ${porteur.userId.slice(0, 8)}`,
+      mediateurId: porteur.mediateurId,
       coordinateurId: coordinateur.id,
     },
-    select: { id: true },
   })
-
-  const utilisateurs = await Promise.all(
-    Array.from({ length: nombreUtilisateurs }, () => semerMediateur()),
-  )
-
-  await utilisateurs.reduce<Promise<void>>(async (precedent, utilisateur) => {
-    await precedent
-    await semerComptteRenduTague(utilisateur.mediateurId, tag.id)
-  }, Promise.resolve())
-
-  equipe = {
-    userIds: [porteur.userId, ...utilisateurs.map(({ userId }) => userId)],
-    mediateurIds: [
-      porteur.mediateurId,
-      ...utilisateurs.map(({ mediateurId }) => mediateurId),
-    ],
-    coordinateurId: coordinateur.id,
-    tagId: tag.id,
-  }
-
-  return equipe
-}
-
-export const semerTagDeMediateur = async ({
-  avecCoordinateur,
-}: {
-  avecCoordinateur: boolean
-}): Promise<EquipeSemee> => {
-  const porteur = await semerMediateur()
-
-  const coordinateur = avecCoordinateur
-    ? await (async () => {
-        const autre = await semerMediateur()
-        const cree = await prismaClient.coordinateur.create({
-          data: { userId: autre.userId },
-          select: { id: true },
-        })
-        await prismaClient.mediateurCoordonne.create({
-          data: { mediateurId: porteur.mediateurId, coordinateurId: cree.id },
-        })
-        await prismaClient.invitationEquipe.create({
-          data: {
-            email: `invite-${autre.userId}@example.com`,
-            coordinateurId: cree.id,
-            mediateurId: porteur.mediateurId,
-          },
-        })
-        return {
-          id: cree.id,
-          userId: autre.userId,
-          mediateurId: autre.mediateurId,
-        }
-      })()
-    : null
-
-  const tag = await prismaClient.tag.create({
+  await prismaClient.invitationEquipe.create({
     data: {
-      nom: `Tag propre ${porteur.userId.slice(0, 8)}`,
+      email: `invite-${autre.userId}@example.com`,
+      coordinateurId: coordinateur.id,
       mediateurId: porteur.mediateurId,
     },
-    select: { id: true },
   })
 
-  equipe = {
-    userIds: [porteur.userId, ...(coordinateur ? [coordinateur.userId] : [])],
-    mediateurIds: [
-      porteur.mediateurId,
-      ...(coordinateur ? [coordinateur.mediateurId] : []),
-    ],
-    coordinateurId: coordinateur?.id ?? null,
-    tagId: tag.id,
+  equipeCourante.semee = {
+    userIds: [porteur.userId, autre.userId],
+    mediateurIds: [porteur.mediateurId, autre.mediateurId],
+    coordinateurId: coordinateur.id,
   }
 
-  return equipe
+  return equipeCourante.semee
 }
 
 After(async () => {
-  const semée = equipe
-  equipe = undefined
-  if (!semée) return
+  const semee = equipeCourante.semee
+  equipeCourante.semee = null
+  if (semee === null) return
 
-  const mediateurIds = [...semée.mediateurIds]
+  const mediateurIds = [...semee.mediateurIds]
 
-  await prismaClient.activitesTags.deleteMany({
-    where: { activite: { mediateurId: { in: mediateurIds } } },
-  })
-  await prismaClient.activite.deleteMany({
-    where: { mediateurId: { in: mediateurIds } },
-  })
   await prismaClient.invitationEquipe.deleteMany({
     where: { mediateurId: { in: mediateurIds } },
   })
   await prismaClient.mediateurCoordonne.deleteMany({
     where: { mediateurId: { in: mediateurIds } },
   })
-  await prismaClient.tag.deleteMany({
-    where: {
-      OR: [
-        { mediateurId: { in: mediateurIds } },
-        ...(semée.coordinateurId
-          ? [{ coordinateurId: semée.coordinateurId }]
-          : []),
-      ],
-    },
+  await prismaClient.coordinateur.deleteMany({
+    where: { id: semee.coordinateurId },
   })
-  if (semée.coordinateurId)
-    await prismaClient.coordinateur.deleteMany({
-      where: { id: semée.coordinateurId },
-    })
   await prismaClient.mediateur.deleteMany({
     where: { id: { in: mediateurIds } },
   })
   await prismaClient.user.deleteMany({
-    where: { id: { in: [...semée.userIds] } },
+    where: { id: { in: [...semee.userIds] } },
   })
 })
 

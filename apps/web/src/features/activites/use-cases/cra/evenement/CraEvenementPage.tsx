@@ -2,19 +2,18 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { Equipe } from '@app/web/features/activites/use-cases/tags/equipe'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
-import type { Tag } from '../../tags/components/TagsComboBox'
-import SaveTagModal from '../../tags/save/SaveTagModal'
 import { CraAnimationData } from '../animation/validation/CraAnimationValidation'
+import { ModaleDeCreationDeTag } from '../tags/ModaleDeCreationDeTag'
+import type { Tag, VisibiliteDuTagDuCra } from '../tags/tag-du-cra'
 import CraEvenementForm from './components/CraEvenementForm'
 
 type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>
   coordinateurId: string
   initialTagsOptions: Tag[]
-  equipes: Equipe[]
+  visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
   retour?: string
 }
 
@@ -22,7 +21,7 @@ const CraEvenementPage = ({
   defaultValues,
   coordinateurId,
   initialTagsOptions,
-  equipes,
+  visibilitesDeTag,
   retour,
 }: CraEvenementPageProps) => (
   <div className="fr-container fr-container--800">
@@ -50,7 +49,7 @@ const CraEvenementPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur={false} isCoordinateur equipes={equipes} />
+      <ModaleDeCreationDeTag visibilites={visibilitesDeTag} />
       <CraEvenementForm
         defaultValues={{ ...defaultValues, coordinateurId }}
         initialTagsOptions={initialTagsOptions}
