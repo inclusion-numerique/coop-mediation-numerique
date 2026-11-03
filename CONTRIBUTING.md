@@ -462,7 +462,7 @@ Les deux buckets sont configures avec des regles CORS pour `localhost:3000`.
 
 #### Container Namespace
 
-- **ContainerNamespace** : namespace Scaleway Serverless Containers (`coop-mediation-numerique-web-2`, en remplacement de `coop-mediation-numerique-web` dont l'ingress mutualise `lb-dl` est tombe le 3 novembre 2026)
+- **ContainerNamespace** : namespace Scaleway Serverless Containers (`coop-mediation-numerique-web`)
 - Configure avec les variables d'environnement partagees :
   - Sentry (DSN, org, project, auth token)
   - Cockpit/Grafana (URLs metrics, logs, alertmanager)
