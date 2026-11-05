@@ -6,8 +6,8 @@ import InscriptionStepsLayout from '@app/web/features/inscription/components/Ins
 import { consulterLaMaintenance } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance'
 import { BanniereDeMaintenance } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance/ui'
 import { messageAffiche } from '@app/web/features/maintenance-mode/domain'
-import { lireLaRuptureEnAttente } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture'
-import { ConfirmationApresRupture } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/ui'
+import { lireLaRuptureEnAttente } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
+import { ChoixDeVisibiliteApresRupture } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui'
 import { MediateurId } from '@app/web/features/mediateurs/domain'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import Link from 'next/link'
@@ -67,7 +67,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
         <div id="skip-links" />
         <Header user={user} fullWidth variant="coop" />
         <InscriptionStepsLayout>
-          <ConfirmationApresRupture />
+          <ChoixDeVisibiliteApresRupture />
         </InscriptionStepsLayout>
         <PublicFooter initialTheme={await getServerDsfrTheme()} />
       </div>

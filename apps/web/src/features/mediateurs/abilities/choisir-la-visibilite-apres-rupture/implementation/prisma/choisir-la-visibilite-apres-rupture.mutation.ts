@@ -5,7 +5,7 @@ import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import {
   AucuneRuptureEnAttente,
-  type ConfirmerLExerciceApresRuptureError,
+  type ChoisirLaVisibiliteApresRuptureError,
   MediateurIntrouvable,
 } from '../../domain/errors'
 import {
@@ -15,7 +15,7 @@ import {
 import { ruptureEnAttente } from '../../domain/rupture-en-attente'
 import { lireMediateurEtContrats } from './mediateur-et-contrats'
 
-export const confirmerLExerciceApresRupture = async ({
+export const choisirLaVisibiliteApresRupture = async ({
   mediateurId,
   reponse,
   auteurId,
@@ -25,7 +25,7 @@ export const confirmerLExerciceApresRupture = async ({
   readonly reponse: ReponseApresRupture
   readonly auteurId: AuteurId
   readonly maintenant?: Date
-}): Promise<Result<void, ConfirmerLExerciceApresRuptureError>> => {
+}): Promise<Result<void, ChoisirLaVisibiliteApresRuptureError>> => {
   const stopwatch = createStopwatch()
 
   const mediateur = await lireMediateurEtContrats(mediateurId)
@@ -40,7 +40,7 @@ export const confirmerLExerciceApresRupture = async ({
 
   if (rupture == null) return failure(AucuneRuptureEnAttente(mediateurId))
 
-  const visible = visibiliteApres(reponse, mediateur.isVisible)
+  const visible = visibiliteApres(reponse)
 
   const { count } = await prismaClient.$transaction(async (transaction) => {
     const ecriture = await transaction.mediateur.updateMany({
