@@ -1,7 +1,12 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import * as Sentry from '@sentry/nextjs'
-import { alignementDe, aUneAutreSource } from './alignement'
+import {
+  type Alignement,
+  alignementDe,
+  aUneAutreSource,
+  type LigneDuRegistre,
+} from './alignement'
 
 type Transaction = Prisma.TransactionClient
 
@@ -119,6 +124,81 @@ const ligneDuRegistreSelect = {
   deletedAt: true,
   deletedBy: true,
 } as const
+
+const ligneVide: LigneDuRegistre = {
+  nom: null,
+  prenom: null,
+  contact: null,
+  cnPgId: null,
+  conseillerNumeriqueId: null,
+  aidantConnectId: null,
+  isMediateur: null,
+  isCoordinateur: null,
+  isVisible: null,
+  deletedAt: null,
+  deletedBy: null,
+}
+
+export type LienDuCompte = 'reliee' | 'a-creer' | 'a-lier' | 'occupee'
+
+export type ApercuDeLaSynchronisation = {
+  readonly lien: LienDuCompte
+  readonly ligne: LigneDuRegistre
+  readonly personneId: number | null
+  readonly alignement: Alignement | null
+}
+
+const ligneDuLien = async (
+  prisma: Transaction,
+  userId: string,
+  compte: { readonly email: string; readonly deleted: Date | null },
+): Promise<{
+  readonly lien: LienDuCompte
+  readonly personneId: number | null
+} | null> => {
+  const reliee = await prisma.personneMain.findUnique({
+    where: { coopId: userId },
+    select: { id: true },
+  })
+  if (reliee) return { lien: 'reliee', personneId: reliee.id }
+  if (compte.deleted !== null) return null
+
+  const candidate = await ligneQuiPorteLeCourriel(compte.email, prisma)
+  if (candidate === null) return { lien: 'a-creer', personneId: null }
+
+  return candidate.occupee
+    ? { lien: 'occupee', personneId: null }
+    : { lien: 'a-lier', personneId: candidate.id }
+}
+
+export const apercuDeLaSynchronisation = async (
+  userId: string,
+  maintenant: Date,
+  prisma: Transaction = prismaClient,
+): Promise<ApercuDeLaSynchronisation | null> => {
+  const compte = await prisma.user.findUnique({
+    where: { id: userId },
+    select: compteCoopSelect,
+  })
+  if (compte === null) return null
+
+  const lien = await ligneDuLien(prisma, userId, compte)
+  if (lien === null) return null
+
+  const ligne =
+    lien.personneId === null
+      ? ligneVide
+      : await prisma.personneMain.findUniqueOrThrow({
+          where: { id: lien.personneId },
+          select: ligneDuRegistreSelect,
+        })
+
+  return {
+    ...lien,
+    ligne,
+    alignement: alignementDe({ compte, ligne, maintenant }),
+  }
+}
 
 const personneASynchroniser = async (
   transaction: Transaction,
