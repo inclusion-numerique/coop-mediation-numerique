@@ -1,2 +1,2 @@
-export { confirmerLExerciceApresRupture } from './confirmer-l-exercice-apres-rupture.mutation'
+export { choisirLaVisibiliteApresRupture } from './choisir-la-visibilite-apres-rupture.mutation'
 export { lireLaRuptureEnAttente } from './rupture-en-attente.query'

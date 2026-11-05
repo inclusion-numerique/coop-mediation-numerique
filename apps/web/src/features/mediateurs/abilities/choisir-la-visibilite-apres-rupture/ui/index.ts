@@ -1,1 +1,1 @@
-export { ConfirmationApresRupture } from './ConfirmationApresRupture'
+export { ChoixDeVisibiliteApresRupture } from './ChoixDeVisibiliteApresRupture'
