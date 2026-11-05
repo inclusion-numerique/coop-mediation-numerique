@@ -4,6 +4,7 @@ import type {
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import type { Prisma } from '@app/web/generated/prisma/client'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 import type { OperationRole, PlanDeChangement } from '../../domain'
 
@@ -79,5 +80,6 @@ export const appliquerLePlan = async (
       where: { id: utilisateurId },
       data: { profilInscription: profil },
     })
+    await synchroniserPersonne(tx, utilisateurId)
   })
 }

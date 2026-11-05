@@ -1,4 +1,5 @@
 import type { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
@@ -56,6 +57,12 @@ export const confirmerLExerciceApresRupture = async ({
         where: { mediateur: { id: mediateur.id } },
         data: { updated: maintenant },
       })
+
+      const { userId } = await transaction.mediateur.findUniqueOrThrow({
+        where: { id: mediateur.id },
+        select: { userId: true },
+      })
+      await synchroniserPersonne(transaction, userId, maintenant)
     }
 
     return ecriture

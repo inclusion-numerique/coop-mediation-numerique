@@ -1,3 +1,7 @@
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 import { EmployeuseId } from '../../../../domain/employeuse-id'
 import type { RattacherAUneEmployeuse } from '../../domain/rattacher-a-une-employeuse'
@@ -5,7 +9,6 @@ import {
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
 } from './ensureAffectationEmploiMain'
-import { ensurePersonneMain } from './ensurePersonneMain'
 import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
 
 /**
@@ -60,6 +63,8 @@ export const rattacherAUneEmployeuse: RattacherAUneEmployeuse = async ({
       },
       transaction,
     )
+
+    await synchroniserPersonne(transaction, userId)
   })
 
   return { _tag: 'rattachee', employeuseId: EmployeuseId(employeuse.id) }
