@@ -123,6 +123,14 @@ const rowIsEmpty = (feuille: FeuilleImport, rowNumber: number): boolean =>
     getCellValueAsString(feuille, rowNumber, index + 1),
   ).every((valeur) => !valeur)
 
+const designeLaCommune = (
+  saisie: string | null,
+  { nom, codePostal }: Commune,
+): boolean =>
+  [nom, `${nom} (${codePostal})`].some(
+    (libelle) => libelle.toLocaleLowerCase() === saisie?.toLocaleLowerCase(),
+  )
+
 const parseBeneficiaireRow = (
   feuille: FeuilleImport,
   rowNumber: number,
@@ -157,7 +165,7 @@ const parseBeneficiaireRow = (
         errors.communeCodePostal =
           'Le code postal de la commune ne correspond pas'
       }
-      if (commune.nom.toLocaleLowerCase() !== communeNom?.toLocaleLowerCase()) {
+      if (!designeLaCommune(communeNom, commune)) {
         errors.communeNom = 'Le nom de la commune ne correspond pas'
       }
     } else {
