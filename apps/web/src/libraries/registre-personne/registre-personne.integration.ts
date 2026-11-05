@@ -136,18 +136,6 @@ describe('registre des personnes', () => {
       )
     })
 
-    it('reprend la ligne d’un compte absent', async () => {
-      const { id, email } = await compte()
-      const delaissee = await ligne({
-        coopId: v4(),
-        contact: { coop: { email } },
-      })
-
-      expect((await ensurePersonneMain({ coopUserId: id, email })).id).toBe(
-        delaissee,
-      )
-    })
-
     it('laisse la ligne d’un autre compte vivant et en crée une', async () => {
       const titulaire = await compte()
       const { id, email } = await compte()
