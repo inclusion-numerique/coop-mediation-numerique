@@ -2,6 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
+import { executeAlignerLeRegistreDesPersonnes } from './aligner-le-registre-des-personnes/executeAlignerLeRegistreDesPersonnes'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
@@ -22,6 +23,7 @@ export const jobExecutors: {
   'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
+  'aligner-le-registre-des-personnes': executeAlignerLeRegistreDesPersonnes,
   'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
   'retirer-les-roles-vacants': executeRetirerLesRolesVacants,
   'sync-rdvsp-data': executeSyncRdvspData,
