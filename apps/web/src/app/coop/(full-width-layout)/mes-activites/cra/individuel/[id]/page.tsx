@@ -1,10 +1,17 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
+import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import {
+  tagsInitiauxDuCra,
+  visibilitesDeTagDuCra,
+} from '@app/web/composition/activites/tags-du-cra'
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
 import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individuel/CraIndividuelPage'
 import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/individuel/db/getCraIndividuelDataDefaultValuesFromExisting'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
+import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/use-cases/cra/tags/creer-un-tag.key'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/use-cases/cra/tags/rechercher-des-tags.key'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -23,7 +30,6 @@ const UpdateCraIndividuelPage = async ({
 
   const user = await authenticateMediateur()
   const mediateurId = user.mediateur.id
-  const equipes = getEquipesFromSessionUser(user)
 
   // Une activité s'exerce forcément quelque part : sans employeuse, on demande
   // laquelle plutôt que d'enregistrer un CRA rattaché à personne. Le cas type
@@ -55,19 +61,29 @@ const UpdateCraIndividuelPage = async ({
   const craPageData = await getCraPageData<CraCollectifData>()(
     mediateurId,
     defaultValues,
+    tagsInitiauxDuCra(user),
   )
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+      to={rechercherDesTagsAction}
     >
-      <CraIndividuelPage
-        {...craPageData}
-        mediateurId={mediateurId}
-        equipes={equipes}
-        retour={retour}
-      />
+      <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
+        <ClientBinder
+          bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+          to={rechercherUnLieuActiviteAction}
+        >
+          <CraIndividuelPage
+            {...craPageData}
+            mediateurId={mediateurId}
+            visibilitesDeTag={visibilitesDeTagDuCra(user, {
+              departemental: false,
+            })}
+            retour={retour}
+          />
+        </ClientBinder>
+      </ClientBinder>
     </ClientBinder>
   )
 }

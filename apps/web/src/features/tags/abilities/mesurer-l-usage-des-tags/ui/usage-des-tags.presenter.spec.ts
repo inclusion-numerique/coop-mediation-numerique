@@ -1,4 +1,3 @@
-import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import {
   DescriptionDuTag,
   Effectif,
@@ -23,12 +22,15 @@ describe('tagsDeLaListe', () => {
       ]),
     ).toEqual([
       {
-        id: '00000000-0000-4000-8000-000000000001',
-        nom: 'Atelier',
-        scope: TagScope.Equipe,
-        description: undefined,
-        usageCount: 4,
-        accompagnementsCount: 9,
+        tag: {
+          id: '00000000-0000-4000-8000-000000000001',
+          nom: 'Atelier',
+          description: null,
+          portee: 'Equipe',
+          equipe: null,
+        },
+        utilisations: 4,
+        accompagnements: 9,
       },
     ])
   })
@@ -44,7 +46,7 @@ describe('tagsDeLaListe', () => {
           utilisations: Effectif(1),
           accompagnements: Effectif(1),
         },
-      ]).at(0)?.description,
+      ]).at(0)?.tag.description,
     ).toBe('Aide aux démarches')
   })
 })

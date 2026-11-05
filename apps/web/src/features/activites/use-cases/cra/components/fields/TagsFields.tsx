@@ -2,13 +2,13 @@ import { Options } from '@app/ui/components/Primitives/Options'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
+import { CreationDeTagDuCra } from '../../tags/ModaleDeCreationDeTag'
 import {
-  Tag,
   TagComboBox,
   TagOptions,
   TagSelectedItems,
-} from '../../../tags/components/TagsComboBox'
-import { SaveTagDynamicModal } from '../../../tags/save/SaveTagModal'
+} from '../../tags/TagsComboBox'
+import type { Tag } from '../../tags/tag-du-cra'
 import { CraData } from '../../validation/CraValidation'
 import styles from '../CraForm.module.css'
 
@@ -23,7 +23,7 @@ export const TagsFields = withForm({
     initialTagsOptions: Tag[]
   },
   render: ({ form, isPending, initialTagsOptions }) => {
-    const openCraModal = SaveTagDynamicModal.useOpen()
+    const openCraModal = CreationDeTagDuCra.useOpen()
 
     return (
       <form.AppField name="tags">
@@ -82,7 +82,7 @@ export const TagsFields = withForm({
                     onClick={() => {
                       openCraModal({
                         nom: options.inputValue,
-                        onTagSaved: (tag) => {
+                        quandCree: (tag) => {
                           field.setValue([...(field.state.value ?? []), tag])
                           options.setInputValue('')
                         },

@@ -1,10 +1,10 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { TagList } from '@app/web/features/activites/use-cases/tags/list/TagList'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
+import { LigneDuTag } from '../../../../ui'
 import type { UsageDesTags } from '../../domain'
 import { CounterCard } from '../CounterCard'
 import { tagsDeLaListe } from '../usage-des-tags.presenter'
@@ -66,7 +66,19 @@ export const UsageDesTagsPage = ({
             Les {numberToString(tagsLesPlusUtilises.length)} tags les plus
             utilisés
           </h2>
-          <TagList tags={tagsDeLaListe(tagsLesPlusUtilises)} />
+          <ul className="fr-raw-list">
+            {tagsDeLaListe(tagsLesPlusUtilises).map(
+              ({ tag, utilisations, accompagnements }) => (
+                <li key={tag.id} className="fr-border--bottom fr-py-5v">
+                  <LigneDuTag
+                    tag={tag}
+                    accompagnements={accompagnements}
+                    utilisations={utilisations}
+                  />
+                </li>
+              ),
+            )}
+          </ul>
         </section>
       </div>
     </main>

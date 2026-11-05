@@ -1,8 +1,16 @@
+import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
+import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
+import {
+  tagsInitiauxDuCra,
+  visibilitesDeTagDuCra,
+} from '@app/web/composition/activites/tags-du-cra'
 import CraAnimationPage from '@app/web/features/activites/use-cases/cra/animation/CraAnimationPage'
 import { CraAnimationData } from '@app/web/features/activites/use-cases/cra/animation/validation/CraAnimationValidation'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
+import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/use-cases/cra/tags/creer-un-tag.key'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/use-cases/cra/tags/rechercher-des-tags.key'
+import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -21,22 +29,31 @@ const CreateCraAnimationPage = async ({
 
   const user = await authenticateCoordinateur()
   const coordinateurId = user.coordinateur.id
-  const equipes = getEquipesFromSessionUser(user)
 
   const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
   const craPageData = await getCraCoordinationPageData(
     coordinateurId,
     stateFromUrl,
+    tagsInitiauxDuCra(user),
   )
 
   return (
-    <CraAnimationPage
-      {...craPageData}
-      coordinateurId={coordinateurId}
-      equipes={equipes}
-      retour={retour}
-    />
+    <ClientBinder
+      bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+      to={rechercherDesTagsAction}
+    >
+      <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
+        <CraAnimationPage
+          {...craPageData}
+          coordinateurId={coordinateurId}
+          visibilitesDeTag={visibilitesDeTagDuCra(user, {
+            departemental: true,
+          })}
+          retour={retour}
+        />
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 
