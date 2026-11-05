@@ -3,6 +3,7 @@ import type {
   IdentiteAnonyme,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const couperAcces = ({
@@ -21,10 +22,12 @@ export const couperAcces = ({
 
     await transaction.account.deleteMany({ where: { userId: utilisateurId } })
 
-    if (dejaAnonymise) return
+    if (!dejaAnonymise) {
+      await transaction.user.update({
+        where: { id: utilisateurId },
+        data: identiteAnonymeFromDomain(identite, supprimeLe),
+      })
+    }
 
-    await transaction.user.update({
-      where: { id: utilisateurId },
-      data: identiteAnonymeFromDomain(identite, supprimeLe),
-    })
+    await synchroniserPersonne(transaction, utilisateurId, supprimeLe)
   })

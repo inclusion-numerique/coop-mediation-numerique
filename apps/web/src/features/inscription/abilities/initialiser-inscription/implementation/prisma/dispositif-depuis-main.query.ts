@@ -28,6 +28,16 @@ export const dispositifDepuisMain = async (
       COALESCE(p.is_coordinateur, false) AS est_coordinateur
     FROM main.personne p
     WHERE p.coop_id = ${userId}::uuid
+      AND (
+        p.cn_pg_id IS NOT NULL
+        OR p.conseiller_numerique_id IS NOT NULL
+        OR p.aidant_connect_id IS NOT NULL
+        OR p.contact -> 'idposte' IS NOT NULL
+        OR EXISTS (
+          SELECT 1 FROM main.personne_affectations_emploi autre
+          WHERE autre.personne_id = p.id AND autre.source <> 'coop'
+        )
+      )
     LIMIT 1`
 
   return row

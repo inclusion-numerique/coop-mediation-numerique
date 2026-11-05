@@ -1,3 +1,4 @@
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const garantirLeRoleCoordinateurDuDispositif = async (
@@ -26,9 +27,12 @@ export const garantirLeRoleCoordinateurDuDispositif = async (
 
   if (!dispositif?.doit_coordonner) return { cree: false }
 
-  await prismaClient.coordinateur.create({
-    data: { userId },
-    select: { id: true },
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.coordinateur.create({
+      data: { userId },
+      select: { id: true },
+    })
+    await synchroniserPersonne(transaction, userId)
   })
 
   return { cree: true }
