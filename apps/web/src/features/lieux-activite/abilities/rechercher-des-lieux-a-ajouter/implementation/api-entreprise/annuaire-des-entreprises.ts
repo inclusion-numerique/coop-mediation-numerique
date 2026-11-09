@@ -1,7 +1,48 @@
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/external-apis/api-entreprise/structuresDepuisUniteLegale'
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import type { SuggestionDeLieu } from '../../../../domain/suggestion-de-lieu'
+import {
+  Nom,
+  Siret,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { NombreDeLieux } from '../../../../domain/nombres'
+import { reconnues } from '../../../../domain/nomenclatures'
+import {
+  AdresseLibre,
+  type SuggestionDeLieu,
+} from '../../../../domain/suggestion-de-lieu'
 import type { ChercherDansLAnnuaireDesEntreprises } from '../../domain/ports'
+
+type Etablissement = ReturnType<
+  typeof structureCreationDataWithSiretFromUniteLegale
+>[number]
+
+const suggestion = (etablissement: Etablissement): SuggestionDeLieu[] => {
+  const siret = Siret.safe(etablissement.siret ?? '')
+  const nom = Nom.safe(etablissement.nom)
+  const adresse = AdresseLibre.safe({
+    voie: etablissement.adresse ?? '',
+    commune: etablissement.commune ?? '',
+    codePostal: '',
+    codeInsee: etablissement.codeInsee ?? null,
+    complement: null,
+  })
+
+  return siret == null || nom == null || adresse == null
+    ? []
+    : [
+        {
+          provenance: { _tag: 'Annuaire', siret },
+          nom,
+          adresse,
+          siret,
+          typologies: reconnues(
+            Typologie,
+            etablissement.typologie == null ? [] : [etablissement.typologie],
+          ),
+        },
+      ]
+}
 
 export const chercherDansLAnnuaireDesEntreprises: ChercherDansLAnnuaireDesEntreprises =
   async (recherche) => {
@@ -11,24 +52,10 @@ export const chercherDansLAnnuaireDesEntreprises: ChercherDansLAnnuaireDesEntrep
       include: 'complements,matching_etablissements',
     })
 
-    const suggestions: SuggestionDeLieu[] = resultat.results
-      .flatMap(structureCreationDataWithSiretFromUniteLegale)
-      .filter((structure) => structure.siret)
-      .map((structure) => ({
-        id: `api_${structure.siret}`,
-        nom: structure.nom,
-        adresse: structure.adresse ?? '',
-        commune: structure.commune ?? '',
-        codePostal: '',
-        codeInsee: structure.codeInsee ?? null,
-        complementAdresse: null,
-        pivot: structure.siret,
-        typologie: structure.typologie ?? null,
-        latitude: null,
-        longitude: null,
-        structures: [],
-        source: 'api',
-      }))
-
-    return { suggestions, nombre: resultat.total_results }
+    return {
+      suggestions: resultat.results
+        .flatMap(structureCreationDataWithSiretFromUniteLegale)
+        .flatMap(suggestion),
+      nombre: NombreDeLieux(resultat.total_results),
+    }
   }

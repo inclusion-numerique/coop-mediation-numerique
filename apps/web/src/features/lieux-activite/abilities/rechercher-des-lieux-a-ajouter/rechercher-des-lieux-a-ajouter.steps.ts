@@ -1,9 +1,19 @@
 import assert from 'node:assert'
-import { rechercherDesLieuxAAjouter } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain'
+import {
+  RechercheDeLieu,
+  rechercherDesLieuxAAjouter,
+} from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain'
 import { chercherDansLaCoop } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementation'
-import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
+import { IdentifiantCartographie } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
+import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
+import { NombreDeLieux } from '@app/web/features/lieux-activite/domain/nombres'
+import {
+  AdresseLibre,
+  type SuggestionDeLieu,
+} from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 const scenario: {
   lieuATrouver?: string
@@ -52,19 +62,23 @@ Given('ce lieu à trouver est supprimé', async () => {
 Given('la cartographie nationale connaît ce lieu à trouver', () => {
   scenario.cartographie = [
     {
-      id: 'Coop-numérique_minimes__France-Services_9999',
-      nom: 'Médiathèque des Minimes',
-      adresse: '5 Place de la Mairie',
-      commune: 'Rochefort',
-      codePostal: '17300',
-      codeInsee: '17299',
-      complementAdresse: null,
-      pivot: undefined,
-      typologie: null,
-      latitude: null,
-      longitude: null,
-      structures: [{ id: lieuATrouver() }],
-      source: 'cartographie_nationale',
+      provenance: {
+        _tag: 'Cartographie',
+        identifiant: IdentifiantCartographie(
+          'Coop-numérique_minimes__France-Services_9999',
+        ),
+        lieuCoop: LieuId(lieuATrouver()),
+      },
+      nom: Nom('Médiathèque des Minimes'),
+      adresse: AdresseLibre({
+        voie: '5 Place de la Mairie',
+        commune: 'Rochefort',
+        codePostal: '17300',
+        codeInsee: '17299',
+        complement: null,
+      }),
+      siret: null,
+      typologies: [],
     },
   ]
 })
@@ -76,21 +90,24 @@ When(
       chercherDansLaCoop,
       chercherDansLaCartographie: async () => ({
         suggestions: scenario.cartographie,
-        nombre: scenario.cartographie.length,
+        nombre: NombreDeLieux(scenario.cartographie.length),
       }),
       chercherDansLAnnuaireDesEntreprises: async () => ({
         suggestions: [],
-        nombre: 0,
+        nombre: NombreDeLieux(0),
       }),
-    })('Médiathèque des Minimes', { limite: 100 })
+    })(RechercheDeLieu('Médiathèque des Minimes'), { limite: 100 })
 
-    scenario.suggestions = resultat.structures
+    scenario.suggestions = resultat.suggestions
   },
 )
 
 const propositionsDuLieu = (): readonly SuggestionDeLieu[] =>
-  scenario.suggestions.filter(({ structures }) =>
-    structures.some(({ id }) => id === lieuATrouver()),
+  scenario.suggestions.filter(
+    ({ provenance }) =>
+      (provenance._tag === 'Coop' && provenance.lieuId === lieuATrouver()) ||
+      (provenance._tag === 'Cartographie' &&
+        provenance.lieuCoop === lieuATrouver()),
   )
 
 Then('la recherche propose ce lieu à trouver', () => {
@@ -103,8 +120,8 @@ Then('la recherche ne propose pas ce lieu à trouver', () => {
 
 Then('la recherche propose ce lieu à trouver une seule fois', () => {
   assert.deepStrictEqual(
-    propositionsDuLieu().map(({ source }) => source),
-    ['structure_locale'],
+    propositionsDuLieu().map(({ provenance }) => provenance._tag),
+    ['Coop'],
   )
 })
 

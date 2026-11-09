@@ -1,27 +1,30 @@
-import type {
-  SuggestionDeLieu,
-  SuggestionsDeLieux,
+import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
+import { NombreDeLieux } from '../../../domain/nombres'
+import {
+  connueDeLaCoop,
+  type SuggestionDeLieu,
+  type SuggestionsDeLieux,
 } from '../../../domain/suggestion-de-lieu'
 import type { RechercherDesLieuxAAjouterPorts } from './ports'
+import type { RechercheDeLieu } from './recherche-de-lieu'
 
 const LONGUEUR_MINIMALE = 3
 
 const LIMITE_PAR_DEFAUT = 50
 
 const aucuneSuggestion: SuggestionsDeLieux = {
-  structures: [],
-  matchesCount: 0,
-  moreResults: 0,
-  apiUnavailable: false,
-  cartoUnavailable: false,
+  suggestions: [],
+  nombre: NombreDeLieux(0),
+  annuaireIndisponible: false,
+  cartographieIndisponible: false,
 }
 
-export const estUneRechercheParSiret = (recherche: string): boolean =>
+export const estUneRechercheParSiret = (recherche: RechercheDeLieu): boolean =>
   /^\d{9,14}$/.test(recherche.replace(/\s/g, ''))
 
 const indisponible = {
   suggestions: [],
-  nombre: 0,
+  nombre: NombreDeLieux(0),
   indisponible: true,
 } as const
 
@@ -34,17 +37,10 @@ const retenues = (
   suggestions: readonly SuggestionDeLieu[],
   nombre: number,
   limite: number,
-) => {
-  const structures = suggestions.slice(0, limite)
-  return {
-    structures,
-    matchesCount: nombre,
-    moreResults: Math.max(0, nombre - structures.length),
-  }
-}
-
-const inconnueDeLaCoop = (suggestion: SuggestionDeLieu): boolean =>
-  suggestion.structures.length === 0
+) => ({
+  suggestions: suggestions.slice(0, limite),
+  nombre: NombreDeLieux(nombre),
+})
 
 export const rechercherDesLieuxAAjouter =
   ({
@@ -53,22 +49,27 @@ export const rechercherDesLieuxAAjouter =
     chercherDansLAnnuaireDesEntreprises,
   }: RechercherDesLieuxAAjouterPorts) =>
   async (
-    recherche: string,
+    recherche: RechercheDeLieu,
     {
       limite = LIMITE_PAR_DEFAUT,
       sauf = [],
-    }: { readonly limite?: number; readonly sauf?: readonly string[] } = {},
+    }: {
+      readonly limite?: number
+      readonly sauf?: readonly IdentifiantCartographie[]
+    } = {},
   ): Promise<SuggestionsDeLieux> => {
     if (recherche.length < LONGUEUR_MINIMALE) return aucuneSuggestion
 
-    const enDernierRecours = async (cartoUnavailable: boolean) => {
+    const enDernierRecours = async (
+      cartographieIndisponible: boolean,
+    ): Promise<SuggestionsDeLieux> => {
       const annuaire = await tenterLaSource(
         chercherDansLAnnuaireDesEntreprises(recherche),
       )
       return {
         ...retenues(annuaire.suggestions, annuaire.nombre, limite),
-        apiUnavailable: annuaire.indisponible,
-        cartoUnavailable,
+        annuaireIndisponible: annuaire.indisponible,
+        cartographieIndisponible,
       }
     }
 
@@ -78,8 +79,8 @@ export const rechercherDesLieuxAAjouter =
         ? enDernierRecours(false)
         : {
             ...retenues(coop.suggestions, coop.nombre, limite),
-            apiUnavailable: false,
-            cartoUnavailable: false,
+            annuaireIndisponible: false,
+            cartographieIndisponible: false,
           }
     }
 
@@ -97,14 +98,16 @@ export const rechercherDesLieuxAAjouter =
 
     const prioritaires = [
       ...coop.suggestions,
-      ...cartographie.suggestions.filter(inconnueDeLaCoop),
+      ...cartographie.suggestions.filter(
+        (suggestion) => !connueDeLaCoop(suggestion),
+      ),
     ]
 
     return prioritaires.length === 0
       ? enDernierRecours(cartographie.indisponible)
       : {
           ...retenues(prioritaires, coop.nombre + cartographie.nombre, limite),
-          apiUnavailable: false,
-          cartoUnavailable: cartographie.indisponible,
+          annuaireIndisponible: false,
+          cartographieIndisponible: cartographie.indisponible,
         }
   }

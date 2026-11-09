@@ -1,7 +1,18 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
-import type { SuggestionDeLieu } from '../../../../domain/suggestion-de-lieu'
+import {
+  Nom,
+  Siret,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { LieuId } from '../../../../domain/lieu-id'
+import { NombreDeLieux } from '../../../../domain/nombres'
+import { reconnues } from '../../../../domain/nomenclatures'
+import {
+  AdresseLibre,
+  type SuggestionDeLieu,
+} from '../../../../domain/suggestion-de-lieu'
 import { lieuExploitable } from '../../../../implementation'
 import type { ChercherDansLaCoop } from '../../domain/ports'
 
@@ -48,6 +59,31 @@ export const lieuxDeLaCoop = async (
   return { lignes, matchesCount }
 }
 
+type LigneDeLaCoop = Awaited<ReturnType<typeof lieuxDeLaCoop>>['lignes'][number]
+
+const suggestion = (lieu: LigneDeLaCoop): SuggestionDeLieu[] => {
+  const nom = Nom.safe(toTitleCase(lieu.nom, { noUpper: true }))
+  const adresse = AdresseLibre.safe({
+    voie: toTitleCase(lieu.adresse ?? '', { noUpper: true }),
+    commune: toTitleCase(lieu.commune ?? ''),
+    codePostal: lieu.codePostal ?? '',
+    codeInsee: lieu.codeInsee,
+    complement: lieu.complementAdresse,
+  })
+
+  return nom == null || adresse == null
+    ? []
+    : [
+        {
+          provenance: { _tag: 'Coop', lieuId: LieuId(lieu.id) },
+          nom,
+          adresse,
+          siret: Siret.safe(lieu.siret ?? ''),
+          typologies: reconnues(Typologie, lieu.typologies ?? []),
+        },
+      ]
+}
+
 export const chercherDansLaCoop: ChercherDansLaCoop = async (
   recherche,
   limite,
@@ -55,23 +91,7 @@ export const chercherDansLaCoop: ChercherDansLaCoop = async (
   const { lignes, matchesCount } = await lieuxDeLaCoop(recherche, { limite })
 
   return {
-    suggestions: lignes.map(
-      (lieu): SuggestionDeLieu => ({
-        id: `structure_${lieu.id}`,
-        nom: toTitleCase(lieu.nom, { noUpper: true }),
-        adresse: toTitleCase(lieu.adresse ?? '', { noUpper: true }),
-        commune: toTitleCase(lieu.commune ?? ''),
-        codePostal: lieu.codePostal ?? '',
-        codeInsee: lieu.codeInsee,
-        complementAdresse: lieu.complementAdresse,
-        pivot: lieu.siret ?? undefined,
-        typologie: lieu.typologies?.join(';') || null,
-        latitude: lieu.latitude,
-        longitude: lieu.longitude,
-        structures: [{ id: lieu.id }],
-        source: 'structure_locale',
-      }),
-    ),
-    nombre: matchesCount,
+    suggestions: lignes.flatMap(suggestion),
+    nombre: NombreDeLieux(matchesCount),
   }
 }

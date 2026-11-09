@@ -1,7 +1,15 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
 import type { Prisma } from '@app/web/generated/entrepot/client'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
-import type { SuggestionDeLieu } from '../../../../domain/suggestion-de-lieu'
+import { Nom, Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { IdentifiantCartographie } from '../../../../domain/ids-cartographie-nationale'
+import { LieuId } from '../../../../domain/lieu-id'
+import { NombreDeLieux } from '../../../../domain/nombres'
+import { reconnues } from '../../../../domain/nomenclatures'
+import {
+  AdresseLibre,
+  type SuggestionDeLieu,
+} from '../../../../domain/suggestion-de-lieu'
 import type { ChercherDansLaCartographie } from '../../domain/ports'
 
 type AdresseDeLaCartographie = {
@@ -69,30 +77,35 @@ export const chercherDansLaCartographie: ChercherDansLaCartographie = async (
     entrepotPrismaClient.lieuInclusion.count({ where: correspondances }),
   ])
 
-  const suggestions = lieux.flatMap((lieu): SuggestionDeLieu[] =>
-    lieu.structureCartographieNationaleId == null
+  const suggestions = lieux.flatMap((lieu): SuggestionDeLieu[] => {
+    const identifiant = IdentifiantCartographie.safe(
+      lieu.structureCartographieNationaleId ?? '',
+    )
+    const nom = Nom.safe(toTitleCase(lieu.nom, { noUpper: true }))
+    const adresse = AdresseLibre.safe({
+      voie: voie(lieu.adresse),
+      commune: toTitleCase(lieu.adresse?.nomCommune ?? ''),
+      codePostal: lieu.adresse?.codePostal ?? '',
+      codeInsee: lieu.adresse?.codeInsee ?? null,
+      complement: null,
+    })
+
+    return identifiant == null || nom == null || adresse == null
       ? []
       : [
           {
-            id: lieu.structureCartographieNationaleId,
-            nom: toTitleCase(lieu.nom, { noUpper: true }),
-            adresse: voie(lieu.adresse),
-            commune: toTitleCase(lieu.adresse?.nomCommune ?? ''),
-            codePostal: lieu.adresse?.codePostal ?? '',
-            codeInsee: lieu.adresse?.codeInsee ?? null,
-            complementAdresse: null,
-            pivot: undefined,
-            typologie:
-              lieu.typologies.length > 0 ? lieu.typologies.join(';') : null,
-            latitude: null,
-            longitude: null,
-            structures: lieu.structureCoopId
-              ? [{ id: lieu.structureCoopId }]
-              : [],
-            source: 'cartographie_nationale',
+            provenance: {
+              _tag: 'Cartographie',
+              identifiant,
+              lieuCoop: LieuId.safe(lieu.structureCoopId ?? ''),
+            },
+            nom,
+            adresse,
+            siret: null,
+            typologies: reconnues(Typologie, lieu.typologies),
           },
-        ],
-  )
+        ]
+  })
 
-  return { suggestions, nombre }
+  return { suggestions, nombre: NombreDeLieux(nombre) }
 }

@@ -1,12 +1,15 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherDesLieuxAAjouterAction } from '@app/web/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
-import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
+import {
+  type SuggestionAffichee,
+  suggestionsAffichees,
+} from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 
-const itemToString = (item: SuggestionDeLieu | null): string =>
+const itemToString = (item: SuggestionAffichee | null): string =>
   item ? item.nom : ''
 
-const itemToKey = (item: SuggestionDeLieu): string => item.id
+const itemToKey = (item: SuggestionAffichee): string => item.id
 
 export const rechercheMinimum = 3
 
@@ -19,7 +22,7 @@ export type RechercheLieuAAjouter = {
 
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: SuggestionDeLieu[] } & RechercheLieuAAjouter> => {
+): Promise<{ items: SuggestionAffichee[] } & RechercheLieuAAjouter> => {
   const rien = { items: [], recherche: input, enCours: false, nonAffiches: 0 }
 
   if (input.length < rechercheMinimum) return { ...rien, enEchec: false }
@@ -28,7 +31,7 @@ const loadSuggestions = async (
 
   if (!resultat.success) return { ...rien, enEchec: true }
 
-  const { structures, matchesCount } = resultat.data
+  const { structures, matchesCount } = suggestionsAffichees(resultat.data)
 
   return {
     items: [...structures],
@@ -39,7 +42,7 @@ const loadSuggestions = async (
   }
 }
 
-const renderItem = ({ item }: { item: SuggestionDeLieu }) => (
+const renderItem = ({ item }: { item: SuggestionAffichee }) => (
   <div className="fr-flex fr-direction-column">
     <span className="fr-text--bold">{item.nom}</span>
     <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
@@ -52,7 +55,7 @@ const renderItem = ({ item }: { item: SuggestionDeLieu }) => (
 )
 
 export const LieuAAjouterComboBox: ComboBoxData<
-  SuggestionDeLieu,
+  SuggestionAffichee,
   RechercheLieuAAjouter
 > = {
   itemToString,
@@ -66,7 +69,7 @@ export const LieuAAjouterComboBox: ComboBoxData<
   loadSuggestions,
 }
 
-export const LieuAAjouterOptions: OptionsData<SuggestionDeLieu> = {
+export const LieuAAjouterOptions: OptionsData<SuggestionAffichee> = {
   itemToKey,
   renderItem,
 }

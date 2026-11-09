@@ -12,3 +12,9 @@ export const NombreDActivites = defineModel(
 )
 
 export type NombreDActivites = Model.TypeOf<typeof NombreDActivites>
+
+export const NombreDeLieux = defineModel(
+  z.number().int().nonnegative().brand('NombreDeLieux'),
+)
+
+export type NombreDeLieux = Model.TypeOf<typeof NombreDeLieux>

@@ -3,12 +3,12 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
 import CreerLieuActiviteForm from '@app/web/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@app/web/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'
@@ -26,7 +26,7 @@ import { type LieuAuPanier, lieuCree, selectionner } from './panier'
 
 type FormValues = {
   lieux: LieuAuPanier[]
-  recherche: SuggestionDeLieu | null
+  recherche: SuggestionAffichee | null
 }
 
 const panierShape = z

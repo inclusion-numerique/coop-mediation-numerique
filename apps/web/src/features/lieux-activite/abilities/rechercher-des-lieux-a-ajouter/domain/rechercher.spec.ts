@@ -1,37 +1,55 @@
-import type {
-  SourceDeSuggestion,
-  SuggestionDeLieu,
+import { Nom, Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
+import { LieuId } from '../../../domain/lieu-id'
+import { NombreDeLieux } from '../../../domain/nombres'
+import {
+  AdresseLibre,
+  type ProvenanceDeSuggestion,
+  type SuggestionDeLieu,
 } from '../../../domain/suggestion-de-lieu'
 import type { RechercherDesLieuxAAjouterPorts } from './ports'
+import { RechercheDeLieu } from './recherche-de-lieu'
 import {
   estUneRechercheParSiret,
   rechercherDesLieuxAAjouter,
 } from './rechercher'
 
+const LIEU_COOP = LieuId('550e8400-e29b-41d4-a716-446655440000')
+
 const suggestion = (
-  id: string,
-  source: SourceDeSuggestion,
-  structures: { id: string }[] = [],
+  nom: string,
+  provenance: ProvenanceDeSuggestion,
 ): SuggestionDeLieu => ({
-  id,
-  nom: id,
-  adresse: '',
-  commune: '',
-  codePostal: '',
-  codeInsee: null,
-  complementAdresse: null,
-  pivot: undefined,
-  typologie: null,
-  latitude: null,
-  longitude: null,
-  structures,
-  source,
+  provenance,
+  nom: Nom(nom),
+  adresse: AdresseLibre({
+    voie: '',
+    commune: '',
+    codePostal: '',
+    codeInsee: null,
+    complement: null,
+  }),
+  siret: null,
+  typologies: [],
 })
+
+const deLaCoop = (nom: string) =>
+  suggestion(nom, { _tag: 'Coop', lieuId: LIEU_COOP })
+
+const deLaCarto = (nom: string, lieuCoop: LieuId | null = null) =>
+  suggestion(nom, {
+    _tag: 'Cartographie',
+    identifiant: IdentifiantCartographie(nom),
+    lieuCoop,
+  })
+
+const deLAnnuaire = (nom: string) =>
+  suggestion(nom, { _tag: 'Annuaire', siret: Siret('13002603200016') })
 
 const source = (suggestions: readonly SuggestionDeLieu[], nombre?: number) =>
   jest.fn(async () => ({
     suggestions,
-    nombre: nombre ?? suggestions.length,
+    nombre: NombreDeLieux(nombre ?? suggestions.length),
   }))
 
 const enPanne = () =>
@@ -48,6 +66,9 @@ const ports = (
   ...partie,
 })
 
+const noms = ({ suggestions }: { suggestions: readonly SuggestionDeLieu[] }) =>
+  suggestions.map(({ nom }) => nom)
+
 describe('reconnaître une recherche par SIRET', () => {
   it.each([
     ['123456789', true],
@@ -55,19 +76,19 @@ describe('reconnaître une recherche par SIRET', () => {
     ['12345678', false],
     ['Médiathèque 123456789', false],
   ])('« %s » : %s', (recherche, attendu) => {
-    expect(estUneRechercheParSiret(recherche)).toBe(attendu)
+    expect(estUneRechercheParSiret(RechercheDeLieu(recherche))).toBe(attendu)
   })
 })
 
 describe('rechercher des lieux à ajouter', () => {
   it('ne cherche rien en dessous de trois caractères', async () => {
-    const coop = source([suggestion('coop', 'structure_locale')])
+    const coop = source([deLaCoop('coop')])
 
     const resultat = await rechercherDesLieuxAAjouter(
       ports({ chercherDansLaCoop: coop }),
-    )('Mé')
+    )(RechercheDeLieu('Mé'))
 
-    expect(resultat.structures).toEqual([])
+    expect(resultat.suggestions).toEqual([])
     expect(coop).not.toHaveBeenCalled()
   })
 
@@ -76,62 +97,53 @@ describe('rechercher des lieux à ajouter', () => {
 
     const resultat = await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLaCoop: source([suggestion('coop', 'structure_locale')]),
+        chercherDansLaCoop: source([deLaCoop('coop')]),
         chercherDansLaCartographie: cartographie,
       }),
-    )('12345678900012')
+    )(RechercheDeLieu('12345678900012'))
 
-    expect(resultat.structures.map(({ id }) => id)).toEqual(['coop'])
+    expect(noms(resultat)).toEqual(['coop'])
     expect(cartographie).not.toHaveBeenCalled()
   })
 
   it('se replie sur l’annuaire quand la coop ne connaît pas le SIRET', async () => {
     const resultat = await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLAnnuaireDesEntreprises: source(
-          [suggestion('api_12345678900012', 'api')],
-          3,
-        ),
+        chercherDansLAnnuaireDesEntreprises: source([deLAnnuaire('api')], 3),
       }),
-    )('12345678900012')
+    )(RechercheDeLieu('12345678900012'))
 
     expect(resultat).toEqual({
-      structures: [suggestion('api_12345678900012', 'api')],
-      matchesCount: 3,
-      moreResults: 2,
-      apiUnavailable: false,
-      cartoUnavailable: false,
+      suggestions: [deLAnnuaire('api')],
+      nombre: 3,
+      annuaireIndisponible: false,
+      cartographieIndisponible: false,
     })
   })
 
   it('écarte de la cartographie les lieux que la coop propose déjà', async () => {
     const resultat = await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLaCoop: source([suggestion('coop', 'structure_locale')]),
+        chercherDansLaCoop: source([deLaCoop('coop')]),
         chercherDansLaCartographie: source([
-          suggestion('carto-connu', 'cartographie_nationale', [{ id: 'x' }]),
-          suggestion('carto-inconnu', 'cartographie_nationale'),
+          deLaCarto('carto-connu', LIEU_COOP),
+          deLaCarto('carto-inconnu'),
         ]),
       }),
-    )('Médiathèque')
+    )(RechercheDeLieu('Médiathèque'))
 
-    expect(resultat.structures.map(({ id }) => id)).toEqual([
-      'coop',
-      'carto-inconnu',
-    ])
+    expect(noms(resultat)).toEqual(['coop', 'carto-inconnu'])
   })
 
   it('n’interroge pas l’annuaire quand la coop ou la cartographie répondent', async () => {
-    const annuaire = source([suggestion('api', 'api')])
+    const annuaire = source([deLAnnuaire('api')])
 
     await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLaCartographie: source([
-          suggestion('carto', 'cartographie_nationale'),
-        ]),
+        chercherDansLaCartographie: source([deLaCarto('carto')]),
         chercherDansLAnnuaireDesEntreprises: annuaire,
       }),
-    )('Médiathèque')
+    )(RechercheDeLieu('Médiathèque'))
 
     expect(annuaire).not.toHaveBeenCalled()
   })
@@ -139,26 +151,25 @@ describe('rechercher des lieux à ajouter', () => {
   it('signale une cartographie indisponible sans perdre les lieux de la coop', async () => {
     const resultat = await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLaCoop: source([suggestion('coop', 'structure_locale')]),
+        chercherDansLaCoop: source([deLaCoop('coop')]),
         chercherDansLaCartographie: enPanne(),
       }),
-    )('Médiathèque')
+    )(RechercheDeLieu('Médiathèque'))
 
-    expect(resultat.structures.map(({ id }) => id)).toEqual(['coop'])
-    expect(resultat.cartoUnavailable).toBe(true)
+    expect(noms(resultat)).toEqual(['coop'])
+    expect(resultat.cartographieIndisponible).toBe(true)
   })
 
   it('signale un annuaire indisponible quand il était le dernier recours', async () => {
     const resultat = await rechercherDesLieuxAAjouter(
       ports({ chercherDansLAnnuaireDesEntreprises: enPanne() }),
-    )('Médiathèque')
+    )(RechercheDeLieu('Médiathèque'))
 
     expect(resultat).toEqual({
-      structures: [],
-      matchesCount: 0,
-      moreResults: 0,
-      apiUnavailable: true,
-      cartoUnavailable: false,
+      suggestions: [],
+      nombre: 0,
+      annuaireIndisponible: true,
+      cartographieIndisponible: false,
     })
   })
 
@@ -171,7 +182,10 @@ describe('rechercher des lieux à ajouter', () => {
         chercherDansLaCoop: coop,
         chercherDansLaCartographie: cartographie,
       }),
-    )('Médiathèque', { limite: 9, sauf: ['deja-la'] })
+    )(RechercheDeLieu('Médiathèque'), {
+      limite: 9,
+      sauf: [IdentifiantCartographie('deja-la')],
+    })
 
     expect(coop).toHaveBeenCalledWith('Médiathèque', 5)
     expect(cartographie).toHaveBeenCalledWith('Médiathèque', {

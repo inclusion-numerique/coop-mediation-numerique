@@ -25,5 +25,10 @@ export {
   type LieuSaisi,
   SaisieDuLieuCard,
 } from './SaisieDuLieuCard'
+export {
+  type SuggestionAffichee,
+  type SuggestionsAffichees,
+  suggestionsAffichees,
+} from './suggestion-de-lieu.presenter'
 export { LieuAccueillantPublicTitle } from './titles/LieuAccueillantPublicTitle'
 export { ServiceInclusionNumeriqueTitle } from './titles/ServiceInclusionNumeriqueTitle'

@@ -1,5 +1,5 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
+import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import type { ComboBoxProps } from '@app/web/libs/form/fields-components/ComboBox'
 import { Input } from '@app/web/libs/form/fields-components/Input'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -10,7 +10,7 @@ import {
 } from './lieu-a-ajouter-combo-box'
 
 type RenduDuComboBox = Parameters<
-  ComboBoxProps<SuggestionDeLieu, RechercheLieuAAjouter>['children']
+  ComboBoxProps<SuggestionAffichee, RechercheLieuAAjouter>['children']
 >[0]
 
 export const RechercheDeLieu = ({

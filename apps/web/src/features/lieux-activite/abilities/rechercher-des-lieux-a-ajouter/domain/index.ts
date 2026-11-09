@@ -5,6 +5,7 @@ export type {
   RechercherDesLieuxAAjouterPorts,
   SuggestionsDUneSource,
 } from './ports'
+export { RechercheDeLieu } from './recherche-de-lieu'
 export {
   estUneRechercheParSiret,
   rechercherDesLieuxAAjouter,

@@ -3,7 +3,7 @@ import {
   SERVICE_ADRESSE_INDISPONIBLE,
 } from '@app/web/external-apis/apiAdresse'
 import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
-import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
+import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import {
   auPanier,
   type LieuAuPanier,
@@ -32,8 +32,8 @@ const adresseBan = {
 }
 
 const resultat = (
-  champs: Partial<SuggestionDeLieu> = {},
-): SuggestionDeLieu => ({
+  champs: Partial<SuggestionAffichee> = {},
+): SuggestionAffichee => ({
   id: 'carto-1',
   nom: 'Tiers-lieu du Port',
   adresse: '12 quai du Port',
@@ -43,8 +43,6 @@ const resultat = (
   complementAdresse: null,
   pivot: '13002603200016',
   typologie: null,
-  latitude: 45.94,
-  longitude: -0.96,
   structures: [],
   source: 'cartographie_nationale',
   ...champs,
