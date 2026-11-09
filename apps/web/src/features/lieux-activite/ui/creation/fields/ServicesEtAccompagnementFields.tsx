@@ -9,7 +9,7 @@ import {
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
-import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
+import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const ServicesEtAccompagnementFields = withForm({
   ...creerLieuActiviteFormOptions,

@@ -2,13 +2,13 @@ import {
   PUBLICATION_SANS_SERVICE,
   publicationSansService,
 } from '@app/web/features/lieux-activite/domain/publication'
-import { DescriptionShape } from './DescriptionValidation'
-import { IdentiteLieuShape } from './InformationsGeneralesValidation'
-import { InformationsPratiquesShape } from './InformationsPratiquesValidation'
-import { ModalitesAccesAuServiceShape } from './ModalitesAccesAuServiceValidation'
-import { ServicesEtAccompagnementShape } from './ServicesEtAccompagnementValidation'
-import { TypesDePublicsAccueillisShape } from './TypesDePublicsAccueillisValidation'
-import { VisiblePourCartographieNationaleShape } from './VisiblePourCartographieNationaleValidation'
+import { DescriptionShape } from './description.validation'
+import { IdentiteLieuShape } from './informations-generales.validation'
+import { InformationsPratiquesShape } from './informations-pratiques.validation'
+import { ModalitesAccesAuServiceShape } from './modalites-acces-au-service.validation'
+import { ServicesEtAccompagnementShape } from './services-et-accompagnement.validation'
+import { TypesDePublicsAccueillisShape } from './types-de-publics-accueillis.validation'
+import { VisiblePourCartographieNationaleShape } from './visible-pour-cartographie-nationale.validation'
 
 /**
  * Ce qui se saisit à la création d'un lieu d'activité, quel que soit le parcours

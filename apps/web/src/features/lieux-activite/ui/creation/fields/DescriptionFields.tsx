@@ -5,7 +5,7 @@ import { RESUME_MAX_LENGTH } from '@app/web/features/lieux-activite/domain/regle
 import { formationLabelOptions } from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { useSelector } from '@tanstack/react-form'
-import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
+import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const DescriptionFields = withForm({
   ...creerLieuActiviteFormOptions,

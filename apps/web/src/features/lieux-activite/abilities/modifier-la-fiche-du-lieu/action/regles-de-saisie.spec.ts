@@ -1,11 +1,11 @@
+import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import {
   DescriptionSaisie,
   InformationsGeneralesSaisie,
   InformationsPratiquesSaisie,
   ModalitesAccesAuServiceSaisie,
   TypesDePublicsAccueillisSaisie,
-} from '../abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.validation'
-import { CreerLieuActiviteValidation } from '../formulaire/CreerLieuActiviteValidation'
+} from './modifier-la-fiche-du-lieu.validation'
 
 /**
  * Créer un lieu et corriger sa fiche décrivent le même objet : une valeur que

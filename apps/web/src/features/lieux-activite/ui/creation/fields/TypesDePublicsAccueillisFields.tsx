@@ -6,11 +6,10 @@ import {
 } from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { type PublicSpecifiquementAdresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
+import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
-const tousLesPublics = publicSpecifiquementAdresseOptions.map(
-  ({ value }) => value,
-) as PublicSpecifiquementAdresse[]
+const tousLesPublics: PublicSpecifiquementAdresse[] =
+  publicSpecifiquementAdresseOptions.map(({ value }) => value)
 
 const sontTousCoches = (publics: PublicSpecifiquementAdresse[]) =>
   publics.length === tousLesPublics.length

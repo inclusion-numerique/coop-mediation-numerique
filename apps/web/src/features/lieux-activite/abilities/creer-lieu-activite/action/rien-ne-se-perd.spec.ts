@@ -1,8 +1,7 @@
+import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import { nouveauLieu } from '../abilities/creer-lieu-activite/action/depuis-la-saisie'
-import type { CreerLieuActiviteData } from '../formulaire/CreerLieuActiviteValidation'
-import { CreerLieuActiviteValidation } from '../formulaire/CreerLieuActiviteValidation'
-import type { Fiche } from './fiche'
+import { nouveauLieu } from './depuis-la-saisie'
 
 /**
  * Ce qu'une saisie acceptée doit devenir : quelque chose.
@@ -81,8 +80,7 @@ const ficheDe = (champs: Record<string, unknown>): Fiche | null => {
   })
 
   return analyse.success
-    ? nouveauLieu(analyse.data as CreerLieuActiviteData, auteur, new Date())
-        .fiche
+    ? nouveauLieu(analyse.data, auteur, new Date()).fiche
     : null
 }
 
@@ -183,7 +181,7 @@ describe('une saisie acceptée n’est jamais perdue en silence', () => {
     const fiche = ficheDe(champs)
 
     expect(fiche).not.toBeNull()
-    expect(renseigne(lu(fiche as Fiche))).toBe(true)
+    expect(fiche != null && renseigne(lu(fiche))).toBe(true)
   })
 
   /**

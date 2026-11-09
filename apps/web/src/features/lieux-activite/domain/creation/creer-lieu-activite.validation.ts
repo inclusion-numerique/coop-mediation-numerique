@@ -1,11 +1,11 @@
 import {
+  auMoinsUnServiceSiVisible,
+  CreerLieuShape,
+} from '@app/web/features/lieux-activite/domain/creation/creer-lieu.shape'
+import {
   adresseReconnue,
   commentaireAdosseAUnCreneau,
 } from '@app/web/features/lieux-activite/domain/regles-de-saisie'
-import {
-  auMoinsUnServiceSiVisible,
-  CreerLieuShape,
-} from '@app/web/features/lieux-activite/formulaire/CreerLieuShape'
 import z from 'zod'
 
 export const CreerLieuActiviteValidation = z

@@ -111,6 +111,11 @@ export { RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS } from './abilities/retirer-un-medi
 export { RetirerUnMediateurDuLieuValidation } from './abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.validation'
 // Identité d'un lieu et des personnes qui le manipulent
 export { BanId } from './domain/ban-id'
+// Ce qui se saisit pour un lieu
+export {
+  type CreerLieuActiviteData,
+  CreerLieuActiviteValidation,
+} from './domain/creation/creer-lieu-activite.validation'
 export { IdentifiantCartographie } from './domain/ids-cartographie-nationale'
 export { LieuId } from './domain/lieu-id'
 export { MediateurId } from './domain/mediateur-id'
@@ -120,11 +125,6 @@ export { MediateurId } from './domain/mediateur-id'
 export { adresseSaisie, localisationSaisie } from './domain/saisie'
 export { TriDesLieux } from './domain/tri-des-lieux'
 export { UserId } from './domain/user-id'
-// Ce qui se saisit pour un lieu
-export {
-  type CreerLieuActiviteData,
-  CreerLieuActiviteValidation,
-} from './formulaire/CreerLieuActiviteValidation'
 // Lectures partagées
 export {
   type Correle,

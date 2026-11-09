@@ -12,7 +12,7 @@ import { libelleDeTypologie } from '@app/web/features/lieux-activite/ui/libelles
 import { typologieStructureOptions } from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
+import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 /**
  * Identité du lieu à créer : ni SIRET ni RNA. On n'arrive sur ce formulaire

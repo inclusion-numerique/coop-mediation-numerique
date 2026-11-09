@@ -12,9 +12,9 @@ import {
   type OsmDaysOfWeek,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { useSelector } from '@tanstack/react-form'
-import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
+import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
-const jours = OSM_DAYS_OF_WEEK as unknown as OsmDaysOfWeek[]
+const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]
 
 const periodes: Period[] = ['am', 'pm']
 

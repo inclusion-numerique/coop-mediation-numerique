@@ -2,13 +2,13 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import { useRouter } from 'next/navigation'
-import type { ReactNode } from 'react'
-import { CreerLieuActivitePageContent } from '../../../formulaire/CreerLieuActivitePageContent'
+import { CreerLieuActivitePageContent } from '@app/web/features/lieux-activite/ui/creation/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
-} from '../../../formulaire/creerLieuActiviteFormData'
+} from '@app/web/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import { useRouter } from 'next/navigation'
+import type { ReactNode } from 'react'
 import { hrefDuLieu } from '../../../ui/href-du-lieu'
 
 const erreurEnregistrement = () =>

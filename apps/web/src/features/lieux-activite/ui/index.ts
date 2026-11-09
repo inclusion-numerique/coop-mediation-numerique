@@ -20,14 +20,11 @@ export {
   LieuActiviteComboBox,
   LieuActiviteOptions,
 } from '../abilities/rechercher-un-lieu-activite/ui/LieuActiviteComboBox'
-export { CreerLieuActivitePageContent } from '../formulaire/CreerLieuActivitePageContent'
+export { CreerLieuActivitePageContent } from './creation/CreerLieuActivitePageContent'
 export {
   type CreerLieuActiviteFormData,
-  CreerLieuActiviteFormValidation,
-  creerLieuActiviteDefaultValues,
-  creerLieuActiviteFormOptions,
   toCreerLieuData,
-} from '../formulaire/creerLieuActiviteFormData'
+} from './creation/creer-lieu-activite.form-data'
 export { DisplayOnCartography } from './DisplayOnCartography'
 export { departementDuLieu, hrefDuLieu } from './href-du-lieu'
 export {

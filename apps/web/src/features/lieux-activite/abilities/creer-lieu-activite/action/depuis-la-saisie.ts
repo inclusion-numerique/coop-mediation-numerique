@@ -1,4 +1,4 @@
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
+import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import {
   Contact,
   DispositifProgrammesNationaux,

@@ -15,7 +15,7 @@ import {
   type CreerLieuActiviteFormData,
   CreerLieuActiviteFormValidation,
   creerLieuActiviteDefaultValues,
-} from './creerLieuActiviteFormData'
+} from './creer-lieu-activite.form-data'
 import { DescriptionFields } from './fields/DescriptionFields'
 import { InformationsGeneralesFields } from './fields/InformationsGeneralesFields'
 import { InformationsPratiquesFields } from './fields/InformationsPratiquesFields'

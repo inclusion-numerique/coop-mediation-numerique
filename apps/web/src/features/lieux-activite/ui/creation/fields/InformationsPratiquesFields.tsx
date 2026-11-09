@@ -3,7 +3,7 @@
 import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Link from 'next/link'
-import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
+import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 import { OpeningHoursFields } from './OpeningHoursFields'
 
 export const InformationsPratiquesFields = withForm({

@@ -1,7 +1,7 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import type { HorairesSaisis } from '@app/web/features/lieux-activite/domain/horaires.validation'
 import type { FormationLabelPropose as FormationLabel } from '@app/web/features/lieux-activite/domain/nomenclatures'
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import type {
   Frais as FraisACharge,
@@ -11,7 +11,6 @@ import type {
   Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
 
 /**
@@ -79,8 +78,14 @@ export const CreerLieuActiviteFormValidation = z
   .superRefine((value, context) => {
     const parsed = CreerLieuActiviteValidation.safeParse(toCreerLieuData(value))
     if (parsed.success) return
-    for (const { path, message } of parsed.error.issues)
-      context.addIssue({ code: 'custom', path, message })
+    context.issues.push(
+      ...parsed.error.issues.map(({ path, message }) => ({
+        code: 'custom' as const,
+        path,
+        message,
+        input: value,
+      })),
+    )
   })
 
 export const creerLieuActiviteDefaultValues = (
@@ -113,8 +118,4 @@ export const creerLieuActiviteDefaultValues = (
   priseEnChargeSpecifique: [],
   toutPublic: null,
   publicsSpecifiquementAdresses: [],
-})
-
-export const creerLieuActiviteFormOptions = formOptions({
-  defaultValues: creerLieuActiviteDefaultValues(),
 })

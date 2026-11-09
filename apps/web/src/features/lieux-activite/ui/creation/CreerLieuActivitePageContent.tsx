@@ -5,7 +5,7 @@ import LieuActiviteSideMenu from '@app/web/features/lieux-activite/ui/LieuActivi
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
 import CreerLieuActiviteForm from './CreerLieuActiviteForm'
-import type { CreerLieuActiviteFormData } from './creerLieuActiviteFormData'
+import type { CreerLieuActiviteFormData } from './creer-lieu-activite.form-data'
 
 /**
  * Page de création d'un lieu d'activité, partagée par l'inscription et la
