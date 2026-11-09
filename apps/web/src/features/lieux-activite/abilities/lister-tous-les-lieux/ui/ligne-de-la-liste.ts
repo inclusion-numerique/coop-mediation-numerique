@@ -37,4 +37,5 @@ export type LigneDeLaListe = {
 export type PageDeLieux = {
   readonly structures: readonly LigneDeLaListe[]
   readonly totalPages: number
+  readonly matchesCount: number
 }

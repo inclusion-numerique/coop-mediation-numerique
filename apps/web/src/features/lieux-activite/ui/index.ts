@@ -20,6 +20,7 @@ export {
   LieuActiviteComboBox,
   LieuActiviteOptions,
 } from '../abilities/rechercher-un-lieu-activite/ui/LieuActiviteComboBox'
+export { auteurDeLaDerniereModification } from './auteur-de-la-derniere-modification'
 export { CreerLieuActivitePageContent } from './creation/CreerLieuActivitePageContent'
 export {
   type CreerLieuActiviteFormData,
