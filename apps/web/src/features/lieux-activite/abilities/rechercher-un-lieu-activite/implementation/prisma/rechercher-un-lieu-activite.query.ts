@@ -1,8 +1,12 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
+import { NombreDActivites } from '../../../../domain/nombres'
 import { lieuExploitable } from '../../../../implementation'
+import { adresseDesColonnes } from '../../../../implementation/prisma/adresse-des-colonnes'
 import type { LieuActiviteTrouve } from '../../domain'
 
 export const rechercherUnLieuActivite = async ({
@@ -43,10 +47,10 @@ export const rechercherUnLieuActivite = async ({
   })
 
   return rattachements.map(({ lieuInclusion: lieu }, rang) => ({
-    id: lieu.id,
-    nom: lieu.nom,
-    adresse: `${lieu.adresse}, ${lieu.codePostal} ${lieu.commune}`,
-    activites: lieu.activitesCount,
+    id: LieuId(lieu.id),
+    nom: Nom(lieu.nom),
+    adresse: adresseDesColonnes(lieu),
+    activites: NombreDActivites(lieu.activitesCount),
     lePlusUtilise: rang === 0 && lieu.activitesCount > 0,
   }))
 }

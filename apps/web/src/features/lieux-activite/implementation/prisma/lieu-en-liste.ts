@@ -1,6 +1,6 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { nomAffiche } from '@app/web/libraries/nom-affiche'
-import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { NomUsage } from '../../domain/identite-sirene'
 import { IdentifiantCartographie } from '../../domain/ids-cartographie-nationale'
 import type {
@@ -11,6 +11,7 @@ import { LieuId } from '../../domain/lieu-id'
 import { NombreDeMediateurs } from '../../domain/nombres'
 import { SourceCartographie } from '../../domain/tracabilite'
 import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
+import { adresseDesColonnes } from './adresse-des-colonnes'
 import { adresseDeLInscription, inscriptionPourLaFiche } from './registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'
 
@@ -53,19 +54,6 @@ export const projectionDuLieuEnListe = {
 type LigneEnListe = Prisma.LieuInclusionGetPayload<{
   select: typeof projectionDuLieuEnListe
 }>
-
-const adresseDeLaCoop = (ligne: LigneEnListe): Adresse | null =>
-  Adresse.safe({
-    voie: ligne.adresse,
-    commune: ligne.commune,
-    code_postal: ligne.codePostal,
-    ...(ligne.codeInsee == null || ligne.codeInsee === ''
-      ? {}
-      : { code_insee: ligne.codeInsee }),
-    ...(ligne.complementAdresse == null || ligne.complementAdresse.trim() === ''
-      ? {}
-      : { complement_adresse: ligne.complementAdresse }),
-  })
 
 const sourceDeLaModification = (
   ligne: LigneEnListe,
@@ -114,7 +102,7 @@ export const lieuEnListe = (ligne: LigneEnListe): LieuEnListe => {
     nomUsage: NomUsage.safe(inscription?.nomUsage ?? ligne.nomUsage ?? ''),
     adresse:
       (inscription == null ? null : adresseDeLInscription(inscription)) ??
-      adresseDeLaCoop(ligne),
+      adresseDesColonnes(ligne),
     adresseAPreciser: ligne.banId == null,
     derniereModification: derniereModification(ligne),
     visibilite: VisibiliteCartographie(

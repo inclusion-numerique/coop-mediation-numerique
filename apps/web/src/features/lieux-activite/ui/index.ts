@@ -7,6 +7,7 @@ export {
   LieuActiviteComboBox,
   LieuActiviteOptions,
 } from '../abilities/rechercher-un-lieu-activite/ui/LieuActiviteComboBox'
+export type { OptionDeLieuTrouve } from '../abilities/rechercher-un-lieu-activite/ui/option-de-lieu-trouve.presenter'
 export { CreerLieuActivitePageContent } from './creation/CreerLieuActivitePageContent'
 export {
   type CreerLieuActiviteFormData,

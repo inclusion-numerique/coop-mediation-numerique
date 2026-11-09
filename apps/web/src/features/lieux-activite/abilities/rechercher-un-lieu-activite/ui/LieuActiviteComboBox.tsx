@@ -2,28 +2,33 @@ import { OptionsData } from '@app/ui/components/Primitives/Options'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { inject } from '@app/web/libs/injection/client'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../action/rechercher-un-lieu-activite.key'
-import type { LieuActiviteTrouve } from '../domain'
+import {
+  type OptionDeLieuTrouve,
+  optionDeLieuTrouve,
+} from './option-de-lieu-trouve.presenter'
 
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: LieuActiviteTrouve[] }> => {
+): Promise<{ items: OptionDeLieuTrouve[] }> => {
   const resultat = await inject(RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY)({
     recherche: input,
   })
 
-  return { items: resultat.success ? [...resultat.data] : [] }
+  return {
+    items: resultat.success ? resultat.data.map(optionDeLieuTrouve) : [],
+  }
 }
 
-const itemToString = (item: LieuActiviteTrouve | null): string =>
+const itemToString = (item: OptionDeLieuTrouve | null): string =>
   item == null ? '' : item.nom
 
-const itemToKey = (item: LieuActiviteTrouve): string => item.id
+const itemToKey = (item: OptionDeLieuTrouve): string => item.id
 
 const renderItem = ({
   item,
   isSelected,
 }: {
-  item: LieuActiviteTrouve
+  item: OptionDeLieuTrouve
   isSelected: boolean
 }) => (
   <span className="fr-flex fr-flex-gap-2v fr-align-items-center">
@@ -46,13 +51,13 @@ const renderItem = ({
   </span>
 )
 
-export const LieuActiviteComboBox: ComboBoxData<LieuActiviteTrouve> = {
+export const LieuActiviteComboBox: ComboBoxData<OptionDeLieuTrouve> = {
   itemToString,
   loadSuggestions,
   itemToKey,
 }
 
-export const LieuActiviteOptions: OptionsData<LieuActiviteTrouve> = {
+export const LieuActiviteOptions: OptionsData<OptionDeLieuTrouve> = {
   itemToKey,
   renderItem,
 }

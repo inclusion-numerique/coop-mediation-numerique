@@ -6,13 +6,11 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/adresse/combo-box/CommuneComboBox'
-import type {
-  LieuActiviteOption,
-  LieuActiviteTrouve,
-} from '@app/web/features/lieux-activite'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,
+  type OptionDeLieuTrouve,
 } from '@app/web/features/lieux-activite/ui'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -45,15 +43,14 @@ const toLieuActiviteOption = ({
     mostUsed: boolean
     activites?: number
   }
-}): LieuActiviteTrouve => ({
+}): OptionDeLieuTrouve => ({
   id: value,
   nom: extra?.nom ?? '',
   adresse: extra?.adresse ?? '',
-  activites: extra?.activites ?? 0,
   lePlusUtilise: extra?.mostUsed ?? false,
 })
 
-const mostUsedOption = ({ lePlusUtilise }: LieuActiviteTrouve) => lePlusUtilise
+const mostUsedOption = ({ lePlusUtilise }: OptionDeLieuTrouve) => lePlusUtilise
 
 export const RendezVousFields = withForm({
   ...options,
