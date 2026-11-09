@@ -26,7 +26,7 @@ export const informationsGeneralesSoumises = ({
   lieuItinerant,
   complementAdresse,
   typologies,
-}: InformationsGeneralesFormData & {
+}: Omit<InformationsGeneralesFormData, 'confirmationDuPartage'> & {
   readonly adresseBan: AdresseBanData
 }): Saisie => ({
   section: 'InformationsGenerales',

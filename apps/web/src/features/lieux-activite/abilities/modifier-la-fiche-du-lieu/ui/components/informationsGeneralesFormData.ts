@@ -14,6 +14,7 @@ export type InformationsGeneralesFormData = {
   nomUsage: string | null
   noSiret: boolean | null
   typologies: Typologie[]
+  confirmationDuPartage: boolean | null
 }
 
 export const InformationsGeneralesFormValidation = z
