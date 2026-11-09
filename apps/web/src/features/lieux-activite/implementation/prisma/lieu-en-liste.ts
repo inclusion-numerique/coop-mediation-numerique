@@ -1,4 +1,5 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
+import type { LieuEnListe } from '../../domain/lieu-en-liste'
 import {
   adresseDeLInscription,
   type InscriptionPourLaFiche,
@@ -77,7 +78,7 @@ const depuisLInscription = (
   }
 }
 
-export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
+export const avecLaFicheDuRegistre = (ligne: LigneEnListe): LieuEnListe => {
   const { inscriptionRegistre, banId, ...reste } = ligne
 
   return {
@@ -88,5 +89,3 @@ export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
       : depuisLInscription(ligne, inscriptionRegistre)),
   }
 }
-
-export type LieuEnListe = ReturnType<typeof avecLaFicheDuRegistre>

@@ -3,10 +3,10 @@ import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPag
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
+import type { LieuEnListe } from '../../../../domain/lieu-en-liste'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
   avecLaFicheDuRegistre,
-  type LieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
 import {

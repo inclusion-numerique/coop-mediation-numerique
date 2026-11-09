@@ -1,4 +1,1 @@
-export {
-  type LieuDuMediateurEnListe,
-  listerLesLieuxDuMediateur,
-} from './lister-les-lieux-du-mediateur.query'
+export { listerLesLieuxDuMediateur } from './lister-les-lieux-du-mediateur.query'

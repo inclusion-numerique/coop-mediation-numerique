@@ -9,6 +9,7 @@ import {
   avecLaFicheDuRegistre,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
+import type { LieuDuMediateurEnListe } from '../../domain'
 
 /**
  * Les lieux où le médiateur exerce aujourd'hui.
@@ -22,7 +23,7 @@ export const listerLesLieuxDuMediateur = async ({
 }: {
   mediateurId: MediateurId
   tri: TriDesLieux
-}) => {
+}): Promise<LieuDuMediateurEnListe[]> => {
   const { champ, sens } = ordonnancement(tri)
   const orderBy: Prisma.MediateurEnActiviteOrderByWithRelationInput = {
     lieuInclusion: { [champ]: sens },
@@ -45,7 +46,3 @@ export const listerLesLieuxDuMediateur = async ({
     lieuInclusion: avecLaFicheDuRegistre(rattachement.lieuInclusion),
   }))
 }
-
-export type LieuDuMediateurEnListe = Awaited<
-  ReturnType<typeof listerLesLieuxDuMediateur>
->[number]

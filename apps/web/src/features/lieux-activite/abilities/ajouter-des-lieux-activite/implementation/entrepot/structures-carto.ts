@@ -34,6 +34,7 @@ import {
   Typologie,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { z } from 'zod'
 import type { LieuCarto } from '../../domain'
 
 // Lit `main.lieu_inclusion` dans l'Entrepôt et en tire la fiche que la coop
@@ -83,25 +84,23 @@ type LieuRow = {
 }
 
 /** La colonne `contact` est un JSON libre : rien n'y est acquis. */
-const contactDeLaLigne = (contact: unknown): Contact => {
-  const record =
-    typeof contact === 'object' && contact !== null
-      ? (contact as Record<string, unknown>)
-      : {}
-  const courriel =
-    typeof record.courriels === 'object' && record.courriels !== null
-      ? ((record.courriels as Record<string, unknown>).email as
-          | string
-          | undefined)
-      : undefined
+const ContactDeLaLigne = z
+  .object({
+    telephone: z.string().nullish().catch(null),
+    courriels: z
+      .object({ email: z.string().nullish().catch(null) })
+      .nullish()
+      .catch(null),
+    site_web: z.string().nullish().catch(null),
+  })
+  .catch({ telephone: null, courriels: null, site_web: null })
 
-  const telephone = telephoneValide(
-    typeof record.telephone === 'string' ? record.telephone : null,
-  )
-  const courriels = courrielsValides([courriel])
-  const sitesWeb = sitesWebSaisis(
-    typeof record.site_web === 'string' ? record.site_web : null,
-  )
+const contactDeLaLigne = (contact: unknown): Contact => {
+  const lu = ContactDeLaLigne.parse(contact)
+
+  const telephone = telephoneValide(lu.telephone ?? null)
+  const courriels = courrielsValides([lu.courriels?.email ?? undefined])
+  const sitesWeb = sitesWebSaisis(lu.site_web ?? null)
 
   return Contact({
     ...(telephone == null ? {} : { telephone }),

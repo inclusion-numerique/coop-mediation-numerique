@@ -37,6 +37,8 @@ const panierShape = z
     path: ['lieux'],
   })
 
+const panierVide: FormValues = { lieux: [], recherche: null }
+
 const erreur = (message: string) => createToast({ priority: 'error', message })
 
 const erreurEnregistrement = () =>
@@ -63,7 +65,7 @@ export const AjouterDesLieuxActivitePage = ({
 
   const form = useAppForm({
     validators: { onSubmit: panierShape },
-    defaultValues: { lieux: [], recherche: null } as FormValues,
+    defaultValues: panierVide,
     onSubmit: async ({ value }) => {
       try {
         const resultat = await ajouterDesLieuxActiviteAction({

@@ -3,19 +3,12 @@ import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import { lieuExploitable } from '../../../../implementation'
+import type { LieuActiviteTrouve } from '../../domain'
 
 /**
  * Un lieu tel qu'il s'affiche dans une liste de suggestions : de quoi le
  * reconnaître, et de quoi signaler celui où le médiateur travaille le plus.
  */
-export type LieuActiviteTrouve = {
-  readonly id: string
-  readonly nom: string
-  readonly adresse: string
-  readonly activites: number
-  readonly lePlusUtilise: boolean
-}
-
 /**
  * La recherche ne porte que sur les lieux où le médiateur exerce : c'est un
  * choix parmi les siens, pas une exploration de l'annuaire.

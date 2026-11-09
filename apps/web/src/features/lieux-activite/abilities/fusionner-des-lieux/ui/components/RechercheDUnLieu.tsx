@@ -28,9 +28,11 @@ export const RechercheDUnLieu = ({
   defaultStructure?: LieuChoisi
   onSelect: (lieu: LieuChoisi) => void
 }) => {
-  const form = useAppForm({
-    defaultValues: { lieu: (defaultStructure ?? null) as LieuChoisi | null },
-  })
+  const valeursInitiales: { lieu: LieuChoisi | null } = {
+    lieu: defaultStructure ?? null,
+  }
+
+  const form = useAppForm({ defaultValues: valeursInitiales })
 
   const isPending = !useHydrated()
 
@@ -50,8 +52,8 @@ export const RechercheDUnLieu = ({
               payload,
               ...optionsProps
             }) => {
-              const { recherche, enCours, nonAffiches } =
-                payload as RechercheDeFusion
+              const { recherche, enCours, nonAffiches }: RechercheDeFusion =
+                payload
               const rechercheFaite =
                 !enCours && (recherche?.trim().length ?? 0) >= rechercheMinimum
 

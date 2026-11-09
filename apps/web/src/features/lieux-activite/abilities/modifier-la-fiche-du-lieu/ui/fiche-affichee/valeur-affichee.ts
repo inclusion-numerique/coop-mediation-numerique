@@ -1,9 +1,9 @@
 import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import type {
-  Adresse,
   Contact,
   Presentation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Fiche } from '../../../../domain/fiche'
 import type { ChampCompare } from '../../domain/differences'
 
 export type ValeurAffichee =
@@ -18,13 +18,6 @@ const nonVide = (morceaux: readonly (string | null | undefined)[]): string[] =>
   morceaux.filter(
     (morceau): morceau is string => morceau != null && morceau !== '',
   )
-
-const adresseLisible = (adresse: Adresse): string =>
-  nonVide([
-    adresse.voie,
-    adresse.complement_adresse,
-    `${adresse.code_postal} ${adresse.commune}`,
-  ]).join(', ')
 
 const morceauxDuContact = (contact: Contact): string[] =>
   nonVide([
@@ -53,22 +46,32 @@ const horaires = (valeur: unknown): ValeurAffichee =>
     ? { _tag: 'Horaires', osm: valeur }
     : ABSENTE
 
-export const affichee = (
-  champ: ChampCompare,
-  valeur: unknown,
-): ValeurAffichee => {
-  if (valeur == null) return ABSENTE
+const enListe = (valeurs: readonly unknown[]): ValeurAffichee =>
+  liste(valeurs.map(String))
 
-  if (champ === 'horaires') return horaires(valeur)
-
-  if (typeof valeur === 'string') return texte(valeur)
-  if (Array.isArray(valeur)) return liste(valeur.map(String))
-  if (typeof valeur !== 'object') return texte(String(valeur))
-
-  if ('voie' in valeur) return texte(adresseLisible(valeur as Adresse))
-
-  if ('resume' in valeur || 'detail' in valeur)
-    return texte(presentationLisible(valeur as Presentation))
-
-  return liste(morceauxDuContact(valeur as Contact))
+const afficheurs: {
+  readonly [C in ChampCompare]: (
+    valeur: NonNullable<Fiche[C]>,
+  ) => ValeurAffichee
+} = {
+  nom: texte,
+  typologies: enListe,
+  itinerance: enListe,
+  contact: (contact) => liste(morceauxDuContact(contact)),
+  horaires,
+  ficheAccesLibre: texte,
+  priseRdv: texte,
+  presentation: (presentation) => texte(presentationLisible(presentation)),
+  formationsLabels: enListe,
+  services: enListe,
+  modalitesAccompagnement: enListe,
+  modalitesAcces: enListe,
+  fraisACharge: enListe,
+  publicsSpecifiquementAdresses: enListe,
+  priseEnChargeSpecifique: enListe,
 }
+
+export const affichee = <C extends ChampCompare>(
+  champ: C,
+  valeur: Fiche[C],
+): ValeurAffichee => (valeur == null ? ABSENTE : afficheurs[champ](valeur))
