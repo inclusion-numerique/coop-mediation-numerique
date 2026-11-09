@@ -1,9 +1,9 @@
 import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@app/web/libs/ui/administration/AdministrationInlineLabelsValues'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { LieuDuMediateurEnListe } from '../../domain'
+import { lieuEnAdministration } from '../lieu-en-administration.presenter'
 
 export const LieuxDActiviteEnAdministration = ({
   lieux,
@@ -17,46 +17,31 @@ export const LieuxDActiviteEnAdministration = ({
     />
   ) : (
     <AdministrationInfoCard title="Lieux d’activité">
-      {lieux.map(({ id, debut, lieuInclusion }) => (
-        <div key={id}>
+      {lieux.map(lieuEnAdministration).map((lieu) => (
+        <div key={lieu.rattachement}>
           <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
-            {lieuInclusion.nom}
+            {lieu.nom}
           </p>
           <AdministrationInlineLabelsValues
             items={[
-              { label: 'Nom', value: lieuInclusion.nom },
+              { label: 'Nom', value: lieu.nom },
               {
                 label: 'Id',
                 value: (
                   <Link
-                    href={`/administration/lieux-activite/${lieuInclusion.id}/modifier`}
+                    href={`/administration/lieux-activite/${lieu.id}/modifier`}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {lieuInclusion.id}
+                    {lieu.id}
                   </Link>
                 ),
               },
-              {
-                label: 'Adresse',
-                value: lieuInclusion.adresse || 'Non renseignée',
-              },
-              {
-                label: 'Commune',
-                value: lieuInclusion.commune || 'Non renseignée',
-              },
-              {
-                label: 'Code Insee',
-                value: lieuInclusion.codeInsee || 'Non renseigné',
-              },
-              {
-                label: 'Code postal',
-                value: lieuInclusion.codePostal || 'Non renseigné',
-              },
-              {
-                label: 'Lien d’activité créé le',
-                value: debut ? dateAsDay(debut) : '-',
-              },
+              { label: 'Adresse', value: lieu.adresse },
+              { label: 'Commune', value: lieu.commune },
+              { label: 'Code Insee', value: lieu.codeInsee },
+              { label: 'Code postal', value: lieu.codePostal },
+              { label: 'Lien d’activité créé le', value: lieu.rattacheLe },
             ]}
           />
         </div>

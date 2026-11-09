@@ -15,8 +15,7 @@ import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import {
-  auteurDeLaDerniereModification,
-  hrefDuLieu,
+  hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@app/web/features/lieux-activite/ui'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
@@ -64,10 +63,7 @@ const LieuActiviteListPage = async ({
               <LieuActiviteCard
                 key={id}
                 lieu={lieuInclusion}
-                href={hrefDuLieu(lieuInclusion)}
-                derniereModificationPar={auteurDeLaDerniereModification(
-                  lieuInclusion,
-                )}
+                href={hrefDuLieuEnListe(lieuInclusion)}
                 retrait={
                   <BoutonDeRetrait
                     mediateurId={MediateurId(mediateur.id)}

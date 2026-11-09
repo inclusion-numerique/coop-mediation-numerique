@@ -1,12 +1,13 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import type { MediateurId } from '../../../../domain/mediateur-id'
+import { RattachementId } from '../../../../domain/rattachement-id'
 import {
   ordonnancement,
   type TriDesLieux,
 } from '../../../../domain/tri-des-lieux'
 import {
-  avecLaFicheDuRegistre,
+  lieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
 import type { LieuDuMediateurEnListe } from '../../domain'
@@ -33,8 +34,9 @@ export const listerLesLieuxDuMediateur = async ({
     orderBy,
   })
 
-  return rattachements.map((rattachement) => ({
-    ...rattachement,
-    lieuInclusion: avecLaFicheDuRegistre(rattachement.lieuInclusion),
+  return rattachements.map(({ id, debut, lieuInclusion }) => ({
+    id: RattachementId(id),
+    debut,
+    lieuInclusion: lieuEnListe(lieuInclusion),
   }))
 }

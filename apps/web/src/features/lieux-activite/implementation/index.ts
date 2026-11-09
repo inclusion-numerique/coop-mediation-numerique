@@ -10,7 +10,7 @@ export {
   preparerCorrele,
 } from './prisma/lieu-correle'
 export {
-  avecLaFicheDuRegistre,
+  lieuEnListe,
   projectionDuLieuEnListe,
 } from './prisma/lieu-en-liste'
 export {

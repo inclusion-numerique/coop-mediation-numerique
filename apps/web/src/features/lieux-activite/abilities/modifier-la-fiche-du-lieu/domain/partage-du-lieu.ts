@@ -1,17 +1,7 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
-import { z } from 'zod'
-
-export const NombreDeMediateurs = defineModel(
-  z.number().int().nonnegative().brand('NombreDeMediateurs'),
-)
-
-export type NombreDeMediateurs = Model.TypeOf<typeof NombreDeMediateurs>
-
-export const NombreDActivites = defineModel(
-  z.number().int().nonnegative().brand('NombreDActivites'),
-)
-
-export type NombreDActivites = Model.TypeOf<typeof NombreDActivites>
+import type {
+  NombreDActivites,
+  NombreDeMediateurs,
+} from '../../../domain/nombres'
 
 export type PartageDuLieu = {
   readonly autresMediateurs: NombreDeMediateurs

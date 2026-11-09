@@ -4,30 +4,24 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import type { LieuEnListe } from '../domain/lieu-en-liste'
 import CartographyIndicator from './CartographyIndicator'
-import {
-  carteDuLieu,
-  type LieuEnActivite,
-} from './lieu-activite-card.presenter'
-
-export type { LieuEnActivite }
+import { carteDuLieu } from './lieu-activite-card.presenter'
 
 const LieuActiviteCard = ({
   lieu,
   href,
-  derniereModificationPar,
   className,
   retrait,
   showActionButtons = false,
 }: {
-  lieu: LieuEnActivite
+  lieu: LieuEnListe
   href: string
-  derniereModificationPar?: string | null
   className?: string
   retrait?: ReactNode
   showActionButtons?: boolean
 }) => {
-  const carte = carteDuLieu(lieu, derniereModificationPar ?? null, new Date())
+  const carte = carteDuLieu(lieu, new Date())
 
   return (
     <article
@@ -98,9 +92,7 @@ const LieuActiviteCard = ({
         )}
         <CartographyIndicator
           status={carte.statutCartographie}
-          structureCartographieNationaleId={
-            lieu.structureCartographieNationaleId
-          }
+          structureCartographieNationaleId={lieu.identifiantCartographie}
           structureId={lieu.id}
           className="fr-lieu-activite-card__au-dessus"
         />

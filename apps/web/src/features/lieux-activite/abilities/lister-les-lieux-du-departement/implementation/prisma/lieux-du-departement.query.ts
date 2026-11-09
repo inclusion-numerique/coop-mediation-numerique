@@ -6,7 +6,7 @@ import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedVal
 import type { LieuEnListe } from '../../../../domain/lieu-en-liste'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
-  avecLaFicheDuRegistre,
+  lieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
 import {
@@ -51,7 +51,7 @@ const getLieuxByIds = async ({
     select: projectionDuLieuEnListe,
   })
 
-  return lieux.map(avecLaFicheDuRegistre)
+  return lieux.map(lieuEnListe)
 }
 
 export const lieuxDuDepartement = async ({

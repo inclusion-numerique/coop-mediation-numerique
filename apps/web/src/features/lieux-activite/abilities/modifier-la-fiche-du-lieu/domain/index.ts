@@ -1,3 +1,7 @@
+export {
+  NombreDActivites,
+  NombreDeMediateurs,
+} from '../../../domain/nombres'
 export { appliquerModification } from './appliquer-la-modification'
 export {
   type ChampCompare,
@@ -10,12 +14,7 @@ export {
 export * from './errors'
 export type { FicheDuLieu } from './fiche-du-lieu'
 export * from './modification-lieu'
-export {
-  estPartage,
-  NombreDActivites,
-  NombreDeMediateurs,
-  type PartageDuLieu,
-} from './partage-du-lieu'
+export { estPartage, type PartageDuLieu } from './partage-du-lieu'
 export { laisseUnePublicationSansAdresse } from './publication-sans-adresse'
 export { laisseUnePublicationSansService } from './publication-sans-service'
 export { resoudreLesDifferences } from './resoudre-les-differences'

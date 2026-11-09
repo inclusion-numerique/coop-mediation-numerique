@@ -1,27 +1,14 @@
-import { nomAffiche } from '@app/web/features/lieux-activite/domain/nom-affiche'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
 import { pluriel } from '@app/web/libraries/pluriel'
+import type { Adresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { format, isAfter, isBefore, subDays, subYears } from 'date-fns'
+import type { LieuEnListe, ModificationEnListe } from '../domain/lieu-en-liste'
+import { nomAffiche } from '../domain/nom-affiche'
+import { estPublie } from '../domain/visibilite-cartographie'
 import {
   type CartographyStatus,
   getCartographyStatus,
 } from './statut-cartographie'
-
-export type LieuEnActivite = {
-  readonly id: string
-  readonly nom: string
-  readonly nomUsage: string | null
-  readonly adresse: string
-  readonly complementAdresse: string | null
-  readonly commune: string
-  readonly codePostal: string
-  readonly modification: Date
-  readonly derniereModificationSource: string | null
-  readonly visiblePourCartographieNationale: boolean
-  readonly structureCartographieNationaleId: string | null
-  readonly adresseAPreciser: boolean
-  readonly _count: { readonly mediateursEnActivite: number }
-}
 
 export type MiseAJourAffichee =
   | { readonly _tag: 'TropAncienne'; readonly texte: string }
@@ -35,61 +22,53 @@ export type CarteDuLieu = {
   readonly mediateurs: string
 }
 
-const parQui = (
-  lieu: LieuEnActivite,
-  derniereModificationPar: string | null,
-): string => {
-  const auteur =
-    derniereModificationPar ??
-    (lieu.derniereModificationSource == null
-      ? null
-      : getCartographieNationaleSourceLabel(lieu.derniereModificationSource))
-
-  return auteur == null ? '' : ` par ${auteur}`
-}
+const parQui = (modification: ModificationEnListe): string =>
+  modification._tag === 'ParUtilisateur'
+    ? ` par ${modification.auteur}`
+    : modification._tag === 'ParSource'
+      ? ` par ${getCartographieNationaleSourceLabel(modification.source)}`
+      : ''
 
 const miseAJour = (
-  lieu: LieuEnActivite,
-  derniereModificationPar: string | null,
+  modification: ModificationEnListe,
   maintenant: Date,
 ): MiseAJourAffichee =>
-  isBefore(lieu.modification, subYears(maintenant, 1))
+  isBefore(modification.date, subYears(maintenant, 1))
     ? {
         _tag: 'TropAncienne',
-        texte: `Dernière mise à jour il y a plus d’un an${parQui(lieu, derniereModificationPar)}`,
+        texte: `Dernière mise à jour il y a plus d’un an${parQui(modification)}`,
       }
     : {
         _tag: 'Recente',
-        texte: `Mis à jour le ${format(lieu.modification, 'dd.MM.yyyy')}${parQui(lieu, derniereModificationPar)}`,
+        texte: `Mis à jour le ${format(modification.date, 'dd.MM.yyyy')}${parQui(modification)}`,
       }
 
-const adresse = ({
-  adresse,
-  complementAdresse,
-  codePostal,
-  commune,
-}: LieuEnActivite): string =>
-  `${adresse}${complementAdresse ? ` (${complementAdresse})` : ''}, ${codePostal} ${commune}`
+const adresse = (adresse: Adresse | null): string =>
+  adresse == null
+    ? 'Adresse non renseignée'
+    : `${adresse.voie}${adresse.complement_adresse ? ` (${adresse.complement_adresse})` : ''}, ${adresse.code_postal} ${adresse.commune}`
 
-const mediateurs = ({ _count }: LieuEnActivite): string =>
-  `${_count.mediateursEnActivite} ${pluriel(
-    _count.mediateursEnActivite,
+const mediateurs = (nombre: number): string =>
+  `${nombre} ${pluriel(
+    nombre,
     'médiateur numérique référencé',
     'médiateurs numériques référencés',
   )}`
 
 export const carteDuLieu = (
-  lieu: LieuEnActivite,
-  derniereModificationPar: string | null,
+  lieu: LieuEnListe,
   maintenant: Date,
 ): CarteDuLieu => ({
   nom: nomAffiche(lieu.nom, lieu.nomUsage),
-  adresse: adresse(lieu),
-  miseAJour: miseAJour(lieu, derniereModificationPar, maintenant),
+  adresse: adresse(lieu.adresse),
+  miseAJour: miseAJour(lieu.derniereModification, maintenant),
   statutCartographie: getCartographyStatus({
-    visiblePourCartographieNationale: lieu.visiblePourCartographieNationale,
-    structureCartographieNationaleId: lieu.structureCartographieNationaleId,
-    hasRecentModification: isAfter(lieu.modification, subDays(maintenant, 1)),
+    visiblePourCartographieNationale: estPublie(lieu.visibilite),
+    structureCartographieNationaleId: lieu.identifiantCartographie,
+    hasRecentModification: isAfter(
+      lieu.derniereModification.date,
+      subDays(maintenant, 1),
+    ),
   }),
-  mediateurs: mediateurs(lieu),
+  mediateurs: mediateurs(lieu.mediateurs),
 })

@@ -90,6 +90,10 @@ export {
   CreerLieuActiviteValidation,
 } from './domain/creation/creer-lieu-activite.validation'
 export { IdentifiantCartographie } from './domain/ids-cartographie-nationale'
+export type {
+  LieuEnListe,
+  ModificationEnListe,
+} from './domain/lieu-en-liste'
 export { LieuId } from './domain/lieu-id'
 export { MediateurId } from './domain/mediateur-id'
 export { adresseSaisie, localisationSaisie } from './domain/saisie'

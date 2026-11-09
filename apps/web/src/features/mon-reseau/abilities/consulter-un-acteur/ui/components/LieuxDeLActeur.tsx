@@ -3,15 +3,12 @@
 import Card from '@app/web/components/Card'
 import IconInSquare from '@app/web/components/IconInSquare'
 import {
-  hrefDuLieu,
+  hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@app/web/features/lieux-activite/ui'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
-import {
-  auteurDeLaDerniereModification,
-  type LieuAffiche,
-} from '../../../../ui/lieu-affiche'
+import { type LieuAffiche } from '../../../../ui/lieu-affiche'
 
 const NOMBRE_AFFICHE_AU_DEPART = 3
 
@@ -47,8 +44,7 @@ export const LieuxDeLActeur = ({
           <LieuActiviteCard
             key={lieu.id}
             lieu={lieu}
-            href={hrefDuLieu(lieu)}
-            derniereModificationPar={auteurDeLaDerniereModification(lieu)}
+            href={hrefDuLieuEnListe(lieu)}
             className={
               !plusQueLeDepart && rang === affiches.length - 1
                 ? 'fr-border-none'

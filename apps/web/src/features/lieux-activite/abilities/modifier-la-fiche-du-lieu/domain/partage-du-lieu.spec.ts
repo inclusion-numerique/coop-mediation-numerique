@@ -1,8 +1,5 @@
-import {
-  estPartage,
-  NombreDActivites,
-  NombreDeMediateurs,
-} from './partage-du-lieu'
+import { NombreDActivites, NombreDeMediateurs } from '../../../domain/nombres'
+import { estPartage } from './partage-du-lieu'
 
 describe('un lieu est partagé', () => {
   it('quand un autre médiateur y exerce', () => {

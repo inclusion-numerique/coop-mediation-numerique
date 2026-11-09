@@ -93,7 +93,7 @@ Given(
 Then("le lieu listé porte l'identifiant du registre", () => {
   assert.deepStrictEqual(
     liste.lieux?.map(
-      ({ lieuInclusion }) => lieuInclusion.structureCartographieNationaleId,
+      ({ lieuInclusion }) => lieuInclusion.identifiantCartographie,
     ),
     [IDENTIFIANT_DU_REGISTRE],
   )

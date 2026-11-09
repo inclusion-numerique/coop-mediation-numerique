@@ -1,10 +1,17 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
-import type { LieuEnListe } from '../../domain/lieu-en-liste'
-import {
-  adresseDeLInscription,
-  type InscriptionPourLaFiche,
-  inscriptionPourLaFiche,
-} from './registre'
+import { nomAffiche } from '@app/web/libraries/nom-affiche'
+import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { NomUsage } from '../../domain/identite-sirene'
+import { IdentifiantCartographie } from '../../domain/ids-cartographie-nationale'
+import type {
+  LieuEnListe,
+  ModificationEnListe,
+} from '../../domain/lieu-en-liste'
+import { LieuId } from '../../domain/lieu-id'
+import { NombreDeMediateurs } from '../../domain/nombres'
+import { SourceCartographie } from '../../domain/tracabilite'
+import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
+import { adresseDeLInscription, inscriptionPourLaFiche } from './registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'
 
 export const projectionDuLieuEnListe = {
@@ -47,38 +54,75 @@ type LigneEnListe = Prisma.LieuInclusionGetPayload<{
   select: typeof projectionDuLieuEnListe
 }>
 
-const depuisLInscription = (
-  ligne: LigneEnListe,
-  inscription: InscriptionPourLaFiche,
-) => {
-  const adresse = adresseDeLInscription(inscription)
-  const externe = derniereModificationExterne(inscription, ligne.modification)
+const adresseDeLaCoop = (ligne: LigneEnListe): Adresse | null =>
+  Adresse.safe({
+    voie: ligne.adresse,
+    commune: ligne.commune,
+    code_postal: ligne.codePostal,
+    ...(ligne.codeInsee == null || ligne.codeInsee === ''
+      ? {}
+      : { code_insee: ligne.codeInsee }),
+    ...(ligne.complementAdresse == null || ligne.complementAdresse.trim() === ''
+      ? {}
+      : { complement_adresse: ligne.complementAdresse }),
+  })
 
-  return {
-    nom: inscription.nom,
-    nomUsage: inscription.nomUsage ?? ligne.nomUsage,
-    adresse: adresse?.voie ?? ligne.adresse,
-    complementAdresse: adresse?.complement_adresse ?? ligne.complementAdresse,
-    commune: adresse?.commune ?? ligne.commune,
-    codePostal: adresse?.code_postal ?? ligne.codePostal,
-    codeInsee: adresse?.code_insee ?? ligne.codeInsee,
-    derniereModificationSource:
-      externe?._tag === 'ParSource'
-        ? externe.source
-        : ligne.derniereModificationSource,
-    structureCartographieNationaleId:
-      inscription.structureCartographieNationaleId,
-  }
+const sourceDeLaModification = (
+  ligne: LigneEnListe,
+): SourceCartographie | null => {
+  const externe =
+    ligne.inscriptionRegistre == null
+      ? null
+      : derniereModificationExterne(
+          ligne.inscriptionRegistre,
+          ligne.modification,
+        )
+
+  return externe?._tag === 'ParSource'
+    ? externe.source
+    : SourceCartographie.safe(ligne.derniereModificationSource ?? '')
 }
 
-export const avecLaFicheDuRegistre = (ligne: LigneEnListe): LieuEnListe => {
-  const { inscriptionRegistre, banId, ...reste } = ligne
+const derniereModification = (ligne: LigneEnListe): ModificationEnListe => {
+  const { derniereModificationPar: auteur, modification: date } = ligne
+
+  if (auteur != null)
+    return {
+      _tag: 'ParUtilisateur',
+      date,
+      auteur: nomAffiche({
+        prenom: auteur.firstName,
+        nom: auteur.lastName,
+        nomComplet: auteur.name,
+        courriel: auteur.email,
+      }),
+    }
+
+  const source = sourceDeLaModification(ligne)
+
+  return source == null
+    ? { _tag: 'Inconnue', date }
+    : { _tag: 'ParSource', date, source }
+}
+
+export const lieuEnListe = (ligne: LigneEnListe): LieuEnListe => {
+  const inscription = ligne.inscriptionRegistre
 
   return {
-    ...reste,
-    adresseAPreciser: banId == null,
-    ...(inscriptionRegistre == null
-      ? { structureCartographieNationaleId: null }
-      : depuisLInscription(ligne, inscriptionRegistre)),
+    id: LieuId(ligne.id),
+    nom: Nom(inscription?.nom ?? ligne.nom),
+    nomUsage: NomUsage.safe(inscription?.nomUsage ?? ligne.nomUsage ?? ''),
+    adresse:
+      (inscription == null ? null : adresseDeLInscription(inscription)) ??
+      adresseDeLaCoop(ligne),
+    adresseAPreciser: ligne.banId == null,
+    derniereModification: derniereModification(ligne),
+    visibilite: VisibiliteCartographie(
+      ligne.visiblePourCartographieNationale ? 'Publie' : 'NonPublie',
+    ),
+    identifiantCartographie: IdentifiantCartographie.safe(
+      inscription?.structureCartographieNationaleId ?? '',
+    ),
+    mediateurs: NombreDeMediateurs(ligne._count.mediateursEnActivite),
   }
 }
