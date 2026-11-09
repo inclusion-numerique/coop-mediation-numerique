@@ -1,4 +1,5 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 import type { FusionAutorisee } from '../../domain'
 
@@ -444,6 +445,7 @@ export const fusionner = async ({
       await reattribuerLesTraces(tx, source.id, cible.id)
       await transfererLesLiaisons(tx, source.id, cible.id)
       await retirerLaSource(tx, source.id)
+      await synchroniserPersonne(tx, cible.id)
     },
     { timeout: 60_000 },
   )

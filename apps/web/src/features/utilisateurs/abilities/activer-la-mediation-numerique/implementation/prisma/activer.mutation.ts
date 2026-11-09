@@ -1,3 +1,4 @@
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 
@@ -20,11 +21,15 @@ export const activer = async ({
   readonly coordinateurId: string
   readonly duree: () => number
 }): Promise<string> => {
-  const mediateur = await prismaClient.mediateur.upsert({
-    where: { userId: utilisateurId },
-    create: { userId: utilisateurId },
-    update: {},
-    select: { id: true },
+  const mediateur = await prismaClient.$transaction(async (transaction) => {
+    const active = await transaction.mediateur.upsert({
+      where: { userId: utilisateurId },
+      create: { userId: utilisateurId },
+      update: {},
+      select: { id: true },
+    })
+    await synchroniserPersonne(transaction, utilisateurId)
+    return active
   })
 
   addMutationLog({

@@ -1,4 +1,5 @@
 import { inscriptionEtatFromDomain } from '@app/web/features/inscription/db'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import type { EnregistrerProfilChoisi } from '../../domain'
@@ -15,24 +16,27 @@ export const enregistrerProfilChoisi: EnregistrerProfilChoisi = async ({
 }) => {
   const { userId } = etat
 
-  await prismaClient.user.update({
-    where: { id: userId },
-    data: {
-      ...inscriptionEtatFromDomain(etat),
-      ...(roles.mediateur
-        ? {
-            mediateur: {
-              connectOrCreate: { where: { userId }, create: { id: v4() } },
-            },
-          }
-        : {}),
-      ...(roles.coordinateur
-        ? {
-            coordinateur: {
-              connectOrCreate: { where: { userId }, create: { id: v4() } },
-            },
-          }
-        : {}),
-    },
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.user.update({
+      where: { id: userId },
+      data: {
+        ...inscriptionEtatFromDomain(etat),
+        ...(roles.mediateur
+          ? {
+              mediateur: {
+                connectOrCreate: { where: { userId }, create: { id: v4() } },
+              },
+            }
+          : {}),
+        ...(roles.coordinateur
+          ? {
+              coordinateur: {
+                connectOrCreate: { where: { userId }, create: { id: v4() } },
+              },
+            }
+          : {}),
+      },
+    })
+    await synchroniserPersonne(transaction, userId)
   })
 }

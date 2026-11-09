@@ -1,4 +1,5 @@
 import type { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
@@ -20,19 +21,22 @@ export const reglerLaVisibiliteCarto = async ({
 
   const mediateur = await prismaClient.mediateur.findFirst({
     where: { id: mediateurId, user: { deleted: null } },
-    select: { id: true },
+    select: { id: true, userId: true },
   })
 
   if (mediateur == null) return failure(MediateurIntrouvable(mediateurId))
 
-  await prismaClient.mediateur.update({
-    where: { id: mediateur.id },
-    data: {
-      isVisible: visible,
-      visibiliteChoisieLe: maintenant,
-      modification: maintenant,
-      user: { update: { updated: maintenant } },
-    },
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.mediateur.update({
+      where: { id: mediateur.id },
+      data: {
+        isVisible: visible,
+        visibiliteChoisieLe: maintenant,
+        modification: maintenant,
+        user: { update: { updated: maintenant } },
+      },
+    })
+    await synchroniserPersonne(transaction, mediateur.userId, maintenant)
   })
 
   addMutationLog({
