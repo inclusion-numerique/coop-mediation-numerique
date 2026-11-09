@@ -7,12 +7,6 @@ import { type ReactNode, useState } from 'react'
 import CreerLieuActiviteForm from './CreerLieuActiviteForm'
 import type { CreerLieuActiviteFormData } from './creer-lieu-activite.form-data'
 
-/**
- * Page de création d'un lieu d'activité, partagée par l'inscription et la
- * gestion des lieux : même mise en page, même formulaire. Ce qui change d'un
- * parcours à l'autre — le retour, le fil d'Ariane, l'enregistrement — est
- * injecté par la route.
- */
 export const CreerLieuActivitePageContent = ({
   contentTop,
   retourHref,

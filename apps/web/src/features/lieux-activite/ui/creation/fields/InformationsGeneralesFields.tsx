@@ -14,11 +14,6 @@ import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
-/**
- * Identité du lieu à créer : ni SIRET ni RNA. On n'arrive sur ce formulaire
- * qu'après une recherche restée sans résultat — redemander une immatriculation
- * reviendrait à redemander ce qu'on vient de ne pas trouver.
- */
 export const InformationsGeneralesFields = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean; className?: string },

@@ -100,7 +100,6 @@ const CartographyIndicator = ({
     )
   }
 
-  // not_visible
   return (
     <span className="fr-flex fr-align-items-center">
       <span className={classNames('fr-tag fr-tag--sm', 'fr-tag--carto-absent')}>

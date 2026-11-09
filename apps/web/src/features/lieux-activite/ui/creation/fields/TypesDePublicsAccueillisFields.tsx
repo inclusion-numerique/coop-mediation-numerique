@@ -14,11 +14,6 @@ const tousLesPublics: PublicSpecifiquementAdresse[] =
 const sontTousCoches = (publics: PublicSpecifiquementAdresse[]) =>
   publics.length === tousLesPublics.length
 
-/**
- * « Tout public » et la liste des publics restent d'accord : cocher la case
- * sélectionne tout, la décocher ne vide la liste que si elle était complète —
- * décocher un public isolé ne doit pas emporter les autres avec lui.
- */
 export const TypesDePublicsAccueillisFields = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean },
@@ -74,9 +69,6 @@ export const TypesDePublicsAccueillisFields = withForm({
       >
         {(field) => (
           <field.Checkbox
-            // La sous-liste se rattache à la case qui la commande par son
-            // retrait, pas par l'absence d'air : le DSFR remonte déjà sa
-            // première case de .75rem, une marge négative en plus les collait.
             className="fr-mb-0 fr-ml-4v fr-mt-3v"
             classes={{ content: 'fr-checkboxes-compact' }}
             small

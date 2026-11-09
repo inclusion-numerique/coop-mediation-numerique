@@ -21,7 +21,6 @@ const TYPES_UTILISABLES: ReadonlySet<string> = new Set([
   'locality',
 ])
 
-/** Ce que la Base Adresse Nationale nomme au point, avant d'être situé. */
 type VoieAuPoint = {
   readonly lieuId: string
   readonly voie: string
@@ -98,15 +97,6 @@ const aChercher = (trouvee: VoieAuPoint): AdresseSoumise => ({
   codeInsee: trouvee.codeInsee,
 })
 
-/**
- * La voie nommée au point, puis cherchée pour être située.
- *
- * Le géocodage inverse dit quelle adresse se trouve à un point et à quelle
- * distance, mais il n'en rend ni les coordonnées ni le code postal : sa réponse
- * ne suffirait pas à remplir une adresse. C'est la recherche de cette voie qui
- * donne l'entrée complète — et qui garantit que tout ce qu'on écrit vient de la
- * Base Adresse Nationale, coordonnées comprises, plutôt que du point de départ.
- */
 type Position = { readonly latitude: number; readonly longitude: number }
 
 const ReponseCommune = z.object({
@@ -207,13 +197,6 @@ const situer = async (
   })
 }
 
-/**
- * Ce que la Base Adresse Nationale trouve aux points qu'on lui montre.
- *
- * Le recours quand l'adresse écrite ne suffit pas : des imports ont mis dans la
- * ligne de voie le nom de la commune ou celui du bâtiment, tout en posant des
- * coordonnées justes.
- */
 export const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
   coordonnees,
 ) => {

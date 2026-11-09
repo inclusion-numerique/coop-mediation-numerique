@@ -23,12 +23,6 @@ import { ModalitesAccesAuServiceFields } from './fields/ModalitesAccesAuServiceF
 import { ServicesEtAccompagnementFields } from './fields/ServicesEtAccompagnementFields'
 import { TypesDePublicsAccueillisFields } from './fields/TypesDePublicsAccueillisFields'
 
-/**
- * Formulaire de création d'un lieu d'activité, partagé par les deux parcours qui
- * y mènent : l'inscription et la gestion des lieux. La saisie et sa validation
- * vivent ici ; l'enregistrement est injecté par la route (`onCreer`), chacune
- * gardant sa propre commande.
- */
 const CreerLieuActiviteForm = ({
   nom,
   annulerHref,
@@ -37,13 +31,7 @@ const CreerLieuActiviteForm = ({
   onVisiblePourCartographieNationaleChange,
 }: {
   nom?: string
-  /** Où revenir en annulant, quand annuler veut dire quitter la page. */
   annulerHref?: string
-  /**
-   * Ce que fait « Annuler » quand la création se déroule DANS un écran qu'il
-   * ne faut pas quitter — le panier d'ajout, dont la navigation viderait la
-   * sélection en cours.
-   */
   onAnnuler?: () => void
   onCreer: (data: CreerLieuActiviteFormData) => Promise<void>
   onVisiblePourCartographieNationaleChange?: (visible: boolean) => void

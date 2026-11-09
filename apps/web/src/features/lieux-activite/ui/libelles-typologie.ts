@@ -1,12 +1,5 @@
 import type { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
-/**
- * Les libellés des typologies.
- *
- * Seule nomenclature dont les valeurs du schéma national ne sont pas lisibles
- * telles quelles : ce sont des sigles. La coop garde donc en propre le libellé
- * affiché dans les formulaires et les fiches.
- */
 export const typologieLibelles: Record<Typologie, string> = {
   ACI: 'Structures porteuses d’ateliers et chantiers d’insertion (ACI)',
   ACIPHC: 'SIAE — Atelier chantier d’insertion premières heures en chantier',
@@ -110,10 +103,5 @@ export const typologieLibelles: Record<Typologie, string> = {
 
 const parValeur = new Map<string, string>(Object.entries(typologieLibelles))
 
-/**
- * Le libellé d'une typologie désignée par une chaîne quelconque — ce que rendent
- * les listes de sélection — ou la chaîne elle-même quand elle n'en désigne
- * aucune.
- */
 export const libelleDeTypologie = (valeur: string): string =>
   parValeur.get(valeur) ?? valeur

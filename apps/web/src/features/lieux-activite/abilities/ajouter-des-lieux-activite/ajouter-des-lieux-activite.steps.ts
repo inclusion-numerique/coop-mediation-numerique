@@ -44,7 +44,6 @@ const dernier: {
 } = {}
 const lieuxDeTest: string[] = []
 
-/** L'Entrepôt n'est pas joignable en test : le port existe pour cela. */
 const ports = {
   lireLieuxDejaRattaches,
   trouverStructuresCarto: async () => new Map(),
@@ -62,18 +61,9 @@ const ajouter = async (
     ports: { ...ports, trouverStructuresCarto: async () => structuresCarto },
   })
 
-  // Les lieux rejoints ou matérialisés se tracent ICI, à l'ajout, et non au
-  // moment où une assertion les retrouve : un scénario qui échoue avant sa
-  // dernière étape les laisserait sinon derrière lui, et le suivant buterait
-  // dessus pour une raison sans rapport.
   if (dernier.ajout.success) lieuxDeTest.push(...dernier.ajout.data.lieux)
 }
 
-/**
- * Un lieu à créer porte toujours une adresse validée par la BAN : c'est la
- * condition pour qu'il soit créé du tout. Les scénarios qui mettent en scène un
- * lieu déjà connu passent son `id` et n'ont pas d'adresse à valider.
- */
 const lieuSaisi = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
   nom: Nom('Tiers-lieu du Port'),
   adresse: Adresse({
@@ -159,7 +149,6 @@ When('ce médiateur ajoute un lieu où il exerce déjà', async () => {
 When(
   'ce médiateur saisit un lieu à la même adresse que ce lieu référencé',
   async () => {
-    // Ni id ni carto : seule la corrélation peut le rattacher à l'existant.
     await ajouter(
       [
         lieuSaisi({
@@ -227,11 +216,6 @@ Then('ce médiateur exerce dans trois lieux', async () => {
   assert.strictEqual(await lieuxDuMediateur(), 3)
 })
 
-/**
- * On cherche la dénomination SOUMISE, pas une absence globale : la base locale
- * porte des données restaurées, et compter les lieux d'une commune y mesurerait
- * la production plutôt que le scénario.
- */
 Then("aucun lieu n'a été créé", async () => {
   const doublon = await prismaClient.lieuInclusion.count({
     where: { nom: Nom('Mediatheque du centre') },
@@ -246,8 +230,6 @@ Then("l'ajout est refusé", () => {
 
 After(async () => {
   const ids = [...lieuxDeTest]
-  // Les semis Entrepôt s'effacent même quand aucun lieu coop n'a été créé : ils
-  // survivraient au scénario, leur table appartenant à un autre schéma.
   const { adresses, inscriptions } = semisEntrepot
   lieuxDeTest.length = 0
   dernier.ajout = undefined
@@ -325,12 +307,6 @@ Given('le registre connaît déjà un lieu de la cartographie', async () => {
   semisEntrepot.inscriptions = [...semisEntrepot.inscriptions, inscription.id]
 })
 
-/**
- * Un identifiant propre à ce scénario. Le partager avec celui de l'adoption les
- * rendrait solidaires : l'identifiant est unique en base, si bien qu'un échec
- * laissant une inscription derrière lui ferait échouer l'autre au passage
- * suivant, pour une raison qui n'aurait rien à voir.
- */
 const IDENTIFIANT_CARTO_DEJA_RELIE = 'Dora_99999999-8888-7777-6666-555555555555'
 
 Given(
@@ -399,7 +375,6 @@ When('ce médiateur ajoute ce lieu de la cartographie', async () => {
   )
 })
 
-/** Le lieu coop que le scénario vient de matérialiser, quel que soit son nom. */
 const lieuMaterialise = async () => {
   const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
     where: {

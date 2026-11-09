@@ -22,10 +22,6 @@ describe('les labels de formation que la coop sait enregistrer', () => {
     ])
   })
 
-  /**
-   * Le schéma national en compte un de plus, auquel la base ne sait pas donner
-   * de nom : le réafficher ferait disparaître le choix à l'enregistrement.
-   */
   it('écarte celui que la base ne sait pas nommer', () => {
     expect(
       formationsLabelsProposees([
@@ -41,11 +37,6 @@ describe('les labels de formation que la coop sait enregistrer', () => {
 })
 
 describe('les valeurs reconnues parmi des libellés bruts', () => {
-  /**
-   * Une source externe rend des chaînes ; les traiter d'emblée comme des
-   * valeurs du standard demanderait un `as`, c'est-à-dire une affirmation
-   * qu'on ne vérifie pas.
-   */
   it('retient les libellés que l’énumération connaît, dans l’ordre', () => {
     expect(
       reconnues(Service, [
@@ -67,12 +58,10 @@ describe('les valeurs reconnues parmi des libellés bruts', () => {
     ).toEqual([Service.AideAuxDemarchesAdministratives])
   })
 
-  /** La comparaison porte sur la VALEUR du standard, pas sur le nom du membre. */
   it('ne reconnaît pas le nom d’un membre pris pour sa valeur', () => {
     expect(reconnues(Service, ['AideAuxDemarchesAdministratives'])).toEqual([])
   })
 
-  /** Les sigles de typologie sont, eux, leur propre valeur. */
   it('reconnaît un sigle de typologie', () => {
     expect(reconnues(Typologie, ['ACI', 'RIEN'])).toEqual([Typologie.ACI])
   })

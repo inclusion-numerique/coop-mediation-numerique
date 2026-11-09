@@ -13,12 +13,6 @@ import {
   rechercheMinimum,
 } from './lieu-a-fusionner-combo-box'
 
-/**
- * Le champ qui désigne le lieu avec lequel fusionner.
- *
- * Rien n'est soumis : choisir SUFFIT, l'écran navigue aussitôt vers l'aperçu de
- * la fusion. Le champ n'existe donc que le temps d'une sélection.
- */
 export const RechercheDUnLieu = ({
   excludeStructureIds = [],
   defaultStructure,

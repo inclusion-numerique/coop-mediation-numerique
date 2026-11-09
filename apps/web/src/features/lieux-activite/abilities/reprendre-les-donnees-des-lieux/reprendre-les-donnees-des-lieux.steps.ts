@@ -108,9 +108,6 @@ const RNA = 'W751234567'
 
 const RESUME_TROP_LONG = 'x'.repeat(281)
 
-// L'adresse que la Base Adresse Nationale rend pour les lieux semés. Les
-// scénarios ne sortent pas sur le réseau : le géocodeur se passe en port, et
-// sans réponse conforme chaque lieu paraîtrait au relevé pour son adresse.
 const ADRESSE_BAN = {
   type: 'housenumber',
   score: 0.96,
@@ -168,17 +165,12 @@ const MAIRIE_DE_L_ANNUAIRE: AdresseGeocodee = {
   libelle: '1 Place Colbert 17300 Rochefort',
 }
 
-// La Base Adresse Nationale est interrogée deux fois sur la même adresse, avec
-// puis sans le code postal : elle rend donc plusieurs réponses par lieu.
 const banRend: { adresses: readonly AdresseGeocodee[] } = {
   adresses: [ADRESSE_BAN],
 }
 
-// Celle des réponses que le scénario attend en base, pour que l'assertion ne
-// redise pas la règle qu'elle vérifie.
 const attendue: { adresse: AdresseGeocodee } = { adresse: ADRESSE_BAN }
 
-// La voie semée, pour que « n'a pas bougé » se vérifie sans la redire.
 const initiale: { voie: string } = { voie: ADRESSE_BAN.voie }
 
 const banRendSeulement = (champs: Partial<AdresseGeocodee>): void => {
@@ -326,9 +318,6 @@ const semerUnLieu = async (champs: {
 
   if (champs.sansAccompagnement === true) return
 
-  // Un lieu de la coop a un médiateur et des accompagnements à son actif. Le
-  // semer ainsi rend la suppression explicite : elle ne frappe que le lieu
-  // qu'un scénario déclare n'avoir accompagné personne.
   const userId = v4()
 
   await prismaClient.user.create({

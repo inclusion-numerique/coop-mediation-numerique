@@ -21,7 +21,6 @@ describe('ce qu’il faut réunir pour qu’un ajout ait un sens', () => {
     })
   })
 
-  /** Un lieu ne se rattache qu'à un médiateur : sans profil, rien à ajouter. */
   it('refuse sans médiateur', () => {
     expect(demandeDAjout({ mediateurId: null, demandes: [demande] })).toEqual({
       success: false,
@@ -29,7 +28,6 @@ describe('ce qu’il faut réunir pour qu’un ajout ait un sens', () => {
     })
   })
 
-  /** Un panier vide n'est pas une demande d'ajout. */
   it('refuse un panier vide', () => {
     expect(demandeDAjout({ mediateurId: mediateur, demandes: [] })).toEqual({
       success: false,
@@ -37,7 +35,6 @@ describe('ce qu’il faut réunir pour qu’un ajout ait un sens', () => {
     })
   })
 
-  /** L'absence de médiateur se dit avant le panier : c'est le refus le plus fort. */
   it('refuse d’abord l’absence de médiateur', () => {
     expect(demandeDAjout({ mediateurId: null, demandes: [] })).toEqual({
       success: false,

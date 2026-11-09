@@ -39,12 +39,6 @@ export const VueDescription = ({
         )}
       </div>
     </div>
-    {/*
-      Les formations et labels ne se saisissent qu'à la création du lieu : cette
-      fiche n'offre aucun champ pour les renseigner. Annoncer « Non renseigné »
-      y désignait donc un manque que le lecteur ne pouvait pas combler — on ne
-      montre la rubrique que lorsqu'elle porte quelque chose.
-    */}
     {formationsLabels != null && formationsLabels.length > 0 && (
       <div>
         <span className="fr-text-mention--grey">Formations et labels</span>

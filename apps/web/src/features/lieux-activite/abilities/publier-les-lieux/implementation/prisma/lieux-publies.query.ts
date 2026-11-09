@@ -4,12 +4,6 @@ import { prismaClient } from '@app/web/prismaClient'
 import { lieuExploitableSql } from '../../../../implementation'
 import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
 
-/**
- * Un médiateur tel que la cartographie nationale l'affiche sur le lieu.
- *
- * Seuls y figurent ceux qui ont accepté d'être visibles : la carte publie un
- * nom et un moyen de contact, ce qui ne se présume pas.
- */
 export type Aidant = {
   id: string
   nom: string
@@ -17,21 +11,6 @@ export type Aidant = {
   telephone?: string
 }
 
-/**
- * Les lieux que la coop publie sur la cartographie nationale.
- *
- * Trois conditions, et elles se cumulent : le lieu n'est pas supprimé, il est
- * déclaré visible pour la cartographie, et il annonce au moins un service. Un
- * lieu sans service n'oriente personne.
- *
- * La requête est écrite en SQL brut parce qu'elle produit directement la forme
- * du schéma national — objets d'adresse, de localisation, de contact, de
- * présentation — que `jsonb_build_object` assemble bien mieux qu'une
- * projection en mémoire sur 12 000 lignes.
- *
- * Le dispositif conseiller numérique se dérive de `main` (affectation idposte
- * active), et non d'une colonne de la coop.
- */
 export const lieuxPublies = async ({
   ids,
   dispositifProgrammeNational,

@@ -22,7 +22,6 @@ const etablissement = {
   source: 'api' as const,
 }
 
-/** Ce que le formulaire porte à l'écran, adresse déjà reconnue par la BAN. */
 type Formulaire = Parameters<typeof informationsGeneralesSoumises>[0]
 
 const formulaire = (champs: Partial<Formulaire> = {}): Formulaire => ({
@@ -47,24 +46,18 @@ describe('avec un SIRET', () => {
     lieuItinerant: true,
   })
 
-  /**
-   * Un SIRET vient TOUJOURS de l'Annuaire des entreprises, seul à pouvoir
-   * l'attester. Ne pas le transmettre l'effaçait à chaque enregistrement.
-   */
   it('transmet le SIRET choisi dans l’Annuaire', () => {
     expect(informationsGeneralesSoumises(avecSiret).siret).toBe(
       '13002603200016',
     )
   })
 
-  /** Le médiateur qui veut paraître sous un autre nom dispose du nom d'usage. */
   it('transmet le nom d’usage', () => {
     expect(informationsGeneralesSoumises(avecSiret).nomUsage).toBe(
       'La Maison du Port',
     )
   })
 
-  /** L'itinérance ne se déclare que pour un lieu sans immatriculation. */
   it('n’emporte pas l’itinérance', () => {
     expect(informationsGeneralesSoumises(avecSiret).lieuItinerant).toBeNull()
   })
@@ -82,7 +75,6 @@ describe('sans SIRET', () => {
     expect(informationsGeneralesSoumises(sansSiret).siret).toBeNull()
   })
 
-  /** Sans immatriculation, le nom d'usage n'a plus d'objet. */
   it('efface le nom d’usage', () => {
     expect(informationsGeneralesSoumises(sansSiret).nomUsage).toBeNull()
   })
@@ -98,7 +90,6 @@ describe('sans SIRET', () => {
   })
 })
 
-/** Dans les deux cas, l'adresse a été reconnue par la Base Adresse Nationale. */
 describe('l’adresse', () => {
   it('est celle que la BAN a validée', () => {
     expect(informationsGeneralesSoumises(formulaire()).adresseBan).toBe(

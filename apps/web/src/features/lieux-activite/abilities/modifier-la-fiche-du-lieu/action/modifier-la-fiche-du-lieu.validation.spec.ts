@@ -74,8 +74,6 @@ describe('la saisie d’une section de fiche', () => {
       },
     )
 
-    // Ces deux-là passaient : le mapper les écartait ensuite en silence, et le
-    // lieu perdait son immatriculation sans que rien ne soit dit.
     it.each([['123'], ['12345678901234'], ['abcdefghijklmn']])(
       'refuse le SIRET %s',
       (siret) => {
@@ -122,8 +120,6 @@ describe('la saisie d’une section de fiche', () => {
       ).toBe(false)
     })
 
-    // Le préfixe seul était vérifié : tout ce qui commençait par l'adresse
-    // d'Acceslibre passait, URL ou non, pour être écarté ensuite en silence.
     it('refuse ce qui commence par Acceslibre sans être une URL', () => {
       expect(
         informationsPratiques({
@@ -147,8 +143,6 @@ describe('la saisie d’une section de fiche', () => {
       expect(numeroTelephone(numero)).toBe(true)
     })
 
-    // Le schéma national n'admet que les indicatifs français et d'outre-mer :
-    // un lieu paraît sur la cartographie nationale.
     it.each([['12'], ['poste 1234'], ['+32 470 44 25 43']])(
       'refuse %s',
       (numero) => {
@@ -158,12 +152,6 @@ describe('la saisie d’une section de fiche', () => {
   })
 })
 
-/**
- * La saisie peut être incohérente, le domaine non : une case de contact cochée
- * sans son moyen ferait une fiche annonçant qu'on peut joindre ce lieu, sans de
- * quoi le joindre. La règle croise deux champs, elle se tient donc sur l'union
- * assemblée et non sur l'un d'eux.
- */
 describe('une case de contact cochée exige son moyen', () => {
   const modalites = (champs: Record<string, unknown>) =>
     ModifierLaFicheDuLieuValidation.safeParse({
@@ -213,12 +201,10 @@ describe('une case de contact cochée exige son moyen', () => {
     ).toBe(true)
   })
 
-  /** Décochées, les cases n'exigent rien. */
   it('n’exige rien quand aucune case n’est cochée', () => {
     expect(modalites({}).success).toBe(true)
   })
 
-  /** La règle ne vaut que pour sa section : les autres ne la portent pas. */
   it('laisse passer une autre section', () => {
     expect(
       ModifierLaFicheDuLieuValidation.safeParse({

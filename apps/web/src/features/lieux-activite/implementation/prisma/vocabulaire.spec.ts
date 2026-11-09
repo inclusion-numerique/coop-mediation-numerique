@@ -5,20 +5,6 @@ type Pont<Coop extends string, Standard extends string> = {
   versCoop: (valeur: Standard) => Coop | null
 }
 
-/**
- * Traduire vers le standard ne peut pas échouer : la table est totale, et le
- * compilateur vérifie que chaque valeur citée est bien un membre de
- * l'énumération du paquet. Le retour, lui, passe par la table inversée — et
- * deux noms stockés qui désigneraient la même valeur du standard en feraient
- * disparaître un, sans que rien ne le signale.
- *
- * C'est donc la bijection qu'on exerce ici, entrée par entrée.
- *
- * L'accord avec les énumérations de la base ne s'y joue pas : le vocabulaire
- * déclare ses noms lui-même, et `ligne-du-lieu.ts` fait tenir l'égalité des
- * deux ensembles au compilateur. La typologie n'y figure pas non plus : ses
- * noms stockés se déduisent des valeurs du standard, il n'y a rien à exercer.
- */
 const exerceLaCorrespondance = <Coop extends string, Standard extends string>(
   pont: Pont<Coop, Standard>,
 ) => {

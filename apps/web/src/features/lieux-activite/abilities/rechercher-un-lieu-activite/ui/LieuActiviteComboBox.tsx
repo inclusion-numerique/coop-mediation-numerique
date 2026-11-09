@@ -11,8 +11,6 @@ const loadSuggestions = async (
     recherche: input,
   })
 
-  // Une recherche qui échoue ne propose rien : le champ reste utilisable, et
-  // l'utilisateur peut toujours saisir autre chose.
   return { items: resultat.success ? [...resultat.data] : [] }
 }
 

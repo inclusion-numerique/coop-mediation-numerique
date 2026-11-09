@@ -7,22 +7,6 @@ import {
   TypesDePublicsAccueillisSaisie,
 } from './modifier-la-fiche-du-lieu.validation'
 
-/**
- * Créer un lieu et corriger sa fiche décrivent le même objet : une valeur que
- * l'un accepte, l'autre l'accepte aussi.
- *
- * Ce fichier confronte les deux formulaires aux mêmes saisies. Il ne teste pas
- * une règle en particulier — chacune a son message et sa raison là où elle est
- * écrite — mais l'absence d'écart entre les deux portes d'entrée. C'est ce qui a
- * manqué : le téléphone se rangeait sous deux formes, la liste de sites web
- * passait d'un côté et pas de l'autre.
- */
-/**
- * Le schéma assemblé, et non la forme nue : les règles inter-champs — au moins
- * un service pour un lieu visible, un commentaire d'horaires adossé à un
- * créneau — vivent sur l'assemblage. Les comparer à la forme seule confrontait
- * la modification à un schéma que le produit n'emploie nulle part.
- */
 const creation = CreerLieuActiviteValidation
 
 const adresseBan = {
@@ -57,7 +41,6 @@ const saisieDeCreation = (champs: Record<string, unknown>) => ({
   ...champs,
 })
 
-/** Les deux verdicts, pour une même valeur, champ par champ. */
 const verdicts = {
   nom: (nom: unknown) => ({
     creation: creation.safeParse(saisieDeCreation({ nom })).success,
@@ -68,10 +51,6 @@ const verdicts = {
       typologies: ['TIERS_LIEUX'],
     }).success,
   }),
-  /**
-   * « Se présenter » : le moyen de contact qui n'exige rien d'autre, donc celui
-   * qui isole le contrat de la case elle-même.
-   */
   moyenDeContact: (coche: unknown) => ({
     creation: creation.safeParse(
       saisieDeCreation({ modalitesAcces: { surPlace: coche } }),
@@ -192,8 +171,6 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     ['nom', '   ', false],
 
     ['siteWeb', 'https://un.example.fr', true],
-    // La liste jointe par « | » du schéma national : le mapper la découpe des
-    // deux côtés, la création la refusait.
     ['siteWeb', 'https://un.example.fr|https://deux.example.fr', true],
     ['siteWeb', 'https://un.example.fr|coucou', false],
     ['siteWeb', 'coucou', false],
@@ -210,19 +187,14 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     ['priseRdv', 'https://rdv.example.fr', true],
     ['priseRdv', 'pas-une-url', false],
 
-    // Le numéro se tape comme on veut, pourvu qu'on sache le reconnaître.
     ['numeroTelephone', '01 02 03 04 05', true],
     ['numeroTelephone', '01.02.03.04.05', true],
     ['numeroTelephone', '+33 1 02 03 04 05', true],
     ['numeroTelephone', '0033102030405', true],
     ['numeroTelephone', '02 62 20 20 20', true],
     ['numeroTelephone', '12', false],
-    // Le schéma national n'admet que les indicatifs français et d'outre-mer.
     ['numeroTelephone', '+32 470 44 25 43', false],
 
-    // Le standard mesure le complément au jeu de caractères d'un nom de voie.
-    // Le mapper le laisse tomber seul pour que l'adresse ne tombe pas avec lui :
-    // sans règle ici, il se perdait sans un mot.
     ['complementAdresse', 'Bâtiment B', true],
     ['complementAdresse', 'Bât. 3 (entrée côté parking)', true],
     ['complementAdresse', '1er étage / bureau 12', true],
@@ -235,14 +207,9 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     ['presentationResume', 'x'.repeat(280), true],
     ['presentationResume', 'x'.repeat(281), false],
 
-    // Le détail n'avait aucune borne : au-delà, `Presentation` rendait `null` et
-    // la présentation tombait tout entière, résumé compris, sans un mot.
     ['presentationDetail', 'x'.repeat(10_000), true],
     ['presentationDetail', 'x'.repeat(10_001), false],
 
-    // Le formulaire validait avec `z.email`, le modèle avec `Courriel` : ce que
-    // l'un acceptait, l'autre le refusait, et le courriel disparaissait à
-    // l'enregistrement sans que rien ne soit dit.
     ['adresseMail', 'contact@example.fr', true],
     ['adresseMail', `${'x'.repeat(65)}@example.fr`, false],
     ['adresseMail', `contact@${'y'.repeat(250)}.fr`, false],
@@ -264,8 +231,6 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
       ).toEqual({ creation: true, modification: true })
     })
 
-    // La grille de la création exigeait les heures sans vérifier leur format,
-    // celle de la modification l'inverse.
     it('refuse une demi-journée ouverte sans heures', () => {
       expect(verdicts.horaires(journeeOuverte({}))).toEqual({
         creation: false,
@@ -282,11 +247,6 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     })
   })
 
-  /**
-   * Une adresse que la Base Adresse Nationale rend n'est pas forcément une
-   * adresse que le standard accepte. Sans cette règle, le lieu s'enregistrait et
-   * revenait sans adresse du tout.
-   */
   describe('l’adresse choisie', () => {
     const avecAdresse = (nom: string) => {
       const ban = { ...adresseBan, nom }
@@ -338,10 +298,6 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
       ).toEqual({ creation: true, modification: true })
     })
 
-    /**
-     * Seul, il ne forme pas une valeur OpenStreetMap : la composition rendait
-     * ` "Sur rendez-vous"`, que le standard refuse et que la coop publiait.
-     */
     it('se refuse quand la grille est vide', () => {
       expect(avecCommentaire(grilleVide)).toEqual({
         creation: false,
@@ -358,12 +314,6 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
       })
     })
 
-    /**
-     * Le groupe de cases à cocher rend `null` quand aucune n'est cochée. La
-     * modification exigeait un booléen : décocher « tout public » rendait donc
-     * impossible d'enregistrer des publics spécifiques sur un lieu existant,
-     * avec un « Expected boolean, received null » à l'écran.
-     */
     it('accepte que la case soit décochée, qui se dit `null`', () => {
       expect(verdicts.toutPublic(null)).toEqual({
         creation: true,
@@ -387,11 +337,6 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
       })
     })
 
-    /**
-     * Même piège que « tout public » : le composant rend `null` au décochage.
-     * La modification exigeait un booléen, et décocher « Téléphoner » ou
-     * « Contacter par mail » interdisait d'enregistrer la section.
-     */
     it('acceptent une case décochée, qui se dit `null`', () => {
       expect(verdicts.moyenDeContact(null)).toEqual({
         creation: true,

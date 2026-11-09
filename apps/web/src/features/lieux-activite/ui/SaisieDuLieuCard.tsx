@@ -4,17 +4,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 
-/**
- * Ce que la carte montre d'un lieu qu'on est en train de retenir : comment il
- * s'appelle, où il est, ce qu'il accueille, sous quel numéro il est
- * immatriculé. De quoi le reconnaître, et rien de plus — cette carte décrit un
- * endroit, pas un dossier chez nous : elle sert aussi à montrer un lieu trouvé
- * dans la cartographie nationale, que la coop ne connaît pas encore.
- *
- * Tout y est facultatif sauf le nom. Un lieu saisi à la main n'a ni SIRET ni
- * RNA — c'est même la raison d'être de la saisie : décrire un endroit que les
- * annuaires ignorent.
- */
 export type LieuSaisi = {
   readonly nom: string
   readonly adresse?: string | null
@@ -24,12 +13,6 @@ export type LieuSaisi = {
   readonly typologies?: readonly string[] | null
 }
 
-/**
- * Les typologies sont des sigles ; l'infobulle les rend lisibles. Ce qu'on ne
- * reconnaît pas s'affiche tel quel plutôt que de disparaître : une typologie
- * inconnue vaut mieux qu'un trou. La carte montre aussi des lieux venus de la
- * cartographie nationale, dont rien ne garantit le vocabulaire.
- */
 const libelles = (typologies: readonly string[]): string =>
   typologies.map(libelleDeTypologie).join(', ')
 
@@ -46,9 +29,6 @@ export const SaisieDuLieuCard = ({
 }) => {
   const tooltipId = `tooltip-${nom.replaceAll('"', '')}-${typologies?.join(',')}-${siret}-${codePostal}-${commune}-${adresse}`
 
-  // Un lieu peut n'avoir aucune adresse exploitable (établissement non
-  // diffusible) : on masque alors la ligne entière plutôt que d'afficher une
-  // épingle sans rien à côté.
   const adresseAffichee = addresseFromParts({ adresse, codePostal, commune })
 
   return (

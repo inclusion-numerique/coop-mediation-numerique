@@ -16,13 +16,6 @@ import {
 } from '../../../../implementation'
 import { type EchecDeCreation, MediateurRequis } from '../../domain/errors'
 
-/**
- * Rattache le médiateur au lieu, sauf s'il y exerce déjà.
- *
- * L'idempotence n'est pas une précaution de style : la sonde peut rendre un lieu
- * où le médiateur exerce déjà — c'est même le cas le plus probable quand
- * quelqu'un ressaisit un lieu qu'il n'avait pas retrouvé à la recherche.
- */
 const rattacher = async (
   transaction: Prisma.TransactionClient,
   {
@@ -49,25 +42,9 @@ const rattacher = async (
   })
 }
 
-/**
- * Ce que le formulaire avait sous les yeux, et que l'écriture peut donc vider.
- *
- * Les sections détaillées ne s'ouvrent que si le médiateur partage le lieu à la
- * cartographie ; sans ce partage il n'a rempli que l'identité, et une inscription
- * adoptée à cette occasion ne doit pas perdre ce qu'une autre source y avait mis.
- * Avec le partage, il a tout vu : un champ laissé vide est alors une décision.
- */
 const colonnesDuFormulaire = (lieu: Lieu) =>
   estPublie(lieu.visibilite) ? toutesLesColonnes : identiteDuLieu
 
-/**
- * Poser la fiche des deux côtés : dans la coop, et au registre des lieux de
- * l'Entrepôt, dans la même transaction.
- *
- * Rien de tel sur le chemin de la corrélation : on n'y crée pas de fiche, on
- * rejoint celle que la coop connaissait déjà, et le registre n'a donc rien de
- * nouveau à apprendre — c'est le rattachement qui change, pas le lieu.
- */
 const creerLaFiche = async (
   transaction: Prisma.TransactionClient,
   lieu: Lieu,
@@ -87,23 +64,6 @@ const creerLaFiche = async (
   return cree
 }
 
-/**
- * Créer un lieu, c'est aussi s'y rattacher : on ne crée pas une fiche pour
- * personne. Les deux écritures vont ensemble, dans une transaction.
- *
- * La saisie est déjà devenue un lieu du domaine avant d'arriver ici : le type du
- * formulaire ne descend pas jusqu'à l'écriture.
- *
- * On ne crée qu'à défaut de lieu corrélé. On n'arrive sur ce formulaire qu'après
- * une recherche restée sans résultat, mais cette garde est un choix de l'écran :
- * rien n'empêche d'y venir directement, ni d'y ressaisir un lieu que la
- * recherche n'avait pas su rendre — une dénomination différente suffit. La sonde
- * est donc le dernier rempart, le même que pour les lieux rattachés depuis la
- * recherche.
- *
- * Rend l'identifiant du lieu REJOINT, qui n'est pas toujours celui du lieu
- * construit : sur corrélation, c'est celui du lieu que la coop connaissait déjà.
- */
 export const creerLieuActivite = async ({
   lieu,
   mediateurId,
@@ -130,7 +90,6 @@ export const creerLieuActivite = async ({
     await rattacher(transaction, {
       mediateurId,
       structureId: id,
-      // Le rattachement naît avec le lieu, de la main de la même personne.
       debut: lieu.tracabilite.creation.date,
       creationParId: lieu.tracabilite.creation.par,
     })

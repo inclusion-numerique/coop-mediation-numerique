@@ -31,7 +31,6 @@ export const ModalitesAccesAuServiceFields = withForm({
         </p>
 
         <div className="fr-flex fr-direction-column fr-flex-gap-6v">
-          {/* Les cases portent `fr-mb-0` : sans gap ici, elles se collent. */}
           <div className="fr-flex fr-direction-column fr-flex-gap-3v">
             <form.AppField name="modalitesAcces.surPlace">
               {(field) => (

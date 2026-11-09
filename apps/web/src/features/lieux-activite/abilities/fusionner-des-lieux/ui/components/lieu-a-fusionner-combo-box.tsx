@@ -2,11 +2,6 @@ import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherUnLieuAFusionnerAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-a-fusionner.action'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 
-/**
- * Ce qu'il faut d'un lieu pour le désigner dans la liste — et rien de plus : la
- * page d'aperçu passe un lieu déjà choisi sous cette même forme, sans être allée
- * le chercher par la recherche.
- */
 export type LieuChoisi = {
   id: string
   nom: string
@@ -19,17 +14,8 @@ const itemToString = (item: LieuChoisi | null): string => item?.nom ?? ''
 
 const itemToKey = (item: LieuChoisi): string => item.id
 
-/** Longueur minimale à partir de laquelle la recherche interroge la base. */
 export const rechercheMinimum = 3
 
-/**
- * L'état de la recherche voyage avec les résultats : une liste vide pendant le
- * chargement serait sinon indiscernable d'une recherche infructueuse.
- *
- * `nonAffiches` compte ce que la recherche a trouvé sans le rendre — la fusion
- * se choisit dans une liste tronquée à cinquante, et ne pas le dire laisserait
- * croire que le lieu cherché n'existe pas.
- */
 export type RechercheDeFusion = {
   recherche: string
   enCours: boolean
@@ -57,7 +43,6 @@ export const lieuAFusionnerComboBox = (
 
     if (!resultat.success) return rien
 
-    // Le lieu qu'on fusionne ne se propose pas à lui-même.
     const items = resultat.data.structures
       .filter(({ id }) => !exclus.includes(id))
       .map(({ id, nom, adresse, commune, codePostal }) => ({

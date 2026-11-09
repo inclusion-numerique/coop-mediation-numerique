@@ -54,12 +54,6 @@ describe('ce que la coop verse à la cartographie nationale', () => {
     })
   })
 
-  /**
-   * La colonne `site_web` de la coop joint plusieurs adresses par « | ». La
-   * requête les découpe : les envelopper telles quelles publiait une seule URL
-   * qui en contenait un, que `Url` refuse — et `Contact` tombant d'un bloc, le
-   * téléphone et les courriels disparaissaient avec.
-   */
   it('garde le contact quand plusieurs sites web sont déclarés', () => {
     const resultat = publie({
       contact: {
@@ -86,11 +80,6 @@ describe('ce que la coop verse à la cartographie nationale', () => {
     expect(resultat.success && resultat.data.contact).toBeUndefined()
   })
 
-  /**
-   * L'ordre d'une liste ne porte aucune information : le premier courriel n'est
-   * pas le contact principal. Sans cette règle, une même fiche se republiait
-   * différemment d'une nuit à l'autre.
-   */
   it('dédoublonne et ordonne les listes', () => {
     const resultat = publie({
       services: [

@@ -11,12 +11,6 @@ import {
 } from '../../../../implementation/prisma/lieu-en-liste'
 import type { LieuDuMediateurEnListe } from '../../domain'
 
-/**
- * Les lieux où le médiateur exerce aujourd'hui.
- *
- * La projection est celle des listes de lieux : « mes lieux » et « l'annuaire du
- * département » montrent le même objet, vu depuis deux entrées.
- */
 export const listerLesLieuxDuMediateur = async ({
   mediateurId,
   tri,
@@ -39,8 +33,6 @@ export const listerLesLieuxDuMediateur = async ({
     orderBy,
   })
 
-  // L'aplatissement porte sur le lieu, pas sur le rattachement qui le porte :
-  // c'est le lieu qui a une identité cartographique.
   return rattachements.map((rattachement) => ({
     ...rattachement,
     lieuInclusion: avecLaFicheDuRegistre(rattachement.lieuInclusion),

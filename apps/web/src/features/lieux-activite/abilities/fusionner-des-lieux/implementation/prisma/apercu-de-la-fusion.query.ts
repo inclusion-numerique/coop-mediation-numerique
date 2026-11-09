@@ -5,14 +5,6 @@ import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'
 
 export type { ChampsPartageables, LieuAFusionner } from '../../domain'
 
-/**
- * L'employeuse ne se relie plus au lieu (ADR-002 : elle vit dans
- * `main.structure_administrative`, sans clé étrangère vers le lieu). La
- * corrélation par nom + adresse qui les rapprochait autrefois ne matche plus,
- * et l'aperçu de fusion n'a donc rien à annoncer côté employeuse. Le domaine
- * garde les deux listes — c'est là que le comptage reviendra s'il est refait
- * sur `personne_affectations_emploi`.
- */
 const SANS_EMPLOYEUSE = {
   employesIds: [],
   activitesEmployeurIds: [],

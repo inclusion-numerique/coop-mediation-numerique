@@ -12,12 +12,10 @@ describe('la publication sur la cartographie nationale', () => {
     ).toBe(false)
   })
 
-  /** Un lieu qui ne paraît pas sur la cartographie n'a rien à y annoncer. */
   it('ne dit rien d’un lieu non publié', () => {
     expect(publicationSansService(false, [])).toBe(false)
   })
 
-  /** La saisie de création laisse le champ absent tant qu'on n'y touche pas. */
   it.each([[null], [undefined]])(
     'traite %s comme aucun service',
     (services) => {
@@ -34,8 +32,6 @@ describe('les services d’un lieu qu’on rend visible', () => {
     ])
   })
 
-  // Le socle est un point de départ, jamais une correction : ce que le lieu
-  // déclare prime, fût-ce un seul service.
   it('laisse intacts les services déjà déclarés', () => {
     expect(
       servicesALaPublication([Service.AideAuxDemarchesAdministratives]),

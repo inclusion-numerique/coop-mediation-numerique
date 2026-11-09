@@ -15,14 +15,6 @@ import type { ComponentType } from 'react'
 import { FormationLabelPropose } from '../domain/nomenclatures'
 import { typologieLibelles } from './libelles-typologie'
 
-/**
- * Les options des formulaires.
- *
- * Les valeurs du schéma national sont déjà des libellés lisibles — « Aide aux
- * démarches administratives » — et ce sont elles que la saisie transporte :
- * une option va donc de la valeur vers elle-même. La typologie fait exception,
- * avec ses sigles et ses libellés propres.
- */
 const optionsDe = <Valeur extends string>(
   nomenclature: Record<string, Valeur>,
   hints: Partial<Record<Valeur, string>> = {},

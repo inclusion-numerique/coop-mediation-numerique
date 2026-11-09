@@ -17,10 +17,6 @@ const mergeFields: { label: string; key: keyof ChampsPartageables }[] = [
   { label: 'Courriels', key: 'courriels' },
 ]
 
-/**
- * L'adresse en une ligne, telle qu'on la lit. Un lieu sans adresse valide reste
- * affichable : c'est souvent celui qu'on est venu fusionner.
- */
 const adresseAffichee = (adresse: LieuAFusionner['adresse']): string =>
   adresse == null
     ? 'Adresse non renseignée'

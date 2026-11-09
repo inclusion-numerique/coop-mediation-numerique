@@ -47,13 +47,6 @@ type LigneEnListe = Prisma.LieuInclusionGetPayload<{
   select: typeof projectionDuLieuEnListe
 }>
 
-/**
- * Ce que la liste prend au registre. Le partage à la cartographie n'en est
- * pas : la coop en est l'auteur — c'est sa colonne que l'interrupteur écrit et
- * que `lieuxPublies` interroge à la moisson —, le registre n'en tient qu'une
- * copie qu'on lui pousse. La lire ici ferait annoncer par la liste une
- * publication que la carte ne ferait pas.
- */
 const depuisLInscription = (
   ligne: LigneEnListe,
   inscription: InscriptionPourLaFiche,

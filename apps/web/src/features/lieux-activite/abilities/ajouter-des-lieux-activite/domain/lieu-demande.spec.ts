@@ -10,7 +10,6 @@ import { estExistant } from './lieu-demande'
 const identite = { nom: Nom('Tiers-lieu du Port') }
 
 describe('la nature d’un lieu demandé', () => {
-  /** La seule chose qui les sépare : sait-on de quel lieu de la coop il s'agit ? */
   it('est existante quand la demande porte une identité interne', () => {
     expect(
       estExistant({

@@ -37,12 +37,6 @@ import {
 import { z } from 'zod'
 import type { LieuCarto } from '../../domain'
 
-// Lit `main.lieu_inclusion` dans l'Entrepôt et en tire la fiche que la coop
-// matérialise. Ni adresse ni coordonnées : celles de l'écran, validées par la
-// Base Adresse Nationale, priment toujours sur celles de la cartographie. Le
-// SIRET (pivot) n'est pas repris non plus — la cartographie nationale n'en est
-// pas une source fiable, seule l'API entreprise fait foi.
-
 const lieuSelect = {
   structureCartographieNationaleId: true,
   nom: true,
@@ -83,7 +77,6 @@ type LieuRow = {
   itinerance: string[]
 }
 
-/** La colonne `contact` est un JSON libre : rien n'y est acquis. */
 const ContactDeLaLigne = z
   .object({
     telephone: z.string().nullish().catch(null),
@@ -109,13 +102,6 @@ const contactDeLaLigne = (contact: unknown): Contact => {
   })
 }
 
-/**
- * Ce que la cartographie sait dire de la fiche, et rien de plus.
- *
- * Les listes qu'elle ne porte pas — dispositifs, labels de formation — restent
- * vides plutôt que d'être devinées ; `reconnues` écarte des autres les valeurs
- * que le schéma national ne connaît pas.
- */
 const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   nom: Nom(lieu.nom),
   pivot: null,
@@ -148,22 +134,11 @@ const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   priseRdv: null,
 })
 
-/**
- * La coop relisant sa propre publication ne nomme aucun producteur tiers : la
- * fiche n'a alors pas été modifiée de l'extérieur.
- */
 const sourceDeLaLigne = (source: string | null): SourceCartographie | null =>
   source == null || source === coopCartographieNationaleSource
     ? null
     : SourceCartographie.safe(source)
 
-/**
- * Une ligne de l'Entrepôt devient un lieu exploitable, ou rien.
- *
- * Sans id de cartographie il n'y a rien à corréler ; sans nom, il n'y a pas de
- * fiche — `Nom` du standard le refuse, et une ligne écartée vaut mieux qu'un
- * import interrompu.
- */
 const toLieuCarto = (lieu: LieuRow): LieuCarto | null => {
   const ids =
     lieu.structureCartographieNationaleId == null

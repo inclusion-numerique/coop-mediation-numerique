@@ -23,16 +23,6 @@ import type { BanId } from '../../../domain/ban-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 
-/**
- * La fiche d'un lieu se corrige section par section : chaque carte de la page
- * enregistre la sienne sans toucher aux autres. Une seule ability porte les
- * sept, parce qu'il n'y a qu'un écran et qu'elles partagent la même fiche.
- *
- * Le discriminant nomme la section éditée. Il rend inexprimable la mise à jour
- * partielle qui, dans le routeur tRPC, se faisait en réétalant toute la ligne
- * (`data: { ...structure, ...champsDeLaSection }`) : une écriture concurrente
- * sur une autre section était alors écrasée par une valeur relue avant elle.
- */
 export type ModificationLieu =
   | {
       readonly section: 'InformationsGenerales'

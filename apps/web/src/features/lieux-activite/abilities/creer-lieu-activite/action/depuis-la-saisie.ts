@@ -34,11 +34,6 @@ import {
 import type { UserId } from '../../../domain/user-id'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 
-/**
- * La saisie porte déjà le vocabulaire du schéma national : il n'y a plus rien à
- * traduire ici, seulement à rendre une liste là où le formulaire peut n'avoir
- * rien coché.
- */
 const cochees = <Valeur>(
   valeurs: readonly Valeur[] | null | undefined,
 ): Valeur[] => [...(valeurs ?? [])]

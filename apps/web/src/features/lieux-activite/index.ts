@@ -1,23 +1,3 @@
-/**
- * API publique de la feature — la part serveur.
- *
- * Ce que les autres features ont le droit de connaître des lieux d'activité :
- * les opérations, les contrats d'entrée, les erreurs qu'elles nomment et les
- * identifiants qui les désignent. Tout le reste est intérieur.
- *
- * Les composants vivent à part, dans `./ui` : ce fichier est chargé côté
- * serveur — par les commandes, les steps Cucumber, les jobs — et y réexporter
- * du React y ferait entrer des feuilles de style et le client Prisma dans le
- * navigateur. La frontière ne se voit ni au typage ni aux tests, seulement au
- * build de production.
- *
- * Deux pièces y figurent au titre d'AR-7 — `lieuCorrele` et `rattacherAuLieu`,
- * que leurs appelants doivent composer dans leur propre transaction, ce qu'un
- * port de commande ne permet pas — et non comme une invitation à interroger la
- * base des lieux.
- */
-
-// Ajouter des lieux depuis la recherche
 export {
   type AdresseValidee,
   ajouterDesLieuxActivite,
@@ -34,11 +14,9 @@ export {
 export { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from './abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
 export { LieuxAAjouterValidation } from './abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 export { findCartoStructuresByIds } from './abilities/ajouter-des-lieux-activite/implementation/entrepot/structures-carto'
-// Créer un lieu à la main
 export { creerLieuActivite } from './abilities/creer-lieu-activite'
 export { CREER_LIEU_ACTIVITE_ERRORS } from './abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
 export { nouveauLieu } from './abilities/creer-lieu-activite/action/depuis-la-saisie'
-// Fusionner deux lieux
 export {
   apercuDeLaFusion,
   type ChampsPartageables,
@@ -50,12 +28,10 @@ export {
   lieuxAFusionner,
 } from './abilities/fusionner-des-lieux'
 export { FusionnerDesLieuxValidation } from './abilities/fusionner-des-lieux/action/fusionner-des-lieux.validation'
-// Servir les lieux aux clients d'API
 export {
   inventaireDesLieux,
   type LieuInventorie,
 } from './abilities/inventorier-les-lieux'
-// Lister
 export {
   communesDesLieux,
   type LieuxDuDepartement,
@@ -85,7 +61,6 @@ export {
   rechercherDesLieux,
   triDesLieux,
 } from './abilities/lister-tous-les-lieux'
-// Modifier la fiche
 export {
   consulterLaFicheDuLieu,
   type FicheDuLieu,
@@ -102,7 +77,6 @@ export {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
 } from './abilities/rechercher-un-lieu-activite'
-// Retirer
 export { retirerDesLieux } from './abilities/retirer-des-lieux'
 export {
   type AuteurDuRetrait,
@@ -110,9 +84,7 @@ export {
 } from './abilities/retirer-un-mediateur-du-lieu'
 export { RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS } from './abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.errors'
 export { RetirerUnMediateurDuLieuValidation } from './abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.validation'
-// Identité d'un lieu et des personnes qui le manipulent
 export { BanId } from './domain/ban-id'
-// Ce qui se saisit pour un lieu
 export {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
@@ -120,9 +92,6 @@ export {
 export { IdentifiantCartographie } from './domain/ids-cartographie-nationale'
 export { LieuId } from './domain/lieu-id'
 export { MediateurId } from './domain/mediateur-id'
-// Ce qui se saisit pour un lieu — les primitives qui traduisent une valeur
-// brute en modèle du standard, dont un appelant a besoin pour composer un
-// LieuDemande.
 export { adresseSaisie, localisationSaisie } from './domain/saisie'
 export type {
   SuggestionDeLieu,
@@ -130,7 +99,6 @@ export type {
 } from './domain/suggestion-de-lieu'
 export { TriDesLieux } from './domain/tri-des-lieux'
 export { UserId } from './domain/user-id'
-// Lectures partagées
 export {
   type Correle,
   type LieuAMaterialiser,
@@ -141,11 +109,6 @@ export {
   lieuExploitable,
   lieuExploitableSql,
 } from './implementation/prisma/lieu-exploitable'
-// Écriture au registre des lieux de l'Entrepôt. Y figure au même titre que
-// `lieuCorrele` (AR-7) : les deux écritures ne valent que composées dans la
-// transaction de l'appelant, ce qu'un port de commande ne permet pas. Quiconque
-// crée une ligne `coop.lieu_inclusion` doit passer par là, sous peine de laisser
-// le registre national ignorer ce lieu — ou d'y semer un doublon.
 export {
   avecIdentifiantCarto,
   ecrireLeLieuAuRegistre,

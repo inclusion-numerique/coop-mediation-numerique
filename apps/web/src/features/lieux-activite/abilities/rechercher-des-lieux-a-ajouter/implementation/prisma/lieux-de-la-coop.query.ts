@@ -5,14 +5,6 @@ import type { SuggestionDeLieu } from '../../../../domain/suggestion-de-lieu'
 import { lieuExploitable } from '../../../../implementation'
 import type { ChercherDansLaCoop } from '../../domain/ports'
 
-/**
- * Les lieux que la coop connaît déjà, cherchés mot à mot sur ce qui permet de
- * les reconnaître : immatriculation, nom, adresse, commune.
- *
- * La ligne est rendue telle quelle. La mise en forme — la casse des noms, le
- * préfixe qui distingue une source d'une autre — appartient à celui qui réunit
- * les trois sources, pas à la requête.
- */
 export const lieuxDeLaCoop = async (
   recherche: string,
   { limite }: { limite: number },

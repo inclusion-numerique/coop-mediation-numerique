@@ -13,25 +13,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { LigneDeLaListe } from './ligne-de-la-liste'
 
-/**
- * Les colonnes que l'écran offre au tri.
- *
- * Déclarées, et non déduites de la configuration : `DataTableColumn` type ses
- * noms en `string`, si bien qu'une extraction rendrait `string` — un
- * référentiel de tri qui n'exigerait plus rien. `ColonneDeLaListe` fait tenir
- * les deux ensemble.
- */
 export type ColonneTriable =
   | 'nom'
   | 'creation'
   | 'modification'
   | 'mediateursEnActivite'
 
-/**
- * Une colonne triable doit être nommée ci-dessus, et le référentiel de tri doit
- * couvrir cette union exactement : offrir un tri qu'aucune règle ne sait
- * résoudre rendrait un lien qui ne trie rien.
- */
 type ColonneDeLaListe = DataTableColumn<LigneDeLaListe> &
   (
     | { name: ColonneTriable; sortable: true }

@@ -8,23 +8,7 @@ import {
   inscriptionPourLaFiche,
 } from '../../../../implementation/prisma/registre'
 
-/**
- * Les nomenclatures rendues dans les valeurs du schéma national, et non sous
- * les noms que la base leur donne.
- *
- * L'inventaire sert des clients d'API : c'est le vocabulaire du standard qu'ils
- * attendent, comme le reste de la coop. La traduction se fait donc ici, dans
- * l'implémentation, plutôt que chez l'appelant — qui n'a alors plus rien à
- * connaître de la façon dont on stocke.
- *
- * `LigneDuLieu` porte la garde d'alignement : si les noms stockés et ceux du
- * vocabulaire divergeaient, cette conversion cesserait de compiler.
- */
 const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => {
-  // La fiche vient du registre de l'Entrepôt, où chaque producteur n'écrit que
-  // ses colonnes : les nomenclatures y sont déjà celles que le lieu déclare de
-  // plus récent. `lieuToDomain` les rend traduites dans le vocabulaire du
-  // standard, qui est justement celui que cet inventaire publie.
   const { fiche, tracabilite } = lieuToDomain(ligne)
 
   return {
@@ -66,18 +50,6 @@ const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => {
   }
 }
 
-/**
- * L'inventaire des lieux, tel que les clients d'API le parcourent.
- *
- * Deux différences avec ce que publie la cartographie : on rend TOUT, y compris
- * les lieux supprimés — un client qui tient un miroir a besoin de savoir qu'une
- * ligne a disparu, et son horodatage de suppression est la seule façon de le
- * lui dire —, et on ne filtre pas sur la visibilité, qui ne regarde que la
- * carte.
- *
- * L'ordre est celui du curseur : création décroissante, l'identifiant
- * départageant les créations simultanées.
- */
 export const inventaireDesLieux = async ({
   ids,
   creeDepuis,
@@ -119,11 +91,7 @@ export const inventaireDesLieux = async ({
 
   const totalCount = await prismaClient.lieuInclusion.count({ where })
 
-  // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
-  // domicile : la colonne coop en portait une copie qui avait dérivé.
   return {
-    // L'aplatissement vient APRÈS la traduction : `auVocabulaireDuStandard`
-    // attend une ligne de lieu, laquelle porte son inscription.
     lieux: lieux.map((lieu) =>
       avecIdentifiantCarto(auVocabulaireDuStandard(lieu)),
     ),

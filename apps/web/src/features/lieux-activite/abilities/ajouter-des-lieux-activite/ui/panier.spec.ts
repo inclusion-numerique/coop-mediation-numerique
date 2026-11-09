@@ -12,10 +12,6 @@ import {
   selectionner,
 } from './panier'
 
-/**
- * Seul le géocodage est remplacé : c'est le seul appel distant du module, et
- * le message d'adresse introuvable reste celui que l'utilisateur lira.
- */
 jest.mock('@app/web/external-apis/ban/geocodeStructureAdresse', () => ({
   ...jest.requireActual('@app/web/external-apis/ban/geocodeStructureAdresse'),
   geocodeStructureAdresse: jest.fn(),
@@ -88,7 +84,6 @@ describe('deux entrées désignent le même lieu', () => {
     expect(memeLieu(auxPanier({ id: 'a' }), auxPanier({ id: 'b' }))).toBe(false)
   })
 
-  /** Sans identité, rien ne permet de les confondre — pas même deux absences. */
   it('ni si aucune des deux n’en porte', () => {
     expect(memeLieu(auxPanier(), auxPanier())).toBe(false)
   })
@@ -110,7 +105,6 @@ describe('un résultat de recherche devient une entrée du panier', () => {
     })
   })
 
-  /** Son adresse ne sera pas réécrite : rien à géocoder. */
   it('sans interroger la Base Adresse Nationale pour un lieu déjà connu', async () => {
     await auPanier(resultat({ structures: [{ id: 'lieu-coop' }] }))
 
@@ -135,11 +129,6 @@ describe('un résultat de recherche devient une entrée du panier', () => {
     expect(lieu?.structureCartographieNationaleId).toBe('carto-1')
   })
 
-  /**
-   * La coop et l'annuaire des entreprises portent leur propre identifiant dans
-   * le même champ : le prendre pour un id carto ferait chercher le lieu dans
-   * l'Entrepôt, où il n'est pas.
-   */
   it.each([['api'], ['structure_locale']] as const)(
     'en l’ignorant pour un résultat venu de %s',
     async (source) => {

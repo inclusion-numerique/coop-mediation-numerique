@@ -29,7 +29,6 @@ type FormValues = {
   recherche: SuggestionDeLieu | null
 }
 
-/** Au moins un lieu au panier ; le champ de recherche est transitoire. */
 const panierShape = z
   .custom<FormValues>()
   .refine((value) => value.lieux.length > 0, {
@@ -46,14 +45,6 @@ const erreurEnregistrement = () =>
     'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   )
 
-/**
- * Ajout de lieux d'activité : on constitue un panier, on le valide d'un coup.
- *
- * La création d'un lieu se déroule DANS cet écran plutôt qu'en le quittant :
- * naviguer viderait le panier, et l'on ne s'aperçoit qu'un lieu manque qu'après
- * en avoir sélectionné d'autres. Le lieu créé rejoint donc la sélection au
- * retour.
- */
 export const AjouterDesLieuxActivitePage = ({
   retourHref,
 }: {

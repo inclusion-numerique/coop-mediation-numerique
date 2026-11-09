@@ -3,19 +3,6 @@ import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { nouveauLieu } from './depuis-la-saisie'
 
-/**
- * Ce qu'une saisie acceptée doit devenir : quelque chose.
- *
- * Le formulaire et le domaine lisent chacun la même valeur, et le domaine est
- * le plus strict des deux. Toute règle qui vit d'un seul côté se paie de la même
- * façon : l'enregistrement réussit, le champ revient vide, et rien n'a été dit.
- *
- * Ce fichier tient la promesse inverse. Pour chaque champ, il confronte des
- * valeurs que le formulaire accepte à ce que le domaine en retient : si le
- * domaine les jette, c'est que la règle manque à la saisie. Un champ ajouté sans
- * sa règle fait donc échouer un test plutôt que d'effacer une saisie en silence.
- */
-
 const adresseBan = {
   id: '51454_7160_00012',
   label: '12 rue de la Paix, 51100 Reims',
@@ -72,7 +59,6 @@ const saisieMinimale = {
 
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
 
-/** La fiche telle que le domaine la retient, ou `null` si la saisie est refusée. */
 const ficheDe = (champs: Record<string, unknown>): Fiche | null => {
   const analyse = CreerLieuActiviteValidation.safeParse({
     ...saisieMinimale,
@@ -89,7 +75,6 @@ const renseigne = (valeur: unknown): boolean =>
   valeur !== '' &&
   !(Array.isArray(valeur) && valeur.length === 0)
 
-/** Chaque champ, avec une valeur plausible et l'endroit où elle doit arriver. */
 const CHAMPS: [string, Record<string, unknown>, (fiche: Fiche) => unknown][] = [
   ['nom', { nom: 'Tiers-lieu du Port' }, (f) => f.nom],
   ['adresse', {}, (f) => f.adresse],
@@ -184,10 +169,6 @@ describe('une saisie acceptée n’est jamais perdue en silence', () => {
     expect(fiche != null && renseigne(lu(fiche))).toBe(true)
   })
 
-  /**
-   * L'autre sens : ce que le domaine refuserait, la saisie le refuse d'abord.
-   * Sans cela, la valeur passerait la validation pour disparaître ensuite.
-   */
   it.each([
     ['nom vide', { nom: '   ' }],
     [

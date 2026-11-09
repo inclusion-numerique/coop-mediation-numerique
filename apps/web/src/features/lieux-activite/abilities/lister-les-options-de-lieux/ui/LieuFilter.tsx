@@ -57,7 +57,7 @@ export const LieuFilter = ({
   defaultValue?: LieuFilterValue[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: SelectOption[]
-  departementsOptions: SelectOption[] | null // if null, disables the departements filter
+  departementsOptions: SelectOption[] | null
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -66,12 +66,6 @@ export const LieuFilter = ({
   const [isOpen, setIsOpen] = useState(false)
   const champRef = useRef<HTMLDivElement>(null)
 
-  /**
-   * Deux champs transitoires : le type de localisation, puis la valeur choisie
-   * dans la liste correspondante. Ni l'un ni l'autre n'est soumis — ce sont les
-   * sélections accumulées qui partent dans l'URL — mais ils passent par le
-   * formulaire pour bénéficier des composants de champ de l'application.
-   */
   const form = useAppForm({
     defaultValues: champsVides,
   })
@@ -154,10 +148,6 @@ export const LieuFilter = ({
     }[lieuFilterType]
     setState((prev) => [...prev, option])
 
-    // Le champ se vide au tour suivant, et non tout de suite : la combo pose sa
-    // propre valeur juste avant d'appeler ce gestionnaire, et le composant ne se
-    // réinitialise qu'au changement de clé. Remettre à zéro dans le même tour ne
-    // ferait donc pas varier la clé — le libellé choisi resterait affiché.
     queueMicrotask(() => form.setFieldValue('valeur', null))
   }
 
@@ -209,9 +199,6 @@ export const LieuFilter = ({
                 <field.ComboBox
                   isPending={isPending}
                   onSelect={handleSelectFilter}
-                  // Le bouton déroule la liste entière ; la frappe la filtre.
-                  // Sans ces items par défaut, ouvrir le champ ne montrerait
-                  // rien tant qu'on n'a pas tapé.
                   defaultItems={[...optionsForType[lieuFilterType]]}
                   {...optionComboBox(optionsForType[lieuFilterType])}
                 >

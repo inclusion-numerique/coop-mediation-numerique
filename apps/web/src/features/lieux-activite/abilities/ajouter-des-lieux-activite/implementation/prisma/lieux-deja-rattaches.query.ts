@@ -7,7 +7,6 @@ import {
 } from '../../../../implementation/prisma/registre'
 import type { LireLieuxDejaRattaches } from '../../domain'
 
-/** Les lieux où le médiateur exerce encore, réduits à leurs deux identités. */
 export const lireLieuxDejaRattaches: LireLieuxDejaRattaches = async (
   mediateurId,
 ) => {
@@ -23,8 +22,6 @@ export const lireLieuxDejaRattaches: LireLieuxDejaRattaches = async (
     },
   })
 
-  // L'identité cartographique vient du registre, non d'une copie tenue par la
-  // coop : c'est sur elle que la sonde écarte un lieu déjà rattaché.
   const lieux = activites.map(({ lieuInclusion }) =>
     avecIdentifiantCarto(lieuInclusion),
   )

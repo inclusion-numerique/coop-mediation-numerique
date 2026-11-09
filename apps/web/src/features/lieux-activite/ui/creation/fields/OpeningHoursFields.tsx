@@ -18,11 +18,6 @@ const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]
 
 const periodes: Period[] = ['am', 'pm']
 
-/**
- * Une demi-journée d'ouverture : les horaires ne sont saisissables que si la
- * bascule « Ouvert » est active, et se vident dès qu'elle retombe — sans quoi
- * un horaire resterait attaché à une demi-journée fermée.
- */
 const DemiJournee = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean; day: OsmDaysOfWeek; period: Period },

@@ -78,10 +78,6 @@ describe('l’identité du lieu créé', () => {
     )
   })
 
-  /**
-   * On ne crée un lieu que lorsque la recherche par nom, adresse ou SIRET n'a
-   * rien rendu : il n'y a donc rien à immatriculer.
-   */
   it('n’a jamais d’immatriculation', () => {
     expect(lieuDe().fiche.pivot).toBeNull()
   })
@@ -132,7 +128,6 @@ describe('le contact', () => {
     })
   })
 
-  /** Les cases commandent les champs : décochées, leur contenu ne part pas. */
   it('ignore les moyens dont la case n’est pas cochée', () => {
     expect(
       lieuDe({
@@ -157,7 +152,6 @@ describe('le contact', () => {
 })
 
 describe('les publics accueillis', () => {
-  /** « Tout public » se traduit par l'absence de public visé. */
   it('n’en vise aucun quand le lieu est tout public', () => {
     expect(
       lieuDe({
@@ -192,7 +186,6 @@ describe('les horaires', () => {
     )
   })
 
-  /** Le commentaire s'écrivait deux fois quand la saisie le composait déjà. */
   it('portent leur commentaire une seule fois', () => {
     expect(
       lieuDe({

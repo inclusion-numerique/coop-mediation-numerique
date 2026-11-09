@@ -11,14 +11,6 @@ type LieuActiviteQueryResult = {
   activites_count: bigint
 }
 
-/**
- * Les lieux proposés pour filtrer des activités ou des statistiques : ceux où
- * portent les activités que les statistiques comptent, avec le même périmètre
- * d'équipe, plus les lieux où le médiateur connecté exerce aujourd'hui. Un lieu
- * quitté reste donc filtrable tant qu'il a des activités ; les lieux actuels
- * des membres d'équipe ne sont pas ajoutés, ils ne filtreraient rien. La
- * saisie, elle, s'en tient aux lieux actuels (`getMediateursLieuxActiviteOptions`).
- */
 export const getLieuxDesActivitesOptions = async ({
   mediateurIds,
   mediateurId,

@@ -24,11 +24,6 @@ const toTracabilite = (row: MediateurEnActivite): TracabiliteRattachement => ({
         ),
 })
 
-/**
- * `fin` et `suppression` désignent un seul état. La suppression est examinée
- * d'abord : elle prime sur la fin d'activité, et discriminer sur `fin` rendrait
- * « en cours » une ligne supprimée à laquelle il manquerait la date de fin.
- */
 export const rattachementToDomain = (
   row: MediateurEnActivite,
 ): Rattachement => {

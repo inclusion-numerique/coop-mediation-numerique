@@ -9,14 +9,6 @@ import type { ReactNode } from 'react'
 import type { LieuDuMediateurEnListe } from '../../domain'
 import { AucunLieu } from '../components/AucunLieu'
 
-/**
- * Les lieux où le médiateur exerce.
- *
- * La carte est reçue et non importée : « mes lieux » et « l'annuaire du
- * département » montrent le même objet, mais c'est l'annuaire qui sait le
- * dessiner. La route branche l'une sur l'autre, ce qui évite que cette feature
- * aille chercher un composant chez sa voisine.
- */
 export const MesLieuxActivitePage = ({
   lieux,
   carte,

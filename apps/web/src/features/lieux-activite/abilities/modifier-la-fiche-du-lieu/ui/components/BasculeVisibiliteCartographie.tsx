@@ -6,10 +6,6 @@ import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 
-/**
- * La visibilité n'est pas une carte à ouvrir : c'est un interrupteur qui
- * enregistre aussitôt, et qui commande l'affichage du reste de la fiche.
- */
 export const BasculeVisibiliteCartographie = ({
   id,
   publie,

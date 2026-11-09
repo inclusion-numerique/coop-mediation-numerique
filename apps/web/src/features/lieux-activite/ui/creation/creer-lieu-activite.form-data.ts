@@ -13,12 +13,6 @@ import type {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
 
-/**
- * Saisie de création d'un lieu d'activité. Les champs texte sont des chaînes
- * (un input vidé rend `''`, pas `null`) et les cases à cocher uniques rendent
- * `null` quand elles sont décochées : `toCreerLieuData` remet cette saisie dans
- * la forme attendue par la validation et par la persistance.
- */
 export type CreerLieuActiviteFormData = {
   nom: string
   adresseBan: AdresseBanData | null
@@ -52,7 +46,6 @@ export type CreerLieuActiviteFormData = {
 const emptyToNull = (value: string): string | null =>
   value.trim() === '' ? null : value
 
-/** Saisie du formulaire projetée vers le contrat de création d'un lieu. */
 export const toCreerLieuData = (value: CreerLieuActiviteFormData) => ({
   ...value,
   complementAdresse: emptyToNull(value.complementAdresse),
@@ -69,10 +62,6 @@ export const toCreerLieuData = (value: CreerLieuActiviteFormData) => ({
   },
 })
 
-/**
- * Le formulaire se valide avec le contrat de création lui-même : une seule
- * source de vérité entre la saisie et ce que la persistance acceptera.
- */
 export const CreerLieuActiviteFormValidation = z
   .custom<CreerLieuActiviteFormData>()
   .superRefine((value, context) => {

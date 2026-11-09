@@ -4,10 +4,6 @@ import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
-/**
- * La base locale porte les données de production : les assertions ne comptent
- * donc que ce que le scénario a semé, jamais ce que la commune contient.
- */
 const semis: {
   ids: string[]
   denomination?: string
@@ -89,7 +85,6 @@ When('l’administration cherche le SIRET du premier lieu', async () => {
   await chercher(semis.siret ?? '')
 })
 
-/** Les seuls lieux du scénario parmi les résultats. */
 const semesTrouves = (): readonly string[] =>
   (semis.trouves?.searchResult.structures ?? [])
     .map(({ id }) => id)

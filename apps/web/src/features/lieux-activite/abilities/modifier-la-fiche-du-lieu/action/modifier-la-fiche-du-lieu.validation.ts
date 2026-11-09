@@ -27,19 +27,6 @@ import {
 import { z } from 'zod'
 import { HorairesValidation } from '../../../domain/horaires.validation'
 
-/**
- * La saisie, telle que le formulaire l'envoie.
- *
- * Le vocabulaire y circule sous les valeurs du schéma national, celles-là mêmes
- * que le domaine manipule : le mapper n'a plus rien à traduire, et la seule
- * table de correspondance qui subsiste est celle du transfer, vers les noms
- * sous lesquels la base les stocke.
- *
- * Les règles de chaque champ vivent au niveau de la feature, dans
- * `domain/regles-de-saisie` : la création décrit le même lieu, et deux jeux de
- * règles pour un seul objet finissent par diverger.
- */
-
 export const InformationsGeneralesSaisie = z
   .object({
     section: z.literal('InformationsGenerales'),
@@ -66,11 +53,6 @@ export const InformationsPratiquesSaisie = z
     siteWeb: SiteWebSaisi,
     ficheAccesLibre: FicheAccesLibreSaisie,
     priseRdv: PriseRdvSaisie,
-    /**
-     * Les horaires se saisissent en grille hebdomadaire et se stockent en une
-     * chaîne au format OpenStreetMap : la composition a lieu à la frontière, dans
-     * le mapper, pour que le domaine n'ait affaire qu'à la chaîne du standard.
-     */
     openingHours: HorairesValidation,
     horairesComment: texteFacultatif,
   })
@@ -89,11 +71,6 @@ export const ServicesEtAccompagnementSaisie = z.object({
   modalitesAccompagnement: z.array(z.enum(ModaliteAccompagnement)),
 })
 
-/**
- * Les modalités d'accès se saisissent en cases à cocher, chacune apportant son
- * moyen de contact. Les deux règles « cochée sans son moyen » restent ici : la
- * saisie peut être incohérente, le domaine non.
- */
 export const ModalitesAccesAuServiceSaisie = z.object({
   section: z.literal('ModalitesAccesAuService'),
   surPlace: CaseCochee,
@@ -111,17 +88,6 @@ export const TypesDePublicsAccueillisSaisie = z.object({
   priseEnChargeSpecifique: z.array(z.enum(PriseEnChargeSpecifique)),
 })
 
-/**
- * Les deux règles « cochée sans son moyen », telles que le formulaire les
- * applique.
- *
- * Elles ne peuvent pas vivre sur `ModalitesAccesAuServiceSaisie` : un
- * `superRefine` produit un `ZodEffects`, qu'une `discriminatedUnion` n'admet pas
- * comme membre. D'où cette variante, à côté de la section — sans quoi le
- * formulaire laissait passer une case cochée sans son moyen, et seule l'action
- * refusait, en renvoyant le code brut « INVALID_INPUT » dans un toast au lieu
- * d'un message sous le champ.
- */
 export const ModalitesAccesAuServiceFormValidation =
   ModalitesAccesAuServiceSaisie.superRefine((saisie, contexte) => {
     if (saisie.parTelephone && !saisie.numeroTelephone)

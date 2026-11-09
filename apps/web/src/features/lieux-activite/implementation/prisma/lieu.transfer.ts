@@ -118,15 +118,6 @@ const toPresentation = (row: LigneDuLieuCoop): Presentation | null => {
   })
 }
 
-/**
- * Qui a touché la fiche en dernier.
- *
- * Le registre est interrogé d'abord : c'est lui qui sait qu'une source tierce
- * est passée après nous, et il le sait à l'instant de la lecture plutôt qu'au
- * dernier passage d'un job de nuit. La colonne coop ne sert plus que de repli
- * pour les lieux sans inscription, et garde la mémoire des annotations que ce
- * job avait posées avant sa suppression.
- */
 const toDerniereModificationCoop = (
   row: LigneDuLieuCoop,
 ): DerniereModification => {
@@ -220,19 +211,6 @@ const toFiche = (row: LigneDuLieuCoop): Fiche => ({
   priseRdv: Url.safe(row.priseRdv ?? ''),
 })
 
-/**
- * La fiche du lieu, prise au registre quand il en porte une.
- *
- * Le registre reçoit toutes les écritures — les nôtres comme celles des autres
- * producteurs — et chacun n'y écrit que les colonnes qu'il possède : la fusion
- * champ par champ y a donc déjà eu lieu, et lire cette ligne, c'est lire la
- * valeur la plus récente de chaque champ sans avoir à comparer des dates.
- *
- * Trois choses n'en viennent pas et lui sont passées : le pivot, que le registre
- * ne porte pas — pas de RNA, et `siret_a_l_enrichissement` vide sur les 12 765
- * inscriptions —, les coordonnées, dont la colonne `geom` est illisible par
- * Prisma, et l'adresse en repli quand celle du registre est incomplète.
- */
 const ficheDuLieu = (row: LigneDuLieu) => {
   const coop = toFiche(row)
 
@@ -245,11 +223,6 @@ const ficheDuLieu = (row: LigneDuLieu) => {
       })
 }
 
-/**
- * Ce que la coop porte autour de la fiche : identité, publication, identifiants
- * et traçabilité. Commun aux deux conversions, qui ne diffèrent que par la
- * provenance de la fiche et de la dernière modification.
- */
 const enveloppe = (row: LigneDuLieuCoop) => ({
   id: LieuId(row.id),
   visibilite: VisibiliteCartographie(
@@ -269,12 +242,6 @@ const enveloppe = (row: LigneDuLieuCoop) => ({
   },
 })
 
-/**
- * Le lieu tel que la COOP le porte, sans rien emprunter au registre.
- *
- * C'est ce qu'on lui pousse : la fiche que le médiateur vient d'enregistrer, et
- * non celle que le registre affiche déjà.
- */
 export const lieuCoopToDomain = (row: LigneDuLieuCoop): Lieu => {
   const { creation, ...reste } = enveloppe(row)
 
@@ -311,19 +278,10 @@ const versPrisma = <Standard, Prisma>(
     .map(traduction)
     .filter((valeur): valeur is NonNullable<Prisma> => valeur != null)
 
-/**
- * Le pivot ne s'écrit plus que dans `siret`. La colonne `rna` demeure en base,
- * mais elle a quitté le domaine : aucune écriture ne la pose ni ne l'efface.
- */
 const fromPivot = (pivot: Pivot | null) => ({
   siret: pivot,
 })
 
-/**
- * Les colonnes d'adresse. Exporté parce que la matérialisation d'un lieu ajouté
- * les compose avec le reste : l'adresse validée prime sur celle de la source,
- * et les deux passent par la même traduction.
- */
 export const fromAdresse = (adresse: Adresse | null) => ({
   adresse: adresse?.voie ?? '',
   commune: adresse?.commune ?? '',
@@ -345,10 +303,6 @@ const fromSuppression = (suppression: Suppression) => ({
   suppressionParId: suppression._tag === 'Supprime' ? suppression.par : null,
 })
 
-/**
- * Les branded types du standard comme ceux de la coop sont structurellement des
- * chaînes : l'assignation vers Prisma est directe, sans `as` ni `!`.
- */
 export const lieuFromDomain = ({
   id,
   fiche,

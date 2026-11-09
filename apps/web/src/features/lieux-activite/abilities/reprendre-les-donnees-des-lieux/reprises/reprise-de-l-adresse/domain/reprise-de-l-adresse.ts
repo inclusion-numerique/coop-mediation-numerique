@@ -60,11 +60,6 @@ export type SupprimerLeLieu = (lieuId: string) => Promise<void>
 
 export type ConfierLAdresseAuLieu = (lieuId: string) => Promise<void>
 
-/**
- * Ce que la Base Adresse Nationale a répondu sur l'ensemble des lieux : par
- * l'adresse d'abord, puis par les coordonnées pour ceux que l'adresse n'a pas
- * suffi à situer.
- */
 export type AdressesRendues = {
   readonly parLAdresse: ReadonlyMap<string, readonly AdresseGeocodee[]>
   readonly parLesCoordonnees: ReadonlyMap<string, AdresseRetrouvee>
@@ -132,11 +127,6 @@ const appliquer =
     )
   }
 
-/**
- * On n'interroge par les coordonnées que les lieux dont l'adresse n'a pas suffi.
- * Le point est un recours, pas une source : quand la Base Adresse Nationale
- * reconnaît déjà l'adresse écrite, c'est elle qui fait foi.
- */
 export const adressesRendues =
   (
     geocoderLesAdresses: GeocoderLesAdresses,

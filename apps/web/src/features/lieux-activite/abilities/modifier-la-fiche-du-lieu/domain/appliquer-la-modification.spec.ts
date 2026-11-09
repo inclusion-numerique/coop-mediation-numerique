@@ -117,10 +117,6 @@ describe('appliquer une modification à la fiche du lieu', () => {
     expect(modifie.fiche).toEqual(lieu.fiche)
   })
 
-  /**
-   * Le contact est partagé entre deux sections : c'est le seul endroit où une
-   * section peut effacer le travail d'une autre sans qu'on s'en aperçoive.
-   */
   it('préserve téléphone et courriels quand on édite les informations pratiques', () => {
     const modifie = appliquerModification(
       lieu,
@@ -334,11 +330,6 @@ describe('ce que la coop sait de l’établissement au répertoire SIRENE', () =
     expect(modifie.identiteSirene.synchronisation).toEqual(verifieLe)
   })
 
-  /**
-   * La date atteste CE numéro-là. La garder ferait passer le nouveau SIRET pour
-   * vérifié, et le job qui les contrôle — qui saute les lieux vus depuis peu —
-   * ne le regarderait jamais.
-   */
   it('efface la date de vérification quand le pivot change', () => {
     const modifie = appliquerModification(
       immatricule,

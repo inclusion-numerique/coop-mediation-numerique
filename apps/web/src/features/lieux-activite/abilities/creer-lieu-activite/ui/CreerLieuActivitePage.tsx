@@ -18,7 +18,6 @@ const erreurEnregistrement = () =>
       'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   })
 
-/** Création d'un lieu d'activité depuis la gestion des lieux d'un médiateur. */
 const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
   const router = useRouter()
 

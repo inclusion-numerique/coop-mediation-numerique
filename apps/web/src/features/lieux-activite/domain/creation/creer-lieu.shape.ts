@@ -10,11 +10,6 @@ import { ServicesEtAccompagnementShape } from './services-et-accompagnement.vali
 import { TypesDePublicsAccueillisShape } from './types-de-publics-accueillis.validation'
 import { VisiblePourCartographieNationaleShape } from './visible-pour-cartographie-nationale.validation'
 
-/**
- * Ce qui se saisit à la création d'un lieu d'activité, quel que soit le parcours
- * qui y mène (inscription ou gestion des lieux). Aucune immatriculation : on ne
- * crée un lieu que lorsque la recherche par nom, adresse ou SIRET n'a rien rendu.
- */
 export const CreerLieuShape = {
   ...IdentiteLieuShape,
   ...VisiblePourCartographieNationaleShape,
@@ -25,7 +20,6 @@ export const CreerLieuShape = {
   ...TypesDePublicsAccueillisShape,
 }
 
-/** Un lieu visible sur la cartographie doit annoncer au moins un service. */
 export const auMoinsUnServiceSiVisible: [
   (data: {
     visiblePourCartographieNationale?: boolean

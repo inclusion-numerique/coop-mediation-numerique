@@ -116,8 +116,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       partage: personneDAutre,
     })
 
-    // Sans ce nom, l'écran annoncerait une mise à jour récente que le médiateur
-    // ne reconnaîtrait pas et que rien n'expliquerait.
     expect(affichee.misAJourPar).toBe('dora')
   })
 
@@ -139,8 +137,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       partage: personneDAutre,
     })
 
-    // C'est l'écart entre les deux dates qui fait l'information : « on a écrit
-    // après vous », et non « la fiche a bougé ».
     expect(affichee.repriseExterne).toEqual({
       source: 'dora',
       le: new Date('2026-09-01T00:00:00Z'),
@@ -168,8 +164,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       },
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
-      // La coop n'avait pas d'horaires : le registre en pose, et l'écart doit se
-      // lire comme « Non renseigné » face à la nouvelle valeur.
       ficheCoop: lieu.fiche,
       partage: personneDAutre,
     })
@@ -184,8 +178,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       {
         champ: 'horaires',
         libelle: 'Horaires',
-        // L'absence est une valeur : c'est elle que le médiateur choisira s'il
-        // veut que la source n'ait rien posé.
         coop: { _tag: 'Absente' },
         registre: { _tag: 'Horaires', osm: 'Tu 14:00-18:00' },
       },
@@ -229,7 +221,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       _tag: 'Liste',
       valeurs: ['Jeunes', 'Seniors'],
     })
-    // Une seule valeur : la puce n'apprendrait rien.
     expect(parChamp.get('typologies')).toEqual({
       _tag: 'Texte',
       texte: 'BIB',
