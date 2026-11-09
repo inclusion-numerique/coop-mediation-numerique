@@ -23,7 +23,6 @@ export type LigneDeLaListe = {
   readonly adresseAPreciser: boolean
   readonly creation: Date
   readonly modification: Date
-  readonly emploisCount: number
   readonly _count: {
     readonly mediateursEnActivite: number
     readonly activites: number

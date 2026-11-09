@@ -68,9 +68,6 @@ export const lieuxPourLaListe = async ({
 
   // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
   // domicile, et non plus d'une copie tenue par la coop.
-  //
-  // L'employeuse n'est plus reliée au lieu (ADR-002) : ce compteur n'a plus de
-  // quoi se calculer et vaut zéro pour tout le monde.
   return structures.map(({ inscriptionRegistre, banId, ...coop }) => {
     const registre =
       inscriptionRegistre == null ? null : champsDAffichage(inscriptionRegistre)
@@ -86,7 +83,6 @@ export const lieuxPourLaListe = async ({
       structureCartographieNationaleId:
         registre?.structureCartographieNationaleId ?? null,
       adresseAPreciser: banId == null,
-      emploisCount: 0,
     }
   })
 }
