@@ -7,7 +7,10 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
 import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import {
+  BoutonDeRetrait,
+  ModaleDeRetrait,
+} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
@@ -86,6 +89,7 @@ const LieuActiviteListPage = async ({
               />
             )}
             visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
+            modaleDeRetrait={<ModaleDeRetrait />}
             entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
           />
         </div>

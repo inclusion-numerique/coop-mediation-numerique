@@ -1,4 +1,3 @@
-import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import {
   libellesDeTri,
   trisDesLieux,
@@ -22,11 +21,13 @@ export const MesLieuxActivitePage = ({
   lieux,
   carte,
   visibilite,
+  modaleDeRetrait,
   entete,
 }: {
   lieux: readonly MonLieuActivite[]
   carte: (lieu: MonLieuActivite) => ReactNode
   visibilite: ReactNode
+  modaleDeRetrait: ReactNode
   entete?: ReactNode
 }) => (
   <div className="fr-container fr-container--medium fr-mb-32v">
@@ -65,7 +66,7 @@ export const MesLieuxActivitePage = ({
             </div>
             <hr className="fr-separator-1px" />
             {lieux.map(carte)}
-            <ModaleDeRetrait />
+            {modaleDeRetrait}
           </>
         )}
       </div>
