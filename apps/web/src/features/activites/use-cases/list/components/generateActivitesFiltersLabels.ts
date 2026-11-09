@@ -1,7 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuFilterType } from '@app/web/features/lieux-activite/ui'
 import {
   type RdvStatus,
   rdvStatusLabels,
@@ -26,14 +25,6 @@ export type FilterType =
   | 'thematiqueAdministratives'
   | 'tags'
   | 'source'
-export const locationTypeLabels: {
-  [key in LieuFilterType]: string
-} = {
-  lieu: 'Lieu d’activité',
-  commune: 'Commune',
-  departement: 'Département',
-}
-
 export const generateActivitesPeriodeFilterLabel = ({
   au,
   du,

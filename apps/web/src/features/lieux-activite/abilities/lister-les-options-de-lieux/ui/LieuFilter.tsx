@@ -6,7 +6,6 @@ import {
 } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
 import { Popover } from '@app/ui/components/Primitives/Popover'
-import { locationTypeLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import {
@@ -28,7 +27,17 @@ import { OptionOptions, optionComboBox } from './option-combo-box'
 export type LieuFilterType = 'lieu' | 'commune' | 'departement'
 export type LieuFilterValue = { type: LieuFilterType; value: string[] }
 
-const lieuTypeOptions = labelsToOptions(locationTypeLabels)
+const libellesDesTypesDeLieu: Record<LieuFilterType, string> = {
+  lieu: 'Lieu d’activité',
+  commune: 'Commune',
+  departement: 'Département',
+}
+
+type ChampsDuFiltre = { type: LieuFilterType | ''; valeur: SelectOption | null }
+
+const champsVides: ChampsDuFiltre = { type: '', valeur: null }
+
+const lieuTypeOptions = labelsToOptions(libellesDesTypesDeLieu)
 const lieuTypeOptionsWithoutDepartement = lieuTypeOptions.filter(
   (option) => option.value !== 'departement',
 )
@@ -64,13 +73,10 @@ export const LieuFilter = ({
    * formulaire pour bénéficier des composants de champ de l'application.
    */
   const form = useAppForm({
-    defaultValues: { type: '', valeur: null as SelectOption | null },
+    defaultValues: champsVides,
   })
 
-  const lieuFilterType = useSelector(
-    form.store,
-    (state) => state.values.type,
-  ) as LieuFilterType | ''
+  const lieuFilterType = useSelector(form.store, (state) => state.values.type)
 
   const isPending = !useHydrated()
 

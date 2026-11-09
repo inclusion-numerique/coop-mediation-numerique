@@ -1,4 +1,4 @@
-import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
 
@@ -22,11 +22,11 @@ type LieuActiviteQueryResult = {
 export const getLieuxDesActivitesOptions = async ({
   mediateurIds,
   mediateurId,
-  coordinateurId,
+  perimetreDesActivites = Prisma.sql`1 = 1`,
 }: {
   mediateurIds: string[]
   mediateurId?: string
-  coordinateurId?: string
+  perimetreDesActivites?: Prisma.Sql
 }): Promise<LieuActiviteOption[]> => {
   if (mediateurIds.length === 0) return []
 
@@ -37,7 +37,7 @@ export const getLieuxDesActivitesOptions = async ({
       WHERE act.mediateur_id = ANY(${mediateurIds}::uuid[])
         AND act.structure_id IS NOT NULL
         AND act.suppression IS NULL
-        AND ${activitesEquipeCoordonneeWhereCondition(coordinateurId)}
+        AND ${perimetreDesActivites}
       GROUP BY act.structure_id
     ),
     lieux_ids AS (
