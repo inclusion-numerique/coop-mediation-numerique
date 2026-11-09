@@ -1,3 +1,4 @@
+import { NomAffiche } from '@app/web/libraries/nom-affiche'
 import {
   Adresse,
   Contact,
@@ -234,7 +235,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('garde l’auteur coop quand c’est lui qui a modifié en dernier', () => {
     const affichee = ficheAffichee({
       lieu,
-      auteurDerniereModification: 'Édith Piaf',
+      auteurDerniereModification: NomAffiche('Édith Piaf'),
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
       ficheCoop: lieu.fiche,
       partage: personneDAutre,
