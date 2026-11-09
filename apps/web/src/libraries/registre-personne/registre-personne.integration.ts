@@ -236,6 +236,38 @@ describe('registre des personnes', () => {
       expect((await lire(id)).contact).toEqual({ idposte, coop: { email } })
     })
 
+    it('laisse l’identité d’une ligne qui a une affectation idposte', async () => {
+      const { id } = await compte(courriel('successeur'), {
+        firstName: 'Alex',
+        lastName: 'Durand',
+      })
+      const structure = await prismaClient.structureAdministrativeMain.create({
+        data: { denominationAntenne: `Identité ${v4()}` },
+        select: { id: true },
+      })
+      structures.push(structure.id)
+      const personneId = await ligne({
+        coopId: id,
+        nom: 'LEROY',
+        prenom: 'Sacha',
+      })
+      await prismaClient.personneAffectationEmploiMain.create({
+        data: {
+          personneId,
+          structureAdministrativeId: structure.id,
+          source: 'idposte',
+          estActive: false,
+        },
+      })
+
+      await synchroniser(id)
+
+      expect(await lire(id)).toMatchObject({
+        nom: 'LEROY',
+        prenom: 'Sacha',
+      })
+    })
+
     it('garde le rôle coordinateur posé par le dispositif', async () => {
       const { id } = await compte()
       await ligne({ coopId: id, cnPgId: 910_000_001, isCoordinateur: true })

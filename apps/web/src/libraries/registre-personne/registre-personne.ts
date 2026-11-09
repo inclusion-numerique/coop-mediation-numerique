@@ -122,7 +122,19 @@ const ligneDuRegistreSelect = {
   isCoordinateur: true,
   deletedAt: true,
   deletedBy: true,
+  affectationsEmploi: {
+    where: { source: 'idposte' },
+    select: { id: true },
+    take: 1,
+  },
 } as const
+
+const ligneDuRegistre = <L extends { readonly affectationsEmploi: unknown[] }>({
+  affectationsEmploi,
+  ...ligne
+}: L): Omit<L, 'affectationsEmploi'> & {
+  readonly aUneAffectationIdposte: boolean
+} => ({ ...ligne, aUneAffectationIdposte: affectationsEmploi.length > 0 })
 
 const ligneVide: LigneDuRegistre = {
   nom: null,
@@ -131,6 +143,7 @@ const ligneVide: LigneDuRegistre = {
   cnPgId: null,
   conseillerNumeriqueId: null,
   aidantConnectId: null,
+  aUneAffectationIdposte: false,
   isMediateur: null,
   isCoordinateur: null,
   deletedAt: null,
@@ -186,10 +199,12 @@ export const apercuDeLaSynchronisation = async (
   const ligne =
     lien.personneId === null
       ? ligneVide
-      : await prisma.personneMain.findUniqueOrThrow({
-          where: { id: lien.personneId },
-          select: ligneDuRegistreSelect,
-        })
+      : ligneDuRegistre(
+          await prisma.personneMain.findUniqueOrThrow({
+            where: { id: lien.personneId },
+            select: ligneDuRegistreSelect,
+          }),
+        )
 
   return {
     ...lien,
@@ -227,10 +242,12 @@ export const synchroniserPersonne = async (
   const personne = await personneASynchroniser(transaction, userId, compte)
   if (personne === null) return
 
-  const ligne = await transaction.personneMain.findUniqueOrThrow({
-    where: { id: personne.id },
-    select: ligneDuRegistreSelect,
-  })
+  const ligne = ligneDuRegistre(
+    await transaction.personneMain.findUniqueOrThrow({
+      where: { id: personne.id },
+      select: ligneDuRegistreSelect,
+    }),
+  )
 
   const alignement = alignementDe({ compte, ligne, maintenant })
   if (alignement === null) return
@@ -253,14 +270,15 @@ export const retirerDuRegistre = async (
   userId: string,
   maintenant: Date = new Date(),
 ): Promise<void> => {
-  const ligne = await transaction.personneMain.findUnique({
+  const trouvee = await transaction.personneMain.findUnique({
     where: { coopId: userId },
     select: {
       ...ligneDuRegistreSelect,
       _count: { select: { contrats: true, postes: true } },
     },
   })
-  if (ligne === null) return
+  if (trouvee === null) return
+  const ligne = ligneDuRegistre(trouvee)
 
   if (
     aUneAutreSource(ligne) ||
