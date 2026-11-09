@@ -13,15 +13,13 @@ import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abiliti
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/ui'
-import { listerLesLieuxDuMediateur } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { consulterLeContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat'
 import { CarteContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat/ui'
 import { UtilisateurId } from '@app/web/features/mediateurs/domain'
 import {
   consulterUnActeur,
+  lieuxDeLActeur,
   nomDeLActeur,
 } from '@app/web/features/mon-reseau/abilities/consulter-un-acteur'
 import {
@@ -69,14 +67,7 @@ const Page = async ({ params }: Parametres) => {
   const mediation = acteur.profil.mediation
   const [employeuse, lieux, contrat] = await Promise.all([
     consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
-    mediation === null
-      ? null
-      : listerLesLieuxDuMediateur({
-          mediateurId: MediateurId(mediation.mediateurId),
-          tri: TriDesLieux(undefined),
-        }).then((rattachements) =>
-          rattachements.map(({ lieuInclusion }) => lieuInclusion),
-        ),
+    mediation === null ? null : lieuxDeLActeur(mediation.mediateurId),
     contratVisible(acteur, regard)
       ? consulterLeContrat({
           utilisateurId: UtilisateurId(acteur.acteurId),
