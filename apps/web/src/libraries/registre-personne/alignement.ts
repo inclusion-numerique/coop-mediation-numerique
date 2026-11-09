@@ -20,6 +20,7 @@ export type LigneDuRegistre = {
   readonly cnPgId: number | null
   readonly conseillerNumeriqueId: string | null
   readonly aidantConnectId: number | null
+  readonly aUneAffectationIdposte: boolean
   readonly isMediateur: boolean | null
   readonly isCoordinateur: boolean | null
   readonly deletedAt: Date | null
@@ -52,11 +53,14 @@ const estUnObjet = (valeur: unknown): valeur is Prisma.InputJsonObject =>
 const contactDe = (ligne: LigneDuRegistre): Prisma.InputJsonObject =>
   estUnObjet(ligne.contact) ? ligne.contact : {}
 
-export const aUneAutreSource = (ligne: LigneDuRegistre): boolean =>
+const vientDIdposte = (ligne: LigneDuRegistre): boolean =>
   ligne.cnPgId !== null ||
   ligne.conseillerNumeriqueId !== null ||
-  ligne.aidantConnectId !== null ||
+  ligne.aUneAffectationIdposte ||
   'idposte' in contactDe(ligne)
+
+export const aUneAutreSource = (ligne: LigneDuRegistre): boolean =>
+  vientDIdposte(ligne) || ligne.aidantConnectId !== null
 
 const siDifferent = <C extends keyof ColonnesAlignees>(
   colonne: C,
@@ -88,6 +92,15 @@ const alignementDuContact = (
     : { contact: { ...contact, coop: voulu } }
 }
 
+const valeurDIdentiteVoulue = (
+  ligne: LigneDuRegistre,
+  actuelle: string | null,
+  duCompte: string | null,
+): string | undefined =>
+  vientDIdposte(ligne) && actuelle !== null && actuelle !== ''
+    ? undefined
+    : (duCompte ?? undefined)
+
 const alignementDeLIdentite = (
   compte: CompteCoop,
   ligne: LigneDuRegistre,
@@ -98,12 +111,20 @@ const alignementDeLIdentite = (
         ...siDifferent(
           'nom',
           ligne.nom,
-          NomDuRegistre.safe(compte.lastName ?? '') ?? undefined,
+          valeurDIdentiteVoulue(
+            ligne,
+            ligne.nom,
+            NomDuRegistre.safe(compte.lastName ?? ''),
+          ),
         ),
         ...siDifferent(
           'prenom',
           ligne.prenom,
-          PrenomDuRegistre.safe(compte.firstName ?? '') ?? undefined,
+          valeurDIdentiteVoulue(
+            ligne,
+            ligne.prenom,
+            PrenomDuRegistre.safe(compte.firstName ?? ''),
+          ),
         ),
       }
 

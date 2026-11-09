@@ -25,6 +25,7 @@ const ligne = {
   cnPgId: null,
   conseillerNumeriqueId: null,
   aidantConnectId: null,
+  aUneAffectationIdposte: false,
   isMediateur: true,
   isCoordinateur: false,
   deletedAt: null,

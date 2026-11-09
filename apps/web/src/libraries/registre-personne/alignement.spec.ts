@@ -28,6 +28,7 @@ const ligneAlignee = (surcharge: Partial<LigneDuRegistre> = {}) => ({
   cnPgId: null,
   conseillerNumeriqueId: null,
   aidantConnectId: null,
+  aUneAffectationIdposte: false,
   isMediateur: true,
   isCoordinateur: false,
   deletedAt: null,
@@ -80,6 +81,52 @@ describe('alignement d’une ligne du registre sur son compte Coop', () => {
       expect(
         aligner({ lastName: null, firstName: 'a'.repeat(51) }, {}),
       ).toBeNull()
+    })
+
+    it.each([
+      [
+        'bloc idposte',
+        {
+          contact: {
+            ...contactIdposte,
+            coop: { email: 'camille@example.org', telephone: '+33612345678' },
+          },
+        },
+      ],
+      ['identifiant CN', { cnPgId: 12 }],
+      ['ancien identifiant CN', { conseillerNumeriqueId: 'abc' }],
+      ['affectation idposte', { aUneAffectationIdposte: true }],
+    ])(
+      'n’écrase pas l’identité d’une ligne venue d’idposte, mais la complète : %s',
+      (_, surcharge) => {
+        expect(
+          aligner(
+            { firstName: 'Alex', lastName: 'Durand' },
+            { nom: 'LEROY', prenom: 'Sacha', ...surcharge },
+          ),
+        ).toBeNull()
+        expect(
+          aligner(
+            { firstName: 'Alex', lastName: 'Durand' },
+            { nom: null, prenom: 'Sacha', ...surcharge },
+          ),
+        ).toMatchObject({ nom: 'DURAND' })
+        expect(
+          aligner(
+            { firstName: 'Alex', lastName: 'Durand' },
+            { nom: null, prenom: 'Sacha', ...surcharge },
+          ),
+        ).not.toHaveProperty('prenom')
+      },
+    )
+
+    it('reprend l’identité d’une ligne venue seulement d’Aidants Connect', () => {
+      expect(
+        aligner(
+          { firstName: 'Camille Andrée' },
+          { prenom: 'Camille', aidantConnectId: 34 },
+        ),
+      ).toMatchObject({ prenom: 'Camille Andrée' })
     })
   })
 
@@ -248,6 +295,7 @@ describe('une autre source que la Coop', () => {
     ['ancien identifiant CN', { conseillerNumeriqueId: 'abc' }],
     ['identifiant Aidants Connect', { aidantConnectId: 34 }],
     ['bloc idposte', { contact: contactIdposte }],
+    ['affectation idposte', { aUneAffectationIdposte: true }],
   ])('se lit dans : %s', (_, surcharge) => {
     expect(aUneAutreSource(ligneAlignee(surcharge))).toBe(true)
   })
