@@ -25,10 +25,6 @@ export {
 } from './criteres-equipe'
 export { Email } from './email'
 export * from './errors'
-export {
-  type EssaimageCoordinateur,
-  essaimageDesTagsDuCoordinateur,
-} from './essaimage-tags'
 export { type Gestionnaire, peutGererLEquipe } from './gestionnaire'
 export {
   exigerEnAttente,
@@ -57,7 +53,6 @@ export { MediateurId } from './mediateur-id'
 export { Nom } from './nom'
 export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
 export { NomStructure } from './nom-structure'
-export { memeNom, NomTag, NomTagCanonique } from './nom-tag'
 export { Prenom } from './prenom'
 export { ReferenceInvitation } from './reference-invitation'
 export { RoleMembre, roleMembre } from './role-membre'
@@ -67,8 +62,6 @@ export {
   type StatutMembre,
   type TypeDeStatut,
 } from './statut-membre'
-export { type TagExistant, tagDAccueil } from './tag-daccueil'
-export { TagId } from './tag-id'
 export { Telephone } from './telephone'
 export { UtilisateurId } from './utilisateur-id'
 export { Voie } from './voie'

@@ -1,10 +1,13 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import type { DefaultValues } from 'react-hook-form'
-import { searchTags } from '../tags/search/searchTags'
 import { CraAnimationData } from './animation/validation/CraAnimationValidation'
 import { CraEvenementData } from './evenement/validation/CraEvenementValidation'
 import { dureeAccompagnementParDefautLabels } from './fields/duree-accompagnement'
 import { CraPartenariatData } from './partenariat/validation/CraPartenariatValidation'
+import {
+  type RechercherDesTagsInitiaux,
+  tagDuFormulaire,
+} from './tags/tag-du-cra'
 
 type CraCoordinationData =
   | CraAnimationData
@@ -25,19 +28,19 @@ const craDefaultValues = (
 export const getCraCoordinationPageData = async (
   coordinateurId: string,
   initialDefaultValues: DefaultValues<CraCoordinationData>,
+  rechercherDesTagsInitiaux: RechercherDesTagsInitiaux,
 ) => {
   const defaultValues: DefaultValues<CraCoordinationData> & {
     coordinateurId: string
   } = craDefaultValues(coordinateurId, initialDefaultValues)
 
   const initialTagsOptions = (
-    await searchTags({
-      searchParams: { lignes: '10' },
-      excludeIds: defaultValues.tags
-        ?.map((tag) => tag?.id)
+    await rechercherDesTagsInitiaux(
+      (defaultValues.tags ?? [])
+        .map((tag) => tag?.id)
         .filter((id): id is string => id != null),
-    })
-  ).items
+    )
+  ).map(tagDuFormulaire)
 
   return {
     defaultValues,

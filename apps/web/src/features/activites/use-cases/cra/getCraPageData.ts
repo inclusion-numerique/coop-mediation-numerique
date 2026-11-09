@@ -1,8 +1,11 @@
-import { searchTags } from '@app/web/features/activites/use-cases/tags/search/searchTags'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite'
 import type { DefaultValues } from 'react-hook-form'
 import { getAdaptiveDureeOptions } from './db/getAdaptiveDureeOptions'
+import {
+  type RechercherDesTagsInitiaux,
+  tagDuFormulaire,
+} from './tags/tag-du-cra'
 import { CraData } from './validation/CraValidation'
 
 const craDefaultValues = (
@@ -34,7 +37,11 @@ export const getCraPageData =
       stateFromUrl: DefaultValues<CraData>,
     ) => DefaultValues<T>,
   ) =>
-  async (mediateurId: string, stateFromUrl: DefaultValues<CraData>) => {
+  async (
+    mediateurId: string,
+    stateFromUrl: DefaultValues<CraData>,
+    rechercherDesTagsInitiaux: RechercherDesTagsInitiaux,
+  ) => {
     const lieuxActiviteOptions = await getMediateursLieuxActiviteOptions({
       mediateurIds: [mediateurId],
     })
@@ -58,13 +65,12 @@ export const getCraPageData =
       })
 
     const initialTagsOptions = (
-      await searchTags({
-        searchParams: { lignes: '10' },
-        excludeIds: defaultValues.tags
-          ?.map((tag) => tag?.id)
+      await rechercherDesTagsInitiaux(
+        (defaultValues.tags ?? [])
+          .map((tag) => tag?.id)
           .filter((id): id is string => id != null),
-      })
-    ).items
+      )
+    ).map(tagDuFormulaire)
 
     const dureeOptions = await getAdaptiveDureeOptions({
       mediateurId,
