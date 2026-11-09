@@ -23,11 +23,11 @@ type LieuxSemes = {
   readonly lieuIds: readonly string[]
 }
 
-let lieux: LieuxSemes | undefined
+const semisDeLieux: { lieux?: LieuxSemes } = {}
 
 export const lieuxSemes = (): LieuxSemes => {
-  if (!lieux) throw new Error('Aucun lieu semé')
-  return lieux
+  if (!semisDeLieux.lieux) throw new Error('Aucun lieu semé')
+  return semisDeLieux.lieux
 }
 
 export const semerLieuxDActivite = async (): Promise<LieuxSemes> => {
@@ -64,18 +64,18 @@ export const semerLieuxDActivite = async (): Promise<LieuxSemes> => {
     })),
   })
 
-  lieux = {
+  semisDeLieux.lieux = {
     userId,
     mediateurId: mediateur.id,
     lieuIds: crees.map(({ id }) => id),
   }
 
-  return lieux
+  return semisDeLieux.lieux
 }
 
 After(async () => {
-  const semé = lieux
-  lieux = undefined
+  const semé = semisDeLieux.lieux
+  semisDeLieux.lieux = undefined
   if (!semé) return
 
   await prismaClient.mediateurEnActivite.deleteMany({

@@ -7,28 +7,30 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-let retires: number | undefined
+const retrait: { retires?: number } = {}
 
 Given("un médiateur rattaché à deux lieux d'activité", async () => {
   await semerLieuxDActivite()
 })
 
 When('je retire ce médiateur de ses lieux', async () => {
-  retires = (await retirerDesLieux({ mediateurId: lieuxSemes().mediateurId }))
-    .rattachementsSupprimes
+  retrait.retires = (
+    await retirerDesLieux({ mediateurId: lieuxSemes().mediateurId })
+  ).rattachementsSupprimes
 })
 
 When('je retire à nouveau ce médiateur de ses lieux', async () => {
-  retires = (await retirerDesLieux({ mediateurId: lieuxSemes().mediateurId }))
-    .rattachementsSupprimes
+  retrait.retires = (
+    await retirerDesLieux({ mediateurId: lieuxSemes().mediateurId })
+  ).rattachementsSupprimes
 })
 
 Then('le retrait porte sur {int} rattachements', (attendu: number) => {
-  assert.strictEqual(retires, attendu)
+  assert.strictEqual(retrait.retires, attendu)
 })
 
 Then('le retrait porte sur {int} rattachement', (attendu: number) => {
-  assert.strictEqual(retires, attendu)
+  assert.strictEqual(retrait.retires, attendu)
 })
 
 Then("ce médiateur n'est plus rattaché à aucun lieu", async () => {
