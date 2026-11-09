@@ -1,6 +1,7 @@
 import type { AppliquerDispositif } from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
 import { profilDepuisDispositif } from '@app/web/features/inscription/domain'
 import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
@@ -12,9 +13,12 @@ const garantirMediateur = async (userId: string): Promise<void> => {
   })
   if (existant) return
 
-  await prismaClient.mediateur.create({
-    data: { userId },
-    select: { id: true },
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.mediateur.create({
+      data: { userId },
+      select: { id: true },
+    })
+    await synchroniserPersonne(transaction, userId)
   })
 }
 

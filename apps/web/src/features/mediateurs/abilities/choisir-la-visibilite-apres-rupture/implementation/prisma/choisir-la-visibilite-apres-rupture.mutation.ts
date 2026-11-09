@@ -1,11 +1,12 @@
 import type { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import {
   AucuneRuptureEnAttente,
-  type ConfirmerLExerciceApresRuptureError,
+  type ChoisirLaVisibiliteApresRuptureError,
   MediateurIntrouvable,
 } from '../../domain/errors'
 import {
@@ -15,7 +16,7 @@ import {
 import { ruptureEnAttente } from '../../domain/rupture-en-attente'
 import { lireMediateurEtContrats } from './mediateur-et-contrats'
 
-export const confirmerLExerciceApresRupture = async ({
+export const choisirLaVisibiliteApresRupture = async ({
   mediateurId,
   reponse,
   auteurId,
@@ -25,7 +26,7 @@ export const confirmerLExerciceApresRupture = async ({
   readonly reponse: ReponseApresRupture
   readonly auteurId: AuteurId
   readonly maintenant?: Date
-}): Promise<Result<void, ConfirmerLExerciceApresRuptureError>> => {
+}): Promise<Result<void, ChoisirLaVisibiliteApresRuptureError>> => {
   const stopwatch = createStopwatch()
 
   const mediateur = await lireMediateurEtContrats(mediateurId)
@@ -40,7 +41,7 @@ export const confirmerLExerciceApresRupture = async ({
 
   if (rupture == null) return failure(AucuneRuptureEnAttente(mediateurId))
 
-  const visible = visibiliteApres(reponse, mediateur.isVisible)
+  const visible = visibiliteApres(reponse)
 
   const { count } = await prismaClient.$transaction(async (transaction) => {
     const ecriture = await transaction.mediateur.updateMany({
@@ -56,6 +57,12 @@ export const confirmerLExerciceApresRupture = async ({
         where: { mediateur: { id: mediateur.id } },
         data: { updated: maintenant },
       })
+
+      const { userId } = await transaction.mediateur.findUniqueOrThrow({
+        where: { id: mediateur.id },
+        select: { userId: true },
+      })
+      await synchroniserPersonne(transaction, userId, maintenant)
     }
 
     return ecriture

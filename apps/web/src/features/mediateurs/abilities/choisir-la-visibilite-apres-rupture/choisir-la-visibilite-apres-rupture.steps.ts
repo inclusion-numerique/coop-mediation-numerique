@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import {
-  confirmerLExerciceApresRupture,
+  choisirLaVisibiliteApresRupture,
   lireLaRuptureEnAttente,
-} from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture'
-import { ReponseApresRupture } from '@app/web/features/mediateurs/abilities/confirmer-l-exercice-apres-rupture/domain'
+} from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
+import { ReponseApresRupture } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
 import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
 import {
   exConseillerSeme,
@@ -13,7 +13,7 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-type Issue = Awaited<ReturnType<typeof confirmerLExerciceApresRupture>>
+type Issue = Awaited<ReturnType<typeof choisirLaVisibiliteApresRupture>>
 
 const derniere: { reponse?: Issue } = {}
 
@@ -26,7 +26,7 @@ const date = (jour: string): Date => {
 
 const repondre = async (reponse: ReponseApresRupture) => {
   const seme = exConseillerSeme()
-  derniere.reponse = await confirmerLExerciceApresRupture({
+  derniere.reponse = await choisirLaVisibiliteApresRupture({
     mediateurId: MediateurId(seme.mediateurId),
     reponse,
     auteurId: AuteurId(seme.userId),
@@ -80,19 +80,19 @@ Given(
   },
 )
 
-Given("il a répondu qu'il continue d'exercer", async () => {
-  await repondre(ReponseApresRupture('ContinueDExercer'))
+Given("il a répondu qu'il souhaite apparaître", async () => {
+  await repondre(ReponseApresRupture('SouhaiteApparaitre'))
 })
 
-When("il répond qu'il continue d'exercer", async () => {
-  await repondre(ReponseApresRupture('ContinueDExercer'))
+When("il répond qu'il souhaite apparaître", async () => {
+  await repondre(ReponseApresRupture('SouhaiteApparaitre'))
 })
 
-When("il répond qu'il n'exerce plus", async () => {
-  await repondre(ReponseApresRupture('NExercePlus'))
+When("il répond qu'il préfère rester masqué", async () => {
+  await repondre(ReponseApresRupture('PrefereResterMasque'))
 })
 
-Then('une réponse sur la poursuite de son activité est attendue', async () => {
+Then('une réponse sur sa visibilité est attendue', async () => {
   assert.notStrictEqual(await ruptureEnAttente(), null)
 })
 

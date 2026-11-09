@@ -1,6 +1,6 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
+import { ensurePersonneMain } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
-import { ensurePersonneMain } from './ensurePersonneMain'
 
 const COOP_SOURCE = 'coop'
 

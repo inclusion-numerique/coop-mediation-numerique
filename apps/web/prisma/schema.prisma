@@ -887,12 +887,18 @@ model PersonneMain {
   /// Identifiant du conseiller numérique côté dispositif. Remplace `coop.users.dataspace_user_id_pg`,
   /// que la synchro nocturne recopiait depuis l'API : c'est la même valeur, à la source.
   cnPgId         Int?      @unique(map: "personne_cn_pg_id_ukey") @map("cn_pg_id")
+  conseillerNumeriqueId String? @unique(map: "personne_conseiller_numerique_id_ukey") @map("conseiller_numerique_id") @db.VarChar(50)
+  aidantConnectId Int?     @unique(map: "personne_aidant_connect_id_ukey") @map("aidant_connect_id")
   coopId         String?   @unique(map: "personne_coop_id_ukey") @map("coop_id") @db.Uuid
   isCoordinateur Boolean?  @map("is_coordinateur")
   isMediateur    Boolean?  @map("is_mediateur")
+  isVisible      Boolean?  @map("is_visible")
   createdAt      DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt      DateTime? @map("updated_at") @db.Timestamp(6)
+  updatedAtCoop  DateTime? @map("updated_at_coop") @db.Timestamp(6)
+  editedBy       String?   @map("edited_by") @db.VarChar(50)
   deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
+  deletedBy      String[]  @map("deleted_by")
 
   user               User?                           @relation(fields: [coopId], references: [id])
   affectationsEmploi PersonneAffectationEmploiMain[]

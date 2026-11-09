@@ -18,6 +18,6 @@ export const AucuneRuptureEnAttente = (
   mediateurId: MediateurId,
 ): AucuneRuptureEnAttente => ({ _tag: 'AucuneRuptureEnAttente', mediateurId })
 
-export type ConfirmerLExerciceApresRuptureError =
+export type ChoisirLaVisibiliteApresRuptureError =
   | MediateurIntrouvable
   | AucuneRuptureEnAttente

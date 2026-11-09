@@ -125,6 +125,13 @@ describe('le dispositif conseiller numérique sans synchro', () => {
     })
 
     // Une personne absente de `main` remplace exactement le 404 de l'API.
+    it('ne tient pas pour connue une ligne déclarée par la Coop seule', async () => {
+      const dispositif = await dispositifDepuisMain(horsDispositif)
+
+      expect(dispositif.connue).toBe(false)
+      expect(profilDepuisDispositif(dispositif)).toBeNull()
+    })
+
     it('ne déduit aucun profil d’une personne inconnue de main', async () => {
       const dispositif = await dispositifDepuisMain(v4())
 

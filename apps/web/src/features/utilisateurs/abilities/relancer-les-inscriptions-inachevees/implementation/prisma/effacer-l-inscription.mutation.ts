@@ -1,4 +1,5 @@
 import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
+import { retirerDuRegistre } from '@app/web/libraries/registre-personne'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const effacerLInscription = async (
@@ -36,6 +37,7 @@ export const effacerLInscription = async (
       where: { userId: utilisateurId },
       data: { userId: null },
     })
+    await retirerDuRegistre(tx, utilisateurId)
     await tx.user.delete({ where: { id: utilisateurId } })
   })
 }

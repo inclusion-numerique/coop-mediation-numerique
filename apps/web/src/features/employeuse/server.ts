@@ -35,7 +35,6 @@ export {
   adresseMainKey,
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
-  ensurePersonneMain,
   ensureStructureAdministrativeMain,
   findAdresseMainId,
   insertAdresseMain,

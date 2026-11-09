@@ -1,5 +1,6 @@
 import { proConnectProviderId } from '@app/web/auth/proConnect'
-import { extendedPrismaClient } from '@app/web/prismaClient'
+import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
+import { extendedPrismaClient, prismaClient } from '@app/web/prismaClient'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
@@ -36,6 +37,13 @@ const createAdapter = (): Adapter & {
 
 const prismaAdapter = createAdapter()
 
+const creerLeCompte = (data: Omit<AdapterUser, 'id'>) =>
+  prismaClient.$transaction(async (transaction) => {
+    const compte = await transaction.user.create({ data })
+    await synchroniserPersonne(transaction, compte.id)
+    return compte
+  })
+
 // ⚠️ Keycloak returns non standard fields that are expected to be ignored by the client
 const removeNonStandardFields = <T extends AdapterAccount>(data: T): T => ({
   ...data,
@@ -54,9 +62,9 @@ export const nextAuthAdapter = {
     const info = { id: v4(), ...rest }
 
     if (provider === proConnectProviderId) {
-      return prismaAdapter.createUser({ ...info, emailVerified: new Date() })
+      return creerLeCompte({ ...info, emailVerified: new Date() })
     }
-    return prismaAdapter.createUser(info)
+    return creerLeCompte(info)
   },
   // Better handle case of missing session when deleting. It should not crash auth process.
   deleteSession: async (sessionToken) => {
