@@ -1,4 +1,4 @@
-# Feature: Lister ses lieux d'activité
+# Feature: Lister les lieux d'un médiateur
 
 ## Rule: Seuls les lieux où l'on exerce aujourd'hui sont listés
 

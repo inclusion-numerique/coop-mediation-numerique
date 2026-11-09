@@ -19,7 +19,6 @@ export {
 } from './prisma/lieu-correle'
 export {
   type LieuEnListe,
-  lieuxEnListeDuMediateur,
   projectionDuLieuEnListe,
 } from './prisma/lieu-en-liste'
 export {

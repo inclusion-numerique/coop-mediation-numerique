@@ -26,8 +26,8 @@ import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
 import { ActionsDuMembre } from '@app/web/features/equipe/ui'
 import { AvertissementsEtatInscription } from '@app/web/features/inscription/components/AvertissementsEtatInscription'
 import { MediateurId, TriDesLieux } from '@app/web/features/lieux-activite'
-import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
-import { LieuxDActiviteEnAdministration } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
+import { listerLesLieuxDuMediateur } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
+import { LieuxDActiviteEnAdministration } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { VisibiliteCartoDuMediateur } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.key'
@@ -110,7 +110,7 @@ const sectionLieux = async (fiche: FicheUtilisateur): Promise<ReactNode> => {
   return (
     <LieuxDActiviteEnAdministration
       lieux={
-        await listerMesLieuxActivite({
+        await listerLesLieuxDuMediateur({
           mediateurId: MediateurId(mediateur.id),
           tri: TriDesLieux(null),
         })

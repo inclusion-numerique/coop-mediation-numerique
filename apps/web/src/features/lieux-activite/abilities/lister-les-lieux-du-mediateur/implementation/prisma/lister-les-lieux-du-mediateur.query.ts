@@ -16,7 +16,7 @@ import {
  * La projection est celle des listes de lieux : « mes lieux » et « l'annuaire du
  * département » montrent le même objet, vu depuis deux entrées.
  */
-export const listerMesLieuxActivite = async ({
+export const listerLesLieuxDuMediateur = async ({
   mediateurId,
   tri,
 }: {
@@ -46,6 +46,6 @@ export const listerMesLieuxActivite = async ({
   }))
 }
 
-export type MonLieuActivite = Awaited<
-  ReturnType<typeof listerMesLieuxActivite>
+export type LieuDuMediateurEnListe = Awaited<
+  ReturnType<typeof listerLesLieuxDuMediateur>
 >[number]

@@ -6,6 +6,12 @@
 
 ## Rule: Seuls les lieux déclarés visibles comptent parmi les lieux visibles du médiateur
 
+> « Visible » est la déclaration portée par le lieu, pas le résultat du
+> moissonnage : la publication exige en plus qu'un médiateur visible y exerce.
+> Un médiateur qui a masqué son profil voit donc ses lieux comptés ici sans
+> qu'ils paraissent sur la carte. L'écart est connu ; le corriger changerait
+> ce que la page annonce.
+
 ### Scenario: Le lieu visible où il exerce compte
 
 * Given un médiateur qui exerce dans un lieu visible de Charente-Maritime

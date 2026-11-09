@@ -4,8 +4,8 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
-import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
+import { listerLesLieuxDuMediateur } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
+import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import {
   BoutonDeRetrait,
@@ -42,7 +42,7 @@ const LieuActiviteListPage = async ({
 
   const mediateur = user.mediateur
 
-  const lieux = await listerMesLieuxActivite({
+  const lieux = await listerLesLieuxDuMediateur({
     mediateurId: MediateurId(user.mediateur.id),
     tri: TriDesLieux(tri),
   })

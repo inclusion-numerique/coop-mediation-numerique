@@ -6,7 +6,7 @@ import { pluriel } from '@app/web/libraries/pluriel'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
-import type { MonLieuActivite } from '../../implementation'
+import type { LieuDuMediateurEnListe } from '../../implementation'
 import { AucunLieu } from '../components/AucunLieu'
 
 /**
@@ -24,8 +24,8 @@ export const MesLieuxActivitePage = ({
   modaleDeRetrait,
   entete,
 }: {
-  lieux: readonly MonLieuActivite[]
-  carte: (lieu: MonLieuActivite) => ReactNode
+  lieux: readonly LieuDuMediateurEnListe[]
+  carte: (lieu: LieuDuMediateurEnListe) => ReactNode
   visibilite: ReactNode
   modaleDeRetrait: ReactNode
   entete?: ReactNode

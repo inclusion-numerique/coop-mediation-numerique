@@ -1,18 +1,18 @@
 import assert from 'node:assert'
 import {
-  listerMesLieuxActivite,
-  type MonLieuActivite,
-} from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
+  type LieuDuMediateurEnListe,
+  listerLesLieuxDuMediateur,
+} from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-const liste: { lieux?: readonly MonLieuActivite[] } = {}
+const liste: { lieux?: readonly LieuDuMediateurEnListe[] } = {}
 
 const lister = async (mediateurId: string, tri?: string) => {
-  liste.lieux = await listerMesLieuxActivite({
+  liste.lieux = await listerLesLieuxDuMediateur({
     mediateurId: MediateurId(mediateurId),
     tri: TriDesLieux(tri),
   })

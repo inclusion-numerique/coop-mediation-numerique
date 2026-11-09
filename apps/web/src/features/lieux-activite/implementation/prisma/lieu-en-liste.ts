@@ -1,5 +1,4 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
 import {
   adresseDeLInscription,
   type InscriptionPourLaFiche,
@@ -91,19 +90,3 @@ export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
 }
 
 export type LieuEnListe = ReturnType<typeof avecLaFicheDuRegistre>
-
-export const lieuxEnListeDuMediateur = async ({
-  mediateurId,
-}: {
-  mediateurId: string
-}): Promise<LieuEnListe[]> =>
-  (
-    await prismaClient.lieuInclusion.findMany({
-      where: {
-        mediateursEnActivite: {
-          some: { mediateurId, suppression: null, fin: null },
-        },
-      },
-      select: projectionDuLieuEnListe,
-    })
-  ).map(avecLaFicheDuRegistre)

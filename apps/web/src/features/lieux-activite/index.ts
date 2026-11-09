@@ -68,6 +68,14 @@ export {
   type RechercheDeLieuxDuDepartement,
 } from './abilities/lister-les-lieux-du-departement'
 export {
+  type LieuDuMediateurEnListe,
+  listerLesLieuxDuMediateur,
+} from './abilities/lister-les-lieux-du-mediateur'
+export {
+  type LieuPourLInscription,
+  listerLesLieuxPourLInscription,
+} from './abilities/lister-les-lieux-pour-l-inscription'
+export {
   getCommunesAndDepartementsOptions,
   getLieuxActiviteOptions,
   getLieuxDesActivitesOptions,
@@ -77,10 +85,6 @@ export {
   mediateurStructureSelect,
   optionDeLieu,
 } from './abilities/lister-les-options-de-lieux'
-export {
-  listerMesLieuxActivite,
-  type MonLieuActivite,
-} from './abilities/lister-mes-lieux-activite'
 export {
   rechercherDesLieux,
   triDesLieux,
@@ -134,18 +138,12 @@ export {
 } from './implementation/prisma/lieu-correle'
 export {
   type LieuEnListe,
-  lieuxEnListeDuMediateur,
   projectionDuLieuEnListe,
 } from './implementation/prisma/lieu-en-liste'
 export {
   lieuExploitable,
   lieuExploitableSql,
 } from './implementation/prisma/lieu-exploitable'
-export {
-  type LieuDuMediateur,
-  lieuxActiviteDuMediateur,
-  visibiliteDesLieuxDuMediateur,
-} from './implementation/prisma/lieux-du-mediateur'
 // Écriture au registre des lieux de l'Entrepôt. Y figure au même titre que
 // `lieuCorrele` (AR-7) : les deux écritures ne valent que composées dans la
 // transaction de l'appelant, ce qu'un port de commande ne permet pas. Quiconque

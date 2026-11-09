@@ -3,12 +3,12 @@ import AdministrationInlineLabelsValues from '@app/web/libs/ui/administration/Ad
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import type { MonLieuActivite } from '../../implementation'
+import type { LieuDuMediateurEnListe } from '../../implementation'
 
 export const LieuxDActiviteEnAdministration = ({
   lieux,
 }: {
-  lieux: readonly MonLieuActivite[]
+  lieux: readonly LieuDuMediateurEnListe[]
 }) =>
   lieux.length === 0 ? (
     <Notice
