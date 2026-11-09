@@ -1,12 +1,15 @@
 import type { LieuInclusion, Prisma } from '@app/web/generated/prisma/client'
+import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { unionArrays } from '@app/web/utils/unionArrays'
+import type { LieuId } from '../../../../domain/lieu-id'
 import {
   ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
   retirerDuRegistre,
   toutesLesColonnes,
 } from '../../../../implementation'
+import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
 
 type PrismaTransaction = Prisma.TransactionClient
 
@@ -168,38 +171,32 @@ const fusionnerAuRegistre =
   }
 
 export const fusionnerDesLieux = async (
-  sourceStructureId: string,
-  targetStructureId: string,
+  { source, cible }: { readonly source: LieuId; readonly cible: LieuId },
   options?: { timeout?: number },
-): Promise<void> => {
-  await prismaClient.$transaction(
-    async (prisma) => {
-      const [sourceStructure, targetStructure] = await Promise.all([
+): Promise<Result<void, EchecDeFusion>> =>
+  prismaClient.$transaction(
+    async (prisma): Promise<Result<void, EchecDeFusion>> => {
+      const [lieuSource, lieuCible] = await Promise.all([
         prisma.lieuInclusion.findUnique({
-          where: { id: sourceStructureId },
+          where: { id: source },
           select: { id: true },
         }),
         prisma.lieuInclusion.findUnique({
-          where: { id: targetStructureId },
+          where: { id: cible },
           select: { id: true },
         }),
       ])
 
-      if (!sourceStructure || !targetStructure) {
-        throw new Error('Une ou les deux structures sont introuvables')
-      }
+      if (lieuSource == null) return failure(LieuIntrouvable(source))
+      if (lieuCible == null) return failure(LieuIntrouvable(cible))
 
-      await mergeMediateursEnActivite(prisma)(
-        sourceStructureId,
-        targetStructureId,
-      )
-      await mergeActivitesLieu(prisma)(sourceStructureId, targetStructureId)
-      await fusionnerLesChamps(prisma)(sourceStructureId, targetStructureId)
+      await mergeMediateursEnActivite(prisma)(source, cible)
+      await mergeActivitesLieu(prisma)(source, cible)
+      await fusionnerLesChamps(prisma)(source, cible)
+      await fusionnerAuRegistre(prisma)(source, cible)
+      await deleteStructure(prisma)(source)
 
-      await fusionnerAuRegistre(prisma)(sourceStructureId, targetStructureId)
-
-      await deleteStructure(prisma)(sourceStructureId)
+      return success(undefined)
     },
     { timeout: options?.timeout },
   )
-}
