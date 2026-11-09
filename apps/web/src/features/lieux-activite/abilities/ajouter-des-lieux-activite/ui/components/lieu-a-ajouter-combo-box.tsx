@@ -1,6 +1,6 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherDesLieuxAAjouterAction } from '@app/web/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 
 /**
@@ -9,10 +9,10 @@ import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox
  * encore, et en dernier repli l'annuaire des entreprises. Cette priorité évite
  * de recréer un lieu qui existe déjà.
  */
-const itemToString = (item: LieuActiviteSearchResult | null): string =>
+const itemToString = (item: SuggestionDeLieu | null): string =>
   item ? item.nom : ''
 
-const itemToKey = (item: LieuActiviteSearchResult): string => item.id
+const itemToKey = (item: SuggestionDeLieu): string => item.id
 
 /** Longueur minimale à partir de laquelle la recherche interroge les annuaires. */
 export const rechercheMinimum = 3
@@ -36,7 +36,7 @@ export type RechercheLieuAAjouter = {
 
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: LieuActiviteSearchResult[] } & RechercheLieuAAjouter> => {
+): Promise<{ items: SuggestionDeLieu[] } & RechercheLieuAAjouter> => {
   const rien = { items: [], recherche: input, enCours: false, nonAffiches: 0 }
 
   if (input.length < rechercheMinimum) return { ...rien, enEchec: false }
@@ -61,7 +61,7 @@ const loadSuggestions = async (
  * parvient — la coop, la cartographie, l'annuaire des entreprises — ne dit rien
  * à qui cherche l'endroit où il travaille.
  */
-const renderItem = ({ item }: { item: LieuActiviteSearchResult }) => (
+const renderItem = ({ item }: { item: SuggestionDeLieu }) => (
   <div className="fr-flex fr-direction-column">
     <span className="fr-text--bold">{item.nom}</span>
     <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
@@ -74,7 +74,7 @@ const renderItem = ({ item }: { item: LieuActiviteSearchResult }) => (
 )
 
 export const LieuAAjouterComboBox: ComboBoxData<
-  LieuActiviteSearchResult,
+  SuggestionDeLieu,
   RechercheLieuAAjouter
 > = {
   itemToString,
@@ -88,7 +88,7 @@ export const LieuAAjouterComboBox: ComboBoxData<
   loadSuggestions,
 }
 
-export const LieuAAjouterOptions: OptionsData<LieuActiviteSearchResult> = {
+export const LieuAAjouterOptions: OptionsData<SuggestionDeLieu> = {
   itemToKey,
   renderItem,
 }

@@ -3,7 +3,7 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
 import CreerLieuActiviteForm from '@app/web/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
@@ -26,7 +26,7 @@ import { type LieuAuPanier, lieuCree, selectionner } from './panier'
 
 type FormValues = {
   lieux: LieuAuPanier[]
-  recherche: LieuActiviteSearchResult | null
+  recherche: SuggestionDeLieu | null
 }
 
 /** Au moins un lieu au panier ; le champ de recherche est transitoire. */

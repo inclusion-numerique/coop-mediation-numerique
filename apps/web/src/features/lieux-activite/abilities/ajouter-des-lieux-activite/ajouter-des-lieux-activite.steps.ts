@@ -6,10 +6,7 @@ import type {
   LieuDemande,
   LieuExistant,
 } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import {
-  lieuxDeLaCoop,
-  lireLieuxDejaRattaches,
-} from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { lireLieuxDejaRattaches } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
 import { BanId } from '@app/web/features/lieux-activite/domain/ban-id'
 import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
 import {
@@ -44,7 +41,6 @@ type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
 const dernier: {
   ajout?: Issue
   lieuReference?: string
-  trouves?: readonly string[]
 } = {}
 const lieuxDeTest: string[] = []
 
@@ -124,38 +120,6 @@ Given('un lieu référencé dans la coop', async () => {
 
   dernier.lieuReference = lieu.id
   lieuxDeTest.push(lieu.id)
-})
-
-Given("ce lieu référencé n'a pas d'adresse reconnue par la BAN", async () => {
-  await prismaClient.lieuInclusion.update({
-    where: { id: dernier.lieuReference ?? '' },
-    data: { banId: null },
-  })
-})
-
-Given('ce lieu référencé est supprimé', async () => {
-  await prismaClient.lieuInclusion.update({
-    where: { id: dernier.lieuReference ?? '' },
-    data: { suppression: new Date() },
-  })
-})
-
-When(
-  'on cherche « Médiathèque du Centre » parmi les lieux de la coop',
-  async () => {
-    const { lignes } = await lieuxDeLaCoop('Médiathèque du Centre', {
-      limite: 100,
-    })
-    dernier.trouves = lignes.map(({ id }) => id)
-  },
-)
-
-Then('la recherche trouve ce lieu référencé', () => {
-  assert.ok(dernier.trouves?.includes(dernier.lieuReference ?? ''))
-})
-
-Then('la recherche ne trouve pas ce lieu référencé', () => {
-  assert.ok(!dernier.trouves?.includes(dernier.lieuReference ?? ''))
 })
 
 When('ce médiateur ajoute ce lieu référencé', async () => {
@@ -288,7 +252,6 @@ After(async () => {
   lieuxDeTest.length = 0
   dernier.ajout = undefined
   dernier.lieuReference = undefined
-  dernier.trouves = undefined
   semisEntrepot.adresses = []
   semisEntrepot.inscriptions = []
 

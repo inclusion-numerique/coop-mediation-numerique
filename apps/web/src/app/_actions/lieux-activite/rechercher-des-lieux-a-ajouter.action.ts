@@ -1,7 +1,7 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
-import { searchLieuActiviteCombined } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import { rechercherDesLieuxAAjouter } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
 
@@ -17,4 +17,4 @@ import { z } from 'zod'
 export const rechercherDesLieuxAAjouterAction = actionBuilder()
   .use(withAuth())
   .use(withInput(z.object({ recherche: z.string() })))
-  .execute(async ({ input }) => searchLieuActiviteCombined(input.recherche))
+  .execute(async ({ input }) => rechercherDesLieuxAAjouter(input.recherche))

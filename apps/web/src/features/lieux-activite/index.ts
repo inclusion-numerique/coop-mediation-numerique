@@ -34,10 +34,6 @@ export {
 export { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from './abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
 export { LieuxAAjouterValidation } from './abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 export { findCartoStructuresByIds } from './abilities/ajouter-des-lieux-activite/implementation/entrepot/structures-carto'
-export {
-  type LieuActiviteSearchResult,
-  searchLieuActiviteCombined,
-} from './abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 // Créer un lieu à la main
 export { creerLieuActivite } from './abilities/creer-lieu-activite'
 export { CREER_LIEU_ACTIVITE_ERRORS } from './abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
@@ -101,6 +97,7 @@ export { depuisLaSaisie } from './abilities/modifier-la-fiche-du-lieu/action/dep
 export { MODIFIER_LA_FICHE_DU_LIEU_ERRORS } from './abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.errors'
 export { ModifierLaFicheDuLieuValidation } from './abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.validation'
 export { type Aidant, lieuxPublies } from './abilities/publier-les-lieux'
+export { rechercherDesLieuxAAjouter } from './abilities/rechercher-des-lieux-a-ajouter'
 export {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
@@ -127,6 +124,10 @@ export { MediateurId } from './domain/mediateur-id'
 // brute en modèle du standard, dont un appelant a besoin pour composer un
 // LieuDemande.
 export { adresseSaisie, localisationSaisie } from './domain/saisie'
+export type {
+  SuggestionDeLieu,
+  SuggestionsDeLieux,
+} from './domain/suggestion-de-lieu'
 export { TriDesLieux } from './domain/tri-des-lieux'
 export { UserId } from './domain/user-id'
 // Lectures partagées

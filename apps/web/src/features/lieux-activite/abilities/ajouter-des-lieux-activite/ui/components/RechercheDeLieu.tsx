@@ -1,5 +1,5 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
 import type { ComboBoxProps } from '@app/web/libs/form/fields-components/ComboBox'
 import { Input } from '@app/web/libs/form/fields-components/Input'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -14,7 +14,7 @@ import {
  * réécrit : ces propriétés voyagent telles quelles depuis downshift.
  */
 type RenduDuComboBox = Parameters<
-  ComboBoxProps<LieuActiviteSearchResult, RechercheLieuAAjouter>['children']
+  ComboBoxProps<SuggestionDeLieu, RechercheLieuAAjouter>['children']
 >[0]
 
 /**

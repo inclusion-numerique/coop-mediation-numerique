@@ -1,6 +1,9 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
+import { toTitleCase } from '@app/web/utils/toTitleCase'
+import type { SuggestionDeLieu } from '../../../../domain/suggestion-de-lieu'
 import { lieuExploitable } from '../../../../implementation'
+import type { ChercherDansLaCoop } from '../../domain/ports'
 
 /**
  * Les lieux que la coop connaît déjà, cherchés mot à mot sur ce qui permet de
@@ -51,4 +54,32 @@ export const lieuxDeLaCoop = async (
   ])
 
   return { lignes, matchesCount }
+}
+
+export const chercherDansLaCoop: ChercherDansLaCoop = async (
+  recherche,
+  limite,
+) => {
+  const { lignes, matchesCount } = await lieuxDeLaCoop(recherche, { limite })
+
+  return {
+    suggestions: lignes.map(
+      (lieu): SuggestionDeLieu => ({
+        id: `structure_${lieu.id}`,
+        nom: toTitleCase(lieu.nom, { noUpper: true }),
+        adresse: toTitleCase(lieu.adresse ?? '', { noUpper: true }),
+        commune: toTitleCase(lieu.commune ?? ''),
+        codePostal: lieu.codePostal ?? '',
+        codeInsee: lieu.codeInsee,
+        complementAdresse: lieu.complementAdresse,
+        pivot: lieu.siret ?? undefined,
+        typologie: lieu.typologies?.join(';') || null,
+        latitude: lieu.latitude,
+        longitude: lieu.longitude,
+        structures: [{ id: lieu.id }],
+        source: 'structure_locale',
+      }),
+    ),
+    nombre: matchesCount,
+  }
 }

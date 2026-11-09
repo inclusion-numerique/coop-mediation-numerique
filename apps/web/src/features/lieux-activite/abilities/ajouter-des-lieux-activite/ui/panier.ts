@@ -8,7 +8,7 @@ import {
   CREER_A_LA_MAIN,
   geocodeStructureAdresse,
 } from '@app/web/external-apis/ban/geocodeStructureAdresse'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import type { SuggestionDeLieu } from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import type { LieuxAAjouterData } from '../action/ajouter-des-lieux-activite.validation'
 
@@ -34,7 +34,7 @@ export type LieuAuPanier = LieuxAAjouterData['lieux'][number]
  * chercher le lieu dans l'Entrepôt, où il n'est pas.
  */
 export const auPanier = async (
-  resultat: LieuActiviteSearchResult,
+  resultat: SuggestionDeLieu,
 ): Promise<LieuAuPanier | null> => {
   const lieuCoop = resultat.structures.at(0)
 
@@ -88,7 +88,7 @@ export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean =>
  */
 export const selectionner = async (
   lieux: readonly LieuAuPanier[],
-  resultat: LieuActiviteSearchResult,
+  resultat: SuggestionDeLieu,
 ): Promise<Result<LieuAuPanier, string>> => {
   const lieu = await auPanier(resultat).catch(
     siIndisponible('indisponible' as const),
