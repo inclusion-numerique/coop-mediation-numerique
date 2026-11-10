@@ -25,6 +25,7 @@ import {
   notesDe,
   type Orientation,
   type Origine,
+  type Participants,
   type ParticipantsAnonymes,
   PrecisionDeDemarche,
   participantsAnonymesDe,
@@ -176,6 +177,11 @@ const lieuDe = (row: ActiviteDeMediationRow): Lieu => {
       }
 }
 
+const SANS_THEMATIQUE_IMPORTEE_DE_LA_V1: Thematiques = {
+  mediation: [],
+  demarche: null,
+}
+
 const thematiquesDeLaLigne = (row: ActiviteDeMediationRow): Thematiques => {
   const aideAuxDemarches = row.thematiques.includes(
     'AideAuxDemarchesAdministratives',
@@ -188,6 +194,9 @@ const thematiquesDeLaLigne = (row: ActiviteDeMediationRow): Thematiques => {
   const precision = renseigne(row.precisionsDemarche)
   if (!aideAuxDemarches && (administratives.length > 0 || precision !== null)) {
     throw new ActiviteIllisible(row.id, 'démarche sans aide aux démarches')
+  }
+  if (row.thematiques.length === 0 && row.v1CraId !== null) {
+    return SANS_THEMATIQUE_IMPORTEE_DE_LA_V1
   }
   return valide(row.id)(
     thematiquesDe({
@@ -378,6 +387,20 @@ const individuelDe = (
   }
 }
 
+const participantsDeLaLigne = (row: ActiviteDeMediationRow): Participants => {
+  const participants = {
+    suivis: row.accompagnements
+      .filter(({ beneficiaire }) => !beneficiaire.anonyme)
+      .map(({ beneficiaire }) => BeneficiaireId(beneficiaire.id)),
+    anonymes: participantsAnonymesDeLaLigne(row),
+  }
+  const atelierHistoriqueSansParticipant =
+    participants.suivis.length === 0 && participants.anonymes.total === 0
+  return atelierHistoriqueSansParticipant
+    ? participants
+    : valide(row.id)(participantsDeLAtelier(participants))
+}
+
 const collectifDe = (
   row: ActiviteDeMediationRow,
 ): Omit<AtelierCollectif, keyof Commun> => {
@@ -393,14 +416,7 @@ const collectifDe = (
     _tag: 'Collectif',
     titre: titre === null ? null : TitreDAtelier(titre),
     niveau: row.niveau === null ? null : NiveauDAtelier(row.niveau),
-    participants: valide(row.id)(
-      participantsDeLAtelier({
-        suivis: row.accompagnements
-          .filter(({ beneficiaire }) => !beneficiaire.anonyme)
-          .map(({ beneficiaire }) => BeneficiaireId(beneficiaire.id)),
-        anonymes: participantsAnonymesDeLaLigne(row),
-      }),
-    ),
+    participants: participantsDeLaLigne(row),
   }
 }
 

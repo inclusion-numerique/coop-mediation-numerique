@@ -5,6 +5,7 @@ import type { z } from 'zod'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
+  type Animation,
   type Choix,
   type ChoixMultiples,
   CoordinateurId,
@@ -227,6 +228,11 @@ const COLONNES_D_EVENEMENT_OU_DE_PARTENARIAT = [
   'echelonTerritorial',
 ] as const
 
+const ANIMATION_HISTORIQUE_SANS_THEMATIQUE: Animation['thematiques'] = {
+  valeurs: [],
+  autre: null,
+}
+
 const effectifDe = (valeur: number | null): Effectif => Effectif(valeur ?? 0)
 
 export const activiteDeCoordinationDe = (
@@ -260,11 +266,15 @@ export const activiteDeCoordinationDe = (
         row.typeAnimation,
         row.typeAnimationAutre,
       ),
-      thematiques: choixMultiplesDeLaLigne(ThematiqueDAnimation)(
-        row.id,
-        row.thematiquesAnimation,
-        row.thematiqueAnimationAutre,
-      ),
+      thematiques:
+        row.thematiquesAnimation.length === 0 &&
+        renseigne(row.thematiqueAnimationAutre) === null
+          ? ANIMATION_HISTORIQUE_SANS_THEMATIQUE
+          : choixMultiplesDeLaLigne(ThematiqueDAnimation)(
+              row.id,
+              row.thematiquesAnimation,
+              row.thematiqueAnimationAutre,
+            ),
       initiative: row.initiative === null ? null : Initiative(row.initiative),
       intervenants: valide(row.id)(
         intervenantsDe({

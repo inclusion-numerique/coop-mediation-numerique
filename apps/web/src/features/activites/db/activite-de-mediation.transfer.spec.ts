@@ -332,6 +332,24 @@ describe('transfer de l’activité de médiation', () => {
       ).toEqual({ _tag: 'ADistance', communeDeRattachement: null })
     })
 
+    it('relit une activité importée de la V1 sans thématique', () => {
+      expect(
+        activiteDeMediationToDomain(
+          ligne({ thematiques: [], v1CraId: 'cra-v1' }),
+        ).thematiques,
+      ).toEqual({ mediation: [], demarche: null })
+    })
+
+    it('relit un atelier historique sans participant', () => {
+      const atelierVide = activiteDeMediationToDomain({
+        ...activiteDeMediationFromDomain(atelier, nouvelId),
+        accompagnements: [],
+      })
+      expect(
+        atelierVide._tag === 'Collectif' && atelierVide.participants.suivis,
+      ).toEqual([])
+    })
+
     it('lit une note vide en texte riche comme une absence', () => {
       expect(
         activiteDeMediationToDomain(ligne({ notes: '<p></p>' })).notes,
@@ -360,6 +378,7 @@ describe('transfer de l’activité de médiation', () => {
       ],
       ['un matériel en plus de « aucun »', { materiel: ['Aucun', 'Tablette'] }],
       ['un individuel sans bénéficiaire', { accompagnements: [] }],
+      ['une saisie sans thématique', { thematiques: [] }],
     ])('refuse %s', (_, modification) => {
       expect(() => activiteDeMediationToDomain(ligne(modification))).toThrow(
         ActiviteIllisible,

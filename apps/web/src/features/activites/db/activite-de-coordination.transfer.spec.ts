@@ -181,6 +181,14 @@ describe('transfer de l’activité de coordination', () => {
       ...modification,
     })
 
+    it('relit une animation historique sans thématique', () => {
+      expect(
+        activiteDeCoordinationDe(
+          ligne(animation, { thematiquesAnimation: [] }),
+        ),
+      ).toMatchObject({ thematiques: { valeurs: [], autre: null } })
+    })
+
     it('lit une note vide en texte riche comme une absence', () => {
       expect(
         activiteDeCoordinationDe(ligne(animation, { notes: '<p></p>' })).notes,
@@ -189,10 +197,6 @@ describe('transfer de l’activité de coordination', () => {
 
     it.each<[string, ActiviteDeCoordinationRow]>([
       ['une animation sans type', ligne(animation, { typeAnimation: null })],
-      [
-        'une animation sans thématique',
-        ligne(animation, { thematiquesAnimation: [] }),
-      ],
       [
         'une animation sans intervenant',
         ligne(animation, {
