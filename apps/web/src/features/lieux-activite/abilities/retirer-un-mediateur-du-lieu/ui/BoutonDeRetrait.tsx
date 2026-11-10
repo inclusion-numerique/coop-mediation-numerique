@@ -6,11 +6,6 @@ import type { LieuId } from '../../../domain/lieu-id'
 import type { MediateurId } from '../../../domain/mediateur-id'
 import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
-/**
- * Les deux identifiants sont demandés dans leur type du domaine : un lieu se
- * lit à côté d'un rattachement dont on connaît aussi l'utilisateur, et rien
- * n'empêchait jusqu'ici de tendre l'un pour l'autre — deux uuid se ressemblent.
- */
 const BoutonDeRetrait = ({
   className,
   structureId,
@@ -26,7 +21,7 @@ const BoutonDeRetrait = ({
   mediateurDisplayName: string
   structureNom: string
   derniereActiviteDate: Date | null
-  variant: 'mediateur' | 'lieu' // if the view of the button is in a mediateur card (remove mediateur wording) or lieu card (remove from my lieux d'activite)
+  variant: 'mediateur' | 'lieu'
 }) => {
   const openModal = ModaleDeRetraitDynamique.useOpen()
 

@@ -18,16 +18,6 @@ const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]
 
 const periodes: Period[] = ['am', 'pm']
 
-/**
- * La grille d'ouverture, dupliquée depuis le parcours de création plutôt que
- * partagée : `withForm` lie un composant à la forme d'UN formulaire, et une
- * ability ne dépend pas d'une autre. Les deux copies mourront ensemble le jour
- * où la création rejoindra ce standard.
- *
- * Une demi-journée : les horaires ne sont saisissables que si la bascule
- * « Ouvert » est active, et se vident dès qu'elle retombe — sans quoi un horaire
- * resterait attaché à une demi-journée fermée.
- */
 const DemiJournee = withForm({
   ...informationsPratiquesFormOptions,
   props: {} as { isPending: boolean; day: OsmDaysOfWeek; period: Period },

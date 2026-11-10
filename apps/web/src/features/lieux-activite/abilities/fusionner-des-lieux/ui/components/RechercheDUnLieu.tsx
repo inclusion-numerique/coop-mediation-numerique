@@ -13,12 +13,6 @@ import {
   rechercheMinimum,
 } from './lieu-a-fusionner-combo-box'
 
-/**
- * Le champ qui désigne le lieu avec lequel fusionner.
- *
- * Rien n'est soumis : choisir SUFFIT, l'écran navigue aussitôt vers l'aperçu de
- * la fusion. Le champ n'existe donc que le temps d'une sélection.
- */
 export const RechercheDUnLieu = ({
   excludeStructureIds = [],
   defaultStructure,
@@ -28,9 +22,11 @@ export const RechercheDUnLieu = ({
   defaultStructure?: LieuChoisi
   onSelect: (lieu: LieuChoisi) => void
 }) => {
-  const form = useAppForm({
-    defaultValues: { lieu: (defaultStructure ?? null) as LieuChoisi | null },
-  })
+  const valeursInitiales: { lieu: LieuChoisi | null } = {
+    lieu: defaultStructure ?? null,
+  }
+
+  const form = useAppForm({ defaultValues: valeursInitiales })
 
   const isPending = !useHydrated()
 
@@ -50,8 +46,8 @@ export const RechercheDUnLieu = ({
               payload,
               ...optionsProps
             }) => {
-              const { recherche, enCours, nonAffiches } =
-                payload as RechercheDeFusion
+              const { recherche, enCours, nonAffiches }: RechercheDeFusion =
+                payload
               const rechercheFaite =
                 !enCours && (recherche?.trim().length ?? 0) >= rechercheMinimum
 

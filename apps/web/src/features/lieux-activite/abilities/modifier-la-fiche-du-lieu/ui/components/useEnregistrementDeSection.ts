@@ -4,11 +4,6 @@ import { createToast } from '@app/ui/toast/createToast'
 import type { ModifierLaFicheDuLieuSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 
-/**
- * L'enregistrement d'une section, identique pour les sept : on envoie, on dit
- * ce qui s'est passé. La carte se referme et rafraîchit d'elle-même quand le
- * formulaire est valide.
- */
 export const useEnregistrementDeSection =
   (id: string, enregistrer: EnregistrerUneSection) =>
   async (modification: ModifierLaFicheDuLieuSaisie['modification']) => {

@@ -6,13 +6,6 @@ import { MediateurId } from '../../../../domain/mediateur-id'
 import type { LieuAFusionner } from '../../domain'
 import type { LieuAFusionnerRow } from './lieu-a-fusionner.data'
 
-/**
- * L'adresse du lieu, si la base en porte une exploitable.
- *
- * Les colonnes existent toujours mais peuvent être vides : un lieu en double
- * est justement le genre de lieu à qui cela arrive, et l'aperçu doit rester
- * lisible plutôt que refuser de s'afficher.
- */
 const adresseDuLieu = (structure: LieuAFusionnerRow) =>
   adresseSaisie(
     {
@@ -38,8 +31,6 @@ export const lieuAFusionnerToDomain = (
   adresse: adresseDuLieu(structure),
   siret: structure.siret,
   rna: structure.rna,
-  // L'identité cartographique vit dans l'inscription au registre de l'Entrepôt,
-  // dont c'est le domicile ; la coop n'en tient plus de copie.
   structureCartographieNationaleId: IdentifiantCartographie.safe(
     structure.inscriptionRegistre?.structureCartographieNationaleId ?? '',
   ),

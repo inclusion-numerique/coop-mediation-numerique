@@ -4,6 +4,7 @@ import {
   modifierLaFicheDuLieu,
 } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { SERVICES_PAR_DEFAUT } from '@app/web/features/lieux-activite/domain/publication'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import {
@@ -24,6 +25,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { depuisLaSaisie } from './action/depuis-la-saisie'
 import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
+import type { FicheDuLieu } from './domain'
 import { informationsGeneralesSoumises } from './ui/informations-generales-soumises'
 
 const auteur = () => UserId(ficheSemee().userIds[0] ?? '')
@@ -158,11 +160,6 @@ Then('la fiche du lieu est introuvable', async () => {
   )
 })
 
-/**
- * L'adresse telle que la Base Adresse Nationale l'a reconnue — celle de
- * l'établissement de l'Annuaire y est géocodée au moment de le choisir, comme
- * celle qu'un utilisateur cherche lui-même.
- */
 const adresseBan = {
   id: '51454_7160_00012',
   label: '12 rue de la Paix, 51100 Reims',
@@ -185,7 +182,6 @@ const ETABLISSEMENT = {
   source: 'api' as const,
 }
 
-/** Le chemin complet du formulaire : ce qu'il porte, ce qu'il soumet, ce qui s'écrit. */
 const enregistrerLesInformationsGenerales = async (
   valeurs: Parameters<typeof informationsGeneralesSoumises>[0],
 ) =>
@@ -213,7 +209,6 @@ When(
       id: ficheSemee().lieuId,
       noSiret: false,
       siretSearch: ETABLISSEMENT,
-      // Le nom vient de l'établissement choisi, que le formulaire recopie.
       nom: ETABLISSEMENT.nom,
       adresseBan,
       nomUsage: 'La Maison du Port',
@@ -403,11 +398,6 @@ Then('le lieu annonce toujours son service', async () => {
   ])
 })
 
-/**
- * La fiche est semée dans la coop seule : son inscription au registre naît de la
- * première modification. C'est la branche de création de l'`upsert`, celle qui
- * rattrape les lieux que le flux quotidien de l'Entrepôt n'a pas encore vus.
- */
 const inscriptionAuRegistre = () =>
   prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
     where: { structureCoopId: ficheSemee().lieuId },
@@ -499,3 +489,30 @@ Then('le registre ne dit plus cette inscription supprimée', async () => {
 
   assert.strictEqual(inscription.deletedAt, null)
 })
+
+const consultation: { fiche?: FicheDuLieu | null } = {}
+
+const consulterEnTantQue = async (mediateurId: string) => {
+  consultation.fiche = await consulterLaFicheDuLieu(
+    LieuId(ficheSemee().lieuId),
+    MediateurId(mediateurId),
+  )
+}
+
+When('le médiateur rattaché consulte la fiche du lieu', async () => {
+  await consulterEnTantQue(ficheSemee().mediateurRattacheId)
+})
+
+When('un médiateur étranger au lieu consulte la fiche du lieu', async () => {
+  await consulterEnTantQue(ficheSemee().mediateurEtrangerId)
+})
+
+Then(
+  'la fiche compte {int} autre(s) médiateur(s) et {int} activité(s)',
+  (autresMediateurs: number, activites: number) => {
+    assert.deepStrictEqual(consultation.fiche?.partage, {
+      autresMediateurs,
+      activites,
+    })
+  },
+)

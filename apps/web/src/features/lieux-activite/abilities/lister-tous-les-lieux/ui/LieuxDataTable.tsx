@@ -13,25 +13,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { LigneDeLaListe } from './ligne-de-la-liste'
 
-/**
- * Les colonnes que l'écran offre au tri.
- *
- * Déclarées, et non déduites de la configuration : `DataTableColumn` type ses
- * noms en `string`, si bien qu'une extraction rendrait `string` — un
- * référentiel de tri qui n'exigerait plus rien. `ColonneDeLaListe` fait tenir
- * les deux ensemble.
- */
 export type ColonneTriable =
   | 'nom'
   | 'creation'
   | 'modification'
   | 'mediateursEnActivite'
 
-/**
- * Une colonne triable doit être nommée ci-dessus, et le référentiel de tri doit
- * couvrir cette union exactement : offrir un tri qu'aucune règle ne sait
- * résoudre rendrait un lien qui ne trie rien.
- */
 type ColonneDeLaListe = DataTableColumn<LigneDeLaListe> &
   (
     | { name: ColonneTriable; sortable: true }
@@ -59,17 +46,15 @@ export const LieuxDataTable = {
     {
       name: 'type',
       header: 'Type',
-      csvHeaders: ["Lieu d'activité", 'Structure employeuse'],
-      csvValues: ({ _count, emploisCount }) => [
+      csvHeaders: ["Lieu d'activité"],
+      csvValues: ({ _count }) => [
         _count.mediateursEnActivite > 0 || _count.activites > 0 ? 'Oui' : 'Non',
-        emploisCount > 0 ? 'Oui' : 'Non',
       ],
-      cell: ({ _count, emploisCount }) => (
+      cell: ({ _count }) => (
         <div className="fr-flex fr-flex-gap-2v">
           {(_count.mediateursEnActivite > 0 || _count.activites > 0) && (
             <Tag small>Lieu d'activité</Tag>
           )}
-          {emploisCount > 0 && <Tag small>Employeuse</Tag>}
         </div>
       ),
     },
@@ -184,16 +169,6 @@ export const LieuxDataTable = {
       csvValues: ({ modification }) => [modification.toISOString()],
       cell: ({ modification }) => dateAsDayAndTime(modification),
       sortable: true,
-    },
-    {
-      name: 'employes',
-      header: 'Employ\u00e9s',
-      csvHeaders: ['Employ\u00e9s'],
-      csvValues: ({ emploisCount }) => [emploisCount],
-      cell: ({ emploisCount }) => optionalNumberToString(emploisCount, null),
-      // Colonne non triable : le compteur d'emplois est corrélé (nom + code
-      // INSEE) côté application, et aucune relation ne permet de le trier en
-      // base — le référentiel de tri n'a donc rien à en dire.
     },
     {
       name: 'mediateursEnActivite',

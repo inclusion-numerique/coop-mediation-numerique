@@ -3,7 +3,10 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import type { LieuActiviteConnu } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
-import { lieuxActiviteDuMediateur } from '@app/web/features/lieux-activite'
+import {
+  listerLesLieuxPourLInscription,
+  MediateurId,
+} from '@app/web/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
@@ -31,8 +34,8 @@ const LieuxActivitePageRoute = async () => {
   // Les lieux déjà rattachés, projetés vers l'input du formulaire. Ils portent
   // tous un id — c'est lui qui porte la réconciliation, et c'est lui qui les
   // dispense d'une adresse validée : rien ne sera réécrit de la leur.
-  const lieuxActivite = await lieuxActiviteDuMediateur({
-    mediateurId: user.mediateur.id,
+  const lieuxActivite = await listerLesLieuxPourLInscription({
+    mediateurId: MediateurId(user.mediateur.id),
   })
 
   const lieuxExistants: LieuActiviteConnu[] = lieuxActivite.map((lieu) => ({

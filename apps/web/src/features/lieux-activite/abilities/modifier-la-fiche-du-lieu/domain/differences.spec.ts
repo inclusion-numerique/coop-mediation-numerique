@@ -64,8 +64,6 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   })
 
   it('signale une information EFFACÉE par l’autre source', () => {
-    // Le cas qui compte : le registre ne dit plus rien d'un champ que la coop
-    // renseignait. Sans lui, la disparition passerait inaperçue.
     const sansHoraires = { ...fiche, horaires: null }
 
     expect(champs(fiche, sansHoraires)).toEqual(['horaires'])
@@ -90,8 +88,6 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   })
 
   it('ne propose jamais de reprendre l’adresse d’une autre source', () => {
-    // Elle ne voyage pas seule : la reprendre poserait une voie sans déplacer
-    // les coordonnées, que le registre ne porte pas.
     const ailleurs = {
       ...fiche,
       adresse: Adresse({
@@ -105,8 +101,6 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   })
 
   it('ignore ce qu’aucun formulaire de la coop ne sait écrire', () => {
-    // Les proposer au choix reviendrait à offrir d'effacer ce que la coop n'a
-    // jamais su dire — précisément ce qu'on vient d'interdire à l'écriture.
     const enrichi = {
       ...fiche,
       dispositifProgrammesNationaux: DispositifProgrammesNationaux([

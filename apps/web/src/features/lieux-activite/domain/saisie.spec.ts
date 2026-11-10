@@ -39,10 +39,6 @@ const ban = {
 }
 
 describe('le numéro de téléphone', () => {
-  /**
-   * La forme canonique est l'E.164 : c'est la seule sous laquelle deux
-   * écritures d'un même numéro se reconnaissent.
-   */
   it.each([
     ['01 02 03 04 05', '+33102030405'],
     ['01.02.03.04.05', '+33102030405'],
@@ -55,11 +51,6 @@ describe('le numéro de téléphone', () => {
     expect(telephoneValide(saisi)).toBe(canonique)
   })
 
-  /**
-   * Les DOM partagent le format national de la métropole mais relèvent d'un
-   * indicatif pays distinct : les lire comme métropolitains donnerait
-   * `+33262…`, qui ne désigne personne.
-   */
   it.each([
     ['02 62 20 20 20', '+262262202020'],
     ['0269600102', '+262269600102'],
@@ -71,7 +62,6 @@ describe('le numéro de téléphone', () => {
     },
   )
 
-  /** Un lieu paraît sur la cartographie nationale, qui n'admet que la France. */
   it('refuse un numéro étranger, fût-il valide', () => {
     expect(telephoneValide('+32 470 44 25 43')).toBeNull()
   })
@@ -83,7 +73,6 @@ describe('le numéro de téléphone', () => {
     },
   )
 
-  /** La case commande le champ : décochée, le numéro saisi ne part pas. */
   it('n’est retenu que si sa case est cochée', () => {
     expect(telephoneSaisi(false, '01 02 03 04 05')).toBeNull()
     expect(telephoneSaisi(true, '01 02 03 04 05')).toBe('+33102030405')
@@ -103,11 +92,6 @@ describe('les horaires', () => {
     expect(horairesSaisis(lundiMatin, null)).toBe('Mo 09:00-12:00')
   })
 
-  /**
-   * `appendComment` ajoute plutôt qu'il ne remplace : composer deux fois — une
-   * fois en projetant la saisie, une fois dans le mapper — écrivait le
-   * commentaire en double.
-   */
   it('portent leur commentaire une seule fois', () => {
     expect(horairesSaisis(lundiMatin, 'Fermé le premier lundi')).toBe(
       'Mo 09:00-12:00 "Fermé le premier lundi"',
@@ -119,12 +103,6 @@ describe('les horaires', () => {
     expect(horairesSaisis(emptyOpeningHours, '   ')).toBeNull()
   })
 
-  /**
-   * Un commentaire seul ne forme pas une valeur OpenStreetMap : la composition
-   * rendait ` "Sur rendez-vous"`, que le standard refuse et que la coop
-   * publiait. Un `Mo-Su off` l'aurait rendue conforme au prix d'une fermeture
-   * que personne n'a déclarée.
-   */
   it('valent null quand un commentaire n’a aucun créneau où s’adosser', () => {
     expect(horairesSaisis(emptyOpeningHours, 'Sur rendez-vous')).toBeNull()
   })
@@ -185,12 +163,6 @@ describe('les horaires', () => {
 })
 
 describe('les listes du domaine', () => {
-  /**
-   * L'ordre d'une liste ne porte aucune information, et une valeur répétée n'en
-   * porte pas davantage. Les modèles du standard le garantissent : la coop ne
-   * peut plus stocker ni doublon ni ordre instable dans ses dix colonnes de
-   * vocabulaire, d'où venaient des republications qui ne différaient que par là.
-   */
   it('dédoublonne et ordonne un vocabulaire fermé', () => {
     expect(
       Services([
@@ -218,12 +190,6 @@ describe('les listes du domaine', () => {
 })
 
 describe('le complément d’adresse', () => {
-  /**
-   * `complement_adresse` n'était pas validé par la bibliothèque avant la 4.2.0.
-   * Depuis, il l'est — avec le jeu de caractères d'un nom de voie, qui ne
-   * couvre pas ce qu'on écrit dans un complément. Mêlé au reste, un complément
-   * refusé emportait l'adresse entière.
-   */
   it.each([
     ['Appt #4'],
     ['Résidence "Les Tilleuls"'],
@@ -285,7 +251,6 @@ describe('les adresses web', () => {
     expect(urlSaisie(valeur)).toBeNull()
   })
 
-  /** Le schéma national joint plusieurs sites web par « | ». */
   it('découpe la liste du schéma national', () => {
     expect(sitesWebSaisis('https://un.fr|https://deux.fr')).toEqual([
       'https://un.fr',

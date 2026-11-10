@@ -57,11 +57,6 @@ describe('le lieu matérialisé depuis la cartographie', () => {
     expect(lieu.idsCartographieNationale).toEqual(['dora', 'abc'])
   })
 
-  /**
-   * La cartographie ne porte pas d'identifiant BAN : rien n'y distingue une
-   * adresse reconnue d'une adresse saisie à l'estime, et c'est l'appelant qui
-   * complète avec celle que la BAN a validée.
-   */
   it('n’a ni identifiant BAN ni identité SIRENE', () => {
     const lieu = lieuDepuisCarto(lieuCarto, maintenant)
 
@@ -72,7 +67,6 @@ describe('le lieu matérialisé depuis la cartographie', () => {
     })
   })
 
-  /** Sa création n'a pas d'auteur : elle ne vient de personne. */
   it('est créé sans auteur', () => {
     expect(lieuDepuisCarto(lieuCarto, maintenant).tracabilite.creation).toEqual(
       {
@@ -95,7 +89,6 @@ describe('le lieu matérialisé depuis la cartographie', () => {
     })
   })
 
-  /** La coop relisant sa propre publication ne nomme aucun producteur. */
   it('reste sans auteur quand aucun producteur n’est nommé', () => {
     expect(
       lieuDepuisCarto(lieuCarto, maintenant).tracabilite.derniereModification,

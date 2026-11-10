@@ -13,7 +13,7 @@ import {
   geocodeStructureAdresse,
 } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite'
+import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui'
 import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
@@ -32,7 +32,7 @@ import {
 
 type FormValues = {
   lieux: LieuActiviteInput[]
-  recherche: LieuActiviteSearchResult | null
+  recherche: SuggestionAffichee | null
 }
 
 /** Au moins un lieu ajouté ; le champ de recherche est transitoire. */
@@ -94,7 +94,7 @@ const dejaAjoute = (
  * peut être un RNA.
  */
 const lieuDepuisResultat = async (
-  item: LieuActiviteSearchResult,
+  item: SuggestionAffichee,
 ): Promise<LieuActiviteInput | null> => {
   const lieuCoop = item.structures.at(0)
 

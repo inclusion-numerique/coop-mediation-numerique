@@ -59,11 +59,6 @@ export const reprise = <Verdict>(
   preparer: async () => constater(definition, definition.constater),
 })
 
-/**
- * Une reprise dont le jugement demande un travail préalable sur l'ensemble des
- * lieux : interroger un service en masse plutôt qu'un lieu à la fois. Le
- * préalable est calculé une seule fois, puis chaque lieu se juge devant lui.
- */
 export const repriseAvecPrealable = <Verdict, Prealable>(
   definition: DefinitionAvecPrealable<Verdict, Prealable>,
 ): Reprise => ({

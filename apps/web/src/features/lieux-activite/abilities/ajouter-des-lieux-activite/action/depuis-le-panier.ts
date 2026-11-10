@@ -26,13 +26,6 @@ const identite = ({
       : IdentifiantCartographie.safe(structureCartographieNationaleId),
 })
 
-/**
- * L'adresse soumise, si la Base Adresse Nationale l'a reconnue.
- *
- * Les champs voyagent facultatifs — un lieu déjà connu de la coop n'a pas à les
- * porter — mais ils ne valent qu'ensemble : c'est leur présence conjointe, et
- * la reconnaissance de chacun par son modèle, qui atteste du géocodage.
- */
 const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null => {
   if (lieu.codeInsee == null || lieu.latitude == null || lieu.longitude == null)
     return null
@@ -55,20 +48,6 @@ const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null => {
     : { adresse, localisation, banId }
 }
 
-/**
- * Le panier soumis devient une liste de demandes.
- *
- * C'est ici que se tient la règle : un lieu que la coop connaît déjà se
- * rattache tel quel, son adresse ne sera pas réécrite ; tout autre lieu sera
- * CRÉÉ, et l'on n'admet plus de créer un lieu dont l'adresse n'a pas été
- * validée par la Base Adresse Nationale — sans code INSEE, sans identifiant
- * BAN ni coordonnées, rien ne distingue une adresse reconnue d'une adresse
- * saisie à l'estime, et un lieu qu'on ne sait pas situer n'apparaît sur aucune
- * carte.
- *
- * L'écran valide l'adresse avant de mettre le lieu au panier ; cette garde est
- * le filet, pour les paniers qui n'en viendraient pas.
- */
 export const depuisLePanier = (
   lieux: LieuxAAjouterData['lieux'],
 ): Result<readonly LieuDemande[], AdresseNonValidee> =>

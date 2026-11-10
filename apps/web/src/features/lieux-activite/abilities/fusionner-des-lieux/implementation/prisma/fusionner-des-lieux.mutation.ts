@@ -1,19 +1,17 @@
 import type { LieuInclusion, Prisma } from '@app/web/generated/prisma/client'
+import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { unionArrays } from '@app/web/utils/unionArrays'
+import type { LieuId } from '../../../../domain/lieu-id'
 import {
   ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
   retirerDuRegistre,
   toutesLesColonnes,
 } from '../../../../implementation'
+import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
 
 type PrismaTransaction = Prisma.TransactionClient
-
-// "Already on the target" must mean the same thing the UI considers a live
-// link — otherwise a finished record on the target silently swallows the
-// source link (hard-deleted by deleteMany below) and the user ends up with
-// nothing visible. Align the visibility filter with the listing query.
 
 const mergeMediateursEnActivite =
   (prisma: PrismaTransaction) =>
@@ -51,13 +49,6 @@ const mergeActivitesLieu =
     })
   }
 
-/**
- * Ce que la fiche absorbée lègue à celle qui reste, quand celle-ci ne le dit
- * pas : le contact du référent et les identifiants de l'import v1.
- *
- * La cible prime — c'est elle que l'administration a choisi de garder — et la
- * source ne comble que les vides. Rien ne se perd, rien ne s'écrase.
- */
 const legs = <Champ extends keyof LieuInclusion>(
   source: LieuInclusion,
   target: LieuInclusion,
@@ -111,10 +102,6 @@ const fusionnerLesChamps =
         ),
         courriels: unionArrays(target.courriels, source.courriels),
         activitesCount: { increment: source.activitesCount },
-        // La publication sur la carte nationale ne se déduit pas d'une fusion :
-        // il faut que les deux fiches l'aient été pour que celle qui reste le
-        // soit. Publier parce que l'une des deux l'était exposerait un lieu que
-        // son second dossier gardait volontairement à l'écart.
         visiblePourCartographieNationale:
           target.visiblePourCartographieNationale &&
           source.visiblePourCartographieNationale,
@@ -137,15 +124,6 @@ const deleteStructure =
     })
   }
 
-/**
- * Répercuter la fusion au registre de l'Entrepôt.
- *
- * Le lieu absorbé y garde sa ligne, marquée supprimée : le registre sert
- * d'autres consommateurs que la coop, à qui l'effacement pur et simple d'un lieu
- * ne dirait rien de ce qui lui est arrivé. Le lieu qui reste, lui, a récupéré
- * les valeurs des deux fiches — il se réécrit en entier, relu depuis la coop,
- * puisque c'est cet état-là qui fait désormais foi.
- */
 const fusionnerAuRegistre =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
@@ -168,38 +146,32 @@ const fusionnerAuRegistre =
   }
 
 export const fusionnerDesLieux = async (
-  sourceStructureId: string,
-  targetStructureId: string,
+  { source, cible }: { readonly source: LieuId; readonly cible: LieuId },
   options?: { timeout?: number },
-): Promise<void> => {
-  await prismaClient.$transaction(
-    async (prisma) => {
-      const [sourceStructure, targetStructure] = await Promise.all([
+): Promise<Result<void, EchecDeFusion>> =>
+  prismaClient.$transaction(
+    async (prisma): Promise<Result<void, EchecDeFusion>> => {
+      const [lieuSource, lieuCible] = await Promise.all([
         prisma.lieuInclusion.findUnique({
-          where: { id: sourceStructureId },
+          where: { id: source },
           select: { id: true },
         }),
         prisma.lieuInclusion.findUnique({
-          where: { id: targetStructureId },
+          where: { id: cible },
           select: { id: true },
         }),
       ])
 
-      if (!sourceStructure || !targetStructure) {
-        throw new Error('Une ou les deux structures sont introuvables')
-      }
+      if (lieuSource == null) return failure(LieuIntrouvable(source))
+      if (lieuCible == null) return failure(LieuIntrouvable(cible))
 
-      await mergeMediateursEnActivite(prisma)(
-        sourceStructureId,
-        targetStructureId,
-      )
-      await mergeActivitesLieu(prisma)(sourceStructureId, targetStructureId)
-      await fusionnerLesChamps(prisma)(sourceStructureId, targetStructureId)
+      await mergeMediateursEnActivite(prisma)(source, cible)
+      await mergeActivitesLieu(prisma)(source, cible)
+      await fusionnerLesChamps(prisma)(source, cible)
+      await fusionnerAuRegistre(prisma)(source, cible)
+      await deleteStructure(prisma)(source)
 
-      await fusionnerAuRegistre(prisma)(sourceStructureId, targetStructureId)
-
-      await deleteStructure(prisma)(sourceStructureId)
+      return success(undefined)
     },
     { timeout: options?.timeout },
   )
-}

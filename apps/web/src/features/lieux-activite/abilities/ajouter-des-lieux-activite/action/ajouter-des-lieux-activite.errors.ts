@@ -1,6 +1,5 @@
 import type { EchecDAjout } from '../domain'
 
-/** Ce que l'utilisateur lit quand l'ajout n'a pas lieu. */
 export const AJOUTER_DES_LIEUX_ACTIVITE_ERRORS: Record<
   EchecDAjout['_tag'],
   string

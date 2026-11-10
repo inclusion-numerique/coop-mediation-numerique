@@ -12,15 +12,6 @@ const sansAccent = (texte: string): string =>
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
 
-/**
- * Un choix parmi des options déjà chargées.
- *
- * La liste est en mémoire — communes, départements et lieux du médiateur
- * viennent du serveur avec la page — mais elle est longue : la parcourir à la
- * souris est impraticable, d'où le filtrage à la frappe plutôt qu'un simple
- * menu déroulant. On compare sans accents ni casse, parce que personne ne tape
- * « Château-Thierry » avec son accent circonflexe.
- */
 export const optionComboBox = (
   options: readonly SelectOption[],
 ): ComboBoxData<SelectOption> => ({

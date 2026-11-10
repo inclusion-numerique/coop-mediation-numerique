@@ -54,7 +54,6 @@ const informationsGenerales = (
     itinerance: Itinerances(itineranceSaisie(saisie.lieuItinerant)),
     typologies: Typologies(saisie.typologies),
     pivot: immatriculation,
-    // Le nom d'usage vient de SIRENE : sans immatriculation, il n'a plus d'objet.
     nomUsage:
       immatriculation == null ? null : NomUsage.safe(saisie.nomUsage ?? ''),
   }

@@ -16,7 +16,6 @@ describe('sous quel nom un lieu se montre', () => {
     )
   })
 
-  // Un nom d'usage réduit à des espaces laisserait un titre vide.
   it('ignore un nom d’usage vide ou blanc', () => {
     expect(nomAffiche('Tiers-lieu du Port', '   ')).toBe('Tiers-lieu du Port')
     expect(nomAffiche('Tiers-lieu du Port', '')).toBe('Tiers-lieu du Port')

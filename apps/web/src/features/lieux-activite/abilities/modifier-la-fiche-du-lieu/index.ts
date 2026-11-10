@@ -1,5 +1,6 @@
 export type {
   ChampCompare,
+  FicheDuLieu,
   ModificationLieu,
   OrigineDuChoix,
   SectionDeLaFiche,
@@ -7,6 +8,5 @@ export type {
 export {
   appliquerLesDifferences,
   consulterLaFicheDuLieu,
-  type FicheDuLieu,
   modifierLaFicheDuLieu,
 } from './implementation'

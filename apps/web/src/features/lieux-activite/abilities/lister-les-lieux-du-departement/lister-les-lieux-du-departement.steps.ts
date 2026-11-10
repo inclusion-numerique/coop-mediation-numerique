@@ -7,10 +7,6 @@ import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
-/**
- * La base locale porte les données de production : chaque scénario sème ses
- * propres lieux sous un nom unique et ne juge que ceux-là.
- */
 const semis: {
   ids: string[]
   publie?: string

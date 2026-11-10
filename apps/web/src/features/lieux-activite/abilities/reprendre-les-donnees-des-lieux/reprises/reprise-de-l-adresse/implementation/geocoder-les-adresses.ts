@@ -13,17 +13,6 @@ const ADRESSES_PAR_LOT = 2000
 
 const EN_TETE = ['lieu_id', 'voie', 'code_postal', 'commune', 'code_insee']
 
-/**
- * Deux interrogations pour la même adresse, avec puis sans le code postal.
- *
- * Le code postal enregistré est l'une des données qu'on vient justement chercher
- * à la Base Adresse Nationale : le lui donner en entrée, c'est lui demander de
- * confirmer une erreur. Dès qu'une commune en porte plusieurs, elle préfère
- * alors n'importe quelle voie du code postal demandé à la bonne voie — « Route
- * de Marseille » à Avignon devient « Route de Lyon » parce que la première est
- * en 84140 et non en 84000. L'ôter seul ne suffit pas non plus : ailleurs, c'est
- * lui qui départage. On pose donc les deux questions et le domaine tranche.
- */
 const INTERROGATIONS: readonly (readonly string[])[] = [
   ['voie', 'code_postal', 'commune'],
   ['voie', 'commune'],
@@ -121,13 +110,6 @@ const soumettre = async (
   return ligneDuTableau(await reponse.text(), geocodee)
 }
 
-/**
- * Une recherche directe, par lots, sur les colonnes demandées.
- *
- * Le géocodage inverse s'en sert lui aussi : la Base Adresse Nationale nomme
- * l'adresse qu'elle trouve à un point, mais ne rend pas ses coordonnées, et
- * c'est en cherchant cette voie qu'on obtient l'entrée complète.
- */
 export const rechercherLesVoies = async (
   adresses: readonly AdresseSoumise[],
   colonnes: readonly string[],
@@ -149,14 +131,6 @@ const parLieu = (
     new Map(),
   )
 
-/**
- * Les adresses partent par lots plutôt qu'une à une : la Base Adresse Nationale
- * géocode un fichier entier en une requête, là où douze mille interrogations
- * séparées demanderaient une cadence et une demi-heure.
- *
- * Les lots défilent en file : c'est un service public gratuit, on ne lui envoie
- * pas sept requêtes de deux mille adresses à la fois.
- */
 export const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
   parLieu(
     await INTERROGATIONS.reduce<Promise<readonly Appariement[]>>(

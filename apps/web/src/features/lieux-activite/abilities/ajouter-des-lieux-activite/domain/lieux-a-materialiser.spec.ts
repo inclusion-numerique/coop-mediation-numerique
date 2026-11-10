@@ -15,11 +15,6 @@ const LIEU_DEJA = LieuId('00efad2c-0d71-43e3-a174-9e0c2defa083')
 const AUTRE = LieuId('a6648fed-4d21-4ca4-a25b-d5a44d8ca38a')
 const CARTO = IdentifiantCartographie('c-1')
 
-/**
- * Une demande porte, ou bien l'id du lieu que la coop connaît déjà, ou bien une
- * adresse validée par la BAN : un lieu sans identité interne sera CRÉÉ, et l'on
- * ne crée plus de lieu qu'on ne saurait situer.
- */
 const identite = { nom: Nom('Maison France Services') }
 
 const connu = (
@@ -62,8 +57,6 @@ describe("les lieux qu'il reste à matérialiser", () => {
       ).toEqual([])
     })
 
-    // Les deux identités sont indépendantes : la recherche coop rend l'id
-    // interne, la cartographie le sien, et il suffit que l'une corresponde.
     it('reconnu par son identité de cartographie nationale', () => {
       expect(
         lieuxAMaterialiser(
@@ -102,8 +95,6 @@ describe("les lieux qu'il reste à matérialiser", () => {
       ).toEqual([aCreer({ structureCartographieNationaleId: CARTO })])
     })
 
-    // Rien ne les identifie encore : c'est la dénomination qui départage, la
-    // persistance corrélant de toute façon sur l'adresse.
     it('par sa dénomination, faute d’identité', () => {
       expect(
         lieuxAMaterialiser(

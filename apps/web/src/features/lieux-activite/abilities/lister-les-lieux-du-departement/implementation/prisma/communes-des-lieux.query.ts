@@ -7,7 +7,6 @@ export const communesDesLieux = async ({
 }: {
   departementCode: string
 }) => {
-  // Get communes from structures in the department
   const communes = await prismaClient.$queryRaw<
     {
       code: string

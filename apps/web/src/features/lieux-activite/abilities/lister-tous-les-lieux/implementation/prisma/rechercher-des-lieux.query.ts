@@ -5,13 +5,6 @@ import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'
 
-/**
- * Ce que l'écran soumet : les mots cherchés, la page et son ampleur.
- *
- * Le tri, lui, ARRIVE déjà résolu. Le déduire ici obligerait la requête à
- * importer la configuration de la table — donc ses colonnes, donc ses
- * composants : une lecture de base de données ne charge pas de DSFR.
- */
 export type RechercheDeLieuxParams = {
   recherche?: string
   page?: string
@@ -20,16 +13,6 @@ export type RechercheDeLieuxParams = {
 
 const DEFAULT_PAGE_SIZE = 100
 
-/**
- * Un mot cherché est confronté aux deux côtés : ce que la coop a stocké et ce
- * que le registre affiche.
- *
- * La liste montre le nom du registre ; ne chercher que dans celui de la coop
- * faisait disparaître un lieu qu'on voyait à l'écran. Chercher dans les deux
- * plutôt que dans le seul côté affiché est délibéré : l'administration connaît
- * souvent un lieu sous le nom qu'il portait avant qu'une autre source ne le
- * renomme.
- */
 const contient = (part: string) =>
   ({ contains: part, mode: 'insensitive' }) satisfies Prisma.StringFilter
 
@@ -47,12 +30,6 @@ const dansLesDeuxFiches = (part: string) => ({
   ],
 })
 
-/**
- * Les lieux que l'administration cherche, et combien la coop en compte.
- *
- * Le total ne dépend d'aucun critère : c'est le repère qui donne son sens au
- * nombre de résultats — « 12 trouvés » ne dit rien sans « sur 12 750 ».
- */
 export const rechercherDesLieux = async ({
   searchParams = {},
   orderBy,

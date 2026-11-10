@@ -4,13 +4,6 @@ import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
-/**
- * Les écritures de la coop se répercutent au registre de l'Entrepôt : un lieu
- * semé y laisse une inscription, qui survivrait au scénario puisque la table
- * appartient à un autre schéma que celui des semis. Les `main.adresse` résolues
- * au passage restent, elles : la table est mutualisée entre lieux et structures
- * administratives, et rien ne dit que la ligne trouvée vient du scénario.
- */
 const effacerDuRegistre = async (lieuIds: readonly string[]): Promise<void> => {
   await prismaClient.lieuInclusionRegistreMain.deleteMany({
     where: { structureCoopId: { in: [...lieuIds] } },
@@ -23,11 +16,11 @@ type LieuxSemes = {
   readonly lieuIds: readonly string[]
 }
 
-let lieux: LieuxSemes | undefined
+const semisDeLieux: { lieux?: LieuxSemes } = {}
 
 export const lieuxSemes = (): LieuxSemes => {
-  if (!lieux) throw new Error('Aucun lieu semé')
-  return lieux
+  if (!semisDeLieux.lieux) throw new Error('Aucun lieu semé')
+  return semisDeLieux.lieux
 }
 
 export const semerLieuxDActivite = async (): Promise<LieuxSemes> => {
@@ -64,18 +57,18 @@ export const semerLieuxDActivite = async (): Promise<LieuxSemes> => {
     })),
   })
 
-  lieux = {
+  semisDeLieux.lieux = {
     userId,
     mediateurId: mediateur.id,
     lieuIds: crees.map(({ id }) => id),
   }
 
-  return lieux
+  return semisDeLieux.lieux
 }
 
 After(async () => {
-  const semé = lieux
-  lieux = undefined
+  const semé = semisDeLieux.lieux
+  semisDeLieux.lieux = undefined
   if (!semé) return
 
   await prismaClient.mediateurEnActivite.deleteMany({
@@ -96,10 +89,6 @@ type FicheSemee = {
   readonly mediateurEtrangerId: string
 }
 
-/**
- * Un holder plutôt qu'un `let` : l'état d'un scénario Cucumber doit bien vivre
- * quelque part entre les steps, mais rien n'oblige à rendre la liaison mutable.
- */
 const semis: { fiche?: FicheSemee } = {}
 
 export const ficheSemee = (): FicheSemee => {
@@ -142,8 +131,6 @@ export const semerUneFicheDeLieu = async (): Promise<FicheSemee> => {
       siteWeb: ['https://www.exemple-reims.fr'],
       telephone: '+33180059880',
       courriels: ['contact@exemple-reims.fr'],
-      // Une modalité que le formulaire ne sait pas exprimer : elle vient d'un
-      // import cartographique et doit survivre à une édition de la section.
       modalitesAcces: ['SePresenter', 'PrendreRdvEnLigne'],
       services: ['AideAuxDemarchesAdministratives'],
     },
@@ -201,8 +188,6 @@ type LieuxASiretSemes = {
   readonly secondId: string
 }
 
-// SIRET improbables en production : la vérification balaie toute la table, il
-// faut que les lieux du scénario y soient reconnaissables.
 export const SIRET_PREMIER = '00000000000017'
 export const SIRET_SECOND = '00000000000025'
 

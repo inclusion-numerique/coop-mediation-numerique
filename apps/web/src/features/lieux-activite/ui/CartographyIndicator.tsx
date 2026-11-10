@@ -3,33 +3,7 @@ import { getStructureCartographieLink } from '@app/web/libraries/cartographie-na
 import classNames from 'classnames'
 import Link from 'next/link'
 
-export type CartographyStatus =
-  | 'visible'
-  | 'pending'
-  | 'updating'
-  | 'not_visible'
-
-export const getCartographyStatus = ({
-  visiblePourCartographieNationale,
-  structureCartographieNationaleId,
-  hasRecentModification,
-}: {
-  visiblePourCartographieNationale: boolean
-  structureCartographieNationaleId: string | null
-  hasRecentModification?: boolean
-}): CartographyStatus => {
-  if (visiblePourCartographieNationale && structureCartographieNationaleId) {
-    // If recently modified, show updating status
-    if (hasRecentModification) {
-      return 'updating'
-    }
-    return 'visible'
-  }
-  if (visiblePourCartographieNationale) {
-    return 'pending'
-  }
-  return 'not_visible'
-}
+import type { CartographyStatus } from './statut-cartographie'
 
 const CartographyIndicator = ({
   status,
@@ -126,7 +100,6 @@ const CartographyIndicator = ({
     )
   }
 
-  // not_visible
   return (
     <span className="fr-flex fr-align-items-center">
       <span className={classNames('fr-tag fr-tag--sm', 'fr-tag--carto-absent')}>

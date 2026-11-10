@@ -5,6 +5,7 @@ import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/ui/
 import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
 import { formatDate } from '@app/web/utils/formatDate'
 import Alert from '@codegouvfr/react-dsfr/Alert'
+import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { BandeauRepriseExterne } from '../components/BandeauRepriseExterne'
 import { BasculeVisibiliteCartographie } from '../components/BasculeVisibiliteCartographie'
@@ -22,11 +23,13 @@ export const FicheDuLieuPage = ({
   enregistrer,
   entete,
   mediateurs,
+  creerUnLieuHref,
 }: {
   fiche: FicheAffichee
   enregistrer: EnregistrerUneSection
   entete?: ReactNode
   mediateurs?: ReactNode
+  creerUnLieuHref?: string
 }) => (
   <div
     className="fr-pr-0 fr-ml-0 fr-mb-30v fr-width-full"
@@ -43,11 +46,32 @@ export const FicheDuLieuPage = ({
 
     <h1 className="fr-page-title fr-h2">{fiche.nom}</h1>
 
+    {fiche.partage != null && (
+      <Alert
+        className="fr-mb-6v"
+        severity="info"
+        small
+        title="D’autres personnes travaillent sur ce lieu"
+        description={
+          <>
+            {fiche.partage.message} Une modification de sa fiche vaut pour tous.{' '}
+            {creerUnLieuHref != null && (
+              <Link href={creerUnLieuHref} className="fr-link">
+                Ce n’est plus le même lieu ? Créez un nouveau lieu
+              </Link>
+            )}
+          </>
+        }
+      />
+    )}
+
     <div className="fr-border fr-border-radius--8 fr-mb-6v">
       <SectionInformationsGenerales
         id={fiche.id}
         informationsGenerales={fiche.informationsGenerales}
         enregistrer={enregistrer}
+        partage={fiche.partage}
+        creerUnLieuHref={creerUnLieuHref}
       />
     </div>
 

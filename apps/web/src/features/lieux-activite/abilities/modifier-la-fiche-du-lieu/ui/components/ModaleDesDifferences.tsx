@@ -17,21 +17,8 @@ const modale = createModal({
   isOpenedByDefault: false,
 })
 
-/**
- * Le seul champ dont la liste s'étale sur trois colonnes.
- *
- * Les typologies se comptent par dizaines — 92 valeurs au catalogue — là où les
- * autres nomenclatures en alignent moins de dix : les mettre en colonnes ne
- * gagnerait rien et les rendrait plus difficiles à parcourir.
- */
 const CHAMP_EN_COLONNES = 'typologies'
 
-/**
- * Une valeur, dans la forme que sa nature appelle.
- *
- * Une liste d'un seul élément reste une ligne de texte — la puce n'apprendrait
- * rien — mais dès qu'il y en a plusieurs elles s'empilent.
- */
 const Valeur = ({
   valeur,
   enColonnes,
@@ -50,9 +37,6 @@ const Valeur = ({
   return (
     <ul
       className={classNames('fr-mb-0', {
-        // `fr-list-style-inside` ramène la puce DANS la cellule : posée dehors,
-        // elle empiète sur la colonne voisine et un libellé long passe
-        // par-dessus les puces de la suivante.
         'fr-display-grid fr-grid-cols-3 fr-grid-column-gap-2v fr-list-style-inside':
           enColonnes,
         'fr-pl-3w': !enColonnes,
@@ -65,18 +49,6 @@ const Valeur = ({
   )
 }
 
-/**
- * Un écart, et le choix qu'il appelle.
- *
- * Les deux valeurs sont montrées l'une sous l'autre plutôt qu'en surbrillance
- * dans un texte : ce ne sont pas des variantes d'une même phrase mais deux
- * réponses à une même question, et le médiateur choisit une réponse.
- *
- * La valeur est rendue HORS du `<label>`, qui n'accepte que du contenu de
- * phrase : une liste ou un tableau d'horaires y seraient du HTML invalide, que
- * le navigateur remonterait ailleurs. Le libellé garde donc la seule mention de
- * provenance, et c'est lui qui reste cliquable.
- */
 const Ecart = ({
   difference,
   choisi,
@@ -123,14 +95,6 @@ const Ecart = ({
   </fieldset>
 )
 
-/**
- * Le bouton qui ouvre la modale, séparé d'elle.
- *
- * Il vit dans le corps de l'alerte, que le DSFR rend dans un `<p>` : un
- * `<dialog>` n'y a pas sa place — le navigateur le remonterait hors du
- * paragraphe et la mise en page casserait. Les deux partagent la même modale,
- * déclarée au niveau du module.
- */
 export const BoutonDesDifferences = () => (
   <Button
     size="small"
@@ -142,15 +106,6 @@ export const BoutonDesDifferences = () => (
   </Button>
 )
 
-/**
- * Le choix, champ par champ, entre la fiche du médiateur et celle que la
- * cartographie propose.
- *
- * Ce que la modale enregistre passe par le même chemin que le formulaire : c'en
- * est un raccourci, pas une écriture parallèle. Les champs conservés depuis la
- * cartographie sont réécrits eux aussi — sans quoi la fiche coop garderait son
- * ancienne valeur et la modale se rouvrirait sur le même écart.
- */
 export const ModaleDesDifferences = ({
   lieuId,
   differences,
@@ -162,8 +117,6 @@ export const ModaleDesDifferences = ({
   const [choix, setChoix] = useState<Record<string, OrigineDuChoix>>({})
   const [enCours, setEnCours] = useState(false)
 
-  // Par défaut on garde ce qui est affiché : la modale ne modifie rien tant que
-  // le médiateur n'a rien touché.
   const origineDe = (champ: string): OrigineDuChoix =>
     choix[champ] ?? 'registre'
 

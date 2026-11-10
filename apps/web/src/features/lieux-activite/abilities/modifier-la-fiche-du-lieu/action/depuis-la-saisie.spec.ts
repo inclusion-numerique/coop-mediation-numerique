@@ -69,7 +69,6 @@ describe('la saisie devient un modèle du domaine', () => {
       ).toMatchObject({
         section: 'InformationsGenerales',
         pivot: null,
-        // Le nom d'usage vient de SIRENE : sans immatriculation il n'a plus d'objet.
         nomUsage: null,
       })
     })

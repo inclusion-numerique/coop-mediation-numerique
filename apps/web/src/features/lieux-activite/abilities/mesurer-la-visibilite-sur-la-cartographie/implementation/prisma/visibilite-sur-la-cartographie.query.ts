@@ -3,7 +3,6 @@ import { type CodeDepartement, CodeInsee } from '@app/web/libraries/departement'
 import { prismaClient } from '@app/web/prismaClient'
 import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 import type { MediateurId } from '../../../../domain/mediateur-id'
-import { visibiliteDesLieuxDuMediateur } from '../../../../implementation/prisma/lieux-du-mediateur'
 import {
   departementDeReference,
   type LieuDuMediateur,
@@ -18,8 +17,22 @@ const lieuxDuMediateur = async (
 ): Promise<readonly LieuDuMediateur[]> =>
   mediateurId === null
     ? []
-    : (await visibiliteDesLieuxDuMediateur({ mediateurId })).map(
-        ({ codeInsee, visiblePourCartographieNationale }) => ({
+    : (
+        await prismaClient.mediateurEnActivite.findMany({
+          where: { mediateurId, suppression: null, fin: null },
+          select: {
+            lieuInclusion: {
+              select: {
+                codeInsee: true,
+                visiblePourCartographieNationale: true,
+              },
+            },
+          },
+        })
+      ).map(
+        ({
+          lieuInclusion: { codeInsee, visiblePourCartographieNationale },
+        }) => ({
           codeInsee: CodeInsee.safe(codeInsee ?? ''),
           visibilite: VisibiliteDuLieu(
             visiblePourCartographieNationale ? 'Visible' : 'Masque',

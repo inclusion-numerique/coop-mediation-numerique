@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { fusionnerDesLieux } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
+import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
@@ -9,6 +10,10 @@ const semis: {
   conserveId?: string
   mediateurId?: string
   userId?: string
+} = {}
+
+const fusion: {
+  issue?: Awaited<ReturnType<typeof fusionnerDesLieux>>
 } = {}
 
 Given('deux lieux à fusionner', async () => {
@@ -125,7 +130,10 @@ Given(
 )
 
 When("l'administration fusionne le premier dans le second", async () => {
-  await fusionnerDesLieux(semis.absorbeId ?? '', semis.conserveId ?? '')
+  fusion.issue = await fusionnerDesLieux({
+    source: LieuId(semis.absorbeId ?? ''),
+    cible: LieuId(semis.conserveId ?? ''),
+  })
 })
 
 const compterLieu = (id?: string) =>
@@ -258,6 +266,7 @@ After(async () => {
   semis.conserveId = undefined
   semis.mediateurId = undefined
   semis.userId = undefined
+  fusion.issue = undefined
 
   const ids = [absorbeId, conserveId].filter((id): id is string => id != null)
   if (ids.length === 0) return
@@ -265,8 +274,6 @@ After(async () => {
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { structureId: { in: ids } },
   })
-  // La fusion inscrit le lieu survivant au registre de l'Entrepôt : son
-  // inscription vit dans un autre schéma que les semis et leur survivrait.
   await prismaClient.lieuInclusionRegistreMain.deleteMany({
     where: { structureCoopId: { in: ids } },
   })
@@ -274,4 +281,25 @@ After(async () => {
   if (mediateurId)
     await prismaClient.mediateur.deleteMany({ where: { id: mediateurId } })
   if (userId) await prismaClient.user.deleteMany({ where: { id: userId } })
+})
+
+When(
+  "l'administration fusionne le premier dans un lieu introuvable",
+  async () => {
+    fusion.issue = await fusionnerDesLieux({
+      source: LieuId(semis.absorbeId ?? ''),
+      cible: LieuId(v4()),
+    })
+  },
+)
+
+Then('la fusion est refusée faute de lieu', () => {
+  assert.deepStrictEqual(
+    fusion.issue?.success === false ? fusion.issue.error._tag : null,
+    'LieuIntrouvable',
+  )
+})
+
+Then('le lieu à absorber existe toujours', async () => {
+  assert.strictEqual(await compterLieu(semis.absorbeId), 1)
 })

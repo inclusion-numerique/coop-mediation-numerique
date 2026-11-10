@@ -1,9 +1,5 @@
 import { depuisLePanier } from './depuis-le-panier'
 
-/**
- * Le panier tel que l'écran le soumet : la forme est déjà validée, c'est la
- * règle d'adresse qui se joue ici.
- */
 const lieuSoumis = (champs: Record<string, unknown> = {}) => ({
   id: null,
   structureCartographieNationaleId: null,
@@ -23,11 +19,6 @@ const CONNU = '0927f824-b84d-4840-ae2e-e4a96a7a519b'
 
 describe('le panier soumis devient une liste de demandes', () => {
   describe('un lieu que la coop connaît déjà', () => {
-    /**
-     * Rien de son adresse ne sera réécrit : la lui redemander refuserait le
-     * rattachement pour un défaut de données dont cet ajout n'est pas
-     * responsable.
-     */
     it('se rattache par son id, sans exiger d’adresse validée', () => {
       const issue = depuisLePanier([
         lieuSoumis({ id: CONNU, codeInsee: null, banId: null, latitude: null }),
@@ -62,11 +53,6 @@ describe('le panier soumis devient une liste de demandes', () => {
       })
     })
 
-    /**
-     * Sans l'un des trois, rien ne distingue une adresse reconnue par la Base
-     * Adresse Nationale d'une adresse saisie à l'estime — et un lieu qu'on ne
-     * sait pas situer n'apparaît sur aucune carte.
-     */
     it.each([
       ['sans code INSEE', { codeInsee: null }],
       ['sans identifiant BAN', { banId: null }],
@@ -110,7 +96,6 @@ describe('le panier soumis devient une liste de demandes', () => {
       ])
     })
 
-    /** Tout ou rien : un demi-panier serait plus déroutant qu'un échec net. */
     it('est refusé en entier dès qu’un seul lieu n’est pas situable', () => {
       const issue = depuisLePanier([
         lieuSoumis({ nom: 'Premier' }),

@@ -6,12 +6,6 @@ import {
   type Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
-/**
- * Le contact est réparti sur deux sections — les informations pratiques
- * possèdent les sites web, les modalités d'accès le téléphone et les courriels.
- * Éditer l'une ne doit rien retirer à l'autre, d'où ces recompositions plutôt
- * qu'un remplacement du `Contact` entier.
- */
 export const contactAvecSitesWeb = (
   contact: Contact,
   sitesWeb: readonly Url[],
@@ -34,13 +28,6 @@ export const contactAvecJoignabilite = (
     : { courriels: [...courriels] }),
 })
 
-/**
- * Les seules modalités que le formulaire sait exprimer — se présenter,
- * téléphoner, écrire. Les trois autres du schéma national viennent des imports
- * cartographiques : dix lieux en portent une, et les réécrire depuis un
- * formulaire qui les ignore les effacerait. La section ne gouverne donc que les
- * siennes, et laisse les autres en place.
- */
 const modalitesDuFormulaire: readonly ModaliteAcces[] = [
   ModaliteAcces.SePresenter,
   ModaliteAcces.Telephoner,

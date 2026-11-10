@@ -8,14 +8,6 @@ import type { LieuxDataTableSearchParams } from './LieuxDataTable'
 
 const CHAMP = 'recherche'
 
-/**
- * La barre de recherche de l'annuaire d'administration.
- *
- * Ce qu'elle soumet ne part pas au serveur mais dans l'URL : la recherche est
- * un paramètre de page, ce qui la rend partageable, et survit au rechargement.
- * Les autres paramètres — tri, page, taille — voyagent avec elle, sauf ceux que
- * la recherche vide, qu'on retire plutôt que de traîner à blanc.
- */
 export const RechercheDeLieux = ({
   searchParams = {},
 }: {
@@ -49,7 +41,6 @@ export const RechercheDeLieux = ({
               </label>
               <input
                 className="fr-input fr-input--white"
-                // biome-ignore lint/a11y/noAutofocus: l'écran n'existe que pour chercher
                 autoFocus
                 id={CHAMP}
                 type="search"

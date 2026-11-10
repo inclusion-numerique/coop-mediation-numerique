@@ -1,5 +1,6 @@
 import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
 import { getUserDepartement } from '@app/web/auth/getUserDepartement'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import { getFirstAndLastActiviteDate } from '@app/web/features/activites/use-cases/list/db/getFirstAndLastActiviteDate'
 import { getStructuresEmployeusesOptions } from '@app/web/features/activites/use-cases/list/db/getStructuresEmployeusesOptions'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
@@ -66,7 +67,9 @@ export const getFiltersOptionsForMediateur = async ({
     getLieuxDesActivitesOptions({
       mediateurIds,
       mediateurId: user.mediateur?.id,
-      coordinateurId: user.coordinateur?.id,
+      perimetreDesActivites: activitesEquipeCoordonneeWhereCondition(
+        user.coordinateur?.id,
+      ),
     }),
     getStructuresEmployeusesOptions({
       mediateurIds,

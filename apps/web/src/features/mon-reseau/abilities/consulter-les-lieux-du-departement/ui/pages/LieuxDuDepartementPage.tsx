@@ -3,7 +3,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import {
-  hrefDuLieu,
+  hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@app/web/features/lieux-activite/ui'
 import type { Departement } from '@app/web/libraries/departement'
@@ -16,10 +16,7 @@ import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
 import { hrefDesLieux } from '../../../../ui/liens'
-import {
-  auteurDeLaDerniereModification,
-  type LieuxTrouves,
-} from '../../../../ui/lieu-affiche'
+import { type LieuxTrouves } from '../../../../ui/lieu-affiche'
 import { type CriteresDesLieux, estFiltre } from '../../domain'
 import Filtres from '../components/Filtres'
 import {
@@ -120,8 +117,7 @@ const LieuxDuDepartementPage = ({
             <LieuActiviteCard
               key={lieu.id}
               lieu={lieu}
-              href={hrefDuLieu(lieu)}
-              derniereModificationPar={auteurDeLaDerniereModification(lieu)}
+              href={hrefDuLieuEnListe(lieu)}
             />
           ))}
 

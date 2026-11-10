@@ -4,6 +4,7 @@ import {
   codeDepartementDuCodeInsee,
   DEPARTEMENT_PAR_DEFAUT,
 } from '@app/web/libraries/departement'
+import type { LieuEnListe } from '../domain/lieu-en-liste'
 
 export const departementDuLieu = (
   codeInsee: string | null,
@@ -21,3 +22,9 @@ export const hrefDuLieu = ({
   id: string
   codeInsee: string | null
 }): string => `/coop/mon-reseau/${departementDuLieu(codeInsee)}/lieux/${id}`
+
+export const hrefDuLieuEnListe = ({
+  id,
+  adresse,
+}: Pick<LieuEnListe, 'id' | 'adresse'>): string =>
+  hrefDuLieu({ id, codeInsee: adresse?.code_insee ?? null })

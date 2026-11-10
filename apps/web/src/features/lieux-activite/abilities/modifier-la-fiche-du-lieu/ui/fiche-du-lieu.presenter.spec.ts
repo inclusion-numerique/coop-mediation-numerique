@@ -1,3 +1,4 @@
+import { NomAffiche } from '@app/web/libraries/nom-affiche'
 import {
   Adresse,
   Contact,
@@ -29,7 +30,12 @@ import {
   SourceCartographie,
 } from '../../../domain/tracabilite'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
-import type { FicheDuLieu } from '../implementation'
+import {
+  type FicheDuLieu,
+  NombreDActivites,
+  NombreDeMediateurs,
+  type PartageDuLieu,
+} from '../domain'
 import { ficheAffichee } from './fiche-du-lieu.presenter'
 
 const lieu: Lieu = {
@@ -75,12 +81,18 @@ const lieu: Lieu = {
 
 const DERNIERE_MODIFICATION_COOP = new Date('2026-08-01T00:00:00Z')
 
+const personneDAutre: PartageDuLieu = {
+  autresMediateurs: NombreDeMediateurs(0),
+  activites: NombreDActivites(0),
+}
+
 const afficher = (fiche: Lieu['fiche']) => {
   const consultee: FicheDuLieu = {
     lieu: { ...lieu, fiche },
     auteurDerniereModification: null,
     derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
     ficheCoop: lieu.fiche,
+    partage: personneDAutre,
   }
 
   return ficheAffichee(consultee)
@@ -102,10 +114,9 @@ describe('mise en forme de la fiche pour l’écran', () => {
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
       ficheCoop: lieu.fiche,
+      partage: personneDAutre,
     })
 
-    // Sans ce nom, l'écran annoncerait une mise à jour récente que le médiateur
-    // ne reconnaîtrait pas et que rien n'expliquerait.
     expect(affichee.misAJourPar).toBe('dora')
   })
 
@@ -124,10 +135,9 @@ describe('mise en forme de la fiche pour l’écran', () => {
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
       ficheCoop: lieu.fiche,
+      partage: personneDAutre,
     })
 
-    // C'est l'écart entre les deux dates qui fait l'information : « on a écrit
-    // après vous », et non « la fiche a bougé ».
     expect(affichee.repriseExterne).toEqual({
       source: 'dora',
       le: new Date('2026-09-01T00:00:00Z'),
@@ -155,9 +165,8 @@ describe('mise en forme de la fiche pour l’écran', () => {
       },
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
-      // La coop n'avait pas d'horaires : le registre en pose, et l'écart doit se
-      // lire comme « Non renseigné » face à la nouvelle valeur.
       ficheCoop: lieu.fiche,
+      partage: personneDAutre,
     })
 
     expect(repriseExterne?.differences).toEqual([
@@ -170,8 +179,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       {
         champ: 'horaires',
         libelle: 'Horaires',
-        // L'absence est une valeur : c'est elle que le médiateur choisira s'il
-        // veut que la source n'ait rien posé.
         coop: { _tag: 'Absente' },
         registre: { _tag: 'Horaires', osm: 'Tu 14:00-18:00' },
       },
@@ -201,6 +208,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
       ficheCoop: lieu.fiche,
+      partage: personneDAutre,
     })
 
     const parChamp = new Map(
@@ -214,7 +222,6 @@ describe('mise en forme de la fiche pour l’écran', () => {
       _tag: 'Liste',
       valeurs: ['Jeunes', 'Seniors'],
     })
-    // Une seule valeur : la puce n'apprendrait rien.
     expect(parChamp.get('typologies')).toEqual({
       _tag: 'Texte',
       texte: 'BIB',
@@ -228,9 +235,10 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('garde l’auteur coop quand c’est lui qui a modifié en dernier', () => {
     const affichee = ficheAffichee({
       lieu,
-      auteurDerniereModification: 'Édith Piaf',
+      auteurDerniereModification: NomAffiche('Édith Piaf'),
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
       ficheCoop: lieu.fiche,
+      partage: personneDAutre,
     })
 
     expect(affichee.misAJourPar).toBe('Édith Piaf')
@@ -311,6 +319,58 @@ describe('mise en forme de la fiche pour l’écran', () => {
       numeroTelephone: '+33180059880',
       parMail: true,
       adresseMail: 'contact@example.fr',
+    })
+  })
+})
+
+describe('le partage du lieu à l’écran', () => {
+  const consultee = (partage: PartageDuLieu): FicheDuLieu => ({
+    lieu,
+    auteurDerniereModification: null,
+    derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+    ficheCoop: lieu.fiche,
+    partage,
+  })
+
+  it('ne dit rien quand personne d’autre n’exerce dans le lieu', () => {
+    expect(ficheAffichee(consultee(personneDAutre)).partage).toBeNull()
+  })
+
+  it('compte les autres médiateurs et les activités, accordés au nombre', () => {
+    expect(
+      ficheAffichee(
+        consultee({
+          autresMediateurs: NombreDeMediateurs(1),
+          activites: NombreDActivites(1),
+        }),
+      ).partage,
+    ).toEqual({
+      message:
+        '1 autre médiateur exerce dans ce lieu et 1 activité y est rattachée.',
+    })
+
+    expect(
+      ficheAffichee(
+        consultee({
+          autresMediateurs: NombreDeMediateurs(3),
+          activites: NombreDActivites(0),
+        }),
+      ).partage,
+    ).toEqual({
+      message:
+        '3 autres médiateurs exercent dans ce lieu et 0 activité y est rattachée.',
+    })
+
+    expect(
+      ficheAffichee(
+        consultee({
+          autresMediateurs: NombreDeMediateurs(2),
+          activites: NombreDActivites(1396),
+        }),
+      ).partage,
+    ).toEqual({
+      message:
+        '2 autres médiateurs exercent dans ce lieu et 1\u202f396 activités y sont rattachées.',
     })
   })
 })

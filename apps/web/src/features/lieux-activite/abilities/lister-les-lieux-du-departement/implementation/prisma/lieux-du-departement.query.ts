@@ -3,10 +3,10 @@ import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPag
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
+import type { LieuEnListe } from '../../../../domain/lieu-en-liste'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
-  avecLaFicheDuRegistre,
-  type LieuEnListe,
+  lieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
 import {
@@ -20,11 +20,6 @@ import { lieuALAnnuaireDuDepartement } from './lieu-a-l-annuaire.sql'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
 
-/**
- * Le tri, dit dans les valeurs que l'annuaire AFFICHE — celles du registre — et
- * non dans les colonnes de la coop, qui donnaient un ordre alphabétique
- * invisible à qui lisait la liste.
- */
 const EXPRESSION_DE_TRI = {
   nom: NOM_AFFICHE,
   modification: DERNIERE_ECRITURE,
@@ -56,19 +51,9 @@ const getLieuxByIds = async ({
     select: projectionDuLieuEnListe,
   })
 
-  return lieux.map(avecLaFicheDuRegistre)
+  return lieux.map(lieuEnListe)
 }
 
-/**
- * L'annuaire d'un département ne montre pas tous les lieux qui s'y trouvent :
- * un lieu y figure s'il est publié sur la cartographie nationale, ou si au
- * moins un médiateur y exerce encore. Un lieu ni publié ni fréquenté n'est
- * l'annuaire de personne.
- *
- * Les identifiants sont paginés en SQL brut — le `DISTINCT` que réclame la
- * jointure avec les rattachements ne se dit pas avec l'API de Prisma — puis
- * hydratés par Prisma, et remis dans l'ordre que le SQL a fixé.
- */
 export const lieuxDuDepartement = async ({
   departementCode,
   searchParams,
@@ -78,7 +63,6 @@ export const lieuxDuDepartement = async ({
 
   const { take, skip } = takeAndSkipFromPage({ page, pageSize })
 
-  // Build search condition
   const searchTerm = searchParams.recherche?.trim()
   const normalizedSearchTerm = searchTerm
     ? Prisma.sql`NULLIF(regexp_replace(lower(unaccent(${searchTerm})), '[\\s-]', '', 'g'), '')`
@@ -96,7 +80,6 @@ export const lieuxDuDepartement = async ({
       )`
     : Prisma.sql`TRUE`
 
-  // Build communes filter condition
   const communesCondition =
     searchParams.communes && searchParams.communes.length > 0
       ? Prisma.sql`s.code_insee = ANY(${[...searchParams.communes]}::TEXT[])`
@@ -106,7 +89,6 @@ export const lieuxDuDepartement = async ({
   const sortColumn = EXPRESSION_DE_TRI[champ]
   const sortDirection = Prisma.raw(sens.toUpperCase())
 
-  // Get paginated structure IDs using CTE to handle DISTINCT + ORDER BY
   const structureIds = await prismaClient.$queryRaw<{ id: string }[]>`
     WITH distinct_lieux AS (
       SELECT DISTINCT ON (s.id)
@@ -125,7 +107,6 @@ export const lieuxDuDepartement = async ({
 
   const ids = structureIds.map((row) => row.id)
 
-  // Get total count
   const countResult = await prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(DISTINCT s.id)::integer AS count
     FROM lieu_inclusion s
@@ -137,10 +118,8 @@ export const lieuxDuDepartement = async ({
 
   const totalCount = countResult[0]?.count ?? 0
 
-  // Hydrate full objects with Prisma
   const lieux = ids.length > 0 ? await getLieuxByIds({ ids }) : []
 
-  // Reorder to maintain SQL ordering
   const orderedLieux = orderItemsByIndexedValues(lieux, ids)
 
   const totalPages = take ? Math.ceil(totalCount / take) : 1

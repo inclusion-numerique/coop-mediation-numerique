@@ -1,11 +1,3 @@
-/**
- * Ce que la feature choisit pour se réaliser, une dépendance par dossier.
- *
- * `prisma/` porte tout ce qui parle à la base : les transferts, les projections
- * de lecture et le vocabulaire sous lequel elle stocke les nomenclatures. Un
- * autre stockage, ou une autre source, prendra un dossier voisin plutôt que de
- * s'y mêler.
- */
 export {
   lieuCoopToDomain,
   lieuFromDomain,
@@ -18,8 +10,7 @@ export {
   preparerCorrele,
 } from './prisma/lieu-correle'
 export {
-  type LieuEnListe,
-  lieuxEnListeDuMediateur,
+  lieuEnListe,
   projectionDuLieuEnListe,
 } from './prisma/lieu-en-liste'
 export {

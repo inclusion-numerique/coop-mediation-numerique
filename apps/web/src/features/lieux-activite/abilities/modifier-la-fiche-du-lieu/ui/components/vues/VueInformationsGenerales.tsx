@@ -1,5 +1,5 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { typologieLibelles } from '@app/web/features/lieux-activite/ui/libelles-typologie'
+import { pluriel } from '@app/web/libraries/pluriel'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { type Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
@@ -75,7 +75,7 @@ export const VueInformationsGenerales = ({
     </div>
     <div>
       <span className="fr-text-mention--grey">
-        Typologie{sPluriel(typologies?.length ?? 0)}
+        {pluriel(typologies?.length ?? 0, 'Typologie', 'Typologies')}
       </span>
       {(typologies?.length ?? 0) > 0 ? (
         <ul className="fr-tags-group fr-mt-3v">

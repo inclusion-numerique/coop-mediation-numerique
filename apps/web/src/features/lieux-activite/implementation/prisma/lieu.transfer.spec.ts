@@ -55,11 +55,6 @@ const modification = new Date('2026-08-20T14:30:00Z')
 const id = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
 
-/**
- * Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent,
- * `structureParente` — que rien n'écrit et qu'aucune ligne ne renseigne — et
- * `rna`, que le standard a sorti du pivot et que plus aucune écriture ne touche.
- */
 const horsDomaine = {
   structureParente: null,
   rna: null,
@@ -73,16 +68,6 @@ const horsDomaine = {
   activitesCount: 0,
 }
 
-/**
- * L'identité cartographique ne vient plus des colonnes du lieu mais de son
- * inscription au registre de l'Entrepôt : le transfer ne l'écrit plus, il la lit
- * là. La ligne du test la porte donc comme la base la rendrait.
- *
- * L'aller-retour se joue sur la ligne COOP — celle qu'on écrit — et non sur
- * celle qu'on lit, dont la fiche vient du registre : `lieuFromDomain` produit
- * des colonnes coop, c'est donc `lieuCoopToDomain` qui doit les relire pour que
- * l'identité ait un sens.
- */
 const ligne = (lieu: Lieu): LigneDuLieuCoop => ({
   ...lieuFromDomain(lieu),
   ...horsDomaine,

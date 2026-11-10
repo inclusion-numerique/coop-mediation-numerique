@@ -20,6 +20,13 @@
 * When l'administration fusionne le premier dans le second
 * Then ce médiateur exerce dans le lieu conservé
 
+### Scenario: Une fusion vers un lieu introuvable est refusée
+
+* Given deux lieux à fusionner
+* When l'administration fusionne le premier dans un lieu introuvable
+* Then la fusion est refusée faute de lieu
+* And le lieu à absorber existe toujours
+
 ## Rule: On n'exerce pas deux fois dans le lieu conservé
 
 > Le même médiateur peut exercer dans les deux fiches — c'est même le signe

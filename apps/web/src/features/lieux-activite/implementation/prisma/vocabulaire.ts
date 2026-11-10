@@ -15,11 +15,12 @@ const pont = <Standard extends string, Coop extends string>(
   _standard: Record<string, Standard>,
   table: Record<Coop, Standard>,
 ) => {
+  const estCoop = (cle: string): cle is Coop => Object.hasOwn(table, cle)
   const inverse = new Map<Standard, Coop>(
-    Object.entries(table).map(([coop, standard]) => [
-      standard as Standard,
-      coop as Coop,
-    ]),
+    Object.entries<Standard>(table).flatMap(
+      ([coop, standard]): [Standard, Coop][] =>
+        estCoop(coop) ? [[standard, coop]] : [],
+    ),
   )
 
   return {

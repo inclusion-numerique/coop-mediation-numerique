@@ -59,6 +59,36 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * When un médiateur étranger au lieu enregistre la description
 * Then la description du lieu est enregistrée
 
+## Rule: La fiche dit combien d'autres médiateurs exercent dans le lieu
+
+> Une fiche modifiée vaut pour tous les médiateurs qui y exercent. En 2026, une
+> permanence en mairie a été transformée en maison départementale par une
+> conseillère du Département, emportant les 1 396 activités d'une autre
+> conseillère rattachée au même lieu. La fiche prévient donc que d'autres
+> personnes travaillent sur ce lieu. L'écran des informations générales demande
+> en plus de cocher une confirmation avant d'enregistrer : c'est un garde-fou
+> d'écran, pas une règle de l'enregistrement, qui reste ouvert à tous comme le
+> dit la règle précédente.
+
+### Scenario: Le médiateur seul dans son lieu ne le voit pas partagé
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché consulte la fiche du lieu
+* Then la fiche compte 0 autre médiateur et 0 activité
+
+### Scenario: Un médiateur étranger au lieu voit qu'un autre y exerce
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When un médiateur étranger au lieu consulte la fiche du lieu
+* Then la fiche compte 1 autre médiateur et 0 activité
+
+### Scenario: Un médiateur qui a quitté le lieu n'est plus compté
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* And ce médiateur a quitté ce lieu
+* When un médiateur étranger au lieu consulte la fiche du lieu
+* Then la fiche compte 0 autre médiateur et 0 activité
+
 ## Rule: Une fiche supprimée ne se consulte plus
 
 ### Scenario: Le lieu supprimé est introuvable

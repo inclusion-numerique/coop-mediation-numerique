@@ -18,6 +18,7 @@ import {
   ModaleDeRetrait,
 } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { filDArianeDuReseau } from '@app/web/features/mon-reseau/ui/fil-d-ariane'
 import { hrefDesLieux } from '@app/web/features/mon-reseau/ui/liens'
 import { departementDuCode } from '@app/web/libraries/departement'
@@ -35,7 +36,12 @@ const LieuActiviteDetailPage = async (props: {
   const departement = departementDuCode(code)
   const lieuId = LieuId.safe(id)
   const consultee =
-    lieuId === null ? null : await consulterLaFicheDuLieu(lieuId)
+    lieuId === null
+      ? null
+      : await consulterLaFicheDuLieu(
+          lieuId,
+          user.mediateur == null ? null : MediateurId(user.mediateur.id),
+        )
 
   if (!departement.success || lieuId === null || consultee === null) {
     return notFound()
@@ -56,6 +62,9 @@ const LieuActiviteDetailPage = async (props: {
         <FicheDuLieuPage
           fiche={fiche}
           enregistrer={modifierLaFicheDuLieuAction}
+          creerUnLieuHref={
+            user.mediateur == null ? undefined : '/coop/lieux-activite/creer'
+          }
           entete={
             <>
               <CoopBreadcrumbs

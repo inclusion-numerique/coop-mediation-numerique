@@ -1,4 +1,4 @@
-import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
 
@@ -11,22 +11,14 @@ type LieuActiviteQueryResult = {
   activites_count: bigint
 }
 
-/**
- * Les lieux proposés pour filtrer des activités ou des statistiques : ceux où
- * portent les activités que les statistiques comptent, avec le même périmètre
- * d'équipe, plus les lieux où le médiateur connecté exerce aujourd'hui. Un lieu
- * quitté reste donc filtrable tant qu'il a des activités ; les lieux actuels
- * des membres d'équipe ne sont pas ajoutés, ils ne filtreraient rien. La
- * saisie, elle, s'en tient aux lieux actuels (`getMediateursLieuxActiviteOptions`).
- */
 export const getLieuxDesActivitesOptions = async ({
   mediateurIds,
   mediateurId,
-  coordinateurId,
+  perimetreDesActivites = Prisma.sql`1 = 1`,
 }: {
   mediateurIds: string[]
   mediateurId?: string
-  coordinateurId?: string
+  perimetreDesActivites?: Prisma.Sql
 }): Promise<LieuActiviteOption[]> => {
   if (mediateurIds.length === 0) return []
 
@@ -37,7 +29,7 @@ export const getLieuxDesActivitesOptions = async ({
       WHERE act.mediateur_id = ANY(${mediateurIds}::uuid[])
         AND act.structure_id IS NOT NULL
         AND act.suppression IS NULL
-        AND ${activitesEquipeCoordonneeWhereCondition(coordinateurId)}
+        AND ${perimetreDesActivites}
       GROUP BY act.structure_id
     ),
     lieux_ids AS (

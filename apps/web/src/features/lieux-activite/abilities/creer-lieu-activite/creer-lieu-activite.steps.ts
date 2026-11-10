@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { creerLieuActivite } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite'
 import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
+import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
@@ -67,7 +67,6 @@ const creer = async (
     dernier.lieuxCreesIds = [...dernier.lieuxCreesIds, dernier.creation.data.id]
 }
 
-/** L'identifiant rendu par la création de rang `rang`, la première valant 1. */
 const lieuCree = (rang: number): string | undefined =>
   dernier.lieuxCreesIds[rang - 1]
 
@@ -148,28 +147,16 @@ Then("ce médiateur n'exerce qu'une fois dans le lieu créé", async () => {
   )
 })
 
-/**
- * Ce que les scénarios sèment DANS l'Entrepôt — hors du périmètre des semis de
- * la coop, et donc à nettoyer ici.
- */
 const semisEntrepot: { adresses: number[]; inscriptions: number[] } = {
   adresses: [],
   inscriptions: [],
 }
 
-/**
- * Sème une adresse de l'Entrepôt. `repetition` vaut `''` et non `null` pour le
- * scénario qui surveille la clé d'unicité : celle-ci compare des `COALESCE`, si
- * bien que les deux y désignent la même adresse.
- */
 const semerUneAdresse = async (
   numeroVoie: number,
   nomVoie: string,
   repetition: string | null = null,
 ): Promise<number> => {
-  // Sous la forme que `main.trouver_ou_creer_adresse_lieu` produit : numéro
-  // séparé, voie en capitales initiales. Semer la ligne entière décrirait un
-  // état que l'Entrepôt ne fabrique pas, et le scénario ne prouverait rien.
   const [creee] = await prismaClient.$queryRaw<{ id: number }[]>`
     INSERT INTO main.adresse (code_postal, code_insee, nom_commune, numero_voie, nom_voie, repetition)
     VALUES ('17300', '17299', 'Rochefort', ${numeroVoie}, ${nomVoie}, ${repetition})
@@ -219,11 +206,6 @@ Then(
   },
 )
 
-/**
- * Le même endroit que `SAISIE_DEJA_AU_REGISTRE`, déjà inscrit au registre sous
- * une autre source et sans lien coop — l'état qu'aucune sonde de la coop ne peut
- * voir, puisqu'il ne vit que dans l'Entrepôt.
- */
 const inscriptionDora: { id?: number; adresseId?: number } = {}
 
 const SAISIE_DEJA_AU_REGISTRE: CreerLieuActiviteData = {
@@ -249,9 +231,6 @@ Given('le registre connaît déjà ce lieu sous la source « dora »', async () 
       nom: saisie.nom,
       adresseId,
       typologies: ['BIB'],
-      // Ce que dora sait et que la coop ne saurait pas redire : les deux
-      // premières colonnes n'ont aucun champ de formulaire, les deux suivantes
-      // sont cachées derrière l'interrupteur de partage à la cartographie.
       autresFormationsLabels: ['Label maison'],
       dispositifProgrammesNationaux: ['AidantsConnect'],
       horaires: 'Mo 09:00-12:00',
@@ -402,11 +381,6 @@ Then("le registre porte l'adresse du lieu créé", async () => {
       },
     })
 
-  // La `clef_interop` ne figure pas dans l'attendu : `main.adresse` est
-  // mutualisée, et « 12 quai du Port » sert aussi aux scénarios d'ajout, qui la
-  // désignent par un autre identifiant BAN. La ligne appartient à celui des deux
-  // qui l'a créée en premier — l'y attacher ferait dépendre le scénario de son
-  // rang d'exécution.
   assert.deepStrictEqual(inscription.adresse, {
     numeroVoie: 12,
     repetition: '',
@@ -425,18 +399,8 @@ Then("le registre ne porte qu'une inscription pour le lieu créé", async () => 
   )
 })
 
-// Les lieux créés par les scénarios ne sont pas semés : ils se nettoient ici.
-//
-// Les `main.adresse` résolues au passage restent, elles : la table est
-// mutualisée entre lieux et structures administratives, et rien ne dit que la
-// ligne trouvée a été créée par le scénario. Une exécution suivante la retrouve
-// par sa `clef_interop` au lieu d'en créer une autre.
 After(async () => {
   const ids = dernier.lieuxCreesIds
-  // Les semis Entrepôt s'effacent même quand aucun lieu n'a été créé : un
-  // scénario qui échoue en cours de création les laisserait sinon derrière lui,
-  // et ferait buter l'exécution suivante sur la clé d'unicité — un échec qui ne
-  // parlerait plus du tout du bug qu'on surveille.
   const { adresses, inscriptions } = semisEntrepot
   dernier.lieuxCreesIds = []
   dernier.creation = undefined

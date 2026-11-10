@@ -39,14 +39,6 @@ export const searchStructureSelect = {
   },
 } satisfies Prisma.LieuInclusionSelect
 
-/**
- * Les colonnes de la liste d'administration, et ce que chaque lieu porte
- * d'activité : médiateurs en exercice, activités, emplois.
- *
- * Le type de retour est celui que l'écran déclare : c'est lui qui dit ce qu'il
- * montre, et la requête qui s'y conforme. Sélectionner une colonne de moins ne
- * compile plus.
- */
 export const lieuxPourLaListe = async ({
   skip,
   take,
@@ -66,11 +58,6 @@ export const lieuxPourLaListe = async ({
     orderBy: [...(orderBy ?? []), { nom: 'asc' }],
   })
 
-  // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
-  // domicile, et non plus d'une copie tenue par la coop.
-  //
-  // L'employeuse n'est plus reliée au lieu (ADR-002) : ce compteur n'a plus de
-  // quoi se calculer et vaut zéro pour tout le monde.
   return structures.map(({ inscriptionRegistre, banId, ...coop }) => {
     const registre =
       inscriptionRegistre == null ? null : champsDAffichage(inscriptionRegistre)
@@ -86,7 +73,6 @@ export const lieuxPourLaListe = async ({
       structureCartographieNationaleId:
         registre?.structureCartographieNationaleId ?? null,
       adresseAPreciser: banId == null,
-      emploisCount: 0,
     }
   })
 }

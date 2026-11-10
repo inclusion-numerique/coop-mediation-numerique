@@ -23,15 +23,6 @@ export type AuteurDuRetrait = {
   readonly nomAffiche: string
 }
 
-/**
- * Le retrait date la fin de l'exercice sans effacer la trace du passage : la
- * ligne reste, avec sa date de fin. Seul l'effacement d'un compte la fait
- * disparaître.
- *
- * L'e-mail part AVANT l'écriture, comme dans le routeur tRPC : s'il échoue,
- * mieux vaut que le retrait n'ait pas eu lieu que de retirer quelqu'un sans
- * jamais l'en informer.
- */
 export const retirerUnMediateurDuLieu = async ({
   mediateurId,
   lieuId,

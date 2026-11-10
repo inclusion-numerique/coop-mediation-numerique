@@ -34,13 +34,8 @@ import {
   Typologie,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { z } from 'zod'
 import type { LieuCarto } from '../../domain'
-
-// Lit `main.lieu_inclusion` dans l'Entrepôt et en tire la fiche que la coop
-// matérialise. Ni adresse ni coordonnées : celles de l'écran, validées par la
-// Base Adresse Nationale, priment toujours sur celles de la cartographie. Le
-// SIRET (pivot) n'est pas repris non plus — la cartographie nationale n'en est
-// pas une source fiable, seule l'API entreprise fait foi.
 
 const lieuSelect = {
   structureCartographieNationaleId: true,
@@ -82,26 +77,23 @@ type LieuRow = {
   itinerance: string[]
 }
 
-/** La colonne `contact` est un JSON libre : rien n'y est acquis. */
-const contactDeLaLigne = (contact: unknown): Contact => {
-  const record =
-    typeof contact === 'object' && contact !== null
-      ? (contact as Record<string, unknown>)
-      : {}
-  const courriel =
-    typeof record.courriels === 'object' && record.courriels !== null
-      ? ((record.courriels as Record<string, unknown>).email as
-          | string
-          | undefined)
-      : undefined
+const ContactDeLaLigne = z
+  .object({
+    telephone: z.string().nullish().catch(null),
+    courriels: z
+      .object({ email: z.string().nullish().catch(null) })
+      .nullish()
+      .catch(null),
+    site_web: z.string().nullish().catch(null),
+  })
+  .catch({ telephone: null, courriels: null, site_web: null })
 
-  const telephone = telephoneValide(
-    typeof record.telephone === 'string' ? record.telephone : null,
-  )
-  const courriels = courrielsValides([courriel])
-  const sitesWeb = sitesWebSaisis(
-    typeof record.site_web === 'string' ? record.site_web : null,
-  )
+const contactDeLaLigne = (contact: unknown): Contact => {
+  const lu = ContactDeLaLigne.parse(contact)
+
+  const telephone = telephoneValide(lu.telephone ?? null)
+  const courriels = courrielsValides([lu.courriels?.email ?? undefined])
+  const sitesWeb = sitesWebSaisis(lu.site_web ?? null)
 
   return Contact({
     ...(telephone == null ? {} : { telephone }),
@@ -110,13 +102,6 @@ const contactDeLaLigne = (contact: unknown): Contact => {
   })
 }
 
-/**
- * Ce que la cartographie sait dire de la fiche, et rien de plus.
- *
- * Les listes qu'elle ne porte pas — dispositifs, labels de formation — restent
- * vides plutôt que d'être devinées ; `reconnues` écarte des autres les valeurs
- * que le schéma national ne connaît pas.
- */
 const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   nom: Nom(lieu.nom),
   pivot: null,
@@ -149,22 +134,11 @@ const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   priseRdv: null,
 })
 
-/**
- * La coop relisant sa propre publication ne nomme aucun producteur tiers : la
- * fiche n'a alors pas été modifiée de l'extérieur.
- */
 const sourceDeLaLigne = (source: string | null): SourceCartographie | null =>
   source == null || source === coopCartographieNationaleSource
     ? null
     : SourceCartographie.safe(source)
 
-/**
- * Une ligne de l'Entrepôt devient un lieu exploitable, ou rien.
- *
- * Sans id de cartographie il n'y a rien à corréler ; sans nom, il n'y a pas de
- * fiche — `Nom` du standard le refuse, et une ligne écartée vaut mieux qu'un
- * import interrompu.
- */
 const toLieuCarto = (lieu: LieuRow): LieuCarto | null => {
   const ids =
     lieu.structureCartographieNationaleId == null

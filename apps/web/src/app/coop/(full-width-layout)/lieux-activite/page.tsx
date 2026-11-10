@@ -4,20 +4,22 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
-import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
+import { listerLesLieuxDuMediateur } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
+import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import {
+  BoutonDeRetrait,
+  ModaleDeRetrait,
+} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import {
-  hrefDuLieu,
+  hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@app/web/features/lieux-activite/ui'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
@@ -39,7 +41,7 @@ const LieuActiviteListPage = async ({
 
   const mediateur = user.mediateur
 
-  const lieux = await listerMesLieuxActivite({
+  const lieux = await listerLesLieuxDuMediateur({
     mediateurId: MediateurId(user.mediateur.id),
     tri: TriDesLieux(tri),
   })
@@ -61,17 +63,7 @@ const LieuActiviteListPage = async ({
               <LieuActiviteCard
                 key={id}
                 lieu={lieuInclusion}
-                href={hrefDuLieu(lieuInclusion)}
-                derniereModificationPar={
-                  lieuInclusion.derniereModificationPar
-                    ? nomAffiche({
-                        prenom: lieuInclusion.derniereModificationPar.firstName,
-                        nom: lieuInclusion.derniereModificationPar.lastName,
-                        nomComplet: lieuInclusion.derniereModificationPar.name,
-                        courriel: lieuInclusion.derniereModificationPar.email,
-                      })
-                    : null
-                }
+                href={hrefDuLieuEnListe(lieuInclusion)}
                 retrait={
                   <BoutonDeRetrait
                     mediateurId={MediateurId(mediateur.id)}
@@ -86,6 +78,7 @@ const LieuActiviteListPage = async ({
               />
             )}
             visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
+            modaleDeRetrait={<ModaleDeRetrait />}
             entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
           />
         </div>

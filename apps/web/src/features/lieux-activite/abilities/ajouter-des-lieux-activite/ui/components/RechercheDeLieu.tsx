@@ -1,5 +1,5 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import type { ComboBoxProps } from '@app/web/libs/form/fields-components/ComboBox'
 import { Input } from '@app/web/libs/form/fields-components/Input'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -9,21 +9,10 @@ import {
   rechercheMinimum,
 } from './lieu-a-ajouter-combo-box'
 
-/**
- * Ce que le ComboBox rend à qui l'affiche. Repris de sa signature plutôt que
- * réécrit : ces propriétés voyagent telles quelles depuis downshift.
- */
 type RenduDuComboBox = Parameters<
-  ComboBoxProps<LieuActiviteSearchResult, RechercheLieuAAjouter>['children']
+  ComboBoxProps<SuggestionAffichee, RechercheLieuAAjouter>['children']
 >[0]
 
-/**
- * La recherche d'un lieu à ajouter : le champ, la liste, et l'issue offerte à
- * qui n'y trouve pas son lieu.
- *
- * Le champ se branche seul sur le formulaire — `AppField` fournit le contexte
- * de champ à tout son sous-arbre, dont ce composant fait partie.
- */
 export const RechercheDeLieu = ({
   isPending,
   onCreer,
@@ -55,12 +44,6 @@ export const RechercheDeLieu = ({
     </Button>
   )
 
-  /**
-   * Trouver des résultats n'est pas trouver le bon : une recherche qui propose
-   * dix lieux sans proposer CELUI qu'on a en tête enfermerait autant qu'une
-   * recherche vide. La création reste donc offerte sous la liste, tant qu'il y
-   * a une liste — le cas sans résultat porte déjà le sien, avec son explication.
-   */
   const issue =
     rechercheFaite && optionsProps.items.length > 0 ? (
       <div>
@@ -74,10 +57,6 @@ export const RechercheDeLieu = ({
       </div>
     ) : null
 
-  // Un seul enfant, `null` quand il n'y a rien à dire : `Options` teste
-  // `children &&` pour ouvrir son élément de liste, et une paire de conditions
-  // serait un tableau toujours truthy — le menu s'ouvrirait vide dès le premier
-  // clic dans le champ.
   const proposition = sansResultat ? (
     <div>
       <p className="fr-text--sm fr-text-mention--grey fr-mb-2v">

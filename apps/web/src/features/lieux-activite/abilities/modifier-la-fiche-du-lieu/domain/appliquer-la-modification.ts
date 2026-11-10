@@ -21,20 +21,6 @@ import type {
   SectionDeLaFiche,
 } from './modification-lieu'
 
-/**
- * Ce qu'une modification fait au lieu.
- *
- * Le contrat — quelles sections existent, et ce que chacune porte — se lit dans
- * `modification-lieu`. Ici se tient son application : une fonction par section,
- * la table qui les rassemble, et l'enveloppe coop que deux d'entre elles
- * touchent.
- */
-
-/**
- * Rendre un lieu visible lui donne un socle de services s'il n'en annonçait
- * aucun : la cartographie oriente, et une fiche muette sur ce qu'elle propose
- * n'oriente personne. Le médiateur les corrige ensuite dans « Services ».
- */
 const visibiliteCartographie = (
   fiche: Fiche,
   { visibilite }: Modification<'VisibiliteCartographie'>,
@@ -124,14 +110,6 @@ const typesDePublicsAccueillis = (
   priseEnChargeSpecifique,
 })
 
-/**
- * Ce que chaque section change à la fiche, une ligne par section.
- *
- * La table remplace le `switch` qui la disait avant : chaque cas n'a plus à se
- * nommer deux fois, et l'exhaustivité ne tient plus à une directive de lint
- * mais au type — une section ajoutée à l'union sans sa ligne ici ne compile
- * pas.
- */
 const ficheParSection: {
   [Section in SectionDeLaFiche]: (
     fiche: Fiche,
@@ -152,14 +130,6 @@ const ficheApres = <Section extends SectionDeLaFiche>(
   modification: Modification<Section>,
 ): Fiche => ficheParSection[modification.section](fiche, modification)
 
-/**
- * Ce que la coop sait de l'établissement au répertoire SIRENE.
- *
- * `synchronisation` date la confrontation du pivot à SIRENE : elle atteste CE
- * numéro-là. Un pivot qui change emporte donc sa preuve, sans quoi le nouveau
- * SIRET hériterait de la vérification du précédent — et le job qui les contrôle,
- * qui saute les lieux vérifiés depuis peu, ne le regarderait jamais.
- */
 const identiteSireneApres = (
   lieu: Lieu,
   pivot: Pivot | null,
@@ -170,7 +140,6 @@ const identiteSireneApres = (
     pivot === lieu.fiche.pivot ? lieu.identiteSirene.synchronisation : null,
 })
 
-/** L'enveloppe coop ne bouge que pour deux des sept sections. */
 const enveloppeApres = (lieu: Lieu, modification: ModificationLieu) => ({
   visibilite:
     modification.section === 'VisibiliteCartographie'

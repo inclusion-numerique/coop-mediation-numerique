@@ -5,29 +5,13 @@ import { estPublie } from '../../../domain/visibilite-cartographie'
 import * as vocabulaire from '../vocabulaire'
 import type { LigneDuRegistre } from './ligne-du-registre'
 
-/** Le séparateur multi-valeurs du schéma national. */
 const SEPARATEUR_LISTE = '|'
 
-/**
- * Les nomenclatures du registre acceptent les mêmes valeurs que celles de la
- * coop — `ligne-du-registre.ts` en fait une garde de compilation. On traduit
- * donc une seule fois, depuis le standard, et le résultat sert aux deux
- * écritures : c'est ce qui garantit qu'elles disent la même chose.
- *
- * Le tableau est recopié parce que `traduites` rend un `readonly`, que Prisma
- * n'accepte pas en écriture.
- */
 const nomenclature = <Standard, Colonne>(
   valeurs: readonly Standard[],
   traduction: (valeur: Standard) => Colonne | null,
 ): Colonne[] => [...vocabulaire.traduites(valeurs, traduction)]
 
-/**
- * Le registre range en un seul `jsonb` ce que la coop tient en trois colonnes.
- * La forme reproduit celle qu'y écrivent les autres sources : les courriels y
- * sont un objet à une clé `email`, valeurs jointes par le séparateur du
- * standard, et les clés absentes ne sont pas posées à `null` — on les omet.
- */
 const contactDuRegistre = (contact: Contact) => {
   const courriels = contact.courriels ?? []
   const sitesWeb = contact.site_web ?? []
@@ -43,30 +27,8 @@ const contactDuRegistre = (contact: Contact) => {
   }
 }
 
-/**
- * Le SIRET tel que la coop l'a déclaré. Il n'est qu'une entrée déclarative pour
- * l'enrichissement : le SIRET canonique reste celui de la
- * `structure_administrative` associée.
- */
 const siretDeclare = (lieu: Lieu): string | null => lieu.fiche.pivot
 
-/**
- * Les colonnes que la coop écrit au registre, prises à la ligne réelle : c'est
- * par ce `Pick` que la garde d'alignement des nomenclatures entre en vigueur —
- * si l'une des deux bouge, le type de la ligne devient le marqueur d'écart et
- * plus rien ici ne compile.
- *
- * `contact` en est exclu : la colonne est un `jsonb`, que Prisma type en lecture
- * (`JsonValue`) et en écriture (`InputJsonValue`) différemment.
- *
- * En sont exclus aussi `dispositif_programmes_nationaux` et
- * `autres_formations_labels`, qu'AUCUN formulaire de la coop ne porte — ni la
- * création, qui les pose à `[]`, ni les sept sections de la modification. Les
- * écrire reviendrait à vider ce que d'autres producteurs y ont mis : 4 841
- * inscriptions renseignent les labels, 2 854 les dispositifs. Ce que la coop ne
- * sait pas dire, elle ne l'écrase pas — et l'omission est ici tenue par le
- * compilateur, non par la vigilance de l'appelant.
- */
 export type ColonnesDuRegistre = Pick<
   LigneDuRegistre,
   | 'nom'
@@ -91,16 +53,6 @@ export type ColonnesDuRegistre = Pick<
   | 'modalitesAccompagnement'
 > & { readonly contact: ReturnType<typeof contactDuRegistre> }
 
-/**
- * Le lieu, dit dans les colonnes du registre.
- *
- * N'y figure pas ce que la coop garde en propre et que le registre n'accueille
- * pas — latitude, longitude, `ban_id`, RNA, champs référent, compteurs — ni
- * l'adresse, qui vit dans `main.adresse` et se résout à part
- * (`adresse-du-registre.ts`), ni les compteurs `mediateurs_en_activite` et
- * `emplois`, entretenus par le flux quotidien de l'Entrepôt. Ni les deux
- * nomenclatures que la coop ne sait pas saisir, cf. `ColonnesDuRegistre`.
- */
 export const lieuVersRegistre = (lieu: Lieu): ColonnesDuRegistre => {
   const { fiche, visibilite, idsCartographieNationale, identiteSirene } = lieu
 

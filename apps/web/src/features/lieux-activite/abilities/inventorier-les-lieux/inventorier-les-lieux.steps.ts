@@ -126,10 +126,6 @@ Then("ce lieu ne figure pas à l'inventaire", () => {
   assert.strictEqual(semis.inventaire?.lieux.length, 0)
 })
 
-/**
- * `FicheDePrescription` est le cas qui compte : c'est la seule nomenclature
- * dont le nom stocké ne ressemble pas au membre du standard qui lui correspond.
- */
 Then('ses nomenclatures sont dites dans les termes du schéma national', () => {
   const lieu = semis.inventaire?.lieux.at(0)
 

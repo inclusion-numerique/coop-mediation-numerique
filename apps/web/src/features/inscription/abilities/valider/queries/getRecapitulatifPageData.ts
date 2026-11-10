@@ -1,7 +1,10 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { employeuseActuelleAdaptee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
-import { lieuxActiviteDuMediateur } from '@app/web/features/lieux-activite'
+import {
+  listerLesLieuxPourLInscription,
+  MediateurId,
+} from '@app/web/features/lieux-activite'
 import { prismaClient } from '@app/web/prismaClient'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
@@ -23,7 +26,9 @@ const getInscriptionDataContext = async ({
       user.mediateur &&
       user.profilInscription !== 'Coordinateur' &&
       user.profilInscription !== 'CoordinateurConseillerNumerique'
-        ? lieuxActiviteDuMediateur({ mediateurId: user.mediateur.id })
+        ? listerLesLieuxPourLInscription({
+            mediateurId: MediateurId(user.mediateur.id),
+          })
         : [],
       // Get mediateurs coordonnes count if coordinateur
       user.coordinateur

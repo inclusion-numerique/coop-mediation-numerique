@@ -3,12 +3,12 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
-import CreerLieuActiviteForm from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteForm'
+import CreerLieuActiviteForm from '@app/web/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
-} from '@app/web/features/lieux-activite/formulaire/creerLieuActiviteFormData'
+} from '@app/web/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'
@@ -26,16 +26,17 @@ import { type LieuAuPanier, lieuCree, selectionner } from './panier'
 
 type FormValues = {
   lieux: LieuAuPanier[]
-  recherche: LieuActiviteSearchResult | null
+  recherche: SuggestionAffichee | null
 }
 
-/** Au moins un lieu au panier ; le champ de recherche est transitoire. */
 const panierShape = z
   .custom<FormValues>()
   .refine((value) => value.lieux.length > 0, {
     message: 'Veuillez sélectionner au moins un lieu d’activité',
     path: ['lieux'],
   })
+
+const panierVide: FormValues = { lieux: [], recherche: null }
 
 const erreur = (message: string) => createToast({ priority: 'error', message })
 
@@ -44,14 +45,6 @@ const erreurEnregistrement = () =>
     'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   )
 
-/**
- * Ajout de lieux d'activité : on constitue un panier, on le valide d'un coup.
- *
- * La création d'un lieu se déroule DANS cet écran plutôt qu'en le quittant :
- * naviguer viderait le panier, et l'on ne s'aperçoit qu'un lieu manque qu'après
- * en avoir sélectionné d'autres. Le lieu créé rejoint donc la sélection au
- * retour.
- */
 export const AjouterDesLieuxActivitePage = ({
   retourHref,
 }: {
@@ -63,7 +56,7 @@ export const AjouterDesLieuxActivitePage = ({
 
   const form = useAppForm({
     validators: { onSubmit: panierShape },
-    defaultValues: { lieux: [], recherche: null } as FormValues,
+    defaultValues: panierVide,
     onSubmit: async ({ value }) => {
       try {
         const resultat = await ajouterDesLieuxActiviteAction({

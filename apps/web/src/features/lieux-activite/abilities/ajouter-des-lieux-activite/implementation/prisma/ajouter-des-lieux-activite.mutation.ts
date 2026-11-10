@@ -13,13 +13,6 @@ import {
 } from '../../domain'
 import { rattacherAuLieu } from './rattacher-au-lieu'
 
-/**
- * Traite les éléments l'un APRÈS l'autre, et non de front.
- *
- * `Promise.all` ne convient pas ici : deux lieux demandés peuvent se corréler au
- * même lieu de la coop, et des sondes menées en parallèle ne verraient pas les
- * créations l'une de l'autre — le doublon que l'on cherche précisément à éviter.
- */
 const enSerie = async <Element, Resultat>(
   elements: readonly Element[],
   traiter: (element: Element) => Promise<Resultat>,
@@ -32,14 +25,6 @@ const enSerie = async <Element, Resultat>(
     Promise.resolve([]),
   )
 
-/**
- * Ajoute d'un coup les lieux du panier à l'activité du médiateur.
- *
- * Tout ou rien : le médiateur valide un ensemble, et un demi-panier serait plus
- * déroutant qu'un échec net. D'où l'unique transaction — mais les structures de
- * la cartographie sont résolues AVANT de l'ouvrir, l'Entrepôt ayant son propre
- * client Prisma, sans transaction partagée.
- */
 export const ajouterDesLieuxActivite = async ({
   demandes,
   userId,

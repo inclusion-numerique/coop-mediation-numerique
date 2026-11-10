@@ -13,13 +13,13 @@ import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abiliti
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/ui'
-import { lieuxEnListeDuMediateur } from '@app/web/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { consulterLeContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat'
 import { CarteContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat/ui'
 import { UtilisateurId } from '@app/web/features/mediateurs/domain'
 import {
   consulterUnActeur,
+  lieuxDeLActeur,
   nomDeLActeur,
 } from '@app/web/features/mon-reseau/abilities/consulter-un-acteur'
 import {
@@ -67,9 +67,7 @@ const Page = async ({ params }: Parametres) => {
   const mediation = acteur.profil.mediation
   const [employeuse, lieux, contrat] = await Promise.all([
     consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
-    mediation === null
-      ? null
-      : lieuxEnListeDuMediateur({ mediateurId: mediation.mediateurId }),
+    mediation === null ? null : lieuxDeLActeur(mediation.mediateurId),
     contratVisible(acteur, regard)
       ? consulterLeContrat({
           utilisateurId: UtilisateurId(acteur.acteurId),

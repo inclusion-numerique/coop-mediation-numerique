@@ -11,7 +11,6 @@ export const lots = <T>(
     ? []
     : [valeurs.slice(0, taille), ...lots(valeurs.slice(taille), taille)]
 
-/** Dépouille la réponse de la Base Adresse Nationale, ligne à ligne. */
 export const ligneDuTableau = <T>(
   reponse: string,
   depuis: (
