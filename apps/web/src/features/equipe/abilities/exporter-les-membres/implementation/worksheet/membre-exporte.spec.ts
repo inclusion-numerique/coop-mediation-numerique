@@ -1,6 +1,6 @@
+import { CodePostal } from '@app/web/libraries/code-postal'
+import { CodeInsee } from '@app/web/libraries/insee'
 import {
-  CodeInsee,
-  CodePostal,
   Commune,
   Email,
   MediateurId,

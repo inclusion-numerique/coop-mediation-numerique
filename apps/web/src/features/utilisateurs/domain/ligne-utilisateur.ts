@@ -1,6 +1,6 @@
+import type { CodeInsee } from '@app/web/libraries/insee'
 import type { AdresseCourriel } from './adresse-courriel'
 import type { Dispositif } from './dispositif'
-import type { CodeCommune } from './filtres-utilisateurs'
 import type { Jalon } from './jalon'
 import type { Nom } from './nom'
 import type { NomAffiche } from './nom-affiche'
@@ -26,7 +26,7 @@ export type CoordinateurDeLaLigne = {
 
 export type EmployeuseDeLaLigne = {
   readonly nom: NomEmployeuse | null
-  readonly codeInsee: CodeCommune | null
+  readonly codeInsee: CodeInsee | null
 }
 
 export type LigneUtilisateur = {

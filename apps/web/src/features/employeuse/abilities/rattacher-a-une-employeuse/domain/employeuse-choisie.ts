@@ -5,8 +5,8 @@ import {
   type TypologieStructure,
   typologiesStructure,
 } from '@app/web/external-apis/api-entreprise/typologieStructure'
+import { Siret } from '@app/web/libraries/insee'
 import { z } from 'zod'
-import { Siret } from '../../../domain/siret'
 
 /**
  * Une employeuse telle que la recherche la propose, avant tout choix : identité

@@ -1,4 +1,4 @@
-import { CodeInsee } from '@app/web/libraries/departement'
+import { CodeInsee } from '@app/web/libraries/insee'
 import { VisibiliteDuLieu } from './visibilite-du-lieu'
 import {
   departementDeReference,

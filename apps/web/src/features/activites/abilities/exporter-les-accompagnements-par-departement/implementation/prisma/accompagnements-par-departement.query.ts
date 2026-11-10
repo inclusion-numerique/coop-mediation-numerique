@@ -1,7 +1,8 @@
 import { departements } from '@app/web/data/collectivites-territoriales/departements'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { Prisma } from '@app/web/generated/prisma/client'
-import { CodeDepartement, NomDepartement } from '@app/web/libraries/departement'
+import { NomDepartement } from '@app/web/libraries/departement'
+import { CodeDepartement } from '@app/web/libraries/insee'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   type AccompagnementsDuDepartement,

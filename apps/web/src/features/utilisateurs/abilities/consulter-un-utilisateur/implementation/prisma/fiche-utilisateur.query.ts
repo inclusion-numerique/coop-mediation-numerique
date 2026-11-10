@@ -15,12 +15,12 @@ import {
   nomAffiche,
   RoleUtilisateur,
   rattachements,
-  Siret,
   statutDe,
   telephoneEnregistrable,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import type { Prisma } from '@app/web/generated/prisma/client'
+import { Siret } from '@app/web/libraries/insee'
 import { prismaClient } from '@app/web/prismaClient'
 import type { FicheUtilisateur } from '../../domain'
 

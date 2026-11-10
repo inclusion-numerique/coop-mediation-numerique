@@ -58,7 +58,6 @@ export {
 } from './filtre-statut'
 export {
   AUCUN_FILTRE,
-  CodeCommune,
   EmployeuseId,
   type FiltresUtilisateurs,
   filtresUtilisateurs,
@@ -121,7 +120,6 @@ export {
   RoleUtilisateur,
   rolesUtilisateur,
 } from './role-utilisateur'
-export { Siret } from './siret'
 export {
   type PalierInactivite,
   type PalierInscription,

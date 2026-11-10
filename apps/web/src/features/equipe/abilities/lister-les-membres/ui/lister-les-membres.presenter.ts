@@ -1,4 +1,4 @@
-import type { CodeDepartement } from '@app/web/libraries/departement'
+import type { CodeDepartement } from '@app/web/libraries/insee'
 import { type LigneEquipe, profilDe } from '../../../domain'
 import { libelleDuRole } from '../../../ui/role-membre.presenter'
 import { libelleStatutMembre } from '../../../ui/statut-membre.presenter'

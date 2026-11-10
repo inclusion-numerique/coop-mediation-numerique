@@ -1,3 +1,4 @@
+import { Siret } from '@app/web/libraries/insee'
 import { AdresseEmployeuse } from './adresse-employeuse'
 import type { Affectation } from './affectation'
 import type { Contrat } from './contrat'
@@ -5,7 +6,6 @@ import { DenominationEmployeuse } from './denomination-employeuse'
 import type { Employeuse } from './employeuse'
 import { EmployeuseId } from './employeuse-id'
 import { PeriodeEmploi } from './periode-emploi'
-import { Siret } from './siret'
 import { SourceAffectation } from './source-affectation'
 
 /** Employeuse de test, construite par les constructeurs du domaine (jamais par `as`). */

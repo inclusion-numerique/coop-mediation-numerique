@@ -1,8 +1,8 @@
+import type { CodeInsee } from '@app/web/libraries/insee'
 import {
   type CodeDepartement,
   codeDepartementDuCodeInsee,
-} from './code-departement'
-import type { CodeInsee } from './code-insee'
+} from '@app/web/libraries/insee'
 
 export type TerritoireDeLActeur = {
   readonly employeuse: CodeInsee | null

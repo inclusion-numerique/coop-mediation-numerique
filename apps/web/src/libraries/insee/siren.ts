@@ -1,12 +1,12 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-export const Siret = defineModel(
+export const Siren = defineModel(
   z
     .string()
     .trim()
-    .regex(/^\d{14}$/)
-    .brand('Siret'),
+    .regex(/^\d{9}$/)
+    .brand('Siren'),
 )
 
-export type Siret = Model.TypeOf<typeof Siret>
+export type Siren = Model.TypeOf<typeof Siren>

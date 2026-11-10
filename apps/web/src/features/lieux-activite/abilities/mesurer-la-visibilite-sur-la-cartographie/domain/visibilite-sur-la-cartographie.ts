@@ -1,9 +1,8 @@
 import {
-  type CodeDepartement,
-  type CodeInsee,
   DEPARTEMENT_PAR_DEFAUT,
   departementDeLActeur,
 } from '@app/web/libraries/departement'
+import { type CodeDepartement, type CodeInsee } from '@app/web/libraries/insee'
 import { NombreDeLieux } from './nombre-de-lieux'
 import type { VisibiliteDuLieu } from './visibilite-du-lieu'
 

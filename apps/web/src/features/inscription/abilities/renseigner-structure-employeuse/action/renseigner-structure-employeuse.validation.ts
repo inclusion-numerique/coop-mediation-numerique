@@ -3,11 +3,7 @@ import {
   typologiesStructure,
 } from '@app/web/external-apis/api-entreprise/typologieStructure'
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-// `Siret` vient du barrel CLIENT d'employeuse, pas de son `domain/` : une feature
-// n'atteint une autre feature que par sa frontière. Ce schéma étant chargé par un
-// composant client, c'est bien `index` qu'il faut viser et non `server`, seul à
-// embarquer les implémentations Prisma.
-import { Siret } from '@app/web/features/employeuse'
+import { Siret } from '@app/web/libraries/insee'
 import { z } from 'zod'
 import type { StructureEmployeuseInput } from '../domain'
 

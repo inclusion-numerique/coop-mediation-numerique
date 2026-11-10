@@ -5,8 +5,6 @@ export {
   affectationActuelle,
   estConseillerNumerique,
 } from './affectation'
-export { CodeInsee } from './code-insee'
-export { CodePostal } from './code-postal'
 export { ContactReferent, referentAffichage } from './contact-referent'
 export {
   type Contrat,
@@ -34,7 +32,6 @@ export {
 } from './identite-employeuse'
 export { couvre, debutEmploi, finEmploi, PeriodeEmploi } from './periode-emploi'
 export { Rna } from './rna'
-export { Siret } from './siret'
 export {
   prioriteSource,
   type SourceAffectation,

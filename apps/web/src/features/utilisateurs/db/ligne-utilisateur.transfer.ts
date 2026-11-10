@@ -4,8 +4,8 @@ import {
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
 import type { Prisma } from '@app/web/generated/prisma/client'
+import { CodeInsee } from '@app/web/libraries/insee'
 import {
-  CodeCommune,
   type CoordinateurDeLaLigne,
   cycleDeVie,
   dispositifDe,
@@ -85,9 +85,7 @@ const employeuseToDomain = (
     ? null
     : {
         nom: NomEmployeuse.safe(actuelle.employeuse.denomination ?? ''),
-        codeInsee: CodeCommune.safe(
-          actuelle.employeuse.adresse?.codeInsee ?? '',
-        ),
+        codeInsee: CodeInsee.safe(actuelle.employeuse.adresse?.codeInsee ?? ''),
       }
 }
 

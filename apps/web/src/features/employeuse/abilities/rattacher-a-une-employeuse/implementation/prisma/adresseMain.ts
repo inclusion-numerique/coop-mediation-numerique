@@ -3,10 +3,10 @@ import {
   siIndisponible,
 } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import { CodePostal } from '@app/web/libraries/code-postal'
+import { CodeInsee } from '@app/web/libraries/insee'
 import { prismaClient } from '@app/web/prismaClient'
 import * as Sentry from '@sentry/nextjs'
-import { CodeInsee } from '../../../../domain/code-insee'
-import { CodePostal } from '../../../../domain/code-postal'
 
 // Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
 // (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces

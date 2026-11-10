@@ -7,11 +7,10 @@ import {
 } from '@app/web/features/employeuse/server'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import {
-  type CodeDepartement,
-  CodeInsee,
   DEPARTEMENT_PAR_DEFAUT,
   departementDeLActeur,
 } from '@app/web/libraries/departement'
+import { type CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
 import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import {
   type Acteur,

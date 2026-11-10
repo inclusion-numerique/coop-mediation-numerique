@@ -3,7 +3,7 @@ import {
   lieuxDuDepartement,
   TriDesLieux,
 } from '@app/web/features/lieux-activite'
-import type { CodeDepartement } from '@app/web/libraries/departement'
+import type { CodeDepartement } from '@app/web/libraries/insee'
 import type { CriteresDesLieux } from '../../domain'
 
 export const lieuxEtCommunesDuDepartement = async (

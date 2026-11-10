@@ -11,11 +11,11 @@ import type {
   Prenom,
   Rattachements,
   RoleUtilisateur,
-  Siret,
   StatutCompte,
   Telephone,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import type { Siret } from '@app/web/libraries/insee'
 
 export type CoordinationDuMediateur = {
   readonly coordinateurUtilisateurId: UtilisateurId

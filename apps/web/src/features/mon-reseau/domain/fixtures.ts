@@ -1,4 +1,4 @@
-import { CodeDepartement } from '@app/web/libraries/departement'
+import { CodeDepartement } from '@app/web/libraries/insee'
 import { NomAffiche } from '@app/web/libraries/nom-affiche'
 import type { Acteur, Mediation } from './acteur'
 import { ActeurId } from './acteur-id'
