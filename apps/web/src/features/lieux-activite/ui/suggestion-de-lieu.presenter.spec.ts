@@ -6,6 +6,7 @@ import {
 import { IdentifiantCartographie } from '../domain/ids-cartographie-nationale'
 import { LieuId } from '../domain/lieu-id'
 import { NombreDeLieux } from '../domain/nombres'
+import { SourceExterne } from '../domain/source-externe'
 import {
   AdresseLibre,
   type SuggestionDeLieu,
@@ -83,8 +84,7 @@ describe('une suggestion de lieu à l’écran', () => {
       suggestionsAffichees({
         suggestions: [suggestion],
         nombre: NombreDeLieux(12),
-        annuaireIndisponible: false,
-        cartographieIndisponible: true,
+        sourcesEnPanne: [SourceExterne('Cartographie')],
       }),
     ).toMatchObject({
       matchesCount: 12,

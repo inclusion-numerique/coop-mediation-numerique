@@ -96,7 +96,9 @@ When(
         suggestions: [],
         nombre: NombreDeLieux(0),
       }),
-    })(RechercheDeLieu('Médiathèque des Minimes'), { limite: 100 })
+    })(RechercheDeLieu('Médiathèque des Minimes'), {
+      limite: NombreDeLieux(100),
+    })
 
     scenario.suggestions = resultat.suggestions
   },

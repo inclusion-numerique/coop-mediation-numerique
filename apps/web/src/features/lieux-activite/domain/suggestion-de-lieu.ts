@@ -9,6 +9,7 @@ import { z } from 'zod'
 import type { IdentifiantCartographie } from './ids-cartographie-nationale'
 import type { LieuId } from './lieu-id'
 import type { NombreDeLieux } from './nombres'
+import type { SourceExterne } from './source-externe'
 
 export const AdresseLibre = defineModel(
   z
@@ -44,8 +45,7 @@ export type SuggestionDeLieu = {
 export type SuggestionsDeLieux = {
   readonly suggestions: readonly SuggestionDeLieu[]
   readonly nombre: NombreDeLieux
-  readonly annuaireIndisponible: boolean
-  readonly cartographieIndisponible: boolean
+  readonly sourcesEnPanne: readonly SourceExterne[]
 }
 
 export const connueDeLaCoop = ({ provenance }: SuggestionDeLieu): boolean =>

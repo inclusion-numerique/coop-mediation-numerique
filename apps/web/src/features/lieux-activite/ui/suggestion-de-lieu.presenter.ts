@@ -1,3 +1,4 @@
+import { SourceExterne } from '../domain/source-externe'
 import type {
   ProvenanceDeSuggestion,
   SuggestionDeLieu,
@@ -70,12 +71,11 @@ export const suggestionAffichee = ({
 export const suggestionsAffichees = ({
   suggestions,
   nombre,
-  annuaireIndisponible,
-  cartographieIndisponible,
+  sourcesEnPanne,
 }: SuggestionsDeLieux): SuggestionsAffichees => ({
   structures: suggestions.map(suggestionAffichee),
   matchesCount: nombre,
   moreResults: Math.max(0, nombre - suggestions.length),
-  apiUnavailable: annuaireIndisponible,
-  cartoUnavailable: cartographieIndisponible,
+  apiUnavailable: sourcesEnPanne.includes(SourceExterne('Annuaire')),
+  cartoUnavailable: sourcesEnPanne.includes(SourceExterne('Cartographie')),
 })

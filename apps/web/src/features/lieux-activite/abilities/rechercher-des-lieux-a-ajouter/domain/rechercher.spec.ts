@@ -2,6 +2,7 @@ import { Nom, Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
 import { LieuId } from '../../../domain/lieu-id'
 import { NombreDeLieux } from '../../../domain/nombres'
+import { SourceExterne } from '../../../domain/source-externe'
 import {
   AdresseLibre,
   type ProvenanceDeSuggestion,
@@ -9,10 +10,7 @@ import {
 } from '../../../domain/suggestion-de-lieu'
 import type { RechercherDesLieuxAAjouterPorts } from './ports'
 import { RechercheDeLieu } from './recherche-de-lieu'
-import {
-  estUneRechercheParSiret,
-  rechercherDesLieuxAAjouter,
-} from './rechercher'
+import { rechercherDesLieuxAAjouter } from './rechercher'
 
 const LIEU_COOP = LieuId('550e8400-e29b-41d4-a716-446655440000')
 
@@ -69,14 +67,22 @@ const ports = (
 const noms = ({ suggestions }: { suggestions: readonly SuggestionDeLieu[] }) =>
   suggestions.map(({ nom }) => nom)
 
-describe('reconnaître une recherche par SIRET', () => {
+describe('lire une recherche de lieu', () => {
   it.each([
-    ['123456789', true],
-    ['123 456 789 00012', true],
-    ['12345678', false],
-    ['Médiathèque 123456789', false],
-  ])('« %s » : %s', (recherche, attendu) => {
-    expect(estUneRechercheParSiret(RechercheDeLieu(recherche))).toBe(attendu)
+    ['Mé', { _tag: 'TropCourte' }],
+    ['  Mé  ', { _tag: 'TropCourte' }],
+    ['123456789', { _tag: 'ParNumeroDEntreprise', terme: '123456789' }],
+    [
+      '123 456 789 00012',
+      { _tag: 'ParNumeroDEntreprise', terme: '12345678900012' },
+    ],
+    ['12345678', { _tag: 'ParNom', terme: '12345678' }],
+    [
+      'Médiathèque 123456789',
+      { _tag: 'ParNom', terme: 'Médiathèque 123456789' },
+    ],
+  ])('« %s »', (texte, attendu) => {
+    expect(RechercheDeLieu(texte)).toEqual(attendu)
   })
 })
 
@@ -116,8 +122,7 @@ describe('rechercher des lieux à ajouter', () => {
     expect(resultat).toEqual({
       suggestions: [deLAnnuaire('api')],
       nombre: 3,
-      annuaireIndisponible: false,
-      cartographieIndisponible: false,
+      sourcesEnPanne: [],
     })
   })
 
@@ -157,7 +162,7 @@ describe('rechercher des lieux à ajouter', () => {
     )(RechercheDeLieu('Médiathèque'))
 
     expect(noms(resultat)).toEqual(['coop'])
-    expect(resultat.cartographieIndisponible).toBe(true)
+    expect(resultat.sourcesEnPanne).toEqual([SourceExterne('Cartographie')])
   })
 
   it('signale un annuaire indisponible quand il était le dernier recours', async () => {
@@ -168,9 +173,48 @@ describe('rechercher des lieux à ajouter', () => {
     expect(resultat).toEqual({
       suggestions: [],
       nombre: 0,
-      annuaireIndisponible: true,
-      cartographieIndisponible: false,
+      sourcesEnPanne: [SourceExterne('Annuaire')],
     })
+  })
+
+  it('cherche un numéro d’entreprise sans ses espaces', async () => {
+    const coop = source([])
+    const annuaire = source([])
+
+    await rechercherDesLieuxAAjouter(
+      ports({
+        chercherDansLaCoop: coop,
+        chercherDansLAnnuaireDesEntreprises: annuaire,
+      }),
+    )(RechercheDeLieu('123 456 789 00012'))
+
+    expect(coop).toHaveBeenCalledWith('12345678900012', 50)
+    expect(annuaire).toHaveBeenCalledWith('12345678900012')
+  })
+
+  it('signale les deux sources en panne quand l’annuaire était le dernier recours', async () => {
+    const resultat = await rechercherDesLieuxAAjouter(
+      ports({
+        chercherDansLaCartographie: enPanne(),
+        chercherDansLAnnuaireDesEntreprises: enPanne(),
+      }),
+    )(RechercheDeLieu('Médiathèque'))
+
+    expect(resultat.sourcesEnPanne).toEqual([
+      SourceExterne('Cartographie'),
+      SourceExterne('Annuaire'),
+    ])
+  })
+
+  it('ne retient pas plus de suggestions que la limite', async () => {
+    const resultat = await rechercherDesLieuxAAjouter(
+      ports({
+        chercherDansLaCoop: source([deLaCoop('coop-1'), deLaCoop('coop-2')]),
+        chercherDansLaCartographie: source([deLaCarto('carto')]),
+      }),
+    )(RechercheDeLieu('Médiathèque'), { limite: NombreDeLieux(2) })
+
+    expect(noms(resultat)).toEqual(['coop-1', 'coop-2'])
   })
 
   it('partage la limite entre la coop et la cartographie pour une recherche par nom', async () => {
@@ -183,7 +227,7 @@ describe('rechercher des lieux à ajouter', () => {
         chercherDansLaCartographie: cartographie,
       }),
     )(RechercheDeLieu('Médiathèque'), {
-      limite: 9,
+      limite: NombreDeLieux(9),
       sauf: [IdentifiantCartographie('deja-la')],
     })
 
