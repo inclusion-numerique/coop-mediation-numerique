@@ -6,12 +6,17 @@ import {
   tagsInitiauxDuCra,
   visibilitesDeTagDuCra,
 } from '@app/web/composition/activites/tags-du-cra'
+import { lireUneActiviteDeCoordination } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
+import { formulaireDuPartenariat } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/formulaire-de-la-coordination.presenter'
 import CraPartenariatPage from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/CraPartenariatPage'
+import {
+  ActiviteDeCoordinationId,
+  CoordinateurId,
+} from '@app/web/features/activites/domain'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
-import { getCraPartenariatDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/partenariat/db/getCraPartenariatDataDefaultValuesFromExisting'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
 
@@ -28,12 +33,18 @@ const UpdateCraPartenariatPage = async ({
   const user = await authenticateCoordinateur()
   const coordinateurId = user.coordinateur.id
 
-  const defaultValues = await getCraPartenariatDataDefaultValuesFromExisting({
-    id,
-    coordinateurId,
-  })
+  const activiteId = ActiviteDeCoordinationId.safe(id)
+  const activite =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeCoordination({
+          id: activiteId,
+          coordinateurId: CoordinateurId(coordinateurId),
+        })
 
-  if (defaultValues == null) return notFound()
+  if (activite?._tag !== 'Partenariat') return notFound()
+
+  const defaultValues = formulaireDuPartenariat(activite)
 
   const craPageData = await getCraCoordinationPageData(
     coordinateurId,
