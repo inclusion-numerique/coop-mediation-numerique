@@ -1,6 +1,5 @@
 import { CraCollectifServerValidation } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifServerValidation'
 import { createOrUpdateActivite } from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActivite'
-import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
 import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
 import { StatutPresenceModifiable } from '@app/web/features/rdvsp/domain/statut-presence'
@@ -49,28 +48,6 @@ const marquerRdvCommeHonore = async ({
 }
 
 export const craRouter = router({
-  individuel: protectedProcedure
-    .input(CraIndividuelServerValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsMediateur(user)
-
-      const createResult = await createOrUpdateActivite({
-        input: {
-          type: 'Individuel',
-          data: input,
-        },
-        sessionUserId: user.id,
-        mediateurId: user.mediateur.id,
-        mediateurUserId: user.id,
-      })
-
-      await marquerRdvCommeHonore({
-        utilisateurId: user.id,
-        rdvId: input.rdvServicePublicId,
-      })
-
-      return createResult
-    }),
   collectif: protectedProcedure
     .input(CraCollectifServerValidation)
     .mutation(async ({ input, ctx: { user } }) => {

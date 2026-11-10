@@ -4,7 +4,6 @@ import {
   type EchecDEnregistrement,
   enregistrerUneActiviteDeCoordination,
   type SaisieDeCoordination,
-  type TagsUtilisables,
 } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
 import {
   ActiviteDeCoordinationId,
@@ -15,6 +14,7 @@ import {
   NomDeTag,
   Organisateur,
   TagId,
+  type TagsUtilisables,
   ThematiqueDAnimation,
   TypeDAnimation,
   TypeDEvenement,

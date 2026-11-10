@@ -31,6 +31,7 @@ features/<feature>/
 │   ├── errors.ts                # erreurs métier typées
 │   └── index.ts                 # barrel
 ├── abilities/<ability>/         # 1 cas d'usage = 1 dossier (voir §4)
+├── action/ · ui/ · implementation/ # code commun à plusieurs abilities, remonté (même rôle que dans l'ability)
 ├── db/                          # transfer layer Prisma ↔ domaine
 │   ├── <entity>.transfer.ts
 │   └── <entity>.transfer.spec.ts # round-trip
@@ -119,7 +120,7 @@ abilities/<ability>/
 | ID   | Règle                                                                                                                                                                  | Sévérité | Détection                                                     |
 |------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------|
 | AB-1 | Ability **avec server action** → contrats groupés dans `action/` (`validation` + `errors` [+ `key`]). Ability **query/pure** → **pas** de dossier `action/`.           | BLOCKER  | `validation.ts` à la racine de l'ability au lieu de `action/` |
-| AB-2 | Modèle d'input **partagé** entre abilities → vit dans `features/<feature>/domain/` (pas dans une ability). Une ability n'importe pas le `domain/` d'une autre ability. | BLOCKER  | `rg "abilities/<other>/" abilities/<self>`                    |
+| AB-2 | Modèle d'input **partagé** entre abilities → vit dans `features/<feature>/domain/` (pas dans une ability). Plus généralement, tout dossier autorisé dans une ability (`action/`, `ui/`, `implementation/`…) peut **remonter à la racine de la feature** sous le même nom quand son code est commun à plusieurs abilities et que la mutualisation est pertinente. Une ability n'importe pas le `domain/` d'une autre ability ; la racine n'importe jamais une ability. | BLOCKER  | `rg "abilities/<other>/" abilities/<self>`                    |
 | AB-3 | La query/mutation Prisma est **owner-scopée** (`where: { …, mediateurId, suppression: null }`).                                                                        | BLOCKER  | mutation/query sans filtre propriétaire                       |
 | AB-4 | Le branding (smart constructors) vit dans l'ability **propriétaire** ; le hub passe des ids, pas des entités brandées d'une autre ability.                             | WARN     | hub qui brande pour le compte d'une autre ability             |
 | AB-5 | Erreurs retournées en `Result<T, E>` discriminé (pas de `throw` métier).                                                                                               | WARN     | `throw new` dans une mutation/query                           |

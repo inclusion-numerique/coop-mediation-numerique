@@ -116,3 +116,23 @@ export type TagInutilisable = { readonly _tag: 'TagInutilisable' }
 export const TagInutilisable = (): TagInutilisable => ({
   _tag: 'TagInutilisable',
 })
+
+export type LieuInutilisable = { readonly _tag: 'LieuInutilisable' }
+
+export const LieuInutilisable = (): LieuInutilisable => ({
+  _tag: 'LieuInutilisable',
+})
+
+export type BeneficiaireIntrouvable = {
+  readonly _tag: 'BeneficiaireIntrouvable'
+}
+
+export const BeneficiaireIntrouvable = (): BeneficiaireIntrouvable => ({
+  _tag: 'BeneficiaireIntrouvable',
+})
+
+export type RendezVousIndisponible = { readonly _tag: 'RendezVousIndisponible' }
+
+export const RendezVousIndisponible = (): RendezVousIndisponible => ({
+  _tag: 'RendezVousIndisponible',
+})

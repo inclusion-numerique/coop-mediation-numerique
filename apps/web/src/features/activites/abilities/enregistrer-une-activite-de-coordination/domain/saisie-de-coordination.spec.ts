@@ -10,11 +10,11 @@ import {
   TagId,
   TagInutilisable,
   TypeDEvenement,
+  tagsDeLaSaisie,
 } from '../../../domain'
 import {
   activiteDeLaSaisie,
   type SaisieDeCoordination,
-  tagsDeLaSaisie,
 } from './saisie-de-coordination'
 
 const reseau = {

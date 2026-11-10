@@ -11,7 +11,9 @@ import {
   type CoordinateurId,
   type DateTropLointaine,
   type TagInutilisable,
+  type TagsUtilisables,
   TypeDActiviteIncompatible,
+  tagsDeLaSaisie,
   type UtilisateurId,
 } from '../../../../domain'
 import {
@@ -19,8 +21,6 @@ import {
   type ActiviteEnregistree,
   activiteDeLaSaisie,
   type SaisieDeCoordination,
-  type TagsUtilisables,
-  tagsDeLaSaisie,
 } from '../../domain'
 
 export type EchecDEnregistrement =

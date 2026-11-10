@@ -1,4 +1,4 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { type Result, success } from '@app/web/libraries/result'
 import {
   type ActiviteDeCoordination,
   type ActiviteDeCoordinationId,
@@ -11,7 +11,6 @@ import {
   type Partenariat,
   type TagDeLActivite,
   type TagId,
-  TagInutilisable,
 } from '../../../domain'
 
 type SaisieDe<Activite> = Omit<
@@ -30,22 +29,6 @@ export type SaisieDeCoordination =
 export type ActiviteEnregistree = {
   readonly id: ActiviteDeCoordinationId
   readonly type: ActiviteDeCoordination['_tag']
-}
-
-export type TagsUtilisables = (
-  tagIds: readonly TagId[],
-) => Promise<readonly TagDeLActivite[]>
-
-export const tagsDeLaSaisie = (
-  choisis: readonly TagId[],
-  utilisables: readonly TagDeLActivite[],
-): Result<readonly TagDeLActivite[], TagInutilisable> => {
-  const tags = choisis.flatMap((tagId) =>
-    utilisables.filter(({ id }) => id === tagId),
-  )
-  return tags.length === new Set(choisis).size
-    ? success(tags)
-    : failure(TagInutilisable())
 }
 
 export const activiteDeLaSaisie = ({

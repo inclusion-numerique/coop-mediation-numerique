@@ -81,12 +81,22 @@ export { Organisateur } from './organisateur'
 export { Precision } from './precision'
 export { PrecisionDeDemarche } from './precision-de-demarche'
 export { RdvId } from './rdv-id'
+export {
+  type EmployeuseALaDate,
+  type EmployeuseDeLaDate,
+  type LieuSaisi,
+  type LieuUtilisable,
+  lieuDeLaSaisie,
+  type MarquerLeRendezVousHonore,
+  origineDeLaSaisie,
+} from './saisie-de-mediation'
 export { StatutSocial, statutsSociaux } from './statut-social'
 export {
   StructureDeRedirection,
   structuresDeRedirection,
 } from './structure-de-redirection'
 export { TagId } from './tag-id'
+export { type TagsUtilisables, tagsDeLaSaisie } from './tags-utilisables'
 export {
   ThematiqueAdministrative,
   thematiquesAdministratives,

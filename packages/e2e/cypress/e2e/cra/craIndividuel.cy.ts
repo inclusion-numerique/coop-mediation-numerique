@@ -37,10 +37,7 @@ describe('ETQ Mediateur, je peux créer un CRA individuel', () => {
       .click({ force: true })
 
     cy.findByLabelText(/Autonome avec guidage/i).click({ force: true })
-    cy.intercept('/api/trpc/cra.individuel*').as('mutation')
-
     cy.get('button[type="submit"]').contains('Enregistrer l’activité').click()
-    cy.wait('@mutation')
 
     cy.appUrlShouldBe('/coop/mes-activites')
   })

@@ -2,7 +2,8 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
+import { saisieDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/saisie-du-formulaire.presenter'
 import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
@@ -13,14 +14,14 @@ import {
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { trpc } from '@app/web/trpc'
+import { inject } from '@app/web/libs/injection/client'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
-import { clearAdministrativeData } from '../../components/clearAdministrativeData'
 import { MaterielField } from '../../components/fields/MaterielField'
 import { RendezVousFields } from '../../components/fields/RendezVousFields'
 import { TagsFields } from '../../components/fields/TagsFields'
@@ -58,8 +59,6 @@ const CraIndividuelForm = ({
   dureeOptions: SelectOption[]
 }) => {
   const router = useRouter()
-  const mutation = trpc.cra.individuel.useMutation()
-  const isPending = mutation.isPending
 
   const form = useAppForm({
     validators: {
@@ -75,31 +74,20 @@ const CraIndividuelForm = ({
         )
       },
     },
-    onSubmit: async (data) => {
-      if (isPending) return
-
-      try {
-        await mutation.mutateAsync(
-          clearAdministrativeData(data.value as CraIndividuelData),
-        )
-        createToast({
-          priority: 'success',
-          message: 'L’accompagnement individuel a bien été enregistré.',
-        })
-        router.push(retour ?? '/coop/mes-activites')
-        router.refresh()
-      } catch (mutationError) {
-        // form.setErrorMap([]) // todo: set mutation errors to form
-        // if (applyZodValidationMutationErrorsToForm(mutationError, setError)) {
-        //   return
-        // }
-        createToast({
-          priority: 'error',
-          message:
-            'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-        })
-        throw mutationError
+    onSubmit: async ({ value }) => {
+      const resultat = await inject(
+        ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY,
+      )(saisieDeLAccompagnementIndividuel(CraIndividuelValidation.parse(value)))
+      if (!resultat.success) {
+        createToast({ priority: 'error', message: resultat.error })
+        return
       }
+      createToast({
+        priority: 'success',
+        message: 'L’accompagnement individuel a bien été enregistré.',
+      })
+      router.push(retour ?? '/coop/mes-activites')
+      router.refresh()
     },
   })
 
@@ -131,6 +119,8 @@ const CraIndividuelForm = ({
       beneficiaire.communeResidence as Commune,
     )
   }
+
+  const isPending = useStore(form.store, (state) => state.isSubmitting)
 
   return (
     <form.AppForm>
@@ -230,4 +220,4 @@ const CraIndividuelForm = ({
   )
 }
 
-export default withTrpc(CraIndividuelForm)
+export default CraIndividuelForm
