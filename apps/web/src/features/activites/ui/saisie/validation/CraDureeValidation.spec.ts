@@ -19,8 +19,6 @@ describe('CraDureeValidation Schema', () => {
     expect(() => CraDureeValidation.parse(data)).not.toThrow()
   })
 
-  // test case ok for only one of the two personnalisee fields
-
   it('should validate valid personnalisee duration with heures field only', () => {
     const data = {
       duree: 'personnaliser',

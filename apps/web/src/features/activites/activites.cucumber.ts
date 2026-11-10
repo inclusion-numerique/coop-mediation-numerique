@@ -4,12 +4,6 @@ import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber de la feature activités.
- *
- * L'effacement des notes porte sur tous les comptes rendus d'une personne : il
- * lui faut un compte jetable, isolé des scénarios qui partagent les fixtures.
- */
 type ComptesRendusSemes = {
   readonly userId: string
   readonly mediateurId: string

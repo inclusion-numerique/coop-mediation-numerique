@@ -95,7 +95,7 @@ describe('minutesToCraDuree', () => {
     })
 
     it('should handle exact hour conversions', () => {
-      const minutes = 180 // 3 hours
+      const minutes = 180
 
       const expected = {
         duree: '180',

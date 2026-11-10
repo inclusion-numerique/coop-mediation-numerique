@@ -6,6 +6,7 @@ import {
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
+  UtilisateurId,
 } from '@app/web/features/activites/domain'
 import type { Result } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
@@ -43,7 +44,7 @@ const supprimerPar = async (coordinateurId: string, userId: string) => {
   resultat = await supprimerUneActiviteDeCoordination({
     activiteId: ActiviteDeCoordinationId(semisCourant().activiteId),
     coordinateurId: CoordinateurId(coordinateurId),
-    auteurId: userId,
+    auteurId: UtilisateurId(userId),
   })
 }
 

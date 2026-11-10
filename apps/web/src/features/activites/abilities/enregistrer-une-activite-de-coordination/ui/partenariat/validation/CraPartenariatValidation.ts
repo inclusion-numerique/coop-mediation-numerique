@@ -39,8 +39,8 @@ export type TypeStructurePartenairesValue =
 
 export const CraPartenariatValidation = z
   .object({
-    id: z.guid().nullish(), // defined if update, nullish if create
-    coordinateurId: z.guid(), // owner of the CRA
+    id: z.guid().nullish(),
+    coordinateurId: z.guid(),
     date: CraDateValidation,
     nom: z.string().nullish(),
     naturePartenariat: z

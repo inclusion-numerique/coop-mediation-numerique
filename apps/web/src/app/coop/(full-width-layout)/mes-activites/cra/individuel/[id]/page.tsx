@@ -12,7 +12,7 @@ import { lireUneActiviteDeMediation } from '@app/web/features/activites/abilitie
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import CraIndividuelPage from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/CraIndividuelPage'
 import { formulaireDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/formulaire-de-l-accompagnement-individuel.presenter'
-import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
@@ -60,7 +60,7 @@ const UpdateCraIndividuelPage = async ({
     aModifier.affichage,
   )
 
-  const craPageData = await getCraPageData<CraCollectifData>()(
+  const craPageData = await getCraPageData<CraIndividuelData>()(
     mediateurId,
     defaultValues,
     tagsInitiauxDuCra(user),

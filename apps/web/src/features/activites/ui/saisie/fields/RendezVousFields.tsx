@@ -30,8 +30,6 @@ const shouldResetLieuCommuneData = (value?: string) =>
 const shouldResetStructure = (value?: string) =>
   value != null && ['Autre', 'Domicile', 'ADistance'].includes(value)
 
-// Les options de filtre et les suggestions du combo-box décrivent le même lieu
-// sous deux formes ; l'adaptation reste ici, chez leur seul point de rencontre.
 const toLieuActiviteOption = ({
   value,
   extra,

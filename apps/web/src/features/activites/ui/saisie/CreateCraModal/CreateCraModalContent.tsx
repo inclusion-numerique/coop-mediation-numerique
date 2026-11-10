@@ -62,15 +62,15 @@ const CreateCraModalContent = ({
 }) => {
   const { push, prefetch } = useRouter()
   const navigateTo = (path: string) => {
-    if (craDefaultValues) {
-      push(
-        `${path}?v=${encodeSerializableState(craDefaultValues)}${
-          retour ? `&retour=${retour}` : ''
-        }`,
-      )
-    } else {
-      push(retour ? `${path}?retour=${retour}` : path)
-    }
+    push(
+      craDefaultValues
+        ? `${path}?v=${encodeSerializableState(craDefaultValues)}${
+            retour ? `&retour=${retour}` : ''
+          }`
+        : retour
+          ? `${path}?retour=${retour}`
+          : path,
+    )
     onClose()
   }
 

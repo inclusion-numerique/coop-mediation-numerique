@@ -32,10 +32,10 @@ export type ThematiqueAnimationValue =
 
 export const CraAnimationValidation = z
   .object({
-    id: z.guid().nullish(), // defined if update, nullish if create
+    id: z.guid().nullish(),
     date: CraDateValidation,
     duree: CraDureeValidation,
-    coordinateurId: z.guid(), // owner of the CRA
+    coordinateurId: z.guid(),
     mediateurs: z.number().nullish(),
     structures: z.number().nullish(),
     autresActeurs: z.number().nullish(),

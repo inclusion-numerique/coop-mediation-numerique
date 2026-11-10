@@ -39,8 +39,8 @@ export type EchelonTerritorialValue = (typeof echelonTerritorialValues)[number]
 
 export const CraEvenementValidation = z
   .object({
-    id: z.guid().nullish(), // defined if update, nullish if create
-    coordinateurId: z.guid(), // owner of the CRA
+    id: z.guid().nullish(),
+    coordinateurId: z.guid(),
     date: CraDateValidation,
     participants: z.coerce
       .number<number>()

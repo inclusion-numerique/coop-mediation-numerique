@@ -1,6 +1,8 @@
 'use server'
 
-import { getAdaptiveDureeOptions } from '@app/web/features/activites/implementation/options-de-duree'
+import { MediateurId } from '@app/web/features/activites/domain'
+import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/durees-frequentes'
+import { optionsDeDuree } from '@app/web/features/activites/ui/saisie/options-de-duree'
 import { cheminDeSaisieDepuisUnRendezVous } from '@app/web/features/activites/ui/saisie/url-de-saisie-depuis-un-rendez-vous'
 import { withAuth, withMediateur } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
@@ -22,7 +24,11 @@ const preparerUrlCreationCra: PreparerUrlCreationCra = async ({
     cheminDeSaisieDepuisUnRendezVous({
       rendezVous,
       participants: beneficiaires,
-      dureesProposees: await getAdaptiveDureeOptions({ mediateurId }),
+      dureesProposees: optionsDeDuree({
+        dureesFrequentes: await dureesFrequentesDuMediateur(
+          MediateurId(mediateurId),
+        ),
+      }),
     }),
     { absolutePath: true },
   )

@@ -1,35 +1,15 @@
-import { getAdaptiveDureeOptions } from '@app/web/features/activites/implementation/options-de-duree'
+import { MediateurId } from '@app/web/features/activites/domain'
+import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/durees-frequentes'
+import { optionsDeDuree } from '@app/web/features/activites/ui/saisie/options-de-duree'
 import {
   type RechercherDesTagsInitiaux,
   tagDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { valeursDeDepartDeMediation } from '@app/web/features/activites/ui/saisie/valeurs-de-depart'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite'
 import type { DefaultValues } from 'react-hook-form'
-
-const craDefaultValues = (
-  mediateurId: string,
-  stateFromUrl: DefaultValues<CraData>,
-  lieuxActiviteOptions: {
-    value: string
-    extra?: { nom: string; adresse: string }
-  }[],
-) => ({
-  ...stateFromUrl,
-  ...(stateFromUrl.structure?.id == null
-    ? {
-        structure: {
-          id: lieuxActiviteOptions.at(0)?.value,
-          ...lieuxActiviteOptions.at(0)?.extra,
-        },
-      }
-    : {}),
-  date: stateFromUrl.date ?? new Date().toISOString().slice(0, 10),
-  mediateurId: mediateurId,
-  duree: stateFromUrl.duree ?? {},
-  tags: stateFromUrl.tags ?? [],
-})
 
 export const getCraPageData =
   <T extends CraData>(
@@ -49,7 +29,7 @@ export const getCraPageData =
     const defaultValues: DefaultValues<CraData> & {
       mediateurId: string
     } = {
-      ...craDefaultValues(
+      ...valeursDeDepartDeMediation(
         mediateurId,
         stateFromUrl,
         lieuxActiviteOptions ?? [],
@@ -72,9 +52,11 @@ export const getCraPageData =
       )
     ).map(tagDuFormulaire)
 
-    const dureeOptions = await getAdaptiveDureeOptions({
-      mediateurId,
-      include: defaultValues.duree?.duree,
+    const dureeOptions = optionsDeDuree({
+      dureesFrequentes: await dureesFrequentesDuMediateur(
+        MediateurId(mediateurId),
+      ),
+      incluse: defaultValues.duree?.duree,
     })
 
     return {

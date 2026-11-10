@@ -7,9 +7,9 @@ import { CraDureeValidation } from '@app/web/features/activites/ui/saisie/valida
 import z from 'zod'
 
 export const CraValidation = z.object({
-  id: z.guid().nullish(), // defined if update, nullish if create
-  mediateurId: z.guid(), // owner of the CRA
-  rdvServicePublicId: z.number().nullish(), // id externe du RDV Service Public qui est à l'origine de cette Activité
+  id: z.guid().nullish(),
+  mediateurId: z.guid(),
+  rdvServicePublicId: z.number().nullish(),
   date: CraDateValidation,
   duree: CraDureeValidation,
   typeLieu: z.enum(typeLieuValues, {

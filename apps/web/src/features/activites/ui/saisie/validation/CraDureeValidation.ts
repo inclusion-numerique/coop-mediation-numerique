@@ -22,7 +22,6 @@ export const CraDureeValidation = z
       })
       .nullish(),
   })
-  // if duree is 'personnaliser', one of dureePersonnalisee is required
   .refine(
     (data) =>
       data.duree !== dureeAccompagnementPersonnaliseeValue ||

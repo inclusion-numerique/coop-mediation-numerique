@@ -101,7 +101,6 @@ export const ParticipantsAnonymesCraCollectifValidation = z
     path: ['total'],
   })
 
-// Cannot infer as the count functions would recursively type fail
 export type ParticipantsAnonymesCraCollectifData = {
   total: number
 

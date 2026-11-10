@@ -11,7 +11,6 @@ export const CraIndividuelValidation = CraValidation.extend({
   orienteVersStructure: z.enum(yesOrNo).nullish(),
   structureDeRedirection: z.enum(structuresRedirectionValues).nullish(),
 })
-  // structure is required if typeLieu ===  LieuActivite
   .refine(
     (data) => {
       return data.typeLieu === 'LieuActivite'
@@ -23,7 +22,6 @@ export const CraIndividuelValidation = CraValidation.extend({
       path: ['structure'],
     },
   )
-  // lieuCommuneData is required if typeLieu === Domicile ou typeLieu === Autre
   .refine(
     (data) =>
       (data.typeLieu !== 'Autre' && data.typeLieu !== 'Domicile') ||

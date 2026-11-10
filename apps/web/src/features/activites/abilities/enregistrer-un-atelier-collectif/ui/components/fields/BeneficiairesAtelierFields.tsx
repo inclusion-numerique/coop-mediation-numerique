@@ -82,8 +82,7 @@ export const BeneficiairesAtelierFields = withForm({
     }
 
     const onGenreStepperChange = useCallback(() => {
-      // Update non communique count
-      if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+      if (!form.state.values.participantsAnonymes) return
 
       form.setFieldValue(
         'participantsAnonymes.genreNonCommunique',
@@ -92,8 +91,7 @@ export const BeneficiairesAtelierFields = withForm({
     }, [form])
 
     const onTrancheAgeStepperChange = useCallback(() => {
-      // Update non communique count
-      if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+      if (!form.state.values.participantsAnonymes) return
       form.setFieldValue(
         'participantsAnonymes.trancheAgeNonCommunique',
         countTrancheAgeNonCommunique(form.state.values.participantsAnonymes),
@@ -101,8 +99,7 @@ export const BeneficiairesAtelierFields = withForm({
     }, [form])
 
     const onStatutSocialStepperChange = useCallback(() => {
-      // Update non communique count
-      if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+      if (!form.state.values.participantsAnonymes) return
       form.setFieldValue(
         'participantsAnonymes.statutSocialNonCommunique',
         countStatutSocialNonCommunique(form.state.values.participantsAnonymes),
@@ -111,7 +108,6 @@ export const BeneficiairesAtelierFields = withForm({
 
     const onTotalStepperChange = useCallback(
       ({ value = 0 }: { value?: number }) => {
-        // Safety if negative value
         if (value <= 0) {
           form.setFieldValue(
             'participantsAnonymes',
@@ -119,8 +115,7 @@ export const BeneficiairesAtelierFields = withForm({
           )
           return
         }
-        // Recompute nonCommunique counts
-        if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+        if (!form.state.values.participantsAnonymes) return
 
         form.setFieldValue(
           'participantsAnonymes.genreNonCommunique',

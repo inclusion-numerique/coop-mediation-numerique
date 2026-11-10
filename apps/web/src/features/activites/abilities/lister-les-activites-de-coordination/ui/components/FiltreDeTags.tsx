@@ -25,15 +25,10 @@ export const FiltreDeTags = ({
   const tags = searchParams.get('tags')?.split(',').filter(Boolean) ?? []
 
   const setFilters = () => {
-    if (Array.isArray(form.state.values.tags)) {
-      form.state.values.tags.length > 0
-        ? params.set('tags', form.state.values.tags.join(','))
-        : params.delete('tags')
-    } else {
-      form.state.values.tags
-        ? params.set('tags', form.state.values.tags)
-        : params.delete('tags')
-    }
+    const choisis = [form.state.values.tags ?? []].flat()
+    choisis.length > 0
+      ? params.set('tags', choisis.join(','))
+      : params.delete('tags')
 
     router.replace(`?${params}`, { scroll: false })
   }

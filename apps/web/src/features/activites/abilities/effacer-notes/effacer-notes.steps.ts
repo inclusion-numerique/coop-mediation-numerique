@@ -4,14 +4,15 @@ import {
   comptesRendusSemes,
   semerComptesRendus,
 } from '@app/web/features/activites/activites.cucumber'
+import { CoordinateurId, MediateurId } from '@app/web/features/activites/domain'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
 let effacees: number | undefined
 
 const cible = () => ({
-  mediateurId: comptesRendusSemes().mediateurId,
-  coordinateurId: comptesRendusSemes().coordinateurId,
+  mediateurId: MediateurId(comptesRendusSemes().mediateurId),
+  coordinateurId: CoordinateurId(comptesRendusSemes().coordinateurId),
 })
 
 Given('des comptes rendus porteurs de texte libre', async () => {
