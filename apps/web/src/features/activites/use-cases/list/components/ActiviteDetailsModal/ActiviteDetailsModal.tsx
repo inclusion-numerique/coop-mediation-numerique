@@ -3,7 +3,7 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import Stars from '@app/web/components/Stars'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/features/activites/use-cases/cra/collectif/createParticipantsAnonymesForBeneficiaires'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import {
@@ -19,7 +19,7 @@ import {
   tranchesAge as trancheAgeValues,
 } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { trpc } from '@app/web/trpc'
+import { inject } from '@app/web/libs/injection/client'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
@@ -107,7 +107,7 @@ const ActiviteDetailsModal = ({
   const state = ActiviteDetailsDynamicModal.useState() ?? initialState
 
   const router = useRouter()
-  const mutation = trpc.cra.deleteActivite.useMutation()
+  const [suppressionEnCours, setSuppressionEnCours] = useState(false)
 
   // Get full path with query params for actionsRetourPath
   const currentPath = usePathname()
@@ -155,31 +155,26 @@ const ActiviteDetailsModal = ({
   } = activite
 
   const onDelete = async () => {
-    try {
-      await mutation.mutateAsync({
-        activiteId: id,
-      })
-      ActiviteDetailsDynamicModal.close()
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: <>L’activité a bien été supprimée</>,
-      })
+    setSuppressionEnCours(true)
+    const resultat = await inject(
+      SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY,
+    )({ activiteId: id })
+    setSuppressionEnCours(false)
 
-      // Reset mutation after modal close so loading states are reset
-      setTimeout(() => {
-        mutation.reset()
-      }, 200)
-    } catch {
-      createToast({
-        priority: 'error',
-        message: 'Une erreur est survenue lors de la suppression de l’activité',
-      })
-      mutation.reset()
+    if (!resultat.success) {
+      createToast({ priority: 'error', message: resultat.error })
+      return
     }
+
+    ActiviteDetailsDynamicModal.close()
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: <>L’activité a bien été supprimée</>,
+    })
   }
 
-  const isLoading = mutation.isPending || mutation.isSuccess
+  const isLoading = suppressionEnCours
 
   const dureeString = dureeAsString(duree)
   const locationString = getActiviteLocationString(activite)
@@ -714,4 +709,4 @@ const ActiviteDetailsModal = ({
   )
 }
 
-export default withTrpc(ActiviteDetailsModal)
+export default ActiviteDetailsModal

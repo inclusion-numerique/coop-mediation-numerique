@@ -1,3 +1,4 @@
+import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rafraichirAccueilRdvAction } from '@app/web/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
@@ -13,6 +14,7 @@ import {
   activitesDeCoordinationPresentees,
 } from '@app/web/features/activites/abilities/compter-les-activites-de-coordination/ui'
 import { listerLesDernieresActivites } from '@app/web/features/activites/abilities/lister-les-dernieres-activites'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
 import { compterLesMembres } from '@app/web/features/equipe'
@@ -84,19 +86,24 @@ const Page = async () => {
       bind={RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY}
       to={rafraichirAccueilRdvAction}
     >
-      <Accueil
-        accueil={accueil}
-        equipe={equipe}
-        activites={activites}
-        rendezVous={
-          <RdvsAccueil
-            widget={rdv.widget}
-            user={{ timezone: user.timezone }}
-            synchroniserAuChargement={rdv.synchroniserAuChargement}
-            alerte={<RdvIntegrationErreurAlerte />}
-          />
-        }
-      />
+      <ClientBinder
+        bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
+        to={supprimerUneActiviteDeMediationAction}
+      >
+        <Accueil
+          accueil={accueil}
+          equipe={equipe}
+          activites={activites}
+          rendezVous={
+            <RdvsAccueil
+              widget={rdv.widget}
+              user={{ timezone: user.timezone }}
+              synchroniserAuChargement={rdv.synchroniserAuChargement}
+              alerte={<RdvIntegrationErreurAlerte />}
+            />
+          }
+        />
+      </ClientBinder>
     </ClientBinder>
   )
 }

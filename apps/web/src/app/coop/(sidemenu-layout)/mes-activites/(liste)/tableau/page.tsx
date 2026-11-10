@@ -1,4 +1,5 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
+import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
@@ -6,6 +7,7 @@ import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/components/filters/more-filters/rechercher-employeuses-des-activites.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import type { ActivitesDataTableSearchParams } from '@app/web/features/activites/use-cases/list/components/ActivitesDataTable'
 import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/ActivitesListeLayout'
 import MesActivitesListeEmptyPage from '@app/web/features/activites/use-cases/list/components/MesActivitesListeEmptyPage'
@@ -79,46 +81,51 @@ const MesActivitesVueTableauPage = async ({
 
     return (
       <ClientBinder
-        bind={RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY}
-        to={rechercherEmployeusesDesActivitesAction}
+        bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
+        to={supprimerUneActiviteDeMediationAction}
       >
         <ClientBinder
-          bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-          to={rechercherUnLieuActiviteAction}
+          bind={RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY}
+          to={rechercherEmployeusesDesActivitesAction}
         >
           <ClientBinder
-            bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
-            to={creerActiviteDepuisRdvAction}
+            bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+            to={rechercherUnLieuActiviteAction}
           >
             <ClientBinder
-              bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
-              to={mettreAJourStatutRdvAction}
+              bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+              to={creerActiviteDepuisRdvAction}
             >
-              <ActivitesListeLayout
-                vue="tableau"
-                href="/coop/mes-activites"
-                subtitle={
-                  isCoordinateur(user) && isMediateur(user)
-                    ? 'Médiation numérique'
-                    : undefined
-                }
+              <ClientBinder
+                bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+                to={mettreAJourStatutRdvAction}
               >
-                <MesActivitesListeHeader
-                  searchResultMatchesCount={searchResultMatchesCount}
-                  defaultFilters={searchParams}
-                  initialMediateursOptions={initialMediateursOptions}
-                  communesOptions={communesOptions}
-                  departementsOptions={departementsOptions}
-                  lieuxActiviteOptions={lieuxActiviteOptions}
-                  structuresEmployeusesOptions={structuresEmployeusesOptions}
-                  tagsOptions={tagsOptions}
-                  activiteDates={filterPeriodDates}
-                  enableRdvsFilter={includeRdvsFilter}
-                  hasCrasV1={hasCrasV1.hasCrasV1}
-                  activiteSourceOptions={activiteSourceOptions}
-                />
-                <MesActivitesTableauPage data={data} />
-              </ActivitesListeLayout>
+                <ActivitesListeLayout
+                  vue="tableau"
+                  href="/coop/mes-activites"
+                  subtitle={
+                    isCoordinateur(user) && isMediateur(user)
+                      ? 'Médiation numérique'
+                      : undefined
+                  }
+                >
+                  <MesActivitesListeHeader
+                    searchResultMatchesCount={searchResultMatchesCount}
+                    defaultFilters={searchParams}
+                    initialMediateursOptions={initialMediateursOptions}
+                    communesOptions={communesOptions}
+                    departementsOptions={departementsOptions}
+                    lieuxActiviteOptions={lieuxActiviteOptions}
+                    structuresEmployeusesOptions={structuresEmployeusesOptions}
+                    tagsOptions={tagsOptions}
+                    activiteDates={filterPeriodDates}
+                    enableRdvsFilter={includeRdvsFilter}
+                    hasCrasV1={hasCrasV1.hasCrasV1}
+                    activiteSourceOptions={activiteSourceOptions}
+                  />
+                  <MesActivitesTableauPage data={data} />
+                </ActivitesListeLayout>
+              </ClientBinder>
             </ClientBinder>
           </ClientBinder>
         </ClientBinder>

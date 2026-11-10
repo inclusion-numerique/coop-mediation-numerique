@@ -1,4 +1,7 @@
 import { useDsfrModalIsBound } from '@app/ui/hooks/useDsfrModalIsBound'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
+import { success } from '@app/web/libraries/result'
+import { provide } from '@app/web/libs/injection/client'
 import type { Meta, StoryObj } from '@storybook/react'
 import { useEffect } from 'react'
 import { expect, waitFor, within } from 'storybook/test'
@@ -34,6 +37,14 @@ const Template = ({
 const meta: Meta<typeof ActiviteDetailsModal> = {
   title: 'Activités/Modale détails',
   component: ActiviteDetailsModal,
+  decorators: [
+    (Story) => {
+      provide(SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY, async () =>
+        success(undefined),
+      )
+      return <Story />
+    },
+  ],
 }
 
 export default meta

@@ -2,7 +2,6 @@ import { CraAnimationValidation } from '@app/web/features/activites/use-cases/cr
 import { CraCollectifServerValidation } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifServerValidation'
 import { createOrUpdateActivite } from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActivite'
 import { createOrUpdateActiviteCoordination } from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActiviteCoordination'
-import { deleteActivite } from '@app/web/features/activites/use-cases/cra/db/deleteActivite'
 import { CraEvenementValidation } from '@app/web/features/activites/use-cases/cra/evenement/validation/CraEvenementValidation'
 import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { CraPartenariatValidation } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
@@ -14,7 +13,6 @@ import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
 import * as Sentry from '@sentry/nextjs'
-import z from 'zod'
 
 /**
  * Un compte rendu d'activité vaut constat de présence : le rendez-vous dont il
@@ -140,21 +138,6 @@ export const craRouter = router({
         },
         userId: user.id,
         coordinateurId: user.coordinateur.id,
-      })
-    }),
-  deleteActivite: protectedProcedure
-    .input(
-      z.object({
-        activiteId: z.guid(),
-      }),
-    )
-    .mutation(async ({ input: { activiteId }, ctx: { user } }) => {
-      enforceIsMediateur(user)
-
-      return deleteActivite({
-        activiteId,
-        sessionUserId: user.id,
-        mediateurId: user.mediateur.id,
       })
     }),
 })

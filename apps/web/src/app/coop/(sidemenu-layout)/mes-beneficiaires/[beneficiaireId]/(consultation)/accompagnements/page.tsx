@@ -1,6 +1,8 @@
+import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import { searchActiviteAndRdvs } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
 import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireAccompagnementsPage from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
@@ -48,16 +50,21 @@ const BeneficiaireAccompagnementsPage = async (props: {
   // 4. Rendu de la vue
   return (
     <ClientBinder
-      bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
-      to={creerActiviteDepuisRdvAction}
+      bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
+      to={supprimerUneActiviteDeMediationAction}
     >
       <ClientBinder
-        bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
-        to={mettreAJourStatutRdvAction}
+        bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
+        to={creerActiviteDepuisRdvAction}
       >
-        <ViewBeneficiaireAccompagnementsPage
-          data={{ beneficiaire, searchResult, user }}
-        />
+        <ClientBinder
+          bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
+          to={mettreAJourStatutRdvAction}
+        >
+          <ViewBeneficiaireAccompagnementsPage
+            data={{ beneficiaire, searchResult, user }}
+          />
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )
