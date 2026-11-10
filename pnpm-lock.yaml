@@ -340,21 +340,9 @@ importers:
       '@tanstack/react-form':
         specifier: ^1.33.5
         version: 1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@tanstack/react-query':
-        specifier: ^5.103.2
-        version: 5.103.2(react@19.3.0)
       '@tiptap/react':
         specifier: ^3.31.3
         version: 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@trpc/client':
-        specifier: 11.19.0
-        version: 11.19.0(@trpc/server@11.19.0(typescript@7.0.2))(typescript@7.0.2)
-      '@trpc/react-query':
-        specifier: 11.19.0
-        version: 11.19.0(@tanstack/react-query@5.103.2(react@19.3.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@7.0.2))(typescript@7.0.2))(@trpc/server@11.19.0(typescript@7.0.2))(react@19.3.0)(typescript@7.0.2)
-      '@trpc/server':
-        specifier: 11.19.0
-        version: 11.19.0(typescript@7.0.2)
       '@zumer/snapdom':
         specifier: ^3.0.0
         version: 3.0.0
@@ -370,9 +358,6 @@ importers:
       client-only:
         specifier: ^0.0.1
         version: 0.0.1
-      cookie:
-        specifier: ^2.0.1
-        version: 2.0.1
       copy:
         specifier: ^0.3.2
         version: 0.3.2
@@ -505,9 +490,6 @@ importers:
       zod:
         specifier: ^4.6.5
         version: 4.6.5
-      zustand:
-        specifier: ^5.0.15
-        version: 5.0.15(@types/react@19.3.0)(immer@11.1.18)(react@19.3.0)(use-sync-external-store@1.7.0(react@19.3.0))
     devDependencies:
       '@arckit/cucumber':
         specifier: ^1.0.1
@@ -5472,9 +5454,6 @@ packages:
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
 
-  '@tanstack/query-core@5.103.2':
-    resolution: {integrity: sha512-I8DkFXls5jXLqtm8+QpOhEmG07hIblhSZFzafg9wHsMSEvMzULy9hK17wU1T/ahfhMbtITJhbxutwwCoihkR7A==}
-
   '@tanstack/react-form@1.33.5':
     resolution: {integrity: sha512-LlRB28qJwO/QCGaHvWnbdh4haBgTFiZVmzA2uzxSBS3YA7/IqrQ6HOBK70CkFQ+DbflZ7NawsmSln13h5iIdTA==}
     peerDependencies:
@@ -5483,11 +5462,6 @@ packages:
     peerDependenciesMeta:
       '@tanstack/react-start':
         optional: true
-
-  '@tanstack/react-query@5.103.2':
-    resolution: {integrity: sha512-B+fWiYZBc+0uUD5zDZAeLw9dKj7XEsdnuu6zRZ+no6LNKpeE3P3bJ+N6HINjcIlWR6fW3vUoTneEaGa2V6ehqw==}
-    peerDependencies:
-      react: ^18 || ^19
 
   '@tanstack/react-store@0.11.1':
     resolution: {integrity: sha512-HaIGKI3YLmjBYIvy5DFDY23oNaYZIsTZfngey07Uh5iLVJgM3bIGCnZeOFOqzjFld9JHWcaHJnasD/bKoGKwJQ==}
@@ -5693,28 +5667,6 @@ packages:
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
-
-  '@trpc/client@11.19.0':
-    resolution: {integrity: sha512-0MKkPq6MejsKB5Opca1Rl22KVIaqo2+A1EiXyZ8EGUsl9TLrPdpGn+Usux20TZKFwnSC2+wI/WilqNJaP4ODfw==}
-    hasBin: true
-    peerDependencies:
-      '@trpc/server': 11.19.0
-      typescript: '>=5.7.2'
-
-  '@trpc/react-query@11.19.0':
-    resolution: {integrity: sha512-TrqZBa/6weXX27mf0P2dMCI65duqO3B/wf9BkP1MezUWSUg7SRGJrIv6K8vjgjeHdafFBI1mmcqPEYXHF4AlVQ==}
-    peerDependencies:
-      '@tanstack/react-query': ^5.80.3
-      '@trpc/client': 11.19.0
-      '@trpc/server': 11.19.0
-      react: '>=18.2.0'
-      typescript: '>=5.7.2'
-
-  '@trpc/server@11.19.0':
-    resolution: {integrity: sha512-7C1goiDurz82yFKtZUbEzjXd0Rg/jyisaIZQhdvus+1l7E6mwcEYZXjZ1US/HF8kOyz1LERL8UN3bcboJtjcyQ==}
-    hasBin: true
-    peerDependencies:
-      typescript: '>=5.7.2'
 
   '@tsconfig/node10@1.0.13':
     resolution: {integrity: sha512-gcLdvR9HO1ZJBypsOGqaP6TFEzb6vIta0KSTLt9NAQ6pXQO3cRgSVyCN6pzYqI9DlJgY71XKO0dpDhCf08b3pg==}
@@ -7420,10 +7372,6 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
-
-  cookie@2.0.1:
-    resolution: {integrity: sha512-yuToqVvRrj6pfDXREyQAAv8SkAEk/8GS3jQRTiUMm66TVtBYmqQeoEjL2Lmq8Rpo6271vH76InTChTitEAm65w==}
-    engines: {node: '>=22'}
 
   copy-anything@4.1.1:
     resolution: {integrity: sha512-AoT6Imdr98feSpFfmFwTFN73ccdr7uFPf27cBCgYvyyRyn1BzLRxMvrHNmwXO5LJMddRy4Rdhw2b1h7vSMKsEw==}
@@ -18867,8 +18815,6 @@ snapshots:
 
   '@tanstack/pacer-lite@0.1.1': {}
 
-  '@tanstack/query-core@5.103.2': {}
-
   '@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@tanstack/form-core': 1.33.5
@@ -18876,11 +18822,6 @@ snapshots:
       react: 19.3.0
     transitivePeerDependencies:
       - react-dom
-
-  '@tanstack/react-query@5.103.2(react@19.3.0)':
-    dependencies:
-      '@tanstack/query-core': 5.103.2
-      react: 19.3.0
 
   '@tanstack/react-store@0.11.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -19115,23 +19056,6 @@ snapshots:
       '@tiptap/pm': 3.31.3
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
-
-  '@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@7.0.2))(typescript@7.0.2)':
-    dependencies:
-      '@trpc/server': 11.19.0(typescript@7.0.2)
-      typescript: 7.0.2
-
-  '@trpc/react-query@11.19.0(@tanstack/react-query@5.103.2(react@19.3.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@7.0.2))(typescript@7.0.2))(@trpc/server@11.19.0(typescript@7.0.2))(react@19.3.0)(typescript@7.0.2)':
-    dependencies:
-      '@tanstack/react-query': 5.103.2(react@19.3.0)
-      '@trpc/client': 11.19.0(@trpc/server@11.19.0(typescript@7.0.2))(typescript@7.0.2)
-      '@trpc/server': 11.19.0(typescript@7.0.2)
-      react: 19.3.0
-      typescript: 7.0.2
-
-  '@trpc/server@11.19.0(typescript@7.0.2)':
-    dependencies:
-      typescript: 7.0.2
 
   '@tsconfig/node10@1.0.13': {}
 
@@ -20934,8 +20858,6 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   cookie@0.7.2: {}
-
-  cookie@2.0.1: {}
 
   copy-anything@4.1.1: {}
 
