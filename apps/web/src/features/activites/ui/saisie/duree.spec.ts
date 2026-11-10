@@ -1,8 +1,8 @@
-import { CraDureeData } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
 import {
   craDureeDataToMinutes,
   minutesToCraDureeData,
-} from './minutesToCraDuree'
+} from '@app/web/features/activites/ui/saisie/duree'
+import { CraDureeData } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
 
 describe('minutesToCraDuree', () => {
   describe('craDureeDataToMinutes Function', () => {

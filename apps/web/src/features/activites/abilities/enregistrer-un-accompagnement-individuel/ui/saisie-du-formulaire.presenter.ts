@@ -1,7 +1,7 @@
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { clearAdministrativeData } from '@app/web/features/activites/ui/saisie/clearAdministrativeData'
+import { craDureeDataToMinutes } from '@app/web/features/activites/ui/saisie/duree'
 import type { z } from 'zod'
-import { craDureeDataToMinutes } from '../../../use-cases/cra/db/minutesToCraDuree'
 import type { EnregistrerUnAccompagnementIndividuelValidation } from '../action/enregistrer-un-accompagnement-individuel.validation'
 
 type Saisie = z.input<typeof EnregistrerUnAccompagnementIndividuelValidation>

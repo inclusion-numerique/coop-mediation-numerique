@@ -40,6 +40,10 @@ export type RdvPourActivite = {
    */
   readonly statutPresence: StatutPresence
   readonly participations: readonly ParticipationDuRdv[]
+  readonly debut: Date
+  readonly dureeEnMinutes: number
+  readonly titre: string | null
+  readonly collectif: boolean
 }
 
 /**

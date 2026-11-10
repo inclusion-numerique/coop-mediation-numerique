@@ -1,3 +1,4 @@
+import { minutesToCraDureeData } from '@app/web/features/activites/ui/saisie/duree'
 import type { DefaultValues } from 'react-hook-form'
 import type {
   Animation,
@@ -6,7 +7,6 @@ import type {
   Evenement,
   Partenariat,
 } from '../../../domain'
-import { minutesToCraDureeData } from '../../../use-cases/cra/db/minutesToCraDuree'
 import type { CraAnimationData } from './animation/validation/CraAnimationValidation'
 import type { CraEvenementData } from './evenement/validation/CraEvenementValidation'
 import type { CraPartenariatData } from './partenariat/validation/CraPartenariatValidation'

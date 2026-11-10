@@ -1,3 +1,4 @@
+import { getAdaptiveDureeOptions } from '@app/web/features/activites/implementation/options-de-duree'
 import {
   type RechercherDesTagsInitiaux,
   tagDuFormulaire,
@@ -6,7 +7,6 @@ import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraVal
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite'
 import type { DefaultValues } from 'react-hook-form'
-import { getAdaptiveDureeOptions } from './db/getAdaptiveDureeOptions'
 
 const craDefaultValues = (
   mediateurId: string,

@@ -1,4 +1,5 @@
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
+import { minutesToCraDureeData } from '@app/web/features/activites/ui/saisie/duree'
 import type {
   ActiviteDeMediation,
   AffichageDeLActivite,
@@ -6,7 +7,6 @@ import type {
   Equipement,
   Thematiques,
 } from '../../domain'
-import { minutesToCraDureeData } from '../../use-cases/cra/db/minutesToCraDuree'
 
 export const communeDuFormulaire = (commune: Commune) =>
   banDefaultValueToAdresseBanData({

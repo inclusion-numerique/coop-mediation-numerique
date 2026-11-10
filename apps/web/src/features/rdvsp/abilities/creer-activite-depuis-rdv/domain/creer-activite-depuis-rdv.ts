@@ -41,9 +41,16 @@ export type CreerOuFusionnerBeneficiaires = (input: {
   readonly mediateurId: MediateurRedacteurId
 }) => Promise<readonly BeneficiaireFusionne[]>
 
-/** Port vers la feature activités : rend l'URL du formulaire de CRA pré-rempli. */
+export type RendezVousASaisir = {
+  readonly id: RdvId
+  readonly debut: Date
+  readonly dureeEnMinutes: number
+  readonly titre: string | null
+  readonly collectif: boolean
+}
+
 export type PreparerUrlCreationCra = (input: {
-  readonly rdvId: RdvId
+  readonly rendezVous: RendezVousASaisir
   readonly mediateurId: MediateurRedacteurId
   readonly beneficiaires: readonly BeneficiaireFusionne[]
 }) => Promise<string>
