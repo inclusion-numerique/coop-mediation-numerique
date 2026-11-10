@@ -1,11 +1,15 @@
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
+  CoordinateurId,
+  DateDActivite,
   DureeEnMinutes,
   Effectif,
   NomDeLActivite,
   NomDeStructure,
   Precision,
+  ThematiqueDAnimation,
+  TypeDAnimation,
   TypeDEvenement,
   TypeDeStructurePartenaire,
 } from '../../../domain'
@@ -15,7 +19,7 @@ import {
 } from './liste-des-coordinations.presenter'
 
 const commun = {
-  duree: null,
+  coordinateurId: CoordinateurId('9e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
   tags: [],
   notes: null,
   creation: new Date('2026-06-02T08:00:00Z'),
@@ -25,11 +29,11 @@ const commun = {
 const evenement: ActiviteDeCoordination = {
   ...commun,
   id: ActiviteDeCoordinationId('1e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
-  date: new Date('2026-06-02'),
+  date: DateDActivite('2026-06-02'),
   _tag: 'Evenement',
   nom: NomDeLActivite('Forum'),
   typeDEvenement: { _tag: 'Liste', valeur: TypeDEvenement('NecLocal') },
-  organisateurs: [{ _tag: 'Autre', precision: Precision('La médiathèque') }],
+  organisateurs: { valeurs: [], autre: Precision('La médiathèque') },
   echelon: null,
   participants: Effectif(1),
 }
@@ -37,18 +41,20 @@ const evenement: ActiviteDeCoordination = {
 const partenariat: ActiviteDeCoordination = {
   ...commun,
   id: ActiviteDeCoordinationId('2e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
-  date: new Date('2026-06-02'),
-  duree: DureeEnMinutes(90),
+  date: DateDActivite('2026-06-02'),
   modification: new Date('2026-06-03T08:00:00Z'),
   _tag: 'Partenariat',
   nom: null,
-  natures: [{ _tag: 'Autre', precision: null }],
+  natures: { valeurs: [], autre: Precision('Mutualisation') },
   structuresPartenaires: [
     {
       nom: NomDeStructure('Mairie'),
-      type: TypeDeStructurePartenaire('Commune'),
+      type: { _tag: 'Liste', valeur: TypeDeStructurePartenaire('Commune') },
     },
-    { nom: NomDeStructure('Collectif'), type: null },
+    {
+      nom: NomDeStructure('Collectif'),
+      type: { _tag: 'Autre', precision: Precision('Collectif citoyen') },
+    },
   ],
   echelon: null,
 }
@@ -56,12 +62,17 @@ const partenariat: ActiviteDeCoordination = {
 const animation: ActiviteDeCoordination = {
   ...commun,
   id: ActiviteDeCoordinationId('3e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
-  date: new Date('2026-05-28'),
+  date: DateDActivite('2026-05-28'),
   _tag: 'Animation',
-  typeDAnimation: null,
-  thematiques: [],
+  duree: DureeEnMinutes(90),
+  typeDAnimation: { _tag: 'Liste', valeur: TypeDAnimation('Webinaire') },
+  thematiques: { valeurs: [ThematiqueDAnimation('Reseau')], autre: null },
   initiative: null,
-  intervenants: { mediateurs: null, structures: null, autresActeurs: null },
+  intervenants: {
+    mediateurs: Effectif(1),
+    structures: Effectif(0),
+    autresActeurs: Effectif(0),
+  },
 }
 
 const liste = listeDesCoordinations({
@@ -101,12 +112,15 @@ describe('liste des activités de coordination', () => {
   it('détaille les partenaires et la modification', () => {
     const { detail, objets, infos } = liste.jours[0].cartes[1]
 
-    expect(objets).toEqual(['Autre'])
+    expect(objets).toEqual(['Mutualisation'])
     expect(infos).toEqual(['2 partenaires'])
-    expect(detail.duree).toBe('1h30')
+    expect(detail.duree).toBeNull()
     expect(detail.modifieeLe).toBe('03.06.2026 à 10h00')
     expect(detail.rubriques).toEqual([
-      { titre: 'Partenaires', elements: ['Mairie · Commune', 'Collectif'] },
+      {
+        titre: 'Partenaires',
+        elements: ['Mairie · Commune', 'Collectif · Collectif citoyen'],
+      },
     ])
   })
 

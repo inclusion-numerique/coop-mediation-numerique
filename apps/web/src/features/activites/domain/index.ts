@@ -3,10 +3,13 @@ export {
   type Animation,
   type Evenement,
   type Intervenants,
+  intervenantsDe,
   type Partenariat,
   partenairesDe,
   participantsDe,
   type StructurePartenaire,
+  type StructuresPartenaires,
+  structuresPartenairesDe,
   type TagDeLActivite,
 } from './activite-de-coordination'
 export { ActiviteDeCoordinationId } from './activite-de-coordination-id'
@@ -39,7 +42,7 @@ export {
 export { ActiviteId } from './activite-id'
 export { Autonomie, autonomies } from './autonomie'
 export { BeneficiaireId } from './beneficiaire-id'
-export type { Choix } from './choix'
+export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
 export { Commune } from './commune'
 export { CoordinateurId } from './coordinateur-id'
 export {

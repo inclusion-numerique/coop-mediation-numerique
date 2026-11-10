@@ -74,9 +74,9 @@ const ligneDe = (activite: ActiviteDeCoordination) => {
   const nom = activite._tag === 'Animation' ? null : activite.nom
 
   return [
-    activite.date,
+    new Date(`${activite.date}T00:00:00.000Z`),
     libelleDuType(activite._tag),
-    seulementPour(['Animation'], () => activite.duree),
+    seulementPour(['Animation'], () => animation?.duree ?? null),
     seulementPour(['Evenement'], () => evenement?.participants ?? null),
     seulementPour(
       ['Animation'],

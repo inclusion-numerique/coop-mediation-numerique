@@ -2,13 +2,18 @@ import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
+  CoordinateurId,
   criteresDesCoordinations,
+  DateDActivite,
+  DureeEnMinutes,
   Effectif,
   NomDeLActivite,
   NomDeStructure,
   NomDeTag,
   Precision,
   TagId,
+  ThematiqueDAnimation,
+  TypeDAnimation,
   TypeDeStructurePartenaire,
 } from '../../../../domain'
 import { classeurDesCoordinations } from './classeur-des-coordinations'
@@ -31,8 +36,8 @@ const TAG = {
 
 const commun = {
   id: ActiviteDeCoordinationId('0e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
-  date: new Date('2026-06-01'),
-  duree: null,
+  date: DateDActivite('2026-06-01'),
+  coordinateurId: CoordinateurId('9e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
   tags: [TAG],
   notes: null,
   creation: new Date('2026-06-01T10:00:00Z'),
@@ -43,11 +48,11 @@ const partenariat: ActiviteDeCoordination = {
   ...commun,
   _tag: 'Partenariat',
   nom: NomDeLActivite('Convention'),
-  natures: [{ _tag: 'Autre', precision: Precision('Mutualisation') }],
+  natures: { valeurs: [], autre: Precision('Mutualisation') },
   structuresPartenaires: [
     {
       nom: NomDeStructure('Mairie'),
-      type: TypeDeStructurePartenaire('Commune'),
+      type: { _tag: 'Liste', valeur: TypeDeStructurePartenaire('Commune') },
     },
   ],
   echelon: null,
@@ -56,13 +61,14 @@ const partenariat: ActiviteDeCoordination = {
 const animation: ActiviteDeCoordination = {
   ...commun,
   _tag: 'Animation',
-  typeDAnimation: null,
-  thematiques: [],
+  duree: DureeEnMinutes(60),
+  typeDAnimation: { _tag: 'Liste', valeur: TypeDAnimation('Webinaire') },
+  thematiques: { valeurs: [ThematiqueDAnimation('Reseau')], autre: null },
   initiative: null,
   intervenants: {
     mediateurs: Effectif(4),
-    structures: null,
-    autresActeurs: null,
+    structures: Effectif(0),
+    autresActeurs: Effectif(0),
   },
 }
 
@@ -112,7 +118,7 @@ describe('classeur des activités de coordination', () => {
   it('reprend les intervenants d’une animation', () => {
     const [ligne] = lignesDuTableau([animation]).lignes
 
-    expect(ligne.slice(2, 8)).toEqual(['', '/', 4, '', '', '/'])
+    expect(ligne.slice(2, 8)).toEqual([60, '/', 4, 0, 0, '/'])
   })
 
   it('résume les filtres appliqués', () => {

@@ -88,3 +88,25 @@ export type TypeDActiviteIncompatible = {
 export const TypeDActiviteIncompatible = (): TypeDActiviteIncompatible => ({
   _tag: 'TypeDActiviteIncompatible',
 })
+
+export type AucunChoix = { readonly _tag: 'AucunChoix' }
+
+export const AucunChoix = (): AucunChoix => ({ _tag: 'AucunChoix' })
+
+export type ChoixEnDouble = { readonly _tag: 'ChoixEnDouble' }
+
+export const ChoixEnDouble = (): ChoixEnDouble => ({ _tag: 'ChoixEnDouble' })
+
+export type AucunIntervenant = { readonly _tag: 'AucunIntervenant' }
+
+export const AucunIntervenant = (): AucunIntervenant => ({
+  _tag: 'AucunIntervenant',
+})
+
+export type AucuneStructurePartenaire = {
+  readonly _tag: 'AucuneStructurePartenaire'
+}
+
+export const AucuneStructurePartenaire = (): AucuneStructurePartenaire => ({
+  _tag: 'AucuneStructurePartenaire',
+})
