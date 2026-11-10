@@ -1,3 +1,4 @@
+export { lireUneActiviteDeMediation } from '../../../implementation/lire-une-activite-de-mediation'
 export {
   type EchecDEnregistrement,
   enregistrerUnAtelierCollectif,

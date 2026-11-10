@@ -1,5 +1,7 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/individuel/db/getCraIndividuelDataDefaultValuesFromExisting'
+import { lireUneActiviteDeMediation } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel'
+import { formulaireDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/formulaire-de-l-accompagnement-individuel.presenter'
+import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -38,12 +40,21 @@ const DupliquerPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
-  const defaultValues = await getCraIndividuelDataDefaultValuesFromExisting({
-    id,
-    mediateurId,
-  })
+  const activiteId = ActiviteId.safe(id)
+  const aModifier =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeMediation({
+          id: activiteId,
+          mediateurId: MediateurId(mediateurId),
+        })
 
-  if (defaultValues == null) return notFound()
+  if (aModifier?.activite._tag !== 'Individuel') return notFound()
+
+  const defaultValues = formulaireDeLAccompagnementIndividuel(
+    aModifier.activite,
+    aModifier.affichage,
+  )
 
   const defaultValuesWithoutId = {
     ...defaultValues,

@@ -1,5 +1,7 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { getCraCollectifDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/collectif/db/getCraCollectifDataDefaultValuesFromExisting'
+import { lireUneActiviteDeMediation } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif'
+import { formulaireDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/formulaire-de-l-atelier-collectif.presenter'
+import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -37,12 +39,21 @@ const DupliquerPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
-  const defaultValues = await getCraCollectifDataDefaultValuesFromExisting({
-    id,
-    mediateurId: user.mediateur.id,
-  })
+  const activiteId = ActiviteId.safe(id)
+  const aModifier =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeMediation({
+          id: activiteId,
+          mediateurId: MediateurId(user.mediateur.id),
+        })
 
-  if (defaultValues == null) return notFound()
+  if (aModifier?.activite._tag !== 'Collectif') return notFound()
+
+  const defaultValues = formulaireDeLAtelierCollectif(
+    aModifier.activite,
+    aModifier.affichage,
+  )
 
   const defaultValuesWithoutIds = {
     ...defaultValues,

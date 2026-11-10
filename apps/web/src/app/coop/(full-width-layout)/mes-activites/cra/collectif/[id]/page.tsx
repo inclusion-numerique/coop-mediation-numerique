@@ -7,12 +7,14 @@ import {
   tagsInitiauxDuCra,
   visibilitesDeTagDuCra,
 } from '@app/web/composition/activites/tags-du-cra'
+import { lireUneActiviteDeMediation } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import CraCollectifPage from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/CraCollectifPage'
+import { formulaireDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/formulaire-de-l-atelier-collectif.presenter'
 import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { getCraCollectifDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/collectif/db/getCraCollectifDataDefaultValuesFromExisting'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
@@ -53,12 +55,21 @@ const UpdateCraCollectifPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
-  const defaultValues = await getCraCollectifDataDefaultValuesFromExisting({
-    id,
-    mediateurId,
-  })
+  const activiteId = ActiviteId.safe(id)
+  const aModifier =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeMediation({
+          id: activiteId,
+          mediateurId: MediateurId(user.mediateur.id),
+        })
 
-  if (defaultValues == null) return notFound()
+  if (aModifier?.activite._tag !== 'Collectif') return notFound()
+
+  const defaultValues = formulaireDeLAtelierCollectif(
+    aModifier.activite,
+    aModifier.affichage,
+  )
 
   const craPageData = await getCraPageData<CraCollectifData>()(
     mediateurId,

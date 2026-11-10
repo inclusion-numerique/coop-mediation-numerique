@@ -7,13 +7,15 @@ import {
   tagsInitiauxDuCra,
   visibilitesDeTagDuCra,
 } from '@app/web/composition/activites/tags-du-cra'
+import { lireUneActiviteDeMediation } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import CraIndividuelPage from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/CraIndividuelPage'
+import { formulaireDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/formulaire-de-l-accompagnement-individuel.presenter'
 import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
-import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/individuel/db/getCraIndividuelDataDefaultValuesFromExisting'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -53,12 +55,21 @@ const UpdateCraIndividuelPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
-  const defaultValues = await getCraIndividuelDataDefaultValuesFromExisting({
-    id,
-    mediateurId,
-  })
+  const activiteId = ActiviteId.safe(id)
+  const aModifier =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeMediation({
+          id: activiteId,
+          mediateurId: MediateurId(user.mediateur.id),
+        })
 
-  if (defaultValues == null) return notFound()
+  if (aModifier?.activite._tag !== 'Individuel') return notFound()
+
+  const defaultValues = formulaireDeLAccompagnementIndividuel(
+    aModifier.activite,
+    aModifier.affichage,
+  )
 
   const craPageData = await getCraPageData<CraCollectifData>()(
     mediateurId,
