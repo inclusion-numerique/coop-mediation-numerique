@@ -1,5 +1,5 @@
+import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '../../cra/components/CreateCraModal/CreateCraModalDefinition'
 
 const MesActivitesListeEmptyPage = () => (
   <div className="fr-border-radius--8 fr-mt-6v fr-p-12v fr-background-alt--blue-france fr-align-items-center">

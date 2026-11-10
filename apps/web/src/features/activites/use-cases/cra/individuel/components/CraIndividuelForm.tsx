@@ -4,6 +4,11 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import { saisieDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/saisie-du-formulaire.presenter'
+import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
+import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
@@ -22,16 +27,11 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
-import { MaterielField } from '../../components/fields/MaterielField'
-import { RendezVousFields } from '../../components/fields/RendezVousFields'
-import { TagsFields } from '../../components/fields/TagsFields'
-import { ThematiquesFields } from '../../components/fields/ThematiquesFields'
 import { materielOptions } from '../../fields/materiel'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '../../fields/thematique'
-import type { Tag } from '../../tags/tag-du-cra'
 import { autonomieOptionsWithExtras } from '../fields/autonomie'
 import { structuresRedirectionOptions } from '../fields/structures-redirection'
 import {

@@ -1,5 +1,5 @@
+import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '../../cra/components/CreateCraModal/CreateCraModalDefinition'
 import { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 import ActiviteCard from './ActiviteCard'
 

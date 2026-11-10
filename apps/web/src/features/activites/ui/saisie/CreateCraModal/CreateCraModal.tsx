@@ -1,7 +1,7 @@
 'use client'
 
-import CreateCraModalContent from './CreateCraModalContent'
-import { CreateCraModalDefinition } from './CreateCraModalDefinition'
+import CreateCraModalContent from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalContent'
+import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 
 const CreateCraModal = ({
   isMediateur,

@@ -1,5 +1,5 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import BeneficiaireEnregistrerUneActivite from '@app/web/features/activites/use-cases/cra/components/BeneficiaireEnregistrerUneActivite'
+import BeneficiaireEnregistrerUneActivite from '@app/web/features/activites/ui/saisie/BeneficiaireEnregistrerUneActivite'
 import type { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
 import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'

@@ -5,6 +5,8 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import { saisieDeLAnimation } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -14,9 +16,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
-import styles from '../../components/CraForm.module.css'
-import { TagsFields } from '../../components/fields/TagsFields'
-import type { Tag } from '../../tags/tag-du-cra'
 import { debutDispositifConum } from '../../validation/CraDateValidation'
 import {
   INITIATIVE_OPTIONS,
@@ -87,7 +86,7 @@ const CraAnimationForm = ({
                 className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
                 isPending={isPending}
                 nativeInputProps={{ type: 'date', min: debutDispositifConum }}
-                classes={{ nativeInputOrTextArea: styles.tallInput }}
+                classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
                 label={
                   <>
                     Date de l’intervention <RedAsterisk />
@@ -102,7 +101,7 @@ const CraAnimationForm = ({
                 <field.Select
                   isPending={isPending}
                   options={dureeOptions}
-                  className={styles.tallInput}
+                  className="fr-input--tall"
                   placeholder="Sélectionnez une durée"
                   label={
                     <>
@@ -129,7 +128,7 @@ const CraAnimationForm = ({
                               </span>
                             }
                             classes={{
-                              nativeInputOrTextArea: styles.tallInput,
+                              nativeInputOrTextArea: 'fr-input--tall',
                             }}
                             nativeInputProps={{
                               type: 'number',
@@ -159,7 +158,7 @@ const CraAnimationForm = ({
                               </span>
                             }
                             classes={{
-                              nativeInputOrTextArea: styles.tallInput,
+                              nativeInputOrTextArea: 'fr-input--tall',
                             }}
                             nativeInputProps={{
                               type: 'number',

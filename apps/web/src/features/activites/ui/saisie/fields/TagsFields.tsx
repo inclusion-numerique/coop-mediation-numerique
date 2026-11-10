@@ -1,16 +1,15 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions } from '@tanstack/react-form'
-import { CreationDeTagDuCra } from '../../tags/ModaleDeCreationDeTag'
+import { CreationDeTagDuCra } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import {
   TagComboBox,
   TagOptions,
   TagSelectedItems,
-} from '../../tags/TagsComboBox'
-import type { Tag } from '../../tags/tag-du-cra'
-import { CraData } from '../../validation/CraValidation'
-import styles from '../CraForm.module.css'
+} from '@app/web/features/activites/ui/saisie/tags/TagsComboBox'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { CraData } from '@app/web/features/activites/use-cases/cra/validation/CraValidation'
+import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { formOptions } from '@tanstack/react-form'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,
@@ -53,7 +52,7 @@ export const TagsFields = withForm({
                   isConnected={false}
                   isPending={isPending}
                   nativeLabelProps={getLabelProps()}
-                  classes={{ nativeInputOrTextArea: styles.tallInput }}
+                  classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
                   nativeInputProps={{
                     ...getInputProps(),
                     placeholder: 'Sélectionnez un ou plusieurs tags',

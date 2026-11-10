@@ -1,10 +1,9 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import { CraData } from '@app/web/features/activites/use-cases/cra/validation/CraValidation'
 import { Thematique } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
-import { CraData } from '../../validation/CraValidation'
-import styles from '../CraForm.module.css'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,
@@ -69,7 +68,7 @@ export const ThematiquesFields = withForm({
                     <field.Input
                       isPending={isPending}
                       label="Préciser le nom de la démarche administrative réalisée"
-                      classes={{ nativeInputOrTextArea: styles.tallInput }}
+                      classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
                       className="fr-mb-12v"
                     />
                   </>

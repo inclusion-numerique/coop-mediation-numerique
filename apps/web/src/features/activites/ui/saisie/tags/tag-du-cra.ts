@@ -1,4 +1,4 @@
-import { TagScope } from '../../tags/tagScope'
+import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 
 export type PorteeDuTagDuCra =
   | 'Personnel'

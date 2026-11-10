@@ -4,6 +4,11 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import { saisieDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/saisie-du-formulaire.presenter'
+import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
+import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
@@ -15,16 +20,11 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { type DefaultValues } from 'react-hook-form'
-import { MaterielField } from '../../components/fields/MaterielField'
-import { RendezVousFields } from '../../components/fields/RendezVousFields'
-import { TagsFields } from '../../components/fields/TagsFields'
-import { ThematiquesFields } from '../../components/fields/ThematiquesFields'
 import { materielOptions } from '../../fields/materiel'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '../../fields/thematique'
-import type { Tag } from '../../tags/tag-du-cra'
 import { niveauAtelierOptionsWithExtras } from '../fields/niveau-atelier'
 import {
   type CraCollectifData,

@@ -1,13 +1,13 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import {
+  type RechercherDesTagsInitiaux,
+  tagDuFormulaire,
+} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { DefaultValues } from 'react-hook-form'
 import { CraAnimationData } from './animation/validation/CraAnimationValidation'
 import { CraEvenementData } from './evenement/validation/CraEvenementValidation'
 import { dureeAccompagnementParDefautLabels } from './fields/duree-accompagnement'
 import { CraPartenariatData } from './partenariat/validation/CraPartenariatValidation'
-import {
-  type RechercherDesTagsInitiaux,
-  tagDuFormulaire,
-} from './tags/tag-du-cra'
 
 type CraCoordinationData =
   | CraAnimationData

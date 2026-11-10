@@ -1,6 +1,6 @@
+import { clearAdministrativeData } from '@app/web/features/activites/ui/saisie/clearAdministrativeData'
 import type { z } from 'zod'
 import type { CraCollectifData } from '../../../use-cases/cra/collectif/validation/CraCollectifValidation'
-import { clearAdministrativeData } from '../../../use-cases/cra/components/clearAdministrativeData'
 import { craDureeDataToMinutes } from '../../../use-cases/cra/db/minutesToCraDuree'
 import type { EnregistrerUnAtelierCollectifValidation } from '../action/enregistrer-un-atelier-collectif.validation'
 

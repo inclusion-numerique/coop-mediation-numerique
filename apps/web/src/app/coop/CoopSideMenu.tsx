@@ -2,7 +2,7 @@
 
 import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
+import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'

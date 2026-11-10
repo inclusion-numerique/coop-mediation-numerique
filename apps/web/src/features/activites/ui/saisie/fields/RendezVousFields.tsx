@@ -1,6 +1,9 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
+import { typeLieuOptionsWithExtras } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+import { debutDispositifConum } from '@app/web/features/activites/use-cases/cra/validation/CraDateValidation'
+import { CraData } from '@app/web/features/activites/use-cases/cra/validation/CraValidation'
 import {
   type Commune,
   CommuneComboBox,
@@ -15,10 +18,6 @@ import {
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
-import { typeLieuOptionsWithExtras } from '../../fields/type-lieu'
-import { debutDispositifConum } from '../../validation/CraDateValidation'
-import { CraData } from '../../validation/CraValidation'
-import styles from '../CraForm.module.css'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,
@@ -89,7 +88,7 @@ export const RendezVousFields = withForm({
                 className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
                 isPending={isPending}
                 nativeInputProps={{ type: 'date', min: debutDispositifConum }}
-                classes={{ nativeInputOrTextArea: styles.tallInput }}
+                classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
                 label={
                   <>
                     Date de l’accompagnement <RedAsterisk />
@@ -104,7 +103,7 @@ export const RendezVousFields = withForm({
                 <field.Select
                   isPending={isPending}
                   options={dureeOptions}
-                  className={styles.tallInput}
+                  className="fr-input--tall"
                   placeholder="Sélectionnez une durée"
                   label={
                     <>
@@ -128,7 +127,7 @@ export const RendezVousFields = withForm({
                               </span>
                             }
                             classes={{
-                              nativeInputOrTextArea: styles.tallInput,
+                              nativeInputOrTextArea: 'fr-input--tall',
                             }}
                             nativeInputProps={{
                               type: 'number',
@@ -155,7 +154,7 @@ export const RendezVousFields = withForm({
                               </span>
                             }
                             classes={{
-                              nativeInputOrTextArea: styles.tallInput,
+                              nativeInputOrTextArea: 'fr-input--tall',
                             }}
                             nativeInputProps={{
                               type: 'number',
@@ -248,7 +247,7 @@ export const RendezVousFields = withForm({
                               )
                             }
                             classes={{
-                              nativeInputOrTextArea: styles.tallInput,
+                              nativeInputOrTextArea: 'fr-input--tall',
                             }}
                             isConnected={false}
                             isPending={isPending}

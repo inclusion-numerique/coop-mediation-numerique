@@ -1,8 +1,8 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import { CraData } from '@app/web/features/activites/use-cases/cra/validation/CraValidation'
 import { Materiel } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
-import { CraData } from '../../validation/CraValidation'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,

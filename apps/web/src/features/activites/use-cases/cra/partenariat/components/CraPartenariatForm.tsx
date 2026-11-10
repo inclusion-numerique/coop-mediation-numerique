@@ -4,6 +4,8 @@ import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { createToast } from '@app/ui/toast/createToast'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import { saisieDuPartenariat } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -13,9 +15,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
-import styles from '../../components/CraForm.module.css'
-import { TagsFields } from '../../components/fields/TagsFields'
-import type { Tag } from '../../tags/tag-du-cra'
 import { debutDispositifConum } from '../../validation/CraDateValidation'
 import {
   ECHELON_TERRITORIAL_OPTIONS,
@@ -87,7 +86,7 @@ const CraPartenariatForm = ({
               className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
               isPending={isPending}
               nativeInputProps={{ type: 'date', min: debutDispositifConum }}
-              classes={{ nativeInputOrTextArea: styles.tallInput }}
+              classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
               label={
                 <>
                   Date de lancement du partenariat <RedAsterisk />

@@ -1,11 +1,11 @@
+import {
+  type RechercherDesTagsInitiaux,
+  tagDuFormulaire,
+} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite'
 import type { DefaultValues } from 'react-hook-form'
 import { getAdaptiveDureeOptions } from './db/getAdaptiveDureeOptions'
-import {
-  type RechercherDesTagsInitiaux,
-  tagDuFormulaire,
-} from './tags/tag-du-cra'
 import { CraData } from './validation/CraValidation'
 
 const craDefaultValues = (

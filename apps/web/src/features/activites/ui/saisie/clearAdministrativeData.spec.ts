@@ -1,5 +1,5 @@
+import { clearAdministrativeData } from '@app/web/features/activites/ui/saisie/clearAdministrativeData'
 import { Thematique } from '@app/web/generated/prisma/browser'
-import { clearAdministrativeData } from './clearAdministrativeData'
 
 describe('clear administrative data', () => {
   it('removes all administrative thematiques when aide aux demarches administratives is absent', () => {

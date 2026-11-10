@@ -2,10 +2,13 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { ModaleDeCreationDeTag } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
+import type {
+  Tag,
+  VisibiliteDuTagDuCra,
+} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
-import { ModaleDeCreationDeTag } from '../tags/ModaleDeCreationDeTag'
-import type { Tag, VisibiliteDuTagDuCra } from '../tags/tag-du-cra'
 import CraPartenariatForm from './components/CraPartenariatForm'
 import { CraPartenariatData } from './validation/CraPartenariatValidation'
 

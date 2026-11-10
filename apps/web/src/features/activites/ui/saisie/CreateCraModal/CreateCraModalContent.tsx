@@ -1,18 +1,17 @@
 'use client'
 
+import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
+import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import { CalendarIcon } from '@app/web/features/pictograms/digital/CalendarIcon'
 import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIcon'
 import { HumanCooperationIcon } from '@app/web/features/pictograms/environment/HumanCooperationIcon'
 import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
-
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
-import { CraCollectifData } from '../../collectif/validation/CraCollectifValidation'
-import { CraIndividuelData } from '../../individuel/validation/CraIndividuelValidation'
 
 const ModalNavigationButton = ({
   children,

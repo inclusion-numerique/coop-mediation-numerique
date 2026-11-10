@@ -1,6 +1,5 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
-import styles from '@app/web/features/activites/use-cases/cra/components/CraForm.module.css'
 import {
   CommuneComboBox,
   CommuneOptions,
@@ -127,7 +126,7 @@ export const BeneficiaireAnonymeFields = withForm({
                     isPending={isPending}
                     isConnected={false}
                     nativeLabelProps={getLabelProps()}
-                    classes={{ nativeInputOrTextArea: styles.tallInput }}
+                    classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
                     nativeInputProps={{
                       ...getInputProps(),
                       placeholder:

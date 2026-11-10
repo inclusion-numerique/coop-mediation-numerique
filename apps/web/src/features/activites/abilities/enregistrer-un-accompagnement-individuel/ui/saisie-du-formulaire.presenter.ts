@@ -1,5 +1,5 @@
+import { clearAdministrativeData } from '@app/web/features/activites/ui/saisie/clearAdministrativeData'
 import type { z } from 'zod'
-import { clearAdministrativeData } from '../../../use-cases/cra/components/clearAdministrativeData'
 import { craDureeDataToMinutes } from '../../../use-cases/cra/db/minutesToCraDuree'
 import type { CraIndividuelData } from '../../../use-cases/cra/individuel/validation/CraIndividuelValidation'
 import type { EnregistrerUnAccompagnementIndividuelValidation } from '../action/enregistrer-un-accompagnement-individuel.validation'

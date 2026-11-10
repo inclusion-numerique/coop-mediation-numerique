@@ -1,5 +1,5 @@
+import { thematiquesNonAdministrativesValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import { Thematique } from '@app/web/generated/prisma/browser'
-import { thematiquesNonAdministrativesValues } from '../fields/thematique'
 
 const hasAideAuxDemarchesAdministratives = (thematiques: Thematique[]) =>
   thematiques.includes(Thematique.AideAuxDemarchesAdministratives)

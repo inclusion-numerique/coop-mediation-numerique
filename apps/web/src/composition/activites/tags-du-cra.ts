@@ -2,7 +2,7 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import type {
   RechercherDesTagsInitiaux,
   VisibiliteDuTagDuCra,
-} from '@app/web/features/activites/use-cases/cra/tags/tag-du-cra'
+} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { visibilitesProposees } from '@app/web/features/tags/abilities/creer-un-tag/ui'
 import { rechercherDesTags } from '@app/web/features/tags/abilities/rechercher-des-tags'
 import { TagId } from '@app/web/features/tags/domain'
