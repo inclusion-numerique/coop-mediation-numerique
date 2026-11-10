@@ -4,6 +4,7 @@ import {
   siIndisponible,
 } from '@app/web/external-apis/apiAdresse'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+import { premierCodePostal } from './premier-code-postal'
 
 export type Commune = {
   id: string
@@ -31,7 +32,7 @@ const loadSuggestions = async (
       id: adresse.properties.id,
       label: `${adresse.properties.label} · ${adresse.properties.postcode}`,
       commune: adresse.properties.city,
-      codePostal: adresse.properties.postcode,
+      codePostal: premierCodePostal(adresse.properties.postcode),
       codeInsee: adresse.properties.citycode,
       nom: adresse.properties.name,
       contexte: adresse.properties.context,
