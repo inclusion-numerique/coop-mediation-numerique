@@ -22,7 +22,7 @@ import {
   Materiel,
   MediateurId,
   NiveauDAtelier,
-  Notes,
+  notesDe,
   type Orientation,
   type Origine,
   type ParticipantsAnonymes,
@@ -118,11 +118,6 @@ const valide =
 
 const renseigne = (valeur: string | null): string | null =>
   valeur === null || valeur.trim() === '' ? null : valeur
-
-const HTML_VIDE = /^\s*(<p>\s*(<br\s*\/?>)?\s*<\/p>\s*)*$/
-
-const notesDe = (notes: string | null): Notes | null =>
-  notes === null || HTML_VIDE.test(notes) ? null : Notes(notes)
 
 const communeDe = (id: string, colonnes: ColonnesDeCommune): Commune | null => {
   const nom = renseigne(colonnes.nom)

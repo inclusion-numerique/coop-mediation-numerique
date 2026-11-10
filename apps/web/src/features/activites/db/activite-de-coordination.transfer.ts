@@ -20,7 +20,7 @@ import {
   NomDeLActivite,
   NomDeStructure,
   NomDeTag,
-  Notes,
+  notesDe,
   Organisateur,
   Precision,
   type StructurePartenaire,
@@ -185,11 +185,6 @@ const structuresPartenairesDeLaLigne = (
       ).map(structurePartenaireDe(row.id)),
     ),
   )
-
-const HTML_VIDE = /^\s*(<p>\s*(<br\s*\/?>)?\s*<\/p>\s*)*$/
-
-const notesDe = (notes: string | null): Notes | null =>
-  notes === null || HTML_VIDE.test(notes) ? null : Notes(notes)
 
 const nomDe = (nom: string | null): NomDeLActivite | null => {
   const renseigneNom = renseigne(nom)

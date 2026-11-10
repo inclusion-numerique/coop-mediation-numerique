@@ -1,16 +1,11 @@
-import { CraAnimationValidation } from '@app/web/features/activites/use-cases/cra/animation/validation/CraAnimationValidation'
 import { CraCollectifServerValidation } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifServerValidation'
 import { createOrUpdateActivite } from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActivite'
-import { createOrUpdateActiviteCoordination } from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActiviteCoordination'
-import { CraEvenementValidation } from '@app/web/features/activites/use-cases/cra/evenement/validation/CraEvenementValidation'
 import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
-import { CraPartenariatValidation } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
 import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
 import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
 import { StatutPresenceModifiable } from '@app/web/features/rdvsp/domain/statut-presence'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
 import * as Sentry from '@sentry/nextjs'
 
@@ -97,47 +92,5 @@ export const craRouter = router({
       })
 
       return createResult
-    }),
-  animation: protectedProcedure
-    .input(CraAnimationValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsCoordinateur(user)
-
-      return createOrUpdateActiviteCoordination({
-        input: {
-          type: 'Animation',
-          data: input,
-        },
-        userId: user.id,
-        coordinateurId: user.coordinateur.id,
-      })
-    }),
-  evenement: protectedProcedure
-    .input(CraEvenementValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsCoordinateur(user)
-
-      return createOrUpdateActiviteCoordination({
-        input: {
-          type: 'Evenement',
-          data: input,
-        },
-        userId: user.id,
-        coordinateurId: user.coordinateur.id,
-      })
-    }),
-  partenariat: protectedProcedure
-    .input(CraPartenariatValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsCoordinateur(user)
-
-      return createOrUpdateActiviteCoordination({
-        input: {
-          type: 'Partenariat',
-          data: input,
-        },
-        userId: user.id,
-        coordinateurId: user.coordinateur.id,
-      })
     }),
 })

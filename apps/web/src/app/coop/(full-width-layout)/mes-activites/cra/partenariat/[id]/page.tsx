@@ -1,3 +1,4 @@
+import { enregistrerUneActiviteDeCoordinationAction } from '@app/web/app/_actions/activites/enregistrer-une-activite-de-coordination.action'
 import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
@@ -5,6 +6,7 @@ import {
   tagsInitiauxDuCra,
   visibilitesDeTagDuCra,
 } from '@app/web/composition/activites/tags-du-cra'
+import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
 import CraPartenariatPage from '@app/web/features/activites/use-cases/cra/partenariat/CraPartenariatPage'
 import { getCraPartenariatDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/partenariat/db/getCraPartenariatDataDefaultValuesFromExisting'
@@ -41,18 +43,23 @@ const UpdateCraPartenariatPage = async ({
 
   return (
     <ClientBinder
-      bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
-      to={rechercherDesTagsAction}
+      bind={ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY}
+      to={enregistrerUneActiviteDeCoordinationAction}
     >
-      <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
-        <CraPartenariatPage
-          {...craPageData}
-          coordinateurId={coordinateurId}
-          visibilitesDeTag={visibilitesDeTagDuCra(user, {
-            departemental: true,
-          })}
-          retour={retour}
-        />
+      <ClientBinder
+        bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+        to={rechercherDesTagsAction}
+      >
+        <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
+          <CraPartenariatPage
+            {...craPageData}
+            coordinateurId={coordinateurId}
+            visibilitesDeTag={visibilitesDeTagDuCra(user, {
+              departemental: true,
+            })}
+            retour={retour}
+          />
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )

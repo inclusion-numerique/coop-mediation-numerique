@@ -110,3 +110,9 @@ export type AucuneStructurePartenaire = {
 export const AucuneStructurePartenaire = (): AucuneStructurePartenaire => ({
   _tag: 'AucuneStructurePartenaire',
 })
+
+export type TagInutilisable = { readonly _tag: 'TagInutilisable' }
+
+export const TagInutilisable = (): TagInutilisable => ({
+  _tag: 'TagInutilisable',
+})

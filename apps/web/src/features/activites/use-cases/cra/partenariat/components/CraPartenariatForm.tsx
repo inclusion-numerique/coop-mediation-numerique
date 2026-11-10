@@ -2,13 +2,15 @@
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
+import { saisieDuPartenariat } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { trpc } from '@app/web/trpc'
+import { inject } from '@app/web/libs/injection/client'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
 import styles from '../../components/CraForm.module.css'
@@ -42,8 +44,6 @@ const CraPartenariatForm = ({
   retour,
 }: CraPartenariatFormProps) => {
   const router = useRouter()
-  const mutation = trpc.cra.partenariat.useMutation()
-  const isPending = mutation.isPending
 
   const form = useAppForm({
     validators: {
@@ -59,27 +59,24 @@ const CraPartenariatForm = ({
         )
       },
     },
-    onSubmit: async (data) => {
-      if (isPending) return
-
-      try {
-        await mutation.mutateAsync(data.value as CraPartenariatData)
-        createToast({
-          priority: 'success',
-          message: 'Le partenariat a bien été enregistré.',
-        })
-        router.push(retour ?? '/coop/mes-coordinations')
-        router.refresh()
-      } catch (mutationError) {
-        createToast({
-          priority: 'error',
-          message:
-            'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-        })
-        throw mutationError
+    onSubmit: async ({ value }) => {
+      const resultat = await inject(
+        ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY,
+      )(saisieDuPartenariat(CraPartenariatValidation.parse(value)))
+      if (!resultat.success) {
+        createToast({ priority: 'error', message: resultat.error })
+        return
       }
+      createToast({
+        priority: 'success',
+        message: 'Le partenariat a bien été enregistré.',
+      })
+      router.push(retour ?? '/coop/mes-coordinations')
+      router.refresh()
     },
   })
+
+  const isPending = useStore(form.store, (state) => state.isSubmitting)
 
   return (
     <form.AppForm>
@@ -300,4 +297,4 @@ const CraPartenariatForm = ({
   )
 }
 
-export default withTrpc(CraPartenariatForm)
+export default CraPartenariatForm
