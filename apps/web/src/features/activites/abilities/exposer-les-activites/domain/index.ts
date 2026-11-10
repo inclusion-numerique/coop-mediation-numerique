@@ -1,4 +1,3 @@
-export { ActiviteId } from './activite-id'
 export type {
   CriteresDExposition,
   CurseurDActivite,

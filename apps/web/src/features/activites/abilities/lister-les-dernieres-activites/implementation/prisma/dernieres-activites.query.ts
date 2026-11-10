@@ -5,7 +5,7 @@ import {
 import { addTimezoneToActivite } from '@app/web/features/activites/use-cases/list/db/addTimezoneToActivite'
 import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
 import { prismaClient } from '@app/web/prismaClient'
-import type { MediateurId } from '../../domain'
+import type { MediateurId } from '../../../../domain'
 
 const NOMBRE_DE_DERNIERES_ACTIVITES = 3
 

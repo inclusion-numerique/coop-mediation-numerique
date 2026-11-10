@@ -5,7 +5,8 @@ import {
 } from '@app/web/features/activites/activites.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { ActiviteId, Horodatage } from './domain'
+import { ActiviteId } from '../../domain'
+import { Horodatage } from './domain'
 import { activitesExposees } from './implementation'
 
 const exposition: {
