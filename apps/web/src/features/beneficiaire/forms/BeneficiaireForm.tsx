@@ -5,8 +5,8 @@ import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisc
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
-import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
   CommuneComboBox,
   CommuneOptions,

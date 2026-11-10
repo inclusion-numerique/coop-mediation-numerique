@@ -1,6 +1,6 @@
 'use client'
 
-import type { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
+import type { BeneficiaireCraData } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
 

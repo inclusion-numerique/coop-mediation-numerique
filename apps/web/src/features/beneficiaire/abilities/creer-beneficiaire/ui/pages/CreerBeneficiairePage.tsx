@@ -2,7 +2,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@app/web/features/beneficiaire/forms/BeneficiaireForm'

@@ -1,6 +1,6 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { CraData } from '@app/web/features/activites/use-cases/cra/validation/CraValidation'
+import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
 import { Thematique } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'

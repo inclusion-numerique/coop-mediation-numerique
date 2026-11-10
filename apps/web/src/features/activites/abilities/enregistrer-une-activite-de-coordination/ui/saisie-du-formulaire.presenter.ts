@@ -1,8 +1,8 @@
+import type { CraAnimationData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
+import type { CraEvenementData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
+import type { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import type { z } from 'zod'
-import type { CraAnimationData } from '../../../use-cases/cra/animation/validation/CraAnimationValidation'
 import { craDureeDataToMinutes } from '../../../use-cases/cra/db/minutesToCraDuree'
-import type { CraEvenementData } from '../../../use-cases/cra/evenement/validation/CraEvenementValidation'
-import type { CraPartenariatData } from '../../../use-cases/cra/partenariat/validation/CraPartenariatValidation'
 import type { EnregistrerUneActiviteDeCoordinationValidation } from '../action/enregistrer-une-activite-de-coordination.validation'
 
 type Saisie = z.input<typeof EnregistrerUneActiviteDeCoordinationValidation>

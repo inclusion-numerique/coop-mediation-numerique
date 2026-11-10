@@ -1,6 +1,6 @@
 import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { CreerBeneficiairePage } from '@app/web/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
 import {
   decodeSerializableState,

@@ -1,11 +1,11 @@
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
+import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/features/activites/use-cases/cra/collectif/createParticipantsAnonymesForBeneficiaires'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { DefaultValues } from 'react-hook-form'
 import { getBeneficiaireDefaultCraDataFromExisting } from '../../db/getBeneficiaireDefaultCraDataFromExisting'
 import { minutesToCraDureeData } from '../../db/minutesToCraDuree'
-import { CraCollectifData } from '../validation/CraCollectifValidation'
 
 export const getCraCollectifDataDefaultValuesFromExisting = async ({
   id,

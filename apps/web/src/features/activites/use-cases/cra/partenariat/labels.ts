@@ -3,7 +3,7 @@ import {
   EchelonTerritorialValue,
   NaturePartenariatValue,
   TypeStructurePartenairesValue,
-} from './validation/CraPartenariatValidation'
+} from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 
 export const NATURE_OPTIONS: SelectOption<NaturePartenariatValue>[] = [
   { label: 'Conception de parcours usager', value: 'ParcoursUsager' },

@@ -1,0 +1,88 @@
+import { CraDateValidation } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
+import { CraDureeValidation } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
+import z from 'zod'
+
+const initiativeValues = ['Initiative', 'Demande'] as const
+
+export type InitiativeValue = (typeof initiativeValues)[number]
+
+const typeAnimationValues = [
+  'Assemblee',
+  'Comite',
+  'GroupeDeTravail',
+  'Echange',
+  'ReunionCoordination',
+  'Webinaire',
+  'Autre',
+] as const
+
+export type TypeAnimationValue = (typeof typeAnimationValues)[number]
+
+const thematiqueAnimationValues = [
+  'Partage',
+  'Reseau',
+  'Soutien',
+  'Professionnel',
+  'RH',
+  'Autre',
+] as const
+
+export type ThematiqueAnimationValue =
+  (typeof thematiqueAnimationValues)[number]
+
+export const CraAnimationValidation = z
+  .object({
+    id: z.guid().nullish(), // defined if update, nullish if create
+    date: CraDateValidation,
+    duree: CraDureeValidation,
+    coordinateurId: z.guid(), // owner of the CRA
+    mediateurs: z.number().nullish(),
+    structures: z.number().nullish(),
+    autresActeurs: z.number().nullish(),
+    typeAnimation: z.enum(typeAnimationValues, {
+      error: 'Veuillez renseigner un type d’animation',
+    }),
+    typeAnimationAutre: z.string().nullish(),
+    initiative: z.enum(initiativeValues).nullish(),
+    thematiquesAnimation: z.array(z.enum(thematiqueAnimationValues), {
+      error: 'Veuillez renseigner au moins une thématique d’animation',
+    }),
+    thematiqueAnimationAutre: z.string().nullish(),
+    tags: z.array(z.object({ id: z.guid() })).default([]),
+    notes: z.string().nullish(),
+  })
+  .superRefine((data, ctx) => {
+    const hasMediateurs = (data.mediateurs ?? 0) > 0
+    const hasStructures = (data.structures ?? 0) > 0
+    const hasAutresActeurs = (data.autresActeurs ?? 0) > 0
+
+    if (!hasMediateurs && !hasStructures && !hasAutresActeurs) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['mediateurs'],
+        message:
+          'Veuillez renseigner au moins un médiateur, une structure ou un autre acteur',
+      })
+    }
+
+    if (data.typeAnimation === 'Autre' && !data.typeAnimationAutre?.trim()) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['typeAnimationAutre'],
+        message: 'Veuillez préciser le type d’animation',
+      })
+    }
+
+    if (
+      data.thematiquesAnimation.includes('Autre') &&
+      !data.thematiqueAnimationAutre?.trim()
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['thematiqueAnimationAutre'],
+        message: 'Veuillez préciser la thématique d’animation',
+      })
+    }
+  })
+
+export type CraAnimationData = z.infer<typeof CraAnimationValidation>

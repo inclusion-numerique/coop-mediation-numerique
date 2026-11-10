@@ -1,7 +1,7 @@
+import { CraEvenementData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { DefaultValues } from 'react-hook-form'
-import { CraEvenementData } from '../validation/CraEvenementValidation'
 
 export const getCraEvenementDataDefaultValuesFromExisting = async ({
   id,

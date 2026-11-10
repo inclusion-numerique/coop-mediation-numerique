@@ -1,0 +1,226 @@
+'use client'
+
+import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import { createToast } from '@app/ui/toast/createToast'
+import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
+import { AutonomieBeneficiaireField } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/AutonomieBeneficiaireField'
+import { BeneficiaireAnonymeFields } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireAnonymeFields'
+import {
+  BeneficiaireFields,
+  isAnonyme,
+} from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireFields'
+import { OrientationFields } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/OrientationFields'
+import { saisieDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/saisie-du-formulaire.presenter'
+import {
+  CraIndividuelData,
+  CraIndividuelValidation,
+} from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
+import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { materielOptions } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import {
+  thematiqueAdministrativesOptionsWithExtras,
+  thematiqueNonAdministrativesOptionsWithExtras,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { autonomieOptionsWithExtras } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
+import { structuresRedirectionOptions } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
+import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
+import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
+import {
+  genreOptions,
+  statutSocialOptions,
+  trancheAgeOptions,
+} from '@app/web/features/beneficiaire/forms/beneficiaire-options'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
+import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
+import { inject } from '@app/web/libs/injection/client'
+import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
+import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useStore } from '@tanstack/react-form'
+import { useRouter } from 'next/navigation'
+import { DefaultValues } from 'react-hook-form'
+
+const CraIndividuelForm = ({
+  defaultValues,
+  lieuActiviteOptions,
+  initialBeneficiairesOptions,
+  initialTagsOptions,
+  retour,
+  dureeOptions,
+}: {
+  defaultValues: DefaultValues<CraIndividuelData> & { mediateurId: string }
+  lieuActiviteOptions: LieuActiviteOption[]
+  initialBeneficiairesOptions: BeneficiaireOption[]
+  initialTagsOptions: Tag[]
+  retour?: string
+  dureeOptions: SelectOption[]
+}) => {
+  const router = useRouter()
+
+  const form = useAppForm({
+    validators: {
+      onChange: CraIndividuelValidation,
+    },
+    defaultValues,
+    listeners: {
+      onChange: ({ formApi }) => {
+        replaceRouteWithoutRerender(
+          `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(
+            formApi.state.values,
+          )}`,
+        )
+      },
+    },
+    onSubmit: async ({ value }) => {
+      const resultat = await inject(
+        ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY,
+      )(saisieDeLAccompagnementIndividuel(CraIndividuelValidation.parse(value)))
+      if (!resultat.success) {
+        createToast({ priority: 'error', message: resultat.error })
+        return
+      }
+      createToast({
+        priority: 'success',
+        message: 'L’accompagnement individuel a bien été enregistré.',
+      })
+      router.push(retour ?? '/coop/mes-activites')
+      router.refresh()
+    },
+  })
+
+  const syncWithCommuneResidenceBeneficiaire = (item: Commune) => {
+    const communeResidence = form.getFieldValue('beneficiaire.communeResidence')
+    const typeLieu = form.getFieldValue('typeLieu')
+    if (communeResidence?.id != null || typeLieu !== 'Domicile') return
+    form.setFieldValue('beneficiaire.communeResidence', item)
+  }
+
+  const syncLieuCommuneDataWithBeneficiaire = () => {
+    const lieuCommuneData = form.getFieldValue('lieuCommuneData')
+    if (lieuCommuneData?.id != null) return
+    const communeResidence = form.getFieldValue('beneficiaire.communeResidence')
+    if (communeResidence?.id == null) return
+    form.setFieldValue('lieuCommuneData', communeResidence)
+  }
+
+  const onSelectBeneficiaire = (beneficiaire: {
+    communeResidence?: { id: string } | null
+  }) => {
+    const typeLieu = form.getFieldValue('typeLieu')
+    if (typeLieu !== 'Domicile') return
+    const lieuCommuneData = form.getFieldValue('lieuCommuneData')
+    if (lieuCommuneData?.id != null) return
+    if (beneficiaire.communeResidence?.id == null) return
+    form.setFieldValue(
+      'lieuCommuneData',
+      beneficiaire.communeResidence as Commune,
+    )
+  }
+
+  const isPending = useStore(form.store, (state) => state.isSubmitting)
+
+  return (
+    <form.AppForm>
+      <form onSubmit={handleSubmit(form)}>
+        <BeneficiaireFields
+          form={form}
+          isPending={isPending}
+          creerBeneficiaireRetourUrl="/coop/mes-activites/cra/individuel"
+          initialBeneficiairesOptions={initialBeneficiairesOptions}
+          onSelectBeneficiaire={onSelectBeneficiaire}
+        />
+        <RendezVousFields
+          form={form as any}
+          isPending={isPending}
+          dureeOptions={dureeOptions}
+          lieuActiviteOptions={lieuActiviteOptions}
+          onSelectLieuCommuneData={syncWithCommuneResidenceBeneficiaire}
+          onSelectTypeLieuDomicile={syncLieuCommuneDataWithBeneficiaire}
+        />
+        <hr className="fr-separator-12v" />
+        <MaterielField
+          form={form as any}
+          isPending={isPending}
+          materielOptions={materielOptions}
+        />
+        <ThematiquesFields
+          form={form as any}
+          isPending={isPending}
+          thematiqueAdministrativesOptionsWithExtras={
+            thematiqueAdministrativesOptionsWithExtras
+          }
+          thematiqueNonAdministrativesOptionsWithExtras={
+            thematiqueNonAdministrativesOptionsWithExtras
+          }
+        />
+        <TagsFields
+          form={form as any}
+          isPending={isPending}
+          initialTagsOptions={initialTagsOptions}
+        />
+        <hr className="fr-separator-12v" />
+        <AutonomieBeneficiaireField
+          form={form}
+          isPending={isPending}
+          autonomieOptionsWithExtras={autonomieOptionsWithExtras}
+        />
+        <OrientationFields
+          form={form}
+          isPending={isPending}
+          yesNoBooleanOptions={yesNoBooleanOptions}
+          structuresRedirectionOptions={structuresRedirectionOptions}
+        />
+        <form.AppField name="beneficiaire">
+          {(field) =>
+            isAnonyme(field) && (
+              <>
+                <hr className="fr-separator-12v" />
+                <BeneficiaireAnonymeFields
+                  form={form}
+                  isPending={isPending}
+                  genreOptions={genreOptions}
+                  trancheAgeOptions={trancheAgeOptions}
+                  statutSocialOptions={statutSocialOptions}
+                />
+              </>
+            )
+          }
+        </form.AppField>
+        <form.AppField name="notes">
+          {(field) => (
+            <field.RichTextarea
+              label="Notes sur l’accompagnement"
+              hint={
+                <>
+                  Il est interdit de stocker des informations sensibles (données
+                  de santé, mots de passe, etc).
+                  <br />
+                  Vous retrouverez ces notes dans votre historique d’activités
+                  ainsi que dans l’historique du bénéficiaire.
+                </>
+              }
+              isPending={isPending}
+              className="fr-mt-12v"
+            />
+          )}
+        </form.AppField>
+        <div className="fr-btns-group fr-mt-12v fr-mb-30v">
+          <form.Submit isPending={isPending}>
+            Enregistrer l’activité
+          </form.Submit>
+          <Button priority="secondary" linkProps={{ href: retour ?? '/coop' }}>
+            Annuler
+          </Button>
+        </div>
+      </form>
+    </form.AppForm>
+  )
+}
+
+export default CraIndividuelForm

@@ -1,5 +1,5 @@
+import { CraDureeData } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
 import { dureeAccompagnementPersonnaliseeValue } from '../fields/duree-accompagnement'
-import { CraDureeData } from '../validation/CraDureeValidation'
 
 export const craDureeDataToMinutes = ({
   duree,

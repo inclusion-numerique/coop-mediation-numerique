@@ -1,11 +1,11 @@
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
+import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { optionalBooleanToYesNo } from '@app/web/utils/yesNoBooleanOptions'
 import { DefaultValues } from 'react-hook-form'
 import { getBeneficiaireDefaultCraDataFromExisting } from '../../db/getBeneficiaireDefaultCraDataFromExisting'
 import { minutesToCraDureeData } from '../../db/minutesToCraDuree'
-import { CraIndividuelData } from '../validation/CraIndividuelValidation'
 
 export const getCraIndividuelDataDefaultValuesFromExisting = async ({
   id,

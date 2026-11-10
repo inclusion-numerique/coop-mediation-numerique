@@ -1,4 +1,4 @@
-import { CraDureeData } from '../validation/CraDureeValidation'
+import { CraDureeData } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
 import {
   craDureeDataToMinutes,
   minutesToCraDureeData,

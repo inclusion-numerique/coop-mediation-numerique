@@ -1,4 +1,4 @@
-import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
+import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import { v4 } from 'uuid'
 import {
   createBeneficiairesForParticipantsAnonymes,

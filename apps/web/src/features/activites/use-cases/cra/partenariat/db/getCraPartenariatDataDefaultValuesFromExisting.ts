@@ -1,7 +1,7 @@
+import { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { DefaultValues } from 'react-hook-form'
-import { CraPartenariatData } from '../validation/CraPartenariatValidation'
 
 export const getCraPartenariatDataDefaultValuesFromExisting = async ({
   id,

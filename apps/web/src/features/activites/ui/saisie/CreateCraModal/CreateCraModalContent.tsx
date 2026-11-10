@@ -1,7 +1,7 @@
 'use client'
 
-import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
-import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { CalendarIcon } from '@app/web/features/pictograms/digital/CalendarIcon'
 import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIcon'
 import { HumanCooperationIcon } from '@app/web/features/pictograms/environment/HumanCooperationIcon'

@@ -1,5 +1,5 @@
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
-import type { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
+import type { BeneficiaireCraData } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
 import type { Beneficiaire } from '@app/web/generated/prisma/client'
 import type { DefaultValues } from 'react-hook-form'
 

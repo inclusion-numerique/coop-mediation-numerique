@@ -6,7 +6,7 @@ import {
   TagSelectedItems,
 } from '@app/web/features/activites/ui/saisie/tags/TagsComboBox'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { CraData } from '@app/web/features/activites/use-cases/cra/validation/CraValidation'
+import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'

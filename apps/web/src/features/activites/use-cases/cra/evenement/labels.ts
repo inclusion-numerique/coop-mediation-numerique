@@ -3,7 +3,7 @@ import {
   EchelonTerritorialValue,
   OrganisateursValue,
   TypeEvenementValue,
-} from './validation/CraEvenementValidation'
+} from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
 
 export const TYPE_EVENEMENT_OPTIONS: SelectOption<TypeEvenementValue>[] = [
   {

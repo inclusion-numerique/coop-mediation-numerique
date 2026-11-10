@@ -1,4 +1,4 @@
-import type { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/ParticipantsAnonymesCraCollectifValidation'
+import type { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
 import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
 import { statutsSociaux as statutSocialValues } from '@app/web/features/beneficiaire/domain/statut-social'
 import { tranchesAge as trancheAgeValues } from '@app/web/features/beneficiaire/domain/tranche-age'

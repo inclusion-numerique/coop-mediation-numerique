@@ -1,8 +1,8 @@
+import { CraAnimationData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { DefaultValues } from 'react-hook-form'
 import { minutesToCraDureeData } from '../../db/minutesToCraDuree'
-import { CraAnimationData } from '../validation/CraAnimationValidation'
 
 export const getCraAnimationDataDefaultValuesFromExisting = async ({
   id,

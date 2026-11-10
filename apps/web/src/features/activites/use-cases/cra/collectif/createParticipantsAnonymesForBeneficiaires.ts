@@ -1,5 +1,5 @@
-import { type ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/ParticipantsAnonymesCraCollectifValidation'
-import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
+import { type ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
+import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import { Beneficiaire } from '@app/web/generated/prisma/browser'
 
 export const createParticipantsAnonymesForBeneficiaires = <

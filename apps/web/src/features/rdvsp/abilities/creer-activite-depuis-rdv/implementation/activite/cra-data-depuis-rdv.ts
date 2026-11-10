@@ -1,11 +1,11 @@
-import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
-import { createEmptyParticipantsAnonymes } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
+import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { createEmptyParticipantsAnonymes } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import { getAdaptiveDureeOptions } from '@app/web/features/activites/use-cases/cra/db/getAdaptiveDureeOptions'
 import {
   minutesToCraDureeData,
   minutesToCustomCraDureeData,
 } from '@app/web/features/activites/use-cases/cra/db/minutesToCraDuree'
-import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import type { MergedBeneficiaire } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { DefaultValues } from 'react-hook-form'
