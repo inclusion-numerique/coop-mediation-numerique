@@ -13,11 +13,13 @@ export const Accueil = ({
   equipe,
   rendezVous,
   activites,
+  enregistrerUneActivite,
 }: {
   accueil: AccueilDuVisiteur
   equipe: ReactNode
   rendezVous: ReactNode
   activites: ReactNode
+  enregistrerUneActivite: ReactNode
 }) => (
   <CoopPageContainer size={56}>
     <SkipLinksPortal />
@@ -29,7 +31,7 @@ export const Accueil = ({
         <>
           {profil.bienvenue && <OnboardingInfo />}
           <section className="fr-my-12v">
-            <ActionsRapides />
+            <ActionsRapides enregistrerUneActivite={enregistrerUneActivite} />
           </section>
         </>
       )}

@@ -1,20 +1,17 @@
 import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { CreerBeneficiairePage } from '@app/web/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
+import type { SaisieEnCours } from '@app/web/features/beneficiaire/forms/saisie-en-cours'
 import {
   decodeSerializableState,
   type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
-import type { DefaultValues } from 'react-hook-form'
 
-// Route = orchestration : authentifie, décode le CRA en cours, lie l'action de
-// création, puis délègue le rendu au composant de page de la feature.
 const PageCreerBeneficiaire = async ({
   searchParams,
 }: {
   searchParams: Promise<{
-    cra?: EncodedState<DefaultValues<CraIndividuelData>>
+    cra?: EncodedState<SaisieEnCours>
     retour?: string
   }>
 }) => {

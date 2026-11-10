@@ -7,11 +7,11 @@ import {
   visibilitesDeTagDuCra,
 } from '@app/web/composition/activites/tags-du-cra'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
+import { getCraCoordinationPageData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/donnees-de-la-page'
 import CraPartenariatPage from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/CraPartenariatPage'
 import { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import {
   decodeSerializableState,

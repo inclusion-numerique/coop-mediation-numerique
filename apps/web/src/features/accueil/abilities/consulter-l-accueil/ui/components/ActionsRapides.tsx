@@ -1,8 +1,11 @@
-import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
-import { Button } from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 
-export const ActionsRapides = () => (
+export const ActionsRapides = ({
+  enregistrerUneActivite,
+}: {
+  enregistrerUneActivite: ReactNode
+}) => (
   <>
     <h2 className="fr-h6 fr-text-mention--grey">
       <span
@@ -13,17 +16,7 @@ export const ActionsRapides = () => (
     </h2>
     <div className="fr-grid-row fr-grid-row--gutters">
       <div className="fr-col-lg-6 fr-col-md-12 fr-col-sm-6 fr-col-12">
-        <Button
-          type="button"
-          {...CreateCraModalDefinition.buttonProps}
-          className="fr-quick-action"
-        >
-          <span
-            className="ri-add-line ri-2x fr-mr-3w fr-text--regular"
-            aria-hidden
-          />
-          Enregistrer une activité
-        </Button>
+        {enregistrerUneActivite}
       </div>
       <div className="fr-col-lg-6 fr-col-md-12 fr-col-sm-6 fr-col-12">
         <Link

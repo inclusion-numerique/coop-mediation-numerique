@@ -5,8 +5,6 @@ import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisc
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
   CommuneComboBox,
   CommuneOptions,
@@ -37,6 +35,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
+import type { SaisieEnCours } from './saisie-en-cours'
 
 // Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses
 // valeurs (comme `CraValidation`) : on étend le schéma partagé localement pour
@@ -60,11 +59,8 @@ type BeneficiaireCraData = {
   communeResidence: AdresseBanData | null
 }
 
-// Fusionne le bénéficiaire créé / modifié dans l'état du CRA en cours, qu'il
-// soit individuel (remplace le bénéficiaire) ou collectif (ajoute un
-// participant).
 const craAvecBeneficiaire = (
-  cra: DefaultValues<CraIndividuelData> | DefaultValues<CraCollectifData>,
+  cra: SaisieEnCours,
   beneficiaire: BeneficiaireCraData,
 ) =>
   'participants' in cra
@@ -81,7 +77,7 @@ const BeneficiaireForm = ({
   defaultValues: DefaultValues<BeneficiaireData> & { mediateurId: string }
   save: EnregistrerBeneficiaire
   // If present, used to merge with state on retour redirection
-  cra?: DefaultValues<CraIndividuelData> | DefaultValues<CraCollectifData>
+  cra?: SaisieEnCours
   retour?: string
   edit?: boolean
 }) => {

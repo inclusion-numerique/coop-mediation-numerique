@@ -2,14 +2,13 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@app/web/features/beneficiaire/forms/BeneficiaireForm'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import type { DefaultValues } from 'react-hook-form'
+import type { SaisieEnCours } from '../../../../forms/saisie-en-cours'
 
 /**
  * Composant de page pur : rend le formulaire de création et son chrome.
@@ -25,7 +24,7 @@ export const CreerBeneficiairePage = ({
   mediateurId: string
   save: EnregistrerBeneficiaire
   retour?: string
-  cra?: DefaultValues<CraIndividuelData>
+  cra?: SaisieEnCours
 }) => (
   <div className="fr-container fr-container--medium">
     <SkipLinksPortal />

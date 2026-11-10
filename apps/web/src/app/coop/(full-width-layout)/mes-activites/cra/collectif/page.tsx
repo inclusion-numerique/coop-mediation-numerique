@@ -2,6 +2,7 @@ import { enregistrerUnAtelierCollectifAction } from '@app/web/app/_actions/activ
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
+import { getCraPageData } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/_donnees/donnees-de-la-saisie-de-mediation'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import {
   tagsInitiauxDuCra,
@@ -13,7 +14,6 @@ import { craCollectifDefaultValues } from '@app/web/features/activites/abilities
 import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
