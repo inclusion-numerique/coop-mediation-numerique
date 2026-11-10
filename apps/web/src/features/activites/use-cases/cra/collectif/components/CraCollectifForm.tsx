@@ -2,16 +2,17 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { clearAdministrativeData } from '@app/web/features/activites/use-cases/cra/components/clearAdministrativeData'
+import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
+import { saisieDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/saisie-du-formulaire.presenter'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { trpc } from '@app/web/trpc'
+import { inject } from '@app/web/libs/injection/client'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { type DefaultValues } from 'react-hook-form'
 import { MaterielField } from '../../components/fields/MaterielField'
@@ -49,9 +50,6 @@ const CraCollectifForm = ({
 }) => {
   const router = useRouter()
 
-  const mutation = trpc.cra.collectif.useMutation()
-  const isPending = mutation.isPending
-
   const form = useAppForm({
     validators: {
       onChange: CraCollectifValidation,
@@ -66,32 +64,24 @@ const CraCollectifForm = ({
         )
       },
     },
-    onSubmit: async (data) => {
-      if (isPending) return
-      try {
-        await mutation.mutateAsync(
-          clearAdministrativeData(data.value as CraCollectifData),
-        )
-        createToast({
-          priority: 'success',
-          message: 'L’atelier collectif a bien été enregistré.',
-        })
-        router.push(retour ?? '/coop/mes-activites')
-        router.refresh()
-      } catch (mutationError) {
-        // form.setErrorMap([]) // todo: set mutation errors to form
-        // if (applyZodValidationMutationErrorsToForm(mutationError, setError)) {
-        //   return
-        // }
-        createToast({
-          priority: 'error',
-          message:
-            'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-        })
-        throw mutationError
+    onSubmit: async ({ value }) => {
+      const resultat = await inject(
+        ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY,
+      )(saisieDeLAtelierCollectif(CraCollectifValidation.parse(value)))
+      if (!resultat.success) {
+        createToast({ priority: 'error', message: resultat.error })
+        return
       }
+      createToast({
+        priority: 'success',
+        message: 'L’atelier collectif a bien été enregistré.',
+      })
+      router.push(retour ?? '/coop/mes-activites')
+      router.refresh()
     },
   })
+
+  const isPending = useStore(form.store, (state) => state.isSubmitting)
 
   return (
     <form.AppForm>
@@ -177,4 +167,4 @@ const CraCollectifForm = ({
   )
 }
 
-export default withTrpc(CraCollectifForm)
+export default CraCollectifForm

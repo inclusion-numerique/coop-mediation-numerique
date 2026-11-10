@@ -1,3 +1,4 @@
+import { enregistrerUnAtelierCollectifAction } from '@app/web/app/_actions/activites/enregistrer-un-atelier-collectif.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
@@ -6,6 +7,7 @@ import {
   tagsInitiauxDuCra,
   visibilitesDeTagDuCra,
 } from '@app/web/composition/activites/tags-du-cra'
+import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import CraCollectifPage from '@app/web/features/activites/use-cases/cra/collectif/CraCollectifPage'
 import { getCraCollectifDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/collectif/db/getCraCollectifDataDefaultValuesFromExisting'
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
@@ -66,22 +68,27 @@ const UpdateCraCollectifPage = async ({
 
   return (
     <ClientBinder
-      bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
-      to={rechercherDesTagsAction}
+      bind={ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY}
+      to={enregistrerUnAtelierCollectifAction}
     >
-      <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
-        <ClientBinder
-          bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-          to={rechercherUnLieuActiviteAction}
-        >
-          <CraCollectifPage
-            {...craPageData}
-            mediateurId={mediateurId}
-            visibilitesDeTag={visibilitesDeTagDuCra(user, {
-              departemental: false,
-            })}
-            retour={retour}
-          />
+      <ClientBinder
+        bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+        to={rechercherDesTagsAction}
+      >
+        <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
+          <ClientBinder
+            bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+            to={rechercherUnLieuActiviteAction}
+          >
+            <CraCollectifPage
+              {...craPageData}
+              mediateurId={mediateurId}
+              visibilitesDeTag={visibilitesDeTagDuCra(user, {
+                departemental: false,
+              })}
+              retour={retour}
+            />
+          </ClientBinder>
         </ClientBinder>
       </ClientBinder>
     </ClientBinder>
