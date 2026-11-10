@@ -8,14 +8,14 @@ import {
   CraEvenementValidation,
 } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
 import { saisieDeLEvenement } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
-import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
-import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { debutDispositifConum } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import {
   ECHELON_TERRITORIAL_OPTIONS,
   ORGANISATEURS_OPTIONS,
   TYPE_EVENEMENT_OPTIONS,
-} from '@app/web/features/activites/use-cases/cra/evenement/labels'
+} from '@app/web/features/activites/ui/libelles/evenement'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { debutDispositifConum } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'

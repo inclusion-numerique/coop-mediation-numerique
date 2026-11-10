@@ -4,7 +4,11 @@ import { HouseIcon } from '@app/web/features/pictograms/buildings/HouseIcon'
 import { SchoolIcon } from '@app/web/features/pictograms/buildings/SchoolIcon'
 import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
 import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { TypeLieu } from '@app/web/generated/prisma/browser'
+import { TYPES_DE_LIEU } from '../../domain'
+
+export const typeLieuValues = TYPES_DE_LIEU
+
+export type TypeLieu = (typeof typeLieuValues)[number]
 
 export const typeLieuLabels: { [key in TypeLieu]: string } = {
   LieuActivite: 'Lieu d’activité',
@@ -31,17 +35,3 @@ export const typeLieuOptionsWithExtras = typeLieuOptions.map(
     },
   }),
 )
-
-export const typeLieuValues = Object.keys(typeLieuLabels) as [
-  TypeLieu,
-  ...TypeLieu[],
-]
-
-export const typeLieuApiValues = {
-  LieuActivite: 'lieu_activite',
-  Autre: 'autre',
-  Domicile: 'domicile',
-  ADistance: 'a_distance',
-} as const satisfies {
-  [key in TypeLieu]: string
-}

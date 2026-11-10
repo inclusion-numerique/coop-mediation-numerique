@@ -1,7 +1,10 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import {
+  AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
+  type Thematique,
+} from '@app/web/features/activites/ui/libelles/thematique'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { Thematique } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 
@@ -41,9 +44,7 @@ export const ThematiquesFields = withForm({
               </>
             }
           />
-          {field.state.value?.includes(
-            Thematique.AideAuxDemarchesAdministratives,
-          ) && (
+          {field.state.value?.includes(AIDE_AUX_DEMARCHES_ADMINISTRATIVES) && (
             <>
               <form.AppField name="thematiques">
                 {(field) => (

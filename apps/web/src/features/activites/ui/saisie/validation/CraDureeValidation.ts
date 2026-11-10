@@ -1,4 +1,4 @@
-import { dureeAccompagnementPersonnaliseeValue } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { dureeAccompagnementPersonnaliseeValue } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { z } from 'zod'
 
 export const maxMinutes = 59

@@ -1,4 +1,4 @@
-import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
 import { Prisma, Thematique } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { pascalCase } from 'change-case'

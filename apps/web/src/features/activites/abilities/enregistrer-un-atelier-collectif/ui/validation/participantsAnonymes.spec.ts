@@ -4,10 +4,10 @@ import {
   participantsAnonymesDefault,
 } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import {
-  Genre,
-  StatutSocial,
-  TrancheAge,
-} from '@app/web/generated/prisma/browser'
+  GENRES,
+  STATUTS_SOCIAUX,
+  TRANCHES_D_AGE,
+} from '@app/web/features/activites/domain'
 
 describe('participantsAnonymes', () => {
   /**
@@ -17,15 +17,15 @@ describe('participantsAnonymes', () => {
   describe('ParticipantsAnonymesCraCollectifData', () => {
     const participantsAnonymes = participantsAnonymesDefault
 
-    const genreKeys = Object.keys(Genre).map(
+    const genreKeys = [...GENRES].map(
       (key) => `genre${key}`,
     ) as ParticipantsAnonymesCraCollectifDataKey[]
 
-    const trancheAgeKeys = Object.keys(TrancheAge).map(
+    const trancheAgeKeys = [...TRANCHES_D_AGE].map(
       (key) => `trancheAge${key}`,
     ) as ParticipantsAnonymesCraCollectifDataKey[]
 
-    const statutSocialKeys = Object.keys(StatutSocial).map(
+    const statutSocialKeys = [...STATUTS_SOCIAUX].map(
       (key) => `statutSocial${key}`,
     ) as ParticipantsAnonymesCraCollectifDataKey[]
 

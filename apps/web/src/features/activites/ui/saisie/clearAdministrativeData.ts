@@ -1,11 +1,14 @@
-import { thematiquesNonAdministrativesValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { Thematique } from '@app/web/generated/prisma/browser'
+import {
+  AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
+  type Thematique,
+  thematiquesNonAdministrativesValues,
+} from '@app/web/features/activites/ui/libelles/thematique'
 
 const hasAideAuxDemarchesAdministratives = (thematiques: Thematique[]) =>
-  thematiques.includes(Thematique.AideAuxDemarchesAdministratives)
+  thematiques.includes(AIDE_AUX_DEMARCHES_ADMINISTRATIVES)
 
 const onlyNonAdministrativesThematiques = (thematique: Thematique) =>
-  thematiquesNonAdministrativesValues.includes(thematique)
+  thematiquesNonAdministrativesValues.some((valeur) => valeur === thematique)
 
 export const clearAdministrativeData = <T>(
   data: T & {

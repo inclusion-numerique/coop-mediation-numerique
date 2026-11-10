@@ -1,3 +1,4 @@
+import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import {
@@ -6,7 +7,6 @@ import {
 } from '@app/web/utils/dateAsDay'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
-import { typeActiviteLabels } from '../../cra/fields/type-activite'
 import type { ActivitesDataTableConfiguration } from '../db/ActivitesDataTableConfiguration'
 import type { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'

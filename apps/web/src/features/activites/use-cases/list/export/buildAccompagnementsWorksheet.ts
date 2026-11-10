@@ -1,3 +1,16 @@
+import {
+  autonomieStars,
+  autonomieValues,
+} from '@app/web/features/activites/ui/libelles/autonomie'
+import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  niveauAtelierStars,
+  niveauAtelierValues,
+} from '@app/web/features/activites/ui/libelles/niveau-atelier'
+import { structuresRedirectionLabels } from '@app/web/features/activites/ui/libelles/structures-redirection'
+import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
@@ -15,19 +28,6 @@ import { addFilters } from '@app/web/worksheet/buildWorksheetHelpers'
 import { format, isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import * as Excel from 'exceljs'
-import {
-  niveauAtelierStars,
-  niveauAtelierValues,
-} from '../../cra/collectif/fields/niveau-atelier'
-import { materielLabels } from '../../cra/fields/materiel'
-import { thematiqueLabels } from '../../cra/fields/thematique'
-import { typeActiviteLabels } from '../../cra/fields/type-activite'
-import { typeLieuLabels } from '../../cra/fields/type-lieu'
-import {
-  autonomieStars,
-  autonomieValues,
-} from '../../cra/individuel/fields/autonomie'
-import { structuresRedirectionLabels } from '../../cra/individuel/fields/structures-redirection'
 import type { ActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
 import type { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 

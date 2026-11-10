@@ -1,16 +1,18 @@
-import { niveauAtelierApiValues } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
-import { materielApiValues } from '@app/web/features/activites/use-cases/cra/fields/materiel'
-import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeActiviteApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import { typeLieuApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
-import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
-import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import type {
   Genre,
   StatutSocial,
   TrancheAge,
 } from '@app/web/generated/prisma/client'
 import type { ActiviteExposee } from '../prisma/activites-exposees.query'
+import {
+  autonomieApiValues,
+  materielApiValues,
+  niveauAtelierApiValues,
+  structureDeRedirectionApiValues,
+  thematiqueApiValues,
+  typeActiviteApiValues,
+  typeLieuApiValues,
+} from './valeurs-de-l-api'
 
 const genreApiValues = {
   Masculin: 'masculin',

@@ -1,3 +1,17 @@
+import {
+  INITIATIVE_OPTIONS,
+  THEMATIQUE_ANIMATION_OPTIONS,
+  TYPE_ANIMATION_OPTIONS,
+} from '@app/web/features/activites/ui/libelles/animation'
+import {
+  ECHELON_TERRITORIAL_OPTIONS,
+  ORGANISATEURS_OPTIONS,
+  TYPE_EVENEMENT_OPTIONS,
+} from '@app/web/features/activites/ui/libelles/evenement'
+import {
+  NATURE_OPTIONS,
+  TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS,
+} from '@app/web/features/activites/ui/libelles/partenariat'
 import type {
   ActiviteDeCoordination,
   Choix,
@@ -6,20 +20,6 @@ import type {
   Initiative,
   StructurePartenaire,
 } from '../domain'
-import {
-  INITIATIVE_OPTIONS,
-  THEMATIQUE_ANIMATION_OPTIONS,
-  TYPE_ANIMATION_OPTIONS,
-} from '../use-cases/cra/animation/labels'
-import {
-  ECHELON_TERRITORIAL_OPTIONS,
-  ORGANISATEURS_OPTIONS,
-  TYPE_EVENEMENT_OPTIONS,
-} from '../use-cases/cra/evenement/labels'
-import {
-  NATURE_OPTIONS,
-  TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS,
-} from '../use-cases/cra/partenariat/labels'
 
 type Option = { readonly value: string; readonly label: string }
 

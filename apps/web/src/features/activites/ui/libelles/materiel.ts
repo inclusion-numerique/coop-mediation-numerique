@@ -1,5 +1,9 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { Materiel } from '@app/web/generated/prisma/browser'
+import { MATERIELS } from '../../domain'
+
+export const materielValues = [...MATERIELS, 'Aucun'] as const
+
+export type Materiel = (typeof materielValues)[number]
 
 export const materielLabels: {
   [key in Materiel]: string
@@ -22,18 +26,3 @@ export const materielIcons: {
 }
 
 export const materielOptions = labelsToOptions(materielLabels)
-
-export const materielValues = Object.keys(materielLabels) as [
-  Materiel,
-  ...Materiel[],
-]
-
-export const materielApiValues = {
-  Ordinateur: 'ordinateur',
-  Telephone: 'telephone',
-  Tablette: 'tablette',
-  Autre: 'autre',
-  Aucun: 'aucun',
-} as const satisfies {
-  [key in Materiel]: string
-}

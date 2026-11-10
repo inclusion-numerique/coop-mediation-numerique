@@ -1,7 +1,7 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 
-export const dureeAccompagnementPersonnaliseeValue = 'personnaliser'
+export const dureeAccompagnementPersonnaliseeValue = 'personnaliser' as const
 
 export const dureeAccompagnementParDefautLabels = {
   '15': dureeAsString(15),
@@ -43,12 +43,15 @@ export const dureeAccompagnementStatisticsRanges = [
 export type DefaultDureeAccompagnementParDefaut =
   keyof typeof dureeAccompagnementParDefautLabels
 
-export const dureeAcompagnementParDefautDefaultValues = Object.keys(
-  dureeAccompagnementParDefautLabels,
-) as [
-  DefaultDureeAccompagnementParDefaut,
-  ...DefaultDureeAccompagnementParDefaut[],
-]
+export const dureeAcompagnementParDefautDefaultValues = [
+  '15',
+  '30',
+  '45',
+  '60',
+  '90',
+  '120',
+  dureeAccompagnementPersonnaliseeValue,
+] as const satisfies readonly DefaultDureeAccompagnementParDefaut[]
 
 export const dureeAccompagnementParDefautOptions = labelsToOptions(
   dureeAccompagnementParDefautLabels,

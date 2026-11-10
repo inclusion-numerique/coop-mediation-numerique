@@ -1,9 +1,16 @@
 import { SelectOption } from '@app/ui/components/Form/utils/options'
-import {
-  EchelonTerritorialValue,
-  OrganisateursValue,
-  TypeEvenementValue,
-} from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
+import type { Model } from '@app/web/libraries/model'
+import type {
+  EchelonTerritorial,
+  Organisateur,
+  TypeDEvenement,
+} from '../../domain'
+
+export type EchelonTerritorialValue = Model.InputOf<typeof EchelonTerritorial>
+
+export type OrganisateursValue = Model.InputOf<typeof Organisateur> | 'Autre'
+
+export type TypeEvenementValue = Model.InputOf<typeof TypeDEvenement> | 'Autre'
 
 export const TYPE_EVENEMENT_OPTIONS: SelectOption<TypeEvenementValue>[] = [
   {

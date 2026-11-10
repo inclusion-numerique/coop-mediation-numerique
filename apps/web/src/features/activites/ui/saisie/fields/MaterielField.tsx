@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import type { Materiel } from '@app/web/features/activites/ui/libelles/materiel'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { Materiel } from '@app/web/generated/prisma/browser'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 

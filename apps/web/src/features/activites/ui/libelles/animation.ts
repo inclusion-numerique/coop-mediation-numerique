@@ -1,14 +1,23 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import {
-  InitiativeValue,
-  ThematiqueAnimationValue,
-  TypeAnimationValue,
-} from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
 import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIcon'
 import { InnovationIcon } from '@app/web/features/pictograms/digital/InnovationIcon'
 import { DocumentSignature } from '@app/web/features/pictograms/document/DocumentSignature'
 import { CommunityIcon } from '@app/web/features/pictograms/leisure/CommunityIcon'
 import { Compass } from '@app/web/features/pictograms/map/Compass'
+import type { Model } from '@app/web/libraries/model'
+import type {
+  Initiative,
+  ThematiqueDAnimation,
+  TypeDAnimation,
+} from '../../domain'
+
+export type InitiativeValue = Model.InputOf<typeof Initiative>
+
+export type ThematiqueAnimationValue =
+  | Model.InputOf<typeof ThematiqueDAnimation>
+  | 'Autre'
+
+export type TypeAnimationValue = Model.InputOf<typeof TypeDAnimation> | 'Autre'
 
 export const INITIATIVE_OPTIONS: SelectOption<InitiativeValue>[] = [
   { label: 'Intervention à mon initiative', value: 'Initiative' },

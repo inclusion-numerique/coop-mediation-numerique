@@ -1,7 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-const VALEURS = [
+export const STRUCTURES_DE_REDIRECTION = [
   'Administration',
   'MediationNumerique',
   'OperateurOuOrganismeEnCharge',
@@ -12,10 +12,10 @@ const VALEURS = [
 ] as const
 
 export const StructureDeRedirection = defineModel(
-  z.enum(VALEURS).brand('StructureDeRedirection'),
+  z.enum(STRUCTURES_DE_REDIRECTION).brand('StructureDeRedirection'),
 )
 
 export type StructureDeRedirection = Model.TypeOf<typeof StructureDeRedirection>
 
 export const structuresDeRedirection: readonly StructureDeRedirection[] =
-  VALEURS.map(StructureDeRedirection)
+  STRUCTURES_DE_REDIRECTION.map(StructureDeRedirection)

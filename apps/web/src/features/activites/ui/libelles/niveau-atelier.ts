@@ -1,5 +1,9 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { NiveauAtelier } from '@app/web/generated/prisma/browser'
+import { NIVEAUX_D_ATELIER } from '../../domain'
+
+export const niveauAtelierValues = NIVEAUX_D_ATELIER
+
+export type NiveauAtelier = (typeof niveauAtelierValues)[number]
 
 export const niveauAtelierLabels: {
   [key in NiveauAtelier]: string
@@ -29,16 +33,3 @@ export const niveauAtelierOptionsWithExtras = niveauAtelierOptions.map(
     },
   }),
 )
-
-export const niveauAtelierValues = Object.keys(niveauAtelierLabels) as [
-  NiveauAtelier,
-  ...NiveauAtelier[],
-]
-
-export const niveauAtelierApiValues = {
-  Debutant: 'debutant',
-  Intermediaire: 'intermediaire',
-  Avance: 'avance',
-} as const satisfies {
-  [key in NiveauAtelier]: string
-}

@@ -1,5 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
+import { typeActiviteSlugLabels } from '@app/web/features/activites/ui/libelles/type-activite'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   type RdvStatus,
@@ -7,7 +8,6 @@ import {
 } from '@app/web/features/rdvsp/ui/rdv-status'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { typeActiviteSlugLabels } from '../../cra/fields/type-activite'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 
 export type FilterType =

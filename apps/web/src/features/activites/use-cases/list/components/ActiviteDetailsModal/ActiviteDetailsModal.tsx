@@ -4,6 +4,16 @@ import { createToast } from '@app/ui/toast/createToast'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import Stars from '@app/web/components/Stars'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
+import { autonomieStars } from '@app/web/features/activites/ui/libelles/autonomie'
+import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
+import { niveauAtelierStars } from '@app/web/features/activites/ui/libelles/niveau-atelier'
+import { structuresRedirectionLabels } from '@app/web/features/activites/ui/libelles/structures-redirection'
+import {
+  thematiqueLabels,
+  thematiquesAdministrativesLabels,
+  thematiquesNonAdministrativesLabels,
+} from '@app/web/features/activites/ui/libelles/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/features/activites/use-cases/cra/collectif/createParticipantsAnonymesForBeneficiaires'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import {
@@ -33,16 +43,6 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, ReactNode, useEffect, useState } from 'react'
-import { niveauAtelierStars } from '../../../cra/collectif/fields/niveau-atelier'
-import { materielLabels } from '../../../cra/fields/materiel'
-import {
-  thematiqueLabels,
-  thematiquesAdministrativesLabels,
-  thematiquesNonAdministrativesLabels,
-} from '../../../cra/fields/thematique'
-import { typeActiviteLabels } from '../../../cra/fields/type-activite'
-import { autonomieStars } from '../../../cra/individuel/fields/autonomie'
-import { structuresRedirectionLabels } from '../../../cra/individuel/fields/structures-redirection'
 import { ActiviteListItemWithTimezone } from '../../db/activitesQueries'
 import RdvStatusBadge from '../RdvStatusBadge'
 import {

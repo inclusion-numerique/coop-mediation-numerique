@@ -8,14 +8,14 @@ import {
   CraPartenariatValidation,
 } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import { saisieDuPartenariat } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
-import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
-import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { debutDispositifConum } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import {
   ECHELON_TERRITORIAL_OPTIONS,
   NATURE_OPTIONS,
   TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS,
-} from '@app/web/features/activites/use-cases/cra/partenariat/labels'
+} from '@app/web/features/activites/ui/libelles/partenariat'
+import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
+import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { debutDispositifConum } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'

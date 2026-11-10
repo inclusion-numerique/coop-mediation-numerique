@@ -1,13 +1,13 @@
 import { TruncateText } from '@app/ui/components/Primitives/TruncatedText'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import Stars from '@app/web/components/Stars'
-import { niveauAtelierStars } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
-import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { autonomieStars } from '@app/web/features/activites/ui/libelles/autonomie'
+import { niveauAtelierStars } from '@app/web/features/activites/ui/libelles/niveau-atelier'
+import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
 import {
   typeActiviteLabels,
   typeActivitePictograms,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import { autonomieStars } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
+} from '@app/web/features/activites/ui/libelles/type-activite'
 import type { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'

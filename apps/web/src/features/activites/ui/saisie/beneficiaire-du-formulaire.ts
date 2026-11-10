@@ -1,7 +1,7 @@
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import type { BeneficiaireCraData } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
-import type { Beneficiaire } from '@app/web/generated/prisma/client'
 import type { DefaultValues } from 'react-hook-form'
+import type { FicheDuBeneficiaireSuivi } from '../../domain'
 
 export const getBeneficiaireDefaultCraDataFromExisting =
   ({
@@ -20,7 +20,7 @@ export const getBeneficiaireDefaultCraDataFromExisting =
     statutSocial,
     telephone,
     trancheAge,
-  }: Exclude<Beneficiaire, 'supression' | 'creation' | 'modification'>) =>
+  }: FicheDuBeneficiaireSuivi) =>
   (
     premierAccompagnement?: boolean,
   ): DefaultValues<BeneficiaireCraData> & { id?: string } => ({

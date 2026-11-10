@@ -1,5 +1,9 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { Autonomie } from '@app/web/generated/prisma/browser'
+import { AUTONOMIES } from '../../domain'
+
+export const autonomieValues = AUTONOMIES
+
+export type Autonomie = (typeof autonomieValues)[number]
 
 export const autonomieLabels: {
   [key in Autonomie]: string
@@ -7,14 +11,6 @@ export const autonomieLabels: {
   EntierementAccompagne: 'Avec guidage',
   PartiellementAutonome: 'Autonome avec guidage en cas de besoin',
   Autonome: 'Autonome',
-}
-
-export const autonomieApiValues = {
-  EntierementAccompagne: 'entierement_accompagne',
-  PartiellementAutonome: 'partiellement_autonome',
-  Autonome: 'autonome',
-} as const satisfies {
-  [key in Autonomie]: string
 }
 
 export const autonomieStars: {
@@ -26,11 +22,6 @@ export const autonomieStars: {
 }
 
 export const autonomieOptions = labelsToOptions(autonomieLabels)
-
-export const autonomieValues = Object.keys(autonomieLabels) as [
-  Autonomie,
-  ...Autonomie[],
-]
 
 export const autonomieOptionsWithExtras = autonomieOptions.map(
   ({ label, value }) => ({

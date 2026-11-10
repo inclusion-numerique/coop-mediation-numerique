@@ -1,7 +1,7 @@
+import { autonomieValues } from '@app/web/features/activites/ui/libelles/autonomie'
+import { structuresRedirectionValues } from '@app/web/features/activites/ui/libelles/structures-redirection'
 import { BeneficiaireCraValidation } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
 import { CraValidation } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { autonomieValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
-import { structuresRedirectionValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import { yesOrNo } from '@app/web/utils/yesNoBooleanOptions'
 import z from 'zod'
 

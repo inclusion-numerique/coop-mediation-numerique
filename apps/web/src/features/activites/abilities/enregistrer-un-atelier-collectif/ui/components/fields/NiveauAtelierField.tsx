@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
-import { NiveauAtelier } from '@app/web/generated/prisma/browser'
+import type { NiveauAtelier } from '@app/web/features/activites/ui/libelles/niveau-atelier'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 

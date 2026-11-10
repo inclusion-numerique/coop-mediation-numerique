@@ -1,5 +1,10 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { StructureDeRedirection } from '@app/web/generated/prisma/browser'
+import { STRUCTURES_DE_REDIRECTION } from '../../domain'
+
+export const structuresRedirectionValues = STRUCTURES_DE_REDIRECTION
+
+export type StructureDeRedirection =
+  (typeof structuresRedirectionValues)[number]
 
 export const structuresRedirectionLabels: {
   [key in StructureDeRedirection]: string
@@ -20,19 +25,3 @@ export const structuresRedirectionLabels: {
 export const structuresRedirectionOptions = labelsToOptions(
   structuresRedirectionLabels,
 )
-
-export const structuresRedirectionValues = Object.keys(
-  structuresRedirectionLabels,
-) as [StructureDeRedirection, ...StructureDeRedirection[]]
-
-export const structureDeRedirectionApiValues = {
-  OperateurOuOrganismeEnCharge: 'operateur_ou_organisme_en_charge',
-  AideAuxDemarchesAdministratives: 'aide_aux_demarches_administratives',
-  Administration: 'administration',
-  MediationNumerique: 'mediation_numerique',
-  AideSociale: 'aide_sociale',
-  InsertionProfessionnelle: 'insertion_professionnelle',
-  Autre: 'autre',
-} as const satisfies {
-  [key in StructureDeRedirection]: string
-}

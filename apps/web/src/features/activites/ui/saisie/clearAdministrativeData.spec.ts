@@ -1,10 +1,9 @@
 import { clearAdministrativeData } from '@app/web/features/activites/ui/saisie/clearAdministrativeData'
-import { Thematique } from '@app/web/generated/prisma/browser'
 
 describe('clear administrative data', () => {
   it('removes all administrative thematiques when aide aux demarches administratives is absent', () => {
     const data = {
-      thematiques: [Thematique.PapiersElectionsCitoyennete],
+      thematiques: ['PapiersElectionsCitoyennete' as const],
     }
 
     const clearedData = clearAdministrativeData(data)
@@ -18,8 +17,8 @@ describe('clear administrative data', () => {
   it('do not removes non administrative thematiques', () => {
     const data = {
       thematiques: [
-        Thematique.PapiersElectionsCitoyennete,
-        Thematique.Bureautique,
+        'PapiersElectionsCitoyennete' as const,
+        'Bureautique' as const,
       ],
     }
 
@@ -27,16 +26,16 @@ describe('clear administrative data', () => {
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: null,
-      thematiques: [Thematique.Bureautique],
+      thematiques: ['Bureautique' as const],
     })
   })
 
   it('do not removes any thematique when thematiques contains aide aux demarches administratives', () => {
     const data = {
       thematiques: [
-        Thematique.AideAuxDemarchesAdministratives,
-        Thematique.PapiersElectionsCitoyennete,
-        Thematique.Bureautique,
+        'AideAuxDemarchesAdministratives' as const,
+        'PapiersElectionsCitoyennete' as const,
+        'Bureautique' as const,
       ],
     }
 
@@ -45,9 +44,9 @@ describe('clear administrative data', () => {
     expect(clearedData).toStrictEqual({
       precisionsDemarche: undefined,
       thematiques: [
-        Thematique.AideAuxDemarchesAdministratives,
-        Thematique.PapiersElectionsCitoyennete,
-        Thematique.Bureautique,
+        'AideAuxDemarchesAdministratives' as const,
+        'PapiersElectionsCitoyennete' as const,
+        'Bureautique' as const,
       ],
     })
   })
@@ -55,7 +54,7 @@ describe('clear administrative data', () => {
   it('removes precisions demarche when aide aux demarches administratives is absent', () => {
     const data = {
       precisionsDemarche: 'test',
-      thematiques: [Thematique.PapiersElectionsCitoyennete],
+      thematiques: ['PapiersElectionsCitoyennete' as const],
     }
 
     const clearedData = clearAdministrativeData(data)
@@ -69,14 +68,14 @@ describe('clear administrative data', () => {
   it('do not removes precisions demarche when thematiques contains aide aux demarches administratives', () => {
     const data = {
       precisionsDemarche: 'test',
-      thematiques: [Thematique.AideAuxDemarchesAdministratives],
+      thematiques: ['AideAuxDemarchesAdministratives' as const],
     }
 
     const clearedData = clearAdministrativeData(data)
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: 'test',
-      thematiques: [Thematique.AideAuxDemarchesAdministratives],
+      thematiques: ['AideAuxDemarchesAdministratives' as const],
     })
   })
 })

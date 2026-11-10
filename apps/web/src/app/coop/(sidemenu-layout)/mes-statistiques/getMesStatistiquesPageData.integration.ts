@@ -19,14 +19,14 @@ import {
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import { emptyQuantifiedSharesFromEnum } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
-import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
 import {
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+} from '@app/web/features/activites/ui/libelles/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'

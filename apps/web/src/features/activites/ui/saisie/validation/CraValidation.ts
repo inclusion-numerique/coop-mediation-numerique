@@ -1,9 +1,9 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { materielValues } from '@app/web/features/activites/ui/libelles/materiel'
+import { thematiqueValues } from '@app/web/features/activites/ui/libelles/thematique'
+import { typeLieuValues } from '@app/web/features/activites/ui/libelles/type-lieu'
 import { CraDateValidation } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { CraDureeValidation } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
-import { materielValues } from '@app/web/features/activites/use-cases/cra/fields/materiel'
-import { thematiqueValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeLieuValues } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import z from 'zod'
 
 export const CraValidation = z.object({

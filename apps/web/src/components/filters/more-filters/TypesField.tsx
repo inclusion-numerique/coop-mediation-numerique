@@ -1,4 +1,4 @@
-import { typeActiviteSlugOptions } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeActiviteSlugOptions } from '@app/web/features/activites/ui/libelles/type-activite'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 

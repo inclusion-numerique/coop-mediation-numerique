@@ -1,4 +1,4 @@
-import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { Prisma } from '@app/web/generated/prisma/client'
 import { snakeCase } from 'change-case'
 

@@ -1,7 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-const VALEURS = [
+export const THEMATIQUES_DE_MEDIATION = [
   'DiagnosticNumerique',
   'PrendreEnMainDuMateriel',
   'MaintenanceDeMateriel',
@@ -23,10 +23,10 @@ const VALEURS = [
 ] as const
 
 export const ThematiqueDeMediation = defineModel(
-  z.enum(VALEURS).brand('ThematiqueDeMediation'),
+  z.enum(THEMATIQUES_DE_MEDIATION).brand('ThematiqueDeMediation'),
 )
 
 export type ThematiqueDeMediation = Model.TypeOf<typeof ThematiqueDeMediation>
 
 export const thematiquesDeMediation: readonly ThematiqueDeMediation[] =
-  VALEURS.map(ThematiqueDeMediation)
+  THEMATIQUES_DE_MEDIATION.map(ThematiqueDeMediation)

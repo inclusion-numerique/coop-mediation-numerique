@@ -1,7 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-const VALEURS = [
+export const STATUTS_SOCIAUX = [
   'Scolarise',
   'SansEmploi',
   'EnEmploi',
@@ -9,8 +9,11 @@ const VALEURS = [
   'NonCommunique',
 ] as const
 
-export const StatutSocial = defineModel(z.enum(VALEURS).brand('StatutSocial'))
+export const StatutSocial = defineModel(
+  z.enum(STATUTS_SOCIAUX).brand('StatutSocial'),
+)
 
 export type StatutSocial = Model.TypeOf<typeof StatutSocial>
 
-export const statutsSociaux: readonly StatutSocial[] = VALEURS.map(StatutSocial)
+export const statutsSociaux: readonly StatutSocial[] =
+  STATUTS_SOCIAUX.map(StatutSocial)

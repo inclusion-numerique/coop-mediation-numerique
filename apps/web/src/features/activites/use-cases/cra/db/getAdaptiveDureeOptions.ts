@@ -1,7 +1,7 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { prismaClient } from '@app/web/prismaClient'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
-import { dureeAccompagnementParDefautLabels } from '../fields/duree-accompagnement'
 
 export const getAdaptiveDureeOptions = async ({
   mediateurId,

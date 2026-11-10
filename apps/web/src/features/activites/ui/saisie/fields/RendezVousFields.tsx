@@ -1,9 +1,9 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
+import { typeLieuOptionsWithExtras } from '@app/web/features/activites/ui/libelles/type-lieu'
 import { debutDispositifConum } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { typeLieuOptionsWithExtras } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import {
   type Commune,
   CommuneComboBox,

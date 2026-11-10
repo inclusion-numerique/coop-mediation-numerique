@@ -1,10 +1,10 @@
 import type { DefaultValues } from 'react-hook-form'
 import type {
   AccompagnementIndividuel,
+  AffichageDeLActivite,
   BeneficiaireAccompagne,
   Orientation,
 } from '../../../domain'
-import type { AffichageDeLActivite } from '../../../implementation/lire-une-activite-de-mediation'
 import { getBeneficiaireDefaultCraDataFromExisting } from '../../../ui/saisie/beneficiaire-du-formulaire'
 import {
   communeDuFormulaire,

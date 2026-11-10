@@ -2,7 +2,11 @@ import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
-import { TypeActivite } from '@app/web/generated/prisma/browser'
+import { TYPES_D_ACTIVITE } from '../../domain'
+
+export const typeActiviteValues = TYPES_D_ACTIVITE
+
+export type TypeActivite = (typeof typeActiviteValues)[number]
 
 export const typeActivitePluralLabels: {
   [key in TypeActivite]: string
@@ -11,7 +15,9 @@ export const typeActivitePluralLabels: {
   Collectif: 'Participants aux ateliers',
 }
 
-export type TypeActiviteSlug = 'individuel' | 'collectif'
+export const typeActiviteSlugValues = ['individuel', 'collectif'] as const
+
+export type TypeActiviteSlug = (typeof typeActiviteSlugValues)[number]
 
 export const typeActiviteLabels: {
   [key in TypeActivite]: string
@@ -38,23 +44,6 @@ export const typeActivitePictograms: Record<TypeActivite, Pictogram> = {
   Collectif: TeacherIcon,
 }
 
-export const typeActiviteValues = Object.keys(typeActiviteLabels) as [
-  TypeActivite,
-  ...TypeActivite[],
-]
-
 export const typeActiviteOptions = labelsToOptions(typeActiviteLabels)
 
 export const typeActiviteSlugOptions = labelsToOptions(typeActiviteSlugLabels)
-
-export const typeActiviteSlugValues = Object.keys(typeActiviteSlugLabels) as [
-  TypeActiviteSlug,
-  ...TypeActiviteSlug[],
-]
-
-export const typeActiviteApiValues = {
-  Individuel: 'individuel',
-  Collectif: 'collectif',
-} as const satisfies {
-  [key in TypeActivite]: string
-}

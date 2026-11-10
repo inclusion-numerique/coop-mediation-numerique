@@ -1,7 +1,5 @@
 'use client'
 
-import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { CalendarIcon } from '@app/web/features/pictograms/digital/CalendarIcon'
 import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIcon'
 import { HumanCooperationIcon } from '@app/web/features/pictograms/environment/HumanCooperationIcon'
@@ -12,6 +10,8 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
+import type { BeneficiaireCraData } from '../validation/BeneficiaireCraValidation'
+import type { CraData } from '../validation/CraValidation'
 
 const ModalNavigationButton = ({
   children,
@@ -51,9 +51,10 @@ const CreateCraModalContent = ({
   isMediateur,
   isCoordinateur,
 }: {
-  craDefaultValues?:
-    | DefaultValues<CraIndividuelData>
-    | DefaultValues<CraCollectifData>
+  craDefaultValues?: DefaultValues<CraData> & {
+    readonly beneficiaire?: DefaultValues<BeneficiaireCraData>
+    readonly participants?: DefaultValues<BeneficiaireCraData>[]
+  }
   onClose: () => void
   retour?: string
   isMediateur: boolean

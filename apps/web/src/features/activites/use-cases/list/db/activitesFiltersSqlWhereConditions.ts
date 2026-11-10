@@ -1,4 +1,4 @@
-import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { thematiqueApiValues } from '@app/web/features/activites/abilities/exposer-les-activites/implementation/api/valeurs-de-l-api'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { Prisma, Thematique } from '@app/web/generated/prisma/client'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'

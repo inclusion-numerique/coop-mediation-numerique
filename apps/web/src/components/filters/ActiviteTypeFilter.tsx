@@ -5,7 +5,7 @@ import {
   TypeActiviteSlug,
   typeActiviteOptions,
   typeActiviteSlugOptions,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+} from '@app/web/features/activites/ui/libelles/type-activite'
 import type {
   ActivitesFilters,
   RdvStatusFilterValue,

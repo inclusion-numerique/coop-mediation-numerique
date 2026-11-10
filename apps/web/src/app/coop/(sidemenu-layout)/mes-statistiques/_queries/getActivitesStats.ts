@@ -3,24 +3,24 @@ import {
   createEnumArrayCountSelect,
   createEnumCountSelect,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import {
   materielLabels,
   materielValues,
-} from '@app/web/features/activites/use-cases/cra/fields/materiel'
+} from '@app/web/features/activites/ui/libelles/materiel'
 import {
   thematiqueLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+} from '@app/web/features/activites/ui/libelles/thematique'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+} from '@app/web/features/activites/ui/libelles/type-activite'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+} from '@app/web/features/activites/ui/libelles/type-lieu'
 import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import {
   getActiviteFiltersSqlFragment,

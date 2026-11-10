@@ -15,18 +15,18 @@ import {
   CraIndividuelData,
   CraIndividuelValidation,
 } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import { autonomieOptionsWithExtras } from '@app/web/features/activites/ui/libelles/autonomie'
+import { materielOptions } from '@app/web/features/activites/ui/libelles/materiel'
+import { structuresRedirectionOptions } from '@app/web/features/activites/ui/libelles/structures-redirection'
+import {
+  thematiqueAdministrativesOptionsWithExtras,
+  thematiqueNonAdministrativesOptionsWithExtras,
+} from '@app/web/features/activites/ui/libelles/thematique'
 import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { materielOptions } from '@app/web/features/activites/use-cases/cra/fields/materiel'
-import {
-  thematiqueAdministrativesOptionsWithExtras,
-  thematiqueNonAdministrativesOptionsWithExtras,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { autonomieOptionsWithExtras } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
-import { structuresRedirectionOptions } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {

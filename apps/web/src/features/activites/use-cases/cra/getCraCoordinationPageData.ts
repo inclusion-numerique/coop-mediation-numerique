@@ -2,12 +2,12 @@ import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { CraAnimationData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
 import { CraEvenementData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
 import { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
+import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import {
   type RechercherDesTagsInitiaux,
   tagDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { DefaultValues } from 'react-hook-form'
-import { dureeAccompagnementParDefautLabels } from './fields/duree-accompagnement'
 
 type CraCoordinationData =
   | CraAnimationData

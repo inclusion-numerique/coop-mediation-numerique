@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { type CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { StructureDeRedirection } from '@app/web/generated/prisma/browser'
+import type { StructureDeRedirection } from '@app/web/features/activites/ui/libelles/structures-redirection'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 

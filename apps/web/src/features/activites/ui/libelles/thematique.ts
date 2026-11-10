@@ -27,7 +27,27 @@ import { UserStatsIcon } from '@app/web/features/pictograms/user/UserStatsIcon'
 import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
 import { ProfessionalIcon } from '@app/web/features/pictograms/work/ProfessionalIcon'
 import { ScolarshipIcon } from '@app/web/features/pictograms/work/ScolarshipIcon'
-import { Thematique } from '@app/web/generated/prisma/browser'
+import {
+  THEMATIQUES_ADMINISTRATIVES,
+  THEMATIQUES_DE_MEDIATION,
+} from '../../domain'
+
+export const AIDE_AUX_DEMARCHES_ADMINISTRATIVES =
+  'AideAuxDemarchesAdministratives' as const
+
+export const thematiquesNonAdministrativesValues = [
+  ...THEMATIQUES_DE_MEDIATION,
+  AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
+] as const
+
+export const thematiquesAdministrativesValues = THEMATIQUES_ADMINISTRATIVES
+
+export const thematiqueValues = [
+  ...thematiquesNonAdministrativesValues,
+  ...thematiquesAdministrativesValues,
+] as const
+
+export type Thematique = (typeof thematiqueValues)[number]
 
 export const thematiquesNonAdministrativesInfo = {
   AideAuxDemarchesAdministratives:
@@ -308,59 +328,3 @@ export const thematiqueAdministrativesOptionsWithExtras = labelsToOptions(
     illustration: thematiqueIllustrations[value],
   },
 }))
-
-export const thematiquesNonAdministrativesValues = Object.keys(
-  thematiquesNonAdministrativesLabels,
-) as [Thematique, ...Thematique[]]
-
-export const thematiquesAdministrativesValues = Object.keys(
-  thematiquesAdministrativesLabels,
-) as [Thematique, ...Thematique[]]
-
-export const thematiqueValues = Object.keys(thematiqueLabels) as [
-  Thematique,
-  ...Thematique[],
-]
-
-export const thematiquesNonAdministrativesApiValues = {
-  DiagnosticNumerique: 'diagnostic_numerique',
-  PrendreEnMainDuMateriel: 'prendre_en_main_du_materiel',
-  MaintenanceDeMateriel: 'maintenance_de_materiel',
-  GereSesContenusNumeriques: 'gere_ses_contenus_numeriques',
-  NavigationSurInternet: 'navigation_sur_internet',
-  Email: 'email',
-  Bureautique: 'bureautique',
-  ReseauxSociaux: 'reseaux_sociaux',
-  Sante: 'sante',
-  BanqueEtAchatsEnLigne: 'banque_et_achats_en_ligne',
-  Entrepreneuriat: 'entrepreneuriat',
-  InsertionProfessionnelle: 'insertion_professionnelle',
-  SecuriteNumerique: 'securite_numerique',
-  Parentalite: 'parentalite',
-  ScolariteEtNumerique: 'scolarite_et_numerique',
-  CreerAvecLeNumerique: 'creer_avec_le_numerique',
-  CultureNumerique: 'culture_numerique',
-  IntelligenceArtificielle: 'intelligence_artificielle',
-  AideAuxDemarchesAdministratives: 'aide_aux_demarches_administratives',
-} as const
-
-export const thematiquesAdministrativesApiValues = {
-  PapiersElectionsCitoyennete: 'papiers_elections_citoyennete',
-  FamilleScolarite: 'famille_scolarite',
-  SocialSante: 'social_sante',
-  TravailFormation: 'travail_formation',
-  Logement: 'logement',
-  TransportsMobilite: 'transports_mobilite',
-  ArgentImpots: 'argent_impots',
-  Justice: 'justice',
-  EtrangersEurope: 'etrangers_europe',
-  LoisirsSportsCulture: 'loisirs_sports_culture',
-  Associations: 'associations',
-} as const
-
-export const thematiqueApiValues = {
-  ...thematiquesNonAdministrativesApiValues,
-  ...thematiquesAdministrativesApiValues,
-} satisfies {
-  [key in Thematique]: string
-}

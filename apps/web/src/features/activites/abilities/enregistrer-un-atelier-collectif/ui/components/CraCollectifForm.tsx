@@ -10,17 +10,17 @@ import {
   type CraCollectifData,
   CraCollectifValidation,
 } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { materielOptions } from '@app/web/features/activites/ui/libelles/materiel'
+import { niveauAtelierOptionsWithExtras } from '@app/web/features/activites/ui/libelles/niveau-atelier'
+import {
+  thematiqueAdministrativesOptionsWithExtras,
+  thematiqueNonAdministrativesOptionsWithExtras,
+} from '@app/web/features/activites/ui/libelles/thematique'
 import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { niveauAtelierOptionsWithExtras } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
-import { materielOptions } from '@app/web/features/activites/use-cases/cra/fields/materiel'
-import {
-  thematiqueAdministrativesOptionsWithExtras,
-  thematiqueNonAdministrativesOptionsWithExtras,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'

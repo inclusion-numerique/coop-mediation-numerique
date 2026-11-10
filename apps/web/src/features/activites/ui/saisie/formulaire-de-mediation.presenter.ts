@@ -1,11 +1,11 @@
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import type {
   ActiviteDeMediation,
+  AffichageDeLActivite,
   Commune,
   Equipement,
   Thematiques,
 } from '../../domain'
-import type { AffichageDeLActivite } from '../../implementation/lire-une-activite-de-mediation'
 import { minutesToCraDureeData } from '../../use-cases/cra/db/minutesToCraDuree'
 
 export const communeDuFormulaire = (commune: Commune) =>

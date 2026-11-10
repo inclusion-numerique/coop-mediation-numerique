@@ -27,7 +27,7 @@ import {
   TypesField,
   updateTypesParams,
 } from '@app/web/components/filters/more-filters/TypesField'
-import type { TypeActiviteSlug } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import type { TypeActiviteSlug } from '@app/web/features/activites/ui/libelles/type-activite'
 import { ActiviteSource } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'

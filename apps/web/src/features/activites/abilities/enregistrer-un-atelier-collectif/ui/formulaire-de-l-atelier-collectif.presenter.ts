@@ -1,6 +1,9 @@
 import type { DefaultValues } from 'react-hook-form'
-import type { AtelierCollectif, ParticipantsAnonymes } from '../../../domain'
-import type { AffichageDeLActivite } from '../../../implementation/lire-une-activite-de-mediation'
+import type {
+  AffichageDeLActivite,
+  AtelierCollectif,
+  ParticipantsAnonymes,
+} from '../../../domain'
 import { getBeneficiaireDefaultCraDataFromExisting } from '../../../ui/saisie/beneficiaire-du-formulaire'
 import { formulaireCommunDeMediation } from '../../../ui/saisie/formulaire-de-mediation.presenter'
 import type { CraCollectifData } from './validation/CraCollectifValidation'

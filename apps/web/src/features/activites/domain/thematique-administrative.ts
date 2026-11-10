@@ -1,7 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-const VALEURS = [
+export const THEMATIQUES_ADMINISTRATIVES = [
   'PapiersElectionsCitoyennete',
   'FamilleScolarite',
   'SocialSante',
@@ -16,7 +16,7 @@ const VALEURS = [
 ] as const
 
 export const ThematiqueAdministrative = defineModel(
-  z.enum(VALEURS).brand('ThematiqueAdministrative'),
+  z.enum(THEMATIQUES_ADMINISTRATIVES).brand('ThematiqueAdministrative'),
 )
 
 export type ThematiqueAdministrative = Model.TypeOf<
@@ -24,4 +24,4 @@ export type ThematiqueAdministrative = Model.TypeOf<
 >
 
 export const thematiquesAdministratives: readonly ThematiqueAdministrative[] =
-  VALEURS.map(ThematiqueAdministrative)
+  THEMATIQUES_ADMINISTRATIVES.map(ThematiqueAdministrative)

@@ -1,15 +1,15 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import type {
+  Genre,
+  StatutSocial,
+  TrancheAge,
+} from '@app/web/features/activites/ui/libelles/profil'
 import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/adresse/combo-box/CommuneComboBox'
-import {
-  Genre,
-  StatutSocial,
-  type TrancheAge,
-} from '@app/web/generated/prisma/browser'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'

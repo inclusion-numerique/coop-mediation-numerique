@@ -1,9 +1,20 @@
 import { SelectOption } from '@app/ui/components/Form/utils/options'
-import {
-  EchelonTerritorialValue,
-  NaturePartenariatValue,
-  TypeStructurePartenairesValue,
-} from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
+import type { Model } from '@app/web/libraries/model'
+import type {
+  EchelonTerritorial,
+  NatureDePartenariat,
+  TypeDeStructurePartenaire,
+} from '../../domain'
+
+export type EchelonTerritorialValue = Model.InputOf<typeof EchelonTerritorial>
+
+export type NaturePartenariatValue =
+  | Model.InputOf<typeof NatureDePartenariat>
+  | 'Autre'
+
+export type TypeStructurePartenairesValue =
+  | Model.InputOf<typeof TypeDeStructurePartenaire>
+  | 'Autre'
 
 export const NATURE_OPTIONS: SelectOption<NaturePartenariatValue>[] = [
   { label: 'Conception de parcours usager', value: 'ParcoursUsager' },

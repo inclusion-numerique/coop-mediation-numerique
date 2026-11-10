@@ -1,25 +1,9 @@
-import type { Beneficiaire } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   activiteDeMediationSelect,
   activiteDeMediationToDomain,
 } from '../db/activite-de-mediation.transfer'
-import type { ActiviteDeMediation, ActiviteId, MediateurId } from '../domain'
-
-export type AffichageDeLActivite = {
-  readonly lieu: {
-    readonly id: string
-    readonly nom: string
-    readonly adresse: string | null
-  } | null
-  readonly suivis: readonly Beneficiaire[]
-  readonly tags: readonly { readonly id: string; readonly nom: string }[]
-}
-
-export type ActiviteAModifier = {
-  readonly activite: ActiviteDeMediation
-  readonly affichage: AffichageDeLActivite
-}
+import type { ActiviteAModifier, ActiviteId, MediateurId } from '../domain'
 
 const adresseDu = (lieu: {
   readonly adresse: string | null

@@ -1,11 +1,11 @@
 import {
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+} from '@app/web/features/activites/ui/libelles/thematique'
 import {
   TypeActiviteSlug,
   typeActiviteSlugValues,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+} from '@app/web/features/activites/ui/libelles/type-activite'
 import {
   type ActiviteSource,
   activiteSourceValues,
