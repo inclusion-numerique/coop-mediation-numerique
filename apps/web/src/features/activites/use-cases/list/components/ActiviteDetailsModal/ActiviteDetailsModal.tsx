@@ -14,7 +14,7 @@ import {
   thematiquesNonAdministrativesLabels,
 } from '@app/web/features/activites/ui/libelles/thematique'
 import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
-import { createParticipantsAnonymesForBeneficiaires } from '@app/web/features/activites/use-cases/cra/collectif/createParticipantsAnonymesForBeneficiaires'
+import { createParticipantsAnonymesForBeneficiaires } from '@app/web/features/activites/use-cases/list/participants-anonymes/createParticipantsAnonymesForBeneficiaires'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import {
   genres as genreValues,

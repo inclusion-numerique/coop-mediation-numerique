@@ -16,7 +16,10 @@ import {
 } from '@app/web/features/activites/ui/libelles/animation'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { debutDispositifConum } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
+import {
+  debutDispositifConum,
+  derniereDateDuFormulaire,
+} from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -85,7 +88,11 @@ const CraAnimationForm = ({
               <field.Input
                 className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
                 isPending={isPending}
-                nativeInputProps={{ type: 'date', min: debutDispositifConum }}
+                nativeInputProps={{
+                  type: 'date',
+                  min: debutDispositifConum,
+                  max: derniereDateDuFormulaire(),
+                }}
                 classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
                 label={
                   <>

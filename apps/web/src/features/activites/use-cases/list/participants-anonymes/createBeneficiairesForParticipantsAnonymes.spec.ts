@@ -1,9 +1,9 @@
 import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
-import { v4 } from 'uuid'
 import {
   createBeneficiairesForParticipantsAnonymes,
   createCounterUuid,
-} from './createBeneficiairesForParticipantsAnonymes'
+} from '@app/web/features/activites/use-cases/list/participants-anonymes/createBeneficiairesForParticipantsAnonymes'
+import { v4 } from 'uuid'
 
 describe('createBeneficiairesForParticipantsAnonymes', () => {
   describe('createCounterUuid', () => {

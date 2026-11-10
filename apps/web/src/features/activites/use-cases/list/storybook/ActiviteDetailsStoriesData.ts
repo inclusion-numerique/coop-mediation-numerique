@@ -1,6 +1,6 @@
 import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { createBeneficiairesForParticipantsAnonymes } from '@app/web/features/activites/use-cases/list/participants-anonymes/createBeneficiairesForParticipantsAnonymes'
 import { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
-import { createBeneficiairesForParticipantsAnonymes } from '../../cra/collectif/createBeneficiairesForParticipantsAnonymes'
 import { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 
 const yesterday = new Date(Date.now() - 1000 * 60 * 60 * 24)

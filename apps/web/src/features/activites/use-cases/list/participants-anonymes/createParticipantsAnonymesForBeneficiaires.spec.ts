@@ -1,6 +1,6 @@
 import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { createParticipantsAnonymesForBeneficiaires } from '@app/web/features/activites/use-cases/list/participants-anonymes/createParticipantsAnonymesForBeneficiaires'
 import { Beneficiaire } from '@app/web/generated/prisma/browser'
-import { createParticipantsAnonymesForBeneficiaires } from './createParticipantsAnonymesForBeneficiaires'
 
 describe('createParticipantsAnonymesForBeneficiaires', () => {
   it('should work for 0 beneficiaires', () => {

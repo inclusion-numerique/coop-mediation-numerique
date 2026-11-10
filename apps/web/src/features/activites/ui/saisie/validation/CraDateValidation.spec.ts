@@ -23,4 +23,15 @@ describe('CraDateValidation', () => {
       'Veuillez renseigner une date valide',
     )
   })
+
+  it('refuse une date au-delà de deux ans', () => {
+    expect(() => CraDateValidation.parse('2525-11-14')).toThrow(
+      'La date ne peut pas dépasser deux ans à partir d’aujourd’hui',
+    )
+  })
+
+  it('accepte une activité planifiée l’an prochain', () => {
+    const anneeProchaine = `${new Date().getFullYear() + 1}-06-15`
+    expect(CraDateValidation.parse(anneeProchaine)).toBe(anneeProchaine)
+  })
 })
