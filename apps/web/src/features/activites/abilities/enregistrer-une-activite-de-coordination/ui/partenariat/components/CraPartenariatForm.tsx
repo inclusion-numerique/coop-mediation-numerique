@@ -268,7 +268,8 @@ const CraPartenariatForm = ({
         </form.Field>
         <hr className="fr-separator-12v" />
         <TagsFields
-          form={form as any}
+          form={form}
+          fields={{ tags: 'tags' }}
           isPending={isPending}
           initialTagsOptions={initialTagsOptions}
         />

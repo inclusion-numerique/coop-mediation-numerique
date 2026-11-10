@@ -1,21 +1,19 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { Materiel } from '@app/web/features/activites/ui/libelles/materiel'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import {
+  type DefaultValues,
+  withFieldGroup,
+} from '@app/web/libs/form/use-app-form'
 
-const options = formOptions({
-  defaultValues: {} as DefaultValues<CraData>,
-})
-
-export const MaterielField = withForm({
-  ...options,
+export const MaterielField = withFieldGroup({
+  defaultValues: {} as Pick<DefaultValues<CraData>, 'materiel'>,
   props: {} as {
     isPending: boolean
     materielOptions: SelectOption<Materiel>[]
   },
-  render: ({ form, isPending, materielOptions }) => (
-    <form.AppField name="materiel">
+  render: ({ group, isPending, materielOptions }) => (
+    <group.AppField name="materiel">
       {(field) => (
         <field.Checkbox
           className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-12v"
@@ -29,6 +27,6 @@ export const MaterielField = withForm({
           legend="Matériel numérique utilisé"
         />
       )}
-    </form.AppField>
+    </group.AppField>
   ),
 })

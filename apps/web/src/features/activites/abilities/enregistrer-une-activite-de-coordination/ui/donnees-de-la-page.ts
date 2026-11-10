@@ -21,7 +21,7 @@ const craDefaultValues = (
   ...defaultValues,
   date: defaultValues.date ?? new Date().toISOString().slice(0, 10),
   coordinateurId,
-  duree: (defaultValues as CraAnimationData).duree ?? {},
+  duree: ('duree' in defaultValues ? defaultValues.duree : undefined) ?? {},
   tags: defaultValues.tags ?? [],
 })
 

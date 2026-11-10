@@ -18,13 +18,11 @@ import {
   LieuActiviteOptions,
   type OptionDeLieuTrouve,
 } from '@app/web/features/lieux-activite/ui'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
+import {
+  type DefaultValues,
+  withFieldGroup,
+} from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions } from '@tanstack/react-form'
-
-const options = formOptions({
-  defaultValues: {} as DefaultValues<CraData>,
-})
 
 const shouldResetLieuCommuneData = (value?: string) =>
   value != null && ['LieuActivite', 'ADistance'].includes(value)
@@ -54,8 +52,11 @@ const toLieuActiviteOption = ({
 
 const mostUsedOption = ({ lePlusUtilise }: OptionDeLieuTrouve) => lePlusUtilise
 
-export const RendezVousFields = withForm({
-  ...options,
+export const RendezVousFields = withFieldGroup({
+  defaultValues: {} as Pick<
+    DefaultValues<CraData>,
+    'date' | 'duree' | 'typeLieu' | 'structure' | 'lieuCommuneData'
+  >,
   props: {} as {
     isPending: boolean
     dureeOptions: SelectOption[]
@@ -64,7 +65,7 @@ export const RendezVousFields = withForm({
     onSelectTypeLieuDomicile?: () => void
   },
   render: ({
-    form,
+    group,
     isPending,
     dureeOptions,
     lieuActiviteOptions,
@@ -73,9 +74,9 @@ export const RendezVousFields = withForm({
   }) => {
     const resetDetailsFields = ({ value }: { value?: string }) => {
       if (shouldResetLieuCommuneData(value))
-        form.setFieldValue('lieuCommuneData', null)
+        group.setFieldValue('lieuCommuneData', null)
       if (shouldResetStructure(value))
-        form.setFieldValue(
+        group.setFieldValue(
           'structure',
           lieuActiviteOptions.map(toLieuActiviteOption).find(mostUsedOption),
         )
@@ -85,7 +86,7 @@ export const RendezVousFields = withForm({
     return (
       <>
         <div className="fr-flex fr-direction-column fr-direction-md-row fr-flex-gap-0 fr-flex-gap-md-4v">
-          <form.AppField name="date">
+          <group.AppField name="date">
             {(field) => (
               <field.Input
                 className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
@@ -103,8 +104,8 @@ export const RendezVousFields = withForm({
                 }
               />
             )}
-          </form.AppField>
-          <form.AppField name="duree.duree">
+          </group.AppField>
+          <group.AppField name="duree.duree">
             {(field) => (
               <div className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v">
                 <field.Select
@@ -120,7 +121,7 @@ export const RendezVousFields = withForm({
                 />
                 {field.state.value === 'personnaliser' && (
                   <div className="fr-flex fr-flex-gap-4v">
-                    <form.AppField name="duree.dureePersonnaliseeHeures">
+                    <group.AppField name="duree.dureePersonnaliseeHeures">
                       {(field) => (
                         <div className="fr-flex-basis-0 fr-flex-grow-1">
                           <field.Input
@@ -146,8 +147,8 @@ export const RendezVousFields = withForm({
                           />
                         </div>
                       )}
-                    </form.AppField>
-                    <form.AppField name="duree.dureePersonnaliseeMinutes">
+                    </group.AppField>
+                    <group.AppField name="duree.dureePersonnaliseeMinutes">
                       {(field) => (
                         <div className="fr-flex-basis-0 fr-flex-grow-1">
                           <field.Input
@@ -173,14 +174,14 @@ export const RendezVousFields = withForm({
                           />
                         </div>
                       )}
-                    </form.AppField>
+                    </group.AppField>
                   </div>
                 )}
               </div>
             )}
-          </form.AppField>
+          </group.AppField>
         </div>
-        <form.AppField
+        <group.AppField
           name="typeLieu"
           listeners={{ onChange: resetDetailsFields }}
         >
@@ -202,7 +203,7 @@ export const RendezVousFields = withForm({
                 }
               />
               {field.state.value === 'LieuActivite' && (
-                <form.AppField name="structure">
+                <group.AppField name="structure">
                   {(field) => (
                     <field.ComboBox
                       isPending={isPending}
@@ -274,11 +275,11 @@ export const RendezVousFields = withForm({
                       )}
                     </field.ComboBox>
                   )}
-                </form.AppField>
+                </group.AppField>
               )}
               {(field.state.value === 'Autre' ||
                 field.state.value === 'Domicile') && (
-                <form.AppField name="lieuCommuneData">
+                <group.AppField name="lieuCommuneData">
                   {(field) => (
                     <field.ComboBox
                       isPending={isPending}
@@ -330,11 +331,11 @@ export const RendezVousFields = withForm({
                       )}
                     </field.ComboBox>
                   )}
-                </form.AppField>
+                </group.AppField>
               )}
             </>
           )}
-        </form.AppField>
+        </group.AppField>
       </>
     )
   },

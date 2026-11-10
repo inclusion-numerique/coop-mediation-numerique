@@ -86,7 +86,7 @@ const Submit = lazy(() =>
   })),
 )
 
-export const { useAppForm, withForm } = createFormHook({
+export const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {

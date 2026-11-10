@@ -103,19 +103,31 @@ const CraCollectifForm = ({
         />
         <hr className="fr-separator-12v" />
         <RendezVousFields
-          form={form as any}
+          form={form}
+          fields={{
+            date: 'date',
+            duree: 'duree',
+            typeLieu: 'typeLieu',
+            structure: 'structure',
+            lieuCommuneData: 'lieuCommuneData',
+          }}
           isPending={isPending}
           dureeOptions={dureeOptions}
           lieuActiviteOptions={lieuActiviteOptions}
         />
         <hr className="fr-separator-12v" />
         <MaterielField
-          form={form as any}
+          form={form}
+          fields={{ materiel: 'materiel' }}
           isPending={isPending}
           materielOptions={materielOptions}
         />
         <ThematiquesFields
-          form={form as any}
+          form={form}
+          fields={{
+            thematiques: 'thematiques',
+            precisionsDemarche: 'precisionsDemarche',
+          }}
           isPending={isPending}
           thematiqueAdministrativesOptionsWithExtras={
             thematiqueAdministrativesOptionsWithExtras
@@ -125,7 +137,8 @@ const CraCollectifForm = ({
           }
         />
         <TagsFields
-          form={form as any}
+          form={form}
+          fields={{ tags: 'tags' }}
           isPending={isPending}
           initialTagsOptions={initialTagsOptions}
         />

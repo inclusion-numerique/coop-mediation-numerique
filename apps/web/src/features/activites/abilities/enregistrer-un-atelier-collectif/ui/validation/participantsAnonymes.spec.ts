@@ -1,4 +1,3 @@
-import type { ParticipantsAnonymesCraCollectifDataKey } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
 import {
   countGenreNonCommunique,
   participantsAnonymesDefault,
@@ -10,46 +9,29 @@ import {
 } from '@app/web/features/activites/domain'
 
 describe('participantsAnonymes', () => {
-  /**
-   * This test ensure that the ParticipantsAnonymesCraCollectifData type
-   * is correctly defined with a count for each of the modelisation enum values
-   */
   describe('ParticipantsAnonymesCraCollectifData', () => {
     const participantsAnonymes = participantsAnonymesDefault
 
-    const genreKeys = [...GENRES].map(
-      (key) => `genre${key}`,
-    ) as ParticipantsAnonymesCraCollectifDataKey[]
+    const genreKeys = GENRES.map((genre) => `genre${genre}` as const)
 
-    const trancheAgeKeys = [...TRANCHES_D_AGE].map(
-      (key) => `trancheAge${key}`,
-    ) as ParticipantsAnonymesCraCollectifDataKey[]
+    const trancheAgeKeys = TRANCHES_D_AGE.map(
+      (trancheAge) => `trancheAge${trancheAge}` as const,
+    )
 
-    const statutSocialKeys = [...STATUTS_SOCIAUX].map(
-      (key) => `statutSocial${key}`,
-    ) as ParticipantsAnonymesCraCollectifDataKey[]
+    const statutSocialKeys = STATUTS_SOCIAUX.map(
+      (statutSocial) => `statutSocial${statutSocial}` as const,
+    )
 
     it('has a total', () => {
       expect(participantsAnonymes.total).toEqual(0)
     })
 
-    it('has a count for every Genre enum values', () => {
-      for (const key of genreKeys) {
+    it.each([...genreKeys, ...trancheAgeKeys, ...statutSocialKeys])(
+      'has a count for %s',
+      (key) => {
         expect(participantsAnonymes[key]).toEqual(0)
-      }
-    })
-
-    it('has a count for every TrancheAge enum values', () => {
-      for (const key of trancheAgeKeys) {
-        expect(participantsAnonymes[key]).toEqual(0)
-      }
-    })
-
-    it('has a count for every StatutSocial enum values', () => {
-      for (const key of statutSocialKeys) {
-        expect(participantsAnonymes[key]).toEqual(0)
-      }
-    })
+      },
+    )
 
     it('has no additional counts', () => {
       const { total: _total, ...enumCounts } = participantsAnonymes

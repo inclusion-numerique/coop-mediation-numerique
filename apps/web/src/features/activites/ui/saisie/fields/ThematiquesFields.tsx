@@ -5,27 +5,28 @@ import {
   type Thematique,
 } from '@app/web/features/activites/ui/libelles/thematique'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import {
+  type DefaultValues,
+  withFieldGroup,
+} from '@app/web/libs/form/use-app-form'
 
-const options = formOptions({
-  defaultValues: {} as DefaultValues<CraData>,
-})
-
-export const ThematiquesFields = withForm({
-  ...options,
+export const ThematiquesFields = withFieldGroup({
+  defaultValues: {} as Pick<
+    DefaultValues<CraData>,
+    'thematiques' | 'precisionsDemarche'
+  >,
   props: {} as {
     isPending: boolean
     thematiqueNonAdministrativesOptionsWithExtras: SelectOption<Thematique>[]
     thematiqueAdministrativesOptionsWithExtras: SelectOption<Thematique>[]
   },
   render: ({
-    form,
+    group,
     isPending,
     thematiqueNonAdministrativesOptionsWithExtras,
     thematiqueAdministrativesOptionsWithExtras,
   }) => (
-    <form.AppField name="thematiques">
+    <group.AppField name="thematiques">
       {(field) => (
         <>
           <field.Checkbox
@@ -46,7 +47,7 @@ export const ThematiquesFields = withForm({
           />
           {field.state.value?.includes(AIDE_AUX_DEMARCHES_ADMINISTRATIVES) && (
             <>
-              <form.AppField name="thematiques">
+              <group.AppField name="thematiques">
                 {(field) => (
                   <>
                     <field.Checkbox
@@ -62,8 +63,8 @@ export const ThematiquesFields = withForm({
                     />
                   </>
                 )}
-              </form.AppField>
-              <form.AppField name="precisionsDemarche">
+              </group.AppField>
+              <group.AppField name="precisionsDemarche">
                 {(field) => (
                   <>
                     <field.Input
@@ -74,11 +75,11 @@ export const ThematiquesFields = withForm({
                     />
                   </>
                 )}
-              </form.AppField>
+              </group.AppField>
             </>
           )}
         </>
       )}
-    </form.AppField>
+    </group.AppField>
   ),
 })

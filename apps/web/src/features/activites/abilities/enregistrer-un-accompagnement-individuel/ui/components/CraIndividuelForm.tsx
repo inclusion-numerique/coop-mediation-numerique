@@ -2,6 +2,7 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import { AutonomieBeneficiaireField } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/AutonomieBeneficiaireField'
 import { BeneficiaireAnonymeFields } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireAnonymeFields'
@@ -110,17 +111,14 @@ const CraIndividuelForm = ({
   }
 
   const onSelectBeneficiaire = (beneficiaire: {
-    communeResidence?: { id: string } | null
+    communeResidence?: AdresseBanData | null
   }) => {
     const typeLieu = form.getFieldValue('typeLieu')
     if (typeLieu !== 'Domicile') return
     const lieuCommuneData = form.getFieldValue('lieuCommuneData')
     if (lieuCommuneData?.id != null) return
     if (beneficiaire.communeResidence?.id == null) return
-    form.setFieldValue(
-      'lieuCommuneData',
-      beneficiaire.communeResidence as Commune,
-    )
+    form.setFieldValue('lieuCommuneData', beneficiaire.communeResidence)
   }
 
   const isPending = useStore(form.store, (state) => state.isSubmitting)
@@ -136,7 +134,14 @@ const CraIndividuelForm = ({
           onSelectBeneficiaire={onSelectBeneficiaire}
         />
         <RendezVousFields
-          form={form as any}
+          form={form}
+          fields={{
+            date: 'date',
+            duree: 'duree',
+            typeLieu: 'typeLieu',
+            structure: 'structure',
+            lieuCommuneData: 'lieuCommuneData',
+          }}
           isPending={isPending}
           dureeOptions={dureeOptions}
           lieuActiviteOptions={lieuActiviteOptions}
@@ -145,12 +150,17 @@ const CraIndividuelForm = ({
         />
         <hr className="fr-separator-12v" />
         <MaterielField
-          form={form as any}
+          form={form}
+          fields={{ materiel: 'materiel' }}
           isPending={isPending}
           materielOptions={materielOptions}
         />
         <ThematiquesFields
-          form={form as any}
+          form={form}
+          fields={{
+            thematiques: 'thematiques',
+            precisionsDemarche: 'precisionsDemarche',
+          }}
           isPending={isPending}
           thematiqueAdministrativesOptionsWithExtras={
             thematiqueAdministrativesOptionsWithExtras
@@ -160,7 +170,8 @@ const CraIndividuelForm = ({
           }
         />
         <TagsFields
-          form={form as any}
+          form={form}
+          fields={{ tags: 'tags' }}
           isPending={isPending}
           initialTagsOptions={initialTagsOptions}
         />

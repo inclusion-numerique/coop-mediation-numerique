@@ -6,26 +6,24 @@ import {
   TagSelectedItems,
 } from '@app/web/features/activites/ui/saisie/tags/TagsComboBox'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
+import type { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
+import {
+  type DefaultValues,
+  withFieldGroup,
+} from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions } from '@tanstack/react-form'
 
-const options = formOptions({
-  defaultValues: {} as DefaultValues<CraData>,
-})
-
-export const TagsFields = withForm({
-  ...options,
+export const TagsFields = withFieldGroup({
+  defaultValues: {} as Pick<DefaultValues<CraData>, 'tags'>,
   props: {} as {
     isPending: boolean
     initialTagsOptions: Tag[]
   },
-  render: ({ form, isPending, initialTagsOptions }) => {
+  render: ({ group, isPending, initialTagsOptions }) => {
     const openCraModal = CreationDeTagDuCra.useOpen()
 
     return (
-      <form.AppField name="tags">
+      <group.AppField name="tags">
         {(field) => (
           <field.ComboBox
             isPending={isPending}
@@ -96,7 +94,7 @@ export const TagsFields = withForm({
             )}
           </field.ComboBox>
         )}
-      </form.AppField>
+      </group.AppField>
     )
   },
 })
