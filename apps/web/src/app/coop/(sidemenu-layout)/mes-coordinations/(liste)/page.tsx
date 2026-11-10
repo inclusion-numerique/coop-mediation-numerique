@@ -14,7 +14,7 @@ import {
   MesCoordinationsPage,
   optionsDeFiltrePresentees,
 } from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.key'
+import { SUPPRIMER_LA_COORDINATION_KEY } from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
 import {
   CoordinateurId,
   criteresDesCoordinations,
@@ -83,7 +83,7 @@ const MesCoordinationsRoute = async ({
         to={mettreAJourStatutRdvAction}
       >
         <ClientBinder
-          bind={SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY}
+          bind={SUPPRIMER_LA_COORDINATION_KEY}
           to={supprimerUneActiviteDeCoordinationAction}
         >
           <MesCoordinationsPage

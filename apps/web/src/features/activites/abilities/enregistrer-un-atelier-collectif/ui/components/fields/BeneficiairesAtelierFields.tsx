@@ -1,5 +1,4 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import IconInSquare from '@app/web/components/IconInSquare'
 import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
@@ -8,24 +7,21 @@ import {
   countTrancheAgeNonCommunique,
   participantsAnonymesDefault,
 } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import {
+  genreLabels,
+  genresAffiches as genreValues,
+  statutSocialLabels,
+  statutsSociauxAffiches as statutSocialValues,
+  trancheAgeLabels,
+  tranchesAgeAffichees as trancheAgeValues,
+} from '@app/web/features/activites/ui/libelles/profil'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
   BeneficiaireSelectedItems,
 } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/components/BeneficiaireComboBox'
-import {
-  genreLabels,
-  genres as genreValues,
-} from '@app/web/features/beneficiaire/domain/genre'
-import {
-  statutSocialLabels,
-  statutsSociaux as statutSocialValues,
-} from '@app/web/features/beneficiaire/domain/statut-social'
-import {
-  trancheAgeLabels,
-  tranchesAge as trancheAgeValues,
-} from '@app/web/features/beneficiaire/domain/tranche-age'
+import { pluriel } from '@app/web/libraries/pluriel'
 import { DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -191,9 +187,12 @@ export const BeneficiairesAtelierFields = withForm({
                           }}
                           label={
                             <>
-                              Bénéficiaire{sPluriel(participants.length)} suivi
-                              {sPluriel(participants.length)} ·{' '}
-                              {participants.length}
+                              {pluriel(
+                                participants.length,
+                                'Bénéficiaire suivi',
+                                'Bénéficiaires suivis',
+                              )}{' '}
+                              · {participants.length}
                             </>
                           }
                         />
@@ -447,12 +446,18 @@ export const BeneficiairesAtelierFields = withForm({
         <hr className="fr-separator-1px" />
         <div className="fr-p-8v fr-flex fr-justify-content-space-between fr-align-items-center">
           <p className="fr-text-mention--grey fr-text--sm fr-mb-0">
-            {participants.length} Bénéficiaire{sPluriel(participants.length)}{' '}
-            suivi
-            {sPluriel(participants.length)}&nbsp;·&nbsp;
-            {participantsAnonymes.total ?? 0} Bénéficiaire
-            {sPluriel(participantsAnonymes.total ?? 0)} anonyme
-            {sPluriel(participantsAnonymes.total ?? 0)}
+            {participants.length}{' '}
+            {pluriel(
+              participants.length,
+              'Bénéficiaire suivi',
+              'Bénéficiaires suivis',
+            )}
+            &nbsp;·&nbsp;{participantsAnonymes.total ?? 0}{' '}
+            {pluriel(
+              participantsAnonymes.total ?? 0,
+              'Bénéficiaire anonyme',
+              'Bénéficiaires anonymes',
+            )}
           </p>
           <p className="fr-text--lg fr-text--bold fr-mb-0">
             <span className="fr-icon-group-line fr-mr-1w" />

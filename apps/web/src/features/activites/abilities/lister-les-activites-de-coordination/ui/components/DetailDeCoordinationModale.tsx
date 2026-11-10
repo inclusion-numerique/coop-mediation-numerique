@@ -3,12 +3,12 @@
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.key'
 import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
 import type { DetailDeCoordination } from '../liste-des-coordinations.presenter'
+import { SUPPRIMER_LA_COORDINATION_KEY } from '../supprimer-la-coordination.key'
 
 export const DetailDeCoordinationDynamicModal = createDynamicModal<
   DetailDeCoordination | undefined
@@ -59,9 +59,9 @@ export const DetailDeCoordinationModale = () => {
 
   const supprimer = async () => {
     setEnCours(true)
-    const resultat = await inject(
-      SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY,
-    )({ activiteId: detail.id })
+    const resultat = await inject(SUPPRIMER_LA_COORDINATION_KEY)({
+      activiteId: detail.id,
+    })
     setEnCours(false)
     setConfirmation(false)
 
