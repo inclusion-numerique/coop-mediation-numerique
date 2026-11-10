@@ -169,7 +169,13 @@ export const modifierLActiviteDeMediation = async (
         where: { id: { in: [...precedente.anonymesOrphelins] }, anonyme: true },
       })
       await transaction.beneficiaire.updateMany({
-        where: { id: { in: [...precedente.suivis] } },
+        where: {
+          id: {
+            in: precedente.beneficiaireIds.filter(
+              (id) => !precedente.anonymesOrphelins.includes(id),
+            ),
+          },
+        },
         data: { accompagnementsCount: { decrement: 1 } },
       })
       await transaction.beneficiaire.createMany({ data: lignes.anonymes })

@@ -25,6 +25,13 @@
 * And le bénéficiaire retiré compte 0 accompagnement
 * And le médiateur compte 1 activité et 2 accompagnements
 
+### Scenario: Un ancien bénéficiaire anonymisé perd l'atelier qu'on réécrit
+
+* Given un médiateur dont un ancien bénéficiaire anonymisé participe à deux ateliers
+* When le médiateur réécrit le premier de ces ateliers avec 1 anonyme
+* Then l'enregistrement de l'atelier collectif réussit
+* And l'ancien bénéficiaire anonymisé compte 1 accompagnement
+
 ## Rule: L'atelier ne cite que ce qui appartient au médiateur
 
 ### Scenario: Le bénéficiaire d'un autre médiateur est refusé

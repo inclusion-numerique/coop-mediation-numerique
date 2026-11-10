@@ -340,6 +340,29 @@ describe('transfer de l’activité de médiation', () => {
       ).toEqual({ mediation: [], demarche: null })
     })
 
+    it('compte comme anonyme un ancien bénéficiaire anonymisé qui garde sa commune', () => {
+      const ligneDAtelier = activiteDeMediationFromDomain(atelier, nouvelId)
+      const relu = activiteDeMediationToDomain({
+        ...ligneDAtelier,
+        accompagnements: ligneDAtelier.accompagnements.map((accompagnement) =>
+          accompagnement.beneficiaire.anonyme
+            ? {
+                ...accompagnement,
+                beneficiaire: {
+                  ...accompagnement.beneficiaire,
+                  commune: 'Lyon',
+                  communeCodePostal: '69001',
+                  communeCodeInsee: '69123',
+                },
+              }
+            : accompagnement,
+        ),
+      })
+      expect(
+        relu._tag === 'Collectif' && relu.participants.anonymes.total,
+      ).toBe(3)
+    })
+
     it('relit un atelier historique sans participant', () => {
       const atelierVide = activiteDeMediationToDomain({
         ...activiteDeMediationFromDomain(atelier, nouvelId),

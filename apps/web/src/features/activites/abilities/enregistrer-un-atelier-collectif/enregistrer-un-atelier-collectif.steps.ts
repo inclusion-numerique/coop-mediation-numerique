@@ -133,6 +133,46 @@ Given(
 )
 
 Given(
+  'un médiateur dont un ancien bénéficiaire anonymisé participe à deux ateliers',
+  async () => {
+    const contexte = await semerLeContexte()
+    const anonymise = await prismaClient.beneficiaire.create({
+      data: {
+        mediateurId: contexte.auteur.mediateurId,
+        anonyme: true,
+        commune: 'Lyon',
+        communeCodePostal: '69001',
+        communeCodeInsee: '69123',
+        accompagnementsCount: 2,
+      },
+      select: { id: true },
+    })
+    const atelier = (jour: string) =>
+      prismaClient.activite
+        .create({
+          data: {
+            mediateurId: contexte.auteur.mediateurId,
+            type: 'Collectif',
+            typeLieu: 'ADistance',
+            date: new Date(`2026-11-${jour}`),
+            duree: 60,
+            thematiques: ['Email'],
+            accompagnementsCount: 1,
+            accompagnements: { create: { beneficiaireId: anonymise.id } },
+          },
+          select: { id: true },
+        })
+        .then(({ id }) => id)
+    const [premier] = await Promise.all([atelier('02'), atelier('03')])
+    semis = {
+      ...contexte,
+      suivis: [...contexte.suivis, anonymise.id],
+      activiteId: premier,
+    }
+  },
+)
+
+Given(
   'un médiateur ayant accompagné individuellement un bénéficiaire suivi',
   async () => {
     const contexte = await semerLeContexte()
@@ -188,6 +228,20 @@ When(
   'un autre médiateur enregistre un atelier pour ces bénéficiaires',
   async () => {
     await enregistrerPar(semisCourant().autre, saisie())
+  },
+)
+
+When(
+  'le médiateur réécrit le premier de ces ateliers avec {int} anonyme',
+  async (total: number) => {
+    await enregistrerPar(
+      semisCourant().auteur,
+      saisie({
+        id: ActiviteId(activiteSemee()),
+        suivis: [],
+        anonymes: anonymes(total, 0, 0),
+      }),
+    )
   },
 )
 
@@ -276,6 +330,19 @@ Then(
       suivis.map(({ accompagnementsCount }) => accompagnementsCount),
       semisCourant().suivis.map(() => attendu),
     )
+  },
+)
+
+Then(
+  "l'ancien bénéficiaire anonymisé compte {int} accompagnement",
+  async (attendu: number) => {
+    const anonymise = semisCourant().suivis.at(-1)
+    assert.ok(anonymise)
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: anonymise },
+      select: { accompagnementsCount: true },
+    })
+    assert.strictEqual(beneficiaire.accompagnementsCount, attendu)
   },
 )
 

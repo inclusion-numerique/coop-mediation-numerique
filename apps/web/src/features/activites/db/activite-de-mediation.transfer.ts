@@ -293,18 +293,6 @@ const participantsAnonymesDeLaLigne = (
   const anonymes = accompagnementsAnonymes.map(
     ({ beneficiaire }) => beneficiaire,
   )
-  if (
-    anonymes.some(
-      (anonyme) =>
-        communeDe(row.id, {
-          nom: anonyme.commune,
-          codePostal: anonyme.communeCodePostal,
-          codeInsee: anonyme.communeCodeInsee,
-        }) !== null,
-    )
-  ) {
-    throw new ActiviteIllisible(row.id, 'résidence d’un participant anonyme')
-  }
   return valide(row.id)(
     participantsAnonymesDe({
       total: Effectif(anonymes.length),
