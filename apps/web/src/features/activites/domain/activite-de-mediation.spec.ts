@@ -47,9 +47,9 @@ describe('date d’activité', () => {
     )
   })
 
-  it('reporte un 29 février au 1er mars deux ans plus tard', () => {
+  it('ramène un 29 février au 28 février deux ans plus tard, comme la base', () => {
     expect(derniereDateDActivite(DateDActivite('2028-02-29'))).toBe(
-      '2030-03-01',
+      '2030-02-28',
     )
   })
 
