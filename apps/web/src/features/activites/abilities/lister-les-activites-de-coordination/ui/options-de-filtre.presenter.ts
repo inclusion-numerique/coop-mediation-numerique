@@ -1,10 +1,10 @@
-import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
-import type { OptionsDeFiltre, PorteeDeTag } from '../domain'
+import type { PorteeDuTag } from '@app/web/features/activites/ui/tags/BadgeDePortee'
+import type { OptionsDeFiltre } from '../domain'
 
 export type OptionDeTag = {
   readonly value: string
   readonly label: string
-  readonly scope: TagScope
+  readonly portee: PorteeDuTag
 }
 
 export type OptionsDeFiltrePresentees = {
@@ -13,24 +13,14 @@ export type OptionsDeFiltrePresentees = {
   readonly fin: Date
 }
 
-const PORTEES: Record<string, TagScope> = {
-  Personnel: TagScope.Personnel,
-  Equipe: TagScope.Equipe,
-  Departemental: TagScope.Departemental,
-  National: TagScope.National,
-}
-
-const portee = (valeur: PorteeDeTag): TagScope =>
-  PORTEES[valeur] ?? TagScope.National
-
 export const optionsDeFiltrePresentees = (
   { tags, periodeCouverte }: OptionsDeFiltre,
   maintenant: Date,
 ): OptionsDeFiltrePresentees => ({
-  tags: tags.map(({ id, nom, portee: valeur }) => ({
+  tags: tags.map(({ id, nom, portee }) => ({
     value: id,
     label: nom,
-    scope: portee(valeur),
+    portee,
   })),
   debut: periodeCouverte?.du ?? maintenant,
   fin: periodeCouverte?.au ?? maintenant,

@@ -1,45 +1,30 @@
-import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
-
-export type PorteeDuTagDuCra =
-  | 'Personnel'
-  | 'Equipe'
-  | 'Departemental'
-  | 'National'
+import type {
+  EquipeDuTag,
+  PorteeDuTag,
+} from '@app/web/features/activites/ui/tags/BadgeDePortee'
 
 export type TagDuCra = {
   readonly id: string
   readonly nom: string
   readonly description: string | null
-  readonly portee: PorteeDuTagDuCra
-  readonly equipe: {
-    readonly numero: number
-    readonly coordonneePar: string
-  } | null
+  readonly portee: PorteeDuTag
+  readonly equipe: EquipeDuTag | null
 }
 
 export type Tag = {
   id: string
   nom: string
   description?: string
-  scope: TagScope
-  equipeNumber?: number
-  equipeCoordinateurNom?: string
-}
-
-const SCOPE: Record<PorteeDuTagDuCra, TagScope> = {
-  Personnel: TagScope.Personnel,
-  Equipe: TagScope.Equipe,
-  Departemental: TagScope.Departemental,
-  National: TagScope.National,
+  portee: PorteeDuTag
+  equipe: EquipeDuTag | null
 }
 
 export const tagDuFormulaire = (tag: TagDuCra): Tag => ({
   id: tag.id,
   nom: tag.nom,
   description: tag.description ?? undefined,
-  scope: SCOPE[tag.portee],
-  equipeNumber: tag.equipe?.numero,
-  equipeCoordinateurNom: tag.equipe?.coordonneePar,
+  portee: tag.portee,
+  equipe: tag.equipe,
 })
 
 export type VisibiliteDuTagDuCra =

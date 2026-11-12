@@ -5,7 +5,7 @@ import {
   type Tag,
   tagDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import TagScopeBadge from '@app/web/features/activites/use-cases/tags/components/TagScopeBadge'
+import { BadgeDePortee } from '@app/web/features/activites/ui/tags/BadgeDePortee'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { inject } from '@app/web/libs/injection/client'
 
@@ -36,7 +36,7 @@ const renderItem = ({ item }: { item: Tag }) => (
         </span>
       )}
     </div>
-    <TagScopeBadge small {...item} />
+    <BadgeDePortee small portee={item.portee} equipe={item.equipe} />
   </div>
 )
 

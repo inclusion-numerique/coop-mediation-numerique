@@ -1,8 +1,7 @@
 'use client'
 
 import { Popover } from '@app/ui/components/Primitives/Popover'
-import TagScopeBadge from '@app/web/features/activites/use-cases/tags/components/TagScopeBadge'
-import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
+import { BadgeDePortee } from '@app/web/features/activites/ui/tags/BadgeDePortee'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
@@ -10,11 +9,12 @@ import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import type { OptionDeTag } from '../options-de-filtre.presenter'
 
 export const FiltreDeTags = ({
   tagOptions,
 }: {
-  tagOptions: { value: string; label: string; scope: TagScope }[]
+  tagOptions: readonly OptionDeTag[]
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -96,11 +96,11 @@ export const FiltreDeTags = ({
                 <field.Checkbox
                   isPending={false}
                   isTiled={false}
-                  options={tagOptions.map(({ value, label, scope }) => ({
+                  options={tagOptions.map(({ value, label, portee }) => ({
                     label: (
                       <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
                         {label}
-                        <TagScopeBadge scope={scope} />
+                        <BadgeDePortee portee={portee} />
                       </span>
                     ),
                     value,
