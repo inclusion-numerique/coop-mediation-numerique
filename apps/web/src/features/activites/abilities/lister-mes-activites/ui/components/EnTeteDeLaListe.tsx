@@ -1,6 +1,4 @@
-import ExportActivitesButtonWrapper from '@app/web/features/activites/use-cases/list/components/ExportActivitesButtonWrapper'
-import ExportActivitesDisabledButton from '@app/web/features/activites/use-cases/list/components/ExportActivitesDisabledButton'
-import { Suspense } from 'react'
+import type { ReactNode } from 'react'
 import {
   BarreDeFiltres,
   type OptionsDeLaBarre,
@@ -13,12 +11,12 @@ export const EnTeteDeLaListe = ({
   filtres,
   options,
   rendezVousFiltrables,
-  nombreDAccompagnements,
+  exportDesAccompagnements,
 }: {
   filtres: FiltresDeLaListe
   options: OptionsDeLaBarre
   rendezVousFiltrables: boolean
-  nombreDAccompagnements: Promise<number>
+  exportDesAccompagnements: ReactNode
 }) => {
   const sources = options.importsV1 ? [...optionsDesSources] : []
   const tags = options.tags.map(({ id, nom }) => ({ id, nom }))
@@ -31,20 +29,7 @@ export const EnTeteDeLaListe = ({
           options={options}
           rendezVousFiltrables={rendezVousFiltrables}
         />
-        <Suspense fallback={<ExportActivitesDisabledButton />}>
-          <ExportActivitesButtonWrapper
-            filters={filtres}
-            tagsOptions={tags}
-            communesOptions={options.communes}
-            departementsOptions={options.departements}
-            lieuxActiviteOptions={options.lieux}
-            structuresEmployeusesOptions={employeuses}
-            beneficiairesOptions={[]}
-            mediateursOptions={[]}
-            searchResultMatchesCount={nombreDAccompagnements}
-            activiteSourceOptions={sources}
-          />
-        </Suspense>
+        {exportDesAccompagnements}
       </div>
       <FilterTags
         filters={filtres}

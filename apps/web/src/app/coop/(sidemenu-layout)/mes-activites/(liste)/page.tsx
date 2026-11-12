@@ -7,6 +7,7 @@ import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/ratt
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
+import { ExportDeMesAccompagnements } from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui'
 import { optionsDeLaBarre } from '@app/web/features/activites/abilities/lister-les-options-de-filtre-des-activites'
 import { listerMesActivites } from '@app/web/features/activites/abilities/lister-mes-activites'
 import {
@@ -171,9 +172,15 @@ const MesActivitesRoute = async ({
                           criteres.statutsDeRendezVous.length > 0 ||
                           voirLesRdvs)
                       }
-                      nombreDAccompagnements={chronologie.then(
-                        ({ total }) => total.accompagnements,
-                      )}
+                      exportDesAccompagnements={
+                        <ExportDeMesAccompagnements
+                          filtres={filtresDeLaListe(criteres)}
+                          options={options}
+                          nombreDAccompagnements={chronologie.then(
+                            ({ total }) => total.accompagnements,
+                          )}
+                        />
+                      }
                     />
                     <ListeDeMesActivites
                       contenu={chronologie.then((lue) => ({
