@@ -9,6 +9,7 @@ export const dureesFrequentesDuMediateur = async (
       SELECT duree
       FROM "activites"
       WHERE mediateur_id = ${mediateurId}::UUID
+        AND suppression IS NULL
       GROUP BY duree
       HAVING count(*) > 5
       ORDER BY count(*) DESC

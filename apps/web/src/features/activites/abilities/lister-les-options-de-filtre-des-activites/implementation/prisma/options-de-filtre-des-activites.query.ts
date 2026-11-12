@@ -24,11 +24,16 @@ export const optionsDeFiltreDesActivites = async ({
       prismaClient.activite.aggregate({
         _min: { date: true },
         _max: { date: true },
-        where: { mediateurId },
+        where: { mediateurId, suppression: null },
       }),
       employeusesDesActivites(mediateurId),
       prismaClient.tag.findMany({
-        where: { activites: { some: { activite: { mediateurId } } } },
+        where: {
+          suppression: null,
+          activites: {
+            some: { activite: { mediateurId, suppression: null } },
+          },
+        },
         select: {
           id: true,
           nom: true,
@@ -40,7 +45,7 @@ export const optionsDeFiltreDesActivites = async ({
         orderBy: { nom: 'asc' },
       }),
       prismaClient.activite.findFirst({
-        where: { mediateurId, v1CraId: { not: null } },
+        where: { mediateurId, suppression: null, v1CraId: { not: null } },
         select: { id: true },
       }),
       prismaClient.activite.findFirst({
