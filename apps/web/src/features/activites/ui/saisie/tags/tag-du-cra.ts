@@ -40,3 +40,9 @@ export type VisibiliteDuTagDuCra =
 export type RechercherDesTagsInitiaux = (
   exclus: readonly string[],
 ) => Promise<readonly TagDuCra[]>
+
+export const visibilitesDuCra = (
+  visibilites: readonly VisibiliteDuTagDuCra[],
+  { departemental }: { readonly departemental: boolean },
+): readonly VisibiliteDuTagDuCra[] =>
+  visibilites.filter(({ _tag }) => departemental || _tag !== 'Departemental')

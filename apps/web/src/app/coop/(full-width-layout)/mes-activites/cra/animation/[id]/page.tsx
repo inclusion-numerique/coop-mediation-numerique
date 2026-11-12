@@ -2,10 +2,6 @@ import { enregistrerUneActiviteDeCoordinationAction } from '@app/web/app/_action
 import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
-import {
-  tagsInitiauxDuCra,
-  visibilitesDeTagDuCra,
-} from '@app/web/composition/activites/tags-du-cra'
 import { lireUneActiviteDeCoordination } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import CraAnimationPage from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/CraAnimationPage'
@@ -17,6 +13,9 @@ import {
 } from '@app/web/features/activites/domain'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { visibilitesDuCra } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { visibilitesProposeesA } from '@app/web/features/tags/abilities/creer-un-tag'
+import { tagsInitiauxPar } from '@app/web/features/tags/abilities/rechercher-des-tags'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
 
@@ -49,7 +48,7 @@ const UpdateCraAnimationPage = async ({
   const craPageData = await getCraCoordinationPageData(
     coordinateurId,
     defaultValues,
-    tagsInitiauxDuCra(user),
+    tagsInitiauxPar(user),
   )
 
   return (
@@ -65,7 +64,7 @@ const UpdateCraAnimationPage = async ({
           <CraAnimationPage
             {...craPageData}
             coordinateurId={coordinateurId}
-            visibilitesDeTag={visibilitesDeTagDuCra(user, {
+            visibilitesDeTag={visibilitesDuCra(visibilitesProposeesA(user), {
               departemental: true,
             })}
             retour={retour}
