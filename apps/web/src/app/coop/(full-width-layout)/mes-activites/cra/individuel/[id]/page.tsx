@@ -14,8 +14,10 @@ import CraIndividuelPage from '@app/web/features/activites/abilities/enregistrer
 import { formulaireDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/formulaire-de-l-accompagnement-individuel.presenter'
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
+import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/commune/rechercher-des-communes.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { rechercherDesCommunes } from '@app/web/features/adresse/abilities/rechercher-des-communes/implementation/api-adresse/rechercher-des-communes'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -80,14 +82,19 @@ const UpdateCraIndividuelPage = async ({
             bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
             to={rechercherUnLieuActiviteAction}
           >
-            <CraIndividuelPage
-              {...craPageData}
-              mediateurId={mediateurId}
-              visibilitesDeTag={visibilitesDeTagDuCra(user, {
-                departemental: false,
-              })}
-              retour={retour}
-            />
+            <ClientBinder
+              bind={RECHERCHER_DES_COMMUNES_DU_CRA_KEY}
+              to={rechercherDesCommunes}
+            >
+              <CraIndividuelPage
+                {...craPageData}
+                mediateurId={mediateurId}
+                visibilitesDeTag={visibilitesDeTagDuCra(user, {
+                  departemental: false,
+                })}
+                retour={retour}
+              />
+            </ClientBinder>
           </ClientBinder>
         </ClientBinder>
       </ClientBinder>

@@ -2,7 +2,6 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import { AutonomieBeneficiaireField } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/AutonomieBeneficiaireField'
 import { BeneficiaireAnonymeFields } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireAnonymeFields'
@@ -23,12 +22,16 @@ import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '@app/web/features/activites/ui/libelles/thematique'
+import {
+  type CommuneConnue,
+  type CommuneDuCra,
+  communeDuCra,
+} from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
 import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   genreOptions,
@@ -43,7 +46,7 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
 
@@ -95,7 +98,7 @@ const CraIndividuelForm = ({
     },
   })
 
-  const syncWithCommuneResidenceBeneficiaire = (item: Commune) => {
+  const syncWithCommuneResidenceBeneficiaire = (item: CommuneDuCra) => {
     const communeResidence = form.getFieldValue('beneficiaire.communeResidence')
     const typeLieu = form.getFieldValue('typeLieu')
     if (communeResidence?.id != null || typeLieu !== 'Domicile') return
@@ -111,17 +114,20 @@ const CraIndividuelForm = ({
   }
 
   const onSelectBeneficiaire = (beneficiaire: {
-    communeResidence?: AdresseBanData | null
+    communeResidence?: CommuneConnue | null
   }) => {
     const typeLieu = form.getFieldValue('typeLieu')
     if (typeLieu !== 'Domicile') return
     const lieuCommuneData = form.getFieldValue('lieuCommuneData')
     if (lieuCommuneData?.id != null) return
-    if (beneficiaire.communeResidence?.id == null) return
-    form.setFieldValue('lieuCommuneData', beneficiaire.communeResidence)
+    if (beneficiaire.communeResidence == null) return
+    form.setFieldValue(
+      'lieuCommuneData',
+      communeDuCra(beneficiaire.communeResidence),
+    )
   }
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
+  const isPending = useSelector(form.store, (state) => state.isSubmitting)
 
   return (
     <form.AppForm>

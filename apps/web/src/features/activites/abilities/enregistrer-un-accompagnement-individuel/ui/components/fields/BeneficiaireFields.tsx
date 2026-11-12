@@ -1,7 +1,7 @@
 import { Options } from '@app/ui/components/Primitives/Options'
 import IconInSquare from '@app/web/components/IconInSquare'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import type { CommuneConnue } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   BeneficiaireComboBox,
@@ -19,7 +19,7 @@ type BeneficiaireItem = {
   id: string
   prenom: string
   nom: string
-  communeResidence?: AdresseBanData | null
+  communeResidence?: CommuneConnue | null
 }
 
 const options = formOptions({

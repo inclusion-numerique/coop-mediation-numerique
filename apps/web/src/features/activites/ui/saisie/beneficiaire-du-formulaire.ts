@@ -1,4 +1,4 @@
-import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
+import { communeDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
 import type { BeneficiaireCraData } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
 import type { DefaultValues } from 'react-hook-form'
 import type { FicheDuBeneficiaireSuivi } from '../../domain'
@@ -27,10 +27,10 @@ export const getBeneficiaireDefaultCraDataFromExisting =
     id: id ?? undefined,
     communeResidence:
       commune && communeCodeInsee && communeCodePostal
-        ? banDefaultValueToAdresseBanData({
-            commune: commune ?? undefined,
-            codePostal: communeCodePostal ?? undefined,
-            codeInsee: communeCodeInsee ?? undefined,
+        ? communeDuCra({
+            commune,
+            codePostal: communeCodePostal,
+            codeInsee: communeCodeInsee,
           })
         : undefined,
     adresse: adresse ?? undefined,

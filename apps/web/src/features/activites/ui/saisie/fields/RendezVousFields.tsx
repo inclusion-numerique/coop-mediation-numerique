@@ -3,15 +3,15 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
 import { typeLieuOptionsWithExtras } from '@app/web/features/activites/ui/libelles/type-lieu'
 import {
+  CommuneComboBox,
+  CommuneOptions,
+} from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
+import type { CommuneDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
+import {
   debutDispositifConum,
   derniereDateDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import {
-  type Commune,
-  CommuneComboBox,
-  CommuneOptions,
-} from '@app/web/features/adresse/combo-box/CommuneComboBox'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import {
   LieuActiviteComboBox,
@@ -59,7 +59,7 @@ export const RendezVousFields = withFieldGroup({
     isPending: boolean
     dureeOptions: SelectOption[]
     lieuActiviteOptions: LieuActiviteOption[]
-    onSelectLieuCommuneData?: (item: Commune) => void
+    onSelectLieuCommuneData?: (item: CommuneDuCra) => void
     onSelectTypeLieuDomicile?: () => void
   },
   render: ({

@@ -1,4 +1,4 @@
-import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
+import { communeDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
 import { minutesToCraDureeData } from '@app/web/features/activites/ui/saisie/duree'
 import type {
   ActiviteDeMediation,
@@ -9,7 +9,7 @@ import type {
 } from '../../domain'
 
 export const communeDuFormulaire = (commune: Commune) =>
-  banDefaultValueToAdresseBanData({
+  communeDuCra({
     commune: commune.nom,
     codePostal: commune.codePostal,
     codeInsee: commune.codeInsee,

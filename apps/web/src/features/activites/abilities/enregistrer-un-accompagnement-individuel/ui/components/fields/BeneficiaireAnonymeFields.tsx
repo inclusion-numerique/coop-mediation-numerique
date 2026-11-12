@@ -9,7 +9,7 @@ import type {
 import {
   CommuneComboBox,
   CommuneOptions,
-} from '@app/web/features/adresse/combo-box/CommuneComboBox'
+} from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'

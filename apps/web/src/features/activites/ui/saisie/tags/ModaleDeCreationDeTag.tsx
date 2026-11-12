@@ -13,7 +13,7 @@ import {
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { type ReactNode, useEffect } from 'react'
 import { z } from 'zod'
 
@@ -151,8 +151,8 @@ export const ModaleDeCreationDeTag = ({
     },
   })
 
-  const enCours = useStore(form.store, (state) => state.isSubmitting)
-  const visibilite = useStore(form.store, (state) => state.values.visibilite)
+  const enCours = useSelector(form.store, (state) => state.isSubmitting)
+  const visibilite = useSelector(form.store, (state) => state.values.visibilite)
 
   useEffect(() => {
     form.reset({ nom, description: null, visibilite: { _tag: 'Personnel' } })

@@ -29,7 +29,7 @@ import { inject } from '@app/web/libs/injection/client'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { type DefaultValues } from 'react-hook-form'
 
@@ -81,7 +81,7 @@ const CraCollectifForm = ({
     },
   })
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
+  const isPending = useSelector(form.store, (state) => state.isSubmitting)
 
   return (
     <form.AppForm>
