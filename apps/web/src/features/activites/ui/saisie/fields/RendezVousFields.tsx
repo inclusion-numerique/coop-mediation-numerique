@@ -8,16 +8,18 @@ import {
 } from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
 import type { CommuneDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
 import {
+  LieuComboBox,
+  LieuOptions,
+} from '@app/web/features/activites/ui/saisie/lieu/lieu-combo-box'
+import {
+  type LieuDuCra,
+  lieuLePlusUtilise,
+} from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
+import {
   debutDispositifConum,
   derniereDateDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
-import {
-  LieuActiviteComboBox,
-  LieuActiviteOptions,
-  type OptionDeLieuTrouve,
-} from '@app/web/features/lieux-activite/ui'
 import {
   type DefaultValues,
   withFieldGroup,
@@ -30,26 +32,6 @@ const shouldResetLieuCommuneData = (value?: string) =>
 const shouldResetStructure = (value?: string) =>
   value != null && ['Autre', 'Domicile', 'ADistance'].includes(value)
 
-const toLieuActiviteOption = ({
-  value,
-  extra,
-}: {
-  value: string
-  extra?: {
-    nom: string
-    adresse: string
-    mostUsed: boolean
-    activites?: number
-  }
-}): OptionDeLieuTrouve => ({
-  id: value,
-  nom: extra?.nom ?? '',
-  adresse: extra?.adresse ?? '',
-  lePlusUtilise: extra?.mostUsed ?? false,
-})
-
-const mostUsedOption = ({ lePlusUtilise }: OptionDeLieuTrouve) => lePlusUtilise
-
 export const RendezVousFields = withFieldGroup({
   defaultValues: {} as Pick<
     DefaultValues<CraData>,
@@ -58,7 +40,7 @@ export const RendezVousFields = withFieldGroup({
   props: {} as {
     isPending: boolean
     dureeOptions: SelectOption[]
-    lieuActiviteOptions: LieuActiviteOption[]
+    lieuxProposes: readonly LieuDuCra[]
     onSelectLieuCommuneData?: (item: CommuneDuCra) => void
     onSelectTypeLieuDomicile?: () => void
   },
@@ -66,7 +48,7 @@ export const RendezVousFields = withFieldGroup({
     group,
     isPending,
     dureeOptions,
-    lieuActiviteOptions,
+    lieuxProposes,
     onSelectLieuCommuneData,
     onSelectTypeLieuDomicile,
   }) => {
@@ -74,10 +56,7 @@ export const RendezVousFields = withFieldGroup({
       if (shouldResetLieuCommuneData(value))
         group.setFieldValue('lieuCommuneData', null)
       if (shouldResetStructure(value))
-        group.setFieldValue(
-          'structure',
-          lieuActiviteOptions.map(toLieuActiviteOption).find(mostUsedOption),
-        )
+        group.setFieldValue('structure', lieuLePlusUtilise(lieuxProposes))
       if (value === 'Domicile') onSelectTypeLieuDomicile?.()
     }
 
@@ -205,10 +184,8 @@ export const RendezVousFields = withFieldGroup({
                   {(field) => (
                     <field.ComboBox
                       isPending={isPending}
-                      defaultItems={lieuActiviteOptions.map(
-                        toLieuActiviteOption,
-                      )}
-                      {...LieuActiviteComboBox}
+                      defaultItems={[...lieuxProposes]}
+                      {...LieuComboBox}
                     >
                       {({
                         getLabelProps,
@@ -264,11 +241,7 @@ export const RendezVousFields = withFieldGroup({
                             }}
                             label=""
                           />
-                          <Options
-                            {...options}
-                            {...LieuActiviteOptions}
-                            showEmpty
-                          />
+                          <Options {...options} {...LieuOptions} showEmpty />
                         </>
                       )}
                     </field.ComboBox>

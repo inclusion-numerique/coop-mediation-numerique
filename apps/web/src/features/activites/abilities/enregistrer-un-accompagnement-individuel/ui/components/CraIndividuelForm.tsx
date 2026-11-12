@@ -31,6 +31,7 @@ import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/Mate
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
@@ -38,7 +39,6 @@ import {
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/features/beneficiaire/forms/beneficiaire-options'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -52,14 +52,14 @@ import { DefaultValues } from 'react-hook-form'
 
 const CraIndividuelForm = ({
   defaultValues,
-  lieuActiviteOptions,
+  lieuxProposes,
   initialBeneficiairesOptions,
   initialTagsOptions,
   retour,
   dureeOptions,
 }: {
   defaultValues: DefaultValues<CraIndividuelData> & { mediateurId: string }
-  lieuActiviteOptions: LieuActiviteOption[]
+  lieuxProposes: readonly LieuDuCra[]
   initialBeneficiairesOptions: BeneficiaireOption[]
   initialTagsOptions: Tag[]
   retour?: string
@@ -150,7 +150,7 @@ const CraIndividuelForm = ({
           }}
           isPending={isPending}
           dureeOptions={dureeOptions}
-          lieuActiviteOptions={lieuActiviteOptions}
+          lieuxProposes={lieuxProposes}
           onSelectLieuCommuneData={syncWithCommuneResidenceBeneficiaire}
           onSelectTypeLieuDomicile={syncLieuCommuneDataWithBeneficiaire}
         />

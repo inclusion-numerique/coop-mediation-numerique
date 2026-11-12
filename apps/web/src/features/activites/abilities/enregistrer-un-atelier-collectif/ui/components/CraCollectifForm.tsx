@@ -20,9 +20,9 @@ import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/Mate
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -35,14 +35,14 @@ import { type DefaultValues } from 'react-hook-form'
 
 const CraCollectifForm = ({
   defaultValues,
-  lieuActiviteOptions,
+  lieuxProposes,
   initialBeneficiairesOptions,
   initialTagsOptions,
   dureeOptions,
   retour,
 }: {
   defaultValues: DefaultValues<CraCollectifData>
-  lieuActiviteOptions: LieuActiviteOption[]
+  lieuxProposes: readonly LieuDuCra[]
   initialBeneficiairesOptions: BeneficiaireOption[]
   initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
@@ -113,7 +113,7 @@ const CraCollectifForm = ({
           }}
           isPending={isPending}
           dureeOptions={dureeOptions}
-          lieuActiviteOptions={lieuActiviteOptions}
+          lieuxProposes={lieuxProposes}
         />
         <hr className="fr-separator-12v" />
         <MaterielField

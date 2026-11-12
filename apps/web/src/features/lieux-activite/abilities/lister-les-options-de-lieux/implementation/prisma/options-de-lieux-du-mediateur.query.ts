@@ -1,6 +1,10 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { lieuExploitableSql } from '../../../../implementation'
-import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
+import {
+  adresseComplete,
+  type LieuActiviteOption,
+  optionDeLieu,
+} from './option-de-lieu'
 
 type LieuActiviteQueryResult = {
   id: string
@@ -11,14 +15,19 @@ type LieuActiviteQueryResult = {
   activites_count: bigint
 }
 
-export const getMediateursLieuxActiviteOptions = async ({
-  mediateurIds,
-}: {
-  mediateurIds: string[]
-}): Promise<LieuActiviteOption[]> => {
-  if (mediateurIds.length === 0) return []
+export type LieuDuMediateur = {
+  readonly id: string
+  readonly nom: string
+  readonly adresse: string
+  readonly lePlusUtilise: boolean
+}
 
-  const results = await prismaClient.$queryRaw<LieuActiviteQueryResult[]>`
+const lieuxExploitesPar = async (
+  mediateurIds: string[],
+): Promise<LieuActiviteQueryResult[]> =>
+  mediateurIds.length === 0
+    ? []
+    : prismaClient.$queryRaw<LieuActiviteQueryResult[]>`
     WITH lieux AS (
       SELECT DISTINCT ON (s.id)
         s.id,
@@ -46,7 +55,12 @@ export const getMediateursLieuxActiviteOptions = async ({
     ORDER BY activites_count DESC, nom ASC
   `
 
-  return results.map(
+export const getMediateursLieuxActiviteOptions = async ({
+  mediateurIds,
+}: {
+  mediateurIds: string[]
+}): Promise<LieuActiviteOption[]> =>
+  (await lieuxExploitesPar(mediateurIds)).map(
     ({ id, nom, commune, code_postal, adresse, activites_count }, rang) =>
       optionDeLieu(
         { id, nom, adresse, codePostal: code_postal, commune },
@@ -54,4 +68,15 @@ export const getMediateursLieuxActiviteOptions = async ({
         rang,
       ),
   )
-}
+
+export const lieuxDuMediateur = async (
+  mediateurId: string,
+): Promise<readonly LieuDuMediateur[]> =>
+  (await lieuxExploitesPar([mediateurId])).map(
+    ({ id, nom, commune, code_postal, adresse, activites_count }, rang) => ({
+      id,
+      nom,
+      adresse: adresseComplete({ adresse, codePostal: code_postal, commune }),
+      lePlusUtilise: rang === 0 && Number(activites_count) > 0,
+    }),
+  )

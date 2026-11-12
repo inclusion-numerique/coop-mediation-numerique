@@ -5,20 +5,20 @@ import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import CraCollectifForm from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/CraCollectifForm'
 import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import { ModaleDeCreationDeTag } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { MostUsedBeneficiairesForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
 
 export type CraCollectifPageData = {
   defaultValues: DefaultValues<CraCollectifData>
   mediateurId: string
-  lieuxActiviteOptions: LieuActiviteOption[]
+  lieuxProposes: readonly LieuDuCra[]
   initialTagsOptions: Tag[]
   initialBeneficiairesOptions: MostUsedBeneficiairesForSearch
   dureeOptions: SelectOption[]
@@ -31,7 +31,7 @@ const CraCollectifPage = ({
   initialBeneficiairesOptions,
   initialTagsOptions,
   dureeOptions,
-  lieuxActiviteOptions,
+  lieuxProposes,
   mediateurId,
   visibilitesDeTag,
   retour,
@@ -57,7 +57,7 @@ const CraCollectifPage = ({
       <ModaleDeCreationDeTag visibilites={visibilitesDeTag} />
       <CraCollectifForm
         defaultValues={{ ...defaultValues, mediateurId }}
-        lieuActiviteOptions={lieuxActiviteOptions}
+        lieuxProposes={lieuxProposes}
         initialBeneficiairesOptions={initialBeneficiairesOptions}
         initialTagsOptions={initialTagsOptions}
         dureeOptions={dureeOptions}

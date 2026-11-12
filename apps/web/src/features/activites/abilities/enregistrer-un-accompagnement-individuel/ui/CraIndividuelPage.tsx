@@ -5,13 +5,13 @@ import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import CraIndividuelForm from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/CraIndividuelForm'
 import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import { ModaleDeCreationDeTag } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { MostUsedBeneficiairesForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
 
@@ -19,7 +19,7 @@ export type CraIndividuelPageData = {
   defaultValues: DefaultValues<CraIndividuelData>
   mediateurId: string
   initialBeneficiairesOptions: MostUsedBeneficiairesForSearch
-  lieuxActiviteOptions: LieuActiviteOption[]
+  lieuxProposes: readonly LieuDuCra[]
   initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
   visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
@@ -30,7 +30,7 @@ const CraIndividuelPage = ({
   defaultValues,
   initialBeneficiairesOptions,
   initialTagsOptions,
-  lieuxActiviteOptions,
+  lieuxProposes,
   dureeOptions,
   mediateurId,
   visibilitesDeTag,
@@ -57,7 +57,7 @@ const CraIndividuelPage = ({
       <ModaleDeCreationDeTag visibilites={visibilitesDeTag} />
       <CraIndividuelForm
         defaultValues={{ ...defaultValues, mediateurId }}
-        lieuActiviteOptions={lieuxActiviteOptions}
+        lieuxProposes={lieuxProposes}
         initialBeneficiairesOptions={initialBeneficiairesOptions}
         initialTagsOptions={initialTagsOptions}
         retour={retour}
