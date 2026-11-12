@@ -1,4 +1,3 @@
-import { tagsUtilisablesPar } from '@app/web/app/_actions/activites/ports-de-la-saisie'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
@@ -15,6 +14,7 @@ import {
   criteresDesActivites,
   MediateurId,
 } from '@app/web/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
 import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
@@ -22,6 +22,7 @@ import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
 } from '@app/web/features/lieux-activite'
+import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
@@ -62,7 +63,7 @@ export const GET = async (request: NextRequest) => {
       criteres,
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
-      tagsUtilisables: tagsUtilisablesPar(user),
+      tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
       beneficiaires: (ids) =>
         getInitialBeneficiairesOptionsForSearch({
           mediateurId: user.mediateur?.id,

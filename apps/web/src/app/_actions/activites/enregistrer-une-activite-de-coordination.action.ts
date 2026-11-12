@@ -7,10 +7,11 @@ import {
   CoordinateurId,
   UtilisateurId,
 } from '@app/web/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
+import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
-import { tagsUtilisablesPar } from './ports-de-la-saisie'
 
 export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())
@@ -26,7 +27,7 @@ export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
               ? null
               : CoordinateurId(user.coordinateur.id),
           auteurId: UtilisateurId(user.id),
-          tagsUtilisables: tagsUtilisablesPar(user),
+          tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
         }),
       { onError: ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS },
     ),
