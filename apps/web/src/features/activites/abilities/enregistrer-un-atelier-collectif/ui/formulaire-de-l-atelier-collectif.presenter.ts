@@ -4,7 +4,7 @@ import type {
   AtelierCollectif,
   ParticipantsAnonymes,
 } from '../../../domain'
-import { getBeneficiaireDefaultCraDataFromExisting } from '../../../ui/saisie/beneficiaire-du-formulaire'
+import { suiviDuFormulaire } from '../../../ui/saisie/beneficiaire/suivi-du-formulaire'
 import { formulaireCommunDeMediation } from '../../../ui/saisie/formulaire-de-mediation.presenter'
 import type { CraCollectifData } from './validation/CraCollectifValidation'
 import type { ParticipantsAnonymesCraCollectifData } from './validation/ParticipantsAnonymesCraCollectifValidation'
@@ -43,8 +43,6 @@ export const formulaireDeLAtelierCollectif = (
   ...formulaireCommunDeMediation(atelier, affichage),
   titreAtelier: atelier.titre ?? undefined,
   niveau: atelier.niveau ?? undefined,
-  participants: affichage.suivis.map((suivi) =>
-    getBeneficiaireDefaultCraDataFromExisting(suivi)(),
-  ),
+  participants: affichage.suivis.map(suiviDuFormulaire),
   participantsAnonymes: anonymesDuFormulaire(atelier.participants.anonymes),
 })

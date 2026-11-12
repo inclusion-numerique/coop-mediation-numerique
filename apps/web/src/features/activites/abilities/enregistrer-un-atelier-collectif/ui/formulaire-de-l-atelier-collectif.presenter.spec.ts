@@ -1,13 +1,20 @@
 import {
   ActiviteId,
+  AdresseDuLieu,
+  type AffichageDeLActivite,
   type AtelierCollectif,
   aucuneParticipationAnonyme,
+  BeneficiaireId,
+  Commune,
   DateDActivite,
   DureeEnMinutes,
   Effectif,
   LieuActiviteId,
   MediateurId,
   NiveauDAtelier,
+  NomDeFamille,
+  NomDeStructure,
+  Prenom,
   participantsAnonymesDe,
   ThematiqueDeMediation,
   TitreDAtelier,
@@ -25,6 +32,8 @@ const anonymes = participantsAnonymesDe({
   dejaAccompagnes: Effectif(1),
   genres: { masculin: Effectif(1), feminin: Effectif(2) },
 })
+
+const camille = BeneficiaireId('e0000000-0000-4000-8000-000000000001')
 
 const atelier = (): AtelierCollectif => {
   if (!anonymes.success) throw new Error(anonymes.error._tag)
@@ -51,17 +60,28 @@ const atelier = (): AtelierCollectif => {
     modification: instant,
     titre: TitreDAtelier('Découvrir sa messagerie'),
     niveau: NiveauDAtelier('Debutant'),
-    participants: { suivis: [], anonymes: anonymes.data },
+    participants: { suivis: [camille], anonymes: anonymes.data },
   }
 }
 
-const affichage = {
+const affichage: AffichageDeLActivite = {
   lieu: {
-    id: 'd0000000-0000-4000-8000-000000000001',
-    nom: 'Médiathèque',
-    adresse: '3 rue de la République, 69001 Lyon',
+    id: LieuActiviteId('d0000000-0000-4000-8000-000000000001'),
+    nom: NomDeStructure('Médiathèque'),
+    adresse: AdresseDuLieu('3 rue de la République, 69001 Lyon'),
   },
-  suivis: [],
+  suivis: [
+    {
+      id: camille,
+      prenom: Prenom('Camille'),
+      nom: NomDeFamille('Martin'),
+      residence: Commune({
+        nom: 'Lyon',
+        codePostal: '69001',
+        codeInsee: '69123',
+      }),
+    },
+  ],
   tags: [],
 }
 
@@ -87,7 +107,7 @@ describe('formulaire d’un atelier collectif', () => {
       rdvId: null,
       titre: rouvert.titre,
       niveau: rouvert.niveau,
-      suivis: [],
+      suivis: [camille],
       anonymes: rouvert.participants.anonymes,
     })
   })

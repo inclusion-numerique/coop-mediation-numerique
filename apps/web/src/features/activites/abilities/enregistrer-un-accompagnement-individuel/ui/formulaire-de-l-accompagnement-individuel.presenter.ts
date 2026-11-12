@@ -5,7 +5,7 @@ import type {
   BeneficiaireAccompagne,
   Orientation,
 } from '../../../domain'
-import { getBeneficiaireDefaultCraDataFromExisting } from '../../../ui/saisie/beneficiaire-du-formulaire'
+import { suiviDuFormulaire } from '../../../ui/saisie/beneficiaire/suivi-du-formulaire'
 import {
   communeDuFormulaire,
   formulaireCommunDeMediation,
@@ -46,7 +46,7 @@ const beneficiaireDuFormulaire = (
   const suivi = affichage.suivis.find(({ id }) => id === beneficiaire.id)
   return suivi === undefined
     ? { id: beneficiaire.id }
-    : getBeneficiaireDefaultCraDataFromExisting(suivi)()
+    : suiviDuFormulaire(suivi)
 }
 
 export const formulaireDeLAccompagnementIndividuel = (

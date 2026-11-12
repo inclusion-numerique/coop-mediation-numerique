@@ -1,7 +1,9 @@
 export type {
   ActiviteAModifier,
   AffichageDeLActivite,
-  FicheDuBeneficiaireSuivi,
+  BeneficiaireSuiviAffiche,
+  LieuAffiche,
+  TagAffiche,
 } from './activite-a-modifier'
 export {
   type ActiviteDeCoordination,
@@ -45,6 +47,7 @@ export {
   thematiquesDe,
 } from './activite-de-mediation'
 export { ActiviteId } from './activite-id'
+export { AdresseDuLieu } from './adresse-du-lieu'
 export { AUTONOMIES, Autonomie, autonomies } from './autonomie'
 export { BeneficiaireId } from './beneficiaire-id'
 export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
@@ -82,6 +85,7 @@ export {
   niveauxDAtelier,
 } from './niveau-d-atelier'
 export { NomDeCommune } from './nom-de-commune'
+export { NomDeFamille } from './nom-de-famille'
 export { NomDeLActivite } from './nom-de-l-activite'
 export { NomDeStructure } from './nom-de-structure'
 export { NomDeTag } from './nom-de-tag'
@@ -89,6 +93,7 @@ export { Notes, notesDe } from './notes'
 export { Organisateur } from './organisateur'
 export { Precision } from './precision'
 export { PrecisionDeDemarche } from './precision-de-demarche'
+export { Prenom } from './prenom'
 export { RdvId } from './rdv-id'
 export {
   type EmployeuseALaDate,

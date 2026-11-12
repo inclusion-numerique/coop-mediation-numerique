@@ -1,34 +1,36 @@
 import type { ActiviteDeMediation } from './activite-de-mediation'
-import type { GENRES } from './genre'
-import type { STATUTS_SOCIAUX } from './statut-social'
-import type { TRANCHES_D_AGE } from './tranche-d-age'
+import type { AdresseDuLieu } from './adresse-du-lieu'
+import type { BeneficiaireId } from './beneficiaire-id'
+import type { Commune } from './commune'
+import type { LieuActiviteId } from './lieu-activite-id'
+import type { NomDeFamille } from './nom-de-famille'
+import type { NomDeStructure } from './nom-de-structure'
+import type { NomDeTag } from './nom-de-tag'
+import type { Prenom } from './prenom'
+import type { TagId } from './tag-id'
 
-export type FicheDuBeneficiaireSuivi = {
-  readonly id: string
-  readonly prenom: string | null
-  readonly nom: string | null
-  readonly telephone: string | null
-  readonly pasDeTelephone: boolean | null
-  readonly email: string | null
-  readonly anneeNaissance: number | null
-  readonly adresse: string | null
-  readonly commune: string | null
-  readonly communeCodePostal: string | null
-  readonly communeCodeInsee: string | null
-  readonly genre: (typeof GENRES)[number] | null
-  readonly trancheAge: (typeof TRANCHES_D_AGE)[number] | null
-  readonly statutSocial: (typeof STATUTS_SOCIAUX)[number] | null
-  readonly notes: string | null
+export type BeneficiaireSuiviAffiche = {
+  readonly id: BeneficiaireId
+  readonly prenom: Prenom
+  readonly nom: NomDeFamille
+  readonly residence: Commune | null
+}
+
+export type LieuAffiche = {
+  readonly id: LieuActiviteId
+  readonly nom: NomDeStructure
+  readonly adresse: AdresseDuLieu | null
+}
+
+export type TagAffiche = {
+  readonly id: TagId
+  readonly nom: NomDeTag
 }
 
 export type AffichageDeLActivite = {
-  readonly lieu: {
-    readonly id: string
-    readonly nom: string
-    readonly adresse: string | null
-  } | null
-  readonly suivis: readonly FicheDuBeneficiaireSuivi[]
-  readonly tags: readonly { readonly id: string; readonly nom: string }[]
+  readonly lieu: LieuAffiche | null
+  readonly suivis: readonly BeneficiaireSuiviAffiche[]
+  readonly tags: readonly TagAffiche[]
 }
 
 export type ActiviteAModifier = {

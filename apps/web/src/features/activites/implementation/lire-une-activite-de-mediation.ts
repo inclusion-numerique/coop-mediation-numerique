@@ -3,16 +3,59 @@ import {
   activiteDeMediationSelect,
   activiteDeMediationToDomain,
 } from '../db/activite-de-mediation.transfer'
-import type { ActiviteAModifier, ActiviteId, MediateurId } from '../domain'
+import {
+  type ActiviteAModifier,
+  type ActiviteId,
+  AdresseDuLieu,
+  BeneficiaireId,
+  type BeneficiaireSuiviAffiche,
+  Commune,
+  LieuActiviteId,
+  type MediateurId,
+  NomDeFamille,
+  NomDeStructure,
+  NomDeTag,
+  Prenom,
+  TagId,
+} from '../domain'
 
 const adresseDu = (lieu: {
   readonly adresse: string | null
   readonly codePostal: string | null
   readonly commune: string | null
-}): string | null =>
+}): AdresseDuLieu | null =>
   lieu.adresse && lieu.codePostal && lieu.commune
-    ? `${lieu.adresse}, ${lieu.codePostal} ${lieu.commune}`
+    ? AdresseDuLieu(`${lieu.adresse}, ${lieu.codePostal} ${lieu.commune}`)
     : null
+
+const residenceDu = ({
+  commune,
+  communeCodePostal,
+  communeCodeInsee,
+}: {
+  readonly commune: string | null
+  readonly communeCodePostal: string | null
+  readonly communeCodeInsee: string | null
+}): Commune | null =>
+  Commune.safe({
+    nom: commune ?? '',
+    codePostal: communeCodePostal ?? '',
+    codeInsee: communeCodeInsee ?? '',
+  })
+
+const suiviAffiche = (beneficiaire: {
+  readonly id: string
+  readonly prenom: string | null
+  readonly nom: string | null
+  readonly commune: string | null
+  readonly communeCodePostal: string | null
+  readonly communeCodeInsee: string | null
+}): BeneficiaireSuiviAffiche => ({
+  id: BeneficiaireId(beneficiaire.id),
+  prenom: Prenom(beneficiaire.prenom ?? ''),
+  nom: NomDeFamille(beneficiaire.nom ?? ''),
+  residence: residenceDu(beneficiaire),
+})
 
 export const lireUneActiviteDeMediation = async ({
   id,
@@ -37,7 +80,14 @@ export const lireUneActiviteDeMediation = async ({
       accompagnements: {
         select: {
           ...activiteDeMediationSelect.accompagnements.select,
-          beneficiaire: true,
+          beneficiaire: {
+            select: {
+              ...activiteDeMediationSelect.accompagnements.select.beneficiaire
+                .select,
+              prenom: true,
+              nom: true,
+            },
+          },
         },
       },
       tags: {
@@ -53,14 +103,18 @@ export const lireUneActiviteDeMediation = async ({
         ligne.lieuInclusion === null
           ? null
           : {
-              id: ligne.lieuInclusion.id,
-              nom: ligne.lieuInclusion.nom,
+              id: LieuActiviteId(ligne.lieuInclusion.id),
+              nom: NomDeStructure(ligne.lieuInclusion.nom),
               adresse: adresseDu(ligne.lieuInclusion),
             },
       suivis: ligne.accompagnements
         .map(({ beneficiaire }) => beneficiaire)
-        .filter(({ anonyme }) => !anonyme),
-      tags: ligne.tags.map(({ tag }) => tag),
+        .filter(({ anonyme }) => !anonyme)
+        .map(suiviAffiche),
+      tags: ligne.tags.map(({ tag }) => ({
+        id: TagId(tag.id),
+        nom: NomDeTag(tag.nom),
+      })),
     },
   }
 }
