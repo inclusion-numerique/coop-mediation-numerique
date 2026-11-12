@@ -4,6 +4,7 @@ import { formulaireDeLAccompagnementIndividuel } from '@app/web/features/activit
 import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
+import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { notFound, redirect } from 'next/navigation'
 
@@ -36,6 +37,7 @@ const DupliquerPage = async ({
       : await lireUneActiviteDeMediation({
           id: activiteId,
           mediateurId: MediateurId(mediateurId),
+          rendezVousLies,
         })
 
   if (aModifier?.activite._tag !== 'Individuel') return notFound()

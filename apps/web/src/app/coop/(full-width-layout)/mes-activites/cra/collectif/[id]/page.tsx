@@ -26,6 +26,7 @@ import { beneficiairesLesPlusSuivis } from '@app/web/features/beneficiaire/abili
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { lieuxDuMediateur } from '@app/web/features/lieux-activite'
+import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
 
@@ -58,6 +59,7 @@ const UpdateCraCollectifPage = async ({
       : await lireUneActiviteDeMediation({
           id: activiteId,
           mediateurId: MediateurId(user.mediateur.id),
+          rendezVousLies,
         })
 
   if (aModifier?.activite._tag !== 'Collectif') return notFound()

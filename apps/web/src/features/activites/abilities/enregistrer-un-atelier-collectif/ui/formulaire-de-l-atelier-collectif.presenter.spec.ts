@@ -83,6 +83,7 @@ const affichage: AffichageDeLActivite = {
     },
   ],
   tags: [],
+  rendezVous: null,
 }
 
 describe('formulaire d’un atelier collectif', () => {

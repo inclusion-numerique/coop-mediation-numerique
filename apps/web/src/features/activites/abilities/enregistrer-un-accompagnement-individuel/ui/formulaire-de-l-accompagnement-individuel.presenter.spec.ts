@@ -63,7 +63,7 @@ const accompagnement: AccompagnementIndividuel = {
   },
 }
 
-const affichage = { lieu: null, suivis: [], tags: [] }
+const affichage = { lieu: null, suivis: [], tags: [], rendezVous: null }
 
 describe('formulaire d’un accompagnement individuel', () => {
   it('rouvre un accompagnement et le réenregistre à l’identique', () => {

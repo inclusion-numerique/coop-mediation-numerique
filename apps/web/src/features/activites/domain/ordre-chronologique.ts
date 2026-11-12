@@ -8,3 +8,8 @@ export const OrdreChronologique = defineModel(
 )
 
 export type OrdreChronologique = Model.TypeOf<typeof OrdreChronologique>
+
+export const ordreChronologiqueLu = (ordre: unknown): OrdreChronologique =>
+  ordre === 'asc'
+    ? OrdreChronologique('PlusAnciennes')
+    : OrdreChronologique('PlusRecentes')

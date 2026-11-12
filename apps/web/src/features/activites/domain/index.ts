@@ -1,10 +1,11 @@
 export type {
-  ActiviteAModifier,
+  ActiviteConsultee,
   AffichageDeLActivite,
   BeneficiaireSuiviAffiche,
   LieuAffiche,
+  RendezVousAffiche,
   TagAffiche,
-} from './activite-a-modifier'
+} from './activite-consultee'
 export {
   type ActiviteDeCoordination,
   type Animation,
@@ -51,6 +52,14 @@ export { AdresseDuLieu } from './adresse-du-lieu'
 export { AUTONOMIES, Autonomie, autonomies } from './autonomie'
 export { BeneficiaireId } from './beneficiaire-id'
 export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
+export {
+  type ChronologieDesActivites,
+  type ContenuDeLaChronologie,
+  contenuDeLaChronologie,
+  type ElementDeChronologie,
+  type RendezVousDeLaChronologie,
+  type RendezVousDuCompte,
+} from './chronologie'
 export { Commune } from './commune'
 export { CoordinateurId } from './coordinateur-id'
 export {
@@ -88,6 +97,7 @@ export {
 export { GENRES, Genre, genres } from './genre'
 export { IdentifiantCraV1 } from './identifiant-cra-v1'
 export { Initiative } from './initiative'
+export { LienAgent } from './lien-agent'
 export { LieuActiviteId } from './lieu-activite-id'
 export { MATERIELS, Materiel, materiels } from './materiel'
 export { MediateurId } from './mediateur-id'
@@ -102,10 +112,12 @@ export { NomDeFamille } from './nom-de-famille'
 export { NomDeLActivite } from './nom-de-l-activite'
 export { NomDeStructure } from './nom-de-structure'
 export { NomDeTag } from './nom-de-tag'
+export { NomDuMotif } from './nom-du-motif'
 export { Notes, notesDe } from './notes'
 export {
   ORDRES_CHRONOLOGIQUES,
   OrdreChronologique,
+  ordreChronologiqueLu,
 } from './ordre-chronologique'
 export { Organisateur } from './organisateur'
 export {
@@ -162,6 +174,7 @@ export {
   ThematiqueRecherchee,
 } from './thematique-recherchee'
 export { TitreDAtelier } from './titre-d-atelier'
+export { TitreDuRendezVous } from './titre-du-rendez-vous'
 export { TRANCHES_D_AGE, TrancheDAge, tranchesDAge } from './tranche-d-age'
 export {
   TYPES_D_ACTIVITE,
