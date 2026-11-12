@@ -7,8 +7,8 @@ import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '../../creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '../action/mettre-a-jour-statut-rdv.key'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from './creer-activite-depuis-rdv.key'
 
 export type RdvASaisir = {
   readonly id: number

@@ -3,7 +3,7 @@ import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import {
   type Commune,
   rechercherDesCommunes,
-} from '../abilities/rechercher-des-communes/implementation/api-adresse/rechercher-des-communes'
+} from '../implementation/api-adresse/rechercher-des-communes'
 
 export type { Commune }
 

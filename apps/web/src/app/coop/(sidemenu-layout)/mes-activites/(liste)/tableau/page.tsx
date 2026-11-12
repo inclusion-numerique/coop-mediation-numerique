@@ -13,7 +13,6 @@ import {
   TableauDeMesActivites,
   titreDuDecompte,
 } from '@app/web/features/activites/abilities/lister-mes-activites/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import {
   criteresDesActivites,
   estFiltreDesActivites,
@@ -22,6 +21,7 @@ import {
   paginationLue,
   parametresDesActivitesDe,
 } from '@app/web/features/activites/domain'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@app/web/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'

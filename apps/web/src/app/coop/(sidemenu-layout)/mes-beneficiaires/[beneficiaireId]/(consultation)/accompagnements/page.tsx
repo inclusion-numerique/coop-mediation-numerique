@@ -7,25 +7,25 @@ import {
   cartesDeLaChronologie,
   HistoriqueDesAccompagnements,
 } from '@app/web/features/activites/abilities/lister-mes-activites/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
   paginationLue,
 } from '@app/web/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@app/web/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireAccompagnementsPage from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
 import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
 } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
 } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'

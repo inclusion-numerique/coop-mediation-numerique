@@ -18,7 +18,7 @@ import {
   DernieresActivites,
   dernieresActivitesPresentees,
 } from '@app/web/features/activites/abilities/lister-les-dernieres-activites/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { BoutonEnregistrerUneActivite } from '@app/web/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
 import { compterLesMembres } from '@app/web/features/equipe'
 import { ResumeDeLEquipe } from '@app/web/features/equipe/abilities/lister-les-membres/ui'

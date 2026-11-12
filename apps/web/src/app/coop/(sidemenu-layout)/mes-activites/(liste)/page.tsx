@@ -17,7 +17,6 @@ import {
   ListeDeMesActivites,
   MesActivitesPage,
 } from '@app/web/features/activites/abilities/lister-mes-activites/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import {
   contenuDeLaChronologie,
   criteresDesActivites,
@@ -28,6 +27,7 @@ import {
   parametresDesActivitesDe,
 } from '@app/web/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@app/web/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@app/web/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
@@ -37,8 +37,7 @@ import {
 } from '@app/web/features/lieux-activite'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
 import AfficherLesRdvs from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/AfficherLesRdvs'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
-import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/rattraper-rdvs-sans-webhook.key'
 import {
   periodeDesRendezVous,
   rendezVousAListerSql,
@@ -46,6 +45,7 @@ import {
   rendezVousParIds,
 } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
 } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'

@@ -21,7 +21,7 @@ import { donneesDeLaSaisieDeMediation } from '@app/web/features/activites/ui/sai
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { rechercherDesCommunes } from '@app/web/features/adresse/abilities/rechercher-des-communes/implementation/api-adresse/rechercher-des-communes'
+import { rechercherDesCommunes } from '@app/web/features/adresse/implementation/api-adresse/rechercher-des-communes'
 import { beneficiairesLesPlusSuivis } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'

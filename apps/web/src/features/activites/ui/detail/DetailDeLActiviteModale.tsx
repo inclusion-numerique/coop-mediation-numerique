@@ -12,11 +12,11 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, type ReactNode, useEffect, useState } from 'react'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '../../abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import type {
   DetailDActivite,
   Rubrique,
 } from './detail-de-l-activite.presenter'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from './supprimer-une-activite-de-mediation.key'
 
 export const DetailDeLActiviteDynamicModal = createDynamicModal<
   DetailDActivite | undefined
