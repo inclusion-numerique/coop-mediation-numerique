@@ -210,6 +210,22 @@ const semerUnCoordinateur = async (userId: string) => {
   ).id
 }
 
+export const semerDesAnimationsDeJanvier = async (
+  nombre: number,
+): Promise<void> => {
+  await prismaClient.activiteCoordination.createMany({
+    data: Array.from({ length: nombre }, (_, rang) => ({
+      coordinateurId: coordinationsSemees().coordinateurId,
+      type: 'Animation' as const,
+      date: new Date(Date.UTC(2026, 0, rang + 1)),
+      duree: 60,
+      typeAnimation: 'Webinaire' as const,
+      thematiquesAnimation: ['Reseau' as const],
+      mediateurs: 1,
+    })),
+  })
+}
+
 export const semerDesCoordinations = async (): Promise<CoordinationsSemees> => {
   const userIds = [v4(), v4()]
   const coordinateurId = await semerUnCoordinateur(userIds[0])

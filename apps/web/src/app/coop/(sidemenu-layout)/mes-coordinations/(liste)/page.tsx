@@ -19,15 +19,11 @@ import {
   CoordinateurId,
   criteresDesCoordinations,
   estFiltre,
+  paginationLue,
 } from '@app/web/features/activites/domain'
 import { filtresActifsDesCoordinations } from '@app/web/features/activites/ui/filtres-actifs-des-coordinations'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
-import {
-  DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
-  toNumberOr,
-} from '@app/web/libs/data-table/toNumberOr'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
 
@@ -65,8 +61,7 @@ const MesCoordinationsRoute = async ({
     listerLesActivitesDeCoordination({
       coordinateurId,
       criteres,
-      page: toNumberOr(parametres.page)(DEFAULT_PAGE),
-      lignesParPage: toNumberOr(parametres.lignes)(DEFAULT_PAGE_SIZE),
+      pagination: paginationLue(parametres),
     }),
     optionsDeFiltre({ coordinateurId }),
   ])

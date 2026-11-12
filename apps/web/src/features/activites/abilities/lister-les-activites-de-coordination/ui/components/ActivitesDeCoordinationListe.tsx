@@ -1,12 +1,13 @@
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
+import { LIGNES_PAR_PAGE } from '../../../../domain'
 import { CoordinationEmptyState } from '../../../../ui/CoordinationEmptyState'
 import type { ListeDesCoordinations } from '../liste-des-coordinations.presenter'
 import { CarteDeCoordination } from './CarteDeCoordination'
 import { DetailDeCoordinationModale } from './DetailDeCoordinationModale'
 
-const optionsDeLignes = generatePageSizeSelectOptions([10, 20, 50, 100])
+const optionsDeLignes = generatePageSizeSelectOptions([...LIGNES_PAR_PAGE])
 
 export const ActivitesDeCoordinationListe = ({
   liste: { titre, jours, pages },

@@ -54,6 +54,13 @@ export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
 export { Commune } from './commune'
 export { CoordinateurId } from './coordinateur-id'
 export {
+  type CriteresDesActivites,
+  criteresDesActivites,
+  estFiltre as estFiltreDesActivites,
+  type ParametresDesActivites,
+  parametresDe as parametresDesActivitesDe,
+} from './criteres-des-activites'
+export {
   type CriteresDesCoordinations,
   criteresDesCoordinations,
   estFiltre,
@@ -72,6 +79,12 @@ export { EchelonTerritorial } from './echelon-territorial'
 export { Effectif } from './effectif'
 export { EmployeuseId } from './employeuse-id'
 export * from './errors'
+export { FILTRES_D_ORIGINE, FiltreDOrigine } from './filtre-d-origine'
+export { FILTRES_DE_DEMARCHE, FiltreDeDemarche } from './filtre-de-demarche'
+export {
+  FILTRES_DE_DISPOSITIF,
+  FiltreDeDispositif,
+} from './filtre-de-dispositif'
 export { GENRES, Genre, genres } from './genre'
 export { IdentifiantCraV1 } from './identifiant-cra-v1'
 export { Initiative } from './initiative'
@@ -90,7 +103,18 @@ export { NomDeLActivite } from './nom-de-l-activite'
 export { NomDeStructure } from './nom-de-structure'
 export { NomDeTag } from './nom-de-tag'
 export { Notes, notesDe } from './notes'
+export {
+  ORDRES_CHRONOLOGIQUES,
+  OrdreChronologique,
+} from './ordre-chronologique'
 export { Organisateur } from './organisateur'
+export {
+  LIGNES_PAR_PAGE,
+  LignesParPage,
+  NumeroDePage,
+  type Pagination,
+  paginationLue,
+} from './pagination'
 export { Precision } from './precision'
 export { PrecisionDeDemarche } from './precision-de-demarche'
 export { Prenom } from './prenom'
@@ -104,6 +128,14 @@ export {
   type MarquerLeRendezVousHonore,
   origineDeLaSaisie,
 } from './saisie-de-mediation'
+export {
+  SOURCES_DE_L_ACTIVITE,
+  SourceDeLActivite,
+} from './source-de-l-activite'
+export {
+  STATUTS_DE_RENDEZ_VOUS,
+  StatutDeRendezVous,
+} from './statut-de-rendez-vous'
 export { STATUTS_SOCIAUX, StatutSocial, statutsSociaux } from './statut-social'
 export {
   STRUCTURES_DE_REDIRECTION,
@@ -123,6 +155,12 @@ export {
   ThematiqueDeMediation,
   thematiquesDeMediation,
 } from './thematique-de-mediation'
+export {
+  AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
+  estAdministrative,
+  THEMATIQUES_RECHERCHEES,
+  ThematiqueRecherchee,
+} from './thematique-recherchee'
 export { TitreDAtelier } from './titre-d-atelier'
 export { TRANCHES_D_AGE, TrancheDAge, tranchesDAge } from './tranche-d-age'
 export {

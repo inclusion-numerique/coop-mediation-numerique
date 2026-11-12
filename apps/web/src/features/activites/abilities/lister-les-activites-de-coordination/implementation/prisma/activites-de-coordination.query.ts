@@ -9,19 +9,18 @@ import {
   type CoordinateurId,
   type CriteresDesCoordinations,
   Effectif,
+  type Pagination,
 } from '../../../../domain'
 import type { ActivitesDeCoordinationListees } from '../../domain'
 
 export const listerLesActivitesDeCoordination = async ({
   coordinateurId,
   criteres,
-  page,
-  lignesParPage,
+  pagination: { page, lignesParPage },
 }: {
   coordinateurId: CoordinateurId
   criteres: CriteresDesCoordinations
-  page: number
-  lignesParPage: number
+  pagination: Pagination
 }): Promise<ActivitesDeCoordinationListees> => {
   const where = filtreDesCoordinations({ coordinateurId, criteres })
   const [total, lignes] = await Promise.all([
