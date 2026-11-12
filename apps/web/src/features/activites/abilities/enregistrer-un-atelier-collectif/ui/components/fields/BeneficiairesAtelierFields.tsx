@@ -15,12 +15,12 @@ import {
   trancheAgeLabels,
   tranchesAgeAffichees as trancheAgeValues,
 } from '@app/web/features/activites/ui/libelles/profil'
-import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
   BeneficiaireSelectedItems,
-} from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/components/BeneficiaireComboBox'
+} from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
+import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
 import { pluriel } from '@app/web/libraries/pluriel'
 import { DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -56,13 +56,13 @@ export const BeneficiairesAtelierFields = withForm({
   props: {} as {
     isPending: boolean
     creerBeneficiaireRetourUrl: string
-    initialBeneficiairesOptions: BeneficiaireOption[]
+    beneficiairesProposes: readonly BeneficiaireDuCra[]
   },
   render: ({
     form,
     isPending,
     creerBeneficiaireRetourUrl,
-    initialBeneficiairesOptions,
+    beneficiairesProposes,
   }) => {
     const router = useRouter()
 
@@ -149,11 +149,7 @@ export const BeneficiairesAtelierFields = withForm({
                 <div className="fr-flex-grow-1">
                   <field.ComboBox
                     isPending={isPending}
-                    defaultItems={initialBeneficiairesOptions.map((option) => ({
-                      id: option.value?.id ?? '',
-                      prenom: option.value?.prenom ?? '',
-                      nom: option.value?.nom ?? '',
-                    }))}
+                    defaultItems={[...beneficiairesProposes]}
                     {...BeneficiaireComboBox(field.state.value)}
                   >
                     {({

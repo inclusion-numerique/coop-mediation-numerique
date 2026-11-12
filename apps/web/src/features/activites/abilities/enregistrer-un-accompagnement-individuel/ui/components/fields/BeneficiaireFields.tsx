@@ -1,12 +1,11 @@
 import { Options } from '@app/ui/components/Primitives/Options'
 import IconInSquare from '@app/web/components/IconInSquare'
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import type { CommuneConnue } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
-import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
-} from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/components/BeneficiaireComboBox'
+} from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
+import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -14,13 +13,6 @@ import { formOptions } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import type { DefaultValues } from 'react-hook-form'
-
-type BeneficiaireItem = {
-  id: string
-  prenom: string
-  nom: string
-  communeResidence?: CommuneConnue | null
-}
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraIndividuelData> & {
@@ -42,14 +34,14 @@ export const BeneficiaireFields = withForm({
   props: {} as {
     isPending: boolean
     creerBeneficiaireRetourUrl: string
-    initialBeneficiairesOptions: BeneficiaireOption[]
-    onSelectBeneficiaire?: (beneficiaire: BeneficiaireItem) => void
+    beneficiairesProposes: readonly BeneficiaireDuCra[]
+    onSelectBeneficiaire?: (beneficiaire: BeneficiaireDuCra) => void
   },
   render: ({
     form,
     isPending,
     creerBeneficiaireRetourUrl,
-    initialBeneficiairesOptions,
+    beneficiairesProposes,
     onSelectBeneficiaire,
   }) => {
     const router = useRouter()
@@ -93,12 +85,7 @@ export const BeneficiaireFields = withForm({
                 <>
                   <field.ComboBox
                     isPending={isPending}
-                    defaultItems={initialBeneficiairesOptions.map((option) => ({
-                      id: option.value?.id ?? '',
-                      prenom: option.value?.prenom ?? '',
-                      nom: option.value?.nom ?? '',
-                      communeResidence: option.value?.communeResidence,
-                    }))}
+                    defaultItems={[...beneficiairesProposes]}
                     resetValue={{}}
                     onSelect={onSelectBeneficiaire}
                     {...BeneficiaireComboBox()}

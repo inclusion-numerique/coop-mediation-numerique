@@ -17,28 +17,24 @@ import {
 } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { autonomieOptionsWithExtras } from '@app/web/features/activites/ui/libelles/autonomie'
 import { materielOptions } from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  genreOptions,
+  statutSocialOptions,
+  trancheAgeOptions,
+} from '@app/web/features/activites/ui/libelles/profil'
 import { structuresRedirectionOptions } from '@app/web/features/activites/ui/libelles/structures-redirection'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '@app/web/features/activites/ui/libelles/thematique'
-import {
-  type CommuneConnue,
-  type CommuneDuCra,
-  communeDuCra,
-} from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
+import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import type { CommuneDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
 import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import {
-  genreOptions,
-  statutSocialOptions,
-  trancheAgeOptions,
-} from '@app/web/features/beneficiaire/forms/beneficiaire-options'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -53,14 +49,14 @@ import { DefaultValues } from 'react-hook-form'
 const CraIndividuelForm = ({
   defaultValues,
   lieuxProposes,
-  initialBeneficiairesOptions,
+  beneficiairesProposes,
   initialTagsOptions,
   retour,
   dureeOptions,
 }: {
   defaultValues: DefaultValues<CraIndividuelData> & { mediateurId: string }
   lieuxProposes: readonly LieuDuCra[]
-  initialBeneficiairesOptions: BeneficiaireOption[]
+  beneficiairesProposes: readonly BeneficiaireDuCra[]
   initialTagsOptions: Tag[]
   retour?: string
   dureeOptions: SelectOption[]
@@ -113,18 +109,13 @@ const CraIndividuelForm = ({
     form.setFieldValue('lieuCommuneData', communeResidence)
   }
 
-  const onSelectBeneficiaire = (beneficiaire: {
-    communeResidence?: CommuneConnue | null
-  }) => {
+  const onSelectBeneficiaire = (beneficiaire: BeneficiaireDuCra) => {
     const typeLieu = form.getFieldValue('typeLieu')
     if (typeLieu !== 'Domicile') return
     const lieuCommuneData = form.getFieldValue('lieuCommuneData')
     if (lieuCommuneData?.id != null) return
     if (beneficiaire.communeResidence == null) return
-    form.setFieldValue(
-      'lieuCommuneData',
-      communeDuCra(beneficiaire.communeResidence),
-    )
+    form.setFieldValue('lieuCommuneData', beneficiaire.communeResidence)
   }
 
   const isPending = useSelector(form.store, (state) => state.isSubmitting)
@@ -136,7 +127,7 @@ const CraIndividuelForm = ({
           form={form}
           isPending={isPending}
           creerBeneficiaireRetourUrl="/coop/mes-activites/cra/individuel"
-          initialBeneficiairesOptions={initialBeneficiairesOptions}
+          beneficiairesProposes={beneficiairesProposes}
           onSelectBeneficiaire={onSelectBeneficiaire}
         />
         <RendezVousFields

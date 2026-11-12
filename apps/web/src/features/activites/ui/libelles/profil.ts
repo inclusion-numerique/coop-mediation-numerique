@@ -1,3 +1,4 @@
+import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import type { GENRES, STATUTS_SOCIAUX, TRANCHES_D_AGE } from '../../domain'
 
 export type Genre = (typeof GENRES)[number]
@@ -55,3 +56,9 @@ export const statutSocialLabels: Readonly<Record<StatutSocial, string>> = {
   Scolarise: 'Scolarisé',
   NonCommunique: 'Non communiqué ou hétérogène',
 }
+
+export const genreOptions = labelsToOptions(genreLabels)
+
+export const trancheAgeOptions = labelsToOptions(trancheAgeLabels)
+
+export const statutSocialOptions = labelsToOptions(statutSocialLabels)

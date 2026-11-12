@@ -16,13 +16,13 @@ import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '@app/web/features/activites/ui/libelles/thematique'
+import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
 import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
 import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
 import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
@@ -36,14 +36,14 @@ import { type DefaultValues } from 'react-hook-form'
 const CraCollectifForm = ({
   defaultValues,
   lieuxProposes,
-  initialBeneficiairesOptions,
+  beneficiairesProposes,
   initialTagsOptions,
   dureeOptions,
   retour,
 }: {
   defaultValues: DefaultValues<CraCollectifData>
   lieuxProposes: readonly LieuDuCra[]
-  initialBeneficiairesOptions: BeneficiaireOption[]
+  beneficiairesProposes: readonly BeneficiaireDuCra[]
   initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
   retour?: string
@@ -99,7 +99,7 @@ const CraCollectifForm = ({
           form={form}
           isPending={isPending}
           creerBeneficiaireRetourUrl="/coop/mes-activites/cra/collectif"
-          initialBeneficiairesOptions={initialBeneficiairesOptions}
+          beneficiairesProposes={beneficiairesProposes}
         />
         <hr className="fr-separator-12v" />
         <RendezVousFields

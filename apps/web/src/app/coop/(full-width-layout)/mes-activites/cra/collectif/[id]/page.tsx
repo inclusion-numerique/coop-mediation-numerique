@@ -1,4 +1,5 @@
 import { enregistrerUnAtelierCollectifAction } from '@app/web/app/_actions/activites/enregistrer-un-atelier-collectif.action'
+import { rechercherBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/rechercher-beneficiaires.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
@@ -14,13 +15,14 @@ import { formulaireDeLAtelierCollectif } from '@app/web/features/activites/abili
 import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
 import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/durees-frequentes'
+import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/commune/rechercher-des-communes.key'
 import { donneesDeLaSaisieDeMediation } from '@app/web/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
 import { rechercherDesCommunes } from '@app/web/features/adresse/abilities/rechercher-des-communes/implementation/api-adresse/rechercher-des-communes'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { beneficiairesLesPlusSuivis } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { lieuxDuMediateur } from '@app/web/features/lieux-activite'
@@ -65,11 +67,11 @@ const UpdateCraCollectifPage = async ({
     aModifier.affichage,
   )
 
-  const [lieuxProposes, dureesFrequentes, initialBeneficiairesOptions] =
+  const [lieuxProposes, dureesFrequentes, beneficiairesProposes] =
     await Promise.all([
       lieuxDuMediateur(mediateurId),
       dureesFrequentesDuMediateur(MediateurId(mediateurId)),
-      getInitialBeneficiairesOptionsForSearch({ mediateurId }),
+      beneficiairesLesPlusSuivis(mediateurId),
     ])
 
   const craPageData = await donneesDeLaSaisieDeMediation<CraCollectifData>()({
@@ -98,15 +100,20 @@ const UpdateCraCollectifPage = async ({
               bind={RECHERCHER_DES_COMMUNES_DU_CRA_KEY}
               to={rechercherDesCommunes}
             >
-              <CraCollectifPage
-                {...craPageData}
-                initialBeneficiairesOptions={initialBeneficiairesOptions}
-                mediateurId={mediateurId}
-                visibilitesDeTag={visibilitesDeTagDuCra(user, {
-                  departemental: false,
-                })}
-                retour={retour}
-              />
+              <ClientBinder
+                bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
+                to={rechercherBeneficiairesAction}
+              >
+                <CraCollectifPage
+                  {...craPageData}
+                  beneficiairesProposes={beneficiairesProposes}
+                  mediateurId={mediateurId}
+                  visibilitesDeTag={visibilitesDeTagDuCra(user, {
+                    departemental: false,
+                  })}
+                  retour={retour}
+                />
+              </ClientBinder>
             </ClientBinder>
           </ClientBinder>
         </ClientBinder>
