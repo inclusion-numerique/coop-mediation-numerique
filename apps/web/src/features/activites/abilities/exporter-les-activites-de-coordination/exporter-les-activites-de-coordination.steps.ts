@@ -1,20 +1,32 @@
 import assert from 'node:assert'
 import {
   exporterLesActivitesDeCoordination,
-  tagsDesCriteres,
+  tagsRappeles,
 } from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination'
 import { coordinationsSemees } from '@app/web/features/activites/activites.cucumber'
 import {
   type ActiviteDeCoordination,
   CoordinateurId,
   criteresDesCoordinations,
+  NomDeTag,
   type ParametresDesCoordinations,
   type TagDeLActivite,
+  TagId,
+  type TagsUtilisables,
 } from '@app/web/features/activites/domain'
+import { prismaClient } from '@app/web/prismaClient'
 import { Then, When } from '@cucumber/cucumber'
 
 let exportees: readonly ActiviteDeCoordination[] = []
-let tagsRappeles: readonly TagDeLActivite[] = []
+let rappeles: readonly TagDeLActivite[] = []
+
+const tagsEnBase: TagsUtilisables = async (tagIds) =>
+  (
+    await prismaClient.tag.findMany({
+      where: { id: { in: [...tagIds] } },
+      select: { id: true, nom: true },
+    })
+  ).map(({ id, nom }) => ({ id: TagId(id), nom: NomDeTag(nom) }))
 
 const exporter = async (parametres: ParametresDesCoordinations) => {
   const criteres = criteresDesCoordinations(parametres)
@@ -23,10 +35,10 @@ const exporter = async (parametres: ParametresDesCoordinations) => {
       coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
       criteres,
     }),
-    tagsDesCriteres(criteres),
+    tagsRappeles({ criteres, tagsUtilisables: tagsEnBase }),
   ])
   exportees = activites
-  tagsRappeles = tags
+  rappeles = tags
 }
 
 When("j'exporte mes activités de coordination", async () => {
@@ -43,7 +55,7 @@ Then('{int} activités de coordination sont exportées', (attendu: number) => {
 
 Then("le tag « Réseau » est rappelé dans les filtres de l'export", () => {
   assert.deepStrictEqual(
-    tagsRappeles.map(({ id }) => id),
+    rappeles.map(({ id }) => id),
     [coordinationsSemees().tags.reseau],
   )
 })

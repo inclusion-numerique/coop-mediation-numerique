@@ -3,12 +3,14 @@ import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFrom
 import {
   classeurDesCoordinations,
   exporterLesActivitesDeCoordination,
-  tagsDesCriteres,
+  tagsRappeles,
 } from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination'
 import {
   CoordinateurId,
   criteresDesCoordinations,
 } from '@app/web/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
+import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -34,7 +36,10 @@ export const GET = async (request: NextRequest) => {
       coordinateurId: CoordinateurId(user.coordinateur.id),
       criteres,
     }),
-    tagsDesCriteres(criteres),
+    tagsRappeles({
+      criteres,
+      tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
+    }),
   ])
 
   const donnees = await classeurDesCoordinations({

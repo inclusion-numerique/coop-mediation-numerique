@@ -8,9 +8,6 @@ import {
   type ActiviteDeCoordination,
   type CoordinateurId,
   type CriteresDesCoordinations,
-  NomDeTag,
-  type TagDeLActivite,
-  TagId,
 } from '../../../../domain'
 
 export const exporterLesActivitesDeCoordination = async ({
@@ -27,18 +24,3 @@ export const exporterLesActivitesDeCoordination = async ({
       select: activiteDeCoordinationSelect,
     })
   ).map(activiteDeCoordinationDe)
-
-export const tagsDesCriteres = async ({
-  tags,
-}: CriteresDesCoordinations): Promise<readonly TagDeLActivite[]> =>
-  tags.length === 0
-    ? []
-    : (
-        await prismaClient.tag.findMany({
-          where: { id: { in: [...tags] } },
-          select: { id: true, nom: true },
-        })
-      ).flatMap(({ id, nom }) => {
-        const nomDuTag = NomDeTag.safe(nom)
-        return nomDuTag === null ? [] : [{ id: TagId(id), nom: nomDuTag }]
-      })
