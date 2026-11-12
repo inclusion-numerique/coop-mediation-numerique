@@ -20,6 +20,7 @@ import {
   derniereDateDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -27,7 +28,6 @@ import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutR
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
-import { DefaultValues } from 'react-hook-form'
 
 type CraPartenariatFormProps = {
   defaultValues: DefaultValues<CraPartenariatData> & { coordinateurId: string }

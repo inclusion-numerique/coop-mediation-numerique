@@ -5,11 +5,11 @@ import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIco
 import { HumanCooperationIcon } from '@app/web/features/pictograms/environment/HumanCooperationIcon'
 import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect } from 'react'
-import type { DefaultValues } from 'react-hook-form'
 import type { BeneficiaireCraData } from '../validation/BeneficiaireCraValidation'
 import type { CraData } from '../validation/CraValidation'
 

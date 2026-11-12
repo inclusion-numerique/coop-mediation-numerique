@@ -25,12 +25,12 @@ import { beneficiairesLesPlusSuivis } from '@app/web/features/beneficiaire/abili
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { lieuxDuMediateur } from '@app/web/features/lieux-activite'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import {
   decodeSerializableState,
   type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
-import type { DefaultValues } from 'react-hook-form'
 
 const CreateCraIndividuelPage = async ({
   searchParams,

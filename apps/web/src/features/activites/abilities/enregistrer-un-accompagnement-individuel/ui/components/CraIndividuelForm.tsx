@@ -36,6 +36,7 @@ import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/
 import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -44,7 +45,6 @@ import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
-import { DefaultValues } from 'react-hook-form'
 
 const CraIndividuelForm = ({
   defaultValues,

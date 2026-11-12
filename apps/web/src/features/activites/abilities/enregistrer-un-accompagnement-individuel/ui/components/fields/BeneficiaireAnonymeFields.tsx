@@ -10,15 +10,17 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
-import type { DefaultValues } from 'react-hook-form'
+
+const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
+  mediateurId: string
+} = { mediateurId: '' }
 
 const options = formOptions({
-  defaultValues: {} as DefaultValues<CraIndividuelData> & {
-    mediateurId: string
-  },
+  defaultValues: valeursDuFormulaire,
 })
 
 export const BeneficiaireAnonymeFields = withForm({

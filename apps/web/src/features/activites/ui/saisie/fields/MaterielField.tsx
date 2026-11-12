@@ -6,8 +6,10 @@ import {
   withFieldGroup,
 } from '@app/web/libs/form/use-app-form'
 
+const valeursDuGroupe: Pick<DefaultValues<CraData>, 'materiel'> = {}
+
 export const MaterielField = withFieldGroup({
-  defaultValues: {} as Pick<DefaultValues<CraData>, 'materiel'>,
+  defaultValues: valeursDuGroupe,
   props: {} as {
     isPending: boolean
     materielOptions: SelectOption<Materiel>[]

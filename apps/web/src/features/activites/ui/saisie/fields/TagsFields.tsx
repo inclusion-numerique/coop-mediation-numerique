@@ -13,8 +13,10 @@ import {
 } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 
+const valeursDuGroupe: Pick<DefaultValues<CraData>, 'tags'> = {}
+
 export const TagsFields = withFieldGroup({
-  defaultValues: {} as Pick<DefaultValues<CraData>, 'tags'>,
+  defaultValues: valeursDuGroupe,
   props: {} as {
     isPending: boolean
     initialTagsOptions: Tag[]

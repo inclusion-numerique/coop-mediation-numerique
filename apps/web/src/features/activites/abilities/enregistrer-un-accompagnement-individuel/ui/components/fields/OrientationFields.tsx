@@ -4,10 +4,12 @@ import type { StructureDeRedirection } from '@app/web/features/activites/ui/libe
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 
+const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
+  mediateurId: string
+} = { mediateurId: '' }
+
 const options = formOptions({
-  defaultValues: {} as DefaultValues<CraIndividuelData> & {
-    mediateurId: string
-  },
+  defaultValues: valeursDuFormulaire,
 })
 
 export const OrientationFields = withForm({

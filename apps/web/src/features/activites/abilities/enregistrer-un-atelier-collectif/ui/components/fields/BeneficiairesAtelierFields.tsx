@@ -30,8 +30,10 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { Fragment, useCallback } from 'react'
 
+const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
+
 const options = formOptions({
-  defaultValues: {} as DefaultValues<CraCollectifData>,
+  defaultValues: valeursDuFormulaire,
 })
 
 const NonCommuniqueCount = ({

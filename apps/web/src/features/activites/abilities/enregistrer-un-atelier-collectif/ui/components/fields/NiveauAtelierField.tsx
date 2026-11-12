@@ -4,8 +4,10 @@ import type { NiveauAtelier } from '@app/web/features/activites/ui/libelles/nive
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 
+const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
+
 const options = formOptions({
-  defaultValues: {} as DefaultValues<CraCollectifData>,
+  defaultValues: valeursDuFormulaire,
 })
 
 export const NiveauAtelierField = withForm({

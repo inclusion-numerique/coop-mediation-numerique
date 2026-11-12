@@ -26,6 +26,11 @@ import {
 } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 
+const valeursDuGroupe: Pick<
+  DefaultValues<CraData>,
+  'date' | 'duree' | 'typeLieu' | 'structure' | 'lieuCommuneData'
+> = {}
+
 const shouldResetLieuCommuneData = (value?: string) =>
   value != null && ['LieuActivite', 'ADistance'].includes(value)
 
@@ -33,10 +38,7 @@ const shouldResetStructure = (value?: string) =>
   value != null && ['Autre', 'Domicile', 'ADistance'].includes(value)
 
 export const RendezVousFields = withFieldGroup({
-  defaultValues: {} as Pick<
-    DefaultValues<CraData>,
-    'date' | 'duree' | 'typeLieu' | 'structure' | 'lieuCommuneData'
-  >,
+  defaultValues: valeursDuGroupe,
   props: {} as {
     isPending: boolean
     dureeOptions: SelectOption[]

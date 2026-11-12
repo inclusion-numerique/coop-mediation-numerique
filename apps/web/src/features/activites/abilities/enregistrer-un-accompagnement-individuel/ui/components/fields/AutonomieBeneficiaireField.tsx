@@ -5,10 +5,12 @@ import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 import Link from 'next/link'
 
+const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
+  mediateurId: string
+} = { mediateurId: '' }
+
 const options = formOptions({
-  defaultValues: {} as DefaultValues<CraIndividuelData> & {
-    mediateurId: string
-  },
+  defaultValues: valeursDuFormulaire,
 })
 
 export const AutonomieBeneficiaireField = withForm({

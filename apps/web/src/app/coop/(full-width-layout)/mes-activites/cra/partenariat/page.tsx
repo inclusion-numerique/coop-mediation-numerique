@@ -12,12 +12,12 @@ import CraPartenariatPage from '@app/web/features/activites/abilities/enregistre
 import { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import {
   decodeSerializableState,
   type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
-import type { DefaultValues } from 'react-hook-form'
 
 const CreateCraPartenariatPage = async ({
   searchParams,

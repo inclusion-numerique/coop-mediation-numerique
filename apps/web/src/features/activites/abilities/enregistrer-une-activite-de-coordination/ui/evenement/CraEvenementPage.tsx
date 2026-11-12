@@ -9,8 +9,8 @@ import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { contentId } from '@app/web/utils/skipLinks'
-import type { DefaultValues } from 'react-hook-form'
 
 type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>

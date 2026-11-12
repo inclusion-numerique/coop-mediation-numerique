@@ -6,18 +6,20 @@ import {
   BeneficiaireOptions,
 } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
 import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { DefaultValues } from 'react-hook-form'
+
+const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
+  mediateurId: string
+} = { mediateurId: '' }
 
 const options = formOptions({
-  defaultValues: {} as DefaultValues<CraIndividuelData> & {
-    mediateurId: string
-  },
+  defaultValues: valeursDuFormulaire,
 })
 
 const isBeneficiaire = (field: {

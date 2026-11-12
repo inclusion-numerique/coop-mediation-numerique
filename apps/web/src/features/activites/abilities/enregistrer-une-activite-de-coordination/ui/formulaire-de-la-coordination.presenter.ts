@@ -1,5 +1,5 @@
 import { minutesToCraDureeData } from '@app/web/features/activites/ui/saisie/duree'
-import type { DefaultValues } from 'react-hook-form'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import type {
   Animation,
   Choix,

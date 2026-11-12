@@ -10,11 +10,13 @@ import {
   withFieldGroup,
 } from '@app/web/libs/form/use-app-form'
 
+const valeursDuGroupe: Pick<
+  DefaultValues<CraData>,
+  'thematiques' | 'precisionsDemarche'
+> = {}
+
 export const ThematiquesFields = withFieldGroup({
-  defaultValues: {} as Pick<
-    DefaultValues<CraData>,
-    'thematiques' | 'precisionsDemarche'
-  >,
+  defaultValues: valeursDuGroupe,
   props: {} as {
     isPending: boolean
     thematiqueNonAdministrativesOptionsWithExtras: SelectOption<Thematique>[]
