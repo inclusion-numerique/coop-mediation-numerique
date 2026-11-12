@@ -14,16 +14,19 @@ import {
   activitesDeCoordinationPresentees,
 } from '@app/web/features/activites/abilities/compter-les-activites-de-coordination/ui'
 import { listerLesDernieresActivites } from '@app/web/features/activites/abilities/lister-les-dernieres-activites'
+import {
+  DernieresActivites,
+  dernieresActivitesPresentees,
+} from '@app/web/features/activites/abilities/lister-les-dernieres-activites/ui'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
 import { BoutonEnregistrerUneActivite } from '@app/web/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
-import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
-import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
 import { compterLesMembres } from '@app/web/features/equipe'
 import { ResumeDeLEquipe } from '@app/web/features/equipe/abilities/lister-les-membres/ui'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
 import { blocRdvAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
+import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
@@ -58,17 +61,15 @@ const sectionActivites = async (
       )}
     />
   ) : (
-    <>
-      <DernieresActivites
-        activites={
-          await listerLesDernieresActivites({
-            mediateurId: profil.mediateurId,
-            timezone,
-          })
-        }
-      />
-      <ActiviteDetailsModal />
-    </>
+    <DernieresActivites
+      activites={dernieresActivitesPresentees(
+        await listerLesDernieresActivites({
+          mediateurId: profil.mediateurId,
+          rendezVousLies,
+        }),
+        timezone,
+      )}
+    />
   )
 
 const Page = async () => {

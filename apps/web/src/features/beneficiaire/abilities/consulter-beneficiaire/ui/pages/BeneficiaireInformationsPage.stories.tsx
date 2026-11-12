@@ -41,7 +41,7 @@ const beneficiaireSansInformations = {
 
 const sansInformations = {
   beneficiaire: beneficiaireSansInformations,
-  thematiquesCounts: [],
+  thematiquesAbordees: [],
   totalActivitesCount: 0,
 } satisfies BeneficiaireInformationsPageData
 
@@ -62,30 +62,26 @@ const beneficiaireAvecInformations = {
 
 const avecInformations = {
   beneficiaire: beneficiaireAvecInformations,
-  thematiquesCounts: [
+  thematiquesAbordees: [
     {
       thematique: 'BanqueEtAchatsEnLigne',
-      count: 3,
-      enumValue: '',
-      label: 'Banque et achats en ligne',
+      libelle: 'Banque et achats en ligne',
+      nombre: 3,
     },
     {
       thematique: 'CultureNumerique',
-      count: 1,
-      enumValue: '',
-      label: 'Culture numérique',
+      libelle: 'Culture numérique',
+      nombre: 1,
     },
     {
       thematique: 'Entrepreneuriat',
-      count: 1,
-      enumValue: '',
-      label: 'Entrepreneuriat',
+      libelle: 'Entrepreneuriat',
+      nombre: 1,
     },
     {
       thematique: 'ArgentImpots',
-      count: 1,
-      enumValue: '',
-      label: 'Argent et impôts',
+      libelle: 'Argent et impôts',
+      nombre: 1,
     },
   ],
   totalActivitesCount: 6,

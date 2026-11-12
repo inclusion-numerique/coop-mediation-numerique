@@ -19,10 +19,26 @@ const OuvrirLeDetail = ({ carte }: { carte: Carte }) => {
   return <button type="button" title="Voir le détail" onClick={onClick} />
 }
 
-export const CarteDActivite = ({ carte }: { carte: Carte }) => (
+export type PlaceDansLaPile = {
+  readonly premiere: boolean
+  readonly derniere: boolean
+}
+
+export const CarteDActivite = ({
+  carte,
+  jour,
+  pile,
+}: {
+  carte: Carte
+  jour?: string
+  pile?: PlaceDansLaPile
+}) => (
   <ListCard
     enlargeButton
     pictogram={typeActivitePictograms[carte.type]}
+    stacked={pile !== undefined}
+    firstOfStack={pile?.premiere}
+    lastOfStack={pile?.derniere}
     contentTop={
       <>
         {carte.libelleDuType}
@@ -30,6 +46,12 @@ export const CarteDActivite = ({ carte }: { carte: Carte }) => (
           <>
             <ActiviteCardSpacer />
             <TruncateText text={carte.titreDAtelier} maxLength={40} />
+          </>
+        )}
+        {jour !== undefined && (
+          <>
+            <ActiviteCardSpacer />
+            le {jour}
           </>
         )}
         <ActiviteCardSpacer />

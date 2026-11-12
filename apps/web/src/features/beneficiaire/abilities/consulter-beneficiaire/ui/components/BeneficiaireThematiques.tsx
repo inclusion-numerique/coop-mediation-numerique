@@ -1,10 +1,15 @@
-import type { CraThematiqueCount } from '@app/web/features/activites/use-cases/list/db/countThematiques'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 
+export type ThematiqueAbordee = {
+  readonly thematique: string
+  readonly libelle: string
+  readonly nombre: number
+}
+
 const BeneficiaireThematiques = ({
-  thematiquesCounts,
+  thematiques,
 }: {
-  thematiquesCounts: CraThematiqueCount[]
+  thematiques: readonly ThematiqueAbordee[]
 }) => (
   <div className="fr-border--bottom fr-pt-6v fr-px-6v fr-pb-8v">
     <h4 className="fr-text--xs fr-text--bold fr-text--uppercase fr-mb-0">
@@ -13,15 +18,15 @@ const BeneficiaireThematiques = ({
     <p className="fr-text--xs fr-text-mention--grey fr-mb-4v">
       Retrouvez les thématiques d’accompagnements vues avec ce bénéficiaire.
     </p>
-    {thematiquesCounts.length > 0 ? (
+    {thematiques.length > 0 ? (
       <div className="fr-flex fr-flex-wrap fr-flex-gap-3v">
-        {thematiquesCounts.map(({ thematique, label, count }) => (
+        {thematiques.map(({ thematique, libelle, nombre }) => (
           <Tag key={thematique}>
-            {label}
-            {count > 1 ? (
+            {libelle}
+            {nombre > 1 ? (
               <>
                 &nbsp;·&nbsp;
-                <span className="fr-text--bold">{count}</span>
+                <span className="fr-text--bold">{nombre}</span>
               </>
             ) : null}
           </Tag>

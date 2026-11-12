@@ -1,5 +1,6 @@
 export { AucuneActivite } from './components/AucuneActivite'
 export { EnTeteDeLaListe } from './components/EnTeteDeLaListe'
+export { HistoriqueDesAccompagnements } from './components/HistoriqueDesAccompagnements'
 export {
   type ContenuDeLaListe,
   ListeDeMesActivites,
@@ -9,6 +10,7 @@ export {
   TableauDeMesActivites,
 } from './components/TableauDeMesActivites'
 export {
+  cartesDeLaChronologie,
   decompteDeLaListe,
   joursDeLaListe,
   lignesDuTableau,

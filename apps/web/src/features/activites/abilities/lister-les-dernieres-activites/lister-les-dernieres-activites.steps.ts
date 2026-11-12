@@ -29,26 +29,36 @@ const mediateurConsulte = () => {
   return premier.mediateurId
 }
 
-const activite = (mediateurId: string, rang: number) => ({
-  mediateurId,
-  type: 'Individuel' as const,
-  typeLieu: 'Autre' as const,
-  date: new Date(`2026-06-0${rang}`),
-  duree: 60,
-  accompagnementsCount: 0,
-  notes: `${rang}`,
-  creation: new Date(`2026-07-0${rang}T10:00:00Z`),
-})
+const semerUneActivite = (mediateurId: string, rang: number) =>
+  prismaClient.activite.create({
+    data: {
+      mediateurId,
+      type: 'Individuel',
+      typeLieu: 'ADistance',
+      date: new Date(`2026-06-0${rang}`),
+      duree: 60,
+      thematiques: ['Email'],
+      accompagnementsCount: 1,
+      accompagnements: {
+        create: {
+          beneficiaire: { create: { mediateurId, anonyme: true } },
+        },
+      },
+      notes: `${rang}`,
+      creation: new Date(`2026-07-0${rang}T10:00:00Z`),
+    },
+    select: { id: true },
+  })
 
 Given(
   'un médiateur ayant enregistré {int} activités',
   async (nombre: number) => {
     const mediateurId = await semerUnMediateur()
-    await prismaClient.activite.createMany({
-      data: Array.from({ length: nombre }, (_, index) =>
-        activite(mediateurId, nombre - index),
+    await Promise.all(
+      Array.from({ length: nombre }, (_, index) =>
+        semerUneActivite(mediateurId, nombre - index),
       ),
-    })
+    )
   },
 )
 
@@ -64,18 +74,16 @@ Given('sa dernière activité est supprimée', async () => {
 })
 
 Given("un autre médiateur vient d'enregistrer une activité", async () => {
-  await prismaClient.activite.create({
-    data: activite(await semerUnMediateur(), 9),
-  })
+  await semerUneActivite(await semerUnMediateur(), 9)
 })
 
 When('je liste ses dernières activités', async () => {
   notes = (
     await listerLesDernieresActivites({
       mediateurId: MediateurId(mediateurConsulte()),
-      timezone: 'Europe/Paris',
+      rendezVousLies: () => Promise.resolve([]),
     })
-  ).map((activite) => activite.notes ?? '')
+  ).map(({ activite }) => activite.notes ?? '')
 })
 
 Then('les activités listées sont {string}', (attendues: string) => {
@@ -89,7 +97,13 @@ After(async () => {
   if (semes.length === 0) return
 
   const mediateurIds = semes.map(({ mediateurId }) => mediateurId)
+  await prismaClient.accompagnement.deleteMany({
+    where: { activite: { mediateurId: { in: mediateurIds } } },
+  })
   await prismaClient.activite.deleteMany({
+    where: { mediateurId: { in: mediateurIds } },
+  })
+  await prismaClient.beneficiaire.deleteMany({
     where: { mediateurId: { in: mediateurIds } },
   })
   await prismaClient.mediateur.deleteMany({

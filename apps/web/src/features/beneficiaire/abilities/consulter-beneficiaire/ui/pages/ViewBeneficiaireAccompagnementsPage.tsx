@@ -1,51 +1,29 @@
-import ActiviteCard from '@app/web/features/activites/use-cases/list/components/ActiviteCard'
-import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
-import RdvCard from '@app/web/features/activites/use-cases/list/components/RdvCard'
-import type { SearchActiviteAndRdvsResult } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
-import RdvStatusUpdateModal from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
-import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
+import type { ReactNode } from 'react'
 import BeneficiairePageNavigationBar from '../components/BeneficiairePageNavigationBar'
 
-export type BeneficiaireAccompagnementsPageData = {
-  beneficiaire: { id: string }
-  searchResult: SearchActiviteAndRdvsResult
-  user: UserRdvAccount & UserId & UserTimezone
-}
-
 const ViewBeneficiaireAccompagnementsPage = ({
-  data: { searchResult, beneficiaire, user },
+  beneficiaireId,
+  nombreDAccompagnements,
+  accompagnements,
 }: {
-  data: BeneficiaireAccompagnementsPageData
+  beneficiaireId: string
+  nombreDAccompagnements: number
+  accompagnements: ReactNode
 }) => (
   <>
     <BeneficiairePageNavigationBar
-      beneficiaireId={beneficiaire.id}
-      accompagnementsCount={searchResult.matchesCount}
+      beneficiaireId={beneficiaireId}
+      accompagnementsCount={nombreDAccompagnements}
       current="accompagnements"
     />
-    {searchResult.matchesCount === 0 && (
+    {nombreDAccompagnements === 0 ? (
       <div className="fr-border-radius--8 fr-border  fr-py-8v fr-px-8v fr-mt-6v fr-text--center">
         <p className="fr-text--sm fr-mb-0">
           Aucun accompagnement pour le moment
         </p>
       </div>
-    )}
-    {searchResult.items.map((item) =>
-      item.kind === 'rdv' ? (
-        <RdvCard key={item.id} rdv={item} user={user} displayBeneficiaire />
-      ) : (
-        <ActiviteCard
-          key={item.id}
-          activite={{ ...item, timezone: user.timezone }}
-          variant="with-beneficiaire"
-        />
-      ),
-    )}
-    {searchResult.items.length > 0 && (
-      <>
-        <ActiviteDetailsModal />
-        <RdvStatusUpdateModal />
-      </>
+    ) : (
+      accompagnements
     )}
   </>
 )

@@ -1,3 +1,4 @@
+export { listerLHistoriqueDUnBeneficiaire } from './historique-d-un-beneficiaire'
 export {
   listerMesActivites,
   type RendezVousALister,

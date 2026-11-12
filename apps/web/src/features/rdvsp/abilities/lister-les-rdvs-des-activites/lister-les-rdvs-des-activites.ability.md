@@ -14,6 +14,21 @@
 * When je sélectionne les rendez-vous du compte
 * Then 1 rendez-vous est sélectionné
 
+## Rule: La fiche d'un bénéficiaire ne propose que les rendez-vous de son usager RDV
+
+### Scenario: Seul le rendez-vous auquel participe l'usager est proposé
+
+* Given un compte RDV ayant 2 rendez-vous en mars 2026
+* And un usager RDV participe à son second rendez-vous
+* When je sélectionne les rendez-vous de cet usager
+* Then 1 rendez-vous est sélectionné
+
+### Scenario: Un bénéficiaire sans usager RDV n'a aucun rendez-vous
+
+* Given un compte RDV ayant 2 rendez-vous en mars 2026
+* When je sélectionne les rendez-vous d'aucun usager
+* Then 0 rendez-vous est sélectionné
+
 ## Rule: Un rendez-vous échu dont la présence n'a pas été saisie est passé
 
 ### Scenario: Filtrer les rendez-vous passés

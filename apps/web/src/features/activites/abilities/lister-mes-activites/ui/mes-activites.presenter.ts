@@ -51,6 +51,11 @@ const carteDe = (element: ElementDeChronologie, fuseau: string): CarteDuJour =>
         carte: carteDeRendezVous(element.rendezVous, fuseau),
       }
 
+export const cartesDeLaChronologie = (
+  elements: readonly ElementDeChronologie[],
+  fuseau: string,
+): readonly CarteDuJour[] => elements.map((element) => carteDe(element, fuseau))
+
 export const joursDeLaListe = (
   elements: readonly ElementDeChronologie[],
   fuseau: string,

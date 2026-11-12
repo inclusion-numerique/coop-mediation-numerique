@@ -85,18 +85,35 @@ const conditionDeStatut =
   (statut: K): Prisma.Sql =>
     table[statut]
 
-export const rendezVousAListerSql = ({
-  comptes,
-  periode,
-  statuts,
-}: {
+type SelectionDesRendezVous = {
   readonly comptes: readonly number[]
   readonly periode: Periode | null
   readonly statuts: readonly (typeof statutsRdv)[number][]
-}): Prisma.Sql =>
+}
+
+const selectionDesRendezVous = (
+  { comptes, periode, statuts }: SelectionDesRendezVous,
+  participation: Prisma.Sql,
+): Prisma.Sql =>
   Prisma.sql`SELECT rdv.id, rdv.starts_at AS moment, rdv.created_at AS creation
     FROM rdvs rdv
     WHERE rdv.rdv_account_id = ANY(${[...comptes]}::int[])
       AND rdv.cra_declined = FALSE
       ${periode === null ? Prisma.empty : Prisma.sql`AND rdv.starts_at::date BETWEEN ${periode.du}::date AND ${periode.au}::date`}
-      ${statuts.length === 0 ? Prisma.empty : Prisma.sql`AND (${Prisma.join(statuts.map(conditionDeStatut(CONDITION_DE_STATUT)), ' OR ')})`}`
+      ${statuts.length === 0 ? Prisma.empty : Prisma.sql`AND (${Prisma.join(statuts.map(conditionDeStatut(CONDITION_DE_STATUT)), ' OR ')})`}
+      ${participation}`
+
+export const rendezVousAListerSql = (
+  selection: SelectionDesRendezVous,
+): Prisma.Sql => selectionDesRendezVous(selection, Prisma.empty)
+
+export const rendezVousDesUsagersAListerSql =
+  (usagers: readonly number[]) =>
+  (selection: SelectionDesRendezVous): Prisma.Sql =>
+    selectionDesRendezVous(
+      selection,
+      Prisma.sql`AND EXISTS (
+        SELECT 1 FROM rdv_participations participation
+        WHERE participation.rdv_id = rdv.id
+          AND participation.user_id = ANY(${[...usagers]}::int[]))`,
+    )
