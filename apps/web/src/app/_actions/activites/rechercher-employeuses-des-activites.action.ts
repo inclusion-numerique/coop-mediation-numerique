@@ -7,21 +7,14 @@ import {
   MediateurId,
   rechercherLesEmployeusesDesActivites,
 } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites'
+import { RechercherLesEmployeusesDesActivitesValidation } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
 import { optionsDEmployeuses } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
 import { withAuth } from '@app/web/features/authentification'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
-import { z } from 'zod'
 
 export const rechercherEmployeusesDesActivitesAction = actionBuilder()
   .use(withAuth())
-  .use(
-    withInput(
-      z.object({
-        recherche: z.string(),
-        exclues: z.array(z.string().regex(/^\d+$/)),
-      }),
-    ),
-  )
+  .use(withInput(RechercherLesEmployeusesDesActivitesValidation))
   .execute(async ({ user, input: { recherche, exclues } }) =>
     optionsDEmployeuses(
       await rechercherLesEmployeusesDesActivites({
