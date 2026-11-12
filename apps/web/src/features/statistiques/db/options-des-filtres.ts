@@ -5,7 +5,7 @@ import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
 } from '@app/web/features/lieux-activite'
-import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
+import { periodeDesRendezVous } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { getStructuresEmployeusesOptions } from '@app/web/features/statistiques/db/employeuses-des-activites'
 import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
 import { getFirstAndLastActiviteDate } from '@app/web/features/statistiques/db/periode-des-activites'
@@ -76,8 +76,8 @@ export const getFiltersOptionsForMediateur = async ({
       coordinateurId: user.coordinateur?.id,
     }),
     getFirstAndLastActiviteDate({ mediateurIds }),
-    getFirstAndLastRdvDate({
-      rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+    periodeDesRendezVous({
+      comptes: user.rdvAccount ? [user.rdvAccount.id] : [],
     }),
     getHasCrasV1({ user, mediateurIds }),
   ])

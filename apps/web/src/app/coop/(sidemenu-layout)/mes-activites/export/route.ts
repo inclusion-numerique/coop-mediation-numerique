@@ -1,18 +1,28 @@
+import { tagsUtilisablesPar } from '@app/web/app/_actions/activites/ports-de-la-saisie'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
-import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import { exporterMesAccompagnements } from '@app/web/features/activites/abilities/exporter-mes-accompagnements'
-import { classeurDesAccompagnements } from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui/classeur-des-accompagnements'
+import {
+  exporterMesAccompagnements,
+  nomsDesFiltresExportes,
+} from '@app/web/features/activites/abilities/exporter-mes-accompagnements'
+import {
+  classeurDesAccompagnements,
+  libellesDuClasseur,
+} from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui'
 import {
   CoordinateurId,
   criteresDesActivites,
   MediateurId,
 } from '@app/web/features/activites/domain'
 import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { generateActivitesFiltersLabels } from '@app/web/features/activites/ui/filtres/libelles-des-filtres'
-import { optionsDesSources } from '@app/web/features/activites/ui/libelles/source-de-l-activite'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import {
+  getLieuxDesActivitesOptions,
+  getMediateurCommunesAndDepartementsOptions,
+} from '@app/web/features/lieux-activite'
+import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -33,43 +43,47 @@ export const GET = async (request: NextRequest) => {
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   )
   const equipe = mediateurCoordonnesEtAnciensIdsFor(user)
+  const demandeur = {
+    mediateurId: user.mediateur ? MediateurId(user.mediateur.id) : null,
+    coordinateurId: user.coordinateur
+      ? CoordinateurId(user.coordinateur.id)
+      : null,
+    equipe: equipe.map((id) => MediateurId(id)),
+  }
 
-  const [exportDes, options] = await Promise.all([
+  const [exportDes, noms] = await Promise.all([
     exporterMesAccompagnements({
-      demandeur: {
-        mediateurId: user.mediateur ? MediateurId(user.mediateur.id) : null,
-        coordinateurId: user.coordinateur
-          ? CoordinateurId(user.coordinateur.id)
-          : null,
-        equipe: equipe.map((id) => MediateurId(id)),
-      },
+      demandeur,
       criteres,
       conseillersNumeriques: conseillerNumeriqueSql,
     }),
-    getFiltersOptionsForMediateur({
-      user,
-      mediateurCoordonnesIds: equipe,
-      includeBeneficiaireIds: [...criteres.beneficiaires],
+    nomsDesFiltresExportes({
+      demandeur,
+      criteres,
+      lieuxDesActivites: getLieuxDesActivitesOptions,
+      communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
+      tagsUtilisables: tagsUtilisablesPar(user),
+      beneficiaires: (ids) =>
+        getInitialBeneficiairesOptionsForSearch({
+          mediateurId: user.mediateur?.id,
+          includeBeneficiaireIds: [...ids],
+        }),
+      mediateurs: () =>
+        getInitialMediateursOptionsForSearch({
+          mediateurId: user.mediateur?.id,
+          coordinateurId: user.coordinateur?.id,
+          mediateurCoordonnesIds: equipe,
+        }),
     }),
   ])
 
   const classeur = classeurDesAccompagnements({
     demandeur: user,
-    filtres: generateActivitesFiltersLabels(filtresDeLaListe(criteres), {
-      beneficiairesOptions: options.initialBeneficiairesOptions.map(
-        ({ label, value }) => ({
-          label,
-          value: value?.id ? { id: value.id } : null,
-        }),
-      ),
-      mediateursOptions: options.initialMediateursOptions,
-      structuresEmployeusesOptions: options.structuresEmployeusesOptions,
-      communesOptions: options.communesOptions,
-      departementsOptions: options.departementsOptions,
-      lieuxActiviteOptions: options.lieuxActiviteOptions,
-      tagsOptions: options.tagsOptions,
-      optionsDesSources: [...optionsDesSources],
-    }),
+    filtres: libellesDuClasseur(
+      filtresDeLaListe(criteres),
+      noms,
+      exportDes.colonnes.source,
+    ),
     exportDes,
   })
 

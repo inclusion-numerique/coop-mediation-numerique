@@ -29,8 +29,10 @@ import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
 } from '@app/web/features/lieux-activite'
-import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
+import {
+  periodeDesRendezVous,
+  rendezVousLies,
+} from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
@@ -70,8 +72,8 @@ const MesActivitesTableauRoute = async ({
         mediateurIds: [mediateurId],
       }),
     periodeDesRendezVous: () =>
-      getFirstAndLastRdvDate({
-        rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+      periodeDesRendezVous({
+        comptes: user.rdvAccount ? [user.rdvAccount.id] : [],
       }),
   })
 

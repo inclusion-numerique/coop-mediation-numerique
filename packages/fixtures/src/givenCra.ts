@@ -1,7 +1,7 @@
 import { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
-import { createBeneficiairesForParticipantsAnonymes } from '@app/web/features/activites/use-cases/list/participants-anonymes/createBeneficiairesForParticipantsAnonymes'
 import type { Prisma, TypeLieu } from '@app/web/generated/prisma/client'
 import { v4 } from 'uuid'
+import { createBeneficiairesForParticipantsAnonymes } from './createBeneficiairesForParticipantsAnonymes'
 import { mergeUuids } from './mergeUuids'
 
 /**

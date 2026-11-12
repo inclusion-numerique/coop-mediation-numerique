@@ -86,6 +86,10 @@ export {
 export { DUREE_MAXIMALE_EN_MINUTES, DureeEnMinutes } from './duree-en-minutes'
 export { EchelonTerritorial } from './echelon-territorial'
 export { Effectif } from './effectif'
+export type {
+  EmployeuseDesActivites,
+  PerimetreDesActivites,
+} from './employeuse-des-activites'
 export { EmployeuseId } from './employeuse-id'
 export * from './errors'
 export { FILTRES_D_ORIGINE, FiltreDOrigine } from './filtre-d-origine'

@@ -5,6 +5,7 @@ import {
   generateActivitesFiltersLabels,
 } from '../../../ui/filtres/libelles-des-filtres'
 import { optionsDesSources } from '../../../ui/libelles/source-de-l-activite'
+import type { NomsDesFiltresExportes } from '../domain'
 
 export const libellesDeLExport = (
   filtres: FiltresDeLaListe,
@@ -22,6 +23,28 @@ export const libellesDeLExport = (
     beneficiairesOptions: [],
     mediateursOptions: [],
     optionsDesSources: options.importsV1 ? [...optionsDesSources] : [],
+  })
+
+export const libellesDuClasseur = (
+  filtres: FiltresDeLaListe,
+  noms: NomsDesFiltresExportes,
+  avecImportsV1: boolean,
+): ActivitesFiltersLabels =>
+  generateActivitesFiltersLabels(filtres, {
+    communesOptions: [...noms.communes],
+    departementsOptions: [...noms.departements],
+    lieuxActiviteOptions: [...noms.lieux],
+    structuresEmployeusesOptions: noms.employeuses.map(({ id, nom }) => ({
+      id: String(id),
+      nom: nom ?? '',
+    })),
+    tagsOptions: noms.tags.map(({ id, nom }) => ({ id, nom })),
+    beneficiairesOptions: noms.beneficiaires.map(({ label, value }) => ({
+      label,
+      value: value?.id ? { id: value.id } : null,
+    })),
+    mediateursOptions: [...noms.mediateurs],
+    optionsDesSources: avecImportsV1 ? [...optionsDesSources] : [],
   })
 
 export const requeteDeLExport = (filtres: FiltresDeLaListe): string =>

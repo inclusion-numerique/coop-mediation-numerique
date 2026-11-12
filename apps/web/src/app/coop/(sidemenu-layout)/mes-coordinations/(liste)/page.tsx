@@ -1,6 +1,4 @@
 import { supprimerUneActiviteDeCoordinationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-coordination.action'
-import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
-import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { isMediateur } from '@app/web/auth/userTypeGuards'
@@ -22,8 +20,6 @@ import {
   paginationLue,
 } from '@app/web/features/activites/domain'
 import { filtresActifsDesCoordinations } from '@app/web/features/activites/ui/filtres-actifs-des-coordinations'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
-import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
 
@@ -70,38 +66,28 @@ const MesCoordinationsRoute = async ({
 
   return (
     <ClientBinder
-      bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
-      to={creerActiviteDepuisRdvAction}
+      bind={SUPPRIMER_LA_COORDINATION_KEY}
+      to={supprimerUneActiviteDeCoordinationAction}
     >
-      <ClientBinder
-        bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
-        to={mettreAJourStatutRdvAction}
-      >
-        <ClientBinder
-          bind={SUPPRIMER_LA_COORDINATION_KEY}
-          to={supprimerUneActiviteDeCoordinationAction}
-        >
-          <MesCoordinationsPage
-            sousTitre={isMediateur(user) ? 'Coordination' : undefined}
-            options={optionsDeFiltrePresentees(options, new Date())}
-            filtresActifs={filtresActifs}
-            liste={listeDesCoordinations({
-              listees,
-              filtre: estFiltre(criteres),
-              timezone: user.timezone,
-            })}
-            filtre={estFiltre(criteres)}
-            pagination={{ page: parametres.page, lignes: parametres.lignes }}
-            exporter={
-              <BoutonExporter
-                filters={filtresActifs}
-                requete={requeteDeLExport(parametres)}
-                activitesCount={listees.total}
-              />
-            }
+      <MesCoordinationsPage
+        sousTitre={isMediateur(user) ? 'Coordination' : undefined}
+        options={optionsDeFiltrePresentees(options, new Date())}
+        filtresActifs={filtresActifs}
+        liste={listeDesCoordinations({
+          listees,
+          filtre: estFiltre(criteres),
+          timezone: user.timezone,
+        })}
+        filtre={estFiltre(criteres)}
+        pagination={{ page: parametres.page, lignes: parametres.lignes }}
+        exporter={
+          <BoutonExporter
+            filters={filtresActifs}
+            requete={requeteDeLExport(parametres)}
+            activitesCount={listees.total}
           />
-        </ClientBinder>
-      </ClientBinder>
+        }
+      />
     </ClientBinder>
   )
 }

@@ -40,6 +40,7 @@ import AfficherLesRdvs from '@app/web/features/rdvsp/abilities/afficher-rdvs-dan
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
 import {
+  periodeDesRendezVous,
   rendezVousAListerSql,
   rendezVousLies,
   rendezVousParIds,
@@ -48,7 +49,6 @@ import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abi
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
 } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
-import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
 
@@ -120,8 +120,8 @@ const MesActivitesRoute = async ({
         mediateurIds: [mediateurId],
       }),
     periodeDesRendezVous: () =>
-      getFirstAndLastRdvDate({
-        rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+      periodeDesRendezVous({
+        comptes: user.rdvAccount ? [user.rdvAccount.id] : [],
       }),
   })
 
