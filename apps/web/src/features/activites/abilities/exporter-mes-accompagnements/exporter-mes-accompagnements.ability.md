@@ -67,3 +67,19 @@
 * Given une médiatrice ayant accompagné 501 bénéficiaires au même instant
 * When j'exporte mes accompagnements
 * Then l'export contient 501 activités distinctes
+
+## Rule: Le classeur ne nomme que les filtres actifs, dans le périmètre de l'export
+
+### Scenario: L'employeuse d'un autre médiateur n'est pas nommée
+
+* Given une médiatrice ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026
+* And son accompagnement du 3 mars 2026 était pour l'employeuse "Mairie de Lyon"
+* And un autre médiateur a accompagné un bénéficiaire le 7 mars 2026 pour l'employeuse "Conseil départemental"
+* When je nomme les filtres de mon export sur les employeuses "Mairie de Lyon, Conseil départemental"
+* Then les employeuses nommées sont "Mairie de Lyon"
+
+### Scenario: Sans filtre actif, aucun nom n'est recherché
+
+* Given une médiatrice ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026
+* When je nomme les filtres de mon export sans filtre
+* Then aucun nom de filtre n'a été recherché

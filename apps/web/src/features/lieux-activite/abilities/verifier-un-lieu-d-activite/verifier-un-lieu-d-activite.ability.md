@@ -23,3 +23,23 @@
 * Given un médiateur ayant cessé d'exercer dans un lieu exploitable
 * When on vérifie ce lieu pour ce médiateur, alors qu'il est déjà rattaché à l'activité
 * Then le lieu est accepté
+
+## Rule: La saisie ne vérifie un lieu que pour un médiateur et un identifiant valides
+
+### Scenario: Le lieu où le médiateur exerce est utilisable depuis la saisie
+
+* Given un médiateur exerçant dans un lieu exploitable
+* When la saisie demande si ce lieu est utilisable par ce médiateur
+* Then le lieu est accepté
+
+### Scenario: Un utilisateur sans médiateur ne peut utiliser aucun lieu
+
+* Given un médiateur exerçant dans un lieu exploitable
+* When la saisie demande si ce lieu est utilisable sans médiateur
+* Then le lieu est refusé
+
+### Scenario: Un identifiant de lieu invalide est refusé
+
+* Given un médiateur exerçant dans un lieu exploitable
+* When la saisie demande si le lieu "pas-un-identifiant" est utilisable par ce médiateur
+* Then le lieu est refusé

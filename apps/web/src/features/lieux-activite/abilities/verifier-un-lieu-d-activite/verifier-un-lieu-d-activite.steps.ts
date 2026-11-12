@@ -4,7 +4,7 @@ import { effacerDuRegistre } from '@app/web/features/lieux-activite/lieux-activi
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { verifierUnLieuDActivite } from './implementation'
+import { lieuUtilisablePar, verifierUnLieuDActivite } from './implementation'
 
 const contexte: {
   semis?: { userId: string; mediateurId: string; lieuId: string }
@@ -70,6 +70,33 @@ When(
   "on vérifie ce lieu pour ce médiateur, alors qu'il est déjà rattaché à l'activité",
   async () => {
     await verifier(true)
+  },
+)
+
+When(
+  'la saisie demande si ce lieu est utilisable par ce médiateur',
+  async () => {
+    assert.ok(contexte.semis)
+    contexte.accepte = await lieuUtilisablePar(contexte.semis.mediateurId)(
+      contexte.semis.lieuId,
+      null,
+    )
+  },
+)
+
+When('la saisie demande si ce lieu est utilisable sans médiateur', async () => {
+  assert.ok(contexte.semis)
+  contexte.accepte = await lieuUtilisablePar(null)(contexte.semis.lieuId, null)
+})
+
+When(
+  'la saisie demande si le lieu {string} est utilisable par ce médiateur',
+  async (lieu: string) => {
+    assert.ok(contexte.semis)
+    contexte.accepte = await lieuUtilisablePar(contexte.semis.mediateurId)(
+      lieu,
+      null,
+    )
   },
 )
 

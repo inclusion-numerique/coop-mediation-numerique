@@ -5,7 +5,10 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { CoordinateurId, criteresDesActivites, MediateurId } from '../../domain'
 import type { Demandeur, ExportDesAccompagnements } from './domain'
-import { exporterMesAccompagnements } from './implementation'
+import {
+  exporterMesAccompagnements,
+  nomsDesFiltresExportes,
+} from './implementation'
 
 type Seme = { readonly userId: string; readonly mediateurId: string }
 
@@ -16,7 +19,52 @@ const contexte: {
   autre?: Seme
   demandeur?: Demandeur
   exporte?: ExportDesAccompagnements
-} = { userIds: [], coordinateurIds: [] }
+  employeuses: Readonly<Record<string, number>>
+  noms?: Awaited<ReturnType<typeof nomsDesFiltresExportes>>
+  recherches: readonly string[]
+} = { userIds: [], coordinateurIds: [], employeuses: {}, recherches: [] }
+
+const semerUneEmployeuse = async (nom: string): Promise<number> => {
+  const { id } = await prismaClient.structureAdministrativeMain.create({
+    data: { denominationAntenne: nom },
+    select: { id: true },
+  })
+  contexte.employeuses = { ...contexte.employeuses, [nom]: id }
+  return id
+}
+
+const rattacherALEmployeuse = async (
+  mediateurId: string,
+  jour: number,
+  employeuse: string,
+) =>
+  prismaClient.activite.updateMany({
+    where: { mediateurId, date: new Date(Date.UTC(2026, 2, jour)) },
+    data: { structureEmployeuseMainId: await semerUneEmployeuse(employeuse) },
+  })
+
+const recherche =
+  <T>(fournisseur: string, resultat: T) =>
+  async () => {
+    contexte.recherches = [...contexte.recherches, fournisseur]
+    return resultat
+  }
+
+const nommer = async (parametres: Record<string, string>) => {
+  assert.ok(contexte.demandeur, 'Aucun demandeur semé')
+  contexte.noms = await nomsDesFiltresExportes({
+    demandeur: contexte.demandeur,
+    criteres: criteresDesActivites(parametres),
+    lieuxDesActivites: recherche('lieux', []),
+    communesEtDepartements: recherche('territoire', {
+      communesOptions: [],
+      departementsOptions: [],
+    }),
+    tagsUtilisables: recherche('tags', []),
+    beneficiaires: recherche('beneficiaires', []),
+    mediateurs: recherche('mediateurs', []),
+  })
+}
 
 const semerUnUtilisateur = async (): Promise<string> => {
   const userId = v4()
@@ -173,6 +221,50 @@ Given(
   },
 )
 
+Given(
+  "son accompagnement du 3 mars 2026 était pour l'employeuse {string}",
+  async (employeuse: string) => {
+    await rattacherALEmployeuse(moi().mediateurId, 3, employeuse)
+  },
+)
+
+Given(
+  "un autre médiateur a accompagné un bénéficiaire le 7 mars 2026 pour l'employeuse {string}",
+  async (employeuse: string) => {
+    contexte.autre = await semerUnMediateur()
+    await semerUneActivite(contexte.autre.mediateurId, 7, 1)
+    await rattacherALEmployeuse(contexte.autre.mediateurId, 7, employeuse)
+  },
+)
+
+When(
+  'je nomme les filtres de mon export sur les employeuses {string}',
+  async (employeuses: string) => {
+    await nommer({
+      structuresEmployeuses: employeuses
+        .split(', ')
+        .map((nom) => String(contexte.employeuses[nom] ?? ''))
+        .join(','),
+    })
+  },
+)
+
+When('je nomme les filtres de mon export sans filtre', async () => {
+  await nommer({})
+})
+
+Then('les employeuses nommées sont {string}', (attendues: string) => {
+  assert.ok(contexte.noms, 'Aucun filtre nommé')
+  assert.strictEqual(
+    contexte.noms.employeuses.map(({ nom }) => nom).join(', '),
+    attendues,
+  )
+})
+
+Then("aucun nom de filtre n'a été recherché", () => {
+  assert.deepStrictEqual(contexte.recherches, [])
+})
+
 const exporter = async (parametres: Record<string, string>) => {
   assert.ok(contexte.demandeur, 'Aucun demandeur semé')
   contexte.exporte = await exporterMesAccompagnements({
@@ -255,7 +347,10 @@ Then("l'export affiche la source des données", () => {
 })
 
 After(async () => {
-  const { userIds, coordinateurIds } = contexte
+  const { userIds, coordinateurIds, employeuses } = contexte
+  contexte.employeuses = {}
+  contexte.noms = undefined
+  contexte.recherches = []
   contexte.userIds = []
   contexte.coordinateurIds = []
   contexte.moi = undefined
@@ -286,6 +381,9 @@ After(async () => {
   })
   await prismaClient.coordinateur.deleteMany({
     where: { id: { in: [...coordinateurIds] } },
+  })
+  await prismaClient.structureAdministrativeMain.deleteMany({
+    where: { id: { in: Object.values(employeuses) } },
   })
   await prismaClient.user.deleteMany({ where: { id: { in: [...userIds] } } })
 })
