@@ -21,7 +21,7 @@ import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { OptionOptions, optionComboBox } from './option-combo-box'
 
 export type LieuFilterType = 'lieu' | 'commune' | 'departement'
@@ -93,12 +93,24 @@ export const LieuFilter = ({
     filteredLieuxActiviteOptions,
   )
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when props options change
-  useEffect(() => {
+  const optionsRecues = {
+    communesOptions,
+    departementsOptions,
+    lieuxActiviteOptions,
+  }
+  const [optionsSynchronisees, setOptionsSynchronisees] =
+    useState(optionsRecues)
+
+  if (
+    optionsSynchronisees.communesOptions !== communesOptions ||
+    optionsSynchronisees.departementsOptions !== departementsOptions ||
+    optionsSynchronisees.lieuxActiviteOptions !== lieuxActiviteOptions
+  ) {
+    setOptionsSynchronisees(optionsRecues)
     setCommunes(filteredCommunesOptions)
     setDepartements(filteredDepartementsOptions)
     setLieuxActivite(filteredLieuxActiviteOptions)
-  }, [communesOptions, departementsOptions, lieuxActiviteOptions])
+  }
 
   const allFilters = [...departements, ...communes, ...lieuxActivite]
   const hasFilters = allFilters.length > 0
