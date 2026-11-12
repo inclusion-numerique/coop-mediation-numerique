@@ -1,12 +1,19 @@
 import assert from 'node:assert'
 import { semerUnAccompagnementDansLaCommune } from '@app/web/features/activites/activites.cucumber'
+import { Prisma } from '@app/web/generated/prisma/client'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { Jour, PopulationDeMediateurs } from './domain'
-import { accompagnementsParDepartement } from './implementation'
+import {
+  accompagnementsParDepartement,
+  type FiltreDesConseillersNumeriques,
+} from './implementation'
 
 const AJACCIO = '2A004'
 const CORSE_DU_SUD = '2A'
 const FIN_SEPTEMBRE = Jour('2026-09-30')
+
+const sansDistinctionDeDispositif: FiltreDesConseillersNumeriques = () =>
+  Prisma.sql`TRUE`
 
 const exportation: { avant?: number; apres?: number } = {}
 
@@ -17,6 +24,7 @@ const accompagnementsDeMediateursEnCorseDuSud = async (
     await accompagnementsParDepartement({
       population: PopulationDeMediateurs('AutresMediateurs'),
       jusquAu,
+      filtreDesConseillersNumeriques: sansDistinctionDeDispositif,
     })
   ).find(({ departement }) => departement.code === CORSE_DU_SUD)
     ?.accompagnements ?? 0
