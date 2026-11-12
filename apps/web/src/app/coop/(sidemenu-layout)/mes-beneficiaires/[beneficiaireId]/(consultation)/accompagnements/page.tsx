@@ -6,6 +6,7 @@ import { listerLHistoriqueDUnBeneficiaire } from '@app/web/features/activites/ab
 import {
   cartesDeLaChronologie,
   HistoriqueDesAccompagnements,
+  parametresDePagination,
 } from '@app/web/features/activites/abilities/lister-mes-activites/ui'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
@@ -33,16 +34,6 @@ import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
 
 type Parametres = Record<string, string | string[] | undefined>
-
-const PARAMETRES_DE_PAGINATION = ['page', 'lignes']
-
-const parametresDePagination = (parametres: Parametres) =>
-  Object.fromEntries(
-    PARAMETRES_DE_PAGINATION.flatMap((cle) => {
-      const valeur = parametres[cle]
-      return typeof valeur === 'string' ? [[cle, valeur]] : []
-    }),
-  )
 
 const BeneficiaireAccompagnementsPage = async (props: {
   params: Promise<{ beneficiaireId: string }>

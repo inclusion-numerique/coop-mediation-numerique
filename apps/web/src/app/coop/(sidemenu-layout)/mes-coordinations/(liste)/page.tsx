@@ -2,7 +2,10 @@ import { supprimerUneActiviteDeCoordinationAction } from '@app/web/app/_actions/
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { isMediateur } from '@app/web/auth/userTypeGuards'
-import { BoutonExporter } from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination/ui'
+import {
+  BoutonExporter,
+  requeteDeLExport,
+} from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination/ui'
 import {
   listerLesActivitesDeCoordination,
   optionsDeFiltre,
@@ -35,13 +38,6 @@ type Parametres = {
   types?: string
   tags?: string
 }
-
-const requeteDeLExport = ({ du, au, types, tags }: Parametres): string =>
-  new URLSearchParams(
-    Object.entries({ du, au, types, tags }).flatMap(([cle, valeur]) =>
-      valeur === undefined ? [] : [[cle, valeur]],
-    ),
-  ).toString()
 
 const MesCoordinationsRoute = async ({
   searchParams,

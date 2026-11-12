@@ -16,6 +16,8 @@ import {
   joursDeLaListe,
   ListeDeMesActivites,
   MesActivitesPage,
+  parametresDeNavigation,
+  rendezVousFiltrablesDansLaListe,
 } from '@app/web/features/activites/abilities/lister-mes-activites/ui'
 import {
   contenuDeLaChronologie,
@@ -57,16 +59,6 @@ export const metadata: Metadata = {
 }
 
 type Parametres = Record<string, string | string[] | undefined>
-
-const PARAMETRES_DE_NAVIGATION = ['page', 'lignes', 'ordre', 'tri', 'voir-rdvs']
-
-const parametresDeNavigation = (parametres: Parametres) =>
-  Object.fromEntries(
-    PARAMETRES_DE_NAVIGATION.flatMap((cle) => {
-      const valeur = parametres[cle]
-      return typeof valeur === 'string' ? [[cle, valeur]] : []
-    }),
-  )
 
 const MesActivitesRoute = async ({
   searchParams,
@@ -166,12 +158,11 @@ const MesActivitesRoute = async ({
                     <EnTeteDeLaListe
                       filtres={filtresDeLaListe(criteres)}
                       options={options}
-                      rendezVousFiltrables={
-                        compteRdv !== null &&
-                        (compteRdv.includeRdvsInActivitesList ||
-                          criteres.statutsDeRendezVous.length > 0 ||
-                          voirLesRdvs)
-                      }
+                      rendezVousFiltrables={rendezVousFiltrablesDansLaListe({
+                        compte: compteRdv,
+                        voirLesRdvs,
+                        statutsDemandes: criteres.statutsDeRendezVous.length,
+                      })}
                       exportDesAccompagnements={
                         <ExportDeMesAccompagnements
                           filtres={filtresDeLaListe(criteres)}

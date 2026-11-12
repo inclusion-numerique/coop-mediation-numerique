@@ -16,4 +16,10 @@ export {
   lignesDuTableau,
   titreDuDecompte,
 } from './mes-activites.presenter'
+export {
+  parametresDeNavigation,
+  parametresDePagination,
+  rendezVousFiltrablesDansLaListe,
+  rendezVousFiltrablesDansLeTableau,
+} from './navigation.presenter'
 export { MesActivitesPage } from './pages/MesActivitesPage'

@@ -10,6 +10,8 @@ import {
   EnTeteDeLaListe,
   lignesDuTableau,
   MesActivitesPage,
+  parametresDeNavigation,
+  rendezVousFiltrablesDansLeTableau,
   TableauDeMesActivites,
   titreDuDecompte,
 } from '@app/web/features/activites/abilities/lister-mes-activites/ui'
@@ -36,16 +38,6 @@ import {
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
-
-const PARAMETRES_DE_NAVIGATION = ['page', 'lignes', 'ordre', 'tri', 'voir-rdvs']
-
-const parametresDeNavigation = (parametres: Parametres) =>
-  Object.fromEntries(
-    PARAMETRES_DE_NAVIGATION.flatMap((cle) => {
-      const valeur = parametres[cle]
-      return typeof valeur === 'string' ? [[cle, valeur]] : []
-    }),
-  )
 
 const MesActivitesTableauRoute = async ({
   searchParams,
@@ -116,10 +108,10 @@ const MesActivitesTableauRoute = async ({
           <EnTeteDeLaListe
             filtres={filtresDeLaListe(criteres)}
             options={options}
-            rendezVousFiltrables={
-              compteRdv !== null &&
-              (compteRdv.includeRdvsInActivitesList || voirLesRdvs)
-            }
+            rendezVousFiltrables={rendezVousFiltrablesDansLeTableau({
+              compte: compteRdv,
+              voirLesRdvs,
+            })}
             exportDesAccompagnements={
               <ExportDeMesAccompagnements
                 filtres={filtresDeLaListe(criteres)}
