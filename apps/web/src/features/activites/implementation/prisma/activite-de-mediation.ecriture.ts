@@ -1,9 +1,9 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
-import { type ActiviteDeMediation, nombreDAccompagnements } from '../domain'
-import { activiteDeMediationFromDomain } from './activite-de-mediation.transfer'
-import { recalculerLesPremiersAccompagnements } from './premier-accompagnement'
+import { activiteDeMediationFromDomain } from '../../db/activite-de-mediation.transfer'
+import { recalculerLesPremiersAccompagnements } from '../../db/premier-accompagnement'
+import { type ActiviteDeMediation, nombreDAccompagnements } from '../../domain'
 
 const DELAI_DE_TRANSACTION_MS = 20_000
 

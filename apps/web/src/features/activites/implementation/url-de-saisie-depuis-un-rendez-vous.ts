@@ -6,7 +6,7 @@ import {
   type ParticipantDuRendezVous,
   type RendezVousASaisir,
 } from '../ui/saisie/url-de-saisie-depuis-un-rendez-vous'
-import { dureesFrequentesDuMediateur } from './durees-frequentes'
+import { dureesFrequentesDuMediateur } from './prisma/durees-frequentes'
 
 export const urlDeSaisieDepuisUnRendezVous = async ({
   rendezVous,

@@ -3,14 +3,14 @@ import {
   activiteConsulteeDe,
   activiteConsulteeSelect,
   rdvIdsDes,
-} from '../db/activite-consultee.transfer'
-import type { RendezVousLies } from '../db/rendez-vous-fournis'
+} from '../../db/activite-consultee.transfer'
+import type { RendezVousLies } from '../../db/rendez-vous-fournis'
 import {
   type ActiviteConsultee,
   type ActiviteId,
   type MediateurId,
   RdvId,
-} from '../domain'
+} from '../../domain'
 
 export const lireUneActiviteDeMediation = async ({
   id,

@@ -14,7 +14,7 @@ import CraCollectifPage from '@app/web/features/activites/abilities/enregistrer-
 import { formulaireDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/formulaire-de-l-atelier-collectif.presenter'
 import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
-import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/durees-frequentes'
+import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/prisma/durees-frequentes'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/commune/rechercher-des-communes.key'
 import { donneesDeLaSaisieDeMediation } from '@app/web/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'

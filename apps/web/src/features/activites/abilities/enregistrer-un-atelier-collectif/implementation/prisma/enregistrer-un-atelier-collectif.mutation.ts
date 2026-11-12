@@ -2,10 +2,6 @@ import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import {
-  creerLActiviteDeMediation,
-  modifierLActiviteDeMediation,
-} from '../../../../db/activite-de-mediation.ecriture'
-import {
   type ActiviteIntrouvable,
   type AtelierSansParticipant,
   type BeneficiaireEnDouble,
@@ -27,11 +23,15 @@ import {
   type UtilisateurId,
 } from '../../../../domain'
 import {
+  creerLActiviteDeMediation,
+  modifierLActiviteDeMediation,
+} from '../../../../implementation/prisma/activite-de-mediation.ecriture'
+import {
   creationOuModification,
   enregistrementDeMediation,
   lieuVerifie,
   rendezVousVerifie,
-} from '../../../../implementation/saisie-de-mediation'
+} from '../../../../implementation/prisma/saisie-de-mediation'
 import {
   ActionNonAutorisee,
   type AtelierEnregistre,

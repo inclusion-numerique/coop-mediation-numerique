@@ -1,5 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { MediateurId } from '../domain'
+import type { MediateurId } from '../../domain'
 
 export const dureesFrequentesDuMediateur = async (
   mediateurId: MediateurId,

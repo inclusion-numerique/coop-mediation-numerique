@@ -2,10 +2,6 @@ import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import {
-  type ActiviteDeMediationPrecedente,
-  lireLActiviteDeMediationPrecedente,
-} from '../db/activite-de-mediation.ecriture'
-import {
   ActiviteId,
   ActiviteIntrouvable,
   IdentifiantCraV1,
@@ -18,7 +14,11 @@ import {
   RendezVousIndisponible,
   type TypeDActivite,
   TypeDActiviteIncompatible,
-} from '../domain'
+} from '../../domain'
+import {
+  type ActiviteDeMediationPrecedente,
+  lireLActiviteDeMediationPrecedente,
+} from './activite-de-mediation.ecriture'
 
 export type EnregistrementDeMediation =
   | { readonly _tag: 'Creation'; readonly id: ActiviteId }

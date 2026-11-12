@@ -13,7 +13,7 @@ import CraIndividuelPage from '@app/web/features/activites/abilities/enregistrer
 import { craIndividuelDefaultValues } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/craIndividuelDefaultValues'
 import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { MediateurId } from '@app/web/features/activites/domain'
-import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/durees-frequentes'
+import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/prisma/durees-frequentes'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/commune/rechercher-des-communes.key'
 import { donneesDeLaSaisieDeMediation } from '@app/web/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'

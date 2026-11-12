@@ -1,4 +1,4 @@
-export { lireUneActiviteDeMediation } from '../../../implementation/lire-une-activite-de-mediation'
+export { lireUneActiviteDeMediation } from '../../../implementation/prisma/lire-une-activite-de-mediation'
 export {
   type EchecDEnregistrement,
   enregistrerUnAccompagnementIndividuel,
