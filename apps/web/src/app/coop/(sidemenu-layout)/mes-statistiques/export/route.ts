@@ -4,7 +4,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
 import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'

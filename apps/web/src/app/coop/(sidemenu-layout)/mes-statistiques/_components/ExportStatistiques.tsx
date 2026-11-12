@@ -2,13 +2,13 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
+import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+} from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { download } from '@app/web/utils/download'
 import { numberToString } from '@app/web/utils/formatNumber'

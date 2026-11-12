@@ -1,6 +1,6 @@
-import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import { getFiltersOptionsForMediateur } from '@app/web/features/statistiques/db/options-des-filtres'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type {

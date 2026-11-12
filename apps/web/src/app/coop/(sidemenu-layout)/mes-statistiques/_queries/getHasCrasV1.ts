@@ -1,4 +1,4 @@
-import { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
 

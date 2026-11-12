@@ -1,7 +1,7 @@
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { z } from 'zod'
 import {
   THEMATIQUES_ADMINISTRATIVES,

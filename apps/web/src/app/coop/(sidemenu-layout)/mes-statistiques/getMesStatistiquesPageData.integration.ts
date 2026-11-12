@@ -27,13 +27,13 @@ import {
 } from '@app/web/features/activites/ui/libelles/thematique'
 import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
 import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { computeProportion } from '@app/web/features/statistiques/allocatePercentages'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   UserDisplayName,

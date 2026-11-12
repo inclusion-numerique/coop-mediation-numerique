@@ -1,11 +1,8 @@
-import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
-import {
-  getActiviteFiltersSqlFragment,
-  getActivitesFiltersWhereConditions,
-} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { allocatePercentages } from '@app/web/features/statistiques/allocatePercentages'
 import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
+import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import type { UserProfile } from '@app/web/utils/user'
@@ -115,9 +112,7 @@ const getActivityStatsQuery = ({
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
       AND act.suppression IS NULL
       AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
-      AND ${getActiviteFiltersSqlFragment(
-        getActivitesFiltersWhereConditions(activitesFilters),
-      )}
+      AND ${filtreDesStatistiques(activitesFilters)}
   `.then((result) => result[0])
 }
 
@@ -150,9 +145,7 @@ const getBeneficiaireStatsQuery = ({
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
       AND act.suppression IS NULL
       AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
-      AND ${getActiviteFiltersSqlFragment(
-        getActivitesFiltersWhereConditions(activitesFilters),
-      )}
+      AND ${filtreDesStatistiques(activitesFilters)}
   `.then((result) => result[0])
 }
 
@@ -189,9 +182,7 @@ const getNouveauxAccompagnementsQuery = ({
       AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
       AND act.suppression IS NULL
       AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
-      AND ${getActiviteFiltersSqlFragment(
-        getActivitesFiltersWhereConditions(activitesFilters),
-      )}
+      AND ${filtreDesStatistiques(activitesFilters)}
   `.then((result) => result[0])
 }
 

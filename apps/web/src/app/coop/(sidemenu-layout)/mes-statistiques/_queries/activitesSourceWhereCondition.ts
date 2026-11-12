@@ -1,4 +1,4 @@
-import { ActiviteSource } from '@app/web/features/activites/use-cases/source/activiteSource'
+import { ActiviteSource } from '@app/web/features/statistiques/ui/filtres/source'
 import { Prisma } from '@app/web/generated/prisma/client'
 
 export const activitesSourceWhereCondition = (source?: ActiviteSource) => {

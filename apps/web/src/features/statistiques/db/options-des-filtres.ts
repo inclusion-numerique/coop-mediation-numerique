@@ -1,0 +1,98 @@
+import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
+import { getUserDepartement } from '@app/web/auth/getUserDepartement'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import {
+  getLieuxDesActivitesOptions,
+  getMediateurCommunesAndDepartementsOptions,
+} from '@app/web/features/lieux-activite'
+import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
+import { getStructuresEmployeusesOptions } from '@app/web/features/statistiques/db/employeuses-des-activites'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
+import { getFirstAndLastActiviteDate } from '@app/web/features/statistiques/db/periode-des-activites'
+import { getMediateursTags } from '@app/web/features/statistiques/db/tags-des-filtres'
+import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
+import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
+import type {
+  UserDisplayName,
+  UserProfile,
+  UserRdvAccount,
+} from '@app/web/utils/user'
+
+export const getFiltersOptionsForMediateur = async ({
+  user,
+  mediateurCoordonnesIds,
+  includeBeneficiaireIds,
+}: {
+  user: UserDisplayName & UserProfile & UserRdvAccount
+  mediateurCoordonnesIds?: string[]
+  includeBeneficiaireIds?: string[]
+}) => {
+  const mediateurIds = [
+    ...(user.mediateur?.id ? [user.mediateur.id] : []),
+    ...(mediateurCoordonnesIds ?? []),
+  ]
+
+  const equipeCoordinateurIds = [
+    ...(user.coordinateur?.id ? [user.coordinateur.id] : []),
+    ...(user.mediateur?.coordinations?.map((c) => c.coordinateur.id) ?? []),
+  ]
+
+  const [
+    { communesOptions, departementsOptions },
+    tagsOptions,
+    initialBeneficiairesOptions,
+    initialMediateursOptions,
+    lieuxActiviteOptions,
+    structuresEmployeusesOptions,
+    activiteDates,
+    rdvDates,
+    hasCrasV1,
+  ] = await Promise.all([
+    getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
+    getMediateursTags({
+      mediateurId: user.mediateur?.id,
+      coordinateurId: user.coordinateur?.id,
+      departement: getUserDepartement(user)?.code,
+      equipeCoordinateurIds,
+    }),
+    getInitialBeneficiairesOptionsForSearch({
+      mediateurId: user.mediateur?.id,
+      includeBeneficiaireIds,
+    }),
+    getInitialMediateursOptionsForSearch({
+      mediateurId: user.mediateur?.id,
+      coordinateurId: user.coordinateur?.id,
+      mediateurCoordonnesIds,
+    }),
+    getLieuxDesActivitesOptions({
+      mediateurIds,
+      mediateurId: user.mediateur?.id,
+      perimetreDesActivites: activitesEquipeCoordonneeWhereCondition(
+        user.coordinateur?.id,
+      ),
+    }),
+    getStructuresEmployeusesOptions({
+      mediateurIds,
+      coordinateurId: user.coordinateur?.id,
+    }),
+    getFirstAndLastActiviteDate({ mediateurIds }),
+    getFirstAndLastRdvDate({
+      rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+    }),
+    getHasCrasV1({ user, mediateurIds }),
+  ])
+
+  return {
+    communesOptions,
+    departementsOptions,
+    tagsOptions,
+    initialBeneficiairesOptions,
+    initialMediateursOptions,
+    lieuxActiviteOptions,
+    structuresEmployeusesOptions,
+    activiteDates,
+    rdvDates,
+    hasCrasV1,
+    activiteSourceOptions: hasCrasV1 ? activiteSourceOptions : [],
+  }
+}
