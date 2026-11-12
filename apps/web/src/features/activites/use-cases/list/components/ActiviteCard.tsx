@@ -1,6 +1,8 @@
 import { TruncateText } from '@app/ui/components/Primitives/TruncatedText'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import Stars from '@app/web/components/Stars'
+import ActiviteCardSpacer from '@app/web/features/activites/ui/carte/ActiviteCardSpacer'
+import ListCard from '@app/web/features/activites/ui/carte/ListCard'
 import { autonomieStars } from '@app/web/features/activites/ui/libelles/autonomie'
 import { niveauAtelierStars } from '@app/web/features/activites/ui/libelles/niveau-atelier'
 import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
@@ -15,8 +17,6 @@ import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { Fragment } from 'react'
 import ActiviteCardOpenModalLink from './ActiviteCardOpenModalLink'
-import ActiviteCardSpacer from './ActiviteCardSpacer'
-import ListCard from './ListCard'
 
 const MAX_THEMATIQUES_DISPLAYED = 2
 

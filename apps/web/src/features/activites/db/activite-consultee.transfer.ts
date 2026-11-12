@@ -5,6 +5,7 @@ import {
   BeneficiaireId,
   type BeneficiaireSuiviAffiche,
   Commune,
+  Effectif,
   LieuActiviteId,
   NomDeFamille,
   NomDeStructure,
@@ -41,6 +42,7 @@ export const activiteConsulteeSelect = {
             .select,
           prenom: true,
           nom: true,
+          accompagnementsCount: true,
         },
       },
     },
@@ -62,6 +64,12 @@ const adresseDu = (lieu: {
   lieu.adresse && lieu.codePostal && lieu.commune
     ? AdresseDuLieu(`${lieu.adresse}, ${lieu.codePostal} ${lieu.commune}`)
     : null
+
+const localiteDu = (lieu: {
+  readonly codePostal: string | null
+  readonly commune: string | null
+}): AdresseDuLieu | null =>
+  AdresseDuLieu.safe([lieu.codePostal, lieu.commune].filter(Boolean).join(' '))
 
 const residenceDu = ({
   commune,
@@ -85,11 +93,13 @@ const suiviAffiche = (beneficiaire: {
   readonly commune: string | null
   readonly communeCodePostal: string | null
   readonly communeCodeInsee: string | null
+  readonly accompagnementsCount: number
 }): BeneficiaireSuiviAffiche => ({
   id: BeneficiaireId(beneficiaire.id),
   prenom: Prenom(beneficiaire.prenom ?? ''),
   nom: NomDeFamille(beneficiaire.nom ?? ''),
   residence: residenceDu(beneficiaire),
+  nombreDActivites: Effectif(beneficiaire.accompagnementsCount),
 })
 
 export const activiteConsulteeDe = (
@@ -112,6 +122,7 @@ export const activiteConsulteeDe = (
               id: LieuActiviteId(ligne.lieuInclusion.id),
               nom: NomDeStructure(ligne.lieuInclusion.nom),
               adresse: adresseDu(ligne.lieuInclusion),
+              localite: localiteDu(ligne.lieuInclusion),
             },
       suivis: ligne.accompagnements
         .map(({ beneficiaire }) => beneficiaire)

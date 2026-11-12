@@ -1,3 +1,4 @@
+import { NomAffiche } from '@app/web/libraries/nom-affiche'
 import {
   Effectif,
   LienAgent,
@@ -33,6 +34,10 @@ export type RendezVousFourni = RendezVousLieFourni & {
   readonly motif: { readonly nom: string; readonly collectif: boolean } | null
   readonly titre: string | null
   readonly places: number | null
+  readonly participants: readonly {
+    readonly prenom: string | null
+    readonly nom: string | null
+  }[]
 }
 
 const STATUT: Readonly<Record<StatutFourni, StatutDeRendezVous>> = {
@@ -70,5 +75,9 @@ export const rendezVousDeLaChronologie = (
         },
   titre: TitreDuRendezVous.safe(fourni.titre ?? ''),
   places: fourni.places === null ? null : Effectif(fourni.places),
+  participants: fourni.participants.flatMap(({ prenom, nom }) => {
+    const affiche = NomAffiche.safe([prenom, nom].filter(Boolean).join(' '))
+    return affiche === null ? [] : [affiche]
+  }),
   lienAgent: LienAgent(fourni.lienAgent),
 })

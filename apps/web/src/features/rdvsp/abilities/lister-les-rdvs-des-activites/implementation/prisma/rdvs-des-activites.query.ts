@@ -46,6 +46,9 @@ export const rendezVousParIds = async (ids: readonly number[]) =>
             maxParticipantsCount: true,
             urlForAgents: true,
             motif: { select: { name: true, collectif: true } },
+            participations: {
+              select: { user: { select: { firstName: true, lastName: true } } },
+            },
           },
         })
       ).map((rdv) => ({
@@ -60,6 +63,10 @@ export const rendezVousParIds = async (ids: readonly number[]) =>
             : { nom: rdv.motif.name, collectif: rdv.motif.collectif },
         titre: rdv.name,
         places: rdv.maxParticipantsCount,
+        participants: rdv.participations.map(({ user }) => ({
+          prenom: user.firstName,
+          nom: user.lastName,
+        })),
       }))
 
 const CONDITION_DE_STATUT: Readonly<
@@ -85,7 +92,7 @@ export const rendezVousAListerSql = ({
 }: {
   readonly comptes: readonly number[]
   readonly periode: Periode | null
-  readonly statuts: readonly StatutRdv[]
+  readonly statuts: readonly (typeof statutsRdv)[number][]
 }): Prisma.Sql =>
   Prisma.sql`SELECT rdv.id, rdv.starts_at AS moment, rdv.created_at AS creation
     FROM rdvs rdv

@@ -1,6 +1,6 @@
 'use client'
 
-import ListCard from '@app/web/features/activites/use-cases/list/components/ListCard'
+import ListCard from '@app/web/features/activites/ui/carte/ListCard'
 import { CalendarIcon } from '@app/web/features/pictograms/digital/CalendarIcon'
 import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIcon'
 import { HumanCooperationIcon } from '@app/web/features/pictograms/environment/HumanCooperationIcon'

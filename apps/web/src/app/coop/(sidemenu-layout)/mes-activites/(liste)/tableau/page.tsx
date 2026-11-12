@@ -1,158 +1,141 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
-import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
-import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/components/filters/more-filters/rechercher-employeuses-des-activites.key'
+import { optionsDeLaBarre } from '@app/web/features/activites/abilities/lister-les-options-de-filtre-des-activites'
+import { listerMesActivites } from '@app/web/features/activites/abilities/lister-mes-activites'
+import {
+  AucuneActivite,
+  EnTeteDeLaListe,
+  lignesDuTableau,
+  MesActivitesPage,
+  TableauDeMesActivites,
+  titreDuDecompte,
+} from '@app/web/features/activites/abilities/lister-mes-activites/ui'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.key'
-import type { ActivitesDataTableSearchParams } from '@app/web/features/activites/use-cases/list/components/ActivitesDataTable'
-import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/ActivitesListeLayout'
-import MesActivitesListeEmptyPage from '@app/web/features/activites/use-cases/list/components/MesActivitesListeEmptyPage'
-import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
-import { mediateurHasActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
-import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cases/list/db/getWidestActiviteDatesRange'
-import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
-import { getActivitesTagsOptions } from '@app/web/features/activites/use-cases/list/getActivitesTagsOptions'
-import MesActivitesTableauPage from '@app/web/features/activites/use-cases/list/MesActivitesTableauPage'
-import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
-import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import {
+  criteresDesActivites,
+  estFiltreDesActivites,
+  MediateurId,
+  ordreChronologiqueLu,
+  paginationLue,
+  parametresDesActivitesDe,
+} from '@app/web/features/activites/domain'
+import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
+import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@app/web/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import {
+  getLieuxDesActivitesOptions,
+  getMediateurCommunesAndDepartementsOptions,
+} from '@app/web/features/lieux-activite'
+import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
-const MesActivitesVueTableauPage = async ({
+type Parametres = Record<string, string | string[] | undefined>
+
+const PARAMETRES_DE_NAVIGATION = ['page', 'lignes', 'ordre', 'tri', 'voir-rdvs']
+
+const parametresDeNavigation = (parametres: Parametres) =>
+  Object.fromEntries(
+    PARAMETRES_DE_NAVIGATION.flatMap((cle) => {
+      const valeur = parametres[cle]
+      return typeof valeur === 'string' ? [[cle, valeur]] : []
+    }),
+  )
+
+const MesActivitesTableauRoute = async ({
   searchParams,
 }: {
-  searchParams: Promise<
-    ActivitesDataTableSearchParams & { 'voir-rdvs'?: string }
-  >
+  searchParams: Promise<Parametres>
 }) => {
-  const rawSearchParams = await searchParams
   const user = await authenticateMediateur()
+  const parametres = await searchParams
+  const mediateurId = MediateurId(user.mediateur.id)
+  const criteres = criteresDesActivites(parametres)
+  const filtree = estFiltreDesActivites(criteres)
+  const voirLesRdvs = parametres['voir-rdvs'] === '1'
+  const compteRdv = user.rdvAccount?.hasOauthTokens ? user.rdvAccount : null
 
-  const showRdvsInList = rawSearchParams['voir-rdvs'] === '1'
-
-  const hasActivites = await mediateurHasActivites({
-    mediateurId: user.mediateur.id,
+  const options = await optionsDeLaBarre({
+    mediateurId,
+    lieuxDesActivites: () =>
+      getLieuxDesActivitesOptions({
+        mediateurIds: [mediateurId],
+        mediateurId,
+      }),
+    communesEtDepartements: () =>
+      getMediateurCommunesAndDepartementsOptions({
+        mediateurIds: [mediateurId],
+      }),
+    periodeDesRendezVous: () =>
+      getFirstAndLastRdvDate({
+        rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+      }),
   })
 
-  if (hasActivites) {
-    const searchParams = validateActivitesFilters(rawSearchParams)
-    const data = getActivitesListPageData({
-      mediateurId: user.mediateur.id,
-      searchParams,
-      user,
-      showRdvsInList,
-    })
-
-    const searchResultMatchesCount = data.then(
-      ({ searchResult: { accompagnementsMatchesCount } }) =>
-        accompagnementsMatchesCount,
-    )
-
-    const includeRdvsFilter =
-      !!user.rdvAccount?.hasOauthTokens &&
-      (user.rdvAccount.includeRdvsInActivitesList || showRdvsInList)
-
-    const {
-      communesOptions,
-      departementsOptions,
-      initialMediateursOptions,
-      lieuxActiviteOptions,
-      structuresEmployeusesOptions,
-      activiteDates,
-      activiteSourceOptions,
-      hasCrasV1,
-      rdvDates,
-    } = await getFiltersOptionsForMediateur({
-      user,
-      includeBeneficiaireIds: searchParams.beneficiaires,
-    })
-
-    const tagsOptions = await getActivitesTagsOptions(user.mediateur.id)
-
-    const filterPeriodDates = getWidestActiviteDatesRange(
-      activiteDates,
-      rdvDates,
-    )
-
+  if (!options.aDesActivites)
     return (
-      <ClientBinder
-        bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
-        to={supprimerUneActiviteDeMediationAction}
-      >
-        <ClientBinder
-          bind={RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY}
-          to={rechercherEmployeusesDesActivitesAction}
-        >
-          <ClientBinder
-            bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-            to={rechercherUnLieuActiviteAction}
-          >
-            <ClientBinder
-              bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
-              to={creerActiviteDepuisRdvAction}
-            >
-              <ClientBinder
-                bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
-                to={mettreAJourStatutRdvAction}
-              >
-                <ActivitesListeLayout
-                  vue="tableau"
-                  href="/coop/mes-activites"
-                  subtitle={
-                    isCoordinateur(user) && isMediateur(user)
-                      ? 'Médiation numérique'
-                      : undefined
-                  }
-                >
-                  <MesActivitesListeHeader
-                    searchResultMatchesCount={searchResultMatchesCount}
-                    defaultFilters={searchParams}
-                    initialMediateursOptions={initialMediateursOptions}
-                    communesOptions={communesOptions}
-                    departementsOptions={departementsOptions}
-                    lieuxActiviteOptions={lieuxActiviteOptions}
-                    structuresEmployeusesOptions={structuresEmployeusesOptions}
-                    tagsOptions={tagsOptions}
-                    activiteDates={filterPeriodDates}
-                    enableRdvsFilter={includeRdvsFilter}
-                    hasCrasV1={hasCrasV1.hasCrasV1}
-                    activiteSourceOptions={activiteSourceOptions}
-                  />
-                  <MesActivitesTableauPage data={data} />
-                </ActivitesListeLayout>
-              </ClientBinder>
-            </ClientBinder>
-          </ClientBinder>
-        </ClientBinder>
-      </ClientBinder>
+      <MesActivitesPage vue="tableau" saisieDuStatutDesRendezVous={null}>
+        <AucuneActivite />
+      </MesActivitesPage>
     )
-  }
+
+  const chronologie = listerMesActivites({
+    mediateurId,
+    criteres,
+    pagination: paginationLue(parametres),
+    ordre: ordreChronologiqueLu(parametres.ordre),
+    contenu: 'ActivitesSeules',
+    rendezVous: null,
+    rendezVousLies,
+    conseillersNumeriques: conseillerNumeriqueSql,
+  })
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
+      to={supprimerUneActiviteDeMediationAction}
     >
       <ClientBinder
-        bind={CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY}
-        to={creerActiviteDepuisRdvAction}
+        bind={RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY}
+        to={rechercherEmployeusesDesActivitesAction}
       >
-        <ClientBinder
-          bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
-          to={mettreAJourStatutRdvAction}
+        <MesActivitesPage
+          vue="tableau"
+          sousTitre={
+            isCoordinateur(user) && isMediateur(user)
+              ? 'Médiation numérique'
+              : undefined
+          }
+          saisieDuStatutDesRendezVous={null}
         >
-          <ActivitesListeLayout vue="tableau" href="/coop/mes-activites">
-            <MesActivitesListeEmptyPage />
-          </ActivitesListeLayout>
-        </ClientBinder>
+          <EnTeteDeLaListe
+            filtres={filtresDeLaListe(criteres)}
+            options={options}
+            rendezVousFiltrables={
+              compteRdv !== null &&
+              (compteRdv.includeRdvsInActivitesList || voirLesRdvs)
+            }
+            nombreDAccompagnements={chronologie.then(
+              ({ total }) => total.accompagnements,
+            )}
+          />
+          <TableauDeMesActivites
+            contenu={chronologie.then((lue) => ({
+              decompte: titreDuDecompte(lue.total.activites, filtree),
+              lignes: lignesDuTableau(lue, user.timezone),
+              pages: lue.pages,
+            }))}
+            parametres={{
+              ...parametresDesActivitesDe(criteres),
+              ...parametresDeNavigation(parametres),
+            }}
+          />
+        </MesActivitesPage>
       </ClientBinder>
     </ClientBinder>
   )
 }
 
-export default MesActivitesVueTableauPage
+export default MesActivitesTableauRoute

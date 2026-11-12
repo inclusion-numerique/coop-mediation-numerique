@@ -1,7 +1,7 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import RdvStatusUpdateModal from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/RdvStatusUpdateModal'
+import RdvStatusUpdateModal from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { PropsWithChildren } from 'react'
 import ActiviteDetailsModal from './ActiviteDetailsModal/ActiviteDetailsModal'

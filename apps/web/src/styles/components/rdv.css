@@ -1,4 +1,4 @@
-.sectionIcon {
+.saisie-du-statut-rdv__icone {
   width: 48px;
   height: 48px;
   border-radius: 8px;
@@ -8,21 +8,21 @@
   flex-shrink: 0;
 }
 
-.sectionIconHonored {
+.saisie-du-statut-rdv__icone--honore {
   background-color: var(--background-contrast-success);
   color: var(--text-default-success);
 }
 
-.sectionIconNotHonored {
+.saisie-du-statut-rdv__icone--non-honore {
   background-color: var(--background-contrast-error);
   color: var(--text-default-error);
 }
 
-.actionItemIcon::before {
+.saisie-du-statut-rdv__icone-d-action::before {
   --icon-size: 1rem;
 }
 
-.cancelCollectifButton {
+.saisie-du-statut-rdv__annulation-collective {
   color: unset;
   font-weight: 400;
 }

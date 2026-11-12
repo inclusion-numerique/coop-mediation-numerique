@@ -57,6 +57,12 @@ export const statutSocialLabels: Readonly<Record<StatutSocial, string>> = {
   NonCommunique: 'Non communiqué ou hétérogène',
 }
 
+export const sexeLabels: Readonly<Record<Genre, string>> = {
+  Masculin: 'Homme',
+  Feminin: 'Femme',
+  NonCommunique: 'Non communiqué',
+}
+
 export const genreOptions = labelsToOptions(genreLabels)
 
 export const trancheAgeOptions = labelsToOptions(trancheAgeLabels)

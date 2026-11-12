@@ -3,41 +3,42 @@
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
-import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
-import type { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
-import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import styles from './RdvStatusUpdateModal.module.css'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '../../creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.key'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '../action/mettre-a-jour-statut-rdv.key'
 
-export type RdvStatusUpdateDynamicModalState = {
-  rdv: RdvListItem
+export type RdvASaisir = {
+  readonly id: number
+  readonly collectif: boolean
 }
 
-export const RdvStatusUpdateDynamicModal = createDynamicModal({
-  id: 'rdv-status-update',
-  isOpenedByDefault: false,
-  initialState: null as null | RdvStatusUpdateDynamicModalState,
-})
+export const SaisieDuStatutDuRdvDynamicModal =
+  createDynamicModal<RdvASaisir | null>({
+    id: 'rdv-status-update',
+    isOpenedByDefault: false,
+    initialState: null,
+  })
 
-const RdvStatusUpdateModal = ({
+export const useOuvrirLaSaisieDuStatut = (): ((rdv: RdvASaisir) => void) =>
+  SaisieDuStatutDuRdvDynamicModal.useOpen()
+
+const SaisieDuStatutDuRdv = ({
   initialState,
 }: {
-  initialState?: RdvStatusUpdateDynamicModalState
+  initialState?: RdvASaisir
 }) => {
-  const state = RdvStatusUpdateDynamicModal.useState() ?? initialState
+  const rdv = SaisieDuStatutDuRdvDynamicModal.useState() ?? initialState
   const router = useRouter()
 
   const [miseAJourEnCours, setMiseAJourEnCours] = useState(false)
   const [preparationCraEnCours, setPreparationCraEnCours] = useState(false)
 
-  if (!state) return null
+  if (!rdv) return null
 
-  const { rdv } = state
-  const isCollectif = rdv.motif?.collectif ?? false
+  const isCollectif = rdv.collectif
 
   const handleCreateCra = async () => {
     setPreparationCraEnCours(true)
@@ -54,7 +55,7 @@ const RdvStatusUpdateModal = ({
       return
     }
 
-    RdvStatusUpdateDynamicModal.close()
+    SaisieDuStatutDuRdvDynamicModal.close()
     router.push(result.data.urlCreationCra)
   }
 
@@ -76,7 +77,7 @@ const RdvStatusUpdateModal = ({
       return
     }
 
-    RdvStatusUpdateDynamicModal.close()
+    SaisieDuStatutDuRdvDynamicModal.close()
     router.refresh()
     createToast({
       priority: 'success',
@@ -87,7 +88,7 @@ const RdvStatusUpdateModal = ({
   const isLoading = miseAJourEnCours || preparationCraEnCours
 
   return (
-    <RdvStatusUpdateDynamicModal.Component
+    <SaisieDuStatutDuRdvDynamicModal.Component
       title={
         isCollectif
           ? 'Renseignez le statut du RDV collectif passé'
@@ -97,12 +98,7 @@ const RdvStatusUpdateModal = ({
       <div className="fr-flex fr-direction-column fr-flex-gap-6v">
         <div className="fr-border fr-border-radius--8 fr-p-3w fr-mt-1w">
           <div className="fr-flex fr-align-items-center fr-flex-gap-3v">
-            <div
-              className={classNames(
-                styles.sectionIcon,
-                styles.sectionIconHonored,
-              )}
-            >
+            <div className="saisie-du-statut-rdv__icone saisie-du-statut-rdv__icone--honore">
               <span className="fr-icon-calendar-check-fill" />
             </div>
             <div>
@@ -128,12 +124,7 @@ const RdvStatusUpdateModal = ({
           >
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
               Renseigner un CRA pour ce RDV
-              <span
-                className={classNames(
-                  'fr-icon-edit-line',
-                  styles.actionItemIcon,
-                )}
-              />
+              <span className="fr-icon-edit-line saisie-du-statut-rdv__icone-d-action" />
             </div>
           </Button>
           <hr className="fr-separator fr-separator-1px fr-my-2w" />
@@ -145,12 +136,7 @@ const RdvStatusUpdateModal = ({
           >
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
               Je ne souhaite pas compléter de CRA pour ce RDV
-              <span
-                className={classNames(
-                  'ri-file-check-line',
-                  styles.actionItemIcon,
-                )}
-              />
+              <span className="ri-file-check-line saisie-du-statut-rdv__icone-d-action" />
             </div>
           </Button>
         </div>
@@ -161,19 +147,11 @@ const RdvStatusUpdateModal = ({
             onClick={() => handleUpdateStatus('revoked')}
             {...buttonLoadingClassname(
               isLoading,
-              classNames(
-                styles.cancelCollectifButton,
-                'fr-border fr-border-radius--8 fr-p-3w fr-width-full',
-              ),
+              'saisie-du-statut-rdv__annulation-collective fr-border fr-border-radius--8 fr-p-3w fr-width-full',
             )}
           >
             <div className="fr-flex fr-flex-gap-3v fr-width-full">
-              <div
-                className={classNames(
-                  styles.sectionIcon,
-                  styles.sectionIconNotHonored,
-                )}
-              >
+              <div className="saisie-du-statut-rdv__icone saisie-du-statut-rdv__icone--non-honore">
                 <span
                   className="fr-icon-calendar-close-fill fr-icon--sm"
                   aria-hidden
@@ -190,12 +168,7 @@ const RdvStatusUpdateModal = ({
         ) : (
           <div className="fr-border fr-border-radius--8 fr-p-3w">
             <div className="fr-flex fr-align-items-center fr-flex-gap-3v">
-              <div
-                className={classNames(
-                  styles.sectionIcon,
-                  styles.sectionIconNotHonored,
-                )}
-              >
+              <div className="saisie-du-statut-rdv__icone saisie-du-statut-rdv__icone--non-honore">
                 <span
                   className="fr-icon-calendar-close-fill fr-icon--sm"
                   aria-hidden
@@ -219,10 +192,7 @@ const RdvStatusUpdateModal = ({
               <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
                 Absence non excusée
                 <span
-                  className={classNames(
-                    'ri-user-forbid-line',
-                    styles.actionItemIcon,
-                  )}
+                  className="ri-user-forbid-line saisie-du-statut-rdv__icone-d-action"
                   aria-hidden
                 />
               </div>
@@ -238,10 +208,7 @@ const RdvStatusUpdateModal = ({
               <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
                 Rendez-vous annulé à l'initiative du bénéficiaire
                 <span
-                  className={classNames(
-                    'ri-user-unfollow-line',
-                    styles.actionItemIcon,
-                  )}
+                  className="ri-user-unfollow-line saisie-du-statut-rdv__icone-d-action"
                   aria-hidden
                 />
               </div>
@@ -257,10 +224,7 @@ const RdvStatusUpdateModal = ({
               <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
                 Rendez-vous annulé à l'initiative du service
                 <span
-                  className={classNames(
-                    'ri-calendar-close-line',
-                    styles.actionItemIcon,
-                  )}
+                  className="ri-calendar-close-line saisie-du-statut-rdv__icone-d-action"
                   aria-hidden
                 />
               </div>
@@ -268,8 +232,8 @@ const RdvStatusUpdateModal = ({
           </div>
         )}
       </div>
-    </RdvStatusUpdateDynamicModal.Component>
+    </SaisieDuStatutDuRdvDynamicModal.Component>
   )
 }
 
-export default RdvStatusUpdateModal
+export default SaisieDuStatutDuRdv

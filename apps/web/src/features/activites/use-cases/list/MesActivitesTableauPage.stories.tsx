@@ -1,8 +1,8 @@
+import { provideRdvStatusUpdateDefaults } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/saisie-du-statut.story-defaults'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import ActivitesListeLayout from './components/ActivitesListeLayout'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
-import { provideRdvStatusUpdateDefaults } from './components/RdvStatusUpdateModal/rdv-status-update.story-defaults'
 import { ActivitesListPageData } from './getActivitesListPageData'
 import MesActivitesTableauPage from './MesActivitesTableauPage'
 import {

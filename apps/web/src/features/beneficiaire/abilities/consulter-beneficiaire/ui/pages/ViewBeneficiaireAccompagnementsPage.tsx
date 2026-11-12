@@ -1,8 +1,8 @@
 import ActiviteCard from '@app/web/features/activites/use-cases/list/components/ActiviteCard'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import RdvCard from '@app/web/features/activites/use-cases/list/components/RdvCard'
-import RdvStatusUpdateModal from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/RdvStatusUpdateModal'
 import type { SearchActiviteAndRdvsResult } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
+import RdvStatusUpdateModal from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import BeneficiairePageNavigationBar from '../components/BeneficiairePageNavigationBar'
 

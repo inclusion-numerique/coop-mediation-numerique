@@ -3,9 +3,9 @@ import type {
   Effectif,
   NomDeTag,
   Periode,
+  PorteeDeTag,
   TagId,
 } from '../../../domain'
-import type { PorteeDeTag } from './portee-de-tag'
 
 export type ActivitesDeCoordinationListees = {
   readonly activites: readonly ActiviteDeCoordination[]

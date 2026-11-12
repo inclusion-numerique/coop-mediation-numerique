@@ -1,14 +1,14 @@
 'use client'
 
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
-import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
 import { inject } from '@app/web/libs/injection/client'
 import { Spinner } from '@app/web/ui/Spinner'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '../../declencher-synchronisation/action/rattraper-rdvs-sans-webhook.key'
+import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '../action/afficher-rdvs-dans-activites.key'
 
-const UpdateIncludeRdvsInActivitesList = ({
+const AfficherLesRdvs = ({
   includeRdvsInActivitesList,
   syncDataOnLoad,
 }: {
@@ -115,4 +115,4 @@ const UpdateIncludeRdvsInActivitesList = ({
   )
 }
 
-export default UpdateIncludeRdvsInActivitesList
+export default AfficherLesRdvs

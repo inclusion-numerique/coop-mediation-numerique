@@ -1,8 +1,10 @@
 'use client'
 
-import { RdvStatusUpdateDynamicModal } from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/RdvStatusUpdateModal'
+import ActiviteCardSpacer from '@app/web/features/activites/ui/carte/ActiviteCardSpacer'
+import ListCard from '@app/web/features/activites/ui/carte/ListCard'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { useOuvrirLaSaisieDuStatut } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
 import type { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import {
   dateAsDayInTimeZone,
@@ -11,8 +13,6 @@ import {
 import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
-import ActiviteCardSpacer from './ActiviteCardSpacer'
-import ListCard from './ListCard'
 import RdvStatusBadge from './RdvStatusBadge'
 
 const RdvCard = ({
@@ -27,7 +27,7 @@ const RdvCard = ({
   displayDate?: boolean
 }) => {
   const { timezone } = user
-  const openStatusUpdateModal = RdvStatusUpdateDynamicModal.useOpen()
+  const openStatusUpdateModal = useOuvrirLaSaisieDuStatut()
 
   const {
     startsAt,
@@ -54,7 +54,10 @@ const RdvCard = ({
   const startTime = dateAsTimeInTimeZone(startsAt, timezone)
   const endTime = dateAsTimeInTimeZone(endsAt, timezone)
   const handleOpenStatusModal = () => {
-    openStatusUpdateModal({ rdv })
+    openStatusUpdateModal({
+      id: rdv.id,
+      collectif: rdv.motif?.collectif ?? false,
+    })
   }
 
   return (

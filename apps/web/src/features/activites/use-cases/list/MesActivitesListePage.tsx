@@ -1,3 +1,4 @@
+import UpdateIncludeRdvsInActivitesList from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/AfficherLesRdvs'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
@@ -8,7 +9,6 @@ import ActiviteCard from './components/ActiviteCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import RdvCard from './components/RdvCard'
-import UpdateIncludeRdvsInActivitesList from './components/UpdateIncludeRdvsInActivitesList'
 import { ActivitesListPageData } from './getActivitesListPageData'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])

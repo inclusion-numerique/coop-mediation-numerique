@@ -1,19 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { porteeDe } from '../../../../db/portee-de-tag'
 import { type CoordinateurId, NomDeTag, TagId } from '../../../../domain'
-import { type OptionsDeFiltre, PorteeDeTag } from '../../domain'
-
-const porteeDe = (tag: {
-  mediateurId: string | null
-  coordinateurId: string | null
-  departement: string | null
-  equipe: boolean | null
-}): PorteeDeTag => {
-  if (tag.equipe === true) return PorteeDeTag('Equipe')
-  if (tag.mediateurId !== null || tag.coordinateurId !== null)
-    return PorteeDeTag('Personnel')
-  if (tag.departement !== null) return PorteeDeTag('Departemental')
-  return PorteeDeTag('National')
-}
+import type { OptionsDeFiltre } from '../../domain'
 
 export const optionsDeFiltre = async ({
   coordinateurId,

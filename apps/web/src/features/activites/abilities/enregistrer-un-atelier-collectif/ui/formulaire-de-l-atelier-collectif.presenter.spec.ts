@@ -69,6 +69,7 @@ const affichage: AffichageDeLActivite = {
     id: LieuActiviteId('d0000000-0000-4000-8000-000000000001'),
     nom: NomDeStructure('Médiathèque'),
     adresse: AdresseDuLieu('3 rue de la République, 69001 Lyon'),
+    localite: AdresseDuLieu('69001 Lyon'),
   },
   suivis: [
     {
@@ -80,6 +81,7 @@ const affichage: AffichageDeLActivite = {
         codePostal: '69001',
         codeInsee: '69123',
       }),
+      nombreDActivites: Effectif(3),
     },
   ],
   tags: [],

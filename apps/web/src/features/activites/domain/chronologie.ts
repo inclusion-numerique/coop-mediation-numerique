@@ -1,3 +1,4 @@
+import type { NomAffiche } from '@app/web/libraries/nom-affiche'
 import type { ActiviteConsultee } from './activite-consultee'
 import type { CriteresDesActivites } from './criteres-des-activites'
 import type { Effectif } from './effectif'
@@ -18,6 +19,7 @@ export type RendezVousDeLaChronologie = {
   } | null
   readonly titre: TitreDuRendezVous | null
   readonly places: Effectif | null
+  readonly participants: readonly NomAffiche[]
   readonly lienAgent: LienAgent
 }
 

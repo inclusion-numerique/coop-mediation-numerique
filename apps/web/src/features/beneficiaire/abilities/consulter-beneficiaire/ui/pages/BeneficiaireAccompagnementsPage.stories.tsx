@@ -2,13 +2,13 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
-import { provideRdvStatusUpdateDefaults } from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/rdv-status-update.story-defaults'
 import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import ViewBeneficiaireAccompagnementsPage, {
   type BeneficiaireAccompagnementsPageData,
 } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
+import { provideRdvStatusUpdateDefaults } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/saisie-du-statut.story-defaults'
 import { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'

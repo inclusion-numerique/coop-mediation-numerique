@@ -127,6 +127,7 @@ export {
   type Pagination,
   paginationLue,
 } from './pagination'
+export { PorteeDeTag } from './portee-de-tag'
 export { Precision } from './precision'
 export { PrecisionDeDemarche } from './precision-de-demarche'
 export { Prenom } from './prenom'

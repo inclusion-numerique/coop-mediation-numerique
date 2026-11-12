@@ -2,6 +2,7 @@ import type { ActiviteDeMediation } from './activite-de-mediation'
 import type { AdresseDuLieu } from './adresse-du-lieu'
 import type { BeneficiaireId } from './beneficiaire-id'
 import type { Commune } from './commune'
+import type { Effectif } from './effectif'
 import type { LienAgent } from './lien-agent'
 import type { LieuActiviteId } from './lieu-activite-id'
 import type { NomDeFamille } from './nom-de-famille'
@@ -16,12 +17,14 @@ export type BeneficiaireSuiviAffiche = {
   readonly prenom: Prenom
   readonly nom: NomDeFamille
   readonly residence: Commune | null
+  readonly nombreDActivites: Effectif
 }
 
 export type LieuAffiche = {
   readonly id: LieuActiviteId
   readonly nom: NomDeStructure
   readonly adresse: AdresseDuLieu | null
+  readonly localite: AdresseDuLieu | null
 }
 
 export type TagAffiche = {
