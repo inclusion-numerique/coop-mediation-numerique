@@ -3,17 +3,34 @@ import { dansLaPeriodeDAppartenance } from '../../../db/periode-d-appartenance.s
 import type {
   BeneficiaireId,
   CriteresDesActivites,
+  EmployeuseDesActivites,
+  TagDeLActivite,
   TagsUtilisables,
 } from '../../../domain'
-import {
-  type Demandeur,
-  mediateursAutorises,
-  type NomDeFiltre,
-  type NomDeFiltreDeBeneficiaire,
-  type NomDeFiltreDeMediateur,
-  type NomsDesFiltresExportes,
-} from '../domain'
+import { type Demandeur, mediateursAutorises } from '../domain'
 import { employeusesNommees } from './prisma/employeuses-nommees.query'
+
+export type NomDeFiltre = { readonly label: string; readonly value: string }
+
+export type NomDeFiltreDeBeneficiaire = {
+  readonly label: string
+  readonly value: { readonly id?: string | null } | null
+}
+
+export type NomDeFiltreDeMediateur = {
+  readonly label: string
+  readonly value: { readonly mediateurId: string } | null
+}
+
+export type NomsDesFiltresExportes = {
+  readonly beneficiaires: readonly NomDeFiltreDeBeneficiaire[]
+  readonly mediateurs: readonly NomDeFiltreDeMediateur[]
+  readonly employeuses: readonly EmployeuseDesActivites[]
+  readonly communes: readonly NomDeFiltre[]
+  readonly departements: readonly NomDeFiltre[]
+  readonly lieux: readonly NomDeFiltre[]
+  readonly tags: readonly TagDeLActivite[]
+}
 
 const siFiltre = <T>(
   valeurs: readonly unknown[],
