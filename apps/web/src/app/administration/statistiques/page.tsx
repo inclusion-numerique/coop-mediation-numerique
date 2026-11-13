@@ -20,7 +20,7 @@ import {
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { getTagsCollectifs } from '@app/web/features/statistiques/db/tags-collectifs'
+import { optionsDeTags } from '@app/web/features/statistiques/abilities/lister-les-options-des-statistiques'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
@@ -28,6 +28,7 @@ import {
 import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
+import { lireLesTagsCollectifs } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 
@@ -48,7 +49,7 @@ const Page = async (props: {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
   const user = await authenticateUser()
-  const tagsOptions = await getTagsCollectifs()
+  const tagsOptions = optionsDeTags(await lireLesTagsCollectifs())
 
   const [{ communesOptions, departementsOptions }, lieuxActiviteOptions] =
     await Promise.all([

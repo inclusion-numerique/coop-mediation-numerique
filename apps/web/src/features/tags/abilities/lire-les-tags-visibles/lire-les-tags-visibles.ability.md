@@ -19,3 +19,12 @@
 * When tous les tags visibles par ce médiateur sont lus
 * Then le tag "Café numérique" est proposé
 * And ni "Café pirate" ni "Café fermé" ne sont proposés
+
+## Rule: Les statistiques de l'administration proposent les tags collectifs encore actifs
+
+### Scenario: Un tag départemental est proposé, un tag personnel et un tag collectif supprimé ne le sont pas
+
+* Given le tag départemental "Rhône numérique" du "69", le tag collectif supprimé "Ancien réseau" et un tag personnel "Café privé"
+* When les tags collectifs sont lus
+* Then le tag "Rhône numérique" est proposé
+* And ni "Ancien réseau" ni "Café privé" ne sont proposés

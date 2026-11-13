@@ -50,6 +50,19 @@ const SCOPE: Readonly<Record<PorteeDuTag, TagScope>> = {
   National: TagScope.National,
 }
 
+export const optionsDeTags = (
+  tags: readonly {
+    readonly id: string
+    readonly nom: string
+    readonly portee: { readonly _tag: PorteeDuTag }
+  }[],
+) =>
+  tags.map(({ id, nom, portee }) => ({
+    id,
+    nom,
+    scope: SCOPE[portee._tag],
+  }))
+
 const libelleDuMembre = ({ nom, situation }: MembreAFiltrer): string =>
   situation === 'Demandeur'
     ? `${nom} (Mes statistiques)`
@@ -84,11 +97,7 @@ export const optionsDesStatistiques = async <
   return {
     communesOptions,
     departementsOptions,
-    tagsOptions: tags.map(({ id, nom, portee }) => ({
-      id,
-      nom,
-      scope: SCOPE[portee._tag],
-    })),
+    tagsOptions: optionsDeTags(tags),
     initialBeneficiairesOptions,
     initialMediateursOptions: membres.map((membre) => ({
       label: libelleDuMembre(membre),

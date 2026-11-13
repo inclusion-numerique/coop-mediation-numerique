@@ -7,7 +7,11 @@ import {
 } from '@app/web/features/tags/tags.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { lireLesTagsVisibles, lireTousLesTagsVisibles } from './implementation'
+import {
+  lireLesTagsCollectifs,
+  lireLesTagsVisibles,
+  lireTousLesTagsVisibles,
+} from './implementation'
 
 const contexte: {
   acteur?: Acteur
@@ -68,3 +72,28 @@ Then(
     )
   },
 )
+
+Given(
+  'le tag départemental {string} du {string}, le tag collectif supprimé {string} et un tag personnel {string}',
+  async (
+    departemental: string,
+    departement: string,
+    supprime: string,
+    personnel: string,
+  ) => {
+    const { mediateurId } = await semerUnMediateur()
+    const [, supprimeId] = await Promise.all([
+      semerUnTag({ nom: departemental, departement }),
+      semerUnTag({ nom: supprime }),
+      semerUnTag({ nom: personnel, mediateurId }),
+    ])
+    await prismaClient.tag.update({
+      where: { id: supprimeId },
+      data: { suppression: new Date() },
+    })
+  },
+)
+
+When('les tags collectifs sont lus', async () => {
+  contexte.lus = await lireLesTagsCollectifs()
+})
