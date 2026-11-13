@@ -2,7 +2,7 @@ import CoopSideMenu from '@app/web/app/coop/CoopSideMenu'
 import MinimalFooter from '@app/web/app/coop/MinimalFooter'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
-import CreateCraModal from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModal'
+import CreateCraModal from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModal'
 import React from 'react'
 
 const CoopSidemenuLayout = async ({

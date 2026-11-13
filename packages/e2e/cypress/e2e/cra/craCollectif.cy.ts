@@ -43,10 +43,8 @@ describe('ETQ Mediateur, je peux créer un CRA collectif', () => {
       .click({ force: true })
 
     cy.findByLabelText(/Avancé/i).click({ force: true })
-    cy.intercept('/api/trpc/cra.collectif*').as('mutation')
 
     cy.get('button[type="submit"]').contains('Enregistrer l’activité').click()
-    cy.wait('@mutation')
 
     cy.appUrlShouldBe('/coop/mes-activites')
   })

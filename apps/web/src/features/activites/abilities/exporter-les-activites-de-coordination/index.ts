@@ -1,5 +1,5 @@
 export {
   classeurDesCoordinations,
   exporterLesActivitesDeCoordination,
-  tagsDesCriteres,
+  tagsRappeles,
 } from './implementation'

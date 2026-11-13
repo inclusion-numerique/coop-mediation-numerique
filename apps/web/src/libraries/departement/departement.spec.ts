@@ -1,5 +1,4 @@
-import { CodeDepartement } from './code-departement'
-import { CodeInsee } from './code-insee'
+import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
 import { DEPARTEMENT_PAR_DEFAUT, departementDuCode } from './departement'
 import { departementDeLActeur } from './departement-de-l-acteur'
 

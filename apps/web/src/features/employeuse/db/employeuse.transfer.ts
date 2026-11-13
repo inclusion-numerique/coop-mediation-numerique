@@ -1,4 +1,5 @@
 import type { Prisma } from '@app/web/generated/prisma/client'
+import { Siret } from '@app/web/libraries/insee'
 import { AdresseEmployeuse } from '../domain/adresse-employeuse'
 import { type Affectation, estConseillerNumerique } from '../domain/affectation'
 import { ContactReferent } from '../domain/contact-referent'
@@ -17,7 +18,6 @@ import {
 } from '../domain/employeuses-historique'
 import { PeriodeEmploi } from '../domain/periode-emploi'
 import { Rna } from '../domain/rna'
-import { Siret } from '../domain/siret'
 import { SourceAffectation } from '../domain/source-affectation'
 
 /** Colonnes de `main.structure_administrative` dont le domaine a besoin. */

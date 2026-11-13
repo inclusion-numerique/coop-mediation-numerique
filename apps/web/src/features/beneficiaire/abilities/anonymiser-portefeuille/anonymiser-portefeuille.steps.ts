@@ -13,6 +13,18 @@ Given('un portefeuille de deux bénéficiaires identifiés', async () => {
   await semerPortefeuille()
 })
 
+Given('un portefeuille de deux bénéficiaires de Nice', async () => {
+  const { mediateurId } = await semerPortefeuille()
+  await prismaClient.beneficiaire.updateMany({
+    where: { mediateurId },
+    data: {
+      commune: 'Nice',
+      communeCodePostal: '06100,06000,06200,06300',
+      communeCodeInsee: '06088',
+    },
+  })
+})
+
 When("j'anonymise le portefeuille de ce médiateur", async () => {
   anonymises = (
     await anonymiserPortefeuille({
@@ -104,5 +116,27 @@ Then(
     })
 
     assert.strictEqual(mediateur.beneficiairesCount, 0)
+  },
+)
+
+Then(
+  'les bénéficiaires du portefeuille ne gardent que le code postal {string}',
+  async (codePostal: string) => {
+    const beneficiaires = await prismaClient.beneficiaire.findMany({
+      where: { mediateurId: portefeuilleSeme().mediateurId },
+      select: {
+        commune: true,
+        communeCodePostal: true,
+        communeCodeInsee: true,
+      },
+    })
+    assert.deepStrictEqual(
+      beneficiaires,
+      beneficiaires.map(() => ({
+        commune: 'Nice',
+        communeCodePostal: codePostal,
+        communeCodeInsee: '06088',
+      })),
+    )
   },
 )

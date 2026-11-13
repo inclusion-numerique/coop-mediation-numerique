@@ -1,7 +1,7 @@
 import {
   typeActivitePictograms,
   typeActivitePluralLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+} from '@app/web/features/activites/ui/libelles/type-activite'
 import { TypeActivite } from '@app/web/generated/prisma/browser'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'

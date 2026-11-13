@@ -4,6 +4,7 @@ import { addMutationLog } from '@app/web/utils/addMutationLog'
 import type {
   ActiviteDeCoordinationId,
   CoordinateurId,
+  UtilisateurId,
 } from '../../../../domain'
 import {
   ActionNonAutorisee,
@@ -19,7 +20,7 @@ export const supprimerUneActiviteDeCoordination = async ({
 }: {
   activiteId: ActiviteDeCoordinationId
   coordinateurId: CoordinateurId | null
-  auteurId: string
+  auteurId: UtilisateurId
   maintenant?: Date
 }): Promise<Result<void, EchecDeSuppression>> => {
   const activite = await prismaClient.activiteCoordination.findUnique({

@@ -1,9 +1,9 @@
 import {
-  CodeInsee,
   type Departement,
   departementDeLActeur,
   departementDuCode,
 } from '@app/web/libraries/departement'
+import { CodeInsee } from '@app/web/libraries/insee'
 
 export const getUserDepartement = (user: {
   emplois?: { structure: { codeInsee: string | null } }[]

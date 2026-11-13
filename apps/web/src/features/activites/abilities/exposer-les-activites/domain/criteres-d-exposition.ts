@@ -1,4 +1,4 @@
-import type { ActiviteId } from './activite-id'
+import type { ActiviteId } from '../../../domain'
 import type { Horodatage } from './horodatage'
 
 export type CriteresDExposition = {

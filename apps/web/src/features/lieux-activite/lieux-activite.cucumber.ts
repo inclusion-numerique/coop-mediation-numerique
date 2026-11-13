@@ -4,7 +4,9 @@ import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
-const effacerDuRegistre = async (lieuIds: readonly string[]): Promise<void> => {
+export const effacerDuRegistre = async (
+  lieuIds: readonly string[],
+): Promise<void> => {
   await prismaClient.lieuInclusionRegistreMain.deleteMany({
     where: { structureCoopId: { in: [...lieuIds] } },
   })

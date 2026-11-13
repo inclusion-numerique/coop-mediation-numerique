@@ -48,7 +48,13 @@ export const creerActiviteDepuisRdv =
 
     return success({
       urlCreationCra: await preparerUrlCreationCra({
-        rdvId,
+        rendezVous: {
+          id: verifie.data.id,
+          debut: verifie.data.debut,
+          dureeEnMinutes: verifie.data.dureeEnMinutes,
+          titre: verifie.data.titre,
+          collectif: verifie.data.collectif,
+        },
         mediateurId,
         beneficiaires,
       }),

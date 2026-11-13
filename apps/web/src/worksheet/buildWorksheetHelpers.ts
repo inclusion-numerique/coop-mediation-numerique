@@ -1,10 +1,8 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import type {
-  ActivitesFiltersLabels,
-  FilterType,
-} from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import type { Worksheet } from 'exceljs'
+
+type LibelleDeFiltre = { readonly type: string; readonly label: string }
 
 const onlyType = (type: string) => (filter: { type: string }) =>
   filter.type === type
@@ -14,13 +12,13 @@ const toLabel = ({ label }: { label: string }) => label
 export const addFilters =
   (worksheet: Worksheet) =>
   (
-    filters: ActivitesFiltersLabels,
+    filters: readonly LibelleDeFiltre[],
     {
       mediateurScope,
       excludeFilters = [],
     }: {
       mediateurScope: null | Pick<SessionUser, 'firstName' | 'lastName'>
-      excludeFilters?: FilterType[]
+      excludeFilters?: readonly string[]
     },
   ) => {
     addTitleRow(worksheet)('Filtres')

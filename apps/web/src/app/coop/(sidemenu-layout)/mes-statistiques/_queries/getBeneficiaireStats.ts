@@ -1,11 +1,5 @@
 import { createEnumDistinctCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
 import { derivedTrancheAgeSql } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/derivedTrancheAgeSql'
-import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
-import {
-  getActiviteFiltersSqlFragment,
-  getActivitesFiltersWhereConditions,
-} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import {
   genreLabels,
   genres as genreValues,
@@ -20,6 +14,9 @@ import {
 } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { allocatePercentagesFromRecords } from '@app/web/features/statistiques/allocatePercentages'
 import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
+import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   Genre,
   Prisma,
@@ -106,9 +103,7 @@ export const getBeneficiaireStatsRaw = async ({
         AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND ${activitesSourceWhereCondition(activitesFilters.source)}
-        AND ${getActiviteFiltersSqlFragment(
-          getActivitesFiltersWhereConditions(activitesFilters),
-        )}
+        AND ${filtreDesStatistiques(activitesFilters)}
   `.then((result) => result[0])
 }
 
@@ -183,9 +178,7 @@ export const getBeneficiairesCommunesRaw = async ({
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN users u ON med.user_id = u.id
         WHERE ${activitesEquipeCoordonneeWhereCondition(user.coordinateur?.id)}
-          AND ${getActiviteFiltersSqlFragment(
-            getActivitesFiltersWhereConditions(activitesFilters),
-          )}
+          AND ${filtreDesStatistiques(activitesFilters)}
       GROUP BY commune_code_insee
   `
 }

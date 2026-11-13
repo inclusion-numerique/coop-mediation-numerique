@@ -2,13 +2,13 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
+import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+} from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { download } from '@app/web/utils/download'
 import { numberToString } from '@app/web/utils/formatNumber'
@@ -158,7 +158,7 @@ export const ExportStatistiques = ({
                 Liste des accompagnements
               </div>
               <Button
-                title="Telécharger liste des accompagnements au format xlsx"
+                title="Télécharger liste des accompagnements au format xlsx"
                 priority="tertiary no outline"
                 iconId="fr-icon-download-line"
                 iconPosition="right"
@@ -181,7 +181,7 @@ export const ExportStatistiques = ({
               Statistiques
             </div>
             <Button
-              title="Telécharger les statistiques d’accompagnement au format PDF"
+              title="Télécharger les statistiques d’accompagnement au format PDF"
               priority="tertiary no outline"
               iconId="fr-icon-download-line"
               iconPosition="right"
@@ -190,7 +190,7 @@ export const ExportStatistiques = ({
               PDF
             </Button>
             <Button
-              title="Telécharger les statistiques d’accompagnement au format xlsx"
+              title="Télécharger les statistiques d’accompagnement au format xlsx"
               priority="tertiary no outline"
               iconId="fr-icon-download-line"
               iconPosition="right"

@@ -1,6 +1,6 @@
 import { z } from 'zod'
+import { ActiviteId } from '../../../../domain'
 import {
-  ActiviteId,
   type CriteresDExposition,
   type CurseurDActivite,
   Horodatage,

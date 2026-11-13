@@ -1,4 +1,4 @@
-import type { CodeDepartement } from '@app/web/libraries/departement'
+import type { CodeDepartement } from '@app/web/libraries/insee'
 import { defineModel, type Model } from '@app/web/libraries/model'
 import type { NomAffiche } from '@app/web/libraries/nom-affiche'
 import { z } from 'zod'

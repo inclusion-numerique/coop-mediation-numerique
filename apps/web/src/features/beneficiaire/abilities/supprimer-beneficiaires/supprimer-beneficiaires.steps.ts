@@ -20,6 +20,16 @@ Given('un bénéficiaire enregistré pour ce médiateur', async () => {
   targetId = await seedBeneficiaire({ prenom: 'Jean', nom: 'Dupont' })
 })
 
+Given('un bénéficiaire de Nice enregistré pour ce médiateur', async () => {
+  targetId = await seedBeneficiaire({
+    prenom: 'Jean',
+    nom: 'Dupont',
+    commune: 'Nice',
+    communeCodePostal: '06100,06000,06200,06300',
+    communeCodeInsee: '06088',
+  })
+})
+
 When('je supprime ce bénéficiaire', async () => {
   assert.ok(targetId, 'Aucun bénéficiaire à supprimer')
   result = await supprimerBeneficiaires({
@@ -66,3 +76,23 @@ Then("la suppression échoue avec l'erreur {string}", (tag: string) => {
   assert.ok(result && !result.success, 'La suppression aurait dû échouer')
   assert.strictEqual(result.error._tag, tag)
 })
+
+Then(
+  'le bénéficiaire supprimé ne garde que le code postal {string}',
+  async (codePostal: string) => {
+    assert.ok(targetId)
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: targetId },
+      select: {
+        commune: true,
+        communeCodePostal: true,
+        communeCodeInsee: true,
+      },
+    })
+    assert.deepStrictEqual(beneficiaire, {
+      commune: 'Nice',
+      communeCodePostal: codePostal,
+      communeCodeInsee: '06088',
+    })
+  },
+)

@@ -1,4 +1,4 @@
-import { CodeDepartement } from '@app/web/libraries/departement'
+import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 import { Dispositif } from './dispositif'
@@ -21,21 +21,13 @@ export const EmployeuseId = defineModel(
 )
 export type EmployeuseId = Model.TypeOf<typeof EmployeuseId>
 
-export const CodeCommune = defineModel(
-  z
-    .string()
-    .regex(/^[0-9][0-9AB][0-9]{3}$/)
-    .brand('CodeCommune'),
-)
-export type CodeCommune = Model.TypeOf<typeof CodeCommune>
-
 export type FiltresUtilisateurs = {
   readonly roles: readonly RoleFiltre[]
   readonly statut: FiltreStatut | null
   readonly dispositif: Dispositif | null
   readonly employeuses: readonly EmployeuseId[]
   readonly lieux: readonly LieuActiviteId[]
-  readonly communes: readonly CodeCommune[]
+  readonly communes: readonly CodeInsee[]
   readonly departements: readonly CodeDepartement[]
 }
 
@@ -87,7 +79,7 @@ export const filtresUtilisateurs = (
     ] ?? null,
   employeuses: validesParmi(EmployeuseId)(parametres.employeuses),
   lieux: validesParmi(LieuActiviteId)(parametres.lieux),
-  communes: validesParmi(CodeCommune)(parametres.communes),
+  communes: validesParmi(CodeInsee)(parametres.communes),
   departements: validesParmi(CodeDepartement)(parametres.departements),
 })
 

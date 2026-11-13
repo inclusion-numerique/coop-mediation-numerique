@@ -10,20 +10,20 @@ import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/m
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
-import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
-import {
-  type ActivitesFilters,
-  validateActivitesFilters,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
-import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
 import {
   getCommunesAndDepartementsOptions,
   getLieuxActiviteOptions,
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import { getTagsCollectifs } from '@app/web/features/statistiques/db/tags-collectifs'
+import {
+  type ActivitesFilters,
+  validateActivitesFilters,
+} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
+import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
+import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 
 export const metadata = {

@@ -1,17 +1,26 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { countThematiques } from '@app/web/features/activites/use-cases/list/db/countThematiques'
-import { searchActiviteAndRdvs } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
+import {
+  BeneficiaireId as BeneficiaireDesActivites,
+  compterLesThematiquesAbordees,
+  MediateurId as MediateurDesActivites,
+} from '@app/web/features/activites/abilities/compter-les-thematiques-abordees'
+import { thematiquesAbordeesPresentees } from '@app/web/features/activites/abilities/compter-les-thematiques-abordees/ui'
+import { listerLHistoriqueDUnBeneficiaire } from '@app/web/features/activites/abilities/lister-mes-activites'
+import { LignesParPage, NumeroDePage } from '@app/web/features/activites/domain'
 import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireInformationsPage from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireInformationsPage'
 import { DeleteBeneficiaireModal } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import {
+  rendezVousDesUsagersAListerSql,
+  rendezVousLies,
+  rendezVousParIds,
+} from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
 
-// Route hub : lit les données propres du bénéficiaire via l'ability
-// consulter-beneficiaire, agrège les comptes activites, puis rend la page en lui
-// injectant les actions d'en-tête (modifier, supprimer) — concerns croisés.
 const BeneficiaireInformationsPage = async (props: {
   params: Promise<{ beneficiaireId: string }>
 }) => {
@@ -28,16 +37,30 @@ const BeneficiaireInformationsPage = async (props: {
     notFound()
   }
 
-  const [thematiquesCounts, searchResult] = await Promise.all([
-    countThematiques({ beneficiaireId, mediateurId }),
-    searchActiviteAndRdvs({
-      mediateurIds: [mediateurId],
-      beneficiaireIds: [beneficiaireId],
-      rdvUserIds: beneficiaire.rdvUserId ? [beneficiaire.rdvUserId] : [],
-      rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
-      shouldFetchRdvs: !!user.rdvAccount?.hasOauthTokens,
-      shouldFetchActivites: true,
-      searchParams: { lignes: '1' },
+  const [thematiquesAbordees, chronologie] = await Promise.all([
+    compterLesThematiquesAbordees({
+      mediateurId: MediateurDesActivites(mediateurId),
+      beneficiaireId: BeneficiaireDesActivites(beneficiaireId),
+    }),
+    listerLHistoriqueDUnBeneficiaire({
+      mediateurId: MediateurDesActivites(user.mediateur.id),
+      beneficiaireId: BeneficiaireDesActivites(beneficiaire.id),
+      pagination: { page: NumeroDePage(1), lignesParPage: LignesParPage(10) },
+      compte: user.rdvAccount?.hasOauthTokens
+        ? { _tag: 'Connecte', affichesDansLaListe: true }
+        : { _tag: 'NonConnecte' },
+      rendezVous:
+        user.rdvAccount === null
+          ? null
+          : {
+              comptes: [user.rdvAccount.id],
+              selection: rendezVousDesUsagersAListerSql(
+                beneficiaire.rdvUserId === null ? [] : [beneficiaire.rdvUserId],
+              ),
+              parIds: rendezVousParIds,
+            },
+      rendezVousLies,
+      conseillersNumeriques: conseillerNumeriqueSql,
     }),
   ])
 
@@ -45,8 +68,9 @@ const BeneficiaireInformationsPage = async (props: {
     <ViewBeneficiaireInformationsPage
       data={{
         beneficiaire,
-        thematiquesCounts,
-        totalActivitesCount: searchResult.matchesCount,
+        thematiquesAbordees: thematiquesAbordeesPresentees(thematiquesAbordees),
+        totalActivitesCount:
+          chronologie.total.activites + chronologie.total.rendezVous,
       }}
       actions={
         <div>

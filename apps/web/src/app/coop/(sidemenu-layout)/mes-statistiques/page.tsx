@@ -4,11 +4,6 @@ import { reglerLePartageStatistiquesAction } from '@app/web/app/_actions/mediate
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
 import { mediateurCoordonnesIdsFor } from '@app/web/auth/mediateursCoordonnes'
-import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/components/filters/more-filters/rechercher-employeuses-des-activites.key'
-import {
-  type ActivitesFilters,
-  validateActivitesFilters,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import {
   consulterEmployeuseAUneDate,
   employeuseCodeInsee,
@@ -20,6 +15,11 @@ import {
   CoordinateurId,
   MediateurId,
 } from '@app/web/features/mediateurs/domain'
+import {
+  type ActivitesFilters,
+  validateActivitesFilters,
+} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
 import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'

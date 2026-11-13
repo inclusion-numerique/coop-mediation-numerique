@@ -93,7 +93,7 @@ export const BoutonExporter = ({
             </span>
           </div>
           <Button
-            title="Telécharger vos activités de coordination au format xlsx"
+            title="Télécharger vos activités de coordination au format xlsx"
             priority="tertiary no outline"
             iconId="fr-icon-download-line"
             iconPosition="right"

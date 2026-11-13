@@ -1,6 +1,6 @@
 import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import { CodeDepartement } from '@app/web/libraries/departement'
+import { CodeDepartement } from '@app/web/libraries/insee'
 import {
   type Acteur,
   CoordinateurId,

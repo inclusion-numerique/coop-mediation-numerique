@@ -1,5 +1,5 @@
-import type { CodeInsee } from './code-insee'
-import type { CodePostal } from './code-postal'
+import type { CodePostal } from '@app/web/libraries/code-postal'
+import type { CodeInsee } from '@app/web/libraries/insee'
 import type { Commune } from './commune'
 import type { Email } from './email'
 import type { MediateurId } from './mediateur-id'

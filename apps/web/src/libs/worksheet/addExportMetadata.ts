@@ -22,10 +22,12 @@ export const addExportMetadata =
     date,
     user,
     total,
+    fuseau = 'Europe/Paris',
   }: {
     user: WorksheetUser
     date: Date
     total?: number
+    fuseau?: string
   }) => {
     addTitleRow(worksheet)('Informations export')
 
@@ -37,14 +39,14 @@ export const addExportMetadata =
         total != null ? ['Total', total] : undefined,
         [
           "Date d'export",
-          date.toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }),
+          date.toLocaleDateString('fr-FR', { timeZone: fuseau }),
         ],
         [
           "Heure d'export",
           date.toLocaleTimeString('fr-FR', {
             hour: '2-digit',
             minute: '2-digit',
-            timeZone: 'Europe/Paris',
+            timeZone: fuseau,
           }),
         ],
         [],

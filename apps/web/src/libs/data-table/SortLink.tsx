@@ -1,5 +1,6 @@
+import classNames from 'classnames'
 import Link from 'next/link'
-import styles from './DataTable.module.css'
+import type { ReactNode } from 'react'
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -8,6 +9,7 @@ export type SortLinkProps = {
   isActive?: boolean
   accessibilityTitle?: string
   href: string
+  children?: ReactNode
 }
 
 const SortLink = ({
@@ -15,6 +17,7 @@ const SortLink = ({
   isActive,
   accessibilityTitle,
   href,
+  children,
 }: SortLinkProps) => {
   const isDesc = ordre === 'desc'
   const isAsc = !isDesc
@@ -30,14 +33,19 @@ const SortLink = ({
 
   return (
     <Link
-      className={`fr-btn fr-ml-2v fr-btn--tertiary-no-outline fr-btn--sm ${icon} ${styles.sortLink}`}
+      className={classNames('lien-de-tri', {
+        'lien-de-tri--inactif': !isActive,
+      })}
       title={title}
       href={href}
       scroll={false}
-      style={{
-        color: isActive ? undefined : 'var(--text-disabled-grey)',
-      }}
-    />
+    >
+      {children}
+      <span
+        className={classNames('lien-de-tri__fleche', icon, 'fr-icon--sm')}
+        aria-hidden="true"
+      />
+    </Link>
   )
 }
 

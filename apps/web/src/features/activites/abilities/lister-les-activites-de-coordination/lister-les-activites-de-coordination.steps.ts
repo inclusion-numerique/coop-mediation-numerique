@@ -7,11 +7,14 @@ import {
 } from '@app/web/features/activites/abilities/lister-les-activites-de-coordination'
 import {
   coordinationsSemees,
+  semerDesAnimationsDeJanvier,
   semerDesCoordinations,
 } from '@app/web/features/activites/activites.cucumber'
 import {
   CoordinateurId,
   criteresDesCoordinations,
+  LignesParPage,
+  NumeroDePage,
   type ParametresDesCoordinations,
 } from '@app/web/features/activites/domain'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
@@ -28,8 +31,10 @@ const lister = async (
   listees = await listerLesActivitesDeCoordination({
     coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
     criteres: criteresDesCoordinations(parametres),
-    page,
-    lignesParPage,
+    pagination: {
+      page: NumeroDePage(page),
+      lignesParPage: LignesParPage(lignesParPage),
+    },
   })
 }
 
@@ -38,6 +43,13 @@ Given('des activités de coordination enregistrées', async () => {
   options = undefined
   await semerDesCoordinations()
 })
+
+Given(
+  '{int} animations de coordination de plus, en janvier 2026',
+  async (nombre: number) => {
+    await semerDesAnimationsDeJanvier(nombre)
+  },
+)
 
 When('je liste mes activités de coordination', async () => {
   await lister({})

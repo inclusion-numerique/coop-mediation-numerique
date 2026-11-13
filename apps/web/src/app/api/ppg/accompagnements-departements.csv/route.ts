@@ -8,6 +8,7 @@ import {
   nomDuFichierDExport,
   PopulationDeMediateurs,
 } from '@app/web/features/activites/abilities/exporter-les-accompagnements-par-departement'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import {
   csvResponse,
   routeBuilder,
@@ -42,10 +43,12 @@ export const GET = routeBuilder()
     const conseillersNumeriques = await accompagnementsParDepartement({
       population: PopulationDeMediateurs('ConseillersNumeriques'),
       jusquAu,
+      filtreDesConseillersNumeriques: conseillerNumeriqueSql,
     })
     const autresMediateurs = await accompagnementsParDepartement({
       population: PopulationDeMediateurs('AutresMediateurs'),
       jusquAu,
+      filtreDesConseillersNumeriques: conseillerNumeriqueSql,
     })
 
     return csvResponse(

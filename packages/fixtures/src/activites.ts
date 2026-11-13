@@ -16,7 +16,7 @@ import {
 import { mediateque } from '@app/fixtures/structures'
 import { conseillerNumeriqueMediateurId } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurAvecActiviteMediateurId } from '@app/fixtures/users/mediateurAvecActivite'
-import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
+import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import { Thematique } from '@app/web/generated/prisma/browser'
 import { coordinateurInscritAvecToutMediateurId } from './users/coordinateurInscritAvecTout'
 
@@ -95,6 +95,7 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T15:00:00'),
+    typeLieu: 'LieuActivite',
     structureId: mediateque.id,
     structureEmployeuseId: mediateque.id,
   }),
@@ -126,6 +127,7 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T16:00:00'),
+    typeLieu: 'LieuActivite',
     structureId: mediateque.id,
     structureEmployeuseId: mediateque.id,
   }),
@@ -247,6 +249,7 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T15:00:00'),
+    typeLieu: 'LieuActivite',
     structureId: mediateque.id,
     structureEmployeuseId: mediateque.id,
   }),
@@ -278,6 +281,7 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T16:00:00'),
+    typeLieu: 'LieuActivite',
     structureId: mediateque.id,
     structureEmployeuseId: mediateque.id,
   }),

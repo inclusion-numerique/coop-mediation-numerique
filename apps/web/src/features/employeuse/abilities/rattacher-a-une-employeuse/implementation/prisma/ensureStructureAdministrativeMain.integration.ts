@@ -1,3 +1,4 @@
+import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
@@ -13,9 +14,22 @@ jest.mock('@app/web/libraries/siret', () => ({
   throttleApiEntreprise: jest.fn().mockResolvedValue(undefined),
 }))
 
+jest.mock('@app/web/external-apis/apiAdresse', () => ({
+  ...jest.requireActual('@app/web/external-apis/apiAdresse'),
+  searchAdresse: jest.fn().mockResolvedValue(null),
+}))
+
 const mockedResolve = resolveIdentiteFromSiret as jest.MockedFunction<
   typeof resolveIdentiteFromSiret
 >
+
+const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
+  typeof searchAdresse
+>
+
+beforeEach(() => {
+  mockedSearchAdresse.mockResolvedValue(null)
+})
 
 describe('ensureStructureAdministrativeMain — dédup par identité', () => {
   const siret = '99999999999999'

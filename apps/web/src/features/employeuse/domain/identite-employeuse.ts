@@ -1,8 +1,8 @@
+import { Siret } from '@app/web/libraries/insee'
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 import { AdresseAGeocoder } from './adresse-a-geocoder'
 import { DenominationEmployeuse } from './denomination-employeuse'
-import { Siret } from './siret'
 
 /**
  * Ce qu'il faut savoir d'une employeuse pour la faire exister dans `main`.

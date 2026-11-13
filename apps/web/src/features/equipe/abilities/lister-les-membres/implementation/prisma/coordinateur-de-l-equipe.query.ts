@@ -4,11 +4,10 @@ import {
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
 import {
-  type CodeDepartement,
-  CodeInsee,
   DEPARTEMENT_PAR_DEFAUT,
   departementDeLActeur,
 } from '@app/web/libraries/departement'
+import { type CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
 import { prismaClient } from '@app/web/prismaClient'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import type { CoordinateurId } from '../../../../domain'

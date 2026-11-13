@@ -6,6 +6,7 @@ import { SupprimerUneActiviteDeCoordinationValidation } from '@app/web/features/
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
+  UtilisateurId,
 } from '@app/web/features/activites/domain'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
@@ -24,7 +25,7 @@ export const supprimerUneActiviteDeCoordinationAction = actionBuilder()
             user.coordinateur == null
               ? null
               : CoordinateurId(user.coordinateur.id),
-          auteurId: user.id,
+          auteurId: UtilisateurId(user.id),
         }),
       { onError: SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ERRORS },
     ),

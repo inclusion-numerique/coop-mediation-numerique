@@ -1,9 +1,9 @@
+import { DEPARTEMENT_PAR_DEFAUT } from '@app/web/libraries/departement'
 import {
   type CodeDepartement,
   CodeInsee,
   codeDepartementDuCodeInsee,
-  DEPARTEMENT_PAR_DEFAUT,
-} from '@app/web/libraries/departement'
+} from '@app/web/libraries/insee'
 import type { LieuEnListe } from '../domain/lieu-en-liste'
 
 export const departementDuLieu = (

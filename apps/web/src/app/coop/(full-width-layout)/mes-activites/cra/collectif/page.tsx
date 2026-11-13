@@ -1,26 +1,35 @@
+import { enregistrerUnAtelierCollectifAction } from '@app/web/app/_actions/activites/enregistrer-un-atelier-collectif.action'
+import { rechercherBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/rechercher-beneficiaires.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@app/web/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@app/web/app/_actions/tags/rechercher-des-tags.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import {
-  tagsInitiauxDuCra,
-  visibilitesDeTagDuCra,
-} from '@app/web/composition/activites/tags-du-cra'
-import CraCollectifPage from '@app/web/features/activites/use-cases/cra/collectif/CraCollectifPage'
-import { craCollectifDefaultValues } from '@app/web/features/activites/use-cases/cra/collectif/craCollectifDefaultValues'
-import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
-import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
-import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/use-cases/cra/tags/creer-un-tag.key'
-import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/use-cases/cra/tags/rechercher-des-tags.key'
+import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
+import CraCollectifPage from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/CraCollectifPage'
+import { craCollectifDefaultValues } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/craCollectifDefaultValues'
+import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { MediateurId } from '@app/web/features/activites/domain'
+import { dureesFrequentesDuMediateur } from '@app/web/features/activites/implementation/prisma/durees-frequentes'
+import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
+import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/commune/rechercher-des-communes.key'
+import { donneesDeLaSaisieDeMediation } from '@app/web/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'
+import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
+import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { visibilitesDuCra } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { rechercherDesCommunes } from '@app/web/features/adresse/implementation/api-adresse/rechercher-des-communes'
+import { beneficiairesLesPlusSuivis } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { lieuxDuMediateur } from '@app/web/features/lieux-activite'
+import { visibilitesProposeesA } from '@app/web/features/tags/abilities/creer-un-tag'
+import { tagsInitiauxPar } from '@app/web/features/tags/abilities/rechercher-des-tags'
+import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import {
   decodeSerializableState,
   type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
-import type { DefaultValues } from 'react-hook-form'
 
 const CreateCraCollectifPage = async ({
   searchParams,
@@ -35,17 +44,6 @@ const CreateCraCollectifPage = async ({
   const user = await authenticateMediateur()
   const mediateurId = user.mediateur.id
 
-  // Une activité s'exerce forcément quelque part : sans employeuse, on demande
-  // laquelle plutôt que d'enregistrer un CRA rattaché à personne. Le cas type
-  // est la fin d'un contrat de conseiller numérique — l'Entrepôt clôt
-  // l'affectation, la personne reste médiatrice.
-  //
-  // La garde pose EXACTEMENT la question que posera l'écriture
-  // (`createOrUpdateActivite`), et non celle, plus étroite, de la session :
-  // `user.emplois` ne connaît que l'affectation active, quand l'ability
-  // reconnaît aussi le contrat qui couvre la date. Sans cela, les personnes que
-  // seul leur contrat rattache seraient renvoyées vers ce formulaire alors que
-  // leur CRA se serait rattaché sans elles.
   const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
     date: new Date(),
@@ -57,28 +55,60 @@ const CreateCraCollectifPage = async ({
 
   const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
-  const craPageData = await getCraPageData<CraCollectifData>(
+  const [lieuxProposes, dureesFrequentes, beneficiairesProposes] =
+    await Promise.all([
+      lieuxDuMediateur(mediateurId),
+      dureesFrequentesDuMediateur(MediateurId(mediateurId)),
+      beneficiairesLesPlusSuivis(mediateurId),
+    ])
+
+  const craPageData = await donneesDeLaSaisieDeMediation<CraCollectifData>(
     craCollectifDefaultValues,
-  )(mediateurId, stateFromUrl, tagsInitiauxDuCra(user))
+  )({
+    mediateurId,
+    stateFromUrl: stateFromUrl,
+    lieuxProposes,
+    dureesFrequentes,
+    tagsInitiaux: tagsInitiauxPar(user),
+  })
 
   return (
     <ClientBinder
-      bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
-      to={rechercherDesTagsAction}
+      bind={ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY}
+      to={enregistrerUnAtelierCollectifAction}
     >
-      <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
-        <ClientBinder
-          bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-          to={rechercherUnLieuActiviteAction}
-        >
-          <CraCollectifPage
-            {...craPageData}
-            mediateurId={mediateurId}
-            visibilitesDeTag={visibilitesDeTagDuCra(user, {
-              departemental: false,
-            })}
-            retour={retour}
-          />
+      <ClientBinder
+        bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+        to={rechercherDesTagsAction}
+      >
+        <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
+          <ClientBinder
+            bind={RECHERCHER_DES_LIEUX_DU_CRA_KEY}
+            to={rechercherUnLieuActiviteAction}
+          >
+            <ClientBinder
+              bind={RECHERCHER_DES_COMMUNES_DU_CRA_KEY}
+              to={rechercherDesCommunes}
+            >
+              <ClientBinder
+                bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
+                to={rechercherBeneficiairesAction}
+              >
+                <CraCollectifPage
+                  {...craPageData}
+                  beneficiairesProposes={beneficiairesProposes}
+                  mediateurId={mediateurId}
+                  visibilitesDeTag={visibilitesDuCra(
+                    visibilitesProposeesA(user),
+                    {
+                      departemental: false,
+                    },
+                  )}
+                  retour={retour}
+                />
+              </ClientBinder>
+            </ClientBinder>
+          </ClientBinder>
         </ClientBinder>
       </ClientBinder>
     </ClientBinder>

@@ -1,7 +1,7 @@
+import { CodePostal } from '@app/web/libraries/code-postal'
+import { CodeInsee } from '@app/web/libraries/insee'
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
-import { CodeInsee } from './code-insee'
-import { CodePostal } from './code-postal'
 
 /**
  * Adresse telle qu'on la reçoit avant de créer une employeuse : celle d'un

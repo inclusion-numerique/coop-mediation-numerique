@@ -59,6 +59,10 @@ const rdvAvec = (
   agentId,
   statutPresence: StatutPresence(statutDuRdv),
   participations,
+  debut: new Date('2026-11-10T09:00:00.000Z'),
+  dureeEnMinutes: 60,
+  titre: null,
+  collectif: false,
 })
 
 describe('usagersPourActivite', () => {

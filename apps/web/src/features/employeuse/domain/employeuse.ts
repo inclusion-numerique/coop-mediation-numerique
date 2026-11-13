@@ -1,9 +1,9 @@
+import type { Siret } from '@app/web/libraries/insee'
 import type { AdresseEmployeuse } from './adresse-employeuse'
 import type { ContactReferent } from './contact-referent'
 import type { DenominationEmployeuse } from './denomination-employeuse'
 import type { EmployeuseId } from './employeuse-id'
 import type { Rna } from './rna'
-import type { Siret } from './siret'
 
 /**
  * Une structure employeuse, telle que la coop la lit dans

@@ -1,8 +1,8 @@
 import {
-  CodeDepartement,
   type Departement,
   NomDepartement,
 } from '@app/web/libraries/departement'
+import { CodeDepartement } from '@app/web/libraries/insee'
 import { lignesDExport } from './accompagnements-par-departement'
 import { NombreDAccompagnements } from './nombre-d-accompagnements'
 

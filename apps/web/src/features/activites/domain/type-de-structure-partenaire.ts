@@ -13,7 +13,6 @@ export const TypeDeStructurePartenaire = defineModel(
       'Hub',
       'Etat',
       'Groupement',
-      'Autre',
     ])
     .brand('TypeDeStructurePartenaire'),
 )

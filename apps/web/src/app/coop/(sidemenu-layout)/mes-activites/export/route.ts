@@ -1,139 +1,96 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
-import { buildAccompagnementsWorksheet } from '@app/web/features/activites/use-cases/list/export/buildAccompagnementsWorksheet'
-import { getAccompagenmentsWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getAccompagenmentsWorksheetInput'
 import {
-  ActivitesFilters,
-  ActivitesFilterValidations,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+  exporterMesAccompagnements,
+  nomsDesFiltresExportes,
+} from '@app/web/features/activites/abilities/exporter-mes-accompagnements'
+import {
+  classeurDesAccompagnements,
+  libellesDuClasseur,
+} from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui'
+import {
+  CoordinateurId,
+  criteresDesActivites,
+  MediateurId,
+} from '@app/web/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
+import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import {
+  getLieuxDesActivitesOptions,
+  getMediateurCommunesAndDepartementsOptions,
+} from '@app/web/features/lieux-activite'
+import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
+import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
-import { z } from 'zod'
-import { getHasCrasV1 } from '../../mes-statistiques/_queries/getHasCrasV1'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const maxDuration = 300
 
-// Debug logging for production performance analysis
-const debugExport = true
-
-export type ExportDebugLogger = (message: string, data?: unknown) => void
-
-const createExportDebugLogger = (enabled: boolean): ExportDebugLogger => {
-  if (!enabled) {
-    return () => {
-      // Intentional no-op when debug is disabled
-    }
-  }
-  const start = performance.now()
-  let lastMark = start
-  return (message: string, data?: unknown) => {
-    const now = performance.now()
-    const total = (now - start).toFixed(0)
-    const delta = (now - lastMark).toFixed(0)
-    lastMark = now
-    // biome-ignore lint/suspicious/noConsole: Intentional debug logging for production performance analysis
-    console.log(
-      `[export activites] +${delta}ms (total: ${total}ms) ${message}`,
-      data ?? '',
-    )
-  }
-}
-
-const ExportActivitesValidation = z
-  .object({
-    // If you want to filter by a specific mediateur, you can add it here
-    // By default this will export for current user if he is a mediateur
-    mediateur: z.guid().optional(),
-  })
-  .extend(ActivitesFilterValidations)
-
 export const GET = async (request: NextRequest) => {
-  const log = createExportDebugLogger(debugExport)
-
-  log('Starting export request')
-
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
-
-  log('Auth complete', { userId: user?.id })
+  const user = await getSessionUserFromSessionToken(
+    getSessionTokenFromNextRequestCookies(request.cookies),
+  )
 
   if (!user?.mediateur && !user?.coordinateur) {
-    return new Response('Unauthorized', {
-      status: 401,
-    })
+    return new Response('Unauthorized', { status: 401 })
   }
 
-  const parsedQueryParams = ExportActivitesValidation.safeParse(
+  const criteres = criteresDesActivites(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   )
-
-  if (parsedQueryParams.error) {
-    return new Response('Invalid query params', {
-      status: 400,
-    })
+  const equipe = mediateurCoordonnesEtAnciensIdsFor(user)
+  const demandeur = {
+    mediateurId: user.mediateur ? MediateurId(user.mediateur.id) : null,
+    coordinateurId: user.coordinateur
+      ? CoordinateurId(user.coordinateur.id)
+      : null,
+    equipe: equipe.map((id) => MediateurId(id)),
   }
 
-  const filters = parsedQueryParams.data as ActivitesFilters
+  const [exportDes, noms] = await Promise.all([
+    exporterMesAccompagnements({
+      demandeur,
+      criteres,
+      conseillersNumeriques: conseillerNumeriqueSql,
+    }),
+    nomsDesFiltresExportes({
+      demandeur,
+      criteres,
+      lieuxDesActivites: getLieuxDesActivitesOptions,
+      communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
+      tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
+      beneficiaires: (ids) =>
+        getInitialBeneficiairesOptionsForSearch({
+          mediateurId: user.mediateur?.id,
+          includeBeneficiaireIds: [...ids],
+        }),
+      mediateurs: () =>
+        getInitialMediateursOptionsForSearch({
+          mediateurId: user.mediateur?.id,
+          coordinateurId: user.coordinateur?.id,
+          mediateurCoordonnesIds: equipe,
+        }),
+    }),
+  ])
 
-  // Anciens membres inclus : `searchActivite` les borne à leur période d'appartenance, comme
-  // « Mes statistiques ». Sans eux, l'export d'un coordinateur perd les accompagnements réalisés
-  // par un médiateur sorti de l'équipe depuis.
-  const mediateurIds: string[] = [
-    ...(user.mediateur ? [user.mediateur.id] : []),
-    ...mediateurCoordonnesEtAnciensIdsFor(user),
-  ]
-
-  const hasCraV1 = await getHasCrasV1({
-    user,
-    mediateurIds,
-    activitesFilters: {},
+  const classeur = classeurDesAccompagnements({
+    demandeur: user,
+    filtres: libellesDuClasseur(
+      filtresDeLaListe(criteres),
+      noms,
+      exportDes.colonnes.source,
+    ),
+    exportDes,
+    fuseau: user.timezone,
   })
 
-  log('getHasCrasV1 complete', { hasCrasV1: hasCraV1.hasCrasV1 })
-
-  const filteredMediateurIds =
-    (filters.mediateurs ?? []).length > 0
-      ? mediateurIds.filter((id) => filters.mediateurs?.includes(id))
-      : mediateurIds
-
-  const activitesWorksheetInput = await getAccompagenmentsWorksheetInput({
-    user,
-    filters,
-    mediateurIds: filteredMediateurIds,
-    coordinateurId: user.coordinateur?.id,
-    hasCraV1: hasCraV1.hasCrasV1,
-    log,
-  })
-
-  log('getAccompagenmentsWorksheetInput complete', {
-    activitesCount: activitesWorksheetInput.activites.length,
-  })
-
-  const isSelfExport =
-    user.mediateur != null &&
-    mediateurIds.includes(user.mediateur.id) &&
-    mediateurIds.length === 1
-
-  const workbook = buildAccompagnementsWorksheet(
-    activitesWorksheetInput,
-    isSelfExport,
-  )
-
-  log('buildAccompagnementsWorksheet complete')
-
-  const data = await workbook.xlsx.writeBuffer()
-
-  log('writeBuffer complete', { bufferSize: data.byteLength })
-
+  const data = await classeur.xlsx.writeBuffer()
   const filename = `coop-numerique_accompagnements_${dateAsIsoDay(new Date())}.xlsx`
-
-  log('Export complete', {
-    activitesCount: activitesWorksheetInput.activites.length,
-    filename,
-  })
 
   return new Response(data, {
     status: 200,

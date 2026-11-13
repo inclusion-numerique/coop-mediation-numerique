@@ -1,4 +1,5 @@
-import { CodeDepartement, NomDepartement } from '@app/web/libraries/departement'
+import { NomDepartement } from '@app/web/libraries/departement'
+import { CodeDepartement } from '@app/web/libraries/insee'
 import { Jour, NombreDAccompagnements } from '../../domain'
 import {
   exportDesAccompagnementsCsv,

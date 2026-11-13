@@ -87,7 +87,6 @@ export {
   AdresseAGeocoder,
   type AdresseEmployeuse,
   type Affectation,
-  type CodeInsee,
   ContactReferent,
   type Contrat,
   type CourrielReferent,
@@ -108,7 +107,6 @@ export {
   type PeriodeEmploi,
   type Rna,
   referentAffichage,
-  Siret,
   type SourceAffectation,
 } from './domain'
 export {

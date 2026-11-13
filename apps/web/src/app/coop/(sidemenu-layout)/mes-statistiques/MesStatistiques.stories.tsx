@@ -1,13 +1,13 @@
 import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { quantifiedSharesFromFixedValues } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
-import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
-import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
 import {
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+} from '@app/web/features/activites/ui/libelles/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'

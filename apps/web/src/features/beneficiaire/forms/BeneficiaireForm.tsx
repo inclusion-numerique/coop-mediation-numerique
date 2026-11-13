@@ -5,8 +5,6 @@ import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisc
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
-import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
   CommuneComboBox,
   CommuneOptions,
@@ -27,6 +25,7 @@ import {
 } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -37,6 +36,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
+import type { SaisieEnCours } from './saisie-en-cours'
 
 // Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses
 // valeurs (comme `CraValidation`) : on étend le schéma partagé localement pour
@@ -60,11 +60,8 @@ type BeneficiaireCraData = {
   communeResidence: AdresseBanData | null
 }
 
-// Fusionne le bénéficiaire créé / modifié dans l'état du CRA en cours, qu'il
-// soit individuel (remplace le bénéficiaire) ou collectif (ajoute un
-// participant).
 const craAvecBeneficiaire = (
-  cra: DefaultValues<CraIndividuelData> | DefaultValues<CraCollectifData>,
+  cra: SaisieEnCours,
   beneficiaire: BeneficiaireCraData,
 ) =>
   'participants' in cra
@@ -81,7 +78,7 @@ const BeneficiaireForm = ({
   defaultValues: DefaultValues<BeneficiaireData> & { mediateurId: string }
   save: EnregistrerBeneficiaire
   // If present, used to merge with state on retour redirection
-  cra?: DefaultValues<CraIndividuelData> | DefaultValues<CraCollectifData>
+  cra?: SaisieEnCours
   retour?: string
   edit?: boolean
 }) => {
@@ -130,21 +127,19 @@ const BeneficiaireForm = ({
         // Les données de redirection CRA sont reconstruites à partir de la
         // saisie du formulaire + l'identifiant retourné : `data.communeResidence`
         // est déjà l'aperçu BAN attendu, inutile d'adapter le retour domaine.
-        const queryParams = cra
-          ? `?v=${encodeSerializableState(
-              craAvecBeneficiaire(cra, {
-                id: beneficiaire.id,
-                prenom: data.prenom,
-                nom: data.nom,
-                communeResidence: data.communeResidence ?? null,
-              }),
-            )}`
-          : ''
-
         router.push(
-          `${
-            retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`
-          }${queryParams}`,
+          adresseAvec(retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`, {
+            v: cra
+              ? encodeSerializableState(
+                  craAvecBeneficiaire(cra, {
+                    id: beneficiaire.id,
+                    prenom: data.prenom,
+                    nom: data.nom,
+                    communeResidence: data.communeResidence ?? null,
+                  }),
+                )
+              : null,
+          }),
         )
         router.refresh()
       } catch {

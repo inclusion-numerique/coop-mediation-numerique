@@ -19,21 +19,21 @@ import {
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import { emptyQuantifiedSharesFromEnum } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
-import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
 import {
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
+} from '@app/web/features/activites/ui/libelles/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { computeProportion } from '@app/web/features/statistiques/allocatePercentages'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   UserDisplayName,
@@ -338,8 +338,8 @@ describe('getMesStatistiquesPageData', () => {
           expectMonthCount(data, '08/24', 7)
 
           expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
-          expectEnum(data.activites.typeLieu, 'ADistance', 20, 22)
-          expectEnum(data.activites.typeLieu, 'LieuActivite', 0, 22)
+          expectEnum(data.activites.typeLieu, 'ADistance', 18, 22)
+          expectEnum(data.activites.typeLieu, 'LieuActivite', 2, 22)
           expectEnum(data.activites.typeLieu, 'Autre', 0, 22)
 
           expectEnum(data.activites.durees, '120', 22, totalAccompagnements)

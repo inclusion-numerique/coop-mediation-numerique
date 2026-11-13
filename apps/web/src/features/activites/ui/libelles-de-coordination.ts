@@ -1,24 +1,25 @@
-import type {
-  ActiviteDeCoordination,
-  Choix,
-  EchelonTerritorial,
-  Initiative,
-  StructurePartenaire,
-} from '../domain'
 import {
   INITIATIVE_OPTIONS,
   THEMATIQUE_ANIMATION_OPTIONS,
   TYPE_ANIMATION_OPTIONS,
-} from '../use-cases/cra/animation/labels'
+} from '@app/web/features/activites/ui/libelles/animation'
 import {
   ECHELON_TERRITORIAL_OPTIONS,
   ORGANISATEURS_OPTIONS,
   TYPE_EVENEMENT_OPTIONS,
-} from '../use-cases/cra/evenement/labels'
+} from '@app/web/features/activites/ui/libelles/evenement'
 import {
   NATURE_OPTIONS,
   TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS,
-} from '../use-cases/cra/partenariat/labels'
+} from '@app/web/features/activites/ui/libelles/partenariat'
+import type {
+  ActiviteDeCoordination,
+  Choix,
+  ChoixMultiples,
+  EchelonTerritorial,
+  Initiative,
+  StructurePartenaire,
+} from '../domain'
 
 type Option = { readonly value: string; readonly label: string }
 
@@ -61,34 +62,34 @@ const libelleDuChoix =
       ? autre(choix.precision)
       : libelleDans(options)(choix.valeur)
 
+const libellesDesChoix =
+  (options: readonly Option[]) =>
+  (autre: FormatDeLAutre) =>
+  (choix: ChoixMultiples<string>): readonly string[] => [
+    ...choix.valeurs.map(libelleDans(options)),
+    ...(choix.autre === null ? [] : [autre(choix.autre)]),
+  ]
+
 export const objetsDe =
   (autre: FormatDeLAutre) =>
   (activite: ActiviteDeCoordination): readonly string[] => {
     if (activite._tag === 'Animation')
-      return activite.typeDAnimation === null
-        ? []
-        : [
-            libelleDuChoix(TYPE_ANIMATION_OPTIONS)(autre)(
-              activite.typeDAnimation,
-            ),
-          ]
+      return [
+        libelleDuChoix(TYPE_ANIMATION_OPTIONS)(autre)(activite.typeDAnimation),
+      ]
     if (activite._tag === 'Evenement')
-      return activite.typeDEvenement === null
-        ? []
-        : [
-            libelleDuChoix(TYPE_EVENEMENT_OPTIONS)(autre)(
-              activite.typeDEvenement,
-            ),
-          ]
-    return activite.natures.map(libelleDuChoix(NATURE_OPTIONS)(autre))
+      return [
+        libelleDuChoix(TYPE_EVENEMENT_OPTIONS)(autre)(activite.typeDEvenement),
+      ]
+    return libellesDesChoix(NATURE_OPTIONS)(autre)(activite.natures)
   }
 
 export const thematiquesDe =
   (autre: FormatDeLAutre) =>
   (activite: ActiviteDeCoordination): readonly string[] =>
     activite._tag === 'Animation'
-      ? activite.thematiques.map(
-          libelleDuChoix(THEMATIQUE_ANIMATION_OPTIONS)(autre),
+      ? libellesDesChoix(THEMATIQUE_ANIMATION_OPTIONS)(autre)(
+          activite.thematiques,
         )
       : []
 
@@ -96,7 +97,7 @@ export const organisateursDe =
   (autre: FormatDeLAutre) =>
   (activite: ActiviteDeCoordination): readonly string[] =>
     activite._tag === 'Evenement'
-      ? activite.organisateurs.map(libelleDuChoix(ORGANISATEURS_OPTIONS)(autre))
+      ? libellesDesChoix(ORGANISATEURS_OPTIONS)(autre)(activite.organisateurs)
       : []
 
 export const libelleDeLInitiative = (initiative: Initiative): string =>
@@ -107,13 +108,14 @@ export const libelleDeLEchelon = (echelon: EchelonTerritorial): string =>
 
 export const libelleDuTypeDeStructure = (
   type: StructurePartenaire['type'],
-): string | null =>
-  type === null ? null : libelleDans(TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS)(type)
+): string =>
+  libelleDuChoix(TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS)(autreAvecPrecision)(type)
 
 export const libelleCourtDuTypeDeStructure = (
   type: StructurePartenaire['type'],
-): string | null =>
-  type === null
-    ? null
-    : (TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS.find(({ value }) => value === type)
-        ?.extra?.short ?? null)
+): string =>
+  type._tag === 'Autre'
+    ? type.precision
+    : (TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS.find(
+        ({ value }) => value === type.valeur,
+      )?.extra?.short ?? type.valeur)

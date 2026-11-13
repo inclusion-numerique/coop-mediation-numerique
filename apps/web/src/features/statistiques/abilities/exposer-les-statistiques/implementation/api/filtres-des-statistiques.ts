@@ -1,13 +1,13 @@
 import {
-  thematiquesAdministrativesValues,
-  thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { typeActiviteSlugValues } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
-import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { z } from 'zod'
+import {
+  THEMATIQUES_ADMINISTRATIVES,
+  THEMATIQUES_NON_ADMINISTRATIVES,
+  TYPES_D_ACTIVITE,
+} from './valeurs-des-filtres'
 
 const listeDe = <Element extends z.ZodType<string, string>>(element: Element) =>
   z
@@ -21,12 +21,10 @@ const listeDe = <Element extends z.ZodType<string, string>>(element: Element) =>
 export const FiltresDesStatistiquesValidation = z
   .object({
     ...ActivitesFilterValidations,
-    types: listeDe(z.enum(typeActiviteSlugValues)),
+    types: listeDe(z.enum(TYPES_D_ACTIVITE)),
     thematiqueNonAdministratives: listeDe(
-      z.enum(thematiquesNonAdministrativesValues),
+      z.enum(THEMATIQUES_NON_ADMINISTRATIVES),
     ),
-    thematiqueAdministratives: listeDe(
-      z.enum(thematiquesAdministrativesValues),
-    ),
+    thematiqueAdministratives: listeDe(z.enum(THEMATIQUES_ADMINISTRATIVES)),
   })
   .default({}) satisfies z.ZodType<ActivitesFilters>

@@ -10,16 +10,15 @@
   }
 }
 
-/* Bouton de tri compact d'un en-tête de table (icône seule, sans padding) */
-th {
-  .fr-btn--sort {
-    box-shadow: none !important;
-    height: 16px !important;
-    padding: 0 !important;
+th .lien-de-tri {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  font: inherit;
+  background-image: none;
+}
 
-    &::before {
-      height: 16px !important;
-      margin: 0 !important;
-    }
-  }
+th .lien-de-tri--inactif .lien-de-tri__fleche {
+  color: var(--text-disabled-grey);
 }

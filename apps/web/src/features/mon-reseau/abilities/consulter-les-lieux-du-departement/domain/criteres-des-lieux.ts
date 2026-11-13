@@ -1,4 +1,4 @@
-import type { CodeInsee } from '@app/web/libraries/departement'
+import type { CodeInsee } from '@app/web/libraries/insee'
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 import {

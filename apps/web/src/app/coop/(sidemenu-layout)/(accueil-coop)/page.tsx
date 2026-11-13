@@ -1,3 +1,4 @@
+import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rafraichirAccueilRdvAction } from '@app/web/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
@@ -13,14 +14,19 @@ import {
   activitesDeCoordinationPresentees,
 } from '@app/web/features/activites/abilities/compter-les-activites-de-coordination/ui'
 import { listerLesDernieresActivites } from '@app/web/features/activites/abilities/lister-les-dernieres-activites'
-import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
-import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
+import {
+  DernieresActivites,
+  dernieresActivitesPresentees,
+} from '@app/web/features/activites/abilities/lister-les-dernieres-activites/ui'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
+import { BoutonEnregistrerUneActivite } from '@app/web/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
 import { compterLesMembres } from '@app/web/features/equipe'
 import { ResumeDeLEquipe } from '@app/web/features/equipe/abilities/lister-les-membres/ui'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
 import { blocRdvAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
+import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
@@ -55,17 +61,15 @@ const sectionActivites = async (
       )}
     />
   ) : (
-    <>
-      <DernieresActivites
-        activites={
-          await listerLesDernieresActivites({
-            mediateurId: profil.mediateurId,
-            timezone,
-          })
-        }
-      />
-      <ActiviteDetailsModal />
-    </>
+    <DernieresActivites
+      activites={dernieresActivitesPresentees(
+        await listerLesDernieresActivites({
+          mediateurId: profil.mediateurId,
+          rendezVousLies,
+        }),
+        timezone,
+      )}
+    />
   )
 
 const Page = async () => {
@@ -84,19 +88,25 @@ const Page = async () => {
       bind={RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY}
       to={rafraichirAccueilRdvAction}
     >
-      <Accueil
-        accueil={accueil}
-        equipe={equipe}
-        activites={activites}
-        rendezVous={
-          <RdvsAccueil
-            widget={rdv.widget}
-            user={{ timezone: user.timezone }}
-            synchroniserAuChargement={rdv.synchroniserAuChargement}
-            alerte={<RdvIntegrationErreurAlerte />}
-          />
-        }
-      />
+      <ClientBinder
+        bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
+        to={supprimerUneActiviteDeMediationAction}
+      >
+        <Accueil
+          accueil={accueil}
+          equipe={equipe}
+          activites={activites}
+          enregistrerUneActivite={<BoutonEnregistrerUneActivite />}
+          rendezVous={
+            <RdvsAccueil
+              widget={rdv.widget}
+              user={{ timezone: user.timezone }}
+              synchroniserAuChargement={rdv.synchroniserAuChargement}
+              alerte={<RdvIntegrationErreurAlerte />}
+            />
+          }
+        />
+      </ClientBinder>
     </ClientBinder>
   )
 }

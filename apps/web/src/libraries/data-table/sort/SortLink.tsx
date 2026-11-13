@@ -1,5 +1,7 @@
 import type { SortDirection } from '@arckit/resultset'
+import classNames from 'classnames'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 
 /**
  * Bouton-lien de tri d'une colonne. `ordre` est la direction que produira le
@@ -10,11 +12,13 @@ export const SortLink = ({
   ordre,
   isActive,
   label,
+  children,
 }: {
   href: string
   ordre: SortDirection
   isActive: boolean
   label?: string
+  children?: ReactNode
 }) => {
   const showsAscending = isActive && ordre === 'asc'
 
@@ -28,11 +32,18 @@ export const SortLink = ({
 
   return (
     <Link
-      className={`fr-btn fr-ml-2v fr-btn--tertiary-no-outline fr-btn--sm fr-btn--sort ${icon}`}
+      className={classNames('lien-de-tri', {
+        'lien-de-tri--inactif': !isActive,
+      })}
       title={title}
       href={href}
       scroll={false}
-      style={{ color: isActive ? undefined : 'var(--text-disabled-grey)' }}
-    />
+    >
+      {children}
+      <span
+        className={classNames('lien-de-tri__fleche', icon, 'fr-icon--sm')}
+        aria-hidden="true"
+      />
+    </Link>
   )
 }

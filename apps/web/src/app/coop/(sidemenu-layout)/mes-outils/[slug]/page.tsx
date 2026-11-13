@@ -11,7 +11,7 @@ import {
 } from '@app/web/features/outils/abilities/consulter-un-outil/ui'
 import RdvServicePublicAccessCard from '@app/web/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@app/web/features/rdvsp/ui/RdvServicePublicMigrationNotice'
-import { CodeInsee } from '@app/web/libraries/departement'
+import { CodeInsee } from '@app/web/libraries/insee'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 

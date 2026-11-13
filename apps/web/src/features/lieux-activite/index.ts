@@ -54,6 +54,8 @@ export {
   getMediateurCommunesAndDepartementsOptions,
   getMediateursLieuxActiviteOptions,
   type LieuActiviteOption,
+  type LieuDuMediateur,
+  lieuxDuMediateur,
   mediateurStructureSelect,
   optionDeLieu,
 } from './abilities/lister-les-options-de-lieux'

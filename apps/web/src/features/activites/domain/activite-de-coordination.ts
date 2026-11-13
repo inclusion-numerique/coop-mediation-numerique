@@ -1,8 +1,12 @@
+import { failure, type Result, success } from '@app/web/libraries/result'
 import type { ActiviteDeCoordinationId } from './activite-de-coordination-id'
-import type { Choix } from './choix'
+import type { Choix, ChoixMultiples } from './choix'
+import type { CoordinateurId } from './coordinateur-id'
+import type { DateDActivite } from './date-d-activite'
 import type { DureeEnMinutes } from './duree-en-minutes'
 import type { EchelonTerritorial } from './echelon-territorial'
 import { Effectif } from './effectif'
+import { AucuneStructurePartenaire, AucunIntervenant } from './errors'
 import type { Initiative } from './initiative'
 import type { NatureDePartenariat } from './nature-de-partenariat'
 import type { NomDeLActivite } from './nom-de-l-activite'
@@ -23,19 +27,19 @@ export type TagDeLActivite = {
 
 export type StructurePartenaire = {
   readonly nom: NomDeStructure
-  readonly type: TypeDeStructurePartenaire | null
+  readonly type: Choix<TypeDeStructurePartenaire>
 }
 
 export type Intervenants = {
-  readonly mediateurs: Effectif | null
-  readonly structures: Effectif | null
-  readonly autresActeurs: Effectif | null
+  readonly mediateurs: Effectif
+  readonly structures: Effectif
+  readonly autresActeurs: Effectif
 }
 
 type Commun = {
   readonly id: ActiviteDeCoordinationId
-  readonly date: Date
-  readonly duree: DureeEnMinutes | null
+  readonly coordinateurId: CoordinateurId
+  readonly date: DateDActivite
   readonly tags: readonly TagDeLActivite[]
   readonly notes: Notes | null
   readonly creation: Date
@@ -44,8 +48,9 @@ type Commun = {
 
 export type Animation = Commun & {
   readonly _tag: 'Animation'
-  readonly typeDAnimation: Choix<TypeDAnimation> | null
-  readonly thematiques: readonly Choix<ThematiqueDAnimation>[]
+  readonly duree: DureeEnMinutes
+  readonly typeDAnimation: Choix<TypeDAnimation>
+  readonly thematiques: ChoixMultiples<ThematiqueDAnimation>
   readonly initiative: Initiative | null
   readonly intervenants: Intervenants
 }
@@ -53,33 +58,55 @@ export type Animation = Commun & {
 export type Evenement = Commun & {
   readonly _tag: 'Evenement'
   readonly nom: NomDeLActivite | null
-  readonly typeDEvenement: Choix<TypeDEvenement> | null
-  readonly organisateurs: readonly Choix<Organisateur>[]
+  readonly typeDEvenement: Choix<TypeDEvenement>
+  readonly organisateurs: ChoixMultiples<Organisateur>
   readonly echelon: EchelonTerritorial | null
-  readonly participants: Effectif | null
+  readonly participants: Effectif
 }
+
+export type StructuresPartenaires = readonly [
+  StructurePartenaire,
+  ...StructurePartenaire[],
+]
 
 export type Partenariat = Commun & {
   readonly _tag: 'Partenariat'
   readonly nom: NomDeLActivite | null
-  readonly natures: readonly Choix<NatureDePartenariat>[]
-  readonly structuresPartenaires: readonly StructurePartenaire[]
+  readonly natures: ChoixMultiples<NatureDePartenariat>
+  readonly structuresPartenaires: StructuresPartenaires
   readonly echelon: EchelonTerritorial | null
 }
 
 export type ActiviteDeCoordination = Animation | Evenement | Partenariat
 
-const total = (effectifs: readonly (Effectif | null)[]): Effectif =>
-  Effectif(
-    effectifs.reduce<number>((somme, effectif) => somme + (effectif ?? 0), 0),
-  )
+export const intervenantsDe = (
+  intervenants: Intervenants,
+): Result<Intervenants, AucunIntervenant> =>
+  intervenants.mediateurs +
+    intervenants.structures +
+    intervenants.autresActeurs ===
+  0
+    ? failure(AucunIntervenant())
+    : success(intervenants)
+
+export const structuresPartenairesDe = (
+  structures: readonly StructurePartenaire[],
+): Result<StructuresPartenaires, AucuneStructurePartenaire> => {
+  const [premiere, ...autres] = structures
+  return premiere === undefined
+    ? failure(AucuneStructurePartenaire())
+    : success([premiere, ...autres])
+}
+
+const total = (effectifs: readonly Effectif[]): Effectif =>
+  Effectif(effectifs.reduce<number>((somme, effectif) => somme + effectif, 0))
 
 export const participantsDe = (activite: ActiviteDeCoordination): Effectif => {
   if (activite._tag === 'Animation') {
     const { mediateurs, structures, autresActeurs } = activite.intervenants
     return total([mediateurs, structures, autresActeurs])
   }
-  if (activite._tag === 'Evenement') return activite.participants ?? Effectif(0)
+  if (activite._tag === 'Evenement') return activite.participants
   return Effectif(0)
 }
 

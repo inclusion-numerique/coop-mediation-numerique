@@ -65,8 +65,6 @@ export type ListeDesCoordinations = {
   readonly pages: number
 }
 
-const jourIso = (date: Date): string => date.toISOString().slice(0, 10)
-
 const titreDe = (activite: ActiviteDeCoordination): string =>
   activite._tag === 'Animation' || activite.nom === null
     ? libelleDuType(activite._tag)
@@ -125,16 +123,18 @@ const rubriquesDe = (activite: ActiviteDeCoordination): readonly Rubrique[] => [
   ...rubrique('Organisé par', organisateursDe(autreOuPrecision)(activite)),
   ...(activite._tag === 'Animation' || activite.echelon === null
     ? []
-    : rubrique('Échelon territorial de l’évènement', [
-        libelleDeLEchelon(activite.echelon),
-      ])),
+    : rubrique(
+        activite._tag === 'Partenariat'
+          ? 'Échelon territorial du partenariat'
+          : 'Échelon territorial de l’évènement',
+        [libelleDeLEchelon(activite.echelon)],
+      )),
   ...(activite._tag === 'Partenariat'
     ? rubrique(
         'Partenaires',
-        activite.structuresPartenaires.map(({ nom, type }) => {
-          const court = libelleCourtDuTypeDeStructure(type)
-          return court === null ? nom : `${nom} · ${court}`
-        }),
+        activite.structuresPartenaires.map(
+          ({ nom, type }) => `${nom} · ${libelleCourtDuTypeDeStructure(type)}`,
+        ),
       )
     : []),
   ...rubrique(
@@ -152,8 +152,9 @@ const detailDe =
       id: activite.id,
       segmentDeType: activite._tag.toLowerCase(),
       titre: titreDe(activite),
-      jour: formatActiviteDayDate(jourIso(activite.date)),
-      duree: activite.duree === null ? null : dureeLisible(activite.duree),
+      jour: formatActiviteDayDate(activite.date),
+      duree:
+        activite._tag === 'Animation' ? dureeLisible(activite.duree) : null,
       infos: infosDe(activite),
       objets: objetsDe(autreOuPrecision)(activite),
       enregistreeLe,
@@ -191,8 +192,7 @@ const parJour = (
   activites.reduce<readonly (readonly ActiviteDeCoordination[])[]>(
     (jours, activite) => {
       const dernier = jours.at(-1)
-      return dernier !== undefined &&
-        jourIso(dernier[0].date) === jourIso(activite.date)
+      return dernier !== undefined && dernier[0].date === activite.date
         ? [...jours.slice(0, -1), [...dernier, activite]]
         : [...jours, [activite]]
     },
@@ -215,7 +215,7 @@ export const listeDesCoordinations = ({
 }): ListeDesCoordinations => ({
   titre: titreDeLaListe(total, filtre),
   jours: parJour(activites).map((activitesDuJour) => {
-    const cle = jourIso(activitesDuJour[0].date)
+    const cle = activitesDuJour[0].date
     return {
       cle,
       jour: formatActiviteDayDate(cle),

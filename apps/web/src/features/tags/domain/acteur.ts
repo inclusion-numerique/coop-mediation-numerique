@@ -1,4 +1,4 @@
-import type { CodeDepartement } from '@app/web/libraries/departement'
+import type { CodeDepartement } from '@app/web/libraries/insee'
 import type { CoordinateurId } from './coordinateur-id'
 import type { MediateurId } from './mediateur-id'
 import type { NomDuCoordinateur } from './nom-du-coordinateur'

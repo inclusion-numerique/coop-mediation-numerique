@@ -1,45 +1,17 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
-import {
-  searchAdresses,
-  siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+import {
+  type Commune,
+  rechercherDesCommunes,
+} from '../implementation/api-adresse/rechercher-des-communes'
 
-export type Commune = {
-  id: string
-  label: string
-  commune: string
-  codePostal: string
-  codeInsee: string
-  nom: string
-  contexte: string
-  latitude: number
-  longitude: number
-}
+export type { Commune }
 
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: Commune[] }> => {
-  const adresses = await searchAdresses(input, {
-    limit: 10,
-    autocomplete: true,
-    type: 'municipality',
-  }).catch(siIndisponible([]))
-
-  return {
-    items: adresses.map((adresse) => ({
-      id: adresse.properties.id,
-      label: `${adresse.properties.label} · ${adresse.properties.postcode}`,
-      commune: adresse.properties.city,
-      codePostal: adresse.properties.postcode,
-      codeInsee: adresse.properties.citycode,
-      nom: adresse.properties.name,
-      contexte: adresse.properties.context,
-      latitude: adresse.geometry.coordinates[1],
-      longitude: adresse.geometry.coordinates[0],
-    })),
-  }
-}
+): Promise<{ items: Commune[] }> => ({
+  items: [...(await rechercherDesCommunes(input))],
+})
 
 const itemToString = (item: Commune | null): string =>
   item == null ? '' : item.label

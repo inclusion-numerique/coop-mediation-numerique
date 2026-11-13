@@ -3,32 +3,29 @@ import {
   createEnumArrayCountSelect,
   createEnumCountSelect,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import {
   materielLabels,
   materielValues,
-} from '@app/web/features/activites/use-cases/cra/fields/materiel'
+} from '@app/web/features/activites/ui/libelles/materiel'
 import {
   thematiqueLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+} from '@app/web/features/activites/ui/libelles/thematique'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+} from '@app/web/features/activites/ui/libelles/type-activite'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
-import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
-import {
-  getActiviteFiltersSqlFragment,
-  getActivitesFiltersWhereConditions,
-} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+} from '@app/web/features/activites/ui/libelles/type-lieu'
 import { allocatePercentagesFromRecords } from '@app/web/features/statistiques/allocatePercentages'
 import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
+import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   Materiel,
   Prisma,
@@ -104,9 +101,7 @@ export const getActivitesStatsRaw = async ({
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND act.suppression IS NULL
-        AND ${getActiviteFiltersSqlFragment(
-          getActivitesFiltersWhereConditions(activitesFilters),
-        )}
+        AND ${filtreDesStatistiques(activitesFilters)}
   `.then((result) => result[0])
 }
 
@@ -210,7 +205,7 @@ const getActiviteTags = ({
       WHERE act.suppression IS NULL
         AND t.mediateur_id IS NULL
         AND t.suppression IS NULL
-        AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+        AND ${filtreDesStatistiques(activitesFilters)}
       GROUP BY t.id, t.nom
       ORDER BY count DESC
   `)
@@ -237,9 +232,7 @@ const getActiviteTags = ({
       AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
       AND act.suppression IS NULL
       AND t.suppression IS NULL
-      AND ${getActiviteFiltersSqlFragment(
-        getActivitesFiltersWhereConditions(activitesFilters),
-      )}
+      AND ${filtreDesStatistiques(activitesFilters)}
     GROUP BY t.id, t.nom
     ORDER BY count DESC
   `)
@@ -310,9 +303,7 @@ export const getActivitesStructuresStatsRaw = async ({
       WHERE ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND act.suppression IS NULL
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
-        AND ${getActiviteFiltersSqlFragment(
-          getActivitesFiltersWhereConditions(activitesFilters),
-        )}
+        AND ${filtreDesStatistiques(activitesFilters)}
     GROUP BY str.id`
 }
 
@@ -386,9 +377,7 @@ export const getActivitesCommunesStatsRaw = async ({
       WHERE ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND act.suppression IS NULL
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
-        AND ${getActiviteFiltersSqlFragment(
-          getActivitesFiltersWhereConditions(activitesFilters),
-        )}
+        AND ${filtreDesStatistiques(activitesFilters)}
     GROUP BY COALESCE(str.code_insee, act.lieu_code_insee)`
 }
 

@@ -1,9 +1,9 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
 import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'

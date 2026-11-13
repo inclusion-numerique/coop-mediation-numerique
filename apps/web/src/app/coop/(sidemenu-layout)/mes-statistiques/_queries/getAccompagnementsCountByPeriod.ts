@@ -1,10 +1,7 @@
-import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
-import {
-  getActiviteFiltersSqlFragment,
-  getActivitesFiltersWhereConditions,
-} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
+import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import {
@@ -63,9 +60,7 @@ export const getAccompagnementsCountByMonth = async ({
           WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
             AND ${activitesSourceWhereCondition(activitesFilters.source)}
             AND act.suppression IS NULL
-            AND ${getActiviteFiltersSqlFragment(
-              getActivitesFiltersWhereConditions(activitesFilters),
-            )}
+            AND ${filtreDesStatistiques(activitesFilters)}
             AND act.date <= ${Prisma.raw(endDate)}
             AND act.date >= ${Prisma.raw(fromDate)}
             AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}),
@@ -129,9 +124,7 @@ export const getAccompagnementsCountByDay = async ({
         WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
           AND ${activitesSourceWhereCondition(activitesFilters.source)}
           AND act.suppression IS NULL
-          AND ${getActiviteFiltersSqlFragment(
-            getActivitesFiltersWhereConditions(activitesFilters),
-          )}
+          AND ${filtreDesStatistiques(activitesFilters)}
           AND act.date <= ${Prisma.raw(endDate)}
           AND act.date >= ${Prisma.raw(fromDate)}
           AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}),

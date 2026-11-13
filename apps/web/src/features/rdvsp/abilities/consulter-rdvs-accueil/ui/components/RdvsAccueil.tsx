@@ -1,6 +1,5 @@
 'use client'
 
-import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
 import { inject } from '@app/web/libs/injection/client'
 import { numberToString } from '@app/web/utils/formatNumber'
 import type { UserTimezone } from '@app/web/utils/user'
@@ -15,6 +14,7 @@ import type {
 import { rdvsPassesTotal } from '../../domain/donnees-accueil-rdv'
 import type { WidgetRdvAccueil } from '../../domain/widget-rdv'
 import { phraseRdv } from '../rdvs-accueil.presenter'
+import { BadgeDuCompteur, type StatutDuCompteur } from './BadgeDuCompteur'
 import RdvsAccueilHeader from './RdvsAccueilHeader'
 
 const Compteur = ({
@@ -24,7 +24,7 @@ const Compteur = ({
   phrase,
 }: {
   nombre: number
-  badgeStatus: 'unknown' | 'past'
+  badgeStatus: StatutDuCompteur
   href: string
   phrase: string
 }) => {
@@ -42,13 +42,13 @@ const Compteur = ({
           >
             {numberToString(nombre)}
           </p>
-          <RdvStatusBadge
+          <BadgeDuCompteur
             className={classNames(
               vide && 'fr-text-disabled-grey',
               vide && 'fr-background-disabled-grey',
             )}
-            rdv={{ badgeStatus }}
-            pluralize={nombre}
+            statut={badgeStatus}
+            nombre={nombre}
           />
           {nombre > 0 && (
             <>

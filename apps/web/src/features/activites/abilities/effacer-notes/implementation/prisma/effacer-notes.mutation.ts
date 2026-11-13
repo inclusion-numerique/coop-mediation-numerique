@@ -1,24 +1,12 @@
 import { prismaClient } from '@app/web/prismaClient'
+import type { CoordinateurId, MediateurId } from '../../../../domain'
 
-/**
- * Vide le texte libre des comptes rendus d'une personne, sans supprimer les
- * lignes.
- *
- * Les notes sont saisies à la main : c'est là que l'identité d'un bénéficiaire
- * finit par se retrouver, malgré les champs prévus pour elle. Les lignes, elles,
- * restent — ce sont elles qui portent l'historique statistique.
- *
- * Les activités de coordination sont traitées de la même façon : un coordinateur
- * n'a pas moins de texte libre qu'un médiateur.
- *
- * Idempotent : le filtre `notes: { not: null }` rend le second passage vide.
- */
 export const effacerNotes = async ({
   mediateurId,
   coordinateurId,
 }: {
-  readonly mediateurId: string | null
-  readonly coordinateurId: string | null
+  readonly mediateurId: MediateurId | null
+  readonly coordinateurId: CoordinateurId | null
 }): Promise<{ readonly effacees: number }> => {
   const activites =
     mediateurId === null

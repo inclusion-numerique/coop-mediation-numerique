@@ -1,4 +1,4 @@
-import { CodeDepartement } from '@app/web/libraries/departement'
+import { CodeDepartement } from '@app/web/libraries/insee'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'

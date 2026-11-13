@@ -31,12 +31,13 @@
 
 ## Rule: La liste se pagine
 
-### Scenario: Deuxième page de deux lignes
+### Scenario: Deuxième page de dix lignes
 
 * Given des activités de coordination enregistrées
-* When je liste la page 2 de mes activités de coordination, 2 par page
-* Then 3 activités de coordination sont comptées sur 2 pages
-* And les types listés sont "Animation"
+* And 9 animations de coordination de plus, en janvier 2026
+* When je liste la page 2 de mes activités de coordination, 10 par page
+* Then 12 activités de coordination sont comptées sur 2 pages
+* And les types listés sont "Animation, Animation"
 
 ## Rule: Les filtres proposent les tags utilisés et la période couverte
 

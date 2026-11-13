@@ -1,31 +1,31 @@
-import {
-  type ActiviteListItemWithTimezone,
-  activiteListSelect,
-} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
-import { addTimezoneToActivite } from '@app/web/features/activites/use-cases/list/db/addTimezoneToActivite'
-import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
 import { prismaClient } from '@app/web/prismaClient'
-import type { MediateurId } from '../../domain'
+import {
+  activiteConsulteeDe,
+  activiteConsulteeSelect,
+  rdvIdsDes,
+} from '../../../../db/activite-consultee.transfer'
+import type { RendezVousLies } from '../../../../db/rendez-vous-fournis'
+import {
+  type ActiviteConsultee,
+  type MediateurId,
+  RdvId,
+} from '../../../../domain'
 
 const NOMBRE_DE_DERNIERES_ACTIVITES = 3
 
 export const listerLesDernieresActivites = async ({
   mediateurId,
-  timezone,
+  rendezVousLies,
 }: {
-  mediateurId: MediateurId
-  timezone: string
-}): Promise<ActiviteListItemWithTimezone[]> =>
-  (
-    await prismaClient.activite.findMany({
-      where: { mediateurId, suppression: null },
-      select: activiteListSelect,
-      orderBy: { creation: 'desc' },
-      take: NOMBRE_DE_DERNIERES_ACTIVITES,
-    })
-  )
-    .map(addTimezoneToActivite({ timezone }))
-    .map((activite) => ({
-      ...activite,
-      rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
-    }))
+  readonly mediateurId: MediateurId
+  readonly rendezVousLies: RendezVousLies
+}): Promise<readonly ActiviteConsultee[]> => {
+  const lignes = await prismaClient.activite.findMany({
+    where: { mediateurId, suppression: null },
+    select: activiteConsulteeSelect,
+    orderBy: { creation: 'desc' },
+    take: NOMBRE_DE_DERNIERES_ACTIVITES,
+  })
+  const lies = await rendezVousLies(rdvIdsDes(lignes).map(RdvId))
+  return lignes.map((ligne) => activiteConsulteeDe(ligne, lies))
+}

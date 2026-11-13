@@ -10,6 +10,13 @@
 * And le bénéficiaire est anonymisé et marqué supprimé
 * And le compteur de bénéficiaires du médiateur revient à son niveau initial
 
+### Scenario: Une commune à plusieurs codes postaux n'en garde qu'un
+
+* Given un bénéficiaire de Nice enregistré pour ce médiateur
+* When je supprime ce bénéficiaire
+* Then le bénéficiaire est anonymisé et marqué supprimé
+* And le bénéficiaire supprimé ne garde que le code postal "06100"
+
 ## Rule: La suppression nécessite au moins un bénéficiaire valide du médiateur
 
 ### Scenario: Supprimer un bénéficiaire inexistant échoue

@@ -1,6 +1,6 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { typeActivitePluralLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeActivitePluralLabels } from '@app/web/features/activites/ui/libelles/type-activite'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { Fragment } from 'react'
 import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'

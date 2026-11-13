@@ -1,5 +1,10 @@
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
-import { getCraEvenementDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/evenement/db/getCraEvenementDataDefaultValuesFromExisting'
+import { lireUneActiviteDeCoordination } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
+import { formulaireDeLEvenement } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/formulaire-de-la-coordination.presenter'
+import {
+  ActiviteDeCoordinationId,
+  CoordinateurId,
+} from '@app/web/features/activites/domain'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { notFound, redirect } from 'next/navigation'
 
@@ -17,12 +22,18 @@ const DupliquerCraEvenementPage = async ({
     coordinateur: { id: coordinateurId },
   } = await authenticateCoordinateur()
 
-  const defaultValues = await getCraEvenementDataDefaultValuesFromExisting({
-    id,
-    coordinateurId,
-  })
+  const activiteId = ActiviteDeCoordinationId.safe(id)
+  const activite =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeCoordination({
+          id: activiteId,
+          coordinateurId: CoordinateurId(coordinateurId),
+        })
 
-  if (defaultValues == null) return notFound()
+  if (activite?._tag !== 'Evenement') return notFound()
+
+  const defaultValues = formulaireDeLEvenement(activite)
 
   const defaultValuesWithoutId = {
     ...defaultValues,

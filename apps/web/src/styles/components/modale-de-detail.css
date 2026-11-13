@@ -12,3 +12,67 @@ dialog.modale-de-detail {
     margin-bottom: 40px;
   }
 }
+
+.notes-de-l-activite p {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.bouton-dupliquer__libelle {
+  margin-left: 7px;
+  font-family: "Marianne", arial, sans-serif;
+}
+
+.accordeon-des-participants {
+  margin: -24px -16px;
+
+  &::before {
+    box-shadow: none !important;
+  }
+
+  .fr-collapse {
+    margin-right: 0;
+    margin-left: 0;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  @media (min-width: 48em) {
+    margin-left: -32px;
+    margin-right: -32px;
+
+    .fr-accordion__btn {
+      padding-right: 32px;
+      padding-left: 32px;
+    }
+
+    .fr-collapse {
+      padding-right: 32px;
+      padding-left: 32px;
+    }
+  }
+
+  button.fr-accordion__btn {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .fr-accordion__btn[aria-expanded="true"] {
+    background-color: var(--grey-1000-50-hover);
+
+    &:hover,
+    &:active {
+      background-color: var(--grey-1000-50-active);
+    }
+  }
+}
+
+.tableau-des-activites__type {
+  max-width: 276px;
+}
+
+.tableau-des-activites__lieu {
+  max-width: 209px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

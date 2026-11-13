@@ -11,6 +11,12 @@
 * And les bénéficiaires du portefeuille gardent leur valeur statistique
 * And le compteur de bénéficiaires du portefeuille est remis à zéro
 
+### Scenario: Une commune à plusieurs codes postaux n'en garde qu'un
+
+* Given un portefeuille de deux bénéficiaires de Nice
+* When j'anonymise le portefeuille de ce médiateur
+* Then les bénéficiaires du portefeuille ne gardent que le code postal "06100"
+
 ## Rule: Le lien vers l'usager RDV est rompu, ce qui le rend orphelinable
 
 ### Scenario: Le rattachement à l'usager RDV est détaché

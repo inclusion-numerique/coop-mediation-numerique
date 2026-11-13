@@ -1,0 +1,28 @@
+.saisie-du-statut-rdv__icone {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.saisie-du-statut-rdv__icone--honore {
+  background-color: var(--background-contrast-success);
+  color: var(--text-default-success);
+}
+
+.saisie-du-statut-rdv__icone--non-honore {
+  background-color: var(--background-contrast-error);
+  color: var(--text-default-error);
+}
+
+.saisie-du-statut-rdv__icone-d-action::before {
+  --icon-size: 1rem;
+}
+
+.saisie-du-statut-rdv__annulation-collective {
+  color: unset;
+  font-weight: 400;
+}

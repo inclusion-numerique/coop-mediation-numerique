@@ -1,4 +1,6 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
+import { garderUnSeulCodePostal } from '../../../../db'
 
 /**
  * Anonymise TOUT le portefeuille d'un médiateur, à la suppression de son compte.
@@ -22,21 +24,28 @@ export const anonymiserPortefeuille = async ({
   readonly mediateurId: string
   readonly maintenant?: Date
 }): Promise<{ readonly anonymises: number }> => {
-  const { count } = await prismaClient.beneficiaire.updateMany({
-    where: { mediateurId, suppression: null },
-    data: {
-      anonyme: true,
-      suppression: maintenant,
-      modification: maintenant,
-      rdvUserId: null,
-      prenom: null,
-      nom: null,
-      telephone: null,
-      email: null,
-      notes: null,
-      adresse: null,
-      pasDeTelephone: null,
-    },
+  const { count } = await prismaClient.$transaction(async (transaction) => {
+    const anonymises = await transaction.beneficiaire.updateMany({
+      where: { mediateurId, suppression: null },
+      data: {
+        anonyme: true,
+        suppression: maintenant,
+        modification: maintenant,
+        rdvUserId: null,
+        prenom: null,
+        nom: null,
+        telephone: null,
+        email: null,
+        notes: null,
+        adresse: null,
+        pasDeTelephone: null,
+      },
+    })
+    await garderUnSeulCodePostal(
+      transaction,
+      Prisma.sql`mediateur_id = ${mediateurId}::uuid AND anonyme = true`,
+    )
+    return anonymises
   })
 
   await prismaClient.mediateur.update({
