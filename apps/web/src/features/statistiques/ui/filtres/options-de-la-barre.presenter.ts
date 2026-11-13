@@ -1,4 +1,4 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import type { LieuxChoisisDeLaBarre } from './lieux-choisis'
 import { TagScope } from './portee-de-tag'
 import { activiteSourceOptions } from './source'
 
@@ -17,15 +17,8 @@ type EmployeuseDesActivites = {
   readonly commune: string | null
 }
 
-export type FournisseursDesOptions<
-  OptionDeBeneficiaire,
-  OptionDeLieu extends SelectOption,
-> = {
-  readonly communesEtDepartements: () => Promise<{
-    communesOptions: SelectOption[]
-    departementsOptions: SelectOption[]
-  }>
-  readonly lieux: () => Promise<OptionDeLieu[]>
+export type FournisseursDesOptions<OptionDeBeneficiaire> = {
+  readonly lieuxChoisis: () => Promise<LieuxChoisisDeLaBarre>
   readonly tags: () => Promise<
     readonly {
       readonly id: string
@@ -69,22 +62,17 @@ const libelleDuMembre = ({ nom, situation }: MembreAFiltrer): string =>
       ? `Ancien membre - ${nom}`
       : nom
 
-export const optionsDesStatistiques = async <
-  OptionDeBeneficiaire,
-  OptionDeLieu extends SelectOption,
->(
-  fournisseurs: FournisseursDesOptions<OptionDeBeneficiaire, OptionDeLieu>,
+export const optionsDesStatistiques = async <OptionDeBeneficiaire>(
+  fournisseurs: FournisseursDesOptions<OptionDeBeneficiaire>,
 ) => {
   const [
-    { communesOptions, departementsOptions },
-    lieuxActiviteOptions,
+    { communesOptions, departementsOptions, lieuxActiviteOptions },
     tags,
     initialBeneficiairesOptions,
     membres,
     { employeuses, premiere, derniere },
   ] = await Promise.all([
-    fournisseurs.communesEtDepartements(),
-    fournisseurs.lieux(),
+    fournisseurs.lieuxChoisis(),
     fournisseurs.tags(),
     fournisseurs.beneficiaires(),
     fournisseurs.membres(),

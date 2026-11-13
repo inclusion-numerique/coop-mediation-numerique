@@ -1,5 +1,5 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { rechercherLesLieuxDuPartageAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
 import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
 import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
@@ -9,13 +9,13 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { StatistiquesPartagees } from '@app/web/features/statistiques/ui/pages/StatistiquesPartagees'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { notFound } from 'next/navigation'
@@ -59,8 +59,8 @@ const Page = async ({ params, searchParams }: PageProps) => {
       to={rechercherEmployeusesDesActivitesAction}
     >
       <ClientBinder
-        bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-        to={rechercherUnLieuActiviteAction}
+        bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
+        to={rechercherLesLieuxDuPartageAction.bind(null, shareId)}
       >
         <StatistiquesPartagees
           {...mesStatistiquesProps}
@@ -70,10 +70,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
           accompagnementsCount={
             mesStatistiquesProps.totalCounts.accompagnements.total
           }
-          filtreDeLieu={filtreDeLieu(
-            mesStatistiquesProps.activitesFilters,
-            mesStatistiquesProps,
-          )}
+          filtreDeLieu={filtreDeLieu(mesStatistiquesProps)}
           impression={impressionDesStatistiques(mesStatistiquesProps)}
           generale={sectionGenerale(mesStatistiquesProps, {
             wording: 'generique',

@@ -270,21 +270,7 @@ describe('getMesStatistiquesPageData', () => {
         activitesFilters: {},
         graphOptions,
       })
-      expect(data).toEqual({
-        ...emptyData,
-        lieuxActiviteOptions: [
-          {
-            label: mediateque.nom,
-            value: mediateque.id,
-            extra: {
-              activites: 0,
-              adresse: '2 rue des livres, 69002 Lyon 2eme',
-              mostUsed: false,
-              nom: 'Exemple de Mediateque',
-            },
-          },
-        ],
-      })
+      expect(data).toEqual(emptyData)
     })
   })
 
@@ -550,40 +536,11 @@ describe('getMesStatistiquesPageData', () => {
 
     beforeAll(async () => {
       expectedCommon = {
-        communesOptions: [
-          {
-            value: '69382',
-            label: 'Lyon 2eme · 69002',
-          },
-          {
-            value: '75101',
-            label: 'Paris 1er · 75001',
-          },
-        ],
-        departementsOptions: [
-          {
-            value: '69',
-            label: '69 · Rhône',
-          },
-          {
-            value: '75',
-            label: '75 · Paris',
-          },
-        ],
+        communesOptions: [],
+        departementsOptions: [],
         initialBeneficiairesOptions:
           await getInitialBeneficiairesOptionsForSearch({ mediateurId }),
-        lieuxActiviteOptions: [
-          {
-            label: mediateque.nom,
-            value: mediateque.id,
-            extra: {
-              activites: 2,
-              adresse: '2 rue des livres, 69002 Lyon 2eme',
-              mostUsed: true,
-              nom: 'Exemple de Mediateque',
-            },
-          },
-        ],
+        lieuxActiviteOptions: [],
         structuresEmployeusesOptions: [expectedStructureEmployeuseOption()],
         activiteSourceOptions,
       }

@@ -2,11 +2,11 @@ import { optionsDesStatistiques } from './options-de-la-barre.presenter'
 import { activiteSourceOptions } from './source'
 
 const fournisseurs = {
-  communesEtDepartements: async () => ({
-    communesOptions: [{ label: 'Lyon', value: '69123' }],
+  lieuxChoisis: async () => ({
+    communesOptions: [{ label: 'Lyon · 69001', value: '69381' }],
     departementsOptions: [],
+    lieuxActiviteOptions: [],
   }),
-  lieux: async () => [],
   tags: async () => [
     { id: 't1', nom: 'Atelier', portee: { _tag: 'Equipe' as const } },
   ],

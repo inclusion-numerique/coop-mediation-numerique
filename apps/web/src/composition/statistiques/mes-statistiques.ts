@@ -3,13 +3,9 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@app/web/features/activites/abilities/decrire-les-activites-du-perimetre'
-import { dansLaPeriodeDAppartenance } from '@app/web/features/activites/db/periode-d-appartenance.sql'
 import {
-  CoordinateurId,
   criteresDesStatistiques,
   Jour,
-  MediateurId,
-  perimetreDuDemandeur,
 } from '@app/web/features/activites/domain'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
@@ -18,16 +14,14 @@ import {
   CoordinateurId as CoordinateurIdDeLEquipe,
   MediateurId as MediateurIdDeLEquipe,
 } from '@app/web/features/equipe/domain'
-import {
-  getLieuxDesActivitesOptions,
-  getMediateurCommunesAndDepartementsOptions,
-} from '@app/web/features/lieux-activite'
 import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { optionsDesStatistiques } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { tousLesTagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'
+import { lieuxChoisisDe } from './lieux-choisis'
+import { perimetreDeLUtilisateur } from './perimetre'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -45,13 +39,7 @@ export const getMesStatistiquesPageData = async ({
 }) => {
   const mediateurCoordonnesIds = mediateurCoordonnesEtAnciensIdsFor(user)
 
-  const perimetre = perimetreDuDemandeur({
-    mediateur: user.mediateur ? MediateurId(user.mediateur.id) : null,
-    coordinateur: user.coordinateur
-      ? CoordinateurId(user.coordinateur.id)
-      : null,
-    equipe: mediateurCoordonnesIds.map((id) => MediateurId(id)),
-  })
+  const perimetre = perimetreDeLUtilisateur(user)
   if (perimetre === null) {
     throw new Error('Statistiques sans profil médiateur ni coordinateur')
   }
@@ -67,11 +55,6 @@ export const getMesStatistiquesPageData = async ({
     ),
   })
 
-  const mediateurIds = [
-    ...(user.mediateur ? [user.mediateur.id] : []),
-    ...mediateurCoordonnesIds,
-  ]
-
   const [statistiques, options] = await Promise.all([
     statistiquesFournies(
       {
@@ -85,16 +68,7 @@ export const getMesStatistiquesPageData = async ({
       { territoires: true, tags: true },
     ),
     optionsDesStatistiques({
-      communesEtDepartements: () =>
-        getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
-      lieux: () =>
-        getLieuxDesActivitesOptions({
-          mediateurIds,
-          mediateurId: user.mediateur?.id,
-          perimetreDesActivites: dansLaPeriodeDAppartenance(
-            user.coordinateur ? CoordinateurId(user.coordinateur.id) : null,
-          ),
-        }),
+      lieuxChoisis: () => lieuxChoisisDe(activitesFilters),
       tags: () => tousLesTagsVisiblesPar(user),
       beneficiaires: () =>
         getInitialBeneficiairesOptionsForSearch({

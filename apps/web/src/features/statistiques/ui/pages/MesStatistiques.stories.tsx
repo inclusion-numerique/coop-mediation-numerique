@@ -36,9 +36,9 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@app/web/features/activites/ui/libelles/type-lieu'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/ui'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
 import { provide } from '@app/web/libs/injection/client'
 import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
@@ -280,7 +280,7 @@ export default {
   component: MesStatistiques,
   decorators: [
     (Story) => {
-      provide(RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY, async () =>
+      provide(RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY, async () =>
         ServerActionSuccess([]),
       )
       provide(REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY, async () =>

@@ -1,6 +1,6 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { reglerLePartageStatistiquesAction } from '@app/web/app/_actions/mediateurs/regler-le-partage-statistiques.action'
+import { rechercherLesLieuxDeMesStatistiquesAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
 import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
@@ -11,7 +11,6 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { consulterMesLiensDePartage } from '@app/web/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
@@ -24,6 +23,7 @@ import {
   validateActivitesFilters,
 } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { MesStatistiques } from '@app/web/features/statistiques/ui/pages/MesStatistiques'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
@@ -64,8 +64,8 @@ const MesStatistiquesPage = async (props: {
       to={rechercherEmployeusesDesActivitesAction}
     >
       <ClientBinder
-        bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-        to={rechercherUnLieuActiviteAction}
+        bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
+        to={rechercherLesLieuxDeMesStatistiquesAction}
       >
         <ClientBinder
           bind={REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY}
@@ -79,10 +79,7 @@ const MesStatistiquesPage = async (props: {
               mesStatistiques.totalCounts.accompagnements.total
             }
             partage={<PartageStatistiques liens={liensDePartage} />}
-            filtreDeLieu={filtreDeLieu(
-              mesStatistiques.activitesFilters,
-              mesStatistiques,
-            )}
+            filtreDeLieu={filtreDeLieu(mesStatistiques)}
             impression={impressionDesStatistiques(mesStatistiques)}
             generale={sectionGenerale(mesStatistiques, {
               debut: mesStatistiques.activitesFilters.du,

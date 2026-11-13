@@ -1,10 +1,11 @@
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { rechercherLesLieuxNationauxAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import {
   filtreDeLieu,
   vocabulaireDeLaBarre,
 } from '@app/web/composition/statistiques/barre'
+import { lieuxChoisisDe } from '@app/web/composition/statistiques/lieux-choisis'
 import {
   sectionActivites,
   sectionBeneficiaires,
@@ -12,31 +13,20 @@ import {
 } from '@app/web/composition/statistiques/sections'
 import { statistiquesNationales } from '@app/web/composition/statistiques/statistiques-nationales'
 import { criteresDesStatistiques } from '@app/web/features/activites/domain'
-import {
-  getCommunesAndDepartementsOptions,
-  getLieuxActiviteOptions,
-} from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { optionsDeTags } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { StatistiquesNationales } from '@app/web/features/statistiques/ui/pages/StatistiquesNationales'
 import { lireLesTagsCollectifs } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { unstable_cache } from 'next/cache'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),
 }
-
-const communesEtDepartementsDesActivites = unstable_cache(
-  getCommunesAndDepartementsOptions,
-  ['communes-et-departements-des-activites'],
-  { revalidate: 3600 },
-)
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -53,8 +43,7 @@ const Page = async (props: {
   const user = await authenticateUser()
   const [
     tagsCollectifs,
-    { communesOptions, departementsOptions },
-    lieuxActiviteOptions,
+    lieuxChoisis,
     {
       totalCounts,
       accompagnementsParJour,
@@ -64,8 +53,7 @@ const Page = async (props: {
     },
   ] = await Promise.all([
     lireLesTagsCollectifs(),
-    communesEtDepartementsDesActivites(),
-    getLieuxActiviteOptions(),
+    lieuxChoisisDe(activitesFilters),
     statistiquesNationales(criteresDesStatistiques(activitesFilters), {
       tags: user.role === 'Admin',
     }),
@@ -74,20 +62,14 @@ const Page = async (props: {
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
+      to={rechercherLesLieuxNationauxAction}
     >
       <StatistiquesNationales
         activitesFilters={activitesFilters}
         vocabulaire={vocabulaireDeLaBarre}
-        filtreDeLieu={filtreDeLieu(activitesFilters, {
-          communesOptions,
-          departementsOptions,
-          lieuxActiviteOptions,
-        })}
-        communesOptions={communesOptions}
-        departementsOptions={departementsOptions}
-        lieuxActiviteOptions={lieuxActiviteOptions}
+        filtreDeLieu={filtreDeLieu(lieuxChoisis)}
+        {...lieuxChoisis}
         tagsOptions={tagsOptions}
         activiteSourceOptions={activiteSourceOptions}
         generale={sectionGenerale(
