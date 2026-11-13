@@ -9,12 +9,22 @@ import {
   withQueryParams,
 } from '@app/web/app/api/v1/middlewares'
 import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
+import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
+import {
+  criteresDesStatistiques,
+  Jour,
+  PERIMETRE_NATIONAL,
+} from '@app/web/features/activites/domain'
+import { statistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   FiltresDesStatistiquesValidation,
   type StatistiquesAttributes,
   statistiquesAttributes,
   statistiquesExposees,
 } from '@app/web/features/statistiques/abilities/exposer-les-statistiques'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -378,14 +388,28 @@ export const GET = routeBuilder()
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
       const requete = serializeApiRequestParams(queryParams)
+      const criteres = criteresDesStatistiques(queryParams.filter)
+      const aujourdhui = Jour(dateAsIsoDay(new Date()))
+      const fournies = await statistiquesFournies(
+        {
+          perimetre: PERIMETRE_NATIONAL,
+          criteres,
+          conseillersNumeriques: conseillerNumeriqueSql,
+          rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+          parJour: fenetreDe({
+            debut: criteres.periode.du,
+            fin: criteres.periode.au ?? aujourdhui,
+          }),
+          parMois: fenetreDe({ debut: null, fin: aujourdhui }),
+        },
+        { territoires: false, tags: false },
+      )
 
       return NextResponse.json({
         data: {
           type: 'statistiques',
           id: 'statistiques',
-          attributes: statistiquesAttributes(
-            await statistiquesExposees(queryParams.filter),
-          ),
+          attributes: statistiquesAttributes(statistiquesExposees(fournies)),
         },
         links: {
           self: {
