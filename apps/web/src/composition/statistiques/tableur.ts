@@ -1,8 +1,8 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { generateActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { BuildStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
+import type { BuildStatistiquesWorksheetInput } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
+import { getMesStatistiquesPageData } from './mes-statistiques'
 
 export const getStatistiquesWorksheetInput = async ({
   user,
@@ -32,5 +32,6 @@ export const getStatistiquesWorksheetInput = async ({
     user,
     mediateur: user,
     filters: activitesFiltersLabels,
+    fuseau: user.timezone,
   }
 }

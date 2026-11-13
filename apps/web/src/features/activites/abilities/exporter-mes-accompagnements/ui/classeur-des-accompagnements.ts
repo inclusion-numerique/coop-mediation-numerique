@@ -3,8 +3,8 @@ import {
   type WorksheetUser,
 } from '@app/web/libs/worksheet/addExportMetadata'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
+import { addFilters } from '@app/web/libs/worksheet/filtres-des-activites'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
-import { addFilters } from '@app/web/worksheet/buildWorksheetHelpers'
 import Excel from 'exceljs'
 import type { ExportDesAccompagnements } from '../domain'
 import {

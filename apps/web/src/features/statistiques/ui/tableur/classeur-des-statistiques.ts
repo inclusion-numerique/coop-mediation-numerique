@@ -1,21 +1,64 @@
-import type { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import type { ActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
+import type {
+  LabelAndCount,
+  QuantifiedShare,
+} from '@app/web/libs/statistiques/quantifiedShare'
 import {
   addExportMetadata,
   type WorksheetUser,
 } from '@app/web/libs/worksheet/addExportMetadata'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
+import { addFilters } from '@app/web/libs/worksheet/filtres-des-activites'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import { numberToPercentage } from '@app/web/utils/formatNumber'
 import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
-import { addFilters } from '../buildWorksheetHelpers'
+
+type PartDuTotal = { total: number; proportion: number }
+
+type CommuneDuClasseur = QuantifiedShare & {
+  commune: string | null
+  codePostal: string | null
+}
+
+export type StatistiquesDuClasseur = {
+  totalCounts: {
+    activites: {
+      total: number
+      individuels: PartDuTotal
+      collectifs: PartDuTotal & { participants: number }
+    }
+    accompagnements: { total: number }
+    beneficiaires: {
+      total: number
+      nouveaux: number
+      suivis: number
+      anonymes: number
+    }
+  }
+  accompagnementsParMois: LabelAndCount[]
+  activites: {
+    thematiques: QuantifiedShare[]
+    thematiquesDemarches: QuantifiedShare[]
+    tags: QuantifiedShare[]
+    materiels: QuantifiedShare[]
+    typeLieu: QuantifiedShare[]
+    durees: QuantifiedShare[]
+  }
+  structures: QuantifiedShare[]
+  communes: CommuneDuClasseur[]
+  beneficiaires: {
+    genres: QuantifiedShare[]
+    trancheAges: QuantifiedShare[]
+    statutsSocial: QuantifiedShare[]
+    communes: QuantifiedShare[]
+  }
+}
 
 const addStatistiquesGenerales =
   (worksheet: Excel.Worksheet) =>
-  ({ totalCounts, accompagnementsParMois }: MesStatistiquesPageData) => {
+  ({ totalCounts, accompagnementsParMois }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Statistiques générales')
     worksheet.addRow([
       'Accompagnements au total',
@@ -46,7 +89,7 @@ const addStatistiquesGenerales =
 
 const addStatistiquesActivites =
   (worksheet: Excel.Worksheet) =>
-  ({ totalCounts: { activites } }: MesStatistiquesPageData) => {
+  ({ totalCounts: { activites } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Statistiques sur vos accompagnements')
     worksheet.addRow([
       'Accompagnements individuels',
@@ -70,14 +113,18 @@ const addQuantifiedShareRows = (
   worksheet: Worksheet,
   items: QuantifiedShare[],
 ) => {
-  for (const { label, count, proportion } of items) {
-    worksheet.addRow([label, count, numberToPercentage(proportion)])
-  }
+  worksheet.addRows(
+    items.map(({ label, count, proportion }) => [
+      label,
+      count,
+      numberToPercentage(proportion),
+    ]),
+  )
 }
 
 const addStatistiquesThematiquesMediationNumerique =
   (worksheet: Excel.Worksheet) =>
-  ({ activites: { thematiques } }: MesStatistiquesPageData) => {
+  ({ activites: { thematiques } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Thématiques Médiation numérique')
     addQuantifiedShareRows(worksheet, thematiques)
     worksheet.addRow([])
@@ -85,7 +132,7 @@ const addStatistiquesThematiquesMediationNumerique =
 
 const addStatistiquesThematiquesDemarchesAdministratives =
   (worksheet: Excel.Worksheet) =>
-  ({ activites: { thematiquesDemarches } }: MesStatistiquesPageData) => {
+  ({ activites: { thematiquesDemarches } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Thématiques Démarches administratives')
     addQuantifiedShareRows(worksheet, thematiquesDemarches)
     worksheet.addRow([])
@@ -93,7 +140,7 @@ const addStatistiquesThematiquesDemarchesAdministratives =
 
 const addStatistiquesTags =
   (worksheet: Excel.Worksheet) =>
-  ({ activites: { tags } }: MesStatistiquesPageData) => {
+  ({ activites: { tags } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Tags')
     addQuantifiedShareRows(worksheet, tags)
     worksheet.addRow([])
@@ -101,7 +148,7 @@ const addStatistiquesTags =
 
 const addStatistiquesMaterielUtilises =
   (worksheet: Excel.Worksheet) =>
-  ({ activites: { materiels } }: MesStatistiquesPageData) => {
+  ({ activites: { materiels } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Matériel utilisés')
     addQuantifiedShareRows(worksheet, materiels)
     worksheet.addRow([])
@@ -109,7 +156,7 @@ const addStatistiquesMaterielUtilises =
 
 const addStatistiquesCanauxActivites =
   (worksheet: Excel.Worksheet) =>
-  ({ activites: { typeLieu } }: MesStatistiquesPageData) => {
+  ({ activites: { typeLieu } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Canaux des activités')
     addQuantifiedShareRows(worksheet, typeLieu)
     worksheet.addRow([])
@@ -117,7 +164,7 @@ const addStatistiquesCanauxActivites =
 
 const addStatistiquesDureesActivites =
   (worksheet: Excel.Worksheet) =>
-  ({ activites: { durees } }: MesStatistiquesPageData) => {
+  ({ activites: { durees } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Durées des activités')
     addQuantifiedShareRows(worksheet, durees)
     worksheet.addRow([])
@@ -125,7 +172,7 @@ const addStatistiquesDureesActivites =
 
 const addStatistiquesNombreActivitesParLieux =
   (worksheet: Excel.Worksheet) =>
-  ({ structures }: MesStatistiquesPageData) => {
+  ({ structures }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Nombre d’activités par lieux')
     addQuantifiedShareRows(worksheet, structures)
     worksheet.addRow([])
@@ -133,7 +180,7 @@ const addStatistiquesNombreActivitesParLieux =
 
 const addStatistiquesNombreAccompagnementsParCodePostal =
   (worksheet: Excel.Worksheet) =>
-  ({ communes }: MesStatistiquesPageData) => {
+  ({ communes }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Nombre d’accompagnements par code postal')
     worksheet.addRows(
       communes.map(({ commune, codePostal, count, proportion }) => [
@@ -148,7 +195,7 @@ const addStatistiquesNombreAccompagnementsParCodePostal =
 
 const addStatistiquesGenre =
   (worksheet: Excel.Worksheet) =>
-  ({ beneficiaires: { genres } }: MesStatistiquesPageData) => {
+  ({ beneficiaires: { genres } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Genre')
     addQuantifiedShareRows(worksheet, genres)
     worksheet.addRow([])
@@ -156,7 +203,7 @@ const addStatistiquesGenre =
 
 const addStatistiquesTranchesAge =
   (worksheet: Excel.Worksheet) =>
-  ({ beneficiaires: { trancheAges } }: MesStatistiquesPageData) => {
+  ({ beneficiaires: { trancheAges } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Tranches d’âge')
     addQuantifiedShareRows(worksheet, trancheAges)
     worksheet.addRow([])
@@ -164,7 +211,7 @@ const addStatistiquesTranchesAge =
 
 const addStatistiquesStatus =
   (worksheet: Excel.Worksheet) =>
-  ({ beneficiaires: { statutsSocial } }: MesStatistiquesPageData) => {
+  ({ beneficiaires: { statutsSocial } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Statuts')
     addQuantifiedShareRows(worksheet, statutsSocial)
     worksheet.addRow([])
@@ -172,20 +219,19 @@ const addStatistiquesStatus =
 
 const addStatistiquesCommuneResidenceBeneficiaires =
   (worksheet: Excel.Worksheet) =>
-  ({ beneficiaires: { communes } }: MesStatistiquesPageData) => {
+  ({ beneficiaires: { communes } }: StatistiquesDuClasseur) => {
     addTitleRow(worksheet)('Commune de résidence des bénéficiaires')
     addQuantifiedShareRows(worksheet, communes)
     worksheet.addRow([])
   }
 
 export type BuildStatistiquesWorksheetInput = {
-  // This is the user that requested the worksheet, it might not be the same user as the one that owns the activites
   user: WorksheetUser
-  // This is the user that owns the activites
   mediateur: WorksheetUser
   filters: ActivitesFiltersLabels
-  statistiques: MesStatistiquesPageData
-  worksheetGenerationDate?: Date // Defaults to current date
+  statistiques: StatistiquesDuClasseur
+  fuseau: string
+  worksheetGenerationDate?: Date
 }
 
 export const buildStatistiquesWorksheet = ({
@@ -193,6 +239,7 @@ export const buildStatistiquesWorksheet = ({
   mediateur,
   filters,
   statistiques,
+  fuseau,
   worksheetGenerationDate = new Date(),
 }: BuildStatistiquesWorksheetInput): Excel.Workbook => {
   const workbook = new Excel.Workbook()
@@ -201,9 +248,12 @@ export const buildStatistiquesWorksheet = ({
 
   const worksheet = workbook.addWorksheet('Statistiques')
 
-  addExportMetadata(worksheet)({ user, date: worksheetGenerationDate })
+  addExportMetadata(worksheet)({
+    user,
+    date: worksheetGenerationDate,
+    fuseau,
+  })
   addFilters(worksheet)(filters, {
-    // only display the mediateur name if the user is NOT the mediateur used for export
     mediateurScope: user.id === mediateur.id ? null : mediateur,
     excludeFilters: ['beneficiaires'],
   })

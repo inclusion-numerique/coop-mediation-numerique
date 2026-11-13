@@ -1,12 +1,12 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { getStatistiquesWorksheetInput } from '@app/web/composition/statistiques/tableur'
 import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { buildStatistiquesWorksheet } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
-import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'
 import { notFound } from 'next/navigation'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'

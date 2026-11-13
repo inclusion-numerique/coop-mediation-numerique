@@ -1,13 +1,13 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { getStatistiquesWorksheetInput } from '@app/web/composition/statistiques/tableur'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { buildStatistiquesWorksheet } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
-import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 

@@ -1,4 +1,3 @@
-import type { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { computeProportion } from '@app/web/libraries/proportions'
 import { numberToPercentage } from '@app/web/utils/formatNumber'
@@ -6,7 +5,7 @@ import type { Workbook, Worksheet } from 'exceljs'
 import {
   type BuildStatistiquesWorksheetInput,
   buildStatistiquesWorksheet,
-} from './buildStatistiquesWorksheet'
+} from './classeur-des-statistiques'
 
 const DATE = new Date('2024-09-11T17:42:00.000Z')
 
@@ -15,6 +14,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
   'mediateur' | 'filters'
 > = {
   worksheetGenerationDate: DATE,
+  fuseau: 'Europe/Paris',
   user: {
     id: '1',
     firstName: 'John',
@@ -44,8 +44,6 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
       },
       accompagnements: {
         total: 44,
-        individuels: { total: 8, proportion: 40 },
-        collectifs: { total: 28, proportion: 20 },
       },
       beneficiaires: {
         total: 23,
@@ -266,7 +264,6 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     },
     structures: [
       {
-        id: 'a0000000-0000-4000-8000-000000000001',
         count: 4,
         proportion: 100,
         label: 'Exemple de Mediateque',
@@ -276,7 +273,6 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
       {
         commune: 'Bourg-en-Bresse',
         codePostal: '01000',
-        codeInsee: '01053',
         count: 3,
         proportion: 75,
         label: 'Bourg-en-Bresse · 01000',
@@ -284,13 +280,12 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
       {
         commune: null,
         codePostal: null,
-        codeInsee: null,
         count: 1,
         proportion: 25,
         label: 'Non communiqué',
       },
     ],
-  } as MesStatistiquesPageData,
+  },
 }
 
 const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInput =
@@ -1090,5 +1085,18 @@ describe('build statistiques worksheet for coordinateur', () => {
       ?.map((row) => row.values)
 
     expect(rows).toEqual([[undefined, 'Médiateurs', 'Marie Doe'], []])
+  })
+})
+
+describe('heure du classeur des statistiques', () => {
+  it('est donnée dans le fuseau de l’utilisateur', () => {
+    const feuille = buildStatistiquesWorksheet({
+      ...STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR,
+      fuseau: 'America/Cayenne',
+    }).getWorksheet('Statistiques')
+
+    expect(
+      feuille?.getRows(info.start, info.length)?.map((row) => row.values),
+    ).toContainEqual([undefined, "Heure d'export", '14:42'])
   })
 })
