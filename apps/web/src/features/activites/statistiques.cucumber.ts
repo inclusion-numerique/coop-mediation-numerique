@@ -61,6 +61,12 @@ export const tagSeme = (nom: string): string => {
   return id
 }
 
+export const lieuSeme = (nom: string): string => {
+  const id = lieux[nom]
+  assert.ok(id, `Lieu inconnu : ${nom}`)
+  return id
+}
+
 const PREMIER_IDENTIFIANT_DE_TEST = 970_000_000
 
 const STATUTS_DE_PRESENCE = [
