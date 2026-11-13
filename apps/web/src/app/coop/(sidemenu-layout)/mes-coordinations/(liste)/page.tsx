@@ -14,6 +14,7 @@ import {
   listeDesCoordinations,
   MesCoordinationsPage,
   optionsDeFiltrePresentees,
+  parametresDeLaPagination,
 } from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
 import {
@@ -75,7 +76,7 @@ const MesCoordinationsRoute = async ({
           timezone: user.timezone,
         })}
         filtre={estFiltre(criteres)}
-        pagination={{ page: parametres.page, lignes: parametres.lignes }}
+        pagination={parametresDeLaPagination(parametres)}
         exporter={
           <BoutonExporter
             filters={filtresActifs}

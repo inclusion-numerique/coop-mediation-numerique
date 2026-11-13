@@ -26,7 +26,7 @@ export const MesCoordinationsPage = ({
   filtresActifs: readonly FiltreActif[]
   liste: ListeDesCoordinations
   filtre: boolean
-  pagination: { page?: string; lignes?: string }
+  pagination: Readonly<Record<string, string>>
   exporter: ReactNode
 }) => (
   <CoopPageContainer size={56}>

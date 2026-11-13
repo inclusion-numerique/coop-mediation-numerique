@@ -16,7 +16,7 @@ export const ActivitesDeCoordinationListe = ({
 }: {
   liste: ListeDesCoordinations
   filtre: boolean
-  pagination: { page?: string; lignes?: string }
+  pagination: Readonly<Record<string, string>>
 }) =>
   jours.length === 0 ? (
     <CoordinationEmptyState isFiltered={filtre} />
