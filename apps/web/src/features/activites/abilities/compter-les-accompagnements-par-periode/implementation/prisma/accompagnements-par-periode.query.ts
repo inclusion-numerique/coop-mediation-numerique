@@ -24,13 +24,13 @@ const serie = (
   format: string,
 ): Promise<Ligne[]> =>
   prismaClient.$queryRaw<Ligne[]>`
-    WITH accompagnements_retenus AS (
-      SELECT DATE_TRUNC(${pas}, act.date::timestamp) AS periode
-      FROM activites act
-        INNER JOIN accompagnements acc ON acc.activite_id = act.id
-        ${jointuresDesStatistiques(demande.criteres)}
+    WITH comptes AS (
+      SELECT DATE_TRUNC(${pas}, act.date::timestamp) AS periode,
+             SUM(act.accompagnements_count) AS nombre
+      FROM activites act ${jointuresDesStatistiques(demande.criteres)}
       WHERE ${activitesRetenues(demande)}
         AND act.date BETWEEN ${du}::date AND ${au}::date
+      GROUP BY 1
     ),
     periodes AS (
       SELECT generate_series(
@@ -40,11 +40,9 @@ const serie = (
       ) AS periode
     )
     SELECT TO_CHAR(periodes.periode, ${format}) AS periode,
-           COUNT(accompagnements_retenus.periode)::int AS nombre
+           COALESCE(comptes.nombre, 0)::int AS nombre
     FROM periodes
-      LEFT JOIN accompagnements_retenus
-        ON accompagnements_retenus.periode = periodes.periode
-    GROUP BY periodes.periode
+      LEFT JOIN comptes ON comptes.periode = periodes.periode
     ORDER BY periodes.periode`
 
 export const compterLesAccompagnementsParPeriode = async ({
