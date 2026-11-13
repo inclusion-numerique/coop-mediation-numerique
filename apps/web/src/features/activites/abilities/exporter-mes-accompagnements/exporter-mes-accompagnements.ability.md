@@ -78,6 +78,13 @@
 * When je nomme les filtres de mon export sur les employeuses "Mairie de Lyon, Conseil départemental"
 * Then les employeuses nommées sont "Mairie de Lyon"
 
+### Scenario: Un médiateur étranger n'est pas nommé
+
+* Given une médiatrice "Ada Lovelace" ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026
+* And un autre médiateur a accompagné un bénéficiaire le 7 mars 2026
+* When je nomme les filtres de mon export sur moi-même et l'autre médiateur
+* Then seule la médiatrice "Ada Lovelace" est nommée
+
 ### Scenario: Sans filtre actif, aucun nom n'est recherché
 
 * Given une médiatrice ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026
