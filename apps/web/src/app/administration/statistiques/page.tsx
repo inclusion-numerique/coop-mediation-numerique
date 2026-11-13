@@ -26,10 +26,17 @@ import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres
 import { StatistiquesNationales } from '@app/web/features/statistiques/ui/pages/StatistiquesNationales'
 import { lireLesTagsCollectifs } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
+import { unstable_cache } from 'next/cache'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),
 }
+
+const communesEtDepartementsDesActivites = unstable_cache(
+  getCommunesAndDepartementsOptions,
+  ['communes-et-departements-des-activites'],
+  { revalidate: 3600 },
+)
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -48,7 +55,7 @@ const Page = async (props: {
 
   const [{ communesOptions, departementsOptions }, lieuxActiviteOptions] =
     await Promise.all([
-      getCommunesAndDepartementsOptions(),
+      communesEtDepartementsDesActivites(),
       getLieuxActiviteOptions(),
     ])
 
