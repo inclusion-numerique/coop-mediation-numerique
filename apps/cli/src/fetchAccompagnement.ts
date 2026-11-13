@@ -1,7 +1,13 @@
 import { createWriteStream } from 'node:fs'
 import { output } from '@app/cli/output'
 import { varFile } from '@app/config/varDirectory'
-import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import { compterLesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements'
+import {
+  criteresDesStatistiques,
+  PERIMETRE_NATIONAL,
+} from '@app/web/features/activites/domain'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { Command } from '@commander-js/extra-typings'
 
 // const BASE_URL = 'http://localhost:3000/api/v1/statistiques'
@@ -118,14 +124,17 @@ export const fetchAccompagnements = new Command()
   .action(async (conum, date) => {
     const results = await Promise.all(
       departements.map(async (departement) => {
-        const total = await getTotalCountsStats({
-          activitesFilters: {
-            departements: [departement],
-            conseiller_numerique: `${conum as '0' | '1'}`,
-            au: `${date}`,
-          },
+        const totaux = await compterLesAccompagnements({
+          perimetre: PERIMETRE_NATIONAL,
+          criteres: criteresDesStatistiques({
+            departements: departement,
+            conseiller_numerique: conum,
+            au: date,
+          }),
+          conseillersNumeriques: conseillerNumeriqueSql,
+          rendezVousAuxStatuts: rendezVousAuxStatutsSql,
         })
-        return { departement, total: total.accompagnements.total }
+        return { departement, total: totaux.accompagnements.total }
       }),
     )
 
