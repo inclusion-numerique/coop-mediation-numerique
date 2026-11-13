@@ -31,6 +31,18 @@ let membres: Readonly<Record<string, readonly string[]>> = {}
 let lieux: Readonly<Record<string, string>> = {}
 let rendezVous: readonly { id: number; compte: number }[] = []
 let tags: Readonly<Record<string, string>> = {}
+let employeuses: Readonly<Record<string, number>> = {}
+
+const employeuseNommee = async (nom: string): Promise<number> => {
+  const existante = employeuses[nom]
+  if (existante) return existante
+  const { id } = await prismaClient.structureAdministrativeMain.create({
+    data: { denominationAntenne: nom },
+    select: { id: true },
+  })
+  employeuses = { ...employeuses, [nom]: id }
+  return id
+}
 
 const tagNomme = async (nom: string, mediateurId: string): Promise<string> => {
   const existant = tags[nom]
@@ -226,6 +238,9 @@ const semerUneActivite = async (
       accompagnementsCount: participants.length,
       suppression: ligne.supprimee === 'oui' ? new Date() : null,
       v1CraId: ligne.v1 === 'oui' ? v4() : null,
+      structureEmployeuseMainId: ligne.employeuse
+        ? await employeuseNommee(ligne.employeuse)
+        : null,
       ...communeDuLieu(ligne.communeDuLieu),
       rdvId: ligne.rendezVous
         ? await semerUnRendezVous(userId, ligne.rendezVous)
@@ -370,6 +385,8 @@ After(async () => {
   rendezVous = []
   const tagsSemes = Object.values(tags)
   tags = {}
+  const employeusesSemees = Object.values(employeuses)
+  employeuses = {}
   personnes = {}
   membres = {}
   lieux = {}
@@ -396,6 +413,9 @@ After(async () => {
     where: { mediateurId: { in: mediateurIds } },
   })
   await prismaClient.tag.deleteMany({ where: { id: { in: tagsSemes } } })
+  await prismaClient.structureAdministrativeMain.deleteMany({
+    where: { id: { in: employeusesSemees } },
+  })
   await prismaClient.rdv.deleteMany({
     where: { id: { in: rendezVousSemes.map(({ id }) => id) } },
   })
