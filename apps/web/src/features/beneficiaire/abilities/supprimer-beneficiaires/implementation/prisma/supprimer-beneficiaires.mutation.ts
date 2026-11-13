@@ -1,5 +1,7 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { failure, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
+import { garderUnSeulCodePostal } from '../../../../db'
 import { AucunBeneficiaireValide } from '../../domain/errors'
 import type { SupprimerBeneficiaires } from '../../domain/supprimer-beneficiaires'
 
@@ -39,6 +41,7 @@ export const supprimerBeneficiaires: SupprimerBeneficiaires = async ({
         pasDeTelephone: null,
       },
     })
+    await garderUnSeulCodePostal(tx, Prisma.sql`id = ANY(${validIds}::uuid[])`)
     await tx.mediateur.update({
       where: { id: mediateurId },
       data: { beneficiairesCount: { decrement: validIds.length } },
