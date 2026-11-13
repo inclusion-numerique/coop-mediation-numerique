@@ -57,11 +57,11 @@ export const repartirLesAccompagnements = async (
   const [ligne] = await prismaClient.$queryRaw<Ligne[]>`
     SELECT
       COALESCE(SUM(act.accompagnements_count), 0)::int AS total,
-      ${parValeur(typesDActivite, (type) => Prisma.sql`act.type::text = ${type}`)} AS types,
+      ${parValeur(typesDActivite, (type) => Prisma.sql`act.type = ${type}::type_activite`)} AS types,
       ${parDuree} AS durees,
-      ${parValeur(typesDeLieu, (typeDeLieu) => Prisma.sql`act.type_lieu::text = ${typeDeLieu}`)} AS types_de_lieu,
-      ${parValeur(thematiquesRecherchees, (thematique) => Prisma.sql`${thematique} = ANY(act.thematiques::text[])`)} AS thematiques,
-      ${parValeur(materielsComptes, (materiel) => Prisma.sql`${materiel} = ANY(act.materiel::text[])`)} AS materiels
+      ${parValeur(typesDeLieu, (typeDeLieu) => Prisma.sql`act.type_lieu = ${typeDeLieu}::type_lieu`)} AS types_de_lieu,
+      ${parValeur(thematiquesRecherchees, (thematique) => Prisma.sql`${thematique}::thematique = ANY(act.thematiques)`)} AS thematiques,
+      ${parValeur(materielsComptes, (materiel) => Prisma.sql`${materiel}::materiel = ANY(act.materiel)`)} AS materiels
     FROM activites act ${jointuresDesStatistiques(demande.criteres)}
     WHERE ${activitesRetenues(demande)}`
   return {
