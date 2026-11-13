@@ -1,4 +1,11 @@
 import assert from 'node:assert'
+import { compterLesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements'
+import {
+  CoordinateurId as CoordinateurIdDesActivites,
+  criteresDesStatistiques,
+  MediateurId as MediateurIdDesActivites,
+} from '@app/web/features/activites/domain'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import {
   consulterUnActeur,
   type QuiConsulte,
@@ -8,12 +15,34 @@ import {
   type ActeurSeme,
   semerUnActeur,
 } from '@app/web/features/mon-reseau/mon-reseau.cucumber'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { derniereActiviteDeLUtilisateur } from '@app/web/features/utilisateurs'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { subDays } from 'date-fns'
 
 type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
+
+const lireLesStatistiquesSur30Jours = async (
+  coordinateurId: string,
+  mediateurId: string,
+  periode: { readonly du: string; readonly au: string },
+) => {
+  const { accompagnements, personnes } = await compterLesAccompagnements({
+    perimetre: {
+      type: 'Equipe',
+      coordinateur: CoordinateurIdDesActivites(coordinateurId),
+      membres: [MediateurIdDesActivites(mediateurId)],
+    },
+    criteres: criteresDesStatistiques(periode),
+    conseillersNumeriques: conseillerNumeriqueSql,
+    rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+  })
+  return {
+    beneficiairesAccompagnes: personnes.total,
+    accompagnements: accompagnements.total,
+  }
+}
 
 const etat: {
   acteur?: ActeurSeme
@@ -67,6 +96,7 @@ const consulter = async (acteurId: string) => {
     quiConsulte: quiConsulte(),
     acteurId,
     lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
+    lireLesStatistiquesSur30Jours,
     maintenant: new Date(),
   })
 }

@@ -4,7 +4,14 @@ import { supprimerUnAncienMembreAction } from '@app/web/app/_actions/equipe/supp
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { compterLesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements'
 import {
+  CoordinateurId as CoordinateurIdDesActivites,
+  criteresDesStatistiques,
+  MediateurId as MediateurIdDesActivites,
+} from '@app/web/features/activites/domain'
+import {
+  conseillerNumeriqueSql,
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
 } from '@app/web/features/employeuse/server'
@@ -30,6 +37,7 @@ import {
   LieuxDeLActeur,
   TitreDeSection,
 } from '@app/web/features/mon-reseau/abilities/consulter-un-acteur/ui'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { derniereActiviteDeLUtilisateur } from '@app/web/features/utilisateurs'
 import { departementDuCode } from '@app/web/libraries/departement'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
@@ -48,6 +56,27 @@ export const generateMetadata = async ({
     : { title: metadataTitle(`${nom} | Mon réseau`) }
 }
 
+const lireLesStatistiquesSur30Jours = async (
+  coordinateurId: string,
+  mediateurId: string,
+  periode: { readonly du: string; readonly au: string },
+) => {
+  const { accompagnements, personnes } = await compterLesAccompagnements({
+    perimetre: {
+      type: 'Equipe',
+      coordinateur: CoordinateurIdDesActivites(coordinateurId),
+      membres: [MediateurIdDesActivites(mediateurId)],
+    },
+    criteres: criteresDesStatistiques(periode),
+    conseillersNumeriques: conseillerNumeriqueSql,
+    rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+  })
+  return {
+    beneficiairesAccompagnes: personnes.total,
+    accompagnements: accompagnements.total,
+  }
+}
+
 const Page = async ({ params }: Parametres) => {
   const quiConsulte = await authenticateMediateurOrCoordinateur()
   const { userId, departement: code } = await params
@@ -57,6 +86,7 @@ const Page = async ({ params }: Parametres) => {
     quiConsulte,
     acteurId: userId,
     lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
+    lireLesStatistiquesSur30Jours,
     maintenant,
   })
 
