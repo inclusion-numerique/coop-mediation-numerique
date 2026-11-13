@@ -240,6 +240,9 @@ const semerUneActivite = async (
               prenom: anonyme ? null : 'Suivi',
               nom: anonyme ? null : 'Statistiques',
               genre: valeurDe(Genre)(ligne.genre),
+              anneeNaissance: ligne.anneeNaissance
+                ? Number(ligne.anneeNaissance)
+                : null,
               trancheAge: valeurDe(TrancheAge)(ligne.trancheAge),
               statutSocial: valeurDe(StatutSocial)(ligne.statutSocial),
               commune: ligne.residence || null,
