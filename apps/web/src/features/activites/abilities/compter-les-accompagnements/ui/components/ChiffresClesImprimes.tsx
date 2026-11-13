@@ -1,14 +1,12 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { AccompagnementBarChart } from '@app/web/libs/statistiques/AccompagnementBarChart'
+import type { TotauxPresentes } from '../totaux.presenter'
 
-export const StatistiquesGeneralesPrint = ({
+export const ChiffresClesImprimes = ({
   totalCounts,
-  accompagnementsParMois,
-  accompagnementsParJour,
-}: MesStatistiquesPageData) => (
+}: {
+  totalCounts: TotauxPresentes
+}) => (
   <>
-    <h2 className="fr-h3">Statistiques générales</h2>
     <h3 className="fr-h5">Accompagnements et bénéficiaires</h3>
     <p>
       <strong>
@@ -53,17 +51,5 @@ export const StatistiquesGeneralesPrint = ({
         accompagnements.
       </small>
     </p>
-    <h3 className="fr-h5 fr-mt-6v">Nombre d’accompagnements par mois</h3>
-    <AccompagnementBarChart
-      data={accompagnementsParMois}
-      height={200}
-      isAnimationActive={false}
-    />
-    <h3 className="fr-h5 fr-mt-6v">Nombre d’accompagnements par jour</h3>
-    <AccompagnementBarChart
-      data={accompagnementsParJour}
-      height={200}
-      isAnimationActive={false}
-    />
   </>
 )

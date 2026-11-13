@@ -1,9 +1,9 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
-import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import { sectionGenerale } from '@app/web/composition/statistiques/sections'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import {
   criteresDesStatistiques,
@@ -112,12 +112,10 @@ const Page = async (props: {
           activiteSourceOptions={activiteSourceOptions}
         />
         <section className="fr-mb-6w">
-          <StatistiquesGenerales
-            wording="generique"
-            totalCounts={totalCounts}
-            accompagnementsParJour={accompagnementsParJour}
-            accompagnementsParMois={accompagnementsParMois}
-          />
+          {sectionGenerale(
+            { totalCounts, accompagnementsParJour, accompagnementsParMois },
+            { wording: 'generique' },
+          )}
         </section>
         <section className="fr-mb-6w">
           <StatistiquesActivites
