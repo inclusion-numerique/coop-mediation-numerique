@@ -13,9 +13,9 @@ import {
 } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
 import {
   GraphiqueDesAccompagnements,
-  GraphiqueEnAttente,
   GraphiquesImprimes,
 } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode/ui'
+import { GraphiqueEnAttente } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/GraphiqueEnAttente'
 import {
   CommunesDeResidence,
   CommunesDeResidenceImprimees,
@@ -287,14 +287,19 @@ export const impressionDesStatistiques = ({
   Parameters<typeof ImpressionDesStatistiques>[0],
   'generale' | 'activites' | 'beneficiaires'
 >) =>
-  bloc(statistiques, (fournies) => (
-    <>
-      <ImpressionDesStatistiques
-        {...options}
-        generale={sectionGeneraleImprimee(fournies)}
-        activites={sectionActivitesImprimee(fournies)}
-        beneficiaires={sectionBeneficiairesImprimee(fournies)}
-      />
-      <AutoPrint />
-    </>
-  ))
+  bloc(
+    statistiques,
+    (fournies) => (
+      <>
+        <ImpressionDesStatistiques
+          {...options}
+          generale={sectionGeneraleImprimee(fournies)}
+          activites={sectionActivitesImprimee(fournies)}
+          beneficiaires={sectionBeneficiairesImprimee(fournies)}
+        />
+        <AutoPrint />
+      </>
+    ),
+    'fr-print',
+    false,
+  )
