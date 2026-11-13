@@ -4,6 +4,7 @@ export {
 } from './prisma/periode-des-rendez-vous.query'
 export {
   rendezVousAListerSql,
+  rendezVousAuxStatutsSql,
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
