@@ -7,7 +7,7 @@ import {
 } from '@app/web/features/tags/tags.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { lireLesTagsVisibles } from './implementation'
+import { lireLesTagsVisibles, lireTousLesTagsVisibles } from './implementation'
 
 const contexte: {
   acteur?: Acteur
@@ -50,3 +50,21 @@ Then('seul le tag {string} est lu', (nom: string) => {
     [nom],
   )
 })
+
+When('tous les tags visibles par ce médiateur sont lus', async () => {
+  assert.ok(contexte.acteur)
+  contexte.lus = await lireTousLesTagsVisibles({ acteur: contexte.acteur })
+})
+
+Then('le tag {string} est proposé', (nom: string) => {
+  assert.ok(contexte.lus?.some((tag) => tag.nom === nom))
+})
+
+Then(
+  'ni {string} ni {string} ne sont proposés',
+  (premier: string, second: string) => {
+    assert.ok(
+      !contexte.lus?.some((tag) => tag.nom === premier || tag.nom === second),
+    )
+  },
+)

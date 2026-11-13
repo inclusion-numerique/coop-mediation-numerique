@@ -1,7 +1,10 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { type Tag, TagId } from '../../../../domain'
 import { acteurDe } from '../../../../implementation/session'
-import { lireLesTagsVisibles } from '../prisma/lire-les-tags-visibles.query'
+import {
+  lireLesTagsVisibles,
+  lireTousLesTagsVisibles,
+} from '../prisma/lire-les-tags-visibles.query'
 
 export const tagsVisiblesPar =
   (user: SessionUser) =>
@@ -13,3 +16,8 @@ export const tagsVisiblesPar =
         return tagId === null ? [] : [tagId]
       }),
     })
+
+export const tousLesTagsVisiblesPar = (
+  user: SessionUser,
+): Promise<readonly Tag[]> =>
+  lireTousLesTagsVisibles({ acteur: acteurDe(user) })

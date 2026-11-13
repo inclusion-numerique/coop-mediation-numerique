@@ -30,3 +30,22 @@ export const lireLesTagsVisibles = async ({
     return tag === null ? [] : [tag]
   })
 }
+
+export const lireTousLesTagsVisibles = async ({
+  acteur,
+}: {
+  readonly acteur: Acteur
+}): Promise<readonly Tag[]> => {
+  const lignes = await prismaClient.$queryRaw<TagRow[]>`
+    SELECT ${COLONNES_DU_TAG}
+    FROM ${TAGS}
+    WHERE t.suppression IS NULL
+      AND ${tagVisiblePar(acteur)}
+    ORDER BY t.nom
+  `
+
+  return lignes.flatMap((ligne) => {
+    const tag = tagToDomain(ligne)
+    return tag === null ? [] : [tag]
+  })
+}
