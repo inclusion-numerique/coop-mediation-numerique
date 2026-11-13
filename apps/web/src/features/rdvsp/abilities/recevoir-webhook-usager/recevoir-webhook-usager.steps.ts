@@ -80,6 +80,23 @@ Given('un usager notifié rattaché à un bénéficiaire', async () => {
   compteurAvant = await compteurDuMediateur()
 })
 
+Given('un usager notifié rattaché à un bénéficiaire de Nice', async () => {
+  await seedUsagerRdv(USAGER_ID)
+  await prismaClient.rdvUser.update({
+    where: { id: USAGER_ID },
+    data: { lastName: 'Dupont' },
+  })
+  beneficiaireId = await seedBeneficiaire({
+    prenom: 'Jean',
+    nom: 'Dupont',
+    rdvUserId: USAGER_ID,
+    commune: 'Nice',
+    communeCodePostal: '06100,06000,06200,06300',
+    communeCodeInsee: '06088',
+  })
+  compteurAvant = await compteurDuMediateur()
+})
+
 Given('un usager notifié rattaché à aucun bénéficiaire', async () => {
   beneficiaireId = undefined
   await seedUsagerRdv(USAGER_ID)
@@ -149,5 +166,25 @@ Then(
   'le compteur de bénéficiaires du médiateur a diminué de {int}',
   async (perte: number) => {
     assert.strictEqual(await compteurDuMediateur(), compteurAvant - perte)
+  },
+)
+
+Then(
+  'le bénéficiaire rattaché ne garde que le code postal {string}',
+  async (codePostal: string) => {
+    assert.ok(beneficiaireId)
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: beneficiaireId },
+      select: {
+        commune: true,
+        communeCodePostal: true,
+        communeCodeInsee: true,
+      },
+    })
+    assert.deepStrictEqual(beneficiaire, {
+      commune: 'Nice',
+      communeCodePostal: codePostal,
+      communeCodeInsee: '06088',
+    })
   },
 )

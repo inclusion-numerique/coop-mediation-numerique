@@ -32,3 +32,10 @@
 * And le bénéficiaire rattaché est anonymisé et supprimé
 * And l’usager notifié n’existe plus
 * And le compteur de bénéficiaires du médiateur a diminué de 1
+
+### Scenario: Usager supprimé dont la commune a plusieurs codes postaux
+
+* Given un usager notifié rattaché à un bénéficiaire de Nice
+* When RDV Service Public notifie la suppression de l’usager
+* Then le bénéficiaire rattaché est anonymisé et supprimé
+* And le bénéficiaire rattaché ne garde que le code postal "06100"

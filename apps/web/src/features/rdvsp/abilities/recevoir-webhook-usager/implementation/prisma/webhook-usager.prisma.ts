@@ -1,3 +1,4 @@
+import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import { usagerFromDomain } from '../../../../db'
 import type {
@@ -5,6 +6,7 @@ import type {
   BeneficiairesLiesAUsager,
   MettreAJourUsager,
 } from '../../domain/recevoir-webhook-usager'
+import { garderUnSeulCodePostal } from './un-seul-code-postal'
 
 export const beneficiairesLiesAUsager: BeneficiairesLiesAUsager = async (
   usagerId,
@@ -49,6 +51,10 @@ export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
           pasDeTelephone: null,
         },
       })
+      await garderUnSeulCodePostal(
+        transaction,
+        Prisma.sql`id = ANY(${beneficiaires.map(({ id }) => id)}::uuid[])`,
+      )
 
       await Promise.all(
         [...perteParMediateur].map(([mediateurId, perte]) =>
