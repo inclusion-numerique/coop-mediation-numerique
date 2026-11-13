@@ -25,6 +25,7 @@ import {
 } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -126,21 +127,19 @@ const BeneficiaireForm = ({
         // Les données de redirection CRA sont reconstruites à partir de la
         // saisie du formulaire + l'identifiant retourné : `data.communeResidence`
         // est déjà l'aperçu BAN attendu, inutile d'adapter le retour domaine.
-        const queryParams = cra
-          ? `?v=${encodeSerializableState(
-              craAvecBeneficiaire(cra, {
-                id: beneficiaire.id,
-                prenom: data.prenom,
-                nom: data.nom,
-                communeResidence: data.communeResidence ?? null,
-              }),
-            )}`
-          : ''
-
         router.push(
-          `${
-            retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`
-          }${queryParams}`,
+          adresseAvec(retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`, {
+            v: cra
+              ? encodeSerializableState(
+                  craAvecBeneficiaire(cra, {
+                    id: beneficiaire.id,
+                    prenom: data.prenom,
+                    nom: data.nom,
+                    communeResidence: data.communeResidence ?? null,
+                  }),
+                )
+              : null,
+          }),
         )
         router.refresh()
       } catch {

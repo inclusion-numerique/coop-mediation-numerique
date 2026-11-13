@@ -1,4 +1,5 @@
 export {
+  adresseAvec,
   type Periode,
   periodeLue,
   premiereValeur,

@@ -45,3 +45,16 @@ export const periodeLue = (
     ? null
     : { du: debut, au: fin }
 }
+
+export const adresseAvec = (
+  adresse: string,
+  parametres: Readonly<Record<string, string | null | undefined>>,
+): string => {
+  const [chemin, requete = ''] = adresse.split('?')
+  const valeurs = Object.entries({
+    ...Object.fromEntries(new URLSearchParams(requete)),
+    ...parametres,
+  }).flatMap(([nom, valeur]) => (valeur == null ? [] : [[nom, valeur]]))
+  const chaine = new URLSearchParams(valeurs).toString()
+  return chaine === '' ? chemin : `${chemin}?${chaine}`
+}

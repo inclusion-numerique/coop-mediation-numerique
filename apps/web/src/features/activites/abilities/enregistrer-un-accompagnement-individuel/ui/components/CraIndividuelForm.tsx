@@ -35,6 +35,7 @@ import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFie
 import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
@@ -126,7 +127,12 @@ const CraIndividuelForm = ({
         <BeneficiaireFields
           form={form}
           isPending={isPending}
-          creerBeneficiaireRetourUrl="/coop/mes-activites/cra/individuel"
+          creerBeneficiaireRetourUrl={adresseAvec(
+            '/coop/mes-activites/cra/individuel',
+            {
+              retour,
+            },
+          )}
           beneficiairesProposes={beneficiairesProposes}
           onSelectBeneficiaire={onSelectBeneficiaire}
         />
