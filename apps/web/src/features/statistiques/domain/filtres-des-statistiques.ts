@@ -54,25 +54,31 @@ export type ActivitesFilters = {
   source?: ActiviteSource
 }
 
-const valeurLue = <S extends z.ZodType>(schema: S, valeur: unknown) => {
-  const lue = schema.safeParse(valeur)
-  return lue.success ? lue.data : undefined
-}
-
-const ActivitesFiltersLus = z.object(
-  Object.fromEntries(
-    Object.entries(ActivitesFilterValidations).map(([cle, schema]) => [
-      cle,
-      z.unknown().transform((valeur) => valeurLue(schema, valeur)),
-    ]),
-  ),
-)
+const ActivitesFiltersLus = z.object({
+  du: ActivitesFilterValidations.du.catch(undefined),
+  au: ActivitesFilterValidations.au.catch(undefined),
+  types: ActivitesFilterValidations.types.catch(undefined),
+  rdvs: ActivitesFilterValidations.rdvs.catch(undefined),
+  mediateurs: ActivitesFilterValidations.mediateurs.catch(undefined),
+  beneficiaires: ActivitesFilterValidations.beneficiaires.catch(undefined),
+  communes: ActivitesFilterValidations.communes.catch(undefined),
+  departements: ActivitesFilterValidations.departements.catch(undefined),
+  lieux: ActivitesFilterValidations.lieux.catch(undefined),
+  conseiller_numerique:
+    ActivitesFilterValidations.conseiller_numerique.catch(undefined),
+  demarches_administratives:
+    ActivitesFilterValidations.demarches_administratives.catch(undefined),
+  thematiqueNonAdministratives:
+    ActivitesFilterValidations.thematiqueNonAdministratives.catch(undefined),
+  thematiqueAdministratives:
+    ActivitesFilterValidations.thematiqueAdministratives.catch(undefined),
+  tags: ActivitesFilterValidations.tags.catch(undefined),
+  structuresEmployeuses:
+    ActivitesFilterValidations.structuresEmployeuses.catch(undefined),
+  rdv: ActivitesFilterValidations.rdv.catch(undefined),
+  source: ActivitesFilterValidations.source.catch(undefined),
+})
 
 export const validateActivitesFilters = (
   parametres: Readonly<Record<string, unknown>>,
-): ActivitesFilters =>
-  Object.fromEntries(
-    Object.entries(ActivitesFiltersLus.parse(parametres)).filter(
-      ([, valeur]) => valeur !== undefined,
-    ),
-  )
+): ActivitesFilters => ActivitesFiltersLus.parse(parametres)
