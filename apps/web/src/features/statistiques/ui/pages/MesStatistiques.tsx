@@ -11,10 +11,13 @@ import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
-import { ExportStatistiques } from '../export/ExportStatistiques'
+import {
+  ExportStatistiques,
+  ExportStatistiquesEnAttente,
+} from '../export/ExportStatistiques'
 import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
+import { BlocEnAttente } from '../sections/BlocEnAttente'
 import { StatistiquesImpact } from '../sections/StatistiquesImpact'
-import { AutoPrint } from './AutoPrint'
 import { statistiquesPageTitle } from './titre-des-statistiques'
 
 export type OptionsDeLaBarre = {
@@ -62,7 +65,7 @@ export const MesStatistiques = ({
 }: OptionsDeLaBarre & {
   user: SessionUser
   hasCrasV1: boolean
-  accompagnementsCount: number
+  accompagnementsCount: Promise<number>
   partage: ReactNode
   impression: ReactNode
   generale: ReactNode
@@ -73,7 +76,6 @@ export const MesStatistiques = ({
     <CoopPageContainer size={56}>
       <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
       <SkipLinksPortal />
-      <AutoPrint />
       {impression}
       <main className="fr-no-print" id={contentId}>
         <h1 className="fr-text-title--blue-france fr-mb-5v">
@@ -96,18 +98,20 @@ export const MesStatistiques = ({
           />
           <div className="fr-flex fr-flex-gap-2v">
             {partage}
-            <ExportStatistiques
-              filters={activitesFilters}
-              communesOptions={communesOptions}
-              departementsOptions={departementsOptions}
-              lieuxActiviteOptions={lieuxActiviteOptions}
-              mediateursOptions={initialMediateursOptions}
-              beneficiairesOptions={[]}
-              tagsOptions={tagsOptions}
-              accompagnementsCount={accompagnementsCount}
-              activiteSourceOptions={activiteSourceOptions}
-              vocabulaire={vocabulaire}
-            />
+            <BlocEnAttente attente={<ExportStatistiquesEnAttente />}>
+              <ExportStatistiques
+                filters={activitesFilters}
+                communesOptions={communesOptions}
+                departementsOptions={departementsOptions}
+                lieuxActiviteOptions={lieuxActiviteOptions}
+                mediateursOptions={initialMediateursOptions}
+                beneficiairesOptions={[]}
+                tagsOptions={tagsOptions}
+                accompagnementsCount={accompagnementsCount}
+                activiteSourceOptions={activiteSourceOptions}
+                vocabulaire={vocabulaire}
+              />
+            </BlocEnAttente>
           </div>
         </div>
         <FilterTags

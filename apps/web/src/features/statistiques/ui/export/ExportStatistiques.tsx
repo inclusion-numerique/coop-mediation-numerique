@@ -13,6 +13,7 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import { use } from 'react'
 import type { OptionDeBeneficiaire } from '../filtres/option-de-beneficiaire'
 import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 
@@ -45,7 +46,7 @@ export const ExportStatistiques = ({
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
-  accompagnementsCount: number
+  accompagnementsCount: Promise<number>
   activiteSourceOptions: SelectOption[]
   vocabulaire: VocabulaireDeLaBarre
   exportListAccompagnements?: boolean
@@ -54,6 +55,7 @@ export const ExportStatistiques = ({
   title?: string
   emptyFilterMessage?: string
 }) => {
+  const nombreDAccompagnements = use(accompagnementsCount)
   const exportXlsx = (exportPath: string, message: string) => {
     const searchParams = new URLSearchParams(
       Object.entries(filters).flatMap(([key, value]) =>
@@ -79,7 +81,7 @@ export const ExportStatistiques = ({
       publicExportId
         ? `/coop/mes-activites/export/${publicExportId}`
         : '/coop/mes-activites/export',
-      `Le téléchargement de vos ${numberToString(accompagnementsCount)} accompagnements est en cours.`,
+      `Le téléchargement de vos ${numberToString(nombreDAccompagnements)} accompagnements est en cours.`,
     )
 
   const onExportStatistiquesXlsx = () =>
@@ -119,7 +121,7 @@ export const ExportStatistiques = ({
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
-        disabled={accompagnementsCount === 0}
+        disabled={nombreDAccompagnements === 0}
       >
         Exporter
       </Button>
@@ -146,7 +148,7 @@ export const ExportStatistiques = ({
         {exportListAccompagnements && (
           <>
             <p className="fr-text-label--blue-france fr-text--sm">
-              <strong>{accompagnementsCount}</strong> accompagnements prêt à
+              <strong>{nombreDAccompagnements}</strong> accompagnements prêt à
               être exportés
             </p>
             <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
@@ -206,3 +208,19 @@ export const ExportStatistiques = ({
     </>
   )
 }
+
+export const ExportStatistiquesEnAttente = ({
+  title = 'Exports des accompagnements',
+}: {
+  title?: string
+}) => (
+  <Button
+    title={title}
+    priority="secondary"
+    iconId="fr-icon-download-line"
+    iconPosition="right"
+    disabled
+  >
+    Exporter
+  </Button>
+)

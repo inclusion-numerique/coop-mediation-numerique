@@ -1,7 +1,7 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { rechercherLesLieuxDuPartageAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
 import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
-import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
+import { mesStatistiques } from '@app/web/composition/statistiques/mes-statistiques'
 import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
 import {
   impressionDesStatistiques,
@@ -9,6 +9,10 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
+import {
+  nombreDAccompagnements,
+  toutesLesStatistiques,
+} from '@app/web/composition/statistiques/statistiques-fournies'
 import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
   type ActivitesFilters,
@@ -45,13 +49,15 @@ const Page = async ({ params, searchParams }: PageProps) => {
 
   const user = await utilisateurDuPartage(partage.data)
 
-  const mesStatistiquesProps = await getMesStatistiquesPageData({
+  const { statistiques, ...mesStatistiquesProps } = await mesStatistiques({
     user,
     activitesFilters: validateActivitesFilters(search),
     graphOptions: {
       fin: search.graphique_fin ? new Date(search.graphique_fin) : undefined,
     },
   })
+  const toutes = toutesLesStatistiques(statistiques)
+  const { hasCrasV1 } = await statistiques.hasCrasV1
 
   return (
     <ClientBinder
@@ -66,19 +72,16 @@ const Page = async ({ params, searchParams }: PageProps) => {
           {...mesStatistiquesProps}
           username={user.name ?? ''}
           shareId={shareId}
-          hasCrasV1={mesStatistiquesProps.hasCrasV1.hasCrasV1}
-          accompagnementsCount={
-            mesStatistiquesProps.totalCounts.accompagnements.total
-          }
+          hasCrasV1={hasCrasV1}
+          accompagnementsCount={nombreDAccompagnements(toutes)}
           filtreDeLieu={filtreDeLieu(mesStatistiquesProps)}
-          impression={impressionDesStatistiques(mesStatistiquesProps)}
-          generale={sectionGenerale(mesStatistiquesProps, {
-            wording: 'generique',
+          impression={impressionDesStatistiques({
+            ...mesStatistiquesProps,
+            statistiques: toutes,
           })}
-          activites={sectionActivites(mesStatistiquesProps, {
-            wording: 'generique',
-          })}
-          beneficiaires={sectionBeneficiaires(mesStatistiquesProps, {
+          generale={sectionGenerale(statistiques, { wording: 'generique' })}
+          activites={sectionActivites(statistiques, { wording: 'generique' })}
+          beneficiaires={sectionBeneficiaires(statistiques, {
             wording: 'generique',
           })}
         />

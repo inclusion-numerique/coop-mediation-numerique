@@ -1,6 +1,9 @@
 import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
+import {
+  rassembler,
+  statistiquesEnCours,
+} from '@app/web/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@app/web/features/activites/abilities/decrire-les-activites-du-perimetre'
 import {
@@ -28,7 +31,7 @@ export type MesStatistiquesGraphOptions = {
   debut?: Date
 }
 
-export const getMesStatistiquesPageData = async ({
+export const mesStatistiques = async ({
   user,
   activitesFilters,
   graphOptions = {},
@@ -55,48 +58,54 @@ export const getMesStatistiquesPageData = async ({
     ),
   })
 
-  const [statistiques, options] = await Promise.all([
-    statistiquesFournies(
-      {
-        perimetre,
-        criteres,
-        conseillersNumeriques: conseillerNumeriqueSql,
-        rendezVousAuxStatuts: rendezVousAuxStatutsSql,
-        parJour: fenetre,
-        parMois: fenetre,
-      },
-      { territoires: true, tags: true },
-    ),
-    optionsDesStatistiques({
-      lieuxChoisis: () => lieuxChoisisDe(activitesFilters),
-      tags: () => tousLesTagsVisiblesPar(user),
-      beneficiaires: () =>
-        getInitialBeneficiairesOptionsForSearch({
-          mediateurId: user.mediateur?.id,
-          includeBeneficiaireIds: activitesFilters.beneficiaires,
-        }),
-      membres: async () =>
-        user.coordinateur
-          ? listerLesMembresAFiltrer({
-              coordinateurId: CoordinateurIdDeLEquipe(user.coordinateur.id),
-              demandeur: user.mediateur
-                ? MediateurIdDeLEquipe(user.mediateur.id)
-                : null,
-              membres: mediateurCoordonnesIds.map((id) =>
-                MediateurIdDeLEquipe(id),
-              ),
-            })
-          : [],
-      activitesDuPerimetre: () => decrireLesActivitesDuPerimetre(perimetre),
-    }),
-  ])
+  const statistiques = statistiquesEnCours(
+    {
+      perimetre,
+      criteres,
+      conseillersNumeriques: conseillerNumeriqueSql,
+      rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+      parJour: fenetre,
+      parMois: fenetre,
+    },
+    { territoires: true, tags: true },
+  )
+
+  const options = await optionsDesStatistiques({
+    lieuxChoisis: () => lieuxChoisisDe(activitesFilters),
+    tags: () => tousLesTagsVisiblesPar(user),
+    beneficiaires: () =>
+      getInitialBeneficiairesOptionsForSearch({
+        mediateurId: user.mediateur?.id,
+        includeBeneficiaireIds: activitesFilters.beneficiaires,
+      }),
+    membres: async () =>
+      user.coordinateur
+        ? listerLesMembresAFiltrer({
+            coordinateurId: CoordinateurIdDeLEquipe(user.coordinateur.id),
+            demandeur: user.mediateur
+              ? MediateurIdDeLEquipe(user.mediateur.id)
+              : null,
+            membres: mediateurCoordonnesIds.map((id) =>
+              MediateurIdDeLEquipe(id),
+            ),
+          })
+        : [],
+    activitesDuPerimetre: () => decrireLesActivitesDuPerimetre(perimetre),
+  })
 
   return {
-    ...statistiques,
     ...options,
     activitesFilters,
     vocabulaire: vocabulaireDeLaBarre,
+    statistiques,
   }
+}
+
+export const getMesStatistiquesPageData = async (
+  parametres: Parameters<typeof mesStatistiques>[0],
+) => {
+  const { statistiques, ...options } = await mesStatistiques(parametres)
+  return { ...(await rassembler(statistiques)), ...options }
 }
 
 export type MesStatistiquesPageData = Awaited<

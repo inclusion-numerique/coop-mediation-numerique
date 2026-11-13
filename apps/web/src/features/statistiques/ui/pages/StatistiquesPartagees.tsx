@@ -5,7 +5,11 @@ import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { ExportStatistiques } from '../export/ExportStatistiques'
+import {
+  ExportStatistiques,
+  ExportStatistiquesEnAttente,
+} from '../export/ExportStatistiques'
+import { BlocEnAttente } from '../sections/BlocEnAttente'
 import type { OptionsDeLaBarre } from './MesStatistiques'
 
 export const StatistiquesPartagees = ({
@@ -33,7 +37,7 @@ export const StatistiquesPartagees = ({
   shareId: string
   username: string
   hasCrasV1: boolean
-  accompagnementsCount: number
+  accompagnementsCount: Promise<number>
   impression: ReactNode
   generale: ReactNode
   activites: ReactNode
@@ -85,22 +89,28 @@ export const StatistiquesPartagees = ({
             hasCrasV1={hasCrasV1}
           />
           <div className="fr-flex fr-flex-gap-2v">
-            <ExportStatistiques
-              filters={activitesFilters}
-              communesOptions={communesOptions}
-              departementsOptions={departementsOptions}
-              lieuxActiviteOptions={lieuxActiviteOptions}
-              mediateursOptions={initialMediateursOptions}
-              beneficiairesOptions={[]}
-              tagsOptions={tagsOptions}
-              accompagnementsCount={accompagnementsCount}
-              activiteSourceOptions={activiteSourceOptions}
-              vocabulaire={vocabulaire}
-              exportListAccompagnements={false}
-              publicExportId={shareId}
-              title="Export des statistiques"
-              emptyFilterMessage="Vous n’avez pas appliqué de filtre, l’intégralité des statistiques sera exportée."
-            />
+            <BlocEnAttente
+              attente={
+                <ExportStatistiquesEnAttente title="Export des statistiques" />
+              }
+            >
+              <ExportStatistiques
+                filters={activitesFilters}
+                communesOptions={communesOptions}
+                departementsOptions={departementsOptions}
+                lieuxActiviteOptions={lieuxActiviteOptions}
+                mediateursOptions={initialMediateursOptions}
+                beneficiairesOptions={[]}
+                tagsOptions={tagsOptions}
+                accompagnementsCount={accompagnementsCount}
+                activiteSourceOptions={activiteSourceOptions}
+                vocabulaire={vocabulaire}
+                exportListAccompagnements={false}
+                publicExportId={shareId}
+                title="Export des statistiques"
+                emptyFilterMessage="Vous n’avez pas appliqué de filtre, l’intégralité des statistiques sera exportée."
+              />
+            </BlocEnAttente>
           </div>
         </div>
         <FilterTags

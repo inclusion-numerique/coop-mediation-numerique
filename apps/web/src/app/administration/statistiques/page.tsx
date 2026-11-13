@@ -11,7 +11,7 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
-import { statistiquesNationales } from '@app/web/composition/statistiques/statistiques-nationales'
+import { statistiquesNationalesEnCours } from '@app/web/composition/statistiques/statistiques-nationales'
 import { criteresDesStatistiques } from '@app/web/features/activites/domain'
 import { optionsDeTags } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
@@ -41,22 +41,13 @@ const Page = async (props: {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
   const user = await authenticateUser()
-  const [
-    tagsCollectifs,
-    lieuxChoisis,
-    {
-      totalCounts,
-      accompagnementsParJour,
-      accompagnementsParMois,
-      beneficiaires,
-      activites,
-    },
-  ] = await Promise.all([
+  const statistiques = statistiquesNationalesEnCours(
+    criteresDesStatistiques(activitesFilters),
+    { tags: user.role === 'Admin' },
+  )
+  const [tagsCollectifs, lieuxChoisis] = await Promise.all([
     lireLesTagsCollectifs(),
     lieuxChoisisDe(activitesFilters),
-    statistiquesNationales(criteresDesStatistiques(activitesFilters), {
-      tags: user.role === 'Admin',
-    }),
   ])
   const tagsOptions = optionsDeTags(tagsCollectifs)
 
@@ -72,23 +63,17 @@ const Page = async (props: {
         {...lieuxChoisis}
         tagsOptions={tagsOptions}
         activiteSourceOptions={activiteSourceOptions}
-        generale={sectionGenerale(
-          { totalCounts, accompagnementsParJour, accompagnementsParMois },
-          { wording: 'generique' },
-        )}
+        generale={sectionGenerale(statistiques, { wording: 'generique' })}
         activites={sectionActivites(
-          { activites, totalCounts },
+          {
+            totalCounts: statistiques.totalCounts,
+            repartition: statistiques.repartition,
+            tags: statistiques.tags,
+          },
           { wording: 'generique' },
         )}
         beneficiaires={sectionBeneficiaires(
-          {
-            beneficiaires: {
-              total: beneficiaires.total,
-              genres: beneficiaires.genres,
-              trancheAges: beneficiaires.trancheAges,
-              statutsSocial: beneficiaires.statutsSocial,
-            },
-          },
+          { profil: statistiques.profil },
           { wording: 'generique' },
         )}
       />

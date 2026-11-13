@@ -22,7 +22,12 @@ import type { DemandeDeStatistiques } from '@app/web/features/activites/db/stati
 
 const aucune = <T>(): Promise<T[]> => Promise.resolve([])
 
-export const statistiquesFournies = async (
+const suivie = <T>(promesse: Promise<T>): Promise<T> => {
+  promesse.catch(() => undefined)
+  return promesse
+}
+
+export const statistiquesEnCours = (
   demande: DemandeDeStatistiques & {
     readonly parJour: FenetreDesGraphiques
     readonly parMois: FenetreDesGraphiques
@@ -31,49 +36,90 @@ export const statistiquesFournies = async (
     territoires,
     tags,
   }: { readonly territoires: boolean; readonly tags: boolean },
-) => {
+) => ({
+  totalCounts: suivie(compterLesAccompagnements(demande).then(totauxPresentes)),
+  periode: suivie(
+    compterLesAccompagnementsParPeriode(demande).then(parPeriodePresentes),
+  ),
+  repartition: suivie(
+    repartirLesAccompagnements(demande).then(repartitionPresentee),
+  ),
+  tags: suivie(
+    (tags ? repartirLesAccompagnementsParTag(demande) : aucune<never>()).then(
+      parTagPresentes,
+    ),
+  ),
+  structures: suivie(
+    (territoires
+      ? compterLesAccompagnementsParLieu(demande)
+      : aucune<never>()
+    ).then(parLieuPresentes),
+  ),
+  communes: suivie(
+    (territoires
+      ? compterLesAccompagnementsParCommune(demande)
+      : aucune<never>()
+    ).then(parCommunePresentes),
+  ),
+  profil: suivie(decrireLesPersonnesAccompagnees(demande).then(profilPresente)),
+  residences: suivie(
+    (territoires
+      ? compterLesPersonnesAccompagneesParCommune(demande)
+      : aucune<never>()
+    ).then(personnesParCommunePresentees),
+  ),
+  hasCrasV1: suivie(
+    verifierLaPresenceDeCrasV1(demande.perimetre).then((crasV1) => ({
+      hasCrasV1: crasV1 === 'Presents',
+    })),
+  ),
+})
+
+export type StatistiquesEnCours = ReturnType<typeof statistiquesEnCours>
+
+export const rassembler = async (enCours: StatistiquesEnCours) => {
   const [
-    totaux,
-    parPeriode,
+    totalCounts,
+    periode,
     repartition,
     parTag,
-    parLieu,
-    parCommune,
+    structures,
+    communes,
     profil,
     residences,
-    crasV1,
+    hasCrasV1,
   ] = await Promise.all([
-    compterLesAccompagnements(demande),
-    compterLesAccompagnementsParPeriode(demande),
-    repartirLesAccompagnements(demande),
-    tags ? repartirLesAccompagnementsParTag(demande) : aucune<never>(),
-    territoires ? compterLesAccompagnementsParLieu(demande) : aucune<never>(),
-    territoires
-      ? compterLesAccompagnementsParCommune(demande)
-      : aucune<never>(),
-    decrireLesPersonnesAccompagnees(demande),
-    territoires
-      ? compterLesPersonnesAccompagneesParCommune(demande)
-      : aucune<never>(),
-    verifierLaPresenceDeCrasV1(demande.perimetre),
+    enCours.totalCounts,
+    enCours.periode,
+    enCours.repartition,
+    enCours.tags,
+    enCours.structures,
+    enCours.communes,
+    enCours.profil,
+    enCours.residences,
+    enCours.hasCrasV1,
   ])
   return {
-    totalCounts: totauxPresentes(totaux),
-    ...parPeriodePresentes(parPeriode),
-    beneficiaires: {
-      ...profilPresente(profil),
-      communes: personnesParCommunePresentees(residences),
-    },
-    activites: {
-      ...repartitionPresentee(repartition),
-      tags: parTagPresentes(parTag),
-    },
-    structures: parLieuPresentes(parLieu),
-    communes: parCommunePresentes(parCommune),
-    hasCrasV1: { hasCrasV1: crasV1 === 'Presents' },
+    totalCounts,
+    ...periode,
+    beneficiaires: { ...profil, communes: residences },
+    activites: { ...repartition, tags: parTag },
+    structures,
+    communes,
+    hasCrasV1,
   }
 }
 
-export type StatistiquesFournies = Awaited<
-  ReturnType<typeof statistiquesFournies>
->
+export const statistiquesFournies = (
+  demande: Parameters<typeof statistiquesEnCours>[0],
+  options: Parameters<typeof statistiquesEnCours>[1],
+) => rassembler(statistiquesEnCours(demande, options))
+
+export type StatistiquesFournies = Awaited<ReturnType<typeof rassembler>>
+
+export const toutesLesStatistiques = (enCours: StatistiquesEnCours) =>
+  suivie(rassembler(enCours))
+
+export const nombreDAccompagnements = (
+  toutes: ReturnType<typeof toutesLesStatistiques>,
+) => suivie(toutes.then(({ totalCounts }) => totalCounts.accompagnements.total))

@@ -4,13 +4,17 @@ import { rechercherLesLieuxDeMesStatistiquesAction } from '@app/web/app/_actions
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
 import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
-import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
+import { mesStatistiques } from '@app/web/composition/statistiques/mes-statistiques'
 import {
   impressionDesStatistiques,
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
+import {
+  nombreDAccompagnements,
+  toutesLesStatistiques,
+} from '@app/web/composition/statistiques/statistiques-fournies'
 import { consulterMesLiensDePartage } from '@app/web/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
@@ -41,7 +45,7 @@ const MesStatistiquesPage = async (props: {
   const searchParams = await props.searchParams
   const user = await authenticateMediateurOrCoordinateur()
 
-  const mesStatistiques = await getMesStatistiquesPageData({
+  const { statistiques, ...options } = await mesStatistiques({
     user,
     activitesFilters: validateActivitesFilters(searchParams),
     graphOptions: {
@@ -50,6 +54,8 @@ const MesStatistiquesPage = async (props: {
         : undefined,
     },
   })
+  const toutes = toutesLesStatistiques(statistiques)
+  const { hasCrasV1 } = await statistiques.hasCrasV1
 
   const liensDePartage = await consulterMesLiensDePartage({
     mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
@@ -72,23 +78,24 @@ const MesStatistiquesPage = async (props: {
           to={reglerLePartageStatistiquesAction}
         >
           <MesStatistiques
-            {...mesStatistiques}
+            {...options}
             user={user}
-            hasCrasV1={mesStatistiques.hasCrasV1.hasCrasV1}
-            accompagnementsCount={
-              mesStatistiques.totalCounts.accompagnements.total
-            }
+            hasCrasV1={hasCrasV1}
+            accompagnementsCount={nombreDAccompagnements(toutes)}
             partage={<PartageStatistiques liens={liensDePartage} />}
-            filtreDeLieu={filtreDeLieu(mesStatistiques)}
-            impression={impressionDesStatistiques(mesStatistiques)}
-            generale={sectionGenerale(mesStatistiques, {
-              debut: mesStatistiques.activitesFilters.du,
-              fin: mesStatistiques.activitesFilters.au,
+            filtreDeLieu={filtreDeLieu(options)}
+            impression={impressionDesStatistiques({
+              ...options,
+              statistiques: toutes,
             })}
-            activites={sectionActivites(mesStatistiques, {
+            generale={sectionGenerale(statistiques, {
+              debut: options.activitesFilters.du,
+              fin: options.activitesFilters.au,
+            })}
+            activites={sectionActivites(statistiques, {
               canManageTags: true,
             })}
-            beneficiaires={sectionBeneficiaires(mesStatistiques)}
+            beneficiaires={sectionBeneficiaires(statistiques)}
           />
         </ClientBinder>
       </ClientBinder>

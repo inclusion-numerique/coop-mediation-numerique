@@ -7,14 +7,14 @@ import {
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { statistiquesFournies } from './statistiques-fournies'
+import { rassembler, statistiquesEnCours } from './statistiques-fournies'
 
-export const statistiquesNationales = (
+export const statistiquesNationalesEnCours = (
   criteres: CriteresDesStatistiques,
   { tags }: { readonly tags: boolean },
 ) => {
   const aujourdhui = Jour(dateAsIsoDay(new Date()))
-  return statistiquesFournies(
+  return statistiquesEnCours(
     {
       perimetre: PERIMETRE_NATIONAL,
       criteres,
@@ -29,3 +29,8 @@ export const statistiquesNationales = (
     { territoires: false, tags },
   )
 }
+
+export const statistiquesNationales = (
+  criteres: CriteresDesStatistiques,
+  options: { readonly tags: boolean },
+) => rassembler(statistiquesNationalesEnCours(criteres, options))

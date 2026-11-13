@@ -299,12 +299,34 @@ export const Statistiques: Story = {
     ...statistiquesPageData,
     user: testSessionUser,
     hasCrasV1: statistiquesPageData.hasCrasV1.hasCrasV1,
-    accompagnementsCount:
+    accompagnementsCount: Promise.resolve(
       statistiquesPageData.totalCounts.accompagnements.total,
+    ),
     partage: <PartageStatistiques liens={[]} />,
-    impression: impressionDesStatistiques(statistiquesPageData),
-    generale: sectionGenerale(statistiquesPageData, {}),
-    activites: sectionActivites(statistiquesPageData, { canManageTags: true }),
-    beneficiaires: sectionBeneficiaires(statistiquesPageData),
+    impression: impressionDesStatistiques({
+      ...statistiquesPageData,
+      statistiques: statistiquesPageData,
+    }),
+    generale: sectionGenerale(
+      {
+        totalCounts: statistiquesPageData.totalCounts,
+        periode: statistiquesPageData,
+      },
+      {},
+    ),
+    activites: sectionActivites(
+      {
+        totalCounts: statistiquesPageData.totalCounts,
+        repartition: statistiquesPageData.activites,
+        tags: statistiquesPageData.activites.tags,
+        structures: statistiquesPageData.structures,
+        communes: statistiquesPageData.communes,
+      },
+      { canManageTags: true },
+    ),
+    beneficiaires: sectionBeneficiaires({
+      profil: statistiquesPageData.beneficiaires,
+      residences: statistiquesPageData.beneficiaires.communes,
+    }),
   },
 }

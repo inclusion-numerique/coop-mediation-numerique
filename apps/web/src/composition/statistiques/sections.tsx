@@ -1,4 +1,7 @@
-import type { StatistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
+import type {
+  StatistiquesEnCours,
+  StatistiquesFournies,
+} from '@app/web/composition/statistiques/statistiques-fournies'
 import {
   ChiffresClesDesAccompagnements,
   ChiffresClesImprimes,
@@ -33,44 +36,79 @@ import {
   TypesDActiviteImprimes,
 } from '@app/web/features/activites/abilities/repartir-les-accompagnements/ui'
 import { TagsDesAccompagnements } from '@app/web/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
+import { AutoPrint } from '@app/web/features/statistiques/ui/pages/AutoPrint'
 import { ImpressionDesStatistiques } from '@app/web/features/statistiques/ui/pages/ImpressionDesStatistiques'
+import { BlocEnAttente } from '@app/web/features/statistiques/ui/sections/BlocEnAttente'
 import { SectionActivites } from '@app/web/features/statistiques/ui/sections/SectionActivites'
 import { SectionActivitesImprimee } from '@app/web/features/statistiques/ui/sections/SectionActivitesImprimee'
 import { SectionBeneficiaires } from '@app/web/features/statistiques/ui/sections/SectionBeneficiaires'
 import { SectionBeneficiairesImprimee } from '@app/web/features/statistiques/ui/sections/SectionBeneficiairesImprimee'
 import { SectionGenerale } from '@app/web/features/statistiques/ui/sections/SectionGenerale'
 import { SectionGeneraleImprimee } from '@app/web/features/statistiques/ui/sections/SectionGeneraleImprimee'
+import type { ReactNode } from 'react'
 
 type Wording = 'personnel' | 'generique'
 
-type DonneesGenerales = Pick<
-  StatistiquesFournies,
-  'totalCounts' | 'accompagnementsParJour' | 'accompagnementsParMois'
+type Donnee<T> = T | Promise<T>
+
+type EnCours<K extends keyof StatistiquesEnCours> = Awaited<
+  StatistiquesEnCours[K]
 >
+
+const Attendue = async <T,>({
+  donnee,
+  rendu,
+}: {
+  donnee: Promise<T>
+  rendu: (valeur: T) => ReactNode
+}) => rendu(await donnee)
+
+const bloc = <T,>(
+  donnee: Donnee<T>,
+  rendu: (valeur: T) => ReactNode,
+  className?: string,
+): ReactNode =>
+  donnee instanceof Promise ? (
+    <BlocEnAttente className={className}>
+      <Attendue donnee={donnee} rendu={rendu} />
+    </BlocEnAttente>
+  ) : (
+    rendu(donnee)
+  )
 
 export const sectionGenerale = (
   {
     totalCounts,
-    accompagnementsParJour,
-    accompagnementsParMois,
-  }: DonneesGenerales,
+    periode,
+  }: {
+    totalCounts: Donnee<EnCours<'totalCounts'>>
+    periode: Donnee<EnCours<'periode'>>
+  },
   { wording, debut, fin }: { wording?: Wording; debut?: string; fin?: string },
 ) => (
   <SectionGenerale
     wording={wording}
-    chiffresCles={
-      <ChiffresClesDesAccompagnements
-        totalCounts={totalCounts}
-        debut={debut}
-        fin={fin}
-      />
-    }
-    graphique={
-      <GraphiqueDesAccompagnements
-        accompagnementsParJour={accompagnementsParJour}
-        accompagnementsParMois={accompagnementsParMois}
-      />
-    }
+    chiffresCles={bloc(
+      totalCounts,
+      (totaux) => (
+        <ChiffresClesDesAccompagnements
+          totalCounts={totaux}
+          debut={debut}
+          fin={fin}
+        />
+      ),
+      'fr-col-xl-4 fr-col-12',
+    )}
+    graphique={bloc(
+      periode,
+      ({ accompagnementsParJour, accompagnementsParMois }) => (
+        <GraphiqueDesAccompagnements
+          accompagnementsParJour={accompagnementsParJour}
+          accompagnementsParMois={accompagnementsParMois}
+        />
+      ),
+      'fr-col',
+    )}
   />
 )
 
@@ -78,7 +116,10 @@ export const sectionGeneraleImprimee = ({
   totalCounts,
   accompagnementsParJour,
   accompagnementsParMois,
-}: DonneesGenerales) => (
+}: Pick<
+  StatistiquesFournies,
+  'totalCounts' | 'accompagnementsParJour' | 'accompagnementsParMois'
+>) => (
   <SectionGeneraleImprimee
     chiffresCles={<ChiffresClesImprimes totalCounts={totalCounts} />}
     graphiques={
@@ -90,23 +131,27 @@ export const sectionGeneraleImprimee = ({
   />
 )
 
-type DonneesDesBeneficiaires = {
-  beneficiaires:
-    | StatistiquesFournies['beneficiaires']
-    | Omit<StatistiquesFournies['beneficiaires'], 'communes'>
-}
-
 export const sectionBeneficiaires = (
-  { beneficiaires }: DonneesDesBeneficiaires,
+  {
+    profil,
+    residences,
+  }: {
+    profil: Donnee<EnCours<'profil'>>
+    residences?: Donnee<EnCours<'residences'>>
+  },
   { wording }: { wording?: Wording } = {},
 ) => (
   <SectionBeneficiaires
     wording={wording}
-    profil={<ProfilDesPersonnesAccompagnees beneficiaires={beneficiaires} />}
+    profil={bloc(profil, (beneficiaires) => (
+      <ProfilDesPersonnesAccompagnees beneficiaires={beneficiaires} />
+    ))}
     communes={
-      'communes' in beneficiaires ? (
-        <CommunesDeResidence communes={beneficiaires.communes} />
-      ) : undefined
+      residences === undefined
+        ? undefined
+        : bloc(residences, (communes) => (
+            <CommunesDeResidence communes={communes} />
+          ))
     }
   />
 )
@@ -125,14 +170,20 @@ export const sectionBeneficiairesImprimee = ({
   />
 )
 
-type DonneesDesActivites = Pick<
-  StatistiquesFournies,
-  'activites' | 'totalCounts'
-> &
-  Partial<Pick<StatistiquesFournies, 'structures' | 'communes'>>
-
 export const sectionActivites = (
-  { activites, totalCounts, structures, communes }: DonneesDesActivites,
+  {
+    totalCounts,
+    repartition,
+    tags,
+    structures,
+    communes,
+  }: {
+    totalCounts: Donnee<EnCours<'totalCounts'>>
+    repartition: Donnee<EnCours<'repartition'>>
+    tags: Donnee<EnCours<'tags'>>
+    structures?: Donnee<EnCours<'structures'>>
+    communes?: Donnee<EnCours<'communes'>>
+  },
   {
     wording,
     canManageTags,
@@ -141,33 +192,49 @@ export const sectionActivites = (
   <SectionActivites
     wording={wording}
     canManageTags={canManageTags}
-    types={
-      <TypesDActivite
-        typeActivites={activites.typeActivites}
-        ateliers={totalCounts.activites.collectifs.total}
-      />
-    }
-    thematiques={
+    types={bloc(
+      totalCounts instanceof Promise || repartition instanceof Promise
+        ? Promise.all([totalCounts, repartition])
+        : ([totalCounts, repartition] as const),
+      ([totaux, activites]) => (
+        <TypesDActivite
+          typeActivites={activites.typeActivites}
+          ateliers={totaux.activites.collectifs.total}
+        />
+      ),
+      'fr-col',
+    )}
+    thematiques={bloc(repartition, (activites) => (
       <ThematiquesDesAccompagnements thematiques={activites.thematiques} />
-    }
-    demarches={
+    ))}
+    demarches={bloc(repartition, (activites) => (
       <DemarchesDesAccompagnements
         thematiquesDemarches={activites.thematiquesDemarches}
       />
-    }
-    tags={<TagsDesAccompagnements tags={activites.tags} />}
-    materiels={<MaterielsUtilises materiels={activites.materiels} />}
-    canaux={<CanauxDesAccompagnements typeLieu={activites.typeLieu} />}
-    durees={<DureesDesAccompagnements durees={activites.durees} />}
+    ))}
+    tags={bloc(tags, (parTag) => <TagsDesAccompagnements tags={parTag} />)}
+    materiels={bloc(repartition, (activites) => (
+      <MaterielsUtilises materiels={activites.materiels} />
+    ))}
+    canaux={bloc(repartition, (activites) => (
+      <CanauxDesAccompagnements typeLieu={activites.typeLieu} />
+    ))}
+    durees={bloc(repartition, (activites) => (
+      <DureesDesAccompagnements durees={activites.durees} />
+    ))}
     lieux={
-      structures === undefined ? undefined : (
-        <LieuxDesAccompagnements structures={structures} />
-      )
+      structures === undefined
+        ? undefined
+        : bloc(structures, (parLieu) => (
+            <LieuxDesAccompagnements structures={parLieu} />
+          ))
     }
     communes={
-      communes === undefined ? undefined : (
-        <CommunesDesAccompagnements communes={communes} />
-      )
+      communes === undefined
+        ? undefined
+        : bloc(communes, (parCommune) => (
+            <CommunesDesAccompagnements communes={parCommune} />
+          ))
     }
   />
 )
@@ -204,17 +271,23 @@ export const sectionActivitesImprimee = ({
   />
 )
 
-export const impressionDesStatistiques = (
-  statistiques: StatistiquesFournies &
-    Omit<
-      Parameters<typeof ImpressionDesStatistiques>[0],
-      'generale' | 'activites' | 'beneficiaires'
-    >,
-) => (
-  <ImpressionDesStatistiques
-    {...statistiques}
-    generale={sectionGeneraleImprimee(statistiques)}
-    activites={sectionActivitesImprimee(statistiques)}
-    beneficiaires={sectionBeneficiairesImprimee(statistiques)}
-  />
-)
+export const impressionDesStatistiques = ({
+  statistiques,
+  ...options
+}: {
+  statistiques: Donnee<StatistiquesFournies>
+} & Omit<
+  Parameters<typeof ImpressionDesStatistiques>[0],
+  'generale' | 'activites' | 'beneficiaires'
+>) =>
+  bloc(statistiques, (fournies) => (
+    <>
+      <ImpressionDesStatistiques
+        {...options}
+        generale={sectionGeneraleImprimee(fournies)}
+        activites={sectionActivitesImprimee(fournies)}
+        beneficiaires={sectionBeneficiairesImprimee(fournies)}
+      />
+      <AutoPrint />
+    </>
+  ))
