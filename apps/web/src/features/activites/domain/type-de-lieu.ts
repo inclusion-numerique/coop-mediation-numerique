@@ -3,8 +3,8 @@ import { z } from 'zod'
 
 export const TYPES_DE_LIEU = [
   'LieuActivite',
-  'Domicile',
   'Autre',
+  'Domicile',
   'ADistance',
 ] as const
 
