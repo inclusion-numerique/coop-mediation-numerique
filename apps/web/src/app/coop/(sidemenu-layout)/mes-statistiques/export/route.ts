@@ -52,7 +52,7 @@ export const GET = async (request: NextRequest) => {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const filters = parsedQueryParams.data as ActivitesFilters
+  const filters: ActivitesFilters = parsedQueryParams.data
 
   if (disallowExportFor(user)(filters.mediateurs)) {
     return new Response('Cannot export for another mediateur', { status: 403 })

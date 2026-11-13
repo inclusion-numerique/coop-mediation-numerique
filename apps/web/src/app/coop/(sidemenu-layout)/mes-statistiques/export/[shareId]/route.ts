@@ -1,8 +1,8 @@
-import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
 import { getStatistiquesWorksheetInput } from '@app/web/composition/statistiques/tableur'
 import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
-  ActivitesFilters,
+  type ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { buildStatistiquesWorksheet } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
@@ -32,20 +32,10 @@ export const GET = async (
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const filters = parsedQueryParams.data as ActivitesFilters
-
-  const { proprietaire, utilisateurId } = partage.data
-  const user = await getSessionUserFromId(utilisateurId)
+  const filters: ActivitesFilters = parsedQueryParams.data
 
   const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
-    user: {
-      ...user,
-      emplois: [],
-      rdvAccount: null,
-      mediateur: proprietaire._tag === 'Mediateur' ? user.mediateur : null,
-      coordinateur:
-        proprietaire._tag === 'Coordinateur' ? user.coordinateur : null,
-    },
+    user: await utilisateurDuPartage(partage.data),
     filters,
   })
 

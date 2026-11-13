@@ -1,8 +1,8 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
 import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
+import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
 import {
   impressionDesStatistiques,
   sectionActivites,
@@ -43,18 +43,10 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const partage = await resoudreUnLienDePartage(shareId)
   if (!partage.success) return notFound()
 
-  const { proprietaire, utilisateurId } = partage.data
-  const user = await getSessionUserFromId(utilisateurId)
+  const user = await utilisateurDuPartage(partage.data)
 
   const mesStatistiquesProps = await getMesStatistiquesPageData({
-    user: {
-      ...user,
-      emplois: [],
-      rdvAccount: null,
-      mediateur: user.mediateur,
-      coordinateur:
-        proprietaire._tag === 'Coordinateur' ? user.coordinateur : null,
-    },
+    user,
     activitesFilters: validateActivitesFilters(search),
     graphOptions: {
       fin: search.graphique_fin ? new Date(search.graphique_fin) : undefined,
