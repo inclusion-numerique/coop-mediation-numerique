@@ -1,14 +1,12 @@
-import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
 import {
-  communeColor,
   genresColors,
   statusColors,
   tranchesAgeColors,
 } from '@app/web/libs/statistiques/couleurs'
 import ProgressBar from '@app/web/libs/statistiques/ProgressBar'
 import { QuantifiedShareLegend } from '@app/web/libs/statistiques/QuantifiedShareLegend'
-import { QuantifiedShareList } from '@app/web/libs/statistiques/QuantifiedShareList'
+import type { ProfilPresente } from '../profil.presenter'
 
 const toProgress = ({
   label,
@@ -24,39 +22,29 @@ const toProgress = ({
   percentage: proportion,
 })
 
-export const StatistiquesBeneficiairesPrint = ({
+const totalRenseigne = (
+  parts: readonly { count: number; value: string }[],
+): number =>
+  parts.reduce(
+    (total: number, { count, value }) =>
+      value === 'NonCommunique' ? total : total + count,
+    0,
+  )
+
+export const ProfilImprime = ({
   beneficiaires,
-}: MesStatistiquesPageData) => {
-  const totalWithGenre = beneficiaires.genres.reduce(
-    (total: number, { count, value }) =>
-      value === 'NonCommunique' ? total : total + count,
-    0,
-  )
-
-  const totalWithTrancheAge = beneficiaires.trancheAges.reduce(
-    (total: number, { count, value }) =>
-      value === 'NonCommunique' ? total : total + count,
-    0,
-  )
-
-  const totalWithStatut = beneficiaires.statutsSocial.reduce(
-    (total: number, { count, value }) =>
-      value === 'NonCommunique' ? total : total + count,
-    0,
-  )
-
-  const totalWithCommune = beneficiaires.communes.reduce(
-    (total: number, { count }) => total + count,
-    0,
-  )
-
+}: {
+  beneficiaires: ProfilPresente
+}) => {
+  const totalWithGenre = totalRenseigne(beneficiaires.genres)
+  const totalWithTrancheAge = totalRenseigne(beneficiaires.trancheAges)
+  const totalWithStatut = totalRenseigne(beneficiaires.statutsSocial)
   const statutsSocialProgress = beneficiaires.statutsSocial.map(toProgress)
   const trancheAgesProgress = beneficiaires.trancheAges.map(toProgress)
   const beneficiairesGenres = beneficiaires.genres
 
   return (
     <>
-      <h2 className="fr-h3">Statistiques sur vos bénéficiaires</h2>
       <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Genres</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
         Les statistiques prennent en compte les bénéficiaires suivis et anonymes
@@ -122,22 +110,6 @@ export const StatistiquesBeneficiairesPrint = ({
       <QuantifiedShareLegend
         quantifiedShares={beneficiaires.statutsSocial}
         colors={statusColors}
-      />
-      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">
-        Commune de résidence des bénéficiaires
-      </h3>
-      <small role="note" className="fr-mb-6v fr-display-block">
-        Les statistiques prennent en compte les bénéficiaires suivis et anonymes
-        dont la commune de résidence a été complétée.
-        <br />
-        Total des bénéficiaires dont la commune de résidence a été
-        complétée&nbsp;: {totalWithCommune}/{beneficiaires.total} bénéficiaires
-        suivis ou anonymes
-      </small>
-      <QuantifiedShareList
-        order="desc"
-        quantifiedShares={beneficiaires.communes}
-        colors={[communeColor]}
       />
     </>
   )

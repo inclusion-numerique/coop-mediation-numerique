@@ -31,3 +31,7 @@ export const personnesParCommunePresentees = (
     'count',
     'proportion',
   )
+
+export type PersonnesParCommunePresentees = ReturnType<
+  typeof personnesParCommunePresentees
+>

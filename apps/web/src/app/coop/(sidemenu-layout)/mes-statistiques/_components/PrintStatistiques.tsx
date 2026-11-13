@@ -1,12 +1,14 @@
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { sectionGeneraleImprimee } from '@app/web/composition/statistiques/sections'
+import {
+  sectionBeneficiairesImprimee,
+  sectionGeneraleImprimee,
+} from '@app/web/composition/statistiques/sections'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { StatistiquesActivitesPrint } from '../_sections/StatistiquesActivitesPrint'
-import { StatistiquesBeneficiairesPrint } from '../_sections/StatistiquesBeneficiairesPrint'
 
 export const PrintStatistiques = (
   mesStatistiquesProps: MesStatistiquesPageData,
@@ -60,7 +62,7 @@ export const PrintStatistiques = (
         <StatistiquesActivitesPrint {...mesStatistiquesProps} />
       </section>
       <section className="fr-pt-6v">
-        <StatistiquesBeneficiairesPrint {...mesStatistiquesProps} />
+        {sectionBeneficiairesImprimee(mesStatistiquesProps)}
       </section>
     </div>
   )

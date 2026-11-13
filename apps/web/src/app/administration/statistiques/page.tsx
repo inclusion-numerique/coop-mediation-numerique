@@ -1,9 +1,11 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
-import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { sectionGenerale } from '@app/web/composition/statistiques/sections'
+import {
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@app/web/composition/statistiques/sections'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import {
   criteresDesStatistiques,
@@ -125,15 +127,17 @@ const Page = async (props: {
           />
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesBeneficiaires
-            beneficiaires={{
-              total: beneficiaires.total,
-              genres: beneficiaires.genres,
-              trancheAges: beneficiaires.trancheAges,
-              statutsSocial: beneficiaires.statutsSocial,
-            }}
-            wording="generique"
-          />
+          {sectionBeneficiaires(
+            {
+              beneficiaires: {
+                total: beneficiaires.total,
+                genres: beneficiaires.genres,
+                trancheAges: beneficiaires.trancheAges,
+                statutsSocial: beneficiaires.statutsSocial,
+              },
+            },
+            { wording: 'generique' },
+          )}
         </section>
       </>
     </ClientBinder>

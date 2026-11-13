@@ -1,10 +1,12 @@
 import { ExportStatistiques } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/ExportStatistiques'
 import { PrintStatistiques } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/PrintStatistiques'
 import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
-import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { sectionGenerale } from '@app/web/composition/statistiques/sections'
+import {
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@app/web/composition/statistiques/sections'
 import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -135,10 +137,7 @@ export const StatistiquesPage = (
           <StatistiquesActivites {...statistiquesProps} wording="generique" />
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesBeneficiaires
-            {...statistiquesProps}
-            wording="generique"
-          />
+          {sectionBeneficiaires(statistiquesProps, { wording: 'generique' })}
         </section>
       </main>
     </>

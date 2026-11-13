@@ -4,7 +4,10 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { sectionGenerale } from '@app/web/composition/statistiques/sections'
+import {
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@app/web/composition/statistiques/sections'
 import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import type { LienDuPerimetre } from '@app/web/features/mediateurs/domain'
 import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
@@ -15,7 +18,6 @@ import Link from 'next/link'
 import { ExportStatistiques } from './_components/ExportStatistiques'
 import { PrintStatistiques } from './_components/PrintStatistiques'
 import { StatistiquesActivites } from './_sections/StatistiquesActivites'
-import { StatistiquesBeneficiaires } from './_sections/StatistiquesBeneficiaires'
 import { AutoPrint } from './AutoPrint'
 import { MesStatistiquesPageData } from './getMesStatistiquesPageData'
 import { statistiquesPageTitle } from './statistiquesPageTitle'
@@ -127,7 +129,7 @@ export const MesStatistiques = (
           <StatistiquesActivites {...mesStatistiquesProps} canManageTags />
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesBeneficiaires {...mesStatistiquesProps} />
+          {sectionBeneficiaires(mesStatistiquesProps)}
         </section>
         <section className="fr-mb-6w">
           <StatistiquesImpact
