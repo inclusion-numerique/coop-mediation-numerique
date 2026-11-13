@@ -36,7 +36,7 @@ export const recalculerLesPremiersAccompagnements = async (
       INNER JOIN activites activite ON activite.id = accompagnement.activite_id
       WHERE accompagnement.beneficiaire_id = ANY(${beneficiaireIds}::uuid[])
         AND activite.suppression IS NULL
-      ORDER BY accompagnement.beneficiaire_id, activite.date ASC, activite.id ASC
+      ORDER BY accompagnement.beneficiaire_id, activite.date ASC, activite.creation ASC, activite.id ASC
     `,
   ])
 

@@ -188,48 +188,109 @@ Given(
   },
 )
 
-Given(
-  'un bénéficiaire suivi accompagné le 3 mars puis le 10 mars',
-  async () => {
-    const contexte = await semerLeContexte()
-    const [suivi] = await semerDesSuivis(contexte.auteur.mediateurId, 1)
-    if (suivi === undefined) throw new Error('Aucun bénéficiaire semé')
-    await prismaClient.beneficiaire.update({
-      where: { id: suivi },
-      data: { accompagnementsCount: 2 },
-    })
-    await prismaClient.mediateur.update({
-      where: { id: contexte.auteur.mediateurId },
-      data: { activitesCount: 2, accompagnementsCount: 2 },
-    })
-    const accompagnement = (jour: string, premier: boolean) =>
-      prismaClient.activite
-        .create({
-          data: {
-            mediateurId: contexte.auteur.mediateurId,
-            type: 'Individuel',
-            typeLieu: 'ADistance',
-            date: new Date(`2026-03-${jour}`),
-            duree: 30,
-            thematiques: ['Email'],
-            accompagnementsCount: 1,
-            accompagnements: {
-              create: { beneficiaireId: suivi, premierAccompagnement: premier },
-            },
-          },
-          select: { id: true },
-        })
-        .then(({ id }) => id)
-    semis = {
-      ...contexte,
-      activites: {
-        '3 mars': await accompagnement('03', true),
-        '10 mars': await accompagnement('10', false),
+const accompagnementSeme = ({
+  mediateurId,
+  beneficiaireId,
+  jour,
+  premier,
+  heure = '00:00',
+  id,
+}: {
+  readonly mediateurId: string
+  readonly beneficiaireId: string
+  readonly jour: string
+  readonly premier: boolean
+  readonly heure?: string
+  readonly id?: string
+}) =>
+  prismaClient.activite
+    .create({
+      data: {
+        id,
+        mediateurId,
+        type: 'Individuel',
+        typeLieu: 'ADistance',
+        date: new Date(`2026-03-${jour}`),
+        creation: new Date(`2026-03-${jour}T${heure}:00.000Z`),
+        duree: 30,
+        thematiques: ['Email'],
+        accompagnementsCount: 1,
+        accompagnements: {
+          create: { beneficiaireId, premierAccompagnement: premier },
+        },
       },
-      suivis: [suivi],
-      anonymes: [],
-    }
-  },
+      select: { id: true },
+    })
+    .then((activite) => activite.id)
+
+const semerUnSuiviAccompagne = async (
+  accompagnements: readonly {
+    readonly libelle: string
+    readonly jour: string
+    readonly premier: boolean
+    readonly heure?: string
+    readonly id?: string
+  }[],
+) => {
+  const contexte = await semerLeContexte()
+  const [suivi] = await semerDesSuivis(contexte.auteur.mediateurId, 1)
+  if (suivi === undefined) throw new Error('Aucun bénéficiaire semé')
+  await prismaClient.beneficiaire.update({
+    where: { id: suivi },
+    data: { accompagnementsCount: accompagnements.length },
+  })
+  await prismaClient.mediateur.update({
+    where: { id: contexte.auteur.mediateurId },
+    data: {
+      activitesCount: accompagnements.length,
+      accompagnementsCount: accompagnements.length,
+    },
+  })
+  const activites = await Promise.all(
+    accompagnements.map(async ({ libelle, ...accompagnement }) => [
+      libelle,
+      await accompagnementSeme({
+        ...accompagnement,
+        mediateurId: contexte.auteur.mediateurId,
+        beneficiaireId: suivi,
+      }),
+    ]),
+  )
+  semis = {
+    ...contexte,
+    activites: Object.fromEntries(activites),
+    suivis: [suivi],
+    anonymes: [],
+  }
+}
+
+Given('un bénéficiaire suivi accompagné le 3 mars puis le 10 mars', () =>
+  semerUnSuiviAccompagne([
+    { libelle: '3 mars', jour: '03', premier: true },
+    { libelle: '10 mars', jour: '10', premier: false },
+  ]),
+)
+
+Given(
+  'un bénéficiaire suivi accompagné le 3 mars puis deux fois le 10 mars, enregistré à 9 h et à 14 h',
+  () =>
+    semerUnSuiviAccompagne([
+      { libelle: '3 mars', jour: '03', premier: true },
+      {
+        libelle: '10 mars à 9 h',
+        jour: '10',
+        premier: false,
+        heure: '09:00',
+        id: 'ffffffff-0000-4000-8000-000000000009',
+      },
+      {
+        libelle: '10 mars à 14 h',
+        jour: '10',
+        premier: false,
+        heure: '14:00',
+        id: '00000000-0000-4000-8000-000000000014',
+      },
+    ]),
 )
 
 When('le médiateur supprime cette activité de médiation', async () => {
@@ -342,13 +403,24 @@ Then("le lieu d'activité compte {int} activité", async (attendu: number) => {
 })
 
 Then(
-  "l'accompagnement du 10 mars devient le premier accompagnement du bénéficiaire",
-  async () => {
+  "l'accompagnement du {string} devient le premier accompagnement du bénéficiaire",
+  async (libelle: string) => {
     const accompagnement = await prismaClient.accompagnement.findFirstOrThrow({
-      where: { activiteId: activiteSemee('10 mars') },
+      where: { activiteId: activiteSemee(libelle) },
       select: { premierAccompagnement: true },
     })
     assert.strictEqual(accompagnement.premierAccompagnement, true)
+  },
+)
+
+Then(
+  "l'accompagnement du {string} n'est pas le premier accompagnement du bénéficiaire",
+  async (libelle: string) => {
+    const accompagnement = await prismaClient.accompagnement.findFirstOrThrow({
+      where: { activiteId: activiteSemee(libelle) },
+      select: { premierAccompagnement: true },
+    })
+    assert.strictEqual(accompagnement.premierAccompagnement, false)
   },
 )
 

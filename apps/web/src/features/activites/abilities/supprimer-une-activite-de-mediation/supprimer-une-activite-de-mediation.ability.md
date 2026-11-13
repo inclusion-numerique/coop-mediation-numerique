@@ -30,7 +30,14 @@
 
 * Given un bénéficiaire suivi accompagné le 3 mars puis le 10 mars
 * When le médiateur supprime l'accompagnement du 3 mars
-* Then l'accompagnement du 10 mars devient le premier accompagnement du bénéficiaire
+* Then l'accompagnement du "10 mars" devient le premier accompagnement du bénéficiaire
+
+### Scenario: À date égale, le premier accompagnement revient au premier enregistré
+
+* Given un bénéficiaire suivi accompagné le 3 mars puis deux fois le 10 mars, enregistré à 9 h et à 14 h
+* When le médiateur supprime l'accompagnement du 3 mars
+* Then l'accompagnement du "10 mars à 9 h" devient le premier accompagnement du bénéficiaire
+* And l'accompagnement du "10 mars à 14 h" n'est pas le premier accompagnement du bénéficiaire
 
 ## Rule: Personne d'autre ne supprime l'activité d'un médiateur
 
