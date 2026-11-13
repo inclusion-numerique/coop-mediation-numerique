@@ -123,9 +123,12 @@ const rubriquesDe = (activite: ActiviteDeCoordination): readonly Rubrique[] => [
   ...rubrique('Organisé par', organisateursDe(autreOuPrecision)(activite)),
   ...(activite._tag === 'Animation' || activite.echelon === null
     ? []
-    : rubrique('Échelon territorial de l’évènement', [
-        libelleDeLEchelon(activite.echelon),
-      ])),
+    : rubrique(
+        activite._tag === 'Partenariat'
+          ? 'Échelon territorial du partenariat'
+          : 'Échelon territorial de l’évènement',
+        [libelleDeLEchelon(activite.echelon)],
+      )),
   ...(activite._tag === 'Partenariat'
     ? rubrique(
         'Partenaires',

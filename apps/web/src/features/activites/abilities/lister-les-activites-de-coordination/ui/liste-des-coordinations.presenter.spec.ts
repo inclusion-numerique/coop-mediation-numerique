@@ -4,6 +4,7 @@ import {
   CoordinateurId,
   DateDActivite,
   DureeEnMinutes,
+  EchelonTerritorial,
   Effectif,
   NomDeLActivite,
   NomDeStructure,
@@ -122,6 +123,25 @@ describe('liste des activités de coordination', () => {
         elements: ['Mairie · Commune', 'Collectif · Collectif citoyen'],
       },
     ])
+  })
+
+  it('titre l’échelon selon le type de l’activité', () => {
+    const avecEchelon = listeDesCoordinations({
+      listees: {
+        activites: [
+          { ...partenariat, echelon: EchelonTerritorial('Departemental') },
+        ],
+        total: Effectif(1),
+        pages: Effectif(1),
+      },
+      filtre: false,
+      timezone: 'Europe/Paris',
+    })
+
+    expect(avecEchelon.jours[0].cartes[0].detail.rubriques).toContainEqual({
+      titre: 'Échelon territorial du partenariat',
+      elements: ['Départemental'],
+    })
   })
 
   it('accorde le titre d’une recherche', () => {
