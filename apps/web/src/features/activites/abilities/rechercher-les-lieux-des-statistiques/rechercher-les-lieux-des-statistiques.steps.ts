@@ -43,15 +43,25 @@ When(
 )
 
 When(
-  'je nomme le lieu {string}, la commune {string} et le département {string}',
-  async (lieu: string, commune: string, departement: string) => {
-    proposes = await nommerLesLieuxChoisis({
-      lieux: [LieuActiviteId(lieuSeme(lieu))],
-      communes: [CodeInsee(commune)],
-      departements: [CodeDepartement(departement)],
-    })
+  '{string} nomme le lieu {string}, la commune {string} et le département {string}',
+  async (nom: string, lieu: string, commune: string, departement: string) => {
+    proposes = await nommerLesLieuxChoisis(
+      {
+        lieux: [LieuActiviteId(lieuSeme(lieu))],
+        communes: [CodeInsee(commune)],
+        departements: [CodeDepartement(departement)],
+      },
+      perimetreDe(nom),
+    )
   },
 )
+
+When('{string} nomme le lieu {string}', async (nom: string, lieu: string) => {
+  proposes = await nommerLesLieuxChoisis(
+    { lieux: [LieuActiviteId(lieuSeme(lieu))], communes: [], departements: [] },
+    perimetreDe(nom),
+  )
+})
 
 Then('les lieux proposés sont {string}', (attendus: string) => {
   assert.strictEqual(

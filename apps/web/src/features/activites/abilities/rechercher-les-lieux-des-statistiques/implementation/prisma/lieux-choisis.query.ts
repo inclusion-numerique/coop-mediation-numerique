@@ -1,14 +1,17 @@
 import { departementDuCode } from '@app/web/libraries/departement'
 import { prismaClient } from '@app/web/prismaClient'
+import { dansLePerimetre } from '../../../../db/perimetre-des-statistiques.sql'
 import {
   communeComptee,
   LieuActiviteId,
   NomDeStructure,
+  type PerimetreDesStatistiques,
 } from '../../../../domain'
 import type { LieuDesStatistiques, LieuxChoisis } from '../../domain'
 
 const lieuxDActivite = async (
   ids: LieuxChoisis['lieux'],
+  perimetre: PerimetreDesStatistiques,
 ): Promise<readonly LieuDesStatistiques[]> =>
   ids.length === 0
     ? []
@@ -17,6 +20,12 @@ const lieuxDActivite = async (
           SELECT str.id::text AS id, str.nom
           FROM lieu_inclusion str
           WHERE str.id = ANY(${[...ids]}::uuid[])
+            AND EXISTS (
+              SELECT 1 FROM activites act
+              WHERE act.structure_id = str.id
+                AND act.suppression IS NULL
+                AND ${dansLePerimetre(perimetre)}
+            )
           ORDER BY str.nom ASC`
       ).flatMap(({ id, nom }) => {
         const lieuId = LieuActiviteId.safe(id)
@@ -76,9 +85,10 @@ const departements = (
 
 export const nommerLesLieuxChoisis = async (
   choisis: LieuxChoisis,
+  perimetre: PerimetreDesStatistiques,
 ): Promise<readonly LieuDesStatistiques[]> => {
   const [lieux, desCommunes] = await Promise.all([
-    lieuxDActivite(choisis.lieux),
+    lieuxDActivite(choisis.lieux, perimetre),
     communes(choisis.communes),
   ])
   return [...lieux, ...desCommunes, ...departements(choisis.departements)]

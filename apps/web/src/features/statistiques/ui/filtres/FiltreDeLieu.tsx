@@ -61,12 +61,13 @@ const champsVides: ChampsDuFiltre = { type: '', valeur: null }
 const rechercher = async (
   type: TypeDeLieu,
   recherche: string,
-): Promise<SelectOption[]> => {
-  const resultat = await inject(
-    RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY,
-  )({ genre: GENRE_DU_TYPE[type], recherche })
-  return resultat.success ? [...resultat.data] : []
-}
+): Promise<SelectOption[]> =>
+  inject(RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY)({
+    genre: GENRE_DU_TYPE[type],
+    recherche,
+  })
+    .then((resultat) => (resultat.success ? [...resultat.data] : []))
+    .catch(() => [])
 
 const itemToKey = (item: SelectOption): string => item.value
 
@@ -118,12 +119,18 @@ export const FiltreDeLieu = ({
     setLieuxActivite(choisis.lieuxActiviteOptions)
   }
 
-  const [plusUtilises, setPlusUtilises] = useState<SelectOption[]>([])
+  const [plusUtilises, setPlusUtilises] = useState<
+    Partial<Record<TypeDeLieu, SelectOption[]>>
+  >({})
 
   useEffect(() => {
     if (type === '') return
-    rechercher(type, '').then(setPlusUtilises)
+    rechercher(type, '').then((options) =>
+      setPlusUtilises((precedents) => ({ ...precedents, [type]: options })),
+    )
   }, [type])
+
+  const plusUtilisesDuType = type === '' ? [] : (plusUtilises[type] ?? [])
 
   const choisisDuType: Record<TypeDeLieu, SelectOption[]> = {
     lieu: lieuxActivite,
@@ -213,10 +220,10 @@ export const FiltreDeLieu = ({
             <form.AppField name="valeur">
               {(field) => (
                 <field.ComboBox
-                  key={`${type}-${plusUtilises.map(itemToKey).join()}`}
+                  key={`${type}-${plusUtilisesDuType.map(itemToKey).join()}`}
                   isPending={isPending}
                   onSelect={handleSelectFilter}
-                  defaultItems={plusUtilises.filter(
+                  defaultItems={plusUtilisesDuType.filter(
                     availableOptionsIn(choisisDuType[type]),
                   )}
                   {...suggestionsDe(type, choisisDuType[type])}

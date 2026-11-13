@@ -12,7 +12,10 @@ import {
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
 import { statistiquesNationalesEnCours } from '@app/web/composition/statistiques/statistiques-nationales'
-import { criteresDesStatistiques } from '@app/web/features/activites/domain'
+import {
+  criteresDesStatistiques,
+  PERIMETRE_NATIONAL,
+} from '@app/web/features/activites/domain'
 import { optionsDeTags } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,
@@ -23,6 +26,7 @@ import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres
 import { StatistiquesNationales } from '@app/web/features/statistiques/ui/pages/StatistiquesNationales'
 import { lireLesTagsCollectifs } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
+import { notFound } from 'next/navigation'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),
@@ -41,13 +45,14 @@ const Page = async (props: {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
   const user = await authenticateUser()
+  if (user.role !== 'Admin') notFound()
   const statistiques = statistiquesNationalesEnCours(
     criteresDesStatistiques(activitesFilters),
-    { tags: user.role === 'Admin' },
+    { tags: true },
   )
   const [tagsCollectifs, lieuxChoisis] = await Promise.all([
     lireLesTagsCollectifs(),
-    lieuxChoisisDe(activitesFilters),
+    lieuxChoisisDe(activitesFilters, PERIMETRE_NATIONAL),
   ])
   const tagsOptions = optionsDeTags(tagsCollectifs)
 

@@ -1,5 +1,9 @@
+import { departements as REFERENTIEL_DES_DEPARTEMENTS } from '@app/web/data/collectivites-territoriales/departements'
 import { Prisma } from '@app/web/generated/prisma/client'
-import { departementDuCode } from '@app/web/libraries/departement'
+import {
+  type Departement,
+  departementDuCode,
+} from '@app/web/libraries/departement'
 import { prismaClient } from '@app/web/prismaClient'
 import { dansLePerimetre } from '../../../../db/perimetre-des-statistiques.sql'
 import {
@@ -16,10 +20,13 @@ const RESULTATS_D_UNE_RECHERCHE = 20
 const limite = (recherche: string): number =>
   recherche === '' ? LES_PLUS_UTILISES : RESULTATS_D_UNE_RECHERCHE
 
+const sansJoker = (recherche: string): string =>
+  recherche.replace(/[\\%_]/g, (caractere) => `\\${caractere}`)
+
 const contient = (colonne: Prisma.Sql, recherche: string): Prisma.Sql =>
   recherche === ''
     ? Prisma.sql`TRUE`
-    : Prisma.sql`unaccent(${colonne}) ILIKE unaccent(${`%${recherche}%`})`
+    : Prisma.sql`unaccent(${colonne}) ILIKE unaccent(${`%${sansJoker(recherche)}%`})`
 
 const sansAccent = (texte: string): string =>
   texte
@@ -83,7 +90,26 @@ const communes = async (
       : []
   })
 
-const departements = async (
+const correspond =
+  (recherche: string) =>
+  ({ departement }: { readonly departement: Departement }): boolean =>
+    recherche === '' ||
+    departement.code.startsWith(recherche.toUpperCase()) ||
+    sansAccent(departement.nom).includes(sansAccent(recherche))
+
+const departementsDuReferentiel = (
+  recherche: string,
+): readonly LieuDesStatistiques[] =>
+  REFERENTIEL_DES_DEPARTEMENTS.flatMap(({ code }) => {
+    const departement = departementDuCode(code)
+    return departement.success
+      ? [{ genre: 'Departement' as const, departement: departement.data }]
+      : []
+  })
+    .filter(correspond(recherche))
+    .slice(0, limite(recherche))
+
+const departementsDesActivites = async (
   perimetre: PerimetreDesStatistiques,
   recherche: string,
 ): Promise<readonly LieuDesStatistiques[]> =>
@@ -107,13 +133,16 @@ const departements = async (
         ? [{ genre: 'Departement' as const, departement: departement.data }]
         : []
     })
-    .filter(
-      ({ departement }) =>
-        recherche === '' ||
-        departement.code.startsWith(recherche.toUpperCase()) ||
-        sansAccent(departement.nom).includes(sansAccent(recherche)),
-    )
+    .filter(correspond(recherche))
     .slice(0, limite(recherche))
+
+const departements = async (
+  perimetre: PerimetreDesStatistiques,
+  recherche: string,
+): Promise<readonly LieuDesStatistiques[]> =>
+  perimetre.type === 'National'
+    ? departementsDuReferentiel(recherche)
+    : departementsDesActivites(perimetre, recherche)
 
 export const rechercherLesLieuxDesStatistiques = ({
   perimetre,

@@ -55,14 +55,15 @@ const MesStatistiquesPage = async (props: {
     },
   })
   const toutes = toutesLesStatistiques(statistiques)
-  const { hasCrasV1 } = await statistiques.hasCrasV1
-
-  const liensDePartage = await consulterMesLiensDePartage({
-    mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
-    coordinateurId: user.coordinateur?.id
-      ? CoordinateurId(user.coordinateur.id)
-      : null,
-  })
+  const [{ hasCrasV1 }, liensDePartage] = await Promise.all([
+    statistiques.hasCrasV1,
+    consulterMesLiensDePartage({
+      mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
+      coordinateurId: user.coordinateur?.id
+        ? CoordinateurId(user.coordinateur.id)
+        : null,
+    }),
+  ])
 
   return (
     <ClientBinder

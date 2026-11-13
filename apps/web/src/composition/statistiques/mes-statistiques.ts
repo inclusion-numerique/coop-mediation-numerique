@@ -71,7 +71,7 @@ export const mesStatistiques = async ({
   )
 
   const options = await optionsDesStatistiques({
-    lieuxChoisis: () => lieuxChoisisDe(activitesFilters),
+    lieuxChoisis: () => lieuxChoisisDe(activitesFilters, perimetre),
     tags: () => tousLesTagsVisiblesPar(user),
     beneficiaires: () =>
       getInitialBeneficiairesOptionsForSearch({

@@ -59,5 +59,26 @@
   | date       | type       | lieu        | typeLieu | communeDuLieu     |
   | 2026-03-03 | individuel | Médiathèque |          |                   |
   | 2026-03-04 | individuel |             | Domicile | Thuir 66300 66210 |
-* When je nomme le lieu "Médiathèque", la commune "66210" et le département "69"
+* When "Ada Lovelace" nomme le lieu "Médiathèque", la commune "66210" et le département "69"
 * Then les lieux proposés sont "Médiathèque, Thuir · 66300, 69 · Rhône"
+
+### Scenario: Un lieu hors du périmètre n'est pas nommé
+
+* Given la médiatrice "Ada Lovelace"
+* And la médiatrice "Grace Hopper"
+* And les activités de "Grace Hopper" :
+  | date       | type       | lieu            |
+  | 2026-03-03 | individuel | Maison du Monde |
+* When "Ada Lovelace" nomme le lieu "Maison du Monde"
+* Then les lieux proposés sont ""
+
+## Rule: Les caractères spéciaux sont cherchés tels quels
+
+### Scenario: Un tiret bas ne remplace pas n'importe quel caractère
+
+* Given la médiatrice "Ada Lovelace"
+* And les activités de "Ada Lovelace" :
+  | date       | type       | lieu           |
+  | 2026-03-03 | individuel | Médiathèque    |
+* When "Ada Lovelace" cherche "_" parmi les lieux d'activité de ses statistiques
+* Then les lieux proposés sont ""
