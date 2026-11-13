@@ -28,6 +28,7 @@ const feuilleDe = (
     demandeur,
     filtres,
     exportDes: { activites, colonnes: { personnel: true, source: false } },
+    fuseau: 'Europe/Paris',
     date: new Date('2026-03-10T09:00:00.000Z'),
   }).getWorksheet('Activités')
   if (!feuille) throw new Error('Onglet « Activités » absent')

@@ -21,11 +21,13 @@ export const classeurDesAccompagnements = ({
   demandeur,
   filtres,
   exportDes: { activites, colonnes },
+  fuseau,
   date = new Date(),
 }: {
   readonly demandeur: WorksheetUser
   readonly filtres: readonly LibelleDeFiltre[]
   readonly exportDes: ExportDesAccompagnements
+  readonly fuseau: string
   readonly date?: Date
 }): Excel.Workbook => {
   const classeur = new Excel.Workbook()
@@ -35,6 +37,7 @@ export const classeurDesAccompagnements = ({
   addExportMetadata(feuille)({
     user: demandeur,
     date,
+    fuseau,
     total: nombreDAccompagnementsExportes(activites),
   })
   addFilters(feuille)(filtres, { mediateurScope: null })
@@ -50,7 +53,9 @@ export const classeurDesAccompagnements = ({
       name,
       filterButton: true,
     })),
-    rows: lignesDuClasseur(activites, colonnes).map((ligne) => [...ligne]),
+    rows: lignesDuClasseur(activites, colonnes, fuseau).map((ligne) => [
+      ...ligne,
+    ]),
   })
 
   feuille

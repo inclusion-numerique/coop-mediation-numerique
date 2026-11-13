@@ -1,7 +1,8 @@
 import { htmlToText } from '@app/web/utils/htmlToText'
 import { booleanToYesNoLabel } from '@app/web/utils/yesNoBooleanOptions'
-import { format, isEqual } from 'date-fns'
+import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { formatInTimeZone } from 'date-fns-tz'
 import type { Equipement, Orientation } from '../../../domain'
 import { autonomieStars, autonomieValues } from '../../../ui/libelles/autonomie'
 import { materielLabels } from '../../../ui/libelles/materiel'
@@ -76,8 +77,10 @@ export const entetesDuClasseur = ({
   'ID CRA',
 ]
 
-const horodatage = (instant: Date): string =>
-  format(instant, "dd/MM/yyyy 'à' HH:mm", { locale: fr })
+const horodatage =
+  (fuseau: string) =>
+  (instant: Date): string =>
+    formatInTimeZone(instant, fuseau, "dd/MM/yyyy 'à' HH:mm", { locale: fr })
 
 const jourDe = (date: string): Date => new Date(`${date}T00:00:00.000Z`)
 
@@ -124,17 +127,17 @@ const SOURCE_AFFICHEE = {
 } as const
 
 const ligneDe =
-  (activite: ActiviteExportee, colonnes: ColonnesDeLExport) =>
+  (activite: ActiviteExportee, colonnes: ColonnesDeLExport, fuseau: string) =>
   (accompagnement: AccompagnementExporte, rang: number): readonly Cellule[] => {
     const { mediateur, lieu, accompagnements } = activite
     const { residence } = accompagnement
     const orientation = orientationDe(activite)
     return [
       jourDe(activite.date),
-      horodatage(activite.creation),
+      horodatage(fuseau)(activite.creation),
       isEqual(activite.creation, activite.modification)
         ? ''
-        : horodatage(activite.modification),
+        : horodatage(fuseau)(activite.modification),
       ...si<Cellule>(!colonnes.personnel, [
         mediateur.prenom ?? '',
         mediateur.nom ?? '',
@@ -181,9 +184,10 @@ const ligneDe =
 export const lignesDuClasseur = (
   activites: readonly ActiviteExportee[],
   colonnes: ColonnesDeLExport,
+  fuseau: string,
 ): readonly (readonly Cellule[])[] =>
   activites.flatMap((activite) =>
-    activite.accompagnements.map(ligneDe(activite, colonnes)),
+    activite.accompagnements.map(ligneDe(activite, colonnes, fuseau)),
   )
 
 export const nombreDAccompagnementsExportes = (

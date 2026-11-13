@@ -81,6 +81,7 @@ const lignesDuTableau = (
     criteres: criteresDesCoordinations(parametres),
     tags: [TAG],
     auteur,
+    fuseau: 'Europe/Paris',
   }).getWorksheet('Activités de coordination')
   if (feuille === undefined) throw new Error('Feuille introuvable')
   const valeurs = Array.from(feuille.getSheetValues(), (ligne) =>
@@ -113,6 +114,12 @@ describe('classeur des activités de coordination', () => {
       '/',
     ])
     expect(ligne[15]).toBe('Été')
+  })
+
+  it('date l’enregistrement dans le fuseau de l’auteur', () => {
+    const [ligne] = lignesDuTableau([partenariat]).lignes
+
+    expect(ligne[17]).toBe('01/06/2026 à 12:00')
   })
 
   it('reprend les intervenants d’une animation', () => {

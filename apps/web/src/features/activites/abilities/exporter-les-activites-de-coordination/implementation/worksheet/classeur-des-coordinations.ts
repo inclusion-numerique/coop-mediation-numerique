@@ -7,8 +7,9 @@ import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { htmlToText } from '@app/web/utils/htmlToText'
-import { format, isEqual } from 'date-fns'
+import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { formatInTimeZone } from 'date-fns-tz'
 import * as Excel from 'exceljs'
 import type {
   ActiviteDeCoordination,
@@ -62,10 +63,12 @@ const pour =
 const lignes = (valeurs: readonly (string | null)[]): string =>
   valeurs.filter((valeur) => valeur !== null).join(SAUT_DE_LIGNE)
 
-const horodatage = (date: Date): string =>
-  format(date, "dd/MM/yyyy 'à' HH:mm", { locale: fr })
+const horodatage =
+  (fuseau: string) =>
+  (date: Date): string =>
+    formatInTimeZone(date, fuseau, "dd/MM/yyyy 'à' HH:mm", { locale: fr })
 
-const ligneDe = (activite: ActiviteDeCoordination) => {
+const ligneDe = (fuseau: string) => (activite: ActiviteDeCoordination) => {
   const seulementPour = pour(activite)
   const animation = activite._tag === 'Animation' ? activite : null
   const evenement = activite._tag === 'Evenement' ? activite : null
@@ -118,10 +121,10 @@ const ligneDe = (activite: ActiviteDeCoordination) => {
     ),
     lignes(activite.tags.map(({ nom }) => nom)),
     activite.notes === null ? '' : htmlToText(activite.notes),
-    horodatage(activite.creation),
+    horodatage(fuseau)(activite.creation),
     isEqual(activite.creation, activite.modification)
       ? ''
-      : horodatage(activite.modification),
+      : horodatage(fuseau)(activite.modification),
     activite.id,
   ]
 }
@@ -145,12 +148,14 @@ export const classeurDesCoordinations = ({
   criteres,
   tags,
   auteur,
+  fuseau,
   genereLe = new Date(),
 }: {
   activites: readonly ActiviteDeCoordination[]
   criteres: CriteresDesCoordinations
   tags: readonly TagDeLActivite[]
   auteur: WorksheetUser
+  fuseau: string
   genereLe?: Date
 }): Excel.Workbook => {
   const classeur = new Excel.Workbook()
@@ -160,6 +165,7 @@ export const classeurDesCoordinations = ({
   addExportMetadata(feuille)({
     user: auteur,
     date: genereLe,
+    fuseau,
     total: activites.length,
   })
 
@@ -174,7 +180,7 @@ export const classeurDesCoordinations = ({
     headerRow: true,
     totalsRow: false,
     columns: ENTETES.map((name) => ({ name, filterButton: true })),
-    rows: activites.map(ligneDe),
+    rows: activites.map(ligneDe(fuseau)),
   })
 
   feuille.getColumn(1).eachCell({ includeEmpty: true }, (cellule, rang) => {

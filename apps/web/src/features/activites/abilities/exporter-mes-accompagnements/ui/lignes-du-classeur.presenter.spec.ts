@@ -12,6 +12,7 @@ import {
 
 const PERSONNEL = { personnel: true, source: false }
 const EQUIPE = { personnel: false, source: true }
+const PARIS = 'Europe/Paris'
 
 const ligneNommee = (
   colonnes: { personnel: boolean; source: boolean },
@@ -45,10 +46,10 @@ describe('lignes du classeur des accompagnements', () => {
   })
 
   it('présente un accompagnement individuel cellule par cellule', () => {
-    const [ligne] = lignesDuClasseur([individuelExporte], PERSONNEL)
+    const [ligne] = lignesDuClasseur([individuelExporte], PERSONNEL, PARIS)
     expect(ligneNommee(PERSONNEL, ligne ?? [])).toEqual({
       Date: new Date('2026-03-09T00:00:00.000Z'),
-      'Enregistré le': expect.stringMatching(/^09\/03\/2026 à \d\d:00$/),
+      'Enregistré le': '09/03/2026 à 11:00',
       'Dernière modification le': '',
       Type: 'Accompagnement individuel',
       Participants: 1,
@@ -81,10 +82,11 @@ describe('lignes du classeur des accompagnements', () => {
   })
 
   it('numérote les participants d’un atelier et ne répète pas ses notes', () => {
-    const lignes = lignesDuClasseur([collectifExporte], {
-      personnel: true,
-      source: true,
-    })
+    const lignes = lignesDuClasseur(
+      [collectifExporte],
+      { personnel: true, source: true },
+      PARIS,
+    )
     const nommees = lignes.map((ligne) =>
       ligneNommee({ personnel: true, source: true }, ligne),
     )
@@ -105,7 +107,7 @@ describe('lignes du classeur des accompagnements', () => {
       'Bénéficiaire réorienté': '',
       'Structure de redirection': '',
       'Source de la donnée': 'Espace coop (V1)',
-      'Dernière modification le': expect.stringMatching(/^06\/03\/2026 à /),
+      'Dernière modification le': '06/03/2026 à 15:15',
     })
     expect(nommees[1]).toMatchObject({
       'Commune du bénéficiaire': '',
@@ -116,8 +118,8 @@ describe('lignes du classeur des accompagnements', () => {
   })
 
   it('décrit le médiateur dans un export d’équipe', () => {
-    const [conseiller] = lignesDuClasseur([individuelExporte], EQUIPE)
-    const [mediateur] = lignesDuClasseur([collectifExporte], EQUIPE)
+    const [conseiller] = lignesDuClasseur([individuelExporte], EQUIPE, PARIS)
+    const [mediateur] = lignesDuClasseur([collectifExporte], EQUIPE, PARIS)
     expect(ligneNommee(EQUIPE, conseiller ?? [])).toMatchObject({
       'Prénom du médiateur': 'Edith',
       'Nom du médiateur': 'Piaf',
@@ -131,11 +133,23 @@ describe('lignes du classeur des accompagnements', () => {
     })
   })
 
+  it('date l’enregistrement dans le fuseau du demandeur', () => {
+    const [ligne] = lignesDuClasseur(
+      [individuelExporte],
+      PERSONNEL,
+      'America/Cayenne',
+    )
+
+    expect(ligneNommee(PERSONNEL, ligne ?? [])['Enregistré le']).toBe(
+      '09/03/2026 à 07:00',
+    )
+  })
+
   it('compte une ligne par accompagnement', () => {
     expect(
       nombreDAccompagnementsExportes([individuelExporte, collectifExporte]),
     ).toBe(3)
-    expect(lignesDuClasseur([], PERSONNEL)).toEqual([])
+    expect(lignesDuClasseur([], PERSONNEL, PARIS)).toEqual([])
   })
 
   it('nomme un bénéficiaire sans prénom ni nom « Bénéficiaire anonyme »', () => {

@@ -86,6 +86,7 @@ export const GET = async (request: NextRequest) => {
       exportDes.colonnes.source,
     ),
     exportDes,
+    fuseau: user.timezone,
   })
 
   const data = await classeur.xlsx.writeBuffer()

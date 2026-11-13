@@ -47,6 +47,7 @@ export const GET = async (request: NextRequest) => {
     criteres,
     tags,
     auteur: user,
+    fuseau: user.timezone,
   }).xlsx.writeBuffer()
 
   return new Response(donnees, {
