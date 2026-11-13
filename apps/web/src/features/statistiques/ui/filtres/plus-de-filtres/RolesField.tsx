@@ -9,14 +9,15 @@ export const roleCount = ({
   return conseiller_numerique === '1' ? 1 : 0
 }
 
-export const updateRolesParams =
-  (params: URLSearchParams) =>
-  (data: { value: { conseiller_numerique?: '' | '0' | '1' } }) => {
-    data.value.conseiller_numerique !== '0' &&
-    data.value.conseiller_numerique !== '1'
-      ? params.delete('conseiller_numerique')
-      : params.set('conseiller_numerique', data.value.conseiller_numerique)
-  }
+export const updateRolesParams = (data: {
+  value: { conseiller_numerique?: '' | '0' | '1' }
+}) => ({
+  conseiller_numerique:
+    data.value.conseiller_numerique === '0' ||
+    data.value.conseiller_numerique === '1'
+      ? data.value.conseiller_numerique
+      : null,
+})
 
 const conseillerNumeriqueOptions = [
   { label: 'Tous les rôles', value: '' },

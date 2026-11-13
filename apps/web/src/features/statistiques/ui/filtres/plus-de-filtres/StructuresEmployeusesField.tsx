@@ -16,14 +16,12 @@ export const structuresEmployeusesCount = ({
   structuresEmployeuses?: StructureEmployeuse[]
 }) => structuresEmployeuses?.length ?? 0
 
-export const updateStructuresEmployeusesParams =
-  (params: URLSearchParams) =>
-  (data: { value: { structuresEmployeuses?: StructureEmployeuse[] } }) => {
-    const ids = data.value.structuresEmployeuses?.map((s) => s.id) ?? []
-    ids.length > 0
-      ? params.set('structuresEmployeuses', ids.join(','))
-      : params.delete('structuresEmployeuses')
-  }
+export const updateStructuresEmployeusesParams = (data: {
+  value: { structuresEmployeuses?: StructureEmployeuse[] }
+}) => {
+  const ids = data.value.structuresEmployeuses?.map((s) => s.id) ?? []
+  return { structuresEmployeuses: ids.length > 0 ? ids.join(',') : null }
+}
 
 export const StructuresEmployeusesField = withForm({
   ...plusDeFiltresFormOptions,

@@ -2,19 +2,14 @@ import { withForm } from '@app/web/libs/form/use-app-form'
 import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
-export const updateThematiqueNonAdministrativesParams =
-  (params: URLSearchParams) =>
-  (data: {
-    value: {
-      thematiqueNonAdministratives: string[]
-    }
-  }) =>
+export const updateThematiqueNonAdministrativesParams = (data: {
+  value: { thematiqueNonAdministratives: string[] }
+}) => ({
+  thematiqueNonAdministratives:
     data.value.thematiqueNonAdministratives.length > 0
-      ? params.set(
-          'thematiqueNonAdministratives',
-          data.value.thematiqueNonAdministratives.join(','),
-        )
-      : params.delete('thematiqueNonAdministratives')
+      ? data.value.thematiqueNonAdministratives.join(',')
+      : null,
+})
 
 export const ThematiqueNonAdministrativesFiled = withForm({
   ...plusDeFiltresFormOptions,

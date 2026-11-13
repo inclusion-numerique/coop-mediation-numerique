@@ -2,11 +2,9 @@ import { withForm } from '@app/web/libs/form/use-app-form'
 import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
-export const updateTypesParams =
-  (params: URLSearchParams) => (data: { value: { types: string[] } }) =>
-    data.value.types.length > 0
-      ? params.set('types', data.value.types.join(','))
-      : params.delete('types')
+export const updateTypesParams = (data: { value: { types: string[] } }) => ({
+  types: data.value.types.length > 0 ? data.value.types.join(',') : null,
+})
 
 export const TypesField = withForm({
   ...plusDeFiltresFormOptions,

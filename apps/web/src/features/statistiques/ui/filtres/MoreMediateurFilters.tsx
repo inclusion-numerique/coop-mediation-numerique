@@ -29,6 +29,7 @@ import {
 import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
 import type { ActiviteSource } from '@app/web/features/statistiques/ui/filtres/source'
 import type { VocabulaireDeLaBarre } from '@app/web/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -62,7 +63,6 @@ export const MoreMediateurFilters = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const activeFiltersCount =
     defaultValues.structuresEmployeuses.length +
@@ -71,8 +71,12 @@ export const MoreMediateurFilters = ({
     defaultValues.thematiqueAdministratives.length +
     (defaultValues.source ? 1 : 0)
 
-  const dismissModal = () => {
-    router.replace(`?${params}`, { scroll: false })
+  const dismissModal = (
+    parametres: Readonly<Record<string, string | null>>,
+  ) => {
+    router.replace(adresseAvec(`?${searchParams}`, parametres) || '?', {
+      scroll: false,
+    })
     MoreFiltersModal.close()
     form.reset()
   }
@@ -95,23 +99,24 @@ export const MoreMediateurFilters = ({
     ...plusDeFiltresFormOptions,
     defaultValues: valeursInitiales,
     onSubmit: (data) => {
-      updateStructuresEmployeusesParams(params)(data)
-      updateThematiqueAdministrativesParams(params)(data)
-      updateThematiqueNonAdministrativesParams(params)(data)
-      updateTagsParams(params)(data)
-      updateSourcesParams(params)(data)
-      dismissModal()
+      dismissModal({
+        ...updateStructuresEmployeusesParams(data),
+        ...updateThematiqueAdministrativesParams(data),
+        ...updateThematiqueNonAdministrativesParams(data),
+        ...updateTagsParams(data),
+        ...updateSourcesParams(data),
+      })
     },
   })
 
-  const clearFilters = () => {
-    params.delete('structuresEmployeuses')
-    params.delete('thematiqueNonAdministratives')
-    params.delete('thematiqueAdministratives')
-    params.delete('tags')
-    params.delete('source')
-    dismissModal()
-  }
+  const clearFilters = () =>
+    dismissModal({
+      structuresEmployeuses: null,
+      thematiqueNonAdministratives: null,
+      thematiqueAdministratives: null,
+      tags: null,
+      source: null,
+    })
 
   return (
     <form.AppForm>

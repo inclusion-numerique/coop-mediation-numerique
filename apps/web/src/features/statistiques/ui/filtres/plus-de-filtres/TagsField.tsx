@@ -7,16 +7,15 @@ import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 export const tagToArray = (tagsOptions: { id: string }[]) => (tags: string[]) =>
   tags.length === 1 && tagsOptions.length === 1 ? tags.at(0) : tags
 
-export const updateTagsParams =
-  (params: URLSearchParams) =>
-  (data: { value: { tags?: string | string[] } }) => {
-    const tags: string[] =
-      (data.value.tags == null || Array.isArray(data.value.tags)
-        ? data.value.tags
-        : [data.value.tags]) ?? []
-
-    tags.length > 0 ? params.set('tags', tags.join(',')) : params.delete('tags')
-  }
+export const updateTagsParams = (data: {
+  value: { tags?: string | string[] }
+}) => {
+  const tags: string[] =
+    (data.value.tags == null || Array.isArray(data.value.tags)
+      ? data.value.tags
+      : [data.value.tags]) ?? []
+  return { tags: tags.length > 0 ? tags.join(',') : null }
+}
 
 export const TagsField = withForm({
   ...plusDeFiltresFormOptions,

@@ -5,13 +5,14 @@ import {
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
-export const updateSourcesParams =
-  (params: URLSearchParams) =>
-  (data: { value: { source?: ActiviteSource } }) => {
-    data.value.source !== 'v1' && data.value.source !== 'v2'
-      ? params.delete('source')
-      : params.set('source', data.value.source)
-  }
+export const updateSourcesParams = (data: {
+  value: { source?: ActiviteSource }
+}) => ({
+  source:
+    data.value.source === 'v1' || data.value.source === 'v2'
+      ? data.value.source
+      : null,
+})
 
 export const SourcesField = withForm({
   ...plusDeFiltresFormOptions,

@@ -3,19 +3,14 @@ import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
-export const updateThematiqueAdministrativesParams =
-  (params: URLSearchParams) =>
-  (data: {
-    value: {
-      thematiqueAdministratives: string[]
-    }
-  }) =>
+export const updateThematiqueAdministrativesParams = (data: {
+  value: { thematiqueAdministratives: string[] }
+}) => ({
+  thematiqueAdministratives:
     data.value.thematiqueAdministratives.length > 0
-      ? params.set(
-          'thematiqueAdministratives',
-          data.value.thematiqueAdministratives.join(','),
-        )
-      : params.delete('thematiqueAdministratives')
+      ? data.value.thematiqueAdministratives.join(',')
+      : null,
+})
 
 export const ThematiqueAdministrativesFiled = withForm({
   ...plusDeFiltresFormOptions,

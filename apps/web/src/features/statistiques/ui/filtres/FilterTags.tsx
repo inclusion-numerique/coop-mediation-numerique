@@ -7,6 +7,7 @@ import {
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -40,7 +41,6 @@ export const FilterTags = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const filterLabelsToDisplay = generateActivitesFiltersLabels(filters, {
     vocabulaire,
@@ -55,26 +55,27 @@ export const FilterTags = ({
   }).map(toLieuPrefix)
 
   const handleRemoveFilter = (key: string, value: string | string[]) => {
-    if (key === 'rdvs' && value === 'tous') {
-      params.delete('rdvs')
-    }
-
     if (Array.isArray(value)) {
-      const conserves = new URLSearchParams(
-        [...params].filter(([cle]) => !value.includes(cle)),
+      return router.replace(
+        adresseAvec(
+          `?${searchParams}`,
+          Object.fromEntries(value.map((cle) => [cle, null])),
+        ) || '?',
+        { scroll: false },
       )
-      return router.replace(`?${conserves}`, { scroll: false })
     }
 
-    const updatedValues = (params.get(key)?.split(',') ?? []).filter(
+    const restantes = (searchParams.get(key)?.split(',') ?? []).filter(
       (v) => v !== value,
     )
 
-    updatedValues.length > 0
-      ? params.set(key, updatedValues.join(','))
-      : params.delete(key)
-
-    router.replace(`?${params}`, { scroll: false })
+    return router.replace(
+      adresseAvec(`?${searchParams}`, {
+        [key]: restantes.length > 0 ? restantes.join(',') : null,
+        ...(key === 'rdvs' && value === 'tous' ? { rdvs: null } : {}),
+      }) || '?',
+      { scroll: false },
+    )
   }
 
   const handleClearFilters = () => {

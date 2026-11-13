@@ -3,6 +3,7 @@
 import { Popover } from '@app/ui/components/Primitives/Popover'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
@@ -24,7 +25,6 @@ export const ActiviteTypeFilter = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -39,27 +39,29 @@ export const ActiviteTypeFilter = ({
   const filtersCount = activiteTypes.length + rdvs.length
   const hasFilters = filtersCount > 0
 
-  const closePopover = (close: boolean = false) => {
+  const closePopover = (
+    close: boolean,
+    parametres: Readonly<Record<string, string | null>>,
+  ) => {
     close && setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(adresseAvec(`?${searchParams}`, parametres) || '?', {
+      scroll: false,
+    })
   }
 
-  const handleSubmit = (close: boolean = false) => {
-    activiteTypes.length > 0
-      ? params.set('types', activiteTypes.join(','))
-      : params.delete('types')
+  const enParametre = (valeurs: readonly string[]): string | null =>
+    valeurs.length > 0 ? valeurs.join(',') : null
 
-    rdvs.length > 0 ? params.set('rdvs', rdvs.join(',')) : params.delete('rdvs')
-
-    closePopover(close)
-  }
+  const handleSubmit = (close: boolean = false) =>
+    closePopover(close, {
+      types: enParametre(activiteTypes),
+      rdvs: enParametre(rdvs),
+    })
 
   const handleClearFilters = () => {
     setActiviteTypes([])
     setRdvs([])
-    params.delete('types')
-    params.delete('rdvs')
-    closePopover(true)
+    closePopover(true, { types: null, rdvs: null })
   }
 
   const handleCheckTypeFilter = (option: ChangeEvent<HTMLInputElement>) => {

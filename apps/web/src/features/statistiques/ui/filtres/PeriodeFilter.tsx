@@ -5,6 +5,7 @@ import {
   DateRangePicker,
 } from '@app/ui/components/Primitives/calendar/DateRangePicker'
 import { Popover } from '@app/ui/components/Primitives/Popover'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
@@ -42,28 +43,29 @@ export const PeriodeFilter = ({
   }, [defaultValue])
 
   const applyFilters = (close = false) => {
-    const params = new URLSearchParams(searchParams.toString())
-
-    params.delete('du')
-    params.delete('au')
-    if (range?.from && range?.to) {
-      params.set('du', dateAsIsoDay(range.from))
-      params.set('au', dateAsIsoDay(range.to))
-    }
+    const complete = range?.from && range?.to
 
     if (close) {
       setIsOpen(false)
     }
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      adresseAvec(`?${searchParams}`, {
+        du: complete && range.from ? dateAsIsoDay(range.from) : null,
+        au: complete && range.to ? dateAsIsoDay(range.to) : null,
+      }) || '?',
+      { scroll: false },
+    )
   }
 
   const handleClearFilters = () => {
     setRange(undefined)
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete('du')
-    params.delete('au')
     setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      adresseAvec(`?${searchParams}`, { du: null, au: null }) || '?',
+      {
+        scroll: false,
+      },
+    )
   }
 
   const { from, to } = range ?? {}
