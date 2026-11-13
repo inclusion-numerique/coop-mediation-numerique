@@ -2,13 +2,13 @@
 
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
+import { AccompagnementBarChart } from '@app/web/libs/statistiques/AccompagnementBarChart'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import { dateAsDayConventional } from '@app/web/utils/dateAsDay'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useRef, useState } from 'react'
-import { AccompagnementBarChart } from '../_components/AccompagnementBarChart'
 
 export const StatistiquesGenerales = ({
   totalCounts,

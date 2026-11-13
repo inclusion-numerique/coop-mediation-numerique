@@ -1,6 +1,6 @@
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
-import { computeProportion } from '@app/web/features/statistiques/allocatePercentages'
+import { computeProportion } from '@app/web/libraries/proportions'
 import { numberToPercentage } from '@app/web/utils/formatNumber'
 import type { Workbook, Worksheet } from 'exceljs'
 import {

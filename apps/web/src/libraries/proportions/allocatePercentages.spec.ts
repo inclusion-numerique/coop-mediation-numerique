@@ -1,7 +1,7 @@
 import {
   allocatePercentages,
   allocatePercentagesFromRecords,
-} from '@app/web/features/statistiques/allocatePercentages'
+} from '@app/web/libraries/proportions'
 
 describe('allocatePercentages', () => {
   it('should allocate percentages correctly for an array of numbers', () => {

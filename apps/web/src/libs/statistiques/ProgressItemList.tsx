@@ -1,11 +1,10 @@
 'use client'
 
+import type { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import type { CSSProperties } from 'react'
-import type { QuantifiedShare } from '../quantifiedShare'
 import ProgressBar from './ProgressBar'
-import styles from './ProgressItemList.module.scss'
 
 export const ProgressItemList = ({
   items,
@@ -38,7 +37,9 @@ export const ProgressItemList = ({
     progressBar?: CSSProperties
   }
 }) => (
-  <div className={classNames('fr-width-full', styles.container)}>
+  <div
+    className={classNames('fr-width-full', 'proportions proportions--barres')}
+  >
     {items.map(({ label, count, proportion }, index) => {
       const computedColors = color
         ? [color] // only one color is provided
@@ -49,7 +50,7 @@ export const ProgressItemList = ({
       const showTooltip = (truncateLabel || oneLineLabel) && tooltipKey
 
       return (
-        <div key={index} className={styles.row}>
+        <div key={index} className={'proportions__ligne'}>
           {showTooltip && (
             <span
               className="fr-tooltip fr-placement fr-text--sm fr-p-2v fr-border-radius--8"
@@ -64,9 +65,9 @@ export const ProgressItemList = ({
           <span
             className={classNames(
               'fr-text--sm',
-              styles.label,
-              truncateLabel && styles.truncatedLabel,
-              oneLineLabel && styles.oneLineLabel,
+              'proportions__libelle',
+              truncateLabel && 'proportions__libelle--tronque',
+              oneLineLabel && 'proportions__libelle--une-ligne',
               classes?.label,
             )}
             style={style?.label}
@@ -79,7 +80,7 @@ export const ProgressItemList = ({
           <span
             className={classNames(
               'fr-text--sm fr-text--right fr-text--bold fr-whitespace-nowrap',
-              styles.count,
+              'proportions__nombre',
               classes?.count,
             )}
             style={style?.count}
@@ -89,7 +90,7 @@ export const ProgressItemList = ({
           <span
             className={classNames(
               'fr-text--sm fr-text--right fr-text--medium fr-text-mention--grey fr-whitespace-nowrap',
-              styles.proportion,
+              'proportions__proportion',
               classes?.proportion,
             )}
             style={style?.proportion}
@@ -97,7 +98,7 @@ export const ProgressItemList = ({
             {numberToPercentage(proportion)}
           </span>
           <ProgressBar
-            className={classNames(styles.progressBar, classes?.progressBar)}
+            className={classNames('proportions__barre', classes?.progressBar)}
             style={style?.progressBar}
             progress={[
               {

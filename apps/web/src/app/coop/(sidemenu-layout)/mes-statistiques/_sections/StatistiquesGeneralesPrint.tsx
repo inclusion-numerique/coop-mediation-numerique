@@ -1,6 +1,6 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { AccompagnementBarChart } from '../_components/AccompagnementBarChart'
+import { AccompagnementBarChart } from '@app/web/libs/statistiques/AccompagnementBarChart'
 
 export const StatistiquesGeneralesPrint = ({
   totalCounts,

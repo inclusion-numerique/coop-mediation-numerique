@@ -1,20 +1,20 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { typeActivitePluralLabels } from '@app/web/features/activites/ui/libelles/type-activite'
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
-import { Fragment } from 'react'
-import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'
-import { ProgressItemList } from '../_components/ProgressItemList'
-import { QuantifiedShareLegend } from '../_components/QuantifiedShareLegend'
-import { QuantifiedShareList } from '../_components/QuantifiedShareList'
-import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
+import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
 import {
   canauxAccompagnementColors,
   dureesAccompagnementColors,
   nombreAccompagnementParLieuColor,
   tagsColor,
   thematiquesAccompagnementColors,
-} from './colors'
+} from '@app/web/libs/statistiques/couleurs'
+import { ProgressItemList } from '@app/web/libs/statistiques/ProgressItemList'
+import { QuantifiedShareLegend } from '@app/web/libs/statistiques/QuantifiedShareLegend'
+import { QuantifiedShareList } from '@app/web/libs/statistiques/QuantifiedShareList'
+import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
+import { Fragment } from 'react'
+import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
 
 const desc = (
   { count: countA }: { count: number },

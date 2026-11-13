@@ -1,9 +1,8 @@
 'use client'
 
+import type { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
-import type { QuantifiedShare } from '../quantifiedShare'
-import styles from './QuantifiedShareLegend.module.scss'
 
 export const QuantifiedShareLegend = ({
   colors,
@@ -21,15 +20,19 @@ export const QuantifiedShareLegend = ({
   tooltipKey?: string // Used to generate unique tooltip IDs
 }) => (
   <div
-    className={classNames('fr-width-full fr-px-0', styles.container, className)}
+    className={classNames(
+      'fr-width-full fr-px-0',
+      'proportions proportions--legende',
+      className,
+    )}
   >
     {quantifiedShares.map(({ label, count, proportion }, index) => {
       const showTooltip = (truncateLabel || oneLineLabel) && tooltipKey
 
       return (
-        <div key={label} className={styles.row}>
+        <div key={label} className={'proportions__ligne'}>
           <span
-            className={classNames('ri-circle-fill', styles)}
+            className="ri-circle-fill"
             style={{ color: colors[index % colors.length] }}
             aria-hidden
           />
@@ -47,9 +50,9 @@ export const QuantifiedShareLegend = ({
           <span
             className={classNames(
               'fr-text--sm',
-              styles.label,
-              truncateLabel && styles.truncatedLabel,
-              oneLineLabel && styles.oneLineLabel,
+              'proportions__libelle',
+              truncateLabel && 'proportions__libelle--tronque',
+              oneLineLabel && 'proportions__libelle--une-ligne',
             )}
             aria-describedby={
               showTooltip ? `tooltip-${tooltipKey}-${index}` : undefined
@@ -60,7 +63,7 @@ export const QuantifiedShareLegend = ({
           <span
             className={classNames(
               'fr-text--sm fr-text--bold fr-text--nowrap',
-              styles.count,
+              'proportions__nombre',
             )}
           >
             {numberToString(count ?? 0)}
@@ -68,7 +71,7 @@ export const QuantifiedShareLegend = ({
           <span
             className={classNames(
               'fr-text--sm fr-text--medium fr-text-mention--grey fr-text--nowrap',
-              styles.proportion,
+              'proportions__proportion',
             )}
           >
             {numberToPercentage(proportion)}

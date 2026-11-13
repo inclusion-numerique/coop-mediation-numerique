@@ -21,7 +21,6 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@app/web/features/activites/ui/libelles/type-lieu'
-import { allocatePercentagesFromRecords } from '@app/web/features/statistiques/allocatePercentages'
 import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
 import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
 import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
@@ -33,6 +32,7 @@ import {
   TypeActivite,
   TypeLieu,
 } from '@app/web/generated/prisma/client'
+import { allocatePercentagesFromRecords } from '@app/web/libraries/proportions'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
 import { snakeCase } from 'change-case'

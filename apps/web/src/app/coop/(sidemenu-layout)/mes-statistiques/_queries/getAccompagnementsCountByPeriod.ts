@@ -3,13 +3,13 @@ import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/stati
 import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { Prisma } from '@app/web/generated/prisma/client'
+import { LabelAndCount } from '@app/web/libs/statistiques/quantifiedShare'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   MonthShortLabel,
   monthShortLabels,
 } from '@app/web/utils/monthShortLabels'
 import { UserProfile } from '@app/web/utils/user'
-import { LabelAndCount } from '../quantifiedShare'
 import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 
 const EMPTY_ACCOMPAGNEMENTS_COUNT = monthShortLabels.map(

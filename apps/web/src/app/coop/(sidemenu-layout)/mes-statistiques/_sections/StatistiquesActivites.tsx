@@ -1,23 +1,14 @@
 'use client'
 
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { AccompagnementPieChart } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/AccompagnementPieChart'
-import { QuantifiedShareLegend } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/QuantifiedShareLegend'
 import type {
   ActivitesCommunesStats,
   ActivitesStats,
   ActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
 import type { TotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
-import { numberToString } from '@app/web/utils/formatNumber'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
-import { Fragment, useRef, useState } from 'react'
-import { ProgressItemList } from '../_components/ProgressItemList'
-import { QuantifiedShareList } from '../_components/QuantifiedShareList'
-import { StatistiqueAccompagnement } from '../_components/StatistiqueAccompagnement'
-import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
 import {
   canauxAccompagnementColors,
   dureesAccompagnementColors,
@@ -25,7 +16,16 @@ import {
   nombreAccompagnementParLieuColor,
   tagsColor,
   thematiquesAccompagnementColors,
-} from './colors'
+} from '@app/web/libs/statistiques/couleurs'
+import { ProgressItemList } from '@app/web/libs/statistiques/ProgressItemList'
+import { QuantifiedShareLegend } from '@app/web/libs/statistiques/QuantifiedShareLegend'
+import { QuantifiedShareList } from '@app/web/libs/statistiques/QuantifiedShareList'
+import { numberToString } from '@app/web/utils/formatNumber'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
+import { Fragment, useRef, useState } from 'react'
+import { StatistiqueAccompagnement } from '../_components/StatistiqueAccompagnement'
+import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
 
 type AccompagnementCategory = 'thematiques' | 'demarches' | 'tags'
 type StructuresCategory = 'lieux' | 'communes'

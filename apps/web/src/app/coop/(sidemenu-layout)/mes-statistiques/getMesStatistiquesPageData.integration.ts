@@ -17,7 +17,6 @@ import {
   MesStatistiquesGraphOptions,
   MesStatistiquesPageData,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import { emptyQuantifiedSharesFromEnum } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
@@ -31,9 +30,10 @@ import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/benef
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
-import { computeProportion } from '@app/web/features/statistiques/allocatePercentages'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
+import { computeProportion } from '@app/web/libraries/proportions'
+import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   UserDisplayName,

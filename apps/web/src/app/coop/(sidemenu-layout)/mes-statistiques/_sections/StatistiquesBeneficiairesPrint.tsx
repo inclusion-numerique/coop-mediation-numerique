@@ -1,14 +1,14 @@
 import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'
-import ProgressBar from '../_components/ProgressBar'
-import { QuantifiedShareLegend } from '../_components/QuantifiedShareLegend'
-import { QuantifiedShareList } from '../_components/QuantifiedShareList'
+import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
 import {
   communeColor,
   genresColors,
   statusColors,
   tranchesAgeColors,
-} from './colors'
+} from '@app/web/libs/statistiques/couleurs'
+import ProgressBar from '@app/web/libs/statistiques/ProgressBar'
+import { QuantifiedShareLegend } from '@app/web/libs/statistiques/QuantifiedShareLegend'
+import { QuantifiedShareList } from '@app/web/libs/statistiques/QuantifiedShareList'
 
 const toProgress = ({
   label,

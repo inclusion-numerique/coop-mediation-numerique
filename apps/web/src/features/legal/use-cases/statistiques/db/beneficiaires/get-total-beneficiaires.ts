@@ -1,4 +1,4 @@
-import { computeProportion } from '@app/web/features/statistiques/allocatePercentages'
+import { computeProportion } from '@app/web/libraries/proportions'
 import { prismaClient } from '@app/web/prismaClient'
 
 const countBeneficiaires = async (anonyme: boolean) =>

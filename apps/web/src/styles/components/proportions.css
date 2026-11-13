@@ -1,0 +1,44 @@
+.proportions {
+  width: 100%;
+  padding: 0;
+  display: grid;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.proportions--barres {
+  grid-template-columns: auto auto auto 1fr;
+}
+
+.proportions--legende {
+  grid-template-columns: auto 1fr auto auto;
+}
+
+.proportions__ligne {
+  display: contents;
+}
+
+.proportions__libelle {
+  text-align: left;
+  margin-bottom: 0;
+}
+
+.proportions__libelle--une-ligne {
+  white-space: nowrap;
+}
+
+.proportions__libelle--tronque {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proportions__nombre,
+.proportions__proportion {
+  text-align: right;
+  margin-bottom: 0;
+}
+
+.proportions__barre {
+  width: 100%;
+}

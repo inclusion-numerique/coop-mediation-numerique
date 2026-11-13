@@ -1,9 +1,9 @@
-import { allocatePercentages } from '@app/web/features/statistiques/allocatePercentages'
 import { activitesMediateurIdsWhereCondition } from '@app/web/features/statistiques/db/activitesMediateurIdsWhereCondition'
 import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/statistiques/db/filtre-de-l-equipe'
 import { filtreDesStatistiques } from '@app/web/features/statistiques/db/filtres-des-statistiques.sql'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { Prisma } from '@app/web/generated/prisma/client'
+import { allocatePercentages } from '@app/web/libraries/proportions'
 import { prismaClient } from '@app/web/prismaClient'
 import type { UserProfile } from '@app/web/utils/user'
 

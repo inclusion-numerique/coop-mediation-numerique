@@ -1,5 +1,5 @@
-import { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
-import { allocatePercentagesFromRecords } from '@app/web/features/statistiques/allocatePercentages'
+import { allocatePercentagesFromRecords } from '@app/web/libraries/proportions'
+import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 
 export const emptyQuantifiedSharesFromEnum = <T extends Record<string, string>>(
   enumObject: T,

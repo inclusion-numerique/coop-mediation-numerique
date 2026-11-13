@@ -1,6 +1,6 @@
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import type { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import type { ActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
+import type { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import {
   addExportMetadata,
   type WorksheetUser,
