@@ -94,11 +94,10 @@ const DataTable = <
                           key={name}
                           className={classNames(headerClassName, classes?.th)}
                         >
-                          {header}
-                          {(!!defaultSortable ||
-                            !!sortable ||
-                            !!sortInMemory ||
-                            !!orderBy) && (
+                          {defaultSortable ||
+                          sortable ||
+                          sortInMemory ||
+                          orderBy ? (
                             <SortLink
                               {...sortLinkProps(
                                 {
@@ -107,7 +106,11 @@ const DataTable = <
                                 defaultSortable,
                                 defaultSortableDirection,
                               )}
-                            />
+                            >
+                              {header}
+                            </SortLink>
+                          ) : (
+                            header
                           )}
                         </th>
                       ),

@@ -26,7 +26,6 @@ export const SortableColumnHeader = ({
   className?: string
 }) => (
   <th scope="col" className={classNames(className)}>
-    {label}
     <SortLink
       label={label}
       {...createSortLinkProps({
@@ -36,6 +35,8 @@ export const SortableColumnHeader = ({
         isDefault,
         defaultDirection,
       })}
-    />
+    >
+      {label}
+    </SortLink>
   </th>
 )
