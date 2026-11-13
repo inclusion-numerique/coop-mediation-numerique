@@ -3,7 +3,6 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@app/web/features/activites/abilities/decrire-les-activites-du-perimetre'
-import { verifierLaPresenceDeCrasV1 } from '@app/web/features/activites/abilities/verifier-la-presence-de-cras-v1'
 import { dansLaPeriodeDAppartenance } from '@app/web/features/activites/db/periode-d-appartenance.sql'
 import {
   CoordinateurId,
@@ -115,7 +114,6 @@ export const getMesStatistiquesPageData = async ({
           })
         : [],
     activitesDuPerimetre: () => decrireLesActivitesDuPerimetre(perimetre),
-    presenceDeCrasV1: () => verifierLaPresenceDeCrasV1(perimetre),
   })
 
   return {

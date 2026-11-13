@@ -36,7 +36,6 @@ const fournisseurs = {
     premiere: '2025-01-15',
     derniere: '2026-03-10',
   }),
-  presenceDeCrasV1: async () => 'Presents' as const,
 }
 
 describe('options des statistiques', () => {
@@ -59,16 +58,9 @@ describe('options des statistiques', () => {
     ])
   })
 
-  it('ne propose la source qu’à ceux qui ont des CRA v1', async () => {
-    const avec = await optionsDesStatistiques(fournisseurs)
-    const sans = await optionsDesStatistiques({
-      ...fournisseurs,
-      presenceDeCrasV1: async () => 'Absents' as const,
-    })
-    expect([avec.activiteSourceOptions, sans.activiteSourceOptions]).toEqual([
-      activiteSourceOptions,
-      [],
-    ])
+  it('fournit toujours les sources pour nommer celle choisie', async () => {
+    const options = await optionsDesStatistiques(fournisseurs)
+    expect(options.activiteSourceOptions).toEqual(activiteSourceOptions)
   })
 
   it('borne les dates à la première activité', async () => {

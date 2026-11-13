@@ -40,7 +40,6 @@ export type FournisseursDesOptions<
     readonly premiere: string | null
     readonly derniere: string | null
   }>
-  readonly presenceDeCrasV1: () => Promise<'Presents' | 'Absents'>
 }
 
 const SCOPE: Readonly<Record<PorteeDuTag, TagScope>> = {
@@ -83,7 +82,6 @@ export const optionsDesStatistiques = async <
     initialBeneficiairesOptions,
     membres,
     { employeuses, premiere, derniere },
-    presenceDeCrasV1,
   ] = await Promise.all([
     fournisseurs.communesEtDepartements(),
     fournisseurs.lieux(),
@@ -91,9 +89,7 @@ export const optionsDesStatistiques = async <
     fournisseurs.beneficiaires(),
     fournisseurs.membres(),
     fournisseurs.activitesDuPerimetre(),
-    fournisseurs.presenceDeCrasV1(),
   ])
-  const hasCrasV1 = presenceDeCrasV1 === 'Presents'
   return {
     communesOptions,
     departementsOptions,
@@ -113,7 +109,7 @@ export const optionsDesStatistiques = async <
       first: premiere === null ? undefined : new Date(premiere),
       last: derniere === null ? undefined : new Date(derniere),
     },
-    activiteSourceOptions: hasCrasV1 ? activiteSourceOptions : [],
+    activiteSourceOptions,
   }
 }
 
