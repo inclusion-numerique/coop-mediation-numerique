@@ -9,6 +9,7 @@ import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
 } from '../export/ExportStatistiques'
+import { ImpressionPreteProvider } from '../export/impression-prete'
 import { BlocEnAttente } from '../sections/BlocEnAttente'
 import type { OptionsDeLaBarre } from './MesStatistiques'
 
@@ -44,7 +45,7 @@ export const StatistiquesPartagees = ({
   beneficiaires: ReactNode
 }) => {
   return (
-    <>
+    <ImpressionPreteProvider key={JSON.stringify(activitesFilters)}>
       <SkipLinksPortal />
       {impression}
       <main
@@ -148,6 +149,6 @@ export const StatistiquesPartagees = ({
         <section className="fr-mb-6w">{activites}</section>
         <section className="fr-mb-6w">{beneficiaires}</section>
       </main>
-    </>
+    </ImpressionPreteProvider>
   )
 }

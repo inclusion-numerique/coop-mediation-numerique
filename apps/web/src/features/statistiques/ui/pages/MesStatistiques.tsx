@@ -15,6 +15,7 @@ import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
 } from '../export/ExportStatistiques'
+import { ImpressionPreteProvider } from '../export/impression-prete'
 import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 import { BlocEnAttente } from '../sections/BlocEnAttente'
 import { StatistiquesImpact } from '../sections/StatistiquesImpact'
@@ -73,87 +74,89 @@ export const MesStatistiques = ({
   beneficiaires: ReactNode
 }) => {
   return (
-    <CoopPageContainer size={56}>
-      <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
-      <SkipLinksPortal />
-      {impression}
-      <main className="fr-no-print" id={contentId}>
-        <h1 className="fr-text-title--blue-france fr-mb-5v">
-          {statistiquesPageTitle(user)}
-        </h1>
-        <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
-          <Filters
-            defaultFilters={activitesFilters}
-            vocabulaire={vocabulaire}
-            filtreDeLieu={filtreDeLieu}
-            structuresEmployeusesOptions={structuresEmployeusesOptions}
-            tagsOptions={tagsOptions}
-            initialMediateursOptions={initialMediateursOptions}
-            initialBeneficiairesOptions={initialBeneficiairesOptions}
-            beneficiairesFilter={false}
-            minDate={activiteDates.first}
-            isCoordinateur={user.coordinateur?.id != null}
-            isMediateur={user.mediateur?.id != null}
-            hasCrasV1={hasCrasV1}
-          />
-          <div className="fr-flex fr-flex-gap-2v">
-            {partage}
-            <BlocEnAttente attente={<ExportStatistiquesEnAttente />}>
-              <ExportStatistiques
-                filters={activitesFilters}
-                communesOptions={communesOptions}
-                departementsOptions={departementsOptions}
-                lieuxActiviteOptions={lieuxActiviteOptions}
-                mediateursOptions={initialMediateursOptions}
-                beneficiairesOptions={[]}
-                tagsOptions={tagsOptions}
-                accompagnementsCount={accompagnementsCount}
-                activiteSourceOptions={activiteSourceOptions}
-                vocabulaire={vocabulaire}
-              />
-            </BlocEnAttente>
+    <ImpressionPreteProvider key={JSON.stringify(activitesFilters)}>
+      <CoopPageContainer size={56}>
+        <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
+        <SkipLinksPortal />
+        {impression}
+        <main className="fr-no-print" id={contentId}>
+          <h1 className="fr-text-title--blue-france fr-mb-5v">
+            {statistiquesPageTitle(user)}
+          </h1>
+          <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
+            <Filters
+              defaultFilters={activitesFilters}
+              vocabulaire={vocabulaire}
+              filtreDeLieu={filtreDeLieu}
+              structuresEmployeusesOptions={structuresEmployeusesOptions}
+              tagsOptions={tagsOptions}
+              initialMediateursOptions={initialMediateursOptions}
+              initialBeneficiairesOptions={initialBeneficiairesOptions}
+              beneficiairesFilter={false}
+              minDate={activiteDates.first}
+              isCoordinateur={user.coordinateur?.id != null}
+              isMediateur={user.mediateur?.id != null}
+              hasCrasV1={hasCrasV1}
+            />
+            <div className="fr-flex fr-flex-gap-2v">
+              {partage}
+              <BlocEnAttente attente={<ExportStatistiquesEnAttente />}>
+                <ExportStatistiques
+                  filters={activitesFilters}
+                  communesOptions={communesOptions}
+                  departementsOptions={departementsOptions}
+                  lieuxActiviteOptions={lieuxActiviteOptions}
+                  mediateursOptions={initialMediateursOptions}
+                  beneficiairesOptions={[]}
+                  tagsOptions={tagsOptions}
+                  accompagnementsCount={accompagnementsCount}
+                  activiteSourceOptions={activiteSourceOptions}
+                  vocabulaire={vocabulaire}
+                />
+              </BlocEnAttente>
+            </div>
           </div>
-        </div>
-        <FilterTags
-          filters={activitesFilters}
-          communesOptions={communesOptions}
-          departementsOptions={departementsOptions}
-          lieuxActiviteOptions={lieuxActiviteOptions}
-          structuresEmployeusesOptions={structuresEmployeusesOptions}
-          mediateursOptions={initialMediateursOptions}
-          beneficiairesOptions={[]}
-          tagsOptions={tagsOptions}
-          activiteSourceOptions={activiteSourceOptions}
-          vocabulaire={vocabulaire}
-        />
-        {hasCrasV1 && (
-          <Notice
-            className="fr-notice--flex fr-align-items-center fr-mt-6v"
-            title={
-              <span className="fr-text--xs fr-text--regular fr-text-default--grey">
-                Les activités renseignées dans l’Espace Coop (V1) sont
-                maintenant visibles sur cette page statistique.{' '}
-                <Link
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://docs.numerique.gouv.fr/docs/e2e794bb-30b3-41ea-a24f-4ef5c8ec074c"
-                  className="fr-link fr-text--xs"
-                >
-                  En savoir plus
-                </Link>
-              </span>
-            }
+          <FilterTags
+            filters={activitesFilters}
+            communesOptions={communesOptions}
+            departementsOptions={departementsOptions}
+            lieuxActiviteOptions={lieuxActiviteOptions}
+            structuresEmployeusesOptions={structuresEmployeusesOptions}
+            mediateursOptions={initialMediateursOptions}
+            beneficiairesOptions={[]}
+            tagsOptions={tagsOptions}
+            activiteSourceOptions={activiteSourceOptions}
+            vocabulaire={vocabulaire}
           />
-        )}
-        <section className="fr-mb-6w fr-mt-6v">{generale}</section>
-        <section className="fr-mb-6w">{activites}</section>
-        <section className="fr-mb-6w">{beneficiaires}</section>
-        <section className="fr-mb-6w">
-          <StatistiquesImpact
-            codeDepartement={getUserDepartement(user)?.code}
-          />
-        </section>
-      </main>
-    </CoopPageContainer>
+          {hasCrasV1 && (
+            <Notice
+              className="fr-notice--flex fr-align-items-center fr-mt-6v"
+              title={
+                <span className="fr-text--xs fr-text--regular fr-text-default--grey">
+                  Les activités renseignées dans l’Espace Coop (V1) sont
+                  maintenant visibles sur cette page statistique.{' '}
+                  <Link
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://docs.numerique.gouv.fr/docs/e2e794bb-30b3-41ea-a24f-4ef5c8ec074c"
+                    className="fr-link fr-text--xs"
+                  >
+                    En savoir plus
+                  </Link>
+                </span>
+              }
+            />
+          )}
+          <section className="fr-mb-6w fr-mt-6v">{generale}</section>
+          <section className="fr-mb-6w">{activites}</section>
+          <section className="fr-mb-6w">{beneficiaires}</section>
+          <section className="fr-mb-6w">
+            <StatistiquesImpact
+              codeDepartement={getUserDepartement(user)?.code}
+            />
+          </section>
+        </main>
+      </CoopPageContainer>
+    </ImpressionPreteProvider>
   )
 }

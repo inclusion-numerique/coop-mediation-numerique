@@ -37,6 +37,7 @@ import {
   TypesDActiviteImprimes,
 } from '@app/web/features/activites/abilities/repartir-les-accompagnements/ui'
 import { TagsDesAccompagnements } from '@app/web/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
+import { ImpressionPrete } from '@app/web/features/statistiques/ui/export/impression-prete'
 import { AutoPrint } from '@app/web/features/statistiques/ui/pages/AutoPrint'
 import { ImpressionDesStatistiques } from '@app/web/features/statistiques/ui/pages/ImpressionDesStatistiques'
 import { BlocEnAttente } from '@app/web/features/statistiques/ui/sections/BlocEnAttente'
@@ -298,6 +299,7 @@ export const impressionDesStatistiques = ({
           beneficiaires={sectionBeneficiairesImprimee(fournies)}
         />
         <AutoPrint />
+        <ImpressionPrete />
       </>
     ),
     'fr-print',

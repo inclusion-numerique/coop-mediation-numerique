@@ -16,6 +16,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import { use } from 'react'
 import type { OptionDeBeneficiaire } from '../filtres/option-de-beneficiaire'
 import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
+import { useImpressionPrete } from './impression-prete'
 
 const ExportStatistiquesModal = createModal({
   id: 'export-statistiques',
@@ -56,6 +57,7 @@ export const ExportStatistiques = ({
   emptyFilterMessage?: string
 }) => {
   const nombreDAccompagnements = use(accompagnementsCount)
+  const impressionPrete = useImpressionPrete()
   const exportXlsx = (exportPath: string, message: string) => {
     const searchParams = new URLSearchParams(
       Object.entries(filters).flatMap(([key, value]) =>
@@ -121,7 +123,7 @@ export const ExportStatistiques = ({
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
-        disabled={nombreDAccompagnements === 0}
+        disabled={nombreDAccompagnements === 0 || !impressionPrete}
       >
         Exporter
       </Button>
