@@ -1,8 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  activitesRetenues,
   type DemandeDeStatistiques,
-  jointuresDesStatistiques,
+  personneAccompagnee,
 } from '../../../../db/statistiques.sql'
 import { communeComptee, Effectif } from '../../../../domain'
 import type { PersonnesParCommune } from '../../domain'
@@ -24,12 +23,9 @@ export const compterLesPersonnesAccompagneesParCommune = async (
         MIN(NULLIF(btrim(ben.commune), '')) AS nom,
         MIN(NULLIF(btrim(ben.commune_code_postal), '')) AS code_postal,
         ben.commune_code_insee AS code_insee,
-        COUNT(DISTINCT ben.id)::int AS nombre
-      FROM activites act
-        INNER JOIN accompagnements acc ON acc.activite_id = act.id
-        INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
-        ${jointuresDesStatistiques(demande.criteres)}
-      WHERE ${activitesRetenues(demande)}
+        COUNT(*)::int AS nombre
+      FROM beneficiaires ben
+      WHERE ${personneAccompagnee(demande)}
       GROUP BY ben.commune_code_insee
       ORDER BY nombre DESC, nom ASC NULLS LAST, code_insee ASC NULLS LAST`
   ).map(({ nom, code_postal, code_insee, nombre }) => ({
