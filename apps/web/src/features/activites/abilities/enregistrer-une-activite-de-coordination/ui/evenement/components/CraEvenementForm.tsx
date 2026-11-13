@@ -82,7 +82,7 @@ const CraEvenementForm = ({
 
   return (
     <form.AppForm>
-      <form onSubmit={handleSubmit(form)}>
+      <form noValidate onSubmit={handleSubmit(form)}>
         <form.AppField name="date">
           {(field) => (
             <field.Input

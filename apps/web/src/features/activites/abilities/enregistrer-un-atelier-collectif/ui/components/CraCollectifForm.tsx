@@ -86,7 +86,7 @@ const CraCollectifForm = ({
 
   return (
     <form.AppForm>
-      <form onSubmit={handleSubmit(form)}>
+      <form noValidate onSubmit={handleSubmit(form)}>
         <form.AppField name="titreAtelier">
           {(field) => (
             <field.Input

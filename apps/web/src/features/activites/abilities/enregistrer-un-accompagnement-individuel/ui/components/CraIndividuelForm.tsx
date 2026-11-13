@@ -123,7 +123,7 @@ const CraIndividuelForm = ({
 
   return (
     <form.AppForm>
-      <form onSubmit={handleSubmit(form)}>
+      <form noValidate onSubmit={handleSubmit(form)}>
         <BeneficiaireFields
           form={form}
           isPending={isPending}

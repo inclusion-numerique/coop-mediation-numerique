@@ -81,7 +81,7 @@ const CraAnimationForm = ({
 
   return (
     <form.AppForm>
-      <form onSubmit={handleSubmit(form)}>
+      <form noValidate onSubmit={handleSubmit(form)}>
         <div className="fr-flex fr-direction-column fr-direction-md-row fr-flex-gap-0 fr-flex-gap-md-4v">
           <form.AppField name="date">
             {(field) => (
