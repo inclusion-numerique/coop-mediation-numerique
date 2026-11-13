@@ -148,6 +148,11 @@ export { PrecisionDeDemarche } from './precision-de-demarche'
 export { Prenom } from './prenom'
 export { RdvId } from './rdv-id'
 export {
+  type LigneDeRepartition,
+  type Repartition,
+  repartitionComplete,
+} from './repartition'
+export {
   type EmployeuseALaDate,
   type EmployeuseDeLaDate,
   type LieuSaisi,
@@ -188,6 +193,7 @@ export {
   estAdministrative,
   THEMATIQUES_RECHERCHEES,
   ThematiqueRecherchee,
+  thematiquesRecherchees,
 } from './thematique-recherchee'
 export { TitreDAtelier } from './titre-d-atelier'
 export { TitreDuRendezVous } from './titre-du-rendez-vous'

@@ -22,3 +22,6 @@ export const estAdministrative = (thematique: ThematiqueRecherchee): boolean =>
   THEMATIQUES_ADMINISTRATIVES.some(
     (administrative) => administrative === thematique,
   )
+
+export const thematiquesRecherchees: readonly ThematiqueRecherchee[] =
+  THEMATIQUES_RECHERCHEES.map(ThematiqueRecherchee)
