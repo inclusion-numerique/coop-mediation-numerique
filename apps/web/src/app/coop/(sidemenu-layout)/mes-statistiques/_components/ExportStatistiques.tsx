@@ -158,7 +158,7 @@ export const ExportStatistiques = ({
                 Liste des accompagnements
               </div>
               <Button
-                title="Telécharger liste des accompagnements au format xlsx"
+                title="Télécharger liste des accompagnements au format xlsx"
                 priority="tertiary no outline"
                 iconId="fr-icon-download-line"
                 iconPosition="right"
@@ -181,7 +181,7 @@ export const ExportStatistiques = ({
               Statistiques
             </div>
             <Button
-              title="Telécharger les statistiques d’accompagnement au format PDF"
+              title="Télécharger les statistiques d’accompagnement au format PDF"
               priority="tertiary no outline"
               iconId="fr-icon-download-line"
               iconPosition="right"
@@ -190,7 +190,7 @@ export const ExportStatistiques = ({
               PDF
             </Button>
             <Button
-              title="Telécharger les statistiques d’accompagnement au format xlsx"
+              title="Télécharger les statistiques d’accompagnement au format xlsx"
               priority="tertiary no outline"
               iconId="fr-icon-download-line"
               iconPosition="right"
