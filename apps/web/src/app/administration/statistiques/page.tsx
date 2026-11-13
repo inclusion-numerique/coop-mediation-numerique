@@ -1,21 +1,23 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import {
-  getAccompagnementsCountByDay,
-  getAccompagnementsCountByMonth,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getAccompagnementsCountByPeriod'
-import { getActivitesStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
-import { getBeneficiaireStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
 import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
+import {
+  criteresDesStatistiques,
+  Jour,
+  PERIMETRE_NATIONAL,
+} from '@app/web/features/activites/domain'
+import { statistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import {
   getCommunesAndDepartementsOptions,
   getLieuxActiviteOptions,
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { getTagsCollectifs } from '@app/web/features/statistiques/db/tags-collectifs'
 import {
   type ActivitesFilters,
@@ -25,6 +27,7 @@ import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),
@@ -51,19 +54,28 @@ const Page = async (props: {
       getLieuxActiviteOptions(),
     ])
 
-  const [
+  const criteres = criteresDesStatistiques(activitesFilters)
+  const aujourdhui = Jour(dateAsIsoDay(new Date()))
+  const {
+    totalCounts,
     accompagnementsParJour,
     accompagnementsParMois,
     beneficiaires,
     activites,
-    totalCounts,
-  ] = await Promise.all([
-    getAccompagnementsCountByDay({ activitesFilters }),
-    getAccompagnementsCountByMonth({ activitesFilters }),
-    getBeneficiaireStats({ activitesFilters }),
-    getActivitesStats({ activitesFilters, user }),
-    getTotalCountsStats({ activitesFilters }),
-  ])
+  } = await statistiquesFournies(
+    {
+      perimetre: PERIMETRE_NATIONAL,
+      criteres,
+      conseillersNumeriques: conseillerNumeriqueSql,
+      rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+      parJour: fenetreDe({
+        debut: criteres.periode.du,
+        fin: criteres.periode.au ?? aujourdhui,
+      }),
+      parMois: fenetreDe({ debut: null, fin: aujourdhui }),
+    },
+    { territoires: false, tags: user.role === 'Admin' },
+  )
 
   return (
     <ClientBinder
@@ -116,7 +128,12 @@ const Page = async (props: {
         </section>
         <section className="fr-mb-6w">
           <StatistiquesBeneficiaires
-            beneficiaires={beneficiaires}
+            beneficiaires={{
+              total: beneficiaires.total,
+              genres: beneficiaires.genres,
+              trancheAges: beneficiaires.trancheAges,
+              statutsSocial: beneficiaires.statutsSocial,
+            }}
             wording="generique"
           />
         </section>
