@@ -62,21 +62,26 @@ const nommer = async (parametres: Record<string, string>) => {
     }),
     tagsUtilisables: recherche('tags', []),
     beneficiaires: recherche('beneficiaires', []),
-    mediateurs: recherche('mediateurs', []),
   })
 }
 
-const semerUnUtilisateur = async (): Promise<string> => {
+type Identite = { readonly firstName?: string; readonly lastName?: string }
+
+const semerUnUtilisateur = async (identite: Identite = {}): Promise<string> => {
   const userId = v4()
   await prismaClient.user.create({
-    data: { id: userId, email: `export-accompagnements-${userId}@example.com` },
+    data: {
+      id: userId,
+      email: `export-accompagnements-${userId}@example.com`,
+      ...identite,
+    },
   })
   contexte.userIds = [...contexte.userIds, userId]
   return userId
 }
 
-const semerUnMediateur = async (): Promise<Seme> => {
-  const userId = await semerUnUtilisateur()
+const semerUnMediateur = async (identite: Identite = {}): Promise<Seme> => {
+  const userId = await semerUnUtilisateur(identite)
   const { id } = await prismaClient.mediateur.create({
     data: { userId },
     select: { id: true },
@@ -115,6 +120,13 @@ const demandeurMediateur = (seme: Seme): Demandeur => ({
   equipe: [],
 })
 
+const semerMesAccompagnementsDeMars = (seme: Seme) =>
+  Promise.all(
+    Object.entries(PARTICIPANTS_EN_MARS).map(([jour, participants]) =>
+      semerUneActivite(seme.mediateurId, Number(jour), participants),
+    ),
+  )
+
 const moi = (): Seme => {
   assert.ok(contexte.moi, 'Aucune médiatrice semée')
   return contexte.moi
@@ -125,11 +137,17 @@ Given(
   async () => {
     contexte.moi = await semerUnMediateur()
     contexte.demandeur = demandeurMediateur(contexte.moi)
-    await Promise.all(
-      Object.entries(PARTICIPANTS_EN_MARS).map(([jour, participants]) =>
-        semerUneActivite(moi().mediateurId, Number(jour), participants),
-      ),
-    )
+    await semerMesAccompagnementsDeMars(contexte.moi)
+  },
+)
+
+Given(
+  'une médiatrice {string} ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026',
+  async (nom: string) => {
+    const [firstName, lastName] = nom.split(' ')
+    contexte.moi = await semerUnMediateur({ firstName, lastName })
+    contexte.demandeur = demandeurMediateur(contexte.moi)
+    await semerMesAccompagnementsDeMars(contexte.moi)
   },
 )
 
@@ -249,6 +267,16 @@ When(
   },
 )
 
+When(
+  "je nomme les filtres de mon export sur moi-même et l'autre médiateur",
+  async () => {
+    assert.ok(contexte.autre, 'Aucun autre médiateur semé')
+    await nommer({
+      mediateurs: [moi().mediateurId, contexte.autre.mediateurId].join(','),
+    })
+  },
+)
+
 When('je nomme les filtres de mon export sans filtre', async () => {
   await nommer({})
 })
@@ -259,6 +287,13 @@ Then('les employeuses nommées sont {string}', (attendues: string) => {
     contexte.noms.employeuses.map(({ nom }) => nom).join(', '),
     attendues,
   )
+})
+
+Then('seule la médiatrice {string} est nommée', (nom: string) => {
+  assert.ok(contexte.noms, 'Aucun filtre nommé')
+  assert.deepStrictEqual(contexte.noms.mediateurs, [
+    { label: nom, value: { mediateurId: moi().mediateurId } },
+  ])
 })
 
 Then("aucun nom de filtre n'a été recherché", () => {

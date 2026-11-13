@@ -23,7 +23,6 @@ import {
   getMediateurCommunesAndDepartementsOptions,
 } from '@app/web/features/lieux-activite'
 import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -68,12 +67,6 @@ export const GET = async (request: NextRequest) => {
         getInitialBeneficiairesOptionsForSearch({
           mediateurId: user.mediateur?.id,
           includeBeneficiaireIds: [...ids],
-        }),
-      mediateurs: () =>
-        getInitialMediateursOptionsForSearch({
-          mediateurId: user.mediateur?.id,
-          coordinateurId: user.coordinateur?.id,
-          mediateurCoordonnesIds: equipe,
         }),
     }),
   ])

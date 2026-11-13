@@ -7,8 +7,16 @@ import type {
   TagDeLActivite,
   TagsUtilisables,
 } from '../../../domain'
-import { type Demandeur, mediateursAutorises } from '../domain'
+import {
+  type Demandeur,
+  mediateursAutorises,
+  perimetreDeLExport,
+} from '../domain'
 import { employeusesNommees } from './prisma/employeuses-nommees.query'
+import {
+  type MediateurNomme,
+  mediateursNommes,
+} from './prisma/mediateurs-nommes.query'
 
 export type NomDeFiltre = { readonly label: string; readonly value: string }
 
@@ -17,14 +25,9 @@ export type NomDeFiltreDeBeneficiaire = {
   readonly value: { readonly id?: string | null } | null
 }
 
-export type NomDeFiltreDeMediateur = {
-  readonly label: string
-  readonly value: { readonly mediateurId: string } | null
-}
-
 export type NomsDesFiltresExportes = {
   readonly beneficiaires: readonly NomDeFiltreDeBeneficiaire[]
-  readonly mediateurs: readonly NomDeFiltreDeMediateur[]
+  readonly mediateurs: readonly MediateurNomme[]
   readonly employeuses: readonly EmployeuseDesActivites[]
   readonly communes: readonly NomDeFiltre[]
   readonly departements: readonly NomDeFiltre[]
@@ -45,7 +48,6 @@ export const nomsDesFiltresExportes = async ({
   communesEtDepartements,
   tagsUtilisables,
   beneficiaires,
-  mediateurs,
 }: {
   readonly demandeur: Demandeur
   readonly criteres: CriteresDesActivites
@@ -64,14 +66,13 @@ export const nomsDesFiltresExportes = async ({
   readonly beneficiaires: (
     ids: readonly BeneficiaireId[],
   ) => Promise<readonly NomDeFiltreDeBeneficiaire[]>
-  readonly mediateurs: () => Promise<readonly NomDeFiltreDeMediateur[]>
 }): Promise<NomsDesFiltresExportes> => {
   const autorises = mediateursAutorises(demandeur)
   const territoire = [...criteres.communes, ...criteres.departements]
 
   const [
     beneficiairesNommes,
-    mediateursNommes,
+    mediateurs,
     employeuses,
     lieux,
     { communesOptions, departementsOptions },
@@ -80,7 +81,12 @@ export const nomsDesFiltresExportes = async ({
     siFiltre(criteres.beneficiaires, () =>
       beneficiaires(criteres.beneficiaires),
     ),
-    siFiltre(criteres.mediateurs, mediateurs),
+    siFiltre(criteres.mediateurs, () =>
+      mediateursNommes({
+        ids: perimetreDeLExport(autorises, criteres.mediateurs),
+        coordinateurId: demandeur.coordinateurId,
+      }),
+    ),
     employeusesNommees({
       perimetre: {
         mediateurs: autorises,
@@ -105,7 +111,7 @@ export const nomsDesFiltresExportes = async ({
 
   return {
     beneficiaires: beneficiairesNommes,
-    mediateurs: mediateursNommes,
+    mediateurs,
     employeuses,
     communes: communesOptions,
     departements: departementsOptions,
