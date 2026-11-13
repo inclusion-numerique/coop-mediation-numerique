@@ -30,7 +30,13 @@ export const CraValidation = z.object({
     .min(1, 'Veuillez renseigner au moins une thématique'),
   tags: z.array(z.object({ id: z.guid() })).default([]),
   precisionsDemarche: z.string().nullish(),
-  materiel: z.array(z.enum(materielValues)).default([]),
+  materiel: z
+    .array(z.enum(materielValues))
+    .default([])
+    .refine(
+      (materiel) => !materiel.includes('Aucun') || materiel.length === 1,
+      '« Pas de matériel » ne se combine pas avec un matériel',
+    ),
   notes: z.string().nullish(),
 })
 

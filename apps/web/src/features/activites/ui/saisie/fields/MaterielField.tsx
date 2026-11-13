@@ -25,6 +25,7 @@ export const MaterielField = withFieldGroup({
           }}
           isPending={isPending}
           options={materielOptions}
+          exclusives={['Aucun']}
           orientation="horizontal"
           legend="Matériel numérique utilisé"
         />

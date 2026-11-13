@@ -12,10 +12,12 @@ import {
   LabelHTMLAttributes,
   ReactNode,
 } from 'react'
+import { casesCochees } from './cases-cochees'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {
   isPending: boolean
   isTiled?: boolean
+  exclusives?: readonly T[]
   options: {
     label: ReactNode
     value: T
@@ -42,11 +44,15 @@ const arrayOrEmpty = <T extends any>(value: T[] | T | null) =>
   Array.isArray(value) ? value : []
 
 const setValue =
-  <T,>(option: { value: T }, isSingleCheckbox: boolean) =>
+  <T,>(
+    option: { value: T },
+    isSingleCheckbox: boolean,
+    exclusives: readonly T[],
+  ) =>
   ({ value }: { value: T | T[] | null }) =>
     isSingleCheckbox
       ? option.value
-      : [...arrayOrEmpty(value), option.value as T]
+      : casesCochees(arrayOrEmpty(value), option.value, exclusives)
 
 const removeValue =
   <T,>(option: { value: T }, isSingleCheckbox: boolean) =>
@@ -80,6 +86,7 @@ export const Checkbox = <T,>({
   legend,
   options,
   isTiled = true,
+  exclusives = [],
   className,
   classes,
   ...props
@@ -149,7 +156,7 @@ export const Checkbox = <T,>({
           onChange: (e: ChangeEvent<HTMLInputElement>) =>
             handleChange(
               e.target.checked
-                ? setValue(option, isSingleCheckbox)(state)
+                ? setValue(option, isSingleCheckbox, exclusives)(state)
                 : removeValue(option, isSingleCheckbox)(state),
             ),
           ...option.nativeInputProps,
