@@ -5,6 +5,7 @@ import { getUserDepartement } from '@app/web/auth/getUserDepartement'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import {
+  sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
@@ -17,7 +18,6 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { ExportStatistiques } from './_components/ExportStatistiques'
 import { PrintStatistiques } from './_components/PrintStatistiques'
-import { StatistiquesActivites } from './_sections/StatistiquesActivites'
 import { AutoPrint } from './AutoPrint'
 import { MesStatistiquesPageData } from './getMesStatistiquesPageData'
 import { statistiquesPageTitle } from './statistiquesPageTitle'
@@ -126,7 +126,7 @@ export const MesStatistiques = (
           })}
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesActivites {...mesStatistiquesProps} canManageTags />
+          {sectionActivites(mesStatistiquesProps, { canManageTags: true })}
         </section>
         <section className="fr-mb-6w">
           {sectionBeneficiaires(mesStatistiquesProps)}

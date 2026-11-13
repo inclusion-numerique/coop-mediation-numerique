@@ -2,6 +2,11 @@ import {
   ChiffresClesDesAccompagnements,
   ChiffresClesImprimes,
 } from '@app/web/features/activites/abilities/compter-les-accompagnements/ui'
+import { CommunesDesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-commune/ui'
+import {
+  LieuxDesAccompagnements,
+  LieuxImprimes,
+} from '@app/web/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
 import {
   GraphiqueDesAccompagnements,
   GraphiquesImprimes,
@@ -14,7 +19,22 @@ import {
   ProfilDesPersonnesAccompagnees,
   ProfilImprime,
 } from '@app/web/features/activites/abilities/decrire-les-personnes-accompagnees/ui'
+import {
+  CanauxDesAccompagnements,
+  CanauxImprimes,
+  DemarchesDesAccompagnements,
+  DureesDesAccompagnements,
+  DureesImprimees,
+  MaterielsImprimes,
+  MaterielsUtilises,
+  ThematiquesDesAccompagnements,
+  TypesDActivite,
+  TypesDActiviteImprimes,
+} from '@app/web/features/activites/abilities/repartir-les-accompagnements/ui'
+import { TagsDesAccompagnements } from '@app/web/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
 import type { StatistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
+import { SectionActivites } from '@app/web/features/statistiques/ui/sections/SectionActivites'
+import { SectionActivitesImprimee } from '@app/web/features/statistiques/ui/sections/SectionActivitesImprimee'
 import { SectionBeneficiaires } from '@app/web/features/statistiques/ui/sections/SectionBeneficiaires'
 import { SectionBeneficiairesImprimee } from '@app/web/features/statistiques/ui/sections/SectionBeneficiairesImprimee'
 import { SectionGenerale } from '@app/web/features/statistiques/ui/sections/SectionGenerale'
@@ -101,5 +121,84 @@ export const sectionBeneficiairesImprimee = ({
         total={beneficiaires.total}
       />
     }
+  />
+)
+
+type DonneesDesActivites = Pick<
+  StatistiquesFournies,
+  'activites' | 'totalCounts'
+> &
+  Partial<Pick<StatistiquesFournies, 'structures' | 'communes'>>
+
+export const sectionActivites = (
+  { activites, totalCounts, structures, communes }: DonneesDesActivites,
+  {
+    wording,
+    canManageTags,
+  }: { wording?: Wording; canManageTags?: boolean } = {},
+) => (
+  <SectionActivites
+    wording={wording}
+    canManageTags={canManageTags}
+    types={
+      <TypesDActivite
+        typeActivites={activites.typeActivites}
+        ateliers={totalCounts.activites.collectifs.total}
+      />
+    }
+    thematiques={
+      <ThematiquesDesAccompagnements thematiques={activites.thematiques} />
+    }
+    demarches={
+      <DemarchesDesAccompagnements
+        thematiquesDemarches={activites.thematiquesDemarches}
+      />
+    }
+    tags={<TagsDesAccompagnements tags={activites.tags} />}
+    materiels={<MaterielsUtilises materiels={activites.materiels} />}
+    canaux={<CanauxDesAccompagnements typeLieu={activites.typeLieu} />}
+    durees={<DureesDesAccompagnements durees={activites.durees} />}
+    lieux={
+      structures === undefined ? undefined : (
+        <LieuxDesAccompagnements structures={structures} />
+      )
+    }
+    communes={
+      communes === undefined ? undefined : (
+        <CommunesDesAccompagnements communes={communes} />
+      )
+    }
+  />
+)
+
+export const sectionActivitesImprimee = ({
+  activites,
+  totalCounts,
+  structures,
+}: Pick<StatistiquesFournies, 'activites' | 'totalCounts' | 'structures'>) => (
+  <SectionActivitesImprimee
+    types={
+      <TypesDActiviteImprimes
+        typeActivites={activites.typeActivites}
+        participations={totalCounts.accompagnements.collectifs.total}
+      />
+    }
+    thematiques={
+      <ThematiquesDesAccompagnements
+        thematiques={activites.thematiques}
+        pourImpression
+      />
+    }
+    demarches={
+      <DemarchesDesAccompagnements
+        thematiquesDemarches={activites.thematiquesDemarches}
+        pourImpression
+      />
+    }
+    tags={<TagsDesAccompagnements tags={activites.tags} pourImpression />}
+    materiels={<MaterielsImprimes materiels={activites.materiels} />}
+    canaux={<CanauxImprimes typeLieu={activites.typeLieu} />}
+    durees={<DureesImprimees durees={activites.durees} />}
+    lieux={<LieuxImprimes structures={structures} />}
   />
 )

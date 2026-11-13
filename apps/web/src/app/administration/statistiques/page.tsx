@@ -1,8 +1,8 @@
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import {
+  sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
@@ -120,11 +120,10 @@ const Page = async (props: {
           )}
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesActivites
-            wording="generique"
-            totalCounts={totalCounts}
-            activites={activites}
-          />
+          {sectionActivites(
+            { activites, totalCounts },
+            { wording: 'generique' },
+          )}
         </section>
         <section className="fr-mb-6w">
           {sectionBeneficiaires(

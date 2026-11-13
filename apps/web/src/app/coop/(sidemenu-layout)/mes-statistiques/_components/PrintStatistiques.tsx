@@ -1,5 +1,6 @@
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import {
+  sectionActivitesImprimee,
   sectionBeneficiairesImprimee,
   sectionGeneraleImprimee,
 } from '@app/web/composition/statistiques/sections'
@@ -8,7 +9,6 @@ import {
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import { StatistiquesActivitesPrint } from '../_sections/StatistiquesActivitesPrint'
 
 export const PrintStatistiques = (
   mesStatistiquesProps: MesStatistiquesPageData,
@@ -59,7 +59,7 @@ export const PrintStatistiques = (
         {sectionGeneraleImprimee(mesStatistiquesProps)}
       </section>
       <section className="fr-pt-6v">
-        <StatistiquesActivitesPrint {...mesStatistiquesProps} />
+        {sectionActivitesImprimee(mesStatistiquesProps)}
       </section>
       <section className="fr-pt-6v">
         {sectionBeneficiairesImprimee(mesStatistiquesProps)}
