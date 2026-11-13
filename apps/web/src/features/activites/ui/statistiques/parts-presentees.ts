@@ -21,7 +21,10 @@ export const partsPresentees = <V, A>(
     'proportion',
   )
 
-export const libelleDeLaCommune = (commune: CommuneComptee): string =>
+export const libelleDeLaCommune = (
+  commune: CommuneComptee,
+  espace = ' ',
+): string =>
   commune.type === 'NonCommuniquee'
     ? 'Non communiqué'
-    : `${commune.commune.nom} · ${commune.commune.codePostal}`
+    : `${commune.commune.nom}${espace}·${espace}${commune.commune.codePostal}`

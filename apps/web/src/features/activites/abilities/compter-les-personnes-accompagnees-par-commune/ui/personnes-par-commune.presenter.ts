@@ -15,7 +15,7 @@ export const personnesParCommunePresentees = (
         codePostal:
           commune.type === 'Renseignee' ? commune.commune.codePostal : null,
         count: nombre,
-        label: libelleDeLaCommune(commune),
+        label: libelleDeLaCommune(commune, '\u00a0'),
       })),
     'count',
     'proportion',
