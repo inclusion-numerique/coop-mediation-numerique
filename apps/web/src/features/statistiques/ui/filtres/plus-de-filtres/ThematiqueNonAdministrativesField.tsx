@@ -1,34 +1,23 @@
-import { thematiqueNonAdministrativesOptions } from '@app/web/features/activites/ui/libelles/thematique'
-import { Thematique } from '@app/web/generated/prisma/browser'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
+import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
-export const updateThematiqueNonAdministrativesParams =
-  (params: URLSearchParams) =>
-  (data: {
-    value: {
-      thematiqueNonAdministratives: string[]
-    }
-  }) =>
+export const updateThematiqueNonAdministrativesParams = (data: {
+  value: { thematiqueNonAdministratives: string[] }
+}) => ({
+  thematiqueNonAdministratives:
     data.value.thematiqueNonAdministratives.length > 0
-      ? params.set(
-          'thematiqueNonAdministratives',
-          data.value.thematiqueNonAdministratives.join(','),
-        )
-      : params.delete('thematiqueNonAdministratives')
-
-const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    thematiqueNonAdministratives: Thematique[]
-  }>,
+      ? data.value.thematiqueNonAdministratives.join(',')
+      : null,
 })
 
 export const ThematiqueNonAdministrativesFiled = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
+    mots: readonly MotDuVocabulaire[]
     isPending: boolean
   },
-  render: ({ form, isPending }) => (
+  render: ({ form, isPending, mots }) => (
     <form.AppField name="thematiqueNonAdministratives">
       {(field) => (
         <field.Checkbox
@@ -37,9 +26,7 @@ export const ThematiqueNonAdministrativesFiled = withForm({
           }}
           isPending={isPending}
           isTiled={false}
-          options={thematiqueNonAdministrativesOptions.filter(
-            ({ value }) => value !== Thematique.AideAuxDemarchesAdministratives,
-          )}
+          options={[...mots]}
         />
       )}
     </form.AppField>

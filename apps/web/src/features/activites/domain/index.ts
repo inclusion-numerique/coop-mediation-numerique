@@ -61,6 +61,7 @@ export {
   type RendezVousDuCompte,
 } from './chronologie'
 export { Commune } from './commune'
+export { type CommuneComptee, communeComptee } from './commune-comptee'
 export { CoordinateurId } from './coordinateur-id'
 export {
   type CriteresDesActivites,
@@ -76,6 +77,11 @@ export {
   type ParametresDesCoordinations,
   type Periode,
 } from './criteres-des-coordinations'
+export {
+  type CriteresDesStatistiques,
+  criteresDesStatistiques,
+  type PeriodeDesStatistiques,
+} from './criteres-des-statistiques'
 export {
   DateDActivite,
   dateDActiviteBornee,
@@ -101,6 +107,7 @@ export {
 export { GENRES, Genre, genres } from './genre'
 export { IdentifiantCraV1 } from './identifiant-cra-v1'
 export { Initiative } from './initiative'
+export { Jour } from './jour'
 export { LienAgent } from './lien-agent'
 export { LieuActiviteId } from './lieu-activite-id'
 export { MATERIELS, Materiel, materiels } from './materiel'
@@ -131,11 +138,21 @@ export {
   type Pagination,
   paginationLue,
 } from './pagination'
+export {
+  PERIMETRE_NATIONAL,
+  type PerimetreDesStatistiques,
+  perimetreDuDemandeur,
+} from './perimetre-des-statistiques'
 export { PorteeDeTag } from './portee-de-tag'
 export { Precision } from './precision'
 export { PrecisionDeDemarche } from './precision-de-demarche'
 export { Prenom } from './prenom'
 export { RdvId } from './rdv-id'
+export {
+  type LigneDeRepartition,
+  type Repartition,
+  repartitionComplete,
+} from './repartition'
 export {
   type EmployeuseALaDate,
   type EmployeuseDeLaDate,
@@ -177,6 +194,7 @@ export {
   estAdministrative,
   THEMATIQUES_RECHERCHEES,
   ThematiqueRecherchee,
+  thematiquesRecherchees,
 } from './thematique-recherchee'
 export { TitreDAtelier } from './titre-d-atelier'
 export { TitreDuRendezVous } from './titre-du-rendez-vous'

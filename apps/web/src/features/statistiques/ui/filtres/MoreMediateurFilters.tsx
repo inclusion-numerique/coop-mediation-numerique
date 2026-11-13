@@ -1,6 +1,10 @@
 'use client'
 
 import {
+  plusDeFiltresFormOptions,
+  type ValeursDePlusDeFiltres,
+} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/plus-de-filtres.form-options'
+import {
   SourcesField,
   updateSourcesParams,
 } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/SourceField'
@@ -24,6 +28,8 @@ import {
 } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
 import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
 import type { ActiviteSource } from '@app/web/features/statistiques/ui/filtres/source'
+import type { VocabulaireDeLaBarre } from '@app/web/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -40,10 +46,12 @@ export const MoreMediateurFilters = ({
   tagsOptions,
   structuresEmployeusesOptions,
   defaultValues,
+  vocabulaire,
   hasCrasV1,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   structuresEmployeusesOptions: StructureEmployeuse[]
+  vocabulaire: VocabulaireDeLaBarre
   defaultValues: {
     structuresEmployeuses: string[]
     thematiqueNonAdministratives: string[]
@@ -55,7 +63,6 @@ export const MoreMediateurFilters = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const activeFiltersCount =
     defaultValues.structuresEmployeuses.length +
@@ -64,8 +71,12 @@ export const MoreMediateurFilters = ({
     defaultValues.thematiqueAdministratives.length +
     (defaultValues.source ? 1 : 0)
 
-  const dismissModal = () => {
-    router.replace(`?${params}`, { scroll: false })
+  const dismissModal = (
+    parametres: Readonly<Record<string, string | null>>,
+  ) => {
+    router.replace(adresseAvec(`?${searchParams}`, parametres) || '?', {
+      scroll: false,
+    })
     MoreFiltersModal.close()
     form.reset()
   }
@@ -75,32 +86,37 @@ export const MoreMediateurFilters = ({
       .map((id) => structuresEmployeusesOptions.find((s) => s.id === id))
       .filter((s): s is StructureEmployeuse => s !== undefined)
 
+  const valeursInitiales: ValeursDePlusDeFiltres = {
+    ...plusDeFiltresFormOptions.defaultValues,
+    ...defaultValues,
+    structuresEmployeuses: structuresToArray(
+      defaultValues.structuresEmployeuses,
+    ),
+    tags: tagToArray(tagsOptions)(defaultValues.tags),
+  }
+
   const form = useAppForm({
-    defaultValues: {
-      ...defaultValues,
-      structuresEmployeuses: structuresToArray(
-        defaultValues.structuresEmployeuses,
-      ),
-      tags: tagToArray(tagsOptions)(defaultValues.tags),
-    },
+    ...plusDeFiltresFormOptions,
+    defaultValues: valeursInitiales,
     onSubmit: (data) => {
-      updateStructuresEmployeusesParams(params)(data)
-      updateThematiqueAdministrativesParams(params)(data)
-      updateThematiqueNonAdministrativesParams(params)(data)
-      updateTagsParams(params)(data)
-      updateSourcesParams(params)(data)
-      dismissModal()
+      dismissModal({
+        ...updateStructuresEmployeusesParams(data),
+        ...updateThematiqueAdministrativesParams(data),
+        ...updateThematiqueNonAdministrativesParams(data),
+        ...updateTagsParams(data),
+        ...updateSourcesParams(data),
+      })
     },
   })
 
-  const clearFilters = () => {
-    params.delete('structuresEmployeuses')
-    params.delete('thematiqueNonAdministratives')
-    params.delete('thematiqueAdministratives')
-    params.delete('tags')
-    params.delete('source')
-    dismissModal()
-  }
+  const clearFilters = () =>
+    dismissModal({
+      structuresEmployeuses: null,
+      thematiqueNonAdministratives: null,
+      thematiqueAdministratives: null,
+      tags: null,
+      source: null,
+    })
 
   return (
     <form.AppForm>
@@ -128,14 +144,14 @@ export const MoreMediateurFilters = ({
         >
           {hasCrasV1 && (
             <>
-              <SourcesField form={form as any} isPending={false} />
+              <SourcesField form={form} isPending={false} />
               <hr className="fr-separator-8v" />
             </>
           )}
           {structuresEmployeusesOptions.length > 1 && (
             <>
               <StructuresEmployeusesField
-                form={form as any}
+                form={form}
                 isPending={false}
                 initialStructuresEmployeusesOptions={
                   structuresEmployeusesOptions
@@ -148,23 +164,25 @@ export const MoreMediateurFilters = ({
             Filtrer par thématique de médiation numérique
           </h2>
           <ThematiqueNonAdministrativesFiled
-            form={form as any}
+            form={form}
             isPending={false}
+            mots={vocabulaire.thematiquesDeMediation}
           />
           <hr className="fr-separator-8v" />
           <h2 className="fr-h6">
             Filtrer par thématique de démarches administratives
           </h2>
           <ThematiqueAdministrativesFiled
-            form={form as any}
+            form={form}
             isPending={false}
+            mots={vocabulaire.thematiquesAdministratives}
           />
           {tagsOptions.length > 0 && (
             <>
               <hr className="fr-separator-8v" />
               <h2 className="fr-h6">Filtrer par tags</h2>
               <TagsField
-                form={form as any}
+                form={form}
                 tagsOptions={tagsOptions}
                 isPending={false}
               />

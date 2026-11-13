@@ -10,9 +10,10 @@ export const activiteSourceLabels: {
   v2: 'La Coop de la médiation numérique',
 }
 
-export const activiteSourceValues = Object.keys(activiteSourceLabels) as [
-  ActiviteSource,
-  ...ActiviteSource[],
-]
+export const activiteSourceValues = [
+  '',
+  'v1',
+  'v2',
+] as const satisfies readonly ActiviteSource[]
 
 export const activiteSourceOptions = labelsToOptions(activiteSourceLabels)

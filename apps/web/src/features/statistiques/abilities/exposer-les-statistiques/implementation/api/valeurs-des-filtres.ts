@@ -35,3 +35,12 @@ export const THEMATIQUES_ADMINISTRATIVES = [
   'LoisirsSportsCulture',
   'Associations',
 ] as const
+
+export const STATUTS_DE_RENDEZ_VOUS = [
+  'unknown',
+  'past',
+  'seen',
+  'revoked',
+  'excused',
+  'noshow',
+] as const

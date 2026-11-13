@@ -1,5 +1,5 @@
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const roleCount = ({
   conseiller_numerique,
@@ -9,14 +9,15 @@ export const roleCount = ({
   return conseiller_numerique === '1' ? 1 : 0
 }
 
-export const updateRolesParams =
-  (params: URLSearchParams) =>
-  (data: { value: { conseiller_numerique?: '' | '0' | '1' } }) => {
-    data.value.conseiller_numerique !== '0' &&
-    data.value.conseiller_numerique !== '1'
-      ? params.delete('conseiller_numerique')
-      : params.set('conseiller_numerique', data.value.conseiller_numerique)
-  }
+export const updateRolesParams = (data: {
+  value: { conseiller_numerique?: '' | '0' | '1' }
+}) => ({
+  conseiller_numerique:
+    data.value.conseiller_numerique === '0' ||
+    data.value.conseiller_numerique === '1'
+      ? data.value.conseiller_numerique
+      : null,
+})
 
 const conseillerNumeriqueOptions = [
   { label: 'Tous les rôles', value: '' },
@@ -24,16 +25,8 @@ const conseillerNumeriqueOptions = [
   { label: 'Médiateurs numériques', value: '0' },
 ]
 
-const options = formOptions({
-  defaultValues: {
-    conseiller_numerique: '',
-  } as DefaultValues<{
-    conseiller_numerique: '' | '0' | '1'
-  }>,
-})
-
 export const RolesField = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
     isPending: boolean
   },

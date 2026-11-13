@@ -3,33 +3,32 @@
 import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Popover } from '@app/ui/components/Primitives/Popover'
-import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
-  resetPagination,
-  update,
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
 
-type BeneficiaireOptionWithId = BeneficiaireOption & {
+type OptionDeBeneficiaireWithId = OptionDeBeneficiaire & {
   value: { id: string }
 }
 
 const onlyDefinedIds = (
-  beneficiaireOption: BeneficiaireOption,
-): beneficiaireOption is BeneficiaireOptionWithId =>
+  beneficiaireOption: OptionDeBeneficiaire,
+): beneficiaireOption is OptionDeBeneficiaireWithId =>
   beneficiaireOption.value?.id != null
 
 const toSelectOption = ({
   label,
   value: { id: value },
-}: BeneficiaireOptionWithId): SelectOption => ({
+}: OptionDeBeneficiaireWithId): SelectOption => ({
   label,
   value,
 })
@@ -39,47 +38,57 @@ export const BeneficiaireFilter = ({
   initialBeneficiairesOptions,
 }: {
   defaultValue: string[]
-  initialBeneficiairesOptions: BeneficiaireOption[]
+  initialBeneficiairesOptions: OptionDeBeneficiaire[]
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const beneficiairesOptions: SelectOption[] = initialBeneficiairesOptions
-    .filter(onlyDefinedIds)
-    .map(toSelectOption)
+  const valeursParDefaut = defaultValue.join(',')
 
-  const selectedBeneficiaires = beneficiairesOptions.filter(
-    defautValuesFrom(new Set(defaultValue)),
+  const beneficiairesOptions: SelectOption[] = useMemo(
+    () =>
+      initialBeneficiairesOptions.filter(onlyDefinedIds).map(toSelectOption),
+    [initialBeneficiairesOptions],
+  )
+
+  const selectedBeneficiaires = useMemo(
+    () =>
+      beneficiairesOptions.filter(
+        defautValuesFrom(new Set(valeursParDefaut.split(','))),
+      ),
+    [beneficiairesOptions, valeursParDefaut],
   )
 
   const [beneficiaires, setBeneficiaires] = useState(selectedBeneficiaires)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when props options change
   useEffect(() => {
     setBeneficiaires(selectedBeneficiaires)
-  }, [initialBeneficiairesOptions])
+  }, [selectedBeneficiaires])
 
   const hasFilters = beneficiaires.length > 0
 
-  const closePopover = (close: boolean = false) => {
+  const closePopover = (close: boolean, choisis: SelectOption[]) => {
     close && setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      adresseAvec(`?${searchParams}`, {
+        beneficiaires:
+          choisis.length > 0
+            ? choisis.map(({ value }) => value).join(',')
+            : null,
+        page: null,
+      }) || '?',
+      { scroll: false },
+    )
   }
 
-  const handleSubmit = (close: boolean = false) => {
-    update(params)('beneficiaires', beneficiaires)
-    resetPagination(params)
-    closePopover(close)
-  }
+  const handleSubmit = (close: boolean = false) =>
+    closePopover(close, beneficiaires)
 
   const handleClearFilters = () => {
     setBeneficiaires([])
-    update(params)('beneficiaires', [])
-    resetPagination(params)
-    closePopover(true)
+    closePopover(true, [])
   }
 
   const handleSelectFilter = (option: SelectOption | null) => {

@@ -1,0 +1,567 @@
+import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
+import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
+import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
+import { mediateque, seedStructures } from '@app/fixtures/structures'
+import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
+import {
+  mediateurAvecActivite,
+  mediateurAvecActiviteMediateurId,
+  mediateurAvecActiviteUserId,
+} from '@app/fixtures/users/mediateurAvecActivite'
+import {
+  mediateurSansActivites,
+  mediateurSansActivitesUserId,
+} from '@app/fixtures/users/mediateurSansActivites'
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
+import {
+  getMesStatistiquesPageData,
+  MesStatistiquesGraphOptions,
+  MesStatistiquesPageData,
+} from '@app/web/composition/statistiques/mes-statistiques'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+import {
+  materielLabels,
+  materielValues,
+} from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  genreLabels,
+  genresAffiches,
+  statutSocialLabels,
+  statutsSociauxAffiches,
+  trancheAgeLabels,
+  tranchesAgeAffichees,
+} from '@app/web/features/activites/ui/libelles/profil'
+import {
+  thematiquesAdministrativesLabels,
+  thematiquesAdministrativesValues,
+  thematiquesNonAdministrativesLabels,
+  thematiquesNonAdministrativesValues,
+} from '@app/web/features/activites/ui/libelles/thematique'
+import {
+  typeActiviteLabels,
+  typeActiviteValues,
+} from '@app/web/features/activites/ui/libelles/type-activite'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@app/web/features/activites/ui/libelles/type-lieu'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
+import { computeProportion } from '@app/web/libraries/proportions'
+import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
+import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
+import { prismaClient } from '@app/web/prismaClient'
+import { cloneDeep } from 'lodash-es'
+
+/**
+ * Base empty data for all tests
+ */
+
+// Fixed graph end date
+const graphOptions = {
+  fin: new Date('2024-08-15'),
+} satisfies MesStatistiquesGraphOptions
+
+const emptyData: MesStatistiquesPageData = {
+  accompagnementsParJour: [
+    { label: '17/07', count: 0 },
+    { label: '18/07', count: 0 },
+    { label: '19/07', count: 0 },
+    { label: '20/07', count: 0 },
+    { label: '21/07', count: 0 },
+    { label: '22/07', count: 0 },
+    { label: '23/07', count: 0 },
+    { label: '24/07', count: 0 },
+    { label: '25/07', count: 0 },
+    { label: '26/07', count: 0 },
+    { label: '27/07', count: 0 },
+    { label: '28/07', count: 0 },
+    { label: '29/07', count: 0 },
+    { label: '30/07', count: 0 },
+    { label: '31/07', count: 0 },
+    { label: '01/08', count: 0 },
+    { label: '02/08', count: 0 },
+    { label: '03/08', count: 0 },
+    { label: '04/08', count: 0 },
+    { label: '05/08', count: 0 },
+    { label: '06/08', count: 0 },
+    { label: '07/08', count: 0 },
+    { label: '08/08', count: 0 },
+    { label: '09/08', count: 0 },
+    { label: '10/08', count: 0 },
+    { label: '11/08', count: 0 },
+    { label: '12/08', count: 0 },
+    { label: '13/08', count: 0 },
+    { label: '14/08', count: 0 },
+    { label: '15/08', count: 0 },
+  ],
+  accompagnementsParMois: [
+    { label: '09/23', count: 0 },
+    { label: '10/23', count: 0 },
+    { label: '11/23', count: 0 },
+    { label: '12/23', count: 0 },
+    { label: '01/24', count: 0 },
+    { label: '02/24', count: 0 },
+    { label: '03/24', count: 0 },
+    { label: '04/24', count: 0 },
+    { label: '05/24', count: 0 },
+    { label: '06/24', count: 0 },
+    { label: '07/24', count: 0 },
+    { label: '08/24', count: 0 },
+  ],
+  totalCounts: {
+    accompagnements: {
+      total: 0,
+      individuels: {
+        total: 0,
+        proportion: 0,
+      },
+      collectifs: {
+        total: 0,
+        proportion: 0,
+      },
+    },
+    activites: {
+      total: 0,
+      individuels: {
+        total: 0,
+        proportion: 0,
+      },
+      collectifs: {
+        total: 0,
+        proportion: 0,
+        participants: 0,
+      },
+    },
+    beneficiaires: {
+      total: 0,
+      nouveaux: 0,
+      anonymes: 0,
+      suivis: 0,
+    },
+  },
+  activites: {
+    total: 0,
+    typeActivites: partsFixees(typeActiviteValues, typeActiviteLabels),
+    thematiques: partsFixees(
+      thematiquesNonAdministrativesValues,
+      thematiquesNonAdministrativesLabels,
+    ),
+    thematiquesDemarches: partsFixees(
+      thematiquesAdministrativesValues,
+      thematiquesAdministrativesLabels,
+    ),
+    materiels: partsFixees(materielValues, materielLabels),
+    typeLieu: partsFixees(typeLieuValues, typeLieuLabels),
+    durees: dureeAccompagnementStatisticsRanges.map(({ key, label }) => ({
+      value: key,
+      label,
+      count: 0,
+      proportion: 0,
+    })),
+    tags: [],
+  },
+  beneficiaires: {
+    total: 0,
+    genres: partsFixees(genresAffiches, genreLabels),
+    trancheAges: partsFixees(tranchesAgeAffichees, trancheAgeLabels),
+    statutsSocial: partsFixees(statutsSociauxAffiches, statutSocialLabels),
+    communes: [],
+  },
+  structures: [],
+  communes: [],
+
+  activitesFilters: {},
+  communesOptions: [],
+  departementsOptions: [],
+  tagsOptions: [],
+  initialBeneficiairesOptions: [],
+  initialMediateursOptions: [],
+  lieuxActiviteOptions: [],
+  structuresEmployeusesOptions: [],
+  activiteSourceOptions,
+  activiteDates: {
+    first: undefined,
+    last: undefined,
+  },
+  hasCrasV1: {
+    hasCrasV1: false,
+  },
+  vocabulaire: vocabulaireDeLaBarre,
+}
+
+const createExpectedData = (
+  transform: (data: typeof emptyData) => MesStatistiquesPageData,
+) => transform(cloneDeep(emptyData))
+
+const expectDayCount = (
+  data: MesStatistiquesPageData,
+  day: string,
+  count: number,
+) => {
+  const item = data.accompagnementsParJour.find(({ label }) => label === day)
+  if (!item) {
+    throw new Error(`Day ${day} not found`)
+  }
+  item.count = count
+}
+
+const expectMonthCount = (
+  data: MesStatistiquesPageData,
+  month: string,
+  count: number,
+) => {
+  const item = data.accompagnementsParMois.find(({ label }) => label === month)
+  if (!item) {
+    throw new Error(`Month ${month} not found`)
+  }
+  item.count = count
+}
+
+const expectEnum = <T extends string>(
+  enumCounts: (QuantifiedShare<string> & { value: T })[],
+  value: T,
+  count: number,
+  total: number,
+) => {
+  const item = enumCounts.find(({ value: itemValue }) => itemValue === value)
+  if (!item) {
+    throw new Error(`Value ${value} not found`)
+  }
+  item.count = count
+  item.proportion = computeProportion(count, total)
+}
+
+const employeuseDesActivitesState = { id: 0 }
+const expectedStructureEmployeuseOption = () => ({
+  id: String(employeuseDesActivitesState.id),
+  nom: mediateque.nom,
+  commune: mediateque.commune,
+})
+
+describe('getMesStatistiquesPageData', () => {
+  beforeAll(async () => {
+    await seedStructures(prismaClient)
+    await resetFixtureUser(mediateurAvecActivite, false)
+    await resetFixtureUser(mediateurSansActivites, false)
+    await resetFixtureUser(conseillerNumerique, false)
+    await seedPersonnesMain(prismaClient, [
+      mediateurAvecActivite,
+      mediateurSansActivites,
+      conseillerNumerique,
+    ])
+    const employeuseDesActivites =
+      await prismaClient.structureAdministrativeMain.findFirstOrThrow({
+        where: { structureCoopId: mediateque.id },
+        select: { id: true },
+      })
+    employeuseDesActivitesState.id = employeuseDesActivites.id
+    await refreshFixturesComputedFields()
+  }, 100_000)
+
+  describe('mediateur sans activites', () => {
+    test('should give empty data without filters', async () => {
+      const user = await getSessionUserFromId(mediateurSansActivitesUserId)
+
+      const data = await getMesStatistiquesPageData({
+        user,
+        activitesFilters: {},
+        graphOptions,
+      })
+      expect(data).toEqual(emptyData)
+    })
+  })
+
+  describe('mediateur avec activites', () => {
+    const cases: {
+      title: string
+      activitesFilters: ActivitesFilters
+      expected: Omit<MesStatistiquesPageData, 'activitesFilters'>
+    }[] = [
+      {
+        title: 'should compute all data without filters',
+        activitesFilters: {},
+        expected: createExpectedData((data) => {
+          // Should have 13 beneficiaires
+          const totalBeneficiaires = 13
+
+          const totalAccompagnements = 22
+
+          data.totalCounts = {
+            activites: {
+              total: 10,
+              individuels: {
+                total: 8,
+                proportion: 80,
+              },
+              collectifs: {
+                total: 2,
+                proportion: 20,
+                participants: 14,
+              },
+            },
+            beneficiaires: {
+              total: totalBeneficiaires,
+              nouveaux: 0,
+              suivis: 2,
+              anonymes: 11,
+            },
+            accompagnements: {
+              total: totalAccompagnements,
+              collectifs: {
+                total: 14,
+                proportion: computeProportion(14, totalAccompagnements),
+              },
+              individuels: {
+                total: 8,
+                proportion: computeProportion(8, totalAccompagnements),
+              },
+            },
+          }
+
+          data.activites.total = totalAccompagnements
+
+          expectDayCount(data, '28/07', 2)
+          expectDayCount(data, '02/08', 2)
+          expectDayCount(data, '03/08', 2)
+          expectDayCount(data, '04/08', 2)
+          expectDayCount(data, '05/08', 1)
+
+          expectMonthCount(data, '06/24', 1)
+          expectMonthCount(data, '07/24', 14)
+          expectMonthCount(data, '08/24', 7)
+
+          expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
+          expectEnum(data.activites.typeLieu, 'ADistance', 18, 22)
+          expectEnum(data.activites.typeLieu, 'LieuActivite', 2, 22)
+          expectEnum(data.activites.typeLieu, 'Autre', 0, 22)
+
+          expectEnum(data.activites.durees, '120', 22, totalAccompagnements)
+
+          expectEnum(data.activites.materiels, 'Ordinateur', 4, 13)
+          expectEnum(data.activites.materiels, 'Telephone', 2, 13)
+          expectEnum(data.activites.materiels, 'Tablette', 3, 13)
+          expectEnum(data.activites.materiels, 'Autre', 4, 13)
+          // before
+
+          expectEnum(data.activites.thematiques, 'Email', 4, 39)
+          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 14, 39)
+          expectEnum(data.activites.thematiques, 'Sante', 2, 39)
+          expectEnum(
+            data.activites.thematiques,
+            'InsertionProfessionnelle',
+            1,
+            39,
+          )
+          expectEnum(data.activites.thematiques, 'Parentalite', 1, 39)
+          expectEnum(data.activites.thematiques, 'CultureNumerique', 13, 39)
+          expectEnum(
+            data.activites.thematiques,
+            'AideAuxDemarchesAdministratives',
+            4,
+            39,
+          )
+
+          expectEnum(
+            data.activites.thematiquesDemarches,
+            'FamilleScolarite',
+            1,
+            8,
+          )
+          expectEnum(data.activites.thematiquesDemarches, 'SocialSante', 3, 8)
+          expectEnum(data.activites.thematiquesDemarches, 'Logement', 1, 8)
+          expectEnum(
+            data.activites.thematiquesDemarches,
+            'TransportsMobilite',
+            1,
+            8,
+          )
+          expectEnum(data.activites.thematiquesDemarches, 'Justice', 1, 8)
+          expectEnum(
+            data.activites.thematiquesDemarches,
+            'EtrangersEurope',
+            1,
+            8,
+          )
+
+          // after
+          expectEnum(
+            data.activites.typeActivites,
+            'Collectif',
+            14,
+            totalAccompagnements,
+          )
+          expectEnum(
+            data.activites.typeActivites,
+            'Individuel',
+            8,
+            totalAccompagnements,
+          )
+
+          expectEnum(
+            data.beneficiaires.genres,
+            'Masculin',
+            1,
+            totalBeneficiaires,
+          )
+          expectEnum(
+            data.beneficiaires.genres,
+            'NonCommunique',
+            12,
+            totalBeneficiaires,
+          )
+
+          expectEnum(
+            data.beneficiaires.statutsSocial,
+            'EnEmploi',
+            9,
+            totalBeneficiaires,
+          )
+          expectEnum(
+            data.beneficiaires.statutsSocial,
+            'Scolarise',
+            2,
+            totalBeneficiaires,
+          )
+          expectEnum(
+            data.beneficiaires.statutsSocial,
+            'NonCommunique',
+            2,
+            totalBeneficiaires,
+          )
+
+          expectEnum(
+            data.beneficiaires.trancheAges,
+            'QuaranteCinquanteNeuf',
+            6,
+            totalBeneficiaires,
+          )
+          expectEnum(
+            data.beneficiaires.trancheAges,
+            'VingtCinqTrenteNeuf',
+            3,
+            totalBeneficiaires,
+          )
+          expectEnum(
+            data.beneficiaires.trancheAges,
+            'DixHuitVingtQuatre',
+            1,
+            totalBeneficiaires,
+          )
+          expectEnum(
+            data.beneficiaires.trancheAges,
+            'NonCommunique',
+            3,
+            totalBeneficiaires,
+          )
+
+          data.beneficiaires.total = totalBeneficiaires
+
+          data.beneficiaires.communes = [
+            {
+              codeInsee: null,
+              codePostal: null,
+              count: 12,
+              label: 'Non communiqué',
+              nom: null,
+              proportion: 92.308,
+            },
+            {
+              codeInsee: '75101',
+              codePostal: '75001',
+              label: 'Paris · 75001',
+              nom: 'Paris',
+              count: 1,
+              proportion: 7.692,
+            },
+          ]
+
+          data.structures = [
+            {
+              id: mediateque.id,
+              count: 2,
+              proportion: 100,
+              label: mediateque.nom,
+            },
+          ]
+
+          data.communes = [
+            {
+              codeInsee: null,
+              codePostal: null,
+              commune: null,
+              count: 17,
+              label: 'Non communiqué',
+              proportion: 77.273,
+            },
+            {
+              codeInsee: '69382',
+              codePostal: '69002',
+              commune: 'Lyon 2eme',
+              count: 3,
+              label: 'Lyon 2eme · 69002',
+              proportion: 13.636,
+            },
+            {
+              codeInsee: '75101',
+              codePostal: '75001',
+              commune: 'Paris 1er',
+              count: 2,
+              label: 'Paris 1er · 75001',
+              proportion: 9.091,
+            },
+          ]
+
+          data.activiteDates.first = new Date('2024-06-15')
+          data.activiteDates.last = new Date('2024-08-05')
+
+          return data
+        }),
+      },
+    ]
+
+    const mediateurId = mediateurAvecActiviteMediateurId
+
+    let expectedCommon: Pick<
+      MesStatistiquesPageData,
+      | 'communesOptions'
+      | 'departementsOptions'
+      | 'initialBeneficiairesOptions'
+      | 'lieuxActiviteOptions'
+      | 'activiteSourceOptions'
+      | 'structuresEmployeusesOptions'
+    >
+
+    beforeAll(async () => {
+      expectedCommon = {
+        communesOptions: [],
+        departementsOptions: [],
+        initialBeneficiairesOptions:
+          await getInitialBeneficiairesOptionsForSearch({ mediateurId }),
+        lieuxActiviteOptions: [],
+        structuresEmployeusesOptions: [expectedStructureEmployeuseOption()],
+        activiteSourceOptions,
+      }
+    })
+
+    test.each(cases)('$title', async ({ activitesFilters, expected }) => {
+      const user = await getSessionUserFromId(mediateurAvecActiviteUserId)
+
+      const data = await getMesStatistiquesPageData({
+        user,
+        activitesFilters,
+        graphOptions,
+      })
+
+      const completeExpectedData = {
+        ...expected,
+        ...expectedCommon,
+        activitesFilters,
+      } satisfies MesStatistiquesPageData
+
+      expect(data).toEqual(completeExpectedData)
+    })
+  })
+})

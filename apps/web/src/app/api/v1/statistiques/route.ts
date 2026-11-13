@@ -9,6 +9,8 @@ import {
   withQueryParams,
 } from '@app/web/app/api/v1/middlewares'
 import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
+import { statistiquesNationales } from '@app/web/composition/statistiques/statistiques-nationales'
+import { criteresDesStatistiques } from '@app/web/features/activites/domain'
 import {
   FiltresDesStatistiquesValidation,
   type StatistiquesAttributes,
@@ -378,14 +380,16 @@ export const GET = routeBuilder()
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
       const requete = serializeApiRequestParams(queryParams)
+      const fournies = await statistiquesNationales(
+        criteresDesStatistiques(queryParams.filter),
+        { tags: false },
+      )
 
       return NextResponse.json({
         data: {
           type: 'statistiques',
           id: 'statistiques',
-          attributes: statistiquesAttributes(
-            await statistiquesExposees(queryParams.filter),
-          ),
+          attributes: statistiquesAttributes(statistiquesExposees(fournies)),
         },
         links: {
           self: {

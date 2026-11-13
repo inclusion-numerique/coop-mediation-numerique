@@ -1,8 +1,8 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions } from '@tanstack/react-form'
 import { useRef } from 'react'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 import {
   type StructureEmployeuse,
   StructureEmployeuseComboBox,
@@ -16,23 +16,15 @@ export const structuresEmployeusesCount = ({
   structuresEmployeuses?: StructureEmployeuse[]
 }) => structuresEmployeuses?.length ?? 0
 
-export const updateStructuresEmployeusesParams =
-  (params: URLSearchParams) =>
-  (data: { value: { structuresEmployeuses?: StructureEmployeuse[] } }) => {
-    const ids = data.value.structuresEmployeuses?.map((s) => s.id) ?? []
-    ids.length > 0
-      ? params.set('structuresEmployeuses', ids.join(','))
-      : params.delete('structuresEmployeuses')
-  }
-
-const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    structuresEmployeuses: StructureEmployeuse[]
-  }>,
-})
+export const updateStructuresEmployeusesParams = (data: {
+  value: { structuresEmployeuses?: StructureEmployeuse[] }
+}) => {
+  const ids = data.value.structuresEmployeuses?.map((s) => s.id) ?? []
+  return { structuresEmployeuses: ids.length > 0 ? ids.join(',') : null }
+}
 
 export const StructuresEmployeusesField = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
     isPending: boolean
     initialStructuresEmployeusesOptions: StructureEmployeuse[]

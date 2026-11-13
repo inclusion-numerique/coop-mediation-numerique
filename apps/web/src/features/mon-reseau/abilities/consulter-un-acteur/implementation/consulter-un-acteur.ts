@@ -1,4 +1,5 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
+import { format, subDays } from 'date-fns'
 import {
   type Acteur,
   ActeurId,
@@ -6,16 +7,17 @@ import {
   CoordinateurId,
 } from '../../../domain'
 import {
+  FENETRE_DES_STATISTIQUES_EN_JOURS,
   type FicheActeur,
   type Lecteur,
   type LireLaDerniereActivite,
+  type LireLesStatistiquesSur30Jours,
   lienDEquipe,
   type RegardDuLecteur,
   type RelationDEquipe,
   statutDActivitePublic,
 } from '../domain'
 import { lireLActeur, lireLesLiensDEquipe } from './prisma'
-import { lireLesStatistiquesSur30Jours } from './statistiques'
 
 export type QuiConsulte = {
   readonly id: string
@@ -33,10 +35,13 @@ const lecteurDe = ({ id, coordinateur }: QuiConsulte): Lecteur => {
       }
 }
 
+const jour = (date: Date): string => format(date, 'yyyy-MM-dd')
+
 const relationAvec = async (
   lecteur: Extract<Lecteur, { _tag: 'Coordinateur' }>,
   acteur: Acteur,
   maintenant: Date,
+  lireLesStatistiquesSur30Jours: LireLesStatistiquesSur30Jours,
 ): Promise<RelationDEquipe> => {
   const mediation = acteur.profil.mediation
   const liens =
@@ -51,7 +56,10 @@ const relationAvec = async (
   const statistiques = await lireLesStatistiquesSur30Jours(
     lecteur.coordinateurId,
     mediation.mediateurId,
-    maintenant,
+    {
+      du: jour(subDays(maintenant, FENETRE_DES_STATISTIQUES_EN_JOURS)),
+      au: jour(maintenant),
+    },
   )
   return { _tag: 'Membre', statistiques }
 }
@@ -60,24 +68,32 @@ const regardDe = async (
   lecteur: Lecteur,
   acteur: Acteur,
   maintenant: Date,
+  lireLesStatistiquesSur30Jours: LireLesStatistiquesSur30Jours,
 ): Promise<RegardDuLecteur> =>
   lecteur._tag === 'Mediateur'
     ? { _tag: 'Mediateur' }
     : {
         _tag: 'Coordinateur',
         coordinateurId: lecteur.coordinateurId,
-        relation: await relationAvec(lecteur, acteur, maintenant),
+        relation: await relationAvec(
+          lecteur,
+          acteur,
+          maintenant,
+          lireLesStatistiquesSur30Jours,
+        ),
       }
 
 export const consulterUnActeur = async ({
   quiConsulte,
   acteurId,
   lireLaDerniereActivite,
+  lireLesStatistiquesSur30Jours,
   maintenant,
 }: {
   quiConsulte: QuiConsulte
   acteurId: string
   lireLaDerniereActivite: LireLaDerniereActivite
+  lireLesStatistiquesSur30Jours: LireLesStatistiquesSur30Jours
   maintenant: Date
 }): Promise<Result<FicheActeur, ActeurIntrouvable>> => {
   const id = ActeurId.safe(acteurId)
@@ -87,7 +103,12 @@ export const consulterUnActeur = async ({
 
   const [derniereActivite, regard] = await Promise.all([
     lireLaDerniereActivite(id),
-    regardDe(lecteurDe(quiConsulte), lu.acteur, maintenant),
+    regardDe(
+      lecteurDe(quiConsulte),
+      lu.acteur,
+      maintenant,
+      lireLesStatistiquesSur30Jours,
+    ),
   ])
 
   return success({

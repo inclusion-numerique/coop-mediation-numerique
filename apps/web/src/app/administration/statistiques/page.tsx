@@ -1,30 +1,32 @@
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import {
-  getAccompagnementsCountByDay,
-  getAccompagnementsCountByMonth,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getAccompagnementsCountByPeriod'
-import { getActivitesStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
-import { getBeneficiaireStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
-import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
-import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
-import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
+import { rechercherLesLieuxNationauxAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import {
-  getCommunesAndDepartementsOptions,
-  getLieuxActiviteOptions,
-} from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
-import { getTagsCollectifs } from '@app/web/features/statistiques/db/tags-collectifs'
+  filtreDeLieu,
+  vocabulaireDeLaBarre,
+} from '@app/web/composition/statistiques/barre'
+import { lieuxChoisisDe } from '@app/web/composition/statistiques/lieux-choisis'
+import {
+  sectionActivites,
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@app/web/composition/statistiques/sections'
+import { statistiquesNationalesEnCours } from '@app/web/composition/statistiques/statistiques-nationales'
+import {
+  criteresDesStatistiques,
+  PERIMETRE_NATIONAL,
+} from '@app/web/features/activites/domain'
+import { optionsDeTags } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
-import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
-import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
+} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
+import { StatistiquesNationales } from '@app/web/features/statistiques/ui/pages/StatistiquesNationales'
+import { lireLesTagsCollectifs } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
+import { notFound } from 'next/navigation'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),
@@ -43,84 +45,43 @@ const Page = async (props: {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
   const user = await authenticateUser()
-  const tagsOptions = await getTagsCollectifs()
-
-  const [{ communesOptions, departementsOptions }, lieuxActiviteOptions] =
-    await Promise.all([
-      getCommunesAndDepartementsOptions(),
-      getLieuxActiviteOptions(),
-    ])
-
-  const [
-    accompagnementsParJour,
-    accompagnementsParMois,
-    beneficiaires,
-    activites,
-    totalCounts,
-  ] = await Promise.all([
-    getAccompagnementsCountByDay({ activitesFilters }),
-    getAccompagnementsCountByMonth({ activitesFilters }),
-    getBeneficiaireStats({ activitesFilters }),
-    getActivitesStats({ activitesFilters, user }),
-    getTotalCountsStats({ activitesFilters }),
+  if (user.role !== 'Admin') notFound()
+  const statistiques = statistiquesNationalesEnCours(
+    criteresDesStatistiques(activitesFilters),
+    { tags: true },
+  )
+  const [tagsCollectifs, lieuxChoisis] = await Promise.all([
+    lireLesTagsCollectifs(),
+    lieuxChoisisDe(activitesFilters, PERIMETRE_NATIONAL),
   ])
+  const tagsOptions = optionsDeTags(tagsCollectifs)
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
+      to={rechercherLesLieuxNationauxAction}
     >
-      <>
-        <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
-          <Filters
-            defaultFilters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
-            structuresEmployeusesOptions={[]}
-            tagsOptions={tagsOptions}
-            initialMediateursOptions={[]}
-            initialBeneficiairesOptions={[]}
-            minDate={new Date('2020-01-01')}
-            beneficiairesFilter={false}
-            isCoordinateur={false}
-            isMediateur={false}
-            hasCrasV1={true}
-          />
-        </div>
-        <FilterTags
-          filters={activitesFilters}
-          communesOptions={communesOptions}
-          departementsOptions={departementsOptions}
-          lieuxActiviteOptions={lieuxActiviteOptions}
-          structuresEmployeusesOptions={[]}
-          tagsOptions={[]}
-          mediateursOptions={[]}
-          beneficiairesOptions={[]}
-          activiteSourceOptions={activiteSourceOptions}
-        />
-        <section className="fr-mb-6w">
-          <StatistiquesGenerales
-            wording="generique"
-            totalCounts={totalCounts}
-            accompagnementsParJour={accompagnementsParJour}
-            accompagnementsParMois={accompagnementsParMois}
-          />
-        </section>
-        <section className="fr-mb-6w">
-          <StatistiquesActivites
-            wording="generique"
-            totalCounts={totalCounts}
-            activites={activites}
-          />
-        </section>
-        <section className="fr-mb-6w">
-          <StatistiquesBeneficiaires
-            beneficiaires={beneficiaires}
-            wording="generique"
-          />
-        </section>
-      </>
+      <StatistiquesNationales
+        activitesFilters={activitesFilters}
+        vocabulaire={vocabulaireDeLaBarre}
+        filtreDeLieu={filtreDeLieu(lieuxChoisis)}
+        {...lieuxChoisis}
+        tagsOptions={tagsOptions}
+        activiteSourceOptions={activiteSourceOptions}
+        generale={sectionGenerale(statistiques, { wording: 'generique' })}
+        activites={sectionActivites(
+          {
+            totalCounts: statistiques.totalCounts,
+            repartition: statistiques.repartition,
+            tags: statistiques.tags,
+          },
+          { wording: 'generique' },
+        )}
+        beneficiaires={sectionBeneficiaires(
+          { profil: statistiques.profil },
+          { wording: 'generique' },
+        )}
+      />
     </ClientBinder>
   )
 }

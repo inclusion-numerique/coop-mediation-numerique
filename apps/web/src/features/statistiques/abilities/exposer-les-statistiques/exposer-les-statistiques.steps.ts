@@ -1,8 +1,17 @@
 import assert from 'node:assert'
+import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
+import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import {
   comptesRendusSemes,
   semerComptesRendus,
 } from '@app/web/features/activites/activites.cucumber'
+import {
+  criteresDesStatistiques,
+  Jour,
+  PERIMETRE_NATIONAL,
+} from '@app/web/features/activites/domain'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
   FiltresDesStatistiquesValidation,
@@ -20,10 +29,24 @@ Given('des activités à compter dans les statistiques', async () => {
 })
 
 When("l'API calcule les statistiques de leur médiateur", async () => {
-  calcul.statistiques = await statistiquesExposees(
+  const criteres = criteresDesStatistiques(
     FiltresDesStatistiquesValidation.parse({
       mediateurs: comptesRendusSemes().mediateurId,
     }),
+  )
+  const fenetre = fenetreDe({ debut: null, fin: Jour('2026-06-30') })
+  calcul.statistiques = statistiquesExposees(
+    await statistiquesFournies(
+      {
+        perimetre: PERIMETRE_NATIONAL,
+        criteres,
+        conseillersNumeriques: conseillerNumeriqueSql,
+        rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+        parJour: fenetre,
+        parMois: fenetre,
+      },
+      { territoires: false, tags: false },
+    ),
   )
 })
 
@@ -41,3 +64,12 @@ Then('les statistiques comptent {int} activités', (attendu: number) => {
 Then('le filtre est refusé', () => {
   assert.strictEqual(calcul.filtreValide, false)
 })
+
+When(
+  "l'API reçoit le filtre de statuts de rendez-vous {string}",
+  (rdvs: string) => {
+    calcul.filtreValide = FiltresDesStatistiquesValidation.safeParse({
+      rdvs,
+    }).success
+  },
+)

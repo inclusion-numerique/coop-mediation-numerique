@@ -18,7 +18,6 @@ import { getSecretValue } from '@app/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
 import { deleteSentryEnvironmentIssues } from '@app/cli/commands/sentry/deleteSentryEnvironmentIssues'
-import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
 import { output, outputError } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
 import * as Sentry from '@sentry/node'
@@ -58,7 +57,6 @@ const main = async () => {
   program.addCommand(createTfVarsFileFromEnvironment)
   program.addCommand(checkDeploymentStatus)
   program.addCommand(locallyRestoreLatestMainBackup)
-  program.addCommand(fetchAccompagnements)
   program.addCommand(deleteSentryEnvironmentIssues)
   program.addCommand(pruneRegistry)
   program.addCommand(deleteRegistryImage)

@@ -1,1 +1,5 @@
-export { lireLesTagsVisibles } from './lire-les-tags-visibles.query'
+export {
+  lireLesTagsCollectifs,
+  lireLesTagsVisibles,
+  lireTousLesTagsVisibles,
+} from './lire-les-tags-visibles.query'

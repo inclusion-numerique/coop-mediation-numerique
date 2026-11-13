@@ -117,3 +117,12 @@ export const rendezVousDesUsagersAListerSql =
         WHERE participation.rdv_id = rdv.id
           AND participation.user_id = ANY(${[...usagers]}::int[]))`,
     )
+
+export const rendezVousAuxStatutsSql = (
+  statuts: readonly (typeof statutsRdv)[number][],
+): Prisma.Sql =>
+  Prisma.sql`SELECT rdv.id FROM rdvs rdv WHERE ${
+    statuts.length === 0
+      ? Prisma.sql`FALSE`
+      : Prisma.join(statuts.map(conditionDeStatut(CONDITION_DE_STATUT)), ' OR ')
+  }`

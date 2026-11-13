@@ -15,3 +15,8 @@
 
 * When l'API reçoit le filtre de types "individuel,inconnu"
 * Then le filtre est refusé
+
+### Scenario: Un statut de rendez-vous inconnu est refusé
+
+* When l'API reçoit le filtre de statuts de rendez-vous "seen,inconnu"
+* Then le filtre est refusé

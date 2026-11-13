@@ -1,25 +1,18 @@
-import { typeActiviteSlugOptions } from '@app/web/features/activites/ui/libelles/type-activite'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
+import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
-export const updateTypesParams =
-  (params: URLSearchParams) => (data: { value: { types: string[] } }) =>
-    data.value.types.length > 0
-      ? params.set('types', data.value.types.join(','))
-      : params.delete('types')
-
-const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    types: string[]
-  }>,
+export const updateTypesParams = (data: { value: { types: string[] } }) => ({
+  types: data.value.types.length > 0 ? data.value.types.join(',') : null,
 })
 
 export const TypesField = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
+    mots: readonly MotDuVocabulaire[]
     isPending: boolean
   },
-  render: ({ form, isPending }) => (
+  render: ({ form, isPending, mots }) => (
     <form.AppField name="types">
       {(field) => (
         <field.Checkbox
@@ -30,7 +23,7 @@ export const TypesField = withForm({
               Filtrer par type d’activité&nbsp;:
             </h2>
           }
-          options={typeActiviteSlugOptions}
+          options={[...mots]}
         />
       )}
     </form.AppField>
