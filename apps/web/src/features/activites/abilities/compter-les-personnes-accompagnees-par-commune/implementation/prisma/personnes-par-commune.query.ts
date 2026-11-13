@@ -5,7 +5,8 @@ import {
   jointuresDesStatistiques,
 } from '../../../../db/statistiques.sql'
 import { communeComptee, Effectif } from '../../../../domain'
-import { type PersonnesParCommune, premierCodePostal } from '../../domain'
+import type { PersonnesParCommune } from '../../domain'
+import { premierCodePostal } from './premier-code-postal'
 
 type Ligne = {
   readonly nom: string | null

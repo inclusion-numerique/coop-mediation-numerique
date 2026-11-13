@@ -1,6 +1,6 @@
-import { premierCodePostal } from './personnes-par-commune'
+import { premierCodePostal } from './premier-code-postal'
 
-describe('personnes par commune', () => {
+describe('premier code postal', () => {
   it('ne garde que le premier code postal d’une commune qui en a plusieurs', () => {
     expect(premierCodePostal('06000, 06100')).toBe('06000')
   })

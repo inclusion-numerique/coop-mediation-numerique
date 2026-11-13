@@ -3,6 +3,7 @@ import type {
   Genre,
   Repartition,
   StatutSocial,
+  TRANCHES_D_AGE,
   TrancheDAge,
 } from '../../../domain'
 
@@ -22,6 +23,10 @@ export const AGE_AVANT_LA_TRANCHE_SUIVANTE = [
   { tranche: 'VingtCinqTrenteNeuf', avant: 40 },
   { tranche: 'QuaranteCinquanteNeuf', avant: 60 },
   { tranche: 'SoixanteSoixanteNeuf', avant: 70 },
-] as const
+] as const satisfies readonly {
+  readonly tranche: (typeof TRANCHES_D_AGE)[number]
+  readonly avant: number
+}[]
 
-export const TRANCHE_DES_PLUS_AGES = 'SoixanteDixPlus'
+export const TRANCHE_DES_PLUS_AGES =
+  'SoixanteDixPlus' satisfies (typeof TRANCHES_D_AGE)[number]

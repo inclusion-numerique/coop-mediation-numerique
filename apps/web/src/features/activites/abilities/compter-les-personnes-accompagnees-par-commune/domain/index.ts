@@ -1,4 +1,1 @@
-export {
-  type PersonnesParCommune,
-  premierCodePostal,
-} from './personnes-par-commune'
+export type { PersonnesParCommune } from './personnes-par-commune'
