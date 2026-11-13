@@ -15,7 +15,7 @@ import {
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 type MediateurOptionWithId = MediateurOption & {
   value: { mediateurId: string }
@@ -47,20 +47,26 @@ export const MediateurFilter = ({
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const mediateursOptions: SelectOption[] = initialMediateursOptions
-    .filter(onlyDefinedIds)
-    .map(toSelectOption)
+  const valeursParDefaut = defaultValue.join(',')
 
-  const selectedMediateurs = mediateursOptions.filter(
-    defautValuesFrom(new Set(defaultValue)),
+  const mediateursOptions: SelectOption[] = useMemo(
+    () => initialMediateursOptions.filter(onlyDefinedIds).map(toSelectOption),
+    [initialMediateursOptions],
+  )
+
+  const selectedMediateurs = useMemo(
+    () =>
+      mediateursOptions.filter(
+        defautValuesFrom(new Set(valeursParDefaut.split(','))),
+      ),
+    [mediateursOptions, valeursParDefaut],
   )
 
   const [mediateurs, setMediateurs] = useState(selectedMediateurs)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when props options change
   useEffect(() => {
     setMediateurs(selectedMediateurs)
-  }, [initialMediateursOptions])
+  }, [selectedMediateurs])
 
   const hasFilters = mediateurs.length > 0
 

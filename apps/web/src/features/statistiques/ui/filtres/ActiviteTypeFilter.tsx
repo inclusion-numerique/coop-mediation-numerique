@@ -1,29 +1,26 @@
 'use client'
 
 import { Popover } from '@app/ui/components/Primitives/Popover'
-import {
-  TypeActiviteSlug,
-  typeActiviteOptions,
-  typeActiviteSlugOptions,
-} from '@app/web/features/activites/ui/libelles/type-activite'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { rdvStatusOptions } from '@app/web/features/rdvsp/ui/rdv-status'
-import type {
-  ActivitesFilters,
-  RdvStatusFilterValue,
-} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
+import type { VocabulaireDeLaBarre } from './vocabulaire-de-la-barre'
 
 export const ActiviteTypeFilter = ({
   defaultValue = {},
   enableRdvsFilter = false,
+  vocabulaire,
 }: {
   defaultValue?: Partial<Pick<ActivitesFilters, 'types' | 'rdvs'>>
   enableRdvsFilter?: boolean
+  vocabulaire: Pick<
+    VocabulaireDeLaBarre,
+    'typesDActivite' | 'statutsDeRendezVous'
+  >
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -66,7 +63,7 @@ export const ActiviteTypeFilter = ({
   }
 
   const handleCheckTypeFilter = (option: ChangeEvent<HTMLInputElement>) => {
-    const value = option.target.value as TypeActiviteSlug
+    const value = option.target.value
 
     option.target.checked
       ? setActiviteTypes([...activiteTypes, value])
@@ -76,7 +73,7 @@ export const ActiviteTypeFilter = ({
   const handleCheckRdvStatusFilter = (
     option: ChangeEvent<HTMLInputElement>,
   ) => {
-    const value = option.target.value as RdvStatusFilterValue
+    const value = option.target.value
 
     if (option.target.checked) {
       const newValues = [...rdvs, value]
@@ -104,7 +101,7 @@ export const ActiviteTypeFilter = ({
           <label className="fr-label fr-mb-2v fr-text--bold">
             Filtrer par&nbsp;:
           </label>
-          {typeActiviteSlugOptions.map(
+          {vocabulaire.typesDActivite.map(
             ({ label, value: optionValue }, index) => {
               const id = `activite-filter-radio-${optionValue}`
 
@@ -112,7 +109,8 @@ export const ActiviteTypeFilter = ({
                 <div
                   className={classNames(
                     'fr-fieldset__element',
-                    index === typeActiviteOptions.length - 1 && 'fr-mb-0',
+                    index === vocabulaire.typesDActivite.length - 1 &&
+                      'fr-mb-0',
                   )}
                   key={optionValue}
                 >
@@ -158,41 +156,44 @@ export const ActiviteTypeFilter = ({
                   Rendez-vous via RDV&nbsp;Service&nbsp;Public
                 </label>
               </div>
-              {rdvStatusOptions.map(({ label, value: optionValue }, index) => {
-                const id = `rdv-status-filter-radio-${optionValue}`
-                const isSmall = true
-                return (
-                  <div
-                    className={classNames(
-                      'fr-fieldset__element',
-                      index === rdvStatusOptions.length - 1 && 'fr-mb-0',
-                    )}
-                    key={optionValue}
-                  >
+              {vocabulaire.statutsDeRendezVous.map(
+                ({ label, value: optionValue }, index) => {
+                  const id = `rdv-status-filter-radio-${optionValue}`
+                  const isSmall = true
+                  return (
                     <div
                       className={classNames(
-                        'fr-checkbox-group',
-                        isSmall && 'fr-checkbox-group--sm',
+                        'fr-fieldset__element',
+                        index === vocabulaire.statutsDeRendezVous.length - 1 &&
+                          'fr-mb-0',
                       )}
+                      key={optionValue}
                     >
-                      <input
-                        type="checkbox"
-                        id={id}
-                        name="rdv-status"
-                        value={optionValue}
-                        checked={rdvs.includes(optionValue)}
-                        onChange={handleCheckRdvStatusFilter}
-                      />
-                      <label
-                        className="fr-label fr-whitespace-nowrap"
-                        htmlFor={id}
+                      <div
+                        className={classNames(
+                          'fr-checkbox-group',
+                          isSmall && 'fr-checkbox-group--sm',
+                        )}
                       >
-                        {label}
-                      </label>
+                        <input
+                          type="checkbox"
+                          id={id}
+                          name="rdv-status"
+                          value={optionValue}
+                          checked={rdvs.includes(optionValue)}
+                          onChange={handleCheckRdvStatusFilter}
+                        />
+                        <label
+                          className="fr-label fr-whitespace-nowrap"
+                          htmlFor={id}
+                        >
+                          {label}
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                },
+              )}
             </fieldset>
           </>
         )}

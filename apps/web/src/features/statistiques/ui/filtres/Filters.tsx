@@ -1,9 +1,5 @@
 'use client'
 
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
-import { LieuFilter } from '@app/web/features/lieux-activite/ui'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { ActiviteTypeFilter } from '@app/web/features/statistiques/ui/filtres/ActiviteTypeFilter'
 import { BeneficiaireFilter } from '@app/web/features/statistiques/ui/filtres/BeneficiaireFilter'
@@ -15,14 +11,14 @@ import { PeriodeFilter } from '@app/web/features/statistiques/ui/filtres/Periode
 import type { StructureEmployeuseOption } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
 import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
 import classNames from 'classnames'
+import type { ReactNode } from 'react'
+import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
+import type { VocabulaireDeLaBarre } from './vocabulaire-de-la-barre'
 
 const Filters = ({
   defaultFilters,
   initialMediateursOptions,
   initialBeneficiairesOptions,
-  communesOptions,
-  departementsOptions,
-  lieuxActiviteOptions,
   structuresEmployeusesOptions,
   tagsOptions,
   isCoordinateur,
@@ -33,15 +29,14 @@ const Filters = ({
   className,
   enableRdvsFilter = false,
   hasCrasV1,
+  vocabulaire,
+  filtreDeLieu,
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
-  initialBeneficiairesOptions: BeneficiaireOption[]
-  communesOptions: SelectOption[]
-  lieuxActiviteOptions: LieuActiviteOption[]
+  initialBeneficiairesOptions: OptionDeBeneficiaire[]
   structuresEmployeusesOptions: StructureEmployeuseOption[]
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
-  departementsOptions: SelectOption[]
   isCoordinateur: boolean
   isMediateur: boolean
   beneficiairesFilter?: boolean
@@ -50,6 +45,8 @@ const Filters = ({
   className?: string
   enableRdvsFilter?: boolean
   hasCrasV1: boolean
+  vocabulaire: VocabulaireDeLaBarre
+  filtreDeLieu: ReactNode
 }) => (
   <div
     className={classNames(
@@ -75,27 +72,7 @@ const Filters = ({
           : undefined
       }
     />
-    <LieuFilter
-      defaultValue={[
-        ...(defaultFilters.lieux == null
-          ? []
-          : [{ type: 'lieu' as const, value: defaultFilters.lieux }]),
-        ...(defaultFilters.communes == null
-          ? []
-          : [{ type: 'commune' as const, value: defaultFilters.communes }]),
-        ...(defaultFilters.departements == null
-          ? []
-          : [
-              {
-                type: 'departement' as const,
-                value: defaultFilters.departements,
-              },
-            ]),
-      ]}
-      lieuxActiviteOptions={lieuxActiviteOptions}
-      communesOptions={communesOptions}
-      departementsOptions={departementsOptions}
-    />
+    {filtreDeLieu}
     {!isCoordinateur && (
       <ActiviteTypeFilter
         defaultValue={{
@@ -103,6 +80,7 @@ const Filters = ({
           rdvs: defaultFilters.rdvs ?? [],
         }}
         enableRdvsFilter={enableRdvsFilter}
+        vocabulaire={vocabulaire}
       />
     )}
     {isMediateur && beneficiairesFilter && (
@@ -116,6 +94,7 @@ const Filters = ({
         tagsOptions={tagsOptions}
         structuresEmployeusesOptions={structuresEmployeusesOptions}
         hasCrasV1={hasCrasV1}
+        vocabulaire={vocabulaire}
         defaultValues={{
           structuresEmployeuses: defaultFilters.structuresEmployeuses ?? [],
           thematiqueNonAdministratives:
@@ -131,6 +110,7 @@ const Filters = ({
       <MoreCoordinateurFilters
         tagsOptions={tagsOptions}
         structuresEmployeusesOptions={structuresEmployeusesOptions}
+        vocabulaire={vocabulaire}
         defaultValues={{
           conseiller_numerique: defaultFilters.conseiller_numerique,
           structuresEmployeuses: defaultFilters.structuresEmployeuses ?? [],

@@ -1,3 +1,4 @@
+import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
 import { quantifiedSharesFromFixedValues } from '@app/web/composition/statistiques/fixtures-des-statistiques'
 import { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import {
@@ -250,6 +251,7 @@ const statistiquesPageData = {
   hasCrasV1: {
     hasCrasV1: false,
   },
+  vocabulaire: vocabulaireDeLaBarre,
   activiteSourceOptions: [],
 } satisfies MesStatistiquesPageData
 

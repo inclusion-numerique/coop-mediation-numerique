@@ -1,6 +1,7 @@
 import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
 import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import {
   impressionDesStatistiques,
@@ -77,6 +78,10 @@ const Page = async ({ params, searchParams }: PageProps) => {
           accompagnementsCount={
             mesStatistiquesProps.totalCounts.accompagnements.total
           }
+          filtreDeLieu={filtreDeLieu(
+            mesStatistiquesProps.activitesFilters,
+            mesStatistiquesProps,
+          )}
           impression={impressionDesStatistiques(mesStatistiquesProps)}
           generale={sectionGenerale(mesStatistiquesProps, {
             wording: 'generique',

@@ -25,6 +25,7 @@ export const getStatistiquesWorksheetInput = async ({
     structuresEmployeusesOptions: statistiques.structuresEmployeusesOptions,
     tagsOptions: statistiques.tagsOptions,
     activiteSourceOptions: statistiques.activiteSourceOptions,
+    vocabulaire: statistiques.vocabulaire,
   })
 
   return {

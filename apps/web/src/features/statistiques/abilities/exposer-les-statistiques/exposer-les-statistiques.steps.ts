@@ -64,3 +64,12 @@ Then('les statistiques comptent {int} activités', (attendu: number) => {
 Then('le filtre est refusé', () => {
   assert.strictEqual(calcul.filtreValide, false)
 })
+
+When(
+  "l'API reçoit le filtre de statuts de rendez-vous {string}",
+  (rdvs: string) => {
+    calcul.filtreValide = FiltresDesStatistiquesValidation.safeParse({
+      rdvs,
+    }).success
+  },
+)

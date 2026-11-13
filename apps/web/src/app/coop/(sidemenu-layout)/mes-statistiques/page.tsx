@@ -3,6 +3,7 @@ import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-acti
 import { reglerLePartageStatistiquesAction } from '@app/web/app/_actions/mediateurs/regler-le-partage-statistiques.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
 import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import {
   impressionDesStatistiques,
@@ -78,6 +79,10 @@ const MesStatistiquesPage = async (props: {
               mesStatistiques.totalCounts.accompagnements.total
             }
             partage={<PartageStatistiques liens={liensDePartage} />}
+            filtreDeLieu={filtreDeLieu(
+              mesStatistiques.activitesFilters,
+              mesStatistiques,
+            )}
             impression={impressionDesStatistiques(mesStatistiques)}
             generale={sectionGenerale(mesStatistiques, {
               debut: mesStatistiques.activitesFilters.du,

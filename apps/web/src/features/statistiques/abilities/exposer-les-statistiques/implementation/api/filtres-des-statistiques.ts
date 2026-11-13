@@ -4,6 +4,7 @@ import {
 } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { z } from 'zod'
 import {
+  STATUTS_DE_RENDEZ_VOUS,
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_NON_ADMINISTRATIVES,
   TYPES_D_ACTIVITE,
@@ -22,6 +23,7 @@ export const FiltresDesStatistiquesValidation = z
   .object({
     ...ActivitesFilterValidations,
     types: listeDe(z.enum(TYPES_D_ACTIVITE)),
+    rdvs: listeDe(z.enum(STATUTS_DE_RENDEZ_VOUS)),
     thematiqueNonAdministratives: listeDe(
       z.enum(THEMATIQUES_NON_ADMINISTRATIVES),
     ),

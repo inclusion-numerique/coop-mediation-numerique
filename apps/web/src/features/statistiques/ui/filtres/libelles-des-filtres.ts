@@ -1,14 +1,12 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
-import { typeActiviteSlugLabels } from '@app/web/features/activites/ui/libelles/type-activite'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import {
-  type RdvStatus,
-  rdvStatusLabels,
-} from '@app/web/features/rdvsp/ui/rdv-status'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
+import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
+import {
+  libelleDans,
+  type VocabulaireDeLaBarre,
+} from './vocabulaire-de-la-barre'
 
 export type FilterType =
   | 'lieux'
@@ -39,7 +37,9 @@ export const generateActivitesPeriodeFilterLabel = ({
 
 const generateBeneficiaireFilterLabel = (
   { beneficiaires = [] }: Pick<ActivitesFilters, 'beneficiaires'>,
-  { beneficiairesOptions = [] }: { beneficiairesOptions: BeneficiaireOption[] },
+  {
+    beneficiairesOptions = [],
+  }: { beneficiairesOptions: OptionDeBeneficiaire[] },
 ) =>
   beneficiairesOptions
     .filter(({ value }) => value?.id && beneficiaires.includes(value.id))
@@ -158,8 +158,9 @@ export const generateActivitesFiltersLabels = (
     lieuxActiviteOptions,
     tagsOptions,
     activiteSourceOptions,
+    vocabulaire,
   }: {
-    beneficiairesOptions: BeneficiaireOption[]
+    beneficiairesOptions: OptionDeBeneficiaire[]
     mediateursOptions: MediateurOption[]
     structuresEmployeusesOptions: { id: string; nom: string }[]
     communesOptions: SelectOption[]
@@ -167,6 +168,7 @@ export const generateActivitesFiltersLabels = (
     departementsOptions: SelectOption[]
     tagsOptions: { id: string; nom: string }[]
     activiteSourceOptions: SelectOption[]
+    vocabulaire: VocabulaireDeLaBarre
   },
 ) => {
   const periode =
@@ -179,7 +181,7 @@ export const generateActivitesFiltersLabels = (
 
   const typesLabel = types
     ? types.map((key) => ({
-        label: typeActiviteSlugLabels[key],
+        label: libelleDans(vocabulaire.typesDActivite)(key),
         key,
         type: 'types' as const,
       }))
@@ -187,14 +189,14 @@ export const generateActivitesFiltersLabels = (
 
   const thematiqueNonAdministrativeLabels =
     thematiqueNonAdministratives?.map((key) => ({
-      label: thematiqueLabels[key],
+      label: libelleDans(vocabulaire.toutesLesThematiques)(key),
       key,
       type: 'thematiqueNonAdministratives' as const,
     })) ?? []
 
   const thematiqueAdministrativeLabels =
     thematiqueAdministratives?.map((key) => ({
-      label: thematiqueLabels[key],
+      label: libelleDans(vocabulaire.toutesLesThematiques)(key),
       key,
       type: 'thematiqueAdministratives' as const,
     })) ?? []
@@ -215,7 +217,7 @@ export const generateActivitesFiltersLabels = (
 
   const rdvsLabel = rdvs
     ? rdvs.map((rdv) => ({
-        label: `RDV ${rdvStatusLabels[rdv as RdvStatus]}`,
+        label: `RDV ${libelleDans(vocabulaire.statutsDeRendezVous)(rdv)}`,
         key: rdv,
         type: 'rdvs' as const,
       }))

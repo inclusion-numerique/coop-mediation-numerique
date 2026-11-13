@@ -2,8 +2,6 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   generateActivitesFiltersLabels,
@@ -15,6 +13,8 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { OptionDeBeneficiaire } from '../filtres/option-de-beneficiaire'
+import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 
 const ExportStatistiquesModal = createModal({
   id: 'export-statistiques',
@@ -31,6 +31,7 @@ export const ExportStatistiques = ({
   tagsOptions,
   accompagnementsCount,
   activiteSourceOptions,
+  vocabulaire,
   exportListAccompagnements = true,
   exportStatistiques = true,
   publicExportId,
@@ -39,13 +40,14 @@ export const ExportStatistiques = ({
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
-  beneficiairesOptions: BeneficiaireOption[]
-  lieuxActiviteOptions: LieuActiviteOption[]
+  beneficiairesOptions: OptionDeBeneficiaire[]
+  lieuxActiviteOptions: SelectOption[]
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
   accompagnementsCount: number
   activiteSourceOptions: SelectOption[]
+  vocabulaire: VocabulaireDeLaBarre
   exportListAccompagnements?: boolean
   exportStatistiques?: boolean
   publicExportId?: string
@@ -53,12 +55,11 @@ export const ExportStatistiques = ({
   emptyFilterMessage?: string
 }) => {
   const exportXlsx = (exportPath: string, message: string) => {
-    const searchParams = new URLSearchParams()
-
-    for (const [key, value] of Object.entries(filters)) {
-      if (!value) continue
-      searchParams.set(key, Array.isArray(value) ? value.join(',') : value)
-    }
+    const searchParams = new URLSearchParams(
+      Object.entries(filters).flatMap(([key, value]) =>
+        value ? [[key, Array.isArray(value) ? value.join(',') : value]] : [],
+      ),
+    )
 
     const pathWithSearchParams =
       searchParams.size > 0
@@ -99,6 +100,7 @@ export const ExportStatistiques = ({
   }
 
   const filterLabelsToDisplay = generateActivitesFiltersLabels(filters, {
+    vocabulaire,
     communesOptions,
     departementsOptions,
     lieuxActiviteOptions,

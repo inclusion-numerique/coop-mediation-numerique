@@ -1,8 +1,6 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   generateActivitesFiltersLabels,
@@ -12,6 +10,8 @@ import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
+import type { VocabulaireDeLaBarre } from './vocabulaire-de-la-barre'
 
 const queryParamsToKeep = ['voir-rdvs']
 
@@ -25,15 +25,17 @@ export const FilterTags = ({
   communesOptions,
   tagsOptions,
   activiteSourceOptions,
+  vocabulaire,
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
-  beneficiairesOptions: BeneficiaireOption[]
+  beneficiairesOptions: OptionDeBeneficiaire[]
   structuresEmployeusesOptions: { id: string; nom: string }[]
-  lieuxActiviteOptions: LieuActiviteOption[]
+  lieuxActiviteOptions: SelectOption[]
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
   activiteSourceOptions: SelectOption[]
+  vocabulaire: VocabulaireDeLaBarre
   tagsOptions: { id: string; nom: string }[]
 }) => {
   const router = useRouter()
@@ -41,6 +43,7 @@ export const FilterTags = ({
   const params = new URLSearchParams(searchParams.toString())
 
   const filterLabelsToDisplay = generateActivitesFiltersLabels(filters, {
+    vocabulaire,
     communesOptions,
     departementsOptions,
     lieuxActiviteOptions,
@@ -57,30 +60,31 @@ export const FilterTags = ({
     }
 
     if (Array.isArray(value)) {
-      for (const param of value) params.delete(param)
-      return router.replace(`?${params}`, { scroll: false })
+      const conserves = new URLSearchParams(
+        [...params].filter(([cle]) => !value.includes(cle)),
+      )
+      return router.replace(`?${conserves}`, { scroll: false })
     }
 
     const updatedValues = (params.get(key)?.split(',') ?? []).filter(
       (v) => v !== value,
     )
 
-    if (updatedValues.length > 0) {
-      params.set(key, updatedValues.join(','))
-    } else {
-      params.delete(key)
-    }
+    updatedValues.length > 0
+      ? params.set(key, updatedValues.join(','))
+      : params.delete(key)
 
     router.replace(`?${params}`, { scroll: false })
   }
 
   const handleClearFilters = () => {
-    const newQueryParams = new URLSearchParams()
-    for (const paramToKeep of queryParamsToKeep) {
-      if (searchParams.has(paramToKeep)) {
-        newQueryParams.set(paramToKeep, searchParams.get(paramToKeep) ?? '')
-      }
-    }
+    const newQueryParams = new URLSearchParams(
+      queryParamsToKeep.flatMap((paramToKeep) =>
+        searchParams.has(paramToKeep)
+          ? [[paramToKeep, searchParams.get(paramToKeep) ?? '']]
+          : [],
+      ),
+    )
     router.replace(`?${newQueryParams}`, { scroll: false })
   }
 

@@ -1,5 +1,5 @@
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const roleCount = ({
   conseiller_numerique,
@@ -24,16 +24,8 @@ const conseillerNumeriqueOptions = [
   { label: 'Médiateurs numériques', value: '0' },
 ]
 
-const options = formOptions({
-  defaultValues: {
-    conseiller_numerique: '',
-  } as DefaultValues<{
-    conseiller_numerique: '' | '0' | '1'
-  }>,
-})
-
 export const RolesField = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
     isPending: boolean
   },

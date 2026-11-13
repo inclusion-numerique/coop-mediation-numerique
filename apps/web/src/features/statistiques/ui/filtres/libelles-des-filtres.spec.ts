@@ -1,5 +1,21 @@
 import { generateActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 
+const vocabulaire = {
+  typesDActivite: [
+    { value: 'individuel', label: 'Accompagnement individuel' },
+    { value: 'collectif', label: 'Atelier collectif' },
+  ],
+  statutsDeRendezVous: [{ value: 'seen', label: 'Honoré' }],
+  thematiquesDeMediation: [{ value: 'Email', label: 'E-mail' }],
+  thematiquesAdministratives: [
+    { value: 'SocialSante', label: 'Social - Santé' },
+  ],
+  toutesLesThematiques: [
+    { value: 'Email', label: 'E-mail' },
+    { value: 'SocialSante', label: 'Social - Santé' },
+  ],
+}
+
 const COMMUNES_OPTIONS = [
   { value: '69382', label: 'Lyon 2eme · 69002' },
   { value: '75101', label: 'Paris 1er · 75001' },
@@ -127,6 +143,7 @@ describe('generate activites filters labels', () => {
         lieuxActiviteOptions: LIEUX_ACTIVITE_OPTIONS,
         mediateursOptions: MEDIATEURS_OPTIONS,
         beneficiairesOptions: BENEFICIAIRES_OPTIONS,
+        vocabulaire,
         structuresEmployeusesOptions: [],
         tagsOptions: [],
         activiteSourceOptions: [],
@@ -163,6 +180,7 @@ describe('generate activites filters labels', () => {
         lieuxActiviteOptions: LIEUX_ACTIVITE_OPTIONS,
         mediateursOptions: MEDIATEURS_OPTIONS,
         beneficiairesOptions: BENEFICIAIRES_OPTIONS,
+        vocabulaire,
         structuresEmployeusesOptions: [],
         tagsOptions: [],
         activiteSourceOptions: [],

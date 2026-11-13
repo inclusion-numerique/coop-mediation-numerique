@@ -20,6 +20,8 @@ export const StatistiquesPartagees = ({
   lieuxActiviteOptions,
   structuresEmployeusesOptions,
   activiteSourceOptions,
+  vocabulaire,
+  filtreDeLieu,
   activiteDates,
   hasCrasV1,
   accompagnementsCount,
@@ -70,9 +72,8 @@ export const StatistiquesPartagees = ({
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
           <Filters
             defaultFilters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
+            vocabulaire={vocabulaire}
+            filtreDeLieu={filtreDeLieu}
             structuresEmployeusesOptions={structuresEmployeusesOptions}
             tagsOptions={tagsOptions}
             initialMediateursOptions={initialMediateursOptions}
@@ -94,6 +95,7 @@ export const StatistiquesPartagees = ({
               tagsOptions={tagsOptions}
               accompagnementsCount={accompagnementsCount}
               activiteSourceOptions={activiteSourceOptions}
+              vocabulaire={vocabulaire}
               exportListAccompagnements={false}
               publicExportId={shareId}
               title="Export des statistiques"
@@ -111,6 +113,7 @@ export const StatistiquesPartagees = ({
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}
           activiteSourceOptions={activiteSourceOptions}
+          vocabulaire={vocabulaire}
         />
         {hasCrasV1 && (
           <Notice

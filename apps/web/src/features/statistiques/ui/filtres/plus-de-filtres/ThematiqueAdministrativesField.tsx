@@ -1,8 +1,7 @@
-import { thematiqueAdministrativesOptions } from '@app/web/features/activites/ui/libelles/thematique'
-import { Thematique } from '@app/web/generated/prisma/browser'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
-import { formOptions } from '@tanstack/react-form'
+import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const updateThematiqueAdministrativesParams =
   (params: URLSearchParams) =>
@@ -18,18 +17,13 @@ export const updateThematiqueAdministrativesParams =
         )
       : params.delete('thematiqueAdministratives')
 
-const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    thematiqueAdministratives: Thematique[]
-  }>,
-})
-
 export const ThematiqueAdministrativesFiled = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
+    mots: readonly MotDuVocabulaire[]
     isPending: boolean
   },
-  render: ({ form, isPending }) => (
+  render: ({ form, isPending, mots }) => (
     <form.AppField name="thematiqueAdministratives">
       {(field) => (
         <>
@@ -39,15 +33,11 @@ export const ThematiqueAdministrativesFiled = withForm({
               {
                 label: 'Toutes les thématiques de démarches administrative',
                 nativeInputProps: {
-                  checked:
-                    field.state.value?.length ===
-                    thematiqueAdministrativesOptions.length,
+                  checked: field.state.value?.length === mots.length,
                   onChange: (value) => {
                     field.setValue(
                       value.target.checked
-                        ? thematiqueAdministrativesOptions.map(
-                            ({ value }) => value,
-                          )
+                        ? mots.map(({ value }) => value)
                         : [],
                     )
                   },
@@ -61,7 +51,7 @@ export const ThematiqueAdministrativesFiled = withForm({
             }}
             isPending={isPending}
             isTiled={false}
-            options={thematiqueAdministrativesOptions}
+            options={[...mots]}
           />
         </>
       )}

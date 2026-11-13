@@ -2,8 +2,8 @@ import {
   ActiviteSource,
   activiteSourceOptions,
 } from '@app/web/features/statistiques/ui/filtres/source'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { formOptions } from '@tanstack/react-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const updateSourcesParams =
   (params: URLSearchParams) =>
@@ -13,14 +13,8 @@ export const updateSourcesParams =
       : params.set('source', data.value.source)
   }
 
-const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    source: ActiviteSource | undefined
-  }>,
-})
-
 export const SourcesField = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
     isPending: boolean
   },

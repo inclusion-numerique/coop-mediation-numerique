@@ -1,3 +1,4 @@
+import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { getUserDepartement } from '@app/web/auth/getUserDepartement'
@@ -11,25 +12,30 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
 import { ExportStatistiques } from '../export/ExportStatistiques'
+import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 import { StatistiquesImpact } from '../sections/StatistiquesImpact'
 import { AutoPrint } from './AutoPrint'
 import { statistiquesPageTitle } from './titre-des-statistiques'
 
-export type OptionsDeLaBarre = Pick<
-  ComponentProps<typeof Filters>,
-  | 'communesOptions'
-  | 'departementsOptions'
-  | 'lieuxActiviteOptions'
-  | 'structuresEmployeusesOptions'
-  | 'tagsOptions'
-  | 'initialMediateursOptions'
-  | 'initialBeneficiairesOptions'
-> & {
+export type OptionsDeLaBarre = {
   activitesFilters: ActivitesFilters
-  activiteSourceOptions: ComponentProps<
-    typeof FilterTags
-  >['activiteSourceOptions']
+  communesOptions: SelectOption[]
+  departementsOptions: SelectOption[]
+  lieuxActiviteOptions: SelectOption[]
+  structuresEmployeusesOptions: ComponentProps<
+    typeof Filters
+  >['structuresEmployeusesOptions']
+  tagsOptions: ComponentProps<typeof Filters>['tagsOptions']
+  initialMediateursOptions: ComponentProps<
+    typeof Filters
+  >['initialMediateursOptions']
+  initialBeneficiairesOptions: ComponentProps<
+    typeof Filters
+  >['initialBeneficiairesOptions']
+  activiteSourceOptions: SelectOption[]
   activiteDates: { first: Date | undefined }
+  vocabulaire: VocabulaireDeLaBarre
+  filtreDeLieu: ReactNode
 }
 
 export const MesStatistiques = ({
@@ -43,6 +49,8 @@ export const MesStatistiques = ({
   structuresEmployeusesOptions,
   activiteDates,
   activiteSourceOptions,
+  vocabulaire,
+  filtreDeLieu,
   user,
   hasCrasV1,
   accompagnementsCount,
@@ -74,9 +82,8 @@ export const MesStatistiques = ({
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
           <Filters
             defaultFilters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
+            vocabulaire={vocabulaire}
+            filtreDeLieu={filtreDeLieu}
             structuresEmployeusesOptions={structuresEmployeusesOptions}
             tagsOptions={tagsOptions}
             initialMediateursOptions={initialMediateursOptions}
@@ -99,6 +106,7 @@ export const MesStatistiques = ({
               tagsOptions={tagsOptions}
               accompagnementsCount={accompagnementsCount}
               activiteSourceOptions={activiteSourceOptions}
+              vocabulaire={vocabulaire}
             />
           </div>
         </div>
@@ -112,6 +120,7 @@ export const MesStatistiques = ({
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}
           activiteSourceOptions={activiteSourceOptions}
+          vocabulaire={vocabulaire}
         />
         {hasCrasV1 && (
           <Notice

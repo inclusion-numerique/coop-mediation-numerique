@@ -2,6 +2,10 @@ import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-acti
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import {
+  filtreDeLieu,
+  vocabulaireDeLaBarre,
+} from '@app/web/composition/statistiques/barre'
+import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
@@ -89,9 +93,12 @@ const Page = async (props: {
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
           <Filters
             defaultFilters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
+            vocabulaire={vocabulaireDeLaBarre}
+            filtreDeLieu={filtreDeLieu(activitesFilters, {
+              communesOptions,
+              departementsOptions,
+              lieuxActiviteOptions,
+            })}
             structuresEmployeusesOptions={[]}
             tagsOptions={tagsOptions}
             initialMediateursOptions={[]}
@@ -113,6 +120,7 @@ const Page = async (props: {
           mediateursOptions={[]}
           beneficiairesOptions={[]}
           activiteSourceOptions={activiteSourceOptions}
+          vocabulaire={vocabulaireDeLaBarre}
         />
         <section className="fr-mb-6w">
           {sectionGenerale(

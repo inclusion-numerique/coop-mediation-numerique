@@ -13,6 +13,7 @@ import {
   mediateurSansActivitesUserId,
 } from '@app/fixtures/users/mediateurSansActivites'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
 import { emptyQuantifiedSharesFromEnum } from '@app/web/composition/statistiques/fixtures-des-statistiques'
 import {
   getMesStatistiquesPageData,
@@ -170,6 +171,7 @@ const emptyData: MesStatistiquesPageData = {
   hasCrasV1: {
     hasCrasV1: false,
   },
+  vocabulaire: vocabulaireDeLaBarre,
 }
 
 const createExpectedData = (

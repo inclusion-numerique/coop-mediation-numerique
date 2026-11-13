@@ -1,8 +1,8 @@
 import { Options } from '@app/ui/components/Primitives/Options'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
+import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions } from '@tanstack/react-form'
 import { useRef } from 'react'
+import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 import {
   type StructureEmployeuse,
   StructureEmployeuseComboBox,
@@ -25,14 +25,8 @@ export const updateStructuresEmployeusesParams =
       : params.delete('structuresEmployeuses')
   }
 
-const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    structuresEmployeuses: StructureEmployeuse[]
-  }>,
-})
-
 export const StructuresEmployeusesField = withForm({
-  ...options,
+  ...plusDeFiltresFormOptions,
   props: {} as {
     isPending: boolean
     initialStructuresEmployeusesOptions: StructureEmployeuse[]

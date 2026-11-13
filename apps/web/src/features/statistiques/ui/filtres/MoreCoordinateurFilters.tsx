@@ -1,6 +1,9 @@
 'use client'
 
-import type { TypeActiviteSlug } from '@app/web/features/activites/ui/libelles/type-activite'
+import {
+  plusDeFiltresFormOptions,
+  type ValeursDePlusDeFiltres,
+} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/plus-de-filtres.form-options'
 import {
   RolesField,
   roleCount,
@@ -34,6 +37,7 @@ import {
 } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/TypesField'
 import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
 import { ActiviteSource } from '@app/web/features/statistiques/ui/filtres/source'
+import type { VocabulaireDeLaBarre } from '@app/web/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
@@ -51,13 +55,15 @@ export const MoreCoordinateurFilters = ({
   tagsOptions,
   structuresEmployeusesOptions,
   defaultValues,
+  vocabulaire,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   structuresEmployeusesOptions: StructureEmployeuse[]
+  vocabulaire: VocabulaireDeLaBarre
   defaultValues: {
     conseiller_numerique: '0' | '1' | undefined
     structuresEmployeuses: string[]
-    types: TypeActiviteSlug[]
+    types: string[]
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
     tags: string[]
@@ -87,19 +93,21 @@ export const MoreCoordinateurFilters = ({
       .map((id) => structuresEmployeusesOptions.find((s) => s.id === id))
       .filter((s): s is StructureEmployeuse => s !== undefined)
 
+  const valeursInitiales: ValeursDePlusDeFiltres = {
+    ...plusDeFiltresFormOptions.defaultValues,
+    ...defaultValues,
+    conseiller_numerique: defaultValues.conseiller_numerique ?? '',
+    structuresEmployeuses: structuresToArray(
+      defaultValues.structuresEmployeuses,
+    ),
+    tags: tagToArray(tagsOptions)(defaultValues.tags),
+  }
+
   const form = useAppForm({
-    defaultValues: {
-      ...defaultValues,
-      conseiller_numerique: defaultValues.conseiller_numerique ?? '',
-      structuresEmployeuses: structuresToArray(
-        defaultValues.structuresEmployeuses,
-      ),
-      tags: tagToArray(tagsOptions)(defaultValues.tags),
-    },
+    ...plusDeFiltresFormOptions,
+    defaultValues: valeursInitiales,
     onSubmit: (data) => {
-      updateRolesParams(params)(
-        data as { value: { conseiller_numerique?: '' | '0' | '1' } },
-      )
+      updateRolesParams(params)(data)
       updateStructuresEmployeusesParams(params)(data)
       updateTypesParams(params)(data)
       updateThematiqueAdministrativesParams(params)(data)
@@ -145,14 +153,14 @@ export const MoreCoordinateurFilters = ({
             },
           ]}
         >
-          <SourcesField form={form as any} isPending={false} />
+          <SourcesField form={form} isPending={false} />
           <hr className="fr-separator-8v" />
-          <RolesField form={form as any} isPending={false} />
+          <RolesField form={form} isPending={false} />
           <hr className="fr-separator-8v" />
           {structuresEmployeusesOptions.length > 1 && (
             <>
               <StructuresEmployeusesField
-                form={form as any}
+                form={form}
                 isPending={false}
                 initialStructuresEmployeusesOptions={
                   structuresEmployeusesOptions
@@ -161,26 +169,32 @@ export const MoreCoordinateurFilters = ({
               <hr className="fr-separator-8v" />
             </>
           )}
-          <TypesField form={form as any} isPending={false} />
+          <TypesField
+            form={form}
+            isPending={false}
+            mots={vocabulaire.typesDActivite}
+          />
           <hr className="fr-separator-8v" />
           <h2 className="fr-h6">Filtrer par thématique et/ou tags&nbsp;:</h2>
           <div className="fr-accordions-group">
             <Accordion label="Thématiques de médiation numérique">
               <ThematiqueNonAdministrativesFiled
-                form={form as any}
+                form={form}
                 isPending={false}
+                mots={vocabulaire.thematiquesDeMediation}
               />
             </Accordion>
             <Accordion label="Thématiques de démarches administratives">
               <ThematiqueAdministrativesFiled
-                form={form as any}
+                form={form}
                 isPending={false}
+                mots={vocabulaire.thematiquesAdministratives}
               />
             </Accordion>
             {tagsOptions.length > 0 && (
               <Accordion label="Tags spécifiques">
                 <TagsField
-                  form={form as any}
+                  form={form}
                   tagsOptions={tagsOptions}
                   isPending={false}
                 />

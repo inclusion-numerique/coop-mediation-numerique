@@ -28,6 +28,7 @@ import type { ActivitesFilters } from '@app/web/features/statistiques/domain/fil
 import { tousLesTagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import { vocabulaireDeLaBarre } from './barre'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -134,6 +135,7 @@ export const getMesStatistiquesPageData = async ({
     ...statistiques,
     ...options,
     activitesFilters,
+    vocabulaire: vocabulaireDeLaBarre,
   }
 }
 

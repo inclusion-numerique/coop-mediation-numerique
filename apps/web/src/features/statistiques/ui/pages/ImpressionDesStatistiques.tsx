@@ -7,6 +7,7 @@ import {
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { ReactNode } from 'react'
 import type { MediateurOption } from '../filtres/mediateur-option'
+import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 
 export const ImpressionDesStatistiques = ({
   activitesFilters,
@@ -16,6 +17,7 @@ export const ImpressionDesStatistiques = ({
   lieuxActiviteOptions,
   tagsOptions,
   activiteSourceOptions,
+  vocabulaire,
   generale,
   activites,
   beneficiaires,
@@ -27,6 +29,7 @@ export const ImpressionDesStatistiques = ({
   lieuxActiviteOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
   activiteSourceOptions: SelectOption[]
+  vocabulaire: VocabulaireDeLaBarre
   generale: ReactNode
   activites: ReactNode
   beneficiaires: ReactNode
@@ -34,6 +37,7 @@ export const ImpressionDesStatistiques = ({
   const filterLabelsToDisplay = generateActivitesFiltersLabels(
     activitesFilters,
     {
+      vocabulaire,
       communesOptions,
       departementsOptions,
       lieuxActiviteOptions,

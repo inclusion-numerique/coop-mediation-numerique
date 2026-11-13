@@ -44,12 +44,11 @@ export const PeriodeFilter = ({
   const applyFilters = (close = false) => {
     const params = new URLSearchParams(searchParams.toString())
 
+    params.delete('du')
+    params.delete('au')
     if (range?.from && range?.to) {
       params.set('du', dateAsIsoDay(range.from))
       params.set('au', dateAsIsoDay(range.to))
-    } else {
-      params.delete('du')
-      params.delete('au')
     }
 
     if (close) {
