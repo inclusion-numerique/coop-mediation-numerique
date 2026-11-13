@@ -16,8 +16,7 @@ export const SectionActivites = ({
   demarches,
   tags,
   materiels,
-  canaux,
-  durees,
+  canauxEtDurees,
   lieux,
   communes,
 }: {
@@ -28,8 +27,7 @@ export const SectionActivites = ({
   demarches: ReactNode
   tags: ReactNode
   materiels: ReactNode
-  canaux: ReactNode
-  durees: ReactNode
+  canauxEtDurees: ReactNode
   lieux?: ReactNode
   communes?: ReactNode
 }) => {
@@ -218,8 +216,7 @@ export const SectionActivites = ({
         className="fr-border fr-p-4w fr-background-default--grey fr-border-radius--16 fr-position-relative"
       >
         <div className="fr-flex fr-flex-wrap fr-flex-gap-16v">
-          {canaux}
-          {durees}
+          {canauxEtDurees}
         </div>
         {(!!lieux || !!communes) && (
           <>

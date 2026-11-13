@@ -13,6 +13,7 @@ import {
 } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
 import {
   GraphiqueDesAccompagnements,
+  GraphiqueEnAttente,
   GraphiquesImprimes,
 } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode/ui'
 import {
@@ -67,9 +68,10 @@ const bloc = <T,>(
   donnee: Donnee<T>,
   rendu: (valeur: T) => ReactNode,
   className?: string,
+  attente?: ReactNode,
 ): ReactNode =>
   donnee instanceof Promise ? (
-    <BlocEnAttente className={className}>
+    <BlocEnAttente className={className} attente={attente}>
       <Attendue donnee={donnee} rendu={rendu} />
     </BlocEnAttente>
   ) : (
@@ -108,6 +110,7 @@ export const sectionGenerale = (
         />
       ),
       'fr-col',
+      <GraphiqueEnAttente />,
     )}
   />
 )
@@ -216,12 +219,16 @@ export const sectionActivites = (
     materiels={bloc(repartition, (activites) => (
       <MaterielsUtilises materiels={activites.materiels} />
     ))}
-    canaux={bloc(repartition, (activites) => (
-      <CanauxDesAccompagnements typeLieu={activites.typeLieu} />
-    ))}
-    durees={bloc(repartition, (activites) => (
-      <DureesDesAccompagnements durees={activites.durees} />
-    ))}
+    canauxEtDurees={bloc(
+      repartition,
+      (activites) => (
+        <>
+          <CanauxDesAccompagnements typeLieu={activites.typeLieu} />
+          <DureesDesAccompagnements durees={activites.durees} />
+        </>
+      ),
+      'fr-flex-grow-1',
+    )}
     lieux={
       structures === undefined
         ? undefined
