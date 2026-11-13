@@ -363,6 +363,62 @@ describe('transfer de l’activité de médiation', () => {
       ).toBe(3)
     })
 
+    const residenceLue = (
+      commune: Pick<
+        ActiviteDeMediationRow['accompagnements'][number]['beneficiaire'],
+        'commune' | 'communeCodePostal' | 'communeCodeInsee'
+      >,
+    ) => {
+      const relue = activiteDeMediationToDomain(
+        ligne({
+          accompagnements: [
+            {
+              premierAccompagnement: true,
+              beneficiaire: {
+                id: nouvelId(),
+                anonyme: true,
+                genre: null,
+                trancheAge: null,
+                statutSocial: null,
+                ...commune,
+              },
+            },
+          ],
+        }),
+      )
+      return relue._tag === 'Individuel' &&
+        relue.beneficiaire._tag === 'Anonyme'
+        ? relue.beneficiaire.profil.residence
+        : undefined
+    }
+
+    it('garde le premier code postal d’une commune qui en a plusieurs', () => {
+      expect(
+        residenceLue({
+          commune: 'Nice',
+          communeCodePostal: '06100,06000,06200,06300',
+          communeCodeInsee: '06088',
+        }),
+      ).toEqual({ nom: 'Nice', codePostal: '06100', codeInsee: '06088' })
+    })
+
+    it.each([
+      [
+        'incomplète',
+        { commune: 'Lyon', communeCodePostal: null, communeCodeInsee: '69123' },
+      ],
+      [
+        'mal formée',
+        {
+          commune: 'Lyon',
+          communeCodePostal: '6900',
+          communeCodeInsee: '69123',
+        },
+      ],
+    ])('lit une résidence %s comme non renseignée', (_, commune) => {
+      expect(residenceLue(commune)).toBeNull()
+    })
+
     it('relit un atelier historique sans participant', () => {
       const atelierVide = activiteDeMediationToDomain({
         ...activiteDeMediationFromDomain(atelier, nouvelId),

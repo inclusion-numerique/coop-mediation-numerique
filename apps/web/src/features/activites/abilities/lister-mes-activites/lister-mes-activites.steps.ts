@@ -123,6 +123,39 @@ Given(
   },
 )
 
+Given(
+  'un médiateur ayant accompagné le 3 mars 2026 un bénéficiaire de Nice, anonymisé depuis',
+  async () => {
+    const { userId, mediateurId } = await semerUnMediateur()
+    semis = { userIds: [userId], mediateurId }
+    await prismaClient.activite.create({
+      data: {
+        mediateurId,
+        type: 'Individuel',
+        typeLieu: 'ADistance',
+        date: new Date(Date.UTC(2026, 2, 3)),
+        duree: 60,
+        thematiques: ['Email'],
+        accompagnementsCount: 1,
+        accompagnements: {
+          create: {
+            beneficiaire: {
+              create: {
+                mediateurId,
+                anonyme: true,
+                suppression: new Date(),
+                commune: 'Nice',
+                communeCodePostal: '06100,06000,06200,06300',
+                communeCodeInsee: '06088',
+              },
+            },
+          },
+        },
+      },
+    })
+  },
+)
+
 const lister = async (parametres: Record<string, string>) => {
   const criteres = criteresDesActivites(parametres)
   chronologie = await listerMesActivites({

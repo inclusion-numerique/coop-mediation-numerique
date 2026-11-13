@@ -254,6 +254,18 @@ const orientationDe = (row: ActiviteDeMediationRow): Orientation => {
     : { _tag: 'NonRenseignee' }
 }
 
+const premierCodePostal = (codes: string | null): string | null =>
+  renseigne(codes)?.split(',')[0]?.trim() ?? null
+
+export const residenceDe = (colonnes: ColonnesDeCommune): Commune | null => {
+  const nom = renseigne(colonnes.nom)
+  const codePostal = premierCodePostal(colonnes.codePostal)
+  const codeInsee = renseigne(colonnes.codeInsee)
+  return nom === null || codePostal === null || codeInsee === null
+    ? null
+    : Commune.safe({ nom, codePostal, codeInsee })
+}
+
 const beneficiaireAccompagneDe = (
   id: string,
   accompagnement: AccompagnementRow,
@@ -269,7 +281,7 @@ const beneficiaireAccompagneDe = (
           statutSocial: StatutSocial(
             beneficiaire.statutSocial ?? 'NonCommunique',
           ),
-          residence: communeDe(id, {
+          residence: residenceDe({
             nom: beneficiaire.commune,
             codePostal: beneficiaire.communeCodePostal,
             codeInsee: beneficiaire.communeCodeInsee,

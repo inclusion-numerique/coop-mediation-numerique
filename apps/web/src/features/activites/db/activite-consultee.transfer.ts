@@ -16,6 +16,7 @@ import {
 import {
   activiteDeMediationSelect,
   activiteDeMediationToDomain,
+  residenceDe,
 } from './activite-de-mediation.transfer'
 import {
   type RendezVousLieFourni,
@@ -80,10 +81,10 @@ const residenceDu = ({
   readonly communeCodePostal: string | null
   readonly communeCodeInsee: string | null
 }): Commune | null =>
-  Commune.safe({
-    nom: commune ?? '',
-    codePostal: communeCodePostal ?? '',
-    codeInsee: communeCodeInsee ?? '',
+  residenceDe({
+    nom: commune,
+    codePostal: communeCodePostal,
+    codeInsee: communeCodeInsee,
   })
 
 const suiviAffiche = (beneficiaire: {

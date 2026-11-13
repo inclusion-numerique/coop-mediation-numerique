@@ -21,6 +21,12 @@
 * When je liste mes activités avec "ordre=asc"
 * Then les activités listées sont celles du "3 mars, 5 mars, 9 mars"
 
+### Scenario: Un bénéficiaire anonymisé dont la commune a plusieurs codes postaux reste listé
+
+* Given un médiateur ayant accompagné le 3 mars 2026 un bénéficiaire de Nice, anonymisé depuis
+* When je liste mes activités
+* Then les activités listées sont celles du "3 mars"
+
 ## Rule: Les filtres de l'URL restreignent la liste, une valeur invalide est ignorée
 
 ### Scenario: Filtrer les ateliers collectifs
