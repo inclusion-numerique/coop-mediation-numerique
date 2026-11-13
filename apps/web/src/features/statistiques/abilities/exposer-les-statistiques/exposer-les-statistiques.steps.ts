@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import {
   comptesRendusSemes,
@@ -9,7 +10,6 @@ import {
   Jour,
   PERIMETRE_NATIONAL,
 } from '@app/web/features/activites/domain'
-import { statistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { Given, Then, When } from '@cucumber/cucumber'

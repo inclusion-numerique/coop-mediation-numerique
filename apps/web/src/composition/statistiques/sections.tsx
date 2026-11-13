@@ -1,3 +1,4 @@
+import type { StatistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
 import {
   ChiffresClesDesAccompagnements,
   ChiffresClesImprimes,
@@ -32,7 +33,6 @@ import {
   TypesDActiviteImprimes,
 } from '@app/web/features/activites/abilities/repartir-les-accompagnements/ui'
 import { TagsDesAccompagnements } from '@app/web/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
-import type { StatistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
 import { ImpressionDesStatistiques } from '@app/web/features/statistiques/ui/pages/ImpressionDesStatistiques'
 import { SectionActivites } from '@app/web/features/statistiques/ui/sections/SectionActivites'
 import { SectionActivitesImprimee } from '@app/web/features/statistiques/ui/sections/SectionActivitesImprimee'

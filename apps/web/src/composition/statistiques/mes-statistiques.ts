@@ -1,4 +1,6 @@
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@app/web/features/activites/abilities/decrire-les-activites-du-perimetre'
 import { verifierLaPresenceDeCrasV1 } from '@app/web/features/activites/abilities/verifier-la-presence-de-cras-v1'
@@ -10,7 +12,6 @@ import {
   MediateurId,
   perimetreDuDemandeur,
 } from '@app/web/features/activites/domain'
-import { statistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { listerLesMembresAFiltrer } from '@app/web/features/equipe/abilities/lister-les-membres-a-filtrer'
@@ -26,7 +27,6 @@ import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/liste
 import { optionsDesStatistiques } from '@app/web/features/statistiques/abilities/lister-les-options-des-statistiques'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { tousLesTagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'
 
@@ -34,8 +34,6 @@ export type MesStatistiquesGraphOptions = {
   fin?: Date
   debut?: Date
 }
-
-const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
 
 export const getMesStatistiquesPageData = async ({
   user,
@@ -46,18 +44,7 @@ export const getMesStatistiquesPageData = async ({
   activitesFilters: ActivitesFilters
   graphOptions?: MesStatistiquesGraphOptions
 }) => {
-  const mediateurCoordonnes =
-    user.coordinateur == null
-      ? []
-      : await prismaClient.mediateurCoordonne.findMany({
-          where: { coordinateurId: user.coordinateur.id },
-          select: { mediateurId: true },
-        })
-
-  // Un médiateur ré-invité a une ligne par passage dans l'équipe : on ne garde qu'un identifiant.
-  const mediateurCoordonnesIds = [
-    ...new Set(mediateurCoordonnes.map(toMediateurId)),
-  ]
+  const mediateurCoordonnesIds = mediateurCoordonnesEtAnciensIdsFor(user)
 
   const perimetre = perimetreDuDemandeur({
     mediateur: user.mediateur ? MediateurId(user.mediateur.id) : null,
