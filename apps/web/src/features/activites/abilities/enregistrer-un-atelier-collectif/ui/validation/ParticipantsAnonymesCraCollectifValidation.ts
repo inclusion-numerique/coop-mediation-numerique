@@ -13,7 +13,7 @@ const participantsAnonymesMaxLocaleString = numberToString(
 
 const participantsAnonymeNumber = ({ maxMessage }: { maxMessage: string }) =>
   z.coerce
-    .number<number>()
+    .number<number>({ error: 'Veuillez renseigner un nombre' })
     .int({
       message: 'Veuillez renseigner un nombre entier',
     })

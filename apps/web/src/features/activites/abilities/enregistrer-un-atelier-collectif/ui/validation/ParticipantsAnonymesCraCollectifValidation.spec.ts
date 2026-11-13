@@ -81,4 +81,15 @@ describe('ParticipantsAnonymesCraCollectifValidation', () => {
       'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     )
   })
+
+  it('demande un nombre quand le total est vidé', () => {
+    const resultat = ParticipantsAnonymesCraCollectifValidation.safeParse({
+      ...validData,
+      total: Number.NaN,
+    })
+
+    expect(resultat.error?.issues[0]?.message).toBe(
+      'Veuillez renseigner un nombre',
+    )
+  })
 })

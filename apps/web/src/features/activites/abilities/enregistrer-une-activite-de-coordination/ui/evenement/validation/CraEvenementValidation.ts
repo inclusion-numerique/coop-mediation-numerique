@@ -43,7 +43,9 @@ export const CraEvenementValidation = z
     coordinateurId: z.guid(),
     date: CraDateValidation,
     participants: z.coerce
-      .number<number>()
+      .number<number>({
+        error: 'Veuillez renseigner le nombre de participants',
+      })
       .int({ message: 'Veuillez renseigner un nombre entier' })
       .min(0, 'Le nombre de participants doit être positif'),
     nom: z.string().nullish(),
