@@ -3,6 +3,7 @@
 import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Popover } from '@app/ui/components/Primitives/Popover'
+import { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import {
@@ -13,7 +14,6 @@ import {
   update,
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 

@@ -9,7 +9,7 @@ import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
-import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
+import { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import { download } from '@app/web/utils/download'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'

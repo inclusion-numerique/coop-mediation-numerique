@@ -1,4 +1,8 @@
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
+import { decrireLesActivitesDuPerimetre } from '@app/web/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { verifierLaPresenceDeCrasV1 } from '@app/web/features/activites/abilities/verifier-la-presence-de-cras-v1'
+import { dansLaPeriodeDAppartenance } from '@app/web/features/activites/db/periode-d-appartenance.sql'
 import {
   CoordinateurId,
   criteresDesStatistiques,
@@ -7,17 +11,23 @@ import {
   perimetreDuDemandeur,
 } from '@app/web/features/activites/domain'
 import { statistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { listerLesMembresAFiltrer } from '@app/web/features/equipe/abilities/lister-les-membres-a-filtrer'
+import {
+  CoordinateurId as CoordinateurIdDeLEquipe,
+  MediateurId as MediateurIdDeLEquipe,
+} from '@app/web/features/equipe/domain'
+import {
+  getLieuxDesActivitesOptions,
+  getMediateurCommunesAndDepartementsOptions,
+} from '@app/web/features/lieux-activite'
 import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { getFiltersOptionsForMediateur } from '@app/web/features/statistiques/db/options-des-filtres'
+import { optionsDesStatistiques } from '@app/web/features/statistiques/abilities/lister-les-options-des-statistiques'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { tousLesTagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type {
-  UserDisplayName,
-  UserProfile,
-  UserRdvAccount,
-} from '@app/web/utils/user'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -31,7 +41,7 @@ export const getMesStatistiquesPageData = async ({
   activitesFilters,
   graphOptions = {},
 }: {
-  user: UserDisplayName & UserProfile & UserRdvAccount
+  user: SessionUser
   activitesFilters: ActivitesFilters
   graphOptions?: MesStatistiquesGraphOptions
 }) => {
@@ -82,34 +92,48 @@ export const getMesStatistiquesPageData = async ({
     { territoires: true, tags: true },
   )
 
-  const {
-    communesOptions,
-    departementsOptions,
-    tagsOptions,
-    initialMediateursOptions,
-    initialBeneficiairesOptions,
-    lieuxActiviteOptions,
-    structuresEmployeusesOptions,
-    activiteSourceOptions,
-    activiteDates,
-  } = await getFiltersOptionsForMediateur({
-    user,
-    mediateurCoordonnesIds,
-    includeBeneficiaireIds: activitesFilters.beneficiaires,
+  const mediateurIds = [
+    ...(user.mediateur ? [user.mediateur.id] : []),
+    ...mediateurCoordonnesIds,
+  ]
+
+  const options = await optionsDesStatistiques({
+    communesEtDepartements: () =>
+      getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
+    lieux: () =>
+      getLieuxDesActivitesOptions({
+        mediateurIds,
+        mediateurId: user.mediateur?.id,
+        perimetreDesActivites: dansLaPeriodeDAppartenance(
+          user.coordinateur ? CoordinateurId(user.coordinateur.id) : null,
+        ),
+      }),
+    tags: () => tousLesTagsVisiblesPar(user),
+    beneficiaires: () =>
+      getInitialBeneficiairesOptionsForSearch({
+        mediateurId: user.mediateur?.id,
+        includeBeneficiaireIds: activitesFilters.beneficiaires,
+      }),
+    membres: async () =>
+      user.coordinateur
+        ? listerLesMembresAFiltrer({
+            coordinateurId: CoordinateurIdDeLEquipe(user.coordinateur.id),
+            demandeur: user.mediateur
+              ? MediateurIdDeLEquipe(user.mediateur.id)
+              : null,
+            membres: mediateurCoordonnesIds.map((id) =>
+              MediateurIdDeLEquipe(id),
+            ),
+          })
+        : [],
+    activitesDuPerimetre: () => decrireLesActivitesDuPerimetre(perimetre),
+    presenceDeCrasV1: () => verifierLaPresenceDeCrasV1(perimetre),
   })
 
   return {
     ...statistiques,
+    ...options,
     activitesFilters,
-    communesOptions,
-    departementsOptions,
-    tagsOptions,
-    initialMediateursOptions,
-    initialBeneficiairesOptions,
-    lieuxActiviteOptions,
-    structuresEmployeusesOptions,
-    activiteSourceOptions,
-    activiteDates,
   }
 }
 

@@ -18,6 +18,7 @@ import {
   MesStatistiquesPageData,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { emptyQuantifiedSharesFromEnum } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
 import {
@@ -35,11 +36,6 @@ import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres
 import { computeProportion } from '@app/web/libraries/proportions'
 import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  UserDisplayName,
-  UserProfile,
-  UserRdvAccount,
-} from '@app/web/utils/user'
 import { cloneDeep } from 'lodash-es'
 
 /**
@@ -247,16 +243,10 @@ describe('getMesStatistiquesPageData', () => {
 
   describe('mediateur sans activites', () => {
     test('should give empty data without filters', async () => {
-      const user = await prismaClient.user.findUnique({
-        where: { id: mediateurSansActivitesUserId },
-        select: {
-          mediateur: true,
-          rdvAccount: true,
-        },
-      })
+      const user = await getSessionUserFromId(mediateurSansActivitesUserId)
 
       const data = await getMesStatistiquesPageData({
-        user: user as unknown as UserDisplayName & UserProfile & UserRdvAccount,
+        user,
         activitesFilters: {},
         graphOptions,
       })
@@ -580,16 +570,10 @@ describe('getMesStatistiquesPageData', () => {
     })
 
     test.each(cases)('$title', async ({ activitesFilters, expected }) => {
-      const user = await prismaClient.user.findUnique({
-        where: { id: mediateurAvecActiviteUserId },
-        select: {
-          mediateur: true,
-          rdvAccount: true,
-        },
-      })
+      const user = await getSessionUserFromId(mediateurAvecActiviteUserId)
 
       const data = await getMesStatistiquesPageData({
-        user: user as unknown as UserDisplayName & UserProfile & UserRdvAccount,
+        user,
         activitesFilters,
         graphOptions,
       })

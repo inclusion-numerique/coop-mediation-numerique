@@ -1,7 +1,7 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import type { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
-import type { StructureEmployeuseOption } from '@app/web/features/statistiques/db/employeuses-des-activites'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
+import type { StructureEmployeuseOption } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { inject } from '@app/web/libs/injection/client'
 

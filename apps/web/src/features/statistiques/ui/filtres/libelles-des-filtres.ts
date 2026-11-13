@@ -7,7 +7,7 @@ import {
   rdvStatusLabels,
 } from '@app/web/features/rdvsp/ui/rdv-status'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
-import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
+import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 
 export type FilterType =

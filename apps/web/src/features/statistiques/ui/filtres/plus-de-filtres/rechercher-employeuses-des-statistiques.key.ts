@@ -1,4 +1,4 @@
-import type { StructureEmployeuseOption } from '@app/web/features/statistiques/db/employeuses-des-activites'
+import type { StructureEmployeuseOption } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
 import type { ServerActionResult } from '@app/web/libraries/nextjs/action/result'
 import { keyFor } from '@app/web/libs/injection/client'
 

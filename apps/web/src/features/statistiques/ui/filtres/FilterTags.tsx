@@ -8,7 +8,7 @@ import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
+import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
