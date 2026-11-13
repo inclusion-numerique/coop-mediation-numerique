@@ -185,6 +185,13 @@ const listeDe =
 const nombre = (cellule: string | undefined, defaut: number): number =>
   cellule === undefined || cellule === '' ? defaut : Number(cellule)
 
+const communeDuLieu = (cellule: string | undefined) => {
+  const [lieuCommune, lieuCodePostal, lieuCodeInsee] = (cellule ?? '').split(
+    ' ',
+  )
+  return lieuCommune ? { lieuCommune, lieuCodePostal, lieuCodeInsee } : {}
+}
+
 const semerUneActivite = async (
   { userId, mediateurId }: { userId: string; mediateurId: string },
   ligne: Readonly<Record<string, string>>,
@@ -219,6 +226,7 @@ const semerUneActivite = async (
       accompagnementsCount: participants.length,
       suppression: ligne.supprimee === 'oui' ? new Date() : null,
       v1CraId: ligne.v1 === 'oui' ? v4() : null,
+      ...communeDuLieu(ligne.communeDuLieu),
       rdvId: ligne.rendezVous
         ? await semerUnRendezVous(userId, ligne.rendezVous)
         : null,

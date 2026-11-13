@@ -17,13 +17,12 @@ export type DemandeDeStatistiques = {
   readonly rendezVousAuxStatuts: RendezVousAuxStatuts
 }
 
-export const jointuresDesStatistiques = ({
-  communes,
-  departements,
-  dispositif,
-}: CriteresDesStatistiques): Prisma.Sql =>
+export const jointuresDesStatistiques = (
+  { communes, departements, dispositif }: CriteresDesStatistiques,
+  { avecLeLieu }: { readonly avecLeLieu: boolean } = { avecLeLieu: false },
+): Prisma.Sql =>
   Prisma.sql`${
-    communes.length > 0 || departements.length > 0
+    avecLeLieu || communes.length > 0 || departements.length > 0
       ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id`
       : Prisma.empty
   } ${

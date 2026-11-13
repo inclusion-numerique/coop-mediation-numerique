@@ -61,6 +61,7 @@ export {
   type RendezVousDuCompte,
 } from './chronologie'
 export { Commune } from './commune'
+export { type CommuneComptee, communeComptee } from './commune-comptee'
 export { CoordinateurId } from './coordinateur-id'
 export {
   type CriteresDesActivites,
