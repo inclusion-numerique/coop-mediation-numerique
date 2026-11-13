@@ -338,8 +338,8 @@ describe('getMesStatistiquesPageData', () => {
           expectMonthCount(data, '08/24', 7)
 
           expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
-          expectEnum(data.activites.typeLieu, 'ADistance', 20, 22)
-          expectEnum(data.activites.typeLieu, 'LieuActivite', 0, 22)
+          expectEnum(data.activites.typeLieu, 'ADistance', 18, 22)
+          expectEnum(data.activites.typeLieu, 'LieuActivite', 2, 22)
           expectEnum(data.activites.typeLieu, 'Autre', 0, 22)
 
           expectEnum(data.activites.durees, '120', 22, totalAccompagnements)
