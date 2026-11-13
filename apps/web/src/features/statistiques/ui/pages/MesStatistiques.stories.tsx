@@ -1,5 +1,4 @@
 import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
-import { quantifiedSharesFromFixedValues } from '@app/web/composition/statistiques/fixtures-des-statistiques'
 import { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import {
   impressionDesStatistiques,
@@ -7,22 +6,42 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@app/web/composition/statistiques/sections'
-import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
-import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  dureeAccompagnementParDefautLabels,
+  dureeAcompagnementParDefautDefaultValues,
+} from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+import {
+  materielLabels,
+  materielValues,
+} from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  genreLabels,
+  genresAffiches,
+  statutSocialLabels,
+  statutsSociauxAffiches,
+  trancheAgeLabels,
+  tranchesAgeAffichees,
+} from '@app/web/features/activites/ui/libelles/profil'
 import {
   thematiquesAdministrativesLabels,
+  thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
+  thematiquesNonAdministrativesValues,
 } from '@app/web/features/activites/ui/libelles/thematique'
-import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
-import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
-import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
-import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
-import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
+import {
+  typeActiviteLabels,
+  typeActiviteValues,
+} from '@app/web/features/activites/ui/libelles/type-activite'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@app/web/features/activites/ui/libelles/type-lieu'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/ui'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
 import { provide } from '@app/web/libs/injection/client'
+import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import { Meta, StoryObj } from '@storybook/react'
 import { MesStatistiques } from './MesStatistiques'
@@ -105,46 +124,47 @@ const statistiquesPageData = {
   },
   activites: {
     total: 1000,
-    typeActivites: quantifiedSharesFromFixedValues({
-      enumObject: typeActiviteLabels,
-      fixedValues: [400, 350, 250],
-    }),
-    thematiques: quantifiedSharesFromFixedValues({
-      enumObject: thematiquesNonAdministrativesLabels,
-      fixedValues: [80, 100, 90, 70, 60, 40, 30, 20, 25, 10, 10, 10, 10, 5],
-    }),
-    thematiquesDemarches: quantifiedSharesFromFixedValues({
-      enumObject: thematiquesAdministrativesLabels,
-      fixedValues: [100, 90, 80, 60, 50, 40, 30, 20, 10, 10],
-    }),
-    materiels: quantifiedSharesFromFixedValues({
-      enumObject: materielLabels,
-      fixedValues: [300, 200, 150, 120, 230],
-    }),
-    typeLieu: quantifiedSharesFromFixedValues({
-      enumObject: typeLieuLabels,
-      fixedValues: [250, 450, 50, 250],
-    }),
-    durees: quantifiedSharesFromFixedValues({
-      enumObject: dureeAccompagnementParDefautLabels,
-      fixedValues: [300, 400, 200, 100],
-    }),
+    typeActivites: partsFixees(
+      typeActiviteValues,
+      typeActiviteLabels,
+      [400, 350, 250],
+    ),
+    thematiques: partsFixees(
+      thematiquesNonAdministrativesValues,
+      thematiquesNonAdministrativesLabels,
+      [80, 100, 90, 70, 60, 40, 30, 20, 25, 10, 10, 10, 10, 5],
+    ),
+    thematiquesDemarches: partsFixees(
+      thematiquesAdministrativesValues,
+      thematiquesAdministrativesLabels,
+      [100, 90, 80, 60, 50, 40, 30, 20, 10, 10],
+    ),
+    materiels: partsFixees(
+      materielValues,
+      materielLabels,
+      [300, 200, 150, 120, 230],
+    ),
+    typeLieu: partsFixees(typeLieuValues, typeLieuLabels, [250, 450, 50, 250]),
+    durees: partsFixees(
+      dureeAcompagnementParDefautDefaultValues,
+      dureeAccompagnementParDefautLabels,
+      [300, 400, 200, 100],
+    ),
     tags: [],
   },
   beneficiaires: {
     total: 550,
-    genres: quantifiedSharesFromFixedValues({
-      enumObject: genreLabels,
-      fixedValues: [70, 80, 400],
-    }),
-    trancheAges: quantifiedSharesFromFixedValues({
-      enumObject: trancheAgeLabels,
-      fixedValues: [50, 60, 80, 100, 120, 140, 200],
-    }),
-    statutsSocial: quantifiedSharesFromFixedValues({
-      enumObject: statutSocialLabels,
-      fixedValues: [50, 60, 70, 80, 290],
-    }),
+    genres: partsFixees(genresAffiches, genreLabels, [70, 80, 400]),
+    trancheAges: partsFixees(
+      tranchesAgeAffichees,
+      trancheAgeLabels,
+      [50, 60, 80, 100, 120, 140, 200],
+    ),
+    statutsSocial: partsFixees(
+      statutsSociauxAffiches,
+      statutSocialLabels,
+      [50, 60, 70, 80, 290],
+    ),
     communes: [
       {
         nom: 'Paris',
@@ -269,7 +289,7 @@ export default {
       return <Story />
     },
   ],
-} as Meta<typeof MesStatistiques>
+} satisfies Meta<typeof MesStatistiques>
 
 type Story = StoryObj<typeof MesStatistiques>
 

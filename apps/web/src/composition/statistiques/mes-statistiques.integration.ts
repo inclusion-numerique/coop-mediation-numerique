@@ -14,27 +14,43 @@ import {
 } from '@app/fixtures/users/mediateurSansActivites'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
-import { emptyQuantifiedSharesFromEnum } from '@app/web/composition/statistiques/fixtures-des-statistiques'
 import {
   getMesStatistiquesPageData,
   MesStatistiquesGraphOptions,
   MesStatistiquesPageData,
 } from '@app/web/composition/statistiques/mes-statistiques'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
-import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  materielLabels,
+  materielValues,
+} from '@app/web/features/activites/ui/libelles/materiel'
+import {
+  genreLabels,
+  genresAffiches,
+  statutSocialLabels,
+  statutsSociauxAffiches,
+  trancheAgeLabels,
+  tranchesAgeAffichees,
+} from '@app/web/features/activites/ui/libelles/profil'
 import {
   thematiquesAdministrativesLabels,
+  thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
+  thematiquesNonAdministrativesValues,
 } from '@app/web/features/activites/ui/libelles/thematique'
-import { typeActiviteLabels } from '@app/web/features/activites/ui/libelles/type-activite'
-import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lieu'
+import {
+  typeActiviteLabels,
+  typeActiviteValues,
+} from '@app/web/features/activites/ui/libelles/type-activite'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@app/web/features/activites/ui/libelles/type-lieu'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
-import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
-import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { computeProportion } from '@app/web/libraries/proportions'
+import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
 import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import { prismaClient } from '@app/web/prismaClient'
 import { cloneDeep } from 'lodash-es'
@@ -128,15 +144,17 @@ const emptyData: MesStatistiquesPageData = {
   },
   activites: {
     total: 0,
-    typeActivites: emptyQuantifiedSharesFromEnum(typeActiviteLabels),
-    thematiques: emptyQuantifiedSharesFromEnum(
+    typeActivites: partsFixees(typeActiviteValues, typeActiviteLabels),
+    thematiques: partsFixees(
+      thematiquesNonAdministrativesValues,
       thematiquesNonAdministrativesLabels,
     ),
-    thematiquesDemarches: emptyQuantifiedSharesFromEnum(
+    thematiquesDemarches: partsFixees(
+      thematiquesAdministrativesValues,
       thematiquesAdministrativesLabels,
     ),
-    materiels: emptyQuantifiedSharesFromEnum(materielLabels),
-    typeLieu: emptyQuantifiedSharesFromEnum(typeLieuLabels),
+    materiels: partsFixees(materielValues, materielLabels),
+    typeLieu: partsFixees(typeLieuValues, typeLieuLabels),
     durees: dureeAccompagnementStatisticsRanges.map(({ key, label }) => ({
       value: key,
       label,
@@ -147,9 +165,9 @@ const emptyData: MesStatistiquesPageData = {
   },
   beneficiaires: {
     total: 0,
-    genres: emptyQuantifiedSharesFromEnum(genreLabels),
-    trancheAges: emptyQuantifiedSharesFromEnum(trancheAgeLabels),
-    statutsSocial: emptyQuantifiedSharesFromEnum(statutSocialLabels),
+    genres: partsFixees(genresAffiches, genreLabels),
+    trancheAges: partsFixees(tranchesAgeAffichees, trancheAgeLabels),
+    statutsSocial: partsFixees(statutsSociauxAffiches, statutSocialLabels),
     communes: [],
   },
   structures: [],
