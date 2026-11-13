@@ -11,6 +11,11 @@ import {
   type SetStateAction,
   useState,
 } from 'react'
+import {
+  type EtatDesSuggestions,
+  reponseRecue,
+  saisieEnCours,
+} from './suggestions'
 
 export type ComboBoxData<TItem, TPayload = {}> = {
   itemToString: (item: TItem | null) => string
@@ -63,8 +68,15 @@ export const ComboBox = <TItem, TPayload extends object>({
   clearOnSelect = false,
   children,
 }: ComboBoxProps<TItem, TPayload>) => {
-  const [items, setItems] = useState<TItem[]>(defaultItems)
-  const [payload, setPayload] = useState<TPayload>({} as TPayload)
+  const [{ items, payload }, setEtat] = useState<
+    EtatDesSuggestions<TItem, TPayload>
+  >({ saisie: '', items: defaultItems, payload: {} as TPayload })
+
+  const setItems: Dispatch<SetStateAction<TItem[]>> = (action) =>
+    setEtat((etat) => ({
+      ...etat,
+      items: action instanceof Function ? action(etat.items) : action,
+    }))
 
   const {
     getLabelProps,
@@ -83,14 +95,15 @@ export const ComboBox = <TItem, TPayload extends object>({
     }: {
       inputValue: string
     }): Promise<void> => {
-      setPayload((prevState: TPayload) => ({
-        ...prevState,
-        ...beforeLoadSuggestions?.(inputValue),
-      }))
+      setEtat(saisieEnCours(inputValue, beforeLoadSuggestions?.(inputValue)))
       const { items: newItems, ...newPayload } =
         await loadSuggestions(inputValue)
-      setItems(newItems)
-      setPayload(newPayload as TPayload)
+      setEtat(
+        reponseRecue(inputValue, {
+          items: newItems,
+          payload: newPayload as TPayload,
+        }),
+      )
     },
     items,
     itemToString,
