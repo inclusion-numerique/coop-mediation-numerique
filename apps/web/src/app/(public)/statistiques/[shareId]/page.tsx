@@ -1,4 +1,4 @@
-import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
+import { rechercherLesEmployeusesDuPartageAction } from '@app/web/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
 import { rechercherLesLieuxDuPartageAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
 import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
 import { mesStatistiques } from '@app/web/composition/statistiques/mes-statistiques'
@@ -62,7 +62,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
   return (
     <ClientBinder
       bind={RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY}
-      to={rechercherEmployeusesDesActivitesAction}
+      to={rechercherLesEmployeusesDuPartageAction.bind(null, shareId)}
     >
       <ClientBinder
         bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
