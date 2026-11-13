@@ -8,15 +8,26 @@ export const personnesParCommunePresentees = (
   allocatePercentagesFromRecords(
     parCommune
       .filter(({ nombre }) => nombre > 0)
-      .map(({ commune, nombre }) => ({
-        nom: commune.type === 'Renseignee' ? commune.commune.nom : null,
-        codeInsee:
-          commune.type === 'Renseignee' ? commune.commune.codeInsee : null,
-        codePostal:
-          commune.type === 'Renseignee' ? commune.commune.codePostal : null,
-        count: nombre,
-        label: libelleDeLaCommune(commune, '\u00a0'),
-      })),
+      .map(
+        ({
+          commune,
+          nombre,
+        }): {
+          nom: string | null
+          codeInsee: string | null
+          codePostal: string | null
+          count: number
+          label: string
+        } => ({
+          nom: commune.type === 'Renseignee' ? commune.commune.nom : null,
+          codeInsee:
+            commune.type === 'Renseignee' ? commune.commune.codeInsee : null,
+          codePostal:
+            commune.type === 'Renseignee' ? commune.commune.codePostal : null,
+          count: nombre,
+          label: libelleDeLaCommune(commune, '\u00a0'),
+        }),
+      ),
     'count',
     'proportion',
   )

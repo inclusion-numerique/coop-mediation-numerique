@@ -1,12 +1,7 @@
 'use client'
 
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type {
-  ActivitesCommunesStats,
-  ActivitesStats,
-  ActivitesStructuresStats,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
-import type { TotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import type { StatistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
 import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import {
@@ -49,10 +44,10 @@ export const StatistiquesActivites = ({
   canManageTags = false,
 }: {
   wording?: 'personnel' | 'generique'
-  activites: ActivitesStats
-  structures?: ActivitesStructuresStats
-  communes?: ActivitesCommunesStats
-  totalCounts: TotalCountsStats
+  activites: StatistiquesFournies['activites']
+  structures?: StatistiquesFournies['structures']
+  communes?: StatistiquesFournies['communes']
+  totalCounts: StatistiquesFournies['totalCounts']
   canManageTags?: boolean
 }) => {
   const captureTypesAccompagnementsRef = useRef<HTMLDivElement | null>(null)

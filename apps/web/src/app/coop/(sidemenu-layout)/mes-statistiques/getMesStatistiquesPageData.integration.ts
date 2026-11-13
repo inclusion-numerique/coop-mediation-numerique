@@ -485,12 +485,8 @@ describe('getMesStatistiquesPageData', () => {
           data.structures = [
             {
               id: mediateque.id,
-              codePostal: mediateque.codePostal,
-              codeInsee: mediateque.codeInsee,
-              commune: mediateque.commune,
               count: 2,
               proportion: 100,
-              nom: mediateque.nom,
               label: mediateque.nom,
             },
           ]

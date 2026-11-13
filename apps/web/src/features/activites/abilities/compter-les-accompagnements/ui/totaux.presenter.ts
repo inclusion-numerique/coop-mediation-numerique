@@ -1,7 +1,26 @@
 import { allocatePercentages } from '@app/web/libraries/proportions'
 import { anonymes, type TotauxDesAccompagnements } from '../domain'
 
-export const totauxPresentes = (totaux: TotauxDesAccompagnements) => {
+type Part = { total: number; proportion: number }
+
+export type TotauxPresentes = {
+  activites: {
+    total: number
+    individuels: Part
+    collectifs: Part & { participants: number }
+  }
+  accompagnements: { total: number; individuels: Part; collectifs: Part }
+  beneficiaires: {
+    total: number
+    nouveaux: number
+    suivis: number
+    anonymes: number
+  }
+}
+
+export const totauxPresentes = (
+  totaux: TotauxDesAccompagnements,
+): TotauxPresentes => {
   const [activitesIndividuelles = 0, activitesCollectives = 0] =
     allocatePercentages([
       totaux.activites.individuelles,
@@ -44,5 +63,3 @@ export const totauxPresentes = (totaux: TotauxDesAccompagnements) => {
     },
   }
 }
-
-export type TotauxPresentes = ReturnType<typeof totauxPresentes>

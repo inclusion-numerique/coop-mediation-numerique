@@ -1,4 +1,14 @@
-import { getTotalCountsStats } from '@app/web/features/statistiques/db/getTotalCountsStats'
+import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
+import {
+  CoordinateurId,
+  criteresDesStatistiques,
+  Jour,
+  MediateurId,
+  perimetreDuDemandeur,
+} from '@app/web/features/activites/domain'
+import { statistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { getFiltersOptionsForMediateur } from '@app/web/features/statistiques/db/options-des-filtres'
 import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { prismaClient } from '@app/web/prismaClient'
@@ -8,17 +18,6 @@ import type {
   UserProfile,
   UserRdvAccount,
 } from '@app/web/utils/user'
-import {
-  getAccompagnementsCountByDay,
-  getAccompagnementsCountByMonth,
-} from './_queries/getAccompagnementsCountByPeriod'
-import {
-  getActivitesCommunesStats,
-  getActivitesStats,
-  getActivitesStructuresStats,
-} from './_queries/getActivitesStats'
-import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
-import { getHasCrasV1 } from './_queries/getHasCrasV1'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -49,58 +48,39 @@ export const getMesStatistiquesPageData = async ({
     ...new Set(mediateurCoordonnes.map(toMediateurId)),
   ]
 
-  const mediateurIds = [
-    ...(user.mediateur?.id ? [user.mediateur.id] : []),
-    ...(mediateurCoordonnesIds ?? []),
-  ]
-
-  if (!graphOptions.debut) {
-    const filterStart = activitesFilters.du ?? undefined
-    graphOptions.debut = filterStart ? new Date(filterStart) : undefined
+  const perimetre = perimetreDuDemandeur({
+    mediateur: user.mediateur ? MediateurId(user.mediateur.id) : null,
+    coordinateur: user.coordinateur
+      ? CoordinateurId(user.coordinateur.id)
+      : null,
+    equipe: mediateurCoordonnesIds.map((id) => MediateurId(id)),
+  })
+  if (perimetre === null) {
+    throw new Error('Statistiques sans profil médiateur ni coordinateur')
   }
 
-  if (!graphOptions.fin) {
-    const filterEnd = activitesFilters.au ? activitesFilters.au : undefined
+  const criteres = criteresDesStatistiques(activitesFilters)
+  const fenetre = fenetreDe({
+    debut: criteres.periode.du,
+    fin: Jour(
+      dateAsIsoDay(
+        graphOptions.fin ??
+          (activitesFilters.au ? new Date(activitesFilters.au) : new Date()),
+      ),
+    ),
+  })
 
-    // end of graph defaults to now
-    graphOptions.fin = filterEnd ? new Date(filterEnd) : new Date()
-  }
-
-  const [
-    accompagnementsParJour,
-    accompagnementsParMois,
-    beneficiaires,
-    activites,
-    structures,
-    communes,
-    totalCounts,
-    hasCrasV1,
-  ] = await Promise.all([
-    getAccompagnementsCountByDay({
-      user,
-      mediateurIds,
-      activitesFilters,
-      periodStart: graphOptions.debut
-        ? dateAsIsoDay(graphOptions.debut)
-        : undefined,
-      periodEnd: graphOptions.fin ? dateAsIsoDay(graphOptions.fin) : undefined,
-    }),
-    getAccompagnementsCountByMonth({
-      user,
-      mediateurIds,
-      activitesFilters,
-      periodStart: graphOptions.debut
-        ? dateAsIsoDay(graphOptions.debut)
-        : undefined,
-      periodEnd: graphOptions.fin ? dateAsIsoDay(graphOptions.fin) : undefined,
-    }),
-    getBeneficiaireStatsWithCommunes({ user, mediateurIds, activitesFilters }),
-    getActivitesStats({ user, mediateurIds, activitesFilters }),
-    getActivitesStructuresStats({ user, mediateurIds, activitesFilters }),
-    getActivitesCommunesStats({ user, mediateurIds, activitesFilters }),
-    getTotalCountsStats({ user, mediateurIds, activitesFilters }),
-    getHasCrasV1({ user, mediateurIds, activitesFilters }),
-  ])
+  const statistiques = await statistiquesFournies(
+    {
+      perimetre,
+      criteres,
+      conseillersNumeriques: conseillerNumeriqueSql,
+      rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+      parJour: fenetre,
+      parMois: fenetre,
+    },
+    { territoires: true, tags: true },
+  )
 
   const {
     communesOptions,
@@ -119,13 +99,7 @@ export const getMesStatistiquesPageData = async ({
   })
 
   return {
-    totalCounts,
-    accompagnementsParMois,
-    accompagnementsParJour,
-    beneficiaires,
-    activites,
-    structures,
-    communes,
+    ...statistiques,
     activitesFilters,
     communesOptions,
     departementsOptions,
@@ -136,7 +110,6 @@ export const getMesStatistiquesPageData = async ({
     structuresEmployeusesOptions,
     activiteSourceOptions,
     activiteDates,
-    hasCrasV1,
   }
 }
 

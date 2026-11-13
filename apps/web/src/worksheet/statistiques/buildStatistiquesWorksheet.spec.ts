@@ -266,7 +266,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     },
     structures: [
       {
-        nom: 'Exemple de Mediateque',
+        id: 'a0000000-0000-4000-8000-000000000001',
         count: 4,
         proportion: 100,
         label: 'Exemple de Mediateque',

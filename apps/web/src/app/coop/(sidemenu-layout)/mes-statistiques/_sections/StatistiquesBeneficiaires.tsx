@@ -1,9 +1,6 @@
 'use client'
 
-import type {
-  BeneficiaireStats,
-  BeneficiairesStatsWithCommunes,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
+import type { StatistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
 import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import {
@@ -36,7 +33,9 @@ export const StatistiquesBeneficiaires = ({
   wording = 'personnel',
 }: {
   wording?: 'personnel' | 'generique'
-  beneficiaires: BeneficiairesStatsWithCommunes | BeneficiaireStats
+  beneficiaires:
+    | StatistiquesFournies['beneficiaires']
+    | Omit<StatistiquesFournies['beneficiaires'], 'communes'>
 }) => {
   const capture = useRef<HTMLDivElement | null>(null)
 

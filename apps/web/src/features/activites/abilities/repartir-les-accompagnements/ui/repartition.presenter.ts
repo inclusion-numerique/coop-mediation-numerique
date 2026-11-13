@@ -31,7 +31,7 @@ export const repartitionPresentee = ({
   thematiques,
   materiels,
 }: RepartitionDesAccompagnements) => ({
-  total,
+  total: Number(total),
   typeActivites: partsPresentees(types, avecLibelle(typeActiviteLabels)),
   durees: partsPresentees(durees, trancheAffichee),
   typeLieu: partsPresentees(typesDeLieu, avecLibelle(typeLieuLabels)),

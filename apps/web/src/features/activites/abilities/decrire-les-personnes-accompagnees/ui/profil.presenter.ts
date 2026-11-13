@@ -27,7 +27,7 @@ export const profilPresente = ({
   tranchesDAge,
   statutsSociaux,
 }: ProfilDesPersonnesAccompagnees) => ({
-  total,
+  total: Number(total),
   genres: partsPresentees(
     dansLOrdre(genres, genresAffiches),
     avecLibelle(genreLabels),

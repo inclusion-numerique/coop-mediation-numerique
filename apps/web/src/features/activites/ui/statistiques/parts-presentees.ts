@@ -13,10 +13,12 @@ export const partsPresentees = <V, A>(
   affichage: (valeur: V) => { value: A; label: string },
 ): PartPresentee<A>[] =>
   allocatePercentagesFromRecords(
-    lignes.map(({ valeur, nombre }) => ({
-      ...affichage(valeur),
-      count: nombre,
-    })),
+    lignes.map(
+      ({ valeur, nombre }): { value: A; label: string; count: number } => ({
+        ...affichage(valeur),
+        count: nombre,
+      }),
+    ),
     'count',
     'proportion',
   )
