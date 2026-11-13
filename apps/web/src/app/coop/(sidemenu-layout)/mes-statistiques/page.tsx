@@ -3,14 +3,17 @@ import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-acti
 import { reglerLePartageStatistiquesAction } from '@app/web/app/_actions/mediateurs/regler-le-partage-statistiques.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { mediateurCoordonnesIdsFor } from '@app/web/auth/mediateursCoordonnes'
+import { getMesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import {
-  consulterEmployeuseAUneDate,
-  employeuseCodeInsee,
-} from '@app/web/features/employeuse/server'
+  impressionDesStatistiques,
+  sectionActivites,
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@app/web/composition/statistiques/sections'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { consulterMesLiensDePartage } from '@app/web/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
+import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import {
   CoordinateurId,
   MediateurId,
@@ -20,10 +23,9 @@ import {
   validateActivitesFilters,
 } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
+import { MesStatistiques } from '@app/web/features/statistiques/ui/pages/MesStatistiques'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import type { Metadata } from 'next'
-import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
-import { MesStatistiques } from './MesStatistiques'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),
@@ -38,8 +40,6 @@ const MesStatistiquesPage = async (props: {
   const searchParams = await props.searchParams
   const user = await authenticateMediateurOrCoordinateur()
 
-  const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)
-
   const mesStatistiques = await getMesStatistiquesPageData({
     user,
     activitesFilters: validateActivitesFilters(searchParams),
@@ -48,11 +48,6 @@ const MesStatistiquesPage = async (props: {
         ? new Date(searchParams.graphique_fin)
         : undefined,
     },
-  })
-
-  const employeuse = await consulterEmployeuseAUneDate({
-    userId: user.id,
-    date: new Date(),
   })
 
   const liensDePartage = await consulterMesLiensDePartage({
@@ -76,11 +71,22 @@ const MesStatistiquesPage = async (props: {
           to={reglerLePartageStatistiquesAction}
         >
           <MesStatistiques
-            user={user}
-            mediateurCoordonnesCount={mediateurCoordonnesIds.length}
-            codeInsee={employeuse ? employeuseCodeInsee(employeuse) : undefined}
-            liensDePartage={liensDePartage}
             {...mesStatistiques}
+            user={user}
+            hasCrasV1={mesStatistiques.hasCrasV1.hasCrasV1}
+            accompagnementsCount={
+              mesStatistiques.totalCounts.accompagnements.total
+            }
+            partage={<PartageStatistiques liens={liensDePartage} />}
+            impression={impressionDesStatistiques(mesStatistiques)}
+            generale={sectionGenerale(mesStatistiques, {
+              debut: mesStatistiques.activitesFilters.du,
+              fin: mesStatistiques.activitesFilters.au,
+            })}
+            activites={sectionActivites(mesStatistiques, {
+              canManageTags: true,
+            })}
+            beneficiaires={sectionBeneficiaires(mesStatistiques)}
           />
         </ClientBinder>
       </ClientBinder>

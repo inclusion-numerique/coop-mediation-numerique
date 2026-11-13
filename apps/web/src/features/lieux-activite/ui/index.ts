@@ -3,6 +3,7 @@ export {
   type LieuFilterType,
   type LieuFilterValue,
 } from '../abilities/lister-les-options-de-lieux/ui/LieuFilter'
+export { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 export {
   LieuActiviteComboBox,
   LieuActiviteOptions,

@@ -1,4 +1,4 @@
-import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
+import type { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { computeProportion } from '@app/web/libraries/proportions'
 import { numberToPercentage } from '@app/web/utils/formatNumber'

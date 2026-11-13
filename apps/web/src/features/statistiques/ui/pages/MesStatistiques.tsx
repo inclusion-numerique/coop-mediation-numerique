@@ -1,57 +1,72 @@
-import { StatistiquesImpact } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesImpact'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { getUserDepartement } from '@app/web/auth/getUserDepartement'
-import { SessionUser } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import {
-  sectionActivites,
-  sectionBeneficiaires,
-  sectionGenerale,
-} from '@app/web/composition/statistiques/sections'
-import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
-import type { LienDuPerimetre } from '@app/web/features/mediateurs/domain'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import { ExportStatistiques } from './_components/ExportStatistiques'
-import { PrintStatistiques } from './_components/PrintStatistiques'
+import type { ComponentProps, ReactNode } from 'react'
+import { ExportStatistiques } from '../export/ExportStatistiques'
+import { StatistiquesImpact } from '../sections/StatistiquesImpact'
 import { AutoPrint } from './AutoPrint'
-import { MesStatistiquesPageData } from './getMesStatistiquesPageData'
-import { statistiquesPageTitle } from './statistiquesPageTitle'
+import { statistiquesPageTitle } from './titre-des-statistiques'
 
-export const MesStatistiques = (
-  mesStatistiquesProps: MesStatistiquesPageData & {
-    user: SessionUser
-    codeInsee?: string | null
-    mediateurCoordonnesCount: number
-    liensDePartage: readonly LienDuPerimetre[]
-  },
-) => {
-  const {
-    activitesFilters,
-    communesOptions,
-    departementsOptions,
-    tagsOptions,
-    initialMediateursOptions,
-    initialBeneficiairesOptions,
-    lieuxActiviteOptions,
-    structuresEmployeusesOptions,
-    activiteDates,
-    user,
-    hasCrasV1,
-    activiteSourceOptions,
-    liensDePartage,
-  } = mesStatistiquesProps
+export type OptionsDeLaBarre = Pick<
+  ComponentProps<typeof Filters>,
+  | 'communesOptions'
+  | 'departementsOptions'
+  | 'lieuxActiviteOptions'
+  | 'structuresEmployeusesOptions'
+  | 'tagsOptions'
+  | 'initialMediateursOptions'
+  | 'initialBeneficiairesOptions'
+> & {
+  activitesFilters: ActivitesFilters
+  activiteSourceOptions: ComponentProps<
+    typeof FilterTags
+  >['activiteSourceOptions']
+  activiteDates: { first: Date | undefined }
+}
 
+export const MesStatistiques = ({
+  activitesFilters,
+  communesOptions,
+  departementsOptions,
+  tagsOptions,
+  initialMediateursOptions,
+  initialBeneficiairesOptions,
+  lieuxActiviteOptions,
+  structuresEmployeusesOptions,
+  activiteDates,
+  activiteSourceOptions,
+  user,
+  hasCrasV1,
+  accompagnementsCount,
+  partage,
+  impression,
+  generale,
+  activites,
+  beneficiaires,
+}: OptionsDeLaBarre & {
+  user: SessionUser
+  hasCrasV1: boolean
+  accompagnementsCount: number
+  partage: ReactNode
+  impression: ReactNode
+  generale: ReactNode
+  activites: ReactNode
+  beneficiaires: ReactNode
+}) => {
   return (
     <CoopPageContainer size={56}>
       <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
       <SkipLinksPortal />
       <AutoPrint />
-      <PrintStatistiques {...mesStatistiquesProps} />
+      {impression}
       <main className="fr-no-print" id={contentId}>
         <h1 className="fr-text-title--blue-france fr-mb-5v">
           {statistiquesPageTitle(user)}
@@ -70,10 +85,10 @@ export const MesStatistiques = (
             minDate={activiteDates.first}
             isCoordinateur={user.coordinateur?.id != null}
             isMediateur={user.mediateur?.id != null}
-            hasCrasV1={hasCrasV1.hasCrasV1}
+            hasCrasV1={hasCrasV1}
           />
           <div className="fr-flex fr-flex-gap-2v">
-            <PartageStatistiques liens={liensDePartage} />
+            {partage}
             <ExportStatistiques
               filters={activitesFilters}
               communesOptions={communesOptions}
@@ -82,9 +97,7 @@ export const MesStatistiques = (
               mediateursOptions={initialMediateursOptions}
               beneficiairesOptions={[]}
               tagsOptions={tagsOptions}
-              accompagnementsCount={
-                mesStatistiquesProps.totalCounts.accompagnements.total
-              }
+              accompagnementsCount={accompagnementsCount}
               activiteSourceOptions={activiteSourceOptions}
             />
           </div>
@@ -100,7 +113,7 @@ export const MesStatistiques = (
           tagsOptions={tagsOptions}
           activiteSourceOptions={activiteSourceOptions}
         />
-        {hasCrasV1.hasCrasV1 && (
+        {hasCrasV1 && (
           <Notice
             className="fr-notice--flex fr-align-items-center fr-mt-6v"
             title={
@@ -119,18 +132,9 @@ export const MesStatistiques = (
             }
           />
         )}
-        <section className="fr-mb-6w fr-mt-6v">
-          {sectionGenerale(mesStatistiquesProps, {
-            debut: activitesFilters.du,
-            fin: activitesFilters.au,
-          })}
-        </section>
-        <section className="fr-mb-6w">
-          {sectionActivites(mesStatistiquesProps, { canManageTags: true })}
-        </section>
-        <section className="fr-mb-6w">
-          {sectionBeneficiaires(mesStatistiquesProps)}
-        </section>
+        <section className="fr-mb-6w fr-mt-6v">{generale}</section>
+        <section className="fr-mb-6w">{activites}</section>
+        <section className="fr-mb-6w">{beneficiaires}</section>
         <section className="fr-mb-6w">
           <StatistiquesImpact
             codeDepartement={getUserDepartement(user)?.code}

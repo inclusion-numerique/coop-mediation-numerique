@@ -1,5 +1,11 @@
-import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { quantifiedSharesFromFixedValues } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
+import { quantifiedSharesFromFixedValues } from '@app/web/composition/statistiques/fixtures-des-statistiques'
+import { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
+import {
+  impressionDesStatistiques,
+  sectionActivites,
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@app/web/composition/statistiques/sections'
 import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
 import {
@@ -11,8 +17,9 @@ import { typeLieuLabels } from '@app/web/features/activites/ui/libelles/type-lie
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/ui'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
+import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
 import { provide } from '@app/web/libs/injection/client'
 import { testSessionUser } from '@app/web/test/testSessionUser'
@@ -268,8 +275,14 @@ export const Statistiques: Story = {
   name: 'Statistiques',
   args: {
     ...statistiquesPageData,
-    codeInsee: '75101',
     user: testSessionUser,
-    liensDePartage: [],
+    hasCrasV1: statistiquesPageData.hasCrasV1.hasCrasV1,
+    accompagnementsCount:
+      statistiquesPageData.totalCounts.accompagnements.total,
+    partage: <PartageStatistiques liens={[]} />,
+    impression: impressionDesStatistiques(statistiquesPageData),
+    generale: sectionGenerale(statistiquesPageData, {}),
+    activites: sectionActivites(statistiquesPageData, { canManageTags: true }),
+    beneficiaires: sectionBeneficiaires(statistiquesPageData),
   },
 }

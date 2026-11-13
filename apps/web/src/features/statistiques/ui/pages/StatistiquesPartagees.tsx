@@ -1,45 +1,46 @@
-import { ExportStatistiques } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/ExportStatistiques'
-import { PrintStatistiques } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/PrintStatistiques'
-import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import {
-  sectionActivites,
-  sectionBeneficiaires,
-  sectionGenerale,
-} from '@app/web/composition/statistiques/sections'
 import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
+import { ExportStatistiques } from '../export/ExportStatistiques'
+import type { OptionsDeLaBarre } from './MesStatistiques'
 
-export const StatistiquesPage = (
-  statistiquesProps: MesStatistiquesPageData & {
-    shareId: string
-    username: string
-  },
-) => {
-  const {
-    shareId,
-    username,
-    activitesFilters,
-    communesOptions,
-    departementsOptions,
-    tagsOptions,
-    initialMediateursOptions,
-    initialBeneficiairesOptions,
-    lieuxActiviteOptions,
-    structuresEmployeusesOptions,
-    activiteSourceOptions,
-    activiteDates,
-    hasCrasV1,
-    totalCounts,
-  } = statistiquesProps
-
+export const StatistiquesPartagees = ({
+  shareId,
+  username,
+  activitesFilters,
+  communesOptions,
+  departementsOptions,
+  tagsOptions,
+  initialMediateursOptions,
+  initialBeneficiairesOptions,
+  lieuxActiviteOptions,
+  structuresEmployeusesOptions,
+  activiteSourceOptions,
+  activiteDates,
+  hasCrasV1,
+  accompagnementsCount,
+  impression,
+  generale,
+  activites,
+  beneficiaires,
+}: OptionsDeLaBarre & {
+  shareId: string
+  username: string
+  hasCrasV1: boolean
+  accompagnementsCount: number
+  impression: ReactNode
+  generale: ReactNode
+  activites: ReactNode
+  beneficiaires: ReactNode
+}) => {
   return (
     <>
       <SkipLinksPortal />
-      <PrintStatistiques {...statistiquesProps} />
+      {impression}
       <main
         id={contentId}
         className="fr-container fr-no-print fr-container--800 fr-mt-12v fr-mb-32v"
@@ -80,7 +81,7 @@ export const StatistiquesPage = (
             minDate={activiteDates.first}
             isCoordinateur={false}
             isMediateur={true}
-            hasCrasV1={hasCrasV1.hasCrasV1}
+            hasCrasV1={hasCrasV1}
           />
           <div className="fr-flex fr-flex-gap-2v">
             <ExportStatistiques
@@ -91,7 +92,7 @@ export const StatistiquesPage = (
               mediateursOptions={initialMediateursOptions}
               beneficiairesOptions={[]}
               tagsOptions={tagsOptions}
-              accompagnementsCount={totalCounts.accompagnements.total}
+              accompagnementsCount={accompagnementsCount}
               activiteSourceOptions={activiteSourceOptions}
               exportListAccompagnements={false}
               publicExportId={shareId}
@@ -111,7 +112,7 @@ export const StatistiquesPage = (
           tagsOptions={tagsOptions}
           activiteSourceOptions={activiteSourceOptions}
         />
-        {hasCrasV1.hasCrasV1 && (
+        {hasCrasV1 && (
           <Notice
             className="fr-notice--flex fr-align-items-center fr-mt-6v"
             title={
@@ -130,15 +131,9 @@ export const StatistiquesPage = (
             }
           />
         )}
-        <section className="fr-mb-6w fr-mt-6v">
-          {sectionGenerale(statistiquesProps, { wording: 'generique' })}
-        </section>
-        <section className="fr-mb-6w">
-          {sectionActivites(statistiquesProps, { wording: 'generique' })}
-        </section>
-        <section className="fr-mb-6w">
-          {sectionBeneficiaires(statistiquesProps, { wording: 'generique' })}
-        </section>
+        <section className="fr-mb-6w fr-mt-6v">{generale}</section>
+        <section className="fr-mb-6w">{activites}</section>
+        <section className="fr-mb-6w">{beneficiaires}</section>
       </main>
     </>
   )

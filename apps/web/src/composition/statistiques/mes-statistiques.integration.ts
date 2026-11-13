@@ -12,13 +12,13 @@ import {
   mediateurSansActivites,
   mediateurSansActivitesUserId,
 } from '@app/fixtures/users/mediateurSansActivites'
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { emptyQuantifiedSharesFromEnum } from '@app/web/composition/statistiques/fixtures-des-statistiques'
 import {
   getMesStatistiquesPageData,
   MesStatistiquesGraphOptions,
   MesStatistiquesPageData,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { emptyQuantifiedSharesFromEnum } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
-import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+} from '@app/web/composition/statistiques/mes-statistiques'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { materielLabels } from '@app/web/features/activites/ui/libelles/materiel'
 import {

@@ -33,6 +33,7 @@ import {
 } from '@app/web/features/activites/abilities/repartir-les-accompagnements/ui'
 import { TagsDesAccompagnements } from '@app/web/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
 import type { StatistiquesFournies } from '@app/web/features/activites/ui/statistiques/statistiques-fournies'
+import { ImpressionDesStatistiques } from '@app/web/features/statistiques/ui/pages/ImpressionDesStatistiques'
 import { SectionActivites } from '@app/web/features/statistiques/ui/sections/SectionActivites'
 import { SectionActivitesImprimee } from '@app/web/features/statistiques/ui/sections/SectionActivitesImprimee'
 import { SectionBeneficiaires } from '@app/web/features/statistiques/ui/sections/SectionBeneficiaires'
@@ -200,5 +201,20 @@ export const sectionActivitesImprimee = ({
     canaux={<CanauxImprimes typeLieu={activites.typeLieu} />}
     durees={<DureesImprimees durees={activites.durees} />}
     lieux={<LieuxImprimes structures={structures} />}
+  />
+)
+
+export const impressionDesStatistiques = (
+  statistiques: StatistiquesFournies &
+    Omit<
+      Parameters<typeof ImpressionDesStatistiques>[0],
+      'generale' | 'activites' | 'beneficiaires'
+    >,
+) => (
+  <ImpressionDesStatistiques
+    {...statistiques}
+    generale={sectionGeneraleImprimee(statistiques)}
+    activites={sectionActivitesImprimee(statistiques)}
+    beneficiaires={sectionBeneficiairesImprimee(statistiques)}
   />
 )

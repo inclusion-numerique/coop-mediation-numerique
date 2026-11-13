@@ -1,28 +1,36 @@
-import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import {
-  sectionActivitesImprimee,
-  sectionBeneficiairesImprimee,
-  sectionGeneraleImprimee,
-} from '@app/web/composition/statistiques/sections'
+import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { ReactNode } from 'react'
+import type { MediateurOption } from '../filtres/mediateur-option'
 
-export const PrintStatistiques = (
-  mesStatistiquesProps: MesStatistiquesPageData,
-) => {
-  const {
-    activitesFilters,
-    communesOptions,
-    departementsOptions,
-    initialMediateursOptions,
-    lieuxActiviteOptions,
-    tagsOptions,
-    activiteSourceOptions,
-  } = mesStatistiquesProps
-
+export const ImpressionDesStatistiques = ({
+  activitesFilters,
+  communesOptions,
+  departementsOptions,
+  initialMediateursOptions,
+  lieuxActiviteOptions,
+  tagsOptions,
+  activiteSourceOptions,
+  generale,
+  activites,
+  beneficiaires,
+}: {
+  activitesFilters: ActivitesFilters
+  communesOptions: SelectOption[]
+  departementsOptions: SelectOption[]
+  initialMediateursOptions: MediateurOption[]
+  lieuxActiviteOptions: SelectOption[]
+  tagsOptions: { id: string; nom: string }[]
+  activiteSourceOptions: SelectOption[]
+  generale: ReactNode
+  activites: ReactNode
+  beneficiaires: ReactNode
+}) => {
   const filterLabelsToDisplay = generateActivitesFiltersLabels(
     activitesFilters,
     {
@@ -55,15 +63,9 @@ export const PrintStatistiques = (
           </ul>
         </section>
       )}
-      <section className="fr-pt-6v">
-        {sectionGeneraleImprimee(mesStatistiquesProps)}
-      </section>
-      <section className="fr-pt-6v">
-        {sectionActivitesImprimee(mesStatistiquesProps)}
-      </section>
-      <section className="fr-pt-6v">
-        {sectionBeneficiairesImprimee(mesStatistiquesProps)}
-      </section>
+      <section className="fr-pt-6v">{generale}</section>
+      <section className="fr-pt-6v">{activites}</section>
+      <section className="fr-pt-6v">{beneficiaires}</section>
     </div>
   )
 }

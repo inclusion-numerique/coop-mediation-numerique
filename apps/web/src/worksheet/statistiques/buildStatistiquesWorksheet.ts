@@ -1,4 +1,4 @@
-import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
+import type { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
 import type { ActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import type { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import {
