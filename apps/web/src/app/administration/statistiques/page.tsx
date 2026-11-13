@@ -51,23 +51,26 @@ const Page = async (props: {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
   const user = await authenticateUser()
-  const tagsOptions = optionsDeTags(await lireLesTagsCollectifs())
-
-  const [{ communesOptions, departementsOptions }, lieuxActiviteOptions] =
-    await Promise.all([
-      communesEtDepartementsDesActivites(),
-      getLieuxActiviteOptions(),
-    ])
-
-  const {
-    totalCounts,
-    accompagnementsParJour,
-    accompagnementsParMois,
-    beneficiaires,
-    activites,
-  } = await statistiquesNationales(criteresDesStatistiques(activitesFilters), {
-    tags: user.role === 'Admin',
-  })
+  const [
+    tagsCollectifs,
+    { communesOptions, departementsOptions },
+    lieuxActiviteOptions,
+    {
+      totalCounts,
+      accompagnementsParJour,
+      accompagnementsParMois,
+      beneficiaires,
+      activites,
+    },
+  ] = await Promise.all([
+    lireLesTagsCollectifs(),
+    communesEtDepartementsDesActivites(),
+    getLieuxActiviteOptions(),
+    statistiquesNationales(criteresDesStatistiques(activitesFilters), {
+      tags: user.role === 'Admin',
+    }),
+  ])
+  const tagsOptions = optionsDeTags(tagsCollectifs)
 
   return (
     <ClientBinder
