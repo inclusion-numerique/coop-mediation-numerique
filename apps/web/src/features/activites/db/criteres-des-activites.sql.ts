@@ -90,7 +90,7 @@ export const conditionsCommunes = (
   ...siNonVide(
     criteres.types,
     (types) =>
-      Prisma.sql`act.type::text = ANY(${types.map(enBase(TYPE_EN_BASE))}::text[])`,
+      Prisma.sql`act.type = ANY(${types.map(enBase(TYPE_EN_BASE))}::type_activite[])`,
   ),
   ...siNonVide(
     criteres.lieux,
@@ -122,8 +122,8 @@ export const conditionsCommunes = (
   ),
   ...siDefini(criteres.demarche, (demarche) =>
     demarche === 'Avec'
-      ? Prisma.sql`${AIDE_AUX_DEMARCHES} = ANY(act.thematiques::text[])`
-      : Prisma.sql`NOT (${AIDE_AUX_DEMARCHES} = ANY(act.thematiques::text[]))`,
+      ? Prisma.sql`${AIDE_AUX_DEMARCHES}::thematique = ANY(act.thematiques)`
+      : Prisma.sql`NOT (${AIDE_AUX_DEMARCHES}::thematique = ANY(act.thematiques))`,
   ),
   ...siDefini(criteres.origine, (origine) =>
     origine === 'RendezVous'
@@ -133,7 +133,7 @@ export const conditionsCommunes = (
   ...siNonVide(
     criteres.thematiques,
     (thematiques) =>
-      Prisma.sql`act.thematiques::text[] && ${thematiques.map(enBase(THEMATIQUE_EN_BASE))}::text[]`,
+      Prisma.sql`act.thematiques && ${thematiques.map(enBase(THEMATIQUE_EN_BASE))}::thematique[]`,
   ),
   ...siNonVide(
     criteres.tags,
