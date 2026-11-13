@@ -30,6 +30,24 @@ let personnes: Readonly<Record<string, Personne>> = {}
 let membres: Readonly<Record<string, readonly string[]>> = {}
 let lieux: Readonly<Record<string, string>> = {}
 let rendezVous: readonly { id: number; compte: number }[] = []
+let tags: Readonly<Record<string, string>> = {}
+
+const tagNomme = async (nom: string, mediateurId: string): Promise<string> => {
+  const existant = tags[nom]
+  if (existant) return existant
+  const { id } = await prismaClient.tag.create({
+    data: { nom, mediateurId },
+    select: { id: true },
+  })
+  tags = { ...tags, [nom]: id }
+  return id
+}
+
+export const tagSeme = (nom: string): string => {
+  const id = tags[nom]
+  assert.ok(id, `Tag inconnu : ${nom}`)
+  return id
+}
 
 const PREMIER_IDENTIFIANT_DE_TEST = 970_000_000
 
@@ -180,9 +198,17 @@ const semerUneActivite = async (
   const typeLieu = ligne.lieu
     ? TypeLieu.LieuActivite
     : (valeurDe(TypeLieu)(ligne.typeLieu) ?? TypeLieu.ADistance)
+  const tagIds = await Promise.all(
+    (ligne.tags ?? '')
+      .split(',')
+      .map((nom) => nom.trim())
+      .filter((nom) => nom !== '')
+      .map((nom) => tagNomme(nom, mediateurId)),
+  )
   await prismaClient.activite.create({
     data: {
       mediateurId,
+      tags: { create: tagIds.map((tagId) => ({ tagId })) },
       type: TYPE_EN_BASE[ligne.type ?? 'individuel'] ?? 'Individuel',
       typeLieu,
       structureId: ligne.lieu ? await lieuNomme(ligne.lieu) : null,
@@ -218,6 +244,13 @@ const semerUneActivite = async (
     },
   })
 }
+
+Given('le tag {string} est supprimé', async (nom: string) => {
+  await prismaClient.tag.update({
+    where: { id: tagSeme(nom) },
+    data: { suppression: new Date() },
+  })
+})
 
 Given('la médiatrice {string}', async (nom: string) => {
   await semerUnePersonne(nom, { mediateur: true, coordinateur: false })
@@ -324,6 +357,8 @@ After(async () => {
   const lieuxSemes = Object.values(lieux)
   const rendezVousSemes = rendezVous
   rendezVous = []
+  const tagsSemes = Object.values(tags)
+  tags = {}
   personnes = {}
   membres = {}
   lieux = {}
@@ -340,12 +375,16 @@ After(async () => {
   await prismaClient.accompagnement.deleteMany({
     where: { activite: { mediateurId: { in: mediateurIds } } },
   })
+  await prismaClient.activitesTags.deleteMany({
+    where: { activite: { mediateurId: { in: mediateurIds } } },
+  })
   await prismaClient.activite.deleteMany({
     where: { mediateurId: { in: mediateurIds } },
   })
   await prismaClient.beneficiaire.deleteMany({
     where: { mediateurId: { in: mediateurIds } },
   })
+  await prismaClient.tag.deleteMany({ where: { id: { in: tagsSemes } } })
   await prismaClient.rdv.deleteMany({
     where: { id: { in: rendezVousSemes.map(({ id }) => id) } },
   })
