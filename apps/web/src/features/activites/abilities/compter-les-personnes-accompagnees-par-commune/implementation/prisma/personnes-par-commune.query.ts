@@ -31,7 +31,7 @@ export const compterLesPersonnesAccompagneesParCommune = async (
         ${jointuresDesStatistiques(demande.criteres)}
       WHERE ${activitesRetenues(demande)}
       GROUP BY ben.commune_code_insee
-      ORDER BY nombre DESC`
+      ORDER BY nombre DESC, nom ASC NULLS LAST, code_insee ASC NULLS LAST`
   ).map(({ nom, code_postal, code_insee, nombre }) => ({
     commune: communeComptee({
       nom,

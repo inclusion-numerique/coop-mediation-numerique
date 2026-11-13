@@ -29,7 +29,7 @@ export const compterLesAccompagnementsParCommune = async (
         ${jointuresDesStatistiques(demande.criteres, { avecLeLieu: true })}
       WHERE ${activitesRetenues(demande)}
       GROUP BY COALESCE(str.code_insee, act.lieu_code_insee)
-      ORDER BY nombre DESC`
+      ORDER BY nombre DESC, nom ASC NULLS LAST, code_insee ASC NULLS LAST`
   ).map(({ nom, code_postal, code_insee, nombre }) => ({
     commune: communeComptee({
       nom,

@@ -25,7 +25,7 @@ export const compterLesAccompagnementsParLieu = async (
       WHERE str.id IS NOT NULL
         AND ${activitesRetenues(demande)}
       GROUP BY str.id, str.nom
-      ORDER BY nombre DESC`
+      ORDER BY nombre DESC, str.nom ASC, str.id ASC`
   ).map(({ id, nom, nombre }) => ({
     lieu: { id: LieuActiviteId(id), nom: NomDeStructure(nom) },
     nombre: Effectif(nombre),
