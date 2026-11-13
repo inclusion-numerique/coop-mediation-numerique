@@ -77,6 +77,11 @@ export {
   type Periode,
 } from './criteres-des-coordinations'
 export {
+  type CriteresDesStatistiques,
+  criteresDesStatistiques,
+  type PeriodeDesStatistiques,
+} from './criteres-des-statistiques'
+export {
   DateDActivite,
   dateDActiviteBornee,
   dateDActiviteDuJour,
@@ -101,6 +106,7 @@ export {
 export { GENRES, Genre, genres } from './genre'
 export { IdentifiantCraV1 } from './identifiant-cra-v1'
 export { Initiative } from './initiative'
+export { Jour } from './jour'
 export { LienAgent } from './lien-agent'
 export { LieuActiviteId } from './lieu-activite-id'
 export { MATERIELS, Materiel, materiels } from './materiel'
@@ -131,6 +137,11 @@ export {
   type Pagination,
   paginationLue,
 } from './pagination'
+export {
+  PERIMETRE_NATIONAL,
+  type PerimetreDesStatistiques,
+  perimetreDuDemandeur,
+} from './perimetre-des-statistiques'
 export { PorteeDeTag } from './portee-de-tag'
 export { Precision } from './precision'
 export { PrecisionDeDemarche } from './precision-de-demarche'
