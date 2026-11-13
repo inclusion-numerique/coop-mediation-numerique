@@ -1,9 +1,8 @@
 import { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  activitesRetenues,
   type DemandeDeStatistiques,
-  jointuresDesStatistiques,
+  personneAccompagnee,
 } from '../../../../db/statistiques.sql'
 import { valeurEnBase } from '../../../../db/valeur-en-base'
 import {
@@ -56,7 +55,7 @@ const parValeur = (
   Prisma.sql`ARRAY[${Prisma.join(
     valeurs.map(
       (valeur) =>
-        Prisma.sql`COUNT(*) FILTER (WHERE ${colonne} = ${valeurEnBase(valeur)})`,
+        Prisma.sql`COALESCE(SUM(nombre) FILTER (WHERE ${colonne} = ${valeurEnBase(valeur)}), 0)`,
     ),
   )}]::int[]`
 
@@ -65,19 +64,17 @@ export const decrireLesPersonnesAccompagnees = async (
 ): Promise<ProfilDesPersonnesAccompagnees> => {
   const [ligne] = await prismaClient.$queryRaw<Ligne[]>`
     WITH personnes AS (
-      SELECT DISTINCT
-        ben.id,
+      SELECT
         COALESCE(ben.genre::text, ${NON_COMMUNIQUE}) AS genre,
         ${trancheDAgeDerivee} AS tranche_d_age,
-        COALESCE(ben.statut_social::text, ${NON_COMMUNIQUE}) AS statut_social
-      FROM activites act
-        INNER JOIN accompagnements acc ON acc.activite_id = act.id
-        INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
-        ${jointuresDesStatistiques(demande.criteres)}
-      WHERE ${activitesRetenues(demande)}
+        COALESCE(ben.statut_social::text, ${NON_COMMUNIQUE}) AS statut_social,
+        COUNT(*) AS nombre
+      FROM beneficiaires ben
+      WHERE ${personneAccompagnee(demande)}
+      GROUP BY 1, 2, 3
     )
     SELECT
-      COUNT(*)::int AS total,
+      COALESCE(SUM(nombre), 0)::int AS total,
       ${parValeur(Prisma.sql`genre`, genres)} AS genres,
       ${parValeur(Prisma.sql`tranche_d_age`, tranchesDAge)} AS tranches_d_age,
       ${parValeur(Prisma.sql`statut_social`, statutsSociaux)} AS statuts_sociaux
