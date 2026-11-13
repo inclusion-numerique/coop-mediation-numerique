@@ -34,7 +34,7 @@ const CraAnimationPage = ({
     <SkipLinksPortal />
     <CoopBreadcrumbs
       className="fr-mb-8v"
-      currentPage="Enregistrer un accompagnement structure(s)"
+      currentPage="Enregistrer une animation"
     />
 
     <BackButtonWithModal
