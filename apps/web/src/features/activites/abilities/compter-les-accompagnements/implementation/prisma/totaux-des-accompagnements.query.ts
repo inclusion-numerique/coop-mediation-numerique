@@ -3,6 +3,7 @@ import {
   activitesRetenues,
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
+  personneAccompagnee,
 } from '../../../../db/statistiques.sql'
 import { Effectif } from '../../../../domain'
 import { nouvellesComptees, type TotauxDesAccompagnements } from '../../domain'
@@ -48,13 +49,10 @@ const personnes = async (
 ): Promise<LigneDesPersonnes> => {
   const [ligne] = await prismaClient.$queryRaw<LigneDesPersonnes[]>`
     SELECT
-      COUNT(DISTINCT ben.id)::int AS personnes,
-      COUNT(DISTINCT ben.id) FILTER (WHERE ben.anonyme = false)::int AS suivies
-    FROM activites act
-      INNER JOIN accompagnements acc ON acc.activite_id = act.id
-      INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
-      ${jointuresDesStatistiques(demande.criteres)}
-    WHERE ${activitesRetenues(demande)}`
+      COUNT(*)::int AS personnes,
+      COUNT(*) FILTER (WHERE ben.anonyme = false)::int AS suivies
+    FROM beneficiaires ben
+    WHERE ${personneAccompagnee(demande)}`
   return ligne ?? { personnes: 0, suivies: 0 }
 }
 

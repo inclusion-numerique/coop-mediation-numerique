@@ -40,3 +40,15 @@ export const activitesRetenues = ({
   Prisma.sql`act.suppression IS NULL
     AND ${dansLePerimetre(perimetre)}
     AND ${filtreDesStatistiques(criteres, { conseillersNumeriques, rendezVousAuxStatuts })}`
+
+export const personneAccompagnee = (
+  demande: DemandeDeStatistiques,
+): Prisma.Sql =>
+  Prisma.sql`EXISTS (
+    SELECT 1
+    FROM accompagnements acc
+      INNER JOIN activites act ON act.id = acc.activite_id
+      ${jointuresDesStatistiques(demande.criteres)}
+    WHERE acc.beneficiaire_id = ben.id
+      AND ${activitesRetenues(demande)}
+  )`
