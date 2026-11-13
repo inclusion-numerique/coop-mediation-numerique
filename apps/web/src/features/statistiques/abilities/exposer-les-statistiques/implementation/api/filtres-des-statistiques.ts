@@ -1,7 +1,7 @@
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { z } from 'zod'
 import {
   STATUTS_DE_RENDEZ_VOUS,

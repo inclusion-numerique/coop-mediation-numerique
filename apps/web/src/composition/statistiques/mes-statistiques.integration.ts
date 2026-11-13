@@ -32,7 +32,7 @@ import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/benef
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
-import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { computeProportion } from '@app/web/libraries/proportions'
 import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'

@@ -1,6 +1,5 @@
 'use client'
 
-import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import { ActiviteTypeFilter } from '@app/web/features/statistiques/ui/filtres/ActiviteTypeFilter'
 import { BeneficiaireFilter } from '@app/web/features/statistiques/ui/filtres/BeneficiaireFilter'
 import { MediateurFilter } from '@app/web/features/statistiques/ui/filtres/MediateurFilter'
@@ -8,6 +7,7 @@ import { MoreCoordinateurFilters } from '@app/web/features/statistiques/ui/filtr
 import { MoreMediateurFilters } from '@app/web/features/statistiques/ui/filtres/MoreMediateurFilters'
 import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import { PeriodeFilter } from '@app/web/features/statistiques/ui/filtres/PeriodeFilter'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import type { StructureEmployeuseOption } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
 import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
 import classNames from 'classnames'

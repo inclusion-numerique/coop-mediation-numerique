@@ -14,7 +14,7 @@ import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { StatistiquesPartagees } from '@app/web/features/statistiques/ui/pages/StatistiquesPartagees'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'

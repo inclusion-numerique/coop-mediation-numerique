@@ -1,5 +1,5 @@
-import { activiteSourceOptions } from '../../../ui/filtres/source'
-import { optionsDesStatistiques } from './options-des-statistiques'
+import { optionsDesStatistiques } from './options-de-la-barre.presenter'
+import { activiteSourceOptions } from './source'
 
 const fournisseurs = {
   communesEtDepartements: async () => ({

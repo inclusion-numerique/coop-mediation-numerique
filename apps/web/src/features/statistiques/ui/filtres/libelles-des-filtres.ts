@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
 import {

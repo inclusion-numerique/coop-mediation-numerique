@@ -1,12 +1,12 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import type { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'

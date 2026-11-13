@@ -1,7 +1,7 @@
 import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
 import { valeursLues } from '@app/web/libraries/parametres-d-url'
 import z from 'zod'
-import { type ActiviteSource, activiteSourceValues } from '../ui/filtres/source'
+import { type ActiviteSource, activiteSourceValues } from './source'
 
 const isoDayRegex = /^\d{4}-\d{2}-\d{2}$/
 

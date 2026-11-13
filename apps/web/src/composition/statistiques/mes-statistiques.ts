@@ -24,8 +24,8 @@ import {
   getMediateurCommunesAndDepartementsOptions,
 } from '@app/web/features/lieux-activite'
 import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { optionsDesStatistiques } from '@app/web/features/statistiques/abilities/lister-les-options-des-statistiques'
-import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import { optionsDesStatistiques } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { tousLesTagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'

@@ -5,7 +5,7 @@ import { getStatistiquesWorksheetInput } from '@app/web/composition/statistiques
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { buildStatistiquesWorksheet } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { NextRequest } from 'next/server'

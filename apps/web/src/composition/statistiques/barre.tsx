@@ -9,7 +9,7 @@ import {
   type LieuFilterValue,
 } from '@app/web/features/lieux-activite/ui'
 import { rdvStatusOptions } from '@app/web/features/rdvsp/ui/rdv-status'
-import type { ActivitesFilters } from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import type { VocabulaireDeLaBarre } from '@app/web/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
 import type { ComponentProps } from 'react'
 

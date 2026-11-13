@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { TagScope } from '../../../ui/filtres/portee-de-tag'
-import { activiteSourceOptions } from '../../../ui/filtres/source'
+import { TagScope } from './portee-de-tag'
+import { activiteSourceOptions } from './source'
 
 type PorteeDuTag = 'Personnel' | 'Equipe' | 'Departemental' | 'National'
 

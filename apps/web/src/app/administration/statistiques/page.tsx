@@ -17,11 +17,11 @@ import {
   getLieuxActiviteOptions,
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { optionsDeTags } from '@app/web/features/statistiques/abilities/lister-les-options-des-statistiques'
+import { optionsDeTags } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/features/statistiques/domain/filtres-des-statistiques'
+} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
 import { StatistiquesNationales } from '@app/web/features/statistiques/ui/pages/StatistiquesNationales'
 import { lireLesTagsCollectifs } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
