@@ -44,16 +44,35 @@ const deLaCarto = (nom: string, lieuCoop: LieuId | null = null) =>
 const deLAnnuaire = (nom: string) =>
   suggestion(nom, { _tag: 'Annuaire', siret: Siret('13002603200016') })
 
-const source = (suggestions: readonly SuggestionDeLieu[], nombre?: number) =>
-  jest.fn(async () => ({
-    suggestions,
-    nombre: NombreDeLieux(nombre ?? suggestions.length),
-  }))
+const trouvees = (
+  suggestions: readonly SuggestionDeLieu[],
+  nombre?: number,
+) => ({
+  suggestions,
+  nombre: NombreDeLieux(nombre ?? suggestions.length),
+})
 
-const enPanne = () =>
-  jest.fn(async () => {
-    throw new Error('indisponible')
-  })
+const source =
+  (suggestions: readonly SuggestionDeLieu[], nombre?: number) => async () =>
+    trouvees(suggestions, nombre)
+
+const pourLeTerme =
+  (attendu: string, suggestions: readonly SuggestionDeLieu[]) =>
+  async (terme: string) =>
+    trouvees(terme === attendu ? suggestions : [])
+
+const enPanne = () => async () => {
+  throw new Error('indisponible')
+}
+
+const numerotes = (
+  combien: number,
+  fabrique: (nom: string) => SuggestionDeLieu,
+  prefixe: string,
+) =>
+  Array.from({ length: combien }, (_, index) =>
+    fabrique(`${prefixe}-${index + 1}`),
+  )
 
 const ports = (
   partie: Partial<RechercherDesLieuxAAjouterPorts> = {},
@@ -88,28 +107,22 @@ describe('lire une recherche de lieu', () => {
 
 describe('rechercher des lieux à ajouter', () => {
   it('ne cherche rien en dessous de trois caractères', async () => {
-    const coop = source([deLaCoop('coop')])
-
     const resultat = await rechercherDesLieuxAAjouter(
-      ports({ chercherDansLaCoop: coop }),
+      ports({ chercherDansLaCoop: source([deLaCoop('coop')]) }),
     )(RechercheDeLieu('Mé'))
 
     expect(resultat.suggestions).toEqual([])
-    expect(coop).not.toHaveBeenCalled()
   })
 
   it('cherche un SIRET dans la coop sans consulter la cartographie', async () => {
-    const cartographie = source([])
-
     const resultat = await rechercherDesLieuxAAjouter(
       ports({
         chercherDansLaCoop: source([deLaCoop('coop')]),
-        chercherDansLaCartographie: cartographie,
+        chercherDansLaCartographie: source([deLaCarto('carto')]),
       }),
     )(RechercheDeLieu('12345678900012'))
 
     expect(noms(resultat)).toEqual(['coop'])
-    expect(cartographie).not.toHaveBeenCalled()
   })
 
   it('se replie sur l’annuaire quand la coop ne connaît pas le SIRET', async () => {
@@ -141,16 +154,14 @@ describe('rechercher des lieux à ajouter', () => {
   })
 
   it('n’interroge pas l’annuaire quand la coop ou la cartographie répondent', async () => {
-    const annuaire = source([deLAnnuaire('api')])
-
-    await rechercherDesLieuxAAjouter(
+    const resultat = await rechercherDesLieuxAAjouter(
       ports({
         chercherDansLaCartographie: source([deLaCarto('carto')]),
-        chercherDansLAnnuaireDesEntreprises: annuaire,
+        chercherDansLAnnuaireDesEntreprises: source([deLAnnuaire('api')]),
       }),
     )(RechercheDeLieu('Médiathèque'))
 
-    expect(annuaire).not.toHaveBeenCalled()
+    expect(noms(resultat)).toEqual(['carto'])
   })
 
   it('signale une cartographie indisponible sans perdre les lieux de la coop', async () => {
@@ -177,19 +188,26 @@ describe('rechercher des lieux à ajouter', () => {
     })
   })
 
-  it('cherche un numéro d’entreprise sans ses espaces', async () => {
-    const coop = source([])
-    const annuaire = source([])
-
-    await rechercherDesLieuxAAjouter(
+  it('cherche un numéro d’entreprise sans ses espaces dans la coop', async () => {
+    const resultat = await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLaCoop: coop,
-        chercherDansLAnnuaireDesEntreprises: annuaire,
+        chercherDansLaCoop: pourLeTerme('12345678900012', [deLaCoop('coop')]),
       }),
     )(RechercheDeLieu('123 456 789 00012'))
 
-    expect(coop).toHaveBeenCalledWith('12345678900012', 50)
-    expect(annuaire).toHaveBeenCalledWith('12345678900012')
+    expect(noms(resultat)).toEqual(['coop'])
+  })
+
+  it('cherche un numéro d’entreprise sans ses espaces dans l’annuaire', async () => {
+    const resultat = await rechercherDesLieuxAAjouter(
+      ports({
+        chercherDansLAnnuaireDesEntreprises: pourLeTerme('12345678900012', [
+          deLAnnuaire('api'),
+        ]),
+      }),
+    )(RechercheDeLieu('123 456 789 00012'))
+
+    expect(noms(resultat)).toEqual(['api'])
   })
 
   it('signale les deux sources en panne quand l’annuaire était le dernier recours', async () => {
@@ -218,23 +236,37 @@ describe('rechercher des lieux à ajouter', () => {
   })
 
   it('partage la limite entre la coop et la cartographie pour une recherche par nom', async () => {
-    const coop = source([])
-    const cartographie = source([])
-
-    await rechercherDesLieuxAAjouter(
+    const resultat = await rechercherDesLieuxAAjouter(
       ports({
-        chercherDansLaCoop: coop,
-        chercherDansLaCartographie: cartographie,
+        chercherDansLaCoop: async (_terme, limite) =>
+          trouvees(numerotes(9, deLaCoop, 'coop').slice(0, limite)),
+        chercherDansLaCartographie: async (_terme, { limite }) =>
+          trouvees(numerotes(9, deLaCarto, 'carto').slice(0, limite)),
+      }),
+    )(RechercheDeLieu('Médiathèque'), { limite: NombreDeLieux(9) })
+
+    expect(noms(resultat)).toEqual([
+      ...numerotes(5, deLaCoop, 'coop').map(({ nom }) => nom),
+      ...numerotes(4, deLaCarto, 'carto').map(({ nom }) => nom),
+    ])
+  })
+
+  it('écarte de la cartographie les lieux déjà retenus', async () => {
+    const resultat = await rechercherDesLieuxAAjouter(
+      ports({
+        chercherDansLaCartographie: async (_terme, { sauf }) =>
+          trouvees(
+            [deLaCarto('deja-la'), deLaCarto('nouveau')].filter(
+              ({ provenance }) =>
+                provenance._tag !== 'Cartographie' ||
+                !sauf.includes(provenance.identifiant),
+            ),
+          ),
       }),
     )(RechercheDeLieu('Médiathèque'), {
-      limite: NombreDeLieux(9),
       sauf: [IdentifiantCartographie('deja-la')],
     })
 
-    expect(coop).toHaveBeenCalledWith('Médiathèque', 5)
-    expect(cartographie).toHaveBeenCalledWith('Médiathèque', {
-      limite: 5,
-      sauf: ['deja-la'],
-    })
+    expect(noms(resultat)).toEqual(['nouveau'])
   })
 })
