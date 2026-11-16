@@ -1,10 +1,10 @@
 import { output } from '@app/cli/output'
+import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
 import { deploymentCanCreateBrevoContact } from '@app/web/external-apis/brevo/createBrevoContact'
 import {
   listeDeDiffusionPorts,
   synchroniserLesRolesBrevo,
 } from '@app/web/features/utilisateurs/abilities/synchroniser-les-roles-brevo'
-import * as Sentry from '@sentry/nextjs'
 
 export const executeSynchroniserLesRolesBrevo = async () => {
   if (!deploymentCanCreateBrevoContact()) {
@@ -19,9 +19,10 @@ export const executeSynchroniserLesRolesBrevo = async () => {
   )
 
   if (bilan.echecs.length > 0)
-    Sentry.captureMessage?.(
-      `Synchronisation Brevo : ${bilan.echecs.length} lots en échec`,
-    )
+    errorReporter.captureMessage({
+      message: `Synchronisation Brevo : ${bilan.echecs.length} lots en échec`,
+      level: 'error',
+    })
 
   return bilan
 }

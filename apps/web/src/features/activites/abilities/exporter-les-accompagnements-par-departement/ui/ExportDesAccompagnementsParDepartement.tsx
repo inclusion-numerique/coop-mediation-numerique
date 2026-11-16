@@ -1,8 +1,8 @@
 'use client'
 
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/client/signaler'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Input } from '@codegouvfr/react-dsfr/Input'
-import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
 
 export const ExportDesAccompagnementsParDepartement = () => {
@@ -27,7 +27,7 @@ export const ExportDesAccompagnementsParDepartement = () => {
       window.URL.revokeObjectURL(downloadUrl)
       a.remove()
     } catch (error) {
-      Sentry.captureException(error)
+      signaler(error)
     } finally {
       setIsDownloading(false)
     }

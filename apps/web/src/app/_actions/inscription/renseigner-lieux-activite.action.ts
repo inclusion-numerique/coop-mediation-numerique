@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import {
   RENSEIGNER_LIEUX_ACTIVITE_ERRORS,
@@ -14,7 +15,7 @@ import type {
 import { trouverStructuresCarto } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { UserId } from '@app/web/features/inscription/domain'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 import type { Result } from '@app/web/libraries/result'
 
 export const renseignerLieuxActiviteAction = actionBuilder()

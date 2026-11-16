@@ -1,5 +1,5 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { echecDefinitif } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
-import * as Sentry from '@sentry/nextjs'
 import { consignerLEchec } from './consigner-l-echec'
 import { declencherSynchronisation } from './declencher-synchronisation'
 import { lancerSynchronisation } from './lancer-synchronisation.adapter'
@@ -20,7 +20,7 @@ export const declencherSynchronisationBinding = consignerLEchec(
   declencherSynchronisation({
     compteACible,
     lancer: lancerSynchronisation,
-    signaler: (erreur) => Sentry.captureException?.(erreur),
+    signaler,
     echecDefinitif,
   }),
   marquerEchecDeSynchronisation(),

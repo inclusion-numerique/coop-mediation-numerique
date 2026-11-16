@@ -1,11 +1,11 @@
 import { compileMjml } from '@app/emails/mjml'
 import { acceptInvitation } from '@app/emails/templates/acceptInvitation'
 import { declineInvitation } from '@app/emails/templates/declineInvitation'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'
 import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
-import * as Sentry from '@sentry/nextjs'
 import type { Email } from '../../domain'
 
 const reponses = {
@@ -50,6 +50,6 @@ export const prevenirLeCoordinateur = async (
   try {
     await envoyer(prevenir)
   } catch (erreur) {
-    Sentry.captureException?.(erreur)
+    signaler(erreur)
   }
 }

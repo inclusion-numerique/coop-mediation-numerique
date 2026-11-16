@@ -1,10 +1,11 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { rechercherDesMediateursAInviter } from '@app/web/features/equipe/abilities/inviter-des-membres'
 import { RechercherDesMediateursAInviterValidation } from '@app/web/features/equipe/abilities/inviter-des-membres/action/rechercher-des-mediateurs-a-inviter.validation'
 import { CoordinateurId } from '@app/web/features/equipe/domain'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 
 export const rechercherDesMediateursAInviterAction = actionBuilder()
   .use(withAuth())

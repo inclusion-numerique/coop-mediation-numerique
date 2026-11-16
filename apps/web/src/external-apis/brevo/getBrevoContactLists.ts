@@ -1,5 +1,5 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import * as Sentry from '@sentry/nextjs'
 import axios from 'axios'
 import { brevoApiThrottle } from './createBrevoContact'
 
@@ -27,7 +27,7 @@ const getContactListsImmediate = async (
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       return null
     }
-    Sentry.captureException?.(error)
+    signaler(error)
     throw error
   }
 }

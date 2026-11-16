@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth, withMediateur } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { choisirLaVisibiliteApresRupture } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
@@ -7,7 +8,7 @@ import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ERRORS } from '@app/web/features/me
 import { ChoisirLaVisibiliteApresRuptureValidation } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.validation'
 import { ReponseApresRupture } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
 import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
   .use(withAuth())

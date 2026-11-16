@@ -23,7 +23,6 @@ import type {
 
 export type ServicesDuBeneficiaireExterne = {
   readonly communeDeLAdresse: (adresse: string) => Promise<CommuneFields | null>
-  readonly signaler: (erreur: unknown) => void
 }
 
 const mergedBeneficiaireSelect = {
@@ -129,7 +128,7 @@ const mergeUpdateData = async (
     usager.adresse && !existingCommune(existing)
       ? await services
           .communeDeLAdresse(usager.adresse)
-          .catch(siIndisponible(null, services.signaler))
+          .catch(siIndisponible(null))
       : null
 
   return {
@@ -185,7 +184,7 @@ const createBeneficiaire = async (
   const communeFields = usager.adresse
     ? await services
         .communeDeLAdresse(usager.adresse)
-        .catch(siIndisponible(null, services.signaler))
+        .catch(siIndisponible(null))
     : null
 
   return prismaClient.beneficiaire.create({

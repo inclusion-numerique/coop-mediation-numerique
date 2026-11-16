@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { RdvId } from '../../../domain/rdv-id'
 import { StatutPresenceModifiable } from '../../../domain/statut-presence'
 import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
@@ -12,11 +12,11 @@ export const rendezVousHonorePar =
       rdvId: RdvId(rdvId),
       statut: StatutPresenceModifiable('seen'),
     }).catch((erreur: unknown) => {
-      Sentry.captureException?.(erreur)
+      signaler(erreur)
       return null
     })
     if (resultat !== null && !resultat.success) {
-      Sentry.captureException?.(
+      signaler(
         new Error(
           `Statut du rendez-vous ${rdvId} non mis à jour (${resultat.error._tag})`,
         ),

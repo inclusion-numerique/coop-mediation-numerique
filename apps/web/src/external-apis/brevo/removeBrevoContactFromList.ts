@@ -1,6 +1,6 @@
+import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import * as Sentry from '@sentry/nextjs'
 import axios from 'axios'
 import { brevoApiThrottle } from './createBrevoContact'
 
@@ -33,9 +33,12 @@ const removeContactFromListImmediate = async (
     return true
   } catch (error) {
     if (estAbsentDeLaListe(error)) return false
-    Sentry.captureException?.(error, {
-      extra: {
-        reponseBrevo: axios.isAxiosError(error) ? error.response?.data : null,
+    errorReporter.captureException({
+      error: error instanceof Error ? error : new Error(String(error)),
+      attributes: {
+        reponseBrevo: JSON.stringify(
+          axios.isAxiosError(error) ? error.response?.data : null,
+        ),
       },
     })
     throw error

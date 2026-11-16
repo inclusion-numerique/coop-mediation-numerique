@@ -1,6 +1,7 @@
 'use server'
 
 import { perimetreDeLUtilisateur } from '@app/web/composition/statistiques/perimetre'
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import {
   GenreDeLieu,
   rechercherLesLieuxDesStatistiques,
@@ -8,7 +9,7 @@ import {
 import { RechercherLesLieuxDesStatistiquesValidation } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
 import { withAuth } from '@app/web/features/authentification'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 
 export const rechercherLesLieuxDeMesStatistiquesAction = actionBuilder()
   .use(withAuth())

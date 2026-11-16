@@ -8,12 +8,12 @@ import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@app/web/features/employeuse/server'
 import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
-import * as Sentry from '@sentry/nextjs'
 import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
 
@@ -85,7 +85,7 @@ export const nextAuthOptions = {
             phone: user.phone || null,
             siret: user.siret || fallbackSiret,
           }).catch((error) => {
-            Sentry.captureException(error)
+            signaler(error)
           })
         }
 
@@ -94,12 +94,12 @@ export const nextAuthOptions = {
         // produire — et la connexion est le bon moment pour la garantir.
         garantirLeRoleCoordinateurDuDispositif(user.id).catch(
           (error: unknown) => {
-            Sentry.captureException(error)
+            signaler(error)
           },
         )
 
         registerLastLogin({ userId: params.user.id }).catch((error) => {
-          Sentry.captureException(error)
+          signaler(error)
         })
         return true
       }
@@ -138,7 +138,7 @@ export const nextAuthOptions = {
             scope: account.scope,
           },
         }).catch((error) => {
-          Sentry.captureException(error)
+          signaler(error)
         })
       }
 
@@ -150,7 +150,7 @@ export const nextAuthOptions = {
           phone: profile.phone_number,
           siret: profile.siret || null,
         }).catch((error) => {
-          Sentry.captureException(error)
+          signaler(error)
         })
       }
 
@@ -159,7 +159,7 @@ export const nextAuthOptions = {
       // conseiller numérique, il doit donc passer APRÈS.
       garantirLeRoleCoordinateurDuDispositif(user.id)
         .catch((error: unknown) => {
-          Sentry.captureException(error)
+          signaler(error)
         })
         .then(() =>
           importStructureEmployeuseFromProConnect(
@@ -170,11 +170,11 @@ export const nextAuthOptions = {
           }),
         )
         .catch((error: unknown) => {
-          Sentry.captureException(error)
+          signaler(error)
         })
 
       registerLastLogin({ userId: user.id }).catch((error) => {
-        Sentry.captureException(error)
+        signaler(error)
       })
       return true
     },

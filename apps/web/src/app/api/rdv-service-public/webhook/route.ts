@@ -1,3 +1,4 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { traiterNotificationRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
 import type { NotificationWebhook } from '@app/web/features/rdvsp/domain/notification-webhook'
@@ -8,7 +9,6 @@ import {
   signatureValide,
 } from '@app/web/features/rdvsp/implementation/webhook/verifier-signature'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import * as Sentry from '@sentry/nextjs'
 import { type NextRequest, NextResponse } from 'next/server'
 
 const traiter = async (notification: NotificationWebhook): Promise<void> => {
@@ -72,7 +72,7 @@ export const POST = async (request: NextRequest) => {
   } catch (error) {
     // biome-ignore lint/suspicious/noConsole: journal de webhook, conservé le temps de la mise en production
     console.error('[rdvsp webhook] Error processing webhook:', error)
-    Sentry.captureException?.(error)
+    signaler(error)
 
     return NextResponse.json(
       { error: 'Failed to process webhook' },

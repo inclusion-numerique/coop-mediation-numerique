@@ -115,7 +115,7 @@ export const ensureStructureAdministrativeMain =
       if (existingByIdentity) return existingByIdentity
 
       const feature = await geocoder(requeteDeGeocodage(identite)).catch(
-        siIndisponible(null, signaler),
+        siIndisponible(null),
       )
       const adresse = adresseMainDepuis(identite, feature)
       const adresseId =

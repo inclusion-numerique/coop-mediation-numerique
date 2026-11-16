@@ -129,7 +129,6 @@ Given(
 When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => {
   result = await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
     communeDeLAdresse: async () => null,
-    signaler: () => undefined,
   })({
     usagers,
     mediateurId: testMediateurId,

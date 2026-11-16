@@ -10,7 +10,7 @@ const ignoredTraceRoutes = [
   '/images/',
 ]
 
-export const initializeSentry = () => {
+export const initialiserSentry = (): void => {
   if (!PublicWebAppConfig.Sentry.dsn || process.env.NODE_ENV !== 'production') {
     return
   }

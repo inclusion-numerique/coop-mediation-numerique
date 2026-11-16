@@ -20,6 +20,9 @@ on:
 permissions:
   contents: read
 
+env:
+  ENV: ephemeral
+
 jobs:
   lint:
     name: Lint

@@ -1,3 +1,4 @@
+import type { ErrorReporter } from '@arckit/telemetry/error-reporter'
 import { ZodError } from 'zod'
 import type { ServerActionResult } from './result'
 
@@ -94,7 +95,8 @@ const buildPipeline = <TResult, TError extends string>(
 }
 
 type ActionBuilderOptions = {
-  errorPrefix?: string
+  readonly errorReporter: ErrorReporter
+  readonly errorPrefix?: string
 }
 
 export const ACTION_INVALID_INPUT_ERROR = 'INVALID_INPUT'
@@ -113,8 +115,11 @@ const formatError =
     ) as TError
   }
 
+const enErreur = (erreur: unknown): Error =>
+  erreur instanceof Error ? erreur : new Error(String(erreur))
+
 export const actionBuilder = (
-  options?: ActionBuilderOptions,
+  options: ActionBuilderOptions,
 ): ActionBuilder<object> => {
   const createBuilder = <TCtx extends object, TInput = void>(
     middlewares: AnyPipeMiddleware[],
@@ -144,8 +149,7 @@ export const actionBuilder = (
           if (isRedirectError(error)) throw error
 
           console.error('Server action failed', error)
-          const Sentry = await import('@sentry/nextjs')
-          Sentry.captureException?.(error)
+          options.errorReporter.captureException({ error: enErreur(error) })
 
           return { success: false, error: formatError<TError>(options)(error) }
         }

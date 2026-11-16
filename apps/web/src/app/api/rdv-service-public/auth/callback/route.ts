@@ -1,5 +1,6 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,
@@ -16,7 +17,6 @@ import {
   decodeSerializableState,
   type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
-import * as Sentry from '@sentry/nextjs'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -113,7 +113,7 @@ export const GET = async (request: NextRequest) => {
   })
 
   if (!connexion.success) {
-    Sentry.captureException?.(
+    signaler(
       new Error(
         `Liaison RDV Service Public refusée : ${motifDiagnostic(connexion.error)}`,
       ),
@@ -129,7 +129,7 @@ export const GET = async (request: NextRequest) => {
     demandeur: { id: utilisateurId, role: user.role },
     utilisateurId,
     seulementSansWebhook: false,
-  }).catch((erreur: unknown) => Sentry.captureException?.(erreur))
+  }).catch((erreur: unknown) => signaler(erreur))
 
   return redirection(succes)
 }

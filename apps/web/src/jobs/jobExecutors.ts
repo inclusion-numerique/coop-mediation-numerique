@@ -1,6 +1,6 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeAlignerLeRegistreDesPersonnes } from './aligner-le-registre-des-personnes/executeAlignerLeRegistreDesPersonnes'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
@@ -56,9 +56,7 @@ export const executeJob = async (job: Job) => {
         },
       })
       .catch((error) => {
-        if (Sentry?.captureException) {
-          Sentry.captureException(error)
-        }
+        signaler(error)
         // biome-ignore lint/suspicious/noConsole: we need output from job executions
         console.error(error)
       })
@@ -70,9 +68,7 @@ export const executeJob = async (job: Job) => {
       duration,
     }
   } catch (error) {
-    if (Sentry?.captureException) {
-      Sentry.captureException(error)
-    }
+    signaler(error)
     // biome-ignore lint/suspicious/noConsole: we need output from job executions
     console.error(error)
     const { ended, duration } = stopWatch.stop()
@@ -91,9 +87,7 @@ export const executeJob = async (job: Job) => {
         },
       })
       .catch((persistenceError) => {
-        if (Sentry?.captureException) {
-          Sentry.captureException(persistenceError)
-        }
+        signaler(persistenceError)
       })
 
     return {

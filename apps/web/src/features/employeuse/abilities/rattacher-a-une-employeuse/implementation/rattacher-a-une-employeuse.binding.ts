@@ -1,12 +1,12 @@
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
-import * as Sentry from '@sentry/nextjs'
+import { geocoder } from '@app/web/configuration/ban'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { etablissementDepuisSiret } from './api/etablissement-depuis-siret'
 import { rattacherAUneEmployeuse } from './prisma/rattacher-a-une-employeuse.mutation'
 import { rattacherAUneEmployeuseDepuisSiret } from './prisma/rattacher-depuis-siret.mutation'
 
 const services = {
-  geocoder: searchAdresse,
-  signaler: (erreur: unknown) => Sentry.captureException?.(erreur),
+  geocoder,
+  signaler,
   etablissementDepuisSiret,
 }
 

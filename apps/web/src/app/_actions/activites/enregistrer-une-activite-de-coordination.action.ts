@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { enregistrerUneActiviteDeCoordination } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.errors'
 import { EnregistrerUneActiviteDeCoordinationValidation } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
@@ -11,7 +12,7 @@ import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementatio
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())

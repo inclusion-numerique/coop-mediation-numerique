@@ -94,8 +94,6 @@ export const packageJestConfig = ({
       // ici seulement : la garde reste entière pour Next, qui seul décide des bundles.
       '^server-only$':
         '<rootDir>/../../apps/web/src/libraries/server-only-cli/index.ts',
-      '@sentry/nextjs':
-        '<rootDir>/../../packages/test/src/mocks/sentry.jest.ts',
       '\\.module\\.css$': 'identity-obj-proxy', // Mock CSS modules
       '^@app/web/(.*)$': '<rootDir>/../../apps/web/src/$1',
       '^@app/cli/(.*)$': '<rootDir>/../../apps/cli/src/$1',

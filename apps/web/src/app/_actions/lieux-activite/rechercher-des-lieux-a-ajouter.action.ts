@@ -1,9 +1,10 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { rechercherDesLieuxAAjouter } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter'
 import { RechercheDeLieu } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
 
 /**

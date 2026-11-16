@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import type { Stream } from 'node:stream'
 import { createVarDirectory } from '@app/config/createVarDirectory'
 import { varFile } from '@app/config/varDirectory'
-import * as Sentry from '@sentry/nextjs'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import axios from 'axios'
 
 const dataInclusionStructuresUrl = () =>
@@ -128,7 +128,7 @@ export const getStructuresFromLocalFile = async () => {
 
     return structures
   } catch (error) {
-    Sentry.captureException(error)
+    signaler(error)
 
     throw new Error('Cannot parse structures json')
   }

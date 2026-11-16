@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { modifierUnTag } from '@app/web/features/tags/abilities/modifier-un-tag'
@@ -11,7 +12,7 @@ import {
   TagId,
 } from '@app/web/features/tags/domain'
 import { acteurDe } from '@app/web/features/tags/implementation/session'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 import { success } from '@app/web/libraries/result'
 
 export const modifierUnTagAction = actionBuilder()

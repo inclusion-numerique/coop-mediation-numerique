@@ -1,11 +1,12 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth, withMediateur } from '@app/web/features/authentification'
 import { ImporterBeneficiairesValidation } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires'
 import { importerBeneficiaires } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/implementation'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 
 export const importerBeneficiairesAction = actionBuilder()
   .use(withAuth())

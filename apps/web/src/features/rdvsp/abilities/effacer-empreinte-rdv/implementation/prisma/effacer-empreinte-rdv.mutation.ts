@@ -1,5 +1,5 @@
+import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
 import { prismaClient } from '@app/web/prismaClient'
-import * as Sentry from '@sentry/nextjs'
 import { jetonsCompteToDomain } from '../../../../db'
 import type { RevoquerJetons } from '../../../../implementation/api'
 
@@ -47,10 +47,13 @@ const revoquerSansBloquer = async (
   const resultat = await revoquerJetons(jetons)
 
   if (!resultat.success) {
-    Sentry.captureException?.(
-      new Error('Révocation des jetons RDV Service Public impossible'),
-      { extra: { agentId: compte.id, erreur: resultat.error } },
-    )
+    errorReporter.captureException({
+      error: new Error('Révocation des jetons RDV Service Public impossible'),
+      attributes: {
+        agentId: compte.id,
+        erreur: JSON.stringify(resultat.error),
+      },
+    })
   }
 
   return resultat.success

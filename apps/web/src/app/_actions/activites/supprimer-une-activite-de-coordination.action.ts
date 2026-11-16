@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { supprimerUneActiviteDeCoordination } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination'
 import { SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.errors'
 import { SupprimerUneActiviteDeCoordinationValidation } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.validation'
@@ -10,7 +11,7 @@ import {
 } from '@app/web/features/activites/domain'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const supprimerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())

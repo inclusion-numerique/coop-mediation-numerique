@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth, withMediateur } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { PRENDRE_RENDEZ_VOUS_ERRORS } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.errors'
@@ -7,7 +8,7 @@ import { PrendreRendezVousValidation } from '@app/web/features/rdvsp/abilities/p
 import { MediateurProprietaireId } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
 import { prendreRendezVousBinding } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous.binding'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const prendreRendezVousAction = actionBuilder()
   .use(withAuth())

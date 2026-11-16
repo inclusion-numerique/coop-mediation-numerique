@@ -34,7 +34,6 @@ const fusionnerAvec = (
 ) =>
   creerOuFusionnerBeneficiairesDepuisUsagersExternes({
     communeDeLAdresse,
-    signaler: () => undefined,
   })
 
 const avecLaBan = fusionnerAvec(async (adresse) =>
