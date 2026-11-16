@@ -8,6 +8,7 @@ import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
+import { rattacherAUneEmployeuseDepuisSiretBinding } from '@app/web/features/employeuse/server'
 import { garantirLeRoleCoordinateurDuDispositif } from '@app/web/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
@@ -161,7 +162,9 @@ export const nextAuthOptions = {
           Sentry.captureException(error)
         })
         .then(() =>
-          importStructureEmployeuseFromProConnect({
+          importStructureEmployeuseFromProConnect(
+            rattacherAUneEmployeuseDepuisSiretBinding,
+          )({
             userId: user.id,
             siret: profile.siret,
           }),

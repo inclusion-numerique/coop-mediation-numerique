@@ -4,14 +4,6 @@ export type {
   RattacherAUneEmployeuseDepuisSiret,
 } from './domain'
 export {
-  adresseMainKey,
-  deactivateCoopAffectationsExcept,
-  ensureAffectationEmploiMain,
-  ensureStructureAdministrativeMain,
-  findAdresseMainId,
-  insertAdresseMain,
-  rattacherAUneEmployeuse,
-  rattacherAUneEmployeuseDepuisSiret,
-  resolveAdresseMain,
-  resolveIdentiteFromSiret,
-} from './implementation'
+  rattacherAUneEmployeuseBinding,
+  rattacherAUneEmployeuseDepuisSiretBinding,
+} from './implementation/rattacher-a-une-employeuse.binding'

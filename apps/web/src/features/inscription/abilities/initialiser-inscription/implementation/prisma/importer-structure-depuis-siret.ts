@@ -1,4 +1,4 @@
-import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/server'
+import { rattacherAUneEmployeuseDepuisSiretBinding } from '@app/web/features/employeuse/server'
 import type { ImporterStructureDepuisSiret } from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -32,5 +32,8 @@ export const importerStructureDepuisSiret: ImporterStructureDepuisSiret =
     if (!user?.siret) return
     if ((user.personneMain?.affectationsEmploi.length ?? 0) > 0) return
 
-    await rattacherAUneEmployeuseDepuisSiret({ userId, siret: user.siret })
+    await rattacherAUneEmployeuseDepuisSiretBinding({
+      userId,
+      siret: user.siret,
+    })
   }

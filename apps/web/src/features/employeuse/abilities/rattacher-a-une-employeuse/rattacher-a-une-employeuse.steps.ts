@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { rattacherAUneEmployeuse } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation'
+import { rattacherAUneEmployeuse } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-a-une-employeuse.mutation'
 import { IdentiteEmployeuse } from '@app/web/features/employeuse/domain/identite-employeuse'
 import {
   affectationsDe,
@@ -69,15 +69,20 @@ Given(
   },
 )
 
+const rattacher = rattacherAUneEmployeuse({
+  geocoder: async () => null,
+  signaler: () => undefined,
+})
+
 When('je le rattache à {string}', async (nom: string) => {
-  await rattacherAUneEmployeuse({
+  await rattacher({
     userId: inscritId,
     identite: identitePour(nom),
   })
 })
 
 When('je le rattache à nouveau à {string}', async (nom: string) => {
-  await rattacherAUneEmployeuse({
+  await rattacher({
     userId: inscritId,
     identite: identitePour(nom),
   })

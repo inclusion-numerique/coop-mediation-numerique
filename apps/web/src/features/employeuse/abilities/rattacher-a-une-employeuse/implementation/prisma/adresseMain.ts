@@ -1,12 +1,8 @@
-import {
-  searchAdresse,
-  siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
+import type { Feature } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { CodePostal } from '@app/web/libraries/code-postal'
 import { CodeInsee } from '@app/web/libraries/insee'
 import { prismaClient } from '@app/web/prismaClient'
-import * as Sentry from '@sentry/nextjs'
 
 // Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
 // (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces
@@ -58,12 +54,16 @@ export const adresseMainKey = ({
   nomVoie,
 }: ResolvedAdresseMain): string => `${codePostal}__${nomCommune}__${nomVoie}`
 
-export const resolveAdresseMain = async (
+export const requeteDeGeocodage = ({
+  adresse,
+  codePostal,
+  commune,
+}: AdresseSource): string => `${adresse}, ${codePostal} ${commune}`
+
+export const adresseMainDepuis = (
   identity: AdresseSource,
-): Promise<ResolvedAdresseMain> => {
-  const feature = await searchAdresse(
-    `${identity.adresse}, ${identity.codePostal} ${identity.commune}`,
-  ).catch(siIndisponible(null, (erreur) => Sentry.captureException?.(erreur)))
+  feature: Feature | null,
+): ResolvedAdresseMain => {
   const banScore = feature?.properties.score ?? null
 
   if (feature && feature.properties.score > BAN_SCORE_THRESHOLD) {

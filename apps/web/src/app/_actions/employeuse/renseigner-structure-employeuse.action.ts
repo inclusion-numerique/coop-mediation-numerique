@@ -4,7 +4,7 @@ import { withAuth } from '@app/web/features/authentification'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
 import {
   IdentiteEmployeuse,
-  rattacherAUneEmployeuse,
+  rattacherAUneEmployeuseBinding,
 } from '@app/web/features/employeuse/server'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
@@ -41,7 +41,7 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
 
     if (!identite) return { rattachee: false as const }
 
-    const rattachement = await rattacherAUneEmployeuse({
+    const rattachement = await rattacherAUneEmployeuseBinding({
       userId: user.id,
       identite,
     })

@@ -1,25 +1,15 @@
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
 
-// Cas limite de production : les établissements non diffusibles, dont SIRENE ne donne ni
-// dénomination ni adresse exploitables — seule la commune est sûre. La garantie doit quand même
-// créer UNE ligne `main.structure_administrative`, et rester idempotente. On neutralise l'appel
-// réseau : searchAdresse -> null rend le géocodage déterministe et hors-ligne.
-jest.mock('@app/web/external-apis/apiAdresse', () => ({
-  ...jest.requireActual('@app/web/external-apis/apiAdresse'),
-  searchAdresse: jest.fn(),
-}))
-const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
-  typeof searchAdresse
->
+const sansGeocodage = ensureStructureAdministrativeMain({
+  geocoder: async () => null,
+  signaler: () => undefined,
+})
 
 describe('employeuse non diffusible', () => {
   const testSiret = '93429789600011'
 
   beforeAll(async () => {
-    mockedSearchAdresse.mockResolvedValue(null)
-
     await prismaClient.structureAdministrativeMain.deleteMany({
       where: {
         siret: testSiret,
@@ -51,11 +41,11 @@ describe('employeuse non diffusible', () => {
         codePostal: '',
       },
     }
-    const result = await ensureStructureAdministrativeMain(input)
+    const result = await sansGeocodage(input)
 
     expect(result?.id).toEqual(expect.any(Number))
 
-    const result2 = await ensureStructureAdministrativeMain(input)
+    const result2 = await sansGeocodage(input)
 
     expect(result2?.id).toEqual(result?.id)
 

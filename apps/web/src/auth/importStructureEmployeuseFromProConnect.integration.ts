@@ -2,25 +2,39 @@ import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
-import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/server'
+import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-depuis-siret.mutation'
 import { prismaClient } from '@app/web/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
-// Ce que ProConnect décide lui reste : à qui il délègue le rattachement, et quand il s'abstient.
-// Le rattachement lui-même appartient à la feature employeuse (couvert par son BDD) — on le mocke
-// pour n'observer ici que la décision.
-jest.mock('@app/web/features/employeuse/server', () => ({
-  ...jest.requireActual('@app/web/features/employeuse/server'),
-  rattacherAUneEmployeuseDepuisSiret: jest.fn(),
-}))
-
-const mockedRattacherDepuisSiret =
-  rattacherAUneEmployeuseDepuisSiret as jest.MockedFunction<
-    typeof rattacherAUneEmployeuseDepuisSiret
-  >
-
 const PROCONNECT_SIRET = '11111111111111'
 const OTHER_SIRET = '22222222222222'
+
+const importer = importStructureEmployeuseFromProConnect(
+  rattacherAUneEmployeuseDepuisSiret({
+    geocoder: async () => null,
+    signaler: () => undefined,
+    etablissementDepuisSiret: async (siret) =>
+      siret === PROCONNECT_SIRET
+        ? {
+            siret,
+            raisonSociale: 'Structure ProConnect',
+            ferme: false,
+            voie: '1 rue du Test',
+            commune: 'Paris',
+            codePostal: '75001',
+            codeInsee: '75101',
+          }
+        : null,
+  }),
+)
+
+const employeusesActivesDe = async (userId: string) =>
+  (
+    await prismaClient.personneAffectationEmploiMain.findMany({
+      where: { personne: { coopId: userId }, estActive: true },
+      select: { structureAdministrativeId: true },
+    })
+  ).map(({ structureAdministrativeId }) => structureAdministrativeId)
 
 describe('importStructureEmployeuseFromProConnect', () => {
   const state = { proconnectMainId: 0, otherMainId: 0 }
@@ -82,56 +96,47 @@ describe('importStructureEmployeuseFromProConnect', () => {
   })
 
   beforeEach(async () => {
-    mockedRattacherDepuisSiret.mockReset()
-    mockedRattacherDepuisSiret.mockResolvedValue({
-      _tag: 'rattachee',
-      employeuseId: state.proconnectMainId as never,
-    })
-
     await resetFixtureUser(mediateurSansActivites, false)
     // Personne + affectations réinitialisées entre chaque test (FK : affectations avant personne).
     await nettoyerPersonnesDeTest()
   })
 
-  // La clôture des autres affectations appartient désormais au rattachement lui-même (feature
-  // employeuse, ability `rattacher-a-une-employeuse`, couverte par son BDD). Il ne reste ici que
-  // ce que ProConnect décide : à qui il délègue, et quand il s'abstient.
-  test('non-CN + SIRET : délègue le rattachement au SIRET fourni', async () => {
-    const result = await importStructureEmployeuseFromProConnect({
+  test('non-CN + SIRET : rattache à l’employeuse du SIRET fourni', async () => {
+    const result = await importer({
       userId: mediateurSansActivites.id,
       siret: PROCONNECT_SIRET,
     })
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(false)
-    expect(mockedRattacherDepuisSiret).toHaveBeenCalledTimes(1)
-    expect(mockedRattacherDepuisSiret).toHaveBeenCalledWith({
-      userId: mediateurSansActivites.id,
-      siret: PROCONNECT_SIRET,
-    })
+    expect(await employeusesActivesDe(mediateurSansActivites.id)).toEqual([
+      state.proconnectMainId,
+    ])
   })
 
-  test('conseiller numerique : no-op, import non appelé', async () => {
+  test('conseiller numerique : no-op, aucun rattachement au SIRET fourni', async () => {
     await resetFixtureUser(conseillerNumerique, false)
 
-    const result = await importStructureEmployeuseFromProConnect({
+    const result = await importer({
       userId: conseillerNumerique.id,
       siret: PROCONNECT_SIRET,
     })
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(mockedRattacherDepuisSiret).not.toHaveBeenCalled()
+    expect(await employeusesActivesDe(conseillerNumerique.id)).not.toContain(
+      state.proconnectMainId,
+    )
   })
 
   test('aucun SIRET fourni : no-op', async () => {
-    const result = await importStructureEmployeuseFromProConnect({
+    const result = await importer({
       userId: mediateurSansActivites.id,
       siret: null,
     })
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(mockedRattacherDepuisSiret).not.toHaveBeenCalled()
+    expect(await employeusesActivesDe(mediateurSansActivites.id)).toEqual([])
   })
 })

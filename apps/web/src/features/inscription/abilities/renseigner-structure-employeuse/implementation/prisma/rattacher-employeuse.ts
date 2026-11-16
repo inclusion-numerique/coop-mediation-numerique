@@ -1,6 +1,6 @@
 import {
   IdentiteEmployeuse,
-  rattacherAUneEmployeuse,
+  rattacherAUneEmployeuseBinding,
 } from '@app/web/features/employeuse/server'
 import type { RattacherEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/domain'
 
@@ -34,7 +34,10 @@ export const rattacherEmployeuse: RattacherEmployeuse = async ({
 
   if (!identite) return 'indisponible'
 
-  const rattachement = await rattacherAUneEmployeuse({ userId, identite })
+  const rattachement = await rattacherAUneEmployeuseBinding({
+    userId,
+    identite,
+  })
 
   return rattachement._tag === 'rattachee' ? 'rattachee' : 'indisponible'
 }
