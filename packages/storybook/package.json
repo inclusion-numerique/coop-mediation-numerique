@@ -7,7 +7,6 @@
   "scripts": {
     "lint": "biome check .storybook src",
     "tsc": "tsc --noEmit",
-    "test-storybook": "test-storybook",
     "dev": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "with-env": "dotenv -e ../../.env --",
@@ -34,7 +33,6 @@
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.6.0",
-    "@storybook/test-runner": "^0.24.5",
     "@types/node": "^24.19.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
