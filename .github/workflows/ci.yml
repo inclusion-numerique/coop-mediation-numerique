@@ -120,7 +120,7 @@ jobs:
       - name: Create env file
         run: cp .env.dist .env
       - name: Test @app/web with coverage
-        run: pnpm --silent -F @app/web exec vitest run --coverage
+        run: pnpm --silent -F @app/web exec vitest run --project unit --coverage
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
@@ -202,7 +202,7 @@ jobs:
           set -a
           source .env
           set +a
-          pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts --runInBand
+          pnpm --silent -F @app/web exec vitest run --project integration --coverage
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:

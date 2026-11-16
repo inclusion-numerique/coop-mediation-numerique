@@ -7,6 +7,7 @@ import {
 import { AdresseIndisponible } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
 

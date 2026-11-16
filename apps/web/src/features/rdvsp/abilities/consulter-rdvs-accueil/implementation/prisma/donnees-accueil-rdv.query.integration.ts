@@ -5,6 +5,7 @@ import {
   estUtilisable,
 } from '@app/web/features/rdvsp/domain/compte-rdv'
 import { prismaClient } from '@app/web/prismaClient'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
 /**

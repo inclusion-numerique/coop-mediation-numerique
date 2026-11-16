@@ -1,4 +1,5 @@
-export const expectV1ApiResponseJest = async (
+import { expect } from 'vitest'
+export const expectV1ApiResponse = async (
   response: Response,
   options?: {
     status?: number
@@ -16,7 +17,7 @@ export const expectV1ApiResponseJest = async (
 }
 
 export const expect403ApiResponse = (response: Response) =>
-  expectV1ApiResponseJest(response, {
+  expectV1ApiResponse(response, {
     status: 403,
     data: { error: 'Forbidden' },
   })

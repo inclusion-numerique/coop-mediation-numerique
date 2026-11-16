@@ -13,16 +13,33 @@ export default defineConfig({
         replacement: depuisIci('./src/libraries/server-only-cli/index.ts'),
       },
     ],
-    conditions: ['react-server', 'node'],
   },
   oxc: { jsx: { runtime: 'automatic' } },
   test: {
-    include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
     environment: 'node',
     isolate: false,
     setupFiles: ['./vitest.setup.ts'],
+    server: { deps: { inline: ['@arckit/nextjs'] } },
     reporters: process.env.CI ? ['default', 'junit'] : ['default'],
-    outputFile: { junit: depuisIci('../../junit/web-unit.xml') },
+    outputFile: { junit: depuisIci('../../junit/web.xml') },
+    projects: [
+      {
+        extends: true,
+        resolve: { conditions: ['react-server', 'node'] },
+        test: {
+          name: 'unit',
+          include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'integration',
+          include: ['src/**/*.integration.ts'],
+          fileParallelism: false,
+        },
+      },
+    ],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],

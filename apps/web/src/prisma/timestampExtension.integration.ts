@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 // Vérifie le comportement de l'extension qui pose automatiquement `modification` / `updated`.
 // Ces tests confirment aussi la casse des clés de la carte (un échec de bump = mauvaise casse).

@@ -4,6 +4,7 @@ import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
 import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-depuis-siret.mutation'
 import { prismaClient } from '@app/web/prismaClient'
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
 const PROCONNECT_SIRET = '11111111111111'
@@ -43,6 +44,13 @@ describe('importStructureEmployeuseFromProConnect', () => {
     await seedStructures(prismaClient)
 
     // Résidu d'un run précédent interrompu : la clé (siret, dénomination) est unique.
+    await prismaClient.personneAffectationEmploiMain.deleteMany({
+      where: {
+        structureAdministrative: {
+          siret: { in: [PROCONNECT_SIRET, OTHER_SIRET] },
+        },
+      },
+    })
     await prismaClient.structureAdministrativeMain.deleteMany({
       where: { siret: { in: [PROCONNECT_SIRET, OTHER_SIRET] } },
     })
@@ -90,6 +98,13 @@ describe('importStructureEmployeuseFromProConnect', () => {
 
   afterAll(async () => {
     await nettoyerPersonnesDeTest()
+    await prismaClient.personneAffectationEmploiMain.deleteMany({
+      where: {
+        structureAdministrativeId: {
+          in: [state.proconnectMainId, state.otherMainId],
+        },
+      },
+    })
     await prismaClient.structureAdministrativeMain.deleteMany({
       where: { id: { in: [state.proconnectMainId, state.otherMainId] } },
     })

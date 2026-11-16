@@ -32,29 +32,18 @@ export const testDotenvConfig = () => {
   dotenv.config({ path: dotenvFile })
 }
 
-/**
- * Swc jest is not compatible with spy and jest mock. For mocking add the modules in mockableFilePatterns.
- * This will at some point be addressed by @swc/jest and we will remove this compatibility layer.
- */
 export const packageJestConfig = ({
   transformIgnorePackages = [],
   testPathIgnorePatterns = [],
-  mockableFilePatterns = [],
   customExportConditions,
   testMatch,
 }: {
   transformIgnorePackages?: string[]
   testPathIgnorePatterns?: string[]
-  mockableFilePatterns?: string[]
   testMatch?: string[]
   customExportConditions?: string[]
 }) => {
   testDotenvConfig()
-
-  // Swc jest is not compatible with spy and jest mock. For mocking add the modules here.
-  // See https://github.com/swc-project/swc/issues/5059
-  // '^.+packages/foo/src/common/cache\\.ts$': 'ts-jest',
-  const tsJestTransformPattern = mockableFilePatterns.join('|')
 
   // Le dépôt compile le JSX en runtime automatique (`"jsx": "react-jsx"` à la racine des
   // tsconfig, comme Next et tsx). @swc/jest, lui, retombe sur le runtime classique quand on ne
@@ -65,14 +54,9 @@ export const packageJestConfig = ({
     { jsc: { transform: { react: { runtime: 'automatic' } } } },
   ]
 
-  const transform = tsJestTransformPattern
-    ? {
-        [tsJestTransformPattern]: 'ts-jest',
-        '^.+\\.(t|j)sx?$': swcJest,
-      }
-    : {
-        '^.+\\.(t|j)sx?$': swcJest,
-      }
+  const transform = {
+    '^.+\\.(t|j)sx?$': swcJest,
+  }
 
   return {
     moduleFileExtensions: ['js', 'ts', 'tsx'],
@@ -118,14 +102,6 @@ export const packageJestConfig = ({
         'node',
         'node-addons',
       ],
-    },
-    globals: {
-      'ts-jest': {
-        tsconfig: {
-          sourceMap: true,
-          inlineSources: false,
-        },
-      },
     },
     // Coverage configuration
     coverageProvider: 'v8',

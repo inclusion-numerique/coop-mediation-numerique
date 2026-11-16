@@ -1,4 +1,5 @@
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
+import { describe, expect, it } from 'vitest'
 
 describe('rechercheApiEntreprise', () => {
   it('should return a result for a "non diffusible" siret', async () => {
