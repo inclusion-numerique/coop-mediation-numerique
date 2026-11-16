@@ -2,6 +2,7 @@ import {
   CoordinateurId,
   MediateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import { activationDe } from './mediation'
 
 const coordinateur = CoordinateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')

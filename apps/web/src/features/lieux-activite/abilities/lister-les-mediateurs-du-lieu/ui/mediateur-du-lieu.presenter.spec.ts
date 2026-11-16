@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ProfilDuMediateur } from '../domain'
 import {
   dateDeDerniereActivite,

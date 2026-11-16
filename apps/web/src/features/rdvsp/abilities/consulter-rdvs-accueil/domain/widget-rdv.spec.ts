@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { type CompteRdv, MessageErreurCompte } from '../../../domain/compte-rdv'
 import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
 import { OrganisationId } from '../../../domain/organisation-id'

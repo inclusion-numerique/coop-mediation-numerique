@@ -9,6 +9,7 @@ import {
   Telephone,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import type {
   CoordinateurDeLaFiche,
   FicheUtilisateur,

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Email } from '../../../domain/email'
 import { MediateurId } from '../../../domain/mediateur-id'
 import { Nom } from '../../../domain/nom'

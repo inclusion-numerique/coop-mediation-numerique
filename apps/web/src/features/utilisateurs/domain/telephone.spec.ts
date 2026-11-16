@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Telephone, telephoneEnregistrable } from './telephone'
 
 describe('téléphone d’un compte', () => {

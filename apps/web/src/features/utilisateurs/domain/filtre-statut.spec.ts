@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { critereDuStatut, FiltreStatut } from './filtre-statut'
 
 const MAINTENANT = new Date('2026-10-21T12:00:00.000Z')

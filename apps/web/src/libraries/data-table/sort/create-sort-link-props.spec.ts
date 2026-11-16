@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { createSortLinkProps } from './create-sort-link-props'
 
 describe('createSortLinkProps', () => {

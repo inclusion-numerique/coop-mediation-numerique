@@ -1,4 +1,5 @@
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import { describe, expect, it } from 'vitest'
 import {
   DescriptionSaisie,
   InformationsGeneralesSaisie,

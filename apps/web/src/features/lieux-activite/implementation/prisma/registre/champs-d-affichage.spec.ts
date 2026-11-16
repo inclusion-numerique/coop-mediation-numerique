@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { champsDAffichage } from './champs-d-affichage'
 import type { InscriptionPourLaFiche } from './fiche-du-registre'
 

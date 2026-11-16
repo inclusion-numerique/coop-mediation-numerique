@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { contenuDeLaChronologie } from './chronologie'
 import { criteresDesActivites } from './criteres-des-activites'
 

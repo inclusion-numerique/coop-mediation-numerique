@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Email } from './email'
 import { Nom } from './nom'
 import { NomAffiche, nomAffiche } from './nom-affiche'

@@ -1,4 +1,5 @@
 import { changeObjectKeysCaseRecursive } from '@app/web/utils/changeObjectKeysCaseRecursive'
+import { describe, expect, it } from 'vitest'
 
 describe('changeObjectKeysCaseRecursive', () => {
   it('should change object keys case to snake case recursively', () => {

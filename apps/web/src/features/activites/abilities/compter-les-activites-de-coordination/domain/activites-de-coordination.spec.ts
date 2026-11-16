@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { TypeDActiviteDeCoordination } from '../../../domain'
 import { decompterParTrimestre } from './activites-de-coordination'
 

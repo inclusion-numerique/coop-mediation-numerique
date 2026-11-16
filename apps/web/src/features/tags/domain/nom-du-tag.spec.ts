@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { memeNom, NomDuTag } from './nom-du-tag'
 
 describe('identité d’un nom de tag', () => {

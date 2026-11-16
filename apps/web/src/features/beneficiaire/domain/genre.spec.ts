@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Genre } from './genre'
 
 describe('Genre', () => {

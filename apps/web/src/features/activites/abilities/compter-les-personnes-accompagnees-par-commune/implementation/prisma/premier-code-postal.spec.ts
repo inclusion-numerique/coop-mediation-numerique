@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { premierCodePostal } from './premier-code-postal'
 
 describe('premier code postal', () => {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Effectif } from './effectif'
 import { proportion } from './proportion'
 

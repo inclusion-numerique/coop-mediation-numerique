@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { depublicationCoop, retraitCoop, signatureCoop } from './signature-coop'
 
 const maintenant = new Date('2026-09-11T16:00:00Z')

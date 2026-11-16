@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { cycleDeVie, inscription } from './cycle-de-vie'
 
 const creeLe = new Date('2026-01-01')

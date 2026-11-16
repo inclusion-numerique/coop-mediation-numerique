@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { contactDuRegistre } from './contact-du-registre'
 
 describe('le contact que le registre rend, relu depuis son jsonb', () => {

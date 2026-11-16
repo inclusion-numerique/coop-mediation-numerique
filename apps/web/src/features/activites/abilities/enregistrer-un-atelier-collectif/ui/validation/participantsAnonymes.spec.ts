@@ -7,6 +7,7 @@ import {
   STATUTS_SOCIAUX,
   TRANCHES_D_AGE,
 } from '@app/web/features/activites/domain'
+import { describe, expect, it } from 'vitest'
 
 describe('participantsAnonymes', () => {
   describe('ParticipantsAnonymesCraCollectifData', () => {

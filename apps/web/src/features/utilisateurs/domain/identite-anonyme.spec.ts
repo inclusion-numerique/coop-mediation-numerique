@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { AdresseCourriel } from './adresse-courriel'
 import { CourrielHash } from './courriel-hash'
 import { estCourrielAnonymise, identiteAnonyme } from './identite-anonyme'

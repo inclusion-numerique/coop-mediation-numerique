@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { hrefDuLieu } from './href-du-lieu'
 
 describe('lien vers la fiche d’un lieu', () => {

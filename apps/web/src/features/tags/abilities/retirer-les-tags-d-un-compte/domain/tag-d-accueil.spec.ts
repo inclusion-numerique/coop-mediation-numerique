@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { NomDuTag, TagId } from '../../../domain'
 import { tagDAccueil } from './tag-d-accueil'
 

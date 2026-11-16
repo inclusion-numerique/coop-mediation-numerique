@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { destination } from './destination'
 import type { LieuAuPanier } from './panier'
 

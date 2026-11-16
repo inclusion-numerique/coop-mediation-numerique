@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CraEvenementValidation } from './CraEvenementValidation'
 
 describe('validation de la saisie d’un évènement', () => {

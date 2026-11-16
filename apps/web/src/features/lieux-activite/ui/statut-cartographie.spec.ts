@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { getCartographyStatus } from './statut-cartographie'
 
 describe('statut d’un lieu sur la cartographie nationale', () => {

@@ -2,6 +2,7 @@ import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiai
 import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { describe, expect, it } from 'vitest'
 import type { BeneficiaireSearchItem } from '../domain/rechercher-beneficiaires'
 import { toBeneficiaireData, toPreviewBanData } from './beneficiaire-option'
 

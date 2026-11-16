@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { AnneeNaissance } from './annee-naissance'
 import type { BeneficiaireAnonyme, BeneficiaireIdentifie } from './beneficiaire'
 import {

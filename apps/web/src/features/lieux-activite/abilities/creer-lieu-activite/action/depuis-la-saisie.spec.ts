@@ -8,6 +8,7 @@ import {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { describe, expect, it } from 'vitest'
 import { UserId } from '../../../domain/user-id'
 import { nouveauLieu } from './depuis-la-saisie'
 

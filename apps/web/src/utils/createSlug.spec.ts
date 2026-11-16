@@ -1,4 +1,5 @@
 import { createSlug } from '@app/web/utils/createSlug'
+import { describe, expect, it } from 'vitest'
 
 describe('createSlug', () => {
   it('should create a simple slug', () => {

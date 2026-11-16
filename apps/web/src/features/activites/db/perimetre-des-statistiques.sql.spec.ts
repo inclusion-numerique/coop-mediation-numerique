@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CoordinateurId, MediateurId, PERIMETRE_NATIONAL } from '../domain'
 import { dansLePerimetre } from './perimetre-des-statistiques.sql'
 

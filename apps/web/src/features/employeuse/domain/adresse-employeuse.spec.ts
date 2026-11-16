@@ -1,4 +1,5 @@
 import type { Model } from '@app/web/libraries/model'
+import { describe, expect, it } from 'vitest'
 import { AdresseEmployeuse } from './adresse-employeuse'
 
 // Le type d'ENTRÉE du modèle, pas sa sortie brandée : c'est lui qui décrit ce

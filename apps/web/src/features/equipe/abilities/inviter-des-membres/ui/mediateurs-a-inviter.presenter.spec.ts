@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Email, MediateurId, NomAffiche, RoleMembre } from '../../../domain'
 import {
   issueDeLInvitation,

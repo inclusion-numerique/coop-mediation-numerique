@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { AnneeNaissance } from '../domain/annee-naissance'
 import type {
   BeneficiaireAnonyme,

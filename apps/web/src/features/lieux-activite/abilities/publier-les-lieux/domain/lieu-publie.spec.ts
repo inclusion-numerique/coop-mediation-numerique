@@ -1,4 +1,5 @@
 import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { LieuPublieSchema } from './lieu-publie'
 
 const lieu = (champs: Record<string, unknown> = {}) => ({

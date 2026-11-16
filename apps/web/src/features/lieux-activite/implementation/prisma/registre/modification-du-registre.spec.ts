@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { derniereModificationExterne } from './modification-du-registre'
 
 const modificationCoop = new Date('2026-09-01T10:00:00Z')

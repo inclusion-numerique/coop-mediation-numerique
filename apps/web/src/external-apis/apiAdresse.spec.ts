@@ -10,6 +10,7 @@ import {
   reponseAdresseTrouvee,
   reponseSansAdresse,
 } from '@app/web/external-apis/apiAdresse.reponses'
+import { describe, expect, it } from 'vitest'
 
 const reponse = (corps: unknown, status = 200) =>
   new Response(JSON.stringify(corps), { status })

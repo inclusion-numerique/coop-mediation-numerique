@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { validateActivitesFilters } from './parametres-de-la-barre'
 
 describe('critères de la page des statistiques', () => {

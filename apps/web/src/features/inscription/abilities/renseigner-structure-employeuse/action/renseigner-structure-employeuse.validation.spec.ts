@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { RenseignerStructureEmployeuseValidation } from './renseigner-structure-employeuse.validation'
 
 const adresseBan = {

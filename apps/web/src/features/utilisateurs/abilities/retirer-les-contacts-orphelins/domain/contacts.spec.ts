@@ -2,6 +2,7 @@ import {
   AdresseCourriel,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import {
   type CompteDuContact,
   type ContactBrevo,

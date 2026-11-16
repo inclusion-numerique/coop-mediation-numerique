@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { parametresDeLaPagination } from './pagination.presenter'
 
 describe('paramètres de la pagination des coordinations', () => {

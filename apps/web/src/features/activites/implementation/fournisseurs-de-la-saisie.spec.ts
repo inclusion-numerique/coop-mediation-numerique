@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { DateDActivite, TagId } from '../domain'
 import {
   employeuseDeLaDateDepuis,

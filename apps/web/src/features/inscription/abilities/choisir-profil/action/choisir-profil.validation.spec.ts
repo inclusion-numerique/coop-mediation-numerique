@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ChoisirProfilValidation } from './choisir-profil.validation'
 
 describe('ChoisirProfilValidation', () => {

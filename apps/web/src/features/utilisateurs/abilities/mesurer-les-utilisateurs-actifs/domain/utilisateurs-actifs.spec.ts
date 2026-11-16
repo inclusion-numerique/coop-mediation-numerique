@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { actifsDeLaCategorie, utilisateursActifs } from './utilisateurs-actifs'
 
 describe('utilisateurs actifs', () => {

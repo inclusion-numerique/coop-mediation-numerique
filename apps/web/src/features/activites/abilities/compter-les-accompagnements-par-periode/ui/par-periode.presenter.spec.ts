@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Effectif, Jour } from '../../../domain'
 import { Mois } from '../domain'
 import { parPeriodePresentes } from './par-periode.presenter'

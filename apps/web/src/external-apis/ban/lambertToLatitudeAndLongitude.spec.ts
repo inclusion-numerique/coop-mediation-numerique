@@ -1,4 +1,5 @@
 import { lambertToLatitudeAndLongitude } from '@app/web/external-apis/ban/lambertToLatitudeAndLongitude'
+import { describe, expect, test } from 'vitest'
 
 const testCases = [
   {

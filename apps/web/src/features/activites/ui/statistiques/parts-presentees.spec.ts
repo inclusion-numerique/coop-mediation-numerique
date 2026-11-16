@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Commune, Effectif } from '../../domain'
 import { libelleDeLaCommune, partsPresentees } from './parts-presentees'
 

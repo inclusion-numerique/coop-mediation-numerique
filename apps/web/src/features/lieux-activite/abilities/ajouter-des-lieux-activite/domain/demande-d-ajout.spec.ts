@@ -1,4 +1,5 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { LieuId } from '../../../domain/lieu-id'
 import { MediateurId } from '../../../domain/mediateur-id'
 import { demandeDAjout } from './demande-d-ajout'

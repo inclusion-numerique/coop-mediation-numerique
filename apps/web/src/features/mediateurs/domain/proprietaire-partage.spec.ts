@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CoordinateurId } from './coordinateur-id'
 import { MediateurId } from './mediateur-id'
 import { PerimetrePartage } from './perimetre-partage'

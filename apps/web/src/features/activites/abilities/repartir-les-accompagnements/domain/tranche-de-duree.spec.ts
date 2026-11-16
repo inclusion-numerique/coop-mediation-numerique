@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { bornesEnMinutes, tranchesDeDuree } from './tranche-de-duree'
 
 describe('tranches de durée', () => {

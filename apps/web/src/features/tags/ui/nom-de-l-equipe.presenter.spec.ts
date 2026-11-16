@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { type Acteur, CoordinateurId, NomDuCoordinateur, role } from '../domain'
 import { nomDeLEquipe } from './nom-de-l-equipe.presenter'
 

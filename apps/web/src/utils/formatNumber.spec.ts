@@ -1,4 +1,5 @@
 import { numberToPercentage } from '@app/web/utils/formatNumber'
+import { describe, expect, test } from 'vitest'
 
 describe('formatNumber', () => {
   describe('numberToPercentage', () => {

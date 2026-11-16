@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ZodError } from 'zod'
 import { curseurDeCraV1 } from './curseur-de-cra-v1'
 

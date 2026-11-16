@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CreerBeneficiaireValidation } from './creer-beneficiaire.validation'
 
 const minimal = { prenom: 'Jean', nom: 'Dupont' }

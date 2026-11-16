@@ -1,4 +1,5 @@
 import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
+import { describe, expect, it } from 'vitest'
 import { structureCreationDataWithSiretFromUniteLegale } from './structuresDepuisUniteLegale'
 
 // Réponse de l'API Recherche d'entreprises réduite à ce que l'adaptateur lit.

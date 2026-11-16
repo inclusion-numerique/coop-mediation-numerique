@@ -4,6 +4,7 @@ import {
   dateAsDayFullWordsInTimezone,
   dateAsDayWithHourInTimezone,
 } from '@app/web/utils/dateAsDay'
+import { describe, expect, it } from 'vitest'
 
 describe('dateAsDay', () => {
   it('formats date', () => {

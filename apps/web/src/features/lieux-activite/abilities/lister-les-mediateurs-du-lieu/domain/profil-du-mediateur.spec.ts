@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { profilDuMediateur } from './profil-du-mediateur'
 
 describe('profil d’un médiateur du lieu', () => {

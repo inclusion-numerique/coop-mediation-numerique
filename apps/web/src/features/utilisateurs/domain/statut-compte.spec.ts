@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import type { ActiviteCoordinateur, ActiviteMediateur } from './activite'
 import { cycleDeVie } from './cycle-de-vie'
 import { JAMAIS, jalon } from './jalon'

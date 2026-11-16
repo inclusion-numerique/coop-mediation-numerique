@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { adhesionActive, adhesionArchivee } from '../../../domain/fixtures'
 import { exigerAncienMembre } from './ancien-membre'
 

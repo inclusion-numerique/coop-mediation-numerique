@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { requeteDeLExport } from './requete-de-l-export.presenter'
 
 describe("requête de l'export des coordinations", () => {

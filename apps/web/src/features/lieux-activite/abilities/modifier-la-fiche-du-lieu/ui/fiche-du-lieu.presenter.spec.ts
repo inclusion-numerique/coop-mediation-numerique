@@ -22,6 +22,7 @@ import {
   Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import type { Lieu } from '../../../domain/lieu'
 import { LieuId } from '../../../domain/lieu-id'
 import {

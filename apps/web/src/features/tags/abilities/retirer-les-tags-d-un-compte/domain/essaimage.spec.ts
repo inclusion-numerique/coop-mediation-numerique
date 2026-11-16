@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { MediateurId } from '../../../domain'
 import { essaimageDesTagsDuCoordinateur } from './essaimage'
 

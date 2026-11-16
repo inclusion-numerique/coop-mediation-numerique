@@ -4,6 +4,7 @@ import {
   Localisation,
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import type { Fiche } from '../../../domain/fiche'
 import {
   adresseDeLInscription,

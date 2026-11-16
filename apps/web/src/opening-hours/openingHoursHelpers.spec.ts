@@ -1,4 +1,5 @@
 import { CLOSED_SCHEDULE } from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { describe, expect, it } from 'vitest'
 import { safeToTimetableOpeningHours } from './openingHoursHelpers'
 
 describe('safeToTimetableOpeningHours', () => {

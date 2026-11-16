@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { adhesionActive, adhesionArchivee } from '../domain/fixtures'
 import { fromAdhesion, toAdhesion } from './adhesion.transfer'
 

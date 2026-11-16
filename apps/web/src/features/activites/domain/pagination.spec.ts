@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { paginationLue } from './pagination'
 
 describe('pagination lue dans l’URL', () => {

@@ -3,6 +3,7 @@ import {
   Localisation,
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { BanId } from '../../../domain/ban-id'
 import { LieuId } from '../../../domain/lieu-id'
 import { estExistant } from './lieu-demande'

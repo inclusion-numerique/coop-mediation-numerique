@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { type LigneActeur, versActeur } from './acteur.transfer'
 
 const coordinateurDeLActeur = {

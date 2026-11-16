@@ -1,5 +1,6 @@
 import { ParticipantsAnonymesCraCollectifValidation } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
 import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { describe, expect, it } from 'vitest'
 
 describe('ParticipantsAnonymesCraCollectifValidation', () => {
   const validData = {

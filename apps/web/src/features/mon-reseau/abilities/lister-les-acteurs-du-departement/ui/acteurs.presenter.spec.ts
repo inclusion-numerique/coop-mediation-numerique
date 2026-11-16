@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Dispositif } from '../../../domain'
 import {
   coordinateurConseillerNumerique,

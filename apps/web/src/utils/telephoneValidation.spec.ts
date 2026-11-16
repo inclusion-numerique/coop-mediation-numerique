@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { telephoneRegex, telephoneValidation } from './telephoneValidation'
 
 describe('telephoneRegex', () => {

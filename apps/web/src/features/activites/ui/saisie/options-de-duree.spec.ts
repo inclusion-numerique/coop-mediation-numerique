@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { optionsDeDuree } from './options-de-duree'
 
 describe('options de durée', () => {

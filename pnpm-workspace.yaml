@@ -37,6 +37,8 @@ minimumReleaseAgeExclude:
   # laissait l'install échouer sur le binaire. Remplace l'entrée `@next/env` seule.
   - "@next/*"
   - "@arckit/resultset"
+  - vitest
+  - "@vitest/*"
 
 # Migré depuis le champ `pnpm` de package.json, que pnpm 10 n'a jamais lu : ces réglages
 # étaient silencieusement inertes (cf. l'avertissement affiché à chaque commande).

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Effectif } from '../../../domain'
 import { totauxPresentes } from './totaux.presenter'
 

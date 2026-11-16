@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { etatContrat, ruptureEnAttente } from './rupture-en-attente'
 
 const maintenant = new Date('2026-10-20T09:00:00.000Z')

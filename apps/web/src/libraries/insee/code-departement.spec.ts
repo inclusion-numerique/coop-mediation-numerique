@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CodeDepartement, codeDepartementDuCodeInsee } from './code-departement'
 import { CodeInsee } from './code-insee'
 

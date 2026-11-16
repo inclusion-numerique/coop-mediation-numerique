@@ -3,6 +3,7 @@ import {
   SERVICE_ADRESSE_INDISPONIBLE,
 } from '@app/web/external-apis/apiAdresse'
 import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import { describe, expect, it } from 'vitest'
 import {
   auPanier,
   type LieuAuPanier,

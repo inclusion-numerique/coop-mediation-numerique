@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { adresseMainDepuis } from './adresseMain'
 
 describe('adresseMainDepuis — codes non conformes des sources amont', () => {

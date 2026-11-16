@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import type { CellValue } from 'exceljs'
 import Excel from 'exceljs'
+import { describe, expect, it } from 'vitest'
 import {
   AnalysisSchema,
   analyseImportBeneficiairesExcel,
@@ -34,9 +35,7 @@ const getSheetFromLocalFile = (file: string) => {
   return getBeneficiaireImportSheet(fileBuffer)
 }
 
-jest.setTimeout(10_000)
-
-describe('analyseImportBeneficiairesExcel', () => {
+describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
   it('should parse the downloadable model xlsx file', async () => {
     const workbook = await getSheetFromLocalFile(
       '../../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',

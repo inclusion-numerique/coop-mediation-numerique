@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { confirmationDuPartageManquante } from './confirmation-du-partage'
 
 describe('confirmer la modification d’un lieu partagé', () => {

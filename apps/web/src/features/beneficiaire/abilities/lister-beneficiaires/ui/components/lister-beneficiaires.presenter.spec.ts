@@ -1,5 +1,6 @@
 import type { BeneficiaireListItem } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import { Page, PageSize, type Paginated } from '@arckit/resultset'
+import { describe, expect, it } from 'vitest'
 import { beneficiaireListItem } from './beneficiaire-list-item.fixture'
 import { presentMesBeneficiaires } from './lister-beneficiaires.presenter'
 

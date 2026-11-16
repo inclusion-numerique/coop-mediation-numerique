@@ -1,4 +1,5 @@
 import { JAMAIS, jalon } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import { etapeInactivite } from './etape-inactivite'
 
 const maintenant = new Date('2026-10-20T01:00:00.000Z')

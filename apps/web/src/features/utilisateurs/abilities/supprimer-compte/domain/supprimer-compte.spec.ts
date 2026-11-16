@@ -6,6 +6,7 @@ import {
   RoleUtilisateur,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import type { AuteurSuppression } from './auteur-suppression'
 import { RetentionPolicy } from './retention-policy'
 import { autoriserSuppression } from './supprimer-compte'

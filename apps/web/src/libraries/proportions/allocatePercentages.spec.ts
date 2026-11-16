@@ -2,6 +2,7 @@ import {
   allocatePercentages,
   allocatePercentagesFromRecords,
 } from '@app/web/libraries/proportions'
+import { describe, expect, it } from 'vitest'
 
 describe('allocatePercentages', () => {
   it('should allocate percentages correctly for an array of numbers', () => {

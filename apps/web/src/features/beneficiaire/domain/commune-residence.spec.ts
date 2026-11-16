@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CommuneResidence } from './commune-residence'
 
 describe('CommuneResidence', () => {

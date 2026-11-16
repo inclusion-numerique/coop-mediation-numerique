@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { beneficiairesComptes } from './activite-exposee.transfer'
 
 describe('beneficiairesComptes', () => {

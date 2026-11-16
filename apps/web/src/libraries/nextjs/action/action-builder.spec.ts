@@ -1,4 +1,5 @@
 import { createNoopReporter } from '@arckit/telemetry/error-reporter'
+import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import {
   ACTION_INVALID_INPUT_ERROR,

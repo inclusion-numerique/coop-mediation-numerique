@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import type { LigneEquipeRow } from './ligne-equipe.sql'
 import { toLigneEquipe } from './ligne-equipe.transfer'
 

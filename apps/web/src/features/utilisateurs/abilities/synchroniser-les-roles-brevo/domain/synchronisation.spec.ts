@@ -10,6 +10,7 @@ import {
   situationDansLeDispositif,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import { contactsASynchroniser } from './synchronisation'
 
 const rattachementsDuMediateur = (

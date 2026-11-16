@@ -1,4 +1,5 @@
 import { Siret } from '@app/web/libraries/insee'
+import { describe, expect, it } from 'vitest'
 import {
   type EmployeuseChoisie,
   identiteDeLEmployeuseChoisie,
