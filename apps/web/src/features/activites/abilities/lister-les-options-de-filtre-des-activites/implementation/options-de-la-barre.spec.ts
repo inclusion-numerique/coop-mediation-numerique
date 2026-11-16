@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { periodeLaPlusLarge } from './options-de-la-barre'
 
 const date = (jour: string) => new Date(jour)

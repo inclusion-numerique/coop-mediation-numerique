@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { type CompteRdv, MessageErreurCompte } from './compte-rdv'
 import { JetonAcces, type JetonsOAuth } from './jetons-oauth'
 import { RdvAgentId } from './rdv-agent-id'

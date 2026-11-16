@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "lint": "biome check src",
-    "test": "jest --passWithNoTests",
     "tsc": "tsc --noEmit",
     "postinstall": "pnpm --silent setup:dsfr",
     "with-env": "dotenv -e ../../.env --",
@@ -41,12 +40,9 @@
   },
   "devDependencies": {
     "@storybook/react": "^10.6.0",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@types/jest": "^30.0.0",
     "@types/node": "^24.19.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "jest": "^30.5.2",
     "storybook": "^10.6.0",
     "typescript": "^7.0.2"
   }

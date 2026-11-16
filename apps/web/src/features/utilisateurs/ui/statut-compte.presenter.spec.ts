@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import type { StatutCompte } from '../domain'
 import { libelleDuStatut, severiteDuStatut } from './statut-compte.presenter'
 

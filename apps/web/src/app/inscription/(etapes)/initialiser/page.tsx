@@ -1,10 +1,10 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
 import { initialiserInscriptionAvecInfra } from '@app/web/features/inscription/abilities/initialiser-inscription/implementation'
 import { UserId } from '@app/web/features/inscription/domain'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
-import * as Sentry from '@sentry/nextjs'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
@@ -32,12 +32,10 @@ const InitialiserInscriptionPage = async () => {
   }
 
   // Capture sentry error if no next step determined
-  Sentry.captureException(
-    new Error('No next step determined for inscription'),
-    {
-      extra: { userId: user.id, email: user.email },
-    },
-  )
+  errorReporter.captureException({
+    error: new Error('No next step determined for inscription'),
+    attributes: { userId: user.id },
+  })
   // Fallback if no next step determined
   redirect('/coop')
 }

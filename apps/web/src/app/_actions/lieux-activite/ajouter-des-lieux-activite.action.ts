@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import {
   ajouterDesLieuxActivite,
@@ -14,7 +15,7 @@ import {
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /**
  * L'ajout du panier. C'est ici que se fait la jonction entre l'ability et ses

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import * as vocabulaire from './vocabulaire'
 
 type Pont<Coop extends string, Standard extends string> = {

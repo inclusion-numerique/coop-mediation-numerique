@@ -1,5 +1,8 @@
-import { initializeSentry } from '@app/web/sentry'
-import * as Sentry from '@sentry/nextjs'
+import {
+  flush,
+  register,
+} from '@app/web/configuration/telemetry/error-reporter/server'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { executeJob } from './jobExecutors'
 import { JobValidation } from './jobs'
 import { output } from './output'
@@ -24,15 +27,14 @@ const lancer = async (): Promise<number> => {
   return resultat.status === 'ok' ? 0 : 1
 }
 
-initializeSentry()
-
-lancer()
+register()
+  .then(lancer)
   .catch((error: unknown) => {
     output.error(error)
-    Sentry.captureException?.(error)
+    signaler(error)
     return 1
   })
   .then(async (code) => {
-    await Sentry.flush?.(2000)
+    await flush(2000)
     process.exit(code)
   })

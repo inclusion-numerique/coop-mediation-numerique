@@ -1,4 +1,5 @@
 import { generateActivitesFiltersLabels } from '@app/web/features/activites/ui/filtres/libelles-des-filtres'
+import { describe, expect, it } from 'vitest'
 
 const COMMUNES_OPTIONS = [
   { value: '69382', label: 'Lyon 2eme · 69002' },

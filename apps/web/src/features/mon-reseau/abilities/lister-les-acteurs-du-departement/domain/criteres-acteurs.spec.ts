@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { criteresActeurs, estFiltre } from './criteres-acteurs'
 
 describe('critères de l’annuaire des acteurs', () => {

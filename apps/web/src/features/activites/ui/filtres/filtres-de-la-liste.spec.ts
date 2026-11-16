@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { criteresDesActivites } from '../../domain'
 import { filtresDeLaListe } from './filtres-de-la-liste'
 

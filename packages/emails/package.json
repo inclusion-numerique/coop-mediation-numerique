@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "lint": "biome check src",
-    "test": "jest",
     "tsc": "tsc --noEmit"
   },
   "engines": {
@@ -26,11 +25,9 @@
   },
   "devDependencies": {
     "@types/html-minifier-terser": "^7.0.2",
-    "@types/jest": "^30.0.0",
     "@types/mjml": "^5.0.0",
     "@types/node": "^24.19.1",
     "@types/react": "^19.3.0",
-    "jest": "^30.5.2",
     "typescript": "^7.0.2"
   }
 }

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { EnregistrerUnAtelierCollectifValidation } from './enregistrer-un-atelier-collectif.validation'
 
 const zeros = <K extends string>(cles: readonly K[]) =>

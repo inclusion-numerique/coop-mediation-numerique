@@ -1,4 +1,4 @@
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import type { CreerOuFusionnerBeneficiaires } from '../../domain/creer-activite-depuis-rdv'
 
 /**
@@ -9,8 +9,8 @@ import type { CreerOuFusionnerBeneficiaires } from '../../domain/creer-activite-
  */
 export const creerOuFusionnerBeneficiaires: CreerOuFusionnerBeneficiaires =
   async ({ usagers, mediateurId }) => {
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
+    const { merges } =
+      await creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding({
         usagers: usagers.map((usager) => ({
           rdvUserId: usager.id,
           prenom: usager.prenom,
@@ -21,8 +21,7 @@ export const creerOuFusionnerBeneficiaires: CreerOuFusionnerBeneficiaires =
           birthDate: usager.dateNaissance,
         })),
         mediateurId,
-      },
-    )
+      })
 
     return merges
   }

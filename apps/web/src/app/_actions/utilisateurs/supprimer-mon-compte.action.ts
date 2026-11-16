@@ -1,6 +1,7 @@
 'use server'
 
 import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import {
@@ -8,7 +9,7 @@ import {
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
 import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import { actionBuilder, fromResult } from '@app/web/libraries/nextjs'
+import { fromResult } from '@app/web/libraries/nextjs'
 
 export const supprimerMonCompteAction = actionBuilder()
   .use(withAuth())

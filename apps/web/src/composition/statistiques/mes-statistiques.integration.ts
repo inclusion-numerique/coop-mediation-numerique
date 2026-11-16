@@ -54,6 +54,7 @@ import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
 import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import { prismaClient } from '@app/web/prismaClient'
 import { cloneDeep } from 'lodash-es'
+import { beforeAll, describe, expect, test } from 'vitest'
 
 /**
  * Base empty data for all tests

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { type Contrat, EcheanceDuContrat, TypeDeContrat } from '../domain'
 import { contratAffiche } from './contrat.presenter'
 

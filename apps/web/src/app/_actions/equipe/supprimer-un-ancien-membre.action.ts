@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { supprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ERRORS } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.errors'
@@ -11,7 +12,7 @@ import {
 } from '@app/web/features/equipe/domain'
 import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const supprimerUnAncienMembreAction = actionBuilder()
   .use(withAuth())

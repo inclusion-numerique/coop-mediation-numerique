@@ -1,34 +1,23 @@
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
+import { AdresseIndisponible } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
-import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
-import { resolveIdentiteFromSiret } from './resolveIdentiteSirene'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import {
+  ensureStructureAdministrativeMain,
+  type IdentiteStructureMain,
+} from './ensureStructureAdministrativeMain'
 
-// On neutralise l'API Recherche d'entreprises (identité) et le throttle : le test cible la dédup par
-// clé métier `(siret, denomination_antenne)`, pas l'appel réseau.
-jest.mock('./resolveIdentiteSirene', () => ({
-  resolveIdentiteFromSiret: jest.fn(),
-}))
-jest.mock('@app/web/libraries/siret', () => ({
-  ...jest.requireActual('@app/web/libraries/siret'),
-  throttleApiEntreprise: jest.fn().mockResolvedValue(undefined),
-}))
+const sansGeocodage = ensureStructureAdministrativeMain({
+  geocoder: async () => null,
+  signaler: () => undefined,
+})
 
-jest.mock('@app/web/external-apis/apiAdresse', () => ({
-  ...jest.requireActual('@app/web/external-apis/apiAdresse'),
-  searchAdresse: jest.fn().mockResolvedValue(null),
-}))
-
-const mockedResolve = resolveIdentiteFromSiret as jest.MockedFunction<
-  typeof resolveIdentiteFromSiret
->
-
-const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
-  typeof searchAdresse
->
-
-beforeEach(() => {
-  mockedSearchAdresse.mockResolvedValue(null)
+const identite = (nom: string): IdentiteStructureMain => ({
+  nom,
+  adresse: '1 rue du Doublon',
+  codePostal: '75001',
+  commune: 'Paris',
+  codeInsee: '75101',
 })
 
 describe('ensureStructureAdministrativeMain — dédup par identité', () => {
@@ -37,17 +26,6 @@ describe('ensureStructureAdministrativeMain — dédup par identité', () => {
   const state = { existingMainId: 0 }
 
   beforeAll(async () => {
-    mockedResolve.mockResolvedValue({
-      identite: {
-        nom: denominationAntenne,
-        adresse: '1 rue du Doublon',
-        codePostal: '75001',
-        commune: 'Paris',
-        codeInsee: '75101',
-        etatAdministratif: 'A',
-      },
-    })
-
     // Une SA main existe déjà pour cette identité, liée à un AUTRE coop (ou aucun).
     const existing = await prismaClient.structureAdministrativeMain.create({
       data: { siret, denominationAntenne },
@@ -63,9 +41,10 @@ describe('ensureStructureAdministrativeMain — dédup par identité', () => {
   })
 
   it('réutilise la SA main existante au lieu de créer un doublon (pas de null)', async () => {
-    const result = await ensureStructureAdministrativeMain({
-      coopId: v4(), // nouveau coop uuid, jamais vu dans main
+    const result = await sansGeocodage({
+      coopId: v4(),
       siret,
+      identite: identite(denominationAntenne),
     })
 
     expect(result).not.toBeNull()
@@ -89,17 +68,6 @@ describe('ensureStructureAdministrativeMain — ligne existante nommée côté S
   const state = { existingMainId: 0 }
 
   beforeAll(async () => {
-    mockedResolve.mockResolvedValue({
-      identite: {
-        nom: denomination,
-        adresse: '1 rue du Doublon',
-        codePostal: '75001',
-        commune: 'Paris',
-        codeInsee: '75101',
-        etatAdministratif: 'A',
-      },
-    })
-
     const existing = await prismaClient.structureAdministrativeMain.create({
       data: {
         siret,
@@ -118,9 +86,10 @@ describe('ensureStructureAdministrativeMain — ligne existante nommée côté S
   })
 
   it('réutilise la ligne dont seule la dénomination SIRENE porte le nom', async () => {
-    const result = await ensureStructureAdministrativeMain({
+    const result = await sansGeocodage({
       coopId: v4(),
       siret,
+      identite: identite(denomination),
     })
 
     expect(result?.id).toBe(state.existingMainId)
@@ -139,17 +108,6 @@ describe('ensureStructureAdministrativeMain — antennes distinctes du même SIR
   const state = { autreAntenneId: 0 }
 
   beforeAll(async () => {
-    mockedResolve.mockResolvedValue({
-      identite: {
-        nom: 'Antenne de Nantes',
-        adresse: '1 rue du Doublon',
-        codePostal: '75001',
-        commune: 'Paris',
-        codeInsee: '75101',
-        etatAdministratif: 'A',
-      },
-    })
-
     const autre = await prismaClient.structureAdministrativeMain.create({
       data: {
         siret,
@@ -168,9 +126,10 @@ describe('ensureStructureAdministrativeMain — antennes distinctes du même SIR
   })
 
   it('crée une ligne pour une antenne que rien ne désigne', async () => {
-    const result = await ensureStructureAdministrativeMain({
+    const result = await sansGeocodage({
       coopId: v4(),
       siret,
+      identite: identite('Antenne de Nantes'),
     })
 
     expect(result?.id).not.toBe(state.autreAntenneId)
@@ -179,5 +138,49 @@ describe('ensureStructureAdministrativeMain — antennes distinctes du même SIR
       where: { siret },
     })
     expect(count).toBe(2)
+  })
+})
+
+describe('ensureStructureAdministrativeMain — service d’adresse indisponible', () => {
+  const siret = '99999999999996'
+  afterAll(async () => {
+    const creee = await prismaClient.structureAdministrativeMain.findFirst({
+      where: { siret },
+      select: { adresseId: true },
+    })
+    await prismaClient.structureAdministrativeMain.deleteMany({
+      where: { siret },
+    })
+    if (creee?.adresseId) {
+      await prismaClient.adresseMain.deleteMany({
+        where: { id: creee.adresseId },
+      })
+    }
+  })
+
+  it('crée l’employeuse à l’adresse de la source', async () => {
+    const result = await ensureStructureAdministrativeMain({
+      geocoder: async () => {
+        throw new AdresseIndisponible('HTTP 503')
+      },
+      signaler: () => undefined,
+    })({
+      coopId: null,
+      siret,
+      identite: {
+        nom: 'Employeuse sans géocodage',
+        adresse: '3 rue du Repli',
+        codePostal: '75001',
+        commune: 'COMMUNE-TEST-REPLI',
+        codeInsee: '75101',
+      },
+    })
+
+    const creee = await prismaClient.structureAdministrativeMain.findUnique({
+      where: { id: result?.id ?? -1 },
+      select: { adresse: { select: { nomVoie: true, codeBan: true } } },
+    })
+
+    expect(creee?.adresse).toEqual({ nomVoie: '3 rue du Repli', codeBan: null })
   })
 })

@@ -28,7 +28,7 @@ employeuse). Rien sur `main.personne` ni sur les affectations emploi.
 
 **Ce que dit le Dataspace (#1707, « Acté »).** La bascule groupe **trois** chantiers présentés comme
 déjà actés côté coop :
-- (a) SA `coop.structure_administrative` → `main.structure_administrative` — *notre ADR* ;
+- (a) SA `coop.structure_administrative` → `main.structure_administrative` — _notre ADR_ ;
 - (b) **la coop synchronise elle-même `main.personne`** depuis `coop.users` (insert + update rôles),
   remplaçant le connecteur/`ingest_utilisateurs` de l'Entrepôt ;
 - (c) **suppression de `coop.employes_structures`** au profit d'écritures directes dans
@@ -98,11 +98,11 @@ d'investir dans le repointage des lectures d'une table condamnée. Il note que l
 
 **Enjeu.** Perte d'information à instruire : `employes_structures` porte **début/fin d'emploi,
 `suppression`, audit `*_par_id`, historisation** ; `personne_affectations_emploi` n'a que `est_active`
-+ **une ligne unique** par (personne, structure, source). Migrer sans analyse = risque de perdre
-l'historique et l'audit. Et une partie de notre étape 6 (repoint des *lectures* d'`employes_structures`)
-serait du **travail jeté** si la table disparaît.
+- **une ligne unique** par (personne, structure, source). Migrer sans analyse = risque de perdre
+  l'historique et l'audit. Et une partie de notre étape 6 (repoint des _lectures_ d'`employes_structures`)
+  serait du **travail jeté** si la table disparaît.
 
-**Vérification schéma main (2026-07-23, introspection locale)** — *où sont les dates d'emploi ?*
+**Vérification schéma main (2026-07-23, introspection locale)** — _où sont les dates d'emploi ?_
 - `main.personne_affectations_emploi` = `personne_id`, `structure_administrative_id`, `source`,
   **`est_active`**, `created_at`/`updated_at`. → **pas de début/fin**.
 - **`main.contrat`** = `personne_id`, **`date_debut`**, **`date_fin`**, `date_rupture`, `type`,
@@ -173,8 +173,8 @@ la SA + l'affectation), deux cas, **tranchés par l'email** :
 - la personne **existe déjà** (autre flux : idposte, CN Dataspace…) → on **pose simplement `coop_id`**
   dessus (find par email) ;
 - elle **n'existe pas** → on **crée** `main.personne` (avec `coop_id` + email).
-Ça règle du même coup l'**angle mort** : les users hors inscription-coop sont retrouvés par email s'ils
-existent via un autre flux ; sinon la coop les crée quand elle en a besoin. Pas de synchro continue.
+  Ça règle du même coup l'**angle mort** : les users hors inscription-coop sont retrouvés par email s'ils
+  existent via un autre flux ; sinon la coop les crée quand elle en a besoin. Pas de synchro continue.
 
 **Détail d'implémentation à confirmer** : l'email vit dans `main.personne.contact` (jsonb, forme
 `{"<source>": {"email": …}}`, ex. `{"coop": {"email": …}}`) et dans la table `main.contact` (colonne
@@ -206,8 +206,8 @@ reset/réactivation du coop-dag qui disparaît).
 ## Point 4 — `ON DELETE SET NULL` vs `RESTRICT` (contradiction interne avérée) 🟢
 
 **Fait vérifié.** La migration `20260723010642_repointer_employeuse_vers_main_colonnes` pose les 2 FK
-en **`ON DELETE SET NULL`**. L'ADR-002 (décision 1) annonce l'inverse : « *une suppression de ligne
-côté Entrepôt sera bloquée par nos lignes* » (= `RESTRICT`/`NO ACTION`). Philippe (PR #575 pt 2) le
+en **`ON DELETE SET NULL`**. L'ADR-002 (décision 1) annonce l'inverse : « _une suppression de ligne
+côté Entrepôt sera bloquée par nos lignes_ » (= `RESTRICT`/`NO ACTION`). Philippe (PR #575 pt 2) le
 relève : un hard-delete de SA côté Entrepôt **débrancherait silencieusement** des emplois/activités
 coop au lieu d'être bloqué.
 
@@ -330,7 +330,7 @@ et acter que le SA↔LI (Point 5) est le seul point de contact lieu restant dans
 carto/`lieu_inclusion`, **hors** périmètre « structures administratives » de cette PR. À corriger dans
 une PR dédiée (enums `entrepot/schema.prisma`), cohérent avec le Point 6 (rien sur les lieux ici).
 
-**7b — Grants Flyway.** *Qui demande / pourquoi* (clarification 2026-07-23) : c'est le **plan #1707
+**7b — Grants Flyway.** _Qui demande / pourquoi_ (clarification 2026-07-23) : c'est le **plan #1707
 Phase 3** (Philippe). Raison : la coop va **écrire directement** dans des tables `main` → le rôle
 Postgres derrière le `DATABASE_URL` coop a besoin de `INSERT/UPDATE/DELETE/REFERENCES` sur ces tables.
 Ces droits ont été posés **à la main** en base (« vérifié en base ») mais **aucune migration Flyway ne
@@ -355,13 +355,13 @@ Philippe à ce moment-là, pas maintenant.
 
 ## Questions factuelles de Philippe — réponses à confirmer puis poster
 
-| Source | Question | Réponse proposée | Statut |
-|---|---|---|---|
-| PR #575 Q1 | `mergeStructureAdministrative` disparaît de la coop ? | **Oui, fait** (`c1961964`). Fusion SA exclusive à MIN — aligné. | ✅ à confirmer |
-| PR #575 Q5 | Plus de corrélation matérialisée lieu↔SA ? | **Confirmé** : pas de colonne, corrélation `nom+adresse+codeInsee`. ⚠️ Description PR #575 à corriger (référence une colonne absente). | ✅ à confirmer |
-| #1705 | Prédicat de suppression des `structure_coop_id` orphelins : test sur **les deux** tables coop, ou seulement `structure_administrative` ? | **Vérifié (script `refactor/audit-coop-main/cleanup-dangling-coop-ids.sh:41`) : prédicat MÊME-TABLE** (`main.SA` testé contre `coop.SA` seul, `main.LI` contre `coop.LI` seul), **pas les deux**. Donc c'est bien le cas redouté. **MAIS** : les coop_id nullés sont **capturés en CSV** (`out/nulled-structure_administrative-*.csv` = **1031**, `nulled-lieu_inclusion-*.csv` = **912**) → récupérables ; et un **rattrapage par SIRET** a été fait (`link-employeuses-main` +156 liens + réconciliation à 100 %). Pas de perte permanente. | 🟢 à poster |
-| PR #575 Q2 | `SET NULL` vs `RESTRICT` transitoire/définitif ? | Voir **Point 4**. | 🔴 |
-| PR #575 Q3-4 | Séquencement `employes_structures` / analyse de schéma avant repoint des lectures ? | Voir **Points 2 + 3**. | 🔴 |
+| Source       | Question                                                                                                                                 | Réponse proposée                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Statut         |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| PR #575 Q1   | `mergeStructureAdministrative` disparaît de la coop ?                                                                                    | **Oui, fait** (`c1961964`). Fusion SA exclusive à MIN — aligné.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | ✅ à confirmer |
+| PR #575 Q5   | Plus de corrélation matérialisée lieu↔SA ?                                                                                               | **Confirmé** : pas de colonne, corrélation `nom+adresse+codeInsee`. ⚠️ Description PR #575 à corriger (référence une colonne absente).                                                                                                                                                                                                                                                                                                                                                                                                        | ✅ à confirmer |
+| #1705        | Prédicat de suppression des `structure_coop_id` orphelins : test sur **les deux** tables coop, ou seulement `structure_administrative` ? | **Vérifié (script `refactor/audit-coop-main/cleanup-dangling-coop-ids.sh:41`) : prédicat MÊME-TABLE** (`main.SA` testé contre `coop.SA` seul, `main.LI` contre `coop.LI` seul), **pas les deux**. Donc c'est bien le cas redouté. **MAIS** : les coop_id nullés sont **capturés en CSV** (`out/nulled-structure_administrative-*.csv` = **1031**, `nulled-lieu_inclusion-*.csv` = **912**) → récupérables ; et un **rattrapage par SIRET** a été fait (`link-employeuses-main` +156 liens + réconciliation à 100 %). Pas de perte permanente. | 🟢 à poster    |
+| PR #575 Q2   | `SET NULL` vs `RESTRICT` transitoire/définitif ?                                                                                         | Voir **Point 4**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | 🔴             |
+| PR #575 Q3-4 | Séquencement `employes_structures` / analyse de schéma avant repoint des lectures ?                                                      | Voir **Points 2 + 3**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | 🔴             |
 
 ---
 
@@ -369,8 +369,8 @@ Philippe à ce moment-là, pas maintenant.
 
 - **2026-07-23 — Point 1 (périmètre) : 🟢 tranché.** Périmètre large, variante « FK personne ».
   Supprimer `coop.structure_administrative` + `coop.employes_structures` → `main.structure_administrative`
-  + `main.personne_affectations_emploi`. Pas de migration `coop.user`→`main.personne` : FK à la place.
-  Même PR. → Pré-décide la direction du Point 2 (suppression) ; recadre le Point 3 (FK, pas propriété).
+  - `main.personne_affectations_emploi`. Pas de migration `coop.user`→`main.personne` : FK à la place.
+    Même PR. → Pré-décide la direction du Point 2 (suppression) ; recadre le Point 3 (FK, pas propriété).
 - **2026-07-23 — Point 1 (FK) : 🟢** réutilise `main.personne.coop_id → coop.user.id` (colonne
   existante, contrainte posée par Flyway/Entrepôt) ; relation Prisma modélisée côté coop.
 - **2026-07-23 — Point 3 (i) : 🟢** la coop crée `main.personne` (find-or-create par `coop_id`) dans
@@ -394,7 +394,7 @@ Philippe à ce moment-là, pas maintenant.
   1031 SA + 912 LI nullés mais **tracés en CSV** + **rattrapage SIRET** fait → pas de perte permanente.
 - **2026-07-23 — Réponse à Philippe POSTÉE** sur la PR #575
   (`inclusion-numerique/coop-mediation-numerique#575`, commentaire `5060028198`) : couvre Q1-Q5 + #1705
-  + grants (`sonum`). Contient 2 questions ouvertes pour l'Entrepôt (création `main.personne` hors
-  inscription-coop ; acter la divergence sur `lieu_inclusion_structure_administrative`).
+  - grants (`sonum`). Contient 2 questions ouvertes pour l'Entrepôt (création `main.personne` hors
+    inscription-coop ; acter la divergence sur `lieu_inclusion_structure_administrative`).
 - **2026-07-23 — ADR-002 mise à jour** : section « Révision 2026-07-23 — périmètre élargi » + précision
   RESTRICT/`sonum` sur la décision 1.

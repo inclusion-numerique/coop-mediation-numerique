@@ -1,4 +1,5 @@
 import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
+import { describe, expect, it } from 'vitest'
 
 describe('serializeJsonApiParams', () => {
   it('should serialize a flat object', () => {

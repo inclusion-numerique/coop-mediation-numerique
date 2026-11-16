@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { affectation, contrat } from './employeuse.fixture'
 import { employeuseALaDate } from './employeuse-a-la-date'
 

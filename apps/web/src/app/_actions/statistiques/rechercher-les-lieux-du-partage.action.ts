@@ -2,6 +2,7 @@
 
 import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
 import { perimetreDeLUtilisateur } from '@app/web/composition/statistiques/perimetre'
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import {
   GenreDeLieu,
   rechercherLesLieuxDesStatistiques,
@@ -9,7 +10,7 @@ import {
 import { RechercherLesLieuxDesStatistiquesValidation } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
 import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
 
 const rechercherDansLePartage = actionBuilder()

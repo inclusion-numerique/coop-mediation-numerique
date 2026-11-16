@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { EvenementWebhook } from '../../../domain/evenement-webhook'
 import {
   type BeneficiaireLie,

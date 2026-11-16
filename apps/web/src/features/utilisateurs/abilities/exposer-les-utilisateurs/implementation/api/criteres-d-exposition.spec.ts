@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { criteresDExposition } from './criteres-d-exposition'
 
 describe('critères d’exposition des utilisateurs', () => {

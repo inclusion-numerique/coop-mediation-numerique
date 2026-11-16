@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { derniereEcriture, type HorodatagesDeSource } from './derniere-ecriture'
 
 const LE_1ER_JANVIER = new Date('2026-01-01T10:00:00Z')

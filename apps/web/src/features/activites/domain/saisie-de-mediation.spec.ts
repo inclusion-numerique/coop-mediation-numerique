@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Commune } from './commune'
 import { EmployeuseId } from './employeuse-id'
 import { IdentifiantCraV1 } from './identifiant-cra-v1'

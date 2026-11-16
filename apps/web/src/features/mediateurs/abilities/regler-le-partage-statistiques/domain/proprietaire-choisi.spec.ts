@@ -3,6 +3,7 @@ import {
   MediateurId,
   PerimetrePartage,
 } from '@app/web/features/mediateurs/domain'
+import { describe, expect, it } from 'vitest'
 import { proprietaireChoisi } from './proprietaire-choisi'
 
 const MEDIATEUR = MediateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8')

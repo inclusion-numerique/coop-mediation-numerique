@@ -4,6 +4,7 @@ import {
   ModaliteAcces,
   PublicSpecifiquementAdresse,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { depuisLaSaisie } from './depuis-la-saisie'
 
 const adresseBan = {

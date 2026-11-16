@@ -1,12 +1,13 @@
 import { createTestApiV1Request } from '@app/web/app/api/v1/createTestApiV1Request'
 import {
   expect403ApiResponse,
-  expectV1ApiResponseJest,
-} from '@app/web/app/api/v1/expectV1ApiResponse.jest'
+  expectV1ApiResponse,
+} from '@app/web/app/api/v1/expectV1ApiResponse'
 import {
   createTestApiClientWithScopes,
   testApiClient,
 } from '@app/web/app/api/v1/testApiClient'
+import { beforeAll, describe, it } from 'vitest'
 import { GET } from './route'
 
 describe('api v1 /health', () => {
@@ -36,7 +37,7 @@ describe('api v1 /health', () => {
       }),
     )
 
-    await expectV1ApiResponseJest(response, {
+    await expectV1ApiResponse(response, {
       data: {
         status: 'ok',
       },

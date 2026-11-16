@@ -1,4 +1,5 @@
 import { NomAffiche } from '@app/web/libraries/nom-affiche'
+import { describe, expect, it } from 'vitest'
 import {
   Effectif,
   LienAgent,

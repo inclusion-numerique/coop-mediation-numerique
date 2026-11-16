@@ -4,6 +4,7 @@ import {
   Role,
   UserId,
 } from '@app/web/features/inscription/domain'
+import { describe, expect, it } from 'vitest'
 import { choisirProfil } from './choisir-profil'
 
 const userId = UserId('550e8400-e29b-41d4-a716-446655440000')

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { paginate } from './paginate'
 
 const numbers = (pages: ReturnType<typeof paginate>['pages']) =>

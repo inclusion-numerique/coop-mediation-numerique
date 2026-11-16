@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { criteresDesLieux } from '../domain'
 import {
   etiquettesDesCommunes,

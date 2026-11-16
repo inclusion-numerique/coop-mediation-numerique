@@ -5,15 +5,15 @@ on:
   workflow_call:
     inputs:
       environnement:
-        description: 'Branch whose environment the image is built for'
+        description: "Branch whose environment the image is built for"
         type: string
         required: true
     outputs:
       environnement:
-        description: 'GitHub environment name of the branch'
+        description: "GitHub environment name of the branch"
         value: ${{ jobs.build.outputs.environnement }}
       image:
-        description: 'Pushed container image'
+        description: "Pushed container image"
         value: ${{ jobs.build.outputs.image }}
 
 permissions:
@@ -72,6 +72,8 @@ jobs:
           path: apps/web/.next/cache
           key: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**/*.ts', 'apps/web/src/**/*.tsx') }}
           restore-keys: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-
+      - name: Generate production implementations
+        run: ENV=prod pnpm --silent -F @app/web generate:implementations
       - name: Build next app
         run: SENTRY_ENABLE_RELEASE=true pnpm --silent -F @app/web build
       - name: Build jobs runner

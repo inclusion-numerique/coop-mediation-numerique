@@ -1,5 +1,6 @@
 import { NomAffiche } from '@app/web/libraries/nom-affiche'
 import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { IdentifiantCartographie } from '../domain/ids-cartographie-nationale'
 import type { LieuEnListe } from '../domain/lieu-en-liste'
 import { LieuId } from '../domain/lieu-id'

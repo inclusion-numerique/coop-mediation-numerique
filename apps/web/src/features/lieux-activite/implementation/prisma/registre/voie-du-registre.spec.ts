@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { voieDuRegistre } from './voie-du-registre'
 
 describe('la voie, que l’Entrepôt éclate en trois colonnes', () => {

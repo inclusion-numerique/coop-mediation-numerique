@@ -4,7 +4,6 @@ import {
   CompteRdvIntrouvable,
   type DeclencherSynchronisation,
   type LancerSynchronisation,
-  type MarquerEchecDeSynchronisation,
   NonAutorise,
   peutDeclencherPour,
   peutRelancerUnCompteEnErreur,
@@ -15,7 +14,6 @@ import {
 export type DependancesDeclencherSynchronisation = {
   readonly compteACible: CompteACible
   readonly lancer: LancerSynchronisation
-  readonly marquerEchec: MarquerEchecDeSynchronisation
   /** Remontée de l'erreur technique — Sentry en production, rien sous test. */
   readonly signaler?: (erreur: unknown) => void
   /**
@@ -49,7 +47,6 @@ export const declencherSynchronisation =
   ({
     compteACible,
     lancer,
-    marquerEchec,
     signaler = () => {
       // Remontée facultative.
     },
@@ -88,13 +85,12 @@ export const declencherSynchronisation =
     } catch (erreur) {
       signaler(erreur)
 
-      // L'échec est toujours consigné au journal de synchronisation, quel qu'il
-      // soit : c'est là qu'on diagnostique. Le compte, lui, n'est marqué que si
-      // réessayer ne servirait à rien.
-      if (echecDefinitif(erreur)) {
-        await marquerEchec({ compte, message: MESSAGE_ECHEC })
-      }
-
-      return failure(SynchronisationEchouee())
+      return failure(
+        SynchronisationEchouee(
+          echecDefinitif(erreur)
+            ? { agentId: compte.agentId, message: MESSAGE_ECHEC }
+            : null,
+        ),
+      )
     }
   }

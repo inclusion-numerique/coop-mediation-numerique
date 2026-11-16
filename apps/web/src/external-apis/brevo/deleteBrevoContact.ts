@@ -1,6 +1,6 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import * as Sentry from '@sentry/nextjs'
 import axios from 'axios'
 import { brevoApiThrottle } from './createBrevoContact'
 
@@ -16,7 +16,7 @@ const deleteContactImmediate = async (email: string): Promise<void> => {
     )
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) return
-    Sentry.captureException?.(error)
+    signaler(error)
     throw error
   }
 }

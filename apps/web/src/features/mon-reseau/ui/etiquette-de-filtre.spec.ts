@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { sansLaValeur } from './etiquette-de-filtre'
 
 describe('retrait d’une valeur de filtre', () => {

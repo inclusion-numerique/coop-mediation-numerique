@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { optionsFiltrees } from './option-combo-box'
 
 describe('options filtrées à la frappe', () => {

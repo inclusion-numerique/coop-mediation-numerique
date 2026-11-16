@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { nomAffiche } from './nom-affiche'
 
 const identite = {

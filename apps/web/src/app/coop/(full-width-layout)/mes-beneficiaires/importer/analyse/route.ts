@@ -1,7 +1,7 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { analyseImportBeneficiairesExcel } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
 import { getBeneficiaireImportSheet } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/getBeneficiaireImportSheet'
 import type { AnalyseResponse } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
-import * as Sentry from '@sentry/nextjs'
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 
@@ -45,7 +45,7 @@ export const POST = async (request: NextRequest) => {
   } catch (error) {
     // biome-ignore lint/suspicious/noConsole: need to log this output for debug in container logs
     console.error(error)
-    Sentry.captureException(error)
+    signaler(error)
 
     return new Response(null, {
       status: 400,

@@ -1,35 +1,21 @@
+import { createNoopReporter } from '@arckit/telemetry/error-reporter'
+import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import {
   ACTION_INVALID_INPUT_ERROR,
   ACTION_TECHNICAL_ERROR,
-  actionBuilder,
+  actionBuilder as baseActionBuilder,
 } from './action-builder'
 import { withInput } from './middlewares'
 
-const captureException = jest.fn()
+const errorReporter = createNoopReporter()
 
-jest.mock('@sentry/nextjs', () => ({
-  get captureException() {
-    return captureException
-  },
-}))
+const actionBuilder = (options: { readonly errorPrefix?: string } = {}) =>
+  baseActionBuilder({ ...options, errorReporter })
 
 const InputValidation = z.object({ nom: z.string().min(1) })
 
 describe('actionBuilder', () => {
-  let consoleError: jest.SpyInstance
-
-  beforeEach(() => {
-    consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined)
-    captureException.mockClear()
-  })
-
-  afterEach(() => {
-    consoleError.mockRestore()
-  })
-
   it('retourne le résultat du handler en succès', async () => {
     const action = actionBuilder()
       .use(withInput(InputValidation))
@@ -58,7 +44,7 @@ describe('actionBuilder', () => {
     expect(await action()).toEqual({ success: true, data: 'ok' })
   })
 
-  it('convertit une entrée invalide en échec INVALID_INPUT tracé', async () => {
+  it('convertit une entrée invalide en échec INVALID_INPUT', async () => {
     const action = actionBuilder()
       .use(withInput(InputValidation))
       .execute(async ({ input }) => input.nom)
@@ -69,14 +55,9 @@ describe('actionBuilder', () => {
       success: false,
       error: ACTION_INVALID_INPUT_ERROR,
     })
-    expect(consoleError).toHaveBeenCalledWith(
-      'Server action failed',
-      expect.any(z.ZodError),
-    )
-    expect(captureException).toHaveBeenCalledWith(expect.any(z.ZodError))
   })
 
-  it('convertit une exception du handler en échec TECHNICAL_ERROR tracé', async () => {
+  it('convertit une exception du handler en échec TECHNICAL_ERROR', async () => {
     const crash = new Error('infra down')
     const action = actionBuilder().execute(async () => {
       throw crash
@@ -86,8 +67,6 @@ describe('actionBuilder', () => {
       success: false,
       error: ACTION_TECHNICAL_ERROR,
     })
-    expect(consoleError).toHaveBeenCalledWith('Server action failed', crash)
-    expect(captureException).toHaveBeenCalledWith(crash)
   })
 
   it('préfixe les codes techniques avec errorPrefix', async () => {
@@ -110,6 +89,5 @@ describe('actionBuilder', () => {
     })
 
     await expect(action()).rejects.toBe(redirect)
-    expect(captureException).not.toHaveBeenCalled()
   })
 })

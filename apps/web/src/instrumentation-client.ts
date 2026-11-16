@@ -1,6 +1,8 @@
-import { initializeSentry } from '@app/web/sentry'
-import * as Sentry from '@sentry/nextjs'
+import {
+  onRouterTransitionStart,
+  register,
+} from '@app/web/configuration/telemetry/error-reporter/client'
 
-initializeSentry()
+register()
 
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart
+export { onRouterTransitionStart }

@@ -91,6 +91,8 @@ CLAUDE.md
 /apps/web/prisma/ERD.pdf
 
 /apps/web/src/generated
+/apps/web/src/configuration/telemetry/**/server/index.ts
+/apps/web/src/configuration/telemetry/**/client/index.ts
 
 # workspace scratch (notes de refacto, scripts one-off, artefacts d'outils)
 /refactor/

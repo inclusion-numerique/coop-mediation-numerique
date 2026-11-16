@@ -2,6 +2,7 @@ import {
   ClientApiId,
   NomDuClientApi,
 } from '@app/web/features/clients-api/domain'
+import { describe, expect, it } from 'vitest'
 import { ligneDeClientApi } from './clients-api.presenter'
 
 const client = {

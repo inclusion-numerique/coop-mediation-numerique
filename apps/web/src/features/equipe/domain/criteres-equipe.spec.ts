@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { criteresEquipe } from './criteres-equipe'
 
 describe('critères de recherche dans une équipe', () => {

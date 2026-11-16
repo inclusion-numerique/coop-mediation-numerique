@@ -1,11 +1,12 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { DECONNECTER_COMPTE_RDV_ERRORS } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/action/deconnecter-compte-rdv.errors'
 import { deconnecterCompteRdv } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/implementation'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { actionBuilder, fromResult } from '@app/web/libraries/nextjs'
+import { fromResult } from '@app/web/libraries/nextjs'
 
 const deconnecter = deconnecterCompteRdv()
 

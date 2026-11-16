@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { criteresDesLieux, estFiltre } from './criteres-des-lieux'
 
 describe('critères de l’annuaire des lieux', () => {

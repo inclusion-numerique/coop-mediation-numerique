@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth, withMediateur } from '@app/web/features/authentification'
 import {
   SUPPRIMER_BENEFICIAIRES_ERRORS,
@@ -8,7 +9,7 @@ import {
 import { supprimerBeneficiaires } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const supprimerBeneficiairesAction = actionBuilder()
   .use(withAuth())

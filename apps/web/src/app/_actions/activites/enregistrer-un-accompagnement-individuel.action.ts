@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { enregistrerUnAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ERRORS } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.errors'
 import { EnregistrerUnAccompagnementIndividuelValidation } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.validation'
@@ -14,7 +15,7 @@ import { lieuUtilisablePar } from '@app/web/features/lieux-activite/abilities/ve
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { rendezVousHonorePar } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/rendez-vous-honore-par'
 import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
   .use(withAuth())

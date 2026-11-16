@@ -13,7 +13,9 @@ import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 
 type PortResult = Awaited<
-  ReturnType<typeof creerOuFusionnerBeneficiairesDepuisUsagersExternes>
+  ReturnType<
+    ReturnType<typeof creerOuFusionnerBeneficiairesDepuisUsagersExternes>
+  >
 >
 
 const createdRdvUserIds = new Set<number>()
@@ -126,6 +128,8 @@ Given(
 
 When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => {
   result = await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
+    communeDeLAdresse: async () => null,
+  })({
     usagers,
     mediateurId: testMediateurId,
   })

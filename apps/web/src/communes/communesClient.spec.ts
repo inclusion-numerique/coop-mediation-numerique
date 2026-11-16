@@ -1,4 +1,5 @@
 import { createCommunesClient } from '@app/web/communes/communesClient'
+import { describe, expect, test } from 'vitest'
 
 describe('findCommune', () => {
   describe('getCommunesClient', () => {

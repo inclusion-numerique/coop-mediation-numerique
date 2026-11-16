@@ -1,5 +1,6 @@
 import { consulterLeReseauDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
 import { listerLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { describe, expect, it } from 'vitest'
 
 /**
  * Le port SQL ne se vérifie qu'à l'exécution : un fragment mal composé passe le

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { depuisLePanier } from './depuis-le-panier'
 
 const lieuSoumis = (champs: Record<string, unknown> = {}) => ({

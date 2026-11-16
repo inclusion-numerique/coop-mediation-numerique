@@ -5,6 +5,7 @@ import {
   RoleUtilisateur,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { describe, expect, it } from 'vitest'
 import {
   autoriserUsurpation,
   type CibleUsurpation,

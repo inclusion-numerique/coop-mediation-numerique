@@ -1,4 +1,5 @@
 import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { publicationSansService, servicesALaPublication } from './publication'
 
 describe('la publication sur la cartographie nationale', () => {

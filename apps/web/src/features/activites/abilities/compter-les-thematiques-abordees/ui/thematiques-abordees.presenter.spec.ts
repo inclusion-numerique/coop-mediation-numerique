@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Effectif, ThematiqueRecherchee } from '../../../domain'
 import { thematiquesAbordeesPresentees } from './thematiques-abordees.presenter'
 

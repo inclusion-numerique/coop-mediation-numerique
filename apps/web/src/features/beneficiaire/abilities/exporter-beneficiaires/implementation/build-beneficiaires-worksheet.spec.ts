@@ -14,6 +14,7 @@ import {
   trancheAgeLabels,
 } from '@app/web/features/beneficiaire/domain/tranche-age'
 import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
+import { describe, expect, it } from 'vitest'
 import type { BeneficiaireExportRow } from '../domain/exporter-beneficiaires'
 import { buildBeneficiairesWorksheet } from './build-beneficiaires-worksheet'
 

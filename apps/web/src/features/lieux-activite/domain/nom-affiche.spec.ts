@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { nomAffiche } from './nom-affiche'
 
 describe('sous quel nom un lieu se montre', () => {

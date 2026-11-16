@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Coordination, Dispositif } from '../domain'
 import { outilsAccompagnementsVisibles } from './catalogue'
 

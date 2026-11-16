@@ -1,6 +1,7 @@
 'use server'
 
 import { perimetreDesEmployeusesDe } from '@app/web/composition/statistiques/perimetre'
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import {
   EmployeuseId,
   rechercherLesEmployeusesDesActivites,
@@ -8,7 +9,7 @@ import {
 import { RechercherLesEmployeusesDesActivitesValidation } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
 import { optionsDEmployeuses } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
 import { withAuth } from '@app/web/features/authentification'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 
 export const rechercherEmployeusesDesActivitesAction = actionBuilder()
   .use(withAuth())

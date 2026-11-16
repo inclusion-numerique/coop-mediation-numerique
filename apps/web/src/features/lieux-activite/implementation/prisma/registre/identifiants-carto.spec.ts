@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { avecIdentifiantCarto } from './identifiants-carto'
 
 describe('l’identité cartographique, aplatie depuis l’inscription', () => {

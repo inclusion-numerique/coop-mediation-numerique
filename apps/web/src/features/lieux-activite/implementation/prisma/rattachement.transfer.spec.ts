@@ -1,4 +1,5 @@
 import type { MediateurEnActivite } from '@app/web/generated/prisma/client'
+import { describe, expect, it } from 'vitest'
 import { LieuId } from '../../domain/lieu-id'
 import { MediateurId } from '../../domain/mediateur-id'
 import type { Rattachement } from '../../domain/rattachement'

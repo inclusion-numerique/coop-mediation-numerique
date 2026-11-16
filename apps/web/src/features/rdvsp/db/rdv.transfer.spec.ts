@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { AdresseRdv } from '../domain/adresse-rdv'
 import { DureeEnMinutes } from '../domain/duree-en-minutes'
 import { NomExterne, PrenomExterne } from '../domain/identite'

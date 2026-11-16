@@ -1,8 +1,9 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { searchStructureEmployeuseCombined } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/recherche-structure-employeuse'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
 
 /**

@@ -1,8 +1,8 @@
-name: 'Mask env file'
-description: 'Mask in the logs every value the .env file holds beyond .env.dist, public values aside'
+name: "Mask env file"
+description: "Mask in the logs every value the .env file holds beyond .env.dist, public values aside"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Mask env file values
       run: |

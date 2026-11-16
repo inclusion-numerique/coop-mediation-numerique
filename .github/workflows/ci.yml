@@ -4,21 +4,24 @@ name: CI
 on:
   push:
     branches:
-      - 'build/*'
-      - 'chore/*'
-      - 'ci/*'
-      - 'docs/*'
-      - 'feat/*'
-      - 'fix/*'
-      - 'perf/*'
-      - 'refactor/*'
-      - 'revert/*'
-      - 'style/*'
-      - 'test/*'
-      - 'main'
+      - "build/*"
+      - "chore/*"
+      - "ci/*"
+      - "docs/*"
+      - "feat/*"
+      - "fix/*"
+      - "perf/*"
+      - "refactor/*"
+      - "revert/*"
+      - "style/*"
+      - "test/*"
+      - "main"
 
 permissions:
   contents: read
+
+env:
+  ENV: ephemeral
 
 jobs:
   lint:
@@ -81,17 +84,11 @@ jobs:
       - name: Create env file
         run: cp .env.dist .env
       - name: Test all packages except @app/web with coverage
-        run: pnpm -F '!coop-mediation-numerique' -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
-      - name: List coverage reports
-        id: coverage
-        run: |
-          shopt -s nullglob
-          files=(apps/*/coverage/lcov.info packages/*/coverage/lcov.info)
-          echo "files=${files[*]}" >> "$GITHUB_OUTPUT"
+        run: pnpm --silent exec vitest run --coverage
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
-          files: ${{ steps.coverage.outputs.files }}
+          files: coverage/lcov.info
           flag-name: packages
           parallel: true
           fail-on-error: false
@@ -99,8 +96,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'junit/*.xml'
-          check_name: 'Packages tests summary'
+          report_paths: "junit/*.xml"
+          check_name: "Packages tests summary"
           annotate_only: true
 
   test-web:
@@ -117,7 +114,7 @@ jobs:
       - name: Create env file
         run: cp .env.dist .env
       - name: Test @app/web with coverage
-        run: pnpm --silent -F @app/web exec jest --coverage -c jest.unit.config.ts
+        run: pnpm --silent -F @app/web exec vitest run --project unit --coverage
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
@@ -129,8 +126,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'junit/*.xml'
-          check_name: 'Unit tests summary'
+          report_paths: "junit/*.xml"
+          check_name: "Unit tests summary"
           annotate_only: true
 
   jobs-runner:
@@ -199,7 +196,7 @@ jobs:
           set -a
           source .env
           set +a
-          pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts --runInBand
+          pnpm --silent -F @app/web exec vitest run --project integration --coverage
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
@@ -211,8 +208,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'junit/*.xml'
-          check_name: 'Integration tests summary'
+          report_paths: "junit/*.xml"
+          check_name: "Integration tests summary"
           annotate_only: true
 
   cucumber:
@@ -270,8 +267,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'apps/web/junit/*.xml'
-          check_name: 'Cucumber summary'
+          report_paths: "apps/web/junit/*.xml"
+          check_name: "Cucumber summary"
           annotate_only: true
 
   chromatic:
@@ -307,7 +304,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          cypress: 'true'
+          cypress: "true"
       - name: Secrets environment
         uses: ./.github/actions/secrets-env
         with:
@@ -331,8 +328,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'packages/e2e/junit/*.xml'
-          check_name: 'Components tests summary'
+          report_paths: "packages/e2e/junit/*.xml"
+          check_name: "Components tests summary"
           annotate_only: true
 
   e2e:
@@ -347,7 +344,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        conteneur: [0, 1, 2]
+        conteneur: [ 0, 1, 2 ]
     services:
       postgres:
         image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
@@ -377,7 +374,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          cypress: 'true'
+          cypress: "true"
       - name: Test environment
         uses: ./.github/actions/test-env
         with:
@@ -434,7 +431,7 @@ jobs:
         with:
           install: false
           working-directory: packages/e2e
-          wait-on: 'http://localhost:3000'
+          wait-on: "http://localhost:3000"
           wait-on-timeout: 120
           command: pnpm cy run --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
       - name: Upload Cypress screenshots and server log
@@ -451,8 +448,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: 'packages/e2e/junit/*.xml'
-          check_name: 'E2E tests summary'
+          report_paths: "packages/e2e/junit/*.xml"
+          check_name: "E2E tests summary"
           annotate_only: true
 
   coverage:
@@ -472,7 +469,7 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           parallel-finished: true
-          carryforward: 'packages,web-unit,web-integration,cucumber'
+          carryforward: "packages,web-unit,web-integration,cucumber"
           fail-on-error: false
 
   dependency-review:

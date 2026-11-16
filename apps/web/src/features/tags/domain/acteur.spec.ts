@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { coordinateurDe, mediateurDe, role } from './acteur'
 import { CoordinateurId } from './coordinateur-id'
 import { MediateurId } from './mediateur-id'

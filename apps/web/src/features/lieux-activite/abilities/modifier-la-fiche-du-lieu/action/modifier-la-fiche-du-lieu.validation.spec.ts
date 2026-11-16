@@ -1,5 +1,6 @@
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import {
   InformationsGeneralesSaisie,
   InformationsPratiquesSaisie,

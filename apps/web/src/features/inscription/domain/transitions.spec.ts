@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { estFranchi, Franchissement } from './franchissement'
 import type {
   InscriptionEnCours,

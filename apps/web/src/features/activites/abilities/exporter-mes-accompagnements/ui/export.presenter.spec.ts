@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { cheminAvecRequete, requeteDeLExport } from './export.presenter'
 
 describe('requête de l’export', () => {

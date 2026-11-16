@@ -7,6 +7,7 @@ import {
 } from '@app/web/external-apis/api-entreprise/typologieStructure'
 import { Siret } from '@app/web/libraries/insee'
 import { z } from 'zod'
+import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
 
 /**
  * Une employeuse telle que la recherche la propose, avant tout choix : identité
@@ -79,3 +80,22 @@ export type EmployeuseChoisie = z.infer<typeof EmployeuseChoisieValidation>
 export type RenseignerStructureEmployeuseData = z.infer<
   typeof RenseignerStructureEmployeuseValidation
 >
+
+export const identiteDeLEmployeuseChoisie = ({
+  siret,
+  nom,
+  adresse,
+  commune,
+  codePostal,
+  codeInsee,
+}: EmployeuseChoisie): IdentiteEmployeuse | null =>
+  IdentiteEmployeuse.safe({
+    siret,
+    denomination: nom,
+    adresse: {
+      voie: adresse,
+      commune,
+      codePostal: codePostal || null,
+      codeInsee: codeInsee || null,
+    },
+  })

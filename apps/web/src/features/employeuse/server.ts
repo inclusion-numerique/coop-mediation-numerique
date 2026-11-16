@@ -31,19 +31,11 @@ export { consulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-
 export { consulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/implementation'
 export { consulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/implementation'
 export { listerEmployeuses } from './abilities/lister-employeuses/implementation'
+export { searchStructureEmployeuseCombined } from './abilities/rattacher-a-une-employeuse/implementation'
 export {
-  adresseMainKey,
-  deactivateCoopAffectationsExcept,
-  ensureAffectationEmploiMain,
-  ensureStructureAdministrativeMain,
-  findAdresseMainId,
-  insertAdresseMain,
-  rattacherAUneEmployeuse,
-  rattacherAUneEmployeuseDepuisSiret,
-  resolveAdresseMain,
-  resolveIdentiteFromSiret,
-  searchStructureEmployeuseCombined,
-} from './abilities/rattacher-a-une-employeuse/implementation'
+  rattacherAUneEmployeuseBinding,
+  rattacherAUneEmployeuseDepuisSiretBinding,
+} from './abilities/rattacher-a-une-employeuse/implementation/rattacher-a-une-employeuse.binding'
 export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implementation'
 export {
   conseillerNumeriqueExpression,

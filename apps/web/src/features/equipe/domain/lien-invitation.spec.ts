@@ -1,4 +1,5 @@
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { describe, expect, it } from 'vitest'
 import { CoordinateurId } from './coordinateur-id'
 import { Email } from './email'
 import {

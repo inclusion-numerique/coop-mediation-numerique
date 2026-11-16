@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { creerUnTag } from '@app/web/features/tags/abilities/creer-un-tag'
@@ -14,7 +15,7 @@ import {
 } from '@app/web/features/tags/domain'
 import { acteurDe } from '@app/web/features/tags/implementation/session'
 import { tagAffiche } from '@app/web/features/tags/ui/tag-affiche.presenter'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 import { success } from '@app/web/libraries/result'
 import type { z } from 'zod'
 

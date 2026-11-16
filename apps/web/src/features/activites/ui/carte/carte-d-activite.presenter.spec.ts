@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { accompagnementSuivi, atelierMixte } from '../fixtures-de-consultation'
 import { carteDActivite } from './carte-d-activite.presenter'
 

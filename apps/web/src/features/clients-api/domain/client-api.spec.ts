@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { couvre } from './client-api'
 import { estValideLe, finApresDebut } from './periode-de-validite'
 

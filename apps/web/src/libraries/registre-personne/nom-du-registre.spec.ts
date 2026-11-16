@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { NomDuRegistre, PrenomDuRegistre } from './nom-du-registre'
 
 describe('nom au registre', () => {

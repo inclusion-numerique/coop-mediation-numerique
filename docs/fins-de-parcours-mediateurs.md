@@ -26,10 +26,10 @@ Un seul job nocturne, `inactive-users-reminders` (cron `0 0 * * *`,
 **Couloir A — inscription jamais terminée** (`signupReminders.ts`)
 Cible : `inscription_validee IS NULL`, décompte depuis `created`.
 
-| Jour            | Effet                                                           |
-|-----------------|-----------------------------------------------------------------|
-| J+7, J+30, J+60 | e-mail « finalisez votre inscription »                          |
-| J+90            | e-mail d'avertissement avant suppression                        |
+| Jour            | Effet                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------- |
+| J+7, J+30, J+60 | e-mail « finalisez votre inscription »                                                                          |
+| J+90            | e-mail d'avertissement avant suppression                                                                        |
 | J+105           | **suppression dure** (`DELETE`) du user et de ses rattachements, jamais moins de 14 jours après l'avertissement |
 
 La suppression est physique et en cascade : `mediateurCoordonne`,
@@ -43,7 +43,7 @@ Cible : `inscription_validee IS NOT NULL` **et** `derniereCreationActivite IS NU
 `inscription_validee`.
 
 | Jour       | Effet                                                                                                                                                                        |
-|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | J+7        | e-mail « premiers pas »                                                                                                                                                      |
 | J+30, J+60 | e-mail de relance                                                                                                                                                            |
 | J+90       | avertissement avant suppression                                                                                                                                              |
@@ -62,7 +62,7 @@ supprimés** gardent un compte : en créer puis les supprimer ne le protège plu
 
 `retirer-les-roles-vacants` (ex-`fix-users-roles`, renommé le 23/10/2026, qui ne se limite plus
 aux comptes hors dispositif ; cron `0 0 * * *`, `infrastructure/locals.tf`) retire le rôle coordinateur
-ou médiateur *en trop* d'un compte double-rôle, 30 jours après validation
+ou médiateur _en trop_ d'un compte double-rôle, 30 jours après validation
 d'inscription, à la stricte condition qu'il ne porte **rien** (ni équipe, ni invitation,
 ni activité de coordination, ni bénéficiaire, ni lieu d'activité). C'est un correctif de
 rôle mal choisi à l'inscription, pas un mécanisme de fin de parcours.
@@ -88,7 +88,7 @@ qu'il ne se passe quoi que ce soit.
 ### 1.5 Les gestes manuels disponibles
 
 | Geste                                            | Qui                                     | Effet                                                                          |
-|--------------------------------------------------|-----------------------------------------|--------------------------------------------------------------------------------|
+| ------------------------------------------------ | --------------------------------------- | ------------------------------------------------------------------------------ |
 | Suppression de son propre compte                 | l'utilisateur                           | suppression douce + anonymisation partielle (`userRouter.ts:90`)               |
 | Suppression d'un compte                          | admin                                   | idem, interdite sur Admin/Support (`userRouter.ts:92-113`)                     |
 | Retirer un médiateur d'un lieu                   | le médiateur, un coordinateur, un admin | pose `mediateurEnActivite.fin` (`lieuActiviteRouter.ts:384-392`) + e-mail      |
@@ -105,7 +105,7 @@ contrat.
 
 **A. Cartographie nationale** — via `GET /api/v1/lieux-activite`
 (`src/app/api/v1/lieux-activite/route.ts:328-332`). Conditions de publication d'un lieu
-et de ses *aidants* (**nom, courriel, téléphone**) :
+et de ses _aidants_ (**nom, courriel, téléphone**) :
 
 ```
 lieu.suppression IS NULL
@@ -179,12 +179,12 @@ confronte.
 
 Sur les 2 649 personnes portant une affectation `idposte` **active** :
 
-| Situation du contrat | Personnes |
-|---|---|
-| contrat sans terme, en cours | 798 |
-| terme à venir, CDD en cours | 1 332 |
-| **tous contrats échus — incohérent** | **410** |
-| aucun contrat connu | 73 |
+| Situation du contrat                 | Personnes |
+| ------------------------------------ | --------- |
+| contrat sans terme, en cours         | 798       |
+| terme à venir, CDD en cours          | 1 332     |
+| **tous contrats échus — incohérent** | **410**   |
+| aucun contrat connu                  | 73        |
 
 Dans l'autre sens, 112 personnes ont une affectation désactivée alors qu'un contrat
 court encore.
@@ -231,7 +231,7 @@ activité sort définitivement du périmètre de tout mécanisme automatique.**
 Conséquence, s'il part sans rien faire :
 
 | Vitrine                                               | Durée d'exposition                                  |
-|-------------------------------------------------------|-----------------------------------------------------|
+| ----------------------------------------------------- | --------------------------------------------------- |
 | Cartographie nationale (nom, courriel, téléphone)     | **illimitée**                                       |
 | Annuaire Mon réseau                                   | **illimitée**                                       |
 | Liste des membres de l'équipe de son coordinateur     | **illimitée**                                       |
@@ -286,7 +286,7 @@ La page publique `/confidentialite` (`src/app/(public)/confidentialite/page.tsx:
 engage la plateforme sur :
 
 | Catégorie                | Engagement affiché                                                | Implémenté ? |
-|--------------------------|-------------------------------------------------------------------|--------------|
+| ------------------------ | ----------------------------------------------------------------- | ------------ |
 | Comptes des médiateurs   | 1 an après le dernier contact, puis **anonymisation totale**      | **non**      |
 | Bénéficiaires            | 1 an après la dernière mise à jour, puis **anonymisation totale** | **non**      |
 | Données d'accompagnement | illimité, **anonymisées après 1 an**                              | **non**      |
@@ -332,7 +332,7 @@ coordinateur** contre la suppression du couloir B (`nouveau-filter.ts:3`,
 Pour une personne qui cesse son activité **sans faire aucune démarche** :
 
 | Situation                                                              | Retiré de la carto                                   | Retiré de l'annuaire                                                          | Compte supprimé              |
-|------------------------------------------------------------------------|------------------------------------------------------|-------------------------------------------------------------------------------|------------------------------|
+| ---------------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------- |
 | N'a jamais validé son inscription                                      | sans objet                                           | sans objet                                                                    | **J+105**, suppression dure  |
 | Inscrit, jamais saisi d'activité                                       | sans objet (pas de lieu publié en général)           | **J+105**                                                                     | **J+105**, suppression douce |
 | A saisi au moins une activité                                          | **jamais**                                           | **jamais**                                                                    | **jamais**                   |
@@ -380,12 +380,12 @@ Le job d'échéance reprend la mécanique de `supprimerBeneficiaires`
 conservée — année de naissance, commune, genre, tranche d'âge et statut social restent.
 Périmètre complet, « la totale » :
 
-| Cible | Ce qui est effacé |
-|---|---|
-| `users` | déjà couvert par la suppression douce (nom, courriel, téléphone) |
-| `beneficiaires` | patron de référence, déjà implémenté |
-| `rdv_users` | nom, nom de naissance, date de naissance, courriel, téléphone, adresse, **numéro d'affiliation et caisse CAF** (`schema.prisma:1803-1821`) |
-| `activites.notes` | texte libre (`schema.prisma:1384`) |
+| Cible             | Ce qui est effacé                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `users`           | déjà couvert par la suppression douce (nom, courriel, téléphone)                                                                           |
+| `beneficiaires`   | patron de référence, déjà implémenté                                                                                                       |
+| `rdv_users`       | nom, nom de naissance, date de naissance, courriel, téléphone, adresse, **numéro d'affiliation et caisse CAF** (`schema.prisma:1803-1821`) |
+| `activites.notes` | texte libre (`schema.prisma:1384`)                                                                                                         |
 
 `rdv_users` était l'angle mort : aucune colonne `deleted`, aucun propriétaire, supprimé
 uniquement sur webhook « usager supprimé » de RDV SP
@@ -413,12 +413,12 @@ jetons OAuth actifs survivent à la suppression du compte.
 Contrat, énonçable en une phrase : **l'identité et l'historique statistique reviennent ;
 les rattachements et les données personnelles de tiers, non.**
 
-| Revient | Ne revient pas |
-|---|---|
-| la ligne `mediateur` | les bénéficiaires (anonymisés, **sans reprise de portefeuille**) |
-| les activités et accompagnements | les équipes (`mediateurCoordonne`) |
-| les compteurs et statistiques | les rattachements aux lieux |
-| | le lien RDV Service Public |
+| Revient                          | Ne revient pas                                                   |
+| -------------------------------- | ---------------------------------------------------------------- |
+| la ligne `mediateur`             | les bénéficiaires (anonymisés, **sans reprise de portefeuille**) |
+| les activités et accompagnements | les équipes (`mediateurCoordonne`)                               |
+| les compteurs et statistiques    | les rattachements aux lieux                                      |
+|                                  | le lien RDV Service Public                                       |
 
 L'intention : quelqu'un qui revient après une longue pause ne repart pas tout à fait de
 zéro.
@@ -577,7 +577,7 @@ la dépublication automatique (D7, D11), mais elle ressurgira avec les relances 
 Extraits de `packages/cdk/src/WebAppStack.ts` à la date de l'étude (l'infrastructure est depuis décrite dans `infrastructure/`) :
 
 | Job                                        | Cron         | Rôle vis-à-vis des fins de parcours       |
-|--------------------------------------------|--------------|-------------------------------------------|
+| ------------------------------------------ | ------------ | ----------------------------------------- |
 | `inactive-users-reminders`                 | `0 0 * * *`  | seul mécanisme de suppression automatique |
 | `fix-users-roles`                          | `0 0 * * *`  | retire un rôle en trop, jamais un compte  |
 | `appliquer-dispositif-conum`               | `0 2 * * *`  | crée, ne retire jamais                    |

@@ -1,4 +1,5 @@
 import { CodeInsee } from '@app/web/libraries/insee'
+import { describe, expect, it } from 'vitest'
 import { VisibiliteDuLieu } from './visibilite-du-lieu'
 import {
   departementDeReference,

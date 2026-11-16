@@ -1,13 +1,12 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeAlignerLeRegistreDesPersonnes } from './aligner-le-registre-des-personnes/executeAlignerLeRegistreDesPersonnes'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
-import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
 import { executeRetirerLesRolesVacants } from './retirer-les-roles-vacants/executeRetirerLesRolesVacants'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/executeSynchroniserLesRolesBrevo'
@@ -24,7 +23,6 @@ export const jobExecutors: {
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'aligner-le-registre-des-personnes': executeAlignerLeRegistreDesPersonnes,
-  'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
   'retirer-les-roles-vacants': executeRetirerLesRolesVacants,
   'sync-rdvsp-data': executeSyncRdvspData,
   'synchroniser-les-roles-brevo': executeSynchroniserLesRolesBrevo,
@@ -58,9 +56,7 @@ export const executeJob = async (job: Job) => {
         },
       })
       .catch((error) => {
-        if (Sentry?.captureException) {
-          Sentry.captureException(error)
-        }
+        signaler(error)
         // biome-ignore lint/suspicious/noConsole: we need output from job executions
         console.error(error)
       })
@@ -72,9 +68,7 @@ export const executeJob = async (job: Job) => {
       duration,
     }
   } catch (error) {
-    if (Sentry?.captureException) {
-      Sentry.captureException(error)
-    }
+    signaler(error)
     // biome-ignore lint/suspicious/noConsole: we need output from job executions
     console.error(error)
     const { ended, duration } = stopWatch.stop()
@@ -93,9 +87,7 @@ export const executeJob = async (job: Job) => {
         },
       })
       .catch((persistenceError) => {
-        if (Sentry?.captureException) {
-          Sentry.captureException(persistenceError)
-        }
+        signaler(persistenceError)
       })
 
     return {

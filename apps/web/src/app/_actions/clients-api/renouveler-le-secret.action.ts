@@ -1,10 +1,11 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAdmin, withAuth } from '@app/web/features/authentification'
 import { renouvelerLeSecret } from '@app/web/features/clients-api/abilities/renouveler-le-secret'
 import { RENOUVELER_LE_SECRET_ERRORS } from '@app/web/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.errors'
 import { RenouvelerLeSecretValidation } from '@app/web/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.validation'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 import { success } from '@app/web/libraries/result'
 
 export const renouvelerLeSecretAction = actionBuilder()

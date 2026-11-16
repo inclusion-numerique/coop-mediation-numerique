@@ -1,6 +1,7 @@
 'use server'
 
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
 import { reglerLePartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques'
@@ -12,7 +13,7 @@ import {
   MediateurId,
   type Rattachements,
 } from '@app/web/features/mediateurs/domain'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 const rattachementsDe = (user: SessionUser): Rattachements => ({
   mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,

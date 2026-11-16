@@ -13,9 +13,9 @@ description: >-
 1. **Types** : `pnpm -F web tsc`.
 2. **Lint/format** : `pnpm biome check --write <fichiers modifiés>` (chemins précis, pas tout le repo).
 3. **Tests ciblés** selon ce qui a changé :
-   - unit : `pnpm -F web test -- <chemin>`
-   - intégration : `pnpm -F web test:integration -- <chemin>` (DB ; capper `DATABASE_URL` avec `&connection_limit=3` si « too many clients », TS-7)
-   - BDD : `pnpm -F web test:cucumber` (suite entière — le scope par chemin en arg ne marche pas, TS-5 ; DB 5433)
+   - unit : `pnpm -F web test <chemin>` (sans `--` : Vitest ignore ce qui le suit et lance toute la suite)
+   - intégration : `pnpm -F web test:integration <chemin>`, **jamais sur la base de travail** : `DATABASE_URL` pointé sur une base jetable du conteneur 5433, migrée (`pnpm -F web db:migrate-deploy`) et chargée (`pnpm -F @app/fixtures load`), capée avec `&connection_limit=3` (TS-7), supprimée ensuite
+   - BDD : `pnpm -F web test:cucumber` (suite entière — le scope par chemin en arg ne marche pas, TS-5), sur la même base jetable
    - E2E si pertinent : `pnpm test:e2e`
 4. Tout vert → proposer le commit.
 

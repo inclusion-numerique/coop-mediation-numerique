@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { enLots, TailleDeLot } from './taille-de-lot'
 
 describe('découpage en lots', () => {

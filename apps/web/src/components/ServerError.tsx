@@ -1,7 +1,7 @@
 'use client'
 
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/client/signaler'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import * as Sentry from '@sentry/nextjs'
 import { PropsWithChildren, useEffect } from 'react'
 
 export const GenericError = ({
@@ -85,8 +85,7 @@ export const ServerError = ({
   error: Error & { digest?: string }
 }) => {
   useEffect(() => {
-    // Log the error to Sentry
-    Sentry.captureException(error)
+    signaler(error)
   }, [error])
 
   return (

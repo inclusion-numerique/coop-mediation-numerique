@@ -6,7 +6,6 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import Card from '@app/web/components/Card'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { ExportDesAccompagnementsParDepartement } from '@app/web/features/activites/abilities/exporter-les-accompagnements-par-departement/ui'
-import NormaliserBeneficiaires from '@app/web/features/beneficiaire/abilities/normaliser-beneficiaires/ui/NormaliserBeneficiaires'
 import {
   consulterLaMaintenance,
   consulterLHistoriqueDesMaintenances,
@@ -79,11 +78,6 @@ const Page = async () => {
                     <LancerLesRelancesDesInscrits />
                   </ClientBinder>
                 </div>
-              </Card>
-            </div>
-            <div className="fr-col-12">
-              <Card title="Maintenance des données bénéficiaires">
-                <NormaliserBeneficiaires />
               </Card>
             </div>
           </div>

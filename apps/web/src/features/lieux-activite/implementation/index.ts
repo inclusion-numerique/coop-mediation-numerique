@@ -28,7 +28,6 @@ export {
   ecrireLeLieuAuRegistre,
   identiteDuLieu,
   inscriptionPourLIdentifiantCarto,
-  lieuVersRegistre,
   retirerDuRegistre,
   toutesLesColonnes,
 } from './prisma/registre'

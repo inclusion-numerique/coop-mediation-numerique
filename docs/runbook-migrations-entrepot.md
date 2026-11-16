@@ -81,7 +81,7 @@ psql "$DATABASE_URL" -c \
 Deux résolutions opposées selon l'état observé à l'étape 3 :
 
 | État réel de la base                                                                        | Commande                                           | Effet                                                   |
-|---------------------------------------------------------------------------------------------|----------------------------------------------------|---------------------------------------------------------|
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------- |
 | Les changements **n'ont pas** été appliqués (ex. échec de permissions sur le 1ᵉʳ statement) | `prisma migrate resolve --rolled-back <migration>` | Prisma re-tentera la migration au prochain `deploy`     |
 | Les changements **ont** été appliqués malgré l'erreur reportée                              | `prisma migrate resolve --applied <migration>`     | Prisma considère la migration faite et passe à la suite |
 

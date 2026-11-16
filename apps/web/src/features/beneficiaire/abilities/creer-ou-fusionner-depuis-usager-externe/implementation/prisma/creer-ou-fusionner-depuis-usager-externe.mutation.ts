@@ -1,8 +1,5 @@
-import {
-  type AdresseIndisponible,
-  siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
-import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
+import { siIndisponible } from '@app/web/external-apis/apiAdresse'
+import type { CommuneFields } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/db/duplicate-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
 import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
@@ -17,7 +14,6 @@ import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,
@@ -25,8 +21,9 @@ import type {
   MergedBeneficiaire,
 } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 
-const signalerIndisponibilite = (erreur: AdresseIndisponible) =>
-  Sentry.captureException?.(erreur)
+export type ServicesDuBeneficiaireExterne = {
+  readonly communeDeLAdresse: (adresse: string) => Promise<CommuneFields | null>
+}
 
 const mergedBeneficiaireSelect = {
   id: true,
@@ -122,15 +119,16 @@ const findDuplicate = async (
 // Ne complète que les champs manquants de la fiche existante (jamais d'écrasement
 // d'une valeur déjà présente). Le géocodage n'est tenté que si la commune manque.
 const mergeUpdateData = async (
+  services: ServicesDuBeneficiaireExterne,
   usager: NormalizedExternalUser,
   existing: BeneficiaireToMerge,
   alreadyLinked: boolean,
 ): Promise<Prisma.BeneficiaireUncheckedUpdateInput> => {
   const communeFields =
     usager.adresse && !existingCommune(existing)
-      ? await communeFieldsFromAddress(usager.adresse).catch(
-          siIndisponible(null, signalerIndisponibilite),
-        )
+      ? await services
+          .communeDeLAdresse(usager.adresse)
+          .catch(siIndisponible(null))
       : null
 
   return {
@@ -177,14 +175,17 @@ const identiteRequise = (usager: NormalizedExternalUser): void => {
 }
 
 const createBeneficiaire = async (
+  services: ServicesDuBeneficiaireExterne,
   usager: NormalizedExternalUser,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
   identiteRequise(usager)
 
-  const communeFields = await communeFieldsFromAddress(usager.adresse).catch(
-    siIndisponible(null, signalerIndisponibilite),
-  )
+  const communeFields = usager.adresse
+    ? await services
+        .communeDeLAdresse(usager.adresse)
+        .catch(siIndisponible(null))
+    : null
 
   return prismaClient.beneficiaire.create({
     data: {
@@ -212,6 +213,7 @@ const createBeneficiaire = async (
 // à la création — dans les deux cas, l'isolation par usager au
 // niveau du lot transforme ces throws en `Skipped` sans bloquer les autres.
 const mergeOneUsager = async (
+  services: ServicesDuBeneficiaireExterne,
   usager: ExternalUserToMerge,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
@@ -228,7 +230,7 @@ const mergeOneUsager = async (
   })
 
   if (linked) {
-    const data = await mergeUpdateData(normalized, linked, true)
+    const data = await mergeUpdateData(services, normalized, linked, true)
     return Object.keys(data).length > 0
       ? prismaClient.beneficiaire.update({
           where: { id: linked.id },
@@ -241,7 +243,7 @@ const mergeOneUsager = async (
   const duplicate = await findDuplicate(normalized, mediateurId)
   if (duplicate) {
     // La liaison rdvUserId est toujours ajoutée → mise à jour garantie.
-    const data = await mergeUpdateData(normalized, duplicate, false)
+    const data = await mergeUpdateData(services, normalized, duplicate, false)
     return prismaClient.beneficiaire.update({
       where: { id: duplicate.id },
       data,
@@ -249,14 +251,17 @@ const mergeOneUsager = async (
     })
   }
 
-  return createBeneficiaire(normalized, mediateurId)
+  return createBeneficiaire(services, normalized, mediateurId)
 }
 
-export const creerOuFusionnerBeneficiairesDepuisUsagersExternes: CreerOuFusionnerBeneficiairesDepuisUsagersExternes =
+export const creerOuFusionnerBeneficiairesDepuisUsagersExternes =
+  (
+    services: ServicesDuBeneficiaireExterne,
+  ): CreerOuFusionnerBeneficiairesDepuisUsagersExternes =>
   async ({ usagers, mediateurId }) => {
     const outcomes = await Promise.all(
       usagers.map((usager) =>
-        mergeOneUsager(usager, mediateurId)
+        mergeOneUsager(services, usager, mediateurId)
           .then((beneficiaire) => ({ _tag: 'Merged' as const, beneficiaire }))
           .catch((reason) => {
             // biome-ignore lint/suspicious/noConsole: observabilité d'un usager écarté (erreur d'infra), sans bloquer le lot

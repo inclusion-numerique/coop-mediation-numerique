@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { contratEnCours, type LigneContrat } from './contrat-membre'
 import { TypeContrat } from './type-contrat'
 

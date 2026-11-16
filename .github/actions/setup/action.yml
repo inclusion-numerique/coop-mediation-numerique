@@ -1,16 +1,16 @@
-name: 'Setup Node & pnpm'
-description: 'Install pnpm, Node.js and dependencies'
+name: "Setup Node & pnpm"
+description: "Install pnpm, Node.js and dependencies"
 
 inputs:
   cypress:
-    description: 'Also install the Cypress binary'
-    default: 'false'
+    description: "Also install the Cypress binary"
+    default: "false"
   node-version:
-    description: 'Node.js version, instead of the one in .nvmrc'
-    default: ''
+    description: "Node.js version, instead of the one in .nvmrc"
+    default: ""
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install pnpm
       uses: pnpm/action-setup@v6
@@ -21,12 +21,12 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         node-version-file: ${{ inputs.node-version == '' && '.nvmrc' || '' }}
-        cache: 'pnpm'
+        cache: "pnpm"
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       shell: bash
       env:
-        CYPRESS_INSTALL_BINARY: '0'
+        CYPRESS_INSTALL_BINARY: "0"
     - name: Cache Cypress binary
       if: inputs.cypress == 'true'
       uses: actions/cache@v6

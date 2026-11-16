@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ReponseApresRupture, visibiliteApres } from './reponse-apres-rupture'
 
 describe('visibilité après la réponse à la rupture', () => {

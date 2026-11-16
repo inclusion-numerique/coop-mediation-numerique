@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { NomLieu } from '../../../domain/lieu'
 import { MotifId } from '../../../domain/motif-id'
 import { RdvId } from '../../../domain/rdv-id'

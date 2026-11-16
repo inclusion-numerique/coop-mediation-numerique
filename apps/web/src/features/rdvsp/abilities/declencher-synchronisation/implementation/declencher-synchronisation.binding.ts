@@ -1,5 +1,6 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { echecDefinitif } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
-import * as Sentry from '@sentry/nextjs'
+import { consignerLEchec } from './consigner-l-echec'
 import { declencherSynchronisation } from './declencher-synchronisation'
 import { lancerSynchronisation } from './lancer-synchronisation.adapter'
 import { compteACible } from './prisma/compte-a-cible.query'
@@ -15,10 +16,12 @@ import { marquerEchecDeSynchronisation } from './prisma/marquer-echec.mutation'
  * À importer par ce chemin explicite : le module tire Prisma et Sentry, qu'un
  * composant client ne doit jamais embarquer.
  */
-export const declencherSynchronisationBinding = declencherSynchronisation({
-  compteACible,
-  lancer: lancerSynchronisation,
-  marquerEchec: marquerEchecDeSynchronisation(),
-  signaler: (erreur) => Sentry.captureException?.(erreur),
-  echecDefinitif,
-})
+export const declencherSynchronisationBinding = consignerLEchec(
+  declencherSynchronisation({
+    compteACible,
+    lancer: lancerSynchronisation,
+    signaler,
+    echecDefinitif,
+  }),
+  marquerEchecDeSynchronisation(),
+)

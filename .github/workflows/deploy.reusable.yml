@@ -5,15 +5,15 @@ on:
   workflow_call:
     inputs:
       environnement:
-        description: 'Branch whose environment to deploy'
+        description: "Branch whose environment to deploy"
         type: string
         required: true
       environnement-github:
-        description: 'GitHub environment name of the branch'
+        description: "GitHub environment name of the branch"
         type: string
         required: true
       image:
-        description: 'Container image to deploy'
+        description: "Container image to deploy"
         type: string
         required: true
 

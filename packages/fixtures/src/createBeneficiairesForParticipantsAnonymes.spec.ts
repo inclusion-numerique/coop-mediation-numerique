@@ -1,5 +1,6 @@
 import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import { v4 } from 'uuid'
+import { describe, expect, it, test } from 'vitest'
 import {
   createBeneficiairesForParticipantsAnonymes,
   createCounterUuid,

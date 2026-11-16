@@ -1,16 +1,16 @@
-name: 'Test environment'
-description: 'Create the .env file for tests against the CI database, then migrate it'
+name: "Test environment"
+description: "Create the .env file for tests against the CI database, then migrate it"
 
 inputs:
   scw-access-key:
-    description: 'Scaleway access key reading the Secret Manager'
+    description: "Scaleway access key reading the Secret Manager"
     required: true
   scw-secret-key:
-    description: 'Scaleway secret key reading the Secret Manager'
+    description: "Scaleway secret key reading the Secret Manager"
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Secrets environment
       uses: ./.github/actions/secrets-env

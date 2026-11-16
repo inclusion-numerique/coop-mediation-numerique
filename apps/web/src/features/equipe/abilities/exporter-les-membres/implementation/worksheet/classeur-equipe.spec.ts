@@ -1,4 +1,5 @@
 import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
+import { describe, expect, it } from 'vitest'
 import { criteresEquipe } from '../../../../domain'
 import { classeurEquipe } from './classeur-equipe'
 import type { MembreExporte } from './membre-exporte'

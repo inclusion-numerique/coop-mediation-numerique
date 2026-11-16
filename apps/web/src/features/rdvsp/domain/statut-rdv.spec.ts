@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { StatutPresence } from './statut-presence'
 import { statutRdv } from './statut-rdv'
 

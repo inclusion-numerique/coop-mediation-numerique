@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ContactTelephone } from './contact-telephone'
 import { Telephone } from './telephone'
 

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { optionsDesStatistiques } from './options-de-la-barre.presenter'
 import { activiteSourceOptions } from './source'
 

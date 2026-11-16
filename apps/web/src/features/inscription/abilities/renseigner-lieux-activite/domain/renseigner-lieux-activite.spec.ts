@@ -6,6 +6,7 @@ import {
   Role,
   UserId,
 } from '@app/web/features/inscription/domain'
+import { describe, expect, it } from 'vitest'
 import { renseignerLieuxActivite } from './renseigner-lieux-activite'
 
 const userId = UserId('11111111-1111-1111-1111-111111111111')

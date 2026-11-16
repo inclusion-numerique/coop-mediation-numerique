@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { statutDActivitePublic } from './statut-d-activite-public'
 
 const maintenant = new Date('2026-10-23T12:00:00Z')

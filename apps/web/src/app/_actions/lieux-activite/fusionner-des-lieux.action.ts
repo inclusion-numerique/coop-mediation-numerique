@@ -1,11 +1,12 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAdmin, withAuth } from '@app/web/features/authentification'
 import { fusionnerDesLieux } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
 import { FUSIONNER_DES_LIEUX_ERRORS } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.errors'
 import { FusionnerDesLieuxValidation } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.validation'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /**
  * Fusionner deux lieux est un acte de modération : la source disparaît, et rien

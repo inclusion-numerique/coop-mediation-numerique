@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { communesLues, premiereValeur } from './parametres-de-recherche'
 
 describe('paramètres de recherche de l’URL', () => {

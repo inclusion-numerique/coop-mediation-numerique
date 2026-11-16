@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { TypeContrat } from './type-contrat'
 
 describe('type de contrat', () => {

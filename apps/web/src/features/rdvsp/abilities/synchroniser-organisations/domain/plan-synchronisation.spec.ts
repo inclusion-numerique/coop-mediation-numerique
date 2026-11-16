@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { EmailExterne, TelephoneExterne } from '../../../domain/identite'
 import { NomOrganisation } from '../../../domain/libelle'
 import type { Organisation } from '../../../domain/organisation'

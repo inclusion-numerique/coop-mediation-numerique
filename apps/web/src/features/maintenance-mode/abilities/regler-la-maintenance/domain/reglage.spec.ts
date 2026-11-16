@@ -1,4 +1,5 @@
 import { MessageDeMaintenance } from '@app/web/features/maintenance-mode/domain'
+import { describe, expect, it } from 'vitest'
 import { reglageDeLaMaintenance } from './reglage'
 
 const message = MessageDeMaintenance('Bascule de la base')

@@ -14,12 +14,13 @@
       "@app/emails/*": ["../../packages/emails/src/*"],
       "@app/lint/*": ["../../packages/lint/src/*"],
       "@app/storybook/*": ["../../packages/storybook/src/*"],
-      "@app/test/*": ["../../packages/test/src/*"],
       "@app/ui/*": ["../../packages/ui/src/*"],
       "@app/fixtures/*": ["../../packages/fixtures/src/*"]
     },
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": ["node"]
   },
+  "files": [],
   "include": [
     "next-env.d.ts",
     "src/**/*.ts",

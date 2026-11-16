@@ -2,6 +2,7 @@ import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites
 import { computeProportion } from '@app/web/libraries/proportions'
 import { numberToPercentage } from '@app/web/utils/formatNumber'
 import type { Workbook, Worksheet } from 'exceljs'
+import { beforeAll, describe, expect, it } from 'vitest'
 import {
   type BuildStatistiquesWorksheetInput,
   buildStatistiquesWorksheet,

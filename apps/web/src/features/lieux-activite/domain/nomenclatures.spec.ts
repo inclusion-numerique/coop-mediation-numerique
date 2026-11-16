@@ -3,6 +3,7 @@ import {
   Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import {
   FormationLabelPropose,
   formationsLabelsProposees,

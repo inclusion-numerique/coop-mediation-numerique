@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { informationsGeneralesSoumises } from './informations-generales-soumises'
 
 const adresseBan = {

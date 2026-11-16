@@ -9,7 +9,7 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "types": ["jest", "node", "next"],
+    "types": ["node", "next"],
     "paths": {
       "@app/cli/*": ["../../apps/cli/src/*"],
       "@app/web/*": ["../../apps/web/src/*"],
@@ -18,12 +18,10 @@
       "@app/emails/*": ["../../packages/emails/src/*"],
       "@app/lint/*": ["../../packages/lint/src/*"],
       "@app/storybook/*": ["../../packages/storybook/src/*"],
-      "@app/test/*": ["../../packages/test/src/*"],
       "@app/ui/*": ["./src/*"]
     }
   },
   "include": [
-    "node_modules/@types/testing-library__jest-dom/index.d.ts",
     "node_modules/@types/react-dom/index.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx"

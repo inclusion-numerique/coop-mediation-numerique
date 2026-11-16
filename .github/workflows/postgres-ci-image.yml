@@ -4,8 +4,8 @@ name: Postgres CI image
 on:
   push:
     paths:
-      - 'docker/postgres-ci/**'
-      - '.github/workflows/postgres-ci-image.yml'
+      - "docker/postgres-ci/**"
+      - ".github/workflows/postgres-ci-image.yml"
   workflow_dispatch:
 
 concurrency:

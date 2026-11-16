@@ -2,8 +2,8 @@ import {
   AdresseIndisponible,
   SERVICE_ADRESSE_INDISPONIBLE,
 } from '@app/web/external-apis/apiAdresse'
-import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import { describe, expect, it } from 'vitest'
 import {
   auPanier,
   type LieuAuPanier,
@@ -11,13 +11,6 @@ import {
   memeLieu,
   selectionner,
 } from './panier'
-
-jest.mock('@app/web/external-apis/ban/geocodeStructureAdresse', () => ({
-  ...jest.requireActual('@app/web/external-apis/ban/geocodeStructureAdresse'),
-  geocodeStructureAdresse: jest.fn(),
-}))
-
-const geocodage = jest.mocked(geocodeStructureAdresse)
 
 const adresseBan = {
   id: '17299_0123_00012',
@@ -29,6 +22,14 @@ const adresseBan = {
   contexte: '17, Charente-Maritime',
   latitude: 45.94,
   longitude: -0.96,
+}
+
+const reconnue = async () => adresseBan
+
+const introuvable = async () => null
+
+const indisponible = async () => {
+  throw new AdresseIndisponible('HTTP 503')
 }
 
 const resultat = (
@@ -59,11 +60,6 @@ const auxPanier = (champs: Partial<LieuAuPanier> = {}): LieuAuPanier => ({
   ...champs,
 })
 
-beforeEach(() => {
-  geocodage.mockReset()
-  geocodage.mockResolvedValue(adresseBan)
-})
-
 describe('deux entrées désignent le même lieu', () => {
   it('si leur identité interne coïncide', () => {
     expect(memeLieu(auxPanier({ id: 'a' }), auxPanier({ id: 'a' }))).toBe(true)
@@ -89,7 +85,9 @@ describe('deux entrées désignent le même lieu', () => {
 
 describe('un résultat de recherche devient une entrée du panier', () => {
   it('par son id quand la coop connaît déjà le lieu', async () => {
-    const lieu = await auPanier(resultat({ structures: [{ id: 'lieu-coop' }] }))
+    const lieu = await auPanier(reconnue)(
+      resultat({ structures: [{ id: 'lieu-coop' }] }),
+    )
 
     expect(lieu).toEqual({
       id: 'lieu-coop',
@@ -104,13 +102,15 @@ describe('un résultat de recherche devient une entrée du panier', () => {
   })
 
   it('sans interroger la Base Adresse Nationale pour un lieu déjà connu', async () => {
-    await auPanier(resultat({ structures: [{ id: 'lieu-coop' }] }))
+    const lieu = await auPanier(indisponible)(
+      resultat({ structures: [{ id: 'lieu-coop' }] }),
+    )
 
-    expect(geocodage).not.toHaveBeenCalled()
+    expect(lieu?.id).toBe('lieu-coop')
   })
 
   it('avec l’adresse reconnue par la BAN pour un lieu à créer', async () => {
-    const lieu = await auPanier(resultat())
+    const lieu = await auPanier(reconnue)(resultat())
 
     expect(lieu).toMatchObject({
       id: null,
@@ -122,7 +122,9 @@ describe('un résultat de recherche devient une entrée du panier', () => {
   })
 
   it('en retenant l’identité de cartographie d’un résultat qui en vient', async () => {
-    const lieu = await auPanier(resultat({ source: 'cartographie_nationale' }))
+    const lieu = await auPanier(reconnue)(
+      resultat({ source: 'cartographie_nationale' }),
+    )
 
     expect(lieu?.structureCartographieNationaleId).toBe('carto-1')
   })
@@ -130,30 +132,26 @@ describe('un résultat de recherche devient une entrée du panier', () => {
   it.each([['api'], ['structure_locale']] as const)(
     'en l’ignorant pour un résultat venu de %s',
     async (source) => {
-      const lieu = await auPanier(resultat({ source }))
+      const lieu = await auPanier(reconnue)(resultat({ source }))
 
       expect(lieu?.structureCartographieNationaleId).toBeNull()
     },
   )
 
   it('rend null quand la BAN ne reconnaît pas l’adresse', async () => {
-    geocodage.mockResolvedValue(null)
-
-    expect(await auPanier(resultat())).toBeNull()
+    expect(await auPanier(introuvable)(resultat())).toBeNull()
   })
 })
 
 describe('le lieu choisi rejoint la sélection', () => {
   it('quand rien ne s’y oppose', async () => {
-    const issue = await selectionner([], resultat())
+    const issue = await selectionner(reconnue)([], resultat())
 
     expect(issue.success).toBe(true)
   })
 
   it('sauf si son adresse est introuvable dans la BAN', async () => {
-    geocodage.mockResolvedValue(null)
-
-    const issue = await selectionner([], resultat())
+    const issue = await selectionner(introuvable)([], resultat())
 
     expect(!issue.success && issue.error).toContain(
       'introuvable dans la Base Adresse Nationale',
@@ -161,15 +159,13 @@ describe('le lieu choisi rejoint la sélection', () => {
   })
 
   it('sauf si le service d’adresse est indisponible', async () => {
-    geocodage.mockRejectedValue(new AdresseIndisponible('HTTP 503'))
-
-    const issue = await selectionner([], resultat())
+    const issue = await selectionner(indisponible)([], resultat())
 
     expect(!issue.success && issue.error).toBe(SERVICE_ADRESSE_INDISPONIBLE)
   })
 
   it('sauf s’il fait déjà partie de la sélection', async () => {
-    const issue = await selectionner(
+    const issue = await selectionner(reconnue)(
       [auxPanier({ structureCartographieNationaleId: 'carto-1' })],
       resultat(),
     )

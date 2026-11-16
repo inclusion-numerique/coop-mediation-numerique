@@ -1,7 +1,7 @@
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
-import * as Sentry from '@sentry/nextjs'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import {
   fromInvitation,
@@ -122,7 +122,7 @@ const envoyer =
       })
       return null
     } catch (erreur) {
-      Sentry.captureException?.(erreur)
+      signaler(erreur)
       return invitation.reference.email
     }
   }

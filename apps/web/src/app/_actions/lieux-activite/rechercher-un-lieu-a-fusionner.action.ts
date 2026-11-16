@@ -1,8 +1,9 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAdmin, withAuth } from '@app/web/features/authentification'
 import { lieuxAFusionner } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
 
 /**

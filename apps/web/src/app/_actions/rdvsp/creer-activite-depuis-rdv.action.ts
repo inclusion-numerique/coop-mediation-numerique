@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { urlDeSaisieDepuisUnRendezVous } from '@app/web/features/activites/implementation/url-de-saisie-depuis-un-rendez-vous'
 import { withAuth, withMediateur } from '@app/web/features/authentification'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
@@ -8,7 +9,7 @@ import { CreerActiviteDepuisRdvValidation } from '@app/web/features/rdvsp/abilit
 import { MediateurRedacteurId } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
 import { creerActiviteDepuisRdvAvec } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 const creerActiviteDepuisRdv = creerActiviteDepuisRdvAvec(
   urlDeSaisieDepuisUnRendezVous,

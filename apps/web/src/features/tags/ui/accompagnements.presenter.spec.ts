@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { infobulleDesAccompagnements } from './accompagnements.presenter'
 
 describe('infobulleDesAccompagnements', () => {

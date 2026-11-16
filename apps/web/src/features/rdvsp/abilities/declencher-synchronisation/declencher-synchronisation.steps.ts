@@ -3,6 +3,7 @@ import type {
   DeclencherSynchronisation,
   LancerSynchronisation,
 } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
+import { consignerLEchec } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/consigner-l-echec'
 import { declencherSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation'
 import { compteACible } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/marquer-echec.mutation'
@@ -37,12 +38,14 @@ const lancer: LancerSynchronisation = async ({ organisationIds }) => {
   return { derive: 3 }
 }
 
-const declencher = declencherSynchronisation({
-  compteACible,
-  lancer,
-  marquerEchec: marquerEchecDeSynchronisation(() => MAINTENANT),
-  maintenant: () => MAINTENANT,
-})
+const declencher = consignerLEchec(
+  declencherSynchronisation({
+    compteACible,
+    lancer,
+    maintenant: () => MAINTENANT,
+  }),
+  marquerEchecDeSynchronisation(() => MAINTENANT),
+)
 
 Before(() => {
   portee = undefined

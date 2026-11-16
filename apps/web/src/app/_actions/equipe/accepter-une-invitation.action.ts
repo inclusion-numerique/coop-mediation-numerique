@@ -1,6 +1,7 @@
 'use server'
 
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import { withAuth } from '@app/web/features/authentification'
 import {
   type Accepteur,
@@ -16,7 +17,7 @@ import {
   UtilisateurId,
 } from '@app/web/features/equipe/domain'
 import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
+import { fromResult, withInput } from '@app/web/libraries/nextjs'
 
 const accepteurDe = (user: SessionUser): Accepteur => {
   const email = Email(user.email)

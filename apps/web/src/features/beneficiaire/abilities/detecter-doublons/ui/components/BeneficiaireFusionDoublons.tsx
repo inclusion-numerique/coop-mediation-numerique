@@ -11,7 +11,6 @@ import { pluriel } from '@app/web/libraries/pluriel'
 import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
-import * as Sentry from '@sentry/nextjs'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
@@ -141,7 +140,6 @@ const BeneficiaireFusionDoublons = ({
         priority: 'error',
         message: 'Une erreur est survenue lors de la fusion des doublons',
       })
-      Sentry.captureException(new Error(result.error))
       return
     }
 

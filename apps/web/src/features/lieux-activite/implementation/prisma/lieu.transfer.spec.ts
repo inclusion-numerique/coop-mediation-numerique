@@ -30,6 +30,7 @@ import {
   Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { describe, expect, it } from 'vitest'
 import { BanId } from '../../domain/ban-id'
 import { NomUsage } from '../../domain/identite-sirene'
 import {

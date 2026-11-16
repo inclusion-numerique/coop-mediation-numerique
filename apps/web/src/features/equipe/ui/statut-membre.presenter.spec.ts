@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { libelleStatutMembre } from './statut-membre.presenter'
 
 const date = new Date('2026-03-04T10:00:00Z')

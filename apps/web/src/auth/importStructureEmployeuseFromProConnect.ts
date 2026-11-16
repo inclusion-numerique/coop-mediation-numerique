@@ -1,7 +1,7 @@
+import type { RattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-  rattacherAUneEmployeuseDepuisSiret,
 } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -22,50 +22,56 @@ export type ImportStructureEmployeuseFromProConnectResult = {
  * l'employeur courant par `est_active` (pas de fenêtre de dates pour les non-CN), ce qui remplace
  * fidèlement l'ancienne logique de clôture/chevauchement des emplois coop (artefact du modèle daté).
  */
-export const importStructureEmployeuseFromProConnect = async ({
-  userId,
-  siret,
-}: {
-  userId: string
-  siret: string | null | undefined
-}): Promise<ImportStructureEmployeuseFromProConnectResult> => {
-  // ProConnect may not provide a SIRET; in that case we intentionally do nothing.
-  if (!siret) {
-    return {
-      success: true,
-      noOp: true,
-      reason: 'No SIRET provided by ProConnect',
-    }
-  }
-
-  const user = await prismaClient.user.findUnique({
-    where: { id: userId },
-    select: { personneMain: { select: personneConseillerNumeriqueSelect } },
-  })
-
-  if (!user) {
-    return { success: false, noOp: true, reason: 'User not found' }
-  }
-
-  // This import logic only applies to non-conseiller users.
-  if (personneEstConseillerNumerique(user.personneMain)) {
-    return { success: true, noOp: true, reason: 'User is conseiller numerique' }
-  }
-
-  const rattachement = await rattacherAUneEmployeuseDepuisSiret({
+export const importStructureEmployeuseFromProConnect =
+  (rattacherDepuisSiret: RattacherAUneEmployeuseDepuisSiret) =>
+  async ({
     userId,
     siret,
-  })
-
-  // Un SIRET fermé, illisible ou une API muette : on l'expose comme un échec
-  // fonctionnel, sans jeter — la connexion ne doit pas en dépendre.
-  if (rattachement._tag !== 'rattachee') {
-    return {
-      success: false,
-      noOp: false,
-      reason: `Rattachement impossible depuis le SIRET ProConnect (${rattachement._tag})`,
+  }: {
+    userId: string
+    siret: string | null | undefined
+  }): Promise<ImportStructureEmployeuseFromProConnectResult> => {
+    // ProConnect may not provide a SIRET; in that case we intentionally do nothing.
+    if (!siret) {
+      return {
+        success: true,
+        noOp: true,
+        reason: 'No SIRET provided by ProConnect',
+      }
     }
-  }
 
-  return { success: true, noOp: false }
-}
+    const user = await prismaClient.user.findUnique({
+      where: { id: userId },
+      select: { personneMain: { select: personneConseillerNumeriqueSelect } },
+    })
+
+    if (!user) {
+      return { success: false, noOp: true, reason: 'User not found' }
+    }
+
+    // This import logic only applies to non-conseiller users.
+    if (personneEstConseillerNumerique(user.personneMain)) {
+      return {
+        success: true,
+        noOp: true,
+        reason: 'User is conseiller numerique',
+      }
+    }
+
+    const rattachement = await rattacherDepuisSiret({
+      userId,
+      siret,
+    })
+
+    // Un SIRET fermé, illisible ou une API muette : on l'expose comme un échec
+    // fonctionnel, sans jeter — la connexion ne doit pas en dépendre.
+    if (rattachement._tag !== 'rattachee') {
+      return {
+        success: false,
+        noOp: false,
+        reason: `Rattachement impossible depuis le SIRET ProConnect (${rattachement._tag})`,
+      }
+    }
+
+    return { success: true, noOp: false }
+  }

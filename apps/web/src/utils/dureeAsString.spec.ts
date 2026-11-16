@@ -1,8 +1,7 @@
 import { dureeAsString } from '@app/web/utils/dureeAsString'
+import { describe, expect, test } from 'vitest'
 
 describe('dureeAsString', () => {
-  // use jest cases each
-
   const cases = [
     { value: 15, expected: '15mn' },
     { value: 30.1, expected: '30mn' },

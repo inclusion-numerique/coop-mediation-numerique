@@ -1,5 +1,6 @@
 'use server'
 
+import { actionBuilder } from '@app/web/configuration/nextjs'
 import {
   GenreDeLieu,
   rechercherLesLieuxDesStatistiques,
@@ -8,7 +9,7 @@ import { RechercherLesLieuxDesStatistiquesValidation } from '@app/web/features/a
 import { optionDeLieu } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
 import { PERIMETRE_NATIONAL } from '@app/web/features/activites/domain'
 import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
+import { withInput } from '@app/web/libraries/nextjs'
 
 export const rechercherLesLieuxNationauxAction = actionBuilder()
   .use(withAuth())

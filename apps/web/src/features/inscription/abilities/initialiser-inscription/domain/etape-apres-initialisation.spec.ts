@@ -1,4 +1,5 @@
 import { ProfilInscription } from '@app/web/features/inscription/domain'
+import { describe, expect, it } from 'vitest'
 import { etapeApresInitialisation } from './etape-apres-initialisation'
 
 describe('etapeApresInitialisation', () => {

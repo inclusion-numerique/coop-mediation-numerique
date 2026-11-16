@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CodeInsee } from './code-insee'
 
 describe('code INSEE', () => {

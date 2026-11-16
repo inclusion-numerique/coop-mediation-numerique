@@ -1,4 +1,5 @@
 import { Prisma } from '@app/web/generated/prisma/client'
+import { describe, expect, it } from 'vitest'
 import { criteresDesActivites } from '../domain'
 import { filtreDesActivites } from './criteres-des-activites.sql'
 

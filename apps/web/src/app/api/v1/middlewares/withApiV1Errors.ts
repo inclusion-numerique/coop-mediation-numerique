@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs'
+import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 
@@ -10,7 +10,7 @@ const reponseDErreur = (error: unknown): Response => {
     )
   }
 
-  Sentry.captureException(error)
+  signaler(error)
 
   return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
 }

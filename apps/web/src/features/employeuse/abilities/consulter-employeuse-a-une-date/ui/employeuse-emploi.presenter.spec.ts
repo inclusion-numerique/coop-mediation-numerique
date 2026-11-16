@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { adresseCompleteAffichage } from './employeuse-emploi.presenter'
 
 describe('adresseCompleteAffichage', () => {

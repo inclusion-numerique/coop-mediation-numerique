@@ -1,4 +1,5 @@
 import type { ApercuDeLaSynchronisation } from '@app/web/libraries/registre-personne'
+import { describe, expect, it } from 'vitest'
 import {
   aQuelqueChoseADire,
   type CompteAuReleve,

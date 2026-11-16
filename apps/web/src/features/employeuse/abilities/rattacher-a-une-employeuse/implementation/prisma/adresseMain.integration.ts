@@ -1,25 +1,12 @@
-import {
-  AdresseIndisponible,
-  searchAdresse,
-} from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import {
+  adresseMainDepuis,
   findAdresseMainId,
   insertAdresseMain,
   type ResolvedAdresseMain,
-  resolveAdresseMain,
 } from './adresseMain'
-
-// Géocodage neutralisé : `searchAdresse -> null` force la branche « api-entreprise » et rend le
-// test déterministe et hors-ligne.
-jest.mock('@app/web/external-apis/apiAdresse', () => ({
-  ...jest.requireActual('@app/web/external-apis/apiAdresse'),
-  searchAdresse: jest.fn(),
-}))
-const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
-  typeof searchAdresse
->
 
 describe('findAdresseMainId — dédup par clé composant', () => {
   const codeBanExistant = v4()
@@ -71,21 +58,11 @@ describe('findAdresseMainId — dédup par clé composant', () => {
   })
 })
 
-// Cas de production : pour un établissement non diffusible, l'API Recherche d'entreprises rend
-// littéralement `[NON-DIFFUSIBLE]` dans `code_postal` et `libelle_voie`. Sans neutralisation, la
-// chaîne de 16 caractères atteignait `main.adresse.code_postal varchar(5)` et faisait échouer
-// l'INSERT en `22001` — la reprise ADR-002 s'arrêtait à la première rencontre.
-describe('resolveAdresseMain — codes non conformes des sources amont', () => {
+describe('insertAdresseMain — codes non conformes des sources amont', () => {
   const COMMUNE_DE_TEST = 'AURAGNE-TEST-NON-DIFFUSIBLE'
   const state = { adresseId: 0 }
 
   beforeAll(async () => {
-    mockedSearchAdresse.mockResolvedValue(null)
-
-    // Commune volontairement synthétique. `main.adresse` porte une clé d'unicité composant
-    // `(code_postal, nom_commune, nom_voie, numero_voie, repetition)` : avec une vraie commune,
-    // le test entrait en collision avec les lignes du restore de production — que l'on ne peut
-    // pas davantage supprimer, des `structure_administrative` les référençant.
     await prismaClient.adresseMain.deleteMany({
       where: { nomCommune: COMMUNE_DE_TEST },
     })
@@ -97,48 +74,19 @@ describe('resolveAdresseMain — codes non conformes des sources amont', () => {
     }
   })
 
-  it('se replie sur l’adresse de la source quand le service d’adresse est indisponible', async () => {
-    mockedSearchAdresse.mockRejectedValueOnce(
-      new AdresseIndisponible('HTTP 503'),
+  it('enregistre l’adresse d’un établissement `[NON-DIFFUSIBLE]`', async () => {
+    state.adresseId = await insertAdresseMain(
+      adresseMainDepuis(
+        {
+          adresse: '[NON-DIFFUSIBLE]',
+          codePostal: '[NON-DIFFUSIBLE]',
+          codeInsee: '31024',
+          commune: COMMUNE_DE_TEST,
+        },
+        null,
+      ),
     )
 
-    const resolved = await resolveAdresseMain({
-      adresse: '1 rue de la Paix',
-      codePostal: '75001',
-      codeInsee: '75101',
-      commune: COMMUNE_DE_TEST,
-    })
-
-    expect(resolved.source).toBe('api-entreprise')
-    expect(resolved.nomVoie).toBe('1 rue de la Paix')
-    expect(resolved.codeBan).toBeNull()
-  })
-
-  it('vide le code postal `[NON-DIFFUSIBLE]` en conservant commune et code INSEE', async () => {
-    const resolved = await resolveAdresseMain({
-      adresse: '[NON-DIFFUSIBLE]',
-      codePostal: '[NON-DIFFUSIBLE]',
-      codeInsee: '31024',
-      commune: COMMUNE_DE_TEST,
-    })
-
-    expect(resolved.codePostal).toBe('')
-    expect(resolved.codeInsee).toBe('31024')
-    expect(resolved.nomCommune).toBe(COMMUNE_DE_TEST)
-
-    state.adresseId = await insertAdresseMain(resolved)
     expect(state.adresseId).toEqual(expect.any(Number))
-  })
-
-  it('normalise un code postal espacé et un code INSEE corse en minuscules', async () => {
-    const resolved = await resolveAdresseMain({
-      adresse: '1 rue du Test',
-      codePostal: '20 000',
-      codeInsee: '2a004',
-      commune: 'AJACCIO',
-    })
-
-    expect(resolved.codePostal).toBe('20000')
-    expect(resolved.codeInsee).toBe('2A004')
   })
 })

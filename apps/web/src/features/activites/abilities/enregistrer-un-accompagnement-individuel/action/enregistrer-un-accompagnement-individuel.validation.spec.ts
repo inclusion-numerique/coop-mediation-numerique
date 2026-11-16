@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { EnregistrerUnAccompagnementIndividuelValidation } from './enregistrer-un-accompagnement-individuel.validation'
 
 const saisie = {

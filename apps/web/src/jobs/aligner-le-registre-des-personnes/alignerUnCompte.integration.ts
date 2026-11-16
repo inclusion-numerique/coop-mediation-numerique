@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { afterAll, describe, expect, it } from 'vitest'
 import { alignerUnCompte } from './executeAlignerLeRegistreDesPersonnes'
 
 describe('aligner un compte sur le registre', () => {

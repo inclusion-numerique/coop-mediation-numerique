@@ -1,4 +1,5 @@
 import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
+import { describe, expect, it } from 'vitest'
 import { DEPARTEMENT_PAR_DEFAUT, departementDuCode } from './departement'
 import { departementDeLActeur } from './departement-de-l-acteur'
 

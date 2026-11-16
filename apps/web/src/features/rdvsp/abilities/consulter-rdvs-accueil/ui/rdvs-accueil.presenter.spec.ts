@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { RdvId } from '../../../domain/rdv-id'
 import { StatutPresence } from '../../../domain/statut-presence'
 import type { RdvEnUneLigne } from '../domain/donnees-accueil-rdv'

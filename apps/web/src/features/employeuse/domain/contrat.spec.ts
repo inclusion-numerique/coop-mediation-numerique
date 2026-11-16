@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { contratPourEmployeuse } from './contrat'
 
 const ligne = (structureId: number | null, dateDebut: Date | null) => ({

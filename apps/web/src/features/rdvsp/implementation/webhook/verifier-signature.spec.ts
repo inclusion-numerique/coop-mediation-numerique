@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { describe, expect, it } from 'vitest'
 import { signatureValide } from './verifier-signature'
 
 const SECRET = 'secret-partage'

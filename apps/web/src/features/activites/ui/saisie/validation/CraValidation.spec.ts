@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CraValidation } from './CraValidation'
 
 const materiel = CraValidation.shape.materiel

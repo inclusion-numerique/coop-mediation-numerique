@@ -1,6 +1,6 @@
+import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
 import type { Prisma } from '@app/web/generated/prisma/client'
 import { prismaClient } from '@app/web/prismaClient'
-import * as Sentry from '@sentry/nextjs'
 import {
   type Alignement,
   alignementDe,
@@ -51,10 +51,12 @@ const signalerLaLigneOccupee = (
   coopUserId: string,
   personneId: number,
 ): void => {
-  Sentry.captureMessage?.(
-    'Courriel d’un compte Coop trouvé sur la ligne d’un autre compte vivant',
-    { level: 'warning', extra: { coopUserId, personneId } },
-  )
+  errorReporter.captureMessage({
+    message:
+      'Courriel d’un compte Coop trouvé sur la ligne d’un autre compte vivant',
+    level: 'warn',
+    attributes: { coopUserId, personneId },
+  })
 }
 
 const creerLaLigne = (

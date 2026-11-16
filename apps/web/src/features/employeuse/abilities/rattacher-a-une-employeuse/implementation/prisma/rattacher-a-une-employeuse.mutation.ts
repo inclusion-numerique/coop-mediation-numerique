@@ -9,7 +9,10 @@ import {
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
 } from './ensureAffectationEmploiMain'
-import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
+import {
+  ensureStructureAdministrativeMain,
+  type ServicesDeLEmployeuse,
+} from './ensureStructureAdministrativeMain'
 
 /**
  * L'employeuse d'abord (elle peut échouer sans conséquence pour l'appelant),
@@ -17,55 +20,54 @@ import { ensureStructureAdministrativeMain } from './ensureStructureAdministrati
  * pas d'une personne créée sans le rattachement qui la justifiait, ni d'une
  * affectation active laissée en double avec la précédente.
  */
-export const rattacherAUneEmployeuse: RattacherAUneEmployeuse = async ({
-  userId,
-  identite,
-}) => {
-  const employeuse = await ensureStructureAdministrativeMain({
-    coopId: null,
-    siret: identite.siret,
-    identite: {
-      // Une employeuse peut n'avoir aucune dénomination (non diffusible, entreprise
-      // individuelle) : `ensureStructureAdministrativeMain` retraduit la chaîne vide
-      // en `null`, valeur que porte déjà la colonne.
-      nom: identite.denomination ?? '',
-      adresse: identite.adresse.voie ?? '',
-      commune: identite.adresse.commune,
-      codePostal: identite.adresse.codePostal ?? '',
-      codeInsee: identite.adresse.codeInsee ?? '',
-    },
-  })
-
-  if (!employeuse) return { _tag: 'employeuseIndisponible' }
-
-  await prismaClient.$transaction(async (transaction) => {
-    const { email } = await transaction.user.findUniqueOrThrow({
-      where: { id: userId },
-      select: { email: true },
+export const rattacherAUneEmployeuse =
+  (services: ServicesDeLEmployeuse): RattacherAUneEmployeuse =>
+  async ({ userId, identite }) => {
+    const employeuse = await ensureStructureAdministrativeMain(services)({
+      coopId: null,
+      siret: identite.siret,
+      identite: {
+        // Une employeuse peut n'avoir aucune dénomination (non diffusible, entreprise
+        // individuelle) : `ensureStructureAdministrativeMain` retraduit la chaîne vide
+        // en `null`, valeur que porte déjà la colonne.
+        nom: identite.denomination ?? '',
+        adresse: identite.adresse.voie ?? '',
+        commune: identite.adresse.commune,
+        codePostal: identite.adresse.codePostal ?? '',
+        codeInsee: identite.adresse.codeInsee ?? '',
+      },
     })
 
-    const personne = await ensurePersonneMain(
-      { coopUserId: userId, email },
-      transaction,
-    )
+    if (!employeuse) return { _tag: 'employeuseIndisponible' }
 
-    await ensureAffectationEmploiMain(
-      { personneId: personne.id, structureAdministrativeId: employeuse.id },
-      transaction,
-    )
+    await prismaClient.$transaction(async (transaction) => {
+      const { email } = await transaction.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: { email: true },
+      })
 
-    // Un seul employeur courant : les autres rattachements déclarés par la coop
-    // sont clos. Ceux des autres sources (idposte) appartiennent à l'Entrepôt.
-    await deactivateCoopAffectationsExcept(
-      {
-        personneId: personne.id,
-        keepStructureAdministrativeIds: [employeuse.id],
-      },
-      transaction,
-    )
+      const personne = await ensurePersonneMain(
+        { coopUserId: userId, email },
+        transaction,
+      )
 
-    await synchroniserPersonne(transaction, userId)
-  })
+      await ensureAffectationEmploiMain(
+        { personneId: personne.id, structureAdministrativeId: employeuse.id },
+        transaction,
+      )
 
-  return { _tag: 'rattachee', employeuseId: EmployeuseId(employeuse.id) }
-}
+      // Un seul employeur courant : les autres rattachements déclarés par la coop
+      // sont clos. Ceux des autres sources (idposte) appartiennent à l'Entrepôt.
+      await deactivateCoopAffectationsExcept(
+        {
+          personneId: personne.id,
+          keepStructureAdministrativeIds: [employeuse.id],
+        },
+        transaction,
+      )
+
+      await synchroniserPersonne(transaction, userId)
+    })
+
+    return { _tag: 'rattachee', employeuseId: EmployeuseId(employeuse.id) }
+  }
