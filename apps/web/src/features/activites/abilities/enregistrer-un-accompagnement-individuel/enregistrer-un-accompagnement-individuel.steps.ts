@@ -154,7 +154,6 @@ Given('un médiateur ayant animé un atelier collectif', async () => {
       date: new Date('2026-11-03'),
       duree: 60,
       thematiques: ['Email'],
-      accompagnementsCount: 1,
       accompagnements: { create: { beneficiaireId: contexte.suiviId } },
     },
     select: { id: true },

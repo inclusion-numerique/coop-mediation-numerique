@@ -24,14 +24,9 @@ const MODIFICATION_FIELD: Record<string, TimestampField> = {
   ApiClient: 'updated',
 }
 
-// Champs « non-contenu » : compteurs dénormalisés et marqueurs techniques. Si une mise à
-// jour ne touche QUE ces champs, on ne bumpe pas (ex. recompte de `activitesCount`, ou
-// `lastSeen`/`lastLogin`) — aligné sur le défaut de Rails counter_culture, et évite que
-// la synchro carto voie une structure « modifiée » à chaque activité loggée.
+// Champs « non-contenu » : marqueurs techniques. Si une mise à jour ne touche QUE ces
+// champs, on ne bumpe pas (ex. `lastSeen`/`lastLogin`).
 const NON_CONTENT_FIELDS = new Set<string>([
-  'activitesCount',
-  'accompagnementsCount',
-  'beneficiairesCount',
   'derniereCreationActivite',
   'derniereCreationBeneficiaire',
   'lastLogin',

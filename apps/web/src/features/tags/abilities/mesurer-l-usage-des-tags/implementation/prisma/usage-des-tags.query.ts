@@ -83,10 +83,7 @@ const tagsLesPlusUtilises = async (): Promise<TagLePlusUtilise[]> => {
       coordinateurId: true,
       departement: true,
       equipe: true,
-      activites: {
-        select: { activite: { select: { accompagnementsCount: true } } },
-      },
-      _count: { select: { activitesCoordinationTags: true } },
+      accompagnementsCount: true,
     },
   })
 
@@ -96,12 +93,7 @@ const tagsLesPlusUtilises = async (): Promise<TagLePlusUtilise[]> => {
     portee: porteeDepuisLaBase(tag),
     description: DescriptionDuTag.safe(tag.description ?? ''),
     utilisations: Effectif(usageParTag.get(tag.id) ?? 0),
-    accompagnements: Effectif(
-      tag.activites.reduce(
-        (total, { activite }) => total + activite.accompagnementsCount,
-        0,
-      ) + tag._count.activitesCoordinationTags,
-    ),
+    accompagnements: Effectif(tag.accompagnementsCount),
   }))
 }
 

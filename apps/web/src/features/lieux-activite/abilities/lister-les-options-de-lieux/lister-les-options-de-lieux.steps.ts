@@ -24,7 +24,6 @@ Given('ce médiateur a des activités dans ce lieu', async () => {
       typeLieu: 'LieuActivite',
       date: new Date('2026-02-01'),
       duree: 60,
-      accompagnementsCount: 1,
     },
   })
 })

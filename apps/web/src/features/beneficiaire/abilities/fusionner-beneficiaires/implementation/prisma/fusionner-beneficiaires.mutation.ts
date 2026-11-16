@@ -74,15 +74,6 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
       data: { beneficiaireId: destinationId },
     })
 
-    // Recalculer le compteur
-    const accompagnementsCount = await tx.accompagnement.count({
-      where: { beneficiaireId: destinationId },
-    })
-    await tx.beneficiaire.update({
-      where: { id: destinationId },
-      data: { accompagnementsCount },
-    })
-
     // Rediriger les fusions successives
     await tx.$executeRaw`
       UPDATE beneficiaires

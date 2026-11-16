@@ -13,7 +13,7 @@ export const beneficiairesLiesAUsager: BeneficiairesLiesAUsager = async (
 ) =>
   await prismaClient.beneficiaire.findMany({
     where: { rdvUserId: usagerId, suppression: null },
-    select: { id: true, mediateurId: true },
+    select: { id: true },
   })
 
 export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
@@ -31,7 +31,6 @@ export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
 export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
   usagerId,
   beneficiaires,
-  perteParMediateur,
 }) => {
   await prismaClient.$transaction(async (transaction) => {
     if (beneficiaires.length > 0) {
@@ -54,15 +53,6 @@ export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
       await garderUnSeulCodePostal(
         transaction,
         Prisma.sql`id = ANY(${beneficiaires.map(({ id }) => id)}::uuid[])`,
-      )
-
-      await Promise.all(
-        [...perteParMediateur].map(([mediateurId, perte]) =>
-          transaction.mediateur.update({
-            where: { id: mediateurId },
-            data: { beneficiairesCount: { decrement: perte } },
-          }),
-        ),
       )
     }
 

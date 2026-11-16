@@ -275,16 +275,6 @@ export const participantsDeLAtelier = (
     : failure(BeneficiaireEnDouble())
 }
 
-export const nombreDAccompagnements = (
-  activite: ActiviteDeMediation,
-): Effectif =>
-  activite._tag === 'Individuel'
-    ? Effectif(1)
-    : Effectif(
-        activite.participants.suivis.length +
-          activite.participants.anonymes.total,
-      )
-
 export const aucuneParticipationAnonyme: SaisieDesParticipantsAnonymes = {
   total: Effectif(0),
   dejaAccompagnes: Effectif(0),

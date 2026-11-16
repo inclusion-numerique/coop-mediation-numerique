@@ -46,7 +46,6 @@ const semerUneActivite = (
       date,
       duree: 60,
       thematiques: ['Email'],
-      accompagnementsCount: 1,
       accompagnements: {
         create: {
           beneficiaire: { create: { mediateurId, anonyme: true } },
@@ -136,7 +135,6 @@ Given(
         date: new Date(Date.UTC(2026, 2, 3)),
         duree: 60,
         thematiques: ['Email'],
-        accompagnementsCount: 1,
         accompagnements: {
           create: {
             beneficiaire: {

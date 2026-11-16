@@ -98,7 +98,6 @@ Given(
         typeLieu: 'LieuActivite',
         date: new Date(date),
         duree: 30,
-        accompagnementsCount: 0,
       },
     })
   },

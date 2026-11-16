@@ -102,7 +102,6 @@ const semerUneActivite = (
       date: new Date(Date.UTC(2026, 2, jour)),
       duree: 60,
       thematiques: ['Email'],
-      accompagnementsCount: participants,
       accompagnements: {
         create: Array.from({ length: participants }, () => ({
           beneficiaire: { create: { mediateurId, anonyme: true } },
@@ -227,7 +226,6 @@ Given(
         modification: instant,
         duree: 30,
         thematiques: ['Email' as const],
-        accompagnementsCount: 1,
       })),
     })
     await prismaClient.accompagnement.createMany({

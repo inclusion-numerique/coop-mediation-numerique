@@ -22,7 +22,6 @@ export const creerBeneficiaire: CreerBeneficiaire = async ({
     await tx.mediateur.update({
       where: { id: mediateurId },
       data: {
-        beneficiairesCount: { increment: 1 },
         derniereCreationBeneficiaire: now,
       },
     })

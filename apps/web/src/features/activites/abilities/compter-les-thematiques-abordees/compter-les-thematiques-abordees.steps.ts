@@ -71,7 +71,6 @@ const semerUneActivite = ({
       date: new Date('2026-03-03'),
       duree: 60,
       thematiques: thematiquesDe(thematiques),
-      accompagnementsCount: 1,
       suppression,
       accompagnements: { create: { beneficiaireId } },
     },

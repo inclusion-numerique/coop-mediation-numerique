@@ -24,7 +24,6 @@ export const mediateurAvecActivite = givenUser({
       },
       create: {
         id: mediateurAvecActiviteMediateurId,
-        activitesCount: 8,
         derniereCreationActivite: new Date(),
         enActivite: {
           connectOrCreate: {

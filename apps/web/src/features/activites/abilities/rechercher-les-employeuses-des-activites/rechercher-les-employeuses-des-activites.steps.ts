@@ -63,7 +63,6 @@ const semerUneActivite = async ({
       typeLieu: 'ADistance',
       date: new Date('2026-03-03'),
       duree: 60,
-      accompagnementsCount: 0,
       structureEmployeuseMainId: await semerUneEmployeuse(employeuse),
       suppression,
     },

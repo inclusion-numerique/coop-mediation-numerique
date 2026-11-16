@@ -39,20 +39,14 @@ let beneficiairesCountBefore = 0
 export const beneficiairesCountAtScenarioStart = (): number =>
   beneficiairesCountBefore
 
-/** Crée un bénéficiaire de test (suivi pour nettoyage) et incrémente le compteur. */
+/** Crée un bénéficiaire de test (suivi pour nettoyage). */
 export const seedBeneficiaire = async (
   data: Partial<Prisma.BeneficiaireUncheckedCreateInput> = {},
 ): Promise<string> => {
   const id = data.id ?? v4()
-  await prismaClient.$transaction([
-    prismaClient.beneficiaire.create({
-      data: { anonyme: false, ...data, id, mediateurId: testMediateurId },
-    }),
-    prismaClient.mediateur.update({
-      where: { id: testMediateurId },
-      data: { beneficiairesCount: { increment: 1 } },
-    }),
-  ])
+  await prismaClient.beneficiaire.create({
+    data: { anonyme: false, ...data, id, mediateurId: testMediateurId },
+  })
   trackBeneficiaire(id)
   return id
 }
@@ -73,10 +67,6 @@ After(async () => {
       where: { id: { in: [...trackedBeneficiaireIds] } },
     })
   }
-  await prismaClient.mediateur.update({
-    where: { id: testMediateurId },
-    data: { beneficiairesCount: beneficiairesCountBefore },
-  })
 })
 
 /**
@@ -106,7 +96,7 @@ export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
   })
 
   const mediateur = await prismaClient.mediateur.create({
-    data: { userId, beneficiairesCount: 2 },
+    data: { userId },
     select: { id: true },
   })
 
