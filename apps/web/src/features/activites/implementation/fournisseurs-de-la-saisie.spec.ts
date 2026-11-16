@@ -6,9 +6,12 @@ import {
 
 describe('fournisseurs de la saisie', () => {
   it("consulte l'employeuse au jour de l'activité, à minuit UTC", async () => {
-    const consulter = jest.fn(async (_date: Date) => null)
-    await employeuseDeLaDateDepuis(consulter)(DateDActivite('2026-03-05'))
-    expect(consulter).toHaveBeenCalledWith(new Date('2026-03-05T00:00:00.000Z'))
+    const employeuse = await employeuseDeLaDateDepuis(async (date) =>
+      date.toISOString() === '2026-03-05T00:00:00.000Z'
+        ? { id: 42, adresse: null }
+        : null,
+    )(DateDActivite('2026-03-05'))
+    expect(employeuse).toEqual({ id: 42, commune: null })
   })
 
   it("traduit l'employeuse fournie et sa commune", async () => {
