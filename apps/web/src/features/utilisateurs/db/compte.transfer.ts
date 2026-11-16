@@ -55,7 +55,4 @@ export const identiteAnonymeFromDomain = (
   name: identite.nomComplet,
   phone: null,
   siret: null,
-  location: null,
-  title: null,
-  description: null,
 })
