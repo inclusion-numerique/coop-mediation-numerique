@@ -1,4 +1,5 @@
 import { emailSignin } from '@app/emails/templates/emailSignin'
+import { describe, expect, it } from 'vitest'
 import { createMjmlTemplateOutput } from '../outputTemplateHtml'
 
 describe('Template: emailSignin', () => {

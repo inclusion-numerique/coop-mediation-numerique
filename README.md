@@ -62,7 +62,6 @@ Les `Packages` contiennent des outils de support et des communs dont l'origine p
 - [fixtures](packages/fixtures) : Ensemble de données à insérer dans la base de données pour avoir un ensemble cohérent plutôt qu'un projet vide.
 - [lint](packages/lint) : Configuration des règles de syntaxes à respecter dans le projet.
 - [storybook](packages/storybook) : Configuration de storybook, utilisé pour administrer une bibliothèque des composants disponibles dans l'application.
-- [test](packages/test) : Configuration de jest, utilisé pour les tests unitaires et les tests d'intégration.
 - [ui](packages/ui) : Composants et utilitaires génériques provenant être réutilisés et surchargés dans d'autres applications.
 
 <h2 id="contribution">🤗 Contribution</h2>

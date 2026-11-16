@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { reponseRecue, saisieEnCours } from './suggestions'
 
 const depart = { saisie: '', items: [], payload: {} }

@@ -1,4 +1,5 @@
 import { databasePasswordSecretName } from '@app/config/secrets/databasePasswordSecretName'
+import { describe, expect, it } from 'vitest'
 
 describe('databasePasswordSecretName', () => {
   it('keeps the secret name of main', () => {

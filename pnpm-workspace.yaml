@@ -6,7 +6,6 @@ packages:
   - packages/emails
   - packages/ui
   - packages/storybook
-  - packages/test
   - packages/fixtures
 
 # Délai de quarantaine avant qu'une version publiée soit installable (en MINUTES : 21600 = 15

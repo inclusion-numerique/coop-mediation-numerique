@@ -1,4 +1,5 @@
 import { computeBranchNamespace } from '@app/cli/branchNamespace'
+import { describe, expect, it } from 'vitest'
 import {
   imageNameForBranch,
   isProtectedImage,

@@ -7,8 +7,7 @@
     "load": "dotenv -e ../../.env -- tsx src/load.ts",
     "load:erase-all-data": "dotenv -e ../../.env -- tsx src/load.ts --erase-all-data",
     "lint": "biome check src",
-    "tsc": "tsc --noEmit",
-    "test": "jest --passWithNoTests"
+    "tsc": "tsc --noEmit"
   },
   "engines": {
     "node": "^24.19"
@@ -21,10 +20,8 @@
     "uuid": "^14.0.2"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
     "@types/node": "^24.19.1",
     "commander": "^15.0.0",
-    "jest": "^30.5.2",
     "next": "^16.3.8"
   }
 }

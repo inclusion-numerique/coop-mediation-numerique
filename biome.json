@@ -261,22 +261,6 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.spec.ts", "**/*.integration.ts", "**/*.jest.ts"],
-      "javascript": {
-        "globals": [
-          "afterEach",
-          "afterAll",
-          "beforeEach",
-          "beforeAll",
-          "describe",
-          "expect",
-          "it",
-          "test",
-          "jest"
-        ]
-      }
-    },
-    {
       "includes": ["packages/e2e/**/*.ts", "packages/e2e/**/*.tsx"],
       "javascript": {
         "formatter": {

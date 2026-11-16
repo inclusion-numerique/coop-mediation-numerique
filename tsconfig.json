@@ -18,7 +18,7 @@
     "incremental": true,
     "sourceMap": true,
     "inlineSources": false,
-    "types": ["node", "jest"],
+    "types": ["node"],
     "paths": {
       "server-only": ["./apps/web/src/libraries/server-only-cli/index.ts"],
       "@app/cli/*": ["./apps/cli/src/*"],
@@ -29,11 +29,9 @@
       "@app/lint/*": ["./packages/lint/src/*"],
       "@app/fixtures/*": ["./packages/fixtures/src/*"],
       "@app/storybook/*": ["./packages/storybook/src/*"],
-      "@app/ui/*": ["./packages/ui/src/*"],
-      "@app/test/*": ["./packages/test/src/*"]
+      "@app/ui/*": ["./packages/ui/src/*"]
     }
   },
-  "include": ["./packages/test/src/jest.setup.ts"],
-  "files": ["./packages/test/node_modules/jest-extended/types/index.d.ts"],
+  "files": [],
   "exclude": ["node_modules"]
 }

@@ -84,7 +84,6 @@ coop-mediation-numerique/
 │   ├── fixtures/            # Donnees de test et seed
 │   ├── lint/                # Configuration Biome/ESLint
 │   ├── storybook/           # Documentation des composants UI
-│   ├── test/                # Configuration Jest partagee
 │   └── ui/                  # Composants UI partages (DSFR)
 ├── docs/                    # Documentation et ADR
 ├── docker/                  # Configuration Docker
@@ -215,7 +214,7 @@ pnpm start:web       # Relancer le serveur
 | `pnpm lint` | Linting sur l'ensemble du monorepo |
 | `pnpm tsc` | Verification des types TypeScript |
 | `pnpm format` | Formatage du code avec Prettier |
-| `pnpm test` | Execute tous les tests unitaires (Jest) |
+| `pnpm test` | Execute tous les tests unitaires (Vitest, sans isolation) |
 | `pnpm test:integration` | Execute les tests d'integration |
 | `pnpm test:e2e` | Ouvre l'interface Cypress pour les tests e2e |
 | `pnpm cli` | Execute les outils CLI avec dotenv |
@@ -746,7 +745,7 @@ Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se t
 - [pnpm](https://pnpm.io/) — Gestionnaire de paquets
 - [Biome](https://biomejs.dev/) — Linting et formatage
 - [Prettier](https://prettier.io/) — Formatage complementaire
-- [Jest](https://jestjs.io/) — Tests unitaires et d'integration
+- [Vitest](https://vitest.dev/) — Tests unitaires et d'integration, sans isolation et sans mock
 - [Cypress](https://www.cypress.io/) — Tests end-to-end
 - [Storybook](https://storybook.js.org/) — Documentation de composants
 - [Sentry](https://sentry.io/) — Monitoring d'erreurs

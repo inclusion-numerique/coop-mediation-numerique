@@ -25,7 +25,7 @@ describe('employeuse non diffusible', () => {
     })
     if (result) {
       throw new Error(
-        'Structure main should have been deleted in beforeAll jest hook',
+        'Structure main should have been deleted in beforeAll hook',
       )
     }
   })

@@ -84,17 +84,11 @@ jobs:
       - name: Create env file
         run: cp .env.dist .env
       - name: Test all packages except @app/web with coverage
-        run: pnpm -F '!coop-mediation-numerique' -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
-      - name: List coverage reports
-        id: coverage
-        run: |
-          shopt -s nullglob
-          files=(apps/*/coverage/lcov.info packages/*/coverage/lcov.info)
-          echo "files=${files[*]}" >> "$GITHUB_OUTPUT"
+        run: pnpm --silent exec vitest run --coverage
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
-          files: ${{ steps.coverage.outputs.files }}
+          files: coverage/lcov.info
           flag-name: packages
           parallel: true
           fail-on-error: false
