@@ -4,6 +4,7 @@ import { AccesRefuse, ApiIndisponible } from '../../../domain/errors'
 import { JetonAcces } from '../../../domain/jetons-oauth'
 import { OrganisationId } from '../../../domain/organisation-id'
 import { RdvAgentId } from '../../../domain/rdv-agent-id'
+import { RdvId } from '../../../domain/rdv-id'
 import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import { synchroniserRdvs } from './synchroniser-rdvs'
 
@@ -35,57 +36,66 @@ const compte: CompteRdvLie = {
   },
 }
 
-const dependancesAvec = (supprimerMotifsOrphelins: jest.Mock) => ({
+const accessible = OrganisationId(3089)
+const inaccessible = OrganisationId(3090)
+
+const motifsOrphelinsEnBase = new Map([
+  [accessible, 2],
+  [inaccessible, 5],
+])
+
+const rdvsEnBase = new Map([
+  [accessible, [RdvId(1)]],
+  [inaccessible, [RdvId(2)]],
+])
+
+const dependances = {
   listerRdvs: async () => success([]),
-  rdvsDejaImportes: async () => [],
+  rdvsDejaImportes: async ({
+    organisationIds,
+  }: {
+    readonly organisationIds?: readonly OrganisationId[]
+  }) =>
+    (organisationIds ?? compte.organisationIds).flatMap(
+      (organisationId) => rdvsEnBase.get(organisationId) ?? [],
+    ),
   etatConnuDuLot: async () => ({
     rdvs: new Map(),
     motifs: new Map(),
     lieux: new Map(),
     usagers: new Map(),
   }),
-  appliquerPlan: async () => {
-    // Rien à écrire : aucun rendez-vous reçu.
-  },
-  supprimerRdvs: async () => {
-    // Rien à supprimer.
-  },
-  supprimerMotifsOrphelins,
-  rapprocherBeneficiaires: async () => {
-    // Hors sujet ici.
-  },
-})
+  appliquerPlan: async () => undefined,
+  supprimerRdvs: async () => undefined,
+  supprimerMotifsOrphelins: async (
+    organisationIds: readonly OrganisationId[],
+  ) =>
+    organisationIds.reduce(
+      (total, organisationId) =>
+        total + (motifsOrphelinsEnBase.get(organisationId) ?? 0),
+      0,
+    ),
+  rapprocherBeneficiaires: async () => undefined,
+}
 
 describe('ramassage des motifs orphelins', () => {
   it('se borne aux organisations du compte quand la passe est complète', async () => {
-    const supprimerMotifsOrphelins = jest.fn().mockResolvedValue(0)
+    const resultat = await synchroniserRdvs(dependances)({ compte })
 
-    await synchroniserRdvs(dependancesAvec(supprimerMotifsOrphelins))({
-      compte,
-    })
-
-    expect(supprimerMotifsOrphelins).toHaveBeenCalledWith(
-      compte.organisationIds,
-    )
+    expect(resultat.success ? resultat.data.motifs.deleted : null).toBe(7)
   })
 
   it('se borne à la portée demandée quand la passe est restreinte', async () => {
-    const supprimerMotifsOrphelins = jest.fn().mockResolvedValue(0)
-    const organisationIds = [OrganisationId(3090)]
-
-    await synchroniserRdvs(dependancesAvec(supprimerMotifsOrphelins))({
+    const resultat = await synchroniserRdvs(dependances)({
       compte,
-      organisationIds,
+      organisationIds: [inaccessible],
     })
 
-    expect(supprimerMotifsOrphelins).toHaveBeenCalledWith(organisationIds)
+    expect(resultat.success ? resultat.data.motifs.deleted : null).toBe(5)
   })
 })
 
 describe('organisation devenue inaccessible pendant un rattrapage', () => {
-  const accessible = OrganisationId(3089)
-  const inaccessible = OrganisationId(3090)
-
   const listerRdvsRefusant = async (
     _compte: unknown,
     filtres?: { organisationIds?: readonly OrganisationId[] },
@@ -95,28 +105,29 @@ describe('organisation devenue inaccessible pendant un rattrapage', () => {
       : success([])
 
   it('écarte l’organisation refusée et poursuit la passe sur les autres', async () => {
-    const supprimerMotifsOrphelins = jest.fn().mockResolvedValue(0)
-    const rdvsDejaImportes = jest.fn().mockResolvedValue([])
-
     const resultat = await synchroniserRdvs({
-      ...dependancesAvec(supprimerMotifsOrphelins),
-      rdvsDejaImportes,
+      ...dependances,
       listerRdvs: listerRdvsRefusant,
     })({ compte, organisationIds: [accessible, inaccessible] })
 
     expect(
-      resultat.success ? resultat.data.organisationIdsInaccessibles : null,
-    ).toEqual([inaccessible])
-    expect(rdvsDejaImportes).toHaveBeenCalledWith({
-      compte,
-      organisationIds: [accessible],
+      resultat.success
+        ? {
+            inaccessibles: resultat.data.organisationIdsInaccessibles,
+            rdvsSupprimes: resultat.data.rdvs.deleted,
+            motifsSupprimes: resultat.data.motifs.deleted,
+          }
+        : null,
+    ).toEqual({
+      inaccessibles: [inaccessible],
+      rdvsSupprimes: 1,
+      motifsSupprimes: 2,
     })
-    expect(supprimerMotifsOrphelins).toHaveBeenCalledWith([accessible])
   })
 
   it('échoue quand une organisation échoue pour une autre raison qu’un refus d’accès', async () => {
     const resultat = await synchroniserRdvs({
-      ...dependancesAvec(jest.fn().mockResolvedValue(0)),
+      ...dependances,
       listerRdvs: async () =>
         failure(ApiIndisponible(503, 'service indisponible')),
     })({ compte, organisationIds: [accessible, inaccessible] })
@@ -127,9 +138,7 @@ describe('organisation devenue inaccessible pendant un rattrapage', () => {
   })
 
   it('ne connaît aucune organisation inaccessible sur une passe complète', async () => {
-    const resultat = await synchroniserRdvs(
-      dependancesAvec(jest.fn().mockResolvedValue(0)),
-    )({ compte })
+    const resultat = await synchroniserRdvs(dependances)({ compte })
 
     expect(
       resultat.success ? resultat.data.organisationIdsInaccessibles : null,
