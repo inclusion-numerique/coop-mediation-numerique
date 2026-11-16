@@ -7,7 +7,6 @@ import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-in
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
-import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
 import { executeRetirerLesRolesVacants } from './retirer-les-roles-vacants/executeRetirerLesRolesVacants'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/executeSynchroniserLesRolesBrevo'
@@ -24,7 +23,6 @@ export const jobExecutors: {
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'aligner-le-registre-des-personnes': executeAlignerLeRegistreDesPersonnes,
-  'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
   'retirer-les-roles-vacants': executeRetirerLesRolesVacants,
   'sync-rdvsp-data': executeSyncRdvspData,
   'synchroniser-les-roles-brevo': executeSynchroniserLesRolesBrevo,
