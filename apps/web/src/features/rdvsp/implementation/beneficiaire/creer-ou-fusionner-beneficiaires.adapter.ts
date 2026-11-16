@@ -1,5 +1,5 @@
 import {
-  creerOuFusionnerBeneficiairesDepuisUsagersExternes,
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
   type ExternalUserToMerge,
   type MergedBeneficiaire,
 } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
@@ -60,7 +60,7 @@ export const createOrMergeBeneficiairesFromRdvUserIds = async ({
     },
   })
 
-  return creerOuFusionnerBeneficiairesDepuisUsagersExternes({
+  return creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding({
     usagers: users.map(toExternalUser),
     mediateurId,
   })

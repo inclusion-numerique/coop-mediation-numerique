@@ -5,19 +5,10 @@ import {
   mediateurAvecActiviteMediateurId,
 } from '@app/fixtures/users/mediateurAvecActivite'
 import { AdresseIndisponible } from '@app/web/external-apis/apiAdresse'
-import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
-
-jest.mock('@app/web/external-apis/ban/communeFieldsFromAddress', () => ({
-  communeFieldsFromAddress: jest.fn(),
-}))
-
-const mockedCommuneFields = communeFieldsFromAddress as jest.MockedFunction<
-  typeof communeFieldsFromAddress
->
 
 const evreux = {
   commune: 'Évreux',
@@ -37,6 +28,24 @@ const usager: ExternalUserToMerge = {
   adresse: '12 rue de la Paix, 27000 Évreux',
   birthDate: null,
 }
+
+const fusionnerAvec = (
+  communeDeLAdresse: (adresse: string) => Promise<typeof evreux | null>,
+) =>
+  creerOuFusionnerBeneficiairesDepuisUsagersExternes({
+    communeDeLAdresse,
+    signaler: () => undefined,
+  })
+
+const avecLaBan = fusionnerAvec(async (adresse) =>
+  adresse === usager.adresse ? evreux : null,
+)
+
+const sansCommuneTrouvee = fusionnerAvec(async () => null)
+
+const banIndisponible = fusionnerAvec(async () => {
+  throw new AdresseIndisponible('HTTP 503')
+})
 
 const createdBeneficiaireIds: string[] = []
 
@@ -83,11 +92,6 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
     await resetFixtureUser(mediateurAvecActivite, false)
   }, 100_000)
 
-  beforeEach(() => {
-    mockedCommuneFields.mockReset()
-    mockedCommuneFields.mockResolvedValue(null)
-  })
-
   afterEach(async () => {
     await prismaClient.beneficiaire.deleteMany({
       where: { id: { in: createdBeneficiaireIds } },
@@ -97,37 +101,30 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
   })
 
   test('renseigne la commune à la création depuis un usager RDV', async () => {
-    mockedCommuneFields.mockResolvedValue(evreux)
     await seedRdvUser()
 
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
-        usagers: [usager],
-        mediateurId,
-      },
-    )
+    const { merges } = await avecLaBan({
+      usagers: [usager],
+      mediateurId,
+    })
     trackBeneficiaire(merges[0].id)
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0].id },
     })
 
-    expect(mockedCommuneFields).toHaveBeenCalledWith(usager.adresse)
     expect(beneficiaire.commune).toBe('Évreux')
     expect(beneficiaire.communeCodePostal).toBe('27000')
     expect(beneficiaire.communeCodeInsee).toBe('27229')
   })
 
   test('crée la fiche sans commune quand le service d’adresse est indisponible', async () => {
-    mockedCommuneFields.mockRejectedValue(new AdresseIndisponible('HTTP 503'))
     await seedRdvUser()
 
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
-        usagers: [usager],
-        mediateurId,
-      },
-    )
+    const { merges } = await banIndisponible({
+      usagers: [usager],
+      mediateurId,
+    })
     trackBeneficiaire(merges[0].id)
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
@@ -139,7 +136,6 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
   })
 
   test('renseigne la commune en fusionnant dans une fiche liée sans commune', async () => {
-    mockedCommuneFields.mockResolvedValue(evreux)
     await seedRdvUser()
     const beneficiaireId = await seedLinkedBeneficiaire({
       commune: null,
@@ -147,7 +143,7 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       communeCodeInsee: null,
     })
 
-    await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
+    await avecLaBan({
       usagers: [usager],
       mediateurId,
     })
@@ -161,8 +157,7 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
     expect(beneficiaire.communeCodeInsee).toBe('27229')
   })
 
-  test('n’écrase jamais une commune existante (et saute le géocodage)', async () => {
-    mockedCommuneFields.mockResolvedValue(evreux)
+  test('n’écrase jamais une commune existante', async () => {
     await seedRdvUser()
     const beneficiaireId = await seedLinkedBeneficiaire({
       commune: 'Paris',
@@ -170,7 +165,7 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       communeCodeInsee: '75101',
     })
 
-    await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
+    await avecLaBan({
       usagers: [usager],
       mediateurId,
     })
@@ -181,28 +176,25 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
 
     expect(beneficiaire.commune).toBe('Paris')
     expect(beneficiaire.communeCodePostal).toBe('75001')
-    expect(mockedCommuneFields).not.toHaveBeenCalled()
   })
 
   test('normalise le téléphone entrant au format E.164', async () => {
     await seedRdvUser()
 
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
-        usagers: [
-          {
-            rdvUserId,
-            nom: 'Tel',
-            prenom: 'National',
-            telephone: '06 11 22 33 44',
-            email: null,
-            adresse: null,
-            birthDate: null,
-          },
-        ],
-        mediateurId,
-      },
-    )
+    const { merges } = await sansCommuneTrouvee({
+      usagers: [
+        {
+          rdvUserId,
+          nom: 'Tel',
+          prenom: 'National',
+          telephone: '06 11 22 33 44',
+          email: null,
+          adresse: null,
+          birthDate: null,
+        },
+      ],
+      mediateurId,
+    })
     trackBeneficiaire(merges[0].id)
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
@@ -214,22 +206,20 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
   test('remplace par null un téléphone non normalisable et met l’email en minuscules', async () => {
     await seedRdvUser()
 
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
-        usagers: [
-          {
-            rdvUserId,
-            nom: 'Tel',
-            prenom: 'Invalide',
-            telephone: 'pas-un-numero',
-            email: '  MAJ@Example.COM ',
-            adresse: null,
-            birthDate: null,
-          },
-        ],
-        mediateurId,
-      },
-    )
+    const { merges } = await sansCommuneTrouvee({
+      usagers: [
+        {
+          rdvUserId,
+          nom: 'Tel',
+          prenom: 'Invalide',
+          telephone: 'pas-un-numero',
+          email: '  MAJ@Example.COM ',
+          adresse: null,
+          birthDate: null,
+        },
+      ],
+      mediateurId,
+    })
     trackBeneficiaire(merges[0].id)
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
@@ -242,22 +232,20 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
   test('normalise une date de naissance absente (sentinelle 1900) en année nulle', async () => {
     await seedRdvUser()
 
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
-        usagers: [
-          {
-            rdvUserId,
-            nom: 'Naissance',
-            prenom: 'Sentinelle',
-            telephone: null,
-            email: null,
-            adresse: null,
-            birthDate: new Date('1900-01-01'),
-          },
-        ],
-        mediateurId,
-      },
-    )
+    const { merges } = await sansCommuneTrouvee({
+      usagers: [
+        {
+          rdvUserId,
+          nom: 'Naissance',
+          prenom: 'Sentinelle',
+          telephone: null,
+          email: null,
+          adresse: null,
+          birthDate: new Date('1900-01-01'),
+        },
+      ],
+      mediateurId,
+    })
     trackBeneficiaire(merges[0].id)
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
@@ -270,22 +258,20 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
   test('conserve une année de naissance valide', async () => {
     await seedRdvUser()
 
-    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
-      {
-        usagers: [
-          {
-            rdvUserId,
-            nom: 'Naissance',
-            prenom: 'Valide',
-            telephone: null,
-            email: null,
-            adresse: null,
-            birthDate: new Date('1990-05-15'),
-          },
-        ],
-        mediateurId,
-      },
-    )
+    const { merges } = await sansCommuneTrouvee({
+      usagers: [
+        {
+          rdvUserId,
+          nom: 'Naissance',
+          prenom: 'Valide',
+          telephone: null,
+          email: null,
+          adresse: null,
+          birthDate: new Date('1990-05-15'),
+        },
+      ],
+      mediateurId,
+    })
     trackBeneficiaire(merges[0].id)
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
