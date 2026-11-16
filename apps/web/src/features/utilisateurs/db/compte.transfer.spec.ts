@@ -90,9 +90,6 @@ describe('identiteAnonymeFromDomain', () => {
       name: 'Utilisateur Supprimé',
       phone: null,
       siret: null,
-      location: null,
-      title: null,
-      description: null,
     })
   })
 })
