@@ -2,8 +2,8 @@
 
 ## Auteurs et historique
 
-| Date | Auteur | Action |
-|------|--------|--------|
+| Date       | Auteur         | Action                      |
+| ---------- | -------------- | --------------------------- |
 | 2025-11-25 | Hugues Maignol | Rédaction initiale de l'ADR |
 
 ## Statut
@@ -113,7 +113,7 @@ Les tokens OAuth expirent après un certain temps. Avant chaque appel API, nous 
 
 #### 2. Synchronisation des données via Webhooks (stratégie principale)
 
-**Implémentation :** 
+**Implémentation :**
 - Endpoint : `apps/web/src/app/api/rdv-service-public/webhook/route.ts`
 - Handlers : `apps/web/src/features/rdvsp/webhook/`
 
@@ -180,7 +180,7 @@ La fonction orchestre les étapes suivantes :
 
 1. **Rafraîchissement des métadonnées du compte** : Organisations, permissions
 2. **Import des organisations** : Si sync globale (organisations non spécifiées)
-3. **Import des RDVs** : 
+3. **Import des RDVs** :
    - Appel à l'API `/rdvs` avec filtres (dates, organisations)
    - Pour chaque RDV : import des dépendances (users, motifs, lieux)
    - Détection des diffs (created, updated, deleted)
@@ -193,12 +193,12 @@ Le "drift" représente le nombre de différences détectées entre notre base lo
 
 ```typescript
 type SyncModelResult = {
-  count: number    // Total d'éléments dans l'API
-  created: number  // Créés localement
-  updated: number  // Mis à jour localement
-  deleted: number  // Supprimés localement
-  noop: number     // Déjà synchronisés
-  drift: number    // created + updated + deleted
+  count: number // Total d'éléments dans l'API
+  created: number // Créés localement
+  updated: number // Mis à jour localement
+  deleted: number // Supprimés localement
+  noop: number // Déjà synchronisés
+  drift: number // created + updated + deleted
 }
 ```
 
@@ -385,15 +385,17 @@ Nos interfaces nécessitent ces comptages pour :
 
 **Dashboard médiateur** (`getDashboardRdvData.ts`) :
 ```typescript
-const [futurRdvsCount, nextRdv, passesCount, crasTodoCount] = await Promise.all([
-  prismaClient.rdv.count({
-    where: {
-      rdvAccountId: rdvAccount.id,
-      startsAt: { gte: now },
-    },
-  }),
-  // ... autres comptages
-])
+const [futurRdvsCount, nextRdv, passesCount, crasTodoCount] = await Promise.all(
+  [
+    prismaClient.rdv.count({
+      where: {
+        rdvAccountId: rdvAccount.id,
+        startsAt: { gte: now },
+      },
+    }),
+    // ... autres comptages
+  ],
+)
 ```
 
 **Statistiques** (`getTotalCountsStats.ts`) :
@@ -458,7 +460,7 @@ Cette approche serait :
 
 L'API RDV Service Public a sa propre pagination. Fusionner une liste paginée d'activités La coop avec une liste paginée de RDVs distants est mathématiquement complexe :
 
-**Problème :** 
+**Problème :**
 - Page 1 d'activités : 25 items du 1er janvier au 15 janvier
 - Page 1 de RDVs : 20 items du 5 janvier au 20 janvier
 - Comment afficher "page 1" unifiée triée par date ?
@@ -491,10 +493,10 @@ Chaque appel à l'API RDV Service Public :
 
 **Exemple concret** : Afficher la liste de 50 activités/RDVs avec filtres
 
-| Approche | Appels API | Temps estimé |
-|----------|-----------|--------------|
-| **Synchronisation locale** | 0 (données déjà en local) | 50-100ms (requête SQL) |
-| **API directe** | 2-5 (pagination, dépendances) | 500-1000ms |
+| Approche                   | Appels API                    | Temps estimé           |
+| -------------------------- | ----------------------------- | ---------------------- |
+| **Synchronisation locale** | 0 (données déjà en local)     | 50-100ms (requête SQL) |
+| **API directe**            | 2-5 (pagination, dépendances) | 500-1000ms             |
 
 Sur un dashboard affichant plusieurs widgets (prochains RDVs, compteurs, etc.), l'approche locale est **10-20x plus rapide**.
 
@@ -526,7 +528,8 @@ Le polling n'est effectué **que sur les organisations concernées** via le para
 
 ```typescript
 // Mutation tRPC refreshRdvData
-const invalidWebhookOrganisationIds = user.rdvAccount?.invalidWebhookOrganisationIds
+const invalidWebhookOrganisationIds =
+  user.rdvAccount?.invalidWebhookOrganisationIds
 
 if (invalidWebhookOrganisationIds?.length > 0) {
   await syncAllRdvData({
@@ -601,7 +604,7 @@ model RdvSyncLog {
 
 ### Avantages
 
-1. **Performance** : 
+1. **Performance** :
    - Requêtes de lecture instantanées (BDD locale)
    - Comptages et agrégations optimisés
    - Pagination efficace
@@ -652,13 +655,13 @@ model RdvSyncLog {
 
 ### Risques et mitigations
 
-| Risque | Impact | Probabilité | Mitigation |
-|--------|--------|-------------|-----------|
-| Webhooks défaillants silencieusement | Données désynchronisées | Moyen | Calcul du drift + monitoring + fallback polling |
-| API RDV Service Public change de modèle | Sync cassée | Faible | Tests d'intégration + versioning API |
-| Grosse volumétrie (milliers de RDVs) | Sync initiale longue | Moyen | Sync par lots + async + progress bar |
-| Conflits d'écriture (modif simultanée RDV et activité) | Incohérences | Faible | Webhooks immédiate + timestamp de sync |
-| Stockage croissant | Coût BDD | Faible | Archivage des vieux RDVs + politique de rétention |
+| Risque                                                 | Impact                  | Probabilité | Mitigation                                        |
+| ------------------------------------------------------ | ----------------------- | ----------- | ------------------------------------------------- |
+| Webhooks défaillants silencieusement                   | Données désynchronisées | Moyen       | Calcul du drift + monitoring + fallback polling   |
+| API RDV Service Public change de modèle                | Sync cassée             | Faible      | Tests d'intégration + versioning API              |
+| Grosse volumétrie (milliers de RDVs)                   | Sync initiale longue    | Moyen       | Sync par lots + async + progress bar              |
+| Conflits d'écriture (modif simultanée RDV et activité) | Incohérences            | Faible      | Webhooks immédiate + timestamp de sync            |
+| Stockage croissant                                     | Coût BDD                | Faible      | Archivage des vieux RDVs + politique de rétention |
 
 ## Alternatives considérées
 
@@ -905,5 +908,3 @@ Les tests E2E devraient vérifier les parcours utilisateurs :
 ---
 
 **Note** : Cet ADR documente une décision d'architecture déjà implémentée. Il a été rédigé a posteriori pour formaliser les choix techniques et faciliter l'onboarding de nouveaux développeurs.
-
-

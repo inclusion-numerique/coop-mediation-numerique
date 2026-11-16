@@ -4,8 +4,8 @@
 
 <h2 id="à-propos">🪧 À propos</h2>
 
-Bienvenue sur la Coop de la médiation numérique, développé par le [Pôle Inclusion numérique de l'ANCT](https://societenumerique.gouv.fr/fr/les-services-de-linclusion-numerique/). \
-Ce [monorepo](https://en.wikipedia.org/wiki/Monorepo) fournit l'ensemble des projets nécessaires au fonctionnement d'une plateforme web utilisant le [Système de Design de l'Etat](https://www.systeme-de-design.gouv.fr/) et le [template commun de l'ANCT](https://www.figma.com/file/C9Ump1yh3z4DPMxm2qk3IY/Templates_communs?type=design&node-id=4-2946&t=d7Fn19OfHLoEcXqg-0) qui ajoute des composants métiers au Système de Design de l'État. \
+Bienvenue sur la Coop de la médiation numérique, développé par le [Pôle Inclusion numérique de l'ANCT](https://societenumerique.gouv.fr/fr/les-services-de-linclusion-numerique/).\
+Ce [monorepo](https://en.wikipedia.org/wiki/Monorepo) fournit l'ensemble des projets nécessaires au fonctionnement d'une plateforme web utilisant le [Système de Design de l'Etat](https://www.systeme-de-design.gouv.fr/) et le [template commun de l'ANCT](https://www.figma.com/file/C9Ump1yh3z4DPMxm2qk3IY/Templates_communs?type=design&node-id=4-2946&t=d7Fn19OfHLoEcXqg-0) qui ajoute des composants métiers au Système de Design de l'État.\
 L'objectif de ce projet est d’outiller les professionels de la médiation numérique.
 
 ## 📑 Table des matières
@@ -33,11 +33,11 @@ L'objectif de ce projet est d’outiller les professionels de la médiation num�
 
 <h2 id="environnements">🔗 Environnements</h2>
 
-| Environnement | URL |
-|---------------|-----|
-| Production | https://coop-numerique.anct.gouv.fr |
-| Dev | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
-| MailDev (mails de test) | http://maildev.coop-numerique.anct.gouv.fr |
+| Environnement           | URL                                                          |
+| ----------------------- | ------------------------------------------------------------ |
+| Production              | https://coop-numerique.anct.gouv.fr                          |
+| Dev                     | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
+| MailDev (mails de test) | http://maildev.coop-numerique.anct.gouv.fr                   |
 
 <h2 id="contenu">📦 Contenu</h2>
 

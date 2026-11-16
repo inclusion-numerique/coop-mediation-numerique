@@ -1,13 +1,13 @@
-name: 'Infrastructure'
-description: 'Install OpenTofu and initialise the infrastructure state of an environment (after the secrets environment)'
+name: "Infrastructure"
+description: "Install OpenTofu and initialise the infrastructure state of an environment (after the secrets environment)"
 
 inputs:
   namespace:
-    description: 'Namespace of the environment whose state to use'
+    description: "Namespace of the environment whose state to use"
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install OpenTofu
       uses: opentofu/setup-opentofu@v2

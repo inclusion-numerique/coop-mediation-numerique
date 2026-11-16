@@ -32,11 +32,11 @@ La plateforme permet aux mediateurs numeriques de :
 
 ### Environnements
 
-| Environnement | URL |
-|---|---|
-| Production | https://coop-numerique.anct.gouv.fr |
-| Developpement | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
-| MailDev (emails de test) | http://maildev.coop-numerique.anct.gouv.fr |
+| Environnement            | URL                                                          |
+| ------------------------ | ------------------------------------------------------------ |
+| Production               | https://coop-numerique.anct.gouv.fr                          |
+| Developpement            | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
+| MailDev (emails de test) | http://maildev.coop-numerique.anct.gouv.fr                   |
 
 ### Authentification
 
@@ -206,73 +206,73 @@ pnpm start:web       # Relancer le serveur
 
 ### Commandes principales (racine)
 
-| Commande | Description |
-|---|---|
-| `pnpm dev` | Lance toutes les apps en parallele (web + storybook) |
-| `pnpm start:web` | Lance uniquement l'application web Next.js |
-| `pnpm build` | Build de production de toutes les apps et packages |
-| `pnpm lint` | Linting sur l'ensemble du monorepo |
-| `pnpm tsc` | Verification des types TypeScript |
-| `pnpm format` | Formatage du code avec Prettier |
-| `pnpm test` | Execute tous les tests unitaires (Vitest, sans isolation) |
-| `pnpm test:integration` | Execute les tests d'integration |
-| `pnpm test:e2e` | Ouvre l'interface Cypress pour les tests e2e |
-| `pnpm cli` | Execute les outils CLI avec dotenv |
-| `pnpm with-env <cmd>` | Execute une commande avec les variables d'env chargees |
+| Commande                | Description                                               |
+| ----------------------- | --------------------------------------------------------- |
+| `pnpm dev`              | Lance toutes les apps en parallele (web + storybook)      |
+| `pnpm start:web`        | Lance uniquement l'application web Next.js                |
+| `pnpm build`            | Build de production de toutes les apps et packages        |
+| `pnpm lint`             | Linting sur l'ensemble du monorepo                        |
+| `pnpm tsc`              | Verification des types TypeScript                         |
+| `pnpm format`           | Formatage du code avec Prettier                           |
+| `pnpm test`             | Execute tous les tests unitaires (Vitest, sans isolation) |
+| `pnpm test:integration` | Execute les tests d'integration                           |
+| `pnpm test:e2e`         | Ouvre l'interface Cypress pour les tests e2e              |
+| `pnpm cli`              | Execute les outils CLI avec dotenv                        |
+| `pnpm with-env <cmd>`   | Execute une commande avec les variables d'env chargees    |
 
 ### Base de donnees
 
-| Commande | Description |
-|---|---|
-| `pnpm db:init` | Genere le client Prisma et applique les migrations |
+| Commande                               | Description                                           |
+| -------------------------------------- | ----------------------------------------------------- |
+| `pnpm db:init`                         | Genere le client Prisma et applique les migrations    |
 | `pnpm prisma:generate-migration <nom>` | Cree une nouvelle migration a partir du schema Prisma |
-| `pnpm fixtures:load` | Charge les donnees de test dans la base |
-| `pnpm -F web prisma studio` | Ouvre Prisma Studio (interface graphique de la BDD) |
+| `pnpm fixtures:load`                   | Charge les donnees de test dans la base               |
+| `pnpm -F web prisma studio`            | Ouvre Prisma Studio (interface graphique de la BDD)   |
 
 ### Docker
 
-| Commande | Description |
-|---|---|
-| `pnpm docker:start` | Demarre PostgreSQL + MailDev |
-| `pnpm docker:stop` | Arrete les conteneurs Docker |
+| Commande            | Description                                  |
+| ------------------- | -------------------------------------------- |
+| `pnpm docker:start` | Demarre PostgreSQL + MailDev                 |
+| `pnpm docker:stop`  | Arrete les conteneurs Docker                 |
 | `pnpm docker:reset` | Reinitialise la base de donnees et redemarre |
 
 ### Tests
 
-| Commande | Description |
-|---|---|
-| `pnpm test` | Tests unitaires de tout le monorepo |
-| `pnpm test:integration` | Tests d'integration (necessite Docker) |
-| `pnpm test:e2e` | Tests e2e interactifs (Cypress UI) |
-| `pnpm -F e2e cy run` | Tests e2e headless |
-| `pnpm -F web test` | Tests unitaires de l'app web uniquement |
+| Commande                | Description                             |
+| ----------------------- | --------------------------------------- |
+| `pnpm test`             | Tests unitaires de tout le monorepo     |
+| `pnpm test:integration` | Tests d'integration (necessite Docker)  |
+| `pnpm test:e2e`         | Tests e2e interactifs (Cypress UI)      |
+| `pnpm -F e2e cy run`    | Tests e2e headless                      |
+| `pnpm -F web test`      | Tests unitaires de l'app web uniquement |
 
 ### Application web
 
-| Commande | Description |
-|---|---|
-| `pnpm -F web dev` | Serveur de dev Next.js |
-| `pnpm -F web build` | Build de production |
-| `pnpm -F web build:analyze` | Build avec analyse du bundle |
-| `pnpm -F web lint` | Lint avec Biome + linter OpenAPI |
-| `pnpm -F web lint:fix` | Correction automatique du linting |
-| `pnpm -F web api-v1-doc:generate` | Genere la spec OpenAPI v1 |
-| `pnpm -F web standalone:configure` | Configure le build standalone |
-| `pnpm -F web standalone:start` | Demarre le serveur standalone |
+| Commande                           | Description                       |
+| ---------------------------------- | --------------------------------- |
+| `pnpm -F web dev`                  | Serveur de dev Next.js            |
+| `pnpm -F web build`                | Build de production               |
+| `pnpm -F web build:analyze`        | Build avec analyse du bundle      |
+| `pnpm -F web lint`                 | Lint avec Biome + linter OpenAPI  |
+| `pnpm -F web lint:fix`             | Correction automatique du linting |
+| `pnpm -F web api-v1-doc:generate`  | Genere la spec OpenAPI v1         |
+| `pnpm -F web standalone:configure` | Configure le build standalone     |
+| `pnpm -F web standalone:start`     | Demarre le serveur standalone     |
 
 ### Storybook
 
-| Commande | Description |
-|---|---|
-| `pnpm -F storybook dev` | Demarre Storybook (http://localhost:6006) |
-| `pnpm -F storybook build-storybook` | Build statique de Storybook |
-| `pnpm -F storybook chromatic` | Deploie sur Chromatic (tests visuels) |
+| Commande                            | Description                               |
+| ----------------------------------- | ----------------------------------------- |
+| `pnpm -F storybook dev`             | Demarre Storybook (http://localhost:6006) |
+| `pnpm -F storybook build-storybook` | Build statique de Storybook               |
+| `pnpm -F storybook chromatic`       | Deploie sur Chromatic (tests visuels)     |
 
 ### Nettoyage
 
-| Commande | Description |
-|---|---|
-| `pnpm clean` | Supprime `node_modules` a la racine |
+| Commande                | Description                                     |
+| ----------------------- | ----------------------------------------------- |
+| `pnpm clean`            | Supprime `node_modules` a la racine             |
 | `pnpm clean:workspaces` | Supprime les `node_modules` de tous les paquets |
 
 ---
@@ -283,10 +283,10 @@ L'application CLI (`pnpm cli <commande>`) fournit un ensemble d'outils pour le d
 
 ### Execution de jobs
 
-| Commande | Description |
-|---|---|
-| `pnpm cli job:execute <name> [data]` | Execute un job en local. `data` est un payload JSON optionnel |
-| `pnpm cli job:api:execute <name> [data]` | Execute un job via l'API d'un deploiement distant |
+| Commande                                 | Description                                                   |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| `pnpm cli job:execute <name> [data]`     | Execute un job en local. `data` est un payload JSON optionnel |
+| `pnpm cli job:api:execute <name> [data]` | Execute un job via l'API d'un deploiement distant             |
 
 Exemples :
 ```bash
@@ -296,59 +296,59 @@ pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
 
 ### Deploiement
 
-| Commande | Description |
-|---|---|
+| Commande                                 | Description                                 |
+| ---------------------------------------- | ------------------------------------------- |
 | `pnpm cli deployment:check-status <url>` | Verifie le statut de sante d'un deploiement |
 
 ### GitHub
 
-| Commande | Description |
-|---|---|
-| `pnpm cli github:deployment:create <branch>` | Cree un deploiement GitHub pour une branche |
+| Commande                                         | Description                                                                                                                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm cli github:deployment:create <branch>`     | Cree un deploiement GitHub pour une branche                                                                                                                        |
 | `pnpm cli github:deployment:update <id> <state>` | Met a jour le statut d'un deploiement (`error`, `failure`, `inactive`, `in_progress`, `queued`, `pending`, `success`). Options : `--url`, `--log`, `--description` |
-| `pnpm cli github:deployment:deactivate <branch>` | Desactive tous les deploiements GitHub d'une branche |
+| `pnpm cli github:deployment:deactivate <branch>` | Desactive tous les deploiements GitHub d'une branche                                                                                                               |
 
 ### Infrastructure
 
-| Commande | Description |
-|---|---|
-| `pnpm cli dotenv:from-infrastructure` | Ajoute au `.env` les sorties OpenTofu lues dans `infrastructure/outputs.json` |
-| `pnpm cli dotenv:add-next-public <namespace>` | Ajoute les variables `NEXT_PUBLIC_*` au `.env`. Option : `--local` |
-| `pnpm cli dotenv:from-secrets` | Recupere tous les secrets depuis Scaleway Secret Manager et peuple le `.env` |
-| `pnpm cli infrastructure:vars-from-env` | Ecrit `infrastructure/.tfvars.json` a partir des variables d'environnement |
-| `pnpm cli infrastructure:create <resource> <names>` | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run` |
-| `pnpm cli infrastructure:delete-preview <branches>` | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Remove ephemeral environment` (branches separees par des virgules) |
-| `pnpm cli infrastructure:prune-registry` | Supprime du registre Scaleway les images des branches qui n'existent plus et les anciens tags (10 conserves pour `main`, 5 pour `dev`). A blanc par defaut ; `--apply` pour supprimer, `--report <fichier>` pour le releve CSV |
-| `pnpm cli infrastructure:delete-registry-image <branche>` | Supprime l'image de la preview d'une branche (jamais `main` ni `dev`) |
-| `pnpm cli infrastructure:inventory` | Affiche l'inventaire de l'infrastructure et permet le nettoyage interactif (branches, conteneurs, buckets, bases) |
-| `pnpm cli backup:locally-restore-latest-main` | Restaure le dernier backup de la base `main` en local. Options : `--date <date>`, `--local`, `--list`, `--type <type>` |
+| Commande                                                  | Description                                                                                                                                                                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm cli dotenv:from-infrastructure`                     | Ajoute au `.env` les sorties OpenTofu lues dans `infrastructure/outputs.json`                                                                                                                                                  |
+| `pnpm cli dotenv:add-next-public <namespace>`             | Ajoute les variables `NEXT_PUBLIC_*` au `.env`. Option : `--local`                                                                                                                                                             |
+| `pnpm cli dotenv:from-secrets`                            | Recupere tous les secrets depuis Scaleway Secret Manager et peuple le `.env`                                                                                                                                                   |
+| `pnpm cli infrastructure:vars-from-env`                   | Ecrit `infrastructure/.tfvars.json` a partir des variables d'environnement                                                                                                                                                     |
+| `pnpm cli infrastructure:create <resource> <names>`       | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run`                                                                                                                                                 |
+| `pnpm cli infrastructure:delete-preview <branches>`       | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Remove ephemeral environment` (branches separees par des virgules)                                                                        |
+| `pnpm cli infrastructure:prune-registry`                  | Supprime du registre Scaleway les images des branches qui n'existent plus et les anciens tags (10 conserves pour `main`, 5 pour `dev`). A blanc par defaut ; `--apply` pour supprimer, `--report <fichier>` pour le releve CSV |
+| `pnpm cli infrastructure:delete-registry-image <branche>` | Supprime l'image de la preview d'une branche (jamais `main` ni `dev`)                                                                                                                                                          |
+| `pnpm cli infrastructure:inventory`                       | Affiche l'inventaire de l'infrastructure et permet le nettoyage interactif (branches, conteneurs, buckets, bases)                                                                                                              |
+| `pnpm cli backup:locally-restore-latest-main`             | Restaure le dernier backup de la base `main` en local. Options : `--date <date>`, `--local`, `--list`, `--type <type>`                                                                                                         |
 
 ### Secrets
 
-| Commande | Description |
-|---|---|
-| `pnpm cli secrets:list` | Liste tous les noms de secrets disponibles |
-| `pnpm cli secrets:get <name>` | Recupere la valeur d'un secret |
-| `pnpm cli secrets:database:setup <namespace>` | Cree le secret de mot de passe base de donnees d'un namespace (`DATABASE_PASSWORD_<NAMESPACE>`, un par preview) |
-| `pnpm cli secrets:database-password <namespace>` | Recupere le mot de passe base de donnees d'un namespace |
-| `pnpm cli secrets:database:delete <namespace>` | Supprime le secret de mot de passe base de donnees d'une preview (jamais `main` ni `dev`) ; appele par **Remove ephemeral environment** |
+| Commande                                         | Description                                                                                                                             |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm cli secrets:list`                          | Liste tous les noms de secrets disponibles                                                                                              |
+| `pnpm cli secrets:get <name>`                    | Recupere la valeur d'un secret                                                                                                          |
+| `pnpm cli secrets:database:setup <namespace>`    | Cree le secret de mot de passe base de donnees d'un namespace (`DATABASE_PASSWORD_<NAMESPACE>`, un par preview)                         |
+| `pnpm cli secrets:database-password <namespace>` | Recupere le mot de passe base de donnees d'un namespace                                                                                 |
+| `pnpm cli secrets:database:delete <namespace>`   | Supprime le secret de mot de passe base de donnees d'une preview (jamais `main` ni `dev`) ; appele par **Remove ephemeral environment** |
 
 ### RAG (Retrieval-Augmented Generation)
 
-| Commande | Description |
-|---|---|
+| Commande                                                   | Description                                                                                                                              |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm cli rag:ingest-notion-help-center-exported-markdown` | Ingere les fichiers markdown exportes du centre d'aide Notion dans le systeme RAG (requiert les fichiers dans `/var/centre-aide-notion`) |
 
 ### Sentry
 
-| Commande | Description |
-|---|---|
+| Commande                                                  | Description                                                                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `pnpm cli sentry:delete-environment-issues <environment>` | Supprime toutes les issues Sentry d'un environnement et le masque de l'UI (interdit pour `main`) |
 
 ### Statistiques
 
-| Commande | Description |
-|---|---|
+| Commande                                              | Description                                                                                                                                                |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm cli stats:fetch-accompagnements <conum> <date>` | Exporte les statistiques d'accompagnement par departement en CSV. `conum` : 0=mediateur, 1=conseiller numerique. `date` : date limite au format YYYY-MM-DD |
 
 ---
@@ -361,13 +361,13 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 
 ### Liste des jobs
 
-| Job | Payload | Description |
-|---|---|---|
-| `synchroniser-les-roles-brevo` | — | Recalcule les roles Brevo (Mediateur, Conseiller numerique, Coordinateur) de tous les inscrits vivants et les envoie en lot |
-| `sync-rdvsp-data` | — | Synchronise les donnees de rendez-vous depuis RDV Service Public |
-| `retirer-les-roles-vacants` | — | Retire le role jamais utilise d'un double role inscrit depuis plus de 30 jours |
-| `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
-| `remove-orphan-brevo-contacts` | — | Supprime les contacts Brevo qui n'existent plus en base de donnees |
+| Job                            | Payload | Description                                                                                                                 |
+| ------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `synchroniser-les-roles-brevo` | —       | Recalcule les roles Brevo (Mediateur, Conseiller numerique, Coordinateur) de tous les inscrits vivants et les envoie en lot |
+| `sync-rdvsp-data`              | —       | Synchronise les donnees de rendez-vous depuis RDV Service Public                                                            |
+| `retirer-les-roles-vacants`    | —       | Retire le role jamais utilise d'un double role inscrit depuis plus de 30 jours                                              |
+| `inactive-users-reminders`     | —       | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes                                             |
+| `remove-orphan-brevo-contacts` | —       | Supprime les contacts Brevo qui n'existent plus en base de donnees                                                          |
 
 Ne figurent ici que les jobs qui ont encore une raison de tourner. Les campagnes
 de reprise de donnees, les correctifs ponctuels et les backfills accomplis sont
@@ -387,17 +387,17 @@ En local, un job se lance avec `pnpm cli job:execute <job> [payload]`.
 
 #### Production uniquement (`main`)
 
-| Job | Schedule | Horaire |
-|---|---|---|
-| `retirer-les-roles-vacants` | `0 0 * * *` | Tous les jours a 00:00 |
-| `inactive-users-reminders` | `0 0 * * *` | Tous les jours a 00:00 |
+| Job                            | Schedule    | Horaire                |
+| ------------------------------ | ----------- | ---------------------- |
+| `retirer-les-roles-vacants`    | `0 0 * * *` | Tous les jours a 00:00 |
+| `inactive-users-reminders`     | `0 0 * * *` | Tous les jours a 00:00 |
 | `synchroniser-les-roles-brevo` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
 
 #### Dev et production (environnements `dev` et `main`)
 
-| Job | Schedule | Horaire |
-|---|---|---|
+| Job               | Schedule    | Horaire                |
+| ----------------- | ----------- | ---------------------- |
 | `sync-rdvsp-data` | `0 2 * * *` | Tous les jours a 02:00 |
 
 ---
@@ -446,10 +446,10 @@ Ces ressources sont deployees une seule fois et partagees par tous les environne
 
 Deux buckets Scaleway Object Storage (compatible AWS S3) :
 
-| Bucket | Usage |
-|---|---|
+| Bucket                                              | Usage                              |
+| --------------------------------------------------- | ---------------------------------- |
 | `coop-mediation-numerique-developer-unsafe-uploads` | Uploads fichiers (dev/integration) |
-| `coop-mediation-numerique-backups` | Sauvegardes de bases de donnees |
+| `coop-mediation-numerique-backups`                  | Sauvegardes de bases de donnees    |
 
 Les deux buckets sont configures avec des regles CORS pour `localhost:3000`.
 
@@ -530,12 +530,12 @@ Chaque environnement a son propre bucket d'uploads :
 
 Chaque environnement deploie un conteneur Scaleway Serverless :
 
-| Parametre | Production (`main`) | Dev (`dev`) | Preview (autres branches) |
-|---|---|---|---|
-| **Min scale** | 2 | 0 | 0 |
-| **Max scale** | 3 | 1 | 1 |
-| **CPU** | 1120 mVPCU | 560 mVPCU | 560 mVPCU |
-| **Memoire** | 2048 Mo | 1024 Mo | 1024 Mo |
+| Parametre     | Production (`main`) | Dev (`dev`) | Preview (autres branches) |
+| ------------- | ------------------- | ----------- | ------------------------- |
+| **Min scale** | 2                   | 0           | 0                         |
+| **Max scale** | 3                   | 1           | 1                         |
+| **CPU**       | 1120 mVPCU          | 560 mVPCU   | 560 mVPCU                 |
+| **Memoire**   | 2048 Mo             | 1024 Mo     | 1024 Mo                   |
 
 Le conteneur recoit une quarantaine de variables d'environnement couvrant :
 - URL de la base de donnees (construite dynamiquement)
@@ -556,17 +556,17 @@ Les crons sont des `scaleway_job_definition` (horaires en UTC, duree maximale 3 
 
 **Production uniquement :**
 
-| Job | Frequence | Description |
-|---|---|---|
-| `retirer-les-roles-vacants` | Tous les jours a minuit | Retrait des roles vacants |
-| `inactive-users-reminders` | Tous les jours a minuit | Relances inscriptions incompletes |
-| `synchroniser-les-roles-brevo` | Tous les jours a 2h | Roles Brevo des inscrits vivants |
-| `remove-orphan-brevo-contacts` | Tous les jours a 3h | Nettoyage contacts Brevo orphelins |
+| Job                            | Frequence               | Description                        |
+| ------------------------------ | ----------------------- | ---------------------------------- |
+| `retirer-les-roles-vacants`    | Tous les jours a minuit | Retrait des roles vacants          |
+| `inactive-users-reminders`     | Tous les jours a minuit | Relances inscriptions incompletes  |
+| `synchroniser-les-roles-brevo` | Tous les jours a 2h     | Roles Brevo des inscrits vivants   |
+| `remove-orphan-brevo-contacts` | Tous les jours a 3h     | Nettoyage contacts Brevo orphelins |
 
 **Dev et production :**
 
-| Job | Frequence | Description |
-|---|---|---|
+| Job               | Frequence           | Description                        |
+| ----------------- | ------------------- | ---------------------------------- |
 | `sync-rdvsp-data` | Tous les jours a 2h | Synchronisation RDV Service Public |
 
 ### Deployer l'infrastructure
@@ -674,15 +674,18 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
 ### Workflow de contribution
 
 1. Creer une branche depuis `main` :
+
    ```bash
    git checkout main && git pull
    git checkout -b feat/nom-de-la-fonctionnalite
    ```
 2. Developper et commiter :
+
    ```bash
    git commit -m "feat: ajoute une fonctionnalite"
    ```
 3. Pousser et ouvrir une Pull Request vers `main` :
+
    ```bash
    git push origin feat/nom-de-la-fonctionnalite
    ```
@@ -696,6 +699,7 @@ Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se t
 
 1. Modifier le schema dans `apps/web/prisma/schema.prisma`
 2. Generer la migration :
+
    ```bash
    pnpm prisma:generate-migration nom_de_la_migration
    ```

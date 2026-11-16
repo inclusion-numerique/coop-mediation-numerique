@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 services:
   web:
     container_name: coop

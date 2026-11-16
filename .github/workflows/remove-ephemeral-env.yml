@@ -5,13 +5,13 @@ on:
   workflow_call:
     inputs:
       branche:
-        description: 'Branch whose preview environment to delete'
+        description: "Branch whose preview environment to delete"
         required: true
         type: string
   workflow_dispatch:
     inputs:
       branche:
-        description: 'Branch whose preview environment to delete'
+        description: "Branch whose preview environment to delete"
         required: true
         type: string
 

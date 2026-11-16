@@ -2,9 +2,9 @@
 
 ## Auteurs et historique
 
-| Date       | Auteur        | Action                                                        |
-|------------|---------------|---------------------------------------------------------------|
-| 2026-07-21 | Marc Gavanier | Rédaction initiale : inventaire, décisions et plan de bascule |
+| Date       | Auteur        | Action                                                                                                 |
+| ---------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| 2026-07-21 | Marc Gavanier | Rédaction initiale : inventaire, décisions et plan de bascule                                          |
 | 2026-07-23 | Marc Gavanier | Révision : périmètre élargi après cadrage Entrepôt (#1707) — cf. `adr-002-reconciliation-dataspace.md` |
 
 ## Statut
@@ -200,7 +200,7 @@ serait s'inviter dans une sémantique qui ne nous appartient pas.
 ### Surface des clés étrangères : deux colonnes
 
 | colonne                                  |    lignes | structures distinctes |
-|------------------------------------------|----------:|----------------------:|
+| ---------------------------------------- | --------: | --------------------: |
 | `coop.activites.structure_employeuse_id` | 3 984 470 |                 3 381 |
 | `coop.employes_structures.structure_id`  |     8 833 |                 3 499 |
 
@@ -215,7 +215,7 @@ prévoir sinon une colonne ajoutée, remplie par lots, puis échangée.
 ### Surface de code : environ 100 fichiers
 
 | zone                                                            | fichiers | nature                                          |
-|-----------------------------------------------------------------|---------:|-------------------------------------------------|
+| --------------------------------------------------------------- | -------: | ----------------------------------------------- |
 | Administration (liste, détail, fusion SA, fusion user, emplois) |       27 | dense, peu de logique                           |
 | Inscription / création de profil                                |       14 | deux chemins d'écriture concurrents             |
 | Profil / affichage / mon-réseau                                 |       11 | dont trois SQL bruts                            |
@@ -234,7 +234,7 @@ Une large part de ce volume n'est que la propagation d'un type `{ id: string }` 
 
 ```ts
 await prismaClient.lieuInclusion.upsert({
-  where:  { id: structureEmployeuseId },   // l'uuid de l'employeuse
+  where: { id: structureEmployeuseId }, // l'uuid de l'employeuse
   update: {},
   create: structureEmployeuse,
 })

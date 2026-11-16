@@ -5,12 +5,12 @@ on:
   workflow_call:
     inputs:
       environnement:
-        description: 'Branch whose environment to plan'
+        description: "Branch whose environment to plan"
         type: string
         required: true
     outputs:
       changes:
-        description: 'Whether the plan changes the infrastructure beyond sensitivity marks'
+        description: "Whether the plan changes the infrastructure beyond sensitivity marks"
         value: ${{ jobs.plan.outputs.changes }}
 
 permissions:

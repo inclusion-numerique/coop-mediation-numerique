@@ -2,9 +2,9 @@
 
 ## Auteurs et historique
 
-| Date | Auteur | Action |
-|------|--------|--------|
-| 2026-09-11 | Marc Gavanier | Rédaction initiale : extraction de la section « Registre des lieux de l'Entrepôt » de `CONTRIBUTING.md` |
+| Date       | Auteur        | Action                                                                                                                            |
+| ---------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-09-11 | Marc Gavanier | Rédaction initiale : extraction de la section « Registre des lieux de l'Entrepôt » de `CONTRIBUTING.md`                           |
 | 2026-09-11 | Marc Gavanier | Règles de lecture : le registre prime sauf sur le partage à la cartographie ; « modifié depuis » se dérive des quatre horodatages |
 
 ## Statut

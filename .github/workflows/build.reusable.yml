@@ -5,15 +5,15 @@ on:
   workflow_call:
     inputs:
       environnement:
-        description: 'Branch whose environment the image is built for'
+        description: "Branch whose environment the image is built for"
         type: string
         required: true
     outputs:
       environnement:
-        description: 'GitHub environment name of the branch'
+        description: "GitHub environment name of the branch"
         value: ${{ jobs.build.outputs.environnement }}
       image:
-        description: 'Pushed container image'
+        description: "Pushed container image"
         value: ${{ jobs.build.outputs.image }}
 
 permissions:

@@ -177,12 +177,12 @@ Audit du 2026-08-06 sur restore prod. La couverture **par lignes** est acquise
 (activités 4 017 546 / 4 017 546) ; l'écart restant est **par colonnes**. Décisions prises,
 à ne pas rouvrir :
 
-| Donnée coop sans équivalent main | Volume | Décision |
-|---|---|---|
-| SA employeuse absente de main | 6 | **À corriger** — cf. étape 0, seul point bloquant |
-| `debut_emploi` / `fin_emploi` | 2 384 débuts, 220 fins sans `main.contrat` correspondant | **Assumé** — l'Entrepôt fait autorité sur les contrats : ce qu'il n'a pas n'a pas lieu d'être |
-| `nom/courriel/telephone_referent` | 344 sans contact main | **Assumé** — les référents sont gérés par l'Entrepôt, les nôtres sont présumés obsolètes |
-| `creation_par_id`, `modification_par_id`, `suppression_par_id` | toute la table | **Assumé perdu** — piste d'audit non portée |
+| Donnée coop sans équivalent main                               | Volume                                                   | Décision                                                                                      |
+| -------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| SA employeuse absente de main                                  | 6                                                        | **À corriger** — cf. étape 0, seul point bloquant                                             |
+| `debut_emploi` / `fin_emploi`                                  | 2 384 débuts, 220 fins sans `main.contrat` correspondant | **Assumé** — l'Entrepôt fait autorité sur les contrats : ce qu'il n'a pas n'a pas lieu d'être |
+| `nom/courriel/telephone_referent`                              | 344 sans contact main                                    | **Assumé** — les référents sont gérés par l'Entrepôt, les nôtres sont présumés obsolètes      |
+| `creation_par_id`, `modification_par_id`, `suppression_par_id` | toute la table                                           | **Assumé perdu** — piste d'audit non portée                                                   |
 
 Non vérifié à ce stade, et qui reste à la charge de qui déclenchera le drop : l'**égalité des
 valeurs** là où les deux côtés sont renseignés (2 091 SA ont « un » contact main, pas

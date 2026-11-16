@@ -388,10 +388,7 @@ const TodoPage = async () => {
     <div className="fr-container">
       <div className="fr-mb-6w fr-flex fr-justify-content-space-between fr-align-items-center">
         <h1 className="fr-mt-8v">Todo</h1>
-        <Link
-          className="fr-btn fr-btn--secondary"
-          href={`/todo/ajouter`}
-        >
+        <Link className="fr-btn fr-btn--secondary" href={`/todo/ajouter`}>
           Ajouter une tâche
         </Link>
       </div>
@@ -484,7 +481,10 @@ const TodoList = ({ todoList }: { todoList: TodoListItem[] }) => (
           <span className="fr-flex fr-direction-column">
             {todo.description}
             <span className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-mt-1v">
-              <span className="fr-icon-calendar-line fr-icon--sm fr-pr-1v" aria-hidden />
+              <span
+                className="fr-icon-calendar-line fr-icon--sm fr-pr-1v"
+                aria-hidden
+              />
               {todo.created.toDateString()}
             </span>
           </span>
@@ -537,10 +537,7 @@ const EmptyTodoList = () => (
       La liste de tâches vous permet de savoir à tout moment ce qu'il vous reste
       à faire. Vous pouvez ajouter une tâche et lui donner une description.
     </div>
-    <Link
-      className="fr-btn fr-mt-4w"
-      href={`/todo/ajouter`}
-    >
+    <Link className="fr-btn fr-mt-4w" href={`/todo/ajouter`}>
       Ajouter une tâche
     </Link>
   </div>
@@ -647,7 +644,10 @@ const TodoList = ({ todoList }: { todoList: TodoListItem[] }) => (
             <span className="fr-flex fr-direction-column">
               {todo.description}
               <span className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-mt-1v">
-                <span className="fr-icon-calendar-line fr-icon--sm fr-pr-1v" aria-hidden />
+                <span
+                  className="fr-icon-calendar-line fr-icon--sm fr-pr-1v"
+                  aria-hidden
+                />
                 {todo.created.toDateString()}
               </span>
             </span>

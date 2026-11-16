@@ -1,16 +1,16 @@
-name: 'Secrets environment'
-description: 'Create the .env file from .env.dist and the Scaleway Secret Manager, its values masked in the logs'
+name: "Secrets environment"
+description: "Create the .env file from .env.dist and the Scaleway Secret Manager, its values masked in the logs"
 
 inputs:
   scw-access-key:
-    description: 'Scaleway access key reading the Secret Manager'
+    description: "Scaleway access key reading the Secret Manager"
     required: true
   scw-secret-key:
-    description: 'Scaleway secret key reading the Secret Manager'
+    description: "Scaleway secret key reading the Secret Manager"
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Create env file
       run: cp .env.dist .env
