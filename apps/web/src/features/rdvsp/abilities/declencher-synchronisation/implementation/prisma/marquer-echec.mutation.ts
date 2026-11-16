@@ -8,11 +8,11 @@ import type { MarquerEchecDeSynchronisation } from '../../domain/declencher-sync
  */
 export const marquerEchecDeSynchronisation =
   (maintenant: () => Date = () => new Date()): MarquerEchecDeSynchronisation =>
-  async ({ compte, message }) => {
+  async ({ agentId, message }) => {
     const date = maintenant()
 
     await prismaClient.rdvAccount.update({
-      where: { id: compte.agentId },
+      where: { id: agentId },
       data: { updated: date, lastSynced: date, error: message },
     })
   }

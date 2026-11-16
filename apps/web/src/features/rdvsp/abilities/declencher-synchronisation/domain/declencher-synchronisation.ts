@@ -1,6 +1,7 @@
 import type { Result } from '@app/web/libraries/result'
 import { type CompteRdv, estUtilisable } from '../../../domain/compte-rdv'
 import type { OrganisationId } from '../../../domain/organisation-id'
+import type { RdvAgentId } from '../../../domain/rdv-agent-id'
 import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 
 export type RoleDemandeur = 'User' | 'Admin' | 'Support'
@@ -82,7 +83,10 @@ export const porteePour = (
 export type ErreurDeclenchement =
   | { readonly _tag: 'NonAutorise' }
   | { readonly _tag: 'CompteRdvIntrouvable' }
-  | { readonly _tag: 'SynchronisationEchouee' }
+  | {
+      readonly _tag: 'SynchronisationEchouee'
+      readonly marquage: MarquageDEchec | null
+    }
 
 export const NonAutorise = (): ErreurDeclenchement => ({ _tag: 'NonAutorise' })
 
@@ -90,8 +94,11 @@ export const CompteRdvIntrouvable = (): ErreurDeclenchement => ({
   _tag: 'CompteRdvIntrouvable',
 })
 
-export const SynchronisationEchouee = (): ErreurDeclenchement => ({
+export const SynchronisationEchouee = (
+  marquage: MarquageDEchec | null,
+): ErreurDeclenchement => ({
   _tag: 'SynchronisationEchouee',
+  marquage,
 })
 
 export type ResultatDeclenchement = {
@@ -121,8 +128,11 @@ export type LancerSynchronisation = (input: {
   readonly organisationIds?: readonly OrganisationId[]
 }) => Promise<{ readonly derive: number }>
 
-/** Consigne l'échec sur le compte, pour que l'administration le voie. */
-export type MarquerEchecDeSynchronisation = (input: {
-  readonly compte: CompteRdv
+export type MarquageDEchec = {
+  readonly agentId: RdvAgentId
   readonly message: string
-}) => Promise<void>
+}
+
+export type MarquerEchecDeSynchronisation = (
+  marquage: MarquageDEchec,
+) => Promise<void>

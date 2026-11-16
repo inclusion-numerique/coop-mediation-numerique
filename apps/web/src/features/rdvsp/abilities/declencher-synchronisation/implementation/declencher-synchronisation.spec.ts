@@ -1,8 +1,12 @@
+import { failure } from '@app/web/libraries/result'
 import type { CompteRdvLie } from '../../../domain/compte-rdv'
 import { JetonAcces } from '../../../domain/jetons-oauth'
 import { RdvAgentId } from '../../../domain/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
-import { declencherSynchronisation } from './declencher-synchronisation'
+import {
+  declencherSynchronisation,
+  MESSAGE_ECHEC,
+} from './declencher-synchronisation'
 
 /**
  * Ce que l'échec d'une passe doit laisser sur le compte.
@@ -32,19 +36,12 @@ const compte: CompteRdvLie = {
   },
 }
 
-const declencherQuiEchoue = ({
-  marquerEchec,
-  echecDefinitif,
-}: {
-  marquerEchec: jest.Mock
-  echecDefinitif: (erreur: unknown) => boolean
-}) =>
+const declencherQuiEchoue = (echecDefinitif: (erreur: unknown) => boolean) =>
   declencherSynchronisation({
     compteACible: async () => compte,
     lancer: async () => {
       throw new Error('API injoignable')
     },
-    marquerEchec,
     echecDefinitif,
   })({
     demandeur: { id: UTILISATEUR, role: 'User' },
@@ -54,28 +51,21 @@ const declencherQuiEchoue = ({
 
 describe('échec d’une synchronisation déclenchée', () => {
   it('ne marque pas le compte quand un nouvel essai peut aboutir', async () => {
-    const marquerEchec = jest.fn()
+    const resultat = await declencherQuiEchoue(() => false)
 
-    const resultat = await declencherQuiEchoue({
-      marquerEchec,
-      echecDefinitif: () => false,
-    })
-
-    expect(resultat.success).toBe(false)
-    expect(marquerEchec).not.toHaveBeenCalled()
+    expect(resultat).toEqual(
+      failure({ _tag: 'SynchronisationEchouee', marquage: null }),
+    )
   })
 
   it('marque le compte quand réessayer ne servirait à rien', async () => {
-    const marquerEchec = jest.fn()
+    const resultat = await declencherQuiEchoue(() => true)
 
-    const resultat = await declencherQuiEchoue({
-      marquerEchec,
-      echecDefinitif: () => true,
-    })
-
-    expect(resultat.success).toBe(false)
-    expect(marquerEchec).toHaveBeenCalledWith(
-      expect.objectContaining({ compte }),
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'SynchronisationEchouee',
+        marquage: { agentId: compte.agentId, message: MESSAGE_ECHEC },
+      }),
     )
   })
 })
