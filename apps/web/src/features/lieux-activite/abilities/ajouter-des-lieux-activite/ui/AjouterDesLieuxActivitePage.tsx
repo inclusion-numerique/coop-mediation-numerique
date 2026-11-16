@@ -3,6 +3,7 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
+import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import CreerLieuActiviteForm from '@app/web/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
@@ -136,7 +137,10 @@ export const AjouterDesLieuxActivitePage = ({
             <field.ComboBox
               isPending={isPending}
               onSelect={async (item) => {
-                const issue = await selectionner(form.state.values.lieux, item)
+                const issue = await selectionner(geocodeStructureAdresse)(
+                  form.state.values.lieux,
+                  item,
+                )
 
                 form.setFieldValue('recherche', null)
                 setRechercheError(issue.success ? null : issue.error)
