@@ -3,13 +3,12 @@ import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { activiteDeMediationFromDomain } from '../../db/activite-de-mediation.transfer'
 import { recalculerLesPremiersAccompagnements } from '../../db/premier-accompagnement'
-import { type ActiviteDeMediation, nombreDAccompagnements } from '../../domain'
+import type { ActiviteDeMediation } from '../../domain'
 
 const DELAI_DE_TRANSACTION_MS = 20_000
 
 export type ActiviteDeMediationPrecedente = {
   readonly lieuActiviteId: string | null
-  readonly beneficiaireIds: readonly string[]
   readonly suivis: readonly string[]
   readonly anonymesOrphelins: readonly string[]
 }
@@ -53,9 +52,6 @@ export const lireLActiviteDeMediationPrecedente = async ({
 
   const precedente: ActiviteDeMediationPrecedente = {
     lieuActiviteId: activite.structureId,
-    beneficiaireIds: activite.accompagnements.map(
-      ({ beneficiaire }) => beneficiaire.id,
-    ),
     suivis: activite.accompagnements
       .filter(({ beneficiaire }) => !beneficiaire.anonyme)
       .map(({ beneficiaire }) => beneficiaire.id),
@@ -80,7 +76,6 @@ const lignesDe = (activite: ActiviteDeMediation) => {
     .map(({ beneficiaire }) => ({
       ...beneficiaire,
       mediateurId: activite.mediateurId,
-      accompagnementsCount: 1,
     }))
   const suivis = accompagnements
     .filter(({ beneficiaire }) => !beneficiaire.anonyme)
@@ -89,7 +84,6 @@ const lignesDe = (activite: ActiviteDeMediation) => {
     colonnes: {
       ...colonnes,
       rdvServicePublicId: colonnes.rdvId,
-      accompagnementsCount: nombreDAccompagnements(activite),
     },
     tags: tags.map(({ tagId }) => ({ activiteId: activite.id, tagId })),
     accompagnements: accompagnements.map(
@@ -110,23 +104,7 @@ const rattacher = async (
 ): Promise<void> => {
   await transaction.accompagnement.createMany({ data: lignes.accompagnements })
   await transaction.activitesTags.createMany({ data: lignes.tags })
-  await transaction.beneficiaire.updateMany({
-    where: { id: { in: lignes.suivis } },
-    data: { accompagnementsCount: { increment: 1 } },
-  })
 }
-
-const compterLeLieu = (
-  transaction: Prisma.TransactionClient,
-  lieuActiviteId: string | null,
-  variation: number,
-) =>
-  lieuActiviteId === null
-    ? Promise.resolve(null)
-    : transaction.lieuInclusion.update({
-        where: { id: lieuActiviteId },
-        data: { activitesCount: { increment: variation } },
-      })
 
 export const creerLActiviteDeMediation = async (
   activite: ActiviteDeMediation,
@@ -139,13 +117,8 @@ export const creerLActiviteDeMediation = async (
       await rattacher(transaction, lignes)
       await transaction.mediateur.update({
         where: { id: activite.mediateurId },
-        data: {
-          activitesCount: { increment: 1 },
-          accompagnementsCount: { increment: lignes.accompagnements.length },
-          derniereCreationActivite: activite.modification,
-        },
+        data: { derniereCreationActivite: activite.modification },
       })
-      await compterLeLieu(transaction, lignes.colonnes.structureId, 1)
       await recalculerLesPremiersAccompagnements(transaction, lignes.suivis)
     },
     { timeout: DELAI_DE_TRANSACTION_MS },
@@ -168,16 +141,6 @@ export const modifierLActiviteDeMediation = async (
       await transaction.beneficiaire.deleteMany({
         where: { id: { in: [...precedente.anonymesOrphelins] }, anonyme: true },
       })
-      await transaction.beneficiaire.updateMany({
-        where: {
-          id: {
-            in: precedente.beneficiaireIds.filter(
-              (id) => !precedente.anonymesOrphelins.includes(id),
-            ),
-          },
-        },
-        data: { accompagnementsCount: { decrement: 1 } },
-      })
       await transaction.beneficiaire.createMany({ data: lignes.anonymes })
       await transaction.activite.update({
         where: {
@@ -190,16 +153,8 @@ export const modifierLActiviteDeMediation = async (
       await rattacher(transaction, lignes)
       await transaction.mediateur.update({
         where: { id: activite.mediateurId },
-        data: {
-          accompagnementsCount: {
-            increment:
-              lignes.accompagnements.length - precedente.beneficiaireIds.length,
-          },
-          derniereCreationActivite: activite.modification,
-        },
+        data: { derniereCreationActivite: activite.modification },
       })
-      await compterLeLieu(transaction, precedente.lieuActiviteId, -1)
-      await compterLeLieu(transaction, lignes.colonnes.structureId, 1)
       await recalculerLesPremiersAccompagnements(transaction, [
         ...new Set([...precedente.suivis, ...lignes.suivis]),
       ])

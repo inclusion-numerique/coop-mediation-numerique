@@ -42,10 +42,6 @@ export const supprimerBeneficiaires: SupprimerBeneficiaires = async ({
       },
     })
     await garderUnSeulCodePostal(tx, Prisma.sql`id = ANY(${validIds}::uuid[])`)
-    await tx.mediateur.update({
-      where: { id: mediateurId },
-      data: { beneficiairesCount: { decrement: validIds.length } },
-    })
   })
 
   return success({ deleted: validIds.length })

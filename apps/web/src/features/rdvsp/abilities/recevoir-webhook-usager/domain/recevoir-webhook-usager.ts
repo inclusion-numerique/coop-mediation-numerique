@@ -27,13 +27,11 @@ export type BeneficiairesLiesAUsager = (
 export type MettreAJourUsager = (usager: Usager) => Promise<void>
 
 /**
- * Anonymise les bénéficiaires descendant de l'usager, décrémente les compteurs
- * des médiateurs concernés, délie ce qui reste et supprime l'usager — d'un seul
- * tenant : un effacement à moitié appliqué laisserait des fiches nominatives
+ * Anonymise les bénéficiaires descendant de l'usager, délie ce qui reste et
+ * supprime l'usager — d'un seul tenant : un effacement à moitié appliqué laisserait des fiches nominatives
  * derrière un usager disparu.
  */
 export type AnonymiserEtSupprimerUsager = (input: {
   readonly usagerId: UsagerId
   readonly beneficiaires: readonly BeneficiaireLie[]
-  readonly perteParMediateur: ReadonlyMap<string, number>
 }) => Promise<void>

@@ -14,8 +14,7 @@ import { garderUnSeulCodePostal } from '../../../../db'
  * Service Public orphelins : sans lui, la charge RDV qui suit n'aurait rien à
  * supprimer.
  *
- * Idempotent : le filtre `suppression: null` rend le second passage vide, et le
- * compteur est POSÉ à zéro plutôt que décrémenté.
+ * Idempotent : le filtre `suppression: null` rend le second passage vide.
  */
 export const anonymiserPortefeuille = async ({
   mediateurId,
@@ -46,11 +45,6 @@ export const anonymiserPortefeuille = async ({
       Prisma.sql`mediateur_id = ${mediateurId}::uuid AND anonyme = true`,
     )
     return anonymises
-  })
-
-  await prismaClient.mediateur.update({
-    where: { id: mediateurId },
-    data: { beneficiairesCount: 0 },
   })
 
   return { anonymises: count }

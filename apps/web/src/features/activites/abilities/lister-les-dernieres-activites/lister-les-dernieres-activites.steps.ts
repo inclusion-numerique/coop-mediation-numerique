@@ -38,7 +38,6 @@ const semerUneActivite = (mediateurId: string, rang: number) =>
       date: new Date(`2026-06-0${rang}`),
       duree: 60,
       thematiques: ['Email'],
-      accompagnementsCount: 1,
       accompagnements: {
         create: {
           beneficiaire: { create: { mediateurId, anonyme: true } },

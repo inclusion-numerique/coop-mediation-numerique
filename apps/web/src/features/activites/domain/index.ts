@@ -31,7 +31,6 @@ export {
   type Equipement,
   equipementDe,
   type Lieu,
-  nombreDAccompagnements,
   type Orientation,
   type Origine,
   PARTICIPANTS_ANONYMES_MAXIMUM,

@@ -241,7 +241,6 @@ const semerUneActivite = async (
       duree: nombre(ligne.duree, 60),
       thematiques: listeDe(Thematique)(ligne.thematiques ?? 'Email'),
       materiel: listeDe(Materiel)(ligne.materiel),
-      accompagnementsCount: participants.length,
       suppression: ligne.supprimee === 'oui' ? new Date() : null,
       v1CraId: ligne.v1 === 'oui' ? v4() : null,
       structureEmployeuseMainId: ligne.employeuse

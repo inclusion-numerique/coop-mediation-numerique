@@ -47,7 +47,7 @@ export const supprimerUneActiviteDeMediation = async ({
 
   const activite = await prismaClient.activite.findFirst({
     where: { id: activiteId, mediateurId, suppression: null },
-    select: { type: true, structureId: true },
+    select: { type: true },
   })
 
   if (activite === null) return failure(ActiviteIntrouvable())
@@ -69,27 +69,10 @@ export const supprimerUneActiviteDeMediation = async ({
     await transaction.beneficiaire.deleteMany({
       where: { id: { in: anonymesOrphelins }, anonyme: true },
     })
-    await transaction.beneficiaire.updateMany({
-      where: { id: { in: suivis } },
-      data: { accompagnementsCount: { decrement: 1 } },
-    })
     await transaction.activite.update({
       where: { id: activiteId },
       data: { suppression: maintenant, modification: maintenant, rdvId: null },
     })
-    await transaction.mediateur.update({
-      where: { id: mediateurId },
-      data: {
-        activitesCount: { decrement: 1 },
-        accompagnementsCount: { decrement: participants.length },
-      },
-    })
-    if (activite.structureId !== null) {
-      await transaction.lieuInclusion.update({
-        where: { id: activite.structureId },
-        data: { activitesCount: { decrement: 1 } },
-      })
-    }
     await recalculerLesPremiersAccompagnements(transaction, suivis)
   })
 

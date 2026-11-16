@@ -50,7 +50,6 @@ const semerLeContexte = async () => {
         adresse: '3 rue de la République',
         commune: 'Lyon',
         codePostal: '69001',
-        activitesCount: 1,
       },
       select: { id: true },
     }),
@@ -67,7 +66,7 @@ const semerDesSuivis = (mediateurId: string, nombre: number) =>
     Array.from({ length: nombre }, () =>
       prismaClient.beneficiaire
         .create({
-          data: { mediateurId, prenom: 'Camille', accompagnementsCount: 1 },
+          data: { mediateurId, prenom: 'Camille' },
           select: { id: true },
         })
         .then(({ id }) => id),
@@ -79,7 +78,7 @@ const semerDesAnonymes = (mediateurId: string, nombre: number) =>
     Array.from({ length: nombre }, () =>
       prismaClient.beneficiaire
         .create({
-          data: { mediateurId, anonyme: true, accompagnementsCount: 1 },
+          data: { mediateurId, anonyme: true },
           select: { id: true },
         })
         .then(({ id }) => id),
@@ -110,10 +109,6 @@ Given(
   async () => {
     const contexte = await semerLeContexte()
     const anonymes = await semerDesAnonymes(contexte.auteur.mediateurId, 1)
-    await prismaClient.mediateur.update({
-      where: { id: contexte.auteur.mediateurId },
-      data: { activitesCount: 1, accompagnementsCount: 1 },
-    })
     const activite = await prismaClient.activite.create({
       data: {
         mediateurId: contexte.auteur.mediateurId,
@@ -123,7 +118,6 @@ Given(
         date: new Date('2026-03-03'),
         duree: 60,
         thematiques: ['Email'],
-        accompagnementsCount: 1,
         accompagnements: {
           create: anonymes.map((beneficiaireId) => ({
             beneficiaireId,
@@ -151,13 +145,6 @@ Given(
       semerDesSuivis(contexte.auteur.mediateurId, nombreDeSuivis),
       semerDesAnonymes(contexte.auteur.mediateurId, nombreDAnonymes),
     ])
-    await prismaClient.mediateur.update({
-      where: { id: contexte.auteur.mediateurId },
-      data: {
-        activitesCount: 1,
-        accompagnementsCount: nombreDeSuivis + nombreDAnonymes,
-      },
-    })
     const activite = await prismaClient.activite.create({
       data: {
         mediateurId: contexte.auteur.mediateurId,
@@ -169,7 +156,6 @@ Given(
         date: new Date('2026-03-03'),
         duree: 90,
         thematiques: ['Email'],
-        accompagnementsCount: nombreDeSuivis + nombreDAnonymes,
         accompagnements: {
           create: [...suivis, ...anonymes].map((beneficiaireId) => ({
             beneficiaireId,
@@ -214,7 +200,6 @@ const accompagnementSeme = ({
         creation: new Date(`2026-03-${jour}T${heure}:00.000Z`),
         duree: 30,
         thematiques: ['Email'],
-        accompagnementsCount: 1,
         accompagnements: {
           create: { beneficiaireId, premierAccompagnement: premier },
         },
@@ -235,17 +220,6 @@ const semerUnSuiviAccompagne = async (
   const contexte = await semerLeContexte()
   const [suivi] = await semerDesSuivis(contexte.auteur.mediateurId, 1)
   if (suivi === undefined) throw new Error('Aucun bénéficiaire semé')
-  await prismaClient.beneficiaire.update({
-    where: { id: suivi },
-    data: { accompagnementsCount: accompagnements.length },
-  })
-  await prismaClient.mediateur.update({
-    where: { id: contexte.auteur.mediateurId },
-    data: {
-      activitesCount: accompagnements.length,
-      accompagnementsCount: accompagnements.length,
-    },
-  })
   const activites = await Promise.all(
     accompagnements.map(async ({ libelle, ...accompagnement }) => [
       libelle,

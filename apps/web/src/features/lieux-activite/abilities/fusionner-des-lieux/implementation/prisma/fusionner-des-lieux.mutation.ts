@@ -101,7 +101,6 @@ const fusionnerLesChamps =
           source.modalitesAccompagnement,
         ),
         courriels: unionArrays(target.courriels, source.courriels),
-        activitesCount: { increment: source.activitesCount },
         visiblePourCartographieNationale:
           target.visiblePourCartographieNationale &&
           source.visiblePourCartographieNationale,

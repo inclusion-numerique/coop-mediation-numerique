@@ -142,7 +142,7 @@ describe('timestampExtension', () => {
       )
     })
 
-    it('ne bumpe PAS `modification` si seul un compteur change', async () => {
+    it('ne bumpe PAS `modification` si seul un marqueur technique change', async () => {
       const before = await prismaClient.mediateur.findUniqueOrThrow({
         where: { id: mediateurId },
       })
@@ -150,7 +150,7 @@ describe('timestampExtension', () => {
       await wait(50)
       const updated = await prismaClient.mediateur.update({
         where: { id: mediateurId },
-        data: { activitesCount: { increment: 1 } },
+        data: { derniereCreationActivite: new Date() },
       })
 
       expect(updated.modification.getTime()).toBe(before.modification.getTime())

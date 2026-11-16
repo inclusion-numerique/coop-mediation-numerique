@@ -91,23 +91,6 @@ const fusionnerLesMediateurs = async (
     data: { mediateurId: cibleId },
   })
 
-  const compteurs = await tx.mediateur.findUniqueOrThrow({
-    where: { id: sourceId },
-    select: {
-      activitesCount: true,
-      accompagnementsCount: true,
-      beneficiairesCount: true,
-    },
-  })
-  await tx.mediateur.update({
-    where: { id: cibleId },
-    data: {
-      activitesCount: { increment: compteurs.activitesCount },
-      accompagnementsCount: { increment: compteurs.accompagnementsCount },
-      beneficiairesCount: { increment: compteurs.beneficiairesCount },
-    },
-  })
-
   await fusionnerLePartage(
     tx,
     await tx.partageStatistiques.findUnique({

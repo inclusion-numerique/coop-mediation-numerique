@@ -23,14 +23,7 @@ export const importerBeneficiaires: ImporterBeneficiaires = async ({
     import: now,
   }))
 
-  const { count } = await prismaClient.$transaction(async (tx) => {
-    const created = await tx.beneficiaire.createMany({ data })
-    await tx.mediateur.update({
-      where: { id: mediateurId },
-      data: { beneficiairesCount: { increment: created.count } },
-    })
-    return created
-  })
+  const { count } = await prismaClient.beneficiaire.createMany({ data })
 
   return { importes: count }
 }

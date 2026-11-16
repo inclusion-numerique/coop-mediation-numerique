@@ -63,7 +63,6 @@ Given('une inscription en cours avec une activité à exposer', async () => {
       date: new Date('2026-06-01'),
       duree: 60,
       typeLieu: 'Autre',
-      accompagnementsCount: 0,
     },
   })
 })

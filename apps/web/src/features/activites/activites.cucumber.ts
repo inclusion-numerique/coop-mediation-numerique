@@ -40,7 +40,6 @@ export const semerComptesRendus = async (): Promise<ComptesRendusSemes> => {
       typeLieu: 'Autre' as const,
       date: new Date(`2026-06-0${rang}`),
       duree: 60,
-      accompagnementsCount: 0,
       notes: `Compte rendu ${rang} avec des éléments personnels`,
     })),
   })
@@ -152,7 +151,6 @@ export const semerUnAccompagnementDansLaCommune = async ({
       lieuCodeInsee: codeInsee,
       date,
       duree: 60,
-      accompagnementsCount: 1,
       accompagnements: { create: { beneficiaireId: beneficiaire.id } },
     },
   })

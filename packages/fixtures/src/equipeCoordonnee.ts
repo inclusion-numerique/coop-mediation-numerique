@@ -58,7 +58,6 @@ const conseillerNumeriqueActif = givenUser({
       where: { id: conseillerNumeriqueActifId },
       create: {
         id: conseillerNumeriqueActifId,
-        activitesCount: 15,
         derniereCreationActivite: new Date(),
         enActivite: {
           connectOrCreate: {
@@ -95,7 +94,6 @@ const mediateurActif = givenUser({
       where: { id: mediateurActifId },
       create: {
         id: mediateurActifId,
-        activitesCount: 10,
         derniereCreationActivite: new Date(),
         enActivite: {
           connectOrCreate: {
@@ -140,7 +138,6 @@ const conseillerNumeriqueInactif = givenUser({
       create: {
         id: conseillerNumeriqueInactifMediateurId,
         creation: sixMonthsAgo,
-        activitesCount: 2,
         derniereCreationActivite: sixMonthsAgo,
         enActivite: {
           connectOrCreate: {
@@ -180,7 +177,6 @@ const mediateurInactif = givenUser({
       create: {
         id: mediateurInactifMediateurId,
         creation: sixMonthsAgo,
-        activitesCount: 1,
         derniereCreationActivite: sixMonthsAgo,
         enActivite: {
           connectOrCreate: {
@@ -217,7 +213,6 @@ const mediateurAQuitte = givenUser({
       where: { id: mediateurAQuitteId },
       create: {
         id: mediateurAQuitteId,
-        activitesCount: 5,
         enActivite: {
           connectOrCreate: {
             where: { id: 'e3f4a5b6-c7d8-9012-6789-123456789012' },
@@ -254,7 +249,6 @@ const conseillerNumeriqueAQuitte = givenUser({
       where: { id: conseillerNumeriqueAQuitteId },
       create: {
         id: conseillerNumeriqueAQuitteId,
-        activitesCount: 8,
         enActivite: {
           connectOrCreate: {
             where: { id: 'c7d8e9f0-a1b2-3456-0123-567890123456' },
@@ -293,7 +287,6 @@ const mediateurProfilSupprime = givenUser({
       where: { id: mediateurProfilSupprimeId },
       create: {
         id: mediateurProfilSupprimeId,
-        activitesCount: 3,
         enActivite: {
           connectOrCreate: {
             where: { id: 'a1b2c3d4-e5f6-7890-4567-901234567890' },
@@ -334,7 +327,6 @@ const conseillerNumeriqueProfilSupprime = givenUser({
       where: { id: conseillerNumeriqueProfilSupprimeId },
       create: {
         id: conseillerNumeriqueProfilSupprimeId,
-        activitesCount: 6,
         enActivite: {
           connectOrCreate: {
             where: { id: 'e5f6a7b8-c9d0-1234-8901-234567890123' },

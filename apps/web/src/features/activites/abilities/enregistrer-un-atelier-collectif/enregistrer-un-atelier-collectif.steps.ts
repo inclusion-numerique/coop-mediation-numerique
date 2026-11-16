@@ -143,7 +143,6 @@ Given(
         commune: 'Lyon',
         communeCodePostal: '69001',
         communeCodeInsee: '69123',
-        accompagnementsCount: 2,
       },
       select: { id: true },
     })
@@ -157,7 +156,6 @@ Given(
             date: new Date(`2026-11-${jour}`),
             duree: 60,
             thematiques: ['Email'],
-            accompagnementsCount: 1,
             accompagnements: { create: { beneficiaireId: anonymise.id } },
           },
           select: { id: true },
@@ -186,7 +184,6 @@ Given(
         date: new Date('2026-11-03'),
         duree: 30,
         thematiques: ['Email'],
-        accompagnementsCount: 1,
         accompagnements: { create: { beneficiaireId: suivi } },
       },
       select: { id: true },

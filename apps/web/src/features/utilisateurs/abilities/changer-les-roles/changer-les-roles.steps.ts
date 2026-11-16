@@ -157,7 +157,6 @@ Given('son rôle médiateur a une activité', async () => {
       date: new Date('2026-06-01'),
       duree: 60,
       typeLieu: 'Autre',
-      accompagnementsCount: 0,
     },
   })
 })

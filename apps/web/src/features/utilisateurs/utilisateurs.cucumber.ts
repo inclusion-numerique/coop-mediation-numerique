@@ -100,7 +100,6 @@ export const semerCompte = async ({
       date: new Date('2026-06-01'),
       duree: 60,
       typeLieu: 'Autre',
-      accompagnementsCount: 0,
       notes: 'Compte rendu contenant des éléments personnels',
     },
     select: { id: true },
@@ -493,7 +492,6 @@ export const semerUnCompteDeListe = async (
         typeLieu: 'Autre',
         date: new Date('2026-06-01'),
         duree: 60,
-        accompagnementsCount: 0,
         suppression: new Date(),
       },
     })

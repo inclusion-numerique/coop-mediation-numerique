@@ -114,8 +114,12 @@ export const semerUneActiviteTaguee = async ({
       typeLieu: 'Autre',
       date: new Date('2026-06-01'),
       duree: 60,
-      accompagnementsCount: accompagnements,
       tags: { create: tagIds.map((tagId) => ({ tagId })) },
+      accompagnements: {
+        create: Array.from({ length: accompagnements }, () => ({
+          beneficiaire: { create: { mediateurId, anonyme: true } },
+        })),
+      },
     },
     select: { id: true },
   })
@@ -216,6 +220,12 @@ After(async () => {
         { tag: tagsConcernes },
       ],
     },
+  })
+  await prismaClient.accompagnement.deleteMany({
+    where: { activite: { mediateurId: { in: mediateurIds } } },
+  })
+  await prismaClient.beneficiaire.deleteMany({
+    where: { mediateurId: { in: mediateurIds } },
   })
   await prismaClient.activite.deleteMany({
     where: { mediateurId: { in: mediateurIds } },

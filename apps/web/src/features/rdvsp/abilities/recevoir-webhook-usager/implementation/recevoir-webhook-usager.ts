@@ -1,7 +1,4 @@
-import {
-  decisionPourWebhookUsager,
-  perteParMediateur,
-} from '../domain/decision-webhook-usager'
+import { decisionPourWebhookUsager } from '../domain/decision-webhook-usager'
 import type {
   AnonymiserEtSupprimerUsager,
   BeneficiairesLiesAUsager,
@@ -51,7 +48,6 @@ export const recevoirWebhookUsager =
     await anonymiserEtSupprimer({
       usagerId: usager.id,
       beneficiaires,
-      perteParMediateur: perteParMediateur(beneficiaires),
     })
 
     return { _tag: 'traite', action: 'anonymiseEtSupprime' }

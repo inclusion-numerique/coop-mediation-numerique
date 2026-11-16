@@ -1,5 +1,4 @@
 import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
-import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { mediateque, seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
@@ -259,7 +258,6 @@ describe('getMesStatistiquesPageData', () => {
         select: { id: true },
       })
     employeuseDesActivitesState.id = employeuseDesActivites.id
-    await refreshFixturesComputedFields()
   }, 100_000)
 
   describe('mediateur sans activites', () => {

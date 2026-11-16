@@ -28,16 +28,8 @@ export const listerLesTags = async ({
   const visibles = Prisma.sql`t.suppression IS NULL AND ${tagVisiblePar(acteur)}`
 
   const [lignes, [{ total }]] = await Promise.all([
-    prismaClient.$queryRaw<(TagRow & { accompagnements: bigint })[]>`
-      SELECT ${COLONNES_DU_TAG},
-        COALESCE((
-          SELECT SUM(a.accompagnements_count)
-          FROM activite_tags at
-          JOIN activites a ON a.id = at.activite_id
-          WHERE at.tag_id = t.id
-        ), 0)
-        + (SELECT COUNT(*) FROM activite_coordination_tags act WHERE act.tag_id = t.id)
-        AS accompagnements
+    prismaClient.$queryRaw<(TagRow & { accompagnements: number })[]>`
+      SELECT ${COLONNES_DU_TAG}, t.accompagnements_count AS accompagnements
       FROM ${TAGS}
       WHERE ${visibles}
       ORDER BY ${ordre(tri)}
@@ -54,7 +46,7 @@ export const listerLesTags = async ({
       const tag = tagToDomain(ligne)
       return tag === null
         ? []
-        : [{ tag, accompagnements: Effectif(Number(ligne.accompagnements)) }]
+        : [{ tag, accompagnements: Effectif(ligne.accompagnements) }]
     }),
     total: Effectif(Number(total)),
   }

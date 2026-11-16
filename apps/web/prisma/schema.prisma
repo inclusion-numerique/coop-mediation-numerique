@@ -1570,7 +1570,7 @@ model Activite {
   mediateurId          String           @map("mediateur_id") @db.Uuid
   mediateur            Mediateur        @relation(fields: [mediateurId], references: [id])
   accompagnements      Accompagnement[]
-  accompagnementsCount Int              @map("accompagnements_count")
+  accompagnementsCount Int              @default(0) @map("accompagnements_count")
   date                 DateTime         @map("date") @db.Date
   duree                Int              @map("duree") // Durée en minutes
   notes                String?
@@ -1693,6 +1693,8 @@ model Tag {
   coordinateurId String?       @map("coordinateur_id") @db.Uuid
   coordinateur   Coordinateur? @relation(fields: [coordinateurId], references: [id])
   equipe         Boolean?
+
+  accompagnementsCount Int @default(0) @map("accompagnements_count")
 
   creation                  DateTime                    @default(now())
   modification              DateTime                    @default(now())
