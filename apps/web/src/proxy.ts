@@ -7,13 +7,13 @@ const isProduction = nodeEnvironment === 'production'
 
 const contentSecurityPolicy = `
   default-src 'self' https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr;
-  script-src 'self' https://matomo.incubateur.anct.gouv.fr https://cdn.jsdelivr.net/npm/@scalar/api-reference 'unsafe-inline' 'unsafe-eval';
+  script-src 'self' https://matomo.incubateur.anct.gouv.fr 'unsafe-inline' 'unsafe-eval';
   script-src-attr 'none';
   style-src 'self' https: 'unsafe-inline';
   img-src 'self' data: *;
   frame-src https://www.youtube-nocookie.com/;
   object-src 'none';
-  connect-src 'self' https://${PublicWebAppConfig.ProConnect.hostname} ${PublicWebAppConfig.isMain ? '' : 'https://cdn.jsdelivr.net '}https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://recherche-entreprises.api.gouv.fr https://data.geopf.fr https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr https://coop-numerique.anct.gouv.fr;
+  connect-src 'self' https://${PublicWebAppConfig.ProConnect.hostname} https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://recherche-entreprises.api.gouv.fr https://data.geopf.fr https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr https://coop-numerique.anct.gouv.fr;
   worker-src 'self' blob:;
   font-src 'self' https: data:;
   frame-ancestors 'self' https://matomo.incubateur.anct.gouv.fr;

@@ -70,5 +70,6 @@ allowBuilds:
   puppeteer: false
   unrs-resolver: false
   yarn: false
+  vue-demi: false
 
 dedupePeerDependents: false
