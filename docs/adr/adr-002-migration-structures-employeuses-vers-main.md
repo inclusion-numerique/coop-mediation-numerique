@@ -41,6 +41,12 @@ requête dans la même base, pas un appel distant. C'est ce qui rend la décisio
 La coop ne fait plus autorité sur les structures employeuses ni sur les emplois. Elle lit le schéma
 `main` du Dataspace, et n'y écrit que ce que l'inscription d'un utilisateur exige.
 
+### Principe : le Dataspace ignore la coop, la coop s'adapte
+
+Le Dataspace est indépendant et ignore l'existence de la coop. La coop dépend de lui et s'adapte à
+ses évolutions, jamais l'inverse. Quand la coop a besoin d'une évolution de `main`, elle la demande
+à l'équipe Dataspace, qui l'applique de son côté.
+
 ```mermaid
 flowchart LR
     U[coop.users] -->|main.personne.coop_id| P[main.personne]
@@ -116,25 +122,58 @@ C'est aussi ce qu'attend la fusion d'employeuses de l'Entrepôt, qui repointe le
 la structure conservée avant de supprimer l'autre : `RESTRICT` garantit qu'aucune référence n'a été
 oubliée.
 
+Cette clé étrangère a un coût pour le Dataspace, sans qu'aucun de son code ni de ses migrations ne
+mentionne la coop :
+
+- le rôle de la coop doit avoir le droit de référencer `main.structure_administrative` ;
+- un `TRUNCATE` ou un `DROP` de la table sans cascade est refusé tant que la clé existe ;
+- en `RESTRICT`, la suppression d'une employeuse encore référencée par une activité est bloquée.
+
+Ce coût est assumé : il protège les données de la coop contre une perte silencieuse.
+
 État actuel : la clé étrangère existe mais reste en `SET NULL`, sur une colonne nullable portant
 encore son nom de transition. Cible à atteindre, ticket à ouvrir. Le passage à `NOT NULL` et le
 renommage suivent les migrations destructives en deux temps
 ([ADR-014](./adr-014-migrations-destructives-en-deux-temps.md)).
 
-### 8. Cible : un seul client Prisma décrit les tables de `main`
+### 8. Cible : la coop ne modifie jamais le schéma `main`
 
-La cible est un client Prisma unique, en `multiSchema`, qui décrit les tables de `main` que la coop
-lit ou écrit, sans les posséder. Plusieurs lectures ont besoin d'une relation déclarée entre les
-deux schémas pour joindre ou trier en SQL plutôt que de recoller deux requêtes en mémoire.
+Le schéma `main` appartient au Dataspace. L'équipe Dataspace le migre avec Flyway, indépendamment
+de la coop. La coop le considère comme existant une fois appliqué de leur côté, et ne le modifie
+jamais : aucune migration de la coop ne crée, n'altère ni ne supprime d'objet de `main`. Seules
+sont admises les clés étrangères de tables de la coop vers `main`, et l'écriture de données.
 
-Décrire une table qu'on ne possède pas expose à une évolution de l'Entrepôt qui casserait notre
-client sans prévenir. Une garde locale compare le schéma `main` réel à un instantané de référence
-versionné et échoue s'il a divergé. Elle tourne à la demande, hors CI : la CI ne reçoit aucun
-identifiant de la base de production.
+La cible rend cette interdiction structurelle : une migration de la coop qui toucherait la
+structure de `main` ne doit pas pouvoir exister. Trois verrous la portent :
 
-État actuel : les structures employeuses, les personnes, les affectations et les contrats sont
-décrits dans le client principal, mais un second client subsiste pour la lecture des lieux. Cible à
-atteindre, ticket à ouvrir.
+1. **Droits de base** : le rôle qui applique les migrations de la coop n'a aucun droit de
+   modification de structure sur `main`. Il y a la lecture, l'écriture de données et le droit de
+   référencer, rien d'autre.
+2. **Configuration Prisma** : les objets de `main` sont déclarés externes. Prisma les décrit pour
+   les lire, les écrire et les joindre, mais ne génère aucune commande de structure pour eux.
+3. **Contrôle automatique en CI** des fichiers de migration : il refuse toute commande de création,
+   de modification ou de suppression visant `main`, hors clés étrangères de la coop vers `main`.
+
+En CI et en local, la structure de `main` vient d'un instantané de celle du Dataspace, et non des
+modèles Prisma de la coop. Les migrations existantes qui touchent `main` sont historiques : elles
+ne sont pas réécrites.
+
+Décrire des tables qu'on ne possède pas expose à une évolution du Dataspace qui casserait la coop
+sans prévenir. Une garde anti-dérive compare le schéma `main` réel à un instantané de référence
+versionné et échoue s'il a divergé. Elle doit couvrir toutes les tables de `main` que la coop
+décrit.
+
+Un second client Prisma subsiste pour la lecture des lieux. Il ne sert qu'à lire et n'est jamais
+passé aux migrations : il ne peut émettre aucune commande de structure. Il est conservé tant que
+l'exclusion de `main` des migrations de la coop n'est pas en place, et sa suppression est
+conditionnée à elle.
+
+État actuel : aucun des trois verrous n'est en place. Les tables de `main` décrites par la coop ne
+sont pas déclarées externes, et sur une base vide (CI, environnements de preview, base locale) ce
+sont les migrations de la coop qui créent la structure de `main` ; les plus récentes ne le font
+que si elle est absente. La garde anti-dérive ne couvre que trois tables (structures, adresses,
+lieux), tourne à la demande en local et jamais en CI, faute d'identifiant de la base de
+production. Cible à atteindre, ticket à ouvrir.
 
 ### 9. Les référents sont lus dans `main`, le complément d'adresse est abandonné
 
@@ -221,9 +260,13 @@ passage du job, quand une contrainte les refuse au moment de l'écriture.
 - **Pertes assumées** : les dates d'emploi tenues par la coop, la piste d'audit de la table
   d'emplois (qui a créé, modifié, supprimé) et le complément d'adresse des employeuses.
 - **Couplage** au schéma de `main`, géré par l'Entrepôt avec Flyway : une évolution de leur côté
-  peut casser notre client. La garde locale le détecte, elle ne l'empêche pas.
-- **Nos lignes bloquent leurs suppressions** une fois la clé étrangère en `RESTRICT` : l'Entrepôt
-  doit repointer avant de supprimer.
+  peut casser notre client. La garde anti-dérive le détecte, elle ne l'empêche pas : la coop
+  s'adapte.
+- **Coût de la clé étrangère pour le Dataspace** : le rôle de la coop doit pouvoir référencer
+  `main.structure_administrative`, un `TRUNCATE` ou un `DROP` sans cascade est refusé, et une fois
+  en `RESTRICT` nos lignes bloquent la suppression d'une employeuse encore référencée : il faut
+  repointer avant de supprimer. Coût assumé, parce qu'il protège les données de la coop, sans
+  qu'aucun code ni aucune migration du Dataspace ne mentionne la coop.
 - **Plusieurs agrégats de contexte à garder** : une même personne peut avoir plusieurs employeuses,
   environ 4 % des utilisateurs, et environ 53 % des affectations de source `coop` n'ont pas de
   contrat. Les lectures distinguent donc l'employeuse courante, l'employeuse à une date et
