@@ -1,9 +1,9 @@
-import { mediateurSansActivitesUserId } from '@app/fixtures/users/mediateurSansActivites'
 import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
 } from '@app/web/features/rdvsp/domain/compte-rdv'
+import { mediateurSansActivitesUserId } from '@app/web/fixtures/users/mediateurSansActivites'
 import { prismaClient } from '@app/web/prismaClient'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'

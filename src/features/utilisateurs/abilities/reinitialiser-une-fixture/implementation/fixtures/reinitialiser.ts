@@ -1,11 +1,11 @@
-import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { fixtureUsers } from '@app/fixtures/users'
 import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
 import {
   type NomAffiche,
   nomAffiche,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
+import { resetFixtureUser } from '@app/web/fixtures/resetFixtureUser'
+import { fixtureUsers } from '@app/web/fixtures/users'
 import { prismaClient } from '@app/web/prismaClient'
 
 const estDansLesFixtures = (id: string): boolean =>

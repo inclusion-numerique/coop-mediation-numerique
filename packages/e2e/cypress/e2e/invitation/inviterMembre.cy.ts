@@ -1,7 +1,7 @@
 import { appUrl } from '@app/e2e/support/helpers'
-import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
-import { coordinateurInscrit } from '@app/fixtures/users/coordinateurInscrit'
-import { mediateurInscription } from '@app/fixtures/users/mediateurInscription'
+import { conseillerNumerique } from '@app/web/fixtures/users/conseillerNumerique'
+import { coordinateurInscrit } from '@app/web/fixtures/users/coordinateurInscrit'
+import { mediateurInscription } from '@app/web/fixtures/users/mediateurInscription'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 

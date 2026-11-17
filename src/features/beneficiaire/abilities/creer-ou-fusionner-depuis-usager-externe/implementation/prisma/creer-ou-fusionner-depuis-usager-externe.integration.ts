@@ -1,10 +1,10 @@
-import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { seedStructures } from '@app/fixtures/structures'
+import { AdresseIndisponible } from '@app/web/external-apis/apiAdresse'
+import { resetFixtureUser } from '@app/web/fixtures/resetFixtureUser'
+import { seedStructures } from '@app/web/fixtures/structures'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
-} from '@app/fixtures/users/mediateurAvecActivite'
-import { AdresseIndisponible } from '@app/web/external-apis/apiAdresse'
+} from '@app/web/fixtures/users/mediateurAvecActivite'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { afterEach, beforeAll, describe, expect, test } from 'vitest'

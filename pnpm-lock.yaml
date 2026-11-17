@@ -198,6 +198,9 @@ importers:
       '@codegouvfr/react-dsfr':
         specifier: ^1.35.0
         version: 1.36.0
+      '@commander-js/extra-typings':
+        specifier: ^15.0.0
+        version: 15.0.0(commander@15.0.0)
       '@faire/mjml-react':
         specifier: ^4.0.1
         version: 4.0.1(mjml@5.4.1(relateurl@0.2.7)(svgo@4.1.0)(terser@5.51.2)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -475,6 +478,9 @@ importers:
       c8:
         specifier: ^12.0.0
         version: 12.0.0
+      commander:
+        specifier: ^15.0.0
+        version: 15.0.0
       esbuild:
         specifier: ^0.28.2
         version: 0.28.2
@@ -636,34 +642,6 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
-
-  packages/fixtures:
-    dependencies:
-      '@commander-js/extra-typings':
-        specifier: ^15.0.0
-        version: 15.0.0(commander@15.0.0)
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
-      tsx:
-        specifier: ^4.23.15
-        version: 4.23.15
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-      uuid:
-        specifier: ^14.0.2
-        version: 14.0.3
-    devDependencies:
-      '@types/node':
-        specifier: ^24.19.1
-        version: 24.19.2
-      commander:
-        specifier: ^15.0.0
-        version: 15.0.0
-      next:
-        specifier: ^16.3.8
-        version: 16.4.6(@babel/core@7.29.7(supports-color@11.0.0))(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.107.1)
 
   packages/storybook:
     dependencies:

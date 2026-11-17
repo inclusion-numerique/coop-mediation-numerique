@@ -1,4 +1,4 @@
-import { deleteAll, seed } from '@app/fixtures/seeds'
+import { deleteAll, seed } from '@app/web/fixtures/seeds'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const resetFixtures = async (

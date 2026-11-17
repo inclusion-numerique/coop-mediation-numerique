@@ -1,5 +1,5 @@
 import { appUrl } from '@app/e2e/support/helpers'
-import { mediateurAvecActivite } from '@app/fixtures/users/mediateurAvecActivite'
+import { mediateurAvecActivite } from '@app/web/fixtures/users/mediateurAvecActivite'
 
 /**
  * Couvre la bascule « Voir les RDVs » de la liste d'activités.

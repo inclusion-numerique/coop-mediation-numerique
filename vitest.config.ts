@@ -49,7 +49,6 @@ export default defineConfig({
         },
       },
       paquet('cli', './apps/cli'),
-      paquet('fixtures', './packages/fixtures'),
     ],
     coverage: {
       provider: 'v8',

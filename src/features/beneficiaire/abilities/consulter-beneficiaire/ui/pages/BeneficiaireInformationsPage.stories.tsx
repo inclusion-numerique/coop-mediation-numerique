@@ -1,8 +1,8 @@
+import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
-} from '@app/fixtures/beneficiaires'
-import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
+} from '@app/web/fixtures/beneficiaires'
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from 'storybook/test'
 import ViewBeneficiaireInformationsPage, {

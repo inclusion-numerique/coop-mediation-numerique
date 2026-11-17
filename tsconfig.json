@@ -23,8 +23,7 @@
       "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./src/*"],
       "@app/e2e/*": ["./packages/e2e/cypress/*"],
-      "@app/storybook/*": ["./packages/storybook/src/*"],
-      "@app/fixtures/*": ["./packages/fixtures/src/*"]
+      "@app/storybook/*": ["./packages/storybook/src/*"]
     },
     "plugins": [
       {

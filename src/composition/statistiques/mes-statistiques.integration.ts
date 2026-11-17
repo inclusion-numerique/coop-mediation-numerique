@@ -1,16 +1,3 @@
-import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
-import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { mediateque, seedStructures } from '@app/fixtures/structures'
-import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-  mediateurAvecActiviteUserId,
-} from '@app/fixtures/users/mediateurAvecActivite'
-import {
-  mediateurSansActivites,
-  mediateurSansActivitesUserId,
-} from '@app/fixtures/users/mediateurSansActivites'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
 import {
@@ -48,6 +35,19 @@ import {
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
+import { seedPersonnesMain } from '@app/web/fixtures/personnesMainConseillerNumerique'
+import { resetFixtureUser } from '@app/web/fixtures/resetFixtureUser'
+import { mediateque, seedStructures } from '@app/web/fixtures/structures'
+import { conseillerNumerique } from '@app/web/fixtures/users/conseillerNumerique'
+import {
+  mediateurAvecActivite,
+  mediateurAvecActiviteMediateurId,
+  mediateurAvecActiviteUserId,
+} from '@app/web/fixtures/users/mediateurAvecActivite'
+import {
+  mediateurSansActivites,
+  mediateurSansActivitesUserId,
+} from '@app/web/fixtures/users/mediateurSansActivites'
 import { computeProportion } from '@app/web/libraries/proportions'
 import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
 import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
