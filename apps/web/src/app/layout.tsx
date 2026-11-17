@@ -11,7 +11,7 @@ import {
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
 
 export const metadata: Metadata = {
@@ -29,10 +29,6 @@ export const metadata: Metadata = {
   },
   description: PublicWebAppConfig.projectTitle,
   manifest: '/favicon/manifest.webmanifest',
-}
-
-export const viewport: Viewport = {
-  themeColor: '#000091',
 }
 
 const RootLayout = ({ children }: PropsWithChildren) => (
