@@ -1,13 +1,10 @@
 import { publicFooterProps } from '@app/web/app/(public)/PublicFooter'
-import SwitchTheme from '@app/web/app/(public)/SwitchTheme'
-import { getServerDsfrTheme } from '@app/web/app/getServerDsfrTheme'
+import { headerFooterDisplayItem } from '@codegouvfr/react-dsfr/Display'
 import { FooterBottomItem } from '@codegouvfr/react-dsfr/Footer'
 import classNames from 'classnames'
 import styles from './MinimalFooter.module.css'
 
-const MinimalFooter = async () => {
-  const initialTheme = await getServerDsfrTheme()
-
+const MinimalFooter = () => {
   return (
     <footer
       role="contentinfo"
@@ -28,7 +25,7 @@ const MinimalFooter = async () => {
           </li>
         ))}
         <li className="fr-footer__bottom-item">
-          <SwitchTheme key="switch-theme" initialTheme={initialTheme} />
+          <FooterBottomItem bottomItem={headerFooterDisplayItem} />
         </li>
       </ul>
     </footer>

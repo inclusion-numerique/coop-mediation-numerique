@@ -59,11 +59,11 @@ export const ApercuDeLaFusionPage = ({
           />
         </div>
         <span
-          className="ri-arrow-right-line ri-2x fr-my-auto fr-hidden fr-unhidden-lg"
+          className="ri-arrow-right-line fr-icon--lg fr-my-auto fr-hidden fr-unhidden-lg"
           aria-hidden
         />
         <span
-          className="ri-arrow-down-line ri-2x fr-mx-auto fr-hidden-lg"
+          className="ri-arrow-down-line fr-icon--lg fr-mx-auto fr-hidden-lg"
           aria-hidden
         />
         <div className="fr-border-radius--8 fr-border fr-p-8v fr-width-full">

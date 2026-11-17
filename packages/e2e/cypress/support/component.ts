@@ -1,8 +1,8 @@
 import { mount } from 'cypress/react'
-import '../../../../apps/web/public/dsfr/dsfr.module.min'
 import '../../../../apps/web/src/app/app.css'
 import './commands'
 import './component.css'
+import { startReactDsfr } from '@codegouvfr/react-dsfr/spa'
 
 declare global {
   namespace Cypress {
@@ -11,5 +11,7 @@ declare global {
     }
   }
 }
+
+startReactDsfr({ defaultColorScheme: 'system' })
 
 Cypress.Commands.add('mount', mount)

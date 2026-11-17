@@ -15,7 +15,7 @@ export const OnboardingMesActivites = () => (
     title="Enregistrez vos activités de médiation numérique"
     label={
       <>
-        <span className="ri-service-line ri-xl fr-mr-3v" aria-hidden />
+        <span className="ri-service-line fr-mr-3v" aria-hidden />
         Mes activités
       </>
     }

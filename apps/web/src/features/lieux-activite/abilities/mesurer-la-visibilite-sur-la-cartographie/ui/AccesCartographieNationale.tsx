@@ -18,7 +18,7 @@ export const AccesCartographieNationale = ({
           {compteAffiche(lieuxVisiblesDuMediateur).nombre}
         </span>
         <span aria-hidden>
-          <span className="ri-home-office-line fr-background-default--grey fr-p-3v fr-border-radius--8 ri-lg fr-line-height-1" />
+          <span className="ri-home-office-line fr-background-default--grey fr-p-3v fr-border-radius--8 fr-line-height-1" />
         </span>
       </div>
       <p className="fr-mb-4v">
@@ -37,7 +37,7 @@ export const AccesCartographieNationale = ({
           {compteAffiche(lieuxDuDepartement).nombre}
         </span>
         <span aria-hidden>
-          <span className="fr-icon-france-line fr-background-default--grey fr-p-3v fr-border-radius--8 ri-lg fr-line-height-1" />
+          <span className="fr-icon-france-line fr-background-default--grey fr-p-3v fr-border-radius--8 fr-line-height-1" />
         </span>
       </div>
       <p className="fr-mb-4v">

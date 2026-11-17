@@ -13,7 +13,7 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="fr-icon-team-line ri-xl fr-mr-1w fr-text--regular"
+            className="fr-icon-team-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Utilisateurs
@@ -28,7 +28,7 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular"
+            className="fr-icon-home-4-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Lieux d’activité
@@ -43,7 +43,7 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="fr-icon-building-line ri-xl fr-mr-1w fr-text--regular"
+            className="fr-icon-building-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Structures employeuses
@@ -57,7 +57,7 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="ri-spy-line ri-xl fr-mr-1w fr-text--regular" />
+          <span className="ri-spy-line fr-mr-1w fr-text--regular" />
           Usurpation
         </>
       ),
@@ -69,7 +69,7 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="ri-key-2-line ri-xl fr-mr-1w fr-text--regular" />
+          <span className="ri-key-2-line fr-mr-1w fr-text--regular" />
           Clients API
         </>
       ),
@@ -82,7 +82,7 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="fr-icon-line-chart-line ri-xl fr-mr-1w fr-text--regular"
+            className="fr-icon-line-chart-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Statistiques
@@ -97,7 +97,7 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="ri-list-check-3 ri-xl fr-mr-2v fr-text--regular"
+            className="ri-list-check-3 fr-mr-2v fr-text--regular"
             style={{ marginLeft: '-4px' }}
             aria-hidden
           />
@@ -112,7 +112,7 @@ const AdministrationSideMenu = () => {
         {
           text: (
             <>
-              <span className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular" />
+              <span className="ri-calendar-check-line fr-mr-1w fr-text--regular" />
               RDVSP
             </>
           ),
@@ -126,7 +126,7 @@ const AdministrationSideMenu = () => {
         {
           text: (
             <>
-              <span className="ri-price-tag-3-line ri-xl fr-mr-1w fr-text--regular" />
+              <span className="ri-price-tag-3-line fr-mr-1w fr-text--regular" />
               Tags
             </>
           ),
@@ -143,7 +143,7 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="fr-icon-settings-5-line ri-xl fr-mr-1w fr-text--regular"
+            className="fr-icon-settings-5-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Outils

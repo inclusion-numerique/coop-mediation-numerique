@@ -17,7 +17,7 @@ export const ActivitesDeCoordination = ({
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-3w">
         <h2 className="fr-h6 fr-text-mention--grey fr-mb-0">
           <span
-            className="ri-user-community-line ri-lg fr-text--regular fr-mr-2v"
+            className="ri-team-line fr-text--regular fr-mr-2v"
             aria-hidden
           />
           Mes activités de coordination

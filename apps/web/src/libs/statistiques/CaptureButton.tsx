@@ -1,5 +1,4 @@
-import Button from '@codegouvfr/react-dsfr/Button'
-import { ButtonProps } from '@codegouvfr/react-dsfr/src/Button'
+import Button, { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import { snapdom } from '@zumer/snapdom'
 import { RefObject } from 'react'
 

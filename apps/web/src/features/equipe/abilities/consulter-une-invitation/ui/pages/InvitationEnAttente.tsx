@@ -70,7 +70,7 @@ const InvitationEnAttente = ({
             <div className="fr-p-4v fr-background-alt--blue-france fr-border-radius--8 fr-display-inline-block">
               <span className="fr-text--lg fr-mb-0 fr-text--bold fr-text-label--blue-france">
                 <span
-                  className="ri-group-2-line ri-lg fr-text--semi-bold fr-mr-2v"
+                  className="ri-group-2-line fr-text--semi-bold fr-mr-2v"
                   aria-hidden
                 />
                 Mon équipe

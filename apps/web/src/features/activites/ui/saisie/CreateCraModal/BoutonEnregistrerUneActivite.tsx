@@ -7,7 +7,10 @@ export const BoutonEnregistrerUneActivite = () => (
     {...CreateCraModalDefinition.buttonProps}
     className="fr-quick-action"
   >
-    <span className="ri-add-line ri-2x fr-mr-3w fr-text--regular" aria-hidden />
+    <span
+      className="ri-add-line fr-icon--lg fr-mr-3w fr-text--regular"
+      aria-hidden
+    />
     Enregistrer une activité
   </Button>
 )

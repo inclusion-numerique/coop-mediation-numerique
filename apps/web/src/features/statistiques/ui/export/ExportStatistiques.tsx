@@ -158,7 +158,7 @@ export const ExportStatistiques = ({
                 className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
                 aria-hidden="true"
               >
-                <div className="fr-icon-table-line ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+                <div className="fr-icon-table-line fr-line-height-1 fr-text-label--blue-france"></div>
               </div>
               <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
                 Liste des accompagnements
@@ -181,7 +181,7 @@ export const ExportStatistiques = ({
               className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
               aria-hidden="true"
             >
-              <div className="fr-icon-chat-poll-fill ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+              <div className="fr-icon-chat-poll-fill fr-line-height-1 fr-text-label--blue-france"></div>
             </div>
             <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
               Statistiques

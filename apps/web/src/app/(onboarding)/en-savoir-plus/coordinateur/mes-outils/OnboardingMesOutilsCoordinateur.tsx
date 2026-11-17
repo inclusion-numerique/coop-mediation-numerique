@@ -16,7 +16,7 @@ export const OnboardingMesOutilsCoordinateur = () => (
     title="Bénéficiez d’outils adaptés à vos besoins"
     label={
       <>
-        <span className="ri-apps-2-line ri-xl fr-mr-3v" aria-hidden />
+        <span className="ri-apps-2-line fr-mr-3v" aria-hidden />
         Mes outils
       </>
     }

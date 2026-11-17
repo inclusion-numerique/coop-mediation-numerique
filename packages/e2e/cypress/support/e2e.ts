@@ -18,3 +18,10 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+beforeEach(() =>
+  Cypress.automation('remote:debugger:protocol', {
+    command: 'Emulation.setEmulatedMedia',
+    params: { features: [{ name: 'prefers-color-scheme', value: 'light' }] },
+  }),
+)

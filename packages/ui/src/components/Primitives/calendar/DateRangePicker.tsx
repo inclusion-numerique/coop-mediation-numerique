@@ -59,7 +59,7 @@ const CustomNav = ({ selected, minDate, maxDate }: CustomNavProps) => {
           disabled={!canGoToStart}
           aria-label="Aller au début de la sélection"
         >
-          <span className="ri-arrow-left-double-line ri-lg" />
+          <span className="ri-arrow-left-double-line" />
         </button>
         <button
           type="button"
@@ -67,7 +67,7 @@ const CustomNav = ({ selected, minDate, maxDate }: CustomNavProps) => {
           disabled={!previousMonth}
           aria-label="Mois précédent"
         >
-          <span className="ri-arrow-left-s-line ri-lg" />
+          <span className="ri-arrow-left-s-line" />
         </button>
       </div>
       <div style={{ pointerEvents: 'auto' }}>
@@ -77,7 +77,7 @@ const CustomNav = ({ selected, minDate, maxDate }: CustomNavProps) => {
           disabled={!nextMonth}
           aria-label="Mois suivant"
         >
-          <span className="ri-arrow-right-s-line ri-lg" />
+          <span className="ri-arrow-right-s-line" />
         </button>
         <button
           type="button"
@@ -85,7 +85,7 @@ const CustomNav = ({ selected, minDate, maxDate }: CustomNavProps) => {
           disabled={!canGoToEnd}
           aria-label="Aller à la fin de la sélection"
         >
-          <span className="ri-arrow-right-double-line ri-lg" />
+          <span className="ri-arrow-right-double-line" />
         </button>
       </div>
     </nav>

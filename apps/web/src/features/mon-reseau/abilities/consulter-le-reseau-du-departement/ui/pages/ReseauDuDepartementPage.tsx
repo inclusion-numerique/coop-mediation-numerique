@@ -67,7 +67,7 @@ const ReseauDuDepartementPage = ({
         <section className="fr-mb-8v">
           <div className="fr-flex fr-align-items-center fr-mb-6v">
             <span
-              className="fr-text-mention--grey fr-icon-chat-3-line ri-lg fr-mr-2v"
+              className="fr-text-mention--grey fr-icon-chat-3-line fr-mr-2v"
               aria-hidden
             />
             <h2 className="fr-h6 fr-mb-0 fr-text-mention--grey fr-flex fr-align-items-center">
@@ -114,7 +114,7 @@ const ReseauDuDepartementPage = ({
       <section className="fr-mb-8v fr-mt-12v">
         <div className="fr-flex fr-align-items-center fr-mb-6v">
           <span
-            className="fr-text-mention--grey fr-icon-france-line ri-lg fr-mr-2v"
+            className="fr-text-mention--grey fr-icon-france-line fr-mr-2v"
             aria-hidden
           />
           <h2 className="fr-text-mention--grey fr-h6 fr-mb-0 fr-flex fr-align-items-center">

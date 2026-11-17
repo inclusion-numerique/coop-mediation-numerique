@@ -15,7 +15,7 @@ export const OnboardingMonEquipeCoordinateur = () => (
     title="Suivez les médiateurs numériques que vous coordonnez"
     label={
       <>
-        <span className="ri-group-2-line ri-xl fr-mr-3v" aria-hidden />
+        <span className="ri-group-2-line fr-mr-3v" aria-hidden />
         Mon équipe
       </>
     }

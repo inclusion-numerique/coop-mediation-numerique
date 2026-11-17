@@ -63,7 +63,7 @@ export const CreerBeneficiairePage = ({
         title={
           <span className="fr-flex fr-align-items-center fr-flex-gap-8v fr-py-1w">
             <span
-              className="ri-admin-line ri-xl fr-mx-1w fr-text--regular"
+              className="ri-admin-line fr-mx-1w fr-text--regular"
               aria-hidden
             />
 

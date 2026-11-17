@@ -8,10 +8,7 @@ import { BadgeActivite } from './BadgeActivite'
 const Icone = ({ icone }: Pick<LigneAffichee, 'icone'>) => {
   if (icone === 'invitation')
     return (
-      <span
-        className="ri-mail-line ri-xl fr-text-label--blue-france"
-        aria-hidden
-      />
+      <span className="ri-mail-line fr-text-label--blue-france" aria-hidden />
     )
   if (icone === 'conseiller-numerique')
     return (
@@ -26,7 +23,7 @@ const Icone = ({ icone }: Pick<LigneAffichee, 'icone'>) => {
     )
   return (
     <span
-      className="ri-account-circle-line ri-xl fr-text-label--blue-france"
+      className="ri-account-circle-line fr-text-label--blue-france"
       aria-hidden
     />
   )

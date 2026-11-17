@@ -15,7 +15,7 @@ export const AccessInfoLink = ({
     {illustration && <Image width={84} height={56} src={illustration} alt="" />}
     {icon && (
       <div
-        className={`${icon} fr-text-label--blue-france ri-2x fr-mt-1w fr-mb-3w`}
+        className={`${icon} fr-text-label--blue-france fr-icon--lg fr-mt-1w fr-mb-3w`}
         aria-hidden
       />
     )}

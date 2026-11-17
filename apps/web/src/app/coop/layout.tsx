@@ -1,5 +1,4 @@
 import PublicFooter from '@app/web/app/(public)/PublicFooter'
-import { getServerDsfrTheme } from '@app/web/app/getServerDsfrTheme'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import InscriptionStepsLayout from '@app/web/features/inscription/components/InscriptionStepsLayout'
@@ -45,7 +44,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
             </Link>
           </div>
         </InscriptionStepsLayout>
-        <PublicFooter initialTheme={await getServerDsfrTheme()} />
+        <PublicFooter />
       </div>
     )
   }
@@ -69,7 +68,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
         <InscriptionStepsLayout>
           <ChoixDeVisibiliteApresRupture />
         </InscriptionStepsLayout>
-        <PublicFooter initialTheme={await getServerDsfrTheme()} />
+        <PublicFooter />
       </div>
     )
   }

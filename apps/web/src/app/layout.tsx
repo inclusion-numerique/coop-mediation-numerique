@@ -1,29 +1,18 @@
-// app.css must be the first import for webpack css chunks to work properly
 import '@app/web/app/setup'
 import Toaster from '@app/ui/toast/Toaster'
 import { terminerLUsurpationAction } from '@app/web/app/_actions/utilisateurs/terminer-l-usurpation.action'
-import { Dsfr } from '@app/web/app/Dsfr'
 import { EnvInformation } from '@app/web/app/EnvInformation'
-import { getServerDsfrTheme } from '@app/web/app/getServerDsfrTheme'
 import { Matomo } from '@app/web/app/Matomo'
-import { PreloadResources } from '@app/web/app/PreloadResources'
+import { Display, DsfrProvider } from '@app/web/configuration/dsfr'
+import {
+  DsfrHead,
+  getHtmlAttributes,
+} from '@app/web/configuration/dsfr/server-only-index'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { setLink } from '@codegouvfr/react-dsfr/link'
-import type { Metadata, Viewport } from 'next'
-import Link from 'next/link'
+import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
-
-declare module '@codegouvfr/react-dsfr/link' {
-  interface RegisterLink {
-    Link: typeof Link
-  }
-}
-
-setLink({
-  Link,
-})
 
 export const metadata: Metadata = {
   title: PublicWebAppConfig.projectTitle,
@@ -42,29 +31,23 @@ export const metadata: Metadata = {
   manifest: '/favicon/manifest.webmanifest',
 }
 
-export const viewport: Viewport = {
-  themeColor: '#000091',
-}
-
-const RootLayout = async ({ children }: PropsWithChildren) => {
-  // Do we want to disable SSG for CSFR on this website ?
-  // const nonce = headers().get('x-sde-script-nonce') ?? undefined
-  const nonce = undefined
-  const theme = await getServerDsfrTheme()
-  return (
-    <html lang="fr" data-fr-theme={theme} data-fr-scheme={theme}>
-      <head>
-        <link
-          rel="preload"
-          href="/images/spinner.svg"
-          as="image"
-          type="image/svg+xml"
-        />
-      </head>
-      <body>
-        <PreloadResources />
-        <Dsfr nonce={nonce} />
-        <Matomo nonce={nonce} />
+const RootLayout = ({ children }: PropsWithChildren) => (
+  <html {...getHtmlAttributes({ lang: 'fr' })}>
+    <head>
+      <link
+        rel="preload"
+        href="/images/spinner.svg"
+        as="image"
+        type="image/svg+xml"
+      />
+    </head>
+    <body>
+      <DsfrHead
+        preloadFonts={['Marianne-Regular', 'Marianne-Medium', 'Marianne-Bold']}
+        doDisableFavicon
+      />
+      <DsfrProvider lang="fr">
+        <Matomo />
         <EnvInformation />
         <ClientBinder
           bind={TERMINER_L_USURPATION_ACTION_KEY}
@@ -73,9 +56,10 @@ const RootLayout = async ({ children }: PropsWithChildren) => {
           {children}
         </ClientBinder>
         <Toaster />
-      </body>
-    </html>
-  )
-}
+        <Display />
+      </DsfrProvider>
+    </body>
+  </html>
+)
 
 export default RootLayout

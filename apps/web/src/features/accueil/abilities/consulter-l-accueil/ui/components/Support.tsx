@@ -5,7 +5,7 @@ export const Support = () => (
   <>
     <div className="fr-flex-1">
       <h2 className="fr-mb-1w fr-text--uppercase fr-flex fr-flex-gap-3v fr-text--md fr-align-items-center">
-        <span className="ri-video-chat-line ri-xl fr-text--light" aria-hidden />
+        <span className="ri-video-chat-line fr-text--light" aria-hidden />
         <span className="fr-text--xs fr-mb-0">
           Participez au prochain webinaire
         </span>
@@ -28,10 +28,7 @@ export const Support = () => (
     <div className="fr-border-bottom fr-border--blue-france fr-my-8v fr-hidden-xl" />
     <div className="fr-flex-1">
       <h2 className="fr-mb-1w fr-text--uppercase fr-flex fr-flex-gap-3v fr-text--md fr-align-items-center">
-        <span
-          className="ri-question-answer-line ri-xl fr-text--light"
-          aria-hidden
-        />
+        <span className="ri-question-answer-line fr-text--light" aria-hidden />
         <span className="fr-text--xs fr-mb-0">Contactez le support</span>
       </h2>
       <p className="fr-text--sm fr-my-2w">

@@ -8,10 +8,7 @@ export const ActionsRapides = ({
 }) => (
   <>
     <h2 className="fr-h6 fr-text-mention--grey">
-      <span
-        className="ri-apps-line ri-lg fr-text--regular fr-mr-2v"
-        aria-hidden
-      />
+      <span className="ri-apps-line fr-text--regular fr-mr-2v" aria-hidden />
       Mes actions rapides
     </h2>
     <div className="fr-grid-row fr-grid-row--gutters">
@@ -24,7 +21,7 @@ export const ActionsRapides = ({
           href="/coop/mes-beneficiaires/nouveau"
         >
           <span
-            className="ri-user-add-line ri-2x fr-mr-3w fr-text--regular"
+            className="ri-user-add-line fr-icon--lg fr-mr-3w fr-text--regular"
             aria-hidden
           />
           Créer un·e bénéficiaire

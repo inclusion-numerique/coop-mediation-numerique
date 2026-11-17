@@ -55,7 +55,7 @@ export const HeaderQuickAccess = () => {
           type="button"
           title="Accès rapide à mes outils"
         >
-          <span className="ri-apps-2-line ri-lg" aria-hidden />
+          <span className="ri-apps-2-line" aria-hidden />
         </button>
       </Popover.Trigger>
       <Popover.Portal>

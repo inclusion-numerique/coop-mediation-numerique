@@ -15,7 +15,7 @@ export const OnboardingMesBeneficiaires = () => (
     title="Suivez l'évolution de vos bénéficiaires"
     label={
       <>
-        <span className="ri-user-heart-line ri-xl fr-mr-3v" aria-hidden />
+        <span className="ri-user-heart-line fr-mr-3v" aria-hidden />
         Mes bénéficiaires
       </>
     }

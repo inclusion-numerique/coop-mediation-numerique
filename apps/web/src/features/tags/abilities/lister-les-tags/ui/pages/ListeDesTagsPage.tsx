@@ -48,7 +48,7 @@ export const ListeDesTagsPage = ({
           <div className="fr-flex fr-direction-row fr-align-items-center fr-flex-gap-4v">
             <div>
               <span
-                className="ri-price-tag-3-line ri-xl fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
+                className="ri-price-tag-3-line fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
                 aria-hidden
               />
             </div>

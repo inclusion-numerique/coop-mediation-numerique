@@ -85,8 +85,19 @@ Cypress.Commands.add('dsfrStylesShouldBeLoaded', () => {
   cy.get('body').should('have.css', 'color', 'rgb(58, 58, 58)')
 })
 
+const attendreLaFinDuChargement = (win: Window) =>
+  new Cypress.Promise<void>((resolve) => {
+    const auRepos = () => win.requestIdleCallback(() => resolve())
+    if (win.document.readyState === 'complete') {
+      auRepos()
+      return
+    }
+    win.addEventListener('load', auRepos, { once: true })
+  })
+
 Cypress.Commands.add('dsfrShouldBeStarted', () => {
   cy.get('html', { timeout: 15000 }).should('have.attr', 'data-fr-js', 'true')
+  cy.window({ log: false }).then(attendreLaFinDuChargement)
 })
 
 Cypress.Commands.add('dsfrModalsShouldBeBound', () => {

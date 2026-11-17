@@ -31,9 +31,7 @@ const FormatDExport = ({
       className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
       aria-hidden="true"
     >
-      <div
-        className={`${icone} ri-lg fr-line-height-1 fr-text-label--blue-france`}
-      />
+      <div className={`${icone} fr-line-height-1 fr-text-label--blue-france`} />
     </div>
     <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
       {titre}
