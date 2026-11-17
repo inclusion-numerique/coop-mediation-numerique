@@ -19,11 +19,6 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-Cypress.on(
-  'uncaught:exception',
-  (error) => !/Hydration failed|Minified React error #418/.test(error.message),
-)
-
 beforeEach(() =>
   Cypress.automation('remote:debugger:protocol', {
     command: 'Emulation.setEmulatedMedia',

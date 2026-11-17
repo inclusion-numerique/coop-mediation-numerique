@@ -34,10 +34,6 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: PropsWithChildren) => (
   <html {...getHtmlAttributes({ lang: 'fr' })}>
     <head>
-      <DsfrHead
-        preloadFonts={['Marianne-Regular', 'Marianne-Medium', 'Marianne-Bold']}
-        doDisableFavicon
-      />
       <link
         rel="preload"
         href="/images/spinner.svg"
@@ -46,6 +42,10 @@ const RootLayout = ({ children }: PropsWithChildren) => (
       />
     </head>
     <body>
+      <DsfrHead
+        preloadFonts={['Marianne-Regular', 'Marianne-Medium', 'Marianne-Bold']}
+        doDisableFavicon
+      />
       <DsfrProvider lang="fr">
         <Matomo />
         <EnvInformation />
