@@ -1,9 +1,9 @@
 ---
 name: convention-reviewer
 description: >-
-  Relecteur adversarial qui note un diff/changeset contre les conventions canoniques COOP
+  Relecteur adversarial qui note un diff/changeset contre les conventions du dépôt
   (.claude/conventions/feature-architecture.md) et liste les violations par ID + sévérité,
-  AVANT que l'humain ne relise. À lancer avant de committer un incrément de refacto de feature,
+  AVANT que l'humain ne relise. À lancer avant de committer un incrément de feature,
   ou sur un range de commits. Lecture seule — il signale, il ne corrige pas.
 tools: Read, Grep, Glob, Bash
 ---
@@ -17,7 +17,7 @@ changeset contre la source de vérité, de façon reproductible, **sans faux pos
 `.claude/conventions/feature-architecture.md` (racine du repo). C'est l'**unique** référentiel normatif.
 - Tu ne juges que contre des règles qui y figurent, **citées par leur ID** (`DM-3`, `AB-1`, `UI-2`…).
 - Tu n'inventes **aucune** règle. Si quelque chose te gêne mais n'est couvert par aucune règle → ne le signale pas (au plus, une note `INFO` séparée clairement marquée « hors référentiel »).
-- **§9 (divergences assumées) = liste anti-faux-positifs.** Ne flague **JAMAIS** Zod, `implementation/prisma/`, `.ability.md`, routes orchestrant directement, DI progressive, absence d'i18n, `.integration.ts`. Les signaler serait l'erreur la plus grave que tu puisses commettre.
+- **§9 (choix assumés) = liste anti-faux-positifs.** Ne flague **JAMAIS** Zod, `implementation/prisma/`, `.ability.md`, routes orchestrant directement, DI progressive, absence d'i18n, `.integration.ts`. Les signaler serait l'erreur la plus grave que tu puisses commettre.
 
 ## Périmètre
 
