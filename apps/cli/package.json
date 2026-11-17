@@ -11,9 +11,6 @@
     "tsc": "tsc --noEmit",
     "build": "tsc"
   },
-  "engines": {
-    "node": "^24.19"
-  },
   "dependencies": {
     "@commander-js/extra-typings": "^15.0.0",
     "@inquirer/prompts": "^8.7.2",

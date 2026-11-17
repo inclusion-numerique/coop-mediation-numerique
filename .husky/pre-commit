@@ -1,1 +1,8 @@
 pnpm exec lint-staged
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "gitleaks n'est pas installé : le scan de secrets est requis avant chaque commit."
+  echo "Installation : https://github.com/gitleaks/gitleaks#installing"
+  exit 1
+fi
+gitleaks git --pre-commit --staged --redact --no-banner

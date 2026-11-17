@@ -12,9 +12,6 @@
     "with-env": "dotenv -e ../../.env --",
     "chromatic": "pnpm with-env chromatic --exit-zero-on-changes --exit-once-uploaded"
   },
-  "engines": {
-    "node": "^24.19"
-  },
   "overrides": {
     "storybook": {
       "react": "*"

@@ -40,9 +40,6 @@
     "standalone:configure": "cp -R ./public ./.next/standalone/apps/web/public && cp -R ./.next/static ./.next/standalone/apps/web/.next/static",
     "standalone:start": "HOSTNAME=\"0.0.0.0\" ../../node_modules/.bin/dotenv -e ../../.env -- node ./.next/standalone/apps/web/server.js"
   },
-  "engines": {
-    "node": "^24.19"
-  },
   "dependencies": {
     "@app/emails": "workspace:^",
     "@arckit/nextjs": "^2.2.2",

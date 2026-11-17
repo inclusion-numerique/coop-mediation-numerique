@@ -15,7 +15,6 @@
     "clean": "rm -rf node_modules",
     "clean:workspaces": "pnpm -r exec rm -rf node_modules",
     "dev": "pnpm -r --parallel dev",
-    "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
     "lint": "pnpm -r lint",
     "lint:commit": "commitlint --from origin/main",
     "tsc": "pnpm -r tsc",
@@ -29,14 +28,10 @@
     "fixtures:load": "pnpm -F fixtures load",
     "prisma:generate-migration": "pnpm --silent -F @app/web prisma migrate dev --name",
     "db:init": "pnpm -F web prisma generate && pnpm -F web db:migrate-deploy",
-    "docker:start": "docker compose -f ./docker-compose.dev.yml -p coop up -d",
-    "docker:stop": "docker compose -f ./docker-compose.dev.yml -p coop down",
+    "docker:start": "docker compose -p coop up -d",
+    "docker:stop": "docker compose -p coop down",
     "docker:reset": "pnpm docker:stop && docker volume rm coop_pgdata && pnpm docker:start && pnpm db:init",
-    "coverage:merge": "rm -rf coverage/.nyc_output && mkdir -p coverage/.nyc_output && find coverage-reports -name '*.json' -exec cp {} coverage/.nyc_output/ \\; && nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --reporter=html --reporter=text-summary --report-dir=./coverage",
     "prepare": "husky"
-  },
-  "volta": {
-    "node": "24.19.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.4",
@@ -48,8 +43,6 @@
     "dotenv-cli": "^11.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
-    "nyc": "^18.0.0",
-    "prettier": "^3.9.8",
     "vitest": "5.1.0"
   }
 }

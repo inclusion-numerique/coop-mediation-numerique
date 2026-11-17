@@ -89,7 +89,7 @@ coop-mediation-numerique/
 ├── docker/                  # Configuration Docker
 ├── .github/                 # Pipeline CI/CD (GitHub Actions)
 ├── .env.dist                # Template des variables d'environnement
-└── docker-compose.dev.yml   # Services Docker pour le dev local
+└── docker-compose.yml       # Services Docker pour le dev local
 ```
 
 ---
@@ -97,7 +97,7 @@ coop-mediation-numerique/
 ## Prerequis
 
 - [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/) version 22.5 minimum (recommande : utiliser [nvm](https://github.com/nvm-sh/nvm) ou [Volta](https://volta.sh/))
+- [Node.js](https://nodejs.org/), dans la version indiquée par `engines.node` du `package.json`
 - [pnpm](https://pnpm.io/) version 10+
 - [Docker](https://www.docker.com/) et Docker Compose (optionnel mais recommande)
 - [PostgreSQL](https://www.postgresql.org/) (optionnel si Docker est utilise)
@@ -748,7 +748,6 @@ Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se t
 
 - [pnpm](https://pnpm.io/) — Gestionnaire de paquets
 - [Biome](https://biomejs.dev/) — Linting et formatage
-- [Prettier](https://prettier.io/) — Formatage complementaire
 - [Vitest](https://vitest.dev/) — Tests unitaires et d'integration, sans isolation et sans mock
 - [Cypress](https://www.cypress.io/) — Tests end-to-end
 - [Storybook](https://storybook.js.org/) — Documentation de composants
