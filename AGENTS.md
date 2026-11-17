@@ -171,6 +171,14 @@ Each ability exposes its contract in `features/<feature>/abilities/<ability>/act
 
 Use DSFR utility classes: `fr-container`, `fr-grid-row`, `fr-col-12`, `fr-mt-8v`, etc.
 
+## ADR
+
+Les agents rédigent les ADR de `docs/adr/` en suivant le modèle [`docs/adr/000-modele.md`](docs/adr/000-modele.md), qui porte toutes les règles de rédaction. Les trois premières :
+
+- L'ADR pose les décisions et leurs raisons, de façon générique, et renvoie vers les `*.ability.md` (specs exécutables, qui font foi) pour le détail : aucun nom de fonction, de fichier ou de ligne de code, aucun chemin.
+- Pas de journal ni de mise à jour datée : l'historique git porte le détail, le tableau d'historique ne garde que les rédactions et révisions de l'ADR.
+- Un ADR ne référence que des ADR de numéro inférieur, jamais un ADR postérieur : il pose une situation à un instant donné.
+
 ## Branch Conventions
 
 Prefix branches with: `feat/`, `fix/`, `chore/`, `refactor/`, `docs/`, `test/`
