@@ -1,8 +1,8 @@
-import { AuthCard } from '@app/web/app/(public)/(authentication)/AuthCard'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import mailSend from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/digital/mail-send.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { cookies } from 'next/headers'
+import { AuthCard } from '@/app/(public)/(authentication)/AuthCard'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 export const Verify = async () => {
   const allCookies = await cookies()

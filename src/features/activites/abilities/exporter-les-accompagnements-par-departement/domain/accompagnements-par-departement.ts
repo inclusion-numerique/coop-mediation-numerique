@@ -1,4 +1,4 @@
-import type { Departement } from '@app/web/libraries/departement'
+import type { Departement } from '@/libraries/departement'
 import { NombreDAccompagnements } from './nombre-d-accompagnements'
 
 export type AccompagnementsDuDepartement = {

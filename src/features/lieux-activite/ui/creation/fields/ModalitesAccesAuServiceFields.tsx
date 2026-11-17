@@ -1,9 +1,9 @@
 'use client'
 
-import { fraisAChargeOptions } from '@app/web/features/lieux-activite/ui/options'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { withForm } from '@app/web/libs/form/use-app-form'
 import { useSelector } from '@tanstack/react-form'
+import { fraisAChargeOptions } from '@/features/lieux-activite/ui/options'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { withForm } from '@/libs/form/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const ModalitesAccesAuServiceFields = withForm({

@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const IdentifiantCraV1 = defineModel(
   z.string().trim().min(1).brand('IdentifiantCraV1'),

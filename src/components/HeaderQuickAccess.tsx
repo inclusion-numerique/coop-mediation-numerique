@@ -1,14 +1,14 @@
 'use client'
 
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { AbcDiagLogo } from '@app/web/features/pictograms/services/AbcDiagLogo'
-import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
-import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
-import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import * as Popover from '@radix-ui/react-popover'
 import { useState } from 'react'
+import { Pictogram } from '@/features/pictograms/pictogram'
+import { AbcDiagLogo } from '@/features/pictograms/services/AbcDiagLogo'
+import { AidantsConnectLogo } from '@/features/pictograms/services/AidantsConnectLogo'
+import { CartographieLogo } from '@/features/pictograms/services/CartographieLogo'
+import { LesBasesLogo } from '@/features/pictograms/services/LesBasesLogo'
+import { PixOrgaLogo } from '@/features/pictograms/services/PixOrgaLogo'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import styles from './HeaderQuickAccess.module.css'
 
 const tools: { label: string; href: string; icon: Pictogram }[] = [

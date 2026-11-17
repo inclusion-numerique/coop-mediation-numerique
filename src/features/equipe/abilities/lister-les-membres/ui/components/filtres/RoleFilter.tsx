@@ -1,10 +1,10 @@
 'use client'
 
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { resetPagination } from '@app/web/libs/filters/helpers'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { resetPagination } from '@/libs/filters/helpers'
+import TriggerButton from '@/libs/filters/TriggerButton'
 import type { RoleFiltre } from './valeurs-de-filtre'
 
 const roleOptions: { label: string; value: RoleFiltre | '' }[] = [

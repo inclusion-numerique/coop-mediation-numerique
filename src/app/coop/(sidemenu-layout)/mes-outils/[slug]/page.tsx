@@ -1,19 +1,19 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { getSessionUser } from '@app/web/auth/getSessionUser'
-import { MediateurId } from '@app/web/features/lieux-activite'
-import { visibiliteSurLaCartographie } from '@app/web/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
-import { AccesCartographieNationale } from '@app/web/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
-import { SlugOutil } from '@app/web/features/outils/abilities/consulter-un-outil'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { getSessionUser } from '@/auth/getSessionUser'
+import { MediateurId } from '@/features/lieux-activite'
+import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
+import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
+import { SlugOutil } from '@/features/outils/abilities/consulter-un-outil'
 import {
   type EmplacementsDeLaFiche,
   ficheDeLOutil,
   OutilPage,
-} from '@app/web/features/outils/abilities/consulter-un-outil/ui'
-import RdvServicePublicAccessCard from '@app/web/features/rdvsp/ui/RdvServicePublicAccess'
-import RdvServicePublicMigrationNotice from '@app/web/features/rdvsp/ui/RdvServicePublicMigrationNotice'
-import { CodeInsee } from '@app/web/libraries/insee'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+} from '@/features/outils/abilities/consulter-un-outil/ui'
+import RdvServicePublicAccessCard from '@/features/rdvsp/ui/RdvServicePublicAccess'
+import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/RdvServicePublicMigrationNotice'
+import { CodeInsee } from '@/libraries/insee'
 
 type Props = { params: Promise<{ slug: string }> }
 

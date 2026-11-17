@@ -1,31 +1,31 @@
-import { supprimerUneActiviteDeCoordinationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-coordination.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
-import { isMediateur } from '@app/web/auth/userTypeGuards'
+import type { Metadata } from 'next'
+import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/supprimer-une-activite-de-coordination.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateCoordinateur } from '@/auth/authenticateUser'
+import { isMediateur } from '@/auth/userTypeGuards'
 import {
   BoutonExporter,
   requeteDeLExport,
-} from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination/ui'
+} from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui'
 import {
   listerLesActivitesDeCoordination,
   optionsDeFiltre,
-} from '@app/web/features/activites/abilities/lister-les-activites-de-coordination'
+} from '@/features/activites/abilities/lister-les-activites-de-coordination'
 import {
   listeDesCoordinations,
   MesCoordinationsPage,
   optionsDeFiltrePresentees,
   parametresDeLaPagination,
-} from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui'
-import { SUPPRIMER_LA_COORDINATION_KEY } from '@app/web/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
+} from '@/features/activites/abilities/lister-les-activites-de-coordination/ui'
+import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
 import {
   CoordinateurId,
   criteresDesCoordinations,
   estFiltre,
   paginationLue,
-} from '@app/web/features/activites/domain'
-import { filtresActifsDesCoordinations } from '@app/web/features/activites/ui/filtres-actifs-des-coordinations'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { Metadata } from 'next'
+} from '@/features/activites/domain'
+import { filtresActifsDesCoordinations } from '@/features/activites/ui/filtres-actifs-des-coordinations'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités de coordination'),

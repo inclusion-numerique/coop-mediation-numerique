@@ -1,10 +1,10 @@
-import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Itinerance,
   ModaliteAcces,
   PublicSpecifiquementAdresse,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
 import { depuisLaSaisie } from './depuis-la-saisie'
 
 const adresseBan = {

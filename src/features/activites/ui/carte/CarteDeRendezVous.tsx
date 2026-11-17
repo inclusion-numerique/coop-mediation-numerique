@@ -1,9 +1,9 @@
 'use client'
 
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { inject } from '@app/web/libs/injection/client'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { inject } from '@/libs/injection/client'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import type { CarteDeRendezVous as Carte } from './carte-de-rendez-vous.presenter'
 import ListCard from './ListCard'

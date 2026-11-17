@@ -1,4 +1,4 @@
-import type { MessageDeMaintenance } from '@app/web/features/maintenance-mode/domain'
+import type { MessageDeMaintenance } from '@/features/maintenance-mode/domain'
 
 export type DemandeDeReglage =
   | { readonly _tag: 'Activer'; readonly message: MessageDeMaintenance | null }

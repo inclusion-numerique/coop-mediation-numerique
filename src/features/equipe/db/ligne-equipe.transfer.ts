@@ -1,5 +1,5 @@
-import { CodePostal } from '@app/web/libraries/code-postal'
-import { CodeInsee } from '@app/web/libraries/insee'
+import { CodePostal } from '@/libraries/code-postal'
+import { CodeInsee } from '@/libraries/insee'
 import {
   type AdresseStructure,
   Commune,

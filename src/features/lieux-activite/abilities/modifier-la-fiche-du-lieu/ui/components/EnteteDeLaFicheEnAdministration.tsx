@@ -1,6 +1,6 @@
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import { toTitleCase } from '@app/web/utils/toTitleCase'
 import Button from '@codegouvfr/react-dsfr/Button'
+import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
+import { toTitleCase } from '@/utils/toTitleCase'
 
 export const EnteteDeLaFicheEnAdministration = ({
   nom,

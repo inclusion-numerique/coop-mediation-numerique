@@ -1,5 +1,6 @@
 import assert from 'node:assert'
-import { TagId } from '@app/web/features/tags/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { TagId } from '@/features/tags/domain'
 import {
   acteurCoordinateur,
   acteurMediateur,
@@ -11,8 +12,7 @@ import {
   tagEnBase,
   tagsDeLActivite,
   tagsDeLActiviteDeCoordination,
-} from '@app/web/features/tags/tags.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/tags/tags.cucumber'
 import { supprimerUnTag } from './implementation'
 
 const contexte: {

@@ -1,9 +1,9 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButton from '@app/web/components/BackButton'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId } from '@app/web/utils/skipLinks'
 import documentPictogram from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/document/document.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButton from '@/components/BackButton'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { contentId } from '@/utils/skipLinks'
 import UploadBeneficiaireFileForm from '../components/UploadBeneficiaireFileForm'
 
 export const ImporterBeneficiairesPage = () => (

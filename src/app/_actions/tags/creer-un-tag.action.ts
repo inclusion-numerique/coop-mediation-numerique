@@ -1,23 +1,23 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { creerUnTag } from '@app/web/features/tags/abilities/creer-un-tag'
-import { CREER_UN_TAG_ERRORS } from '@app/web/features/tags/abilities/creer-un-tag/action/creer-un-tag.errors'
-import type { VisibiliteValidation } from '@app/web/features/tags/abilities/creer-un-tag/action/creer-un-tag.validation'
-import { CreerUnTagValidation } from '@app/web/features/tags/abilities/creer-un-tag/action/creer-un-tag.validation'
+import type { z } from 'zod'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { creerUnTag } from '@/features/tags/abilities/creer-un-tag'
+import { CREER_UN_TAG_ERRORS } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.errors'
+import type { VisibiliteValidation } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.validation'
+import { CreerUnTagValidation } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.validation'
 import {
   CoordinateurId,
   DescriptionDuTag,
   NomDuTag,
   type VisibiliteChoisie,
-} from '@app/web/features/tags/domain'
-import { acteurDe } from '@app/web/features/tags/implementation/session'
-import { tagAffiche } from '@app/web/features/tags/ui/tag-affiche.presenter'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
-import type { z } from 'zod'
+} from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementation/session'
+import { tagAffiche } from '@/features/tags/ui/tag-affiche.presenter'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const visibiliteChoisie = (
   visibilite: z.output<typeof VisibiliteValidation>,

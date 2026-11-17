@@ -1,29 +1,29 @@
-import { modifierLaFicheDuLieuAction } from '@app/web/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import BackButton from '@app/web/components/BackButton'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { listerLesMediateursDuLieu } from '@app/web/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
+import { notFound } from 'next/navigation'
+import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import BackButton from '@/components/BackButton'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import {
   dateDeDerniereActivite,
   MediateursDuLieu,
-} from '@app/web/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
-import { consulterLaFicheDuLieu } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+} from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
+import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
 import {
   FicheDuLieuPage,
   ficheAffichee,
-} from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
 import {
   BoutonDeRetrait,
   ModaleDeRetrait,
-} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { filDArianeDuReseau } from '@app/web/features/mon-reseau/ui/fil-d-ariane'
-import { hrefDesLieux } from '@app/web/features/mon-reseau/ui/liens'
-import { departementDuCode } from '@app/web/libraries/departement'
-import { contentId } from '@app/web/utils/skipLinks'
-import { notFound } from 'next/navigation'
+} from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { filDArianeDuReseau } from '@/features/mon-reseau/ui/fil-d-ariane'
+import { hrefDesLieux } from '@/features/mon-reseau/ui/liens'
+import { departementDuCode } from '@/libraries/departement'
+import { contentId } from '@/utils/skipLinks'
 
 const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>

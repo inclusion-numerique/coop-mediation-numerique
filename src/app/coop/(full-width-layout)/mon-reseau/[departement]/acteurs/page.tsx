@@ -1,12 +1,12 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
 import {
   listerLesActeursDuDepartement,
   type ParametresDesActeurs,
-} from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
-import { ActeursDuDepartementPage } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+} from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { ActeursDuDepartementPage } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui'
 
 export const metadata: Metadata = {
   title: metadataTitle('Annuaire des acteurs'),

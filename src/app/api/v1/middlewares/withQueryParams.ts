@@ -1,7 +1,7 @@
-import type { ApiV1QueryParamsSchema } from '@app/web/app/api/v1/ApiV1QueryParams'
-import { getApiRequestParams } from '@app/web/app/api/v1/getApiRequestParams'
 import { type NextRequest, NextResponse } from 'next/server'
 import type { z } from 'zod'
+import type { ApiV1QueryParamsSchema } from '@/app/api/v1/ApiV1QueryParams'
+import { getApiRequestParams } from '@/app/api/v1/getApiRequestParams'
 
 export const withQueryParams =
   <Schema extends ApiV1QueryParamsSchema>(schema: Schema) =>

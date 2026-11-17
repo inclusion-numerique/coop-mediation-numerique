@@ -1,8 +1,8 @@
 import {
   productionSelect,
   productionToDomain,
-} from '@app/web/features/utilisateurs/db/production.transfer'
-import { relanceToDomain } from '@app/web/features/utilisateurs/db/relance.transfer'
+} from '@/features/utilisateurs/db/production.transfer'
+import { relanceToDomain } from '@/features/utilisateurs/db/relance.transfer'
 import {
   AdresseCourriel,
   aProduit,
@@ -12,8 +12,8 @@ import {
   Prenom,
   rattachements,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 export const inscriptionsInachevees = async (): Promise<
   readonly CompteARelancer[]

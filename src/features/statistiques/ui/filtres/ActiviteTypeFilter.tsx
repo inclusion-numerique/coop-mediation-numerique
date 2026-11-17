@@ -1,14 +1,14 @@
 'use client'
 
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import TriggerButton from '@/libs/filters/TriggerButton'
 import type { VocabulaireDeLaBarre } from './vocabulaire-de-la-barre'
 
 export const ActiviteTypeFilter = ({

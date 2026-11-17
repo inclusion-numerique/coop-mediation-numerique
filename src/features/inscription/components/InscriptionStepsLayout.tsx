@@ -1,6 +1,6 @@
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId } from '@app/web/utils/skipLinks'
 import { PropsWithChildren } from 'react'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { contentId } from '@/utils/skipLinks'
 
 const InscriptionStepsLayout = ({ children }: PropsWithChildren) => (
   <>

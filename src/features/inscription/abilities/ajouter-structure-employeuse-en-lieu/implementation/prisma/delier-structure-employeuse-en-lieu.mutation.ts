@@ -1,6 +1,6 @@
-import { lieuCorrele } from '@app/web/features/lieux-activite'
-import { prismaClient } from '@app/web/prismaClient'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { lieuCorrele } from '@/features/lieux-activite'
+import { prismaClient } from '@/prismaClient'
+import { addMutationLog } from '@/utils/addMutationLog'
 import type { DelierStructureEmployeuseEnLieu } from '../../domain/ports'
 import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 

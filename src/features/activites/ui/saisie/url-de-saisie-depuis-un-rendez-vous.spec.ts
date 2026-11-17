@@ -1,5 +1,5 @@
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { describe, expect, it } from 'vitest'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 import { minutesToCraDureeData, minutesToCustomCraDureeData } from './duree'
 import { cheminDeSaisieDepuisUnRendezVous } from './url-de-saisie-depuis-un-rendez-vous'
 

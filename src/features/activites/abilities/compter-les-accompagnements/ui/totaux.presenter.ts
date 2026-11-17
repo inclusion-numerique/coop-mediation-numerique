@@ -1,4 +1,4 @@
-import { allocatePercentages } from '@app/web/libraries/proportions'
+import { allocatePercentages } from '@/libraries/proportions'
 import { anonymes, type TotauxDesAccompagnements } from '../domain'
 
 type Part = { total: number; proportion: number }

@@ -1,8 +1,8 @@
-import { departementsByCode } from '@app/web/data/collectivites-territoriales/departements'
-import { CodeDepartement } from '@app/web/libraries/insee'
-import { defineModel, type Model } from '@app/web/libraries/model'
-import { failure, type Result, success } from '@app/web/libraries/result'
 import { z } from 'zod'
+import { departementsByCode } from '@/data/collectivites-territoriales/departements'
+import { CodeDepartement } from '@/libraries/insee'
+import { defineModel, type Model } from '@/libraries/model'
+import { failure, type Result, success } from '@/libraries/result'
 
 export const NomDepartement = defineModel(
   z.string().trim().min(1).brand('NomDepartement'),

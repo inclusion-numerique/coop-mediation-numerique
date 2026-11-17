@@ -1,9 +1,9 @@
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import type { Email } from '@app/web/features/beneficiaire/domain/email'
-import type { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import type { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { Email } from '@/features/beneficiaire/domain/email'
+import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import type { Nom } from '@/features/beneficiaire/domain/nom'
+import type { Prenom } from '@/features/beneficiaire/domain/prenom'
+import type { Telephone } from '@/features/beneficiaire/domain/telephone'
 import type { BeneficiaireDoublon, DuplicateBeneficiaire } from './types'
 
 export type FindDuplicatesForBeneficiaire = (input: {

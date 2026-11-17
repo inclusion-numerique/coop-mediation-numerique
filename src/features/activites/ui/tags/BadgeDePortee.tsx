@@ -1,10 +1,10 @@
 'use client'
 
-import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
+import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
 export type PorteeDuTag = 'Personnel' | 'Equipe' | 'Departemental' | 'National'
 

@@ -1,4 +1,4 @@
-import { keyFor } from '@app/web/libs/injection/client'
+import { keyFor } from '@/libs/injection/client'
 import type { CommuneDuCra } from './commune-du-cra'
 
 export const RECHERCHER_DES_COMMUNES_DU_CRA_KEY = keyFor<

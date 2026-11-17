@@ -1,7 +1,7 @@
-import { isAuthenticatedApiClientRequest } from '@app/web/app/api/v1/isAuthenticatedApiClientRequest'
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import type { ApiClientScope } from '@app/web/generated/prisma/client'
 import { type NextRequest, NextResponse } from 'next/server'
+import { isAuthenticatedApiClientRequest } from '@/app/api/v1/isAuthenticatedApiClientRequest'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import type { ApiClientScope } from '@/generated/prisma/client'
 
 const estAuthentifie = (request: NextRequest, portees: ApiClientScope[]) =>
   isAuthenticatedApiClientRequest(request, portees).catch((error: unknown) => {

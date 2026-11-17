@@ -1,5 +1,5 @@
-import { CraDateValidation } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import z from 'zod'
+import { CraDateValidation } from '@/features/activites/ui/saisie/validation/CraDateValidation'
 
 const typeEvenementValues = [
   'GrandPublic',

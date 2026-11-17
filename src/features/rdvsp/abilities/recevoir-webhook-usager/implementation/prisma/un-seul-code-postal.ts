@@ -1,4 +1,4 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
+import type { Prisma } from '@/generated/prisma/client'
 
 type Client = Pick<Prisma.TransactionClient, '$executeRaw'>
 

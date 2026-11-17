@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 import { CoordinateurId } from './coordinateur-id'
 import { Email } from './email'
 

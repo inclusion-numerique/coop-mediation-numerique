@@ -2,9 +2,9 @@ import {
   fixtureCrasCollectifs,
   fixtureCrasDemarchesAdministratives,
   fixtureCrasIndividuels,
-} from '@app/web/fixtures/activites'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { enSerie } from '@app/web/libraries/fixtures/enSerie'
+} from '@/fixtures/activites'
+import type { Prisma } from '@/generated/prisma/client'
+import { enSerie } from '@/libraries/fixtures/enSerie'
 
 export const upsertCraFixtures = async ({
   transaction,

@@ -1,6 +1,6 @@
-import type { StructureEmployeuseOption } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
-import type { ServerActionResult } from '@app/web/libraries/nextjs/action/result'
-import { keyFor } from '@app/web/libs/injection/client'
+import type { StructureEmployeuseOption } from '@/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
+import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import { keyFor } from '@/libs/injection/client'
 
 export const RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY = keyFor<
   (input: {

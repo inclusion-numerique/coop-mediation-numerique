@@ -1,9 +1,9 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { analyseImportBeneficiairesExcel } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
-import { getBeneficiaireImportSheet } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/getBeneficiaireImportSheet'
-import type { AnalyseResponse } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
+import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/getBeneficiaireImportSheet'
+import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
 
 export const POST = async (request: NextRequest) => {
   try {

@@ -1,11 +1,11 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { rechercherDesLieuxAAjouter } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter'
-import { RechercheDeLieu } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
-import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { rechercherDesLieuxAAjouter } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter'
+import { RechercheDeLieu } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
+import { withInput } from '@/libraries/nextjs'
 
 /**
  * Les suggestions du champ d'ajout : la coop, la cartographie nationale et,

@@ -1,9 +1,9 @@
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { ContactTelephone } from '@app/web/features/beneficiaire/domain/contact-telephone'
-import { Genre } from '@app/web/features/beneficiaire/domain/genre'
-import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
-import { beneficiaireFormShape } from '@app/web/features/beneficiaire/forms/beneficiaire-form'
 import { z } from 'zod'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
+import { Genre } from '@/features/beneficiaire/domain/genre'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { beneficiaireFormShape } from '@/features/beneficiaire/forms/beneficiaire-form'
 import type { BeneficiaireAModifier } from '../domain/beneficiaire-a-modifier'
 
 export const ModifierBeneficiaireValidation = beneficiaireFormShape

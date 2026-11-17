@@ -1,15 +1,15 @@
-import { supprimerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/supprimer-beneficiaires.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { listerBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/implementation'
-import { presentMesBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
+import type { Metadata } from 'next'
+import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementation'
+import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
 import {
   type MesBeneficiairesSearchParams,
   toListerBeneficiairesQuery,
-} from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires-search-params'
-import { MesBeneficiairesListePage } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/pages/MesBeneficiairesListePage'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import type { Metadata } from 'next'
+} from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires-search-params'
+import { MesBeneficiairesListePage } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/pages/MesBeneficiairesListePage'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes bénéficiaires'),

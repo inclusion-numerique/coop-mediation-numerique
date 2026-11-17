@@ -1,22 +1,22 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   consulterUneInvitation,
   type VueInvitation,
-} from '@app/web/features/equipe/abilities/consulter-une-invitation'
+} from '@/features/equipe/abilities/consulter-une-invitation'
 import {
   CoordinateurId,
   codeInvitation,
   Email,
   ReferenceInvitation,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   semerUnCoordinateur,
   semerUneAdhesion,
   semerUneInvitation,
   semerUnMediateurDEquipe,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

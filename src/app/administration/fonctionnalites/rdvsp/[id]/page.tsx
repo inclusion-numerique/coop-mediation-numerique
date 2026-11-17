@@ -1,7 +1,7 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { getAdministrationRdvspUserData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/compte-rdv-detaille.query'
-import { AdministrationRdvspUserPage } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
 import { notFound } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { getAdministrationRdvspUserData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/compte-rdv-detaille.query'
+import { AdministrationRdvspUserPage } from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
 
 export const metadata = {
   title: metadataTitle('Rendez-vous Service Public - Utilisateur'),

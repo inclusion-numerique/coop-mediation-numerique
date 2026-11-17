@@ -1,21 +1,21 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
 import {
   ajouterDesLieuxActivite,
   depuisLePanier,
-} from '@app/web/features/lieux-activite'
-import { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
-import { LieuxAAjouterValidation } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
+} from '@/features/lieux-activite'
+import { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
+import { LieuxAAjouterValidation } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 import {
   lireLieuxDejaRattaches,
   trouverStructuresCarto,
-} from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 /**
  * L'ajout du panier. C'est ici que se fait la jonction entre l'ability et ses

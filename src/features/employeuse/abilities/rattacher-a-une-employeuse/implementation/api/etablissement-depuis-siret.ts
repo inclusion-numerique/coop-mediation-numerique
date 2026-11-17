@@ -1,4 +1,4 @@
-import { fetchSiretApiData } from '@app/web/external-apis/siret/fetchSiretData'
+import { fetchSiretApiData } from '@/external-apis/siret/fetchSiretData'
 import type { EtablissementSirene } from '../../../../domain/identite-employeuse'
 
 /**

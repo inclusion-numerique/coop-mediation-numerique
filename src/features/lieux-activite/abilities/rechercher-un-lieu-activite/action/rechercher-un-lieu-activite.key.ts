@@ -1,5 +1,5 @@
-import type { ServerActionResult } from '@app/web/libraries/nextjs/action/result'
-import { keyFor } from '@app/web/libs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import { keyFor } from '@/libs/injection/client'
 import type { LieuActiviteTrouve } from '../domain'
 
 export const RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY = keyFor<

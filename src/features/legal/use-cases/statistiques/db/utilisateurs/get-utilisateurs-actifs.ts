@@ -1,7 +1,7 @@
 import {
   mesurerLesUtilisateursActifs,
   utilisateursActifsParMois,
-} from '@app/web/features/utilisateurs/abilities/mesurer-les-utilisateurs-actifs'
+} from '@/features/utilisateurs/abilities/mesurer-les-utilisateurs-actifs'
 
 export const getUtilisateursActifs = async () => {
   const [{ total, mediateurs, conseillers, coordinateurs }, perMonth] =

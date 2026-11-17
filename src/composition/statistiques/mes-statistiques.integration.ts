@@ -1,15 +1,17 @@
-import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
-import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
+import { cloneDeep } from 'lodash-es'
+import { beforeAll, describe, expect, test } from 'vitest'
+import { getSessionUserFromId } from '@/auth/getSessionUserFromSessionToken'
+import { vocabulaireDeLaBarre } from '@/composition/statistiques/barre'
 import {
   getMesStatistiquesPageData,
   MesStatistiquesGraphOptions,
   MesStatistiquesPageData,
-} from '@app/web/composition/statistiques/mes-statistiques'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+} from '@/composition/statistiques/mes-statistiques'
+import { dureeAccompagnementStatisticsRanges } from '@/features/activites/ui/libelles/duree-accompagnement'
 import {
   materielLabels,
   materielValues,
-} from '@app/web/features/activites/ui/libelles/materiel'
+} from '@/features/activites/ui/libelles/materiel'
 import {
   genreLabels,
   genresAffiches,
@@ -17,43 +19,41 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '@app/web/features/activites/ui/libelles/profil'
+} from '@/features/activites/ui/libelles/profil'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/ui/libelles/thematique'
+} from '@/features/activites/ui/libelles/thematique'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '@app/web/features/activites/ui/libelles/type-activite'
+} from '@/features/activites/ui/libelles/type-activite'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '@app/web/features/activites/ui/libelles/type-lieu'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { activiteSourceOptions } from '@app/web/features/statistiques/ui/filtres/source'
-import { seedPersonnesMain } from '@app/web/fixtures/personnesMainConseillerNumerique'
-import { resetFixtureUser } from '@app/web/fixtures/resetFixtureUser'
-import { mediateque, seedStructures } from '@app/web/fixtures/structures'
-import { conseillerNumerique } from '@app/web/fixtures/users/conseillerNumerique'
+} from '@/features/activites/ui/libelles/type-lieu'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
+import { seedPersonnesMain } from '@/fixtures/personnesMainConseillerNumerique'
+import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
+import { mediateque, seedStructures } from '@/fixtures/structures'
+import { conseillerNumerique } from '@/fixtures/users/conseillerNumerique'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
   mediateurAvecActiviteUserId,
-} from '@app/web/fixtures/users/mediateurAvecActivite'
+} from '@/fixtures/users/mediateurAvecActivite'
 import {
   mediateurSansActivites,
   mediateurSansActivitesUserId,
-} from '@app/web/fixtures/users/mediateurSansActivites'
-import { computeProportion } from '@app/web/libraries/proportions'
-import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
-import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
-import { prismaClient } from '@app/web/prismaClient'
-import { cloneDeep } from 'lodash-es'
-import { beforeAll, describe, expect, test } from 'vitest'
+} from '@/fixtures/users/mediateurSansActivites'
+import { computeProportion } from '@/libraries/proportions'
+import { partsFixees } from '@/libs/statistiques/parts-fixees'
+import { QuantifiedShare } from '@/libs/statistiques/quantifiedShare'
+import { prismaClient } from '@/prismaClient'
 
 /**
  * Base empty data for all tests

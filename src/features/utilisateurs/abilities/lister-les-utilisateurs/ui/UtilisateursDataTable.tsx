@@ -1,22 +1,22 @@
+import Tag from '@codegouvfr/react-dsfr/Tag'
 import {
   coordinateurDe,
   type Jalon,
   type LigneUtilisateur,
   mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
-import { BadgeStatutCompte } from '@app/web/features/utilisateurs/ui'
-import CopyToClipboardButton from '@app/web/libs/clipboard/CopyToClipboardButton'
+} from '@/features/utilisateurs/domain'
+import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
+import CopyToClipboardButton from '@/libs/clipboard/CopyToClipboardButton'
 import type {
   DataTableColumn,
   DataTableConfiguration,
   DataTableSearchParams,
-} from '@app/web/libs/data-table/DataTableConfiguration'
+} from '@/libs/data-table/DataTableConfiguration'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@app/web/utils/dateAsDayAndTime'
-import { optionalNumberToString } from '@app/web/utils/formatNumber'
-import Tag from '@codegouvfr/react-dsfr/Tag'
+} from '@/utils/dateAsDayAndTime'
+import { optionalNumberToString } from '@/utils/formatNumber'
 
 export type ColonneTriable =
   | 'creation'

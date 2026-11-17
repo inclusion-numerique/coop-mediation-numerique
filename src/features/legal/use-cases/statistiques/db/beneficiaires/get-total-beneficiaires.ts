@@ -1,5 +1,5 @@
-import { computeProportion } from '@app/web/libraries/proportions'
-import { prismaClient } from '@app/web/prismaClient'
+import { computeProportion } from '@/libraries/proportions'
+import { prismaClient } from '@/prismaClient'
 
 const countBeneficiaires = async (anonyme: boolean) =>
   prismaClient.beneficiaire.count({

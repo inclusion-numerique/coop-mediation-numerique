@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import { lieuALAnnuaireDuDepartement } from './lieu-a-l-annuaire.sql'
 
 export const nombreDeLieuxDuDepartement = async (

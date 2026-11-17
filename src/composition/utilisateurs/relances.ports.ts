@@ -1,4 +1,4 @@
-import { removeBrevoUserContact } from '@app/web/external-apis/brevo/removeBrevoUserContact'
+import { removeBrevoUserContact } from '@/external-apis/brevo/removeBrevoUserContact'
 import {
   effacerLInscription,
   type RelancerLesInscriptionsInacheveesPorts,
@@ -6,7 +6,7 @@ import {
   sendAccountDeletedEmail,
   sendDeletionWarningEmail,
   sendFinishYourSignupEmail,
-} from '@app/web/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees'
+} from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees'
 import {
   type RelancerLesInscritsInactifsPorts,
   relancerLesInscritsInactifs,
@@ -14,17 +14,14 @@ import {
   sendNouveauAccountDeletedEmail,
   sendNouveauAccountDeletionWarningEmail,
   sendNouveauAccountEmail,
-} from '@app/web/features/utilisateurs/abilities/relancer-les-inscrits-inactifs'
+} from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs'
 import {
   RetentionPolicy,
   supprimerCompte,
-} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import { compterLesInscrits } from '@app/web/features/utilisateurs/db/compter-les-inscrits.query'
-import {
-  coordinateurDe,
-  mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
-import { success } from '@app/web/libraries/result'
+} from '@/features/utilisateurs/abilities/supprimer-compte'
+import { compterLesInscrits } from '@/features/utilisateurs/db/compter-les-inscrits.query'
+import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import { success } from '@/libraries/result'
 import { supprimerComptePorts } from './supprimer-compte.ports'
 
 const dateFrancaise = (date: Date): string => date.toLocaleDateString('fr-FR')

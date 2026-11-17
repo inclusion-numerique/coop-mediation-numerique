@@ -1,17 +1,17 @@
-import {
-  withApiV1Errors,
-  withClientApi,
-  withQueryParams,
-} from '@app/web/app/api/v1/middlewares'
-import {
-  type LieuPublieExpose,
-  lieuPublieExpose,
-  lieuxPublies,
-} from '@app/web/features/lieux-activite/abilities/publier-les-lieux'
 import { routeBuilder } from '@arckit/nextjs/route'
 import { DispositifProgrammeNational } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@/app/api/v1/middlewares'
+import {
+  type LieuPublieExpose,
+  lieuPublieExpose,
+  lieuxPublies,
+} from '@/features/lieux-activite/abilities/publier-les-lieux'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -1,11 +1,11 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { inject } from '@/libs/injection/client'
 import { DECONNECTER_UN_UTILISATEUR_ACTION_KEY } from '../action/deconnecter-un-utilisateur.key'
 
 export const BoutonDeconnecter = ({

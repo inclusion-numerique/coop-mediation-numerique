@@ -1,4 +1,4 @@
-import { Prisma } from '@app/web/generated/prisma/client'
+import { Prisma } from '@/generated/prisma/client'
 
 export const JOINTURE_DE_L_INSCRIPTION = Prisma.sql`
   LEFT JOIN main.lieu_inclusion ri ON ri.structure_coop_id = s.id AND ri.deleted_at IS NULL

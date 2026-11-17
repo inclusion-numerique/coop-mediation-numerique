@@ -1,10 +1,10 @@
 'use client'
 
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import TriggerButton from '@/libs/filters/TriggerButton'
 import { filtresDeRole } from '../../domain'
 import { LIBELLE_DU_ROLE } from '../acteurs.presenter'
 

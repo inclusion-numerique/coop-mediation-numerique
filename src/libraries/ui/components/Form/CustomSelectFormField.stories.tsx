@@ -1,12 +1,12 @@
-import { useOnDiff } from '@app/web/hooks/useOnDiff'
-import CustomSelectFormField, {
-  CustomSelectFormFieldProps,
-} from '@app/web/libraries/ui/components/Form/CustomSelectFormField'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Meta, StoryObj } from '@storybook/react'
 import { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import { useOnDiff } from '@/hooks/useOnDiff'
+import CustomSelectFormField, {
+  CustomSelectFormFieldProps,
+} from '@/libraries/ui/components/Form/CustomSelectFormField'
 
 const options = [
   {

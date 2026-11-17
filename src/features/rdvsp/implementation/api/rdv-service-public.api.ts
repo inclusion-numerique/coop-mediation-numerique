@@ -1,11 +1,6 @@
-import {
-  type Failure,
-  failure,
-  type Result,
-  success,
-} from '@app/web/libraries/result'
 import axios, { type AxiosRequestConfig } from 'axios'
 import type { z } from 'zod'
+import { type Failure, failure, type Result, success } from '@/libraries/result'
 import type { CompteRdvUtilisable } from '../../domain/compte-rdv'
 import type { DemandeRdv } from '../../domain/demande-rdv'
 import {

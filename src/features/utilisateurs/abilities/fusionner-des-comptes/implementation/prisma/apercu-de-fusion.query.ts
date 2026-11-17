@@ -1,11 +1,11 @@
-import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
+import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   etatDuCompte,
   nomAffiche,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import { type ApercuDeFusion, type CompteApercu, communs } from '../../domain'
 
 const apercuSelect = {

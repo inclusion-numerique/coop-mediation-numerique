@@ -1,12 +1,12 @@
 'use client'
 
-import { retirerUnMediateurDuLieuAction } from '@app/web/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { formatDate } from '@app/web/utils/formatDate'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { formatDate } from '@/utils/formatDate'
 import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
 const ModaleDeRetrait = () => {

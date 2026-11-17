@@ -1,5 +1,5 @@
-import { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { DefaultValues } from 'react-hook-form'
+import { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 
 // Failsafe function to display a label for an AdresseBanData
 export const getAdresseBanLabel = ({

@@ -1,6 +1,6 @@
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 
 const CraFormLabel = ({
   children,

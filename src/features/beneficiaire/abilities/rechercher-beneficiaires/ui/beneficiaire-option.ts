@@ -1,7 +1,7 @@
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import type { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import type { BeneficiaireData } from '@/features/beneficiaire/forms/beneficiaire-validation'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { BeneficiaireSearchItem } from '../domain/rechercher-beneficiaires'
 
 /**

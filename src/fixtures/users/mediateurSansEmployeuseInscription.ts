@@ -1,4 +1,4 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
 export const mediateurSansEmployeuseInscriptionMediateurId =
   'b7e0a2c1-58d3-4f6e-9a41-2c5d8e0f3b74'

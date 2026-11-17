@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import type { Lieu } from '../../../../domain/lieu'
 import { ecrireAuRegistre, lieuFromDomain } from '../../../../implementation'
 import type { SectionDeLaFiche } from '../../domain/modification-lieu'

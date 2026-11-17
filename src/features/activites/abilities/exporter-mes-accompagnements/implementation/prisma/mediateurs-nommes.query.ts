@@ -1,5 +1,5 @@
-import { prismaClient } from '@app/web/prismaClient'
-import { getUserDisplayName } from '@app/web/utils/user'
+import { prismaClient } from '@/prismaClient'
+import { getUserDisplayName } from '@/utils/user'
 import type { CoordinateurId, MediateurId } from '../../../../domain'
 
 export type MediateurNomme = {

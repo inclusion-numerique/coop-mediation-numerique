@@ -1,5 +1,5 @@
-import { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
 import {
   type Commune,
   rechercherDesCommunes,

@@ -1,3 +1,3 @@
-import { dateFormatter } from '@app/web/utils/formatDate'
+import { dateFormatter } from '@/utils/formatDate'
 
 export const dateAsIsoMonth = dateFormatter('yyyy-MM')

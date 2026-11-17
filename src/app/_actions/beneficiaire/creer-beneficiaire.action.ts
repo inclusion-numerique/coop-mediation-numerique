@@ -1,12 +1,12 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth, withMediateur } from '@app/web/features/authentification'
-import { CreerBeneficiaireValidation } from '@app/web/features/beneficiaire/abilities/creer-beneficiaire'
-import { creerBeneficiaire } from '@app/web/features/beneficiaire/abilities/creer-beneficiaire/implementation'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth, withMediateur } from '@/features/authentification'
+import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire'
+import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementation'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { withInput } from '@/libraries/nextjs'
 
 export const creerBeneficiaireAction = actionBuilder()
   .use(withAuth())

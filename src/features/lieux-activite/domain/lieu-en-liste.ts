@@ -1,5 +1,5 @@
-import type { NomAffiche } from '@app/web/libraries/nom-affiche'
 import type { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { NomAffiche } from '@/libraries/nom-affiche'
 import type { NomUsage } from './identite-sirene'
 import type { IdentifiantCartographie } from './ids-cartographie-nationale'
 import type { LieuId } from './lieu-id'

@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const MESSAGE_DE_MAINTENANCE_PAR_DEFAUT = `Une opération de maintenance est en cours.
 Les modifications sont temporairement désactivées, vous pouvez toujours consulter vos données.`

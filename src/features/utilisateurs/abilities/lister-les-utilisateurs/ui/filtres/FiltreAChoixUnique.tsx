@@ -1,12 +1,12 @@
 'use client'
 
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { resetPagination } from '@app/web/libs/filters/helpers'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { resetPagination } from '@/libs/filters/helpers'
+import TriggerButton from '@/libs/filters/TriggerButton'
 
 export const FiltreAChoixUnique = ({
   parametre,

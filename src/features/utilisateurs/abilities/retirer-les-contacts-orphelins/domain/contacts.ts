@@ -2,7 +2,7 @@ import {
   type AdresseCourriel,
   estCourrielAnonymise,
   type UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 
 export type CompteDuContact =
   | { readonly _tag: 'Aucun' }

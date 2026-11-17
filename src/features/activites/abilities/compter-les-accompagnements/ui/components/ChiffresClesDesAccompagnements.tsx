@@ -1,7 +1,7 @@
-import { sPluriel } from '@app/web/libraries/ui/utils/pluriel/sPluriel'
-import { dateAsDayConventional } from '@app/web/utils/dateAsDay'
-import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
+import { dateAsDayConventional } from '@/utils/dateAsDay'
+import { numberToString } from '@/utils/formatNumber'
 import type { TotauxPresentes } from '../totaux.presenter'
 
 export const ChiffresClesDesAccompagnements = ({

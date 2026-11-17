@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import * as Sentry from '@sentry/nextjs'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 // Routes à ignorer pour le tracing (haut volume, peu d'intérêt)
 const ignoredTraceRoutes = [

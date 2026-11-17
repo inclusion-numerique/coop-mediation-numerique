@@ -1,7 +1,5 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import Link from 'next/link'
@@ -13,6 +11,8 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { download } from '@/utils/download'
 
 export const BeneficiairesMoreOptionsButton = () => {
   // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère

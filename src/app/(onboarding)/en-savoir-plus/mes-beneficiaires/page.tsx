@@ -1,7 +1,7 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
 import { OnboardingMesBeneficiaires } from './OnboardingMesBeneficiaires'
 
 export const dynamic = 'force-dynamic'

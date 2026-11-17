@@ -1,11 +1,8 @@
-import { pluriel } from '@app/web/libraries/pluriel'
-import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
-import {
-  dateAsDay,
-  dateAsDayWithHourInTimezone,
-} from '@app/web/utils/dateAsDay'
-import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { formatInTimeZone } from 'date-fns-tz'
+import { pluriel } from '@/libraries/pluriel'
+import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
+import { dateAsDay, dateAsDayWithHourInTimezone } from '@/utils/dateAsDay'
+import { dureeAsString } from '@/utils/dureeAsString'
 import type {
   ActiviteConsultee,
   ChronologieDesActivites,

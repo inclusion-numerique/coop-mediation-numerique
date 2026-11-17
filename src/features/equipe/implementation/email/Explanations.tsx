@@ -1,11 +1,11 @@
-import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
-import { brandColor } from '@app/web/libraries/emails/styles'
 import {
   MjmlButton,
   MjmlColumn,
   MjmlSection,
   MjmlText,
 } from '@faire/mjml-react'
+import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
+import { brandColor } from '@/libraries/emails/styles'
 
 const Explanations = () => (
   <>

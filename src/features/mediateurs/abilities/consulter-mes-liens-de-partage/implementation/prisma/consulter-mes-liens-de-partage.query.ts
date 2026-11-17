@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
 import {
   LienDePartageId,

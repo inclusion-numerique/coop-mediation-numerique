@@ -2,13 +2,13 @@ import {
   createBrevoContact,
   deploymentCanCreateBrevoContact,
   toBrevoContact,
-} from '@app/web/external-apis/brevo/createBrevoContact'
+} from '@/external-apis/brevo/createBrevoContact'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
-import { prismaClient } from '@app/web/prismaClient'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+} from '@/features/employeuse/server'
+import { prismaClient } from '@/prismaClient'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import type { EffetsApresValidation } from '../domain/ports'
 
 const isMediateur = (

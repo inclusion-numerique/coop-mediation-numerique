@@ -1,6 +1,6 @@
-import { emailSignin } from '@app/web/features/authentification/implementation/email/emailSignin'
-import { createMjmlTemplateOutput } from '@app/web/libraries/emails/outputTemplateHtml'
 import { describe, expect, it } from 'vitest'
+import { emailSignin } from '@/features/authentification/implementation/email/emailSignin'
+import { createMjmlTemplateOutput } from '@/libraries/emails/outputTemplateHtml'
 
 describe('Template: emailSignin', () => {
   const output = createMjmlTemplateOutput('emailSignin')

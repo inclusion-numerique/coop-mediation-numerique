@@ -1,15 +1,15 @@
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
-import type { JsonApiListMeta } from '@app/web/app/api/v1/JsonApiTypes'
-import {
-  decodeSerializableState,
-  EncodedState,
-  encodeSerializableState,
-} from '@app/web/utils/encodeSerializableState'
 /**
  * We use cursor pagination for the v1 list endpoints
  * See why: https://jsonapi.org/profiles/ethanresnick/cursor-pagination/
  */
 import { ZodError, z } from 'zod'
+import { apiV1Url } from '@/app/api/v1/apiV1Url'
+import type { JsonApiListMeta } from '@/app/api/v1/JsonApiTypes'
+import {
+  decodeSerializableState,
+  EncodedState,
+  encodeSerializableState,
+} from '@/utils/encodeSerializableState'
 
 /**
  * @openapi

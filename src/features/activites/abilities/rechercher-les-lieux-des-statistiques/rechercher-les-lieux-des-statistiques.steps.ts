@@ -1,6 +1,6 @@
 import assert from 'node:assert'
-import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
 import { Then, When } from '@cucumber/cucumber'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { LieuActiviteId } from '../../domain'
 import { lieuSeme, perimetreDe } from '../../statistiques.cucumber'
 import {

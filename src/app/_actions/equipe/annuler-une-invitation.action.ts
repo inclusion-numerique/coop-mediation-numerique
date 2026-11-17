@@ -1,19 +1,19 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { annulerUneInvitation } from '@app/web/features/equipe/abilities/annuler-une-invitation'
-import { ANNULER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.errors'
-import { AnnulerUneInvitationValidation } from '@app/web/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.validation'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation'
+import { ANNULER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.errors'
+import { AnnulerUneInvitationValidation } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.validation'
 import {
   CoordinateurId,
   Email,
   ReferenceInvitation,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
-import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/equipe/domain'
+import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const annulerUneInvitationAction = actionBuilder()
   .use(withAuth())

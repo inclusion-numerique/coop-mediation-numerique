@@ -1,5 +1,5 @@
-import type { Feature } from '@app/web/external-apis/apiAdresse'
 import { describe, expect, test } from 'vitest'
+import type { Feature } from '@/external-apis/apiAdresse'
 import { communeDuResultat } from './communeFieldsFromAddress'
 
 const evreuxFeature: Feature = {

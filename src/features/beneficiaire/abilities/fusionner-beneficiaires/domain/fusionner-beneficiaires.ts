@@ -1,6 +1,6 @@
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import type { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import type { Result } from '@app/web/libraries/result'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import type { Result } from '@/libraries/result'
 import type {
   BeneficiaireDestinationIntrouvable,
   BeneficiaireSourceIntrouvable,

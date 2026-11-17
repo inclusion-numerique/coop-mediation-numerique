@@ -2,7 +2,7 @@ import {
   type DataTableUrlState,
   generatePageSizeSelectOptions,
   PaginationNavWithPageSizeSelect,
-} from '@app/web/libraries/data-table'
+} from '@/libraries/data-table'
 import { DEFAULT_PAGE_SIZE } from './lister-beneficiaires-search-params'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])

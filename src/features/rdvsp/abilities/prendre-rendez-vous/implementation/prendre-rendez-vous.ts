@@ -1,4 +1,4 @@
-import { success } from '@app/web/libraries/result'
+import { success } from '@/libraries/result'
 import { UrlRetour } from '../../../domain/demande-rdv'
 import type { RdvServicePublicApi } from '../../../domain/rdv-service-public.port'
 import type { BeneficiaireCibleId } from '../domain/beneficiaire-cible'

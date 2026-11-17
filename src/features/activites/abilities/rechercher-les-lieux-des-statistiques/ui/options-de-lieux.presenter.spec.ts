@@ -1,5 +1,5 @@
-import { departementDuCode } from '@app/web/libraries/departement'
 import { describe, expect, it } from 'vitest'
+import { departementDuCode } from '@/libraries/departement'
 import { Commune, LieuActiviteId, NomDeStructure } from '../../../domain'
 import type { LieuDesStatistiques } from '../domain'
 import { optionsDesLieuxChoisis } from './options-de-lieux.presenter'

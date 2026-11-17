@@ -1,17 +1,17 @@
 'use client'
 
-import {
-  RoleFiltre,
-  type RoleFiltre as RoleFiltreType,
-} from '@app/web/features/utilisateurs/domain'
-import { optionsDesRoles } from '@app/web/features/utilisateurs/ui'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import { resetPagination } from '@app/web/libs/filters/helpers'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import {
+  RoleFiltre,
+  type RoleFiltre as RoleFiltreType,
+} from '@/features/utilisateurs/domain'
+import { optionsDesRoles } from '@/features/utilisateurs/ui'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import { resetPagination } from '@/libs/filters/helpers'
+import TriggerButton from '@/libs/filters/TriggerButton'
 
 export const FiltreRoles = ({
   rolesInitiaux,

@@ -1,16 +1,16 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   AdresseCourriel,
   type ContactAImporter,
-} from '@app/web/features/utilisateurs/domain'
-import { versContactBrevo } from '@app/web/features/utilisateurs/implementation/brevo/liste-de-diffusion'
+} from '@/features/utilisateurs/domain'
+import { versContactBrevo } from '@/features/utilisateurs/implementation/brevo/liste-de-diffusion'
 import {
   type CompteDeListe,
   semerUnCompteDeListe,
-} from '@app/web/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/utilisateurs/utilisateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 import { synchroniserLesRolesBrevo } from './commands/synchroniser-les-roles-brevo'
 import {
   type BilanDeSynchronisation,

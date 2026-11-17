@@ -1,5 +1,3 @@
-import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
 import {
   MjmlButton,
   MjmlColumn,
@@ -7,6 +5,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
+import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
 const STANDARD_TEXT = {
   fontWeight: '400',

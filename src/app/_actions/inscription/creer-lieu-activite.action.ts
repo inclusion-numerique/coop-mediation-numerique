@@ -1,17 +1,17 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { CREER_LIEU_ACTIVITE_ERRORS } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
-import { creerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { CREER_LIEU_ACTIVITE_ERRORS } from '@/features/inscription/abilities/renseigner-lieux-activite'
+import { creerLieuActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import {
   enregistrerLeLieuSaisi,
   mediateurFromUser,
-} from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
-import { UserId } from '@app/web/features/inscription/domain'
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/inscription/abilities/renseigner-lieux-activite/implementation'
+import { UserId } from '@/features/inscription/domain'
+import { CreerLieuActiviteValidation } from '@/features/lieux-activite'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const creerLieuActiviteAction = actionBuilder()
   .use(withAuth())

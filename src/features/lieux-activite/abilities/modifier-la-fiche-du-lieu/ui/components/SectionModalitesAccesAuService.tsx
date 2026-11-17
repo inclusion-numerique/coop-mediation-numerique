@@ -1,11 +1,11 @@
 'use client'
 
-import EditCardTanStack from '@app/web/components/EditCardTanStack'
-import { fraisAChargeOptions } from '@app/web/features/lieux-activite/ui/options'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
+import EditCardTanStack from '@/components/EditCardTanStack'
+import { fraisAChargeOptions } from '@/features/lieux-activite/ui/options'
+import { telephoneDisplayString } from '@/libraries/telephone'
+import { useAppForm } from '@/libs/form/use-app-form'
 import {
   ModalitesAccesAuServiceFormValidation,
   ModalitesAccesAuServiceSaisie,

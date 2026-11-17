@@ -1,10 +1,10 @@
-import { pluriel } from '@app/web/libraries/pluriel'
-import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
+import { formatInTimeZone } from 'date-fns-tz'
+import { pluriel } from '@/libraries/pluriel'
+import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@app/web/utils/dateAsDayAndTime'
-import { formatInTimeZone } from 'date-fns-tz'
+} from '@/utils/dateAsDayAndTime'
 import {
   type ActiviteDeCoordination,
   type DureeEnMinutes,

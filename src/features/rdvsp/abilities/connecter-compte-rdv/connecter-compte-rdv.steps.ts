@@ -1,26 +1,27 @@
 import assert from 'node:assert'
-import { CodeAutorisation } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
 import type {
   ConnecterCompteRdv,
   EchangerCodeAutorisation,
-} from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
-import { CodeAutorisationRefuse } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
-import { connecterCompteRdv } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv'
-import { compteRdvExistant } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/implementation/prisma/compte-rdv-existant.query'
-import { enregistrerCompteConnecte } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/implementation/prisma/enregistrer-compte-connecte.mutation'
-import type { Agent } from '@app/web/features/rdvsp/domain/agent'
+} from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
+import { CodeAutorisationRefuse } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
+import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv'
+import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/prisma/compte-rdv-existant.query'
+import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/prisma/enregistrer-compte-connecte.mutation'
+import type { Agent } from '@/features/rdvsp/domain/agent'
 import {
   EmailExterne,
   NomExterne,
   PrenomExterne,
-} from '@app/web/features/rdvsp/domain/identite'
+} from '@/features/rdvsp/domain/identite'
 import {
   JetonAcces,
   JetonRafraichissement,
   type JetonsOAuth,
-} from '@app/web/features/rdvsp/domain/jetons-oauth'
-import { RdvAgentId } from '@app/web/features/rdvsp/domain/rdv-agent-id'
-import type { RdvServicePublicApi } from '@app/web/features/rdvsp/domain/rdv-service-public.port'
+} from '@/features/rdvsp/domain/jetons-oauth'
+import { RdvAgentId } from '@/features/rdvsp/domain/rdv-agent-id'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
 import {
   compteRdvEnBase,
   emailUtilisateurDeTest,
@@ -28,9 +29,8 @@ import {
   seedCompteRdv,
   suivreCompteRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@app/web/libraries/result'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { failure, success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 1
 const MAINTENANT = new Date('2026-08-17T14:30:00.000Z')

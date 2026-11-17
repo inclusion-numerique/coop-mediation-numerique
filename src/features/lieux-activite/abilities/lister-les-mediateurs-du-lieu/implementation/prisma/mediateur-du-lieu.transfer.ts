@@ -4,14 +4,14 @@ import {
   personneEmployeuseSelect,
   personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse/server'
-import type { Prisma } from '@app/web/generated/prisma/client'
+} from '@/features/employeuse/server'
+import type { Prisma } from '@/generated/prisma/client'
 import {
   DEPARTEMENT_PAR_DEFAUT,
   departementDeLActeur,
-} from '@app/web/libraries/departement'
-import { type CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
-import { nomAffiche } from '@app/web/libraries/nom-affiche'
+} from '@/libraries/departement'
+import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { nomAffiche } from '@/libraries/nom-affiche'
 import { MediateurId } from '../../../../domain/mediateur-id'
 import { RattachementId } from '../../../../domain/rattachement-id'
 import { UserId } from '../../../../domain/user-id'

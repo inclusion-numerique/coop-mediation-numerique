@@ -1,8 +1,8 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButton from '@app/web/components/BackButton'
-import Card from '@app/web/components/Card'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId } from '@app/web/utils/skipLinks'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButton from '@/components/BackButton'
+import Card from '@/components/Card'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { contentId } from '@/utils/skipLinks'
 import InviterMembreForm from './InviterMembreForm'
 
 const CarteDInvitation = () => (

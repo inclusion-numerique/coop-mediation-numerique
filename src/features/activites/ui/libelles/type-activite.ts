@@ -1,7 +1,7 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
-import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
-import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
+import { Pictogram } from '@/features/pictograms/pictogram'
+import { SittingAtATableIcon } from '@/features/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@/features/pictograms/user/TeacherIcon'
+import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { TYPES_D_ACTIVITE } from '../../domain'
 
 export const typeActiviteValues = TYPES_D_ACTIVITE

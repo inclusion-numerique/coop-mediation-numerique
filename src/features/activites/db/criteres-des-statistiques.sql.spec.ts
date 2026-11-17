@@ -1,5 +1,5 @@
-import { Prisma } from '@app/web/generated/prisma/client'
 import { describe, expect, it } from 'vitest'
+import { Prisma } from '@/generated/prisma/client'
 import { criteresDesStatistiques } from '../domain'
 import { filtreDesStatistiques } from './criteres-des-statistiques.sql'
 

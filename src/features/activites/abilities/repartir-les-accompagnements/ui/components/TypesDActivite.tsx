@@ -1,5 +1,5 @@
-import { sPluriel } from '@app/web/libraries/ui/utils/pluriel/sPluriel'
-import { numberToString } from '@app/web/utils/formatNumber'
+import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
+import { numberToString } from '@/utils/formatNumber'
 import type { RepartitionPresentee } from '../repartition.presenter'
 import { StatistiqueAccompagnement } from './StatistiqueAccompagnement'
 

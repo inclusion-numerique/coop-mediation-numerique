@@ -2,10 +2,10 @@ import {
   conseillerNumeriqueSql,
   employeuseCourante,
   employeuseCouranteJoin,
-} from '@app/web/features/employeuse/server'
-import { Prisma } from '@app/web/generated/prisma/client'
-import type { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
-import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
+} from '@/features/employeuse/server'
+import { Prisma } from '@/generated/prisma/client'
+import type { CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { departementCodeFromInseeRegex } from '@/utils/departementCodeFromInseeRegex'
 
 export const ACTEUR = {
   id: Prisma.raw('u.id'),

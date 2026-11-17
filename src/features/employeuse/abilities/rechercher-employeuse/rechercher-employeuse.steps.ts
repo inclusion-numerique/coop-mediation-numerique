@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { rechercherEmployeuse } from '@app/web/features/employeuse/abilities/rechercher-employeuse/implementation'
-import type { Employeuse } from '@app/web/features/employeuse/domain/employeuse'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { rechercherEmployeuse } from '@/features/employeuse/abilities/rechercher-employeuse/implementation'
+import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedEmployeuseMain,
   supprimerEmployeuseMain,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 let trouvees: Employeuse[] = []
 

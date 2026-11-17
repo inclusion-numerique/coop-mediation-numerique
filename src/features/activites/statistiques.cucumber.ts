@@ -1,6 +1,8 @@
 import assert from 'node:assert'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
-import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { After, type DataTable, Given } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   Genre,
   Materiel,
@@ -8,10 +10,8 @@ import {
   Thematique,
   TrancheAge,
   TypeLieu,
-} from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, type DataTable, Given } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import type { DemandeDeStatistiques } from './db/statistiques.sql'
 import {
   CoordinateurId,

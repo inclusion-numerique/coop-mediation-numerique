@@ -1,16 +1,16 @@
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
-import type { SessionUser } from '@app/web/auth/sessionUser'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/auth/mediateursCoordonnes'
+import type { SessionUser } from '@/auth/sessionUser'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   MediateurId as MediateurIdDesActivites,
   type PerimetreDesActivites,
-} from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites'
+} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites'
 import {
   CoordinateurId,
   MediateurId,
   type PerimetreDesStatistiques,
   perimetreDuDemandeur,
-} from '@app/web/features/activites/domain'
+} from '@/features/activites/domain'
 
 export const perimetreDeLUtilisateur = (
   user: SessionUser,

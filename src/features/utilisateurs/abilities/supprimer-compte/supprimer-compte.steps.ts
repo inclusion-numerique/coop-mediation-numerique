@@ -1,15 +1,15 @@
 import assert from 'node:assert'
-import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
-import { effacerEmpreinteRdvAvec } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
-import { AuteurId, UtilisateurId } from '@app/web/features/utilisateurs/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
+import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   type CompteSeme,
   semerCompte,
-} from '@app/web/features/utilisateurs/utilisateurs.cucumber'
-import { success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/utilisateurs/utilisateurs.cucumber'
+import { success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 import { supprimerCompte } from './commands/supprimer-compte'
 import {
   type AuteurSuppression,

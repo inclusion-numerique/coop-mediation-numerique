@@ -1,12 +1,12 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { ajouterUnMembre } from '@app/web/features/equipe/abilities/ajouter-un-membre'
-import { AJOUTER_UN_MEMBRE_ERRORS } from '@app/web/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.errors'
-import { AjouterUnMembreValidation } from '@app/web/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.validation'
-import { CoordinateurId, UtilisateurId } from '@app/web/features/equipe/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre'
+import { AJOUTER_UN_MEMBRE_ERRORS } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.errors'
+import { AjouterUnMembreValidation } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.validation'
+import { CoordinateurId, UtilisateurId } from '@/features/equipe/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const ajouterUnMembreAction = actionBuilder()
   .use(withAuth())

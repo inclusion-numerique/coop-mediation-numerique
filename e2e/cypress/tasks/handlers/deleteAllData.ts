@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 
 export const deleteAllData = async (
   _emptyParametersNeededForTypesafety: Record<string, string>,

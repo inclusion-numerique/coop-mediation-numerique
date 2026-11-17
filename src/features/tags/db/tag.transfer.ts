@@ -1,4 +1,4 @@
-import { CodeDepartement } from '@app/web/libraries/insee'
+import { CodeDepartement } from '@/libraries/insee'
 import {
   CoordinateurId,
   DescriptionDuTag,

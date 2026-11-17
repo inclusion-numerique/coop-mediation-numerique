@@ -1,10 +1,10 @@
-import InfoLabelValue from '@app/web/components/InfoLabelValue'
-import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
-import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
+import InfoLabelValue from '@/components/InfoLabelValue'
+import { genreLabels } from '@/features/beneficiaire/domain/genre'
+import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
 import {
   effectiveTrancheAge,
   trancheAgeLabels,
-} from '@app/web/features/beneficiaire/domain/tranche-age'
+} from '@/features/beneficiaire/domain/tranche-age'
 import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
 
 const BeneficiaireInformationsComplementaires = ({

@@ -1,7 +1,7 @@
-import type { EtatDeMaintenance } from '@app/web/features/maintenance-mode/domain'
-import type { ServerActionResult } from '@app/web/libraries/nextjs/action/result'
-import { keyFor } from '@app/web/libs/injection/client'
 import type { z } from 'zod'
+import type { EtatDeMaintenance } from '@/features/maintenance-mode/domain'
+import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import { keyFor } from '@/libs/injection/client'
 import type { ReglerLaMaintenanceValidation } from './regler-la-maintenance.validation'
 
 export const REGLER_LA_MAINTENANCE_ACTION_KEY = keyFor<

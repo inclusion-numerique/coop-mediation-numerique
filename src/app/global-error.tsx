@@ -1,8 +1,8 @@
 'use client'
 
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/client/signaler'
 import NextError from 'next/error'
 import { useEffect } from 'react'
+import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
 
 const GlobalError = ({ error }: { error: Error & { digest?: string } }) => {
   useEffect(() => {

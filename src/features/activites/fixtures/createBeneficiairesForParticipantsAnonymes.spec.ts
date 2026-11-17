@@ -1,10 +1,10 @@
-import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { v4 } from 'uuid'
+import { describe, expect, it, test } from 'vitest'
+import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import {
   createBeneficiairesForParticipantsAnonymes,
   createCounterUuid,
-} from '@app/web/features/activites/fixtures/createBeneficiairesForParticipantsAnonymes'
-import { v4 } from 'uuid'
-import { describe, expect, it, test } from 'vitest'
+} from '@/features/activites/fixtures/createBeneficiairesForParticipantsAnonymes'
 
 describe('createBeneficiairesForParticipantsAnonymes', () => {
   describe('createCounterUuid', () => {

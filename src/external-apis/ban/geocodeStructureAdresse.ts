@@ -1,6 +1,6 @@
-import { type Feature, searchAdresses } from '@app/web/external-apis/apiAdresse'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import { type Feature, searchAdresses } from '@/external-apis/apiAdresse'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 
 /**
  * Les seuls champs nécessaires au géocodage : structures employeuses et lieux

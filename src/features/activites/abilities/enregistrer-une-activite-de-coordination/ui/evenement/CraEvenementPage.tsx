@@ -1,16 +1,16 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { CraAnimationData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
-import CraEvenementForm from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/components/CraEvenementForm'
-import { ModaleDeCreationDeTag } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButtonWithModal from '@/components/BackButtonWithModal'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
+import CraEvenementForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/components/CraEvenementForm'
+import { ModaleDeCreationDeTag } from '@/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import type {
   Tag,
   VisibiliteDuTagDuCra,
-} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import RequiredFieldsDisclamer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclamer'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { contentId } from '@app/web/utils/skipLinks'
+} from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { contentId } from '@/utils/skipLinks'
 
 type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>

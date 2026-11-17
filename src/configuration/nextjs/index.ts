@@ -1,5 +1,5 @@
-import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
-import { actionBuilder as baseActionBuilder } from '@app/web/libraries/nextjs'
+import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { actionBuilder as baseActionBuilder } from '@/libraries/nextjs'
 
 export const actionBuilder = (
   options: { readonly errorPrefix?: string } = {},

@@ -1,10 +1,10 @@
 import {
   ClientApiId,
   ClientApiIntrouvable,
-} from '@app/web/features/clients-api/domain'
-import { nouveauSecret } from '@app/web/features/clients-api/implementation/secret'
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/clients-api/domain'
+import { nouveauSecret } from '@/features/clients-api/implementation/secret'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 export const renouvelerLeSecret = async ({
   clientApiId,

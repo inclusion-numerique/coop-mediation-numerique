@@ -1,9 +1,9 @@
-import { choisirProfilAction } from '@app/web/app/_actions/inscription/choisir-profil.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import ChoisirRolePage from '@app/web/features/inscription/abilities/choisir-profil/ui/pages/ChoisirRolePage'
-import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
+import { choisirProfilAction } from '@/app/_actions/inscription/choisir-profil.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
+import ChoisirRolePage from '@/features/inscription/abilities/choisir-profil/ui/pages/ChoisirRolePage'
+import { hasInscriptionComplete } from '@/security/getHomepage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -1,5 +1,5 @@
-import { generateRandomSecret } from '@app/web/security/generateRandomSecret'
 import { describe, expect, it } from 'vitest'
+import { generateRandomSecret } from '@/security/generateRandomSecret'
 
 describe('generateRandomSecret', () => {
   it('should generate a random secret of the specified length', () => {

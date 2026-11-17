@@ -1,19 +1,19 @@
+import type { z } from 'zod'
 import {
   AnalysisSchema,
   type ParsedBeneficiaireRow,
-} from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
-import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import { ContactTelephone } from '@app/web/features/beneficiaire/domain/contact-telephone'
-import { Email } from '@app/web/features/beneficiaire/domain/email'
-import { Genre } from '@app/web/features/beneficiaire/domain/genre'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Notes } from '@app/web/features/beneficiaire/domain/notes'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
-import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
-import type { z } from 'zod'
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { Genre } from '@/features/beneficiaire/domain/genre'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Notes } from '@/features/beneficiaire/domain/notes'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { Telephone } from '@/features/beneficiaire/domain/telephone'
+import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { BeneficiaireAImporter } from '../domain/importer-beneficiaires'
 
 // Récupère la valeur d'un value object si elle est valide, sinon `null` : les

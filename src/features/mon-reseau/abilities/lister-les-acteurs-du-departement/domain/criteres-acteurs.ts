@@ -1,6 +1,6 @@
-import type { CodeInsee } from '@app/web/libraries/insee'
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import type { CodeInsee } from '@/libraries/insee'
+import { defineModel, type Model } from '@/libraries/model'
 import {
   communesLues,
   LignesParPage,

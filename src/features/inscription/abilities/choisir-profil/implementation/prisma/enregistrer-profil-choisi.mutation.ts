@@ -1,7 +1,7 @@
-import { inscriptionEtatFromDomain } from '@app/web/features/inscription/db'
-import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { inscriptionEtatFromDomain } from '@/features/inscription/db'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 import type { EnregistrerProfilChoisi } from '../../domain'
 
 /**

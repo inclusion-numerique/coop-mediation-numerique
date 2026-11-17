@@ -1,9 +1,9 @@
-import { useOnDiff } from '@app/web/hooks/useOnDiff'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import { useOnDiff } from '@/hooks/useOnDiff'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import RadioFormField, {
   LabelComponentPropsType,
   RadioFormFieldProps,

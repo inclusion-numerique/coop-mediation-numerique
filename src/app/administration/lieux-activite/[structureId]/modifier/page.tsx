@@ -1,25 +1,25 @@
-import { modifierLaFicheDuLieuAction } from '@app/web/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { listerLesMediateursDuLieu } from '@app/web/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
+import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import {
   dateDeDerniereActivite,
   MediateursDuLieu,
-} from '@app/web/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
-import { consulterLaFicheDuLieu } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+} from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
+import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
 import {
   EnteteDeLaFicheEnAdministration,
   FicheDuLieuPage,
   ficheAffichee,
-} from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
 import {
   BoutonDeRetrait,
   ModaleDeRetrait,
-} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { contentId } from '@app/web/utils/skipLinks'
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+} from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { contentId } from '@/utils/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Modifier une structure'),

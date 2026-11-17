@@ -1,7 +1,7 @@
-import { publicFooterProps } from '@app/web/app/(public)/PublicFooter'
 import { headerFooterDisplayItem } from '@codegouvfr/react-dsfr/Display'
 import { FooterBottomItem } from '@codegouvfr/react-dsfr/Footer'
 import classNames from 'classnames'
+import { publicFooterProps } from '@/app/(public)/PublicFooter'
 import styles from './MinimalFooter.module.css'
 
 const MinimalFooter = () => {

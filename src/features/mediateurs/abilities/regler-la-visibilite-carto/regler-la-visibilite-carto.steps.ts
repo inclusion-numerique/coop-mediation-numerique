@@ -1,12 +1,12 @@
 import assert from 'node:assert'
-import { reglerLaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto'
-import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto'
+import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import {
   semerUnMediateurVisible,
   visibiliteSemee,
-} from '@app/web/features/mediateurs/mediateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/mediateurs/mediateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof reglerLaVisibiliteCarto>>
 

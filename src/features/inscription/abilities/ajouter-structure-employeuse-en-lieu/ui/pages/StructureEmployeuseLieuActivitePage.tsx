@@ -1,14 +1,14 @@
 'use client'
 
-import { ajouterStructureEmployeuseEnLieuAction } from '@app/web/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
-import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
-import type { EmployeuseAffichee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
-import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import type { EmployeuseAffichee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
+import InscriptionCard from '@/features/inscription/components/InscriptionCard'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
 const erreurEnregistrement = () =>
   createToast({

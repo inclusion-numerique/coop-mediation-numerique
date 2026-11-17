@@ -1,14 +1,14 @@
-import type { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
-import { genres } from '@app/web/features/beneficiaire/domain/genre'
-import { statutsSociaux } from '@app/web/features/beneficiaire/domain/statut-social'
-import { tranchesAge } from '@app/web/features/beneficiaire/domain/tranche-age'
+import { v4 } from 'uuid'
+import type { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
+import { genres } from '@/features/beneficiaire/domain/genre'
+import { statutsSociaux } from '@/features/beneficiaire/domain/statut-social'
+import { tranchesAge } from '@/features/beneficiaire/domain/tranche-age'
 import type {
   Genre,
   Prisma,
   StatutSocial,
   TrancheAge,
-} from '@app/web/generated/prisma/client'
-import { v4 } from 'uuid'
+} from '@/generated/prisma/client'
 
 export const createCounterUuid = (root: string, index: number): string =>
   root.slice(0, -5) + index.toString(10).padStart(5, '0')

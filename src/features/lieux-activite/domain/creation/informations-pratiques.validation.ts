@@ -1,10 +1,10 @@
-import { HorairesValidation } from '@app/web/features/lieux-activite/domain/horaires.validation'
+import { HorairesValidation } from '@/features/lieux-activite/domain/horaires.validation'
 import {
   FicheAccesLibreSaisie,
   PriseRdvSaisie,
   SiteWebSaisi,
   texteFacultatif,
-} from '@app/web/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/regles-de-saisie'
 
 export const InformationsPratiquesShape = {
   siteWeb: SiteWebSaisi,

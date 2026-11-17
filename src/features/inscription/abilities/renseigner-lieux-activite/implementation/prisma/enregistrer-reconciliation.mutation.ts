@@ -1,6 +1,6 @@
-import { inscriptionEtatFromDomain } from '@app/web/features/inscription/db'
-import { rattacherAuLieu } from '@app/web/features/lieux-activite'
-import { prismaClient } from '@app/web/prismaClient'
+import { inscriptionEtatFromDomain } from '@/features/inscription/db'
+import { rattacherAuLieu } from '@/features/lieux-activite'
+import { prismaClient } from '@/prismaClient'
 import type { EnregistrerReconciliation } from '../../domain'
 import { depuisLeLieuDesire } from '../depuis-le-lieu-desire'
 

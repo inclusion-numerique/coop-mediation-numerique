@@ -1,13 +1,13 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { modifierUnClientApi } from '@app/web/features/clients-api/abilities/modifier-un-client-api'
-import { MODIFIER_UN_CLIENT_API_ERRORS } from '@app/web/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.errors'
-import { ModifierUnClientApiValidation } from '@app/web/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.validation'
-import { definitionDepuis } from '@app/web/features/clients-api/formulaire'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api'
+import { MODIFIER_UN_CLIENT_API_ERRORS } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.errors'
+import { ModifierUnClientApiValidation } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.validation'
+import { definitionDepuis } from '@/features/clients-api/formulaire'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const modifierUnClientApiAction = actionBuilder()
   .use(withAuth())

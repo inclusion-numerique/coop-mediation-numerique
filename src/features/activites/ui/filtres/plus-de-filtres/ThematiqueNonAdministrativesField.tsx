@@ -1,5 +1,5 @@
-import { thematiqueNonAdministrativesOptions } from '@app/web/features/activites/ui/libelles/thematique'
-import { withForm } from '@app/web/libs/form/use-app-form'
+import { thematiqueNonAdministrativesOptions } from '@/features/activites/ui/libelles/thematique'
+import { withForm } from '@/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const updateThematiqueNonAdministrativesParams =

@@ -1,10 +1,10 @@
-import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/inscription/renseigner-structure-employeuse.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
-import RenseignerStructureEmployeusePage from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
-import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
+import { renseignerStructureEmployeuseAction } from '@/app/_actions/inscription/renseigner-structure-employeuse.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
+import { sessionUserHasStructureEmployeuse } from '@/auth/sessionUser'
+import RenseignerStructureEmployeusePage from '@/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
+import { hasInscriptionComplete } from '@/security/getHomepage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

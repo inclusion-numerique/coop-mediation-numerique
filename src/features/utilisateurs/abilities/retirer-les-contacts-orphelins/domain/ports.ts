@@ -1,4 +1,4 @@
-import type { AdresseCourriel } from '@app/web/features/utilisateurs/domain'
+import type { AdresseCourriel } from '@/features/utilisateurs/domain'
 import type { ContactBrevo, RetraitDeLaListe } from './contacts'
 
 export type RetirerLesContactsOrphelinsPorts = {

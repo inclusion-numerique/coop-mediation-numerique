@@ -1,5 +1,5 @@
-import { Role } from '@app/web/features/inscription/domain'
 import { z } from 'zod'
+import { Role } from '@/features/inscription/domain'
 import { rolesDisponibles } from '../domain/choisir-profil'
 
 /**

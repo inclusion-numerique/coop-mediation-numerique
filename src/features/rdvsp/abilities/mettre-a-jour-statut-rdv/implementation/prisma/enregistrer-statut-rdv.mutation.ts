@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import type { EnregistrerStatutRdv } from '../../domain/mettre-a-jour-statut-rdv'
 
 /**

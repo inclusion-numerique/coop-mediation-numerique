@@ -1,5 +1,5 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import { mediateque } from '@app/web/fixtures/structures'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import { mediateque } from '@/fixtures/structures'
 
 export const mediateurAvecActiviteUserId =
   'd10844c6-b6de-402a-a68d-f8328b1d1b0c'

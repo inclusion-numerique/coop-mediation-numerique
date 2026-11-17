@@ -1,9 +1,9 @@
-import { noterLaRelance } from '@app/web/features/utilisateurs/db/noter-la-relance.mutation'
+import { noterLaRelance } from '@/features/utilisateurs/db/noter-la-relance.mutation'
 import {
   deroulerLesRelances,
   type RapportDeRelance,
-} from '@app/web/features/utilisateurs/domain'
-import { success } from '@app/web/libraries/result'
+} from '@/features/utilisateurs/domain'
+import { success } from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
 import { inscriptionsInachevees } from '../implementation'
 

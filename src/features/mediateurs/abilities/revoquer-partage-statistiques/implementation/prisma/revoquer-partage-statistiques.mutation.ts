@@ -1,8 +1,5 @@
-import type {
-  CoordinateurId,
-  MediateurId,
-} from '@app/web/features/mediateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+import type { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 export const revoquerPartageStatistiques = async ({
   mediateurId,

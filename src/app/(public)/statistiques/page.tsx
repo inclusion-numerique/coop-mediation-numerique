@@ -1,4 +1,4 @@
-import StatistiquesPubliquesPage from '@app/web/features/legal/use-cases/statistiques/StatistiquesPubliquesPage'
+import StatistiquesPubliquesPage from '@/features/legal/use-cases/statistiques/StatistiquesPubliquesPage'
 
 const Page = () => {
   return <StatistiquesPubliquesPage />

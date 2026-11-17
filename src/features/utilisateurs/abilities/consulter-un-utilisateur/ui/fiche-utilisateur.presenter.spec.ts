@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
   CoordinateurId,
@@ -8,8 +9,7 @@ import {
   rattachements,
   Telephone,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import type {
   CoordinateurDeLaFiche,
   FicheUtilisateur,

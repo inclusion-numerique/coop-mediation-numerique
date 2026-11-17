@@ -1,11 +1,11 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import EmployeusesListePage from '@app/web/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
+import { metadataTitle } from '@/app/metadataTitle'
+import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
 import {
   type EmployeusesSearchParams,
   employeuseAffichee,
   listerEmployeuses,
-} from '@app/web/features/employeuse/server'
-import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
+} from '@/features/employeuse/server'
+import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
 
 export const metadata = {
   title: metadataTitle('Structures employeuses'),

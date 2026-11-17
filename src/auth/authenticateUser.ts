@@ -1,5 +1,6 @@
-import { AuthenticationError } from '@app/web/auth/AuthenticationError'
-import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
+import { redirect } from 'next/navigation'
+import { AuthenticationError } from '@/auth/AuthenticationError'
+import { getAuthenticatedSessionUser } from '@/auth/getSessionUser'
 import {
   type ConseillerNumeriqueUser,
   type CoordinateurUser,
@@ -7,8 +8,7 @@ import {
   isCoordinateur,
   isMediateur,
   type MediateurUser,
-} from '@app/web/auth/userTypeGuards'
-import { redirect } from 'next/navigation'
+} from '@/auth/userTypeGuards'
 
 /**
  * This gets the session user from request cache and redirects to login

@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import type { Invitation, ReferenceInvitation } from '../domain'
 import { invitationSelect, toInvitation } from './invitation.transfer'
 

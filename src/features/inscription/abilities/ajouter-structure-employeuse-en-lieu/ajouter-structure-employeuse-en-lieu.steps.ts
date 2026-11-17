@@ -1,21 +1,21 @@
 import assert from 'node:assert'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
+import { Before, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import type {
   Geocodage,
   GeocoderLAdresse,
-} from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
-import type { UserId } from '@app/web/features/inscription/domain'
+} from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
+import type { UserId } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
   rattacherAEmployeuseMain,
   seedCollegueMediateur,
   seedEmployeuseMain,
   seedLieuActivite,
-} from '@app/web/features/inscription/inscription.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Before, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/inscription/inscription.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 

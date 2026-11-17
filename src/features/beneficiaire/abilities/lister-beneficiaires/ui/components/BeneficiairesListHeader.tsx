@@ -1,5 +1,5 @@
-import type { DataTableUrlState } from '@app/web/libraries/data-table'
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { DataTableUrlState } from '@/libraries/data-table'
 import { BeneficiairesMoreOptionsButton } from './BeneficiairesMoreOptionsButton'
 import { BeneficiairesSearch } from './BeneficiairesSearch'
 

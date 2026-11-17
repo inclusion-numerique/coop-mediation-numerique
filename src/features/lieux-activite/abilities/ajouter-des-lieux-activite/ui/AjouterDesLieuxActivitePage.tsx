@@ -1,24 +1,24 @@
 'use client'
 
-import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
-import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
-import CreerLieuActiviteForm from '@app/web/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
-import {
-  type CreerLieuActiviteFormData,
-  toCreerLieuData,
-} from '@app/web/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
-import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
+import { ajouterDesLieuxActiviteAction } from '@/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
+import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
+import { geocodeStructureAdresse } from '@/external-apis/ban/geocodeStructureAdresse'
+import CreerLieuActiviteForm from '@/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
+import {
+  type CreerLieuActiviteFormData,
+  toCreerLieuData,
+} from '@/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 import { LieuAAjouterComboBox } from './components/lieu-a-ajouter-combo-box'
 import { PanierDeLieux } from './components/PanierDeLieux'
 import { RechercheDeLieu } from './components/RechercheDeLieu'

@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Link from 'next/link'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 const Webinaire = () => (
   <div className="fr-background-action-low--blue-france fr-py-6w">

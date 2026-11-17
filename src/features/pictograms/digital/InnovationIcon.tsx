@@ -1,4 +1,4 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
+import { Pictogram } from '@/features/pictograms/pictogram'
 
 export const InnovationIcon: Pictogram = ({
   width = 80,

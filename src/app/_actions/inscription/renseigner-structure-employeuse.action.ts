@@ -1,16 +1,16 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
 import {
   RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS,
   RenseignerStructureEmployeuseValidation,
-} from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import { renseignerStructureEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
-import { rattacherEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/implementation'
-import { UserId } from '@app/web/features/inscription/domain'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/inscription/abilities/renseigner-structure-employeuse'
+import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
+import { rattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementation'
+import { UserId } from '@/features/inscription/domain'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 /**
  * Étape d'inscription « ma structure employeuse ».

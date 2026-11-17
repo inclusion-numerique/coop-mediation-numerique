@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 
 export const getMediateursCoordonnesForInscription = async ({
   userId,

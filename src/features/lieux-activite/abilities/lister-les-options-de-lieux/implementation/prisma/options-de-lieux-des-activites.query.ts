@@ -1,5 +1,5 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+import { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
 
 type LieuActiviteQueryResult = {

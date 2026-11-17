@@ -1,4 +1,4 @@
-import type { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
+import type { CreateUserInput } from '@e2e/tasks/handlers/user.tasks'
 import { v4 } from 'uuid'
 
 export const appUrl = (path: string) =>

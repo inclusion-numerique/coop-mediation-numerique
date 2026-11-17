@@ -1,10 +1,7 @@
-import { departements as REFERENTIEL_DES_DEPARTEMENTS } from '@app/web/data/collectivites-territoriales/departements'
-import { Prisma } from '@app/web/generated/prisma/client'
-import {
-  type Departement,
-  departementDuCode,
-} from '@app/web/libraries/departement'
-import { prismaClient } from '@app/web/prismaClient'
+import { departements as REFERENTIEL_DES_DEPARTEMENTS } from '@/data/collectivites-territoriales/departements'
+import { Prisma } from '@/generated/prisma/client'
+import { type Departement, departementDuCode } from '@/libraries/departement'
+import { prismaClient } from '@/prismaClient'
 import { dansLePerimetre } from '../../../../db/perimetre-des-statistiques.sql'
 import {
   communeComptee,

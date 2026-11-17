@@ -1,8 +1,8 @@
 import {
   type ClientApi,
   libellesDesPortees,
-} from '@app/web/features/clients-api/domain'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
+} from '@/features/clients-api/domain'
+import { dateAsDayAndTime } from '@/utils/dateAsDayAndTime'
 import { hrefDuClientApi } from '../../../ui/liens'
 
 export type LigneDeClientApi = {

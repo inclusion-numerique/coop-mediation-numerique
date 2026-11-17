@@ -1,4 +1,4 @@
-import { failure, success } from '@app/web/libraries/result'
+import { failure, success } from '@/libraries/result'
 import type { RdvServicePublicApi } from '../../../domain/rdv-service-public.port'
 import {
   type CompteRdvExistant,

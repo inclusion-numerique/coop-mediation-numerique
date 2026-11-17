@@ -1,4 +1,4 @@
-import type { InjectionKey } from '@app/web/libs/injection/types'
+import type { InjectionKey } from '@/libs/injection/types'
 import type { PipeMiddleware } from '../action-builder'
 import type { ServerActionResult } from '../result'
 

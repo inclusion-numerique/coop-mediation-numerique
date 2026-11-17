@@ -1,8 +1,8 @@
-import { proConnectProviderId } from '@app/web/auth/proConnect'
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { prismaClient } from '@app/web/prismaClient'
 import axios from 'axios'
+import { proConnectProviderId } from '@/auth/proConnect'
+import type { SessionUser } from '@/auth/sessionUser'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { prismaClient } from '@/prismaClient'
 
 const isJwtUnexpired = (token: string, clockSkewSeconds = 60): boolean => {
   try {

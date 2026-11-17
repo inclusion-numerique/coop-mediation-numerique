@@ -1,13 +1,13 @@
 'use client'
 
-import { SessionUser } from '@app/web/auth/sessionUser'
-import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
-import { statistiquesPageTitle } from '@app/web/features/statistiques/ui/pages/titre-des-statistiques'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
+import { SessionUser } from '@/auth/sessionUser'
+import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
+import { statistiquesPageTitle } from '@/features/statistiques/ui/pages/titre-des-statistiques'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import styles from './CoopSideMenu.module.css'
 
 const onlyFor =

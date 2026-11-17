@@ -1,19 +1,19 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
   RechercheDeLieu,
   rechercherDesLieuxAAjouter,
-} from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain'
-import { chercherDansLaCoop } from '@app/web/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementation'
-import { IdentifiantCartographie } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { NombreDeLieux } from '@app/web/features/lieux-activite/domain/nombres'
+} from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain'
+import { chercherDansLaCoop } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementation'
+import { IdentifiantCartographie } from '@/features/lieux-activite/domain/ids-cartographie-nationale'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { NombreDeLieux } from '@/features/lieux-activite/domain/nombres'
 import {
   AdresseLibre,
   type SuggestionDeLieu,
-} from '@app/web/features/lieux-activite/domain/suggestion-de-lieu'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+} from '@/features/lieux-activite/domain/suggestion-de-lieu'
+import { prismaClient } from '@/prismaClient'
 
 const scenario: {
   lieuATrouver?: string

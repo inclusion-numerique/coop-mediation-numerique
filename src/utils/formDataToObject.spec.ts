@@ -1,5 +1,5 @@
-import { formDataToObject } from '@app/web/utils/formDataToObject'
 import { describe, expect, it } from 'vitest'
+import { formDataToObject } from '@/utils/formDataToObject'
 
 describe('formDataToObject', () => {
   it('converts FormData to a plain object with primitive values', () => {

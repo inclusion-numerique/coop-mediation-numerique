@@ -1,17 +1,17 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { supprimerUneActiviteDeMediation } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ERRORS } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.errors'
-import { SupprimerUneActiviteDeMediationValidation } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.validation'
+import { actionBuilder } from '@/configuration/nextjs'
+import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ERRORS } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.errors'
+import { SupprimerUneActiviteDeMediationValidation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.validation'
 import {
   ActiviteId,
   MediateurId,
   UtilisateurId,
-} from '@app/web/features/activites/domain'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/activites/domain'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const supprimerUneActiviteDeMediationAction = actionBuilder()
   .use(withAuth())

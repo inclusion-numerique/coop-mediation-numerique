@@ -1,18 +1,19 @@
 import assert from 'node:assert'
-import type { SynchroniserOrganisations } from '@app/web/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
-import { appliquerPlanOrganisations } from '@app/web/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
-import { etatOrganisations } from '@app/web/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
-import { synchroniserOrganisations } from '@app/web/features/rdvsp/abilities/synchroniser-organisations/implementation/synchroniser-organisations'
-import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { SynchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
+import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
+import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
+import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/synchroniser-organisations'
+import { compteRdvToDomain } from '@/features/rdvsp/db'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
-} from '@app/web/features/rdvsp/domain/compte-rdv'
-import { ApiIndisponible } from '@app/web/features/rdvsp/domain/errors'
-import { NomOrganisation } from '@app/web/features/rdvsp/domain/libelle'
-import type { Organisation } from '@app/web/features/rdvsp/domain/organisation'
-import { OrganisationId } from '@app/web/features/rdvsp/domain/organisation-id'
-import type { RdvServicePublicApi } from '@app/web/features/rdvsp/domain/rdv-service-public.port'
+} from '@/features/rdvsp/domain/compte-rdv'
+import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { NomOrganisation } from '@/features/rdvsp/domain/libelle'
+import type { Organisation } from '@/features/rdvsp/domain/organisation'
+import { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
 import {
   compteRdvEnBase,
   ID_TEST,
@@ -21,9 +22,8 @@ import {
   seedCompteRdv,
   seedOrganisation,
   seedRattachement,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@app/web/libraries/result'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { failure, success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 8
 

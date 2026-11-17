@@ -1,23 +1,4 @@
 import assert from 'node:assert'
-import { ajouterDesLieuxActivite } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite'
-import type {
-  LieuACreer,
-  LieuCarto,
-  LieuDemande,
-  LieuExistant,
-} from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import { lireLieuxDejaRattaches } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
-import { BanId } from '@app/web/features/lieux-activite/domain/ban-id'
-import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
-import {
-  IdentifiantCartographie,
-  IdsCartographieNationale,
-} from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import { lieuxSemes } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
   Adresse,
@@ -35,6 +16,25 @@ import {
   Services,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
+import type {
+  LieuACreer,
+  LieuCarto,
+  LieuDemande,
+  LieuExistant,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
+import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { BanId } from '@/features/lieux-activite/domain/ban-id'
+import type { Fiche } from '@/features/lieux-activite/domain/fiche'
+import {
+  IdentifiantCartographie,
+  IdsCartographieNationale,
+} from '@/features/lieux-activite/domain/ids-cartographie-nationale'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { lieuxSemes } from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
 

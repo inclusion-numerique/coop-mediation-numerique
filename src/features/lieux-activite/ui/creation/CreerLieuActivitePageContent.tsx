@@ -1,9 +1,9 @@
 'use client'
 
-import IconInSquare from '@app/web/components/IconInSquare'
-import LieuActiviteSideMenu from '@app/web/features/lieux-activite/ui/LieuActiviteSideMenu'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
+import IconInSquare from '@/components/IconInSquare'
+import LieuActiviteSideMenu from '@/features/lieux-activite/ui/LieuActiviteSideMenu'
 import CreerLieuActiviteForm from './CreerLieuActiviteForm'
 import type { CreerLieuActiviteFormData } from './creer-lieu-activite.form-data'
 

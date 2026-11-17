@@ -1,6 +1,6 @@
-import { AccompagnementPieChart } from '@app/web/libs/statistiques/AccompagnementPieChart'
-import { dureesAccompagnementColors } from '@app/web/libs/statistiques/couleurs'
-import { QuantifiedShareLegend } from '@app/web/libs/statistiques/QuantifiedShareLegend'
+import { AccompagnementPieChart } from '@/libs/statistiques/AccompagnementPieChart'
+import { dureesAccompagnementColors } from '@/libs/statistiques/couleurs'
+import { QuantifiedShareLegend } from '@/libs/statistiques/QuantifiedShareLegend'
 import type { RepartitionPresentee } from '../repartition.presenter'
 
 export const DureesDesAccompagnements = ({

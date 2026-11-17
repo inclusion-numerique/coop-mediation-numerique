@@ -1,14 +1,11 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   inviterDesMembres,
   type MediateursAInviter,
   rechercherDesMediateursAInviter,
-} from '@app/web/features/equipe/abilities/inviter-des-membres'
-import {
-  CoordinateurId,
-  Email,
-  UtilisateurId,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/abilities/inviter-des-membres'
+import { CoordinateurId, Email, UtilisateurId } from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   invitationDe,
@@ -17,9 +14,8 @@ import {
   semerUneAdhesion,
   semerUneInvitation,
   semerUnMediateurDEquipe,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

@@ -1,4 +1,4 @@
-import { premiereValeur, valeurLue } from '@app/web/libraries/parametres-d-url'
+import { premiereValeur, valeurLue } from '@/libraries/parametres-d-url'
 import {
   type CriteresDesActivites,
   criteresDesActivites,

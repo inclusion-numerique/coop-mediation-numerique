@@ -1,25 +1,25 @@
 import assert from 'node:assert'
-import { creerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
-import { renseignerLieuxActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { creerLieuActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
+import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
 import {
   enregistrerLeLieuSaisi,
   mediateurFromUser,
-} from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
-import { ProfilInscription } from '@app/web/features/inscription/domain'
+} from '@/features/inscription/abilities/renseigner-lieux-activite/implementation'
+import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedLieuActivite,
   seedProfilChoisi,
   trackLieuActivite,
-} from '@app/web/features/inscription/inscription.cucumber'
+} from '@/features/inscription/inscription.cucumber'
 import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
-} from '@app/web/features/lieux-activite'
-import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/lieux-activite'
+import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { prismaClient } from '@/prismaClient'
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({

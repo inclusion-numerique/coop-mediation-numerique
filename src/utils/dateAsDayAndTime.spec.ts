@@ -1,11 +1,11 @@
+import { describe, expect, it } from 'vitest'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
   dateAsDayInTimeZone,
   dateAsTime,
   dateAsTimeInTimeZone,
-} from '@app/web/utils/dateAsDayAndTime'
-import { describe, expect, it } from 'vitest'
+} from '@/utils/dateAsDayAndTime'
 
 describe('dateAsDayAndTime', () => {
   describe('dateAsDayAndTime', () => {

@@ -1,19 +1,19 @@
-import { appUrl } from '@app/e2e/support/helpers'
+import { appUrl } from '@e2e/support/helpers'
 import {
   CoordinateurId,
   Email,
   lienInvitation,
   ReferenceInvitation,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
-} from '@app/web/fixtures/users/conseillerNumerique'
-import { coordinateurInscritCoordinateurId } from '@app/web/fixtures/users/coordinateurInscrit'
+} from '@/fixtures/users/conseillerNumerique'
+import { coordinateurInscritCoordinateurId } from '@/fixtures/users/coordinateurInscrit'
 import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
-} from '@app/web/fixtures/users/mediateurInscription'
+} from '@/fixtures/users/mediateurInscription'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 
 const createInvitationUrl = ({

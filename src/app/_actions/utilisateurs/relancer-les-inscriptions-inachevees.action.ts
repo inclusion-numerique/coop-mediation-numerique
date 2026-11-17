@@ -1,8 +1,8 @@
 'use server'
 
-import { lancerLesRelancesDInscription } from '@app/web/composition/utilisateurs/relances.ports'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
+import { lancerLesRelancesDInscription } from '@/composition/utilisateurs/relances.ports'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
 
 export const relancerLesInscriptionsInacheveesAction = actionBuilder()
   .use(withAuth())

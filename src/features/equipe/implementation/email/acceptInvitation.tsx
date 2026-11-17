@@ -1,7 +1,7 @@
-import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
-import { brandColor } from '@app/web/libraries/emails/styles'
 import { MjmlColumn, MjmlSection, MjmlText } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
+import { brandColor } from '@/libraries/emails/styles'
 
 export const acceptInvitation = {
   text: ({ mediateur }: { mediateur: string }): string =>

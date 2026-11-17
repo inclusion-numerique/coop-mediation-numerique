@@ -1,9 +1,9 @@
-import { nouveauAccountEmail } from '@app/web/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementation/email/nouveauAccountEmail'
-import { compileMjml } from '@app/web/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { emailTransport } from '@app/web/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
+import { nouveauAccountEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementation/email/nouveauAccountEmail'
+import { compileMjml } from '@/libraries/emails/mjml'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { emailTransport } from '@/server/email/emailTransport'
+import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 
 export const sendNouveauAccountEmail = async ({
   email,

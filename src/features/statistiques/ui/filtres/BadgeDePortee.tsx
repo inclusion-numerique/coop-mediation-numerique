@@ -1,11 +1,11 @@
 'use client'
 
-import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
-import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { TagScope } from '@/features/statistiques/ui/filtres/portee-de-tag'
+import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
 const TAG_SEVERITY: Record<TagScope, string> = {
   [TagScope.Personnel]: 'fr-text-mention--grey',

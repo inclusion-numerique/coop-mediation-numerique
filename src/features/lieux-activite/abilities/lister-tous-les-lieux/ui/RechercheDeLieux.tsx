@@ -1,9 +1,9 @@
 'use client'
 
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter } from 'next/navigation'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 import type { LieuxDataTableSearchParams } from './LieuxDataTable'
 
 const CHAMP = 'recherche'

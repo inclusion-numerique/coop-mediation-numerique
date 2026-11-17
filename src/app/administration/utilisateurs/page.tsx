@@ -1,28 +1,28 @@
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { rechercherDesEmployeusesAction } from '@app/web/app/_actions/utilisateurs/rechercher-des-employeuses.action'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { optionsDesFiltres } from '@app/web/composition/utilisateurs/options-des-filtres'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { BoutonExporterLesUtilisateurs } from '@app/web/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
+import CoopPageContainer from '@/app/coop/CoopPageContainer'
+import { metadataTitle } from '@/app/metadataTitle'
+import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
   rechercherDesUtilisateurs,
   triDesUtilisateurs,
-} from '@app/web/features/utilisateurs/abilities/lister-les-utilisateurs'
-import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
+} from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
+import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
 import {
   UtilisateursDataTable,
   type UtilisateursDataTableSearchParams,
   UtilisateursPage,
-} from '@app/web/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
+} from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
 import {
   filtresUtilisateurs,
   type ParametresDeFiltres,
   parametresDesFiltres,
-} from '@app/web/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@app/web/features/utilisateurs/ui'
-import { getDataTableOrderBy } from '@app/web/libs/data-table/getDataTableOrderBy'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
+} from '@/features/utilisateurs/domain'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { getDataTableOrderBy } from '@/libs/data-table/getDataTableOrderBy'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),

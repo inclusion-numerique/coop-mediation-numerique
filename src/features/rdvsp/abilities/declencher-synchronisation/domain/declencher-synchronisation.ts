@@ -1,4 +1,4 @@
-import type { Result } from '@app/web/libraries/result'
+import type { Result } from '@/libraries/result'
 import { type CompteRdv, estUtilisable } from '../../../domain/compte-rdv'
 import type { OrganisationId } from '../../../domain/organisation-id'
 import type { RdvAgentId } from '../../../domain/rdv-agent-id'

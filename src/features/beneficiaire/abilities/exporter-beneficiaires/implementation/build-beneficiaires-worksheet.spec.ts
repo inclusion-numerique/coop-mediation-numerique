@@ -1,20 +1,20 @@
-import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import { Email } from '@app/web/features/beneficiaire/domain/email'
-import { Genre, sexLabels } from '@app/web/features/beneficiaire/domain/genre'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { describe, expect, it } from 'vitest'
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { Genre, sexLabels } from '@/features/beneficiaire/domain/genre'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import {
   StatutSocial,
   statutSocialLabels,
-} from '@app/web/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+} from '@/features/beneficiaire/domain/statut-social'
+import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import {
   TrancheAge,
   trancheAgeLabels,
-} from '@app/web/features/beneficiaire/domain/tranche-age'
-import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
-import { describe, expect, it } from 'vitest'
+} from '@/features/beneficiaire/domain/tranche-age'
+import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
 import type { BeneficiaireExportRow } from '../domain/exporter-beneficiaires'
 import { buildBeneficiairesWorksheet } from './build-beneficiaires-worksheet'
 

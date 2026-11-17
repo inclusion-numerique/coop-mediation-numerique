@@ -1,8 +1,8 @@
-import { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
-import { createBeneficiairesForParticipantsAnonymes } from '@app/web/features/activites/fixtures/createBeneficiairesForParticipantsAnonymes'
-import type { Prisma, TypeLieu } from '@app/web/generated/prisma/client'
-import { mergeUuids } from '@app/web/libraries/fixtures/mergeUuids'
 import { v4 } from 'uuid'
+import { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
+import { createBeneficiairesForParticipantsAnonymes } from '@/features/activites/fixtures/createBeneficiairesForParticipantsAnonymes'
+import type { Prisma, TypeLieu } from '@/generated/prisma/client'
+import { mergeUuids } from '@/libraries/fixtures/mergeUuids'
 
 /**
  * Create a CRA individuel prisma data with associated entities

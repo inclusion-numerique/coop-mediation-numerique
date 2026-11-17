@@ -1,8 +1,8 @@
+import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
   RoleUtilisateur,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import {
   autoriserFusion,
   CibleFusionId,

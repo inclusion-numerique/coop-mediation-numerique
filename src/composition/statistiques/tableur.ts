@@ -1,7 +1,7 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { generateActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import type { BuildStatistiquesWorksheetInput } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
+import type { SessionUser } from '@/auth/sessionUser'
+import { generateActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import type { BuildStatistiquesWorksheetInput } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
 import { getMesStatistiquesPageData } from './mes-statistiques'
 
 export const getStatistiquesWorksheetInput = async ({

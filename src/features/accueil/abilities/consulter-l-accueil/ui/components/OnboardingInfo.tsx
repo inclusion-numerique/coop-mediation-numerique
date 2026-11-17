@@ -1,10 +1,10 @@
 'use client'
 
-import { hasClosedOnboardingCookie } from '@app/web/app/(onboarding)/onboardingCookie'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
+import { hasClosedOnboardingCookie } from '@/app/(onboarding)/onboardingCookie'
 
 const setOnboardingCookie = () => {
   Cookies.set(hasClosedOnboardingCookie, new Date().toISOString(), {

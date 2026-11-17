@@ -1,11 +1,11 @@
 'use client'
 
+import { type PublicSpecifiquementAdresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
-} from '@app/web/features/lieux-activite/ui/options'
-import { withForm } from '@app/web/libs/form/use-app-form'
-import { type PublicSpecifiquementAdresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
+} from '@/features/lieux-activite/ui/options'
+import { withForm } from '@/libs/form/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 const tousLesPublics: PublicSpecifiquementAdresse[] =

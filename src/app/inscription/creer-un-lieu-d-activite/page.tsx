@@ -1,12 +1,12 @@
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import CreerLieuActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/CreerLieuActivitePage'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import CreerLieuActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/CreerLieuActivitePage'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { ClientBinder } from '@/libs/injection/client-binder'
+import { contentId } from '@/utils/skipLinks'
 
 export const metadata = {
   title: metadataTitle('Finaliser mon inscription'),

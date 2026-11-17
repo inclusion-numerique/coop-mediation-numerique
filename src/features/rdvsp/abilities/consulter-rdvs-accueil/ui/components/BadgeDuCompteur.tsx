@@ -1,5 +1,5 @@
-import { pluriel } from '@app/web/libraries/pluriel'
 import Badge from '@codegouvfr/react-dsfr/Badge'
+import { pluriel } from '@/libraries/pluriel'
 
 export type StatutDuCompteur = 'unknown' | 'past'
 

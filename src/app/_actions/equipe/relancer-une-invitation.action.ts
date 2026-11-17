@@ -1,19 +1,19 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { relancerUneInvitation } from '@app/web/features/equipe/abilities/relancer-une-invitation'
-import { RELANCER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.errors'
-import { RelancerUneInvitationValidation } from '@app/web/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.validation'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation'
+import { RELANCER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.errors'
+import { RelancerUneInvitationValidation } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.validation'
 import {
   CoordinateurId,
   Email,
   ReferenceInvitation,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
-import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/equipe/domain'
+import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const relancerUneInvitationAction = actionBuilder()
   .use(withAuth())

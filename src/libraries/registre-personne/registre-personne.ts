@@ -1,6 +1,6 @@
-import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import {
   type Alignement,
   alignementDe,

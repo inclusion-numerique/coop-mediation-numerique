@@ -1,7 +1,7 @@
 import {
   contratPourEmployeuse,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
+} from '@/features/employeuse/server'
 import type { UtilisateurExpose } from '../prisma/utilisateurs-exposes.query'
 
 export type UtilisateurAttributes = {

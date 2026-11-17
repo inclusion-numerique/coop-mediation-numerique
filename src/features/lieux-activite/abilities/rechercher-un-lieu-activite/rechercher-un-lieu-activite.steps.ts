@@ -1,12 +1,12 @@
 import assert from 'node:assert'
+import { Then, When } from '@cucumber/cucumber'
 import {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
-} from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const resultats: { trouves?: readonly LieuActiviteTrouve[] } = {}
 

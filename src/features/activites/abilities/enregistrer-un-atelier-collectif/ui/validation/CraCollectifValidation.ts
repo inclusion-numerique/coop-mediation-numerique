@@ -1,8 +1,8 @@
-import { ParticipantsAnonymesCraCollectifValidation } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
-import { niveauAtelierValues } from '@app/web/features/activites/ui/libelles/niveau-atelier'
-import { BeneficiaireCraValidation } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
-import { CraValidation } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
 import z from 'zod'
+import { ParticipantsAnonymesCraCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
+import { niveauAtelierValues } from '@/features/activites/ui/libelles/niveau-atelier'
+import { BeneficiaireCraValidation } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
+import { CraValidation } from '@/features/activites/ui/saisie/validation/CraValidation'
 
 export const CraCollectifValidation = CraValidation.extend({
   participants: z

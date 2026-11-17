@@ -1,5 +1,5 @@
-import { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
+import { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
+import type { DefaultValues } from '@/libs/form/use-app-form'
 
 export const craPartenariatDefaultValues = (
   stateFromUrl: DefaultValues<CraPartenariatData>,

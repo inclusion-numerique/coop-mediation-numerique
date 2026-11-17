@@ -1,7 +1,7 @@
 'use client'
 
-import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { download } from '@/utils/download'
 
 const DownloadCsvDataButton = ({
   csvData,

@@ -1,8 +1,8 @@
+import { Editor } from '@tiptap/react'
 import {
   RichTextLink,
   RichTextLinkModal,
-} from '@app/web/libraries/ui/components/Form/RichText/RichTextLinkModalForm'
-import { Editor } from '@tiptap/react'
+} from '@/libraries/ui/components/Form/RichText/RichTextLinkModalForm'
 
 export type EditLinkOptions = {
   url?: string

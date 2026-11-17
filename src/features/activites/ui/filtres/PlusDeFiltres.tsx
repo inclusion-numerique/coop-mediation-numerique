@@ -1,35 +1,35 @@
 'use client'
 
-import type { OptionDeTag } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import {
-  SourcesField,
-  updateSourcesParams,
-} from '@app/web/features/activites/ui/filtres/plus-de-filtres/SourceField'
-import type { StructureEmployeuse } from '@app/web/features/activites/ui/filtres/plus-de-filtres/StructureEmployeuseComboBox'
-import {
-  StructuresEmployeusesField,
-  updateStructuresEmployeusesParams,
-} from '@app/web/features/activites/ui/filtres/plus-de-filtres/StructuresEmployeusesField'
-import {
-  TagsField,
-  tagToArray,
-  updateTagsParams,
-} from '@app/web/features/activites/ui/filtres/plus-de-filtres/TagsField'
-import {
-  ThematiqueAdministrativesFiled,
-  updateThematiqueAdministrativesParams,
-} from '@app/web/features/activites/ui/filtres/plus-de-filtres/ThematiqueAdministrativesField'
-import {
-  ThematiqueNonAdministrativesFiled,
-  updateThematiqueNonAdministrativesParams,
-} from '@app/web/features/activites/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
-import type { SourceDansLURL } from '@app/web/features/activites/ui/libelles/source-de-l-activite'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { OptionDeTag } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import {
+  SourcesField,
+  updateSourcesParams,
+} from '@/features/activites/ui/filtres/plus-de-filtres/SourceField'
+import type { StructureEmployeuse } from '@/features/activites/ui/filtres/plus-de-filtres/StructureEmployeuseComboBox'
+import {
+  StructuresEmployeusesField,
+  updateStructuresEmployeusesParams,
+} from '@/features/activites/ui/filtres/plus-de-filtres/StructuresEmployeusesField'
+import {
+  TagsField,
+  tagToArray,
+  updateTagsParams,
+} from '@/features/activites/ui/filtres/plus-de-filtres/TagsField'
+import {
+  ThematiqueAdministrativesFiled,
+  updateThematiqueAdministrativesParams,
+} from '@/features/activites/ui/filtres/plus-de-filtres/ThematiqueAdministrativesField'
+import {
+  ThematiqueNonAdministrativesFiled,
+  updateThematiqueNonAdministrativesParams,
+} from '@/features/activites/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
+import type { SourceDansLURL } from '@/features/activites/ui/libelles/source-de-l-activite'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres/plus-de-filtres.form-options'
 
 const MoreFiltersModal = createModal({

@@ -1,8 +1,8 @@
 import {
   AdresseCourriel,
   RoleUtilisateur,
-} from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
 import {
   CibleFusionId,
   type CompteAFusionner,

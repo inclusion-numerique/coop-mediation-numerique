@@ -1,12 +1,12 @@
 import assert from 'node:assert'
-import type { EmployeuseListee } from '@app/web/features/employeuse/abilities/lister-employeuses/domain/lister-employeuses'
-import { listerEmployeuses } from '@app/web/features/employeuse/abilities/lister-employeuses/implementation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/lister-employeuses'
+import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementation'
 import {
   seedAffectation,
   seedEmployeuseMain,
   seedUtilisateur,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 const employeuses = new Map<string, number>()
 let listees: EmployeuseListee[] = []

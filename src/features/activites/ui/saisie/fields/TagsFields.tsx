@@ -1,17 +1,14 @@
-import { CreationDeTagDuCra } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { CreationDeTagDuCra } from '@/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import {
   TagComboBox,
   TagOptions,
   TagSelectedItems,
-} from '@app/web/features/activites/ui/saisie/tags/TagsComboBox'
-import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import type { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@app/web/libs/form/use-app-form'
-import Button from '@codegouvfr/react-dsfr/Button'
+} from '@/features/activites/ui/saisie/tags/TagsComboBox'
+import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import type { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { type DefaultValues, withFieldGroup } from '@/libs/form/use-app-form'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'tags'> = {}
 

@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { CodeInsee } from '@app/web/libraries/insee'
+import type { Prisma } from '@/generated/prisma/client'
+import { CodeInsee } from '@/libraries/insee'
 import {
   ActiviteId,
   AdresseDuLieu,

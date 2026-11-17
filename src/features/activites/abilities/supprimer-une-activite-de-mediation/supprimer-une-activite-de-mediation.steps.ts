@@ -1,15 +1,15 @@
 import assert from 'node:assert'
-import { supprimerUneActiviteDeMediation } from '@app/web/features/activites/abilities/supprimer-une-activite-de-mediation'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation'
 import {
   ActiviteId,
   type ActiviteIntrouvable,
   MediateurId,
   UtilisateurId,
-} from '@app/web/features/activites/domain'
-import type { Result } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/activites/domain'
+import type { Result } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 type Mediateur = { readonly userId: string; readonly mediateurId: string }
 

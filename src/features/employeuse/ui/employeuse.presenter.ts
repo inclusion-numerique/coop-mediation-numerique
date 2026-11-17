@@ -1,4 +1,4 @@
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import { referentAffichage } from '../domain/contact-referent'
 import type { Employeuse } from '../domain/employeuse'
 

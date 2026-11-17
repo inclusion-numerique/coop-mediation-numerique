@@ -1,15 +1,15 @@
 'use server'
 
-import { perimetreDesEmployeusesDe } from '@app/web/composition/statistiques/perimetre'
-import { actionBuilder } from '@app/web/configuration/nextjs'
+import { perimetreDesEmployeusesDe } from '@/composition/statistiques/perimetre'
+import { actionBuilder } from '@/configuration/nextjs'
 import {
   EmployeuseId,
   rechercherLesEmployeusesDesActivites,
-} from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites'
-import { RechercherLesEmployeusesDesActivitesValidation } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
-import { optionsDEmployeuses } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
-import { withAuth } from '@app/web/features/authentification'
-import { withInput } from '@app/web/libraries/nextjs'
+} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites'
+import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
+import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
+import { withAuth } from '@/features/authentification'
+import { withInput } from '@/libraries/nextjs'
 
 export const rechercherEmployeusesDesActivitesAction = actionBuilder()
   .use(withAuth())

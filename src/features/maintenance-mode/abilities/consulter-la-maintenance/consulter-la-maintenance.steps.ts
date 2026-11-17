@@ -1,9 +1,9 @@
 import assert from 'node:assert'
-import { consulterLHistoriqueDesMaintenances } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance'
-import type { PeriodeDeMaintenance } from '@app/web/features/maintenance-mode/domain'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { consulterLHistoriqueDesMaintenances } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
+import type { PeriodeDeMaintenance } from '@/features/maintenance-mode/domain'
+import { prismaClient } from '@/prismaClient'
 
 const auteurId = v4()
 

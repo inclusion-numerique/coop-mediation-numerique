@@ -1,10 +1,10 @@
+import { NextRequest } from 'next/server'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
-} from '@app/web/app/api/v1/apiV1Headers'
-import { authentifierUnClientApi } from '@app/web/features/clients-api/abilities/authentifier-un-client-api'
-import { ApiClientScope } from '@app/web/generated/prisma/browser'
-import { NextRequest } from 'next/server'
+} from '@/app/api/v1/apiV1Headers'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api'
+import { ApiClientScope } from '@/generated/prisma/browser'
 
 export const isAuthenticatedApiClientRequest = async (
   request: NextRequest,

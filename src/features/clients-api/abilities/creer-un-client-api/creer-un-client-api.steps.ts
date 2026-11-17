@@ -1,14 +1,14 @@
 import assert from 'node:assert'
-import { creerUnClientApi } from '@app/web/features/clients-api/abilities/creer-un-client-api'
+import { Then, When } from '@cucumber/cucumber'
+import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api'
 import {
   clientSeme,
   jour,
   nomUnique,
   portees,
   retenirLeClient,
-} from '@app/web/features/clients-api/clients-api.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/clients-api/clients-api.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const creation: { resultat?: Awaited<ReturnType<typeof creerUnClientApi>> } = {}
 

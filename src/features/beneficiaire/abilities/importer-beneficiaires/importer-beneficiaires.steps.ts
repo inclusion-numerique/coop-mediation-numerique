@@ -1,17 +1,17 @@
 import assert from 'node:assert'
-import type { BeneficiaireAImporter } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires'
-import { importerBeneficiaires } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/implementation'
+import { Then, When } from '@cucumber/cucumber'
+import type { BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires'
+import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementation'
 import {
   testMediateurId,
   trackBeneficiaire,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { Genre } from '@app/web/features/beneficiaire/domain/genre'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
-import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
-import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { Genre } from '@/features/beneficiaire/domain/genre'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import { prismaClient } from '@/prismaClient'
 
 let result: { importes: number } | undefined
 

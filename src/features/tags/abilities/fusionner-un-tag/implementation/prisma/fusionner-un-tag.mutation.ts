@@ -1,5 +1,5 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 import { tagToDomain } from '../../../../db/tag.transfer'
 import {
   type Acteur,

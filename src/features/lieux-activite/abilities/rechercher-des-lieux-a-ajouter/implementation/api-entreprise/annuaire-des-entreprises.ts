@@ -1,10 +1,10 @@
-import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/external-apis/api-entreprise/structuresDepuisUniteLegale'
-import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
 import {
   Nom,
   Siret,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { structureCreationDataWithSiretFromUniteLegale } from '@/external-apis/api-entreprise/structuresDepuisUniteLegale'
+import { rechercheApiEntreprise } from '@/external-apis/rechercheApiEntreprise'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
 import {

@@ -1,5 +1,5 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import type { Prisma } from '@app/web/generated/prisma/client'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import type { Prisma } from '@/generated/prisma/client'
 
 export const administrateur = givenUser({
   id: 'bd74893d-34fc-4d21-bfea-fe31b99b66a0',

@@ -1,6 +1,6 @@
 import assert from 'node:assert'
-import { semerUnCraV1 } from '@app/web/features/activites/activites.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { semerUnCraV1 } from '@/features/activites/activites.cucumber'
 import { Horodatage } from './domain'
 import { crasV1Exposes } from './implementation'
 

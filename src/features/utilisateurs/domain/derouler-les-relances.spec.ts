@@ -1,5 +1,5 @@
-import { failure, success } from '@app/web/libraries/result'
 import { describe, expect, it } from 'vitest'
+import { failure, success } from '@/libraries/result'
 import { AdresseCourriel } from './adresse-courriel'
 import {
   type CompteARelancer,

@@ -1,18 +1,18 @@
 import assert from 'node:assert'
-import { statistiquesFournies } from '@app/web/composition/statistiques/statistiques-fournies'
-import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { statistiquesFournies } from '@/composition/statistiques/statistiques-fournies'
+import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
 import {
   comptesRendusSemes,
   semerComptesRendus,
-} from '@app/web/features/activites/activites.cucumber'
+} from '@/features/activites/activites.cucumber'
 import {
   criteresDesStatistiques,
   Jour,
   PERIMETRE_NATIONAL,
-} from '@app/web/features/activites/domain'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
-import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/activites/domain'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   FiltresDesStatistiquesValidation,
   type StatistiquesExposees,

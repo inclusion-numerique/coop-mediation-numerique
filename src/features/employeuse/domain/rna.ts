@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 /**
  * Numéro RNA (répertoire national des associations) : un `W` suivi de 9

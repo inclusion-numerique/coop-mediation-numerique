@@ -1,8 +1,8 @@
 import assert from 'node:assert'
-import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { rattachementsSemes } from '@app/web/features/mediateurs/mediateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
 import { Then, When } from '@cucumber/cucumber'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { rattachementsSemes } from '@/features/mediateurs/mediateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const revocation: { partagesRevoques?: number } = {}
 

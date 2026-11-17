@@ -1,4 +1,4 @@
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { BeneficiaireSearchItem } from '../../domain/rechercher-beneficiaires'
 import { getInitialBeneficiairesOptions } from './rechercher-beneficiaires.query'
 

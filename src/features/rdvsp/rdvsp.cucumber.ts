@@ -1,13 +1,13 @@
-import { resetFixtureUser } from '@app/web/fixtures/resetFixtureUser'
-import { seedStructures } from '@app/web/fixtures/structures'
+import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
+import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
+import { seedStructures } from '@/fixtures/structures'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
   mediateurAvecActiviteUserId,
-} from '@app/web/fixtures/users/mediateurAvecActivite'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
+} from '@/fixtures/users/mediateurAvecActivite'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import { EmailExterne } from './domain/identite'
 import { UtilisateurCoopId } from './domain/utilisateur-coop-id'
 

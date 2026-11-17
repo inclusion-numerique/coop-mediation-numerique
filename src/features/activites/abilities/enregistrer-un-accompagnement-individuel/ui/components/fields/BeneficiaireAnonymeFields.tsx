@@ -1,19 +1,19 @@
-import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { formOptions } from '@tanstack/react-form'
+import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import type {
   Genre,
   StatutSocial,
   TrancheAge,
-} from '@app/web/features/activites/ui/libelles/profil'
+} from '@/features/activites/ui/libelles/profil'
 import {
   CommuneComboBox,
   CommuneOptions,
-} from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { withForm } from '@app/web/libs/form/use-app-form'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions } from '@tanstack/react-form'
+} from '@/features/activites/ui/saisie/commune/commune-combo-box'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { withForm } from '@/libs/form/use-app-form'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

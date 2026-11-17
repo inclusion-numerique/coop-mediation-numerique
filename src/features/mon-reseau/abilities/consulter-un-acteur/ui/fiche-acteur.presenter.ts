@@ -1,4 +1,4 @@
-import { dateAsDay } from '@app/web/utils/dateAsDay'
+import { dateAsDay } from '@/utils/dateAsDay'
 import type { Acteur } from '../../../domain'
 import type { RegardDuLecteur, StatutDActivitePublic } from '../domain'
 

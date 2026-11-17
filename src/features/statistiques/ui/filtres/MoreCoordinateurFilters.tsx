@@ -1,51 +1,51 @@
 'use client'
 
-import {
-  plusDeFiltresFormOptions,
-  type ValeursDePlusDeFiltres,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/plus-de-filtres.form-options'
-import {
-  RolesField,
-  roleCount,
-  updateRolesParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/RolesField'
-import {
-  SourcesField,
-  updateSourcesParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/SourceField'
-import type { StructureEmployeuse } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/StructureEmployeuseComboBox'
-import {
-  StructuresEmployeusesField,
-  updateStructuresEmployeusesParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/StructuresEmployeusesField'
-import {
-  TagsField,
-  tagToArray,
-  updateTagsParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/TagsField'
-import {
-  ThematiqueAdministrativesFiled,
-  updateThematiqueAdministrativesParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/ThematiqueAdministrativesField'
-import {
-  ThematiqueNonAdministrativesFiled,
-  updateThematiqueNonAdministrativesParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
-import {
-  TypesField,
-  updateTypesParams,
-} from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/TypesField'
-import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
-import { ActiviteSource } from '@app/web/features/statistiques/ui/filtres/source'
-import type { VocabulaireDeLaBarre } from '@app/web/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
+import {
+  plusDeFiltresFormOptions,
+  type ValeursDePlusDeFiltres,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/plus-de-filtres.form-options'
+import {
+  RolesField,
+  roleCount,
+  updateRolesParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/RolesField'
+import {
+  SourcesField,
+  updateSourcesParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/SourceField'
+import type { StructureEmployeuse } from '@/features/statistiques/ui/filtres/plus-de-filtres/StructureEmployeuseComboBox'
+import {
+  StructuresEmployeusesField,
+  updateStructuresEmployeusesParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/StructuresEmployeusesField'
+import {
+  TagsField,
+  tagToArray,
+  updateTagsParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/TagsField'
+import {
+  ThematiqueAdministrativesFiled,
+  updateThematiqueAdministrativesParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/ThematiqueAdministrativesField'
+import {
+  ThematiqueNonAdministrativesFiled,
+  updateThematiqueNonAdministrativesParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
+import {
+  TypesField,
+  updateTypesParams,
+} from '@/features/statistiques/ui/filtres/plus-de-filtres/TypesField'
+import { TagScope } from '@/features/statistiques/ui/filtres/portee-de-tag'
+import { ActiviteSource } from '@/features/statistiques/ui/filtres/source'
+import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',

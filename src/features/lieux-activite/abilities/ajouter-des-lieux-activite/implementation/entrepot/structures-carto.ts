@@ -1,17 +1,3 @@
-import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
-import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
-import { reconnues } from '@app/web/features/lieux-activite/domain/nomenclatures'
-import {
-  courrielsValides,
-  ficheAccesLibreSaisie,
-  horairesDeLaSource,
-  presentationSaisie,
-  sitesWebSaisis,
-  telephoneValide,
-} from '@app/web/features/lieux-activite/domain/saisie'
-import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
-import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
 import {
   Contact,
   DispositifProgrammesNationaux,
@@ -35,6 +21,20 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
+import { entrepotPrismaClient } from '@/entrepotPrismaClient'
+import type { Fiche } from '@/features/lieux-activite/domain/fiche'
+import { IdsCartographieNationale } from '@/features/lieux-activite/domain/ids-cartographie-nationale'
+import { reconnues } from '@/features/lieux-activite/domain/nomenclatures'
+import {
+  courrielsValides,
+  ficheAccesLibreSaisie,
+  horairesDeLaSource,
+  presentationSaisie,
+  sitesWebSaisis,
+  telephoneValide,
+} from '@/features/lieux-activite/domain/saisie'
+import { SourceCartographie } from '@/features/lieux-activite/domain/tracabilite'
+import { coopCartographieNationaleSource } from '@/libraries/cartographie-nationale'
 import type { LieuCarto } from '../../domain'
 
 const lieuSelect = {

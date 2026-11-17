@@ -1,7 +1,7 @@
-import LogoCoop from '@app/web/components/LogoCoop'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import LogoCoop from '@/components/LogoCoop'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import type { CoordinateurDeLEquipe } from '../../../../domain'
 
 const InvitationEnAttente = ({

@@ -1,5 +1,5 @@
-import { Role } from '@app/web/features/inscription/domain'
 import { describe, expect, it } from 'vitest'
+import { Role } from '@/features/inscription/domain'
 import { rolesACreerPourRole } from './roles-a-creer'
 
 describe('rolesACreerPourRole', () => {

@@ -1,8 +1,5 @@
-import {
-  AdresseCourriel,
-  UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
 import { describe, expect, it } from 'vitest'
+import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   type CompteDuContact,
   type ContactBrevo,

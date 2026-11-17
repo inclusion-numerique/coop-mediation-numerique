@@ -1,9 +1,9 @@
 'use client'
 
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/client/signaler'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Input } from '@codegouvfr/react-dsfr/Input'
 import { useState } from 'react'
+import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
 
 export const ExportDesAccompagnementsParDepartement = () => {
   const [date, setDate] = useState('')

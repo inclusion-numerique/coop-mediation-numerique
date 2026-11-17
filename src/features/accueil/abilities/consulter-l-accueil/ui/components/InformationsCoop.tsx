@@ -1,4 +1,4 @@
-import Card from '@app/web/components/Card'
+import Card from '@/components/Card'
 
 export const InformationsCoop = () => (
   <>

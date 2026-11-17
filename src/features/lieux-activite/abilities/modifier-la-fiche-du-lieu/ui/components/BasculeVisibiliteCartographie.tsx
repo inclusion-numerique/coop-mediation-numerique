@@ -1,9 +1,9 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
+import { createToast } from '@/libraries/ui/toast/createToast'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 
 export const BasculeVisibiliteCartographie = ({

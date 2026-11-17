@@ -1,18 +1,18 @@
 'use client'
 
-import IconInSquare from '@app/web/components/IconInSquare'
-import InfoLabelValue from '@app/web/components/InfoLabelValue'
-import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
-import ValiderInscriptionForm from '@app/web/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
-import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
-import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
+import Notice from '@codegouvfr/react-dsfr/Notice'
+import IconInSquare from '@/components/IconInSquare'
+import InfoLabelValue from '@/components/InfoLabelValue'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
+import InscriptionCard from '@/features/inscription/components/InscriptionCard'
+import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
 import {
   computeUserProfile,
   libelleDuProfil,
-} from '@app/web/features/inscription/domain'
-import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
-import { sPluriel } from '@app/web/libraries/ui/utils/pluriel/sPluriel'
-import Notice from '@codegouvfr/react-dsfr/Notice'
+} from '@/features/inscription/domain'
+import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
+import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 

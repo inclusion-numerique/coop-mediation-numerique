@@ -1,4 +1,5 @@
-import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
+import { z } from 'zod'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import {
   type Periode,
   periodeLue,
@@ -6,8 +7,7 @@ import {
   type ValeurDeParametre,
   valeurLue,
   valeursLues,
-} from '@app/web/libraries/parametres-d-url'
-import { z } from 'zod'
+} from '@/libraries/parametres-d-url'
 import { BeneficiaireId } from './beneficiaire-id'
 import { EmployeuseId } from './employeuse-id'
 import { FILTRES_D_ORIGINE, FiltreDOrigine } from './filtre-d-origine'

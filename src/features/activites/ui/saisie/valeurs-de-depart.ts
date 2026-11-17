@@ -1,4 +1,4 @@
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
+import type { DefaultValues } from '@/libs/form/use-app-form'
 import type { LieuDuCra } from './lieu/lieu-du-cra'
 import type { CraData } from './validation/CraValidation'
 

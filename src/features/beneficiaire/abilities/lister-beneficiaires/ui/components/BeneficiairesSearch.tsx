@@ -1,7 +1,4 @@
-import {
-  DataSearchBar,
-  type DataTableUrlState,
-} from '@app/web/libraries/data-table'
+import { DataSearchBar, type DataTableUrlState } from '@/libraries/data-table'
 
 export const BeneficiairesSearch = ({
   state,

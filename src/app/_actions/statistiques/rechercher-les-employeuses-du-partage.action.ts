@@ -1,17 +1,17 @@
 'use server'
 
-import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
-import { perimetreDesEmployeusesDe } from '@app/web/composition/statistiques/perimetre'
-import { actionBuilder } from '@app/web/configuration/nextjs'
+import { z } from 'zod'
+import { utilisateurDuPartage } from '@/composition/statistiques/partage'
+import { perimetreDesEmployeusesDe } from '@/composition/statistiques/perimetre'
+import { actionBuilder } from '@/configuration/nextjs'
 import {
   EmployeuseId,
   rechercherLesEmployeusesDesActivites,
-} from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites'
-import { RechercherLesEmployeusesDesActivitesValidation } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
-import { optionsDEmployeuses } from '@app/web/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
-import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { withInput } from '@app/web/libraries/nextjs'
-import { z } from 'zod'
+} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites'
+import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
+import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
   .use(

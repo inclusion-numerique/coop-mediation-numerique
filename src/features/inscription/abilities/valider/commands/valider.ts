@@ -1,7 +1,7 @@
-import type { UserId } from '@app/web/features/inscription/domain'
-import { type Result, success } from '@app/web/libraries/result'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
-import { createStopwatch } from '@app/web/utils/stopwatch'
+import type { UserId } from '@/features/inscription/domain'
+import { type Result, success } from '@/libraries/result'
+import { addMutationLog } from '@/utils/addMutationLog'
+import { createStopwatch } from '@/utils/stopwatch'
 import {
   validerInscription as deciderValidation,
   type ValiderInscriptionError,

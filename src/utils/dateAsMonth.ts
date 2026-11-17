@@ -1,4 +1,4 @@
-import { dateFormatter } from '@app/web/utils/formatDate'
+import { dateFormatter } from '@/utils/formatDate'
 
 // e.g. 02/2023
 export const dateAsMonth = dateFormatter('MM/yyyy')

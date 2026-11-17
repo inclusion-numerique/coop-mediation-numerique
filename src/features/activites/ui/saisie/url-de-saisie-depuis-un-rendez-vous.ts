@@ -1,5 +1,5 @@
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 import { minutesToCraDureeData, minutesToCustomCraDureeData } from './duree'
 
 export type RendezVousASaisir = {

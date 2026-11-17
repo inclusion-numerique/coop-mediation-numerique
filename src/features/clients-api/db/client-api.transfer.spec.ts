@@ -1,8 +1,5 @@
-import {
-  ClientApiId,
-  NomDuClientApi,
-} from '@app/web/features/clients-api/domain'
 import { describe, expect, it } from 'vitest'
+import { ClientApiId, NomDuClientApi } from '@/features/clients-api/domain'
 import { depuisDefinition, versClientApi } from './client-api.transfer'
 
 describe('transfert d’un client API', () => {

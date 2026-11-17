@@ -1,11 +1,11 @@
+import Button from '@codegouvfr/react-dsfr/Button'
+import type { ReactNode } from 'react'
 import {
   libellesDeTri,
   trisDesLieux,
-} from '@app/web/features/lieux-activite/domain/tri-des-lieux'
-import { pluriel } from '@app/web/libraries/pluriel'
-import SortSelect from '@app/web/libs/data-table/SortSelect'
-import Button from '@codegouvfr/react-dsfr/Button'
-import type { ReactNode } from 'react'
+} from '@/features/lieux-activite/domain/tri-des-lieux'
+import { pluriel } from '@/libraries/pluriel'
+import SortSelect from '@/libs/data-table/SortSelect'
 import type { LieuDuMediateurEnListe } from '../../domain'
 import { AucunLieu } from '../components/AucunLieu'
 

@@ -1,8 +1,8 @@
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import type { StructureSearchResult } from '@app/web/features/employeuse'
 import { type Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { StructureSearchResult } from '@/features/employeuse'
 
 export type InformationsGeneralesFormData = {
   id: string

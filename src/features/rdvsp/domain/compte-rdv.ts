@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 import type { JetonsOAuth } from './jetons-oauth'
 import type { OrganisationId } from './organisation-id'
 import type { RdvAgentId } from './rdv-agent-id'

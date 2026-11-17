@@ -1,6 +1,6 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import type { Worksheet } from 'exceljs'
+import type { SessionUser } from '@/auth/sessionUser'
+import { addTitleRow } from '@/libs/worksheet/addTitleRow'
 
 type LibelleDeFiltre = { readonly type: string; readonly label: string }
 

@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 /**
  * Depending on the environment we have a different provider configuration

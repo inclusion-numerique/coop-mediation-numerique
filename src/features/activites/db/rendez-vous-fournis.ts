@@ -1,4 +1,4 @@
-import { NomAffiche } from '@app/web/libraries/nom-affiche'
+import { NomAffiche } from '@/libraries/nom-affiche'
 import {
   Effectif,
   LienAgent,

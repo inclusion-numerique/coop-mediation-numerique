@@ -1,29 +1,29 @@
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import {
-  coordinateurDe,
-  inscription,
-  type Jalon,
-  mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
-import { BadgeStatutCompte } from '@app/web/features/utilisateurs/ui'
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@app/web/libs/ui/administration/AdministrationInlineLabelsValues'
-import AdministrationMailtoLink from '@app/web/libs/ui/administration/AdministrationMailtoLink'
-import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
-import {
-  dateAsDayAndTime,
-  dateAsDayAndTimeInTimeZone,
-} from '@app/web/utils/dateAsDayAndTime'
-import { numberToString } from '@app/web/utils/formatNumber'
-import { contentId } from '@app/web/utils/skipLinks'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import CoopPageContainer from '@/app/coop/CoopPageContainer'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import {
+  coordinateurDe,
+  inscription,
+  type Jalon,
+  mediateurDe,
+} from '@/features/utilisateurs/domain'
+import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
+import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
+import AdministrationInlineLabelsValues from '@/libs/ui/administration/AdministrationInlineLabelsValues'
+import AdministrationMailtoLink from '@/libs/ui/administration/AdministrationMailtoLink'
+import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
+import { dateAsDay } from '@/utils/dateAsDay'
+import {
+  dateAsDayAndTime,
+  dateAsDayAndTimeInTimeZone,
+} from '@/utils/dateAsDayAndTime'
+import { numberToString } from '@/utils/formatNumber'
+import { contentId } from '@/utils/skipLinks'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
   etiquettesDuCompte,

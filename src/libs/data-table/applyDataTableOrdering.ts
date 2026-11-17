@@ -1,4 +1,4 @@
-import { compareMultiple } from '@app/web/utils/compareMultiple'
+import { compareMultiple } from '@/utils/compareMultiple'
 import {
   DataTableConfiguration,
   DataTableRow,

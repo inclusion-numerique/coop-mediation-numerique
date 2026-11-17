@@ -1,8 +1,8 @@
 import {
   type DepartementInconnu,
   departementDuCode,
-} from '@app/web/libraries/departement'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/libraries/departement'
+import { failure, type Result, success } from '@/libraries/result'
 import type { ReseauDuDepartement } from '../domain'
 import { compterLesLieuxDuDepartement } from './lieux-activite'
 import { compterLesActeursDuDepartement } from './prisma'

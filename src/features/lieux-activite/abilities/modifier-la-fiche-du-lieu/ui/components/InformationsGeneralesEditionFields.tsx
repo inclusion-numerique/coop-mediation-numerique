@@ -1,27 +1,27 @@
 'use client'
 
-import {
-  SERVICE_ADRESSE_INDISPONIBLE,
-  siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
-import {
-  adresseNonVerifiableMessage,
-  geocodeStructureAdresse,
-  SANS_SIRET_A_LA_MAIN,
-} from '@app/web/external-apis/ban/geocodeStructureAdresse'
-import {
-  AdresseBanComboBox,
-  AdresseBanOptions,
-} from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
-import { typologieStructureOptions } from '@app/web/features/lieux-activite/ui/options'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { optionsWithEmptyValue } from '@app/web/libraries/ui/components/Form/utils/options'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
 import { useState } from 'react'
+import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@/external-apis/apiAdresse'
+import {
+  adresseNonVerifiableMessage,
+  geocodeStructureAdresse,
+  SANS_SIRET_A_LA_MAIN,
+} from '@/external-apis/ban/geocodeStructureAdresse'
+import {
+  AdresseBanComboBox,
+  AdresseBanOptions,
+} from '@/features/adresse/combo-box/AdresseBanComboBox'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { withForm } from '@/libs/form/use-app-form'
 import { informationsGeneralesFormOptions } from './informationsGeneralesFormData'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 

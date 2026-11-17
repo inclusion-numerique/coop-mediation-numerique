@@ -1,17 +1,17 @@
-import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
-import { CoordinateurId, MediateurId } from '@app/web/features/activites/domain'
-import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { detacherDesEquipes } from '@app/web/features/equipe'
-import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
-import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
-import { retirerLesTagsDUnCompte } from '@app/web/features/tags/abilities/retirer-les-tags-d-un-compte'
+import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
+import { CoordinateurId, MediateurId } from '@/features/activites/domain'
+import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { detacherDesEquipes } from '@/features/equipe'
+import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import {
   hash,
   retirerDesListesDeDiffusion,
   type SupprimerComptePorts,
-} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import { identifiantsDe } from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/abilities/supprimer-compte'
+import { identifiantsDe } from '@/features/utilisateurs/domain'
 
 export const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,

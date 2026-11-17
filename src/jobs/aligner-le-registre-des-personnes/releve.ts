@@ -1,7 +1,7 @@
 import {
   type ApercuDeLaSynchronisation,
   aUneAutreSource,
-} from '@app/web/libraries/registre-personne'
+} from '@/libraries/registre-personne'
 
 const A_CORRIGER = 'à corriger'
 

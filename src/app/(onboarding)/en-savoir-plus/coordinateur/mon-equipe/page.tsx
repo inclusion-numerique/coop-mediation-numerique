@@ -1,8 +1,8 @@
-import { OnboardingMonEquipeCoordinateur } from '@app/web/app/(onboarding)/en-savoir-plus/coordinateur/mon-equipe/OnboardingMonEquipeCoordinateur'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import { OnboardingMonEquipeCoordinateur } from '@/app/(onboarding)/en-savoir-plus/coordinateur/mon-equipe/OnboardingMonEquipeCoordinateur'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

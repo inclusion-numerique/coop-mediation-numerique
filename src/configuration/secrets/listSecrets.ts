@@ -1,4 +1,4 @@
-import { requestSecretClientWithRetry } from '@app/web/configuration/secrets/secretClient'
+import { requestSecretClientWithRetry } from '@/configuration/secrets/secretClient'
 
 export const listSecrets = () =>
   requestSecretClientWithRetry<{

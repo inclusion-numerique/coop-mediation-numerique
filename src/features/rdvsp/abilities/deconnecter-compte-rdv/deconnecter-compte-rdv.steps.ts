@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import type { DeconnecterCompteRdv } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
-import { deconnecterCompteRdv } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/implementation/prisma/deconnecter-compte-rdv.mutation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { DeconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
+import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementation/prisma/deconnecter-compte-rdv.mutation'
 import {
   compteRdvEnBase,
   ID_TEST,
   seedCompteRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 2
 const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')

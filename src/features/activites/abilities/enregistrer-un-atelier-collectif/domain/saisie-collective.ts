@@ -1,4 +1,4 @@
-import { type Result, success } from '@app/web/libraries/result'
+import { type Result, success } from '@/libraries/result'
 import {
   type ActiviteId,
   type AtelierCollectif,

@@ -1,7 +1,7 @@
-import type { OptionDeTag } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { BadgeDePortee } from '@app/web/features/activites/ui/tags/BadgeDePortee'
-import { withForm } from '@app/web/libs/form/use-app-form'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
+import type { OptionDeTag } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
+import { withForm } from '@/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const tagToArray = (tagsOptions: { id: string }[]) => (tags: string[]) =>

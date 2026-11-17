@@ -1,4 +1,4 @@
-import type { NomAffiche } from '@app/web/libraries/nom-affiche'
+import type { NomAffiche } from '@/libraries/nom-affiche'
 import type { Fiche } from '../../../domain/fiche'
 import type { Lieu } from '../../../domain/lieu'
 import type { PartageDuLieu } from './partage-du-lieu'

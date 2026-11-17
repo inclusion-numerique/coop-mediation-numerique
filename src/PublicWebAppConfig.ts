@@ -5,7 +5,7 @@ import {
   mainLiveUrl,
   projectTitle,
   repositoryUrl,
-} from '@app/web/configuration/projet/config'
+} from '@/configuration/projet/config'
 
 const isMain = process.env.BRANCH === 'main'
 const isDev = process.env.BRANCH === 'dev'

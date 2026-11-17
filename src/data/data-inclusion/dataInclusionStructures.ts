@@ -1,10 +1,10 @@
 import { createWriteStream } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import type { Stream } from 'node:stream'
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { createVarDirectory } from '@app/web/libraries/chemins/createVarDirectory'
-import { varFile } from '@app/web/libraries/chemins/varDirectory'
 import axios from 'axios'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
+import { varFile } from '@/libraries/chemins/varDirectory'
 
 const dataInclusionStructuresUrl = () =>
   `https://www.data.gouv.fr/fr/datasets/r/4fc64287-e869-4550-8fb9-b1e0b7809ffa`

@@ -1,17 +1,17 @@
-import type { ProconnectSignoutState } from '@app/web/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
-import { generateProconnectSignoutUrl } from '@app/web/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { proConnectProviderId } from '@app/web/auth/proConnect'
-import { prismaClient } from '@app/web/prismaClient'
-import { refreshProconnectIdToken } from '@app/web/security/getProconnectIdToken'
-import { getServerUrl } from '@app/web/utils/baseUrl'
+import type { NextRequest } from 'next/server'
+import { v4 } from 'uuid'
+import type { ProconnectSignoutState } from '@/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
+import { generateProconnectSignoutUrl } from '@/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { proConnectProviderId } from '@/auth/proConnect'
+import { prismaClient } from '@/prismaClient'
+import { refreshProconnectIdToken } from '@/security/getProconnectIdToken'
+import { getServerUrl } from '@/utils/baseUrl'
 import {
   type EncodedState,
   encodeSerializableState,
-} from '@app/web/utils/encodeSerializableState'
-import type { NextRequest } from 'next/server'
-import { v4 } from 'uuid'
+} from '@/utils/encodeSerializableState'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -1,7 +1,7 @@
-import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import { centreSocial, mediateque } from '@app/web/fixtures/structures'
-import type { Prisma } from '@app/web/generated/prisma/client'
+import { previewBranchAuthFallbacks } from '@/auth/previewBranchAuthFallbacks'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import { centreSocial, mediateque } from '@/fixtures/structures'
+import type { Prisma } from '@/generated/prisma/client'
 
 export const coordinateurInscriptionAvecToutCoordinateurId =
   'b0ebe56a-b1eb-49c0-9963-26dbbaa1c15e'

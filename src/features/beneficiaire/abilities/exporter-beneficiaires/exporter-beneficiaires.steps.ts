@@ -1,12 +1,12 @@
 import assert from 'node:assert'
-import { exporterBeneficiaires } from '@app/web/features/beneficiaire/abilities/exporter-beneficiaires'
+import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
+import type { Workbook } from 'exceljs'
+import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires'
 import {
   seedBeneficiaire,
   testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
-import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
-import type { Workbook } from 'exceljs'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
 
 const user: WorksheetUser = {
   id: '00000000-0000-0000-0000-000000000000',

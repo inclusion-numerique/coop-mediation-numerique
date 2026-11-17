@@ -1,13 +1,5 @@
 'use client'
 
-import {
-  type AnalyseResponse,
-  getBeneficiaireImportAnalysis,
-} from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
-import type { ServerActionResult } from '@app/web/libraries/nextjs'
-import { pluriel } from '@app/web/libraries/pluriel'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import classNames from 'classnames'
@@ -20,6 +12,14 @@ import {
   useRef,
   useState,
 } from 'react'
+import {
+  type AnalyseResponse,
+  getBeneficiaireImportAnalysis,
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { pluriel } from '@/libraries/pluriel'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
 // L'action d'import est injectée par la route (concern croisé), l'UI reste
 // découplée de l'ability.

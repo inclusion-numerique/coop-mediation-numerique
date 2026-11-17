@@ -1,4 +1,4 @@
-import { computeBranchNamespace } from '@app/web/cli/branchNamespace'
+import { computeBranchNamespace } from '@/cli/branchNamespace'
 
 export type RegistryTag = {
   readonly id: string

@@ -1,18 +1,18 @@
 import assert from 'node:assert'
-import { annulerUneInvitation } from '@app/web/features/equipe/abilities/annuler-une-invitation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation'
 import {
   CoordinateurId,
   Email,
   ReferenceInvitation,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   invitationDe,
   semerUnCoordinateur,
   semerUneInvitation,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

@@ -1,4 +1,7 @@
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
+import { routeBuilder } from '@arckit/nextjs/route'
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { apiV1Url } from '@/app/api/v1/apiV1Url'
 import {
   type CursorDirection,
   createCompositeCursor,
@@ -7,27 +10,24 @@ import {
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
-} from '@app/web/app/api/v1/CursorPagination'
+} from '@/app/api/v1/CursorPagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@app/web/app/api/v1/JsonApiTypes'
+} from '@/app/api/v1/JsonApiTypes'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@app/web/app/api/v1/middlewares'
+} from '@/app/api/v1/middlewares'
 import {
   type ActiviteAttributes,
   activiteExposee,
   activitesExposees,
   criteresDExposition,
   curseurDActivite,
-} from '@app/web/features/activites/abilities/exposer-les-activites'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { routeBuilder } from '@arckit/nextjs/route'
-import { NextResponse } from 'next/server'
-import { z } from 'zod'
+} from '@/features/activites/abilities/exposer-les-activites'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 /**
  * @openapi

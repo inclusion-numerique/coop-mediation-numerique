@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
   AuteurId,
@@ -5,8 +6,7 @@ import {
   Dispositif,
   RoleUtilisateur,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import type { AuteurSuppression } from './auteur-suppression'
 import { RetentionPolicy } from './retention-policy'
 import { autoriserSuppression } from './supprimer-compte'

@@ -1,18 +1,18 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import type { NextRequest } from 'next/server'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import {
   classeurDesMembres,
   exporterLesMembres,
-} from '@app/web/features/equipe/abilities/exporter-les-membres'
-import { estMembreActif } from '@app/web/features/equipe/abilities/lister-les-membres'
+} from '@/features/equipe/abilities/exporter-les-membres'
+import { estMembreActif } from '@/features/equipe/abilities/lister-les-membres'
 import {
   CoordinateurId,
   criteresEquipe,
   MediateurId,
-} from '@app/web/features/equipe/domain'
-import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { NextRequest } from 'next/server'
+} from '@/features/equipe/domain'
+import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const GET = async (
   request: NextRequest,

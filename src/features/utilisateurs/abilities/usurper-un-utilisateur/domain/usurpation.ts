@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import type {
   Jalon,
   NomAffiche,
@@ -5,10 +6,9 @@ import type {
   RattachementsDuCompte,
   RoleUtilisateur,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { defineModel, type Model } from '@app/web/libraries/model'
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { z } from 'zod'
+} from '@/features/utilisateurs/domain'
+import { defineModel, type Model } from '@/libraries/model'
+import { failure, type Result, success } from '@/libraries/result'
 
 export const PorteeUsurpation = defineModel(
   z.enum(['FixturesSeulement', 'TousLesComptes']).brand('PorteeUsurpation'),

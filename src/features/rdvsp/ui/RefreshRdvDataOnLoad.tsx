@@ -1,8 +1,8 @@
 'use client'
 
-import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
+import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 
 /**
  * Rattrape au chargement les rendez-vous des organisations dont le webhook n'a

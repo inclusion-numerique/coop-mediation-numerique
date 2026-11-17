@@ -1,5 +1,5 @@
-import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Notice from '@codegouvfr/react-dsfr/Notice'
+import { authenticateUser } from '@/auth/authenticateUser'
 
 const Page = async () => {
   const user = await authenticateUser()

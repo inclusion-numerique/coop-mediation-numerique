@@ -1,8 +1,8 @@
 import {
   type DepartementInconnu,
   departementDuCode,
-} from '@app/web/libraries/departement'
-import { failure, success } from '@app/web/libraries/result'
+} from '@/libraries/departement'
+import { failure, success } from '@/libraries/result'
 import { criteresActeurs, type ParametresDesActeurs } from '../domain'
 import { communesDuDepartement } from './lieux-activite'
 import { acteursDuDepartement } from './prisma'

@@ -1,6 +1,6 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
+import { addMutationLog } from '@/utils/addMutationLog'
 import { lireLesAdhesionsDeLaPaire } from '../../../../db/adhesion.query'
 import {
   ActionNonAutorisee,

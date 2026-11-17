@@ -1,8 +1,8 @@
-import { rechercherStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/rechercher-structure-employeuse.action'
-import type { StructureSearchResult } from '@app/web/features/employeuse'
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { addresseFromParts } from '@app/web/utils/addresseFromParts'
+import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import type { StructureSearchResult } from '@/features/employeuse'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { addresseFromParts } from '@/utils/addresseFromParts'
 
 const itemToString = (item: StructureSearchResult | null): string =>
   item ? `${item.nom} · ${item.siret}` : ''

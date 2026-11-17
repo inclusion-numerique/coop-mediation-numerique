@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const TRANCHES_DE_DUREE = [
   'MoinsDe30Minutes',

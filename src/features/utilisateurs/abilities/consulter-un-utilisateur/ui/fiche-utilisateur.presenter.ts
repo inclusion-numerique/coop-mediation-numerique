@@ -1,8 +1,5 @@
-import {
-  coordinateurDe,
-  mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
+import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import type { FicheUtilisateur } from '../domain'
 
 const NON_RENSEIGNE = 'Non renseigné'

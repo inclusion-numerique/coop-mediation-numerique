@@ -1,4 +1,4 @@
-import { allocatePercentagesFromRecords } from '@app/web/libraries/proportions'
+import { allocatePercentagesFromRecords } from '@/libraries/proportions'
 
 export const partsFixees = <V extends string>(
   valeurs: readonly V[],

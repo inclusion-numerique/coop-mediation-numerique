@@ -2,13 +2,13 @@ import { exec as callbackExec } from 'node:child_process'
 import { createWriteStream, existsSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { promisify } from 'node:util'
-import { createVarDirectory } from '@app/web/libraries/chemins/createVarDirectory'
-import { varDirectory } from '@app/web/libraries/chemins/varDirectory'
-import { output } from '@app/web/libraries/console/output'
-import { prismaClient } from '@app/web/prismaClient'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
+import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
+import { varDirectory } from '@/libraries/chemins/varDirectory'
+import { output } from '@/libraries/console/output'
+import { prismaClient } from '@/prismaClient'
 
 const exec = promisify(callbackExec)
 

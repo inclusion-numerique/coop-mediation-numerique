@@ -1,14 +1,14 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@app/web/libs/injection/client'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { inject } from '@/libs/injection/client'
+import { dateAsDay } from '@/utils/dateAsDay'
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '../abilities/annuler-une-invitation/action/annuler-une-invitation.key'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '../abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 

@@ -1,13 +1,13 @@
 'use client'
 
-import Card from '@app/web/components/Card'
-import IconInSquare from '@app/web/components/IconInSquare'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useState } from 'react'
+import Card from '@/components/Card'
+import IconInSquare from '@/components/IconInSquare'
 import {
   hrefDuLieuEnListe,
   LieuActiviteCard,
-} from '@app/web/features/lieux-activite/ui'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { useState } from 'react'
+} from '@/features/lieux-activite/ui'
 import { type LieuAffiche } from '../../../../ui/lieu-affiche'
 
 const NOMBRE_AFFICHE_AU_DEPART = 3

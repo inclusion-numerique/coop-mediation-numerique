@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { rdvServicePublicApiBinding } from '../../../implementation/rdv-service-public.bindings'
 import {
   rdvServicePublicOAuthConfig,

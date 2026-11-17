@@ -1,13 +1,13 @@
-import { CraAnimationData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
-import { CraEvenementData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
-import { CraPartenariatData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
-import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
+import { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
+import { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
+import { dureeAccompagnementParDefautLabels } from '@/features/activites/ui/libelles/duree-accompagnement'
 import {
   type RechercherDesTagsInitiaux,
   tagDuFormulaire,
-} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
+} from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
+import type { DefaultValues } from '@/libs/form/use-app-form'
 
 type CraCoordinationData =
   | CraAnimationData

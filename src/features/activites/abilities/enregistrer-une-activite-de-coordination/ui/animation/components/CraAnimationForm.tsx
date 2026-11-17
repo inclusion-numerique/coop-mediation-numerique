@@ -1,34 +1,34 @@
 'use client'
 
-import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useSelector } from '@tanstack/react-form'
+import { useRouter } from 'next/navigation'
+import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import {
   CraAnimationData,
   CraAnimationValidation,
-} from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
-import { saisieDeLAnimation } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
+import { saisieDeLAnimation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/saisie-du-formulaire.presenter'
 import {
   INITIATIVE_OPTIONS,
   THEMATIQUE_ANIMATION_OPTIONS,
   TYPE_ANIMATION_OPTIONS,
-} from '@app/web/features/activites/ui/libelles/animation'
-import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
-import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+} from '@/features/activites/ui/libelles/animation'
+import { TagsFields } from '@/features/activites/ui/saisie/fields/TagsFields'
+import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import {
   debutDispositifConum,
   derniereDateDuFormulaire,
-} from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { inject } from '@app/web/libs/injection/client'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { useSelector } from '@tanstack/react-form'
-import { useRouter } from 'next/navigation'
+} from '@/features/activites/ui/saisie/validation/CraDateValidation'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { inject } from '@/libs/injection/client'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { replaceRouteWithoutRerender } from '@/utils/replaceRouteWithoutRerender'
 
 type CraAnimationFormProps = {
   defaultValues: DefaultValues<CraAnimationData> & { coordinateurId: string }

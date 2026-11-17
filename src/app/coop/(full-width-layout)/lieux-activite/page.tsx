@@ -1,29 +1,29 @@
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { reglerMaVisibiliteCartoAction } from '@app/web/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { listerLesLieuxDuMediateur } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
-import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
+import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import {
   BoutonDeRetrait,
   ModaleDeRetrait,
-} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
+} from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import {
   hrefDuLieuEnListe,
   LieuActiviteCard,
-} from '@app/web/features/lieux-activite/ui'
-import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
-import { MaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { contentId } from '@app/web/utils/skipLinks'
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+} from '@/features/lieux-activite/ui'
+import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
+import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
+import { ClientBinder } from '@/libs/injection/client-binder'
+import { contentId } from '@/utils/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),

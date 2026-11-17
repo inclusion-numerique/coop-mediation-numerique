@@ -1,5 +1,5 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
 import { format, subDays } from 'date-fns'
+import { failure, type Result, success } from '@/libraries/result'
 import {
   type Acteur,
   ActeurId,

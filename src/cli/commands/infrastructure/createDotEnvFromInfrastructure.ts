@@ -1,6 +1,6 @@
-import { appendEnvVariablesToDotEnvFile } from '@app/web/cli/dotEnvFile'
-import { output } from '@app/web/libraries/console/output'
 import { Command } from '@commander-js/extra-typings'
+import { appendEnvVariablesToDotEnvFile } from '@/cli/dotEnvFile'
+import { output } from '@/libraries/console/output'
 import { readInfrastructureOutput } from './infrastructureOutput'
 
 export const createDotEnvFromInfrastructure = new Command()

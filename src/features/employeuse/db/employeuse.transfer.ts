@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { Siret } from '@app/web/libraries/insee'
+import type { Prisma } from '@/generated/prisma/client'
+import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../domain/adresse-employeuse'
 import { type Affectation, estConseillerNumerique } from '../domain/affectation'
 import { ContactReferent } from '../domain/contact-referent'

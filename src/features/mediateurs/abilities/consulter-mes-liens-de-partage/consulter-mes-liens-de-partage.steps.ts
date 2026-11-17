@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { consulterMesLiensDePartage } from '@app/web/features/mediateurs/abilities/consulter-mes-liens-de-partage'
-import type { LienDuPerimetre } from '@app/web/features/mediateurs/domain'
+import { Then, When } from '@cucumber/cucumber'
+import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
+import type { LienDuPerimetre } from '@/features/mediateurs/domain'
 import {
   compteSeme,
   rattachementsSemes,
-} from '@app/web/features/mediateurs/mediateurs.cucumber'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/mediateurs/mediateurs.cucumber'
 
 const roles = {
   médiateur: { perimetre: 'Mediateur', partage: 'mediateur' },

@@ -1,10 +1,10 @@
-import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
-import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
-import { ExportDeMesAccompagnements } from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui'
-import { optionsDeLaBarre } from '@app/web/features/activites/abilities/lister-les-options-de-filtre-des-activites'
-import { listerMesActivites } from '@app/web/features/activites/abilities/lister-mes-activites'
+import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activites/rechercher-employeuses-des-activites.action'
+import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { isCoordinateur, isMediateur } from '@/auth/userTypeGuards'
+import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
+import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites'
+import { listerMesActivites } from '@/features/activites/abilities/lister-mes-activites'
 import {
   AucuneActivite,
   EnTeteDeLaListe,
@@ -14,7 +14,7 @@ import {
   rendezVousFiltrablesDansLeTableau,
   TableauDeMesActivites,
   titreDuDecompte,
-} from '@app/web/features/activites/abilities/lister-mes-activites/ui'
+} from '@/features/activites/abilities/lister-mes-activites/ui'
 import {
   criteresDesActivites,
   estFiltreDesActivites,
@@ -22,20 +22,20 @@ import {
   ordreChronologiqueLu,
   paginationLue,
   parametresDesActivitesDe,
-} from '@app/web/features/activites/domain'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@app/web/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+} from '@/features/activites/domain'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
+import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-} from '@app/web/features/lieux-activite'
+} from '@/features/lieux-activite'
 import {
   periodeDesRendezVous,
   rendezVousLies,
-} from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
+} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
 

@@ -1,19 +1,19 @@
 'use server'
 
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { reglerLePartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques'
-import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'
-import { ReglerLePartageStatistiquesValidation } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.validation'
+import type { SessionUser } from '@/auth/sessionUser'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques'
+import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'
+import { ReglerLePartageStatistiquesValidation } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.validation'
 import {
   AuteurId,
   CoordinateurId,
   MediateurId,
   type Rattachements,
-} from '@app/web/features/mediateurs/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/mediateurs/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 const rattachementsDe = (user: SessionUser): Rattachements => ({
   mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,

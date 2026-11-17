@@ -1,6 +1,6 @@
-import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { defineModel, type Model } from '@/libraries/model'
 import { Dispositif } from './dispositif'
 import { FiltreStatut } from './filtre-statut'
 

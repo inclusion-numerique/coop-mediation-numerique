@@ -1,4 +1,4 @@
-import { nombreDeLieuxDuDepartement } from '@app/web/features/lieux-activite'
+import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite'
 import { Effectif } from '../../../../domain'
 import type { CompterLesLieuxDuDepartement } from '../../domain'
 

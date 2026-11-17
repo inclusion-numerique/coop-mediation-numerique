@@ -1,4 +1,4 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@/auth/sessionUser'
 import { CoordinateurId, type Gestionnaire } from '../../domain'
 
 export const gestionnaireDe = (user: SessionUser): Gestionnaire => {

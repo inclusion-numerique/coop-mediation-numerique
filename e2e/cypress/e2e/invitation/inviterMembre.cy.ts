@@ -1,8 +1,8 @@
-import { appUrl } from '@app/e2e/support/helpers'
-import { conseillerNumerique } from '@app/web/fixtures/users/conseillerNumerique'
-import { coordinateurInscrit } from '@app/web/fixtures/users/coordinateurInscrit'
-import { mediateurInscription } from '@app/web/fixtures/users/mediateurInscription'
-import { getUserDisplayName } from '@app/web/utils/user'
+import { appUrl } from '@e2e/support/helpers'
+import { conseillerNumerique } from '@/fixtures/users/conseillerNumerique'
+import { coordinateurInscrit } from '@/fixtures/users/coordinateurInscrit'
+import { mediateurInscription } from '@/fixtures/users/mediateurInscription'
+import { getUserDisplayName } from '@/utils/user'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 
 const searchAndInviteUser = ({

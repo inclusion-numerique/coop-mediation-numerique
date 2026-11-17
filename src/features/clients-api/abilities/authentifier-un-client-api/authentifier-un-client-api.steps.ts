@@ -1,12 +1,12 @@
 import assert from 'node:assert'
-import { authentifierUnClientApi } from '@app/web/features/clients-api/abilities/authentifier-un-client-api'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api'
 import {
   clientSeme,
   jour,
   portees,
   semerUnClientApi,
-} from '@app/web/features/clients-api/clients-api.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/clients-api/clients-api.cucumber'
 
 const appel: { authentifie?: boolean } = {}
 

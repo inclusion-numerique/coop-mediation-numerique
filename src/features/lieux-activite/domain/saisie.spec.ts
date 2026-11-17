@@ -1,8 +1,4 @@
 import {
-  emptyOpeningHours,
-  safeToTimetableOpeningHours,
-} from '@app/web/opening-hours/openingHoursHelpers'
-import {
   Horaires,
   Itinerance,
   ModaliteAcces,
@@ -11,6 +7,10 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
+import {
+  emptyOpeningHours,
+  safeToTimetableOpeningHours,
+} from '@/opening-hours/openingHoursHelpers'
 import {
   adresseSaisie,
   courrielsSaisis,

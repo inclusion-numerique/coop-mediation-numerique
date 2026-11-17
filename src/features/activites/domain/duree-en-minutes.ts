@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const DUREE_MAXIMALE_EN_MINUTES = 23 * 60 + 59
 

@@ -1,6 +1,6 @@
-import type { Result } from '@app/web/libraries/result'
-import { success } from '@app/web/libraries/result'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import type { Result } from '@/libraries/result'
+import { success } from '@/libraries/result'
+import { addMutationLog } from '@/utils/addMutationLog'
 import {
   enregistrerLArchivage,
   lireLesAdhesionsDeLaPaire,

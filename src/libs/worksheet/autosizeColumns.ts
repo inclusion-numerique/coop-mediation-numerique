@@ -1,5 +1,5 @@
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import type { Worksheet } from 'exceljs'
+import { onlyDefinedAndNotNull } from '@/utils/onlyDefinedAndNotNull'
 
 export type AutosizeColumnsOptions = {
   fixedColumns?: Record<number, number>

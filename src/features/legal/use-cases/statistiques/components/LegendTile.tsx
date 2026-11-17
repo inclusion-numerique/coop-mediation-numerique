@@ -1,5 +1,5 @@
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
+import { numberToPercentage, numberToString } from '@/utils/formatNumber'
 
 export const LegendTile = ({
   value,

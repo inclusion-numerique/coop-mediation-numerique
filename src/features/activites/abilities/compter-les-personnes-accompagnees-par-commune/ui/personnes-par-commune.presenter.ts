@@ -1,4 +1,4 @@
-import { allocatePercentagesFromRecords } from '@app/web/libraries/proportions'
+import { allocatePercentagesFromRecords } from '@/libraries/proportions'
 import { libelleDeLaCommune } from '../../../ui/statistiques/parts-presentees'
 import type { PersonnesParCommune } from '../domain'
 

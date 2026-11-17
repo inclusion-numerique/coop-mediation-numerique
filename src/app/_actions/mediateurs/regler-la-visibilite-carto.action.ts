@@ -1,12 +1,12 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { reglerLaVisibiliteCarto } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto'
-import { REGLER_LA_VISIBILITE_CARTO_ERRORS } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.errors'
-import { ReglerLaVisibiliteCartoValidation } from '@app/web/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.validation'
-import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto'
+import { REGLER_LA_VISIBILITE_CARTO_ERRORS } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.errors'
+import { ReglerLaVisibiliteCartoValidation } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.validation'
+import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const reglerLaVisibiliteCartoAction = actionBuilder()
   .use(withAuth())

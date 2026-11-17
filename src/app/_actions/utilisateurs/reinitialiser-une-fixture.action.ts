@@ -1,10 +1,10 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { reinitialiserUneFixture } from '@app/web/features/utilisateurs/abilities/reinitialiser-une-fixture'
-import { ReinitialiserUneFixtureValidation } from '@app/web/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { reinitialiserUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture'
+import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const reinitialiserUneFixtureAction = actionBuilder()
   .use(withAuth())

@@ -1,9 +1,3 @@
-import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
-import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
-import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
-import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
 import {
   Frais,
   ModaliteAccompagnement,
@@ -12,6 +6,12 @@ import {
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { ComponentType } from 'react'
+import { InternetIcon } from '@/features/pictograms/digital/InternetIcon'
+import { SittingAtATableIcon } from '@/features/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@/features/pictograms/user/TeacherIcon'
+import { PairIcon } from '@/features/pictograms/work/PairIcon'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { FormationLabelPropose } from '../domain/nomenclatures'
 import { typologieLibelles } from './libelles-typologie'
 

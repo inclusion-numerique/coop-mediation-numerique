@@ -1,5 +1,5 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { failure, type Result, success } from '@/libraries/result'
 import { BanId } from '../../../domain/ban-id'
 import { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
 import { LieuId } from '../../../domain/lieu-id'

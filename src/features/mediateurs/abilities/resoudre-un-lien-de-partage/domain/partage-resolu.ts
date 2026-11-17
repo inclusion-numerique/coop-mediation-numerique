@@ -1,7 +1,7 @@
 import type {
   ProprietairePartage,
   UtilisateurId,
-} from '@app/web/features/mediateurs/domain'
+} from '@/features/mediateurs/domain'
 
 export type PartageResolu = {
   readonly proprietaire: ProprietairePartage

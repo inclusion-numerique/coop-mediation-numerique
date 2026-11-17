@@ -1,7 +1,7 @@
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
+} from '@/features/employeuse/server'
 import {
   CoordinateurId,
   dispositifDe,
@@ -9,8 +9,8 @@ import {
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
 import type { CompteAReaffecter } from '../../domain'
 
 export const compteAReaffecter = async (

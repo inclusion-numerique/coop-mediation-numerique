@@ -3,8 +3,8 @@ import type {
   ContactAImporter,
   InscritDeLaListe,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { contactASynchroniser } from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
+import { contactASynchroniser } from '@/features/utilisateurs/domain'
 import type { IdentifiantDImport } from './identifiant-d-import'
 
 export type LectureDesInscrits = {

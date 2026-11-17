@@ -3,7 +3,7 @@
 import {
   type DataTableUrlState,
   useDataTableSelection,
-} from '@app/web/libraries/data-table'
+} from '@/libraries/data-table'
 import { BeneficiairesPagination } from './BeneficiairesPagination'
 import { BeneficiairesSelectionToolbar } from './BeneficiairesSelectionToolbar'
 import { BeneficiairesTable } from './BeneficiairesTable'

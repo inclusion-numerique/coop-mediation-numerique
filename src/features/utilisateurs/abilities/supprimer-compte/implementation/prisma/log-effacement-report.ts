@@ -1,4 +1,4 @@
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { addMutationLog } from '@/utils/addMutationLog'
 import type { CompteSupprime } from '../../domain'
 
 export const logEffacementReport = (compte: CompteSupprime): void => {

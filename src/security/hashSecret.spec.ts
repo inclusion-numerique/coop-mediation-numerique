@@ -1,5 +1,5 @@
-import { hashSecret, verifySecret } from '@app/web/security/hashSecret'
 import { describe, expect, it } from 'vitest'
+import { hashSecret, verifySecret } from '@/security/hashSecret'
 
 describe('hashSecret', () => {
   const plainSecret = 'uberSecret'

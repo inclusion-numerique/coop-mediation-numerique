@@ -1,5 +1,5 @@
-import { failure } from '@app/web/libraries/result'
 import { describe, expect, it } from 'vitest'
+import { failure } from '@/libraries/result'
 import type { CompteRdvLie } from '../../../domain/compte-rdv'
 import { JetonAcces } from '../../../domain/jetons-oauth'
 import { RdvAgentId } from '../../../domain/rdv-agent-id'

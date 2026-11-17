@@ -1,6 +1,6 @@
-import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
-import type { Prisma } from '@app/web/generated/prisma/client'
 import { z } from 'zod'
+import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
+import type { Prisma } from '@/generated/prisma/client'
 import {
   type CritereStatut,
   critereDuStatut,

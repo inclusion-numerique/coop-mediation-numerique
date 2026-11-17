@@ -1,5 +1,5 @@
-import type { NomAffiche } from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+import type { NomAffiche } from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
 import { estUneFixture, reinitialiser } from '../implementation'
 
 export type CompteNonFixture = { readonly _tag: 'CompteNonFixture' }

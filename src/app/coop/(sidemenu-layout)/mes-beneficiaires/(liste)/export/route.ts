@@ -1,13 +1,13 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { isMediateur } from '@app/web/auth/userTypeGuards'
+import type { NextRequest } from 'next/server'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { isMediateur } from '@/auth/userTypeGuards'
 import {
   ExportBeneficiairesFilterValidations,
   exporterBeneficiaires,
-} from '@app/web/features/beneficiaire/abilities/exporter-beneficiaires'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { NextRequest } from 'next/server'
+} from '@/features/beneficiaire/abilities/exporter-beneficiaires'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)

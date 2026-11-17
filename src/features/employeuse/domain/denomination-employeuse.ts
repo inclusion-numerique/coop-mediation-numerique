@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 /**
  * Nom affichable d'une employeuse. `main` en porte deux — celle de l'antenne

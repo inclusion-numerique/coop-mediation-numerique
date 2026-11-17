@@ -1,12 +1,12 @@
-import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues, {
-  type LabelAndValue,
-} from '@app/web/libs/ui/administration/AdministrationInlineLabelsValues'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
+import AdministrationInlineLabelsValues, {
+  type LabelAndValue,
+} from '@/libs/ui/administration/AdministrationInlineLabelsValues'
+import { dateAsDay } from '@/utils/dateAsDay'
 import type { EmployeuseHistoriqueAffichage } from './historique-employeuses.presenter'
 
 const informationsDeLaStructure = ({

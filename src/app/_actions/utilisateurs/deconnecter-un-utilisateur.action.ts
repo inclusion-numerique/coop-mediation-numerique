@@ -1,11 +1,11 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { deconnecterUnUtilisateur } from '@app/web/features/utilisateurs/abilities/deconnecter-un-utilisateur'
-import { DECONNECTER_UN_UTILISATEUR_ERRORS } from '@app/web/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.errors'
-import { DeconnecterUnUtilisateurValidation } from '@app/web/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.validation'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { deconnecterUnUtilisateur } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur'
+import { DECONNECTER_UN_UTILISATEUR_ERRORS } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.errors'
+import { DeconnecterUnUtilisateurValidation } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.validation'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const deconnecterUnUtilisateurAction = actionBuilder()
   .use(withAuth())

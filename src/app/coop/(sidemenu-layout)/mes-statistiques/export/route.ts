@@ -1,15 +1,15 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { SessionUser } from '@app/web/auth/sessionUser'
-import { getStatistiquesWorksheetInput } from '@app/web/composition/statistiques/tableur'
+import { NextRequest } from 'next/server'
+import { z } from 'zod'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { SessionUser } from '@/auth/sessionUser'
+import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { buildStatistiquesWorksheet } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { NextRequest } from 'next/server'
-import { z } from 'zod'
+} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

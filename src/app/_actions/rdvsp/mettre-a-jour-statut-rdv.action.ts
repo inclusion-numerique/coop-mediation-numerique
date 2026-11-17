@@ -1,13 +1,13 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { METTRE_A_JOUR_STATUT_RDV_ERRORS } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.errors'
-import { MettreAJourStatutRdvValidation } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.validation'
-import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { METTRE_A_JOUR_STATUT_RDV_ERRORS } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.errors'
+import { MettreAJourStatutRdvValidation } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.validation'
+import { mettreAJourStatutRdvBinding } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const mettreAJourStatutRdvAction = actionBuilder()
   .use(withAuth())

@@ -1,9 +1,9 @@
 'use client'
 
-import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { Fragment, type ReactNode, useRef, useState } from 'react'
+import { CaptureButton } from '@/libs/statistiques/CaptureButton'
 
 type AccompagnementCategory = 'thematiques' | 'demarches' | 'tags'
 type StructuresCategory = 'lieux' | 'communes'

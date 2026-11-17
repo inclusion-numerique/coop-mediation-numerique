@@ -1,6 +1,6 @@
-import { conseillersNumeriquesUserIdsSql } from '@app/web/features/employeuse/server'
-import { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+import { conseillersNumeriquesUserIdsSql } from '@/features/employeuse/server'
+import { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import { lieuExploitableSql } from '../../../../implementation'
 import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
 

@@ -1,9 +1,9 @@
-import { type CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import type { Autonomie } from '@app/web/features/activites/ui/libelles/autonomie'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 import Link from 'next/link'
+import { type CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import type { Autonomie } from '@/features/activites/ui/libelles/autonomie'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { type DefaultValues, withForm } from '@/libs/form/use-app-form'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

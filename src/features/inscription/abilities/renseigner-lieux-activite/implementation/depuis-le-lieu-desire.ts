@@ -1,3 +1,4 @@
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
   adresseSaisie,
   BanId,
@@ -5,8 +6,7 @@ import {
   type LieuDemande,
   LieuId,
   localisationSaisie,
-} from '@app/web/features/lieux-activite'
-import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+} from '@/features/lieux-activite'
 import type { LieuActiviteInput } from '../domain'
 
 /**

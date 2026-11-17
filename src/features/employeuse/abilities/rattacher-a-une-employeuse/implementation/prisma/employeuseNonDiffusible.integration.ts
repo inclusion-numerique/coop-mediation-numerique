@@ -1,5 +1,5 @@
-import { prismaClient } from '@app/web/prismaClient'
 import { beforeAll, describe, expect, it } from 'vitest'
+import { prismaClient } from '@/prismaClient'
 import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
 
 const sansGeocodage = ensureStructureAdministrativeMain({

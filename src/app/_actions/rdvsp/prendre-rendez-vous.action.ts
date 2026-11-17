@@ -1,14 +1,14 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth, withMediateur } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { PRENDRE_RENDEZ_VOUS_ERRORS } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.errors'
-import { PrendreRendezVousValidation } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.validation'
-import { MediateurProprietaireId } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
-import { prendreRendezVousBinding } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous.binding'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth, withMediateur } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { PRENDRE_RENDEZ_VOUS_ERRORS } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.errors'
+import { PrendreRendezVousValidation } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.validation'
+import { MediateurProprietaireId } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
+import { prendreRendezVousBinding } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous.binding'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const prendreRendezVousAction = actionBuilder()
   .use(withAuth())

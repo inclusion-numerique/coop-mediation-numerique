@@ -1,5 +1,5 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
 import axios from 'axios'
+import { failure, type Result, success } from '@/libraries/result'
 import { ApiIndisponible, type ErreurRdvApi } from '../../domain/errors'
 import type { JetonsOAuth } from '../../domain/jetons-oauth'
 

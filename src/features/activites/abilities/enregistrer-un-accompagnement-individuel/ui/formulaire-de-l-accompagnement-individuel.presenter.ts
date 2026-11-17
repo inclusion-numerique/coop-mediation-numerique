@@ -1,4 +1,4 @@
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
+import type { DefaultValues } from '@/libs/form/use-app-form'
 import type {
   AccompagnementIndividuel,
   AffichageDeLActivite,

@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { consulterUnClientApi } from '@app/web/features/clients-api/abilities/consulter-un-client-api'
+import { Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api'
 import {
   clientSeme,
   portees,
-} from '@app/web/features/clients-api/clients-api.cucumber'
-import { Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/clients-api/clients-api.cucumber'
 
 const consultation: {
   resultat?: Awaited<ReturnType<typeof consulterUnClientApi>>

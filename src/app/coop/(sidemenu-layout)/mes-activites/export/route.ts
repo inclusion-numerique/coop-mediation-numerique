@@ -1,30 +1,30 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
+import type { NextRequest } from 'next/server'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/auth/mediateursCoordonnes'
 import {
   exporterMesAccompagnements,
   nomsDesFiltresExportes,
-} from '@app/web/features/activites/abilities/exporter-mes-accompagnements'
+} from '@/features/activites/abilities/exporter-mes-accompagnements'
 import {
   classeurDesAccompagnements,
   libellesDuClasseur,
-} from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui'
+} from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
 import {
   CoordinateurId,
   criteresDesActivites,
   MediateurId,
-} from '@app/web/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
-import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+} from '@/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-} from '@app/web/features/lieux-activite'
-import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { NextRequest } from 'next/server'
+} from '@/features/lieux-activite'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

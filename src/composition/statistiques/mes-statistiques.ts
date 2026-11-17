@@ -1,27 +1,24 @@
-import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/auth/mediateursCoordonnes'
-import type { SessionUser } from '@app/web/auth/sessionUser'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/auth/mediateursCoordonnes'
+import type { SessionUser } from '@/auth/sessionUser'
 import {
   rassembler,
   statistiquesEnCours,
-} from '@app/web/composition/statistiques/statistiques-fournies'
-import { fenetreDe } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode'
-import { decrireLesActivitesDuPerimetre } from '@app/web/features/activites/abilities/decrire-les-activites-du-perimetre'
-import {
-  criteresDesStatistiques,
-  Jour,
-} from '@app/web/features/activites/domain'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
-import { listerLesMembresAFiltrer } from '@app/web/features/equipe/abilities/lister-les-membres-a-filtrer'
+} from '@/composition/statistiques/statistiques-fournies'
+import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { criteresDesStatistiques, Jour } from '@/features/activites/domain'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import {
   CoordinateurId as CoordinateurIdDeLEquipe,
   MediateurId as MediateurIdDeLEquipe,
-} from '@app/web/features/equipe/domain'
-import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { optionsDesStatistiques } from '@app/web/features/statistiques/ui/filtres/options-de-la-barre.presenter'
-import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { tousLesTagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+} from '@/features/equipe/domain'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { optionsDesStatistiques } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { tousLesTagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'
 import { lieuxChoisisDe } from './lieux-choisis'
 import { perimetreDeLUtilisateur } from './perimetre'

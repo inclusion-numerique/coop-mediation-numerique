@@ -1,7 +1,4 @@
-import type {
-  ProfilInscription,
-  UserId,
-} from '@app/web/features/inscription/domain'
+import type { ProfilInscription, UserId } from '@/features/inscription/domain'
 import type { DispositifInscription } from './dispositif-inscription'
 
 /**

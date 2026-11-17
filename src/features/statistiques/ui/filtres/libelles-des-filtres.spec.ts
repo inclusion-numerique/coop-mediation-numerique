@@ -1,5 +1,5 @@
-import { generateActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import { describe, expect, it } from 'vitest'
+import { generateActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
 
 const vocabulaire = {
   typesDActivite: [

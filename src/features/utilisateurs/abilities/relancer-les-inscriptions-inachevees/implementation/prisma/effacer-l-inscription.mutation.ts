@@ -1,6 +1,6 @@
-import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import { retirerDuRegistre } from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import { retirerDuRegistre } from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 
 export const effacerLInscription = async (
   utilisateurId: UtilisateurId,

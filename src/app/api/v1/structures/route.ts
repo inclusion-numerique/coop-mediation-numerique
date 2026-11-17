@@ -1,3 +1,6 @@
+import { routeBuilder } from '@arckit/nextjs/route'
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
 import {
   createCompositeCursor,
   cursorListMeta,
@@ -5,24 +8,21 @@ import {
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
-} from '@app/web/app/api/v1/CursorPagination'
+} from '@/app/api/v1/CursorPagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@app/web/app/api/v1/JsonApiTypes'
+} from '@/app/api/v1/JsonApiTypes'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@app/web/app/api/v1/middlewares'
+} from '@/app/api/v1/middlewares'
 import {
   inventaireDesLieux,
   lieuInventorie,
   type StructureAttributes,
-} from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
-import { routeBuilder } from '@arckit/nextjs/route'
-import { NextResponse } from 'next/server'
-import { z } from 'zod'
+} from '@/features/lieux-activite/abilities/inventorier-les-lieux'
 
 /**
  * @openapi

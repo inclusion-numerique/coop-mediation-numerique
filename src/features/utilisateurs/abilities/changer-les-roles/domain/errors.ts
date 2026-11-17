@@ -3,7 +3,7 @@ import type {
   RoleUtilisateur,
   UtilisateurId,
   UtilisateurIntrouvable,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 
 export type AucunRoleDemande = { readonly _tag: 'AucunRoleDemande' }
 

@@ -1,4 +1,4 @@
-import { ImporterBeneficiairesPage } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/pages/ImporterBeneficiairesPage'
+import { ImporterBeneficiairesPage } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/pages/ImporterBeneficiairesPage'
 
 const ImporterPage = () => <ImporterBeneficiairesPage />
 

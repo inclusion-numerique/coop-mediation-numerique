@@ -1,17 +1,4 @@
 import assert from 'node:assert'
-import {
-  consulterLaFicheDuLieu,
-  modifierLaFicheDuLieu,
-} from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { SERVICES_PAR_DEFAUT } from '@app/web/features/lieux-activite/domain/publication'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import {
-  ficheSemee,
-  semerUneFicheDeLieu,
-} from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
   FormationsLabels,
@@ -23,6 +10,19 @@ import {
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  consulterLaFicheDuLieu,
+  modifierLaFicheDuLieu,
+} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
+import {
+  ficheSemee,
+  semerUneFicheDeLieu,
+} from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 import { depuisLaSaisie } from './action/depuis-la-saisie'
 import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
 import type { FicheDuLieu } from './domain'

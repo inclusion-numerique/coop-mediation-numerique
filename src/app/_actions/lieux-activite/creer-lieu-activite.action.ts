@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { creerLieuActivite } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite'
-import { CREER_LIEU_ACTIVITE_ERRORS } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
-import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite'
+import { CREER_LIEU_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
+import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
+import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const creerUnLieuActiviteAction = actionBuilder()
   .use(withAuth())

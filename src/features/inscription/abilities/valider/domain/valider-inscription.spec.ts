@@ -1,5 +1,5 @@
-import { UserId } from '@app/web/features/inscription/domain'
 import { describe, expect, it } from 'vitest'
+import { UserId } from '@/features/inscription/domain'
 import {
   type FaitsInscription,
   validerInscription,

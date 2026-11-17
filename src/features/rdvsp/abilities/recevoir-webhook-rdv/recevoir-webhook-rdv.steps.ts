@@ -1,15 +1,16 @@
 import assert from 'node:assert'
-import type { RecevoirWebhookRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
-import { lireNotificationRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/api/lire-notification-rdv'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { RecevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
+import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/api/lire-notification-rdv'
 import {
   comptePourWebhook,
   enregistrerRdvDeLaNotification,
   organisationConnue,
   rdvConnuParId,
   supprimerRdvDeLaNotification,
-} from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/prisma/webhook-rdv.prisma'
-import { recevoirWebhookRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv'
-import { EvenementWebhook } from '@app/web/features/rdvsp/domain/evenement-webhook'
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/prisma/webhook-rdv.prisma'
+import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv'
+import { EvenementWebhook } from '@/features/rdvsp/domain/evenement-webhook'
 import {
   ID_TEST,
   rdvEnBase,
@@ -18,8 +19,7 @@ import {
   seedOrganisation,
   seedRdv,
   suivreUsagerRdv,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 11
 const RDV_ID = ID_TEST.rdv + 400

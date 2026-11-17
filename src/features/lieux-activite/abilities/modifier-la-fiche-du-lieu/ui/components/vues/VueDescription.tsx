@@ -1,5 +1,5 @@
-import { FormationLabelPropose as FormationLabel } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import { FormationLabelPropose as FormationLabel } from '@/features/lieux-activite/domain/nomenclatures'
 
 export const VueDescription = ({
   presentationResume,

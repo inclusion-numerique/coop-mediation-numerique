@@ -1,9 +1,9 @@
 import assert from 'node:assert'
-import { fusionnerDesLieux } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { prismaClient } from '@/prismaClient'
 
 const semis: {
   absorbeId?: string

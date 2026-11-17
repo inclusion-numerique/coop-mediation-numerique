@@ -1,9 +1,9 @@
+import { Frais } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import z from 'zod'
 import {
   AdresseMailSaisie,
   NumeroTelephoneSaisi,
-} from '@app/web/features/lieux-activite/domain/regles-de-saisie'
-import { Frais } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import z from 'zod'
+} from '@/features/lieux-activite/domain/regles-de-saisie'
 
 export const ModalitesAccesAuServiceShape = {
   modalitesAcces: z

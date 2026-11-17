@@ -1,4 +1,4 @@
-import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
+import { getCartographieNationaleSourceLabel } from '@/libraries/cartographie-nationale'
 import type { FicheDuLieu } from '../../domain'
 import { type ChampCompare, differences } from '../../domain/differences'
 import { affichee, type ValeurAffichee } from './valeur-affichee'

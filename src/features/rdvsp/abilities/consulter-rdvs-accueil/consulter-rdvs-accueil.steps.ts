@@ -1,14 +1,14 @@
 import assert from 'node:assert'
-import type { ConsulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
-import { consulterRdvsAccueilBinding as consulter } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
-import { StatutPresence } from '@app/web/features/rdvsp/domain/statut-presence'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { ConsulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
+import { consulterRdvsAccueilBinding as consulter } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
+import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
 import {
   ID_TEST,
   seedCompteRdv,
   seedRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 9
 const MAINTENANT = new Date('2026-08-17T12:00:00.000Z')

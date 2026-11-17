@@ -1,9 +1,9 @@
-import type { OptionDEmployeuse } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@app/web/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { SelectedItemsData } from '@app/web/libraries/ui/components/Primitives/SelectedItems'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { inject } from '@app/web/libs/injection/client'
+import type { OptionDEmployeuse } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { inject } from '@/libs/injection/client'
 
 export type StructureEmployeuse = OptionDEmployeuse
 

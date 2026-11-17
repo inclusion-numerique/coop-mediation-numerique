@@ -1,5 +1,5 @@
-import { defineModel } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel } from '@/libraries/model'
 import { TermeDeRecherche } from './terme-de-recherche'
 
 export type RechercheDeLieu =

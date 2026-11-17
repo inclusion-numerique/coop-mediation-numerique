@@ -3,8 +3,8 @@ import type {
   EffacementImpossible,
   PalierDeRelance,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import type { Result } from '@app/web/libraries/result'
+} from '@/features/utilisateurs/domain'
+import type { Result } from '@/libraries/result'
 
 export type RelancerLesInscritsInactifsPorts = {
   readonly envoyerLaRelance: (

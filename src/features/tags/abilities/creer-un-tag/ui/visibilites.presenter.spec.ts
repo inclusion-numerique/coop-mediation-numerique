@@ -1,5 +1,5 @@
-import { CodeDepartement } from '@app/web/libraries/insee'
 import { describe, expect, it } from 'vitest'
+import { CodeDepartement } from '@/libraries/insee'
 import {
   type Acteur,
   CoordinateurId,

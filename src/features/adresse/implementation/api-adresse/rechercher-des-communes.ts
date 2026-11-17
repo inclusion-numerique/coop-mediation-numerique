@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  searchAdresses,
-  siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
+import { searchAdresses, siIndisponible } from '@/external-apis/apiAdresse'
 import { premierCodePostal } from './premier-code-postal'
 
 export type Commune = {

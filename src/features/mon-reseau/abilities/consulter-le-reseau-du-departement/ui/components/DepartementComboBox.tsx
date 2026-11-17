@@ -1,11 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import {
   Departement,
   departements,
-} from '@app/web/data/collectivites-territoriales/departements'
-import { ComboBox } from '@app/web/libraries/ui/components/Primitives/Form/ComboBox'
-import { useRouter } from 'next/navigation'
+} from '@/data/collectivites-territoriales/departements'
+import { ComboBox } from '@/libraries/ui/components/Primitives/Form/ComboBox'
 import { hrefDuReseau } from '../../../../ui/liens'
 
 const itemToString = (departement: Departement | null): string =>

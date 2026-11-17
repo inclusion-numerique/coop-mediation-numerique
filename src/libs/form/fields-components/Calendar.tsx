@@ -1,8 +1,8 @@
 import {
   Calendar as CalendarBase,
   CalendarProps as CalendarBaseProps,
-} from '@app/web/libraries/ui/components/Primitives/calendar/Calendar'
-import { useFieldContext } from '@app/web/libs/form/form-context'
+} from '@/libraries/ui/components/Primitives/calendar/Calendar'
+import { useFieldContext } from '@/libs/form/form-context'
 
 type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]

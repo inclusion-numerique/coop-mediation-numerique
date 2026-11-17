@@ -1,4 +1,4 @@
-import { MonInclusionNumeriqueLogo } from '@app/web/features/pictograms/services/MonInclusionNumeriqueLogo'
+import { MonInclusionNumeriqueLogo } from '@/features/pictograms/services/MonInclusionNumeriqueLogo'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

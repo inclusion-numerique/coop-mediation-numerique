@@ -1,6 +1,6 @@
-import type { UserId } from '@app/web/features/inscription/domain'
-import { type Result, success } from '@app/web/libraries/result'
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
+import type { UserId } from '@/features/inscription/domain'
+import { type Result, success } from '@/libraries/result'
+import { onlyDefinedAndNotNull } from '@/utils/onlyDefinedAndNotNull'
 import {
   renseignerLieuxActivite as deciderRenseignerLieuxActivite,
   type LieuActiviteInput,

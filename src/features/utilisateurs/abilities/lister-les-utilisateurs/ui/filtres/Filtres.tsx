@@ -1,16 +1,13 @@
 'use client'
 
-import {
-  LieuFilter,
-  type LieuFilterValue,
-} from '@app/web/features/lieux-activite/ui'
-import type { FiltresUtilisateurs } from '@app/web/features/utilisateurs/domain'
+import { LieuFilter, type LieuFilterValue } from '@/features/lieux-activite/ui'
+import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   type OptionsDesFiltres,
   optionsDesDispositifs,
   optionsDesStatuts,
-} from '@app/web/features/utilisateurs/ui'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+} from '@/features/utilisateurs/ui'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { FiltreAChoixUnique } from './FiltreAChoixUnique'
 import { FiltreEmployeuses } from './FiltreEmployeuses'
 import { FiltreRoles } from './FiltreRoles'

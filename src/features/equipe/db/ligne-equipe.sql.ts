@@ -1,6 +1,6 @@
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
-import { Prisma } from '@app/web/generated/prisma/client'
 import { subDays } from 'date-fns'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { Prisma } from '@/generated/prisma/client'
 import {
   type CoordinateurId,
   type CriteresEquipe,

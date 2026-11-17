@@ -1,15 +1,15 @@
 import assert from 'node:assert'
+import { PageSize, Search, Sort, SortDirection } from '@arckit/resultset'
+import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import {
   type BeneficiaireSortField,
   beneficiaireSortFields,
-} from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { listerBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/implementation'
+} from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementation'
 import {
   seedBeneficiaire,
   testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { PageSize, Search, Sort, SortDirection } from '@arckit/resultset'
-import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
 
 type ListResult = Awaited<ReturnType<typeof listerBeneficiaires>>
 

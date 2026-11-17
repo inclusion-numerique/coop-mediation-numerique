@@ -1,7 +1,7 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios, { AxiosResponse } from 'axios'
 import pThrottle from 'p-throttle'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 
 type User = {
   id: string

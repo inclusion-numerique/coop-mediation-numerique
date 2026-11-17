@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { renouvelerLeSecret } from '@app/web/features/clients-api/abilities/renouveler-le-secret'
+import { Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret'
 import {
   clientSeme,
   leSecretOuvreLAcces,
-} from '@app/web/features/clients-api/clients-api.cucumber'
-import { Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/clients-api/clients-api.cucumber'
 
 const renouvellement: {
   resultat?: Awaited<ReturnType<typeof renouvelerLeSecret>>

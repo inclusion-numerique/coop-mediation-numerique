@@ -1,11 +1,11 @@
-import { modifierBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/modifier-beneficiaire.action'
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { beneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
-import { presentBeneficiaireAModifier } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
-import { ModifierBeneficiairePage } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { notFound } from 'next/navigation'
+import { modifierBeneficiaireAction } from '@/app/_actions/beneficiaire/modifier-beneficiaire.action'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { beneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
+import { presentBeneficiaireAModifier } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
+import { ModifierBeneficiairePage } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 
 const PageModifierBeneficiaire = async (props: {
   searchParams: Promise<{ retour?: string }>

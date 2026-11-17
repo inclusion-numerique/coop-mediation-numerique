@@ -1,6 +1,5 @@
 'use client'
 
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import {
   Cell,
   Pie,
@@ -9,6 +8,7 @@ import {
   Tooltip,
   TooltipProps,
 } from 'recharts'
+import { numberToPercentage, numberToString } from '@/utils/formatNumber'
 
 type PieData = { label: string; count: number; proportion: number }
 

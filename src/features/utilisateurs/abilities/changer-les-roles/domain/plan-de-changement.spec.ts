@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   CoordinateurId,
   Dispositif,
@@ -5,8 +6,7 @@ import {
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import {
   type CompteAReaffecter,
   type CoordinateurAReaffecter,

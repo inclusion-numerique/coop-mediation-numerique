@@ -1,4 +1,4 @@
-import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
+import { CartographieLogo } from '@/features/pictograms/services/CartographieLogo'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

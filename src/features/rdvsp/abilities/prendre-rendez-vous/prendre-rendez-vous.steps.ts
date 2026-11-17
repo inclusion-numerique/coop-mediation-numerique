@@ -1,21 +1,23 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   BeneficiaireCibleId,
   MediateurProprietaireId,
-} from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
-import type { PrendreRendezVous } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
-import { prendreRendezVous } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous'
-import { beneficiaireADemander } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/beneficiaire-a-demander.query'
-import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/compte-du-mediateur.query'
-import { lierUsagerAuBeneficiaire } from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/lier-usager-au-beneficiaire.mutation'
+} from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
+import type { PrendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
+import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous'
+import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/beneficiaire-a-demander.query'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/compte-du-mediateur.query'
+import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/lier-usager-au-beneficiaire.mutation'
 import {
   DemandeRdvId,
   UrlPriseRdv,
   type UsagerDeLaDemande,
-} from '@app/web/features/rdvsp/domain/demande-rdv'
-import { ApiIndisponible } from '@app/web/features/rdvsp/domain/errors'
-import type { RdvServicePublicApi } from '@app/web/features/rdvsp/domain/rdv-service-public.port'
-import { UsagerId } from '@app/web/features/rdvsp/domain/usager-id'
+} from '@/features/rdvsp/domain/demande-rdv'
+import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
+import { UsagerId } from '@/features/rdvsp/domain/usager-id'
 import {
   beneficiaireEnBase,
   ID_TEST,
@@ -27,10 +29,8 @@ import {
   supprimerCompteRdvDuMediateur,
   testMediateurId,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@app/web/libraries/result'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { failure, success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 5
 const USAGER_RENDU = ID_TEST.usager + 2

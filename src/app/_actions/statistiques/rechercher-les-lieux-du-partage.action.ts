@@ -1,17 +1,17 @@
 'use server'
 
-import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
-import { perimetreDeLUtilisateur } from '@app/web/composition/statistiques/perimetre'
-import { actionBuilder } from '@app/web/configuration/nextjs'
+import { z } from 'zod'
+import { utilisateurDuPartage } from '@/composition/statistiques/partage'
+import { perimetreDeLUtilisateur } from '@/composition/statistiques/perimetre'
+import { actionBuilder } from '@/configuration/nextjs'
 import {
   GenreDeLieu,
   rechercherLesLieuxDesStatistiques,
-} from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques'
-import { RechercherLesLieuxDesStatistiquesValidation } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
-import { optionDeLieu } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
-import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { withInput } from '@app/web/libraries/nextjs'
-import { z } from 'zod'
+} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
+import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
+import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
   .use(

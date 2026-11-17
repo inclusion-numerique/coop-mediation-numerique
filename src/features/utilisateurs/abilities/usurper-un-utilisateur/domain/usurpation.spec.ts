@@ -1,11 +1,11 @@
+import { describe, expect, it } from 'vitest'
 import {
   JAMAIS,
   NomAffiche,
   OrigineCompte,
   RoleUtilisateur,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import {
   autoriserUsurpation,
   type CibleUsurpation,

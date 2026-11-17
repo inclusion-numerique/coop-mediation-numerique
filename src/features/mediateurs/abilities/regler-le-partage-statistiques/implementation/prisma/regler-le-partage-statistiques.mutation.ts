@@ -1,7 +1,7 @@
-import { type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
-import { createStopwatch } from '@app/web/utils/stopwatch'
+import { type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
+import { addMutationLog } from '@/utils/addMutationLog'
+import { createStopwatch } from '@/utils/stopwatch'
 import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
 import type {
   AuteurId,

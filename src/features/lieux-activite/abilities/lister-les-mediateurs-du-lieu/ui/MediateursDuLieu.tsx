@@ -1,8 +1,8 @@
 'use client'
 
-import Card from '@app/web/components/Card'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
+import Card from '@/components/Card'
 import type { MediateurDuLieu } from '../domain'
 import { CarteDuMediateur } from './CarteDuMediateur'
 

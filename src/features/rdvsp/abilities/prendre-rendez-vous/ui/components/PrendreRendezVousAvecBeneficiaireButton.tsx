@@ -1,12 +1,12 @@
 'use client'
 
-import { prendreRendezVousAction } from '@app/web/app/_actions/rdvsp/prendre-rendez-vous.action'
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
+import type { SessionUser } from '@/auth/sessionUser'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
 const PrendreRendezVousAvecBeneficiaireButton = ({
   beneficiaire,

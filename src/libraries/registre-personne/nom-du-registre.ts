@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 const capitaliserLeSegment = (segment: string): string =>
   `${segment.slice(0, 1).toUpperCase()}${segment.slice(1).toLowerCase()}`

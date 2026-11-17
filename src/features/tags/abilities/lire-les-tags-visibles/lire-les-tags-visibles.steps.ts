@@ -1,12 +1,12 @@
 import assert from 'node:assert'
-import { type Acteur, type Tag, TagId } from '@app/web/features/tags/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { type Acteur, type Tag, TagId } from '@/features/tags/domain'
 import {
   acteurMediateur,
   semerUnMediateur,
   semerUnTag,
-} from '@app/web/features/tags/tags.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/tags/tags.cucumber'
+import { prismaClient } from '@/prismaClient'
 import {
   lireLesTagsCollectifs,
   lireLesTagsVisibles,

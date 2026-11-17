@@ -1,10 +1,10 @@
 'use client'
 
-import { fusionnerDesLieuxAction } from '@app/web/app/_actions/lieux-activite/fusionner-des-lieux.action'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
+import { fusionnerDesLieuxAction } from '@/app/_actions/lieux-activite/fusionner-des-lieux.action'
+import { createToast } from '@/libraries/ui/toast/createToast'
 
 const ValiderLaFusion = ({
   sourceStructure,

@@ -2,8 +2,8 @@ import {
   coordinateurDe,
   mediateurDe,
   type RattachementsDuCompte,
-} from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
 
 export type NonCoordinateur = { readonly _tag: 'NonCoordinateur' }
 

@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Link from 'next/link'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 export const Support = () => (
   <>

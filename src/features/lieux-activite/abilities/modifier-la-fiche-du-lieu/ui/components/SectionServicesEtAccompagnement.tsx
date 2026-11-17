@@ -1,13 +1,13 @@
 'use client'
 
-import EditCardTanStack from '@app/web/components/EditCardTanStack'
+import { useStore } from '@tanstack/react-form'
+import type { z } from 'zod'
+import EditCardTanStack from '@/components/EditCardTanStack'
 import {
   modaliteAccompagnementOptions,
   serviceOptions,
-} from '@app/web/features/lieux-activite/ui/options'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useStore } from '@tanstack/react-form'
-import type { z } from 'zod'
+} from '@/features/lieux-activite/ui/options'
+import { useAppForm } from '@/libs/form/use-app-form'
 import { ServicesEtAccompagnementSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { ServicesEtAccompagnementAffiches } from '../fiche-affichee/services-et-accompagnement'

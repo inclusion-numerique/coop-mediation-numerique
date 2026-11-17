@@ -1,10 +1,10 @@
-import { inviteMediateur } from '@app/web/features/equipe/implementation/email/inviteMediateur'
-import { inviteNewMediateur } from '@app/web/features/equipe/implementation/email/inviteNewMediateur'
-import { compileMjml } from '@app/web/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { emailTransport } from '@app/web/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
+import { inviteMediateur } from '@/features/equipe/implementation/email/inviteMediateur'
+import { inviteNewMediateur } from '@/features/equipe/implementation/email/inviteNewMediateur'
+import { compileMjml } from '@/libraries/emails/mjml'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { emailTransport } from '@/server/email/emailTransport'
+import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import {
   type InvitationEnAttente,
   lienInvitation,

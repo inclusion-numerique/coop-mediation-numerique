@@ -1,11 +1,11 @@
+import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { ReactNode } from 'react'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { ReactNode } from 'react'
+} from '@/features/statistiques/ui/filtres/libelles-des-filtres'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { MediateurOption } from '../filtres/mediateur-option'
 import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 

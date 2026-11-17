@@ -1,5 +1,5 @@
-import { createCommunesClient } from '@app/web/communes/communesClient'
 import { describe, expect, test } from 'vitest'
+import { createCommunesClient } from '@/communes/communesClient'
 
 describe('findCommune', () => {
   describe('getCommunesClient', () => {

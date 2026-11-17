@@ -1,13 +1,13 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   getLieuxActiviteOptions,
   getLieuxDesActivitesOptions,
   getMediateursLieuxActiviteOptions,
   type LieuActiviteOption,
-} from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const proposees: { options?: LieuActiviteOption[] } = {}
 

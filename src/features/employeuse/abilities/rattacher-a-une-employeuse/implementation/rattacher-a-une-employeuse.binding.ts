@@ -1,5 +1,5 @@
-import { geocoder } from '@app/web/configuration/ban'
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
+import { geocoder } from '@/configuration/ban'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { etablissementDepuisSiret } from './api/etablissement-depuis-siret'
 import { rattacherAUneEmployeuse } from './prisma/rattacher-a-une-employeuse.mutation'
 import { rattacherAUneEmployeuseDepuisSiret } from './prisma/rattacher-depuis-siret.mutation'

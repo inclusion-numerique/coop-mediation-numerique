@@ -1,10 +1,10 @@
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import type { UiComponentProps } from '@app/web/libraries/ui/utils/uiComponentProps'
 import classNames from 'classnames'
 import { type ComponentType, type CSSProperties, type ReactNode } from 'react'
 import type { FieldPath } from 'react-hook-form'
 import { type Control, Controller, type FieldValues } from 'react-hook-form'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { UiComponentProps } from '@/libraries/ui/utils/uiComponentProps'
 
 type LabelComponentPropsType<O extends SelectOption> = {
   option: O

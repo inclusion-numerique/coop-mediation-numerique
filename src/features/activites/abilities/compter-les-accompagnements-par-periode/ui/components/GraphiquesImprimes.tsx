@@ -1,5 +1,5 @@
-import { AccompagnementBarChart } from '@app/web/libs/statistiques/AccompagnementBarChart'
-import type { LabelAndCount } from '@app/web/libs/statistiques/quantifiedShare'
+import { AccompagnementBarChart } from '@/libs/statistiques/AccompagnementBarChart'
+import type { LabelAndCount } from '@/libs/statistiques/quantifiedShare'
 
 export const GraphiquesImprimes = ({
   accompagnementsParMois,

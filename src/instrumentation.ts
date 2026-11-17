@@ -1,4 +1,4 @@
 export {
   onRequestError,
   register,
-} from '@app/web/configuration/telemetry/error-reporter/server'
+} from '@/configuration/telemetry/error-reporter/server'

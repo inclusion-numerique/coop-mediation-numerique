@@ -1,4 +1,4 @@
-import { pluriel } from '@app/web/libraries/pluriel'
+import { pluriel } from '@/libraries/pluriel'
 import { Email } from '../../../domain'
 import type { InvitationsEnvoyees, MediateursAInviter } from '../domain'
 import { horsDe, libelleDe, type PersonneAInviter } from './personne-a-inviter'

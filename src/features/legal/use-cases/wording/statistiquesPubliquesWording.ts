@@ -1,4 +1,4 @@
-import { dateAsDay } from '@app/web/utils/dateAsDay'
+import { dateAsDay } from '@/utils/dateAsDay'
 
 export const datesDonneesRecolteesEtMisesAJour = (
   {

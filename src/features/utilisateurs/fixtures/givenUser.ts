@@ -1,6 +1,6 @@
-import type { Prisma, UserRole } from '@app/web/generated/prisma/client'
-import { createSlug } from '@app/web/utils/createSlug'
 import { v4 } from 'uuid'
+import type { Prisma, UserRole } from '@/generated/prisma/client'
+import { createSlug } from '@/utils/createSlug'
 
 export const givenUser = <
   T extends Partial<Prisma.UserCreateInput> & {

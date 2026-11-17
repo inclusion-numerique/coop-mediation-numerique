@@ -1,9 +1,9 @@
+import { Command } from '@commander-js/extra-typings'
 import {
   previewDeletionRunsUrl,
   triggerPreviewDeletion,
-} from '@app/web/cli/triggerPreviewDeletion'
-import { output, outputError } from '@app/web/libraries/console/output'
-import { Command } from '@commander-js/extra-typings'
+} from '@/cli/triggerPreviewDeletion'
+import { output, outputError } from '@/libraries/console/output'
 
 const protectedBranches = ['main', 'dev']
 

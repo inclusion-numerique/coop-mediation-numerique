@@ -1,7 +1,7 @@
 import {
   PUBLICATION_SANS_SERVICE,
   publicationSansService,
-} from '@app/web/features/lieux-activite/domain/publication'
+} from '@/features/lieux-activite/domain/publication'
 import { DescriptionShape } from './description.validation'
 import { IdentiteLieuShape } from './informations-generales.validation'
 import { InformationsPratiquesShape } from './informations-pratiques.validation'

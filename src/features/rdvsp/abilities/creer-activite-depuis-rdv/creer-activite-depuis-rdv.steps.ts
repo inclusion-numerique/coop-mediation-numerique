@@ -1,7 +1,7 @@
 import assert from 'node:assert'
-import type { CreerActiviteDepuisRdv } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
-import { MediateurRedacteurId } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
-import { creerActiviteDepuisRdvAvec } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
+import type { CreerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
+import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
+import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
 
 const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
   ({ rendezVous }) =>
@@ -10,8 +10,9 @@ const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
     ),
 )
 
-import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
-import { StatutPresence } from '@app/web/features/rdvsp/domain/statut-presence'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { RdvId } from '@/features/rdvsp/domain/rdv-id'
+import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
 import {
   beneficiairesDuMediateurAvecUsagers,
   ID_TEST,
@@ -21,8 +22,7 @@ import {
   seedRdv,
   testMediateurId,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 6
 const AGENT_ID_AUTRE = ID_TEST.compte + 7

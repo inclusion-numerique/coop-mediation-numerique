@@ -1,25 +1,25 @@
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
+import { routeBuilder } from '@arckit/nextjs/route'
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { apiV1Url } from '@/app/api/v1/apiV1Url'
 import type {
   JsonApiItemResponse,
   JsonApiResource,
-} from '@app/web/app/api/v1/JsonApiTypes'
+} from '@/app/api/v1/JsonApiTypes'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@app/web/app/api/v1/middlewares'
-import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
-import { statistiquesNationales } from '@app/web/composition/statistiques/statistiques-nationales'
-import { criteresDesStatistiques } from '@app/web/features/activites/domain'
+} from '@/app/api/v1/middlewares'
+import { serializeApiRequestParams } from '@/app/api/v1/serializeApiRequestParams'
+import { statistiquesNationales } from '@/composition/statistiques/statistiques-nationales'
+import { criteresDesStatistiques } from '@/features/activites/domain'
 import {
   FiltresDesStatistiquesValidation,
   type StatistiquesAttributes,
   statistiquesAttributes,
   statistiquesExposees,
-} from '@app/web/features/statistiques/abilities/exposer-les-statistiques'
-import { routeBuilder } from '@arckit/nextjs/route'
-import { NextResponse } from 'next/server'
-import { z } from 'zod'
+} from '@/features/statistiques/abilities/exposer-les-statistiques'
 
 /**
  * @openapi

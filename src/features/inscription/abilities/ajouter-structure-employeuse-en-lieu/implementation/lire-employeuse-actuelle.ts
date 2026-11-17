@@ -1,4 +1,4 @@
-import { employeuseActuelleId } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
+import { employeuseActuelleId } from '@/features/inscription/acl/employeuse-actuelle.adapter'
 import { EmployeuseId, type LireEmployeuseActuelle } from '../domain'
 
 /**

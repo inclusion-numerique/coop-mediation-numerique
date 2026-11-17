@@ -2,8 +2,8 @@ import {
   contratLePlusRecent,
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
-import type { Prisma } from '@app/web/generated/prisma/client'
+} from '@/features/employeuse/server'
+import type { Prisma } from '@/generated/prisma/client'
 import {
   AdresseCourriel,
   CoordinateurId,

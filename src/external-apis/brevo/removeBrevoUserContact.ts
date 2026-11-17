@@ -1,4 +1,4 @@
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { deleteBrevoContactIfOrphan } from './deleteBrevoContactIfOrphan'
 import {
   deploymentCanRemoveBrevoContactFromList,

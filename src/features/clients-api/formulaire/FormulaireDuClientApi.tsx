@@ -1,18 +1,15 @@
 'use client'
 
-import {
-  libellesDesPortees,
-  porteesApi,
-} from '@app/web/features/clients-api/domain'
-import type { ServerActionResult } from '@app/web/libraries/nextjs/action/result'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
+import { libellesDesPortees, porteesApi } from '@/features/clients-api/domain'
+import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 import {
   ClientApiValidation,
   type ValeursDuClientApi,

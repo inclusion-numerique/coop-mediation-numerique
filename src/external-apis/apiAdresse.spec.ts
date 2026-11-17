@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   AdresseIndisponible,
   lireLaReponse,
@@ -5,12 +6,11 @@ import {
   searchAdresses,
   siIndisponible,
   urlDeRecherche,
-} from '@app/web/external-apis/apiAdresse'
+} from '@/external-apis/apiAdresse'
 import {
   reponseAdresseTrouvee,
   reponseSansAdresse,
-} from '@app/web/external-apis/apiAdresse.reponses'
-import { describe, expect, it } from 'vitest'
+} from '@/external-apis/apiAdresse.reponses'
 
 const reponse = (corps: unknown, status = 200) =>
   new Response(JSON.stringify(corps), { status })

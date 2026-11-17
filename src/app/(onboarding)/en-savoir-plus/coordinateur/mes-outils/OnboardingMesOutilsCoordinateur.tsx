@@ -1,6 +1,6 @@
-import Onboarding from '@app/web/app/(onboarding)/_components/Onboarding'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Image from 'next/image'
+import Onboarding from '@/app/(onboarding)/_components/Onboarding'
 
 export const OnboardingMesOutilsCoordinateur = () => (
   <Onboarding

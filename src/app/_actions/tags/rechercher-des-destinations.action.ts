@@ -1,13 +1,13 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { destinationsDeFusion } from '@app/web/features/tags/abilities/fusionner-un-tag'
-import { RechercherDesDestinationsValidation } from '@app/web/features/tags/abilities/fusionner-un-tag/action/rechercher-des-destinations.validation'
-import { destinationsAffichees } from '@app/web/features/tags/abilities/fusionner-un-tag/ui/destinations.presenter'
-import { TagId } from '@app/web/features/tags/domain'
-import { acteurDe } from '@app/web/features/tags/implementation/session'
-import { withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { destinationsDeFusion } from '@/features/tags/abilities/fusionner-un-tag'
+import { RechercherDesDestinationsValidation } from '@/features/tags/abilities/fusionner-un-tag/action/rechercher-des-destinations.validation'
+import { destinationsAffichees } from '@/features/tags/abilities/fusionner-un-tag/ui/destinations.presenter'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementation/session'
+import { withInput } from '@/libraries/nextjs'
 
 export const rechercherDesDestinationsAction = actionBuilder()
   .use(withAuth())

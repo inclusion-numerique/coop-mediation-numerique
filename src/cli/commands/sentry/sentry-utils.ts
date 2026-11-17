@@ -1,5 +1,5 @@
-import { outputError } from '@app/web/libraries/console/output'
 import axios, { type AxiosInstance } from 'axios'
+import { outputError } from '@/libraries/console/output'
 
 export type SentryConfig = {
   url: string

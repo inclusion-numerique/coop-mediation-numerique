@@ -1,9 +1,9 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import type { FrIconClassName, RiIconClassName } from '@codegouvfr/react-dsfr'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
+import { Pictogram } from '@/features/pictograms/pictogram'
 
 export const CardOutil = ({
   pictogram: Pictogram,

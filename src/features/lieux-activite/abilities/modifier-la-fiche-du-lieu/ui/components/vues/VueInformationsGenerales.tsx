@@ -1,7 +1,7 @@
-import { typologieLibelles } from '@app/web/features/lieux-activite/ui/libelles-typologie'
-import { pluriel } from '@app/web/libraries/pluriel'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { type Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { typologieLibelles } from '@/features/lieux-activite/ui/libelles-typologie'
+import { pluriel } from '@/libraries/pluriel'
 
 export const VueInformationsGenerales = ({
   nom,

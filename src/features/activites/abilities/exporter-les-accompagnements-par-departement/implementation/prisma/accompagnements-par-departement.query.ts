@@ -1,8 +1,8 @@
-import { departements } from '@app/web/data/collectivites-territoriales/departements'
-import { Prisma } from '@app/web/generated/prisma/client'
-import { NomDepartement } from '@app/web/libraries/departement'
-import { CodeDepartement } from '@app/web/libraries/insee'
-import { prismaClient } from '@app/web/prismaClient'
+import { departements } from '@/data/collectivites-territoriales/departements'
+import { Prisma } from '@/generated/prisma/client'
+import { NomDepartement } from '@/libraries/departement'
+import { CodeDepartement } from '@/libraries/insee'
+import { prismaClient } from '@/prismaClient'
 import {
   type AccompagnementsDuDepartement,
   type Jour,

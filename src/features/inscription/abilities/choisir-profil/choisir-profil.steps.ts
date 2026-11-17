@@ -1,18 +1,18 @@
 import assert from 'node:assert'
-import { type ChoisirProfilError } from '@app/web/features/inscription/abilities/choisir-profil'
-import { choisirProfil } from '@app/web/features/inscription/abilities/choisir-profil/commands/choisir-profil'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil'
+import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import {
   type InscriptionStep,
   ProfilInscription,
   Role,
-} from '@app/web/features/inscription/domain'
+} from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedInscriptionValidee,
-} from '@app/web/features/inscription/inscription.cucumber'
-import type { Result } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/inscription/inscription.cucumber'
+import type { Result } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 let resultat: Result<
   { readonly role: Role; readonly etapeSuivante: InscriptionStep },

@@ -1,6 +1,6 @@
-import { pluriel } from '@app/web/libraries/pluriel'
-import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
-import { dateAsTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
+import { pluriel } from '@/libraries/pluriel'
+import { dateAsDayFullWordsInTimezone } from '@/utils/dateAsDay'
+import { dateAsTimeInTimeZone } from '@/utils/dateAsDayAndTime'
 import type { RdvEnUneLigne } from '../domain/donnees-accueil-rdv'
 
 /**

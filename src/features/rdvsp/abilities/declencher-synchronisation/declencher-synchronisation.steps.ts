@@ -1,21 +1,21 @@
 import assert from 'node:assert'
+import { Before, Given, Then, When } from '@cucumber/cucumber'
 import type {
   DeclencherSynchronisation,
   LancerSynchronisation,
-} from '@app/web/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
-import { consignerLEchec } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/consigner-l-echec'
-import { declencherSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation'
-import { compteACible } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/compte-a-cible.query'
-import { marquerEchecDeSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/marquer-echec.mutation'
-import type { OrganisationId } from '@app/web/features/rdvsp/domain/organisation-id'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
+} from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
+import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/consigner-l-echec'
+import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation'
+import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/compte-a-cible.query'
+import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/marquer-echec.mutation'
+import type { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import {
   compteRdvEnBase,
   ID_TEST,
   seedCompteRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Before, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 8
 const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')

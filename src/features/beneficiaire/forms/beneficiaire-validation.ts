@@ -1,10 +1,10 @@
-import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { anneeNaissanceValidation } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
-import { statutsSociaux as statutSocialValues } from '@app/web/features/beneficiaire/domain/statut-social'
-import { tranchesAge as trancheAgeValues } from '@app/web/features/beneficiaire/domain/tranche-age'
-import { telephoneValidation } from '@app/web/utils/telephoneValidation'
 import z from 'zod'
+import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
+import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
+import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
+import { statutsSociaux as statutSocialValues } from '@/features/beneficiaire/domain/statut-social'
+import { tranchesAge as trancheAgeValues } from '@/features/beneficiaire/domain/tranche-age'
+import { telephoneValidation } from '@/utils/telephoneValidation'
 
 export const BeneficiaireValidation = z.object({
   id: z.guid().nullish(), // defined if update, nullish if create

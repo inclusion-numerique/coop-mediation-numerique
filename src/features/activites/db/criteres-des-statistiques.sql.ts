@@ -1,4 +1,4 @@
-import { Prisma } from '@app/web/generated/prisma/client'
+import { Prisma } from '@/generated/prisma/client'
 import type { CriteresDesStatistiques, STATUTS_DE_RENDEZ_VOUS } from '../domain'
 import {
   conditionsCommunes,

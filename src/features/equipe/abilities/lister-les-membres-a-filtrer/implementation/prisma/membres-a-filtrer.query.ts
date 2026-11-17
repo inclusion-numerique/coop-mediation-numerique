@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import type { CoordinateurId } from '../../../../domain/coordinateur-id'
 import { Email } from '../../../../domain/email'
 import { MediateurId } from '../../../../domain/mediateur-id'

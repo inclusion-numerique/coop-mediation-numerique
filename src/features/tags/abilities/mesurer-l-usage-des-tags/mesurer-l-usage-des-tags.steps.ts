@@ -1,6 +1,6 @@
 import assert from 'node:assert'
-import { semerUnTagUtiliseDansUneActivite } from '@app/web/features/tags/tags.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { semerUnTagUtiliseDansUneActivite } from '@/features/tags/tags.cucumber'
 import type { UsageDesTags } from './domain'
 import { usageDesTags } from './implementation'
 

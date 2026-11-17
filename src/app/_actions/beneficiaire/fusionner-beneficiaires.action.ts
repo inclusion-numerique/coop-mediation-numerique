@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth, withMediateur } from '@app/web/features/authentification'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth, withMediateur } from '@/features/authentification'
 import {
   FUSIONNER_BENEFICIAIRES_ERRORS,
   FusionnerBeneficiairesValidation,
-} from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires'
-import { fusionnerBeneficiaires } from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires/implementation'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { ServerActionError, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/beneficiaire/abilities/fusionner-beneficiaires'
+import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementation'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { ServerActionError, withInput } from '@/libraries/nextjs'
 
 export const fusionnerBeneficiairesAction = actionBuilder()
   .use(withAuth())

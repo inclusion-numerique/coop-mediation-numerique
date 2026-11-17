@@ -1,7 +1,7 @@
 import '@testing-library/cypress/add-commands'
-import { appUrl } from '@app/e2e/support/helpers'
-import type { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
-import type { Tasks as CustomTasks } from '@app/e2e/tasks/tasks'
+import { appUrl } from '@e2e/support/helpers'
+import type { CreateUserInput } from '@e2e/tasks/handlers/user.tasks'
+import type { Tasks as CustomTasks } from '@e2e/tasks/tasks'
 import 'cypress-file-upload'
 
 import Timeoutable = Cypress.Timeoutable

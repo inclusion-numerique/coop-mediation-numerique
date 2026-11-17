@@ -1,10 +1,10 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
+import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 import {
   premiereValeur,
   type ValeurDeParametre,
   valeurLue,
-} from '@app/web/libraries/parametres-d-url'
-import { z } from 'zod'
+} from '@/libraries/parametres-d-url'
 
 export const LIGNES_PAR_PAGE = [10, 20, 50, 100] as const
 

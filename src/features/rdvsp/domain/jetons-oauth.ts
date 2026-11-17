@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const JetonAcces = defineModel(z.string().min(1).brand('JetonAcces'))
 export type JetonAcces = Model.TypeOf<typeof JetonAcces>

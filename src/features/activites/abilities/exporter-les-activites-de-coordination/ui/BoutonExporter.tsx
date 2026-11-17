@@ -1,12 +1,12 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { download } from '@app/web/utils/download'
-import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Image from 'next/image'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { download } from '@/utils/download'
+import { numberToString } from '@/utils/formatNumber'
 import type { FiltreActif } from '../../../ui/filtres-actifs-des-coordinations'
 
 const ExportActiviteModal = createModal({

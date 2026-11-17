@@ -1,15 +1,15 @@
-import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
+import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
 import {
   anonymiserLesComptesInactifs,
   avertirDeLaSuppression,
-} from '@app/web/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
+} from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
 import {
   RetentionPolicy,
   supprimerCompte,
-} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import { type UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import type { JobExecutor } from '@app/web/jobs/jobExecutors'
-import { output } from '@app/web/jobs/output'
+} from '@/features/utilisateurs/abilities/supprimer-compte'
+import { type UtilisateurId } from '@/features/utilisateurs/domain'
+import type { JobExecutor } from '@/jobs/jobExecutors'
+import { output } from '@/jobs/output'
 
 const supprimerLeCompte =
   (maintenant: Date) =>

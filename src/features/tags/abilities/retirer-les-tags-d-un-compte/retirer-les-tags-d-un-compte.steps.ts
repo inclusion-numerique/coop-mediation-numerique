@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   semerUnCoordinateur,
   semerUneActiviteTaguee,
@@ -6,9 +7,8 @@ import {
   semerUnTag,
   tagEnBase,
   tagsDeLActivite,
-} from '@app/web/features/tags/tags.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/tags/tags.cucumber'
+import { prismaClient } from '@/prismaClient'
 import { retirerLesTagsDUnCompte, type TagsRetires } from './implementation'
 
 const contexte: {

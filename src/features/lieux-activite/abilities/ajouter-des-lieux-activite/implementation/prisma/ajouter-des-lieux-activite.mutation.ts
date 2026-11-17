@@ -1,5 +1,5 @@
-import { type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+import { type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import type { UserId } from '../../../../domain/user-id'

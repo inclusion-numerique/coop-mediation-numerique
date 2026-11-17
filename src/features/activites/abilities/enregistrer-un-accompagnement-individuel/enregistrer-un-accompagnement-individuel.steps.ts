@@ -1,10 +1,12 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   type AccompagnementEnregistre,
   type EchecDEnregistrement,
   enregistrerUnAccompagnementIndividuel,
   type SaisieIndividuelle,
-} from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel'
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel'
 import {
   ActiviteId,
   BeneficiaireId,
@@ -18,11 +20,9 @@ import {
   ThematiqueDeMediation,
   TrancheDAge,
   UtilisateurId,
-} from '@app/web/features/activites/domain'
-import type { Result } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/activites/domain'
+import type { Result } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 type Mediateur = { readonly userId: string; readonly mediateurId: string }
 

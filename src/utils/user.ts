@@ -1,4 +1,4 @@
-import { SessionUser } from '@app/web/auth/sessionUser'
+import { SessionUser } from '@/auth/sessionUser'
 
 export type UserProfile = Partial<
   Pick<

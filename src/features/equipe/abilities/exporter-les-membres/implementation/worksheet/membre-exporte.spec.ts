@@ -1,6 +1,6 @@
-import { CodePostal } from '@app/web/libraries/code-postal'
-import { CodeInsee } from '@app/web/libraries/insee'
 import { describe, expect, it } from 'vitest'
+import { CodePostal } from '@/libraries/code-postal'
+import { CodeInsee } from '@/libraries/insee'
 import {
   Commune,
   Email,

@@ -1,8 +1,8 @@
 import assert from 'node:assert'
-import type { Thematique } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import type { Thematique } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import {
   BeneficiaireId,
   compterLesThematiquesAbordees,

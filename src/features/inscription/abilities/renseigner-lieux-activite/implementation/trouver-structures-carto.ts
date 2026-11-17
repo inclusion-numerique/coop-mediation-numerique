@@ -1,4 +1,4 @@
-import { findCartoStructuresByIds } from '@app/web/features/lieux-activite'
+import { findCartoStructuresByIds } from '@/features/lieux-activite'
 import type { TrouverStructuresCarto } from '../domain'
 
 /**

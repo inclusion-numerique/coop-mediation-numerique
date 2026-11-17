@@ -1,4 +1,4 @@
-import type { AuteurId } from '@app/web/features/utilisateurs/domain'
+import type { AuteurId } from '@/features/utilisateurs/domain'
 import type { RetentionPolicy } from './retention-policy'
 
 export type AuteurSuppression =

@@ -2,32 +2,32 @@ import {
   fixtureCrasCollectifs,
   fixtureCrasDemarchesAdministratives,
   fixtureCrasIndividuels,
-} from '@app/web/fixtures/activites'
-import { fixtureBeneficiaires } from '@app/web/fixtures/beneficiaires'
+} from '@/fixtures/activites'
+import { fixtureBeneficiaires } from '@/fixtures/beneficiaires'
 import {
   equipeCoordonnee,
   equipeCordonneeIds,
   invitationsEquipe,
   quitterEquipe,
-} from '@app/web/fixtures/equipeCoordonnee'
-import { seedPersonnesMain } from '@app/web/fixtures/personnesMainConseillerNumerique'
-import { seedStructures } from '@app/web/fixtures/structures'
-import { upsertCoordinationFixtures } from '@app/web/fixtures/upsertCoordinationFixture'
-import { upsertCraFixtures } from '@app/web/fixtures/upsertCraFixtures'
-import { upsertInvitationEquipeFixtures } from '@app/web/fixtures/upsertInvitationEquipeFixture'
-import { upsertMediateurCoordonneFixtures } from '@app/web/fixtures/upsertMediateurCoordonneFixture'
-import { upsertUserFixtures } from '@app/web/fixtures/upsertUserFixture'
+} from '@/fixtures/equipeCoordonnee'
+import { seedPersonnesMain } from '@/fixtures/personnesMainConseillerNumerique'
+import { seedStructures } from '@/fixtures/structures'
+import { upsertCoordinationFixtures } from '@/fixtures/upsertCoordinationFixture'
+import { upsertCraFixtures } from '@/fixtures/upsertCraFixtures'
+import { upsertInvitationEquipeFixtures } from '@/fixtures/upsertInvitationEquipeFixture'
+import { upsertMediateurCoordonneFixtures } from '@/fixtures/upsertMediateurCoordonneFixture'
+import { upsertUserFixtures } from '@/fixtures/upsertUserFixture'
 import {
   coordinations,
   fixtureUsers,
   rdvServicePublicStagingUsers,
   teamAdministrateurs,
   teamMediateurs,
-} from '@app/web/fixtures/users'
-import { coordinateurInscritAvecToutCoordinateurId } from '@app/web/fixtures/users/coordinateurInscritAvecTout'
-import { Prisma } from '@app/web/generated/prisma/client'
-import { enSerie } from '@app/web/libraries/fixtures/enSerie'
-import { output } from '@app/web/libraries/fixtures/output'
+} from '@/fixtures/users'
+import { coordinateurInscritAvecToutCoordinateurId } from '@/fixtures/users/coordinateurInscritAvecTout'
+import { Prisma } from '@/generated/prisma/client'
+import { enSerie } from '@/libraries/fixtures/enSerie'
+import { output } from '@/libraries/fixtures/output'
 
 /**
  * Le `TRUNCATE` ne porte que sur le schéma `coop` : les lignes `main` des

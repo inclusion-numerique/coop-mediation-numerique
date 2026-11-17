@@ -1,14 +1,14 @@
 import { randomBytes } from 'node:crypto'
-import { computeBranchNamespace } from '@app/web/cli/branchNamespace'
+import { Command } from '@commander-js/extra-typings'
+import axios from 'axios'
+import { computeBranchNamespace } from '@/cli/branchNamespace'
 import {
   containerNamespaceName,
   databaseInstanceName,
   projectSlug,
   region,
-} from '@app/web/configuration/projet/config'
-import { output, outputError } from '@app/web/libraries/console/output'
-import { Command } from '@commander-js/extra-typings'
-import axios from 'axios'
+} from '@/configuration/projet/config'
+import { output, outputError } from '@/libraries/console/output'
 
 type ResourceKind = 'database' | 'container'
 

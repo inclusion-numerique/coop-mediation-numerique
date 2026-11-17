@@ -1,9 +1,9 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { getVerifierInformationsPageData } from '@app/web/features/inscription/abilities/verifier-informations/queries/getVerifierInformationsPageData'
-import VerifierInformationsPage from '@app/web/features/inscription/abilities/verifier-informations/ui/pages/VerifierInformationsPage'
-import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
+import { getVerifierInformationsPageData } from '@/features/inscription/abilities/verifier-informations/queries/getVerifierInformationsPageData'
+import VerifierInformationsPage from '@/features/inscription/abilities/verifier-informations/ui/pages/VerifierInformationsPage'
+import { hasInscriptionComplete } from '@/security/getHomepage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

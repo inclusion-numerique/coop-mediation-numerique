@@ -1,5 +1,5 @@
-import { dateAsMonth, dateAsMonthFull } from '@app/web/utils/dateAsMonth'
 import { describe, expect, it } from 'vitest'
+import { dateAsMonth, dateAsMonthFull } from '@/utils/dateAsMonth'
 
 describe('dateAsMonth', () => {
   describe('dateAsMonth', () => {

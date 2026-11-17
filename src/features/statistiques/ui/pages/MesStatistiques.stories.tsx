@@ -1,19 +1,20 @@
-import { vocabulaireDeLaBarre } from '@app/web/composition/statistiques/barre'
-import { MesStatistiquesPageData } from '@app/web/composition/statistiques/mes-statistiques'
+import { Meta, StoryObj } from '@storybook/react'
+import { vocabulaireDeLaBarre } from '@/composition/statistiques/barre'
+import { MesStatistiquesPageData } from '@/composition/statistiques/mes-statistiques'
 import {
   impressionDesStatistiques,
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@app/web/composition/statistiques/sections'
+} from '@/composition/statistiques/sections'
 import {
   dureeAccompagnementParDefautLabels,
   dureeAcompagnementParDefautDefaultValues,
-} from '@app/web/features/activites/ui/libelles/duree-accompagnement'
+} from '@/features/activites/ui/libelles/duree-accompagnement'
 import {
   materielLabels,
   materielValues,
-} from '@app/web/features/activites/ui/libelles/materiel'
+} from '@/features/activites/ui/libelles/materiel'
 import {
   genreLabels,
   genresAffiches,
@@ -21,29 +22,28 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '@app/web/features/activites/ui/libelles/profil'
+} from '@/features/activites/ui/libelles/profil'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/ui/libelles/thematique'
+} from '@/features/activites/ui/libelles/thematique'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '@app/web/features/activites/ui/libelles/type-activite'
+} from '@/features/activites/ui/libelles/type-activite'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '@app/web/features/activites/ui/libelles/type-lieu'
-import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
-import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
-import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
-import { provide } from '@app/web/libs/injection/client'
-import { partsFixees } from '@app/web/libs/statistiques/parts-fixees'
-import { testSessionUser } from '@app/web/test/testSessionUser'
-import { Meta, StoryObj } from '@storybook/react'
+} from '@/features/activites/ui/libelles/type-lieu'
+import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
+import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
+import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
+import { provide } from '@/libs/injection/client'
+import { partsFixees } from '@/libs/statistiques/parts-fixees'
+import { testSessionUser } from '@/test/testSessionUser'
 import { MesStatistiques } from './MesStatistiques'
 
 const statistiquesPageData = {

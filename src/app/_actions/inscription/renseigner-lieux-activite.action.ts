@@ -1,22 +1,22 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
 import {
   RENSEIGNER_LIEUX_ACTIVITE_ERRORS,
   RenseignerLieuxActiviteValidation,
-} from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
-import { depuisLaSaisie } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/action/depuis-la-saisie'
-import { renseignerLieuxActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
+} from '@/features/inscription/abilities/renseigner-lieux-activite'
+import { depuisLaSaisie } from '@/features/inscription/abilities/renseigner-lieux-activite/action/depuis-la-saisie'
+import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
 import type {
   AdresseNonValidee,
   RenseignerLieuxActiviteError,
-} from '@app/web/features/inscription/abilities/renseigner-lieux-activite/domain'
-import { trouverStructuresCarto } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
-import { UserId } from '@app/web/features/inscription/domain'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import type { Result } from '@app/web/libraries/result'
+} from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
+import { trouverStructuresCarto } from '@/features/inscription/abilities/renseigner-lieux-activite/implementation'
+import { UserId } from '@/features/inscription/domain'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import type { Result } from '@/libraries/result'
 
 export const renseignerLieuxActiviteAction = actionBuilder()
   .use(withAuth())

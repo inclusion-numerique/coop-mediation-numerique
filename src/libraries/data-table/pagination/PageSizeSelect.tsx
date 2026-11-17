@@ -1,8 +1,8 @@
 'use client'
 
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { useRouter } from 'next/navigation'
 import type { FormEventHandler } from 'react'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createDataTableHref } from '../href/create-data-table-href'
 

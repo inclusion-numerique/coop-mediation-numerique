@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
 import {
   lieuxSemes,
   semerLieuxDActivite,
-} from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const retrait: { retires?: number } = {}
 

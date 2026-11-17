@@ -1,10 +1,10 @@
 import assert from 'node:assert'
-import { filtresUtilisateurs } from '@app/web/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@app/web/features/utilisateurs/ui'
-import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type Excel from 'exceljs'
 import { v4 } from 'uuid'
+import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,

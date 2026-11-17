@@ -1,21 +1,21 @@
 'use client'
 
-import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
+import { useSelector } from '@tanstack/react-form'
+import { type ReactNode, useEffect } from 'react'
+import { z } from 'zod'
+import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import {
   type Tag,
   tagDuFormulaire,
   type VisibiliteDuTagDuCra,
-} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { inject } from '@app/web/libs/injection/client'
-import { useSelector } from '@tanstack/react-form'
-import { type ReactNode, useEffect } from 'react'
-import { z } from 'zod'
+} from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { inject } from '@/libs/injection/client'
 
 const NOM_LONGUEUR_MAX = 80
 const DESCRIPTION_LONGUEUR_MAX = 280

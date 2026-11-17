@@ -1,12 +1,12 @@
 'use client'
 
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import TriggerButton from '@/libs/filters/TriggerButton'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 import { LIBELLES_DES_TYPES } from '../../../../ui/libelles-de-coordination'
 
 export const FiltreDeType = () => {

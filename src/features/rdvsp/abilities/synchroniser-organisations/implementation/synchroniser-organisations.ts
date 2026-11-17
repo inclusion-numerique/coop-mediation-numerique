@@ -1,4 +1,4 @@
-import { success } from '@app/web/libraries/result'
+import { success } from '@/libraries/result'
 import type { RdvServicePublicApi } from '../../../domain/rdv-service-public.port'
 import { planifierSynchronisation } from '../domain/plan-synchronisation'
 import {

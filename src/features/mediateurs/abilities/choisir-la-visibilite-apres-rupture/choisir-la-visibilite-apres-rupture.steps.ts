@@ -1,17 +1,17 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   choisirLaVisibiliteApresRupture,
   lireLaRuptureEnAttente,
-} from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
-import { ReponseApresRupture } from '@app/web/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
-import { AuteurId, MediateurId } from '@app/web/features/mediateurs/domain'
+} from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
+import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
+import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import {
   exConseillerSeme,
   semerUnContratDeLExConseiller,
   semerUnExConseiller,
-} from '@app/web/features/mediateurs/mediateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/mediateurs/mediateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof choisirLaVisibiliteApresRupture>>
 

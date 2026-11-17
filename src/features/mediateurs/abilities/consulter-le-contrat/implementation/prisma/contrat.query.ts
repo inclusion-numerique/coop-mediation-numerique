@@ -1,5 +1,5 @@
-import type { UtilisateurId } from '@app/web/features/mediateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+import type { UtilisateurId } from '@/features/mediateurs/domain'
+import { prismaClient } from '@/prismaClient'
 import {
   type Contrat,
   dernierContrat,

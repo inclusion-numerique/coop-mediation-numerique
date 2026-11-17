@@ -3,7 +3,7 @@ import type {
   DestinataireDeRelance,
   PalierDeRelance,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 
 export type RelancerLesInscriptionsInacheveesPorts = {
   readonly envoyerLaRelance: (

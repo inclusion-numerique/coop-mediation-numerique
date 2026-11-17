@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 
 const computeExpiresAt = (expiresIn?: number): number | undefined => {
   if (expiresIn === undefined) return undefined

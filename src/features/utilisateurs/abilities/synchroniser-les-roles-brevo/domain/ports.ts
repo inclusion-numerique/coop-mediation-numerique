@@ -1,7 +1,7 @@
 import type {
   AdresseCourriel,
   ContactAImporter,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 import type { IdentifiantDImport } from './identifiant-d-import'
 import type { TailleDeLot } from './taille-de-lot'
 

@@ -1,12 +1,12 @@
 'use client'
 
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import type { AnyFormApi } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
+import { handleSubmit } from '@/libs/form/handle-submit'
 import Card from './Card'
 
 const EditCardTanStack = ({

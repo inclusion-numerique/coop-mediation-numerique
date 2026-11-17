@@ -1,10 +1,10 @@
 'use client'
 
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { inject } from '@app/web/libs/injection/client'
-import { Spinner } from '@app/web/ui/Spinner'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { inject } from '@/libs/injection/client'
+import { Spinner } from '@/ui/Spinner'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '../action/afficher-rdvs-dans-activites.key'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from './rattraper-rdvs-sans-webhook.key'
 

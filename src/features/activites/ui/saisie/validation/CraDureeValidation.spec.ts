@@ -1,5 +1,5 @@
-import { CraDureeValidation } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
 import { describe, expect, it } from 'vitest'
+import { CraDureeValidation } from '@/features/activites/ui/saisie/validation/CraDureeValidation'
 
 describe('CraDureeValidation Schema', () => {
   it('should validate valid default duration without personnalisee fields', () => {

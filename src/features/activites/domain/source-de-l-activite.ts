@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const SOURCES_DE_L_ACTIVITE = ['ImportV1', 'Coop'] as const
 

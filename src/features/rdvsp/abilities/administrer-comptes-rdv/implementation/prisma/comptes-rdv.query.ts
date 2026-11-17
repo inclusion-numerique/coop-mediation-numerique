@@ -1,6 +1,6 @@
-import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
-import { santeDuCompte } from '@app/web/features/rdvsp/domain/sante-compte'
-import { prismaClient } from '@app/web/prismaClient'
+import { compteRdvToDomain } from '@/features/rdvsp/db'
+import { santeDuCompte } from '@/features/rdvsp/domain/sante-compte'
+import { prismaClient } from '@/prismaClient'
 
 export const getAdministrationRdvspData = async () => {
   const maintenant = new Date()

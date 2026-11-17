@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { rechercherBeneficiaires } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
+import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
+import { rechercherBeneficiaires } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import {
   seedBeneficiaire,
   testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
 type SearchResult = Awaited<ReturnType<typeof rechercherBeneficiaires>>
 

@@ -1,13 +1,13 @@
 import {
   ligneUtilisateurSelect,
   ligneUtilisateurToDomain,
-} from '@app/web/features/utilisateurs/db/ligne-utilisateur.transfer'
-import { utilisateursWhere } from '@app/web/features/utilisateurs/db/utilisateurs.where'
+} from '@/features/utilisateurs/db/ligne-utilisateur.transfer'
+import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
 import type {
   FiltresUtilisateurs,
   LigneUtilisateur,
-} from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 export const utilisateursAExporter = async ({
   mots,

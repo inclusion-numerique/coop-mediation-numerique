@@ -1,12 +1,12 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { fusionnerDesComptes } from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes'
-import { FUSIONNER_DES_COMPTES_ERRORS } from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.errors'
-import { FusionnerDesComptesValidation } from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.validation'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner-des-comptes'
+import { FUSIONNER_DES_COMPTES_ERRORS } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.errors'
+import { FusionnerDesComptesValidation } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.validation'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const fusionnerDesComptesAction = actionBuilder()
   .use(withAuth())

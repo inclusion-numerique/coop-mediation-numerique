@@ -3,8 +3,8 @@ import {
   type Jalon,
   type LigneUtilisateur,
   mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
-import { libelleDuStatut } from '@app/web/features/utilisateurs/ui'
+} from '@/features/utilisateurs/domain'
+import { libelleDuStatut } from '@/features/utilisateurs/ui'
 
 type Cellule = string | number | null
 

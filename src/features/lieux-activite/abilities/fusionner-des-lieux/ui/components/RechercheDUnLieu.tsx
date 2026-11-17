@@ -1,10 +1,10 @@
 'use client'
 
-import { pluriel } from '@app/web/libraries/pluriel'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { pluriel } from '@/libraries/pluriel'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 import {
   LieuAFusionnerOptions,
   type LieuChoisi,

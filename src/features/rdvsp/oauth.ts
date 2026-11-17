@@ -1,6 +1,6 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { getServerUrl } from '@app/web/utils/baseUrl'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { getServerUrl } from '@/utils/baseUrl'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 export const rdvServicePublicOauthCallbackUrl = getServerUrl(
   '/api/rdv-service-public/auth/callback',

@@ -1,9 +1,6 @@
-import {
-  type Departement,
-  NomDepartement,
-} from '@app/web/libraries/departement'
-import { CodeDepartement } from '@app/web/libraries/insee'
 import { describe, expect, it } from 'vitest'
+import { type Departement, NomDepartement } from '@/libraries/departement'
+import { CodeDepartement } from '@/libraries/insee'
 import { lignesDExport } from './accompagnements-par-departement'
 import { NombreDAccompagnements } from './nombre-d-accompagnements'
 

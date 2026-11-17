@@ -1,4 +1,4 @@
-import type { Result } from '@app/web/libraries/result'
+import type { Result } from '@/libraries/result'
 import type { CompteRdv, CompteRdvDeconnecte } from '../../../domain/compte-rdv'
 import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import type { CompteRdvIntrouvable } from './errors'

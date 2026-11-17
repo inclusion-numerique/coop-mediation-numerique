@@ -1,9 +1,9 @@
 import type {
   MatchingEtablissement,
   UniteLegale,
-} from '@app/web/external-apis/apiEntrepriseApiModels'
-import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import { SiretApiResponse } from '@app/web/libraries/siret'
+} from '@/external-apis/apiEntrepriseApiModels'
+import { rechercheApiEntreprise } from '@/external-apis/rechercheApiEntreprise'
+import { SiretApiResponse } from '@/libraries/siret'
 
 // Catégorie juridique INSEE des entrepreneurs individuels (personnes physiques)
 const natureJuridiqueEntrepreneurIndividuel = '1000'

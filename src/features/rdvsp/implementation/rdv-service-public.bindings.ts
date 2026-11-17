@@ -1,7 +1,7 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { prismaClient } from '@app/web/prismaClient'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { getServerUrl } from '@app/web/utils/baseUrl'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { prismaClient } from '@/prismaClient'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { getServerUrl } from '@/utils/baseUrl'
 import { jetonsCompteToDomain } from '../db'
 import { rdvServicePublicApi, revoquerJetons } from './api'
 

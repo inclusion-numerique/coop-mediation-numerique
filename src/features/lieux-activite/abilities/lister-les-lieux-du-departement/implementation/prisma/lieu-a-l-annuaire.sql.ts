@@ -1,5 +1,5 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
+import { Prisma } from '@/generated/prisma/client'
+import { departementCodeFromInseeRegex } from '@/utils/departementCodeFromInseeRegex'
 
 export const lieuALAnnuaireDuDepartement = (
   departementCode: string,

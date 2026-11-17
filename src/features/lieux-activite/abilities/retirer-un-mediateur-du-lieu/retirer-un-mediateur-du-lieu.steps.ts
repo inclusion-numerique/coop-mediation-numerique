@@ -1,14 +1,14 @@
 import assert from 'node:assert'
-import { retirerUnMediateurDuLieu } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
 import {
   ficheSemee,
   semerUneFicheDeLieu,
-} from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof retirerUnMediateurDuLieu>>
 

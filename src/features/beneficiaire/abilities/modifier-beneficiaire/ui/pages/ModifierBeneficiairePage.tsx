@@ -1,13 +1,13 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButton from '@app/web/components/BackButton'
-import IconInSquare from '@app/web/components/IconInSquare'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { ModifierBeneficiaireView } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
+import Link from 'next/link'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButton from '@/components/BackButton'
+import IconInSquare from '@/components/IconInSquare'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import type { ModifierBeneficiaireView } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
-} from '@app/web/features/beneficiaire/forms/BeneficiaireForm'
-import { contentId } from '@app/web/utils/skipLinks'
-import Link from 'next/link'
+} from '@/features/beneficiaire/forms/BeneficiaireForm'
+import { contentId } from '@/utils/skipLinks'
 
 export const ModifierBeneficiairePage = ({
   view: { beneficiaireId, displayName, defaultValues },

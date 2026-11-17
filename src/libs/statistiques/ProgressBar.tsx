@@ -1,9 +1,9 @@
 'use client'
 
-import { numberToPercentage } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { type CSSProperties, Fragment } from 'react'
+import { numberToPercentage } from '@/utils/formatNumber'
 
 const ProgressBar = ({
   progress = [],

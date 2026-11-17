@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { rattacherAUneEmployeuse } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-a-une-employeuse.mutation'
-import { IdentiteEmployeuse } from '@app/web/features/employeuse/domain/identite-employeuse'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-a-une-employeuse.mutation'
+import { IdentiteEmployeuse } from '@/features/employeuse/domain/identite-employeuse'
 import {
   affectationsDe,
   seedAffectation,
   seedEmployeuseMain,
   seedUtilisateur,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 // État local à cette ability (les phrasés Cucumber sont globaux).
 let inscritId: string

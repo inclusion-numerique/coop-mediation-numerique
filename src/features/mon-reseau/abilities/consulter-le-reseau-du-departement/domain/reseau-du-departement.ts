@@ -1,5 +1,5 @@
-import type { Departement } from '@app/web/libraries/departement'
-import type { CodeDepartement } from '@app/web/libraries/insee'
+import type { Departement } from '@/libraries/departement'
+import type { CodeDepartement } from '@/libraries/insee'
 import type { Effectif } from '../../../domain'
 
 export type ReseauDuDepartement = {

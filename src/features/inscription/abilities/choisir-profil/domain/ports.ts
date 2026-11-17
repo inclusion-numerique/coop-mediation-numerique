@@ -1,4 +1,4 @@
-import type { InscriptionEnCours } from '@app/web/features/inscription/domain'
+import type { InscriptionEnCours } from '@/features/inscription/domain'
 import type { RolesACreer } from './roles-a-creer'
 
 /**

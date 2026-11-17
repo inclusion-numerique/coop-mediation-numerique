@@ -1,9 +1,9 @@
 import type {
   CompteASupprimer,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { estRoleProtege } from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/features/utilisateurs/domain'
+import { estRoleProtege } from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
 import type { AuteurSuppression } from './auteur-suppression'
 import type { EffacementReport } from './effacement-report'
 import {

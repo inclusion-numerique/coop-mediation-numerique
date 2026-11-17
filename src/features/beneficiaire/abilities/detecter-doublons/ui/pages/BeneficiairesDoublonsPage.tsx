@@ -1,11 +1,11 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButton from '@app/web/components/BackButton'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { DetecterDoublons } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
-import { pluriel } from '@app/web/libraries/pluriel'
-import { numberToString } from '@app/web/utils/formatNumber'
-import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButton from '@/components/BackButton'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import type { DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons'
+import { pluriel } from '@/libraries/pluriel'
+import { numberToString } from '@/utils/formatNumber'
+import { contentId } from '@/utils/skipLinks'
 import BeneficiaireFusionDoublons from '../components/BeneficiaireFusionDoublons'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>

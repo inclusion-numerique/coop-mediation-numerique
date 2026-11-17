@@ -1,5 +1,5 @@
-import SaisieDuLieuCard from '@app/web/features/lieux-activite/ui/SaisieDuLieuCard'
 import Button from '@codegouvfr/react-dsfr/Button'
+import SaisieDuLieuCard from '@/features/lieux-activite/ui/SaisieDuLieuCard'
 import type { LieuAuPanier } from '../panier'
 
 export const PanierDeLieux = ({

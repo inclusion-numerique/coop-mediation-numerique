@@ -1,13 +1,13 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { changerLesRoles } from '@app/web/features/utilisateurs/abilities/changer-les-roles'
-import { CHANGER_LES_ROLES_ERRORS } from '@app/web/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
-import { ChangerLesRolesValidation } from '@app/web/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
-import { AuteurId } from '@app/web/features/utilisateurs/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles'
+import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
+import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
+import { AuteurId } from '@/features/utilisateurs/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const changerLesRolesAction = actionBuilder()
   .use(withAuth())

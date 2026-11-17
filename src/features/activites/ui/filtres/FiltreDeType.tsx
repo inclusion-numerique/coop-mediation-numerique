@@ -1,21 +1,21 @@
 'use client'
 
-import type { FiltresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import {
-  optionsDesStatutsDeRendezVous,
-  statutDansLURL,
-} from '@app/web/features/activites/ui/libelles/statut-de-rendez-vous'
-import {
-  typeActiviteOptions,
-  typeActiviteSlugOptions,
-} from '@app/web/features/activites/ui/libelles/type-activite'
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
+import type { FiltresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import {
+  optionsDesStatutsDeRendezVous,
+  statutDansLURL,
+} from '@/features/activites/ui/libelles/statut-de-rendez-vous'
+import {
+  typeActiviteOptions,
+  typeActiviteSlugOptions,
+} from '@/features/activites/ui/libelles/type-activite'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import TriggerButton from '@/libs/filters/TriggerButton'
 
 export const ActiviteTypeFilter = ({
   defaultValue = {},

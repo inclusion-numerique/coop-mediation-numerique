@@ -1,34 +1,36 @@
-import { inviterDesMembresAction } from '@app/web/app/_actions/equipe/inviter-des-membres.action'
-import { retirerUnMembreAction } from '@app/web/app/_actions/equipe/retirer-un-membre.action'
-import { supprimerUnAncienMembreAction } from '@app/web/app/_actions/equipe/supprimer-un-ancien-membre.action'
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { compterLesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membres.action'
+import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
+import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresDesStatistiques,
   MediateurId as MediateurIdDesActivites,
-} from '@app/web/features/activites/domain'
+} from '@/features/activites/domain'
 import {
   conseillerNumeriqueSql,
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
-} from '@app/web/features/employeuse/server'
-import ActeurStructureEmployeuse from '@app/web/features/employeuse/ui/ActeurStructureEmployeuse'
-import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
-import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
-import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
-import { BoutonSupprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/ui'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { consulterLeContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat'
-import { CarteContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat/ui'
-import { UtilisateurId } from '@app/web/features/mediateurs/domain'
+} from '@/features/employeuse/server'
+import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
+import { INVITER_DES_MEMBRES_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
+import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
+import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
+import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
+import { UtilisateurId } from '@/features/mediateurs/domain'
 import {
   consulterUnActeur,
   lieuxDeLActeur,
   nomDeLActeur,
-} from '@app/web/features/mon-reseau/abilities/consulter-un-acteur'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur'
 import {
   ancienMembreDe,
   contratVisible,
@@ -36,13 +38,11 @@ import {
   FicheActeurPage,
   LieuxDeLActeur,
   TitreDeSection,
-} from '@app/web/features/mon-reseau/abilities/consulter-un-acteur/ui'
-import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { derniereActiviteDeLUtilisateur } from '@app/web/features/utilisateurs'
-import { departementDuCode } from '@app/web/libraries/departement'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
+import { departementDuCode } from '@/libraries/departement'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 type Parametres = { params: Promise<{ userId: string; departement: string }> }
 

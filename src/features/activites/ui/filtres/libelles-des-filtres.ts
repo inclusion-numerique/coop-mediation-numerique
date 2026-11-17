@@ -2,12 +2,12 @@ import type {
   FiltresDeLaListe,
   OptionDeBeneficiaire,
   OptionDeMediateur,
-} from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { libelleDuStatutDansLURL } from '@app/web/features/activites/ui/libelles/statut-de-rendez-vous'
-import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
-import { typeActiviteSlugLabels } from '@app/web/features/activites/ui/libelles/type-activite'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
+} from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { libelleDuStatutDansLURL } from '@/features/activites/ui/libelles/statut-de-rendez-vous'
+import { thematiqueLabels } from '@/features/activites/ui/libelles/thematique'
+import { typeActiviteSlugLabels } from '@/features/activites/ui/libelles/type-activite'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { dateAsDay } from '@/utils/dateAsDay'
 
 export type FilterType =
   | 'lieux'

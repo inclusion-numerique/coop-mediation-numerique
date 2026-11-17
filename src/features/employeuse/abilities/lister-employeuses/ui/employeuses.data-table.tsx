@@ -1,12 +1,12 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
+import type { Prisma } from '@/generated/prisma/client'
 import type {
   DataTableConfiguration,
   DataTableFilterValues,
   DataTableSearchParams,
-} from '@app/web/libs/data-table/DataTableConfiguration'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { optionalNumberToString } from '@app/web/utils/formatNumber'
+} from '@/libs/data-table/DataTableConfiguration'
+import { dateAsDayAndTime } from '@/utils/dateAsDayAndTime'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { optionalNumberToString } from '@/utils/formatNumber'
 import type { EmployeuseAffichee } from './employeuse-affichee.presenter'
 
 export type EmployeusesDataTableConfiguration = DataTableConfiguration<

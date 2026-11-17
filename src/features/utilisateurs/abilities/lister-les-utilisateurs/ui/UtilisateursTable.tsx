@@ -1,7 +1,7 @@
-import type { LigneUtilisateur } from '@app/web/features/utilisateurs/domain'
-import DataTable from '@app/web/libs/data-table/DataTable'
-import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
+import DataTable from '@/libs/data-table/DataTable'
+import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
+import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
 import {
   UtilisateursDataTable,
   type UtilisateursDataTableSearchParams,

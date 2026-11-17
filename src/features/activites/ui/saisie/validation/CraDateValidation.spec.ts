@@ -1,8 +1,8 @@
+import { describe, expect, it } from 'vitest'
 import {
   CraDateValidation,
   debutDispositifConum,
-} from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
-import { describe, expect, it } from 'vitest'
+} from '@/features/activites/ui/saisie/validation/CraDateValidation'
 
 describe('CraDateValidation', () => {
   it('accepte une date postérieure au début du dispositif', () => {

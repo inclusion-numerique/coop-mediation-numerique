@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import type { SaisieDeSection } from '../action/modifier-la-fiche-du-lieu.validation'
 import type { InformationsGeneralesFormData } from './components/informationsGeneralesFormData'
 

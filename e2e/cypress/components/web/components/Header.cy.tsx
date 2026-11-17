@@ -1,4 +1,4 @@
-import Header from '@app/web/components/Header'
+import Header from '@/components/Header'
 
 /**
  * While cypress components do not support server actions, we cannot test Header

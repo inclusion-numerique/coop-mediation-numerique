@@ -1,4 +1,4 @@
-import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
+import { coopCartographieNationaleSource } from '@/libraries/cartographie-nationale'
 import {
   type DerniereModification,
   ModifieParSource,

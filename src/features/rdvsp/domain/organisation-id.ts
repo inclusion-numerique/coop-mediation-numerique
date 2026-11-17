@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 /** Identifiant d'une organisation côté RDV Service Public. */
 export const OrganisationId = defineModel(

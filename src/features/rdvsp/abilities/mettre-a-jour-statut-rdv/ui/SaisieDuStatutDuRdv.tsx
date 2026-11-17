@@ -1,12 +1,12 @@
 'use client'
 
-import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { inject } from '@/libs/injection/client'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '../action/mettre-a-jour-statut-rdv.key'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from './creer-activite-depuis-rdv.key'
 

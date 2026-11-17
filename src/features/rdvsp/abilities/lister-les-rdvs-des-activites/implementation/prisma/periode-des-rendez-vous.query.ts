@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 
 export type PeriodeDesRendezVous = {
   readonly first: Date | undefined

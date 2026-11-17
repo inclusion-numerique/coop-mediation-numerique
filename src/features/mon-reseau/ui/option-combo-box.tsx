@@ -1,6 +1,6 @@
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
 
 const itemToString = (item: SelectOption | null): string => item?.label ?? ''
 

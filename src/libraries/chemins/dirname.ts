@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { getFilename } from '@app/web/libraries/chemins/filename'
+import { getFilename } from '@/libraries/chemins/filename'
 
 /**
  * Get the (commonjs) __dirname from the current ES module import.meta.url

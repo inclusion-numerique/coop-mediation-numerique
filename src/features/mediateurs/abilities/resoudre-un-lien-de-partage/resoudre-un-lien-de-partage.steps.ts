@@ -1,8 +1,8 @@
 import assert from 'node:assert'
-import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { compteSeme } from '@app/web/features/mediateurs/mediateurs.cucumber'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { compteSeme } from '@/features/mediateurs/mediateurs.cucumber'
 
 type Issue = Awaited<ReturnType<typeof resoudreUnLienDePartage>>
 

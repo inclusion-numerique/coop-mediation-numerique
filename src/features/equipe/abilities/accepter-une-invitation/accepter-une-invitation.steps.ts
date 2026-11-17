@@ -1,15 +1,16 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type Accepteur,
   accepterUneInvitation,
-} from '@app/web/features/equipe/abilities/accepter-une-invitation'
+} from '@/features/equipe/abilities/accepter-une-invitation'
 import {
   CoordinateurId,
   Email,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   adhesionsDe,
   type CoordinateurSeme,
@@ -19,8 +20,7 @@ import {
   semerUneAdhesion,
   semerUneInvitation,
   semerUnMediateurDEquipe,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

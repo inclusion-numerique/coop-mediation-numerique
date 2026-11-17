@@ -4,7 +4,7 @@ import {
   DataTable,
   type DataTableSelection,
   type DataTableUrlState,
-} from '@app/web/libraries/data-table'
+} from '@/libraries/data-table'
 import { BeneficiairesTableHead } from './BeneficiairesTableHead'
 import { BeneficiaireTableRow } from './BeneficiaireTableRow'
 import type { BeneficiaireRow } from './beneficiaire-row'

@@ -1,5 +1,5 @@
-import { AuteurId } from '@app/web/features/utilisateurs/domain'
 import { describe, expect, it } from 'vitest'
+import { AuteurId } from '@/features/utilisateurs/domain'
 import type { AuteurSuppression } from './auteur-suppression'
 import { motifDe } from './motif-suppression'
 import { RetentionPolicy } from './retention-policy'

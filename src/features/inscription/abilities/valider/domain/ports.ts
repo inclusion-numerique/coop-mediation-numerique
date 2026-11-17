@@ -1,4 +1,4 @@
-import type { UserId } from '@app/web/features/inscription/domain'
+import type { UserId } from '@/features/inscription/domain'
 import type {
   FaitsInscription,
   ValidationAEnregistrer,

@@ -1,6 +1,6 @@
-import type { DataTableConfiguration } from '@app/web/libs/data-table/DataTableConfiguration'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import type { ReactNode } from 'react'
+import type { DataTableConfiguration } from '@/libs/data-table/DataTableConfiguration'
 import type { LigneEquipe } from '../../../../domain'
 import type { LigneAffichee } from '../lister-les-membres.presenter'
 import { BadgeActivite } from './BadgeActivite'

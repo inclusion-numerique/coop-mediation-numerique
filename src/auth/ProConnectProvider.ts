@@ -1,14 +1,14 @@
-import { proConnectProviderId } from '@app/web/auth/proConnect'
-import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { getServerUrl } from '@app/web/utils/baseUrl'
 import { OAuth2Config } from '@auth/core/providers'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
 // La carte `exports` de next-auth déclare `./providers/*` mais pas `./providers` seul : le
 // résolveur `bundler` de TypeScript 7 la respecte, contrairement à l'ancien `node10`.
 import type { TokenEndpointHandler } from 'next-auth/providers/oauth'
+import { proConnectProviderId } from '@/auth/proConnect'
+import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { getServerUrl } from '@/utils/baseUrl'
 
 const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
 

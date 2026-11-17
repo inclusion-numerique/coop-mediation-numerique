@@ -1,3 +1,4 @@
+import { max } from 'date-fns'
 import {
   type AdresseCourriel,
   coordinateurDe,
@@ -6,8 +7,7 @@ import {
   type Prenom,
   type Rattachements,
   type UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { max } from 'date-fns'
+} from '@/features/utilisateurs/domain'
 
 export type PresenceMediateur = {
   readonly dernierCompteRendu: Jalon

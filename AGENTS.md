@@ -104,7 +104,7 @@ Architecture decisions and their rationale are recorded in `docs/adr/`; the norm
 
 ### Server Actions
 
-Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `apps/web/src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@app/web/configuration/nextjs`, already wired to the error reporter (`withAuth`, `withMaintenance`, `withInput`, `fromResult` come from `@app/web/libraries/nextjs`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
+Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `apps/web/src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withAuth`, `withMaintenance`, `withInput`, `fromResult` come from `@/libraries/nextjs`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
 
 ### Telemetry
 

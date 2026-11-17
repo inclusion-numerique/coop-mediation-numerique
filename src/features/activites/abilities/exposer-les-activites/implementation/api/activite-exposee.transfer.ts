@@ -1,8 +1,4 @@
-import type {
-  Genre,
-  StatutSocial,
-  TrancheAge,
-} from '@app/web/generated/prisma/client'
+import type { Genre, StatutSocial, TrancheAge } from '@/generated/prisma/client'
 import type { ActiviteExposee } from '../prisma/activites-exposees.query'
 import {
   autonomieApiValues,

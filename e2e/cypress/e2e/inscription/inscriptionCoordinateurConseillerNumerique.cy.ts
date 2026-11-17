@@ -1,5 +1,5 @@
-import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
-import { coordinateurInscription } from '@app/web/fixtures/users/coordinateurInscription'
+import { executeInscriptionFlow } from '@e2e/e2e/inscription/executeInscriptionFlow'
+import { coordinateurInscription } from '@/fixtures/users/coordinateurInscription'
 
 describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours', () => {
   beforeEach(() => {

@@ -1,16 +1,16 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateUser } from '@app/web/auth/authenticateUser'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import RattacherEmployeuseForm from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateUser } from '@/auth/authenticateUser'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
-} from '@app/web/features/employeuse/server'
-import ActeurStructureEmployeuse from '@app/web/features/employeuse/ui/ActeurStructureEmployeuse'
-import { contentId } from '@app/web/utils/skipLinks'
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+} from '@/features/employeuse/server'
+import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
+import { contentId } from '@/utils/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Ma structure employeuse'),

@@ -1,7 +1,7 @@
 import {
   importerDansLaListe,
   retirerDeLaListe,
-} from '@app/web/features/utilisateurs/implementation/brevo/liste-de-diffusion'
+} from '@/features/utilisateurs/implementation/brevo/liste-de-diffusion'
 import {
   IdentifiantDImport,
   type SynchroniserLesRolesBrevoPorts,

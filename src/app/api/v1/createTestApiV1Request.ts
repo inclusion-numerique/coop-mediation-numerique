@@ -1,8 +1,8 @@
+import { NextRequest } from 'next/server'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
-} from '@app/web/app/api/v1/apiV1Headers'
-import { NextRequest } from 'next/server'
+} from '@/app/api/v1/apiV1Headers'
 
 export const createTestApiV1Request = ({
   client,

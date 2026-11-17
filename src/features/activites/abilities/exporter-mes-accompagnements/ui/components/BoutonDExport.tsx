@@ -1,14 +1,14 @@
 'use client'
 
-import { pluriel } from '@app/web/libraries/pluriel'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { download } from '@app/web/utils/download'
-import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
+import { pluriel } from '@/libraries/pluriel'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { download } from '@/utils/download'
+import { numberToString } from '@/utils/formatNumber'
 import type { ActivitesFiltersLabels } from '../../../../ui/filtres/libelles-des-filtres'
 import { cheminAvecRequete } from '../export.presenter'
 

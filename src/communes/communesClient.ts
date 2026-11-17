@@ -1,6 +1,6 @@
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
-import { staticFile } from '@app/web/staticDirectory'
+import { staticFile } from '@/staticDirectory'
 
 export type Commune = {
   codeInsee: string

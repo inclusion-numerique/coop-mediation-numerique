@@ -1,10 +1,10 @@
 'use server'
 
-import { getAuthenticatedSessionToken } from '@app/web/auth/getSessionUser'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { terminerLUsurpation } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation'
-import { fromResult } from '@app/web/libraries/nextjs'
+import { getAuthenticatedSessionToken } from '@/auth/getSessionUser'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { terminerLUsurpation } from '@/features/utilisateurs/abilities/terminer-l-usurpation'
+import { fromResult } from '@/libraries/nextjs'
 
 export const terminerLUsurpationAction = actionBuilder()
   .use(withAuth())

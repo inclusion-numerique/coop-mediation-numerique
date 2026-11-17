@@ -1,5 +1,5 @@
-import { failure, success } from '@app/web/libraries/result'
 import { z } from 'zod'
+import { failure, success } from '@/libraries/result'
 import { RdvAgentId } from '../../../../domain/rdv-agent-id'
 import { rdvPayload } from '../../../../implementation/api/payloads'
 import { rdvToDomain } from '../../../../implementation/api/to-domain'

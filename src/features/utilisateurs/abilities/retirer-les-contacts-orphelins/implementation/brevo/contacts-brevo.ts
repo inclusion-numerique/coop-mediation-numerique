@@ -1,13 +1,10 @@
-import { brevoApiThrottle } from '@app/web/external-apis/brevo/createBrevoContact'
-import { deleteBrevoContact } from '@app/web/external-apis/brevo/deleteBrevoContact'
-import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
-import { removeBrevoContactFromList } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
-import {
-  AdresseCourriel,
-  UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
+import { brevoApiThrottle } from '@/external-apis/brevo/createBrevoContact'
+import { deleteBrevoContact } from '@/external-apis/brevo/deleteBrevoContact'
+import { deleteBrevoContactIfOrphan } from '@/external-apis/brevo/deleteBrevoContactIfOrphan'
+import { removeBrevoContactFromList } from '@/external-apis/brevo/removeBrevoContactFromList'
+import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import type {
   CompteDuContact,
   ContactBrevo,

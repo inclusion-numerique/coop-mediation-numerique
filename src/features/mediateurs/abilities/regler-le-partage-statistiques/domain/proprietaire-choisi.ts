@@ -4,8 +4,8 @@ import {
   proprietaireDuPerimetre,
   proprietairesPossibles,
   type Rattachements,
-} from '@app/web/features/mediateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/features/mediateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
 import { AucuneStatistiqueAPartager, PerimetreNonRattache } from './errors'
 
 export const proprietaireChoisi = (

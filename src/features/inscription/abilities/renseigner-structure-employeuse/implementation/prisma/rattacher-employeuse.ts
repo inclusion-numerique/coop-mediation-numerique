@@ -1,8 +1,8 @@
 import {
   IdentiteEmployeuse,
   rattacherAUneEmployeuseBinding,
-} from '@app/web/features/employeuse/server'
-import type { RattacherEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/domain'
+} from '@/features/employeuse/server'
+import type { RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain'
 
 /**
  * Implémentation ACL : traduit le choix du formulaire en identité d'employeuse

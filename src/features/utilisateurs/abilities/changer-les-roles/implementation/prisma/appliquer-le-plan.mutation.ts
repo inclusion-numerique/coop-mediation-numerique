@@ -2,10 +2,10 @@ import type {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import type { Prisma } from '@/generated/prisma/client'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 import type { OperationRole, PlanDeChangement } from '../../domain'
 
 type Transaction = Prisma.TransactionClient

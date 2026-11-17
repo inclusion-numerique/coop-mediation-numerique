@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import type { GetInscriptionEtat } from '../domain/get-inscription-etat'
 import { inscriptionEtatToDomain } from './inscription-etat.transfer'
 

@@ -1,12 +1,12 @@
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
+import Excel from 'exceljs'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import {
   addExportMetadata,
   type WorksheetUser,
-} from '@app/web/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
-import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
-import Excel from 'exceljs'
+} from '@/libs/worksheet/addExportMetadata'
+import { addTitleRow } from '@/libs/worksheet/addTitleRow'
+import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
+import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
 import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
 import type { ContratMembre, MembreAExporter } from '../../domain'
 import { type MembreExporte, membreExporte } from './membre-exporte'

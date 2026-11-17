@@ -1,18 +1,18 @@
 import assert from 'node:assert'
+import { Before, Given, Then, When } from '@cucumber/cucumber'
 import type {
   RattacherEmployeuse,
   RenseignerStructureEmployeuseError,
   StructureEmployeuseInput,
-} from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import { renseignerStructureEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
-import { ProfilInscription } from '@app/web/features/inscription/domain'
+} from '@/features/inscription/abilities/renseigner-structure-employeuse'
+import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
+import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedProfilChoisi,
-} from '@app/web/features/inscription/inscription.cucumber'
-import type { Result } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { Before, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/inscription/inscription.cucumber'
+import type { Result } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 let rattachable = true
 let rattachementsDemandes = 0

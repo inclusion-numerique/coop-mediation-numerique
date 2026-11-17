@@ -303,11 +303,11 @@
                 "patterns": [
                   {
                     "group": [
-                      "@app/web/features/lieux-activite/*",
-                      "@app/web/features/lieux-activite/*/**",
-                      "!@app/web/features/lieux-activite/ui"
+                      "@/features/lieux-activite/*",
+                      "@/features/lieux-activite/*/**",
+                      "!@/features/lieux-activite/ui"
                     ],
-                    "message": "Une feature passe par l'API publique d'une autre : `@app/web/features/lieux-activite` pour le serveur, `@app/web/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
+                    "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
                   }
                 ]
               }

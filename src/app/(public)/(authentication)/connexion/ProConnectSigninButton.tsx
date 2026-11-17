@@ -1,12 +1,12 @@
 'use client'
 
-import { proConnectProviderId } from '@app/web/auth/proConnect'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { Route } from 'next'
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
+import { proConnectProviderId } from '@/auth/proConnect'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
 const ProConnectSigninButton = ({
   className,

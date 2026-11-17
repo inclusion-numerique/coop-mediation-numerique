@@ -1,6 +1,6 @@
-import { scrollToError } from '@app/web/libraries/ui/hooks/useScrollToError'
 import { AnyFormApi } from '@tanstack/react-form'
 import { FormEvent } from 'react'
+import { scrollToError } from '@/libraries/ui/hooks/useScrollToError'
 
 export const handleSubmit =
   (form: AnyFormApi) => async (event: FormEvent<HTMLFormElement>) => {

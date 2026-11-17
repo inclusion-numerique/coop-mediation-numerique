@@ -1,12 +1,12 @@
 import assert from 'node:assert'
-import { reglerLePartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques'
-import { AuteurId, PerimetrePartage } from '@app/web/features/mediateurs/domain'
+import { Then, When } from '@cucumber/cucumber'
+import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques'
+import { AuteurId, PerimetrePartage } from '@/features/mediateurs/domain'
 import {
   compteSeme,
   rattachementsSemes,
-} from '@app/web/features/mediateurs/mediateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/mediateurs/mediateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof reglerLePartageStatistiques>>
 

@@ -1,4 +1,4 @@
-import dataGouvDepartments from '@app/web/data/collectivites-territoriales/departements-region.json'
+import dataGouvDepartments from '@/data/collectivites-territoriales/departements-region.json'
 
 export type DataGouvDepartment = (typeof dataGouvDepartments)[number]
 

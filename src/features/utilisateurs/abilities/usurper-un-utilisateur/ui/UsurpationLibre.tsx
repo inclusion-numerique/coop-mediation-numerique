@@ -1,7 +1,7 @@
 'use client'
 
-import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
 import { useState } from 'react'
+import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
 import { BoutonUsurper } from './BoutonUsurper'
 
 export const UsurpationLibre = () => {

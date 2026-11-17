@@ -1,10 +1,10 @@
-import type { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import type { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import type { Email } from '@app/web/features/beneficiaire/domain/email'
-import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import type { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import type { Email } from '@/features/beneficiaire/domain/email'
+import type { Nom } from '@/features/beneficiaire/domain/nom'
+import type { Prenom } from '@/features/beneficiaire/domain/prenom'
+import type { Telephone } from '@/features/beneficiaire/domain/telephone'
 
 // Projection d'un bénéficiaire candidat à la déduplication. Partagée au niveau
 // feature : consommée par l'ability `detecter-doublons` ET par l'ability

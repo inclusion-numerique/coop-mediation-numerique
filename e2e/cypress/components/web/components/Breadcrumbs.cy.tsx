@@ -1,4 +1,4 @@
-import Breadcrumbs from '@app/web/components/Breadcrumbs'
+import Breadcrumbs from '@/components/Breadcrumbs'
 
 describe('<Breadcrumbs />', () => {
   it('should render a breadcrumbs with no parent', () => {

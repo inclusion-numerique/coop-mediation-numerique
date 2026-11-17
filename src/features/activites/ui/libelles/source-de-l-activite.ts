@@ -1,4 +1,4 @@
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 export const SOURCES_DANS_L_URL = ['', 'v1', 'v2'] as const
 

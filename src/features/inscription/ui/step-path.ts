@@ -1,4 +1,4 @@
-import type { InscriptionStepValue } from '@app/web/features/inscription/domain'
+import type { InscriptionStepValue } from '@/features/inscription/domain'
 
 const stepPaths: Record<InscriptionStepValue, string> = {
   initialize: '/inscription/initialiser',

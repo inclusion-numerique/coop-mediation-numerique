@@ -1,18 +1,18 @@
 'use client'
 
-import {
-  type AnalyseResponse,
-  storeBeneficiaireImportAnalysis,
-} from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { isBrowser } from '@app/web/utils/isBrowser'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
+import {
+  type AnalyseResponse,
+  storeBeneficiaireImportAnalysis,
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { isBrowser } from '@/utils/isBrowser'
 
 // Create zod validation so the file is required and of type File
 // And the file must be an xlsx file

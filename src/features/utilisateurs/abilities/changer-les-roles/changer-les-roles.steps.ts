@@ -1,9 +1,9 @@
 import assert from 'node:assert'
-import { AuteurId } from '@app/web/features/utilisateurs/domain'
-import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { AuteurId } from '@/features/utilisateurs/domain'
+import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 import { changerLesRoles } from './commands/changer-les-roles'
 import { rolesVacants } from './implementation'
 

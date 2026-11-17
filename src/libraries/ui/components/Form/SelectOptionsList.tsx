@@ -1,4 +1,4 @@
-import type { SelectInputOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import type { SelectInputOption } from '@/libraries/ui/components/Form/utils/options'
 
 const SelectOptionsList = ({ options }: { options: SelectInputOption[] }) => (
   <>

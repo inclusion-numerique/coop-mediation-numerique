@@ -1,6 +1,6 @@
-import type { ProjeterEtapeFranchie } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/domain'
-import { inscriptionEtatFromDomain } from '@app/web/features/inscription/db'
-import { prismaClient } from '@app/web/prismaClient'
+import type { ProjeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain'
+import { inscriptionEtatFromDomain } from '@/features/inscription/db'
+import { prismaClient } from '@/prismaClient'
 
 /**
  * Projette l'état d'inscription — qui porte déjà l'étape franchie — scopé sur

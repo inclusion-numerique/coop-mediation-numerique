@@ -1,6 +1,6 @@
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { inject } from '@app/web/libs/injection/client'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { inject } from '@/libs/injection/client'
 import { RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY } from '../action/rechercher-des-mediateurs-a-inviter.key'
 import {
   type EtatDeLaRecherche,

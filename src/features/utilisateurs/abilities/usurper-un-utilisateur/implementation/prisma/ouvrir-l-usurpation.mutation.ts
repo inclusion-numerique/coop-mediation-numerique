@@ -1,6 +1,6 @@
-import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
+import { addMutationLog } from '@/utils/addMutationLog'
 
 export const ouvrirLUsurpation = async ({
   jetonDeSession,

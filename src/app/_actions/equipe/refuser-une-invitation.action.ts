@@ -1,17 +1,17 @@
 'use server'
 
-import { getSessionUser } from '@app/web/auth/getSessionUser'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { refuserUneInvitation } from '@app/web/features/equipe/abilities/refuser-une-invitation'
-import { REFUSER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.errors'
-import { RefuserUneInvitationValidation } from '@app/web/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.validation'
+import { getSessionUser } from '@/auth/getSessionUser'
+import { actionBuilder } from '@/configuration/nextjs'
+import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation'
+import { REFUSER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.errors'
+import { RefuserUneInvitationValidation } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.validation'
 import {
   CoordinateurId,
   Email,
   ReferenceInvitation,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/equipe/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const refuserUneInvitationAction = actionBuilder()
   .use(withInput(RefuserUneInvitationValidation))

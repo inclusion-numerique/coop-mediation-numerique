@@ -1,5 +1,5 @@
-import { ServerActionSuccess } from '@app/web/libraries/nextjs/action/result'
-import { provide } from '@app/web/libs/injection/client'
+import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
+import { provide } from '@/libs/injection/client'
 import { StatutPresence } from '../../../domain/statut-presence'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '../action/mettre-a-jour-statut-rdv.key'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from './creer-activite-depuis-rdv.key'

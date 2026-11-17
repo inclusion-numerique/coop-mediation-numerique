@@ -1,4 +1,4 @@
-import { CodeInsee } from '@app/web/libraries/insee'
+import { CodeInsee } from '@/libraries/insee'
 
 export type ValeurDeParametre = string | readonly string[] | undefined
 

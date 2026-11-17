@@ -1,15 +1,15 @@
 import assert from 'node:assert'
-import type { EmployeuseConsultee } from '@app/web/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
-import { consulterEmployeuse } from '@app/web/features/employeuse/abilities/consulter-employeuse/implementation'
-import { EmployeuseId } from '@app/web/features/employeuse/domain/employeuse-id'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { EmployeuseConsultee } from '@/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
+import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementation'
+import { EmployeuseId } from '@/features/employeuse/domain/employeuse-id'
 import {
   desactiverAffectations,
   seedAffectation,
   seedEmployeuseMain,
   seedUtilisateur,
   supprimerEmployeuseMain,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 const employeuses = new Map<string, number>()
 let fiche: EmployeuseConsultee | null = null

@@ -1,7 +1,7 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId } from '@app/web/utils/skipLinks'
 import type { ReactNode } from 'react'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { contentId } from '@/utils/skipLinks'
 import { CarteInformationsProConnect } from '../CarteInformationsProConnect'
 
 export const MonProfilPage = ({

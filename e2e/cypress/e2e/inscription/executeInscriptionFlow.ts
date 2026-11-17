@@ -1,7 +1,7 @@
-import { appUrl } from '@app/e2e/support/helpers'
-import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
-import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
-import { stepPath } from '@app/web/features/inscription/ui/step-path'
+import { appUrl } from '@e2e/support/helpers'
+import { CreateUserInput } from '@e2e/tasks/handlers/user.tasks'
+import { profilInscriptionLabels } from '@/features/inscription/domain'
+import { stepPath } from '@/features/inscription/ui/step-path'
 
 export type InscriptionFlowE2eExpectedStep =
   | {

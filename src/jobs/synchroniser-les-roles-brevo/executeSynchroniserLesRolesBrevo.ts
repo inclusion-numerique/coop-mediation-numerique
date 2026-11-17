@@ -1,10 +1,10 @@
-import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
-import { deploymentCanCreateBrevoContact } from '@app/web/external-apis/brevo/createBrevoContact'
+import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { deploymentCanCreateBrevoContact } from '@/external-apis/brevo/createBrevoContact'
 import {
   listeDeDiffusionPorts,
   synchroniserLesRolesBrevo,
-} from '@app/web/features/utilisateurs/abilities/synchroniser-les-roles-brevo'
-import { output } from '@app/web/libraries/console/output'
+} from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo'
+import { output } from '@/libraries/console/output'
 
 export const executeSynchroniserLesRolesBrevo = async () => {
   if (!deploymentCanCreateBrevoContact()) {

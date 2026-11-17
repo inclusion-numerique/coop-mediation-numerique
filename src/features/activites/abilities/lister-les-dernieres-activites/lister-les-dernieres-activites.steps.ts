@@ -1,11 +1,11 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   listerLesDernieresActivites,
   MediateurId,
-} from '@app/web/features/activites/abilities/lister-les-dernieres-activites'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/activites/abilities/lister-les-dernieres-activites'
+import { prismaClient } from '@/prismaClient'
 
 let mediateurs: readonly { userId: string; mediateurId: string }[] = []
 let notes: readonly string[] = []

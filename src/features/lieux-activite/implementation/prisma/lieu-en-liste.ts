@@ -1,6 +1,6 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { nomAffiche } from '@app/web/libraries/nom-affiche'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Prisma } from '@/generated/prisma/client'
+import { nomAffiche } from '@/libraries/nom-affiche'
 import { NomUsage } from '../../domain/identite-sirene'
 import { IdentifiantCartographie } from '../../domain/ids-cartographie-nationale'
 import type {

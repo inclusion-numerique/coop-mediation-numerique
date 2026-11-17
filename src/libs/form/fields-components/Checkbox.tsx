@@ -1,5 +1,3 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { useFieldContext } from '@app/web/libs/form/form-context'
 import {
   Checkbox as DsfrCheckbox,
   CheckboxProps as DsfrCheckboxProps,
@@ -12,6 +10,8 @@ import {
   LabelHTMLAttributes,
   ReactNode,
 } from 'react'
+import { Pictogram } from '@/features/pictograms/pictogram'
+import { useFieldContext } from '@/libs/form/form-context'
 import { casesCochees } from './cases-cochees'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {

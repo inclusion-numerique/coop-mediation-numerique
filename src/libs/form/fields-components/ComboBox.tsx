@@ -1,10 +1,10 @@
+import { isEqual } from 'lodash-es'
+import { KeyboardEvent } from 'react'
 import {
   ComboBox as ComboBoxBase,
   type ComboBoxData as ComboBoxBaseData,
   type ComboBoxProps as ComboBoxBaseProps,
-} from '@app/web/libraries/ui/components/Primitives/Form/ComboBox'
-import { isEqual } from 'lodash-es'
-import { KeyboardEvent } from 'react'
+} from '@/libraries/ui/components/Primitives/Form/ComboBox'
 import { useFieldContext } from '../form-context'
 
 export type ComboBoxData<TItem, TPayload = {}> = ComboBoxBaseData<

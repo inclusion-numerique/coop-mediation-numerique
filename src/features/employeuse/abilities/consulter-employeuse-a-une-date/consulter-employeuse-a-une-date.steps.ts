@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/abilities/consulter-employeuse-a-une-date/implementation'
-import type { Employeuse } from '@app/web/features/employeuse/domain/employeuse'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementation'
+import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedAffectation,
   seedContrat,
   seedEmployeuseMain,
   seedUtilisateur,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 // État local à cette ability : les phrasés Cucumber sont globaux, et une ability
 // ne s'appuie pas sur les steps d'une autre (duplication découplée assumée).

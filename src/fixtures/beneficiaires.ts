@@ -1,10 +1,10 @@
 import {
   givenBeneficiaire,
   givenBeneficiaireAnonyme,
-} from '@app/web/features/beneficiaire/fixtures/givenBeneficiaire'
-import { conseillerNumeriqueMediateurId } from '@app/web/fixtures/users/conseillerNumerique'
-import { coordinateurInscritAvecToutMediateurId } from '@app/web/fixtures/users/coordinateurInscritAvecTout'
-import { mediateurAvecActiviteMediateurId } from '@app/web/fixtures/users/mediateurAvecActivite'
+} from '@/features/beneficiaire/fixtures/givenBeneficiaire'
+import { conseillerNumeriqueMediateurId } from '@/fixtures/users/conseillerNumerique'
+import { coordinateurInscritAvecToutMediateurId } from '@/fixtures/users/coordinateurInscritAvecTout'
+import { mediateurAvecActiviteMediateurId } from '@/fixtures/users/mediateurAvecActivite'
 
 export const beneficiaireMinimaleMediateurAvecActivite = givenBeneficiaire({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',

@@ -1,4 +1,4 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import { type CompteRdv, estUtilisable } from '../../../domain/compte-rdv'
 import {
   CompteNonLie,

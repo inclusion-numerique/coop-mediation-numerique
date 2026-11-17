@@ -1,4 +1,4 @@
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
 export type BeneficiaireSourceIntrouvable = {
   readonly _tag: 'BeneficiaireSourceIntrouvable'

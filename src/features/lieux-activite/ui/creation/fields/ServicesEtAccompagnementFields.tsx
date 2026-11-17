@@ -1,14 +1,14 @@
 'use client'
 
+import Notice from '@codegouvfr/react-dsfr/Notice'
+import { useSelector } from '@tanstack/react-form'
 import {
   modaliteAccompagnementOptions,
   serviceOptions,
-} from '@app/web/features/lieux-activite/ui/options'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { optionsWithEmptyValue } from '@app/web/libraries/ui/components/Form/utils/options'
-import { withForm } from '@app/web/libs/form/use-app-form'
-import Notice from '@codegouvfr/react-dsfr/Notice'
-import { useSelector } from '@tanstack/react-form'
+} from '@/features/lieux-activite/ui/options'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
+import { withForm } from '@/libs/form/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const ServicesEtAccompagnementFields = withForm({

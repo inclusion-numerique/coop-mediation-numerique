@@ -1,8 +1,5 @@
-import type { RattachementsDuCompte } from '@app/web/features/utilisateurs/domain'
-import {
-  coordinateurDe,
-  mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
+import type { RattachementsDuCompte } from '@/features/utilisateurs/domain'
+import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import { EffacementStep } from './effacement-report'
 
 type PlannableStep = {

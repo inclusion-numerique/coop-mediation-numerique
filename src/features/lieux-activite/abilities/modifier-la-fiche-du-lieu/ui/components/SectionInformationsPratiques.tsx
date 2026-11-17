@@ -1,8 +1,8 @@
 'use client'
 
-import EditCardTanStack from '@app/web/components/EditCardTanStack'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
+import EditCardTanStack from '@/components/EditCardTanStack'
+import { useAppForm } from '@/libs/form/use-app-form'
 import { InformationsPratiquesSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { InformationsPratiquesAffichees } from '../fiche-affichee/informations-pratiques'

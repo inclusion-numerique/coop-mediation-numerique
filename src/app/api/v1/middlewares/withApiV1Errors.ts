@@ -1,6 +1,6 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 
 const reponseDErreur = (error: unknown): Response => {
   if (error instanceof ZodError) {

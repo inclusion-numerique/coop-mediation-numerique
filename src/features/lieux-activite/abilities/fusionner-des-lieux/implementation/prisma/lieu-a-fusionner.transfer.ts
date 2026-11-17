@@ -1,5 +1,5 @@
-import { adresseSaisie } from '@app/web/features/lieux-activite/domain/saisie'
 import { Courriel, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { adresseSaisie } from '@/features/lieux-activite/domain/saisie'
 import { IdentifiantCartographie } from '../../../../domain/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/lieu-id'
 import { MediateurId } from '../../../../domain/mediateur-id'

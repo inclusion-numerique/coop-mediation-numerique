@@ -1,11 +1,16 @@
-import IconInSquare from '@app/web/components/IconInSquare'
-import { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { formOptions, useSelector } from '@tanstack/react-form'
+import classNames from 'classnames'
+import { useRouter } from 'next/navigation'
+import { Fragment, useCallback } from 'react'
+import IconInSquare from '@/components/IconInSquare'
+import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
   countGenreNonCommunique,
   countStatutSocialNonCommunique,
   countTrancheAgeNonCommunique,
   participantsAnonymesDefault,
-} from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import {
   genreLabels,
   genresAffiches as genreValues,
@@ -13,22 +18,17 @@ import {
   statutsSociauxAffiches as statutSocialValues,
   trancheAgeLabels,
   tranchesAgeAffichees as trancheAgeValues,
-} from '@app/web/features/activites/ui/libelles/profil'
+} from '@/features/activites/ui/libelles/profil'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
   BeneficiaireSelectedItems,
-} from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
-import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
-import { pluriel } from '@app/web/libraries/pluriel'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions, useSelector } from '@tanstack/react-form'
-import classNames from 'classnames'
-import { useRouter } from 'next/navigation'
-import { Fragment, useCallback } from 'react'
+} from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import { pluriel } from '@/libraries/pluriel'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { DefaultValues, withForm } from '@/libs/form/use-app-form'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
 

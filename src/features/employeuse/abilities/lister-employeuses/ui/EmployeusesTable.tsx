@@ -1,6 +1,6 @@
-import DataTable from '@app/web/libs/data-table/DataTable'
-import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import DataTable from '@/libs/data-table/DataTable'
+import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
+import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
 import type { EmployeuseAffichee } from './employeuse-affichee.presenter'
 import {
   EmployeusesDataTable,

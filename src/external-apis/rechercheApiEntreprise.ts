@@ -1,6 +1,6 @@
-import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import pRetry, { AbortError } from 'p-retry'
+import type { UniteLegale } from '@/external-apis/apiEntrepriseApiModels'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import { rechercheApiEntrepriseE2e } from './rechercheApiEntreprise.e2e'
 
 const rechercheApiEntrepriseEndpoint =

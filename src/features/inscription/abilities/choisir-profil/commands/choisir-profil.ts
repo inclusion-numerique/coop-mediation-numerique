@@ -3,8 +3,8 @@ import {
   type InscriptionStep,
   prochaineEtape,
   type Role,
-} from '@app/web/features/inscription/domain'
-import { type Result, success } from '@app/web/libraries/result'
+} from '@/features/inscription/domain'
+import { type Result, success } from '@/libraries/result'
 import {
   type ChoisirProfilError,
   choisirProfil as deciderRole,

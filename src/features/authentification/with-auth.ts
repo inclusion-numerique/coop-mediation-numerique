@@ -1,10 +1,7 @@
-import { getSessionUser } from '@app/web/auth/getSessionUser'
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import type {
-  PipeMiddleware,
-  ServerActionResult,
-} from '@app/web/libraries/nextjs'
-import { ServerActionError } from '@app/web/libraries/nextjs'
+import { getSessionUser } from '@/auth/getSessionUser'
+import type { SessionUser } from '@/auth/sessionUser'
+import type { PipeMiddleware, ServerActionResult } from '@/libraries/nextjs'
+import { ServerActionError } from '@/libraries/nextjs'
 
 export const withAuth =
   (): PipeMiddleware<object, { user: SessionUser }, unknown> =>

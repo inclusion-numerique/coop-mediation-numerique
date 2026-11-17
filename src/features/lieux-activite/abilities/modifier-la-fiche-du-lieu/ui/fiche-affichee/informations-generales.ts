@@ -1,11 +1,11 @@
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { getAdresseBanLabel } from '@app/web/external-apis/ban/adresseBanLabel'
-import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
-import type { StructureSearchResult } from '@app/web/features/employeuse'
 import {
   Itinerance,
   type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import { getAdresseBanLabel } from '@/external-apis/ban/adresseBanLabel'
+import { banDefaultValueToAdresseBanData } from '@/external-apis/ban/banDefaultValueToAdresseBanData'
+import type { StructureSearchResult } from '@/features/employeuse'
 import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
 

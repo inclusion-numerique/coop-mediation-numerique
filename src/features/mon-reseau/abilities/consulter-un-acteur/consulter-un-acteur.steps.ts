@@ -1,25 +1,25 @@
 import assert from 'node:assert'
-import { compterLesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { subDays } from 'date-fns'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresDesStatistiques,
   MediateurId as MediateurIdDesActivites,
-} from '@app/web/features/activites/domain'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+} from '@/features/activites/domain'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   consulterUnActeur,
   type QuiConsulte,
-} from '@app/web/features/mon-reseau/abilities/consulter-un-acteur'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur'
 import {
   type ActeurASemer,
   type ActeurSeme,
   semerUnActeur,
-} from '@app/web/features/mon-reseau/mon-reseau.cucumber'
-import { rendezVousAuxStatutsSql } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { derniereActiviteDeLUtilisateur } from '@app/web/features/utilisateurs'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { subDays } from 'date-fns'
+} from '@/features/mon-reseau/mon-reseau.cucumber'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
+import { prismaClient } from '@/prismaClient'
 
 type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
 

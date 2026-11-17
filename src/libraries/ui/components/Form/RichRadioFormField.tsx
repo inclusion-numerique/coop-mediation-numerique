@@ -1,8 +1,8 @@
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { UiComponentProps } from '@app/web/libraries/ui/utils/uiComponentProps'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { UiComponentProps } from '@/libraries/ui/utils/uiComponentProps'
 import { RichRadioOption } from './utils/options'
 
 export type RichRadioFormFieldProps<T extends FieldValues> = {

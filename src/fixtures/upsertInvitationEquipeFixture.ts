@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { enSerie } from '@app/web/libraries/fixtures/enSerie'
+import type { Prisma } from '@/generated/prisma/client'
+import { enSerie } from '@/libraries/fixtures/enSerie'
 
 export type InvitationEquipeFixture = {
   email: string

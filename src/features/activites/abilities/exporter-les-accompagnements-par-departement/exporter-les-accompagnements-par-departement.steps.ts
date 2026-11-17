@@ -1,7 +1,7 @@
 import assert from 'node:assert'
-import { semerUnAccompagnementDansLaCommune } from '@app/web/features/activites/activites.cucumber'
-import { Prisma } from '@app/web/generated/prisma/client'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { semerUnAccompagnementDansLaCommune } from '@/features/activites/activites.cucumber'
+import { Prisma } from '@/generated/prisma/client'
 import { Jour, PopulationDeMediateurs } from './domain'
 import {
   accompagnementsParDepartement,

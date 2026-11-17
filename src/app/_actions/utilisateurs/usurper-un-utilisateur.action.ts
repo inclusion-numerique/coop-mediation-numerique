@@ -1,19 +1,19 @@
 'use server'
 
-import { getAuthenticatedSessionToken } from '@app/web/auth/getSessionUser'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
+import { getAuthenticatedSessionToken } from '@/auth/getSessionUser'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
 import {
   PorteeUsurpation,
   usurperUnUtilisateur,
-} from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur'
-import { USURPER_UN_UTILISATEUR_ERRORS } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.errors'
-import { UsurperUnUtilisateurValidation } from '@app/web/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.validation'
-import { identifiantsDe } from '@app/web/features/utilisateurs/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { getLoginRedirectUrl } from '@app/web/security/getHomepage'
+} from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
+import { USURPER_UN_UTILISATEUR_ERRORS } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.errors'
+import { UsurperUnUtilisateurValidation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.validation'
+import { identifiantsDe } from '@/features/utilisateurs/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { getLoginRedirectUrl } from '@/security/getHomepage'
 
 export const usurperUnUtilisateurAction = actionBuilder()
   .use(withAuth())

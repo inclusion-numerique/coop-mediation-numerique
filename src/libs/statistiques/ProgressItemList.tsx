@@ -1,9 +1,9 @@
 'use client'
 
-import type { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import type { CSSProperties } from 'react'
+import type { QuantifiedShare } from '@/libs/statistiques/quantifiedShare'
+import { numberToPercentage, numberToString } from '@/utils/formatNumber'
 import ProgressBar from './ProgressBar'
 
 export const ProgressItemList = ({

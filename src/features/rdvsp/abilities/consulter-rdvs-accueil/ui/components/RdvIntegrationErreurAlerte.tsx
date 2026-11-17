@@ -1,10 +1,10 @@
+import Alert from '@codegouvfr/react-dsfr/Alert'
+import Button from '@codegouvfr/react-dsfr/Button'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
-} from '@app/web/features/rdvsp/oauth'
-import Alert from '@codegouvfr/react-dsfr/Alert'
-import Button from '@codegouvfr/react-dsfr/Button'
+} from '@/features/rdvsp/oauth'
 
 export const RdvIntegrationErreurAlerte = () => (
   <Alert

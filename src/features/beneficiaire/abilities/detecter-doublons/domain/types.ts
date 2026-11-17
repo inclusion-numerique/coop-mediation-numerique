@@ -1,11 +1,11 @@
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import type { Email } from '@app/web/features/beneficiaire/domain/email'
-import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import type { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { Email } from '@/features/beneficiaire/domain/email'
+import type { Nom } from '@/features/beneficiaire/domain/nom'
+import type { Prenom } from '@/features/beneficiaire/domain/prenom'
+import type { Telephone } from '@/features/beneficiaire/domain/telephone'
 
 // Projection partagée au niveau feature (voir beneficiaire/db).
-export type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/db/duplicate-beneficiaire'
+export type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
 
 type DoublonEntry = {
   readonly id: BeneficiaireId

@@ -1,10 +1,10 @@
+import { describe, expect, it } from 'vitest'
 import {
   dateAsDay,
   dateAsDayConventional,
   dateAsDayFullWordsInTimezone,
   dateAsDayWithHourInTimezone,
-} from '@app/web/utils/dateAsDay'
-import { describe, expect, it } from 'vitest'
+} from '@/utils/dateAsDay'
 
 describe('dateAsDay', () => {
   it('formats date', () => {

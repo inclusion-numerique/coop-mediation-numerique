@@ -1,6 +1,6 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { listerLesClientsApi } from '@app/web/features/clients-api/abilities/lister-les-clients-api'
-import { ClientsApiPage } from '@app/web/features/clients-api/abilities/lister-les-clients-api/ui'
+import { metadataTitle } from '@/app/metadataTitle'
+import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
+import { ClientsApiPage } from '@/features/clients-api/abilities/lister-les-clients-api/ui'
 
 export const metadata = {
   title: metadataTitle('Clients API'),

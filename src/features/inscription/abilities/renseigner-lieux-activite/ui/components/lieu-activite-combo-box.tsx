@@ -1,10 +1,10 @@
-import { rechercherDesLieuxAAjouterAction } from '@app/web/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
+import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import {
   type SuggestionAffichee,
   suggestionsAffichees,
-} from '@app/web/features/lieux-activite/ui'
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+} from '@/features/lieux-activite/ui'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
 
 /**
  * Recherche d'un lieu d'activité, par ordre de priorité : les lieux déjà connus

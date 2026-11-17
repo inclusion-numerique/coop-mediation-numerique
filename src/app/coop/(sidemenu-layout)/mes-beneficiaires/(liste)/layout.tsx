@@ -1,5 +1,5 @@
-import MesBeneficiairesListeLayout from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/MesBeneficiairesListeLayout'
 import type { PropsWithChildren } from 'react'
+import MesBeneficiairesListeLayout from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/MesBeneficiairesListeLayout'
 
 const MesBeneficiairesLayout = ({ children }: PropsWithChildren) => (
   <MesBeneficiairesListeLayout>{children}</MesBeneficiairesListeLayout>

@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import { porteeDe } from '../../../../db/portee-de-tag'
 import { type MediateurId, NomDeTag, TagId } from '../../../../domain'
 

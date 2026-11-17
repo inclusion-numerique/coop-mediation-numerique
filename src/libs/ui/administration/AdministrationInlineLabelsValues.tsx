@@ -1,6 +1,6 @@
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import classNames from 'classnames'
 import { Fragment, ReactNode } from 'react'
+import { onlyDefinedAndNotNull } from '@/utils/onlyDefinedAndNotNull'
 
 export type LabelAndValue = {
   label: ReactNode

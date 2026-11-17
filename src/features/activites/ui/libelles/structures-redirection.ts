@@ -1,4 +1,4 @@
-import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { STRUCTURES_DE_REDIRECTION } from '../../domain'
 
 export const structuresRedirectionValues = STRUCTURES_DE_REDIRECTION

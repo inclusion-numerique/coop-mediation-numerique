@@ -1,6 +1,6 @@
-import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
 import classNames from 'classnames'
 import Link from 'next/link'
+import { profilInscriptionLabels } from '@/features/inscription/domain'
 
 const ConseillerNumeriqueRoleNotice = ({
   conseillerNumeriqueRole,

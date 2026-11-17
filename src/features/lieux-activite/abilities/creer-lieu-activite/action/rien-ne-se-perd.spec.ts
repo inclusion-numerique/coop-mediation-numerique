@@ -1,7 +1,7 @@
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { describe, expect, it } from 'vitest'
+import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import type { Fiche } from '@/features/lieux-activite/domain/fiche'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
 import { nouveauLieu } from './depuis-la-saisie'
 
 const adresseBan = {

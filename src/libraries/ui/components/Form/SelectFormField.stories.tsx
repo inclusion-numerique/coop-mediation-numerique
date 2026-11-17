@@ -1,8 +1,8 @@
-import { useOnDiff } from '@app/web/hooks/useOnDiff'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import { useOnDiff } from '@/hooks/useOnDiff'
 import SelectFormField, { SelectFormFieldProps } from './SelectFormField'
 import { SelectOption } from './utils/options'
 

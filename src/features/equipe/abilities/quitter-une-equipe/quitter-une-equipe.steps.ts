@@ -1,10 +1,11 @@
 import assert from 'node:assert'
-import { quitterUneEquipe } from '@app/web/features/equipe/abilities/quitter-une-equipe'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe'
 import {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   adhesionsDe,
   type CoordinateurSeme,
@@ -12,8 +13,7 @@ import {
   semerUnCoordinateur,
   semerUneAdhesion,
   semerUnMediateurDEquipe,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

@@ -1,9 +1,9 @@
+import { Page, PageSize, Search, Sort, SortDirection } from '@arckit/resultset'
 import {
   type BeneficiaireSortField,
   beneficiaireSortFields,
-} from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import type { DataTableUrlState } from '@app/web/libraries/data-table'
-import { Page, PageSize, Search, Sort, SortDirection } from '@arckit/resultset'
+} from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { DataTableUrlState } from '@/libraries/data-table'
 
 export const DEFAULT_PAGE_SIZE = 20
 

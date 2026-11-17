@@ -1,14 +1,14 @@
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { FiltresUtilisateurs } from '@app/web/features/utilisateurs/domain'
+import type { ReactNode } from 'react'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   libellesDesFiltres,
   type OptionsDesFiltres,
-} from '@app/web/features/utilisateurs/ui'
-import { pluriel } from '@app/web/libraries/pluriel'
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@app/web/utils/skipLinks'
-import type { ReactNode } from 'react'
+} from '@/features/utilisateurs/ui'
+import { pluriel } from '@/libraries/pluriel'
+import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
+import { contentId } from '@/utils/skipLinks'
 import type { UtilisateursTrouves } from '../../domain'
 import { EtiquettesDesFiltres } from '../filtres/EtiquettesDesFiltres'
 import { Filtres } from '../filtres/Filtres'

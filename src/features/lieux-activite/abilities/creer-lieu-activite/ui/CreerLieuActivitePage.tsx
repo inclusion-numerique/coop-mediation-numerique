@@ -1,14 +1,14 @@
 'use client'
 
-import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import { CreerLieuActivitePageContent } from '@app/web/features/lieux-activite/ui/creation/CreerLieuActivitePageContent'
+import { useRouter } from 'next/navigation'
+import type { ReactNode } from 'react'
+import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
+import { CreerLieuActivitePageContent } from '@/features/lieux-activite/ui/creation/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
-} from '@app/web/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { useRouter } from 'next/navigation'
-import type { ReactNode } from 'react'
+} from '@/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import { createToast } from '@/libraries/ui/toast/createToast'
 import { hrefDuLieu } from '../../../ui/href-du-lieu'
 
 const erreurEnregistrement = () =>

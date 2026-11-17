@@ -1,8 +1,8 @@
 'use client'
 
-import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
+import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
 export const BadgeActivite = ({
   activite,

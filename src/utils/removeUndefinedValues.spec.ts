@@ -1,5 +1,5 @@
-import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
 import { describe, expect, it } from 'vitest'
+import { removeUndefinedValues } from '@/utils/removeUndefinedValues'
 
 describe('removeUndefinedValues', () => {
   it('Removes undefined values', () => {

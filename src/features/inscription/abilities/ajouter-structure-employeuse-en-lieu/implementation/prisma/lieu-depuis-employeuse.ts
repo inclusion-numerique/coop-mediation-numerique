@@ -1,9 +1,9 @@
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,
-} from '@app/web/features/inscription/implementation/prisma/employeuse-en-lieu.data'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/inscription/implementation/prisma/employeuse-en-lieu.data'
+import { prismaClient } from '@/prismaClient'
 import type { EmployeuseId } from '../../domain'
 
 /**

@@ -1,6 +1,6 @@
-import { givenLieuInclusion } from '@app/web/features/lieux-activite/fixtures/givenLieuInclusion'
-import { type Prisma, Typologie } from '@app/web/generated/prisma/browser'
-import { enSerie } from '@app/web/libraries/fixtures/enSerie'
+import { givenLieuInclusion } from '@/features/lieux-activite/fixtures/givenLieuInclusion'
+import { type Prisma, Typologie } from '@/generated/prisma/browser'
+import { enSerie } from '@/libraries/fixtures/enSerie'
 
 export const structureEmployeuse = givenLieuInclusion({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',

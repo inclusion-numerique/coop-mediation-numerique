@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
 import { v4 } from 'uuid'
+import type { Prisma } from '@/generated/prisma/client'
 import {
   fromAdresse,
   lieuFromDomain,

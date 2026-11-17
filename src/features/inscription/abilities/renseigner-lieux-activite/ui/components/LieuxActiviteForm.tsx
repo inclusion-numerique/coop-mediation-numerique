@@ -1,28 +1,28 @@
 'use client'
 
-import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
-import {
-  SERVICE_ADRESSE_INDISPONIBLE,
-  siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
-import {
-  adresseNonVerifiableMessage,
-  CREER_A_LA_MAIN,
-  geocodeStructureAdresse,
-} from '@app/web/external-apis/ban/geocodeStructureAdresse'
-import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
-import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui'
-import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
+import { renseignerLieuxActiviteAction } from '@/app/_actions/inscription/renseigner-lieux-activite.action'
+import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@/external-apis/apiAdresse'
+import {
+  adresseNonVerifiableMessage,
+  CREER_A_LA_MAIN,
+  geocodeStructureAdresse,
+} from '@/external-apis/ban/geocodeStructureAdresse'
+import type { LieuActiviteInput } from '@/features/inscription/abilities/renseigner-lieux-activite'
+import type { SuggestionAffichee } from '@/features/lieux-activite/ui'
+import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,

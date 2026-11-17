@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import { OrganisationId } from '../../../../domain/organisation-id'
 import { RdvId } from '../../../../domain/rdv-id'
 import { StatutPresence } from '../../../../domain/statut-presence'

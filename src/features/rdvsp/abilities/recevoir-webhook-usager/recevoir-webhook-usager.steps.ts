@@ -1,22 +1,22 @@
 import assert from 'node:assert'
-import type { RecevoirWebhookUsager } from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
-import { lireNotificationUsager } from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/implementation/api/lire-notification-usager'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { RecevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
+import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/api/lire-notification-usager'
 import {
   anonymiserEtSupprimerUsager,
   beneficiairesLiesAUsager,
   mettreAJourUsager,
-} from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/implementation/prisma/webhook-usager.prisma'
-import { recevoirWebhookUsager } from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager'
-import { EvenementWebhook } from '@app/web/features/rdvsp/domain/evenement-webhook'
+} from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/prisma/webhook-usager.prisma'
+import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager'
+import { EvenementWebhook } from '@/features/rdvsp/domain/evenement-webhook'
 import {
   beneficiaireEnBase,
   ID_TEST,
   seedBeneficiaire,
   seedUsagerRdv,
   testMediateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const USAGER_ID = ID_TEST.usager + 500
 

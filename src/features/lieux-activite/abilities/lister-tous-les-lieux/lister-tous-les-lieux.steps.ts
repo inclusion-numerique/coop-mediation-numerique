@@ -1,8 +1,8 @@
 import assert from 'node:assert'
-import { rechercherDesLieux } from '@app/web/features/lieux-activite/abilities/lister-tous-les-lieux'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
+import { prismaClient } from '@/prismaClient'
 
 const semis: {
   ids: string[]

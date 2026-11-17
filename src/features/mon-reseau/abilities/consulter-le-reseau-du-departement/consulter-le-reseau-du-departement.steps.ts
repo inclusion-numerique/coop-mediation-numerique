@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { nombreDeLieuxDuDepartement } from '@app/web/features/lieux-activite'
-import { consulterLeReseauDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite'
+import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
 import {
   type ActeurASemer,
   exercerDansLeLieu,
   semerUnActeur,
   semerUnLieu,
-} from '@app/web/features/mon-reseau/mon-reseau.cucumber'
-import { After, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/mon-reseau/mon-reseau.cucumber'
 
 type Consultation = Awaited<ReturnType<typeof consulterLeReseauDuDepartement>>
 

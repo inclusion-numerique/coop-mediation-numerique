@@ -1,13 +1,13 @@
-import { rechercherStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import {
   type TypologieStructure,
   typologieStructureLibelle,
-} from '@app/web/external-apis/api-entreprise/typologieStructure'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import type { StructureSearchResult } from '@app/web/features/employeuse'
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { addresseFromParts } from '@app/web/utils/addresseFromParts'
+} from '@/external-apis/api-entreprise/typologieStructure'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { StructureSearchResult } from '@/features/employeuse'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { addresseFromParts } from '@/utils/addresseFromParts'
 
 /**
  * Structure employeuse choisie dans le ComboBox : la forme produite ici EST

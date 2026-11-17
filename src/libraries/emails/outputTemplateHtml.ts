@@ -1,6 +1,6 @@
 import { existsSync, promises as fs } from 'node:fs'
 import path from 'node:path'
-import { getDirname } from '@app/web/libraries/chemins/dirname'
+import { getDirname } from '@/libraries/chemins/dirname'
 import { compileMjml } from './mjml'
 
 const outputDirectory = path.resolve(

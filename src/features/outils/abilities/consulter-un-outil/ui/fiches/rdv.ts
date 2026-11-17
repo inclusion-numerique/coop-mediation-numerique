@@ -1,5 +1,5 @@
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

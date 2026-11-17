@@ -1,5 +1,5 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@/auth/sessionUser'
+import { sessionUserHasStructureEmployeuse } from '@/auth/sessionUser'
 import {
   getNextInscriptionStep,
   type InscriptionContexte,
@@ -7,8 +7,8 @@ import {
   InscriptionStep,
   ProfilInscription,
   profilInscriptionLabels,
-} from '@app/web/features/inscription/domain'
-import { stepPath } from '@app/web/features/inscription/ui/step-path'
+} from '@/features/inscription/domain'
+import { stepPath } from '@/features/inscription/ui/step-path'
 
 // Une employeuse peut n'avoir aucune dénomination en base, mais la carte attend
 // un libellé : la projection porte le contrat d'affichage et décide du repli,

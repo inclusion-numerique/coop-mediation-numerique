@@ -1,5 +1,5 @@
-import { prismaClient } from '@app/web/prismaClient'
-import type { EncodedState } from '@app/web/utils/encodeSerializableState'
+import { prismaClient } from '@/prismaClient'
+import type { EncodedState } from '@/utils/encodeSerializableState'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import { lireUneInvitation } from '../../../../db/invitation.query'
 import { type Email, referenceDuCode } from '../../../../domain'

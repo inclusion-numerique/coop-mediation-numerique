@@ -1,11 +1,8 @@
-import type {
-  InscriptionEnCours,
-  UserId,
-} from '@app/web/features/inscription/domain'
+import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
 import type {
   CreerLieuActiviteData,
   LieuCarto,
-} from '@app/web/features/lieux-activite'
+} from '@/features/lieux-activite'
 import type { MediateurId } from './mediateur-id'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 

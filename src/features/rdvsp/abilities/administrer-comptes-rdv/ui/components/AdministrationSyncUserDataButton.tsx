@@ -1,12 +1,12 @@
 'use client'
 
-import { declencherSynchronisationAction } from '@app/web/app/_actions/rdvsp/declencher-synchronisation.action'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import type { UserId } from '@app/web/utils/user'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import type { UserId } from '@/utils/user'
 
 const AdministrationSyncUserDataButton = ({
   user: { id },

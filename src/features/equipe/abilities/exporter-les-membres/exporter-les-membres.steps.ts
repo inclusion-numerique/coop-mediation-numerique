@@ -1,18 +1,18 @@
 import assert from 'node:assert'
-import { exporterLesMembres } from '@app/web/features/equipe/abilities/exporter-les-membres'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres'
 import {
   CoordinateurId,
   criteresEquipe,
   type Lecteur,
   type ParametresDeRecherche,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   semerUnCoordinateur,
   semerUneAdhesion,
   semerUnMediateurDEquipe,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

@@ -1,9 +1,9 @@
 import {
   UtilisateurId,
   UtilisateurIntrouvable,
-} from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 export const deconnecterUnUtilisateur = async (
   utilisateurId: string,

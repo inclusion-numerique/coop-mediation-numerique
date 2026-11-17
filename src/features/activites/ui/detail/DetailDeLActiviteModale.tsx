@@ -1,10 +1,5 @@
 'use client'
 
-import Stars from '@app/web/components/Stars'
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { inject } from '@app/web/libs/injection/client'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -12,6 +7,11 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, type ReactNode, useEffect, useState } from 'react'
+import Stars from '@/components/Stars'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { inject } from '@/libs/injection/client'
 import type {
   DetailDActivite,
   Rubrique,

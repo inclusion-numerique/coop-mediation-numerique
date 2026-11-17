@@ -1,5 +1,5 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import type { ReactNode } from 'react'
+import { Pictogram } from '@/features/pictograms/pictogram'
 
 export type FonctionnaliteDeLOutil = {
   title: string

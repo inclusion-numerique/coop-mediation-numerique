@@ -1,6 +1,6 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
+import { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
+import { orderItemsByIndexedValues } from '@/utils/orderItemsByIndexedValues'
 import {
   ACTEUR,
   ACTEUR_VISIBLE,

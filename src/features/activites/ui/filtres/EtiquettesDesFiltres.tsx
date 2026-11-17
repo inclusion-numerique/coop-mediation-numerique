@@ -1,18 +1,18 @@
 'use client'
 
-import type {
-  FiltresDeLaListe,
-  OptionDeMediateur,
-} from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { OptionDeBeneficiaire } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import {
-  generateActivitesFiltersLabels,
-  toLieuPrefix,
-} from '@app/web/features/activites/ui/filtres/libelles-des-filtres'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type {
+  FiltresDeLaListe,
+  OptionDeMediateur,
+} from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { OptionDeBeneficiaire } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import {
+  generateActivitesFiltersLabels,
+  toLieuPrefix,
+} from '@/features/activites/ui/filtres/libelles-des-filtres'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 const queryParamsToKeep = ['voir-rdvs']
 

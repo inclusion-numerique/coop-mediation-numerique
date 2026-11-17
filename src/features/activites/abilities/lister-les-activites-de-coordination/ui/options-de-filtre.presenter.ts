@@ -1,4 +1,4 @@
-import type { PorteeDuTag } from '@app/web/features/activites/ui/tags/BadgeDePortee'
+import type { PorteeDuTag } from '@/features/activites/ui/tags/BadgeDePortee'
 import type { OptionsDeFiltre } from '../domain'
 
 export type OptionDeTag = {

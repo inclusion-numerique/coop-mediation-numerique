@@ -1,5 +1,5 @@
-import { prismaClient } from '@app/web/prismaClient'
 import { pascalCase } from 'change-case'
+import { prismaClient } from '@/prismaClient'
 import {
   type BeneficiaireId,
   Effectif,

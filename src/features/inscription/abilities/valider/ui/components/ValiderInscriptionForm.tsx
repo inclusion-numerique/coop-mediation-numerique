@@ -1,18 +1,18 @@
 'use client'
 
-import { validerAction } from '@app/web/app/_actions/inscription/valider.action'
-import {
-  type ValiderFormData,
-  validerFormShape,
-} from '@app/web/features/inscription/abilities/valider'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import { validerAction } from '@/app/_actions/inscription/valider.action'
+import {
+  type ValiderFormData,
+  validerFormShape,
+} from '@/features/inscription/abilities/valider'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { type DefaultValues, useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 
 const erreurValidation = () =>
   createToast({

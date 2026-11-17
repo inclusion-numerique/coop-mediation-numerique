@@ -1,5 +1,5 @@
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { onlyDefinedAndNotNull } from '@/utils/onlyDefinedAndNotNull'
 import DataFilters from './DataFilters'
 import DataSearchBar from './DataSearchBar'
 import {

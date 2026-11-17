@@ -1,4 +1,4 @@
-import { Siret } from '@app/web/libraries/insee'
+import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from './adresse-employeuse'
 import type { Affectation } from './affectation'
 import type { Contrat } from './contrat'

@@ -1,6 +1,6 @@
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { failure, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { failure, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 import {
   BeneficiaireDestinationIntrouvable,
   BeneficiaireSourceIntrouvable,

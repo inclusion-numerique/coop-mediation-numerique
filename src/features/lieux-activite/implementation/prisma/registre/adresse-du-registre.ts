@@ -1,4 +1,4 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
+import type { Prisma } from '@/generated/prisma/client'
 import type { Lieu } from '../../../domain/lieu'
 
 const codeAdressable = (valeur: string | null | undefined): string | null =>

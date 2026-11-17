@@ -1,8 +1,8 @@
+import { z } from 'zod'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { z } from 'zod'
+} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import {
   STATUTS_DE_RENDEZ_VOUS,
   THEMATIQUES_ADMINISTRATIVES,

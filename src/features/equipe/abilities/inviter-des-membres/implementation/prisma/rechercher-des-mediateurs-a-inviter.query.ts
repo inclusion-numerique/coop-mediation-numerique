@@ -1,10 +1,10 @@
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/employeuse'
+import type { Prisma } from '@/generated/prisma/client'
+import { DEFAULT_PAGE_SIZE } from '@/libs/data-table/toNumberOr'
+import { prismaClient } from '@/prismaClient'
 import { lue } from '../../../../db/lue'
 import {
   type CoordinateurId,

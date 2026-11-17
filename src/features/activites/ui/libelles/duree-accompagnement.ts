@@ -1,5 +1,5 @@
-import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
-import { dureeAsString } from '@app/web/utils/dureeAsString'
+import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
+import { dureeAsString } from '@/utils/dureeAsString'
 
 export const dureeAccompagnementPersonnaliseeValue = 'personnaliser' as const
 

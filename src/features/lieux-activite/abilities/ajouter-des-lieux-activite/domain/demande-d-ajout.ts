@@ -1,4 +1,4 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import type { MediateurId } from '../../../domain/mediateur-id'
 import { type EchecDAjout, MediateurRequis, PanierVide } from './errors'
 import type { LieuDemande } from './lieu-demande'

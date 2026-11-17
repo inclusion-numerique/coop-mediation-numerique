@@ -1,4 +1,4 @@
-import type { Result } from '@app/web/libraries/result'
+import type { Result } from '@/libraries/result'
 import type { CompteRdv, CompteRdvLie } from '../../../domain/compte-rdv'
 import type { ErreurRdvApi } from '../../../domain/errors'
 import type { EmailExterne } from '../../../domain/identite'

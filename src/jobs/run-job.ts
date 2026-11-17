@@ -1,8 +1,8 @@
 import {
   flush,
   register,
-} from '@app/web/configuration/telemetry/error-reporter/server'
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
+} from '@/configuration/telemetry/error-reporter/server'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { executeJob } from './jobExecutors'
 import { JobValidation } from './jobs'
 import { output } from './output'

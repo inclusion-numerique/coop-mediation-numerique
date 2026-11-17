@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
 import {
   CHOISIR_PROFIL_ERRORS,
   ChoisirProfilValidation,
-} from '@app/web/features/inscription/abilities/choisir-profil'
-import { choisirProfil } from '@app/web/features/inscription/abilities/choisir-profil/commands/choisir-profil'
-import { UserId } from '@app/web/features/inscription/domain'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/inscription/abilities/choisir-profil'
+import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
+import { UserId } from '@/features/inscription/domain'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const choisirProfilAction = actionBuilder()
   .use(withAuth())

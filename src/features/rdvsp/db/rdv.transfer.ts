@@ -4,7 +4,7 @@ import type {
   RdvMotif as PrismaRdvMotif,
   RdvParticipation as PrismaRdvParticipation,
   RdvUser as PrismaRdvUser,
-} from '@app/web/generated/prisma/client'
+} from '@/generated/prisma/client'
 import { AdresseRdv } from '../domain/adresse-rdv'
 import { DureeEnMinutes } from '../domain/duree-en-minutes'
 import {

@@ -1,9 +1,9 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import Breadcrumbs from '@app/web/components/Breadcrumbs'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
+import { metadataTitle } from '@/app/metadataTitle'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { contentId } from '@/utils/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Politique de confidentialité'),

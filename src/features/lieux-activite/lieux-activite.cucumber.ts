@@ -1,6 +1,6 @@
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 

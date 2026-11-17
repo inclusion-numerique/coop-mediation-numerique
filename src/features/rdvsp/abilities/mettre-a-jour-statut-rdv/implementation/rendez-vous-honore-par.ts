@@ -1,4 +1,4 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { RdvId } from '../../../domain/rdv-id'
 import { StatutPresenceModifiable } from '../../../domain/statut-presence'
 import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'

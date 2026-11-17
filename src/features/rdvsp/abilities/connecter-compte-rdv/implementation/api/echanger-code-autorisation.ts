@@ -1,6 +1,6 @@
-import { failure, success } from '@app/web/libraries/result'
 import axios from 'axios'
 import { z } from 'zod'
+import { failure, success } from '@/libraries/result'
 import {
   JetonAcces,
   JetonRafraichissement,

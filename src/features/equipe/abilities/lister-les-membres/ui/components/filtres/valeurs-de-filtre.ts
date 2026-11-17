@@ -1,4 +1,4 @@
-import type { Model } from '@app/web/libraries/model'
+import type { Model } from '@/libraries/model'
 import type { FiltreRole, FiltreStatut } from '../../../../../domain'
 
 export type RoleFiltre = Model.InputOf<typeof FiltreRole>

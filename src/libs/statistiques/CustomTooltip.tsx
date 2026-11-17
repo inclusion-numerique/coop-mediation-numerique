@@ -1,5 +1,3 @@
-import { numberToString } from '@app/web/utils/formatNumber'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { ReactNode } from 'react'
 // recharts 3 sépare les deux contrats : `TooltipProps` décrit ce que l'on passe au composant
 // <Tooltip>, tandis que `TooltipContentProps` y ajoute ce que le contenu reçoit du contexte
@@ -9,6 +7,8 @@ import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
+import { numberToString } from '@/utils/formatNumber'
+import { isDefinedAndNotNull } from '@/utils/isDefinedAndNotNull'
 import styles from './CustomTooltip.module.css'
 
 const CustomTooltip = <TValue extends ValueType, TName extends NameType>({

@@ -1,16 +1,16 @@
 'use client'
 
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { inject } from '@app/web/libs/injection/client'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { z } from 'zod'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { inject } from '@/libs/injection/client'
 import {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,
   NOM_DU_TAG_LONGUEUR_MAX,

@@ -1,15 +1,15 @@
 import type {
   PrismaSessionUser,
   PrismaSessionUsupper,
-} from '@app/web/auth/getSessionUserFromSessionToken'
-import { splitMediateursCoordonnes } from '@app/web/auth/mediateursCoordonnes'
-import type { SessionUser } from '@app/web/auth/sessionUser'
+} from '@/auth/getSessionUserFromSessionToken'
+import { splitMediateursCoordonnes } from '@/auth/mediateursCoordonnes'
+import type { SessionUser } from '@/auth/sessionUser'
 import {
   employeuseSessionEmplois,
   personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse/server'
-import { statutIntegrationDeLaSession } from '@app/web/features/rdvsp/db/statut-integration'
+} from '@/features/employeuse/server'
+import { statutIntegrationDeLaSession } from '@/features/rdvsp/db/statut-integration'
 
 /**
  * This is the session user that will be publicly sent to the client.

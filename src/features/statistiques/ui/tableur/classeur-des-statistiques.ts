@@ -1,19 +1,19 @@
-import type { ActivitesFiltersLabels } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
+import * as Excel from 'exceljs'
+import { Worksheet } from 'exceljs'
+import type { ActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
 import type {
   LabelAndCount,
   QuantifiedShare,
-} from '@app/web/libs/statistiques/quantifiedShare'
+} from '@/libs/statistiques/quantifiedShare'
 import {
   addExportMetadata,
   type WorksheetUser,
-} from '@app/web/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
-import { addFilters } from '@app/web/libs/worksheet/filtres-des-activites'
-import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
-import { numberToPercentage } from '@app/web/utils/formatNumber'
-import * as Excel from 'exceljs'
-import { Worksheet } from 'exceljs'
+} from '@/libs/worksheet/addExportMetadata'
+import { addTitleRow } from '@/libs/worksheet/addTitleRow'
+import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
+import { addFilters } from '@/libs/worksheet/filtres-des-activites'
+import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
+import { numberToPercentage } from '@/utils/formatNumber'
 
 type PartDuTotal = { total: number; proportion: number }
 

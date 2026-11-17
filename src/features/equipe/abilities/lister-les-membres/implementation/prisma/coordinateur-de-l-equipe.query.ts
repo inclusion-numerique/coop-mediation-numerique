@@ -2,13 +2,13 @@ import {
   employeuseCodeInsee,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse/server'
+} from '@/features/employeuse/server'
 import {
   DEPARTEMENT_PAR_DEFAUT,
   departementDeLActeur,
-} from '@app/web/libraries/departement'
-import { type CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/libraries/departement'
+import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { prismaClient } from '@/prismaClient'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import type { CoordinateurId } from '../../../../domain'
 import type { CoordinateurDeLaListe } from '../../domain'

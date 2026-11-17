@@ -1,7 +1,7 @@
 import {
   consulterEmployeuseActuelle,
   employeuseActuelleAffichage,
-} from '@app/web/features/employeuse/server'
+} from '@/features/employeuse/server'
 
 /**
  * Couche anti-corruption vers la feature employeuse : le seul endroit où

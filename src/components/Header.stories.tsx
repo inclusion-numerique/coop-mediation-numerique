@@ -1,6 +1,6 @@
-import Header from '@app/web/components/Header'
-import { testSessionUser } from '@app/web/test/testSessionUser'
 import { Meta, StoryObj } from '@storybook/react'
+import Header from '@/components/Header'
+import { testSessionUser } from '@/test/testSessionUser'
 
 export default {
   title: 'Header',

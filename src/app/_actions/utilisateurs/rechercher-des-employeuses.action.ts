@@ -1,11 +1,11 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { employeuseAffichage } from '@app/web/features/employeuse'
-import { rechercherEmployeuse } from '@app/web/features/employeuse/server'
-import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { employeuseAffichage } from '@/features/employeuse'
+import { rechercherEmployeuse } from '@/features/employeuse/server'
+import { withInput } from '@/libraries/nextjs'
 
 export const rechercherDesEmployeusesAction = actionBuilder()
   .use(withAuth())

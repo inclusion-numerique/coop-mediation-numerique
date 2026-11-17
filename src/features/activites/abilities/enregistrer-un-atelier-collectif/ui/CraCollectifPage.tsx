@@ -1,22 +1,22 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import CraCollectifForm from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/CraCollectifForm'
-import type { CraCollectifData } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButtonWithModal from '@/components/BackButtonWithModal'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import CraCollectifForm from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/CraCollectifForm'
+import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
   type BeneficiaireTrouveParLeCra,
   beneficiaireDuCra,
-} from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
-import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
-import { ModaleDeCreationDeTag } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
+} from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import type { LieuDuCra } from '@/features/activites/ui/saisie/lieu/lieu-du-cra'
+import { ModaleDeCreationDeTag } from '@/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import type {
   Tag,
   VisibiliteDuTagDuCra,
-} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import RequiredFieldsDisclamer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclamer'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { contentId } from '@app/web/utils/skipLinks'
+} from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { contentId } from '@/utils/skipLinks'
 
 export type CraCollectifPageData = {
   defaultValues: DefaultValues<CraCollectifData>

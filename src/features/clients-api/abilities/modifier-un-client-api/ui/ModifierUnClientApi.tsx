@@ -1,8 +1,8 @@
 'use client'
 
-import type { ClientApi } from '@app/web/features/clients-api/domain'
-import { FormulaireDuClientApi } from '@app/web/features/clients-api/formulaire/FormulaireDuClientApi'
-import { inject } from '@app/web/libs/injection/client'
+import type { ClientApi } from '@/features/clients-api/domain'
+import { FormulaireDuClientApi } from '@/features/clients-api/formulaire/FormulaireDuClientApi'
+import { inject } from '@/libs/injection/client'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '../action/modifier-un-client-api.key'
 import { valeursDuClientApi } from './valeurs-du-client-api.presenter'
 

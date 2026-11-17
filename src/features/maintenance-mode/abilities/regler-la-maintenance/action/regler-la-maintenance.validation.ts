@@ -1,5 +1,5 @@
-import { MessageDeMaintenance } from '@app/web/features/maintenance-mode/domain'
 import { z } from 'zod'
+import { MessageDeMaintenance } from '@/features/maintenance-mode/domain'
 
 export const ReglerLaMaintenanceValidation = z.discriminatedUnion('_tag', [
   z.object({

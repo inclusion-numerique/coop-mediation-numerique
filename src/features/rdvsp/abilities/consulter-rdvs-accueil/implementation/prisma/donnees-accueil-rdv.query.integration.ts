@@ -1,11 +1,11 @@
-import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { compteRdvToDomain } from '@/features/rdvsp/db'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
-} from '@app/web/features/rdvsp/domain/compte-rdv'
-import { mediateurSansActivitesUserId } from '@app/web/fixtures/users/mediateurSansActivites'
-import { prismaClient } from '@app/web/prismaClient'
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+} from '@/features/rdvsp/domain/compte-rdv'
+import { mediateurSansActivitesUserId } from '@/fixtures/users/mediateurSansActivites'
+import { prismaClient } from '@/prismaClient'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
 /**

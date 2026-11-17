@@ -1,15 +1,15 @@
 'use server'
 
-import { supprimerComptePorts } from '@app/web/composition/utilisateurs/supprimer-compte.ports'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
+import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
 import {
   SUPPRIMER_COMPTE_ERRORS,
   SupprimerCompteValidation,
   supprimerCompte,
-} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import { AuteurId, UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/utilisateurs/abilities/supprimer-compte'
+import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const supprimerCompteAction = actionBuilder()
   .use(withAuth())

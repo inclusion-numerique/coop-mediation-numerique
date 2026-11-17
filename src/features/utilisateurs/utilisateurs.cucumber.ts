@@ -1,7 +1,7 @@
-import type { OnboardingStatus } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import type { OnboardingStatus } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 

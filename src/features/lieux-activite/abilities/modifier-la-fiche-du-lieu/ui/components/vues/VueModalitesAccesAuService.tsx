@@ -1,7 +1,7 @@
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { type Frais as FraisACharge } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import Link from 'next/link'
+import { telephoneDisplayString } from '@/libraries/telephone'
 
 export const VueModalitesAccesAuService = ({
   fraisACharge = [],

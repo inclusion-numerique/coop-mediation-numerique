@@ -1,8 +1,8 @@
-import Stars from '@app/web/components/Stars'
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import classNames from 'classnames'
 import { Fragment, type KeyboardEventHandler, memo } from 'react'
+import Stars from '@/components/Stars'
+import { Pictogram } from '@/features/pictograms/pictogram'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import styles from './RichCardLabel.module.css'
 
 export type RichCardOptionExtras = {

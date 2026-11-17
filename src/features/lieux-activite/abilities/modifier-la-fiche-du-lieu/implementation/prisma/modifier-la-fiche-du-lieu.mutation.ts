@@ -1,4 +1,4 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
 import type { UserId } from '../../../../domain/user-id'

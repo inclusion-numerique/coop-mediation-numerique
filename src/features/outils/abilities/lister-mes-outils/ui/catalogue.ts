@@ -1,11 +1,11 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
-import { CentreAideConseillerNumeriqueLogo } from '@app/web/features/pictograms/services/CentreAideConseillerNumeriqueLogo'
-import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
-import { MattermostLogo } from '@app/web/features/pictograms/services/MattermostLogo'
-import { MonInclusionNumeriqueLogo } from '@app/web/features/pictograms/services/MonInclusionNumeriqueLogo'
-import type { Model } from '@app/web/libraries/model'
+import { Pictogram } from '@/features/pictograms/pictogram'
+import { AidantsConnectLogo } from '@/features/pictograms/services/AidantsConnectLogo'
+import { CartographieLogo } from '@/features/pictograms/services/CartographieLogo'
+import { CentreAideConseillerNumeriqueLogo } from '@/features/pictograms/services/CentreAideConseillerNumeriqueLogo'
+import { LesBasesLogo } from '@/features/pictograms/services/LesBasesLogo'
+import { MattermostLogo } from '@/features/pictograms/services/MattermostLogo'
+import { MonInclusionNumeriqueLogo } from '@/features/pictograms/services/MonInclusionNumeriqueLogo'
+import type { Model } from '@/libraries/model'
 import {
   type OutilDAccompagnement,
   outilsDAccompagnementVisibles,

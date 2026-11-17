@@ -1,9 +1,9 @@
 'use client'
 
-import Card from '@app/web/components/Card'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { signOut } from 'next-auth/react'
+import Card from '@/components/Card'
 import { InformationsProConnect } from './InformationsProConnect'
 
 const {

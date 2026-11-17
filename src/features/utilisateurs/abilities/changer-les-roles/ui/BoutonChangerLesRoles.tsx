@@ -1,12 +1,12 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { inject } from '@/libs/injection/client'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '../action/changer-les-roles.key'
 
 const RolesModal = createModal({

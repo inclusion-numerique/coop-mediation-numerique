@@ -1,4 +1,4 @@
-import type { OnboardingStatus } from '@app/web/generated/prisma/client'
+import type { OnboardingStatus } from '@/generated/prisma/client'
 import { type PhaseDeRelance, Relance, type relances } from '../domain'
 
 const lectureParPhase: Record<

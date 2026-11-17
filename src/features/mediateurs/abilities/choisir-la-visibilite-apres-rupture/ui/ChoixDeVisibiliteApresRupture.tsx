@@ -1,10 +1,10 @@
 'use client'
 
-import { choisirLaVisibiliteApresRuptureAction } from '@app/web/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { choisirLaVisibiliteApresRuptureAction } from '@/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
+import { createToast } from '@/libraries/ui/toast/createToast'
 import type { reponsesApresRupture } from '../domain/reponse-apres-rupture'
 
 export const ChoixDeVisibiliteApresRupture = () => {

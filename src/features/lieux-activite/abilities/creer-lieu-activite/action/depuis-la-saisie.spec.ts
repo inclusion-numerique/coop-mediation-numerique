@@ -1,5 +1,3 @@
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Itinerance,
   ModaliteAcces,
@@ -9,6 +7,8 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
 import { UserId } from '../../../domain/user-id'
 import { nouveauLieu } from './depuis-la-saisie'
 

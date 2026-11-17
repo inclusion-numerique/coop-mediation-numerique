@@ -1,19 +1,19 @@
 import assert from 'node:assert'
+import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   AUCUN_FILTRE,
   type FiltresUtilisateurs,
   filtresUtilisateurs,
   type LigneUtilisateur,
-} from '@app/web/features/utilisateurs/domain'
-import { libelleDuStatut } from '@app/web/features/utilisateurs/ui'
+} from '@/features/utilisateurs/domain'
+import { libelleDuStatut } from '@/features/utilisateurs/ui'
 import {
   semerUnCompteDeListe,
   semerUneEmployeuse,
   semerUnLieu,
-} from '@app/web/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/utilisateurs/utilisateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 import type { UtilisateursTrouves } from './domain'
 import { rechercherDesUtilisateurs } from './implementation'
 

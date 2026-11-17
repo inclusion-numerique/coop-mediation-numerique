@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 // Ordre aligné sur `statutSocialLabels` (ordre d'affichage historique), pour que
 // les listes dérivées des valeurs et des libellés restent cohérentes.

@@ -1,14 +1,14 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { appliquerLesDifferences } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
-import { AppliquerLesDifferencesValidation } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.validation'
-import { MODIFIER_LA_FICHE_DU_LIEU_ERRORS } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.errors'
-import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { appliquerLesDifferences } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+import { AppliquerLesDifferencesValidation } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.validation'
+import { MODIFIER_LA_FICHE_DU_LIEU_ERRORS } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.errors'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const appliquerLesDifferencesAction = actionBuilder()
   .use(withAuth())

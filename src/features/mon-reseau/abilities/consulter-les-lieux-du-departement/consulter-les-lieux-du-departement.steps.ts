@@ -1,7 +1,7 @@
 import assert from 'node:assert'
-import { consulterLesLieuxDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
-import { semerUnLieu } from '@app/web/features/mon-reseau/mon-reseau.cucumber'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
+import { semerUnLieu } from '@/features/mon-reseau/mon-reseau.cucumber'
 
 const AURILLAC = '15014'
 const SAINT_FLOUR = '15187'

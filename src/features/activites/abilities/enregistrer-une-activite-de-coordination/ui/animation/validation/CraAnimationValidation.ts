@@ -1,6 +1,6 @@
-import { CraDateValidation } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
-import { CraDureeValidation } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
 import z from 'zod'
+import { CraDateValidation } from '@/features/activites/ui/saisie/validation/CraDateValidation'
+import { CraDureeValidation } from '@/features/activites/ui/saisie/validation/CraDureeValidation'
 
 const initiativeValues = ['Initiative', 'Demande'] as const
 

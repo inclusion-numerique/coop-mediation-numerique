@@ -1,7 +1,4 @@
-import type {
-  InscriptionStep,
-  UserId,
-} from '@app/web/features/inscription/domain'
+import type { InscriptionStep, UserId } from '@/features/inscription/domain'
 import { etapeApresInitialisation } from './etape-apres-initialisation'
 import type { InitialiserInscriptionPorts } from './ports'
 

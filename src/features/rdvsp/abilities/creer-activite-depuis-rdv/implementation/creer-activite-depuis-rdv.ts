@@ -1,4 +1,4 @@
-import { success } from '@app/web/libraries/result'
+import { success } from '@/libraries/result'
 import {
   type CompteDuRedacteur,
   type CreerActiviteDepuisRdv,

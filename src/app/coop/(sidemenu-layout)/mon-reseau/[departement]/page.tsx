@@ -1,10 +1,10 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { consulterLeReseauDuDepartement } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
-import { ReseauDuDepartementPage } from '@app/web/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui'
-import { departementDuCode } from '@app/web/libraries/departement'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
+import { ReseauDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui'
+import { departementDuCode } from '@/libraries/departement'
 
 type Parametres = { params: Promise<{ departement: string }> }
 

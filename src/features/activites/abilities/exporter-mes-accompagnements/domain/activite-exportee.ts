@@ -1,4 +1,4 @@
-import type { CodeInsee } from '@app/web/libraries/insee'
+import type { CodeInsee } from '@/libraries/insee'
 import type {
   ActiviteId,
   AdresseDuLieu,

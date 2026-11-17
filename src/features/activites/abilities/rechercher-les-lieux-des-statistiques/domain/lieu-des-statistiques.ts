@@ -1,7 +1,7 @@
-import type { Departement } from '@app/web/libraries/departement'
-import type { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import type { Departement } from '@/libraries/departement'
+import type { CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { defineModel, type Model } from '@/libraries/model'
 import type { Commune, LieuActiviteId, NomDeStructure } from '../../../domain'
 
 export const GENRES_DE_LIEU = [

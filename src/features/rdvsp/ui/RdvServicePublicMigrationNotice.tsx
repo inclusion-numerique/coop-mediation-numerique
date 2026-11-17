@@ -1,6 +1,6 @@
-import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import { getAuthenticatedSessionUser } from '@/auth/getSessionUser'
 
 const RdvServicePublicMigrationNotice = async () => {
   const user = await getAuthenticatedSessionUser()

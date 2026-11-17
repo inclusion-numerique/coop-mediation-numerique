@@ -1,14 +1,14 @@
 import assert from 'node:assert'
-import { ModifierBeneficiaireValidation } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire'
-import { modifierBeneficiaire } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
-import {
-  seedBeneficiaire,
-  testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { ModifierBeneficiaireValidation } from '@/features/beneficiaire/abilities/modifier-beneficiaire'
+import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
+import {
+  seedBeneficiaire,
+  testMediateurId,
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 type ModificationResult = Awaited<ReturnType<typeof modifierBeneficiaire>>
 

@@ -1,19 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { modifierUnTag } from '@app/web/features/tags/abilities/modifier-un-tag'
-import { MODIFIER_UN_TAG_ERRORS } from '@app/web/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.errors'
-import { ModifierUnTagValidation } from '@app/web/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.validation'
-import {
-  DescriptionDuTag,
-  NomDuTag,
-  TagId,
-} from '@app/web/features/tags/domain'
-import { acteurDe } from '@app/web/features/tags/implementation/session'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { modifierUnTag } from '@/features/tags/abilities/modifier-un-tag'
+import { MODIFIER_UN_TAG_ERRORS } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.errors'
+import { ModifierUnTagValidation } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.validation'
+import { DescriptionDuTag, NomDuTag, TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementation/session'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const modifierUnTagAction = actionBuilder()
   .use(withAuth())

@@ -1,11 +1,11 @@
-import type { StatutIntegration } from '@app/web/features/rdvsp/domain/sante-compte'
+import type { StatutIntegration } from '@/features/rdvsp/domain/sante-compte'
 import type {
   Coordinateur,
   Mediateur,
   RdvAccount,
   RdvOrganisation,
   User,
-} from '@app/web/generated/prisma/client'
+} from '@/generated/prisma/client'
 
 // Serializable user interface
 export type SessionUser = Pick<

@@ -1,19 +1,19 @@
 'use client'
 
-import { fusionnerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/fusionner-beneficiaires.action'
-import type {
-  BeneficiaireDoublon,
-  DetecterDoublons,
-} from '@app/web/features/beneficiaire/abilities/detecter-doublons'
-import { pluriel } from '@app/web/libraries/pluriel'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
-import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
+import { fusionnerBeneficiairesAction } from '@/app/_actions/beneficiaire/fusionner-beneficiaires.action'
+import type {
+  BeneficiaireDoublon,
+  DetecterDoublons,
+} from '@/features/beneficiaire/abilities/detecter-doublons'
+import { pluriel } from '@/libraries/pluriel'
+import { telephoneDisplayString } from '@/libraries/telephone'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { numberToString } from '@/utils/formatNumber'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 

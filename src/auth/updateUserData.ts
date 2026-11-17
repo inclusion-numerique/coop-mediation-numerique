@@ -1,6 +1,6 @@
-import { telephoneEnregistrable } from '@app/web/features/utilisateurs/domain'
-import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
+import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 
 export const updateUserData = async ({
   userId,

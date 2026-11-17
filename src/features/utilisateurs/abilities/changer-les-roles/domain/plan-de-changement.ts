@@ -1,4 +1,4 @@
-import { ProfilInscription } from '@app/web/features/inscription/domain'
+import { ProfilInscription } from '@/features/inscription/domain'
 import {
   CompteSupprime,
   type CoordinateurId,
@@ -14,8 +14,8 @@ import {
   type Rattachements,
   type RoleUtilisateur,
   type UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
 import { type ChangerLesRolesError, RoleNonVierge, RoleProtege } from './errors'
 import type { RolesDemandes } from './roles-demandes'
 

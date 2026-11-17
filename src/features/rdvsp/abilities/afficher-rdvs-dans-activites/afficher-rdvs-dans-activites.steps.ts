@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import type { AfficherRdvsDansActivites } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/domain/afficher-rdvs-dans-activites'
-import { afficherRdvsDansActivites } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementation/prisma/afficher-rdvs-dans-activites.mutation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { AfficherRdvsDansActivites } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/domain/afficher-rdvs-dans-activites'
+import { afficherRdvsDansActivites } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementation/prisma/afficher-rdvs-dans-activites.mutation'
 import {
   compteRdvEnBase,
   ID_TEST,
   seedCompteRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 9
 

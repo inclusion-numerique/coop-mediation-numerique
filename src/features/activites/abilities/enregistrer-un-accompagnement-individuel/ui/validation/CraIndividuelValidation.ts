@@ -1,9 +1,9 @@
-import { autonomieValues } from '@app/web/features/activites/ui/libelles/autonomie'
-import { structuresRedirectionValues } from '@app/web/features/activites/ui/libelles/structures-redirection'
-import { BeneficiaireCraValidation } from '@app/web/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
-import { CraValidation } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import { yesOrNo } from '@app/web/utils/yesNoBooleanOptions'
 import z from 'zod'
+import { autonomieValues } from '@/features/activites/ui/libelles/autonomie'
+import { structuresRedirectionValues } from '@/features/activites/ui/libelles/structures-redirection'
+import { BeneficiaireCraValidation } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
+import { CraValidation } from '@/features/activites/ui/saisie/validation/CraValidation'
+import { yesOrNo } from '@/utils/yesNoBooleanOptions'
 
 export const CraIndividuelValidation = CraValidation.extend({
   beneficiaire: BeneficiaireCraValidation.nullish(),

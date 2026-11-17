@@ -1,12 +1,12 @@
 import {
   LieuActiviteId,
   nommerLesLieuxChoisis,
-} from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques'
-import { optionsDesLieuxChoisis } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
-import type { PerimetreDesStatistiques } from '@app/web/features/activites/domain'
-import type { LieuxChoisisDeLaBarre } from '@app/web/features/statistiques/ui/filtres/lieux-choisis'
-import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
+} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
+import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
+import type { PerimetreDesStatistiques } from '@/features/activites/domain'
+import type { LieuxChoisisDeLaBarre } from '@/features/statistiques/ui/filtres/lieux-choisis'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 
 const valides =
   <T>(lire: (valeur: string) => T | null) =>

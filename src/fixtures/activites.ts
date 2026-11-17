@@ -1,9 +1,9 @@
-import { participantsAnonymesDefault } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import {
   givenCraCollectif,
   givenCraDemarcheAdministrative,
   givenCraIndividuel,
-} from '@app/web/features/activites/fixtures/givenCra'
+} from '@/features/activites/fixtures/givenCra'
 import {
   beneficiaireAnonymeConseillerNumerique,
   beneficiaireAnonymeMediateurAvecActivite,
@@ -13,12 +13,12 @@ import {
   beneficiaireMinimaleConseillerNumerique,
   beneficiaireMinimaleCoordinateur,
   beneficiaireMinimaleMediateurAvecActivite,
-} from '@app/web/fixtures/beneficiaires'
-import { mediateque } from '@app/web/fixtures/structures'
-import { conseillerNumeriqueMediateurId } from '@app/web/fixtures/users/conseillerNumerique'
-import { coordinateurInscritAvecToutMediateurId } from '@app/web/fixtures/users/coordinateurInscritAvecTout'
-import { mediateurAvecActiviteMediateurId } from '@app/web/fixtures/users/mediateurAvecActivite'
-import { Thematique } from '@app/web/generated/prisma/browser'
+} from '@/fixtures/beneficiaires'
+import { mediateque } from '@/fixtures/structures'
+import { conseillerNumeriqueMediateurId } from '@/fixtures/users/conseillerNumerique'
+import { coordinateurInscritAvecToutMediateurId } from '@/fixtures/users/coordinateurInscritAvecTout'
+import { mediateurAvecActiviteMediateurId } from '@/fixtures/users/mediateurAvecActivite'
+import { Thematique } from '@/generated/prisma/browser'
 
 export const mediateurAvecActiviteCrasIndividuels = [
   givenCraIndividuel({

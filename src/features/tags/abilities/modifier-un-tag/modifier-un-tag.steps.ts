@@ -1,16 +1,12 @@
 import assert from 'node:assert'
-import {
-  DescriptionDuTag,
-  NomDuTag,
-  TagId,
-} from '@app/web/features/tags/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { DescriptionDuTag, NomDuTag, TagId } from '@/features/tags/domain'
 import {
   acteurMediateur,
   semerUnMediateur,
   semerUnTag,
   tagEnBase,
-} from '@app/web/features/tags/tags.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/tags/tags.cucumber'
 import { modifierUnTag } from './implementation'
 
 const contexte: {

@@ -1,5 +1,5 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import { centreSocial, mediateque } from '@app/web/fixtures/structures'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import { centreSocial, mediateque } from '@/fixtures/structures'
 
 export const conseillerNumeriqueMediateurId =
   '1ae07d95-316c-489f-893a-d17052c883b7'

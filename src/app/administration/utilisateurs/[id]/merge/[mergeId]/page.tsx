@@ -1,14 +1,14 @@
-import { fusionnerDesComptesAction } from '@app/web/app/_actions/utilisateurs/fusionner-des-comptes.action'
-import { rechercherDesComptesAFusionnerAction } from '@app/web/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { apercuDeFusion } from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes'
+import { notFound } from 'next/navigation'
+import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
+import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { apercuDeFusion } from '@/features/utilisateurs/abilities/fusionner-des-comptes'
 import {
   FUSIONNER_DES_COMPTES_ACTION_KEY,
   RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY,
-} from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
-import { FusionPage } from '@app/web/features/utilisateurs/abilities/fusionner-des-comptes/ui'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { notFound } from 'next/navigation'
+} from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
+import { FusionPage } from '@/features/utilisateurs/abilities/fusionner-des-comptes/ui'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Fusion'),

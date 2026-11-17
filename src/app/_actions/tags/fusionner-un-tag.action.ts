@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fusionnerUnTag } from '@app/web/features/tags/abilities/fusionner-un-tag'
-import { FUSIONNER_UN_TAG_ERRORS } from '@app/web/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.errors'
-import { FusionnerUnTagValidation } from '@app/web/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.validation'
-import { TagId } from '@app/web/features/tags/domain'
-import { acteurDe } from '@app/web/features/tags/implementation/session'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fusionnerUnTag } from '@/features/tags/abilities/fusionner-un-tag'
+import { FUSIONNER_UN_TAG_ERRORS } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.errors'
+import { FusionnerUnTagValidation } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.validation'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementation/session'
+import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const fusionnerUnTagAction = actionBuilder()
   .use(withAuth())

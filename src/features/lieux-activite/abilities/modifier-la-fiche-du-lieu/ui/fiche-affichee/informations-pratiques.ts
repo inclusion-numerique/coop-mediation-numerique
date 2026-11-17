@@ -1,8 +1,8 @@
-import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   CLOSED_SCHEDULE,
   type Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { safeToTimetableOpeningHours } from '@/opening-hours/openingHoursHelpers'
 import type { Fiche } from '../../../../domain/fiche'
 import { aucuneValeur } from './section-vide'
 

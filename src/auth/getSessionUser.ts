@@ -1,13 +1,13 @@
 import { cookies } from 'next/headers'
 import { cache } from 'react'
 import 'server-only'
-import { AuthenticationError } from '@app/web/auth/AuthenticationError'
+import { AuthenticationError } from '@/auth/AuthenticationError'
 import {
   secureSessionCookie,
   sessionCookie,
-} from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import type { SessionUser } from '@app/web/auth/sessionUser'
+} from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import type { SessionUser } from '@/auth/sessionUser'
 
 export const getSessionToken = async (): Promise<string | null> => {
   const allCookies = await cookies()

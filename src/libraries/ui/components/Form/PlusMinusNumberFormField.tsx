@@ -1,10 +1,10 @@
-import InputFormField, {
-  type InputFormFieldProps,
-} from '@app/web/libraries/ui/components/Form/InputFormField'
-import type { UiComponentProps } from '@app/web/libraries/ui/utils/uiComponentProps'
 import classNames from 'classnames'
 import { type RefObject, useRef } from 'react'
 import type { FieldValues } from 'react-hook-form'
+import InputFormField, {
+  type InputFormFieldProps,
+} from '@/libraries/ui/components/Form/InputFormField'
+import type { UiComponentProps } from '@/libraries/ui/utils/uiComponentProps'
 import styles from './PlusMinusNumberFormField.module.css'
 
 const getInputFromRef = (

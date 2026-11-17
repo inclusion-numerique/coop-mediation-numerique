@@ -1,7 +1,7 @@
-import { computeBranchNamespace } from '@app/web/cli/branchNamespace'
-import { octokit, owner, repo } from '@app/web/cli/github'
-import { output } from '@app/web/libraries/console/output'
 import { Command } from '@commander-js/extra-typings'
+import { computeBranchNamespace } from '@/cli/branchNamespace'
+import { octokit, owner, repo } from '@/cli/github'
+import { output } from '@/libraries/console/output'
 
 export const createGithubDeployment = new Command()
   .command('github:deployment:create')

@@ -1,11 +1,11 @@
+import { Argument, Command } from '@commander-js/extra-typings'
 import {
   configureDeploymentTarget,
   DeploymentTargetOption,
-} from '@app/web/cli/deploymentTarget'
-import { executeJob, jobExecutors } from '@app/web/jobs/jobExecutors'
-import { JobValidation } from '@app/web/jobs/jobs'
-import { output } from '@app/web/libraries/console/output'
-import { Argument, Command } from '@commander-js/extra-typings'
+} from '@/cli/deploymentTarget'
+import { executeJob, jobExecutors } from '@/jobs/jobExecutors'
+import { JobValidation } from '@/jobs/jobs'
+import { output } from '@/libraries/console/output'
 
 export const executeJobCommand = new Command()
   .command('job:execute')

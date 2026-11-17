@@ -1,6 +1,6 @@
-import type { BeneficiaireListItem } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { listerBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/implementation'
 import { PageSize, Search } from '@arckit/resultset'
+import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementation'
 import type {
   BeneficiaireExportRow,
   ExporterBeneficiaires,

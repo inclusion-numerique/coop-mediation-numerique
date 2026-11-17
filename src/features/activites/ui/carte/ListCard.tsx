@@ -1,6 +1,6 @@
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import classNames from 'classnames'
 import { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
+import { Pictogram } from '@/features/pictograms/pictogram'
 
 type ListCardProps<T extends ElementType> = {
   pictogram: Pictogram

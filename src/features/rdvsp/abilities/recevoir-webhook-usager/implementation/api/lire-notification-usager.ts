@@ -1,4 +1,4 @@
-import { failure, success } from '@app/web/libraries/result'
+import { failure, success } from '@/libraries/result'
 import { usagerPayload } from '../../../../implementation/api/payloads'
 import { usagerToDomain } from '../../../../implementation/api/to-domain'
 import type { LireNotificationUsager } from '../../domain/recevoir-webhook-usager'

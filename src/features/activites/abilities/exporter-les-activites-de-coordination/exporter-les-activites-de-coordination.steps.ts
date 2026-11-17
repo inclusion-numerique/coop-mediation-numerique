@@ -1,9 +1,10 @@
 import assert from 'node:assert'
+import { Then, When } from '@cucumber/cucumber'
 import {
   exporterLesActivitesDeCoordination,
   tagsRappeles,
-} from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination'
-import { coordinationsSemees } from '@app/web/features/activites/activites.cucumber'
+} from '@/features/activites/abilities/exporter-les-activites-de-coordination'
+import { coordinationsSemees } from '@/features/activites/activites.cucumber'
 import {
   type ActiviteDeCoordination,
   CoordinateurId,
@@ -13,9 +14,8 @@ import {
   type TagDeLActivite,
   TagId,
   type TagsUtilisables,
-} from '@app/web/features/activites/domain'
-import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/activites/domain'
+import { prismaClient } from '@/prismaClient'
 
 let exportees: readonly ActiviteDeCoordination[] = []
 let rappeles: readonly TagDeLActivite[] = []

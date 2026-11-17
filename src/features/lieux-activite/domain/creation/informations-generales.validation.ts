@@ -1,10 +1,10 @@
-import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import z from 'zod'
+import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
 import {
   ComplementAdresseSaisi,
   NomDuLieuSaisi,
-} from '@app/web/features/lieux-activite/domain/regles-de-saisie'
-import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import z from 'zod'
+} from '@/features/lieux-activite/domain/regles-de-saisie'
 
 export const IdentiteLieuShape = {
   nom: NomDuLieuSaisi,

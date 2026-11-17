@@ -1,17 +1,17 @@
 'use client'
 
-import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/renseigner-structure-employeuse.action'
-import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
-import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
+import SiretInputInfo from '@/components/siret/SiretInputInfo'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 import {
   RenseignerStructureEmployeuseValidation,
   type StructureSearchResult,

@@ -1,8 +1,8 @@
 'use client'
 
-import { QuantifiedShare } from '@app/web/libs/statistiques/quantifiedShare'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { CSSProperties, useMemo, useState } from 'react'
+import { QuantifiedShare } from '@/libs/statistiques/quantifiedShare'
 import { ProgressItemList } from './ProgressItemList'
 
 const orderQuantifiedShares = (

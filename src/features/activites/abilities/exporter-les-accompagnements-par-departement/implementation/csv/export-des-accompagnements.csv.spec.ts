@@ -1,6 +1,6 @@
-import { NomDepartement } from '@app/web/libraries/departement'
-import { CodeDepartement } from '@app/web/libraries/insee'
 import { describe, expect, it } from 'vitest'
+import { NomDepartement } from '@/libraries/departement'
+import { CodeDepartement } from '@/libraries/insee'
 import { Jour, NombreDAccompagnements } from '../../domain'
 import {
   exportDesAccompagnementsCsv,

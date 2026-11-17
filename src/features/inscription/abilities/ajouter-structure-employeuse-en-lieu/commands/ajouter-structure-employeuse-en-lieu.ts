@@ -1,5 +1,5 @@
-import type { UserId } from '@app/web/features/inscription/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+import type { UserId } from '@/features/inscription/domain'
+import { failure, type Result, success } from '@/libraries/result'
 import {
   AdresseNonReconnue,
   type AjouterStructureEmployeuseEnLieuError,

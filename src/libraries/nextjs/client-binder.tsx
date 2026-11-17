@@ -1,7 +1,7 @@
 'use client'
 
-import type { InjectionKey, ProvideLazy } from '@app/web/libs/injection/types'
 import { type ReactNode, useEffect, useRef } from 'react'
+import type { InjectionKey, ProvideLazy } from '@/libs/injection/types'
 
 export const createClientBinder =
   (provideLazy: ProvideLazy) =>

@@ -1,18 +1,18 @@
+import { ReactNode } from 'react'
+import type { Control, FieldValues, Path } from 'react-hook-form'
 import {
   Feature,
   SERVICE_ADRESSE_INDISPONIBLE,
   SearchAdresseOptions,
   searchAdresses,
   siIndisponible,
-} from '@app/web/external-apis/apiAdresse'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+} from '@/external-apis/apiAdresse'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 import CustomSelectFormField, {
   type CustomSelectFormFieldProps,
-} from '@app/web/libraries/ui/components/Form/CustomSelectFormField'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { ReactNode } from 'react'
-import type { Control, FieldValues, Path } from 'react-hook-form'
+} from '@/libraries/ui/components/Form/CustomSelectFormField'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 export type AdressBanFormFieldOption = SelectOption<AdresseBanData | null>
 

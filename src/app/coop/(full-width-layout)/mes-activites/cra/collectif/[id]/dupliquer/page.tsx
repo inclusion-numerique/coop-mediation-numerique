@@ -1,12 +1,12 @@
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { lireUneActiviteDeMediation } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif'
-import { formulaireDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/formulaire-de-l-atelier-collectif.presenter'
-import { ActiviteId, MediateurId } from '@app/web/features/activites/domain'
-import RattacherEmployeusePage from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
-import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
-import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { notFound, redirect } from 'next/navigation'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { lireUneActiviteDeMediation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
+import { formulaireDeLAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/formulaire-de-l-atelier-collectif.presenter'
+import { ActiviteId, MediateurId } from '@/features/activites/domain'
+import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
+import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 const DupliquerPage = async ({
   params,

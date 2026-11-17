@@ -1,11 +1,11 @@
 'use client'
 
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { inject } from '@app/web/libs/injection/client'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { inject } from '@/libs/injection/client'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '../action/regler-la-visibilite-carto.key'
 
 export const MaVisibiliteCarto = ({ visible }: { visible: boolean }) => {

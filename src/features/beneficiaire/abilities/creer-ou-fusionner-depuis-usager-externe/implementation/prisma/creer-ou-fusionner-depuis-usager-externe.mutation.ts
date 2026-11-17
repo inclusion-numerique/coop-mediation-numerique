@@ -1,20 +1,20 @@
-import { siIndisponible } from '@app/web/external-apis/apiAdresse'
-import type { CommuneFields } from '@app/web/external-apis/ban/communeFieldsFromAddress'
-import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/db/duplicate-beneficiaire'
-import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
-import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import { Email } from '@app/web/features/beneficiaire/domain/email'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { NOM_MAX_LENGTH, Nom } from '@app/web/features/beneficiaire/domain/nom'
+import { v4 } from 'uuid'
+import { siIndisponible } from '@/external-apis/apiAdresse'
+import type { CommuneFields } from '@/external-apis/ban/communeFieldsFromAddress'
+import type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
+import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { NOM_MAX_LENGTH, Nom } from '@/features/beneficiaire/domain/nom'
 import {
   PRENOM_MAX_LENGTH,
   Prenom,
-} from '@app/web/features/beneficiaire/domain/prenom'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
-import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { v4 } from 'uuid'
+} from '@/features/beneficiaire/domain/prenom'
+import { Telephone } from '@/features/beneficiaire/domain/telephone'
+import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,
   ExternalUserToMerge,

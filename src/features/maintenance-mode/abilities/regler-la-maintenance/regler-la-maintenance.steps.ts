@@ -1,18 +1,18 @@
 import assert from 'node:assert'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { consulterLaMaintenance } from '@app/web/features/maintenance-mode/abilities/consulter-la-maintenance'
-import { reglerLaMaintenance } from '@app/web/features/maintenance-mode/abilities/regler-la-maintenance'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
+import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance'
 import {
   type EtatDeMaintenance,
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
   MessageDeMaintenance,
   messageAffiche,
   type RoleDuCompte,
-} from '@app/web/features/maintenance-mode/domain'
-import type { ServerActionResult } from '@app/web/libraries/nextjs'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/maintenance-mode/domain'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { prismaClient } from '@/prismaClient'
 
 const tentative: { resultat?: ServerActionResult<unknown> } = {}
 

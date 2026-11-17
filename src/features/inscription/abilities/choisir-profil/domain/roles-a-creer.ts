@@ -1,4 +1,4 @@
-import type { Role } from '@app/web/features/inscription/domain'
+import type { Role } from '@/features/inscription/domain'
 
 /** Comptes de rôle à garantir selon le rôle choisi. */
 export type RolesACreer = {

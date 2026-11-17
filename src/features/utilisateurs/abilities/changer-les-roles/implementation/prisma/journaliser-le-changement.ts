@@ -1,8 +1,5 @@
-import type {
-  AuteurId,
-  UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import type { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
+import { addMutationLog } from '@/utils/addMutationLog'
 import type { PlanDeChangement } from '../../domain'
 
 export const journaliserLeChangement = ({

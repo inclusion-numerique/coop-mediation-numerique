@@ -4,8 +4,8 @@ import {
   type DefinitionDuClientApi,
   NomDuClientApi,
   PorteeApi,
-} from '@app/web/features/clients-api/domain'
-import type { ApiClientScope } from '@app/web/generated/prisma/client'
+} from '@/features/clients-api/domain'
+import type { ApiClientScope } from '@/generated/prisma/client'
 
 export const clientApiSelect = {
   id: true,

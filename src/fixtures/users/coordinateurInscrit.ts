@@ -1,4 +1,4 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
 export const coordinateurInscritCoordinateurId =
   'c2a5a5f3-56be-4632-9253-880fb3ff9ea4'

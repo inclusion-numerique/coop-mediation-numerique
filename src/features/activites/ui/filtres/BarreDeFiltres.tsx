@@ -1,6 +1,6 @@
 'use client'
 
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { LieuFilter } from './FiltreDeLieu'
 import { PeriodeFilter } from './FiltreDePeriode'
 import { ActiviteTypeFilter } from './FiltreDeType'

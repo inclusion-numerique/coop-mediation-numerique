@@ -1,6 +1,6 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
-import { failure, type Result, success } from '@app/web/libraries/result'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
+import { failure, type Result, success } from '@/libraries/result'
 import { DateTropLointaine } from './errors'
 
 export const PREMIERE_DATE_D_ACTIVITE = '2020-11-17'

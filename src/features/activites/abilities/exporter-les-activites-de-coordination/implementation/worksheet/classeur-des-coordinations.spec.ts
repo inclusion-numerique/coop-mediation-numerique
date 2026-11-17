@@ -1,5 +1,5 @@
-import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
 import { describe, expect, it } from 'vitest'
+import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,

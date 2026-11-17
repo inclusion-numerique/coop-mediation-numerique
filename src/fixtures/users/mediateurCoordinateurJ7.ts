@@ -1,4 +1,4 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
 const day = 24 * 60 * 60 * 1000
 const date = new Date(Date.now() - 7 * day)

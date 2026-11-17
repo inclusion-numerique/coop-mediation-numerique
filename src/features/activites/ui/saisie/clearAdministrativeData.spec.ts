@@ -1,5 +1,5 @@
-import { clearAdministrativeData } from '@app/web/features/activites/ui/saisie/clearAdministrativeData'
 import { describe, expect, it } from 'vitest'
+import { clearAdministrativeData } from '@/features/activites/ui/saisie/clearAdministrativeData'
 
 describe('clear administrative data', () => {
   it('removes all administrative thematiques when aide aux demarches administratives is absent', () => {

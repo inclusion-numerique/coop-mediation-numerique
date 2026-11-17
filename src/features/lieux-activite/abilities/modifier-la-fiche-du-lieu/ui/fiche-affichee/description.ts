@@ -1,7 +1,7 @@
 import {
   type FormationLabelPropose,
   formationsLabelsProposees,
-} from '@app/web/features/lieux-activite/domain/nomenclatures'
+} from '@/features/lieux-activite/domain/nomenclatures'
 import type { Fiche } from '../../../../domain/fiche'
 import { aucuneValeur } from './section-vide'
 

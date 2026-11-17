@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { getDirname } from '@app/web/libraries/chemins/dirname'
+import { getDirname } from '@/libraries/chemins/dirname'
 
 export type InfrastructureOutput = {
   webBaseUrl: string

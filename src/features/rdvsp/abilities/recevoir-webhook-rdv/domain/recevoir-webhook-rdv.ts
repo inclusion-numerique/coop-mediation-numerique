@@ -1,4 +1,4 @@
-import type { Result } from '@app/web/libraries/result'
+import type { Result } from '@/libraries/result'
 import type { EvenementWebhook } from '../../../domain/evenement-webhook'
 import type { OrganisationId } from '../../../domain/organisation-id'
 import type { Rdv } from '../../../domain/rdv'

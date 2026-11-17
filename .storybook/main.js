@@ -38,7 +38,7 @@ export default {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
-        '@app/web': path.resolve(dirname, '../src'),
+        '@': path.resolve(dirname, '../src'),
       },
     },
   }),

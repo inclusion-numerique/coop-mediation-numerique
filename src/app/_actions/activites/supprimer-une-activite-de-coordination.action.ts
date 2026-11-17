@@ -1,17 +1,17 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { supprimerUneActiviteDeCoordination } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination'
-import { SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.errors'
-import { SupprimerUneActiviteDeCoordinationValidation } from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.validation'
+import { actionBuilder } from '@/configuration/nextjs'
+import { supprimerUneActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination'
+import { SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.errors'
+import { SupprimerUneActiviteDeCoordinationValidation } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/action/supprimer-une-activite-de-coordination.validation'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
   UtilisateurId,
-} from '@app/web/features/activites/domain'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/activites/domain'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const supprimerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())

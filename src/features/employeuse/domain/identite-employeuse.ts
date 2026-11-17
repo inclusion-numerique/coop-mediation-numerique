@@ -1,6 +1,6 @@
-import { Siret } from '@app/web/libraries/insee'
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { Siret } from '@/libraries/insee'
+import { defineModel, type Model } from '@/libraries/model'
 import { AdresseAGeocoder } from './adresse-a-geocoder'
 import { DenominationEmployeuse } from './denomination-employeuse'
 

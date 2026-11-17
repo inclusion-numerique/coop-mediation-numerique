@@ -1,15 +1,15 @@
 import assert from 'node:assert'
-import { type ValiderInscriptionError } from '@app/web/features/inscription/abilities/valider'
-import { validerInscription } from '@app/web/features/inscription/abilities/valider/commands/valider'
-import { ProfilInscription } from '@app/web/features/inscription/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { type ValiderInscriptionError } from '@/features/inscription/abilities/valider'
+import { validerInscription } from '@/features/inscription/abilities/valider/commands/valider'
+import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedProfilChoisi,
-} from '@app/web/features/inscription/inscription.cucumber'
-import type { Result } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/inscription/inscription.cucumber'
+import type { Result } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 let resultat: Result<void, ValiderInscriptionError>
 

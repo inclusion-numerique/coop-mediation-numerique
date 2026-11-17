@@ -1,8 +1,8 @@
-import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
-import { StatutPresence } from '@app/web/features/rdvsp/domain/statut-presence'
-import { success } from '@app/web/libraries/result'
-import { provide } from '@app/web/libs/injection/client'
 import type { Meta, StoryObj } from '@storybook/react'
+import { RdvId } from '@/features/rdvsp/domain/rdv-id'
+import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import { success } from '@/libraries/result'
+import { provide } from '@/libs/injection/client'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '../../action/rafraichir-accueil-rdv.key'
 import type {
   DonneesAccueilRdv,

@@ -1,8 +1,8 @@
 import {
   ActiviteSource,
   activiteSourceOptions,
-} from '@app/web/features/statistiques/ui/filtres/source'
-import { withForm } from '@app/web/libs/form/use-app-form'
+} from '@/features/statistiques/ui/filtres/source'
+import { withForm } from '@/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const updateSourcesParams = (data: {

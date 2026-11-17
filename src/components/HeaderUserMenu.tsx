@@ -1,8 +1,5 @@
 'use client'
 
-import { SessionUser } from '@app/web/auth/sessionUser'
-import TerminerUsurpationHeaderUserMenuItem from '@app/web/components/TerminerUsurpationHeaderUserMenuItem'
-import { getUserDisplayName } from '@app/web/utils/user'
 import classNames from 'classnames'
 import Link from 'next/link'
 import {
@@ -12,6 +9,9 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
+import { SessionUser } from '@/auth/sessionUser'
+import TerminerUsurpationHeaderUserMenuItem from '@/components/TerminerUsurpationHeaderUserMenuItem'
+import { getUserDisplayName } from '@/utils/user'
 import styles from './HeaderUserMenu.module.css'
 
 const isLimitedToInscription = (

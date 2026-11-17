@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
 import {
   portefeuilleSeme,
   semerPortefeuille,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 let anonymises: number | undefined
 

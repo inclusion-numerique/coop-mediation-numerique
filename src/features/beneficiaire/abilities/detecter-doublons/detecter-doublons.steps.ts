@@ -1,10 +1,10 @@
 import assert from 'node:assert'
-import { detecterDoublons } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { detecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/implementation'
 import {
   seedBeneficiaire,
   testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
 
 type Detection = Awaited<ReturnType<typeof detecterDoublons>>
 

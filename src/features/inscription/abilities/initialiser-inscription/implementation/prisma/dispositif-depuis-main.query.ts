@@ -1,8 +1,8 @@
 import {
   type DispositifPersonne,
   dispositifInconnu,
-} from '@app/web/features/inscription/domain'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/inscription/domain'
+import { prismaClient } from '@/prismaClient'
 
 type DispositifRow = {
   est_conseiller_numerique: boolean

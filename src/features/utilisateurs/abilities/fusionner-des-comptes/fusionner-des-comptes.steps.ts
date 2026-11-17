@@ -1,10 +1,10 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type CompteSeme,
   semerCompte,
-} from '@app/web/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/utilisateurs/utilisateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 import { fusionnerDesComptes } from './commands/fusionner-des-comptes'
 
 const fusion: {

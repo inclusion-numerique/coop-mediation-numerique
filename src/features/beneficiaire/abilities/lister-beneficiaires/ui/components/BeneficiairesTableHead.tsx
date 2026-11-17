@@ -2,7 +2,7 @@ import {
   type DataTableUrlState,
   SelectAllHeaderCell,
   SortableColumnHeader,
-} from '@app/web/libraries/data-table'
+} from '@/libraries/data-table'
 import { beneficiairesColumns } from './beneficiaires-columns'
 
 export const BeneficiairesTableHead = ({

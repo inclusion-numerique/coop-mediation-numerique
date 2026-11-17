@@ -2,7 +2,7 @@ import {
   AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
   type Thematique,
   thematiquesNonAdministrativesValues,
-} from '@app/web/features/activites/ui/libelles/thematique'
+} from '@/features/activites/ui/libelles/thematique'
 
 const hasAideAuxDemarchesAdministratives = (thematiques: Thematique[]) =>
   thematiques.includes(AIDE_AUX_DEMARCHES_ADMINISTRATIVES)

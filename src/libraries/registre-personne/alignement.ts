@@ -1,4 +1,4 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
+import type { Prisma } from '@/generated/prisma/client'
 import { NomDuRegistre, PrenomDuRegistre } from './nom-du-registre'
 
 const SIGNATURE_COOP = 'coop'

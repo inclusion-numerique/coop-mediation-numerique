@@ -1,8 +1,8 @@
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import Toaster from '@app/web/libraries/ui/toast/Toaster'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Meta, StoryObj } from '@storybook/react'
 import { useEffect } from 'react'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import Toaster from '@/libraries/ui/toast/Toaster'
 
 const meta: Meta<typeof Toaster> = {
   title: 'Toasts',

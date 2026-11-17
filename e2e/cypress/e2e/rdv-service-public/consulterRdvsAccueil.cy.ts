@@ -1,5 +1,5 @@
-import { appUrl } from '@app/e2e/support/helpers'
-import { mediateurSansActivites } from '@app/web/fixtures/users/mediateurSansActivites'
+import { appUrl } from '@e2e/support/helpers'
+import { mediateurSansActivites } from '@/fixtures/users/mediateurSansActivites'
 
 /**
  * Couvre le bloc RDV Service Public de l'accueil.

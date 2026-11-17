@@ -1,4 +1,4 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@/auth/sessionUser'
 
 export type MediateurUser<
   T extends Pick<SessionUser, 'mediateur'> = SessionUser,

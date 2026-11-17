@@ -1,11 +1,11 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type Accueil,
   consulterLAccueil,
   type UtilisateurConnecte,
   visiteurDe,
-} from '@app/web/features/accueil/abilities/consulter-l-accueil'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/accueil/abilities/consulter-l-accueil'
 
 type Utilisateur = UtilisateurConnecte
 

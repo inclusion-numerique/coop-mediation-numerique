@@ -1,6 +1,6 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { brevoApiThrottle } from './createBrevoContact'
 
 type BrevoContactResponse = {

@@ -1,5 +1,5 @@
-import type { BeneficiaireListItem } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { numberToString } from '@app/web/utils/formatNumber'
+import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import { numberToString } from '@/utils/formatNumber'
 
 /**
  * Ligne d'affichage de la table : projection plate (chaînes prêtes à rendre)

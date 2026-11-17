@@ -1,11 +1,11 @@
 import assert from 'node:assert'
+import { Then, When } from '@cucumber/cucumber'
 import {
   type LieuPourLInscription,
   listerLesLieuxPourLInscription,
-} from '@app/web/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { Then, When } from '@cucumber/cucumber'
+} from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 const listes = new Map<'inscription', readonly LieuPourLInscription[]>()
 

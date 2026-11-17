@@ -1,17 +1,17 @@
 import assert from 'node:assert'
-import { refuserUneInvitation } from '@app/web/features/equipe/abilities/refuser-une-invitation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation'
 import {
   CoordinateurId,
   Email,
   ReferenceInvitation,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   invitationDe,
   semerUnCoordinateur,
   semerUneInvitation,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

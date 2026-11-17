@@ -1,5 +1,5 @@
-import { useDsfrModalIsBound } from '@app/web/libraries/ui/hooks/useDsfrModalIsBound'
 import { useEffect, useRef } from 'react'
+import { useDsfrModalIsBound } from '@/libraries/ui/hooks/useDsfrModalIsBound'
 
 export type UseModalVisibilityOptions =
   | {

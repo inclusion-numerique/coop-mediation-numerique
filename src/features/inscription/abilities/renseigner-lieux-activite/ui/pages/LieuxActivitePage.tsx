@@ -1,8 +1,8 @@
 'use client'
 
-import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
-import LieuxActiviteForm from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/components/LieuxActiviteForm'
-import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
+import type { LieuActiviteInput } from '@/features/inscription/abilities/renseigner-lieux-activite'
+import LieuxActiviteForm from '@/features/inscription/abilities/renseigner-lieux-activite/ui/components/LieuxActiviteForm'
+import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 
 const LieuxActivitePage = ({
   lieuxActivite,

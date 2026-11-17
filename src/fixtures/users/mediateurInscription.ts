@@ -1,5 +1,5 @@
-import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
+import { previewBranchAuthFallbacks } from '@/auth/previewBranchAuthFallbacks'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
 export const mediateurInscriptionMediateurId =
   '77ae444f-574c-4fcc-87cb-4f792725a496'

@@ -1,6 +1,6 @@
-import { instrument } from '@app/web/configuration/telemetry/instrument/server'
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
-import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
+import { instrument } from '@/configuration/telemetry/instrument/server'
+import { searchAdresse } from '@/external-apis/apiAdresse'
+import { communeFieldsFromAddress } from '@/external-apis/ban/communeFieldsFromAddress'
 
 const operation = {
   name: 'http.ban.search',

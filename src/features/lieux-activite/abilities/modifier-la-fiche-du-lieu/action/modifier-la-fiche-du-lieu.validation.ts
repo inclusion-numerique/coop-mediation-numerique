@@ -1,5 +1,14 @@
-import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
+import {
+  Frais,
+  ModaliteAccompagnement,
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+  Service,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { z } from 'zod'
+import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
+import { FormationLabelPropose } from '@/features/lieux-activite/domain/nomenclatures'
 import {
   AdresseMailSaisie,
   adresseReconnue,
@@ -15,16 +24,7 @@ import {
   SiretSaisi,
   SiteWebSaisi,
   texteFacultatif,
-} from '@app/web/features/lieux-activite/domain/regles-de-saisie'
-import {
-  Frais,
-  ModaliteAccompagnement,
-  PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse,
-  Service,
-  Typologie,
-} from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { z } from 'zod'
+} from '@/features/lieux-activite/domain/regles-de-saisie'
 import { HorairesValidation } from '../../../domain/horaires.validation'
 
 export const InformationsGeneralesSaisie = z

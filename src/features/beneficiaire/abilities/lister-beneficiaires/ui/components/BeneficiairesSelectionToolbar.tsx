@@ -1,7 +1,7 @@
 'use client'
 
-import { pluriel } from '@app/web/libraries/pluriel'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { pluriel } from '@/libraries/pluriel'
 import { DeleteBulkBeneficiairesModal } from './DeleteBulkBeneficiairesModal'
 
 export const BeneficiairesSelectionToolbar = ({

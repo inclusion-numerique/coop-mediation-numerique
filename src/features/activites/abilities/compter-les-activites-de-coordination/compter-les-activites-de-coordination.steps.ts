@@ -1,12 +1,12 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   type ActivitesDeCoordination,
   CoordinateurId,
   compterLesActivitesDeCoordination,
-} from '@app/web/features/activites/abilities/compter-les-activites-de-coordination'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/activites/abilities/compter-les-activites-de-coordination'
+import { prismaClient } from '@/prismaClient'
 
 let coordinateurs: readonly { userId: string; coordinateurId: string }[] = []
 let resultat: ActivitesDeCoordination | undefined

@@ -1,10 +1,10 @@
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
-import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
-import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import Filters from '@/features/statistiques/ui/filtres/Filters'
+import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
+import { contentId } from '@/utils/skipLinks'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,

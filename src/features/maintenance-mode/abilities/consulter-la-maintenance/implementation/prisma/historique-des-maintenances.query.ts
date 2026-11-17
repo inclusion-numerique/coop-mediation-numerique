@@ -1,5 +1,5 @@
-import type { PeriodeDeMaintenance } from '@app/web/features/maintenance-mode/domain'
-import { prismaClient } from '@app/web/prismaClient'
+import type { PeriodeDeMaintenance } from '@/features/maintenance-mode/domain'
+import { prismaClient } from '@/prismaClient'
 import {
   periodeDeMaintenance,
   periodeDeMaintenanceSelect,

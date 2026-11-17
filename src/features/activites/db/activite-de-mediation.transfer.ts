@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import type { Result } from '@app/web/libraries/result'
+import type { Prisma } from '@/generated/prisma/client'
+import type { Result } from '@/libraries/result'
 import {
   type AccompagnementIndividuel,
   type ActiviteDeMediation,

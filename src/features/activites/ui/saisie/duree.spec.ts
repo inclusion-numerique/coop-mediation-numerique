@@ -1,9 +1,9 @@
+import { describe, expect, it } from 'vitest'
 import {
   craDureeDataToMinutes,
   minutesToCraDureeData,
-} from '@app/web/features/activites/ui/saisie/duree'
-import { CraDureeData } from '@app/web/features/activites/ui/saisie/validation/CraDureeValidation'
-import { describe, expect, it } from 'vitest'
+} from '@/features/activites/ui/saisie/duree'
+import { CraDureeData } from '@/features/activites/ui/saisie/validation/CraDureeValidation'
 
 describe('minutesToCraDuree', () => {
   describe('craDureeDataToMinutes Function', () => {

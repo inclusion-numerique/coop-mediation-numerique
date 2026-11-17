@@ -1,4 +1,4 @@
-import type { ProfilInscription } from '@app/web/features/inscription/domain'
+import type { ProfilInscription } from '@/features/inscription/domain'
 import type {
   AdresseCourriel,
   CoordinateurId,
@@ -14,8 +14,8 @@ import type {
   StatutCompte,
   Telephone,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import type { Siret } from '@app/web/libraries/insee'
+} from '@/features/utilisateurs/domain'
+import type { Siret } from '@/libraries/insee'
 
 export type CoordinationDuMediateur = {
   readonly coordinateurUtilisateurId: UtilisateurId

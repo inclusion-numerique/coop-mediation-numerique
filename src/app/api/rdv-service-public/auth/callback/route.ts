@@ -1,23 +1,23 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
+import { type NextRequest, NextResponse } from 'next/server'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,
   type MotifEchecConnexion,
-} from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors'
-import { CodeAutorisation } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
-import type { ErreurConnexionCompte } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
-import { connecterCompteRdvBinding } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv.binding'
-import { declencherSynchronisationBinding } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
-import { EmailExterne } from '@app/web/features/rdvsp/domain/identite'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { getServerUrl } from '@app/web/utils/baseUrl'
+} from '@/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors'
+import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
+import type { ErreurConnexionCompte } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
+import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv.binding'
+import { declencherSynchronisationBinding } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { EmailExterne } from '@/features/rdvsp/domain/identite'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { getServerUrl } from '@/utils/baseUrl'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@app/web/utils/encodeSerializableState'
-import { type NextRequest, NextResponse } from 'next/server'
+} from '@/utils/encodeSerializableState'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

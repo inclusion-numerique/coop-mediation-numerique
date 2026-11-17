@@ -1,4 +1,4 @@
-import { getServerUrl } from '@app/web/utils/baseUrl'
+import { getServerUrl } from '@/utils/baseUrl'
 
 export const apiV1Url = (
   path: string,

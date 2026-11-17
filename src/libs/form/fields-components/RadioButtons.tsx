@@ -1,6 +1,3 @@
-import Stars from '@app/web/components/Stars'
-import { Pictogram } from '@app/web/features/pictograms/pictogram'
-import { useFieldContext } from '@app/web/libs/form/form-context'
 import {
   RadioButtons as DsfrRadioButtons,
   RadioButtonsProps as DsfrRadioButtonsProps,
@@ -14,6 +11,9 @@ import {
   LabelHTMLAttributes,
   ReactNode,
 } from 'react'
+import Stars from '@/components/Stars'
+import { Pictogram } from '@/features/pictograms/pictogram'
+import { useFieldContext } from '@/libs/form/form-context'
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
   isPending: boolean

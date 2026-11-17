@@ -1,9 +1,9 @@
+import { ChangeEvent, DetailedHTMLProps, LabelHTMLAttributes } from 'react'
 import {
   Input as DsfrInput,
   InputProps as DsfrInputProps,
-} from '@app/web/libraries/ui/components/Primitives/Form/Input'
-import { useFieldContext } from '@app/web/libs/form/form-context'
-import { ChangeEvent, DetailedHTMLProps, LabelHTMLAttributes } from 'react'
+} from '@/libraries/ui/components/Primitives/Form/Input'
+import { useFieldContext } from '@/libs/form/form-context'
 
 export type InputProps = Omit<DsfrInputProps, 'name'> & {
   isPending: boolean

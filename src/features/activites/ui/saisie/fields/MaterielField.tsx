@@ -1,10 +1,7 @@
-import type { Materiel } from '@app/web/features/activites/ui/libelles/materiel'
-import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@app/web/libs/form/use-app-form'
+import type { Materiel } from '@/features/activites/ui/libelles/materiel'
+import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { type DefaultValues, withFieldGroup } from '@/libs/form/use-app-form'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'materiel'> = {}
 

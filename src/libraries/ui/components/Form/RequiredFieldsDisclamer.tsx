@@ -1,6 +1,6 @@
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
 import classNames from 'classnames'
 import Link from 'next/link'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 
 const RequiredFieldsDisclamer = ({
   className,

@@ -1,5 +1,5 @@
-import { filtresUtilisateurs } from '@app/web/features/utilisateurs/domain'
 import { describe, expect, it } from 'vitest'
+import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from './libelles-des-filtres.presenter'
 
 const options = {

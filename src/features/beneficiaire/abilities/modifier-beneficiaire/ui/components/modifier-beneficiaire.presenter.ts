@@ -1,9 +1,9 @@
-import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
-import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
-import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
-import type { Beneficiaire } from '@app/web/generated/prisma/client'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import type { DefaultValues } from 'react-hook-form'
+import type { BeneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
+import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import type { BeneficiaireData } from '@/features/beneficiaire/forms/beneficiaire-validation'
+import type { Beneficiaire } from '@/generated/prisma/client'
+import { telephoneDisplayString } from '@/libraries/telephone'
 
 /**
  * Construit l'aperçu BAN (option du select commune) à partir des champs commune

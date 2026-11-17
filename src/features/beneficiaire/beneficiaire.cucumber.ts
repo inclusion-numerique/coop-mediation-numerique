@@ -1,14 +1,14 @@
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { resetFixtureUser } from '@app/web/fixtures/resetFixtureUser'
-import { seedStructures } from '@app/web/fixtures/structures'
+import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
+import { seedStructures } from '@/fixtures/structures'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
-} from '@app/web/fixtures/users/mediateurAvecActivite'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/fixtures/users/mediateurAvecActivite'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 

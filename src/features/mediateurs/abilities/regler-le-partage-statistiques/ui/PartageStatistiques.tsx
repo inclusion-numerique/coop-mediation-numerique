@@ -1,16 +1,16 @@
 'use client'
 
-import type {
-  LienDuPerimetre,
-  PerimetrePartage,
-} from '@app/web/features/mediateurs/domain'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import type {
+  LienDuPerimetre,
+  PerimetrePartage,
+} from '@/features/mediateurs/domain'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { inject } from '@/libs/injection/client'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '../action/regler-le-partage-statistiques.key'
 
 const PartageStatistiquesModal = createModal({

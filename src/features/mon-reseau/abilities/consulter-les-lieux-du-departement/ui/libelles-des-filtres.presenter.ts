@@ -1,5 +1,5 @@
-import { pluriel } from '@app/web/libraries/pluriel'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { pluriel } from '@/libraries/pluriel'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { EtiquetteDeFiltre } from '../../../ui/etiquette-de-filtre'
 import type { CriteresDesLieux } from '../domain'
 

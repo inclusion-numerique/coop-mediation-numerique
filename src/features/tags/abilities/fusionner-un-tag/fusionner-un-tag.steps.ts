@@ -1,5 +1,6 @@
 import assert from 'node:assert'
-import { type Acteur, TagId } from '@app/web/features/tags/domain'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { type Acteur, TagId } from '@/features/tags/domain'
 import {
   acteurCoordinateur,
   acteurMediateur,
@@ -11,8 +12,7 @@ import {
   tagEnBase,
   tagsDeLActivite,
   tagsDeLActiviteDeCoordination,
-} from '@app/web/features/tags/tags.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/tags/tags.cucumber'
 import type { DestinationDeFusion } from './domain'
 import { destinationsDeFusion, fusionnerUnTag } from './implementation'
 

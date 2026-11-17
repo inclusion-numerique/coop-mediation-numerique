@@ -1,4 +1,4 @@
-import { pluriel } from '@app/web/libraries/pluriel'
+import { pluriel } from '@/libraries/pluriel'
 import { type ProfilActeur, profilAffiche } from '../domain'
 
 type Profil =

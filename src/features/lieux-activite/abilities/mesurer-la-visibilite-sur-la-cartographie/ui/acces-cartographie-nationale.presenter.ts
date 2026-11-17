@@ -1,4 +1,4 @@
-import { pluriel } from '@app/web/libraries/pluriel'
+import { pluriel } from '@/libraries/pluriel'
 
 export type CompteAffiche = {
   readonly nombre: string

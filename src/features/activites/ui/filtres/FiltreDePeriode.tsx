@@ -1,16 +1,16 @@
 'use client'
 
-import {
-  type DateRange,
-  DateRangePicker,
-} from '@app/web/libraries/ui/components/Primitives/calendar/DateRangePicker'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import {
+  type DateRange,
+  DateRangePicker,
+} from '@/libraries/ui/components/Primitives/calendar/DateRangePicker'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import TriggerButton from '@/libs/filters/TriggerButton'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export type PeriodFilterValue = { du: string; au: string }
 

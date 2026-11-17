@@ -1,5 +1,5 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { echecDefinitif } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { echecDefinitif } from '@/features/rdvsp/implementation/synchroniser-compte.binding'
 import { consignerLEchec } from './consigner-l-echec'
 import { declencherSynchronisation } from './declencher-synchronisation'
 import { lancerSynchronisation } from './lancer-synchronisation.adapter'

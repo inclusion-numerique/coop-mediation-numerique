@@ -1,10 +1,10 @@
-import { inactiviteProlongeeAvertissementEmail } from '@app/web/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementation/email/inactiviteProlongeeAvertissementEmail'
-import { compileMjml } from '@app/web/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { emailTransport } from '@app/web/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
 import { formatInTimeZone } from 'date-fns-tz'
+import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementation/email/inactiviteProlongeeAvertissementEmail'
+import { compileMjml } from '@/libraries/emails/mjml'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { emailTransport } from '@/server/email/emailTransport'
+import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import type { AvertirDeLaSuppression } from '../../domain'
 
 export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({

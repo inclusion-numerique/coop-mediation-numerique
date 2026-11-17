@@ -1,20 +1,16 @@
 'use client'
 
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
-import {
-  matchingOption,
-  resetPagination,
-  update,
-} from '@app/web/libs/filters/helpers'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import { FilterSelection } from '@/libs/filters/FilterSelection'
+import { matchingOption, resetPagination, update } from '@/libs/filters/helpers'
+import TriggerButton from '@/libs/filters/TriggerButton'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 import { EmployeuseOptions, employeuseComboBox } from './employeuse-combo-box'
 
 const aucune = (): SelectOption | null => null

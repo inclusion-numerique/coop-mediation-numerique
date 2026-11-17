@@ -1,8 +1,8 @@
 import {
   RichTextarea as RichTextareaBase,
   RichTextareaProps as RichTextareaBaseProps,
-} from '@app/web/libraries/ui/components/Primitives/Form/RichTextarea'
-import { useFieldContext } from '@app/web/libs/form/form-context'
+} from '@/libraries/ui/components/Primitives/Form/RichTextarea'
+import { useFieldContext } from '@/libs/form/form-context'
 
 type RichTextareaProps = Omit<RichTextareaBaseProps, 'id' | 'name'> & {
   isPending: boolean

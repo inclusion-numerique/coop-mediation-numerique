@@ -1,7 +1,4 @@
-import type {
-  InscriptionEnCours,
-  UserId,
-} from '@app/web/features/inscription/domain'
+import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
 import type { StructureEmployeuseInput } from './structure-employeuse-input'
 
 /**

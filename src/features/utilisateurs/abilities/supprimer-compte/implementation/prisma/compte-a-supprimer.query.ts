@@ -1,12 +1,12 @@
 import {
   compteASupprimerSelect,
   compteASupprimerToDomain,
-} from '@app/web/features/utilisateurs/db/compte.transfer'
+} from '@/features/utilisateurs/db/compte.transfer'
 import {
   type CompteASupprimer,
   type UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 export const compteASupprimer = async (
   utilisateurId: UtilisateurId,

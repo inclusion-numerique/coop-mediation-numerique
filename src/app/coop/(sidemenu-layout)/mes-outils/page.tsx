@@ -1,17 +1,14 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
-import {
-  isConseillerNumerique,
-  isCoordinateur,
-} from '@app/web/auth/userTypeGuards'
+import type { Metadata } from 'next'
+import { metadataTitle } from '@/app/metadataTitle'
+import { getAuthenticatedSessionUser } from '@/auth/getSessionUser'
+import { isConseillerNumerique, isCoordinateur } from '@/auth/userTypeGuards'
 import {
   Coordination,
   Dispositif,
-} from '@app/web/features/outils/abilities/lister-mes-outils'
-import { MesOutilsPage } from '@app/web/features/outils/abilities/lister-mes-outils/ui'
-import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
-import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
-import type { Metadata } from 'next'
+} from '@/features/outils/abilities/lister-mes-outils'
+import { MesOutilsPage } from '@/features/outils/abilities/lister-mes-outils/ui'
+import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes outils'),

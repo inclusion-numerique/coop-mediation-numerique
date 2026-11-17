@@ -1,10 +1,10 @@
-import { EcosystemIcon } from '@app/web/features/pictograms/digital/EcosystemIcon'
-import { InnovationIcon } from '@app/web/features/pictograms/digital/InnovationIcon'
-import { DocumentSignature } from '@app/web/features/pictograms/document/DocumentSignature'
-import { CommunityIcon } from '@app/web/features/pictograms/leisure/CommunityIcon'
-import { Compass } from '@app/web/features/pictograms/map/Compass'
-import type { Model } from '@app/web/libraries/model'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { EcosystemIcon } from '@/features/pictograms/digital/EcosystemIcon'
+import { InnovationIcon } from '@/features/pictograms/digital/InnovationIcon'
+import { DocumentSignature } from '@/features/pictograms/document/DocumentSignature'
+import { CommunityIcon } from '@/features/pictograms/leisure/CommunityIcon'
+import { Compass } from '@/features/pictograms/map/Compass'
+import type { Model } from '@/libraries/model'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type {
   Initiative,
   ThematiqueDAnimation,

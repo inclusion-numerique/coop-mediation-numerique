@@ -5,9 +5,9 @@ import {
 
 import Option = DsfrSelectProps.Option
 
-import { useFieldContext } from '@app/web/libs/form/form-context'
 import classNames from 'classnames'
 import { ChangeEvent } from 'react'
+import { useFieldContext } from '@/libs/form/form-context'
 import { Label } from './Label'
 
 type MultiSelectProps<T extends Option<string>[]> = Omit<

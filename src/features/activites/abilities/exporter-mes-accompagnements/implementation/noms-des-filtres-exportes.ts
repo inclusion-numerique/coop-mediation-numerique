@@ -1,4 +1,4 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
+import type { Prisma } from '@/generated/prisma/client'
 import { dansLaPeriodeDAppartenance } from '../../../db/periode-d-appartenance.sql'
 import type {
   BeneficiaireId,

@@ -1,9 +1,9 @@
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import type {
   BeneficiaireSearchItem,
   GetInitialBeneficiairesOptions,

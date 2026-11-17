@@ -1,5 +1,5 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import { centreSocial, mediateque } from '@app/web/fixtures/structures'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import { centreSocial, mediateque } from '@/fixtures/structures'
 
 export const coordinateurHorsDispositifInscritAvecToutCoordinateurId =
   'aa792475-7201-473a-af4a-7d3236539bfd'

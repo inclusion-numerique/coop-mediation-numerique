@@ -1,7 +1,7 @@
 import {
   NomAffiche,
   nomAffiche as nomAfficheDeLaPersonne,
-} from '@app/web/libraries/nom-affiche'
+} from '@/libraries/nom-affiche'
 import type { Email } from './email'
 import type { Nom } from './nom'
 import type { Prenom } from './prenom'

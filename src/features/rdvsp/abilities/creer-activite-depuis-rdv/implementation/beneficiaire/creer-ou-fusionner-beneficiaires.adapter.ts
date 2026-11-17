@@ -1,4 +1,4 @@
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import type { CreerOuFusionnerBeneficiaires } from '../../domain/creer-activite-depuis-rdv'
 
 /**

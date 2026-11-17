@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { consulterHistoriqueEmployeuses } from '@app/web/features/employeuse/abilities/consulter-historique-employeuses/implementation'
-import type { EmployeuseHistorique } from '@app/web/features/employeuse/domain/employeuses-historique'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementation'
+import type { EmployeuseHistorique } from '@/features/employeuse/domain/employeuses-historique'
 import {
   seedAffectation,
   seedContrat,
   seedEmployeuseMain,
   seedUtilisateur,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 // État local à cette ability (les phrasés Cucumber sont globaux, et une ability
 // ne s'appuie pas sur les steps d'une autre).

@@ -3,9 +3,9 @@ import {
   MediateurId,
   rattachements,
   UtilisateurIntrouvable,
-} from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { createStopwatch } from '@app/web/utils/stopwatch'
+} from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import { createStopwatch } from '@/utils/stopwatch'
 import { type Activation, activationDe, type NonCoordinateur } from '../domain'
 import {
   activer,

@@ -1,9 +1,9 @@
 'use client'
 
-import type { LibelleDeFiltre } from '@app/web/features/utilisateurs/ui'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
 
 export const EtiquettesDesFiltres = ({
   libelles,

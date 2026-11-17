@@ -1,6 +1,6 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import { mediateque } from '@app/web/fixtures/structures'
-import type { Prisma } from '@app/web/generated/prisma/client'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import { mediateque } from '@/fixtures/structures'
+import type { Prisma } from '@/generated/prisma/client'
 
 export type GivenMediateurInput = {
   firstName: string

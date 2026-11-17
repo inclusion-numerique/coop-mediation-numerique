@@ -1,17 +1,17 @@
-import { findDuplicatesForBeneficiaire as findDuplicateForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { Email } from '@app/web/features/beneficiaire/domain/email'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
-import { givenBeneficiaire } from '@app/web/features/beneficiaire/fixtures/givenBeneficiaire'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { findDuplicatesForBeneficiaire as findDuplicateForBeneficiaire } from '@/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { Telephone } from '@/features/beneficiaire/domain/telephone'
+import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/givenBeneficiaire'
 import {
   mediateurSansActivitesMediateurId,
   mediateurSansActivitesUserId,
-} from '@app/web/fixtures/users/mediateurSansActivites'
-import { prismaClient } from '@app/web/prismaClient'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+} from '@/fixtures/users/mediateurSansActivites'
+import { prismaClient } from '@/prismaClient'
 
 const withBrandedFields = (fixture: {
   id: string

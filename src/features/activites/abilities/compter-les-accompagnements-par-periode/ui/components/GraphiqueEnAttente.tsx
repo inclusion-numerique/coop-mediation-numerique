@@ -1,4 +1,4 @@
-import { Spinner } from '@app/web/ui/Spinner'
+import { Spinner } from '@/ui/Spinner'
 
 export const GraphiqueEnAttente = () => (
   <div className="fr-col fr-border fr-pt-6v fr-pb-4v fr-px-8v fr-border-radius--16 fr-flex fr-direction-column">

@@ -1,7 +1,7 @@
-import { errorReporter } from '@app/web/configuration/telemetry/error-reporter/server'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
+import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { brevoApiThrottle } from './createBrevoContact'
 
 const CONTACT_ABSENT_DE_LA_LISTE =

@@ -1,20 +1,20 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   type DispositifInscription,
   initialiserInscription,
-} from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
-import { lireEtatPourEtapeSuivante } from '@app/web/features/inscription/abilities/initialiser-inscription/implementation/prisma/lire-etat-pour-etape-suivante'
+} from '@/features/inscription/abilities/initialiser-inscription/domain'
+import { lireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/implementation/prisma/lire-etat-pour-etape-suivante'
 import {
   type InscriptionStep,
   ProfilInscription,
-} from '@app/web/features/inscription/domain'
+} from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedLieuActivite,
-} from '@app/web/features/inscription/inscription.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/inscription/inscription.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 // Seuls les ports à effets (dispositif, SIRET) sont fakés ; la lecture d'état
 // passe par l'adapteur Prisma RÉEL sur la base seedée (BDD hybride).

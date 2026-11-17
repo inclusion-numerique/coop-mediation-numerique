@@ -1,5 +1,5 @@
-import type { CodeDepartement } from '@app/web/libraries/insee'
-import type { NomAffiche } from '@app/web/libraries/nom-affiche'
+import type { CodeDepartement } from '@/libraries/insee'
+import type { NomAffiche } from '@/libraries/nom-affiche'
 import type { ActeurId } from './acteur-id'
 import type { CoordinateurId } from './coordinateur-id'
 import type { Courriel } from './courriel'

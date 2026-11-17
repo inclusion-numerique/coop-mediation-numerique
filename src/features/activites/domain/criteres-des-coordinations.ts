@@ -2,7 +2,7 @@ import {
   type Periode,
   periodeLue,
   valeursLues,
-} from '@app/web/libraries/parametres-d-url'
+} from '@/libraries/parametres-d-url'
 import { TagId } from './tag-id'
 import { TypeDActiviteDeCoordination } from './type-d-activite-de-coordination'
 

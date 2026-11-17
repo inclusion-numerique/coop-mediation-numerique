@@ -1,7 +1,7 @@
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRef } from 'react'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { withForm } from '@/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 import {
   type StructureEmployeuse,

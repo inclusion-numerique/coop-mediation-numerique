@@ -1,30 +1,27 @@
-import { typeLieuOptionsWithExtras } from '@app/web/features/activites/ui/libelles/type-lieu'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { typeLieuOptionsWithExtras } from '@/features/activites/ui/libelles/type-lieu'
 import {
   CommuneComboBox,
   CommuneOptions,
-} from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
-import type { CommuneDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
+} from '@/features/activites/ui/saisie/commune/commune-combo-box'
+import type { CommuneDuCra } from '@/features/activites/ui/saisie/commune/commune-du-cra'
 import {
   LieuComboBox,
   LieuOptions,
-} from '@app/web/features/activites/ui/saisie/lieu/lieu-combo-box'
+} from '@/features/activites/ui/saisie/lieu/lieu-combo-box'
 import {
   type LieuDuCra,
   lieuLePlusUtilise,
-} from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
+} from '@/features/activites/ui/saisie/lieu/lieu-du-cra'
 import {
   debutDispositifConum,
   derniereDateDuFormulaire,
-} from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
-import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@app/web/libs/form/use-app-form'
-import Button from '@codegouvfr/react-dsfr/Button'
+} from '@/features/activites/ui/saisie/validation/CraDateValidation'
+import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { type DefaultValues, withFieldGroup } from '@/libs/form/use-app-form'
 
 const valeursDuGroupe: Pick<
   DefaultValues<CraData>,

@@ -1,6 +1,6 @@
-import { Spinner } from '@app/web/ui/Spinner'
 import classNames from 'classnames'
 import { type ReactNode, Suspense } from 'react'
+import { Spinner } from '@/ui/Spinner'
 import { FrontiereDErreur } from './FrontiereDErreur'
 
 export const BlocEnAttente = ({

@@ -1,7 +1,7 @@
-import { getTypologieFromApiEntreprise } from '@app/web/external-apis/api-entreprise/typologieFromApiEntreprise'
-import type { TypologieStructure } from '@app/web/external-apis/api-entreprise/typologieStructure'
-import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
-import { toTitleCase } from '@app/web/utils/toTitleCase'
+import { getTypologieFromApiEntreprise } from '@/external-apis/api-entreprise/typologieFromApiEntreprise'
+import type { TypologieStructure } from '@/external-apis/api-entreprise/typologieStructure'
+import type { UniteLegale } from '@/external-apis/apiEntrepriseApiModels'
+import { toTitleCase } from '@/utils/toTitleCase'
 
 /**
  * SIRENE masque les données des établissements non diffusibles en rendant la

@@ -1,10 +1,10 @@
-import { identiteAnonymeFromDomain } from '@app/web/features/utilisateurs/db/compte.transfer'
+import { identiteAnonymeFromDomain } from '@/features/utilisateurs/db/compte.transfer'
 import type {
   IdentiteAnonyme,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 
 export const couperAcces = ({
   utilisateurId,

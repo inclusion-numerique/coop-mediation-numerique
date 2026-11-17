@@ -1,8 +1,8 @@
-import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
-import { shouldBeOnCoopHomepage } from '@app/e2e/support/helpers'
-import { profilInscriptionLabels } from '@app/web/features/inscription/domain'
-import { structureEmployeuse } from '@app/web/fixtures/structures'
-import { mediateurSansEmployeuseInscription } from '@app/web/fixtures/users/mediateurSansEmployeuseInscription'
+import { executeInscriptionFlow } from '@e2e/e2e/inscription/executeInscriptionFlow'
+import { shouldBeOnCoopHomepage } from '@e2e/support/helpers'
+import { profilInscriptionLabels } from '@/features/inscription/domain'
+import { structureEmployeuse } from '@/fixtures/structures'
+import { mediateurSansEmployeuseInscription } from '@/fixtures/users/mediateurSansEmployeuseInscription'
 
 /**
  * Seul parcours qui emprunte l'étape « renseigner votre structure employeuse » :

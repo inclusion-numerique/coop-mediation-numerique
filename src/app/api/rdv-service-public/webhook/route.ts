@@ -1,15 +1,15 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { traiterNotificationRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
-import { traiterNotificationUsager } from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
-import type { NotificationWebhook } from '@app/web/features/rdvsp/domain/notification-webhook'
-import { journaliserWebhook } from '@app/web/features/rdvsp/implementation/webhook/journal'
-import { lireNotificationWebhook } from '@app/web/features/rdvsp/implementation/webhook/lire-notification-webhook'
+import { type NextRequest, NextResponse } from 'next/server'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { traiterNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
+import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
+import type { NotificationWebhook } from '@/features/rdvsp/domain/notification-webhook'
+import { journaliserWebhook } from '@/features/rdvsp/implementation/webhook/journal'
+import { lireNotificationWebhook } from '@/features/rdvsp/implementation/webhook/lire-notification-webhook'
 import {
   ENTETE_SIGNATURE_WEBHOOK,
   signatureValide,
-} from '@app/web/features/rdvsp/implementation/webhook/verifier-signature'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { type NextRequest, NextResponse } from 'next/server'
+} from '@/features/rdvsp/implementation/webhook/verifier-signature'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 
 const traiter = async (notification: NotificationWebhook): Promise<void> => {
   if (notification._tag === 'ignoree') {

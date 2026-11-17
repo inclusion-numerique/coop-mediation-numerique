@@ -1,7 +1,7 @@
 import type {
   RoleUtilisateur,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 import type { FailureReason } from './effacement-report'
 
 export type CompteIntrouvable = {

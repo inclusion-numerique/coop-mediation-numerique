@@ -1,18 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { enregistrerUneActiviteDeCoordination } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
-import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.errors'
-import { EnregistrerUneActiviteDeCoordinationValidation } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
-import {
-  CoordinateurId,
-  UtilisateurId,
-} from '@app/web/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { enregistrerUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
+import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.errors'
+import { EnregistrerUneActiviteDeCoordinationValidation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
+import { CoordinateurId, UtilisateurId } from '@/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())

@@ -1,11 +1,11 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { rechercherUnLieuActivite } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { rechercherUnLieuActivite } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { withInput } from '@/libraries/nextjs'
 
 /**
  * Les suggestions du combo-box.

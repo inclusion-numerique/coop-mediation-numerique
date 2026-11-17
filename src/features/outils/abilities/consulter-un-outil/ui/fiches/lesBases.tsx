@@ -1,4 +1,4 @@
-import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
+import { LesBasesLogo } from '@/features/pictograms/services/LesBasesLogo'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

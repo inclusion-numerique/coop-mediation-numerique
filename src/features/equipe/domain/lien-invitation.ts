@@ -1,10 +1,10 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
+import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 import {
   decodeSerializableState,
   type EncodedState,
   encodeSerializableState,
-} from '@app/web/utils/encodeSerializableState'
-import { z } from 'zod'
+} from '@/utils/encodeSerializableState'
 import { ReferenceInvitation } from './reference-invitation'
 
 const PREFIXE = '/invitations/'

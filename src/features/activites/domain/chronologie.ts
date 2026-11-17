@@ -1,4 +1,4 @@
-import type { NomAffiche } from '@app/web/libraries/nom-affiche'
+import type { NomAffiche } from '@/libraries/nom-affiche'
 import type { ActiviteConsultee } from './activite-consultee'
 import type { CriteresDesActivites } from './criteres-des-activites'
 import type { Effectif } from './effectif'

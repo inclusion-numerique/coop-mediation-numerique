@@ -1,6 +1,6 @@
-import { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { communeDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
+import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import { communeDuCra } from '@/features/activites/ui/saisie/commune/commune-du-cra'
+import type { DefaultValues } from '@/libs/form/use-app-form'
 
 const communeDeResidence = (
   residence?: {

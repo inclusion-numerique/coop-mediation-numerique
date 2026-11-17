@@ -1,7 +1,7 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { prismaClient } from '@app/web/prismaClient'
-import { getDepartementsFromCodesInsee } from '@app/web/utils/getDepartementFromCodeInsee'
+import { Prisma } from '@/generated/prisma/client'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { prismaClient } from '@/prismaClient'
+import { getDepartementsFromCodesInsee } from '@/utils/getDepartementFromCodeInsee'
 
 export const getMediateurCommunesAndDepartementsOptions = async ({
   mediateurIds,

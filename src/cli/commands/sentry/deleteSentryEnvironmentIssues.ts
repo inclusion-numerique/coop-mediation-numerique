@@ -1,7 +1,7 @@
-import { output, outputError } from '@app/web/libraries/console/output'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
+import { output, outputError } from '@/libraries/console/output'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import {
   createSentryHttpClient,
   deleteIssuesByIds,

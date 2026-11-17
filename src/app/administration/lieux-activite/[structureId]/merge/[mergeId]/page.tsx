@@ -1,7 +1,7 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { apercuDeLaFusion } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
-import { ApercuDeLaFusionPage } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux/ui'
 import { notFound } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { apercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui'
 
 export const metadata = {
   title: metadataTitle('Structures - Fusion'),

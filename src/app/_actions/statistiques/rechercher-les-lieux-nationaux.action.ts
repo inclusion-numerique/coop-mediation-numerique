@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
 import {
   GenreDeLieu,
   rechercherLesLieuxDesStatistiques,
-} from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques'
-import { RechercherLesLieuxDesStatistiquesValidation } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
-import { optionDeLieu } from '@app/web/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
-import { PERIMETRE_NATIONAL } from '@app/web/features/activites/domain'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { withInput } from '@app/web/libraries/nextjs'
+} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
+import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
+import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
+import { PERIMETRE_NATIONAL } from '@/features/activites/domain'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { withInput } from '@/libraries/nextjs'
 
 export const rechercherLesLieuxNationauxAction = actionBuilder()
   .use(withAuth())

@@ -1,6 +1,6 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { getUserRoleLabel } from '@app/web/utils/getUserRoleLabel'
 import type { Worksheet } from 'exceljs'
+import type { SessionUser } from '@/auth/sessionUser'
+import { getUserRoleLabel } from '@/utils/getUserRoleLabel'
 import { addTitleRow } from './addTitleRow'
 
 export type WorksheetUser = Pick<

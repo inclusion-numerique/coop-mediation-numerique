@@ -1,7 +1,7 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { brevoApiThrottle } from './createBrevoContact'
 
 const deleteContactImmediate = async (email: string): Promise<void> => {

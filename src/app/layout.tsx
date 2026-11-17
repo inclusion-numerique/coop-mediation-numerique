@@ -1,18 +1,18 @@
-import '@app/web/app/setup'
-import { terminerLUsurpationAction } from '@app/web/app/_actions/utilisateurs/terminer-l-usurpation.action'
-import { EnvInformation } from '@app/web/app/EnvInformation'
-import { Matomo } from '@app/web/app/Matomo'
-import { Display, DsfrProvider } from '@app/web/configuration/dsfr'
+import '@/app/setup'
+import type { Metadata } from 'next'
+import type { PropsWithChildren } from 'react'
+import { terminerLUsurpationAction } from '@/app/_actions/utilisateurs/terminer-l-usurpation.action'
+import { EnvInformation } from '@/app/EnvInformation'
+import { Matomo } from '@/app/Matomo'
+import { Display, DsfrProvider } from '@/configuration/dsfr'
 import {
   DsfrHead,
   getHtmlAttributes,
-} from '@app/web/configuration/dsfr/server-only-index'
-import { TERMINER_L_USURPATION_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
-import Toaster from '@app/web/libraries/ui/toast/Toaster'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import type { Metadata } from 'next'
-import type { PropsWithChildren } from 'react'
+} from '@/configuration/dsfr/server-only-index'
+import { TERMINER_L_USURPATION_ACTION_KEY } from '@/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
+import Toaster from '@/libraries/ui/toast/Toaster'
+import { ClientBinder } from '@/libs/injection/client-binder'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 export const metadata: Metadata = {
   title: PublicWebAppConfig.projectTitle,

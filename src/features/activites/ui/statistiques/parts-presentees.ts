@@ -1,4 +1,4 @@
-import { allocatePercentagesFromRecords } from '@app/web/libraries/proportions'
+import { allocatePercentagesFromRecords } from '@/libraries/proportions'
 import type { CommuneComptee, Repartition } from '../../domain'
 
 export type PartPresentee<V = string> = {

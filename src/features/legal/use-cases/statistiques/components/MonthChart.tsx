@@ -1,8 +1,5 @@
 'use client'
 
-import CustomTooltip from '@app/web/libs/statistiques/CustomTooltip'
-import { StatisticsLegend } from '@app/web/libs/statistiques/StatisticsLegend'
-import { numberToString } from '@app/web/utils/formatNumber'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
 import {
@@ -16,6 +13,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import CustomTooltip from '@/libs/statistiques/CustomTooltip'
+import { StatisticsLegend } from '@/libs/statistiques/StatisticsLegend'
+import { numberToString } from '@/utils/formatNumber'
 
 export type ChartSerie = {
   label: string

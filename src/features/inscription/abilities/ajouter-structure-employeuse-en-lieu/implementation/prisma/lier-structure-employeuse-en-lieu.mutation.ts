@@ -1,14 +1,14 @@
+import { v4 } from 'uuid'
 import {
   ecrireLeLieuAuRegistre,
   identiteDuLieu,
   inscriptionPourLIdentifiantCarto,
   lieuCorrele,
   preparerCorrele,
-} from '@app/web/features/lieux-activite'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
-import { v4 } from 'uuid'
+} from '@/features/lieux-activite'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
+import { addMutationLog } from '@/utils/addMutationLog'
 import type { LierStructureEmployeuseEnLieu } from '../../domain/ports'
 import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 

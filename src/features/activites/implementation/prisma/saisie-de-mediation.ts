@@ -1,6 +1,6 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 import {
   ActiviteId,
   ActiviteIntrouvable,

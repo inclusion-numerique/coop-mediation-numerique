@@ -1,7 +1,7 @@
 import {
   type CompteASupprimer,
   mediateurDe,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 import type { NomEffacementStep, SupprimerComptePorts } from '../domain'
 
 type Runner = () => Promise<number>

@@ -1,6 +1,6 @@
-import { region } from '@app/web/configuration/projet/config'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import pRetry, { type Options as PRetryOptions } from 'p-retry'
+import { region } from '@/configuration/projet/config'
 
 export const projectId = process.env.SCW_PROJECT_ID ?? ''
 

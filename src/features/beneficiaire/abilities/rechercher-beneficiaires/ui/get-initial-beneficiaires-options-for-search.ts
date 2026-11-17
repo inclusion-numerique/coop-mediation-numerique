@@ -1,7 +1,7 @@
-import { getInitialBeneficiairesOptions } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
-import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { getInitialBeneficiairesOptions } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
+import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import {
   type BeneficiaireOption,
   toBeneficiaireData,

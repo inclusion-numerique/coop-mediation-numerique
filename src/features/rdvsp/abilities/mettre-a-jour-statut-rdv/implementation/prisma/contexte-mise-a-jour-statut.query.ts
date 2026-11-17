@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import { compteRdvToDomain } from '../../../../db'
 import { RdvAgentId } from '../../../../domain/rdv-agent-id'
 import type { ContexteMiseAJourStatut } from '../../domain/mettre-a-jour-statut-rdv'

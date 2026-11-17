@@ -1,7 +1,7 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import { type CodeDepartement, CodeInsee } from '@app/web/libraries/insee'
-import { prismaClient } from '@app/web/prismaClient'
-import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
+import { Prisma } from '@/generated/prisma/client'
+import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { prismaClient } from '@/prismaClient'
+import { departementCodeFromInseeRegex } from '@/utils/departementCodeFromInseeRegex'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import {
   departementDeReference,

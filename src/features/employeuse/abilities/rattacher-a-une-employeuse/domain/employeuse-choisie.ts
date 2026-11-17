@@ -1,12 +1,13 @@
 // Import direct du value object, et non du barrel de la feature : ce schéma est chargé par
 // un composant client, or le barrel ré-exporte les implémentations Prisma de l'employeuse —
 // elles atterriraient dans le bundle client (frontière que `tsc` ne signale pas).
+
+import { z } from 'zod'
 import {
   type TypologieStructure,
   typologiesStructure,
-} from '@app/web/external-apis/api-entreprise/typologieStructure'
-import { Siret } from '@app/web/libraries/insee'
-import { z } from 'zod'
+} from '@/external-apis/api-entreprise/typologieStructure'
+import { Siret } from '@/libraries/insee'
 import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
 
 /**

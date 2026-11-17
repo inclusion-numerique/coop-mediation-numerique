@@ -3,7 +3,7 @@ import {
   listerLesLieuxDuMediateur,
   MediateurId,
   TriDesLieux,
-} from '@app/web/features/lieux-activite'
+} from '@/features/lieux-activite'
 
 export const lieuxDeLActeur = async (
   mediateurId: string,

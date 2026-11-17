@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 export const EnvInformation = () => {
   const {

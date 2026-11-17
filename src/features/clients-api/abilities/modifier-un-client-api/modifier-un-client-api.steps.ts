@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { modifierUnClientApi } from '@app/web/features/clients-api/abilities/modifier-un-client-api'
+import { Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api'
 import {
   clientSeme,
   jour,
   nomUnique,
   portees,
-} from '@app/web/features/clients-api/clients-api.cucumber'
-import { Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/clients-api/clients-api.cucumber'
 
 const modification: {
   resultat?: Awaited<ReturnType<typeof modifierUnClientApi>>

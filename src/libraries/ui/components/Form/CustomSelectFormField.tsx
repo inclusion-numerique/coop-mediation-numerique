@@ -1,8 +1,3 @@
-import CustomSelect, {
-  CustomSelectProps,
-} from '@app/web/libraries/ui/components/CustomSelect/CustomSelect'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { UiComponentProps } from '@app/web/libraries/ui/utils/uiComponentProps'
 import classNames from 'classnames'
 import { ReactNode, useCallback, useState } from 'react'
 import {
@@ -13,6 +8,11 @@ import {
   PathValue,
 } from 'react-hook-form'
 import type { GroupBase, OnChangeValue, Options } from 'react-select'
+import CustomSelect, {
+  CustomSelectProps,
+} from '@/libraries/ui/components/CustomSelect/CustomSelect'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { UiComponentProps } from '@/libraries/ui/utils/uiComponentProps'
 
 export type CustomSelectFormFieldProps<
   FormData extends FieldValues,

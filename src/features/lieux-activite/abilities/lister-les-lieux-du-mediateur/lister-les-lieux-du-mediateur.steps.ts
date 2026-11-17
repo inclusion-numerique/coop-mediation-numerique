@@ -1,13 +1,13 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type LieuDuMediateurEnListe,
   listerLesLieuxDuMediateur,
-} from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
-import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
+import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const liste: { lieux?: readonly LieuDuMediateurEnListe[] } = {}
 

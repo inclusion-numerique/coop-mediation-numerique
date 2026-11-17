@@ -1,14 +1,14 @@
 import {
   ligneUtilisateurSelect,
   ligneUtilisateurToDomain,
-} from '@app/web/features/utilisateurs/db/ligne-utilisateur.transfer'
-import { utilisateursWhere } from '@app/web/features/utilisateurs/db/utilisateurs.where'
-import type { FiltresUtilisateurs } from '@app/web/features/utilisateurs/domain'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
-import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
-import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/db/ligne-utilisateur.transfer'
+import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
+import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
+import type { Prisma } from '@/generated/prisma/client'
+import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
+import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
+import { toQueryParts } from '@/libs/data-table/toQueryParts'
+import { prismaClient } from '@/prismaClient'
 import type { UtilisateursTrouves } from '../../domain'
 
 export type RechercheDUtilisateursParams = {

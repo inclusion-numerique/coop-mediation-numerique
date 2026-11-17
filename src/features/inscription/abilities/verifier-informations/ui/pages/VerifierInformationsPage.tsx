@@ -1,8 +1,8 @@
-import IconInSquare from '@app/web/components/IconInSquare'
-import InfoLabelValue from '@app/web/components/InfoLabelValue'
-import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
-import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import Button from '@codegouvfr/react-dsfr/Button'
+import IconInSquare from '@/components/IconInSquare'
+import InfoLabelValue from '@/components/InfoLabelValue'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 import type { VerifierInformationsPageData } from '../../queries/getVerifierInformationsPageData'
 
 /**

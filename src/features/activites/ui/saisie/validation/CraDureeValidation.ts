@@ -1,5 +1,5 @@
-import { dureeAccompagnementPersonnaliseeValue } from '@app/web/features/activites/ui/libelles/duree-accompagnement'
 import { z } from 'zod'
+import { dureeAccompagnementPersonnaliseeValue } from '@/features/activites/ui/libelles/duree-accompagnement'
 
 export const maxMinutes = 59
 export const maxHeures = 23

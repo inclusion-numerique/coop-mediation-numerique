@@ -1,7 +1,7 @@
 import {
   MessageDeMaintenance,
   type PeriodeDeMaintenance,
-} from '@app/web/features/maintenance-mode/domain'
+} from '@/features/maintenance-mode/domain'
 
 export const periodeDeMaintenanceSelect = {
   id: true,

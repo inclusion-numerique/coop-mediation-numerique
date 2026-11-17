@@ -1,8 +1,8 @@
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 import { EmployeuseId } from '../../../../domain/employeuse-id'
 import type { RattacherAUneEmployeuse } from '../../domain/rattacher-a-une-employeuse'
 import {

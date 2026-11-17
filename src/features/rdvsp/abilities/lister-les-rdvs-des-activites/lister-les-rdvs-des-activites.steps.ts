@@ -1,12 +1,12 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   ID_TEST,
   seedCompteRdv,
   seedParticipation,
   seedRdv,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { prismaClient } from '@/prismaClient'
 import { StatutRdv } from '../../domain/statut-rdv'
 import {
   rendezVousAListerSql,

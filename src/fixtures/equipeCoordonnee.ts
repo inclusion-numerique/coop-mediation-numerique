@@ -1,7 +1,7 @@
-import { givenUser } from '@app/web/features/utilisateurs/fixtures/givenUser'
-import { mediateque } from '@app/web/fixtures/structures'
-import { coordinateurInscritAvecToutCoordinateurId } from '@app/web/fixtures/users/coordinateurInscritAvecTout'
-import { mergeUuids } from '@app/web/libraries/fixtures/mergeUuids'
+import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
+import { mediateque } from '@/fixtures/structures'
+import { coordinateurInscritAvecToutCoordinateurId } from '@/fixtures/users/coordinateurInscritAvecTout'
+import { mergeUuids } from '@/libraries/fixtures/mergeUuids'
 
 const mediateurInviteEnAttenteId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
 

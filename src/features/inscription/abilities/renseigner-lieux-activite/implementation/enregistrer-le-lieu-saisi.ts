@@ -3,7 +3,7 @@ import {
   MediateurId,
   nouveauLieu,
   UserId,
-} from '@app/web/features/lieux-activite'
+} from '@/features/lieux-activite'
 import type { EnregistrerLeLieuSaisi } from '../domain'
 
 /**

@@ -1,20 +1,20 @@
-import { accepterUneInvitationAction } from '@app/web/app/_actions/equipe/accepter-une-invitation.action'
-import { refuserUneInvitationAction } from '@app/web/app/_actions/equipe/refuser-une-invitation.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { getSessionUser } from '@app/web/auth/getSessionUser'
-import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
-import { consulterUneInvitation } from '@app/web/features/equipe/abilities/consulter-une-invitation'
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-invitation.action'
+import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { getSessionUser } from '@/auth/getSessionUser'
+import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
+import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation'
 import {
   InvitationEnAttente,
   InvitationPlusValide,
-} from '@app/web/features/equipe/abilities/consulter-une-invitation/ui'
-import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@app/web/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
-import { Email, lienInvitation } from '@app/web/features/equipe/domain'
-import { ReponseAInvitation } from '@app/web/features/equipe/ui'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { EncodedState } from '@app/web/utils/encodeSerializableState'
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+} from '@/features/equipe/abilities/consulter-une-invitation/ui'
+import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
+import { Email, lienInvitation } from '@/features/equipe/domain'
+import { ReponseAInvitation } from '@/features/equipe/ui'
+import { ClientBinder } from '@/libs/injection/client-binder'
+import type { EncodedState } from '@/utils/encodeSerializableState'
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),

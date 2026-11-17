@@ -1,13 +1,13 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { rechercherDesTags } from '@app/web/features/tags/abilities/rechercher-des-tags'
-import { RechercherDesTagsValidation } from '@app/web/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
-import { TagId } from '@app/web/features/tags/domain'
-import { acteurDe } from '@app/web/features/tags/implementation/session'
-import { tagAffiche } from '@app/web/features/tags/ui/tag-affiche.presenter'
-import { withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags'
+import { RechercherDesTagsValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementation/session'
+import { tagAffiche } from '@/features/tags/ui/tag-affiche.presenter'
+import { withInput } from '@/libraries/nextjs'
 
 export const rechercherDesTagsAction = actionBuilder()
   .use(withAuth())

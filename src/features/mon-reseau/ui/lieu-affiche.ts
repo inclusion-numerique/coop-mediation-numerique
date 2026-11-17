@@ -1,4 +1,4 @@
-import type { LieuEnListe } from '@app/web/features/lieux-activite'
+import type { LieuEnListe } from '@/features/lieux-activite'
 
 export type LieuAffiche = LieuEnListe
 

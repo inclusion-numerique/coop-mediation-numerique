@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { listerLesActeursDuDepartement } from '@app/web/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 import {
   exercerDansLeLieu,
   semerUnActeur,
   semerUnLieu,
-} from '@app/web/features/mon-reseau/mon-reseau.cucumber'
-import { After, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/mon-reseau/mon-reseau.cucumber'
 
 type Consultation = Awaited<ReturnType<typeof listerLesActeursDuDepartement>>
 

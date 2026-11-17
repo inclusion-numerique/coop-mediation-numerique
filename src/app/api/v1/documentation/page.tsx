@@ -1,5 +1,5 @@
-import { DocumentationDeLApi } from '@app/web/features/clients-api/ui/DocumentationDeLApi'
 import type { Metadata } from 'next'
+import { DocumentationDeLApi } from '@/features/clients-api/ui/DocumentationDeLApi'
 
 export const metadata: Metadata = {
   title: 'La coop - API',

@@ -1,10 +1,11 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type Acteur,
   CoordinateurId,
   NomDuTag,
   type VisibiliteChoisie,
-} from '@app/web/features/tags/domain'
+} from '@/features/tags/domain'
 import {
   acteurCoordinateur,
   acteurMediateur,
@@ -13,8 +14,7 @@ import {
   semerUnCoordinateur,
   semerUnMediateur,
   tagEnBase,
-} from '@app/web/features/tags/tags.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/tags/tags.cucumber'
 import { creerUnTag } from './implementation'
 
 const contexte: {

@@ -1,23 +1,23 @@
 'use server'
 
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
+import type { SessionUser } from '@/auth/sessionUser'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
 import {
   type Accepteur,
   accepterUneInvitation,
-} from '@app/web/features/equipe/abilities/accepter-une-invitation'
-import { ACCEPTER_UNE_INVITATION_ERRORS } from '@app/web/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.errors'
-import { AccepterUneInvitationValidation } from '@app/web/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.validation'
+} from '@/features/equipe/abilities/accepter-une-invitation'
+import { ACCEPTER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.errors'
+import { AccepterUneInvitationValidation } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.validation'
 import {
   CoordinateurId,
   Email,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/equipe/domain'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 const accepteurDe = (user: SessionUser): Accepteur => {
   const email = Email(user.email)

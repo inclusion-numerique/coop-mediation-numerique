@@ -1,23 +1,23 @@
 'use client'
 
-import LogoCoop from '@app/web/components/LogoCoop'
+import { useSelector } from '@tanstack/react-form'
+import { useRouter } from 'next/navigation'
+import LogoCoop from '@/components/LogoCoop'
 import {
   type ChoisirProfilFormData,
   choisirProfilFormShape,
-} from '@app/web/features/inscription/abilities/choisir-profil'
+} from '@/features/inscription/abilities/choisir-profil'
 import {
   type InscriptionStep,
   profilInscriptionLabels,
   type Role,
-} from '@app/web/features/inscription/domain'
-import { stepPath } from '@app/web/features/inscription/ui/step-path'
-import type { ServerActionResult } from '@app/web/libraries/nextjs'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
-import { useSelector } from '@tanstack/react-form'
-import { useRouter } from 'next/navigation'
+} from '@/features/inscription/domain'
+import { stepPath } from '@/features/inscription/ui/step-path'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { type DefaultValues, useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 
 export type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{

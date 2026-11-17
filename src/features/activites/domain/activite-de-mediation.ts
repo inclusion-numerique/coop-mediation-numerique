@@ -1,4 +1,4 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import type { ActiviteId } from './activite-id'
 import type { Autonomie } from './autonomie'
 import type { BeneficiaireId } from './beneficiaire-id'

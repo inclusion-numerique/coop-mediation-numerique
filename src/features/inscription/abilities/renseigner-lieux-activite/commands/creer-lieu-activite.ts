@@ -1,6 +1,6 @@
-import type { UserId } from '@app/web/features/inscription/domain'
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite'
-import { failure, type Result, success } from '@app/web/libraries/result'
+import type { UserId } from '@/features/inscription/domain'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite'
+import { failure, type Result, success } from '@/libraries/result'
 import {
   type CreerLieuActiviteError,
   type EnregistrerLeLieuSaisi,

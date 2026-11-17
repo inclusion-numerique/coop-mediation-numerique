@@ -1,5 +1,5 @@
-import { useFieldContext } from '@app/web/libs/form/form-context'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { useFieldContext } from '@/libs/form/form-context'
 import { Input, type InputProps } from './Input'
 
 export type StepperProps = InputProps & {

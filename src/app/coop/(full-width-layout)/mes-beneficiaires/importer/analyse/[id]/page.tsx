@@ -1,5 +1,5 @@
-import { importerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/importer-beneficiaires.action'
-import { ImporterBeneficiairesAnalysePage } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/pages/ImporterBeneficiairesAnalysePage'
+import { importerBeneficiairesAction } from '@/app/_actions/beneficiaire/importer-beneficiaires.action'
+import { ImporterBeneficiairesAnalysePage } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/pages/ImporterBeneficiairesAnalysePage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

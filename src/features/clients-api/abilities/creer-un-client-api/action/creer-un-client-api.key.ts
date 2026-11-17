@@ -1,6 +1,6 @@
-import type { ValeursDuClientApi } from '@app/web/features/clients-api/formulaire'
-import type { ServerActionResult } from '@app/web/libraries/nextjs/action/result'
-import { keyFor } from '@app/web/libs/injection/client'
+import type { ValeursDuClientApi } from '@/features/clients-api/formulaire'
+import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import { keyFor } from '@/libs/injection/client'
 
 export const CREER_UN_CLIENT_API_ACTION_KEY = keyFor<
   (

@@ -1,51 +1,51 @@
 'use client'
 
-import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
-import { AutonomieBeneficiaireField } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/AutonomieBeneficiaireField'
-import { BeneficiaireAnonymeFields } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireAnonymeFields'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useSelector } from '@tanstack/react-form'
+import { useRouter } from 'next/navigation'
+import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
+import { AutonomieBeneficiaireField } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/AutonomieBeneficiaireField'
+import { BeneficiaireAnonymeFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireAnonymeFields'
 import {
   BeneficiaireFields,
   isAnonyme,
-} from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireFields'
-import { OrientationFields } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/OrientationFields'
-import { saisieDeLAccompagnementIndividuel } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/saisie-du-formulaire.presenter'
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/BeneficiaireFields'
+import { OrientationFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/components/fields/OrientationFields'
+import { saisieDeLAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/saisie-du-formulaire.presenter'
 import {
   CraIndividuelData,
   CraIndividuelValidation,
-} from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { autonomieOptionsWithExtras } from '@app/web/features/activites/ui/libelles/autonomie'
-import { materielOptions } from '@app/web/features/activites/ui/libelles/materiel'
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
+import { autonomieOptionsWithExtras } from '@/features/activites/ui/libelles/autonomie'
+import { materielOptions } from '@/features/activites/ui/libelles/materiel'
 import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
-} from '@app/web/features/activites/ui/libelles/profil'
-import { structuresRedirectionOptions } from '@app/web/features/activites/ui/libelles/structures-redirection'
+} from '@/features/activites/ui/libelles/profil'
+import { structuresRedirectionOptions } from '@/features/activites/ui/libelles/structures-redirection'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
-} from '@app/web/features/activites/ui/libelles/thematique'
-import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
-import type { CommuneDuCra } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
-import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
-import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
-import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
-import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
-import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
-import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { inject } from '@app/web/libs/injection/client'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
-import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { useSelector } from '@tanstack/react-form'
-import { useRouter } from 'next/navigation'
+} from '@/features/activites/ui/libelles/thematique'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import type { CommuneDuCra } from '@/features/activites/ui/saisie/commune/commune-du-cra'
+import { MaterielField } from '@/features/activites/ui/saisie/fields/MaterielField'
+import { RendezVousFields } from '@/features/activites/ui/saisie/fields/RendezVousFields'
+import { TagsFields } from '@/features/activites/ui/saisie/fields/TagsFields'
+import { ThematiquesFields } from '@/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { LieuDuCra } from '@/features/activites/ui/saisie/lieu/lieu-du-cra'
+import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { inject } from '@/libs/injection/client'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { replaceRouteWithoutRerender } from '@/utils/replaceRouteWithoutRerender'
+import { yesNoBooleanOptions } from '@/utils/yesNoBooleanOptions'
 
 const CraIndividuelForm = ({
   defaultValues,

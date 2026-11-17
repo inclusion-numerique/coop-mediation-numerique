@@ -6,8 +6,8 @@ import {
   poserRole,
   type Role,
   type UserId,
-} from '@app/web/features/inscription/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/features/inscription/domain'
+import { failure, type Result, success } from '@/libraries/result'
 import type { EnregistrerProfilChoisiInput } from './ports'
 import { rolesACreerPourRole } from './roles-a-creer'
 

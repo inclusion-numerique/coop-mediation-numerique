@@ -1,18 +1,18 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import type { NextRequest } from 'next/server'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import {
   classeurDesCoordinations,
   exporterLesActivitesDeCoordination,
   tagsRappeles,
-} from '@app/web/features/activites/abilities/exporter-les-activites-de-coordination'
+} from '@/features/activites/abilities/exporter-les-activites-de-coordination'
 import {
   CoordinateurId,
   criteresDesCoordinations,
-} from '@app/web/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@app/web/features/activites/implementation/fournisseurs-de-la-saisie'
-import { tagsVisiblesPar } from '@app/web/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { NextRequest } from 'next/server'
+} from '@/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

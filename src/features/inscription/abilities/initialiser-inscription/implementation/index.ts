@@ -1,8 +1,5 @@
-import { initialiserInscription } from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
-import type {
-  InscriptionStep,
-  UserId,
-} from '@app/web/features/inscription/domain'
+import { initialiserInscription } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import type { InscriptionStep, UserId } from '@/features/inscription/domain'
 import { appliquerDispositif } from './prisma/appliquer-dispositif'
 import { importerStructureDepuisSiret } from './prisma/importer-structure-depuis-siret'
 import { lireEtatPourEtapeSuivante } from './prisma/lire-etat-pour-etape-suivante'

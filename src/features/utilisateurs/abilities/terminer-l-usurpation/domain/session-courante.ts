@@ -1,5 +1,5 @@
-import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
 
 export type SessionCourante = {
   readonly jeton: string

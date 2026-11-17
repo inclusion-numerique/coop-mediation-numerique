@@ -1,8 +1,8 @@
 'use client'
 
-import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
-import { withForm } from '@app/web/libs/form/use-app-form'
 import Link from 'next/link'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { withForm } from '@/libs/form/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 import { OpeningHoursFields } from './OpeningHoursFields'
 

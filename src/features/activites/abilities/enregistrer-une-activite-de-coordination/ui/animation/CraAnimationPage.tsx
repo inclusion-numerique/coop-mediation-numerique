@@ -1,17 +1,17 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import CraAnimationForm from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/components/CraAnimationForm'
-import { CraAnimationData } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
-import { ModaleDeCreationDeTag } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButtonWithModal from '@/components/BackButtonWithModal'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import CraAnimationForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/components/CraAnimationForm'
+import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
+import { ModaleDeCreationDeTag } from '@/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import type {
   Tag,
   VisibiliteDuTagDuCra,
-} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import RequiredFieldsDisclamer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclamer'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { contentId } from '@app/web/utils/skipLinks'
+} from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { contentId } from '@/utils/skipLinks'
 
 type CraAnimationPageProps = {
   defaultValues: DefaultValues<CraAnimationData>

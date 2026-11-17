@@ -1,4 +1,4 @@
-export { getInscriptionEtat } from '@app/web/features/inscription/db'
+export { getInscriptionEtat } from '@/features/inscription/db'
 export { depuisLeLieuDesire } from './depuis-le-lieu-desire'
 export { enregistrerLeLieuSaisi } from './enregistrer-le-lieu-saisi'
 export { enregistrerReconciliation } from './prisma/enregistrer-reconciliation.mutation'

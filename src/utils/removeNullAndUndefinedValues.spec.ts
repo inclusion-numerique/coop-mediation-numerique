@@ -1,5 +1,5 @@
-import { removeNullAndUndefinedValues } from '@app/web/utils/removeNullAndUndefinedValues'
 import { describe, expect, it } from 'vitest'
+import { removeNullAndUndefinedValues } from '@/utils/removeNullAndUndefinedValues'
 
 describe('removeNullAndUndefinedValues', () => {
   it('Removes null and values', () => {

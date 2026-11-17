@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   estFranchi,
   Franchissement,
@@ -5,8 +6,7 @@ import {
   type InscriptionEtat,
   Role,
   UserId,
-} from '@app/web/features/inscription/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/inscription/domain'
 import { renseignerLieuxActivite } from './renseigner-lieux-activite'
 
 const userId = UserId('11111111-1111-1111-1111-111111111111')

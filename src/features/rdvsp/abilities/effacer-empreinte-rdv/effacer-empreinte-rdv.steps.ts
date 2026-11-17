@@ -1,7 +1,8 @@
 import assert from 'node:assert'
-import { effacerEmpreinteRdvAvec } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
-import { ApiIndisponible } from '@app/web/features/rdvsp/domain/errors'
-import type { JetonsOAuth } from '@app/web/features/rdvsp/domain/jetons-oauth'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import type { JetonsOAuth } from '@/features/rdvsp/domain/jetons-oauth'
 import {
   ID_TEST,
   seedAutreMediateur,
@@ -11,10 +12,9 @@ import {
   seedRdv,
   seedUsagerRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { failure, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 const rdvServicePublic: {
   disponible: boolean

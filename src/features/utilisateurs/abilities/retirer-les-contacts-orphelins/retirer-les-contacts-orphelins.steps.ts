@@ -1,11 +1,8 @@
 import assert from 'node:assert'
-import {
-  AdresseCourriel,
-  UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
+import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import {
   type BilanDesContacts,
   retirerLesContactsOrphelins,

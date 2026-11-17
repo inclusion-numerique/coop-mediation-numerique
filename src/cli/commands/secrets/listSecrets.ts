@@ -1,6 +1,6 @@
-import { listSecrets as configListSecrets } from '@app/web/configuration/secrets/listSecrets'
-import { output } from '@app/web/libraries/console/output'
 import { Command } from '@commander-js/extra-typings'
+import { listSecrets as configListSecrets } from '@/configuration/secrets/listSecrets'
+import { output } from '@/libraries/console/output'
 
 /**
  * This command outputs available secrets names

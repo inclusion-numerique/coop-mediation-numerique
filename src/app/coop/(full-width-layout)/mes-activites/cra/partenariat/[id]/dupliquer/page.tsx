@@ -1,12 +1,12 @@
-import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
-import { lireUneActiviteDeCoordination } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination'
-import { formulaireDuPartenariat } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/formulaire-de-la-coordination.presenter'
+import { notFound, redirect } from 'next/navigation'
+import { authenticateCoordinateur } from '@/auth/authenticateUser'
+import { lireUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
+import { formulaireDuPartenariat } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/formulaire-de-la-coordination.presenter'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
-} from '@app/web/features/activites/domain'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { notFound, redirect } from 'next/navigation'
+} from '@/features/activites/domain'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 const DupliquerCraPartenariatPage = async ({
   searchParams,

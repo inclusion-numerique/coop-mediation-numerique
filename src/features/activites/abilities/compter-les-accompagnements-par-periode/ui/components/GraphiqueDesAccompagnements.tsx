@@ -1,10 +1,10 @@
 'use client'
 
-import { AccompagnementBarChart } from '@app/web/libs/statistiques/AccompagnementBarChart'
-import type { LabelAndCount } from '@app/web/libs/statistiques/quantifiedShare'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
+import { AccompagnementBarChart } from '@/libs/statistiques/AccompagnementBarChart'
+import type { LabelAndCount } from '@/libs/statistiques/quantifiedShare'
 
 export const GraphiqueDesAccompagnements = ({
   accompagnementsParMois,

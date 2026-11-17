@@ -1,7 +1,7 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import type { Model } from '@app/web/libraries/model'
-import type { Result } from '@app/web/libraries/result'
 import type { z } from 'zod'
+import type { Prisma } from '@/generated/prisma/client'
+import type { Model } from '@/libraries/model'
+import type { Result } from '@/libraries/result'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,

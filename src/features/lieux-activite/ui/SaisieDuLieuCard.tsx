@@ -1,8 +1,8 @@
-import { libelleDeTypologie } from '@app/web/features/lieux-activite/ui/libelles-typologie'
-import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
+import { libelleDeTypologie } from '@/features/lieux-activite/ui/libelles-typologie'
+import { addresseFromParts } from '@/utils/addresseFromParts'
 
 export type LieuSaisi = {
   readonly nom: string

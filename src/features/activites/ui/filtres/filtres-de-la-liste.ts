@@ -1,5 +1,5 @@
-import { valeursLues } from '@app/web/libraries/parametres-d-url'
 import { z } from 'zod'
+import { valeursLues } from '@/libraries/parametres-d-url'
 import {
   type CriteresDesActivites,
   parametresDesActivitesDe,

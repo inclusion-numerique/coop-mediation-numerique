@@ -1,14 +1,14 @@
 'use client'
 
-import { BadgeDePortee } from '@app/web/features/activites/ui/tags/BadgeDePortee'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import TriggerButton from '@/libs/filters/TriggerButton'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 import type { OptionDeTag } from '../options-de-filtre.presenter'
 
 export const FiltreDeTags = ({

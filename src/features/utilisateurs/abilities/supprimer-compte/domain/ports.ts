@@ -3,7 +3,7 @@ import type {
   MediateurId,
   RattachementsDuCompte,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 
 export type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
@@ -44,7 +44,7 @@ export type RetirerDesListesDeDiffusion = (
 
 export type Hash = (
   seed: string,
-) => import('@app/web/features/utilisateurs/domain').CourrielHash
+) => import('@/features/utilisateurs/domain').CourrielHash
 
 export type SupprimerComptePorts = {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille

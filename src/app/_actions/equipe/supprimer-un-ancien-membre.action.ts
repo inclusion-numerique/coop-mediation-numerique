@@ -1,18 +1,18 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { supprimerUnAncienMembre } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre'
-import { SUPPRIMER_UN_ANCIEN_MEMBRE_ERRORS } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.errors'
-import { SupprimerUnAncienMembreValidation } from '@app/web/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.validation'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { supprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre'
+import { SUPPRIMER_UN_ANCIEN_MEMBRE_ERRORS } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.errors'
+import { SupprimerUnAncienMembreValidation } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.validation'
 import {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
-import { gestionnaireDe } from '@app/web/features/equipe/implementation/session'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/equipe/domain'
+import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const supprimerUnAncienMembreAction = actionBuilder()
   .use(withAuth())

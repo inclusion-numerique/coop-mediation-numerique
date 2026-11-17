@@ -1,5 +1,5 @@
-import { projectSlug, region } from '@app/web/configuration/projet/config'
 import axios, { type AxiosInstance } from 'axios'
+import { projectSlug, region } from '@/configuration/projet/config'
 import type { RegistryImage, RegistryTag } from './registryRetention'
 
 const DEFAULT_SCW_REGION = 'fr-par'

@@ -1,22 +1,3 @@
-import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import { Email } from '@app/web/features/beneficiaire/domain/email'
-import { Genre } from '@app/web/features/beneficiaire/domain/genre'
-import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Notes } from '@app/web/features/beneficiaire/domain/notes'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
-import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
-import type {
-  Prisma,
-  Genre as PrismaGenre,
-  StatutSocial as PrismaStatutSocial,
-  TrancheAge as PrismaTrancheAge,
-} from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
 import {
   DEFAULT_PAGE,
   PageSize,
@@ -24,6 +5,25 @@ import {
   type Sort,
   type SortDirection,
 } from '@arckit/resultset'
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { Genre } from '@/features/beneficiaire/domain/genre'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Notes } from '@/features/beneficiaire/domain/notes'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { Telephone } from '@/features/beneficiaire/domain/telephone'
+import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import type {
+  Prisma,
+  Genre as PrismaGenre,
+  StatutSocial as PrismaStatutSocial,
+  TrancheAge as PrismaTrancheAge,
+} from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import type {
   BeneficiaireListItem,
   BeneficiaireSortField,

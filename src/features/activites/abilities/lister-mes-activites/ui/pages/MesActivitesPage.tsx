@@ -1,8 +1,8 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId } from '@app/web/utils/skipLinks'
 import type { ReactNode } from 'react'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import CoopPageContainer from '@/app/coop/CoopPageContainer'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { contentId } from '@/utils/skipLinks'
 import { DetailDeLActiviteModale } from '../../../../ui/detail/DetailDeLActiviteModale'
 import { ChoixDeLaVue } from '../components/ChoixDeLaVue'
 

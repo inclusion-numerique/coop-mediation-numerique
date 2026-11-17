@@ -1,36 +1,33 @@
-import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
-import { reglerLePartageStatistiquesAction } from '@app/web/app/_actions/mediateurs/regler-le-partage-statistiques.action'
-import { rechercherLesLieuxDeMesStatistiquesAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
-import { mesStatistiques } from '@app/web/composition/statistiques/mes-statistiques'
+import type { Metadata } from 'next'
+import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activites/rechercher-employeuses-des-activites.action'
+import { reglerLePartageStatistiquesAction } from '@/app/_actions/mediateurs/regler-le-partage-statistiques.action'
+import { rechercherLesLieuxDeMesStatistiquesAction } from '@/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { filtreDeLieu } from '@/composition/statistiques/barre'
+import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
 import {
   impressionDesStatistiques,
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@app/web/composition/statistiques/sections'
+} from '@/composition/statistiques/sections'
 import {
   nombreDAccompagnements,
   toutesLesStatistiques,
-} from '@app/web/composition/statistiques/statistiques-fournies'
-import { consulterMesLiensDePartage } from '@app/web/features/mediateurs/abilities/consulter-mes-liens-de-partage'
-import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
-import { PartageStatistiques } from '@app/web/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
-import {
-  CoordinateurId,
-  MediateurId,
-} from '@app/web/features/mediateurs/domain'
+} from '@/composition/statistiques/statistiques-fournies'
+import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
+import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
+import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
+import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
-import { MesStatistiques } from '@app/web/features/statistiques/ui/pages/MesStatistiques'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { Metadata } from 'next'
+} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
+import { MesStatistiques } from '@/features/statistiques/ui/pages/MesStatistiques'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),

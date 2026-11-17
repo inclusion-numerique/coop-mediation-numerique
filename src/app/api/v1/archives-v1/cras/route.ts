@@ -1,26 +1,26 @@
+import { routeBuilder } from '@arckit/nextjs/route'
+import { NextResponse } from 'next/server'
 import {
   cursorListMeta,
   cursorPageHref,
   JsonApiCursorPaginationQueryParamsValidation,
   prismaCursorPagination,
-} from '@app/web/app/api/v1/CursorPagination'
+} from '@/app/api/v1/CursorPagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@app/web/app/api/v1/JsonApiTypes'
+} from '@/app/api/v1/JsonApiTypes'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@app/web/app/api/v1/middlewares'
+} from '@/app/api/v1/middlewares'
 import {
   type CraV1Attributes,
   crasV1Exposes,
   craV1Expose,
   curseurDeCraV1,
-} from '@app/web/features/activites/abilities/exposer-les-cras-v1'
-import { routeBuilder } from '@arckit/nextjs/route'
-import { NextResponse } from 'next/server'
+} from '@/features/activites/abilities/exposer-les-cras-v1'
 
 /**
  * @openapi

@@ -1,9 +1,9 @@
+import { describe, expect, it } from 'vitest'
 import {
   CoordinateurId,
   MediateurId,
   type RattachementsDuCompte,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import { effacementPlan } from './effacement-plan'
 import { EffacementStep } from './effacement-report'
 

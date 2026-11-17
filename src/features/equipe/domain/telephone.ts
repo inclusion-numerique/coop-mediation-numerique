@@ -1,6 +1,6 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
-import { telephoneCanonique } from '@app/web/libraries/telephone'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
+import { telephoneCanonique } from '@/libraries/telephone'
 
 export const Telephone = defineModel(
   z

@@ -1,6 +1,6 @@
-import { pluriel } from '@app/web/libraries/pluriel'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { pluriel } from '@/libraries/pluriel'
 import type { StatistiquesEquipe } from '../../domain'
 import EquipeVide from './EquipeVide'
 import MonEquipeHeader from './MonEquipeHeader'

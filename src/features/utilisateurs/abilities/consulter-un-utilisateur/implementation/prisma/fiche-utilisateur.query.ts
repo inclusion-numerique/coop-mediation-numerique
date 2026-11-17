@@ -1,9 +1,9 @@
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
-import { ProfilInscription } from '@app/web/features/inscription/domain'
-import { identiteToDomain } from '@app/web/features/utilisateurs/db/identite.transfer'
+} from '@/features/employeuse/server'
+import { ProfilInscription } from '@/features/inscription/domain'
+import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
   coordinateurEstVierge,
@@ -18,10 +18,10 @@ import {
   statutDe,
   telephoneEnregistrable,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { Siret } from '@app/web/libraries/insee'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/utilisateurs/domain'
+import type { Prisma } from '@/generated/prisma/client'
+import { Siret } from '@/libraries/insee'
+import { prismaClient } from '@/prismaClient'
 import type { FicheUtilisateur } from '../../domain'
 
 const ficheSelect = {

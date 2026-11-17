@@ -1,25 +1,25 @@
-import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
+import { sessionUserSelect } from '@/auth/getSessionUserFromSessionToken'
 import {
   fixtureCrasCollectifs,
   fixtureCrasDemarchesAdministratives,
   fixtureCrasIndividuels,
-} from '@app/web/fixtures/activites'
-import { fixtureBeneficiaires } from '@app/web/fixtures/beneficiaires'
+} from '@/fixtures/activites'
+import { fixtureBeneficiaires } from '@/fixtures/beneficiaires'
 import {
   garantirAffectationEmployeuse,
   garantirAffectationIdposte,
   garantirContratRompu,
   refleterCoordinateurDansMain,
-} from '@app/web/fixtures/personnesMainConseillerNumerique'
+} from '@/fixtures/personnesMainConseillerNumerique'
 import {
   Coordination,
   upsertCoordinationFixtures,
-} from '@app/web/fixtures/upsertCoordinationFixture'
-import { upsertCraFixtures } from '@app/web/fixtures/upsertCraFixtures'
-import { sansDrapeauDispositif } from '@app/web/fixtures/upsertUserFixture'
-import { coordinations, fixtureUsers } from '@app/web/fixtures/users'
-import type { Session } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/fixtures/upsertCoordinationFixture'
+import { upsertCraFixtures } from '@/fixtures/upsertCraFixtures'
+import { sansDrapeauDispositif } from '@/fixtures/upsertUserFixture'
+import { coordinations, fixtureUsers } from '@/fixtures/users'
+import type { Session } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 
 const isCoordinateur = (resetedUser: {
   coordinateur: { id: string } | null

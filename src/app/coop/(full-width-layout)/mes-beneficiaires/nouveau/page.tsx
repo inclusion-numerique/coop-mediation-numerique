@@ -1,11 +1,11 @@
-import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { CreerBeneficiairePage } from '@app/web/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
-import type { SaisieEnCours } from '@app/web/features/beneficiaire/forms/saisie-en-cours'
+import { creerBeneficiaireAction } from '@/app/_actions/beneficiaire/creer-beneficiaire.action'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { CreerBeneficiairePage } from '@/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
+import type { SaisieEnCours } from '@/features/beneficiaire/forms/saisie-en-cours'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@app/web/utils/encodeSerializableState'
+} from '@/utils/encodeSerializableState'
 
 const PageCreerBeneficiaire = async ({
   searchParams,

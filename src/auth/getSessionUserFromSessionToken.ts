@@ -1,9 +1,9 @@
-import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { personneEmployeuseSelect } from '@app/web/features/employeuse/server'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
-import { registerLastSeen } from '@app/web/security/registerLastSeen'
+import { serializePrismaSessionUser } from '@/auth/serializePrismaSessionUser'
+import type { SessionUser } from '@/auth/sessionUser'
+import { personneEmployeuseSelect } from '@/features/employeuse/server'
+import type { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
+import { registerLastSeen } from '@/security/registerLastSeen'
 
 export const sessionUserSelect = {
   id: true,

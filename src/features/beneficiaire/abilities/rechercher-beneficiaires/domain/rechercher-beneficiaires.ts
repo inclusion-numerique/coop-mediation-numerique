@@ -1,8 +1,8 @@
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import type { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import type { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import type { Nom } from '@/features/beneficiaire/domain/nom'
+import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 
 /**
  * Projection minimale d'un bénéficiaire en vue d'une sélection

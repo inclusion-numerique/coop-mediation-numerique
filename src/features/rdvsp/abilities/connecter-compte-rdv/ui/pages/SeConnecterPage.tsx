@@ -1,11 +1,11 @@
-import BackButton from '@app/web/components/BackButton'
-import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import Button from '@codegouvfr/react-dsfr/Button'
+import BackButton from '@/components/BackButton'
+import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
-} from '@app/web/features/rdvsp/oauth'
-import Button from '@codegouvfr/react-dsfr/Button'
+} from '@/features/rdvsp/oauth'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const SeConnecterPage = () => {

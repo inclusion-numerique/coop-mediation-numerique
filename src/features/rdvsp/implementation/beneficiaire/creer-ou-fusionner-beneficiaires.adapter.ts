@@ -2,9 +2,9 @@ import {
   creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
   type ExternalUserToMerge,
   type MergedBeneficiaire,
-} from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
-import type { RdvUser } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import type { RdvUser } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 
 // Adaptateur (anti-corruption côté rdvsp) : traduit un usager RDV Service Public
 // en primitifs pour le port bénéficiaire. rdvsp ne connaît ni les value objects
@@ -20,7 +20,7 @@ export type RdvUserForMerge = Pick<
   | 'birthDate'
 >
 
-export type { MergedBeneficiaire } from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+export type { MergedBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 
 const toExternalUser = (rdvUser: RdvUserForMerge): ExternalUserToMerge => ({
   rdvUserId: rdvUser.id,

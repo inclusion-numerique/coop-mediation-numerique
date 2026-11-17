@@ -1,7 +1,7 @@
-import AdministrationInfoCard from '@app/web/libs/ui/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@app/web/libs/ui/administration/AdministrationInlineLabelsValues'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
+import AdministrationInlineLabelsValues from '@/libs/ui/administration/AdministrationInlineLabelsValues'
 import type { LieuDuMediateurEnListe } from '../../domain'
 import { lieuEnAdministration } from '../lieu-en-administration.presenter'
 

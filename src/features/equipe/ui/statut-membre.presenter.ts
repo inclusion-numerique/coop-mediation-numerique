@@ -1,4 +1,4 @@
-import { dateAsDay } from '@app/web/utils/dateAsDay'
+import { dateAsDay } from '@/utils/dateAsDay'
 import type { StatutMembre } from '../domain'
 
 export const libelleStatutMembre = (statut: StatutMembre): string => {

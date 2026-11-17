@@ -1,10 +1,10 @@
+import z from 'zod'
 import {
   countTotalGenre,
   countTotalStatutSocial,
   countTotalTrancheAge,
-} from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
-import { numberToString } from '@app/web/utils/formatNumber'
-import z from 'zod'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { numberToString } from '@/utils/formatNumber'
 
 const participantsAnonymesMax = 10_000
 const participantsAnonymesMaxLocaleString = numberToString(

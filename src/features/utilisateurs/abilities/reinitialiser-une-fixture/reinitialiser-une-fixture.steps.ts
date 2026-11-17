@@ -1,7 +1,7 @@
 import assert from 'node:assert'
-import { semerUnCompteDeListe } from '@app/web/features/utilisateurs/utilisateurs.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { reinitialiserUneFixture } from './commands/reinitialiser-une-fixture'
 
 const reinitialisation: {

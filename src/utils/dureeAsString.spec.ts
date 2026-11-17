@@ -1,5 +1,5 @@
-import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { describe, expect, test } from 'vitest'
+import { dureeAsString } from '@/utils/dureeAsString'
 
 describe('dureeAsString', () => {
   const cases = [

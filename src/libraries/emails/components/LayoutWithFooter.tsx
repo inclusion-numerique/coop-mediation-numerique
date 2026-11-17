@@ -1,8 +1,3 @@
-import Footer from '@app/web/libraries/emails/components/Footer'
-import Head from '@app/web/libraries/emails/components/Head'
-import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
-import { backgroundColor } from '@app/web/libraries/emails/styles'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   Mjml,
   MjmlBody,
@@ -13,6 +8,11 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { PropsWithChildren, ReactNode } from 'react'
+import Footer from '@/libraries/emails/components/Footer'
+import Head from '@/libraries/emails/components/Head'
+import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
+import { backgroundColor } from '@/libraries/emails/styles'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 /**
  * With headerLogoOnly the logo will be centered and you can include title in children

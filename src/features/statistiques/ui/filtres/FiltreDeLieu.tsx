@@ -1,31 +1,31 @@
 'use client'
 
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useSelector } from '@tanstack/react-form'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
 import {
   labelsToOptions,
   type SelectOption,
-} from '@app/web/libraries/ui/components/Form/utils/options'
+} from '@/libraries/ui/components/Form/utils/options'
 import {
   Options,
   type OptionsData,
-} from '@app/web/libraries/ui/components/Primitives/Options'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
+} from '@/libraries/ui/components/Primitives/Options'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import { FilterSelection } from '@/libs/filters/FilterSelection'
 import {
   availableOptionsIn,
   matchingOption,
   resetPagination,
   update,
-} from '@app/web/libs/filters/helpers'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
-import { inject } from '@app/web/libs/injection/client'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { useSelector } from '@tanstack/react-form'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+} from '@/libs/filters/helpers'
+import TriggerButton from '@/libs/filters/TriggerButton'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
+import { inject } from '@/libs/injection/client'
 import type { LieuxChoisisDeLaBarre } from './lieux-choisis'
 import {
   type GenreDuFiltreDeLieu,

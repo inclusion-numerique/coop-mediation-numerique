@@ -160,7 +160,7 @@ jobs:
           scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
           scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
       - name: Load fixtures
-        run: pnpm -F @app/fixtures load
+        run: pnpm fixtures:load
       - name: Run web integration tests with coverage
         run: |
           set -a

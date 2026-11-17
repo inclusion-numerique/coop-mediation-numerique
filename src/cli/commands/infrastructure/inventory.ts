@@ -1,16 +1,3 @@
-import { computeBranchNamespace } from '@app/web/cli/branchNamespace'
-import { octokit, owner, repo } from '@app/web/cli/github'
-import {
-  previewDeletionRunsUrl,
-  triggerPreviewDeletion,
-} from '@app/web/cli/triggerPreviewDeletion'
-import {
-  containerNamespaceName,
-  databaseInstanceName,
-  projectSlug,
-  region,
-} from '@app/web/configuration/projet/config'
-import { output, outputError } from '@app/web/libraries/console/output'
 import { Command } from '@commander-js/extra-typings'
 import { select } from '@inquirer/prompts'
 import axios from 'axios'
@@ -18,6 +5,19 @@ import Table from 'cli-table3'
 import { differenceInDays, format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import pc from 'picocolors'
+import { computeBranchNamespace } from '@/cli/branchNamespace'
+import { octokit, owner, repo } from '@/cli/github'
+import {
+  previewDeletionRunsUrl,
+  triggerPreviewDeletion,
+} from '@/cli/triggerPreviewDeletion'
+import {
+  containerNamespaceName,
+  databaseInstanceName,
+  projectSlug,
+  region,
+} from '@/configuration/projet/config'
+import { output, outputError } from '@/libraries/console/output'
 
 const PROTECTED_BRANCHES = ['main', 'dev'] as const
 const DEFAULT_SCW_REGION = 'fr-par'

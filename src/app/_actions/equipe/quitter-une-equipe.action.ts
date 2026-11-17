@@ -1,17 +1,17 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth, withMediateur } from '@app/web/features/authentification'
-import { quitterUneEquipe } from '@app/web/features/equipe/abilities/quitter-une-equipe'
-import { QUITTER_UNE_EQUIPE_ERRORS } from '@app/web/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.errors'
-import { QuitterUneEquipeValidation } from '@app/web/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.validation'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth, withMediateur } from '@/features/authentification'
+import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe'
+import { QUITTER_UNE_EQUIPE_ERRORS } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.errors'
+import { QuitterUneEquipeValidation } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.validation'
 import {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
-} from '@app/web/features/equipe/domain'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+} from '@/features/equipe/domain'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const quitterUneEquipeAction = actionBuilder()
   .use(withAuth())

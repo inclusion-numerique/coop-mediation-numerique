@@ -1,15 +1,15 @@
-import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import { optionsDesFiltres } from '@app/web/composition/utilisateurs/options-des-filtres'
+import type { NextRequest } from 'next/server'
+import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,
-} from '@app/web/features/utilisateurs/abilities/exporter-les-utilisateurs'
-import { filtresUtilisateurs } from '@app/web/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@app/web/features/utilisateurs/ui'
-import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { NextRequest } from 'next/server'
+} from '@/features/utilisateurs/abilities/exporter-les-utilisateurs'
+import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { toQueryParts } from '@/libs/data-table/toQueryParts'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

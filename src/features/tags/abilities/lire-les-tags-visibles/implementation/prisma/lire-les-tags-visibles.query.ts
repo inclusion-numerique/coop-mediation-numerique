@@ -1,5 +1,5 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
+import { Prisma } from '@/generated/prisma/client'
+import { prismaClient } from '@/prismaClient'
 import { type TagRow, tagToDomain } from '../../../../db/tag.transfer'
 import {
   COLONNES_DU_TAG,

@@ -1,14 +1,14 @@
 import {
   clientApiSelect,
   versClientApi,
-} from '@app/web/features/clients-api/db/client-api.transfer'
+} from '@/features/clients-api/db/client-api.transfer'
 import {
   type ClientApi,
   ClientApiId,
   ClientApiIntrouvable,
-} from '@app/web/features/clients-api/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/clients-api/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 export const consulterUnClientApi = async (
   clientApiId: string,

@@ -1,14 +1,16 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { subDays } from 'date-fns'
 import {
   listerLesMembres,
   type MembresDeLEquipe,
-} from '@app/web/features/equipe/abilities/lister-les-membres'
+} from '@/features/equipe/abilities/lister-les-membres'
 import {
   CoordinateurId,
   criteresEquipe,
   type Lecteur,
   type ParametresDeRecherche,
-} from '@app/web/features/equipe/domain'
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   type MediateurSeme,
@@ -16,9 +18,7 @@ import {
   semerUneAdhesion,
   semerUneInvitation,
   semerUnMediateurDEquipe,
-} from '@app/web/features/equipe/equipe.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { subDays } from 'date-fns'
+} from '@/features/equipe/equipe.cucumber'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

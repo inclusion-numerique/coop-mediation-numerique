@@ -1,9 +1,9 @@
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import SelectOptionsList from '@app/web/libraries/ui/components/Form/SelectOptionsList'
 import classNames from 'classnames'
 import { ChangeEventHandler, MouseEventHandler, ReactNode } from 'react'
 import type { FieldPath } from 'react-hook-form'
 import { Control, Controller, FieldValues } from 'react-hook-form'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import SelectOptionsList from '@/libraries/ui/components/Form/SelectOptionsList'
 import type { SelectInputOption, SelectOption } from './utils/options'
 
 const OptionBadge = ({

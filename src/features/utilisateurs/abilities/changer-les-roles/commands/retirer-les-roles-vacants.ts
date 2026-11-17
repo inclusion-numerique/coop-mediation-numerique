@@ -1,4 +1,4 @@
-import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import { rolesVacants } from '../implementation'
 import { changerLesRoles } from './changer-les-roles'
 

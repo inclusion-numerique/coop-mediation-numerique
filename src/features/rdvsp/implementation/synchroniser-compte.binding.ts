@@ -1,5 +1,5 @@
-import { success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
+import { success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 import { detacherOrganisations } from '../abilities/synchroniser-compte-rdv/implementation/prisma/detacher-organisations.mutation'
 import {
   cloturerJournal,

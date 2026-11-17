@@ -1,10 +1,10 @@
 import assert from 'node:assert'
-import { consulterLeContrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat'
-import type { Contrat } from '@app/web/features/mediateurs/abilities/consulter-le-contrat/domain'
-import { UtilisateurId } from '@app/web/features/mediateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
+import type { Contrat } from '@/features/mediateurs/abilities/consulter-le-contrat/domain'
+import { UtilisateurId } from '@/features/mediateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 type CompteSeme = {
   readonly userId: string

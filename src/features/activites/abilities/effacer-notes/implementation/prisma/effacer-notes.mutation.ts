@@ -1,4 +1,4 @@
-import { prismaClient } from '@app/web/prismaClient'
+import { prismaClient } from '@/prismaClient'
 import type { CoordinateurId, MediateurId } from '../../../../domain'
 
 export const effacerNotes = async ({

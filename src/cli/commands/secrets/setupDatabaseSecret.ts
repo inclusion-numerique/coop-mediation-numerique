@@ -1,9 +1,9 @@
-import { createSecret } from '@app/web/configuration/secrets/createSecret'
-import { databasePasswordSecretName } from '@app/web/configuration/secrets/databasePasswordSecretName'
-import { generateDatabasePassword } from '@app/web/configuration/secrets/generateDatabasePassword'
-import { listSecrets } from '@app/web/configuration/secrets/listSecrets'
-import { output } from '@app/web/libraries/console/output'
 import { Argument, Command } from '@commander-js/extra-typings'
+import { createSecret } from '@/configuration/secrets/createSecret'
+import { databasePasswordSecretName } from '@/configuration/secrets/databasePasswordSecretName'
+import { generateDatabasePassword } from '@/configuration/secrets/generateDatabasePassword'
+import { listSecrets } from '@/configuration/secrets/listSecrets'
+import { output } from '@/libraries/console/output'
 
 /**
  * This command creates the database secret for the namespace argument

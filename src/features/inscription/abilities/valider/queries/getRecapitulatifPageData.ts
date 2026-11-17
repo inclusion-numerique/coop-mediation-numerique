@@ -1,11 +1,11 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { employeuseActuelleAdaptee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
-import { stepPath } from '@app/web/features/inscription/ui/step-path'
+import type { SessionUser } from '@/auth/sessionUser'
+import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
+import { stepPath } from '@/features/inscription/ui/step-path'
 import {
   listerLesLieuxPourLInscription,
   MediateurId,
-} from '@app/web/features/lieux-activite'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/lieux-activite'
+import { prismaClient } from '@/prismaClient'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
 const getInscriptionDataContext = async ({

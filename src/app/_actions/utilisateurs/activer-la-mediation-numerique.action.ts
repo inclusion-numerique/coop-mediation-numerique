@@ -1,11 +1,11 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { activerLaMediationNumerique } from '@app/web/features/utilisateurs/abilities/activer-la-mediation-numerique'
-import { ACTIVER_LA_MEDIATION_NUMERIQUE_ERRORS } from '@app/web/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.errors'
-import { fromResult } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { activerLaMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique'
+import { ACTIVER_LA_MEDIATION_NUMERIQUE_ERRORS } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.errors'
+import { fromResult } from '@/libraries/nextjs'
 
 export const activerLaMediationNumeriqueAction = actionBuilder()
   .use(withAuth())

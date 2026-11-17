@@ -1,16 +1,16 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
   creerOuFusionnerBeneficiairesDepuisUsagersExternes,
   type ExternalUserToMerge,
-} from '@app/web/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import {
   seedBeneficiaire,
   testMediateurId,
   trackBeneficiaire,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { NOM_MAX_LENGTH } from '@app/web/features/beneficiaire/domain/nom'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { NOM_MAX_LENGTH } from '@/features/beneficiaire/domain/nom'
+import { prismaClient } from '@/prismaClient'
 
 type PortResult = Awaited<
   ReturnType<

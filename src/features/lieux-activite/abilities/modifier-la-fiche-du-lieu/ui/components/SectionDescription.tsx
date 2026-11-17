@@ -1,10 +1,10 @@
 'use client'
 
-import EditCardTanStack from '@app/web/components/EditCardTanStack'
-import { RESUME_MAX_LENGTH } from '@app/web/features/lieux-activite/domain/regles-de-saisie'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
+import EditCardTanStack from '@/components/EditCardTanStack'
+import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/regles-de-saisie'
+import { useAppForm } from '@/libs/form/use-app-form'
 import { DescriptionSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { DescriptionAffichee } from '../fiche-affichee/description'

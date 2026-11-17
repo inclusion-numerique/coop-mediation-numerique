@@ -1,6 +1,6 @@
-import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
-import { removeBrevoUserContact } from '@app/web/external-apis/brevo/removeBrevoUserContact'
-import type { AdresseCourriel } from '@app/web/features/utilisateurs/domain'
+import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { removeBrevoUserContact } from '@/external-apis/brevo/removeBrevoUserContact'
+import type { AdresseCourriel } from '@/features/utilisateurs/domain'
 
 export const retirerLaSourceDesListes = async (
   courriel: AdresseCourriel,

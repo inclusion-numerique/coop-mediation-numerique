@@ -1,11 +1,11 @@
+import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   CoordinateurId,
   MediateurId,
   type Rattachements,
-} from '@app/web/features/mediateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/mediateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 

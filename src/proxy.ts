@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { NextRequest, NextResponse } from 'next/server'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 const nodeEnvironment = process.env.NODE_ENV
 const isCI = !!process.env.CI

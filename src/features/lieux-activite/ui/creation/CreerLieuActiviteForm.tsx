@@ -1,16 +1,16 @@
 'use client'
 
-import { CompleteFields } from '@app/web/components/form/CompleteFields'
-import { DisplayOnCartography } from '@app/web/features/lieux-activite/ui/DisplayOnCartography'
-import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/ui/titles/LieuAccueillantPublicTitle'
-import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useSelector } from '@tanstack/react-form'
 import { useEffect } from 'react'
+import { CompleteFields } from '@/components/form/CompleteFields'
+import { DisplayOnCartography } from '@/features/lieux-activite/ui/DisplayOnCartography'
+import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/titles/LieuAccueillantPublicTitle'
+import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { useHydrated } from '@/libs/form/use-hydrated'
 import {
   type CreerLieuActiviteFormData,
   CreerLieuActiviteFormValidation,

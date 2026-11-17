@@ -1,4 +1,4 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import type { TagDeLActivite } from './activite-de-coordination'
 import { TagInutilisable } from './errors'
 import type { TagId } from './tag-id'

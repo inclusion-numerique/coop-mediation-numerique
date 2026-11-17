@@ -1,12 +1,12 @@
 'use client'
 
-import Card from '@app/web/components/Card'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { signOut } from 'next-auth/react'
 import { useState, useTransition } from 'react'
+import Card from '@/components/Card'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { inject } from '@/libs/injection/client'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '../action/supprimer-compte.key'
 
 const SuppressionModal = createModal({

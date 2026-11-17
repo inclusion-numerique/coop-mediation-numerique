@@ -1,11 +1,11 @@
+import classNames from 'classnames'
+import { ReactNode } from 'react'
 import {
   typeActivitePictograms,
   typeActivitePluralLabels,
-} from '@app/web/features/activites/ui/libelles/type-activite'
-import { TypeActivite } from '@app/web/generated/prisma/browser'
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
-import classNames from 'classnames'
-import { ReactNode } from 'react'
+} from '@/features/activites/ui/libelles/type-activite'
+import { TypeActivite } from '@/generated/prisma/browser'
+import { numberToPercentage, numberToString } from '@/utils/formatNumber'
 
 export const StatistiqueAccompagnement = ({
   typeActivite,

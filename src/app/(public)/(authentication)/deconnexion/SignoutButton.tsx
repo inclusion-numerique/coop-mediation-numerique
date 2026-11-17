@@ -1,9 +1,9 @@
 'use client'
 
-import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
 const SignoutButton = ({
   children = 'Se déconnecter',

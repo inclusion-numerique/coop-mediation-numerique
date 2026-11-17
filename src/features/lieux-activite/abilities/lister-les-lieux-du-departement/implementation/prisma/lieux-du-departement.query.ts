@@ -1,8 +1,8 @@
-import { Prisma } from '@app/web/generated/prisma/client'
-import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
-import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
-import { prismaClient } from '@app/web/prismaClient'
-import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
+import { Prisma } from '@/generated/prisma/client'
+import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
+import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
+import { prismaClient } from '@/prismaClient'
+import { orderItemsByIndexedValues } from '@/utils/orderItemsByIndexedValues'
 import type { LieuEnListe } from '../../../../domain/lieu-en-liste'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {

@@ -1,8 +1,8 @@
 import assert from 'node:assert'
-import { listerLesClientsApi } from '@app/web/features/clients-api/abilities/lister-les-clients-api'
-import { clientSeme } from '@app/web/features/clients-api/clients-api.cucumber'
-import type { ClientApi } from '@app/web/features/clients-api/domain'
 import { Then, When } from '@cucumber/cucumber'
+import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
+import { clientSeme } from '@/features/clients-api/clients-api.cucumber'
+import type { ClientApi } from '@/features/clients-api/domain'
 
 const liste: { clients: readonly ClientApi[] } = { clients: [] }
 

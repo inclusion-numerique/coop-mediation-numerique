@@ -1,11 +1,11 @@
-import { useOnDiff } from '@app/web/hooks/useOnDiff'
-import RichRadioFormField, {
-  RichRadioFormFieldProps,
-} from '@app/web/libraries/ui/components/Form/RichRadioFormField'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import { useOnDiff } from '@/hooks/useOnDiff'
+import RichRadioFormField, {
+  RichRadioFormFieldProps,
+} from '@/libraries/ui/components/Form/RichRadioFormField'
 import { RichRadioOption } from './utils/options'
 
 const objectFormValidation = z

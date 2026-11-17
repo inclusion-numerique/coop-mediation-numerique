@@ -1,16 +1,16 @@
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import CoopPageContainer from '@/app/coop/CoopPageContainer'
+import { metadataTitle } from '@/app/metadataTitle'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
 import {
   rechercherDesLieux,
   triDesLieux,
-} from '@app/web/features/lieux-activite/abilities/lister-tous-les-lieux'
+} from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
 import {
   LieuxDataTable,
   type LieuxDataTableSearchParams,
   LieuxPage,
-} from '@app/web/features/lieux-activite/abilities/lister-tous-les-lieux/ui'
-import { getDataTableOrderBy } from '@app/web/libs/data-table/getDataTableOrderBy'
+} from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui'
+import { getDataTableOrderBy } from '@/libs/data-table/getDataTableOrderBy'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),

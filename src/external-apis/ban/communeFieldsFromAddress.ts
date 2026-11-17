@@ -1,5 +1,5 @@
-import { type Feature, searchAdresse } from '@app/web/external-apis/apiAdresse'
-import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import { type Feature, searchAdresse } from '@/external-apis/apiAdresse'
+import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 
 export type CommuneFields = {
   commune: string

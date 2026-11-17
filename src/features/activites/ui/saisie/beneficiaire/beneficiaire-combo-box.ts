@@ -1,7 +1,7 @@
-import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import type { SelectedItemsData } from '@app/web/libraries/ui/components/Primitives/SelectedItems'
-import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { inject } from '@app/web/libs/injection/client'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { inject } from '@/libs/injection/client'
 import {
   type BeneficiaireDuCra,
   beneficiaireDuCra,

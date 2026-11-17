@@ -1,14 +1,14 @@
-import type { LigneUtilisateur } from '@app/web/features/utilisateurs/domain'
-import type { LibelleDeFiltre } from '@app/web/features/utilisateurs/ui'
+import Excel from 'exceljs'
+import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
+import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
 import {
   addExportMetadata,
   type WorksheetUser,
-} from '@app/web/libs/worksheet/addExportMetadata'
-import { addFilters } from '@app/web/libs/worksheet/addFilters'
-import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
-import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
-import Excel from 'exceljs'
+} from '@/libs/worksheet/addExportMetadata'
+import { addFilters } from '@/libs/worksheet/addFilters'
+import { addTitleRow } from '@/libs/worksheet/addTitleRow'
+import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
+import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
 import { colonnesDeLExport } from './colonnes-de-l-export'
 
 const filtresDisponibles = [

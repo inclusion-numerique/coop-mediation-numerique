@@ -1,24 +1,24 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type ActivitesDeCoordinationListees,
   listerLesActivitesDeCoordination,
   type OptionsDeFiltre,
   optionsDeFiltre,
-} from '@app/web/features/activites/abilities/lister-les-activites-de-coordination'
+} from '@/features/activites/abilities/lister-les-activites-de-coordination'
 import {
   coordinationsSemees,
   semerDesAnimationsDeJanvier,
   semerDesCoordinations,
-} from '@app/web/features/activites/activites.cucumber'
+} from '@/features/activites/activites.cucumber'
 import {
   CoordinateurId,
   criteresDesCoordinations,
   LignesParPage,
   NumeroDePage,
   type ParametresDesCoordinations,
-} from '@app/web/features/activites/domain'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/activites/domain'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 let listees: ActivitesDeCoordinationListees | undefined
 let options: OptionsDeFiltre | undefined

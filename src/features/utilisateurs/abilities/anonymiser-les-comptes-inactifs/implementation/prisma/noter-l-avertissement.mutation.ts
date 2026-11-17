@@ -1,5 +1,5 @@
-import type { UtilisateurId } from '@app/web/features/utilisateurs/domain'
-import { prismaClient } from '@app/web/prismaClient'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import { prismaClient } from '@/prismaClient'
 
 export const noterLAvertissement = async (
   utilisateurId: UtilisateurId,

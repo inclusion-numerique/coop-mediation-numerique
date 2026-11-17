@@ -1,6 +1,6 @@
-import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import type { ReactNode } from 'react'
+import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
+import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
 import { LIGNES_PAR_PAGE } from '../../../../domain'
 import { CarteDActivite } from '../../../../ui/carte/CarteDActivite'
 import { CarteDeRendezVous } from '../../../../ui/carte/CarteDeRendezVous'

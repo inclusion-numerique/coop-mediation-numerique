@@ -1,14 +1,14 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
 import {
   anonymiserLesComptesInactifs,
   type CompteExamine,
-} from '@app/web/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
+} from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
 import {
   type CompteInactifSeme,
   semerUnCompteInactif,
-} from '@app/web/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/utilisateurs/utilisateurs.cucumber'
+import { prismaClient } from '@/prismaClient'
 
 const maintenant = new Date('2026-10-20T01:00:00.000Z')
 

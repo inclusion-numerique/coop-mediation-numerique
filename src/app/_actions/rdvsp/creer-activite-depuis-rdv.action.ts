@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { urlDeSaisieDepuisUnRendezVous } from '@app/web/features/activites/implementation/url-de-saisie-depuis-un-rendez-vous'
-import { withAuth, withMediateur } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
-import { CreerActiviteDepuisRdvValidation } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
-import { MediateurRedacteurId } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
-import { creerActiviteDepuisRdvAvec } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { fromResult, withInput } from '@app/web/libraries/nextjs'
+import { actionBuilder } from '@/configuration/nextjs'
+import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementation/url-de-saisie-depuis-un-rendez-vous'
+import { withAuth, withMediateur } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
+import { CreerActiviteDepuisRdvValidation } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
+import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
+import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { fromResult, withInput } from '@/libraries/nextjs'
 
 const creerActiviteDepuisRdv = creerActiviteDepuisRdvAvec(
   urlDeSaisieDepuisUnRendezVous,

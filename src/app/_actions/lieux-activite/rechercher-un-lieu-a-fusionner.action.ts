@@ -1,10 +1,10 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAdmin, withAuth } from '@app/web/features/authentification'
-import { lieuxAFusionner } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
-import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { lieuxAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { withInput } from '@/libraries/nextjs'
 
 /**
  * Les suggestions de l'écran de fusion. Réservées à l'administration, comme la

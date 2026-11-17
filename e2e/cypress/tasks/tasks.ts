@@ -1,19 +1,19 @@
-import { createInvitation } from '@app/e2e/tasks/handlers/createInvitation'
-import { deleteAllData } from '@app/e2e/tasks/handlers/deleteAllData'
+import { createInvitation } from '@e2e/tasks/handlers/createInvitation'
+import { deleteAllData } from '@e2e/tasks/handlers/deleteAllData'
 import {
   connectRdvAccountFor,
   getRdvAccountFor,
   reglageRdvsDansActivitesFor,
   seedRdvsFor,
-} from '@app/e2e/tasks/handlers/rdv.tasks'
-import { resetFixtures } from '@app/e2e/tasks/handlers/resetFixtures'
+} from '@e2e/tasks/handlers/rdv.tasks'
+import { resetFixtures } from '@e2e/tasks/handlers/resetFixtures'
 import {
   createCoordinateurFor,
   createSession,
   createUser,
   deleteSession,
   deleteUser,
-} from '@app/e2e/tasks/handlers/user.tasks'
+} from '@e2e/tasks/handlers/user.tasks'
 
 /**
  * Export of custom tasks that can be run with cy.execute() type safe custom command

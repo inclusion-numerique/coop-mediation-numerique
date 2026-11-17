@@ -1,34 +1,5 @@
 'use client'
 
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import {
-  CommuneComboBox,
-  CommuneOptions,
-} from '@app/web/features/adresse/combo-box/CommuneComboBox'
-import {
-  ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
-  ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
-} from '@app/web/features/beneficiaire/domain/annee-naissance'
-import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
-import {
-  genreOptions,
-  statutSocialOptions,
-  trancheAgeOptions,
-} from '@app/web/features/beneficiaire/forms/beneficiaire-options'
-import {
-  BeneficiaireData,
-  BeneficiaireValidation,
-} from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
-import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
-import type { ServerActionResult } from '@app/web/libraries/nextjs'
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclaimer'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import Link from 'next/link'
@@ -36,6 +7,35 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import {
+  CommuneComboBox,
+  CommuneOptions,
+} from '@/features/adresse/combo-box/CommuneComboBox'
+import {
+  ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
+  ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
+} from '@/features/beneficiaire/domain/annee-naissance'
+import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import {
+  genreOptions,
+  statutSocialOptions,
+  trancheAgeOptions,
+} from '@/features/beneficiaire/forms/beneficiaire-options'
+import {
+  BeneficiaireData,
+  BeneficiaireValidation,
+} from '@/features/beneficiaire/forms/beneficiaire-validation'
+import FormSection from '@/features/beneficiaire/forms/FormSection'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import RequiredFieldsDisclaimer from '@/libraries/ui/components/Form/RequiredFieldsDisclaimer'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
 import type { SaisieEnCours } from './saisie-en-cours'
 
 // Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses

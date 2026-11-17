@@ -5,8 +5,8 @@ import {
   type RoleFiltre,
   rolesFiltres,
   statutDuFiltre,
-} from '@app/web/features/utilisateurs/domain'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+} from '@/features/utilisateurs/domain'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { libelleDuStatut } from './statut-compte.presenter'
 
 export type TypeDeFiltre =

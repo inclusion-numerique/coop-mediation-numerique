@@ -1,13 +1,13 @@
-import type { BeneficiaireInformations } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/domain/consulter-beneficiaire'
-import BeneficiaireCoordonnees from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireCoordonnees'
-import BeneficiaireInformationsComplementaires from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireInformationsComplementaires'
-import BeneficiaireNotes from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireNotes'
-import BeneficiairePageNavigationBar from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiairePageNavigationBar'
+import type { ReactNode } from 'react'
+import type { BeneficiaireInformations } from '@/features/beneficiaire/abilities/consulter-beneficiaire/domain/consulter-beneficiaire'
+import BeneficiaireCoordonnees from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireCoordonnees'
+import BeneficiaireInformationsComplementaires from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireInformationsComplementaires'
+import BeneficiaireNotes from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireNotes'
+import BeneficiairePageNavigationBar from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiairePageNavigationBar'
 import BeneficiaireThematiques, {
   type ThematiqueAbordee,
-} from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireThematiques'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
-import type { ReactNode } from 'react'
+} from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireThematiques'
+import { dateAsDay } from '@/utils/dateAsDay'
 
 export type BeneficiaireInformationsPageData = {
   beneficiaire: BeneficiaireInformations

@@ -1,10 +1,10 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { searchStructureEmployeuseCombined } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/recherche-structure-employeuse'
-import { withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { searchStructureEmployeuseCombined } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/recherche-structure-employeuse'
+import { withInput } from '@/libraries/nextjs'
 
 /**
  * Recherche d'employeuse : structures déjà enregistrées et annuaire des

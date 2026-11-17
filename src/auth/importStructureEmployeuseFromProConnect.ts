@@ -1,9 +1,9 @@
-import type { RattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse'
+import type { RattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
-import { prismaClient } from '@app/web/prismaClient'
+} from '@/features/employeuse/server'
+import { prismaClient } from '@/prismaClient'
 
 export type ImportStructureEmployeuseFromProConnectResult = {
   success: boolean

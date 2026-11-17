@@ -1,16 +1,16 @@
-import { getStructureCartographieLink } from '@app/web/libraries/cartographie-nationale'
+import Badge from '@codegouvfr/react-dsfr/Badge'
+import Button from '@codegouvfr/react-dsfr/Button'
+import Tag from '@codegouvfr/react-dsfr/Tag'
+import { getStructureCartographieLink } from '@/libraries/cartographie-nationale'
 import type {
   DataTableColumn,
   DataTableConfiguration,
   DataTableFilterValues,
   DataTableSearchParams,
-} from '@app/web/libs/data-table/DataTableConfiguration'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { optionalNumberToString } from '@app/web/utils/formatNumber'
-import Badge from '@codegouvfr/react-dsfr/Badge'
-import Button from '@codegouvfr/react-dsfr/Button'
-import Tag from '@codegouvfr/react-dsfr/Tag'
+} from '@/libs/data-table/DataTableConfiguration'
+import { dateAsDayAndTime } from '@/utils/dateAsDayAndTime'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { optionalNumberToString } from '@/utils/formatNumber'
 import type { LigneDeLaListe } from './ligne-de-la-liste'
 
 export type ColonneTriable =

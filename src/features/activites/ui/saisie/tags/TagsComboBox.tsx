@@ -1,13 +1,13 @@
-import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
 import {
   type Tag,
   tagDuFormulaire,
-} from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { BadgeDePortee } from '@app/web/features/activites/ui/tags/BadgeDePortee'
-import { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
-import { SelectedItemsData } from '@app/web/libraries/ui/components/Primitives/SelectedItems'
-import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { inject } from '@app/web/libs/injection/client'
+} from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
+import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
+import { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { inject } from '@/libs/injection/client'
 
 const itemToKey = (item: { id: string }): string => item.id
 

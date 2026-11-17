@@ -1,10 +1,10 @@
-import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
+import type { Meta, StoryObj } from '@storybook/react'
+import { expect, within } from 'storybook/test'
+import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
-} from '@app/web/fixtures/beneficiaires'
-import type { Meta, StoryObj } from '@storybook/react'
-import { expect, within } from 'storybook/test'
+} from '@/fixtures/beneficiaires'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,
 } from './ViewBeneficiaireInformationsPage'

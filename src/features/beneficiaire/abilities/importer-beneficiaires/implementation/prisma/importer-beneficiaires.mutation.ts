@@ -1,8 +1,8 @@
-import { beneficiaireFromDomain } from '@app/web/features/beneficiaire/db'
-import { toBeneficiaireIdentifie } from '@app/web/features/beneficiaire/domain/beneficiaire'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { beneficiaireFromDomain } from '@/features/beneficiaire/db'
+import { toBeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { prismaClient } from '@/prismaClient'
 import type { ImporterBeneficiaires } from '../../domain/importer-beneficiaires'
 
 export const importerBeneficiaires: ImporterBeneficiaires = async ({

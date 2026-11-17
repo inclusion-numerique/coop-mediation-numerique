@@ -1,10 +1,10 @@
 'use client'
 
-import { supprimerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/supprimer-beneficiaires.action'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
+import { createToast } from '@/libraries/ui/toast/createToast'
 import { DeleteBeneficiaireModal } from './DeleteBeneficiaireModal'
 
 const DeleteBeneficiaireModalContent = ({

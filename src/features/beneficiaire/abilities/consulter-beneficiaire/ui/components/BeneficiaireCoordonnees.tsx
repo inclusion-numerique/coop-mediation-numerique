@@ -1,5 +1,5 @@
-import InfoLabelValue from '@app/web/components/InfoLabelValue'
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
+import InfoLabelValue from '@/components/InfoLabelValue'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
 
 const BeneficiaireCoordonnees = ({

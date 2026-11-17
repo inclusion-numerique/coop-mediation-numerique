@@ -1,8 +1,8 @@
 import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { getDirname } from '@app/web/libraries/chemins/dirname'
-import { output } from '@app/web/libraries/console/output'
 import { Command } from '@commander-js/extra-typings'
+import { getDirname } from '@/libraries/chemins/dirname'
+import { output } from '@/libraries/console/output'
 import {
   optionalInfrastructureVariables,
   requiredInfrastructureVariables,

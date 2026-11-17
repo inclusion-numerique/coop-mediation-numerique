@@ -2,7 +2,7 @@ import type {
   AdresseCourriel,
   Prenom,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 
 export type AvertirDeLaSuppression = (avertissement: {
   readonly courriel: AdresseCourriel

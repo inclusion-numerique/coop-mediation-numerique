@@ -1,5 +1,5 @@
-import { tagsColor } from '@app/web/libs/statistiques/couleurs'
-import { ProgressItemList } from '@app/web/libs/statistiques/ProgressItemList'
+import { tagsColor } from '@/libs/statistiques/couleurs'
+import { ProgressItemList } from '@/libs/statistiques/ProgressItemList'
 import type { parTagPresentes } from '../par-tag.presenter'
 
 const desc = (

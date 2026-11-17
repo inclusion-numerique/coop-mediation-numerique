@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
   CoordinateurId,
@@ -9,8 +10,7 @@ import {
   SANS_CONTRAT,
   situationDansLeDispositif,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/utilisateurs/domain'
 import { contactsASynchroniser } from './synchronisation'
 
 const rattachementsDuMediateur = (

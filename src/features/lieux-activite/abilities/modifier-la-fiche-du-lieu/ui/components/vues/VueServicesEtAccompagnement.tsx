@@ -1,8 +1,8 @@
-import { modaliteAccompagnementIcons } from '@app/web/features/lieux-activite/ui/options'
 import {
   ModaliteAccompagnement,
   type Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { modaliteAccompagnementIcons } from '@/features/lieux-activite/ui/options'
 
 export const VueServicesEtAccompagnement = ({
   services = [],

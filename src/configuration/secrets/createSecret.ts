@@ -1,7 +1,4 @@
-import {
-  projectId,
-  secretClient,
-} from '@app/web/configuration/secrets/secretClient'
+import { projectId, secretClient } from '@/configuration/secrets/secretClient'
 
 export const createSecret = async ({
   name,

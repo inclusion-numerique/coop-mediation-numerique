@@ -1,15 +1,15 @@
 'use server'
 
-import { actionBuilder } from '@app/web/configuration/nextjs'
-import { withAuth } from '@app/web/features/authentification'
-import { withMaintenance } from '@app/web/features/maintenance-mode'
-import type { RafraichissementAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/domain/rafraichissement-accueil'
-import { consulterRdvsAccueilBinding as consulter } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
-import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
-import { declencherSynchronisationBinding as declencher } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { fromResult } from '@app/web/libraries/nextjs'
-import { success } from '@app/web/libraries/result'
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import type { RafraichissementAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/rafraichissement-accueil'
+import { consulterRdvsAccueilBinding as consulter } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
+import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
+import { declencherSynchronisationBinding as declencher } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { fromResult } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 /**
  * Rattrape les rendez-vous des organisations sans webhook, puis relit la

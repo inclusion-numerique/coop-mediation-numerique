@@ -6,13 +6,13 @@
  * we need to execute.
  */
 
-import { logToFile } from '@app/e2e/support/logToFile'
-import { TaskName, tasks } from '@app/e2e/tasks/tasks'
+import { logToFile } from '@e2e/support/logToFile'
+import { TaskName, tasks } from '@e2e/tasks/tasks'
 import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '@app/web/utils/encodeSerializableState'
+} from '@/utils/encodeSerializableState'
 
 const taskExecutor = async () => {
   const task = process.argv[2] as TaskName

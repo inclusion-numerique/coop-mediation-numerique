@@ -1,4 +1,4 @@
-import { withForm } from '@app/web/libs/form/use-app-form'
+import { withForm } from '@/libs/form/use-app-form'
 import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 

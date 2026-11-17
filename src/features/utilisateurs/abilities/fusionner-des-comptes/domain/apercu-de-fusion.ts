@@ -3,7 +3,7 @@ import type {
   EtatCompte,
   NomAffiche,
   UtilisateurId,
-} from '@app/web/features/utilisateurs/domain'
+} from '@/features/utilisateurs/domain'
 
 export const categoriesDeFusion = [
   'beneficiaires',

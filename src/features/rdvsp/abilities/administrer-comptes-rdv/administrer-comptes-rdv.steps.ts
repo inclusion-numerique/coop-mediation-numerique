@@ -1,12 +1,12 @@
 import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   ID_TEST,
   seedCompteRdv,
   seedRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/rdvsp/rdvsp.cucumber'
 import { getAdministrationRdvspUserData } from './implementation/prisma/compte-rdv-detaille.query'
 import {
   type AdministrationRdvspData,

@@ -1,11 +1,11 @@
+import { z } from 'zod'
 import {
   type DefinitionDuClientApi,
   finApresDebut,
   MESSAGE_FIN_AVANT_DEBUT,
   NomDuClientApi,
   PorteeApi,
-} from '@app/web/features/clients-api/domain'
-import { z } from 'zod'
+} from '@/features/clients-api/domain'
 
 const date = z.iso
   .date('Veuillez renseigner une date valide')

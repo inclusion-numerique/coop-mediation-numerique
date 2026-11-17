@@ -1,8 +1,8 @@
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
-} from '@app/web/features/employeuse/server'
-import { Prisma } from '@app/web/generated/prisma/client'
+} from '@/features/employeuse/server'
+import { Prisma } from '@/generated/prisma/client'
 import {
   AdresseCourriel,
   type CompteASupprimer,

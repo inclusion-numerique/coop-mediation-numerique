@@ -1,15 +1,15 @@
-import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
-import { getStatistiquesWorksheetInput } from '@app/web/composition/statistiques/tableur'
-import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import {
-  type ActivitesFilters,
-  ActivitesFilterValidations,
-} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { buildStatistiquesWorksheet } from '@app/web/features/statistiques/ui/tableur/classeur-des-statistiques'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { notFound } from 'next/navigation'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
+import { utilisateurDuPartage } from '@/composition/statistiques/partage'
+import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import {
+  type ActivitesFilters,
+  ActivitesFilterValidations,
+} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

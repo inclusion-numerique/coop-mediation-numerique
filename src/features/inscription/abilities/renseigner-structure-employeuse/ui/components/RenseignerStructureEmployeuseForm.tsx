@@ -1,21 +1,21 @@
 'use client'
 
-import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
-import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
-import {
-  type RenseignerStructureEmployeuseFormData,
-  renseignerStructureEmployeuseFormShape,
-} from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import type { ServerActionResult } from '@app/web/libraries/nextjs'
-import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import SiretInputInfo from '@/components/siret/SiretInputInfo'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import {
+  type RenseignerStructureEmployeuseFormData,
+  renseignerStructureEmployeuseFormShape,
+} from '@/features/inscription/abilities/renseigner-structure-employeuse'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import { useAppForm } from '@/libs/form/use-app-form'
 import {
   type StructureEmployeuseItem,
   structureEmployeuseComboBox,

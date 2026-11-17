@@ -1,7 +1,7 @@
-import type { LieuInclusion, Prisma } from '@app/web/generated/prisma/client'
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { unionArrays } from '@app/web/utils/unionArrays'
+import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
+import { failure, type Result, success } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
+import { unionArrays } from '@/utils/unionArrays'
 import type { LieuId } from '../../../../domain/lieu-id'
 import {
   ecrireLeLieuAuRegistre,

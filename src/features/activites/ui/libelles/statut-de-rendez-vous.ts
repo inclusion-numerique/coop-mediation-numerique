@@ -1,4 +1,4 @@
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { StatutDeRendezVous } from '../../domain'
 
 export type SeveriteDeBadge = 'new' | 'success' | 'error' | 'warning' | 'info'

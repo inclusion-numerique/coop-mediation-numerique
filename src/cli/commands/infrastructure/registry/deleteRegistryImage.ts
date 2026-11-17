@@ -1,5 +1,5 @@
-import { output } from '@app/web/libraries/console/output'
 import { Command } from '@commander-js/extra-typings'
+import { output } from '@/libraries/console/output'
 import { imageNameForBranch, isProtectedImage } from './registryRetention'
 import {
   deleteImage,

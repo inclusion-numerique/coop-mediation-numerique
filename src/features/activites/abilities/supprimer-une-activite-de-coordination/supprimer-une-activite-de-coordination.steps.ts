@@ -1,17 +1,17 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   type EchecDeSuppression,
   supprimerUneActiviteDeCoordination,
-} from '@app/web/features/activites/abilities/supprimer-une-activite-de-coordination'
+} from '@/features/activites/abilities/supprimer-une-activite-de-coordination'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
   UtilisateurId,
-} from '@app/web/features/activites/domain'
-import type { Result } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/activites/domain'
+import type { Result } from '@/libraries/result'
+import { prismaClient } from '@/prismaClient'
 
 type Semis = {
   readonly userIds: readonly string[]

@@ -1,5 +1,5 @@
-import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import { describe, expect, it } from 'vitest'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { type SessionCourante, usurpateurARetrouver } from './session-courante'
 
 const administrateur = UtilisateurId('1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f')

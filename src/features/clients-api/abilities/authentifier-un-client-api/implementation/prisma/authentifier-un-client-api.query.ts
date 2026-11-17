@@ -1,15 +1,15 @@
 import {
   clientApiSelect,
   versClientApi,
-} from '@app/web/features/clients-api/db/client-api.transfer'
+} from '@/features/clients-api/db/client-api.transfer'
 import {
   ClientApiId,
   couvre,
   estValideLe,
   type PorteeApi,
-} from '@app/web/features/clients-api/domain'
-import { prismaClient } from '@app/web/prismaClient'
-import { verifySecret } from '@app/web/security/hashSecret'
+} from '@/features/clients-api/domain'
+import { prismaClient } from '@/prismaClient'
+import { verifySecret } from '@/security/hashSecret'
 
 export const authentifierUnClientApi = async ({
   clientApiId,

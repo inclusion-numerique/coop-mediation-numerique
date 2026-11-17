@@ -1,15 +1,15 @@
-import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import {
   consulterLesLieuxDuDepartement,
   type ParametresDesLieux,
-} from '@app/web/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
-import { LieuxDuDepartementPage } from '@app/web/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+} from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
+import { LieuxDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle("Annuaire des lieux d'activités"),

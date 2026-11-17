@@ -1,38 +1,38 @@
 'use client'
 
-import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
-import { BeneficiairesAtelierFields } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/fields/BeneficiairesAtelierFields'
-import { NiveauAtelierField } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/fields/NiveauAtelierField'
-import { saisieDeLAtelierCollectif } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/saisie-du-formulaire.presenter'
-import {
-  type CraCollectifData,
-  CraCollectifValidation,
-} from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
-import { materielOptions } from '@app/web/features/activites/ui/libelles/materiel'
-import { niveauAtelierOptionsWithExtras } from '@app/web/features/activites/ui/libelles/niveau-atelier'
-import {
-  thematiqueAdministrativesOptionsWithExtras,
-  thematiqueNonAdministrativesOptionsWithExtras,
-} from '@app/web/features/activites/ui/libelles/thematique'
-import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
-import { MaterielField } from '@app/web/features/activites/ui/saisie/fields/MaterielField'
-import { RendezVousFields } from '@app/web/features/activites/ui/saisie/fields/RendezVousFields'
-import { TagsFields } from '@app/web/features/activites/ui/saisie/fields/TagsFields'
-import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/ThematiquesFields'
-import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
-import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { handleSubmit } from '@app/web/libs/form/handle-submit'
-import type { DefaultValues } from '@app/web/libs/form/use-app-form'
-import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { inject } from '@app/web/libs/injection/client'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
+import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
+import { BeneficiairesAtelierFields } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/fields/BeneficiairesAtelierFields'
+import { NiveauAtelierField } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/fields/NiveauAtelierField'
+import { saisieDeLAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/saisie-du-formulaire.presenter'
+import {
+  type CraCollectifData,
+  CraCollectifValidation,
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { materielOptions } from '@/features/activites/ui/libelles/materiel'
+import { niveauAtelierOptionsWithExtras } from '@/features/activites/ui/libelles/niveau-atelier'
+import {
+  thematiqueAdministrativesOptionsWithExtras,
+  thematiqueNonAdministrativesOptionsWithExtras,
+} from '@/features/activites/ui/libelles/thematique'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import { MaterielField } from '@/features/activites/ui/saisie/fields/MaterielField'
+import { RendezVousFields } from '@/features/activites/ui/saisie/fields/RendezVousFields'
+import { TagsFields } from '@/features/activites/ui/saisie/fields/TagsFields'
+import { ThematiquesFields } from '@/features/activites/ui/saisie/fields/ThematiquesFields'
+import type { LieuDuCra } from '@/features/activites/ui/saisie/lieu/lieu-du-cra'
+import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { handleSubmit } from '@/libs/form/handle-submit'
+import type { DefaultValues } from '@/libs/form/use-app-form'
+import { useAppForm } from '@/libs/form/use-app-form'
+import { inject } from '@/libs/injection/client'
+import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { replaceRouteWithoutRerender } from '@/utils/replaceRouteWithoutRerender'
 
 const CraCollectifForm = ({
   defaultValues,

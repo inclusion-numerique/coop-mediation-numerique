@@ -1,8 +1,8 @@
 import {
   optionsDesSources,
   SourceDansLURL,
-} from '@app/web/features/activites/ui/libelles/source-de-l-activite'
-import { withForm } from '@app/web/libs/form/use-app-form'
+} from '@/features/activites/ui/libelles/source-de-l-activite'
+import { withForm } from '@/libs/form/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const updateSourcesParams =

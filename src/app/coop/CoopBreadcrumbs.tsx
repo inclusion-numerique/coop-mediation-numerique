@@ -1,6 +1,4 @@
-import Breadcrumbs, {
-  type BreadcrumbParents,
-} from '@app/web/components/Breadcrumbs'
+import Breadcrumbs, { type BreadcrumbParents } from '@/components/Breadcrumbs'
 
 export type CoopBreadcrumbsProps = {
   currentPage: string

@@ -1,16 +1,16 @@
-import {
-  addExportMetadata,
-  type WorksheetUser,
-} from '@app/web/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
-import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { htmlToText } from '@app/web/utils/htmlToText'
 import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { formatInTimeZone } from 'date-fns-tz'
 import * as Excel from 'exceljs'
+import {
+  addExportMetadata,
+  type WorksheetUser,
+} from '@/libs/worksheet/addExportMetadata'
+import { addTitleRow } from '@/libs/worksheet/addTitleRow'
+import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
+import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
+import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { htmlToText } from '@/utils/htmlToText'
 import type {
   ActiviteDeCoordination,
   CriteresDesCoordinations,

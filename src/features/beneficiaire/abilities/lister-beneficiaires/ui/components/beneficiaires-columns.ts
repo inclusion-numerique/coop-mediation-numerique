@@ -1,4 +1,4 @@
-import type { BeneficiaireSortField } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { BeneficiaireSortField } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import type { BeneficiaireRow } from './beneficiaire-row'
 
 /**

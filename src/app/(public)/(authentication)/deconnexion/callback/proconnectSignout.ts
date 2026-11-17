@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { getServerUrl } from '@app/web/utils/baseUrl'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { getServerUrl } from '@/utils/baseUrl'
 
 const proconnectSignoutRedirectPath = '/deconnexion/callback'
 

@@ -1,11 +1,11 @@
 import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import {
   lieuxDuDepartement,
   nombreDeLieuxDuDepartement,
-} from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-departement'
-import { prismaClient } from '@app/web/prismaClient'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement'
+import { prismaClient } from '@/prismaClient'
 
 const semis: {
   ids: string[]

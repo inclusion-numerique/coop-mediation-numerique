@@ -1,5 +1,5 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 
 export const AdresseCourriel = defineModel(
   z.string().trim().toLowerCase().pipe(z.email()).brand('AdresseCourriel'),

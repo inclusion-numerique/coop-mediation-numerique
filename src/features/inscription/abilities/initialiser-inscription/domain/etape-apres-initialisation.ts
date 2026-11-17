@@ -3,7 +3,7 @@ import {
   getNextInscriptionStep,
   InscriptionStep,
   type ProfilInscription,
-} from '@app/web/features/inscription/domain'
+} from '@/features/inscription/domain'
 
 /**
  * Décision pure de l'étape qui suit l'initialisation : dérive le type de flow du

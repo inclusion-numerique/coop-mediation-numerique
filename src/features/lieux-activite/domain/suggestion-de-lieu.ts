@@ -1,4 +1,3 @@
-import { defineModel, type Model } from '@app/web/libraries/model'
 import {
   CodeInsee,
   type Nom,
@@ -6,6 +5,7 @@ import {
   type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
 import type { IdentifiantCartographie } from './ids-cartographie-nationale'
 import type { LieuId } from './lieu-id'
 import type { NombreDeLieux } from './nombres'

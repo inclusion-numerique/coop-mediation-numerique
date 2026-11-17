@@ -1,17 +1,17 @@
 'use client'
 
-import {
-  type EtatDeMaintenance,
-  MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
-  type PeriodeDeMaintenance,
-} from '@app/web/features/maintenance-mode/domain'
-import { createToast } from '@app/web/libraries/ui/toast/createToast'
-import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Input from '@codegouvfr/react-dsfr/Input'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import {
+  type EtatDeMaintenance,
+  MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
+  type PeriodeDeMaintenance,
+} from '@/features/maintenance-mode/domain'
+import { createToast } from '@/libraries/ui/toast/createToast'
+import { inject } from '@/libs/injection/client'
 import { REGLER_LA_MAINTENANCE_ACTION_KEY } from '../action/regler-la-maintenance.key'
 
 const formatDeDate = new Intl.DateTimeFormat('fr-FR', {

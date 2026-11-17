@@ -1,4 +1,4 @@
-import type { NomAffiche } from '@app/web/libraries/nom-affiche'
+import type { NomAffiche } from '@/libraries/nom-affiche'
 import { ActeurId } from '../../../domain'
 import { lireLActeur } from './prisma'
 

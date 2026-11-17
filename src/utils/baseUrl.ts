@@ -1,4 +1,4 @@
-import { isBrowser } from '@app/web/utils/isBrowser'
+import { isBrowser } from '@/utils/isBrowser'
 
 export type GetServerUrlOptions = {
   absolutePath?: boolean // Force absolute path including protocol and hostname instead of relative path

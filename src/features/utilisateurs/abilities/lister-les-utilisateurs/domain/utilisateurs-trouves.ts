@@ -1,4 +1,4 @@
-import type { LigneUtilisateur } from '@app/web/features/utilisateurs/domain'
+import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
 
 export type UtilisateursTrouves = {
   readonly totalCount: number

@@ -1,6 +1,5 @@
 'use client'
 
-import RichTextFormLinkTooltip from '@app/web/libraries/ui/components/Form/RichText/RichTextFormLinkTooltip'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { ReactNode, useState } from 'react'
@@ -11,6 +10,7 @@ import {
   PathValue,
   UseFormReturn,
 } from 'react-hook-form'
+import RichTextFormLinkTooltip from '@/libraries/ui/components/Form/RichText/RichTextFormLinkTooltip'
 import styles from './RichTextForm.module.css'
 import RichTextFormMenuBar from './RichTextFormMenuBar'
 

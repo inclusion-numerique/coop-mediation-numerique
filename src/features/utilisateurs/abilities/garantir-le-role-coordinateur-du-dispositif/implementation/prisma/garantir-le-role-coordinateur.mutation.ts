@@ -1,5 +1,5 @@
-import { synchroniserPersonne } from '@app/web/libraries/registre-personne'
-import { prismaClient } from '@app/web/prismaClient'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
+import { prismaClient } from '@/prismaClient'
 
 export const garantirLeRoleCoordinateurDuDispositif = async (
   userId: string,

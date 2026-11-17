@@ -1,8 +1,8 @@
-import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import type {
   Contact,
   Presentation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import type { Fiche } from '../../../../domain/fiche'
 import type { ChampCompare } from '../../domain/differences'
 

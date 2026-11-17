@@ -1,6 +1,6 @@
-import Breadcrumbs from '@app/web/components/Breadcrumbs'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId } from '@app/web/utils/skipLinks'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { contentId } from '@/utils/skipLinks'
 
 const ContentPolicyPage = () => (
   <div className="fr-container">

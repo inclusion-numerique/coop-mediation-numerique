@@ -1,5 +1,5 @@
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { correler } from '@app/web/libraries/lieu-identite'
+import type { Prisma } from '@/generated/prisma/client'
+import { correler } from '@/libraries/lieu-identite'
 import { serialiserIdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../../domain/lieu'
 import {

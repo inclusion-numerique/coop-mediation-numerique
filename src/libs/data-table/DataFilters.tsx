@@ -1,9 +1,9 @@
 'use client'
 
-import OptionBadge from '@app/web/libraries/ui/components/Form/OptionBadge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect, useRef, useState } from 'react'
+import OptionBadge from '@/libraries/ui/components/Form/OptionBadge'
 import {
   DataTableConfiguration,
   DataTableFilterValues,

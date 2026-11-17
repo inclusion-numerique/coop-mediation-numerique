@@ -1,9 +1,9 @@
 import {
   lancerLesRelancesDesInscrits,
   lancerLesRelancesDInscription,
-} from '@app/web/composition/utilisateurs/relances.ports'
-import type { RapportDeRelance } from '@app/web/features/utilisateurs/domain'
-import { output } from '@app/web/libraries/console/output'
+} from '@/composition/utilisateurs/relances.ports'
+import type { RapportDeRelance } from '@/features/utilisateurs/domain'
+import { output } from '@/libraries/console/output'
 
 const resume = (rapports: readonly RapportDeRelance[]) => ({
   traites: rapports.length,

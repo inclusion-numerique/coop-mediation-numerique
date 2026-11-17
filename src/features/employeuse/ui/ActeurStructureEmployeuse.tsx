@@ -1,7 +1,7 @@
-import Card from '@app/web/components/Card'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import { ReactNode } from 'react'
+import Card from '@/components/Card'
 import type { EmploiEmployeuseAffichage } from '../abilities/consulter-employeuse-a-une-date/ui'
 import { ReferentStructure } from './ReferentStructure'
 

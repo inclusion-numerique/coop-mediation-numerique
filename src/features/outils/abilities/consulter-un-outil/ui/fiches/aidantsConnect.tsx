@@ -1,4 +1,4 @@
-import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
+import { AidantsConnectLogo } from '@/features/pictograms/services/AidantsConnectLogo'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

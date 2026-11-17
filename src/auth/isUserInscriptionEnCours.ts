@@ -1,4 +1,4 @@
-import { SessionUser } from '@app/web/auth/sessionUser'
+import { SessionUser } from '@/auth/sessionUser'
 
 /**
  * « L'utilisateur n'a pas encore validé son inscription » — et rien de plus.

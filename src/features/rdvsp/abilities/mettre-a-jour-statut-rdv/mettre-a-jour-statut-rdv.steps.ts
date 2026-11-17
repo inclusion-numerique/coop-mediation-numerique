@@ -1,15 +1,16 @@
 import assert from 'node:assert'
-import type { MettreAJourStatutRdv } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
-import { mettreAJourStatutRdv } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv'
-import { contexteMiseAJourStatut } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/prisma/contexte-mise-a-jour-statut.query'
-import { enregistrerStatutRdv } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/prisma/enregistrer-statut-rdv.mutation'
-import { ApiIndisponible } from '@app/web/features/rdvsp/domain/errors'
-import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
-import type { RdvServicePublicApi } from '@app/web/features/rdvsp/domain/rdv-service-public.port'
+import { Given, Then, When } from '@cucumber/cucumber'
+import type { MettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
+import { mettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv'
+import { contexteMiseAJourStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/prisma/contexte-mise-a-jour-statut.query'
+import { enregistrerStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/prisma/enregistrer-statut-rdv.mutation'
+import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { RdvId } from '@/features/rdvsp/domain/rdv-id'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
 import {
   StatutPresence,
   StatutPresenceModifiable,
-} from '@app/web/features/rdvsp/domain/statut-presence'
+} from '@/features/rdvsp/domain/statut-presence'
 import {
   ID_TEST,
   rdvEnBase,
@@ -17,9 +18,8 @@ import {
   seedCompteRdvAutreMediateur,
   seedRdv,
   testUtilisateurId,
-} from '@app/web/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@app/web/libraries/result'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { failure, success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 3
 const AGENT_ID_AUTRE = ID_TEST.compte + 4

@@ -1,5 +1,5 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { failure, type Result, success } from '@/libraries/result'
+import { addMutationLog } from '@/utils/addMutationLog'
 import {
   enregistrerLArchivage,
   lireLesAdhesionsDeLaPaire,

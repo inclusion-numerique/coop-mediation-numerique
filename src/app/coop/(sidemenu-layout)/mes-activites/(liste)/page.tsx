@@ -1,15 +1,16 @@
-import { rechercherEmployeusesDesActivitesAction } from '@app/web/app/_actions/activites/rechercher-employeuses-des-activites.action'
-import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
-import { afficherRdvsDansActivitesAction } from '@app/web/app/_actions/rdvsp/afficher-rdvs-dans-activites.action'
-import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
-import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
-import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
-import { ExportDeMesAccompagnements } from '@app/web/features/activites/abilities/exporter-mes-accompagnements/ui'
-import { optionsDeLaBarre } from '@app/web/features/activites/abilities/lister-les-options-de-filtre-des-activites'
-import { listerMesActivites } from '@app/web/features/activites/abilities/lister-mes-activites'
+import type { Metadata } from 'next'
+import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activites/rechercher-employeuses-des-activites.action'
+import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
+import { afficherRdvsDansActivitesAction } from '@/app/_actions/rdvsp/afficher-rdvs-dans-activites.action'
+import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
+import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
+import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { isCoordinateur, isMediateur } from '@/auth/userTypeGuards'
+import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
+import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites'
+import { listerMesActivites } from '@/features/activites/abilities/lister-mes-activites'
 import {
   decompteDeLaListe,
   EnTeteDeLaListe,
@@ -18,7 +19,7 @@ import {
   MesActivitesPage,
   parametresDeNavigation,
   rendezVousFiltrablesDansLaListe,
-} from '@app/web/features/activites/abilities/lister-mes-activites/ui'
+} from '@/features/activites/abilities/lister-mes-activites/ui'
 import {
   contenuDeLaChronologie,
   criteresDesActivites,
@@ -27,32 +28,31 @@ import {
   ordreChronologiqueLu,
   paginationLue,
   parametresDesActivitesDe,
-} from '@app/web/features/activites/domain'
-import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@app/web/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { filtresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
-import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@app/web/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
-import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
+} from '@/features/activites/domain'
+import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
+import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-} from '@app/web/features/lieux-activite'
-import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
-import AfficherLesRdvs from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/AfficherLesRdvs'
-import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@app/web/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/rattraper-rdvs-sans-webhook.key'
+} from '@/features/lieux-activite'
+import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
+import AfficherLesRdvs from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/AfficherLesRdvs'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/rattraper-rdvs-sans-webhook.key'
 import {
   periodeDesRendezVous,
   rendezVousAListerSql,
   rendezVousLies,
   rendezVousParIds,
-} from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
+} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
-} from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { Metadata } from 'next'
+} from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités'),

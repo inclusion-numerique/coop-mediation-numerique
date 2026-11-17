@@ -1,7 +1,7 @@
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import { prismaClient } from '@app/web/prismaClient'
 import type { Metadata } from 'next'
+import { metadataTitle } from '@/app/metadataTitle'
+import { entrepotPrismaClient } from '@/entrepotPrismaClient'
+import { prismaClient } from '@/prismaClient'
 
 export const metadata: Metadata = {
   title: metadataTitle('Validation entrepôt - communes'),

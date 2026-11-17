@@ -2,8 +2,8 @@ import {
   InscriptionDejaValidee,
   ProfilNonChoisi,
   type UserId,
-} from '@app/web/features/inscription/domain'
-import { failure, type Result, success } from '@app/web/libraries/result'
+} from '@/features/inscription/domain'
+import { failure, type Result, success } from '@/libraries/result'
 
 /**
  * Un profil d'inscription est posé mais aucun compte de rôle (médiateur ou

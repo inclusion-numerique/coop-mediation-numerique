@@ -1,4 +1,4 @@
-import type { Result } from '@app/web/libraries/result'
+import type { Result } from '@/libraries/result'
 import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 
 export type ErreurAffichageRdvs = { readonly _tag: 'CompteRdvIntrouvable' }

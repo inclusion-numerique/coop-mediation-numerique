@@ -1,12 +1,12 @@
-import { structureEmployeuse } from '@app/web/fixtures/structures'
-import type { UserFixture } from '@app/web/fixtures/upsertUserFixture'
-import { fixtureUsers } from '@app/web/fixtures/users'
-import { conseillerInscriptionSansContrat } from '@app/web/fixtures/users/conseillerInscriptionSansContrat'
-import { conseillerSansLieuInscription } from '@app/web/fixtures/users/conseillerSansLieuInscription'
-import { coordinateurInscription } from '@app/web/fixtures/users/coordinateurInscription'
-import { contratRompuDeLExConseiller } from '@app/web/fixtures/users/exConseillerApresRupture'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { enSerie } from '@app/web/libraries/fixtures/enSerie'
+import { structureEmployeuse } from '@/fixtures/structures'
+import type { UserFixture } from '@/fixtures/upsertUserFixture'
+import { fixtureUsers } from '@/fixtures/users'
+import { conseillerInscriptionSansContrat } from '@/fixtures/users/conseillerInscriptionSansContrat'
+import { conseillerSansLieuInscription } from '@/fixtures/users/conseillerSansLieuInscription'
+import { coordinateurInscription } from '@/fixtures/users/coordinateurInscription'
+import { contratRompuDeLExConseiller } from '@/fixtures/users/exConseillerApresRupture'
+import type { Prisma } from '@/generated/prisma/client'
+import { enSerie } from '@/libraries/fixtures/enSerie'
 
 /**
  * Les conseillers numériques de fixtures se déclaraient par `isConseillerNumerique: true` sur la

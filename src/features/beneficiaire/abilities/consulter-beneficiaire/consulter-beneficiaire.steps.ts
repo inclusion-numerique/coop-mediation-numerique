@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
-import {
-  seedBeneficiaire,
-  testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
+import {
+  seedBeneficiaire,
+  testMediateurId,
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
 type ConsultationResult = Awaited<ReturnType<typeof consulterBeneficiaire>>
 

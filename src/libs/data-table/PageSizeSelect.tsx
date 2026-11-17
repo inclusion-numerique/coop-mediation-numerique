@@ -1,8 +1,8 @@
 'use client'
 
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { useRouter } from 'next/navigation'
 import type { FormEventHandler } from 'react'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { createDataTableHref } from './createDataTableHref'
 import type { PaginationNavProps } from './PaginationNav'
 

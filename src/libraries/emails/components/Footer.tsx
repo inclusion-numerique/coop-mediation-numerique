@@ -1,10 +1,10 @@
-import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
 import {
   MjmlColumn,
   MjmlDivider,
   MjmlImage,
   MjmlSection,
 } from '@faire/mjml-react'
+import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
 const Footer = ({
   padding = '15px 15px 0 15px',

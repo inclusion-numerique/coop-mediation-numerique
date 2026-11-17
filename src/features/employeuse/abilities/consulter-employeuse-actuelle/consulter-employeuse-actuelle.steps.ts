@@ -1,13 +1,13 @@
 import assert from 'node:assert'
-import { consulterEmployeuseActuelle } from '@app/web/features/employeuse/abilities/consulter-employeuse-actuelle/implementation'
-import type { EmployeuseActuelle } from '@app/web/features/employeuse/domain/employeuse-actuelle'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementation'
+import type { EmployeuseActuelle } from '@/features/employeuse/domain/employeuse-actuelle'
 import {
   seedAffectation,
   seedContrat,
   seedEmployeuseMain,
   seedUtilisateur,
-} from '@app/web/features/employeuse/employeuse.cucumber'
-import { Given, Then, When } from '@cucumber/cucumber'
+} from '@/features/employeuse/employeuse.cucumber'
 
 let utilisateurId: string
 const employeusesParNom = new Map<string, number>()

@@ -1,28 +1,28 @@
-import { rechercherLesEmployeusesDuPartageAction } from '@app/web/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
-import { rechercherLesLieuxDuPartageAction } from '@app/web/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
-import { filtreDeLieu } from '@app/web/composition/statistiques/barre'
-import { mesStatistiques } from '@app/web/composition/statistiques/mes-statistiques'
-import { utilisateurDuPartage } from '@app/web/composition/statistiques/partage'
+import { notFound } from 'next/navigation'
+import { rechercherLesEmployeusesDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
+import { rechercherLesLieuxDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
+import { filtreDeLieu } from '@/composition/statistiques/barre'
+import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
+import { utilisateurDuPartage } from '@/composition/statistiques/partage'
 import {
   impressionDesStatistiques,
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@app/web/composition/statistiques/sections'
+} from '@/composition/statistiques/sections'
 import {
   nombreDAccompagnements,
   toutesLesStatistiques,
-} from '@app/web/composition/statistiques/statistiques-fournies'
-import { resoudreUnLienDePartage } from '@app/web/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+} from '@/composition/statistiques/statistiques-fournies'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@app/web/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
-import { StatistiquesPartagees } from '@app/web/features/statistiques/ui/pages/StatistiquesPartagees'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import { notFound } from 'next/navigation'
+} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
+import { StatistiquesPartagees } from '@/features/statistiques/ui/pages/StatistiquesPartagees'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 type PageProps = {
   params: Promise<{

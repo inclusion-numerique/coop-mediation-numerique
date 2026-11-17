@@ -1,5 +1,5 @@
-import { generateRandomSecret } from '@app/web/security/generateRandomSecret'
-import { hashSecret } from '@app/web/security/hashSecret'
+import { generateRandomSecret } from '@/security/generateRandomSecret'
+import { hashSecret } from '@/security/hashSecret'
 
 export const nouveauSecret = () => {
   const secret = generateRandomSecret()

@@ -1,7 +1,7 @@
-import { ContactTelephone } from '@app/web/features/beneficiaire/domain/contact-telephone'
-import { Genre } from '@app/web/features/beneficiaire/domain/genre'
-import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
-import { beneficiaireFormShape } from '@app/web/features/beneficiaire/forms/beneficiaire-form'
+import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
+import { Genre } from '@/features/beneficiaire/domain/genre'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { beneficiaireFormShape } from '@/features/beneficiaire/forms/beneficiaire-form'
 import type { BeneficiaireACreer } from '../domain/creer-beneficiaire'
 
 export const CreerBeneficiaireValidation = beneficiaireFormShape.transform(

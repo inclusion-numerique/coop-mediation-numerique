@@ -1,4 +1,4 @@
-import { getStructuresMetadata } from '@app/web/data/data-inclusion/dataInclusionStructures'
+import { getStructuresMetadata } from '@/data/data-inclusion/dataInclusionStructures'
 
 export const revalidate = 0
 

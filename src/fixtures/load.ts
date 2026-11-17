@@ -1,8 +1,8 @@
-import { assertDatabaseIsNotProduction } from '@app/web/assertDatabaseTarget'
-import { deleteAll, seed } from '@app/web/fixtures/seeds'
-import { output } from '@app/web/libraries/fixtures/output'
-import { prismaClient } from '@app/web/prismaClient'
 import { Command } from '@commander-js/extra-typings'
+import { assertDatabaseIsNotProduction } from '@/assertDatabaseTarget'
+import { deleteAll, seed } from '@/fixtures/seeds'
+import { output } from '@/libraries/fixtures/output'
+import { prismaClient } from '@/prismaClient'
 
 const main = async (eraseAllData: boolean, confirmProduction?: string) => {
   // Garde-fou : `fixtures:load` injecte des données de test (et TRUNCATE tout avec `-e`).

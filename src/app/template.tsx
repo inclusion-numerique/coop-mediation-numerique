@@ -1,5 +1,5 @@
-import { StartDsfrOnHydration } from '@app/web/configuration/dsfr'
 import type { PropsWithChildren } from 'react'
+import { StartDsfrOnHydration } from '@/configuration/dsfr'
 
 const Template = ({ children }: PropsWithChildren) => (
   <>

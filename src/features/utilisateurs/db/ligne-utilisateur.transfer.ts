@@ -2,9 +2,9 @@ import {
   personneEmployeuseSelect,
   personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse/server'
-import type { Prisma } from '@app/web/generated/prisma/client'
-import { CodeInsee } from '@app/web/libraries/insee'
+} from '@/features/employeuse/server'
+import type { Prisma } from '@/generated/prisma/client'
+import { CodeInsee } from '@/libraries/insee'
 import {
   type CoordinateurDeLaLigne,
   cycleDeVie,

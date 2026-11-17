@@ -1,19 +1,19 @@
 'use client'
 
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
-import CustomSelect from '@app/web/libraries/ui/components/CustomSelect/CustomSelect'
-import { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
-import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import CustomSelect from '@/libraries/ui/components/CustomSelect/CustomSelect'
+import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { FilterFooter } from '@/libs/filters/FilterFooter'
+import { FilterSelection } from '@/libs/filters/FilterSelection'
 import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
-} from '@app/web/libs/filters/helpers'
-import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+} from '@/libs/filters/helpers'
+import TriggerButton from '@/libs/filters/TriggerButton'
 import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
 
 type OptionDeBeneficiaireWithId = OptionDeBeneficiaire & {

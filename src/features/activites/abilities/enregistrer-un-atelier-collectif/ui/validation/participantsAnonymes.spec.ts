@@ -1,13 +1,13 @@
+import { describe, expect, it } from 'vitest'
 import {
   countGenreNonCommunique,
   participantsAnonymesDefault,
-} from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
 import {
   GENRES,
   STATUTS_SOCIAUX,
   TRANCHES_D_AGE,
-} from '@app/web/features/activites/domain'
-import { describe, expect, it } from 'vitest'
+} from '@/features/activites/domain'
 
 describe('participantsAnonymes', () => {
   describe('ParticipantsAnonymesCraCollectifData', () => {

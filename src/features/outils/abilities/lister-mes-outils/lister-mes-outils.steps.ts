@@ -1,6 +1,6 @@
 import assert from 'node:assert'
-import type { Model } from '@app/web/libraries/model'
 import { Given, Then, When } from '@cucumber/cucumber'
+import type { Model } from '@/libraries/model'
 import {
   Coordination,
   Dispositif,

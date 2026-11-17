@@ -1,9 +1,9 @@
-import { databasePasswordSecretName } from '@app/web/configuration/secrets/databasePasswordSecretName'
-import { findSecretByName } from '@app/web/configuration/secrets/findSecretByName'
-import { getSecretValue as configGetSecretValue } from '@app/web/configuration/secrets/getSecretValue'
-import { listSecrets } from '@app/web/configuration/secrets/listSecrets'
-import { output } from '@app/web/libraries/console/output'
 import { Argument, Command } from '@commander-js/extra-typings'
+import { databasePasswordSecretName } from '@/configuration/secrets/databasePasswordSecretName'
+import { findSecretByName } from '@/configuration/secrets/findSecretByName'
+import { getSecretValue as configGetSecretValue } from '@/configuration/secrets/getSecretValue'
+import { listSecrets } from '@/configuration/secrets/listSecrets'
+import { output } from '@/libraries/console/output'
 
 /**
  * This command outputs available secrets names

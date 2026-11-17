@@ -1,29 +1,30 @@
+import type { ReactNode } from 'react'
 import type {
   StatistiquesEnCours,
   StatistiquesFournies,
-} from '@app/web/composition/statistiques/statistiques-fournies'
+} from '@/composition/statistiques/statistiques-fournies'
 import {
   ChiffresClesDesAccompagnements,
   ChiffresClesImprimes,
-} from '@app/web/features/activites/abilities/compter-les-accompagnements/ui'
-import { CommunesDesAccompagnements } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-commune/ui'
+} from '@/features/activites/abilities/compter-les-accompagnements/ui'
+import { CommunesDesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui'
 import {
   LieuxDesAccompagnements,
   LieuxImprimes,
-} from '@app/web/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
+} from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
 import {
   GraphiqueDesAccompagnements,
   GraphiquesImprimes,
-} from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode/ui'
-import { GraphiqueEnAttente } from '@app/web/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/GraphiqueEnAttente'
+} from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui'
+import { GraphiqueEnAttente } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/GraphiqueEnAttente'
 import {
   CommunesDeResidence,
   CommunesDeResidenceImprimees,
-} from '@app/web/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/ui'
+} from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/ui'
 import {
   ProfilDesPersonnesAccompagnees,
   ProfilImprime,
-} from '@app/web/features/activites/abilities/decrire-les-personnes-accompagnees/ui'
+} from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui'
 import {
   CanauxDesAccompagnements,
   CanauxImprimes,
@@ -35,19 +36,18 @@ import {
   ThematiquesDesAccompagnements,
   TypesDActivite,
   TypesDActiviteImprimes,
-} from '@app/web/features/activites/abilities/repartir-les-accompagnements/ui'
-import { TagsDesAccompagnements } from '@app/web/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
-import { ImpressionPrete } from '@app/web/features/statistiques/ui/export/impression-prete'
-import { AutoPrint } from '@app/web/features/statistiques/ui/pages/AutoPrint'
-import { ImpressionDesStatistiques } from '@app/web/features/statistiques/ui/pages/ImpressionDesStatistiques'
-import { BlocEnAttente } from '@app/web/features/statistiques/ui/sections/BlocEnAttente'
-import { SectionActivites } from '@app/web/features/statistiques/ui/sections/SectionActivites'
-import { SectionActivitesImprimee } from '@app/web/features/statistiques/ui/sections/SectionActivitesImprimee'
-import { SectionBeneficiaires } from '@app/web/features/statistiques/ui/sections/SectionBeneficiaires'
-import { SectionBeneficiairesImprimee } from '@app/web/features/statistiques/ui/sections/SectionBeneficiairesImprimee'
-import { SectionGenerale } from '@app/web/features/statistiques/ui/sections/SectionGenerale'
-import { SectionGeneraleImprimee } from '@app/web/features/statistiques/ui/sections/SectionGeneraleImprimee'
-import type { ReactNode } from 'react'
+} from '@/features/activites/abilities/repartir-les-accompagnements/ui'
+import { TagsDesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
+import { ImpressionPrete } from '@/features/statistiques/ui/export/impression-prete'
+import { AutoPrint } from '@/features/statistiques/ui/pages/AutoPrint'
+import { ImpressionDesStatistiques } from '@/features/statistiques/ui/pages/ImpressionDesStatistiques'
+import { BlocEnAttente } from '@/features/statistiques/ui/sections/BlocEnAttente'
+import { SectionActivites } from '@/features/statistiques/ui/sections/SectionActivites'
+import { SectionActivitesImprimee } from '@/features/statistiques/ui/sections/SectionActivitesImprimee'
+import { SectionBeneficiaires } from '@/features/statistiques/ui/sections/SectionBeneficiaires'
+import { SectionBeneficiairesImprimee } from '@/features/statistiques/ui/sections/SectionBeneficiairesImprimee'
+import { SectionGenerale } from '@/features/statistiques/ui/sections/SectionGenerale'
+import { SectionGeneraleImprimee } from '@/features/statistiques/ui/sections/SectionGeneraleImprimee'
 
 type Wording = 'personnel' | 'generique'
 

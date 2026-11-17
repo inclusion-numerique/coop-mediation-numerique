@@ -1,37 +1,37 @@
-import { supprimerUneActiviteDeMediationAction } from '@app/web/app/_actions/activites/supprimer-une-activite-de-mediation.action'
-import { rafraichirAccueilRdvAction } from '@app/web/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
-import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import type { ReactNode } from 'react'
+import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
+import { rafraichirAccueilRdvAction } from '@/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
 import {
   consulterLAccueil,
   type ProfilDAccueil,
   visiteurDe,
-} from '@app/web/features/accueil/abilities/consulter-l-accueil'
-import { Accueil } from '@app/web/features/accueil/abilities/consulter-l-accueil/ui'
-import { compterLesActivitesDeCoordination } from '@app/web/features/activites/abilities/compter-les-activites-de-coordination'
+} from '@/features/accueil/abilities/consulter-l-accueil'
+import { Accueil } from '@/features/accueil/abilities/consulter-l-accueil/ui'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination'
 import {
   ActivitesDeCoordination,
   activitesDeCoordinationPresentees,
-} from '@app/web/features/activites/abilities/compter-les-activites-de-coordination/ui'
-import { listerLesDernieresActivites } from '@app/web/features/activites/abilities/lister-les-dernieres-activites'
+} from '@/features/activites/abilities/compter-les-activites-de-coordination/ui'
+import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites'
 import {
   DernieresActivites,
   dernieresActivitesPresentees,
-} from '@app/web/features/activites/abilities/lister-les-dernieres-activites/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@app/web/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { BoutonEnregistrerUneActivite } from '@app/web/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
-import { compterLesMembres } from '@app/web/features/equipe'
-import { ResumeDeLEquipe } from '@app/web/features/equipe/abilities/lister-les-membres/ui'
-import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
-import { blocRdvAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
-import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
-import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
-import { rendezVousLies } from '@app/web/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { ClientBinder } from '@app/web/libs/injection/client-binder'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import type { ReactNode } from 'react'
+} from '@/features/activites/abilities/lister-les-dernieres-activites/ui'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
+import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
+import { compterLesMembres } from '@/features/equipe'
+import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui'
+import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
+import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
+import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
+import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
+import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Accueil'),

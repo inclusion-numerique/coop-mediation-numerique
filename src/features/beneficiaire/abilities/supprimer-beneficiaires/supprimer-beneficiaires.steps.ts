@@ -1,15 +1,15 @@
 import assert from 'node:assert'
-import { supprimerBeneficiaires } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
+import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
 import {
   beneficiairesCountAtScenarioStart,
   mediateurBeneficiairesCount,
   seedBeneficiaire,
   testMediateurId,
-} from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+} from '@/features/beneficiaire/beneficiaire.cucumber'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { prismaClient } from '@/prismaClient'
 
 type SuppressionResult = Awaited<ReturnType<typeof supprimerBeneficiaires>>
 

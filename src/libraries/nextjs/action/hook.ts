@@ -1,7 +1,7 @@
 'use client'
 
-import type { InjectionKey } from '@app/web/libs/injection/types'
 import { useActionState } from 'react'
+import type { InjectionKey } from '@/libs/injection/types'
 import type {
   ServerActionError,
   ServerActionResult,

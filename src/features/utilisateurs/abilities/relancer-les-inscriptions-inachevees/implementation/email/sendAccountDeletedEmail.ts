@@ -1,9 +1,9 @@
-import { finishYourSignupAccountDeletedEmail } from '@app/web/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementation/email/finishYourSignupAccountDeletedEmail'
-import { compileMjml } from '@app/web/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { emailTransport } from '@app/web/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@app/web/server/email/throwOnSendMailFailure'
+import { finishYourSignupAccountDeletedEmail } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementation/email/finishYourSignupAccountDeletedEmail'
+import { compileMjml } from '@/libraries/emails/mjml'
+import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { emailTransport } from '@/server/email/emailTransport'
+import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 
 export const sendAccountDeletedEmail = async ({
   email,

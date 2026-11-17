@@ -1,17 +1,17 @@
 'use client'
 
-import { withForm } from '@app/web/libs/form/use-app-form'
-import {
-  daysTexts,
-  type Period,
-  periodsTexts,
-} from '@app/web/opening-hours/openingHoursHelpers'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import {
   OSM_DAYS_OF_WEEK,
   type OsmDaysOfWeek,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { useSelector } from '@tanstack/react-form'
+import { withForm } from '@/libs/form/use-app-form'
+import {
+  daysTexts,
+  type Period,
+  periodsTexts,
+} from '@/opening-hours/openingHoursHelpers'
 import { informationsPratiquesFormOptions } from './informationsPratiquesFormData'
 
 const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]

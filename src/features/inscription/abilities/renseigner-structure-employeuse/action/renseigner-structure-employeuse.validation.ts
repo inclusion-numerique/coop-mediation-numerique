@@ -1,10 +1,10 @@
+import { z } from 'zod'
 import {
   type TypologieStructure,
   typologiesStructure,
-} from '@app/web/external-apis/api-entreprise/typologieStructure'
-import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { Siret } from '@app/web/libraries/insee'
-import { z } from 'zod'
+} from '@/external-apis/api-entreprise/typologieStructure'
+import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
+import { Siret } from '@/libraries/insee'
 import type { StructureEmployeuseInput } from '../domain'
 
 /**

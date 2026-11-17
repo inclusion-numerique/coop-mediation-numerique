@@ -1,10 +1,10 @@
+import { z } from 'zod'
 import {
   GENRES,
   STATUTS_SOCIAUX,
   TRANCHES_D_AGE,
-} from '@app/web/features/activites/domain'
-import { CommuneDuCraValidation } from '@app/web/features/activites/ui/saisie/commune/commune-du-cra'
-import { z } from 'zod'
+} from '@/features/activites/domain'
+import { CommuneDuCraValidation } from '@/features/activites/ui/saisie/commune/commune-du-cra'
 
 export const BeneficiaireCraValidation = z.object({
   id: z.guid().nullish(),

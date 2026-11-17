@@ -1,7 +1,5 @@
 'use client'
 
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import { UiComponentProps } from '@app/web/libraries/ui/utils/uiComponentProps'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
 import {
@@ -10,6 +8,8 @@ import {
   FieldValues,
   UseFormReturn,
 } from 'react-hook-form'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import { UiComponentProps } from '@/libraries/ui/utils/uiComponentProps'
 import RichTextForm from './RichTextForm'
 
 export type RichTextFormFieldProps<T extends FieldValues> = {

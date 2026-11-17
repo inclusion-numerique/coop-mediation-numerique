@@ -1,4 +1,4 @@
-import { allocatePercentagesFromRecords } from '@app/web/libraries/proportions'
+import { allocatePercentagesFromRecords } from '@/libraries/proportions'
 import type { AccompagnementsParLieu } from '../domain'
 
 export const parLieuPresentes = (parLieu: AccompagnementsParLieu) =>

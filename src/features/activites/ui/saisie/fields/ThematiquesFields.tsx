@@ -1,14 +1,11 @@
 import {
   AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
   type Thematique,
-} from '@app/web/features/activites/ui/libelles/thematique'
-import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
-import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
-import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@app/web/libs/form/use-app-form'
+} from '@/features/activites/ui/libelles/thematique'
+import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { type DefaultValues, withFieldGroup } from '@/libs/form/use-app-form'
 
 const valeursDuGroupe: Pick<
   DefaultValues<CraData>,
