@@ -1,4 +1,4 @@
-import LayoutWithFooter from '@app/emails/components/LayoutWithFooter'
+import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
 import { MjmlColumn, MjmlSection, MjmlText } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
 

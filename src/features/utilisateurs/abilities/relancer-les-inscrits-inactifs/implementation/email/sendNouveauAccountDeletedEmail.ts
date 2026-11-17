@@ -1,5 +1,5 @@
-import { compileMjml } from '@app/emails/mjml'
-import { nouveauAccountDeletedEmail } from '@app/emails/templates/nouveauAccountDeletedEmail'
+import { nouveauAccountDeletedEmail } from '@app/web/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementation/email/nouveauAccountDeletedEmail'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'

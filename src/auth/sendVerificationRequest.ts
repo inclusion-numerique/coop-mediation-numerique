@@ -1,5 +1,5 @@
-import { compileMjml } from '@app/emails/mjml'
-import { emailSignin } from '@app/emails/templates/emailSignin'
+import { emailSignin } from '@app/web/features/authentification/implementation/email/emailSignin'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'

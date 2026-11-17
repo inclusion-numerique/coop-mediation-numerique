@@ -1,5 +1,5 @@
-import { compileMjml } from '@app/emails/mjml'
-import { finishYourSignupAccountDeletedEmail } from '@app/emails/templates/finishYourSignupAccountDeletedEmail'
+import { finishYourSignupAccountDeletedEmail } from '@app/web/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementation/email/finishYourSignupAccountDeletedEmail'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'

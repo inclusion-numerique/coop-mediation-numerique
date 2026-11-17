@@ -1,4 +1,4 @@
-import { compileMjml } from '@app/emails/mjml'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { describe, expect, it } from 'vitest'
 
 describe('mjml', () => {

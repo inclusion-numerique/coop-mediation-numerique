@@ -1,7 +1,8 @@
-import Explanations from '@app/emails/components/Explanations'
-import LayoutWithFooter from '@app/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
-import { backgroundColor } from '@app/emails/styles'
+import Explanations from '@app/web/features/equipe/implementation/email/Explanations'
+import Invitation from '@app/web/features/equipe/implementation/email/Invitation'
+import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
+import { backgroundColor } from '@app/web/libraries/emails/styles'
 import {
   MjmlButton,
   MjmlColumn,
@@ -11,7 +12,6 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import Invitation from '../components/Invitation'
 
 export const inviteNewMediateur = {
   text: ({ url, from }: { url: string; from: string }): string =>

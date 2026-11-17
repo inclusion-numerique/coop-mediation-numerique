@@ -1,5 +1,5 @@
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
-import { brandColor } from '@app/emails/styles'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
+import { brandColor } from '@app/web/libraries/emails/styles'
 import {
   MjmlButton,
   MjmlColumn,

@@ -1,5 +1,5 @@
-import LayoutWithFooter from '@app/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
+import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
 import {
   MjmlButton,
   MjmlColumn,
@@ -22,19 +22,33 @@ const STANDARD_PARAGRAPH = {
   paddingBottom: '16px',
 }
 
-const FINALIZE_PATH = '/coop?mtm_campaign=reinscription'
+const FINALIZE_PATH = '/coop?mtm_campaign='
 
 const HELP_URL =
   'https://docs.numerique.gouv.fr/docs/09e84488-ad22-4495-abcc-dd813a20ddd5/'
 
-export const finishYourSignupAccountDeletedEmail = {
-  text: ({ firstname }: { firstname: string | null }): string =>
+export const finishYourSignupEmail = {
+  text: ({
+    firstname,
+    totalUsers,
+    matomoCampaignId,
+  }: {
+    firstname: string | null
+    totalUsers: number
+    matomoCampaignId: string
+  }): string =>
     `Bonjour ${firstname},
 
-Votre inscription sur La Coop de la médiation numérique n’ayant pas été finalisée dans les délais, votre compte a été automatiquement supprimé.
+Nous avons remarqué que vous n’avez pas encore finalisé votre inscription sur La Coop de la médiation numérique.
 
-Vous pouvez bien sûr revenir à tout moment et créer un nouveau compte en quelques minutes seulement en utilisant ce lien :
-${emailAssetUrl(FINALIZE_PATH)}
+En terminant votre inscription, vous pourrez :
+- Suivre vos accompagnements facilement
+- Simplifier et personnaliser votre suivi des publics accompagnés
+- Visualiser graphiquement vos données d’accompagnement et les partager
+- Rejoindre la communauté de ${totalUsers} médiateur·rices numériques inscrit·es sur La Coop
+
+Pour finaliser votre inscription, utilisez ce lien :
+${emailAssetUrl(FINALIZE_PATH + matomoCampaignId)}
 
 Besoin d’aide ? Contactez notre équipe en répondant à cet email ou consultez le centre d’aide :
 ${HELP_URL}
@@ -43,11 +57,19 @@ ${HELP_URL}
 L’équipe de La Coop de la médiation numérique
 `,
 
-  mjml: ({ firstname }: { firstname: string | null }): string =>
+  mjml: ({
+    firstname,
+    totalUsers,
+    matomoCampaignId,
+  }: {
+    firstname: string | null
+    totalUsers: number
+    matomoCampaignId: string
+  }): string =>
     renderToMjml(
       <LayoutWithFooter
-        title="Votre compte a été supprimé"
-        preview="Vous n’avez pas terminé votre inscription sur La Coop de la médiation numérique dans les délais."
+        title="Votre inscription n’est pas finalisée"
+        preview="Vous n’avez pas terminé votre inscription sur La Coop de la médiation numérique."
         showDivider={false}
       >
         <MjmlSection paddingLeft={15} paddingRight={15}>
@@ -59,7 +81,7 @@ L’équipe de La Coop de la médiation numérique
               color="#000091"
               paddingBottom="16px"
             >
-              Votre compte a été supprimé
+              Votre inscription n’est pas finalisée
             </MjmlText>
             <MjmlText
               fontWeight="700"
@@ -71,20 +93,26 @@ L’équipe de La Coop de la médiation numérique
               Bonjour{firstname ? ` ${firstname}` : ''},
             </MjmlText>
             <MjmlText {...STANDARD_PARAGRAPH}>
-              Votre inscription sur <b>La Coop de la médiation numérique</b>{' '}
-              n’ayant pas été finalisée dans les délais, votre compte a été
-              automatiquement supprimé.
+              Nous avons remarqué que vous n’avez pas encore finalisé votre
+              inscription sur La Coop de la médiation numérique.
             </MjmlText>
             <MjmlText {...STANDARD_PARAGRAPH}>
-              💡 Vous pouvez bien sûr revenir à tout moment et créer un nouveau
-              compte en quelques minutes seulement !
+              En terminant votre inscription, vous pourrez :<br />📝 Suivre vos
+              accompagnements facilement
+              <br />
+              👩‍🦰 Simplifier et personnaliser votre suivi des publics
+              accompagnés
+              <br />📊 Visualiser graphiquement vos données d’accompagnement et
+              les partager
+              <br />🤝 Rejoindre la communauté de {totalUsers} médiateur·rices
+              numériques inscrit·es sur La Coop
             </MjmlText>
             <MjmlButton
               fontWeight="500"
               fontSize="16px"
-              href={emailAssetUrl(FINALIZE_PATH)}
+              href={emailAssetUrl(FINALIZE_PATH + matomoCampaignId)}
             >
-              Je me réinscris sur La Coop
+              Je finalise mon inscription
             </MjmlButton>
             <MjmlText {...STANDARD_PARAGRAPH} paddingTop="16px">
               Besoin d’aide&nbsp;? Contactez notre équipe en répondant à cet

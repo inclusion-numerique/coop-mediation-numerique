@@ -21,7 +21,6 @@ const dirname = path.dirname(filename)
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  transpilePackages: ['@app/emails'],
   // `mjml` et ses satellites ne peuvent pas être empaquetés (ils font des `require`
   // dynamiques). Ils étaient jusqu'ici poussés dans les `externals` du
   // hook webpack ; `serverExternalPackages` exprime la même chose pour les deux bundlers.

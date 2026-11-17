@@ -1,5 +1,5 @@
-import LayoutWithFooter from '@app/emails/components/LayoutWithFooter'
-import { brandColor } from '@app/emails/styles'
+import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
+import { brandColor } from '@app/web/libraries/emails/styles'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   MjmlButton,

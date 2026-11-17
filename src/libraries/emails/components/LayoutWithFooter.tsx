@@ -1,7 +1,7 @@
-import Footer from '@app/emails/components/Footer'
-import Head from '@app/emails/components/Head'
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
-import { backgroundColor } from '@app/emails/styles'
+import Footer from '@app/web/libraries/emails/components/Footer'
+import Head from '@app/web/libraries/emails/components/Head'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
+import { backgroundColor } from '@app/web/libraries/emails/styles'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   Mjml,

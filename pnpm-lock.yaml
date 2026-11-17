@@ -177,9 +177,6 @@ importers:
 
   .:
     dependencies:
-      '@app/emails':
-        specifier: workspace:^
-        version: link:packages/emails
       '@arckit/nextjs':
         specifier: ^2.2.2
         version: 2.2.2(2fe24f2d14e816bae7353dcd9a979dcf)
@@ -201,6 +198,9 @@ importers:
       '@codegouvfr/react-dsfr':
         specifier: ^1.35.0
         version: 1.36.0
+      '@faire/mjml-react':
+        specifier: ^4.0.1
+        version: 4.0.1(mjml@5.4.1(relateurl@0.2.7)(svgo@4.1.0)(terser@5.51.2)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@gouvfr-anct/lieux-de-mediation-numerique':
         specifier: ^4.4.0
         version: 4.4.0
@@ -285,6 +285,9 @@ importers:
       framer-motion:
         specifier: ^13.4.0
         version: 13.5.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      html-minifier-terser:
+        specifier: ^7.2.0
+        version: 7.2.0
       html-to-text:
         specifier: ^10.0.1
         version: 10.0.1
@@ -439,6 +442,9 @@ importers:
       '@types/debounce-promise':
         specifier: ^3.1.9
         version: 3.1.9
+      '@types/html-minifier-terser':
+        specifier: ^7.0.2
+        version: 7.0.2
       '@types/html-to-text':
         specifier: ^9.0.4
         version: 9.0.4
@@ -451,6 +457,9 @@ importers:
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
+      '@types/mjml':
+        specifier: ^5.0.0
+        version: 5.4.2
       '@types/node':
         specifier: ^24.19.1
         version: 24.19.2
@@ -652,40 +661,6 @@ importers:
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-
-  packages/emails:
-    dependencies:
-      '@faire/mjml-react':
-        specifier: ^4.0.1
-        version: 4.0.1(mjml@5.4.1(relateurl@0.2.7)(svgo@4.1.0)(terser@5.51.2)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      html-minifier-terser:
-        specifier: ^7.2.0
-        version: 7.2.0
-      mjml:
-        specifier: ^5.4.1
-        version: 5.4.1(relateurl@0.2.7)(svgo@4.1.0)(terser@5.51.2)(typescript@7.0.2)
-      react:
-        specifier: ^19.3.0
-        version: 19.3.1
-      react-dom:
-        specifier: ^19.3.0
-        version: 19.3.1(react@19.3.1)
-    devDependencies:
-      '@types/html-minifier-terser':
-        specifier: ^7.0.2
-        version: 7.0.2
-      '@types/mjml':
-        specifier: ^5.0.0
-        version: 5.4.2
-      '@types/node':
-        specifier: ^24.19.1
-        version: 24.19.2
-      '@types/react':
-        specifier: ^19.3.0
-        version: 19.3.0
       typescript:
         specifier: ^7.0.2
         version: 7.0.2

@@ -1,5 +1,5 @@
-import { compileMjml } from '@app/emails/mjml'
-import { nouveauAccountDeletionWarningEmail } from '@app/emails/templates/nouveauAccountDeletionWarningEmail'
+import { nouveauAccountDeletionWarningEmail } from '@app/web/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementation/email/nouveauAccountDeletionWarningEmail'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'

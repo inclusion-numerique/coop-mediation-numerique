@@ -1,5 +1,5 @@
-import LayoutWithFooter from '@app/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
+import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
 import {
   MjmlButton,
   MjmlColumn,
@@ -22,48 +22,43 @@ const STANDARD_PARAGRAPH = {
   paddingBottom: '16px',
 }
 
-const SIGNUP_PATH = '/coop?mtm_campaign=reinscription'
+const CONNEXION_PATH = '/connexion?mtm_campaign=inactivite-prolongee'
 
 const HELP_URL =
   'https://docs.numerique.gouv.fr/docs/09e84488-ad22-4495-abcc-dd813a20ddd5/'
 
-type InactiveAccountDeletedEmailProps = {
-  isMediateur: boolean
+type InactiviteProlongeeAvertissementEmailProps = {
+  firstname: string | null
+  dateDeSuppression: string
 }
 
-const getInactivityReason = (isMediateur: boolean): string =>
-  isMediateur
-    ? "vous n'avez enregistré aucune activité depuis votre inscription"
-    : "aucun membre n'a été ajouté à votre équipe depuis votre inscription"
+export const inactiviteProlongeeAvertissementEmail = {
+  text: ({
+    firstname,
+    dateDeSuppression,
+  }: InactiviteProlongeeAvertissementEmailProps): string =>
+    `Bonjour ${firstname ?? ''},
 
-export const nouveauAccountDeletedEmail = {
-  text: ({ isMediateur }: InactiveAccountDeletedEmailProps): string => {
-    const inactivityReason = getInactivityReason(isMediateur)
+Nous n'avons constaté aucune activité sur votre compte La Coop de la médiation numérique depuis près de 2 ans. Sans connexion de votre part, votre compte sera supprimé le ${dateDeSuppression} et vos données personnelles seront anonymisées.
 
-    return `Bonjour,
-
-Vous recevez ce message car ${inactivityReason}. Pour cette raison, votre compte a été automatiquement supprimé.
-
-Vous pouvez bien sûr revenir à tout moment : il vous suffit de créer un nouveau compte pour rejoindre la communauté des médiateur·rices numériques partout en France.
-
-Pour recréer votre compte :
-${emailAssetUrl(SIGNUP_PATH)}
+Pour conserver votre compte, il vous suffit de vous connecter avant cette date :
+${emailAssetUrl(CONNEXION_PATH)}
 
 Besoin d'aide ? Contactez notre équipe en répondant à cet email ou consultez le centre d'aide :
 ${HELP_URL}
 
 À bientôt,
 L'équipe de La Coop de la médiation numérique
-`
-  },
+`,
 
-  mjml: ({ isMediateur }: InactiveAccountDeletedEmailProps): string => {
-    const inactivityReason = getInactivityReason(isMediateur)
-
-    return renderToMjml(
+  mjml: ({
+    firstname,
+    dateDeSuppression,
+  }: InactiviteProlongeeAvertissementEmailProps): string =>
+    renderToMjml(
       <LayoutWithFooter
-        title="Votre compte a été supprimé"
-        preview="Votre compte La Coop a été supprimé pour inactivité."
+        title="Votre compte va bientôt être supprimé"
+        preview="Votre compte La Coop va être supprimé après 2 ans d'inactivité."
         showDivider={false}
       >
         <MjmlSection paddingLeft={15} paddingRight={15}>
@@ -75,7 +70,7 @@ L'équipe de La Coop de la médiation numérique
               color="#000091"
               paddingBottom="16px"
             >
-              Votre compte a été supprimé
+              Votre compte va bientôt être supprimé
             </MjmlText>
             <MjmlText
               fontWeight="700"
@@ -84,23 +79,27 @@ L'équipe de La Coop de la médiation numérique
               color="#3A3A3A"
               paddingBottom="16px"
             >
-              Bonjour,
+              Bonjour{firstname ? ` ${firstname}` : ''},
             </MjmlText>
             <MjmlText {...STANDARD_PARAGRAPH}>
-              Vous recevez ce message car {inactivityReason}. Pour cette raison,
-              votre compte a été automatiquement supprimé.
+              Nous n'avons constaté aucune activité sur votre compte La Coop de
+              la médiation numérique depuis près de 2 ans. Sans connexion de
+              votre part, votre compte sera supprimé le{' '}
+              <span style={{ color: '#000091', fontWeight: 700 }}>
+                {dateDeSuppression}
+              </span>{' '}
+              et vos données personnelles seront anonymisées.
             </MjmlText>
             <MjmlText {...STANDARD_PARAGRAPH}>
-              💡 Vous pouvez bien sûr revenir à tout moment : il vous suffit de
-              créer un nouveau compte pour rejoindre la communauté des
-              médiateur·rices numériques partout en France.
+              Pour conserver votre compte, il vous suffit de vous connecter
+              avant cette date.
             </MjmlText>
             <MjmlButton
               fontWeight="500"
               fontSize="16px"
-              href={emailAssetUrl(SIGNUP_PATH)}
+              href={emailAssetUrl(CONNEXION_PATH)}
             >
-              Je recrée mon compte
+              Je me connecte
             </MjmlButton>
             <MjmlText {...STANDARD_PARAGRAPH} paddingTop="16px">
               Besoin d'aide&nbsp;? Contactez notre équipe en répondant à cet
@@ -113,6 +112,5 @@ L'équipe de La Coop de la médiation numérique
           </MjmlColumn>
         </MjmlSection>
       </LayoutWithFooter>,
-    )
-  },
+    ),
 }

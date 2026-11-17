@@ -2,7 +2,6 @@ packages:
   - apps/cli
   - packages/config
   - packages/e2e
-  - packages/emails
   - packages/storybook
   - packages/fixtures
 

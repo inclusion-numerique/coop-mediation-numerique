@@ -1,4 +1,4 @@
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
 import {
   MjmlColumn,
   MjmlDivider,

@@ -1,5 +1,5 @@
-import LayoutWithFooter from '@app/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@app/emails/emailAssetUrl'
+import LayoutWithFooter from '@app/web/libraries/emails/components/LayoutWithFooter'
+import { emailAssetUrl } from '@app/web/libraries/emails/emailAssetUrl'
 import {
   MjmlButton,
   MjmlColumn,

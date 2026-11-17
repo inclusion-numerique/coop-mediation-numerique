@@ -1,5 +1,5 @@
-import { compileMjml } from '@app/emails/mjml'
-import { inactiviteProlongeeAvertissementEmail } from '@app/emails/templates/inactiviteProlongeeAvertissementEmail'
+import { inactiviteProlongeeAvertissementEmail } from '@app/web/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementation/email/inactiviteProlongeeAvertissementEmail'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'

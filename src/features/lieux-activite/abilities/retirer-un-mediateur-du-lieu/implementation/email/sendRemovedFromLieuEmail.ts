@@ -1,5 +1,5 @@
-import { compileMjml } from '@app/emails/mjml'
-import { removedFromLieuEmail } from '@app/emails/templates/removedFromLieuEmail'
+import { removedFromLieuEmail } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementation/email/removedFromLieuEmail'
+import { compileMjml } from '@app/web/libraries/emails/mjml'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'

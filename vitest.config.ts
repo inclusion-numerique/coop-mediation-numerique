@@ -50,7 +50,6 @@ export default defineConfig({
       },
       paquet('cli', './apps/cli'),
       paquet('config', './packages/config'),
-      paquet('emails', './packages/emails'),
       paquet('fixtures', './packages/fixtures'),
     ],
     coverage: {
