@@ -22,8 +22,7 @@
     "paths": {
       "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./src/*"],
-      "@app/e2e/*": ["./packages/e2e/cypress/*"],
-      "@app/storybook/*": ["./packages/storybook/src/*"]
+      "@app/e2e/*": ["./packages/e2e/cypress/*"]
     },
     "plugins": [
       {
@@ -37,6 +36,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts",
-    "nextAuth.d.ts"
+    "nextAuth.d.ts",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
   ]
 }

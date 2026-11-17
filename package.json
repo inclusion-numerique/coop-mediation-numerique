@@ -56,7 +56,12 @@
     "docker:start": "docker compose -p coop up -d",
     "docker:stop": "docker compose -p coop down",
     "docker:reset": "pnpm docker:stop && docker volume rm coop_pgdata && pnpm docker:start && pnpm db:init",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prestorybook": "react-dsfr update-icons --silent",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "prebuild-storybook": "react-dsfr update-icons --silent",
+    "build-storybook": "storybook build",
+    "chromatic": "dotenv -- chromatic --exit-zero-on-changes --exit-once-uploaded"
   },
   "dependencies": {
     "@arckit/nextjs": "^2.2.2",
@@ -77,6 +82,8 @@
     "@radix-ui/react-popover": "^1.1.23",
     "@scalar/api-reference-react": "^0.9.87",
     "@sentry/nextjs": "^10.75.0",
+    "@storybook/addon-links": "^10.6.0",
+    "@storybook/nextjs": "^10.6.0",
     "@tanstack/react-form": "^1.33.5",
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
@@ -147,6 +154,7 @@
     "@cucumber/cucumber": "^13.2.1",
     "@manypkg/cli": "^0.25.1",
     "@mermaid-js/mermaid-cli": "^11.17.0",
+    "@storybook/addon-a11y": "^10.6.0",
     "@storybook/react": "^10.6.0",
     "@superfaceai/openapi-linter": "^0.1.0",
     "@types/debounce-promise": "^3.1.9",
@@ -161,6 +169,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitest/coverage-v8": "5.1.0",
     "c8": "^12.0.0",
+    "chromatic": "^18.9.4",
     "commander": "^15.0.0",
     "esbuild": "^0.28.2",
     "husky": "^9.1.7",
@@ -174,6 +183,7 @@
     "storybook": "^10.6.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitest": "5.1.0"
+    "vitest": "5.1.0",
+    "webpack": "5.108.4"
   }
 }

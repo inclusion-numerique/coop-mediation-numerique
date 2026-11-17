@@ -8,8 +8,7 @@
       "server-only": ["./src/libraries/server-only-cli/index.ts"],
       "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./src/*"],
-      "@app/e2e/*": ["./packages/e2e/cypress/*"],
-      "@app/storybook/*": ["./packages/storybook/src/*"]
+      "@app/e2e/*": ["./packages/e2e/cypress/*"]
     }
   },
   "//include": "tsx n'applique un tsconfig qu'aux fichiers qu'il COUVRE : hors de cette liste, il retombe sur le runtime JSX classique et exige un `import React`. Cucumber charge des .tsx des paquets partagés (gabarits d'e-mail), qui doivent donc y figurer.",

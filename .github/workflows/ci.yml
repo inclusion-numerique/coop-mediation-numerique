@@ -289,7 +289,7 @@ jobs:
           scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
           scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
       - name: Build storybook and deploy on chromatic
-        run: pnpm --silent -F @app/storybook chromatic
+        run: pnpm --silent chromatic
 
   components:
     name: Components
