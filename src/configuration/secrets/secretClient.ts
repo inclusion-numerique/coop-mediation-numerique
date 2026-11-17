@@ -1,4 +1,4 @@
-import { region } from '@app/config/config'
+import { region } from '@app/web/configuration/projet/config'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import pRetry, { type Options as PRetryOptions } from 'p-retry'
 

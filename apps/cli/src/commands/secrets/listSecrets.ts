@@ -1,5 +1,5 @@
 import { output } from '@app/cli/output'
-import { listSecrets as configListSecrets } from '@app/config/secrets/listSecrets'
+import { listSecrets as configListSecrets } from '@app/web/configuration/secrets/listSecrets'
 import { Command } from '@commander-js/extra-typings'
 
 /**

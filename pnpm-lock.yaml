@@ -582,34 +582,6 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
-  packages/config:
-    dependencies:
-      axios:
-        specifier: ^1.20.0
-        version: 1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
-      dotenv-cli:
-        specifier: ^11.0.0
-        version: 11.1.0
-      nanoid:
-        specifier: ^6.0.1
-        version: 6.0.2
-      p-retry:
-        specifier: ^8.0.1
-        version: 8.0.1
-    devDependencies:
-      '@types/node':
-        specifier: ^24.19.1
-        version: 24.19.2
-      tsx:
-        specifier: ^4.23.15
-        version: 4.23.15
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-
   packages/e2e:
     dependencies:
       '@codegouvfr/react-dsfr':

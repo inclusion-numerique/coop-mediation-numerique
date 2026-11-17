@@ -1,7 +1,11 @@
 /**
  * Public config can be used on client side or server side
  */
-import { mainLiveUrl, projectTitle, repositoryUrl } from '@app/config/config'
+import {
+  mainLiveUrl,
+  projectTitle,
+  repositoryUrl,
+} from '@app/web/configuration/projet/config'
 
 const isMain = process.env.BRANCH === 'main'
 const isDev = process.env.BRANCH === 'dev'

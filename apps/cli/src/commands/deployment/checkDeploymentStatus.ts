@@ -1,5 +1,5 @@
 import { output } from '@app/cli/output'
-import { projectTitle } from '@app/config/config'
+import { projectTitle } from '@app/web/configuration/projet/config'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import axiosRetry from 'axios-retry'

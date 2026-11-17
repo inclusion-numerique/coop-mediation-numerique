@@ -1,8 +1,8 @@
 import { output } from '@app/cli/output'
-import { databasePasswordSecretName } from '@app/config/secrets/databasePasswordSecretName'
-import { findSecretByName } from '@app/config/secrets/findSecretByName'
-import { getSecretValue as configGetSecretValue } from '@app/config/secrets/getSecretValue'
-import { listSecrets } from '@app/config/secrets/listSecrets'
+import { databasePasswordSecretName } from '@app/web/configuration/secrets/databasePasswordSecretName'
+import { findSecretByName } from '@app/web/configuration/secrets/findSecretByName'
+import { getSecretValue as configGetSecretValue } from '@app/web/configuration/secrets/getSecretValue'
+import { listSecrets } from '@app/web/configuration/secrets/listSecrets'
 import { Argument, Command } from '@commander-js/extra-typings'
 
 /**

@@ -6,7 +6,7 @@ import {
   databaseInstanceName,
   projectSlug,
   region,
-} from '@app/config/config'
+} from '@app/web/configuration/projet/config'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 

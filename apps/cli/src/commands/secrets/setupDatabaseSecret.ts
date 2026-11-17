@@ -1,8 +1,8 @@
 import { output } from '@app/cli/output'
-import { createSecret } from '@app/config/secrets/createSecret'
-import { databasePasswordSecretName } from '@app/config/secrets/databasePasswordSecretName'
-import { generateDatabasePassword } from '@app/config/secrets/generateDatabasePassword'
-import { listSecrets } from '@app/config/secrets/listSecrets'
+import { createSecret } from '@app/web/configuration/secrets/createSecret'
+import { databasePasswordSecretName } from '@app/web/configuration/secrets/databasePasswordSecretName'
+import { generateDatabasePassword } from '@app/web/configuration/secrets/generateDatabasePassword'
+import { listSecrets } from '@app/web/configuration/secrets/listSecrets'
 import { Argument, Command } from '@commander-js/extra-typings'
 
 /**

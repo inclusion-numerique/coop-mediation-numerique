@@ -1,9 +1,9 @@
 import { createWriteStream } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import type { Stream } from 'node:stream'
-import { createVarDirectory } from '@app/config/createVarDirectory'
-import { varFile } from '@app/config/varDirectory'
 import { signaler } from '@app/web/configuration/telemetry/error-reporter/server/signaler'
+import { createVarDirectory } from '@app/web/libraries/chemins/createVarDirectory'
+import { varFile } from '@app/web/libraries/chemins/varDirectory'
 import axios from 'axios'
 
 const dataInclusionStructuresUrl = () =>

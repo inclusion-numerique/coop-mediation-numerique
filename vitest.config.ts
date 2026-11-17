@@ -49,7 +49,6 @@ export default defineConfig({
         },
       },
       paquet('cli', './apps/cli'),
-      paquet('config', './packages/config'),
       paquet('fixtures', './packages/fixtures'),
     ],
     coverage: {

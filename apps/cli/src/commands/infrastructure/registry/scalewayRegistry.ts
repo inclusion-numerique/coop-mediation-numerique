@@ -1,4 +1,4 @@
-import { projectSlug, region } from '@app/config/config'
+import { projectSlug, region } from '@app/web/configuration/projet/config'
 import axios, { type AxiosInstance } from 'axios'
 import type { RegistryImage, RegistryTag } from './registryRetention'
 

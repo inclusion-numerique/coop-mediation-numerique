@@ -1,4 +1,4 @@
-import { databasePasswordSecretName } from '@app/config/secrets/databasePasswordSecretName'
+import { databasePasswordSecretName } from '@app/web/configuration/secrets/databasePasswordSecretName'
 import { describe, expect, it } from 'vitest'
 
 describe('databasePasswordSecretName', () => {

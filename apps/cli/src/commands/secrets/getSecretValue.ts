@@ -1,7 +1,7 @@
 import { output } from '@app/cli/output'
-import { findSecretByName } from '@app/config/secrets/findSecretByName'
-import { getSecretValue as configGetSecretValue } from '@app/config/secrets/getSecretValue'
-import { listSecrets } from '@app/config/secrets/listSecrets'
+import { findSecretByName } from '@app/web/configuration/secrets/findSecretByName'
+import { getSecretValue as configGetSecretValue } from '@app/web/configuration/secrets/getSecretValue'
+import { listSecrets } from '@app/web/configuration/secrets/listSecrets'
 import { Argument, Command } from '@commander-js/extra-typings'
 
 /**
