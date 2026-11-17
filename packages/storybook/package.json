@@ -7,9 +7,9 @@
   "scripts": {
     "lint": "biome check .storybook src",
     "tsc": "tsc --noEmit",
-    "predev": "react-dsfr update-icons",
+    "predev": "react-dsfr update-icons --silent",
     "dev": "storybook dev -p 6006 --no-open",
-    "prebuild-storybook": "react-dsfr update-icons",
+    "prebuild-storybook": "react-dsfr update-icons --silent",
     "build-storybook": "storybook build",
     "with-env": "dotenv -e ../../.env --",
     "chromatic": "pnpm with-env chromatic --exit-zero-on-changes --exit-once-uploaded"
