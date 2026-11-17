@@ -41,11 +41,13 @@ requête dans la même base, pas un appel distant. C'est ce qui rend la décisio
 La coop ne fait plus autorité sur les structures employeuses ni sur les emplois. Elle lit le schéma
 `main` du Dataspace, et n'y écrit que ce que l'inscription d'un utilisateur exige.
 
-### Principe : le Dataspace ignore la coop, la coop s'adapte
+### Principe : le Dataspace fait autorité sur `main`, la coop s'y conforme
 
-Le Dataspace est indépendant et ignore l'existence de la coop. La coop dépend de lui et s'adapte à
-ses évolutions, jamais l'inverse. Quand la coop a besoin d'une évolution de `main`, elle la demande
-à l'équipe Dataspace, qui l'applique de son côté.
+Le Dataspace fait autorité sur le schéma `main`. La coop en est cliente et s'y conforme. Les
+évolutions de `main` se décident et s'appliquent du côté du Dataspace : quand la coop a besoin
+d'une évolution, elle la demande à l'équipe Dataspace. La coop ne modifie jamais `main` pour ses
+propres besoins techniques. Le Dataspace reste libre de référencer la coop ou d'en tenir compte
+s'il le souhaite : c'est son choix, pas une obligation.
 
 ```mermaid
 flowchart LR
@@ -70,13 +72,14 @@ passer disparaissent ensemble.
 
 Retirer les employeuses sans retirer les emplois aurait gardé, côté coop, une table qui pointe vers
 `main` tout en restant la vérité sur les rattachements. Le rattachement d'un utilisateur à son
-employeuse vit donc dans `main.personne_affectations_emploi`, avec la source `coop` pour ce que la
-coop déclare. La table d'emplois de la coop disparaît.
+employeuse vit donc dans `main.personne_affectations_emploi`, avec la source `coop` que le Dataspace
+a choisi de porter pour ce que la coop déclare. La table d'emplois de la coop disparaît.
 
 ### 3. Le lien passe par `main.personne.coop_id`
 
 Les utilisateurs de la coop ne migrent pas vers `main`. Un utilisateur est relié à sa personne par
-la colonne `main.personne.coop_id`, qui existait déjà et que l'Entrepôt renseignait. La coop
+la colonne `main.personne.coop_id`, que le Dataspace a choisi de porter et que l'Entrepôt
+renseignait déjà. La coop
 traverse ce lien pour aller de l'utilisateur à ses affectations, puis à ses employeuses.
 
 ### 4. La personne est trouvée ou créée à l'inscription, avec l'email comme pivot
@@ -122,14 +125,16 @@ C'est aussi ce qu'attend la fusion d'employeuses de l'Entrepôt, qui repointe le
 la structure conservée avant de supprimer l'autre : `RESTRICT` garantit qu'aucune référence n'a été
 oubliée.
 
-Cette clé étrangère a un coût pour le Dataspace, sans qu'aucun de son code ni de ses migrations ne
-mentionne la coop :
+Cette contrainte est posée uniquement côté coop, sans aucune modification de `main`. Elle a
+pourtant un coût pour le Dataspace :
 
-- le rôle de la coop doit avoir le droit de référencer `main.structure_administrative` ;
+- le rôle de la coop doit avoir le droit de référencer `main.structure_administrative`, droit que
+  le Dataspace accorde ;
 - un `TRUNCATE` ou un `DROP` de la table sans cascade est refusé tant que la clé existe ;
 - en `RESTRICT`, la suppression d'une employeuse encore référencée par une activité est bloquée.
 
-Ce coût est assumé : il protège les données de la coop contre une perte silencieuse.
+Ce coût est assumé. Le Dataspace garde la décision sur ses propres choix, et une suppression bloquée
+par cette contrainte protège les données de la coop contre une perte silencieuse.
 
 État actuel : la clé étrangère existe mais reste en `SET NULL`, sur une colonne nullable portant
 encore son nom de transition. Cible à atteindre, ticket à ouvrir. Le passage à `NOT NULL` et le
@@ -138,10 +143,11 @@ renommage suivent les migrations destructives en deux temps
 
 ### 8. Cible : la coop ne modifie jamais le schéma `main`
 
-Le schéma `main` appartient au Dataspace. L'équipe Dataspace le migre avec Flyway, indépendamment
-de la coop. La coop le considère comme existant une fois appliqué de leur côté, et ne le modifie
-jamais : aucune migration de la coop ne crée, n'altère ni ne supprime d'objet de `main`. Seules
-sont admises les clés étrangères de tables de la coop vers `main`, et l'écriture de données.
+Le Dataspace fait autorité sur le schéma `main` : son équipe en décide les évolutions et les
+applique avec Flyway, y compris celles que la coop lui demande. La coop le considère comme existant
+une fois appliqué de leur côté, et ne le modifie jamais pour ses propres besoins techniques : aucune
+migration de la coop ne crée, n'altère ni ne supprime d'objet de `main`. Seules sont admises les
+clés étrangères de tables de la coop vers `main`, et l'écriture de données.
 
 La cible rend cette interdiction structurelle : une migration de la coop qui toucherait la
 structure de `main` ne doit pas pouvoir exister. Trois verrous la portent :
@@ -260,13 +266,13 @@ passage du job, quand une contrainte les refuse au moment de l'écriture.
 - **Pertes assumées** : les dates d'emploi tenues par la coop, la piste d'audit de la table
   d'emplois (qui a créé, modifié, supprimé) et le complément d'adresse des employeuses.
 - **Couplage** au schéma de `main`, géré par l'Entrepôt avec Flyway : une évolution de leur côté
-  peut casser notre client. La garde anti-dérive le détecte, elle ne l'empêche pas : la coop
-  s'adapte.
+  peut casser notre client. La garde anti-dérive le détecte, elle ne l'empêche pas : la coop s'y
+  conforme, ou demande à l'équipe Dataspace l'évolution dont elle a besoin.
 - **Coût de la clé étrangère pour le Dataspace** : le rôle de la coop doit pouvoir référencer
   `main.structure_administrative`, un `TRUNCATE` ou un `DROP` sans cascade est refusé, et une fois
   en `RESTRICT` nos lignes bloquent la suppression d'une employeuse encore référencée : il faut
-  repointer avant de supprimer. Coût assumé, parce qu'il protège les données de la coop, sans
-  qu'aucun code ni aucune migration du Dataspace ne mentionne la coop.
+  repointer avant de supprimer. Coût assumé, parce qu'il protège les données de la coop. La
+  contrainte est posée uniquement côté coop et ne demande aucune modification de `main`.
 - **Plusieurs agrégats de contexte à garder** : une même personne peut avoir plusieurs employeuses,
   environ 4 % des utilisateurs, et environ 53 % des affectations de source `coop` n'ont pas de
   contrat. Les lectures distinguent donc l'employeuse courante, l'employeuse à une date et
@@ -282,8 +288,9 @@ La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
 - **Sens de `est_active` pour la source `coop`** : la coop le maintient désormais elle-même, à la
   place du cycle de réactivation que tenait l'import de l'Entrepôt ; la sémantique est à poser avec
   lui (#1729).
-- **Clé étrangère de `main.personne.coop_id` vers `coop.users`** : elle vit sur une table de `main`,
-  donc dans Flyway. Elle suppose une personne au plus par utilisateur.
+- **Clé étrangère de `main.personne.coop_id` vers `coop.users`** : le Dataspace a choisi de la
+  porter ; elle vit sur une table de `main`, donc dans Flyway. Elle suppose une personne au plus
+  par utilisateur.
 - **Réconciliation inachevée** : des comptes en conflit, où deux utilisateurs actifs prétendent à la
   même personne, restent à trancher à la main, et des conseillers numériques absents de `main`,
   faute d'email concordant, restent à rapprocher.
