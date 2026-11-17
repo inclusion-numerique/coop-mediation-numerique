@@ -31,13 +31,8 @@ const RDV = 9_900_300
  * `force` court-circuite l'attente d'actionnabilité de Cypress. Un clic parti
  * avant l'hydratation modifie le DOM sans que React ne voie rien : le réglage
  * n'est jamais écrit, et l'échec se présente comme une liste qui ne change pas.
- *
- * `data-fr-js` est posé sur `<html>` quand le JS du DSFR a démarré côté client,
- * ce qui n'arrive qu'une fois le bundle exécuté. Même famille de garde que
- * `dsfrModalsShouldBeBound`.
  */
-const attendreHydratation = () =>
-  cy.get('html').should('have.attr', 'data-fr-js', 'true')
+const attendreHydratation = () => cy.dsfrShouldBeStarted()
 
 describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activités', () => {
   beforeEach(() => {
