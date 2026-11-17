@@ -21,8 +21,7 @@
     "types": ["node"],
     "paths": {
       "@app/cli/*": ["./apps/cli/src/*"],
-      "@app/web/*": ["./src/*"],
-      "@app/e2e/*": ["./packages/e2e/cypress/*"]
+      "@app/web/*": ["./src/*"]
     },
     "plugins": [
       {

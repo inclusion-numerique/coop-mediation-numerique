@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "@testing-library/cypress", "node"],
+    "paths": {
+      "@app/web/*": ["../src/*"],
+      "@app/e2e/*": ["./cypress/*"]
+    }
+  },
+  "include": ["./cypress.config.ts", "./cypress/**/*.ts", "./cypress/**/*.tsx"]
+}

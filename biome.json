@@ -29,11 +29,9 @@
       "!**/storybook-static",
       "!.next/",
       "!public/dsfr",
-      "!packages/e2e/cypress/videos",
-      "!packages/e2e/cypress/screenshots",
-      "!packages/e2e/.next/",
-      "!packages/ui/.next",
-      "!packages/ui/public/dsfr",
+      "!e2e/cypress/videos",
+      "!e2e/cypress/screenshots",
+      "!e2e/.next/",
       "!var",
       "!.next",
       "!public",
@@ -276,7 +274,7 @@
       }
     },
     {
-      "includes": ["packages/e2e/**/*.ts", "packages/e2e/**/*.tsx"],
+      "includes": ["e2e/**/*.ts", "e2e/**/*.tsx"],
       "javascript": {
         "formatter": {
           "quoteStyle": "single"

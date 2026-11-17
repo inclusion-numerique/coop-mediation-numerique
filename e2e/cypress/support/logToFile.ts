@@ -5,7 +5,7 @@ import path from 'node:path'
  * Only import this file in e2e cypress task management features
  */
 
-const logDirectory = path.resolve(import.meta.dirname, '../../../../var')
+const logDirectory = path.resolve(import.meta.dirname, '../../../var')
 
 export const logFile = path.resolve(logDirectory, 'cypress.log')
 

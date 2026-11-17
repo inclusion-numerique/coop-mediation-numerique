@@ -62,14 +62,13 @@ storybook-static
 
 
 # e2e
-/packages/e2e/cypress/videos
-/packages/e2e/cypress/screenshots
-/packages/e2e/.next/
-/packages/e2e/cypress/downloads
+/e2e/cypress/videos
+/e2e/cypress/screenshots
+/e2e/.next/
+/e2e/cypress/downloads
 
 
 # ui
-/packages/ui/.next
 
 # http rest client
 /*.http

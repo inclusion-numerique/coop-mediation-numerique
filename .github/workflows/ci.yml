@@ -313,21 +313,20 @@ jobs:
         uses: cypress-io/github-action@v7
         with:
           install: false
-          working-directory: packages/e2e
-          command: pnpm cy run --component --reporter junit --reporter-options mochaFile=junit/components-[hash].xml
+          command: pnpm cy run --project e2e --component --reporter junit --reporter-options mochaFile=junit/components-[hash].xml
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: components-cypress
           path: |
-            packages/e2e/cypress/screenshots
+            e2e/cypress/screenshots
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: "packages/e2e/junit/*.xml"
+          report_paths: "e2e/junit/*.xml"
           check_name: "Components tests summary"
           annotate_only: true
 
@@ -397,7 +396,7 @@ jobs:
           PROCONNECT_SIMULE_PORT=8443 \
           PROCONNECT_SIMULE_CERTIFICAT="$RUNNER_TEMP/proconnect-simule/certificat.pem" \
           PROCONNECT_SIMULE_CLE="$RUNNER_TEMP/proconnect-simule/cle.pem" \
-            nohup node packages/e2e/cypress/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
+            nohup node e2e/cypress/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
       - name: Build cache
         uses: actions/cache@v6
         with:
@@ -429,17 +428,16 @@ jobs:
           SPLIT_FILE: timings.json
         with:
           install: false
-          working-directory: packages/e2e
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
-          command: pnpm cy run --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
+          command: pnpm cy run --project e2e --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
       - name: Upload Cypress screenshots and server log
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-cypress-${{ matrix.conteneur }}
           path: |
-            packages/e2e/cypress/screenshots
+            e2e/cypress/screenshots
             server.log
             proconnect-simule.log
           retention-days: 30
@@ -447,7 +445,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@v6
         with:
-          report_paths: "packages/e2e/junit/*.xml"
+          report_paths: "e2e/junit/*.xml"
           check_name: "E2E tests summary"
           annotate_only: true
 

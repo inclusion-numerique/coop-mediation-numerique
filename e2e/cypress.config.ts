@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress'
 import cypressSplit from 'cypress-split'
-import { cypressProjectId } from '../config/src/config'
+import { cypressProjectId } from '../src/configuration/projet/config'
 import { taskManager } from './cypress/support/taskManager'
 
 export default defineConfig({

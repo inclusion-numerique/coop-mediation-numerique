@@ -35,5 +35,5 @@ runs:
         key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
     - name: Install Cypress binary
       if: inputs.cypress == 'true'
-      run: pnpm -F @app/e2e exec cypress install
+      run: pnpm exec cypress install
       shell: bash

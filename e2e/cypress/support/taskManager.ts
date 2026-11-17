@@ -4,7 +4,7 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '../../../../apps/web/src/utils/encodeSerializableState'
+} from '../../../src/utils/encodeSerializableState'
 import { logToFile } from './logToFile'
 
 const packageBaseDirectory = path.resolve(import.meta.dirname, '../..')
