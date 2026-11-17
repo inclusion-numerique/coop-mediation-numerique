@@ -1,5 +1,5 @@
-import { output } from '@app/cli/output'
 import { retirerLesRolesVacants } from '@app/web/features/utilisateurs/abilities/changer-les-roles'
+import { output } from '@app/web/libraries/console/output'
 
 export const executeRetirerLesRolesVacants = async () => {
   const { coordinateursRetires, mediateursRetires } =

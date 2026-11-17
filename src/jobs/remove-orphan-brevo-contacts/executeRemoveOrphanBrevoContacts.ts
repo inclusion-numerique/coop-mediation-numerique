@@ -1,9 +1,9 @@
-import { output } from '@app/cli/output'
 import { deploymentCanCreateBrevoContact } from '@app/web/external-apis/brevo/createBrevoContact'
 import {
   contactsBrevoPorts,
   retirerLesContactsOrphelins,
 } from '@app/web/features/utilisateurs/abilities/retirer-les-contacts-orphelins'
+import { output } from '@app/web/libraries/console/output'
 
 export const executeRemoveOrphanBrevoContacts = async () => {
   if (!deploymentCanCreateBrevoContact()) {

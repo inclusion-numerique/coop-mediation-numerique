@@ -1,8 +1,8 @@
-import { output } from '@app/cli/output'
 import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
 import { declencherSynchronisationBinding as declencher } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { peutEtreSynchronise } from '@app/web/features/rdvsp/domain/sante-compte'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
+import { output } from '@app/web/libraries/console/output'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 
 export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {

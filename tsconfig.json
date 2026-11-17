@@ -20,7 +20,6 @@
     "inlineSources": false,
     "types": ["node"],
     "paths": {
-      "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./src/*"]
     },
     "plugins": [

@@ -6,7 +6,6 @@
     "jsx": "react-jsx",
     "paths": {
       "server-only": ["./src/libraries/server-only-cli/index.ts"],
-      "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./src/*"]
     }
   },

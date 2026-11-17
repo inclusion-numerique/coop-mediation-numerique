@@ -70,36 +70,6 @@ jobs:
       - name: Lint commits
         run: pnpm lint:commit
 
-  test-packages:
-    name: Test packages
-    runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-packages
-      cancel-in-progress: true
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-      - name: Setup
-        uses: ./.github/actions/setup
-      - name: Create env file
-        run: cp .env.dist .env
-      - name: Test remaining packages with coverage
-        run: pnpm --silent exec vitest run --project cli --project config --project emails --project fixtures --project ui --coverage
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          files: coverage/lcov.info
-          flag-name: packages
-          parallel: true
-          fail-on-error: false
-      - name: Publish test summary
-        if: ${{ !cancelled() }}
-        uses: mikepenz/action-junit-report@v6
-        with:
-          report_paths: "junit/*.xml"
-          check_name: "Packages tests summary"
-          annotate_only: true
-
   test-web:
     name: Test web
     runs-on: ubuntu-latest
@@ -452,7 +422,6 @@ jobs:
   coverage:
     name: Coverage
     needs:
-      - test-packages
       - test-web
       - integration-tests
       - cucumber

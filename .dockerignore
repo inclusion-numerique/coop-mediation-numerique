@@ -23,7 +23,6 @@ data
 
 # Unused package in docker app
 packages/
-apps/cli/node_modules
 
 # Test files
 **/*.stories.mdx

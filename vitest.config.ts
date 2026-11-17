@@ -4,15 +4,6 @@ import { defineConfig } from 'vitest/config'
 const depuisIci = (chemin: string) =>
   fileURLToPath(new URL(chemin, import.meta.url))
 
-const paquet = (name: string, root: string) => ({
-  extends: true,
-  test: {
-    name,
-    root: depuisIci(root),
-    include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
-  },
-})
-
 export default defineConfig({
   resolve: {
     tsconfigPaths: true,
@@ -48,7 +39,6 @@ export default defineConfig({
           fileParallelism: false,
         },
       },
-      paquet('cli', './apps/cli'),
     ],
     coverage: {
       provider: 'v8',

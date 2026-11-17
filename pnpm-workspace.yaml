@@ -1,5 +1,4 @@
 packages:
-  - apps/cli
 
 # Délai de quarantaine avant qu'une version publiée soit installable (en MINUTES : 21600 = 15
 # jours). C'est la principale défense du dépôt contre les compromissions de chaîne
