@@ -2,71 +2,70 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/inclusion-numerique/coop-mediation-numerique/badge.svg?branch=main)](https://coveralls.io/github/inclusion-numerique/coop-mediation-numerique?branch=main)
 
-<h2 id="à-propos">🪧 À propos</h2>
+<h2 id="a-propos">🪧 À propos</h2>
 
-Bienvenue sur la Coop de la médiation numérique, développé par le [Pôle Inclusion numérique de l'ANCT](https://societenumerique.gouv.fr/fr/les-services-de-linclusion-numerique/).\
-Ce [monorepo](https://en.wikipedia.org/wiki/Monorepo) fournit l'ensemble des projets nécessaires au fonctionnement d'une plateforme web utilisant le [Système de Design de l'Etat](https://www.systeme-de-design.gouv.fr/) et le [template commun de l'ANCT](https://www.figma.com/file/C9Ump1yh3z4DPMxm2qk3IY/Templates_communs?type=design&node-id=4-2946&t=d7Fn19OfHLoEcXqg-0) qui ajoute des composants métiers au Système de Design de l'État.\
-L'objectif de ce projet est d’outiller les professionels de la médiation numérique.
+La Coop de la médiation numérique est l'outil de travail quotidien des médiateurs et médiatrices numériques, des conseillers numériques et de leurs coordinateurs. Elle est développée par le [Programme Société Numérique](https://societenumerique.gouv.fr) de l'Agence nationale de la cohésion des territoires (ANCT), avec le [Système de Design de l'État](https://www.systeme-de-design.gouv.fr/).
+
+Elle permet de :
+
+- enregistrer ses accompagnements, individuels ou collectifs, et ses activités de coordination ;
+- suivre ses bénéficiaires, les importer depuis un tableur et repérer les doublons ;
+- consulter ses statistiques d'activité et les exporter ;
+- gérer son équipe quand on coordonne d'autres médiateurs ;
+- décrire ses lieux d'activité, publiés sur la [Cartographie nationale des lieux d'inclusion numérique](https://cartographie.societenumerique.gouv.fr) ;
+- retrouver les acteurs de la médiation numérique de son territoire ;
+- relier son compte à [RDV Service Public](https://rdv.anct.gouv.fr) pour voir ses rendez-vous parmi ses activités ;
+- accéder aux outils numériques utiles à la médiation.
+
+La connexion passe par [ProConnect](https://www.proconnect.gouv.fr). Une [API](https://coop-numerique.anct.gouv.fr/api/v1/documentation) ouvre les données d'activité aux partenaires habilités.
 
 ## 📑 Table des matières
 
-- 🪧 [À propos](#à-propos)
-- ✨ [Fonctionnalités](#fonctionnalités)
+- 🪧 [À propos](#a-propos)
 - 🔗 [Environnements](#environnements)
-- 📦 [Contenu](#contenu)
-- 🤗 [Contribution](#contribution)
+- 🧭 [Liens utiles](#liens-utiles)
+- 📚 [Documentation](#documentation)
+- 📦 [Contenu du dépôt](#contenu)
+- 🤗 [Contribuer](#contribuer)
 - 📝 [Licence](#licence)
-
-<h2 id="fonctionnalités">✨ Fonctionnalités</h2>
-
-- Accueil
-- Connexion par lien magique
-- Connexion avec Single Sign On
-  - [ProConnect](https://github.com/numerique-gouv/proconnect-documentation/blob/main/doc_fs/README.md)
-- Page profil
-- Politique de confidentialité
-- Mentions légales
-- Conditions générales d'utilisation
-- Statistiques
-- Déclaration d'accessibilité
-- Page d'erreur : 404, 500, etc.
 
 <h2 id="environnements">🔗 Environnements</h2>
 
-| Environnement           | URL                                                          |
-| ----------------------- | ------------------------------------------------------------ |
-| Production              | https://coop-numerique.anct.gouv.fr                          |
-| Dev                     | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
-| MailDev (mails de test) | http://maildev.coop-numerique.anct.gouv.fr                   |
+| Environnement | URL                                                          |
+| ------------- | ------------------------------------------------------------ |
+| Production    | https://coop-numerique.anct.gouv.fr                          |
+| Dev           | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
+| MailDev       | http://maildev.coop-numerique.anct.gouv.fr                   |
 
-<h2 id="contenu">📦 Contenu</h2>
+Chaque pull request peut aussi déployer son propre environnement de preview, voir le [guide de contribution](./CONTRIBUTING.md#ci-cd). Les e-mails de `dev` et des previews ne partent pas : ils arrivent dans MailDev.
 
-### Applications
+<h2 id="liens-utiles">🧭 Liens utiles</h2>
 
-Les `Applications` contiennent le code source des éléments propres au projet
+- [Centre d'aide](https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/) : la documentation destinée aux utilisateurs
+- [Statistiques d'impact](https://coop-numerique.anct.gouv.fr/statistiques) : l'usage de la plateforme, publié en continu
+- [Documentation de l'API v1](https://coop-numerique.anct.gouv.fr/api/v1/documentation)
+- [Tickets](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues) : le suivi des demandes et des anomalies, partagé avec la suite gestionnaire numérique
 
-- [cli](apps/cli) : Suite d'outils en ligne de commande qui servent à exécuter des scripts complexes nécessaires lors de processus automatisés tels que l'intégration et le déploiement automatisé.
-- [web](apps/web) : Source du projet web next.js qui permet de faire tourner la stack, front et back en utilisant des servers components.
+<h2 id="documentation">📚 Documentation</h2>
 
-### Infrastructure
+- [Guide de contribution](./CONTRIBUTING.md) : installer l'environnement de développement et les pratiques du dépôt
+- [Infrastructure](./infrastructure/README.md) : les ressources Scaleway de chaque environnement, les tâches planifiées et le déploiement
+- [Décisions d'architecture (ADR)](./docs/adr)
+- [Migrations sur l'Entrepôt](./docs/runbook-migrations-entrepot.md) : la procédure pour faire évoluer le schéma en production
+- [AGENTS.md](./AGENTS.md) : les conventions de code, rédigées pour les agents de code et utiles à tout le monde
 
-- [infrastructure](infrastructure) : [Définition de l'infrastructure](infrastructure/README.md) de chaque environnement en HCL, déployée avec [OpenTofu](https://opentofu.org) sur [Scaleway](https://www.scaleway.com).
+<h2 id="contenu">📦 Contenu du dépôt</h2>
 
-### Packages
+- [apps/web](apps/web) : l'application Next.js, interface et serveur
+- [apps/cli](apps/cli) : les outils en ligne de commande du déploiement, des secrets et des tâches
+- [infrastructure](infrastructure) : l'infrastructure de chaque environnement, en HCL pour [OpenTofu](https://opentofu.org)
+- [packages](packages) : la configuration (`config`), les composants partagés (`ui`), les gabarits d'e-mails (`emails`), les données de test (`fixtures`), Storybook (`storybook`) et les tests de bout en bout (`e2e`)
+- [docker](docker) : les images de l'application et de PostgreSQL
 
-Les `Packages` contiennent des outils de support et des communs dont l'origine provient de la [stack](https://github.com/inclusion-numerique/stack).
+<h2 id="contribuer">🤗 Contribuer</h2>
 
-- [config](packages/config) : [Configuration des services](packages/config/Readme.md) utilisés lors de la génération, le déploiement et l'exécution via des variables d'environnement.
-- [e2e](packages/e2e) : Tests de bout en bout opérés par [Cypress](https://www.cypress.io/).
-- [emails](packages/emails) : Templates pour les emails utilisés par l'application.
-- [fixtures](packages/fixtures) : Ensemble de données à insérer dans la base de données pour avoir un ensemble cohérent plutôt qu'un projet vide.
-- [storybook](packages/storybook) : Configuration de storybook, utilisé pour administrer une bibliothèque des composants disponibles dans l'application.
-- [ui](packages/ui) : Composants et utilitaires génériques provenant être réutilisés et surchargés dans d'autres applications.
-
-<h2 id="contribution">🤗 Contribution</h2>
-
-Pour contribuer, nous vous invitons à consulter le [guide de contribution](./CONTRIBUTING.md). Ce guide vous fournira des instructions détaillées sur la manière de configurer le projet localement, ainsi que sur la manière de soumettre des contributions de manière efficace.
+Le [guide de contribution](./CONTRIBUTING.md) explique comment installer le projet, le lancer, le tester et proposer une modification.
 
 <h2 id="licence">📝 Licence</h2>
 
-Voir le fichier [LICENSE](./LICENSE) du dépôt.
+Ce projet est distribué sous licence [AGPL-3.0-or-later](./LICENSE).

@@ -15,7 +15,7 @@ pnpm docker:start          # Start PostgreSQL and MailDev containers
 pnpm db:init                # Generate Prisma client and run migrations
 pnpm start:web              # Start web app at http://localhost:3001
 pnpm dev                    # Start web app + Storybook (http://localhost:6006)
-pnpm fixtures:load          # Load test data (users: edith@piaf.com, georges@moustaki.com)
+pnpm fixtures:load          # Load test data
 ```
 
 ### Linting & Type Checking
@@ -178,4 +178,4 @@ Branch names can be of any length: a preview's namespace (see `apps/cli/src/bran
 
 - Merging to `main` triggers automatic production deployment
 - Database connection string uses port 5433 locally (not 5432)
-- Magic link for dev login appears in console output when running `pnpm start:web`
+- Local sign-in goes through the ProConnect integration environment (`PROCONNECT_LOCAL_CLIENT_SECRET`); the email magic link only exists on previews

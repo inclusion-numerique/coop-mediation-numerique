@@ -1,768 +1,199 @@
-# Guide de Contribution
+# Guide de contribution
 
-## Table des matieres
+## 📑 Table des matières
 
-- [Contexte du projet](#contexte-du-projet)
-- [Architecture du monorepo](#architecture-du-monorepo)
-- [Prerequis](#prerequis)
-- [Installation](#installation)
-- [Lancer le projet](#lancer-le-projet)
-- [Commandes CLI](#commandes-cli)
-- [CLI (`apps/cli`)](#cli-appscli)
-- [Jobs](#jobs)
-- [Infrastructure Terraform](#infrastructure-terraform)
-- [Procedures de contribution](#procedures-de-contribution)
-- [Stack technique](#stack-technique)
+- 📦 [Prérequis](#prerequis)
+- 🚀 [Installer l'environnement de développement](#installer)
+- 🛠️ [Commandes disponibles](#commandes)
+- 🧪 [Tests](#tests)
+- 🤝 [Pratiques du dépôt](#pratiques)
+- 🗃️ [Base de données](#base-de-donnees)
+- ⏱️ [Tâches](#taches)
+- 🔄 [Intégration et déploiement continus](#ci-cd)
+- 🔐 [Sécurité](#securite)
+- 🏗️ [Technologies utilisées](#technologies)
 
----
-
-## Contexte du projet
-
-**La Coop de la mediation numerique** est une plateforme web destinee aux professionnels de la mediation numerique. Elle est developpee par le Pole Inclusion numerique de l'ANCT (Agence Nationale de la Cohesion des Territoires).
-
-La plateforme permet aux mediateurs numeriques de :
-
-- Gerer leurs activites et beneficiaires
-- Consulter et administrer les structures de mediation numerique
-- Acceder a un annuaire des acteurs de la mediation numerique
-- Gerer des equipes de mediateurs
-- Planifier des rendez-vous via l'integration avec RDV Service Public
-- Utiliser un assistant IA pour accompagner leur travail
-- Consulter des statistiques sur leurs activites
-
-### Environnements
-
-| Environnement            | URL                                                          |
-| ------------------------ | ------------------------------------------------------------ |
-| Production               | https://coop-numerique.anct.gouv.fr                          |
-| Developpement            | https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr |
-| MailDev (emails de test) | http://maildev.coop-numerique.anct.gouv.fr                   |
-
-### Authentification
-
-L'application supporte deux modes d'authentification :
-- **Magic link** : connexion par lien magique envoye par email
-- **ProConnect** : SSO du gouvernement francais (anciennement AgentConnect)
-
-### Roles utilisateurs
-
-- **User** : utilisateur standard
-- **Support** : acces aux outils de support
-- **Admin** : acces complet a l'administration
-- Profils metier : ConseillerNumerique, Mediateur, Coordinateur
-
----
-
-## Architecture du monorepo
-
-Le projet est organise en monorepo avec pnpm workspaces :
-
-```
-coop-mediation-numerique/
-├── apps/
-│   ├── cli/                 # Outils CLI (scripts, deploiement, traitements)
-│   └── web/                 # Application Next.js principale
-│       ├── src/
-│       │   ├── app/         # Pages Next.js (App Router)
-│       │   │   ├── (public)/    # Pages publiques (sans auth)
-│       │   │   ├── (private)/   # Pages protegees (auth requise)
-│       │   │   └── api/         # Routes API (tRPC + REST)
-│       │   ├── assistant/   # Fonctionnalites assistant IA
-│       │   ├── auth/        # Logique d'authentification
-│       │   ├── beneficiaire/# Gestion des beneficiaires
-│       │   ├── components/  # Composants React
-│       │   ├── external-apis/# Integrations API externes
-│       │   ├── jobs/        # Taches planifiees
-│       │   ├── server/      # Logique serveur & procedures tRPC
-│       │   └── prisma/      # Schema et migrations Prisma
-│       └── prisma/
-│           └── migrations/  # Fichiers de migration SQL
-├── packages/
-│   ├── config/              # Configuration partagee (constantes, domaines)
-│   ├── e2e/                 # Tests end-to-end (Cypress)
-│   ├── emails/              # Templates d'emails (MJML + React)
-│   ├── fixtures/            # Donnees de test et seed
-│   ├── lint/                # Configuration Biome/ESLint
-│   ├── storybook/           # Documentation des composants UI
-│   └── ui/                  # Composants UI partages (DSFR)
-├── docs/                    # Documentation et ADR
-├── docker/                  # Configuration Docker
-├── .github/                 # Pipeline CI/CD (GitHub Actions)
-├── .env.dist                # Template des variables d'environnement
-└── docker-compose.yml       # Services Docker pour le dev local
-```
-
----
-
-## Prerequis
+<h2 id="prerequis">📦 Prérequis</h2>
 
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/), dans la version indiquée par `engines.node` du `package.json`
-- [pnpm](https://pnpm.io/) version 10+
-- [Docker](https://www.docker.com/) et Docker Compose (optionnel mais recommande)
-- [PostgreSQL](https://www.postgresql.org/) (optionnel si Docker est utilise)
+- [pnpm](https://pnpm.io/) : il installe de lui-même la version indiquée par `packageManager` du `package.json`
+- [Docker](https://www.docker.com/) avec Docker Compose, pour la base de données et la messagerie locales
+- [gitleaks](https://github.com/gitleaks/gitleaks#installing) : le hook de pré-commit l'exécute et refuse le commit s'il est absent
+- [OpenTofu](https://opentofu.org/docs/intro/install/), seulement pour lire un plan d'infrastructure en local
 
----
+<h2 id="installer">🚀 Installer l'environnement de développement</h2>
 
-## Installation
-
-### 1. Cloner le depot
+### 1. Cloner le dépôt et installer les dépendances
 
 ```bash
 git clone git@github.com:inclusion-numerique/coop-mediation-numerique.git
 cd coop-mediation-numerique
-```
-
-### 2. Installer Node.js
-
-```bash
-nvm use --lts
-```
-
-### 3. Installer les dependances
-
-```bash
 pnpm install
 ```
 
-### 4. Configurer les variables d'environnement
+L'installation génère aussi le client Prisma.
 
-Creer le fichier `.env` a partir du template :
+### 2. Configurer les variables d'environnement
 
 ```bash
 cp .env.dist .env
 ```
 
-Editer `.env` avec vos valeurs locales. Les variables marquees `<secret>` doivent etre demandees a un membre de l'equipe, notamment :
+Les valeurs marquées `<secret>` ne sont jamais versionnées. Avec une clé Scaleway personnelle (`SCW_ACCESS_KEY` et `SCW_SECRET_KEY`, à demander à l'équipe), cette commande les ajoute au `.env` depuis le Secret Manager de Scaleway :
 
-- `PROCONNECT_LOCAL_CLIENT_SECRET` : pour l'authentification ProConnect en local
-- `SCW_ACCESS_KEY` / `SCW_SECRET_KEY` : credentials Scaleway personnels
+```bash
+pnpm cli dotenv:from-secrets
+```
 
-### 5. Demarrer les services Docker
+En local, la connexion passe par l'environnement d'intégration de ProConnect : elle demande `PROCONNECT_LOCAL_CLIENT_SECRET`.
+
+### 3. Démarrer la base de données et la messagerie
 
 ```bash
 pnpm docker:start
 ```
 
-Cela lance :
-- **PostgreSQL** (avec pgvector) : `localhost:5433`, utilisateur `coop-mediation-numerique`, mot de passe `password`
-- **MailDev** (intercepteur d'emails) : interface web sur http://localhost:1080, SMTP sur le port `1025`
+- **PostgreSQL**, avec les extensions de la Coop et de l'Entrepôt (`docker/postgres`) : `localhost:5433`, utilisateur `coop-mediation-numerique`, mot de passe `password`
+- **MailDev**, qui intercepte les e-mails envoyés : interface sur http://localhost:1080, SMTP sur le port 1025
 
-### 6. Initialiser la base de donnees
+### 4. Initialiser la base de données
 
 ```bash
 pnpm db:init
-```
-
-Cette commande genere le client Prisma et applique toutes les migrations.
-
-### 7. Charger les donnees de test (optionnel)
-
-```bash
 pnpm fixtures:load
 ```
 
-Charge des donnees de test avec deux utilisateurs :
-- **Edith Piaf** : `edith@piaf.com`
-- **Georges Moustaki** : `georges@moustaki.com`
+`db:init` génère le client Prisma et applique les migrations ; c'est aussi la commande à relancer après avoir récupéré de nouvelles migrations. `fixtures:load` charge un jeu de données de test, et refuse de viser la base de production.
 
-En developpement, un "Magic link" de connexion apparait dans la console du serveur Next.js.
-
----
-
-## Lancer le projet
-
-### Demarrage rapide
+### 5. Lancer l'application
 
 ```bash
-pnpm docker:start    # Demarrer PostgreSQL + MailDev
-pnpm db:init         # Initialiser la base
-pnpm start:web       # Lancer le serveur de dev
+pnpm start:web
 ```
 
-L'application est disponible sur **http://localhost:3000**.
-
-### Mode developpement complet
-
-```bash
-pnpm dev
-```
-
-Lance en parallele :
-- **web** : http://localhost:3000
-- **storybook** : http://localhost:6006
-
-### Reinitialiser l'environnement
-
-```bash
-pnpm docker:reset    # Reset les conteneurs Docker et la base
-pnpm db:init         # Reinitialiser les migrations
-pnpm start:web       # Relancer le serveur
-```
-
----
-
-## Commandes CLI
-
-### Commandes principales (racine)
-
-| Commande                | Description                                               |
-| ----------------------- | --------------------------------------------------------- |
-| `pnpm dev`              | Lance toutes les apps en parallele (web + storybook)      |
-| `pnpm start:web`        | Lance uniquement l'application web Next.js                |
-| `pnpm build`            | Build de production de toutes les apps et packages        |
-| `pnpm lint`             | Linting sur l'ensemble du monorepo                        |
-| `pnpm tsc`              | Verification des types TypeScript                         |
-| `pnpm format`           | Formatage du code avec Prettier                           |
-| `pnpm test`             | Execute tous les tests unitaires (Vitest, sans isolation) |
-| `pnpm test:integration` | Execute les tests d'integration                           |
-| `pnpm test:e2e`         | Ouvre l'interface Cypress pour les tests e2e              |
-| `pnpm cli`              | Execute les outils CLI avec dotenv                        |
-| `pnpm with-env <cmd>`   | Execute une commande avec les variables d'env chargees    |
-
-### Base de donnees
-
-| Commande                               | Description                                           |
-| -------------------------------------- | ----------------------------------------------------- |
-| `pnpm db:init`                         | Genere le client Prisma et applique les migrations    |
-| `pnpm prisma:generate-migration <nom>` | Cree une nouvelle migration a partir du schema Prisma |
-| `pnpm fixtures:load`                   | Charge les donnees de test dans la base               |
-| `pnpm -F web prisma studio`            | Ouvre Prisma Studio (interface graphique de la BDD)   |
-
-### Docker
-
-| Commande            | Description                                  |
-| ------------------- | -------------------------------------------- |
-| `pnpm docker:start` | Demarre PostgreSQL + MailDev                 |
-| `pnpm docker:stop`  | Arrete les conteneurs Docker                 |
-| `pnpm docker:reset` | Reinitialise la base de donnees et redemarre |
-
-### Tests
-
-| Commande                | Description                             |
-| ----------------------- | --------------------------------------- |
-| `pnpm test`             | Tests unitaires de tout le monorepo     |
-| `pnpm test:integration` | Tests d'integration (necessite Docker)  |
-| `pnpm test:e2e`         | Tests e2e interactifs (Cypress UI)      |
-| `pnpm -F e2e cy run`    | Tests e2e headless                      |
-| `pnpm -F web test`      | Tests unitaires de l'app web uniquement |
-
-### Application web
-
-| Commande                           | Description                       |
-| ---------------------------------- | --------------------------------- |
-| `pnpm -F web dev`                  | Serveur de dev Next.js            |
-| `pnpm -F web build`                | Build de production               |
-| `pnpm -F web build:analyze`        | Build avec analyse du bundle      |
-| `pnpm -F web lint`                 | Lint avec Biome + linter OpenAPI  |
-| `pnpm -F web lint:fix`             | Correction automatique du linting |
-| `pnpm -F web api-v1-doc:generate`  | Genere la spec OpenAPI v1         |
-| `pnpm -F web standalone:configure` | Configure le build standalone     |
-| `pnpm -F web standalone:start`     | Demarre le serveur standalone     |
-
-### Storybook
-
-| Commande                            | Description                               |
-| ----------------------------------- | ----------------------------------------- |
-| `pnpm -F storybook dev`             | Demarre Storybook (http://localhost:6006) |
-| `pnpm -F storybook build-storybook` | Build statique de Storybook               |
-| `pnpm -F storybook chromatic`       | Deploie sur Chromatic (tests visuels)     |
-
-### Nettoyage
-
-| Commande                | Description                                     |
-| ----------------------- | ----------------------------------------------- |
-| `pnpm clean`            | Supprime `node_modules` a la racine             |
-| `pnpm clean:workspaces` | Supprime les `node_modules` de tous les paquets |
-
----
-
-## CLI (`apps/cli`)
-
-L'application CLI (`pnpm cli <commande>`) fournit un ensemble d'outils pour le deploiement, la gestion d'infrastructure, les secrets et l'execution de jobs. Elle utilise [Commander.js](https://github.com/tj/commander.js/).
-
-### Execution de jobs
-
-| Commande                                 | Description                                                   |
-| ---------------------------------------- | ------------------------------------------------------------- |
-| `pnpm cli job:execute <name> [data]`     | Execute un job en local. `data` est un payload JSON optionnel |
-| `pnpm cli job:api:execute <name> [data]` | Execute un job via l'API d'un deploiement distant             |
-
-Exemples :
-```bash
-# Relever les SIRET des lieux a reprendre sans rien ecrire
-pnpm cli job:execute reprendre-les-donnees-des-lieux '{"reprises":["siret"]}'
-```
-
-### Deploiement
-
-| Commande                                 | Description                                 |
-| ---------------------------------------- | ------------------------------------------- |
-| `pnpm cli deployment:check-status <url>` | Verifie le statut de sante d'un deploiement |
-
-### GitHub
-
-| Commande                                         | Description                                                                                                                                                        |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm cli github:deployment:create <branch>`     | Cree un deploiement GitHub pour une branche                                                                                                                        |
-| `pnpm cli github:deployment:update <id> <state>` | Met a jour le statut d'un deploiement (`error`, `failure`, `inactive`, `in_progress`, `queued`, `pending`, `success`). Options : `--url`, `--log`, `--description` |
-| `pnpm cli github:deployment:deactivate <branch>` | Desactive tous les deploiements GitHub d'une branche                                                                                                               |
-
-### Infrastructure
-
-| Commande                                                  | Description                                                                                                                                                                                                                    |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm cli dotenv:from-infrastructure`                     | Ajoute au `.env` les sorties OpenTofu lues dans `infrastructure/outputs.json`                                                                                                                                                  |
-| `pnpm cli dotenv:add-next-public <namespace>`             | Ajoute les variables `NEXT_PUBLIC_*` au `.env`. Option : `--local`                                                                                                                                                             |
-| `pnpm cli dotenv:from-secrets`                            | Recupere tous les secrets depuis Scaleway Secret Manager et peuple le `.env`                                                                                                                                                   |
-| `pnpm cli infrastructure:vars-from-env`                   | Ecrit `infrastructure/.tfvars.json` a partir des variables d'environnement                                                                                                                                                     |
-| `pnpm cli infrastructure:create <resource> <names>`       | Cree des ressources Scaleway (`database` ou `container`). Option : `--dry-run`                                                                                                                                                 |
-| `pnpm cli infrastructure:delete-preview <branches>`       | Declenche la suppression d'environnements de preview via le workflow GitHub Actions `Remove ephemeral environment` (branches separees par des virgules)                                                                        |
-| `pnpm cli infrastructure:prune-registry`                  | Supprime du registre Scaleway les images des branches qui n'existent plus et les anciens tags (10 conserves pour `main`, 5 pour `dev`). A blanc par defaut ; `--apply` pour supprimer, `--report <fichier>` pour le releve CSV |
-| `pnpm cli infrastructure:delete-registry-image <branche>` | Supprime l'image de la preview d'une branche (jamais `main` ni `dev`)                                                                                                                                                          |
-| `pnpm cli infrastructure:inventory`                       | Affiche l'inventaire de l'infrastructure et permet le nettoyage interactif (branches, conteneurs, buckets, bases)                                                                                                              |
-| `pnpm cli backup:locally-restore-latest-main`             | Restaure le dernier backup de la base `main` en local. Options : `--date <date>`, `--local`, `--list`, `--type <type>`                                                                                                         |
-
-### Secrets
-
-| Commande                                         | Description                                                                                                                             |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm cli secrets:list`                          | Liste tous les noms de secrets disponibles                                                                                              |
-| `pnpm cli secrets:get <name>`                    | Recupere la valeur d'un secret                                                                                                          |
-| `pnpm cli secrets:database:setup <namespace>`    | Cree le secret de mot de passe base de donnees d'un namespace (`DATABASE_PASSWORD_<NAMESPACE>`, un par preview)                         |
-| `pnpm cli secrets:database-password <namespace>` | Recupere le mot de passe base de donnees d'un namespace                                                                                 |
-| `pnpm cli secrets:database:delete <namespace>`   | Supprime le secret de mot de passe base de donnees d'une preview (jamais `main` ni `dev`) ; appele par **Remove ephemeral environment** |
-
-### RAG (Retrieval-Augmented Generation)
-
-| Commande                                                   | Description                                                                                                                              |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm cli rag:ingest-notion-help-center-exported-markdown` | Ingere les fichiers markdown exportes du centre d'aide Notion dans le systeme RAG (requiert les fichiers dans `/var/centre-aide-notion`) |
-
-### Sentry
-
-| Commande                                                  | Description                                                                                      |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `pnpm cli sentry:delete-environment-issues <environment>` | Supprime toutes les issues Sentry d'un environnement et le masque de l'UI (interdit pour `main`) |
-
-### Statistiques
-
-| Commande                                              | Description                                                                                                                                                |
-| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm cli stats:fetch-accompagnements <conum> <date>` | Exporte les statistiques d'accompagnement par departement en CSV. `conum` : 0=mediateur, 1=conseiller numerique. `date` : date limite au format YYYY-MM-DD |
-
----
-
-## Jobs
-
-Les jobs sont des taches executables definies dans `apps/web/src/jobs/`. Chaque job possede un nom unique, un payload optionnel type avec Zod, et un executeur. Les jobs peuvent etre lances manuellement via le CLI (`pnpm cli job:execute <name>`) ou automatiquement via des crons Scaleway.
-
-L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
-
-### Liste des jobs
-
-| Job                            | Payload | Description                                                                                                                 |
-| ------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `synchroniser-les-roles-brevo` | —       | Recalcule les roles Brevo (Mediateur, Conseiller numerique, Coordinateur) de tous les inscrits vivants et les envoie en lot |
-| `sync-rdvsp-data`              | —       | Synchronise les donnees de rendez-vous depuis RDV Service Public                                                            |
-| `retirer-les-roles-vacants`    | —       | Retire le role jamais utilise d'un double role inscrit depuis plus de 30 jours                                              |
-| `inactive-users-reminders`     | —       | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes                                             |
-| `remove-orphan-brevo-contacts` | —       | Supprime les contacts Brevo qui n'existent plus en base de donnees                                                          |
-
-Ne figurent ici que les jobs qui ont encore une raison de tourner. Les campagnes
-de reprise de donnees, les correctifs ponctuels et les backfills accomplis sont
-supprimes une fois passes : leur trace vit dans `job_executions` et dans
-l'historique git, pas dans le code.
-
-### Mecanisme d'execution des crons
-
-1. **Scaleway Serverless Jobs** demarre, a l'heure du cron, un conteneur dedie a partir de l'image web
-2. Ce conteneur execute `node ./apps/web/run-job.cjs <job>` : un script autonome, produit par `pnpm -F @app/web build:jobs` (esbuild), qui ne passe ni par HTTP ni par le serveur Next. La CI verifie, avec `dist/verifier-le-bundle.cjs` produit par la meme commande, que ce script se charge et rend un courriel
-3. Le job est valide puis execute via `executeJob()`
-4. Les details d'execution sont sauvegardes en base (`jobExecution`), et un job en echec sort en erreur : l'execution apparait en echec dans la console Scaleway (historique et journaux conserves 60 jours)
-
-En local, un job se lance avec `pnpm cli job:execute <job> [payload]`.
-
-### Planning des crons
-
-#### Production uniquement (`main`)
-
-| Job                            | Schedule    | Horaire                |
-| ------------------------------ | ----------- | ---------------------- |
-| `retirer-les-roles-vacants`    | `0 0 * * *` | Tous les jours a 00:00 |
-| `inactive-users-reminders`     | `0 0 * * *` | Tous les jours a 00:00 |
-| `synchroniser-les-roles-brevo` | `0 2 * * *` | Tous les jours a 02:00 |
-| `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
-
-#### Dev et production (environnements `dev` et `main`)
-
-| Job               | Schedule    | Horaire                |
-| ----------------- | ----------- | ---------------------- |
-| `sync-rdvsp-data` | `0 2 * * *` | Tous les jours a 02:00 |
-
----
-
-## Infrastructure
-
-L'infrastructure de chaque environnement est decrite en HCL dans `infrastructure/` et deployee avec [OpenTofu](https://opentofu.org) 1.13 et le [fournisseur Scaleway](https://search.opentofu.org/provider/scaleway/scaleway/latest). Les ressources partagees par tous les environnements sont gerees par l'infrastructure de l'incubateur.
-
-### Vue d'ensemble
-
-```
-infrastructure/
-├── versions.tf          # Versions d'OpenTofu et du fournisseur, backend S3
-├── variables.tf         # Variables d'entree (branche, namespace, secrets)
-├── locals.tf            # Domaines, noms, URL de base de donnees, jobs par environnement
-├── container.tf         # Conteneur serverless et ses variables d'environnement
-├── database.tf          # Utilisateur, base et privileges sur l'instance partagee
-├── storage.tf           # Bucket d'uploads
-├── dns.tf               # Enregistrement DNS et domaine du conteneur
-├── jobs.tf              # Declencheurs cron des jobs
-├── outputs.tf           # Sorties lues par le CLI
-└── .terraform.lock.hcl  # Empreintes du fournisseur
-```
-
-### Etat
-
-L'etat est stocke dans un bucket S3 Scaleway :
-
-- **Bucket** : `coop-mediation-numerique-terraform-state`
-- **Endpoint** : `https://s3.fr-par.scw.cloud`
-- **Fichier d'etat** : `coop-mediation-numerique-web-<namespace>.tfstate`, une cle par environnement passee a `tofu init` par `-backend-config`
-
-### Ressources partagees (infrastructure de l'incubateur)
-
-Ces ressources sont deployees une seule fois et partagees par tous les environnements :
-
-#### Base de donnees managee
-
-- **Type** : PostgreSQL 14 (Scaleway Managed Database)
-- **Instance** : `db-pro2-s` en haute disponibilite (HA cluster)
-- **Stockage** : SBS 15K, 60 Go, chiffrement au repos active
-- **Backups** : automatiques toutes les 24h, retention de 14 jours
-- **Configuration** : 500 connexions max, optimisations memoire/cache
-
-#### Stockage objet (S3)
-
-Deux buckets Scaleway Object Storage (compatible AWS S3) :
-
-| Bucket                                              | Usage                              |
-| --------------------------------------------------- | ---------------------------------- |
-| `coop-mediation-numerique-developer-unsafe-uploads` | Uploads fichiers (dev/integration) |
-| `coop-mediation-numerique-backups`                  | Sauvegardes de bases de donnees    |
-
-Les deux buckets sont configures avec des regles CORS pour `localhost:3000`.
-
-#### Registry Docker
-
-- **RegistryNamespace** : registre d'images Docker Scaleway pour les builds de l'app web
-- Nom : `coop-mediation-numerique-web-app`
-- Region : `fr-par`
-
-#### Container Namespace
-
-- **ContainerNamespace** : namespace Scaleway Serverless Containers (`coop-mediation-numerique-web`)
-- Configure avec les variables d'environnement partagees :
-  - Sentry (DSN, org, project, auth token)
-  - Cockpit/Grafana (URLs metrics, logs, alertmanager)
-  - S3, region, Node env, timezone
-  - Secrets : Cockpit token, NextAuth secret, credentials Scaleway
-
-#### Email transactionnel
-
-- **TemDomain** : domaine Scaleway TEM (Transactional Email Module)
-- Enregistrements DNS :
-  - **SPF** : inclut `_spf.ox.numerique.gouv.fr` + config Scaleway TEM
-  - **DKIM** : cle de signature pour les emails transactionnels
-  - **MX** : `mx.ox.numerique.gouv.fr` pour la reception
-  - **DMARC** : politique de validation (via Brevo)
-  - **Brevo** : DKIM et verification de domaine pour les campagnes email
-
-#### DNS
-
-- **Zones DNS** : domaine principal (`coop-numerique.anct.gouv.fr`) et domaine de preview (`coop-mediation-numerique.incubateur.anct.gouv.fr`)
-- **NS records** : `ns0.dom.scw.cloud` et `ns1.dom.scw.cloud`
-- **CNAME** : sous-domaines pour IMAP, SMTP, webmail (Open-Xchange), Mattermost (`discussion`)
-
-#### Monitoring (Cockpit/Grafana)
-
-- **Cockpit** : plateforme d'observabilite Scaleway
-- **CockpitToken** : token pour l'app web (lecture/ecriture logs et metriques)
-- **Grafana users** : editeurs et viewers configures avec des comptes individuels
-
-#### Instance MailDev (preview)
-
-- **InstanceServer** : machine Scaleway `STARDUST1-S` avec Docker
-- Execute un conteneur MailDev pour les environnements de preview
-- Expose le port 80 (web) et 1025 (SMTP)
-- IP publique avec DNS `maildev.coop-numerique.anct.gouv.fr`
-- Security group : ports 80, 443, 1025, 22 ouverts en entree
-
-#### Secrets
-
-- **Secret Manager** : stockage securise de l'ID de l'instance de base de donnees
-
-### Ressources par environnement
-
-`infrastructure/` est deployee pour chaque branche/namespace. Le namespace est derive du nom de la branche Git :
-
-```
-main        → namespace "main"    → domaine : coop-numerique.anct.gouv.fr
-dev         → namespace "dev"     → domaine : dev.coop-mediation-numerique.incubateur.anct.gouv.fr
-feat/ma-feature → namespace correspondant → sous-domaine de preview
-```
-
-#### Base de donnees par environnement
-
-Chaque namespace a sa propre base de donnees et son propre utilisateur sur l'instance partagee :
-
-- **RdbUser** : utilisateur `coop-mediation-numerique-<namespace>`
-- **RdbDatabase** : base `coop-mediation-numerique-<namespace>`
-- **RdbPrivilege** : permissions `all` sur la base
-
-#### Bucket d'uploads
-
-Chaque environnement a son propre bucket d'uploads :
-- Nom : `coop-mediation-numerique-uploads-<namespace>`
-- CORS configure pour le hostname de l'environnement
-
-#### Conteneur Serverless
-
-Chaque environnement deploie un conteneur Scaleway Serverless :
-
-| Parametre     | Production (`main`) | Dev (`dev`) | Preview (autres branches) |
-| ------------- | ------------------- | ----------- | ------------------------- |
-| **Min scale** | 2                   | 0           | 0                         |
-| **Max scale** | 3                   | 1           | 1                         |
-| **CPU**       | 1120 mVPCU          | 560 mVPCU   | 560 mVPCU                 |
-| **Memoire**   | 2048 Mo             | 1024 Mo     | 1024 Mo                   |
-
-Le conteneur recoit une quarantaine de variables d'environnement couvrant :
-- URL de la base de donnees (construite dynamiquement)
-- Credentials ProConnect (main vs preview)
-- Credentials SMTP (Scaleway TEM en prod, MailDev en preview)
-- Cles API externes (Brevo, API Entreprise, RDV Service Public, Albert, Brave)
-- Configuration interne (namespace, branche, URL de base)
-
-#### DNS et domaine
-
-- **Production** : enregistrement `ALIAS` vers le conteneur (domaine racine)
-- **Preview** : enregistrement `CNAME` vers le conteneur (sous-domaine)
-- **ContainerDomain** : liaison entre le conteneur et le hostname
-
-#### Jobs planifies (Cron)
-
-Les crons sont des `scaleway_job_definition` (horaires en UTC, duree maximale 3 h) qui reutilisent l'image et les variables d'environnement du conteneur web. Les secrets leur parviennent par Secret Manager (`scaleway_secret`, chemin `/jobs/<namespace>`) :
-
-**Production uniquement :**
-
-| Job                            | Frequence               | Description                        |
-| ------------------------------ | ----------------------- | ---------------------------------- |
-| `retirer-les-roles-vacants`    | Tous les jours a minuit | Retrait des roles vacants          |
-| `inactive-users-reminders`     | Tous les jours a minuit | Relances inscriptions incompletes  |
-| `synchroniser-les-roles-brevo` | Tous les jours a 2h     | Roles Brevo des inscrits vivants   |
-| `remove-orphan-brevo-contacts` | Tous les jours a 3h     | Nettoyage contacts Brevo orphelins |
-
-**Dev et production :**
-
-| Job               | Frequence           | Description                        |
-| ----------------- | ------------------- | ---------------------------------- |
-| `sync-rdvsp-data` | Tous les jours a 2h | Synchronisation RDV Service Public |
-
-### Deployer l'infrastructure
-
-Les deploiements passent par GitHub Actions (voir CI/CD). Pour lire un plan en local, avec les secrets du `.env` (`pnpm cli dotenv:from-secrets`) et [OpenTofu](https://opentofu.org/docs/intro/install/) 1.13 :
-
-```bash
-DATABASE_PASSWORD=$(pnpm --silent cli secrets:database-password <namespace>) \
-  WEB_CONTAINER_IMAGE=<image deployee> pnpm cli infrastructure:vars-from-env
-pnpm with-env tofu -chdir=infrastructure init -backend-config="key=coop-mediation-numerique-web-<namespace>.tfstate"
-pnpm with-env tofu -chdir=infrastructure plan -var-file=.tfvars.json -var "branch=<branche>" -var "namespace=<namespace>"
-```
-
-Les variables d'entree sont listees dans `infrastructure/variables.tf` et lues par `apps/cli/src/commands/infrastructure/infrastructureVariables.ts`.
-
-### Schema de l'infrastructure
-
-```
-                    ┌─────────────────────────────────────┐
-                    │          Scaleway Cloud (fr-par)     │
-                    │                                     │
-                    │  ┌───────────────────────────────┐  │
-                    │  │       Ressources partagees     │  │
-                    │  │                               │  │
-                    │  │  ┌─────────────────────────┐  │  │
-                    │  │  │  PostgreSQL 14 (HA)     │  │  │
-                    │  │  │  db-pro2-s / 60Go SBS   │  │  │
-                    │  │  └─────────────────────────┘  │  │
-                    │  │                               │  │
-                    │  │  ┌──────────┐ ┌───────────┐  │  │
-                    │  │  │ S3 Uploads│ │ S3 Backups│  │  │
-                    │  │  └──────────┘ └───────────┘  │  │
-                    │  │                               │  │
-                    │  │  ┌──────────┐ ┌───────────┐  │  │
-                    │  │  │ Registry │ │ Cockpit/  │  │  │
-                    │  │  │ Docker   │ │ Grafana   │  │  │
-                    │  │  └──────────┘ └───────────┘  │  │
-                    │  │                               │  │
-                    │  │  ┌──────────┐ ┌───────────┐  │  │
-                    │  │  │ TEM Email│ │ DNS Zones │  │  │
-                    │  │  └──────────┘ └───────────┘  │  │
-                    │  │                               │  │
-                    │  │  ┌──────────────────────────┐ │  │
-                    │  │  │ MailDev Instance         │ │  │
-                    │  │  │ (STARDUST1-S + Docker)   │ │  │
-                    │  │  └──────────────────────────┘ │  │
-                    │  └───────────────────────────────┘  │
-                    │                                     │
-                    │  ┌───────────────────────────────┐  │
-                    │  │  infrastructure/ (par branche) │  │
-                    │  │                               │  │
-                    │  │  ┌─────────┐ ┌─────────────┐  │  │
-                    │  │  │Container│ │ RDB Database │  │  │
-                    │  │  │Serverless│ │ + User      │  │  │
-                    │  │  └─────────┘ └─────────────┘  │  │
-                    │  │                               │  │
-                    │  │  ┌─────────┐ ┌─────────────┐  │  │
-                    │  │  │S3 Upload│ │ DNS Record  │  │  │
-                    │  │  │Bucket   │ │ + Domain    │  │  │
-                    │  │  └─────────┘ └─────────────┘  │  │
-                    │  │                               │  │
-                    │  │  ┌─────────────────────────┐  │  │
-                    │  │  │  Cron Jobs (production) │  │  │
-                    │  │  │  Backups, syncs, etc.   │  │  │
-                    │  │  └─────────────────────────┘  │  │
-                    │  └───────────────────────────────┘  │
-                    └─────────────────────────────────────┘
-```
-
-### CI/CD
-
-Le pipeline CI/CD est gere par **GitHub Actions** (`.github/workflows/`) :
-
-- **`CI`** (push sur une branche prefixee, cf. Branches, et sur `main`) : lint, tests unitaires, d'integration, Cucumber, Cypress, Chromatic et revue des dependances (`Dependency review`). Les checks Lint, Test packages, Test web, Integration tests, Cucumber, Components et E2E 0/1/2 sont obligatoires pour fusionner dans `main`. Sur `main`, ces checks tiennent a jour la couverture de reference (Coveralls) et les captures de reference de Chromatic ; `Dependency review` n'y tourne pas.
-- **`Preview`** (evenements de PR) : environnement de preview a la demande, pilote par le label `preview`.
-  - Poser le label `preview` sur la PR deploie l'environnement de la branche ; chaque push sur la PR le redeploie tant que le label est present.
-  - Retirer le label, ou fermer ou fusionner la PR, detruit l'environnement.
-  - Les evenements d'une meme PR s'executent l'un apres l'autre, sans jamais interrompre un deploiement en cours.
-- **`Release`** (push sur `main`) : les images de `dev` et de la production se construisent en parallele, pendant que l'infrastructure de chaque environnement est planifiee contre l'image deployee. Si un plan change autre chose que les marques de sensibilite de l'etat, le deploiement de cet environnement attend l'approbation du job `Approve dev infrastructure` ou `Approve production infrastructure` (environnement GitHub `infrastructure-approval`) ; le plan se lit dans le resume du run. L'environnement `dev` se deploie, puis la production si `dev` a reussi. En production, la migration du schema `coop` sur l'Entrepot passe avant le conteneur. Le registre est ensuite elague (`infrastructure:prune-registry`).
-- **`infrastructure-plan.reusable.yml`** : plan OpenTofu d'un environnement contre l'image deployee, publie dans le resume du run ; appele par `Release` et par `CI` (jobs `Infrastructure plan dev` et `main`, quand la branche modifie `infrastructure/`).
-- **`build.reusable.yml`** et **`deploy.reusable.yml`** : construction et publication de l'image d'un environnement, puis son deploiement (un deploiement a la fois par environnement), appeles par `Preview` et `Release`.
-- **`Remove ephemeral environment`** : destruction de l'environnement de preview d'une branche, appelee par `Preview` ou lancee a la main (commande `infrastructure:delete-preview`). Il detruit l'infrastructure de la branche (`tofu destroy`), supprime l'image de la branche du registre, desactive puis supprime les deploiements, supprime l'environnement GitHub de la branche (jeton de la GitHub App de la Coop, variable `COOP_CI_APP_CLIENT_ID` et secret `COOP_CI_APP_PRIVATE_KEY`) et nettoie Sentry.
-- **`Postgres CI image`** : publication de l'image Postgres de CI (`docker/postgres-ci`) sur GitHub Container Registry
-
----
-
-## Procedures de contribution
+L'application répond sur http://localhost:3000. `pnpm dev` lance en plus Storybook sur http://localhost:6006.
+
+<h2 id="commandes">🛠️ Commandes disponibles</h2>
+
+| Commande                               | Rôle                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| `pnpm start:web`                       | Lance l'application en développement                                    |
+| `pnpm dev`                             | Lance l'application et Storybook                                        |
+| `pnpm lint`                            | Vérifie le code de tous les paquets avec Biome                          |
+| `pnpm -F web lint:fix`                 | Corrige le format et les erreurs que Biome sait corriger                |
+| `pnpm tsc`                             | Vérifie les types de tous les paquets                                   |
+| `pnpm test`                            | Lance les tests unitaires                                               |
+| `pnpm build`                           | Construit les paquets pour la production                                |
+| `pnpm docker:start` / `docker:stop`    | Démarre ou arrête PostgreSQL et MailDev                                 |
+| `pnpm docker:reset`                    | Supprime la base locale, la recrée et la réinitialise                   |
+| `pnpm db:init`                         | Génère le client Prisma et applique les migrations                      |
+| `pnpm prisma:generate-migration <nom>` | Crée une migration à partir du schéma Prisma                            |
+| `pnpm fixtures:load`                   | Charge les données de test                                              |
+| `pnpm lint:commit`                     | Vérifie les messages des commits de la branche depuis `main`            |
+| `pnpm cli <commande>`                  | Lance un outil du CLI : `pnpm cli --help` les liste                     |
+| `pnpm -F web api-v1-doc:generate`      | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour |
+
+<h2 id="tests">🧪 Tests</h2>
+
+| Commande                    | Tests                                                                  |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `pnpm test`                 | Unitaires, avec [Vitest](https://vitest.dev/)                          |
+| `pnpm test:integration`     | Intégration, contre la base de `DATABASE_URL`                          |
+| `pnpm -F web test:cucumber` | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
+| `pnpm test:e2e`             | De bout en bout, avec [Cypress](https://www.cypress.io/), en interface |
+| `pnpm -F e2e cy run`        | De bout en bout, sans interface                                        |
+
+- Les tests n'utilisent ni mock ni espion : ils injectent des dépendances écrites à la main et vérifient les valeurs retournées.
+- Les tests d'intégration et les scénarios Cucumber écrivent dans la base : lancez-les sur une base jetable, jamais sur une base qui contient des données utiles. La CI les joue sur une base neuve à chaque exécution.
+- Les tests de bout en bout demandent un serveur lancé avec `IS_E2E=true` (`IS_E2E=true pnpm start:web`), qui remplace l'API Dataspace par un simulateur.
+
+<h2 id="pratiques">🤝 Pratiques du dépôt</h2>
 
 ### Branches
 
-- Creer les branches a partir de la branche `main` (a jour)
-- Prefixer les branches selon la nature des modifications :
-  `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/`, `test/`
-
-Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
+- Partir de `main` à jour, et mettre une branche à jour par rebase, jamais par fusion.
+- Préfixer la branche selon la nature du changement : `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/` ou `test/`. Seules ces branches déclenchent la CI.
 
 ### Commits
 
-- Les messages de commit doivent suivre la specification [Commits Conventionnels](https://www.conventionalcommits.org/fr)
-- Ils sont verifies par `commitlint` (configuration `@commitlint/config-conventional`) : en local par le hook `commit-msg`, et en CI par le check « Lint commits » sur tous les commits de la branche depuis `main` (`pnpm lint:commit`)
-- Les commits doivent etre signes (GPG)
-- Les PR se fusionnent dans `main` par « Squash and merge » : le titre de la PR devient le message du commit, il suit donc lui aussi la specification Commits Conventionnels, et le corps reprend les messages des commits de la PR ; le check « Lint PR title » le verifie
-- Consultez la [documentation GitHub](https://docs.github.com/en/authentication/managing-commit-signature-verification) pour configurer la signature
+- Les messages suivent les [Commits Conventionnels](https://www.conventionalcommits.org/fr), vérifiés par commitlint au commit (hook `commit-msg`) et en CI (check « Lint commits »).
+- Les commits sont signés avec une clé GPG ; la [documentation GitHub](https://docs.github.com/fr/authentication/managing-commit-signature-verification) explique comment configurer la signature.
+- Au commit, le hook de pré-commit formate les fichiers indexés avec Biome et cherche des secrets avec gitleaks. Ne jamais le contourner (`--no-verify`).
 
-### Workflow de contribution
+### Pull requests
 
-1. Creer une branche depuis `main` :
+- Une PR vise `main` et se fusionne par « Squash and merge » : son titre devient le message du commit, il suit donc lui aussi les Commits Conventionnels (check « Lint PR title »).
+- Les checks Lint, Lint commits, Lint PR title, Test packages, Test web, Integration tests, Cucumber, Components, E2E 0, 1 et 2 et Dependency review doivent passer pour fusionner.
+- La fusion dans `main` déploie l'environnement `dev`, puis la production si `dev` a réussi.
 
-   ```bash
-   git checkout main && git pull
-   git checkout -b feat/nom-de-la-fonctionnalite
-   ```
-2. Developper et commiter :
+### Code
 
-   ```bash
-   git commit -m "feat: ajoute une fonctionnalite"
-   ```
-3. Pousser et ouvrir une Pull Request vers `main` :
+Les conventions d'architecture (features, abilities, domaine, server actions) et de style sont décrites dans [AGENTS.md](./AGENTS.md). Les décisions structurantes sont consignées dans les [ADR](./docs/adr).
 
-   ```bash
-   git push origin feat/nom-de-la-fonctionnalite
-   ```
-4. Le merge dans `main` deploie l'environnement `dev`, puis la production si `dev` a reussi. Un changement d'infrastructure attend d'abord l'approbation de son plan.
+<h2 id="base-de-donnees">🗃️ Base de données</h2>
 
-### Incidents de securite
+1. Modifier le schéma dans `apps/web/prisma/schema.prisma`.
+2. Générer la migration : `pnpm prisma:generate-migration nom_de_la_migration`.
+3. Relire le SQL généré dans `apps/web/prisma/migrations/`.
 
-Tout incident de securite, ou toute vulnerabilite decouverte, se signale et se traite selon la [Procedure de Reponse et Signalement des Incidents de Securite (PRIS)](https://docs.numerique.gouv.fr/docs/e8f1a2d1-3a6c-4e52-9ffd-639d772e76e7/). Le document est reserve aux agents : il s'ouvre apres connexion a Docs.
+En production, la base de la Coop est le schéma `coop` de l'Entrepôt de données de l'inclusion numérique : la procédure est décrite dans [le runbook des migrations sur l'Entrepôt](./docs/runbook-migrations-entrepot.md). Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` passe par l'application ou se signale à l'équipe Dataspace, parce que la Coop écrit aussi dans le registre de l'Entrepôt ([ADR-003](./docs/adr/adr-003-registre-des-lieux-entrepot.md)).
 
-### Migrations de base de donnees
+<h2 id="taches">⏱️ Tâches</h2>
 
-1. Modifier le schema dans `apps/web/prisma/schema.prisma`
-2. Generer la migration :
+Les tâches de fond vivent dans `apps/web/src/jobs/`. Chacune a un nom, une charge utile validée par Zod et un exécuteur, et chaque exécution est tracée dans la table `job_executions`.
 
-   ```bash
-   pnpm prisma:generate-migration nom_de_la_migration
-   ```
-3. Verifier le fichier SQL genere dans `apps/web/prisma/migrations/`
-4. Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` doit
-   passer par l'application, ou etre signale a l'equipe Dataspace : la coop ecrit aussi dans le
-   registre de l'Entrepot. Voir
-   [ADR-003 : Registre des lieux de l'Entrepot](docs/adr/adr-003-registre-des-lieux-entrepot.md).
+```bash
+pnpm cli job:execute <tâche> '<charge utile JSON>'
+```
 
----
+| Tâche                               | Rôle                                                                                                                  |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `sync-rdvsp-data`                   | Synchronise les rendez-vous depuis RDV Service Public                                                                 |
+| `inactive-users-reminders`          | Relance par e-mail les inscriptions inachevées                                                                        |
+| `anonymiser-les-comptes-inactifs`   | Anonymise les comptes inactifs ; `{"simuler": true}` pour un passage à blanc                                          |
+| `retirer-les-roles-vacants`         | Retire le rôle jamais utilisé d'un double rôle inscrit depuis plus de 30 jours                                        |
+| `synchroniser-les-roles-brevo`      | Recalcule les rôles Brevo des inscrits et les envoie                                                                  |
+| `remove-orphan-brevo-contacts`      | Supprime les contacts Brevo qui n'ont plus de compte                                                                  |
+| `aligner-le-registre-des-personnes` | Aligne l'identité des comptes sur le registre des personnes ; passage à blanc par défaut, `{"appliquer": true}` écrit |
 
-## Stack technique
+Le planning des tâches qui tournent seules est décrit dans [l'infrastructure](./infrastructure/README.md#taches-planifiees). Une tâche n'a sa place ici que tant qu'elle a une raison de tourner : une reprise de données ou un correctif ponctuel disparaît une fois passé, sa trace reste dans `job_executions` et dans l'historique git.
 
-### Langages et frameworks
+<h2 id="ci-cd">🔄 Intégration et déploiement continus</h2>
 
-- [TypeScript](https://www.typescriptlang.org/) — Langage principal
-- [React 19](https://react.dev/) — Bibliotheque UI
-- [Next.js 15](https://nextjs.org/) — Framework full-stack (App Router)
-- [tRPC](https://trpc.io/) — API typees end-to-end
-- [Prisma](https://www.prisma.io/) — ORM pour PostgreSQL
-- [Zod](https://zod.dev/) — Validation de schemas
-- [React Hook Form](https://react-hook-form.com/) — Gestion des formulaires
+Les workflows GitHub Actions sont dans `.github/workflows/` :
 
-### UI et design
+- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic et revue des dépendances, sur les branches préfixées et sur `main`. Sur `main`, ils tiennent à jour la couverture de référence (Coveralls) et les captures de référence de Chromatic.
+- **Preview** : poser le label `preview` sur une PR déploie l'environnement de sa branche, et chaque push le redéploie. Retirer le label, fermer ou fusionner la PR le détruit.
+- **Release** : à chaque fusion dans `main`, construit les images et déploie `dev` puis la production.
+- **Remove ephemeral environment** : détruit l'environnement de preview d'une branche.
+- **Postgres CI image** : publie l'image PostgreSQL de la CI (`docker/postgres-ci`).
 
-- [Systeme de Design de l'Etat (DSFR)](https://www.systeme-de-design.gouv.fr/) — Design system officiel
-- [React DSFR](https://github.com/codegouvfr/react-dsfr) — Adaptation React du DSFR
-- [MapLibre GL](https://maplibre.org/) — Cartographie
-- [Recharts](https://recharts.org/) — Graphiques
-- [Remix Icon](https://remixicon.com/) — Icones
+Le détail du déploiement et de l'approbation des changements d'infrastructure est dans [l'infrastructure](./infrastructure/README.md#deploiement).
 
-### Backend et donnees
+<h2 id="securite">🔐 Sécurité</h2>
 
-- [PostgreSQL 14+](https://www.postgresql.org/) avec [pgvector](https://github.com/pgvector/pgvector) — Base de donnees + embeddings
-- [NextAuth.js](https://next-auth.js.org/) — Authentification
-- [Nodemailer](https://nodemailer.com/) + [MJML](https://mjml.io/) — Envoi d'emails
-- [Scaleway TEM](https://www.scaleway.com/en/transactional-email/) — Service email transactionnel
+Tout incident de sécurité, ou toute vulnérabilité découverte, se signale et se traite selon la [Procédure de Réponse et Signalement des Incidents de Sécurité (PRIS)](https://docs.numerique.gouv.fr/docs/e8f1a2d1-3a6c-4e52-9ffd-639d772e76e7/), réservée aux agents connectés à Docs. Voir aussi [SECURITY.md](./SECURITY.md).
 
-### IA
+<h2 id="technologies">🏗️ Technologies utilisées</h2>
 
-- [Vercel AI SDK](https://sdk.vercel.ai/) — Integration IA
-- [OpenAI SDK](https://platform.openai.com/) — Modeles de langage
-- Albert API — IA souveraine francaise
+### Application
 
-### Outils de developpement
+- [TypeScript](https://www.typescriptlang.org/), [React 19](https://react.dev/) et [Next.js 16](https://nextjs.org/) (App Router)
+- [Système de Design de l'État](https://www.systeme-de-design.gouv.fr/), avec [react-dsfr](https://react-dsfr.codegouv.studio/)
+- [Prisma](https://www.prisma.io/) et [PostgreSQL](https://www.postgresql.org/)
+- [Zod](https://zod.dev/) pour la validation, [TanStack Form](https://tanstack.com/form) et [React Hook Form](https://react-hook-form.com/) pour les formulaires
+- [NextAuth.js](https://next-auth.js.org/) avec [ProConnect](https://www.proconnect.gouv.fr)
+- [MJML](https://mjml.io/) et [Nodemailer](https://nodemailer.com/) pour les e-mails
+- [Recharts](https://recharts.org/) pour les graphiques
 
-- [pnpm](https://pnpm.io/) — Gestionnaire de paquets
-- [Biome](https://biomejs.dev/) — Linting et formatage
-- [Vitest](https://vitest.dev/) — Tests unitaires et d'integration, sans isolation et sans mock
-- [Cypress](https://www.cypress.io/) — Tests end-to-end
-- [Storybook](https://storybook.js.org/) — Documentation de composants
-- [Sentry](https://sentry.io/) — Monitoring d'erreurs
-- [Matomo](https://matomo.org/) — Analytics web
+### Outils
+
+- [pnpm](https://pnpm.io/), [Biome](https://biomejs.dev/), [Husky](https://typicode.github.io/husky/), [lint-staged](https://github.com/lint-staged/lint-staged), [commitlint](https://commitlint.js.org/) et [gitleaks](https://github.com/gitleaks/gitleaks)
+- [Vitest](https://vitest.dev/), [Cucumber](https://cucumber.io/), [Cypress](https://www.cypress.io/), [Storybook](https://storybook.js.org/) et [Chromatic](https://www.chromatic.com/)
+- [Sentry](https://sentry.io/) pour le suivi des erreurs, [Matomo](https://matomo.org/) pour la mesure d'audience
 
 ### Infrastructure
 
-- [Scaleway](https://www.scaleway.com/) — Hebergement cloud
-- [OpenTofu](https://opentofu.org) — Infrastructure as Code (HCL)
-- [GitHub Actions](https://docs.github.com/actions) — CI/CD
-- [Docker](https://www.docker.com/) — Conteneurisation
-
----
-
-## Licence
-
-Ce projet est sous licence [AGPL-3.0-or-later](LICENSE).
+- [Scaleway](https://www.scaleway.com/), décrite avec [OpenTofu](https://opentofu.org)
+- [GitHub Actions](https://docs.github.com/fr/actions) et [Docker](https://www.docker.com/)
