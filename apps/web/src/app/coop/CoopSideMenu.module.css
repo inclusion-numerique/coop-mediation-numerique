@@ -52,12 +52,17 @@
     }
   }
 
-  :global(.fr-sidemenu__link:has(.fr-btn)) {
-    padding: 0 !important;
+  :global(.fr-sidemenu__link.fr-btn) {
+    padding: 0.5rem 1rem;
+    color: var(--text-inverted-blue-france);
 
-    &:hover {
-      background-color: transparent !important;
+    &::before {
+      content: "";
     }
+  }
+
+  :global(.fr-sidemenu__link.fr-btn--tertiary) {
+    color: var(--text-action-high-blue-france);
   }
 
   &:last-of-type {

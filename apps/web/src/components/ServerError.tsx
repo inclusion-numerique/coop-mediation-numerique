@@ -4,6 +4,7 @@ import { signaler } from '@app/web/configuration/telemetry/error-reporter/client
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import ovoid from '@codegouvfr/react-dsfr/dsfr/artwork/background/ovoid.svg'
 import technicalError from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/system/technical-error.svg'
+import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { PropsWithChildren, useEffect } from 'react'
 
 export const GenericError = ({
@@ -52,23 +53,23 @@ export const GenericError = ({
             height="200"
             viewBox="0 0 160 200"
           >
-            <use className="fr-artwork-motif" href={ovoid.src} />
+            <use className="fr-artwork-motif" href={getAssetUrl(ovoid)} />
             <use
               className="fr-artwork-background"
-              href={`${ovoid.src}#artwork-background`}
+              href={`${getAssetUrl(ovoid)}#artwork-background`}
             />
             <g transform="translate(40, 60)">
               <use
                 className="fr-artwork-decorative"
-                href={`${technicalError.src}#artwork-decorative`}
+                href={`${getAssetUrl(technicalError)}#artwork-decorative`}
               />
               <use
                 className="fr-artwork-minor"
-                href={`${technicalError.src}#artwork-minor`}
+                href={`${getAssetUrl(technicalError)}#artwork-minor`}
               />
               <use
                 className="fr-artwork-major"
-                href={`${technicalError.src}#artwork-major`}
+                href={`${getAssetUrl(technicalError)}#artwork-major`}
               />
             </g>
           </svg>

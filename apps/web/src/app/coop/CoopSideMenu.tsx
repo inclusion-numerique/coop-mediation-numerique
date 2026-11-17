@@ -4,7 +4,6 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreateCraModalDefinition } from '@app/web/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 import { statistiquesPageTitle } from '@app/web/features/statistiques/ui/pages/titre-des-statistiques'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import Button from '@codegouvfr/react-dsfr/Button'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
@@ -142,34 +141,23 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
 
   items.push(
     {
-      text: (
-        <Button
-          type="button"
-          {...CreateCraModalDefinition.buttonProps}
-          iconId="fr-icon-add-line"
-          className="fr-width-full fr-my-7v"
-        >
-          Enregistrer une activité
-        </Button>
-      ),
-      linkProps: undefined as unknown as { href: string },
+      text: 'Enregistrer une activité',
+      linkProps: {
+        href: '#',
+        onClick: () => CreateCraModalDefinition.open(),
+        className:
+          'fr-btn fr-icon-add-line fr-btn--icon-left fr-width-full fr-my-7v',
+      },
       isActive: false,
     },
     {
-      text: (
-        <Button
-          type="button"
-          iconId="fr-icon-question-answer-line"
-          priority="tertiary"
-          className="fr-width-full"
-        >
-          Contacter le support
-        </Button>
-      ),
-      isActive: false,
+      text: 'Contacter le support',
       linkProps: {
         href: `mailto:${PublicWebAppConfig.contactEmail}`,
+        className:
+          'fr-btn fr-btn--tertiary fr-icon-question-answer-line fr-btn--icon-left fr-width-full',
       },
+      isActive: false,
     },
   )
 

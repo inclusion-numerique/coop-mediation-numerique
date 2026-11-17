@@ -3,6 +3,7 @@ import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { contentId } from '@app/web/utils/skipLinks'
 import documentPictogram from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/document/document.svg'
+import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import UploadBeneficiaireFileForm from '../components/UploadBeneficiaireFileForm'
 
 export const ImporterBeneficiairesPage = () => (
@@ -41,7 +42,7 @@ export const ImporterBeneficiairesPage = () => (
         </div>
         <div className="fr-col-12 fr-col-md-7">
           <div className="fr-border fr-border-radius--16 fr-p-8v fr-flex fr-enlarge-link  fr-align-items-center">
-            <img src={documentPictogram.src} alt="" width={64} />
+            <img src={getAssetUrl(documentPictogram)} alt="" width={64} />
             <div className="fr-pl-7v fr-flex-1">
               <h3 className="fr-h6 fr-mb-4v fr-text-title--blue-france">
                 Modèle liste bénéficiaires
