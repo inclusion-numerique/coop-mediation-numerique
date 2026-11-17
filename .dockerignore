@@ -1,6 +1,5 @@
 **/.git
 **/var
-**/.turbo
 **/.pnp
 **/.pnp.js
 **/.idea
@@ -20,9 +19,6 @@
 
 # generated files
 data
-
-# Unused package in docker app
-packages/
 
 # Test files
 **/*.stories.mdx

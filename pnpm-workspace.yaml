@@ -1,5 +1,3 @@
-packages:
-
 # Délai de quarantaine avant qu'une version publiée soit installable (en MINUTES : 21600 = 15
 # jours). C'est la principale défense du dépôt contre les compromissions de chaîne
 # d'approvisionnement type Shai-Hulud / ChainDrop, où les versions malveillantes ne restent en

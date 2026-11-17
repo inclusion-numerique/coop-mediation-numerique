@@ -35,14 +35,10 @@ jobs:
         uses: actions/checkout@v7
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Monorepo manypkg check
-        run: pnpm manypkg check
       - name: Tsc
         run: pnpm tsc
-      - name: Lint remaining packages
-        run: pnpm -r lint
-      - name: Lint application - biome
-        run: pnpm exec biome check src
+      - name: Lint - biome
+        run: pnpm exec biome check src e2e .storybook
       - name: Generate openapi docs for api v1
         run: pnpm --silent api-v1-doc:generate
       - name: Check that openapi spec file is up to date
