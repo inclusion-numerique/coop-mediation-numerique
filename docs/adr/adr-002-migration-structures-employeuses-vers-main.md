@@ -282,9 +282,10 @@ passage du job, quand une contrainte les refuse au moment de l'écriture.
 
 La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
 
-- **Droits** : le rôle qui applique les migrations de la coop et celui de l'application ont besoin
-  des droits de lecture, d'écriture et de référence sur les tables de `main` qu'elle touche. Ils
-  doivent être posés par Flyway, pour exister dans une base fraîche et pas seulement en production.
+- **Droits** : le Dataspace accorde à la coop les droits nécessaires sur les tables de `main`
+  qu'elle lit et écrit (lecture, écriture de données et référence), la coop ne détenant aucun droit
+  de modification de structure sur `main`. Ces droits doivent être posés par Flyway, pour exister
+  dans une base fraîche et pas seulement en production.
 - **Sens de `est_active` pour la source `coop`** : la coop le maintient désormais elle-même, à la
   place du cycle de réactivation que tenait l'import de l'Entrepôt ; la sémantique est à poser avec
   lui (#1729).

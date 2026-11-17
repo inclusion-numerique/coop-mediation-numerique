@@ -157,8 +157,9 @@ fixer. Le script échappe toujours à la quarantaine et au lockfile.
 - [Configuration de Dependabot](../../.github/dependabot.yml) : écosystèmes suivis, fréquence et
   délai d'attente.
 - [Hook de pré-commit](../../.husky/pre-commit) : lancement de gitleaks.
-- [Guide de contribution](../../CONTRIBUTING.md) : outils à installer sur le poste, dont
-  gitleaks, et rôle du hook de pré-commit.
+- [Guide de contribution](../../CONTRIBUTING.md) : prérequis du poste, dont gitleaks, sans lequel
+  le hook de pré-commit refuse le commit, et rôle de ce hook, qui formate les fichiers indexés avec
+  Biome et cherche des secrets avec gitleaks.
 
 ## Références
 

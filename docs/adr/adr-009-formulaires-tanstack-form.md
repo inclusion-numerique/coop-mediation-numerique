@@ -84,7 +84,8 @@ Négatives :
 - Le texte riche charge encore l'ancien moteur : sa barre d'outils embarque une modale de lien
   écrite avec react-hook-form.
 - Les adaptateurs n'ont pas tous la surface des anciens champs. Par exemple, un champ numérique
-  vidé émet une chaîne vide, qu'un écouteur doit ramener à vide.
+  vidé émet une chaîne vide, qu'un écouteur du formulaire doit ramener à null pour que la
+  validation la traite comme une valeur absente.
 
 ## Où trouver le détail
 

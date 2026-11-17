@@ -106,8 +106,6 @@ Un linter qui reste rouge n'est plus lu.
 ## Où trouver le détail
 
 - Le [fichier du workspace pnpm](../../pnpm-workspace.yaml) déclare les paquets du dépôt.
-- La [structure du dépôt décrite pour les agents](../../AGENTS.md#monorepo-structure) détaille le
-  rôle de chaque paquet.
 
 ## Références
 
