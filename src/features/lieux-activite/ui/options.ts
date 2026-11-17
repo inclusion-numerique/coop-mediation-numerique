@@ -1,9 +1,9 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
 import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
 import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
 import {
   Frais,
   ModaliteAccompagnement,

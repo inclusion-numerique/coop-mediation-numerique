@@ -1,7 +1,5 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { fusionnerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/fusionner-beneficiaires.action'
 import type {
   BeneficiaireDoublon,
@@ -9,6 +7,8 @@ import type {
 } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
 import { pluriel } from '@app/web/libraries/pluriel'
 import { telephoneDisplayString } from '@app/web/libraries/telephone'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'

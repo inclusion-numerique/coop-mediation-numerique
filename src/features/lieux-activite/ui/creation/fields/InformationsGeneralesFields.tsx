@@ -1,15 +1,15 @@
 'use client'
 
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
-import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import { Options } from '@app/ui/components/Primitives/Options'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
 import { libelleDeTypologie } from '@app/web/features/lieux-activite/ui/libelles-typologie'
 import { typologieStructureOptions } from '@app/web/features/lieux-activite/ui/options'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import RequiredFieldsDisclaimer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclaimer'
+import { optionsWithEmptyValue } from '@app/web/libraries/ui/components/Form/utils/options'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'

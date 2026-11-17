@@ -1,7 +1,7 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import Filters from '@app/web/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@app/web/features/statistiques/ui/filtres/FilterTags'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import type { ComponentProps, ReactNode } from 'react'
 import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
 

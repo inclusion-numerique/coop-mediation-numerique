@@ -1,11 +1,11 @@
 'use client'
 
+import { adresseAvec } from '@app/web/libraries/parametres-d-url'
 import {
   type DateRange,
   DateRangePicker,
-} from '@app/ui/components/Primitives/calendar/DateRangePicker'
-import { Popover } from '@app/ui/components/Primitives/Popover'
-import { adresseAvec } from '@app/web/libraries/parametres-d-url'
+} from '@app/web/libraries/ui/components/Primitives/calendar/DateRangePicker'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'

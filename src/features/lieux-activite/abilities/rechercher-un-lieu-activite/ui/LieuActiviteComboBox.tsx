@@ -1,4 +1,4 @@
-import { OptionsData } from '@app/ui/components/Primitives/Options'
+import { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { inject } from '@app/web/libs/injection/client'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../action/rechercher-un-lieu-activite.key'

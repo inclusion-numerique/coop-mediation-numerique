@@ -52,7 +52,6 @@ export default defineConfig({
       paquet('config', './packages/config'),
       paquet('emails', './packages/emails'),
       paquet('fixtures', './packages/fixtures'),
-      paquet('ui', './packages/ui'),
     ],
     coverage: {
       provider: 'v8',

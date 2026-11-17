@@ -1,7 +1,3 @@
-import CustomSelectFormField, {
-  type CustomSelectFormFieldProps,
-} from '@app/ui/components/Form/CustomSelectFormField'
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import {
   Feature,
   SERVICE_ADRESSE_INDISPONIBLE,
@@ -11,6 +7,10 @@ import {
 } from '@app/web/external-apis/apiAdresse'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import CustomSelectFormField, {
+  type CustomSelectFormFieldProps,
+} from '@app/web/libraries/ui/components/Form/CustomSelectFormField'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { ReactNode } from 'react'
 import type { Control, FieldValues, Path } from 'react-hook-form'
 

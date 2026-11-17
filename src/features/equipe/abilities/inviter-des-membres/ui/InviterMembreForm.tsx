@@ -1,6 +1,6 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

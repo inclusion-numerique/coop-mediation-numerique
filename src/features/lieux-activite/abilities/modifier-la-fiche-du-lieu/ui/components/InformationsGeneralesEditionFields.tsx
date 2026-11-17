@@ -1,8 +1,5 @@
 'use client'
 
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import { Options } from '@app/ui/components/Primitives/Options'
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
@@ -17,6 +14,9 @@ import {
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
 import { typologieStructureOptions } from '@app/web/features/lieux-activite/ui/options'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import { optionsWithEmptyValue } from '@app/web/libraries/ui/components/Form/utils/options'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'

@@ -1,6 +1,6 @@
 'use client'
 
-import InputFormField from '@app/ui/components/Form/InputFormField'
+import InputFormField from '@app/web/libraries/ui/components/Form/InputFormField'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cookies from 'js-cookie'

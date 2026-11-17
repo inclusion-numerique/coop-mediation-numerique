@@ -3,12 +3,12 @@
 import {
   labelsToOptions,
   type SelectOption,
-} from '@app/ui/components/Form/utils/options'
+} from '@app/web/libraries/ui/components/Form/utils/options'
 import {
   Options,
   type OptionsData,
-} from '@app/ui/components/Primitives/Options'
-import { Popover } from '@app/ui/components/Primitives/Popover'
+} from '@app/web/libraries/ui/components/Primitives/Options'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import {

@@ -1,7 +1,7 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import { pluriel } from '@app/web/libraries/pluriel'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { download } from '@app/web/utils/download'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'

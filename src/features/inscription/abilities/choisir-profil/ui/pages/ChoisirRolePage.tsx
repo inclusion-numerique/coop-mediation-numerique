@@ -1,6 +1,5 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import LogoCoop from '@app/web/components/LogoCoop'
 import {
   type ChoisirProfilFormData,
@@ -13,6 +12,7 @@ import {
 } from '@app/web/features/inscription/domain'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

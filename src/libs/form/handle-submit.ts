@@ -1,4 +1,4 @@
-import { scrollToError } from '@app/ui/hooks/useScrollToError'
+import { scrollToError } from '@app/web/libraries/ui/hooks/useScrollToError'
 import { AnyFormApi } from '@tanstack/react-form'
 import { FormEvent } from 'react'
 

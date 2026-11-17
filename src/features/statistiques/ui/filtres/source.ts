@@ -1,4 +1,4 @@
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
 
 export type ActiviteSource = 'v1' | 'v2' | ''
 

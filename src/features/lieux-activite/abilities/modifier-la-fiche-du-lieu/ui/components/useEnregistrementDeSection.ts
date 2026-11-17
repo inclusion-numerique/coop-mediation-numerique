@@ -1,6 +1,6 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import type { ModifierLaFicheDuLieuSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 

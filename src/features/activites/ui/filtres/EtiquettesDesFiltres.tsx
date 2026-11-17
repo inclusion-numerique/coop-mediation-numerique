@@ -1,6 +1,5 @@
 'use client'
 
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type {
   FiltresDeLaListe,
   OptionDeMediateur,
@@ -10,6 +9,7 @@ import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/activites/ui/filtres/libelles-des-filtres'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'

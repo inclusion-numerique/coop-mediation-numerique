@@ -1,6 +1,5 @@
 'use client'
 
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
@@ -12,6 +11,7 @@ import {
   libelleDuProfil,
 } from '@app/web/features/inscription/domain'
 import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
+import { sPluriel } from '@app/web/libraries/ui/utils/pluriel/sPluriel'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'

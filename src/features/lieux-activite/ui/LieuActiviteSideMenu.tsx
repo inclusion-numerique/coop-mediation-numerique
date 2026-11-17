@@ -1,4 +1,4 @@
-import CompactNavigationSideMenu from '@app/ui/components/CompactNavigationSideMenu'
+import CompactNavigationSideMenu from '@app/web/libraries/ui/components/CompactNavigationSideMenu'
 
 const LieuActiviteSideMenu = ({
   className,

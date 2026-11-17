@@ -3,7 +3,6 @@ packages:
   - packages/config
   - packages/e2e
   - packages/emails
-  - packages/ui
   - packages/storybook
   - packages/fixtures
 

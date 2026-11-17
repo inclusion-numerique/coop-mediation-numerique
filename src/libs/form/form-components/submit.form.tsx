@@ -1,4 +1,4 @@
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import Button, {
   ButtonProps as BaseButtonProps,
 } from '@codegouvfr/react-dsfr/Button'

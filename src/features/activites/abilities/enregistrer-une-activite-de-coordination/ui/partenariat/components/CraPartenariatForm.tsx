@@ -1,7 +1,5 @@
 'use client'
 
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { createToast } from '@app/ui/toast/createToast'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import {
   CraPartenariatData,
@@ -19,6 +17,8 @@ import {
   debutDispositifConum,
   derniereDateDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { useAppForm } from '@app/web/libs/form/use-app-form'

@@ -1,8 +1,8 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { retirerUnMediateurDuLieuAction } from '@app/web/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { formatDate } from '@app/web/utils/formatDate'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'

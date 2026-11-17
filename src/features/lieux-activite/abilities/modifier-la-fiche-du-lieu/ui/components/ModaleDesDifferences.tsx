@@ -1,7 +1,7 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import { appliquerLesDifferencesAction } from '@app/web/app/_actions/lieux-activite/appliquer-les-differences.action'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'

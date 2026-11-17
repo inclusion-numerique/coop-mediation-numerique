@@ -1,9 +1,9 @@
 'use client'
 
-import { Popover } from '@app/ui/components/Primitives/Popover'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { adresseAvec } from '@app/web/libraries/parametres-d-url'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'

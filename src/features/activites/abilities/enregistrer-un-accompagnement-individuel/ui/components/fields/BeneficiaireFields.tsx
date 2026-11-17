@@ -1,4 +1,3 @@
-import { Options } from '@app/ui/components/Primitives/Options'
 import IconInSquare from '@app/web/components/IconInSquare'
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import {
@@ -6,6 +5,7 @@ import {
   BeneficiaireOptions,
 } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
 import type { BeneficiaireDuCra } from '@app/web/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'

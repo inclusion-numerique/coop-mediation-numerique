@@ -1,11 +1,11 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import {
   type EtatDeMaintenance,
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
   type PeriodeDeMaintenance,
 } from '@app/web/features/maintenance-mode/domain'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Input from '@codegouvfr/react-dsfr/Input'

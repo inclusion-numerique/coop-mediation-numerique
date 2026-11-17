@@ -1,6 +1,5 @@
 'use client'
 
-import { Popover } from '@app/ui/components/Primitives/Popover'
 import type { FiltresDeLaListe } from '@app/web/features/activites/ui/filtres/filtres-de-la-liste'
 import {
   optionsDesStatutsDeRendezVous,
@@ -11,6 +10,7 @@ import {
   typeActiviteSlugOptions,
 } from '@app/web/features/activites/ui/libelles/type-activite'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'

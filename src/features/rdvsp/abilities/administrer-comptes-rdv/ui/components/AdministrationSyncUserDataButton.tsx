@@ -1,8 +1,8 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { declencherSynchronisationAction } from '@app/web/app/_actions/rdvsp/declencher-synchronisation.action'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import type { UserId } from '@app/web/utils/user'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'

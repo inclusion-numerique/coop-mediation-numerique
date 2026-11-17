@@ -1,5 +1,5 @@
-import { Options } from '@app/ui/components/Primitives/Options'
 import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import type { ComboBoxProps } from '@app/web/libs/form/fields-components/ComboBox'
 import { Input } from '@app/web/libs/form/fields-components/Input'
 import Button from '@codegouvfr/react-dsfr/Button'

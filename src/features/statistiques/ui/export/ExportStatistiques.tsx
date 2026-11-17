@@ -1,13 +1,13 @@
 'use client'
 
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { createToast } from '@app/ui/toast/createToast'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/features/statistiques/ui/filtres/libelles-des-filtres'
 import { MediateurOption } from '@app/web/features/statistiques/ui/filtres/mediateur-option'
 import type { ActivitesFilters } from '@app/web/features/statistiques/ui/filtres/parametres-de-la-barre'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { download } from '@app/web/utils/download'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'

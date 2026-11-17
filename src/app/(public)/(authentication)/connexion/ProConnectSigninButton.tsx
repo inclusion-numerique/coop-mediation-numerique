@@ -1,7 +1,7 @@
 'use client'
 
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { proConnectProviderId } from '@app/web/auth/proConnect'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { Route } from 'next'

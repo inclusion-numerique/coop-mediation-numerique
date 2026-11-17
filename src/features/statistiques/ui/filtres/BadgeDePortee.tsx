@@ -1,7 +1,7 @@
 'use client'
 
-import TooltipIcon from '@app/ui/components/TooltipIcon'
 import { TagScope } from '@app/web/features/statistiques/ui/filtres/portee-de-tag'
+import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'

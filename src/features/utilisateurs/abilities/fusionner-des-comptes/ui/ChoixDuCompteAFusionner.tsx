@@ -3,7 +3,7 @@
 import {
   Options,
   type OptionsData,
-} from '@app/ui/components/Primitives/Options'
+} from '@app/web/libraries/ui/components/Primitives/Options'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

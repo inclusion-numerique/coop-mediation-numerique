@@ -1,4 +1,3 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import {
   type Dispositif,
   type FiltresUtilisateurs,
@@ -7,6 +6,7 @@ import {
   rolesFiltres,
   statutDuFiltre,
 } from '@app/web/features/utilisateurs/domain'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { libelleDuStatut } from './statut-compte.presenter'
 
 export type TypeDeFiltre =

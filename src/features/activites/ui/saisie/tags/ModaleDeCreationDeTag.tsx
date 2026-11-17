@@ -1,15 +1,15 @@
 'use client'
 
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@app/web/features/activites/ui/saisie/tags/creer-un-tag.key'
 import {
   type Tag,
   tagDuFormulaire,
   type VisibiliteDuTagDuCra,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { inject } from '@app/web/libs/injection/client'

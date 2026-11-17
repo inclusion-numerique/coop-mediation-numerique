@@ -1,4 +1,4 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { sPluriel } from '@app/web/libraries/ui/utils/pluriel/sPluriel'
 import { dateAsDayConventional } from '@app/web/utils/dateAsDay'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'

@@ -1,6 +1,3 @@
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { Options } from '@app/ui/components/Primitives/Options'
 import { typeLieuOptionsWithExtras } from '@app/web/features/activites/ui/libelles/type-lieu'
 import {
   CommuneComboBox,
@@ -20,6 +17,9 @@ import {
   derniereDateDuFormulaire,
 } from '@app/web/features/activites/ui/saisie/validation/CraDateValidation'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import {
   type DefaultValues,
   withFieldGroup,

@@ -1,4 +1,3 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type {
   FiltresDeLaListe,
   OptionDeBeneficiaire,
@@ -7,6 +6,7 @@ import type {
 import { libelleDuStatutDansLURL } from '@app/web/features/activites/ui/libelles/statut-de-rendez-vous'
 import { thematiqueLabels } from '@app/web/features/activites/ui/libelles/thematique'
 import { typeActiviteSlugLabels } from '@app/web/features/activites/ui/libelles/type-activite'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 
 export type FilterType =

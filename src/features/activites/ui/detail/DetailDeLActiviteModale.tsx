@@ -1,9 +1,9 @@
 'use client'
 
-import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/ui/toast/createToast'
 import Stars from '@app/web/components/Stars'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { inject } from '@app/web/libs/injection/client'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'

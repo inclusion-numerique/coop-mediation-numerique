@@ -1,4 +1,3 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { EmployeuseId, employeuseAffichage } from '@app/web/features/employeuse'
 import { consulterEmployeuse } from '@app/web/features/employeuse/server'
 import {
@@ -7,6 +6,7 @@ import {
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import type { FiltresUtilisateurs } from '@app/web/features/utilisateurs/domain'
 import type { OptionsDesFiltres } from '@app/web/features/utilisateurs/ui'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 
 const employeusesChoisies = async (
   ids: FiltresUtilisateurs['employeuses'],

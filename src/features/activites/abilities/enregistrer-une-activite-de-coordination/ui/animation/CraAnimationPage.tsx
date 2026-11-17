@@ -1,5 +1,3 @@
-import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDisclamer'
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
@@ -10,6 +8,8 @@ import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
+import RequiredFieldsDisclamer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclamer'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { contentId } from '@app/web/utils/skipLinks'
 

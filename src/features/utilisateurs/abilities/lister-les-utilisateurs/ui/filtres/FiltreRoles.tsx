@@ -1,11 +1,11 @@
 'use client'
 
-import { Popover } from '@app/ui/components/Primitives/Popover'
 import {
   RoleFiltre,
   type RoleFiltre as RoleFiltreType,
 } from '@app/web/features/utilisateurs/domain'
 import { optionsDesRoles } from '@app/web/features/utilisateurs/ui'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { resetPagination } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'

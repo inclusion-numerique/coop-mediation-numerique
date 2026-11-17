@@ -1,9 +1,9 @@
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { CityHallIcon } from '@app/web/features/pictograms/buildings/CityHallIcon'
 import { HouseIcon } from '@app/web/features/pictograms/buildings/HouseIcon'
 import { SchoolIcon } from '@app/web/features/pictograms/buildings/SchoolIcon'
 import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
 import { Pictogram } from '@app/web/features/pictograms/pictogram'
+import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
 import { TYPES_DE_LIEU } from '../../domain'
 
 export const typeLieuValues = TYPES_DE_LIEU

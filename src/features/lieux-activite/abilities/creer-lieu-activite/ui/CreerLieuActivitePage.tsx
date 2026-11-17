@@ -1,12 +1,12 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { CreerLieuActivitePageContent } from '@app/web/features/lieux-activite/ui/creation/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@app/web/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { hrefDuLieu } from '../../../ui/href-du-lieu'

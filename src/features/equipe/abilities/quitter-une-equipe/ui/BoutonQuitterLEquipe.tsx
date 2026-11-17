@@ -1,6 +1,6 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'

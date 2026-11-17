@@ -1,4 +1,4 @@
-import type { OptionsData } from '@app/ui/components/Primitives/Options'
+import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { inject } from '@app/web/libs/injection/client'
 import type { CommuneDuCra } from './commune-du-cra'

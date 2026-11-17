@@ -1,7 +1,5 @@
 'use client'
 
-import { Options } from '@app/ui/components/Primitives/Options'
-import { createToast } from '@app/ui/toast/createToast'
 import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
@@ -15,6 +13,8 @@ import {
 import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import type { SuggestionAffichee } from '@app/web/features/lieux-activite/ui'
 import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

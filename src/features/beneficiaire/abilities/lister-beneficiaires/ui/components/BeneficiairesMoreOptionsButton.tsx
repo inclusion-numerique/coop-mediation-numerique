@@ -1,6 +1,6 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'

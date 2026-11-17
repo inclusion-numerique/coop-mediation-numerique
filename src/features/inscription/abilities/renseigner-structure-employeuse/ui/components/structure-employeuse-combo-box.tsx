@@ -1,4 +1,3 @@
-import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import {
   type TypologieStructure,
@@ -6,6 +5,7 @@ import {
 } from '@app/web/external-apis/api-entreprise/typologieStructure'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
+import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 

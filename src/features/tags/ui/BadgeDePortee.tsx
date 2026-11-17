@@ -1,6 +1,6 @@
 'use client'
 
-import TooltipIcon from '@app/ui/components/TooltipIcon'
+import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'

@@ -1,7 +1,7 @@
 'use client'
 
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { MARQUER_L_ONBOARDING_COMME_VU_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/action/marquer-l-onboarding-comme-vu.key'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { inject } from '@app/web/libs/injection/client'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'

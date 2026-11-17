@@ -1,8 +1,8 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { inject } from '@app/web/libs/injection/client'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'

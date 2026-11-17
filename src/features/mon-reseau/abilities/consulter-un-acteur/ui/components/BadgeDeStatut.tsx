@@ -1,6 +1,6 @@
 'use client'
 
-import TooltipIcon from '@app/ui/components/TooltipIcon'
+import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { SEUIL_D_INACTIVITE_EN_JOURS } from '../../domain'

@@ -1,6 +1,6 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import Button, { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 
 const CopyToClipboardButton = ({

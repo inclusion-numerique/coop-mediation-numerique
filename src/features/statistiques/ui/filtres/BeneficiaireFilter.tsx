@@ -1,9 +1,9 @@
 'use client'
 
-import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
-import { SelectOption } from '@app/ui/components/Form/utils/options'
-import { Popover } from '@app/ui/components/Primitives/Popover'
 import { adresseAvec } from '@app/web/libraries/parametres-d-url'
+import CustomSelect from '@app/web/libraries/ui/components/CustomSelect/CustomSelect'
+import { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import {

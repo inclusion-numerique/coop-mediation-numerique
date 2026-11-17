@@ -1,10 +1,10 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import BackButton from '@app/web/components/BackButton'
 import { INVITER_DES_MEMBRES_ACTION_KEY } from '@app/web/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@app/web/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { inject } from '@app/web/libs/injection/client'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'

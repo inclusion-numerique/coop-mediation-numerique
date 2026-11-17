@@ -1,11 +1,11 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import { validerAction } from '@app/web/app/_actions/inscription/valider.action'
 import {
   type ValiderFormData,
   validerFormShape,
 } from '@app/web/features/inscription/abilities/valider'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

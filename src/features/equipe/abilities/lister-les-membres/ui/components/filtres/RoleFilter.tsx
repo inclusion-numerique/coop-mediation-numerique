@@ -1,6 +1,6 @@
 'use client'
 
-import { Popover } from '@app/ui/components/Primitives/Popover'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { resetPagination } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'

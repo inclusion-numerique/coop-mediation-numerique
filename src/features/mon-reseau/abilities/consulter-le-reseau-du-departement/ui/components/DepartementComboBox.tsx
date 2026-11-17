@@ -1,10 +1,10 @@
 'use client'
 
-import { ComboBox } from '@app/ui/components/Primitives/Form/ComboBox'
 import {
   Departement,
   departements,
 } from '@app/web/data/collectivites-territoriales/departements'
+import { ComboBox } from '@app/web/libraries/ui/components/Primitives/Form/ComboBox'
 import { useRouter } from 'next/navigation'
 import { hrefDuReseau } from '../../../../ui/liens'
 

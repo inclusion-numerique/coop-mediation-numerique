@@ -1,7 +1,7 @@
 import {
   SelectedItems as SelectedItemsBase,
   SelectedItemsProps as SelectedItemsBaseProps,
-} from '@app/ui/components/Primitives/SelectedItems'
+} from '@app/web/libraries/ui/components/Primitives/SelectedItems'
 import { ReactNode } from 'react'
 import { useFieldContext } from '../form-context'
 

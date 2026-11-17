@@ -1,6 +1,5 @@
 'use client'
 
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import {
   LieuFilter,
   type LieuFilterValue,
@@ -11,6 +10,7 @@ import {
   optionsDesDispositifs,
   optionsDesStatuts,
 } from '@app/web/features/utilisateurs/ui'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { FiltreAChoixUnique } from './FiltreAChoixUnique'
 import { FiltreEmployeuses } from './FiltreEmployeuses'
 import { FiltreRoles } from './FiltreRoles'

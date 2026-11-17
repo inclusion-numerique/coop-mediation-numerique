@@ -1,9 +1,5 @@
 'use client'
 
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
-import { Options } from '@app/ui/components/Primitives/Options'
-import { createToast } from '@app/ui/toast/createToast'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
   CommuneComboBox,
@@ -26,6 +22,10 @@ import {
 import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { adresseAvec } from '@app/web/libraries/parametres-d-url'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import RequiredFieldsDisclaimer from '@app/web/libraries/ui/components/Form/RequiredFieldsDisclaimer'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'

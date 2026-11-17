@@ -1,6 +1,6 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { Materiel } from '@app/web/features/activites/ui/libelles/materiel'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import {
   type DefaultValues,
   withFieldGroup,

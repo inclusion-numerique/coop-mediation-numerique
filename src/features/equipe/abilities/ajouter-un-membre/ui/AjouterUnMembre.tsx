@@ -3,9 +3,9 @@
 import {
   Options,
   type OptionsData,
-} from '@app/ui/components/Primitives/Options'
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+} from '@app/web/libraries/ui/components/Primitives/Options'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

@@ -1,7 +1,7 @@
 import {
   Input as DsfrInput,
   InputProps as DsfrInputProps,
-} from '@app/ui/components/Primitives/Form/Input'
+} from '@app/web/libraries/ui/components/Primitives/Form/Input'
 import { useFieldContext } from '@app/web/libs/form/form-context'
 import { ChangeEvent, DetailedHTMLProps, LabelHTMLAttributes } from 'react'
 

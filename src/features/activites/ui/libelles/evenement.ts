@@ -1,5 +1,5 @@
-import { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { Model } from '@app/web/libraries/model'
+import { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import type {
   EchelonTerritorial,
   Organisateur,

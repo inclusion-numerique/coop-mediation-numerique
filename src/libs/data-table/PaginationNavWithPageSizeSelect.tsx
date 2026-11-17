@@ -1,4 +1,4 @@
-import { SelectOption } from '@app/ui/components/Form/utils/options'
+import { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import classNames from 'classnames'
 import PageSizeSelect from './PageSizeSelect'
 import PaginationNav, { PaginationNavProps } from './PaginationNav'

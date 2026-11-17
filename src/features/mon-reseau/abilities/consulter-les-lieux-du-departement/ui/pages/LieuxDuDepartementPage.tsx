@@ -1,4 +1,3 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
@@ -7,6 +6,7 @@ import {
   LieuActiviteCard,
 } from '@app/web/features/lieux-activite/ui'
 import type { Departement } from '@app/web/libraries/departement'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'

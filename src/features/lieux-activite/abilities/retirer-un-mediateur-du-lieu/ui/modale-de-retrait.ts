@@ -1,4 +1,4 @@
-import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
+import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
 
 export type EtatDeLaModaleDeRetrait = {
   mediateurId: string

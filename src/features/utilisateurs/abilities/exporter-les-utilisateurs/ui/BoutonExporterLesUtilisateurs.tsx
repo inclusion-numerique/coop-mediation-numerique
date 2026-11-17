@@ -1,7 +1,7 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import type { LibelleDeFiltre } from '@app/web/features/utilisateurs/ui'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'

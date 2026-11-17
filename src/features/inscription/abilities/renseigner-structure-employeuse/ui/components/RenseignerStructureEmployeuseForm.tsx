@@ -1,7 +1,5 @@
 'use client'
 
-import { Options } from '@app/ui/components/Primitives/Options'
-import { createToast } from '@app/ui/toast/createToast'
 import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
 import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
 import {
@@ -9,6 +7,8 @@ import {
   renseignerStructureEmployeuseFormShape,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Alert from '@codegouvfr/react-dsfr/Alert'

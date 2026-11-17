@@ -1,4 +1,3 @@
-import { Options } from '@app/ui/components/Primitives/Options'
 import { CreationDeTagDuCra } from '@app/web/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
 import {
   TagComboBox,
@@ -7,6 +6,7 @@ import {
 } from '@app/web/features/activites/ui/saisie/tags/TagsComboBox'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import type { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import {
   type DefaultValues,
   withFieldGroup,

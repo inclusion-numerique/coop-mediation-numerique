@@ -1,8 +1,8 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { pluriel } from '@app/web/libraries/pluriel'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'

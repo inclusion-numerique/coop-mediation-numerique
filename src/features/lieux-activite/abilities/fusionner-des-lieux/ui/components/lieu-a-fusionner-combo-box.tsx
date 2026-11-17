@@ -1,5 +1,5 @@
-import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherUnLieuAFusionnerAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-a-fusionner.action'
+import type { OptionsData } from '@app/web/libraries/ui/components/Primitives/Options'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 
 export type LieuChoisi = {

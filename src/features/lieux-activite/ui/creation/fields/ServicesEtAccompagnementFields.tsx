@@ -1,11 +1,11 @@
 'use client'
 
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import {
   modaliteAccompagnementOptions,
   serviceOptions,
 } from '@app/web/features/lieux-activite/ui/options'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import { optionsWithEmptyValue } from '@app/web/libraries/ui/components/Form/utils/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'

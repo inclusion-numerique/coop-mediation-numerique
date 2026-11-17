@@ -1,7 +1,7 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import { choisirLaVisibiliteApresRuptureAction } from '@app/web/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'

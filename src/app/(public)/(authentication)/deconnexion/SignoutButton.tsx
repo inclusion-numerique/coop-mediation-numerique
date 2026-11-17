@@ -1,6 +1,6 @@
 'use client'
 
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'

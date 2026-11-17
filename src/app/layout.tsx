@@ -1,5 +1,4 @@
 import '@app/web/app/setup'
-import Toaster from '@app/ui/toast/Toaster'
 import { terminerLUsurpationAction } from '@app/web/app/_actions/utilisateurs/terminer-l-usurpation.action'
 import { EnvInformation } from '@app/web/app/EnvInformation'
 import { Matomo } from '@app/web/app/Matomo'
@@ -9,6 +8,7 @@ import {
   getHtmlAttributes,
 } from '@app/web/configuration/dsfr/server-only-index'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@app/web/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
+import Toaster from '@app/web/libraries/ui/toast/Toaster'
 import { ClientBinder } from '@app/web/libs/injection/client-binder'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import type { Metadata } from 'next'

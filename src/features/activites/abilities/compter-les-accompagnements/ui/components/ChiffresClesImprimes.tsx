@@ -1,4 +1,4 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { sPluriel } from '@app/web/libraries/ui/utils/pluriel/sPluriel'
 import type { TotauxPresentes } from '../totaux.presenter'
 
 export const ChiffresClesImprimes = ({

@@ -1,7 +1,7 @@
 'use client'
 
-import { TruncateText } from '@app/ui/components/Primitives/TruncatedText'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { TruncateText } from '@app/web/libraries/ui/components/Primitives/TruncatedText'
 import type { MouseEventHandler } from 'react'
 import { DetailDeLActiviteDynamicModal } from '../detail/DetailDeLActiviteModale'
 import { typeActivitePictograms } from '../libelles/type-activite'

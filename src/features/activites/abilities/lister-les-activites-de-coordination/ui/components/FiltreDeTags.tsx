@@ -1,7 +1,7 @@
 'use client'
 
-import { Popover } from '@app/ui/components/Primitives/Popover'
 import { BadgeDePortee } from '@app/web/features/activites/ui/tags/BadgeDePortee'
+import { Popover } from '@app/web/libraries/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'

@@ -1,7 +1,7 @@
 'use client'
 
-import { createToast } from '@app/ui/toast/createToast'
 import Card from '@app/web/components/Card'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { inject } from '@app/web/libs/injection/client'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'

@@ -1,7 +1,5 @@
 'use client'
 
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { createToast } from '@app/ui/toast/createToast'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import { BeneficiairesAtelierFields } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/fields/BeneficiairesAtelierFields'
 import { NiveauAtelierField } from '@app/web/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/fields/NiveauAtelierField'
@@ -24,6 +22,8 @@ import { ThematiquesFields } from '@app/web/features/activites/ui/saisie/fields/
 import type { LieuDuCra } from '@app/web/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@app/web/features/activites/ui/saisie/tags/tag-du-cra'
 import { adresseAvec } from '@app/web/libraries/parametres-d-url'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { useAppForm } from '@app/web/libs/form/use-app-form'

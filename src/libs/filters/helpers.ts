@@ -1,4 +1,4 @@
-import { SelectOption } from '@app/ui/components/Form/utils/options'
+import { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 
 /**
  * Removes the page parameter from URLSearchParams.

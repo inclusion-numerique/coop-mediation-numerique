@@ -1,5 +1,5 @@
-import TooltipIcon from '@app/ui/components/TooltipIcon'
 import { getStructureCartographieLink } from '@app/web/libraries/cartographie-nationale'
+import TooltipIcon from '@app/web/libraries/ui/components/TooltipIcon'
 import classNames from 'classnames'
 import Link from 'next/link'
 

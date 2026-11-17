@@ -1,4 +1,4 @@
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 

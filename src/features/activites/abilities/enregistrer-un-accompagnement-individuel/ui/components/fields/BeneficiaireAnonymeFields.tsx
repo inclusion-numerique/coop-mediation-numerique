@@ -1,5 +1,3 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { Options } from '@app/ui/components/Primitives/Options'
 import type { CraIndividuelData } from '@app/web/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import type {
   Genre,
@@ -10,6 +8,8 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/activites/ui/saisie/commune/commune-combo-box'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
+import { Options } from '@app/web/libraries/ui/components/Primitives/Options'
 import type { DefaultValues } from '@app/web/libs/form/use-app-form'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'

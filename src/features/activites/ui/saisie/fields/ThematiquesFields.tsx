@@ -1,10 +1,10 @@
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import {
   AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
   type Thematique,
 } from '@app/web/features/activites/ui/libelles/thematique'
 import { CraData } from '@app/web/features/activites/ui/saisie/validation/CraValidation'
+import RedAsterisk from '@app/web/libraries/ui/components/Form/RedAsterisk'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import {
   type DefaultValues,
   withFieldGroup,

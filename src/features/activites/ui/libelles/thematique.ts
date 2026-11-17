@@ -1,4 +1,3 @@
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { HouseIcon } from '@app/web/features/pictograms/buildings/HouseIcon'
 import { AIIcon } from '@app/web/features/pictograms/digital/AIIcon'
 import { DevicesIcon } from '@app/web/features/pictograms/digital/DevicesIcon'
@@ -27,6 +26,7 @@ import { UserStatsIcon } from '@app/web/features/pictograms/user/UserStatsIcon'
 import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
 import { ProfessionalIcon } from '@app/web/features/pictograms/work/ProfessionalIcon'
 import { ScolarshipIcon } from '@app/web/features/pictograms/work/ScolarshipIcon'
+import { labelsToOptions } from '@app/web/libraries/ui/components/Form/utils/options'
 import {
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_DE_MEDIATION,

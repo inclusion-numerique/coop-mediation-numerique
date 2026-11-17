@@ -1,5 +1,5 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { pluriel } from '@app/web/libraries/pluriel'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../domain'
 import type { EtiquetteDeFiltre } from '../../../ui/etiquette-de-filtre'
 import type { CriteresActeurs, filtresDeRole } from '../domain'

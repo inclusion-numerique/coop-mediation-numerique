@@ -2,7 +2,7 @@ import {
   ComboBox as ComboBoxBase,
   type ComboBoxData as ComboBoxBaseData,
   type ComboBoxProps as ComboBoxBaseProps,
-} from '@app/ui/components/Primitives/Form/ComboBox'
+} from '@app/web/libraries/ui/components/Primitives/Form/ComboBox'
 import { isEqual } from 'lodash-es'
 import { KeyboardEvent } from 'react'
 import { useFieldContext } from '../form-context'

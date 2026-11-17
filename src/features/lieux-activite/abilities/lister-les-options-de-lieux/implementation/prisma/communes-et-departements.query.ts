@@ -1,4 +1,4 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import type { SelectOption } from '@app/web/libraries/ui/components/Form/utils/options'
 import { prismaClient } from '@app/web/prismaClient'
 import { getDepartementsFromCodesInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 

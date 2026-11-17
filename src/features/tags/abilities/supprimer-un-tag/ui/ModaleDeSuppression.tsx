@@ -1,8 +1,8 @@
 'use client'
 
-import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
-import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { createDynamicModal } from '@app/web/libraries/ui/components/Modal/createDynamicModal'
+import { createToast } from '@app/web/libraries/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/web/libraries/ui/utils/buttonLoadingClassname'
 import { inject } from '@app/web/libs/injection/client'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'

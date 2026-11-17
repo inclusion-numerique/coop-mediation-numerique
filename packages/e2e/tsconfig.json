@@ -9,7 +9,7 @@
       "@app/e2e/*": ["./cypress/*"],
       "@app/emails/*": ["../../packages/emails/src/*"],
       "@app/storybook/*": ["../../packages/storybook/src/*"],
-      "@app/ui/*": ["../../packages/ui/src/*"],
+      "@app/web/libraries/ui/*": ["../../packages/ui/src/*"],
       "@app/fixtures/*": ["../../packages/fixtures/src/*"]
     }
   },
