@@ -282,7 +282,7 @@ const Fusion = ({ source }: { source: TagAFusionner }) => {
             </div>
             <span className="fr-flex fr-flex-gap-2v fr-align-items-center fr-justify-content-center">
               <span
-                className="ri-arrow-down-line ri-xl fr-text-label--blue-france fr-text--center"
+                className="ri-arrow-down-line fr-text-label--blue-france fr-text--center"
                 aria-hidden
               />
               <Badge

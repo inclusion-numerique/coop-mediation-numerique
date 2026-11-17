@@ -18,10 +18,7 @@ const onlyFor =
 
 const mesActivitesItemTitle = (
   <>
-    <span
-      className="ri-service-line ri-xl fr-mr-1w fr-text--regular"
-      aria-hidden
-    />
+    <span className="ri-service-line fr-mr-1w fr-text--regular" aria-hidden />
     Mes activités
   </>
 )
@@ -76,7 +73,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       text: (
         <>
           <span
-            className="ri-home-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-home-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Accueil
@@ -89,7 +86,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       text: (
         <>
           <span
-            className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-chat-poll-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           {statistiquesPageTitle(user)}
@@ -105,7 +102,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       text: (
         <>
           <span
-            className="ri-user-heart-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-user-heart-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Mes bénéficiaires
@@ -119,7 +116,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       text: (
         <>
           <span
-            className="ri-apps-2-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-apps-2-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Mes outils
@@ -132,7 +129,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       text: (
         <>
           <span
-            className="ri-team-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-team-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
           Mon réseau

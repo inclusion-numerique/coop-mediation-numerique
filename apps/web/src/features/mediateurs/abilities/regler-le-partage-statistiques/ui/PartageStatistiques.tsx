@@ -87,7 +87,7 @@ const LigneDePartage = ({
               className="fr-background-contrast--success fr-p-4v fr-border-radius--8 fr-display-inline-block"
               aria-hidden
             >
-              <span className="ri-earth-fill ri-lg fr-line-height-1 fr-text-default--success" />
+              <span className="ri-earth-fill fr-line-height-1 fr-text-default--success" />
             </div>
             <div>
               Lien de partage public activé
@@ -103,7 +103,7 @@ const LigneDePartage = ({
               className="fr-background-contrast--grey fr-p-4v fr-border-radius--8 fr-display-inline-block"
               aria-hidden
             >
-              <span className="ri-link-unlink ri-lg fr-line-height-1 fr-text-disabled-grey" />
+              <span className="ri-link-unlink fr-line-height-1 fr-text-disabled-grey" />
             </div>
             <div className="fr-flex-1">
               Lien de partage public désactivé

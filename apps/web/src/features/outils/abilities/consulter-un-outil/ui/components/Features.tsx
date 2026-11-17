@@ -16,7 +16,7 @@ export const Features = ({
           <div className="fr-flex fr-flex-gap-4v">
             <span aria-hidden>
               <span
-                className={`${feature.icon} fr-background-contrast--info fr-text-label--blue-france fr-p-1w fr-border-radius--8 fr-display-inline-block ri-lg fr-line-height-1`}
+                className={`${feature.icon} fr-background-contrast--info fr-text-label--blue-france fr-p-1w fr-border-radius--8 fr-display-inline-block fr-line-height-1`}
               />
             </span>
             <div>

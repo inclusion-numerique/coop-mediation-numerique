@@ -6,7 +6,6 @@ const ignoredTraceRoutes = [
   '/monitoring', // tunnel Sentry
   '/_next/',
   '/favicon',
-  '/dsfr/',
   '/images/',
 ]
 

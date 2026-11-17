@@ -37,7 +37,7 @@ export const MesOutilsPage = ({
       <section className="fr-mt-6w">
         <h2 className="fr-h6 fr-text-mention--grey">
           <span
-            className="ri-service-line ri-lg fr-text--regular fr-mr-1w"
+            className="ri-service-line fr-text--regular fr-mr-1w"
             aria-hidden
           />
           Des outils pour vos accompagnements

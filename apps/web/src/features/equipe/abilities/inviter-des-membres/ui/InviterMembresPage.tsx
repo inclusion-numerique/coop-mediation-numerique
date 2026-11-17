@@ -13,7 +13,7 @@ const CarteDInvitation = () => (
     title={
       <span className="fr-flex fr-align-items-center fr-flex-gap-6v">
         <span
-          className="ri-user-add-line ri-md fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8 fr-text--regular"
+          className="ri-user-add-line fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8 fr-text--regular"
           aria-hidden
         />
         <h1 className="fr-h3 fr-text-title--blue-france fr-mb-0">

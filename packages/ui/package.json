@@ -7,13 +7,10 @@
   "scripts": {
     "lint": "biome check src",
     "tsc": "tsc --noEmit",
-    "postinstall": "pnpm --silent setup:dsfr",
-    "with-env": "dotenv -e ../../.env --",
-    "setup:dsfr": "bash ../../setup-dsfr.sh"
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@codegouvfr/react-dsfr": "^1.35.0",
-    "@gouvfr/dsfr": "~1.14.4",
     "@hookform/resolvers": "^5.9.1",
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",

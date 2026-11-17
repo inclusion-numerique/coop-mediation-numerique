@@ -20,7 +20,7 @@ export const ChiffresClesDesAccompagnements = ({
           {numberToString(totalCounts.accompagnements.total)}
         </span>
         <span
-          className="ri-service-line ri-2x"
+          className="ri-service-line fr-icon--lg"
           style={{
             color: 'var(--brown-caramel-sun-425-moon-901-hover)',
           }}
@@ -74,7 +74,7 @@ export const ChiffresClesDesAccompagnements = ({
           {numberToString(totalCounts.beneficiaires.total)}
         </span>
         <span
-          className="ri-user-heart-line ri-2x"
+          className="ri-user-heart-line fr-icon--lg"
           style={{
             color: 'var(--brown-caramel-sun-425-moon-901-hover)',
           }}

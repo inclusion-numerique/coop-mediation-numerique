@@ -17,7 +17,7 @@ const Statistique = ({
       <span
         className={classNames(
           icone,
-          'ri-lg fr-background-alt--brown-caramel-950 fr-text-label--brown-caramel fr-p-3v fr-border-radius--8 fr-line-height-1',
+          'fr-background-alt--brown-caramel-950 fr-text-label--brown-caramel fr-p-3v fr-border-radius--8 fr-line-height-1',
         )}
         aria-hidden
       />
@@ -39,10 +39,7 @@ export const StatistiquesDeLActeur = ({
   <>
     <span className="fr-flex fr-direction-column fr-direction-md-row fr-flex-gap-3v fr-mb-6v">
       <span className="fr-flex fr-align-items-center fr-flex-gap-3v">
-        <span
-          className="ri-chat-poll-line ri-lg fr-text-mention--grey"
-          aria-hidden
-        />
+        <span className="ri-chat-poll-line fr-text-mention--grey" aria-hidden />
         <h2 className="fr-h6 fr-text-mention--grey fr-mb-0">
           Statistiques d’activité sur les 30 derniers jours
         </h2>

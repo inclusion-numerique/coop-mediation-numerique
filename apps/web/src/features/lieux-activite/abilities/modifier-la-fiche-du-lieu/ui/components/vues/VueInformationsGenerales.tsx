@@ -56,7 +56,7 @@ export const VueInformationsGenerales = ({
     {lieuItinerant && (
       <div data-testid="informations-generales-lieu-itinerant">
         <span
-          className="fr-icon-bus-line ri-lg fr-text-label--blue-france fr-mr-1w"
+          className="fr-icon-bus-line fr-text-label--blue-france fr-mr-1w"
           aria-hidden
         />
         <span className="fr-text-mention--grey">Lieu itinérant</span>

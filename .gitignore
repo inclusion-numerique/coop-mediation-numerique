@@ -60,7 +60,6 @@ storybook-static
 /apps/web/.next/
 /apps/web/dist/
 
-/apps/web/public/dsfr
 
 # e2e
 /packages/e2e/cypress/videos
@@ -71,7 +70,6 @@ storybook-static
 
 # ui
 /packages/ui/.next
-/packages/ui/public/dsfr
 
 # http rest client
 /*.http

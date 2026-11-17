@@ -1,2 +1,2 @@
-// Include global styles and scripts that you want to run asap
+import '@codegouvfr/react-dsfr/assets/dsfr_plus_icons.scss'
 import '@app/web/app/app.css'

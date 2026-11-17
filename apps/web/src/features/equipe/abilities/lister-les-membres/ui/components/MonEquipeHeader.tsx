@@ -1,10 +1,7 @@
 const MonEquipeHeader = () => (
   <div className="fr-flex fr-flex-wrap fr-flex-gap-4v fr-align-items-center fr-justify-content-space-between fr-mb-3w">
     <h2 className="fr-h6 fr-text-mention--grey fr-mb-0">
-      <span
-        className="ri-group-2-line ri-lg fr-text--regular fr-mr-2v"
-        aria-hidden
-      />
+      <span className="ri-group-2-line fr-text--regular fr-mr-2v" aria-hidden />
       Mon équipe
     </h2>
   </div>

@@ -1,5 +1,6 @@
 import { AuthCard } from '@app/web/app/(public)/(authentication)/AuthCard'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import mailSend from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/digital/mail-send.svg'
 import { cookies } from 'next/headers'
 
 export const Verify = async () => {
@@ -12,7 +13,7 @@ export const Verify = async () => {
       <div className="fr-grid-row fr-grid-row--center">
         <picture>
           <img
-            src="/dsfr/artwork/pictograms/digital/mail-send.svg"
+            src={mailSend.src}
             alt="Boite email"
             style={{ textAlign: 'center', width: 96 }}
           />

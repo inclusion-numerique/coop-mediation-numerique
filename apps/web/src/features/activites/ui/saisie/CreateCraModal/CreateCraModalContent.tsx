@@ -84,7 +84,7 @@ const CreateCraModalContent = ({
       <p>Quel type d’activité avez-vous réalisé&nbsp;?</p>
       {isMediateur && isCoordinateur && (
         <div className="fr-mt-8v fr-text-mention--grey fr-flex fr-flex-gap-2v fr-align-items-center">
-          <span className="ri-xl ri-service-line" aria-hidden="true" />
+          <span className="ri-service-line" aria-hidden="true" />
           <span className="fr-text--xs fr-text--uppercase fr-text--bold fr-mb-0">
             Activités de médiation numérique
           </span>
@@ -108,7 +108,7 @@ const CreateCraModalContent = ({
       )}
       {isMediateur && isCoordinateur && (
         <div className="fr-mt-8v fr-text-mention--grey fr-flex fr-flex-gap-2v fr-align-items-center">
-          <span className="ri-xl ri-group-2-line" aria-hidden="true" />
+          <span className="ri-group-2-line" aria-hidden="true" />
           <span className="fr-text--xs fr-text--uppercase fr-text--bold fr-mb-0">
             Activités de coordination
           </span>

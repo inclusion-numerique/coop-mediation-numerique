@@ -4,7 +4,7 @@ export const InformationsCoop = () => (
   <>
     <h2 className="fr-h6 fr-text-mention--grey">
       <span
-        className="ri-information-line ri-lg fr-text--regular fr-mr-2v"
+        className="ri-information-line fr-text--regular fr-mr-2v"
         aria-hidden
       />
       Plus d’informations sur la Coop

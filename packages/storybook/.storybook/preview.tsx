@@ -1,18 +1,13 @@
+import '@codegouvfr/react-dsfr/main.css'
 import '@app/web/styles/index.css'
+import { startReactDsfr } from '@codegouvfr/react-dsfr/spa'
 import { Preview } from '@storybook/react'
 import { DEFAULT_VIEWPORT, MINIMAL_VIEWPORTS } from 'storybook/viewport'
 
-const loadDsfrJs = () => {
-  const existing = document.querySelector('#dsfr-js')
-  if (existing) {
-    return
-  }
-
-  const script = document.createElement('script')
-  script.id = 'dsfr-js'
-  script.src = '/dsfr/dsfr.module.min.js'
-  document.body.append(script)
-}
+startReactDsfr({
+  defaultColorScheme: 'system',
+  useLang: () => 'fr',
+})
 
 const preview: Preview = {
   parameters: {
@@ -59,16 +54,6 @@ const preview: Preview = {
       },
     },
   },
-  decorators: [
-    (Story) => {
-      if (!(window as any).dsfrIsSetup) {
-        loadDsfrJs()
-        ;(window as any).dsfrIsSetup = true
-      }
-
-      return <Story />
-    },
-  ],
 }
 
 export default preview

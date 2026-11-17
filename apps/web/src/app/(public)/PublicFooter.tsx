@@ -1,4 +1,4 @@
-import SwitchTheme from '@app/web/app/(public)/SwitchTheme'
+import { headerFooterDisplayItem } from '@codegouvfr/react-dsfr/Display'
 import Footer, { type FooterProps } from '@codegouvfr/react-dsfr/Footer'
 
 export const publicFooterProps = {
@@ -43,7 +43,7 @@ export const publicFooterProps = {
   'accessibility' | 'accessibilityLinkProps' | 'bottomItems'
 >
 
-const PublicFooter = ({ initialTheme }: { initialTheme: 'light' | 'dark' }) => {
+const PublicFooter = () => {
   return (
     <Footer
       accessibility={publicFooterProps.accessibility}
@@ -64,10 +64,7 @@ const PublicFooter = ({ initialTheme }: { initialTheme: 'light' | 'dark' }) => {
         href: '/',
         title: 'Accueil',
       }}
-      bottomItems={[
-        ...publicFooterProps.bottomItems,
-        <SwitchTheme key="switch-theme" initialTheme={initialTheme} />,
-      ]}
+      bottomItems={[...publicFooterProps.bottomItems, headerFooterDisplayItem]}
     />
   )
 }

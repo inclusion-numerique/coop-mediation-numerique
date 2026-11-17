@@ -27,7 +27,7 @@ export const StatistiqueMateriel = ({
             ? { transform: `rotate(${materielIcons[value].rotation}deg)` }
             : {}
         }
-        className={`${materielIcons[value].icon} ri-2x fr-line-height-1 fr-text-label--blue-france`}
+        className={`${materielIcons[value].icon} fr-icon--lg fr-line-height-1 fr-text-label--blue-france`}
       />
     </div>
     <div className="fr-flex fr-flex-gap-2v fr-justify-content-center fr-text--nowrap">

@@ -26,7 +26,7 @@ export const MonProfilPage = ({
       <main id={contentId}>
         <div className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v fr-my-12v">
           <span
-            className="ri-account-circle-line ri-lg fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
+            className="ri-account-circle-line fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
             aria-hidden
           />
           <h1 className="fr-page-title fr-m-0">Mon profil</h1>

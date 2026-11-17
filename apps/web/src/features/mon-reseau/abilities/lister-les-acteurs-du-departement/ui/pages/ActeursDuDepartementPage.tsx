@@ -81,7 +81,7 @@ const ActeursDuDepartementPage = ({
           <BackButton />
           <div className="fr-flex fr-align-items-center fr-flex-gap-6v fr-mb-6v">
             <span
-              className="ri-account-circle-line ri-xl fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
+              className="ri-account-circle-line fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
               aria-hidden
             />
             <div>

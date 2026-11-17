@@ -9,6 +9,7 @@
     "cy": "dotenv -e ../../.env -e ./cypress.env -- cypress"
   },
   "dependencies": {
+    "@codegouvfr/react-dsfr": "^1.35.0",
     "cypress-real-events": "^1.15.1",
     "next": "^16.3.8",
     "react": "^19.3.0",

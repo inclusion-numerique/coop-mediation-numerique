@@ -33,7 +33,7 @@ export const StatTile = ({
           <span
             className={classNames(
               rest.iconId,
-              'ri-lg fr-text-label--blue-france fr-background-alt--blue-france fr-p-2v fr-border-radius--8',
+              'fr-text-label--blue-france fr-background-alt--blue-france fr-p-2v fr-border-radius--8',
             )}
           ></span>
         </div>
