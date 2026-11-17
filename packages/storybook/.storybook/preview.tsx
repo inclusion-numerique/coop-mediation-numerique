@@ -1,4 +1,5 @@
 import '@codegouvfr/react-dsfr/main.css'
+import '@codegouvfr/react-dsfr/dsfr/utility/colors/colors.min.css'
 import '@app/web/styles/index.css'
 import { startReactDsfr } from '@codegouvfr/react-dsfr/spa'
 import { Preview } from '@storybook/react'
