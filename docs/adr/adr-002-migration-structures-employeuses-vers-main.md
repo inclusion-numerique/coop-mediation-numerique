@@ -32,9 +32,9 @@ affectations. Cette duplication avait un coût permanent :
 - **synchronisation** à maintenir des deux côtés, dont l'Entrepôt dépendait pour tenir ses
   affectations à jour.
 
-La base de la coop vit dans le schéma `coop` de la même base que `main`
-([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)) : lire et écrire `main` depuis la coop est une
-requête dans la même base, pas un appel distant. C'est ce qui rend la décision possible.
+La base de la coop vit dans le schéma `coop` de la même base que `main` : lire et écrire `main`
+depuis la coop est une requête dans la même base, pas un appel distant. C'est ce qui rend la
+décision possible.
 
 ## Décision
 
@@ -138,8 +138,9 @@ par cette contrainte protège les données de la coop contre une perte silencieu
 
 État actuel : la clé étrangère existe mais reste en `SET NULL`, sur une colonne nullable portant
 encore son nom de transition. Cible à atteindre, ticket à ouvrir. Le passage à `NOT NULL` et le
-renommage suivent les migrations destructives en deux temps
-([ADR-014](./adr-014-migrations-destructives-en-deux-temps.md)).
+renommage se font en deux temps : d'abord le code adapté, sans migration destructive, puis, une
+fois ce code en production, la migration seule. Le code encore en service n'est ainsi jamais cassé
+par une migration appliquée avant son remplacement.
 
 ### 8. Cible : la coop ne modifie jamais le schéma `main`
 
@@ -195,11 +196,10 @@ côté Entrepôt, qui en est le propriétaire.
 
 ### 11. Les lieux sont hors périmètre
 
-Les lieux d'activité restent tenus par la coop, et `main` les reçoit comme consommateur
-([ADR-003](./adr-003-registre-des-lieux-entrepot.md)). Cette décision ne porte que sur les
-employeuses et les emplois. Le seul point de rencontre est l'inscription, où un médiateur peut
-déclarer son employeuse comme lieu d'activité : la coop matérialise alors un lieu à partir de
-l'employeuse, sans garder de lien entre les deux.
+Les lieux d'activité restent tenus par la coop, et `main` les reçoit comme consommateur. Cette
+décision ne porte que sur les employeuses et les emplois. Le seul point de rencontre est
+l'inscription, où un médiateur peut déclarer son employeuse comme lieu d'activité : la coop
+matérialise alors un lieu à partir de l'employeuse, sans garder de lien entre les deux.
 
 ### 12. La qualité des SIRET d'employeurs appartient à l'Entrepôt
 
@@ -323,6 +323,3 @@ Cucumber de chaque feature, et elles font foi.
 - [anct-cnum/suite-gestionnaire-numerique#1707](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1707) : rendre caduque la table d'employeuses de la coop
 - [anct-cnum/suite-gestionnaire-numerique#1729](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1729) : sens de `est_active` sous écriture directe de la coop
 - [inclusion-numerique/coop-mediation-numerique#575](https://github.com/inclusion-numerique/coop-mediation-numerique/pull/575) : relecture de la bascule par l'Entrepôt
-- [ADR-003 : Registre des lieux de l'Entrepôt](./adr-003-registre-des-lieux-entrepot.md)
-- [ADR-012 : La base de la Coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
-- [ADR-014 : Migrations destructives en deux temps](./adr-014-migrations-destructives-en-deux-temps.md)

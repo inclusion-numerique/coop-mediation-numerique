@@ -22,7 +22,7 @@ Les lieux existent deux fois : dans le registre du Dataspace, `main.lieu_inclusi
 affiche leurs données, et dans la table de lieux de la coop, à laquelle se rattachent de nombreuses
 relations métier propres à l'application. Fusionner les deux tables reporterait ces relations dans
 le schéma du Dataspace, ce qui n'est pas souhaitable. Les deux tables vivent dans la même base,
-dans deux schémas distincts ([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)).
+dans deux schémas distincts.
 
 L'historique des saisies du médiateur est un effet de bord de cette séparation, et la coop
 l'exploite : si une autre source a modifié le lieu, le médiateur peut revenir rapidement à sa
@@ -144,4 +144,3 @@ Cucumber de chaque feature, et elles font foi.
 
 - [Runbook des migrations dans l'Entrepôt](../runbook-migrations-entrepot.md)
 - [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./adr-002-migration-structures-employeuses-vers-main.md)
-- [ADR-012 : La base de la Coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
