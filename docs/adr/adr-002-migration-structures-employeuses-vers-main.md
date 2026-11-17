@@ -1,361 +1,278 @@
-# ADR-002 : Migration des structures employeuses de `coop` vers `main`
+# ADR-002 : Les structures employeuses vivent dans main (Dataspace)
 
 ## Auteurs et historique
 
-| Date       | Auteur        | Action                                                                                                 |
-| ---------- | ------------- | ------------------------------------------------------------------------------------------------------ |
-| 2026-07-21 | Marc Gavanier | Rédaction initiale : inventaire, décisions et plan de bascule                                          |
-| 2026-07-23 | Marc Gavanier | Révision : périmètre élargi après cadrage Entrepôt (#1707) — cf. `adr-002-reconciliation-dataspace.md` |
+| Date       | Auteur        | Action                                                                                         |
+| ---------- | ------------- | ---------------------------------------------------------------------------------------------- |
+| 2026-07-21 | Marc Gavanier | Rédaction initiale : abandonner la table d'employeuses de la coop au profit de celle de `main` |
+| 2026-07-23 | Marc Gavanier | Périmètre élargi aux emplois après le cadrage avec l'Entrepôt (#1707)                          |
+| 2026-11-17 | Marc Gavanier | Fusion des documents de l'ADR-002 en un seul ADR, aligné sur le code et les abilities          |
 
 ## Statut
 
-Proposé — travail de réconciliation des données terminé, bascule du code à faire.
-**Périmètre élargi le 2026-07-23** (voir la section Révision ci-dessous).
-
-## Révision 2026-07-23 — périmètre élargi (cadrage avec l'Entrepôt)
-
-Le cadrage avec l'équipe Entrepôt (issue `anct-cnum/suite-gestionnaire-numerique#1707`) a **élargi le
-périmètre** au-delà de la seule `structure_administrative`. Le détail des arbitrages, les mesures en
-base et le journal des décisions vivent dans **`adr-002-reconciliation-dataspace.md`** ; résumé ici.
-
-**Objectif reformulé.** La coop **ne fait plus autorité** sur les structures employeuses (sauf en
-créer de nouvelles à l'inscription). On **supprime** côté coop **`coop.structure_administrative` ET
-`coop.employes_structures`**, au profit de `main.structure_administrative` + `main.personne_affectations_emploi`.
-
-**Modèle cible.**
-
-```
-coop.user ──(FK main.personne.coop_id)──▶ main.personne
-                                              └─1:N─▶ main.personne_affectations_emploi ─FK─▶ main.structure_administrative
-                                                     (source='coop', est_active)              (dates via main.contrat, best-effort)
-```
-
-**Décisions actées (2026-07-23) :**
-1. **Lien user↔personne** : on **ne migre pas** `coop.user` vers `main.personne`. On réutilise la
-   colonne existante **`main.personne.coop_id`** comme FK vers `coop.user.id` (contrainte posée côté
-   Flyway/Entrepôt ; relation Prisma modélisée côté coop).
-2. **Création personne** : à l'inscription, la coop **crée/relie** `main.personne` dans la même
-   transaction que la SA + l'affectation. **Pivot = email** : si une personne existe déjà (autre flux :
-   idposte, CN Dataspace…) on pose juste `coop_id`, sinon on la crée.
-3. **Emplois** : `coop.employes_structures` disparaît. L'employeuse **courante** = `est_active` sur
-   `main.personne_affectations_emploi` ; les **dates** viennent de `main.contrat` en **best-effort**
-   (couvre les CN). On **abandonne** `debut_emploi`/`fin_emploi` coop (artefacts d'inscription à 83 %
-   pour les non-CN). Sémantique `est_active` maintenue par la coop → #1729.
-4. **FK** : toutes les FK coop → `main.structure_administrative` sont **`ON DELETE RESTRICT`** (et non
-   `SET NULL`) — conforme à la décision 1 ci-dessous et à l'attente de l'Entrepôt (fusion =
-   repointer-puis-supprimer).
-5. **Corrélation lieu↔SA** : **uniquement** `nom + adresse + codeInsee` (applicative). La table
-   `main.lieu_inclusion_structure_administrative` est considérée **legacy, non consommée** (divergence
-   assumée avec #1707).
-6. **Lieux hors périmètre** : `coop.lieu_inclusion` **inchangée** dans cette PR ; les lieux restent
-   gérés par la coop, MIN consommateur.
-7. **Fusion SA** : la fusion admin d'employeuses est **supprimée côté coop** (déjà fait, commit
-   `c1961964`) — la fusion des SA devient exclusive à MIN.
-
-Ces décisions **complètent/rectifient** les décisions numérotées ci-dessous (voir notamment la
-décision 4 « sans suppression », qui reste vraie mais s'applique désormais aussi à `employes_structures`).
+Accepté
 
 ## Contexte
 
-La Coop maintient sa propre table `coop.structure_administrative` (les « structures employeuses »).
-L'Entrepôt de données maintient la sienne, `main.structure_administrative`, qui est la référence
-partagée entre les produits de l'inclusion numérique.
+La coop tenait sa propre table de structures employeuses et sa propre table d'emplois, qui reliait
+chaque utilisateur à ses employeuses avec des dates de début et de fin. Le Dataspace tient de son
+côté, dans le schéma `main`, la référence partagée entre les produits de l'inclusion numérique :
+`main.structure_administrative` pour les structures, `main.personne` pour les personnes,
+`main.personne_affectations_emploi` pour leurs rattachements et `main.contrat` pour les contrats
+du dispositif conseiller numérique.
 
-Les deux tables décrivent les mêmes entités. Un script de synchronisation recopie périodiquement
-les structures de la Coop vers `main`, via la colonne de liaison `main.structure_administrative.structure_coop_id`.
-Cette duplication a un coût permanent : dérive des données, doublons, script de synchronisation à
-maintenir, et impossibilité de raccrocher les données Coop aux autres produits sans passer par un
-appariement approximatif.
+Les deux côtés décrivaient les mêmes entités. Une synchronisation recopiait les employeuses de la
+coop vers `main`, et l'Entrepôt réimportait les utilisateurs de la coop pour en déduire les
+affectations. Cette duplication avait un coût permanent :
 
-**L'objectif est de supprimer la duplication** : abandonner `coop.structure_administrative` au profit
-de `main.structure_administrative`, et supprimer le script de synchronisation qui n'aura plus d'objet.
+- **dérive** : des employeuses arrivaient côté coop sans ligne correspondante dans `main`, de
+  l'ordre d'une tous les deux jours ;
+- **doublons** et appariements approximatifs pour raccrocher les données de la coop aux autres
+  produits ;
+- **synchronisation** à maintenir des deux côtés, dont l'Entrepôt dépendait pour tenir ses
+  affectations à jour.
 
-### Prérequis atteint : couverture à 100 %
+La base de la coop vit dans le schéma `coop` de la même base que `main`
+([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)) : lire et écrire `main` depuis la coop est une
+requête dans la même base, pas un appel distant. C'est ce qui rend la décision possible.
 
-Une campagne de réconciliation menée en juillet 2026 a amené le delta à zéro : chaque employeuse
-Coop non supprimée possède désormais une ligne correspondante dans `main`, reliée par
-`structure_coop_id`. Sans cela, les clés étrangères ne pourraient pas être repointées.
+## Décision
 
-Cette campagne s'appuie sur quatre jobs (`corriger-employeuses-sans-siret`,
-`deduplicate-employeuses`, `appliquer-plan-couverture`, `couvrir-employeuses-restantes`) et un
-toolkit d'audit SQL (`refactor/audit-coop-main/`, non versionné). Elle reste à rejouer en
-production.
+La coop ne fait plus autorité sur les structures employeuses ni sur les emplois. Elle lit le schéma
+`main` du Dataspace, et n'y écrit que ce que l'inscription d'un utilisateur exige.
 
-**L'ordre d'exécution est prescrit** et chaque étape modifie la population que la suivante
-analyse.
-
-## Décisions
-
-### 1. Clé étrangère directe vers `main` (`integer`)
-
-`coop.structure_administrative.id` est un `uuid`, `main.structure_administrative.id` est un `integer`.
-Les colonnes portant les clés étrangères changent donc de type.
-
-**Décision : contrainte `FOREIGN KEY … REFERENCES main.structure_administrative` réellement posée**,
-et non une simple colonne `integer` non contrainte vérifiée par un job.
-
-L'équipe Entrepôt accepte le couplage, et le droit `REFERENCES` sur `main.structure_administrative`
-est déjà accordé au rôle `coop-mediation-numerique` (vérifié en base, au même titre que
-`INSERT`, `UPDATE`, `DELETE`).
-
-Conséquence assumée : une suppression de ligne côté Entrepôt sera bloquée par nos lignes.
-
-> **Précision (2026-07-23)** : cette intention se traduit par **`ON DELETE RESTRICT`** sur les FK
-> (pas `SET NULL`). Le `SET NULL` généré par défaut par Prisma pour une relation nullable est un
-> artefact à corriger dans le jeu de migrations final. `RESTRICT` est aussi ce qu'attend le moteur de
-> fusion de l'Entrepôt (repointer-puis-supprimer). NB : le rôle qui applique nos migrations est
-> **`sonum`** ; c'est à lui que les grants `main` doivent être accordés (à codifier côté Flyway).
-
-### 2. Client Prisma unique multi-schéma
-
-Aujourd'hui deux clients coexistent : `prismaClient` (schéma `coop`) et `entrepotPrismaClient`
-(schéma `main`).
-
-**Décision : passer à un client unique avec `multiSchema`**, et modéliser
-`main.structure_administrative` et `main.adresse` dans `apps/web/prisma/schema.prisma`.
-
-Motif : plusieurs requêtes existantes exigent une relation Prisma déclarée entre les deux schémas,
-et ne peuvent pas être réécrites en deux requêtes recollées en mémoire sans perte —
-voir « Jointures cross-schéma » plus bas. Ce choix converge par ailleurs avec le projet de bascule
-de la base Coop vers l'Entrepôt.
-
-**Risque introduit** : nous décrivons dans notre schéma une table que nous ne possédons pas.
-Un changement côté Entrepôt (Flyway) casserait notre client silencieusement.
-**Mitigation** : une garde locale à la demande — `pnpm -F web db:check-main-drift` introspecte le
-schéma `main` réel (lecture seule du catalogue, via `DATABASE_URL`) et échoue s'il a divergé du
-snapshot de référence committé (`apps/web/prisma/main.reference.prisma`, régénéré par
-`db:refresh-main-reference`). Volontairement **hors CI** : la CI ne se connecte jamais à la base de
-l'Entrepôt (pas de credentials prod, pas de couplage réseau) ; le dev lance la garde en local quand
-une évolution Flyway est suspectée.
-
-### 3. Écriture directe dans `main`
-
-Une fois `coop.structure_administrative` abandonnée, l'inscription et la synchronisation Dataspace
-écrivent directement dans `main.structure_administrative`.
-
-Le problème de dérive (environ une employeuse tous les deux jours arrivant sans ligne `main`)
-disparaît par construction, et le script de synchronisation est supprimé.
-
-La logique de création — choix du nom d'antenne, réutilisation d'une adresse existante — est déjà
-écrite et éprouvée dans `apps/web/src/jobs/structures-main/creerLigneMain.ts`. Elle doit être
-déplacée du job vers le socle applicatif.
-
-### 4. Bascule one-shot, sans suppression
-
-**Décision : une seule PR, un seul déploiement.**
-
-Ni `coop.structure_administrative` ni `main.structure_administrative.structure_coop_id` ne sont
-supprimées. Elles restent en place après la bascule, ce qui rend la marche arrière possible :
-le script de retour est le même `UPDATE` dans l'autre sens, et il est écrit en même temps que la
-migration aller, pas après.
-
-**Validation** : restauration d'une sauvegarde iso-production en local et rejeu complet de la
-bascule, juste avant la mise en production.
-
-### 5. Passage en abilities limité au strict nécessaire
-
-Seul le code qui touche la structure administrative passe au format `features/*/abilities`, quitte à
-laisser des features à moitié refactorées. Les abilities étant indépendantes par construction, la
-cohabitation est acceptable.
-
-En pratique cela concerne le socle « structures ». Aucune feature n'est aujourd'hui en abilities sur
-ce périmètre (seul `features/beneficiaire/abilities/` existe, et il ne touche pas les structures).
-
-### 6. Abandon des champs référent
-
-> **Révision (23/07/2026) — décision partiellement renversée.** Le postulat « affichés nulle part »
-> était **faux** : `ActeurStructureEmployeuse.tsx` (mon-réseau) affiche nom / courriel / téléphone du
-> référent, et `showReferentStructure` est actif. Décision effective : les référents ne sont **pas**
-> abandonnés, ils sont **lus depuis `main.structure_administrative.contact`** (jsonb :
-> `{ nom, prenom, telephone, courriels: { referent_hierarchique, mail_gestionnaire, … } }`, renseigné
-> par les producteurs Dataspace). Le mapping est implémenté dans `getActeurEmploiForDate.ts`
-> (`toEmploiStructureEmployeuse` : `nomReferent = nom+prenom`, `telephoneReferent = contact.telephone`,
-> `courrielReferent = referent_hierarchique ?? mail_gestionnaire ?? premier`). **Seul
-> `complement_adresse` est réellement abandonné** (absent de `main`, `complementAdresse: null`).
-> Le reste de cette section (satellite écarté, non-écriture dans `main.contact`) reste valable :
-> on **lit** `contact` sans y **écrire**.
-
-`coop.structure_administrative` porte quatre champs sans équivalent dans `main` :
-`nom_referent` (2 880 lignes), `courriel_referent` (2 907), `telephone_referent` (2 897),
-`complement_adresse` (71).
-
-Ils ne sont **affichés nulle part**. Ils n'ont que deux usages :
-
-- `features/dataspace/syncFromDataspaceCore.ts:304` les écrit depuis le contact Dataspace ;
-- `server/rpc/inscription/inscriptionRouter.ts:241` les lit, uniquement pour les recopier dans le
-  lieu créé quand l'utilisateur déclare « ma structure employeuse est aussi mon lieu d'activité ».
-
-Ce ne sont pas des données métier de l'employeuse, mais un tampon de recopie vers le lieu.
-
-**Décision : abandon.** Le contact est lu directement depuis Dataspace au moment de créer le lieu.
-Une table satellite `coop.structure_administrative_complement` avait été envisagée puis écartée :
-elle aurait créé une table pour des données que rien ne lit.
-
-`main.structure_administrative.contact` (jsonb, forme `{site_web, telephone}`, renseigné sur 4 296
-lignes par d'autres producteurs) a également été écarté comme destination : y écrire nos référents
-serait s'inviter dans une sémantique qui ne nous appartient pas.
-
-## Inventaire
-
-### Surface des clés étrangères : deux colonnes
-
-| colonne                                  |    lignes | structures distinctes |
-| ---------------------------------------- | --------: | --------------------: |
-| `coop.activites.structure_employeuse_id` | 3 984 470 |                 3 381 |
-| `coop.employes_structures.structure_id`  |     8 833 |                 3 499 |
-
-Faux amis écartés : `coop.activites.structure_id` et `coop.mediateurs_en_activite.structure_id`
-pointent vers `lieu_inclusion`. Les colonnes `structure_*` de `cras_conseiller_numerique_v1` sont du
-texte legacy V1 sans contrainte.
-
-La migration de données se réduit donc à deux `UPDATE`. Le seul enjeu est le volume : un
-`ALTER COLUMN … TYPE integer` sur 4 M de lignes réécrit toute la table. À mesurer en local ;
-prévoir sinon une colonne ajoutée, remplie par lots, puis échangée.
-
-### Surface de code : environ 100 fichiers
-
-| zone                                                            | fichiers | nature                                          |
-| --------------------------------------------------------------- | -------: | ----------------------------------------------- |
-| Administration (liste, détail, fusion SA, fusion user, emplois) |       27 | dense, peu de logique                           |
-| Inscription / création de profil                                |       14 | deux chemins d'écriture concurrents             |
-| Profil / affichage / mon-réseau                                 |       11 | dont trois SQL bruts                            |
-| Statistiques, filtres, exports                                  |       10 | mécanique : ne portent que `{id, nom, commune}` |
-| Socle « structures »                                            |        8 | le cœur                                         |
-| CRA / activités                                                 |        8 | une seule écriture réelle                       |
-| Équipe / coordination                                           |        6 | dépend d'un SQL brut avec `JOIN`                |
-| tRPC, API v1, Dataspace / ProConnect                            |       12 |                                                 |
-
-Une large part de ce volume n'est que la propagation d'un type `{ id: string }` → `{ id: number }`.
-
-### Blocage identifié : un id d'employeuse réutilisé comme id de lieu
-
-`apps/web/src/server/rpc/inscription/inscriptionRouter.ts:247` — procédure
-« ma structure employeuse est aussi mon lieu d'activité » :
-
-```ts
-await prismaClient.lieuInclusion.upsert({
-  where: { id: structureEmployeuseId }, // l'uuid de l'employeuse
-  update: {},
-  create: structureEmployeuse,
-})
+```mermaid
+flowchart LR
+    U[coop.users] -->|main.personne.coop_id| P[main.personne]
+    P --> A[main.personne_affectations_emploi]
+    A --> S[main.structure_administrative]
+    P --> C[main.contrat]
+    C --> S
+    ACT[coop.activites] -->|employeuse| S
 ```
 
-Le lieu est créé **avec l'id de l'employeuse**, et cet id sert de test d'idempotence.
-Dès que l'id d'employeuse devient un `integer` venant de `main`, la procédure ne peut plus
-fonctionner : `lieu_inclusion.id` est un `uuid`.
+### 1. La coop lit les employeuses, et n'en crée qu'à l'inscription
 
-`packages/fixtures/src/structures.ts` fait la même chose et casse également.
+`main.structure_administrative` est la seule table des structures employeuses. La coop la lit
+partout où elle affiche, filtre ou compte une employeuse. Elle n'y crée une ligne que lorsqu'un
+utilisateur, à l'inscription, se rattache à une structure que `main` ne connaît pas encore.
 
-**Point ouvert** : il faut choisir un nouveau critère d'idempotence pour remplacer
-« le lieu porte l'id de l'employeuse ». C'est la seule décision de conception encore à prendre.
+La table d'employeuses de la coop, la synchronisation vers `main` et la dérive qu'elle laissait
+passer disparaissent ensemble.
 
-### Deux chemins de création concurrents
+### 2. Le périmètre couvre aussi les emplois
 
-- `features/structures/findOrCreateStructureAdministrative.ts` — find-or-create par SIRET, puis RNA,
-  puis nom + code INSEE. Utilisé par la synchronisation Dataspace et l'import SIRET.
-- `server/rpc/inscription/getOrCreateStructureEmployeuse.ts:88` — fait son propre `create` sans passer
-  par le précédent. Utilisé par `inscription.renseignerStructureEmployeuse` et `employeStructure.creer`.
+Retirer les employeuses sans retirer les emplois aurait gardé, côté coop, une table qui pointe vers
+`main` tout en restant la vérité sur les rattachements. Le rattachement d'un utilisateur à son
+employeuse vit donc dans `main.personne_affectations_emploi`, avec la source `coop` pour ce que la
+coop déclare. La table d'emplois de la coop disparaît.
 
-Les deux devront écrire dans `main`. C'est le doublon le plus facile à oublier ; à unifier avant la
-bascule.
+### 3. Le lien passe par `main.personne.coop_id`
 
-### Types mélangeant lieu et employeuse
+Les utilisateurs de la coop ne migrent pas vers `main`. Un utilisateur est relié à sa personne par
+la colonne `main.personne.coop_id`, qui existait déjà et que l'Entrepôt renseignait. La coop
+traverse ce lien pour aller de l'utilisateur à ses affectations, puis à ses employeuses.
 
-`features/structures/siret/siretBearingStructures.ts` et
-`features/structures/correlateStructureAdministrative.ts` placent dans une même structure de données
-des ids de lieu (`uuid`) et d'employeuse. Indolore aujourd'hui — les deux sont des `uuid` — mais
-impossible après la bascule. À disjoindre en préalable.
+### 4. La personne est trouvée ou créée à l'inscription, avec l'email comme pivot
 
-### Jointures cross-schéma
+Quand un utilisateur se rattache à une employeuse, la coop cherche sa personne dans `main`, toutes
+sources confondues, par son email. Si elle existe déjà, venue d'un autre flux comme le dispositif
+conseiller numérique, la coop y pose son `coop_id`. Sinon, elle la crée. La personne, la structure
+et l'affectation s'écrivent dans la même transaction : un utilisateur n'est jamais rattaché à moitié.
 
-Quatre requêtes brutes nomment la table en dur, triviales à requalifier :
+### 5. L'employeuse courante vient de `est_active`, les dates de `main.contrat`
 
-- `equipe/EquipeListePage/searchMediateursCoordonneBy.ts:114` — `INNER JOIN "structure_administrative"`
-- `features/mon-reseau/getMonReseauPageData.ts:22` — `LEFT JOIN structure_administrative`
-- `features/mon-reseau/use-cases/acteurs/db/searchActeurs.ts:175` et `:204` — idem
-- `features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions.ts:220` — filtre sur la FK
+L'employeuse courante d'un utilisateur est celle de son affectation active. Les dates d'emploi
+viennent de `main.contrat` quand il en existe un ; sans contrat couvrant une date, l'employeuse
+courante fait foi.
 
-Deux requêtes Prisma en revanche **exigent** la relation cross-schéma déclarée, et motivent à elles
-seules la décision 2 :
+Les dates d'emploi que tenait la coop sont abandonnées. La perte est mesurée : seuls les
+utilisateurs ayant eu plusieurs employeuses dans le temps sans contrat pour les départager, environ
+2 % des utilisateurs, perdent l'employeuse exacte d'une date passée. Les dates de la coop étaient
+d'ailleurs surtout des artefacts d'inscription, posées au jour où l'utilisateur remplissait le
+formulaire plutôt qu'au début réel de son emploi.
 
-- `features/structures/getStructuresEmployeusesOptions.ts:18` — traverse
-  `structure_administrative → employes_structures → users → mediateurs`
-- `features/structures/use-cases/list-administrative/StructuresAdministrativesDataTable.tsx:70` —
-  tri SQL sur `orderBy: { emplois: { _count } }`
+Le rattachement déclaré par la coop affirme l'employeur courant : rattacher un utilisateur à une
+nouvelle employeuse clôt sa précédente affectation de source `coop`, et seulement celle-là.
 
-## Complétude des données `main`
+### 6. Le dispositif fait autorité sur le déclaratif
 
-Sur les 3 797 lignes appariées, deux catégories de trous ont été mesurées.
-Le détail ligne à ligne est exporté dans `refactor/audit-coop-main/out/lignes-main-incompletes.csv`
-(175 lignes, la valeur `main` manquante et la valeur `coop` en regard).
+Quand un utilisateur porte à la fois une affectation déclarée par la coop et une affectation du
+dispositif conseiller numérique, c'est celle du dispositif qui désigne l'employeuse. Les
+affectations des autres sources appartiennent à l'Entrepôt : la coop ne les modifie pas. Le détail
+de la priorité et de la clôture vit dans les abilities de la feature employeuse.
 
-### Dénomination : 82 lignes, dont 14 vrais trous
+### 7. Cible : une clé étrangère des activités vers `main`, en `RESTRICT`
 
-68 des 82 lignes sans `denomination_sirene` possèdent une `denomination_antenne`. La règle
-d'affichage retenue — `denomination_antenne ?? denomination_sirene` — les couvre.
+Une activité garde l'employeuse de son médiateur au moment de l'intervention. La cible est une
+vraie clé étrangère de `coop.activites` vers `main.structure_administrative` :
 
-Les 14 restantes n'ont aucun nom. Toutes ont un SIRET, et le motif est explicable : ce sont presque
-toutes des **entreprises individuelles**, auxquelles SIRENE n'attribue pas de dénomination mais un
-nom et un prénom, plus un cas `[Non-Diffusible]`. Les deux plus exposées sont le siège de la CC La
-Rochefoucauld Porte du Périgord (2 297 activités) et HYPRA (1 176).
+- en `ON DELETE RESTRICT`, pour qu'une suppression physique d'employeuse côté Entrepôt soit
+  bloquée par nos lignes au lieu de les débrancher sans bruit ;
+- sur une colonne `NOT NULL`, puisque toute activité a une employeuse ;
+- sous le nom canonique de la colonne, sans suffixe de transition.
 
-Correction : recopier le `nom` Coop dans `denomination_antenne`. Aucun appel API nécessaire.
+C'est aussi ce qu'attend la fusion d'employeuses de l'Entrepôt, qui repointe les références vers
+la structure conservée avant de supprimer l'autre : `RESTRICT` garantit qu'aucune référence n'a été
+oubliée.
 
-### Adresse : 98 lignes, toutes récupérables
+État actuel : la clé étrangère existe mais reste en `SET NULL`, sur une colonne nullable portant
+encore son nom de transition. Cible à atteindre, ticket à ouvrir. Le passage à `NOT NULL` et le
+renommage suivent les migrations destructives en deux temps
+([ADR-014](./adr-014-migrations-destructives-en-deux-temps.md)).
 
-Les 98 lignes sans `adresse_id` sont récupérables à 100 % depuis `coop.adresse`, `commune`,
-`code_postal` et `code_insee`, tous `NOT NULL`. Il s'agit surtout de grandes collectivités
-(Mulhouse, Basse-Terre, Département de l'Orne, CC du Pays d'Ancenis…), représentant 47 000 activités.
+### 8. Cible : un seul client Prisma décrit les tables de `main`
 
-La logique de création d'adresse avec réutilisation d'une ligne existante — nécessaire à cause de la
-contrainte d'unicité sur `main.adresse` — est déjà écrite dans
-`jobs/structures-main/creerLigneMain.ts`.
+La cible est un client Prisma unique, en `multiSchema`, qui décrit les tables de `main` que la coop
+lit ou écrit, sans les posséder. Plusieurs lectures ont besoin d'une relation déclarée entre les
+deux schémas pour joindre ou trier en SQL plutôt que de recoller deux requêtes en mémoire.
 
-**Aucun de ces 112 cas ne bloque la migration** : un job de complétion alimenté uniquement par des
-données déjà en base les ferme tous.
+Décrire une table qu'on ne possède pas expose à une évolution de l'Entrepôt qui casserait notre
+client sans prévenir. Une garde locale compare le schéma `main` réel à un instantané de référence
+versionné et échoue s'il a divergé. Elle tourne à la demande, hors CI : la CI ne reçoit aucun
+identifiant de la base de production.
 
-### Divergence de noms
+État actuel : les structures employeuses, les personnes, les affectations et les contrats sont
+décrits dans le client principal, mais un second client subsiste pour la lecture des lieux. Cible à
+atteindre, ticket à ouvrir.
 
-Les noms diffèrent sur 275 des 3 797 lignes (`coop.nom` ≠ `main.denomination_sirene`), le plus
-souvent légitimement — il s'agit d'antennes. D'où la règle d'affichage
-`denomination_antenne ?? denomination_sirene`.
+### 9. Les référents sont lus dans `main`, le complément d'adresse est abandonné
 
-## Plan de bascule
+Le référent d'une employeuse, affiché dans la fiche d'administration et dans le réseau du médiateur,
+est lu dans `main.structure_administrative.contact`, que renseignent les producteurs du Dataspace.
+La coop le lit sans jamais y écrire : cette colonne a une sémantique qui ne lui appartient pas.
+Le complément d'adresse, absent de `main`, est abandonné.
 
-Ordre des commits, du plus risqué au plus mécanique, pour que le sujet difficile soit traité tant
-qu'il reste de la marge :
+### 10. La fusion d'employeuses appartient à l'Entrepôt
 
-1. redessiner `inscriptionRouter` « employeuse = lieu d'activité » pour ne plus réutiliser l'id
-   (et les fixtures), avec les tests d'intégration existants comme filet ;
-2. modéliser `main.structure_administrative` et `main.adresse` dans `schema.prisma` (`multiSchema`),
-   avec la garde locale à la demande contre la dérive de schéma ;
-3. disjoindre les types lieu / employeuse dans `siretBearingStructures` et
-   `correlateStructureAdministrative` ;
-4. unifier les deux chemins de création derrière `findOrCreateStructureAdministrative`, écrivant
-   désormais dans `main` ;
-5. job de complétion des 14 dénominations et 98 adresses ;
-6. migration SQL des deux colonnes de clé étrangère, avec le script de retour arrière écrit dans la
-   foulée ;
-7. repointage du code lecteur, zone par zone : socle → inscription → profil → CRA → équipe →
-   administration → filtres et statistiques ;
-8. passage en abilities du seul socle « structures » ;
-9. suppression des jobs de synchronisation et de réconciliation devenus sans objet.
+La coop ne fusionne plus d'employeuses. Les doublons de `main.structure_administrative` se règlent
+côté Entrepôt, qui en est le propriétaire.
+
+### 11. Les lieux sont hors périmètre
+
+Les lieux d'activité restent tenus par la coop, et `main` les reçoit comme consommateur
+([ADR-003](./adr-003-registre-des-lieux-entrepot.md)). Cette décision ne porte que sur les
+employeuses et les emplois. Le seul point de rencontre est l'inscription, où un médiateur peut
+déclarer son employeuse comme lieu d'activité : la coop matérialise alors un lieu à partir de
+l'employeuse, sans garder de lien entre les deux.
+
+### 12. La qualité des SIRET d'employeurs appartient à l'Entrepôt
+
+La coop consulte les SIRET des employeuses sans les corriger. Leur normalisation, leur
+dédoublonnage et leur vérification relèvent de l'Entrepôt. L'outillage de qualité des SIRET de la
+coop ne porte plus que sur les lieux.
+
+## Alternatives écartées
+
+### Ne basculer que la structure administrative
+
+C'était le premier périmètre : remplacer la table d'employeuses de la coop par
+`main.structure_administrative`, en gardant la table d'emplois. Elle aurait gardé côté coop la
+vérité sur les rattachements, donc une synchronisation vers les affectations de `main`, et une table
+appelée à disparaître dont il aurait fallu repointer toutes les lectures pour rien.
+
+### Migrer les utilisateurs de la coop vers `main.personne`
+
+Faire de `main.personne` la table des utilisateurs aurait touché l'authentification, les sessions
+et l'essentiel des écrans. Relier l'utilisateur à sa personne par `coop_id` donne le même accès aux
+affectations sans déplacer les comptes.
+
+### Étendre les affectations avec des dates
+
+Ajouter un début et une fin à `main.personne_affectations_emploi` aurait gardé l'historique complet,
+au prix d'un changement de schéma côté Entrepôt pour des dates qui, côté coop, étaient surtout des
+artefacts d'inscription.
+
+### Écrire dans `main.contrat`
+
+`main.contrat` porte les contrats du dispositif conseiller numérique. Y écrire les emplois déclarés
+par la coop aurait détourné sa sémantique, et exigé de reconstituer des contrats pour les quelque
+53 % d'affectations de source `coop` qui n'en ont pas, à partir de dates peu fiables.
+
+### Consommer la table d'association entre lieux et employeuses
+
+L'Entrepôt avait matérialisé une table d'association entre `main.lieu_inclusion` et
+`main.structure_administrative`. La consommer aurait ajouté un couplage au schéma de l'Entrepôt
+sur un sujet, les lieux, que cette décision laisse hors périmètre. La coop ne s'en sert pas.
+
+### Une clé étrangère en `SET NULL`
+
+C'est la valeur que Prisma génère par défaut pour une relation nullable. Une suppression physique
+d'employeuse côté Entrepôt viderait alors en silence l'employeuse de nos activités, au lieu d'être
+bloquée, et contredirait la fusion de l'Entrepôt qui repointe avant de supprimer.
+
+### Un contrôle par job, sans contrainte
+
+Une colonne entière non contrainte, vérifiée par un job périodique, aurait évité de coupler nos
+tables au schéma de l'Entrepôt. Elle laisse passer les références cassées jusqu'au prochain
+passage du job, quand une contrainte les refuse au moment de l'écriture.
 
 ## Conséquences
 
 **Positives**
 
-- Une seule table de référence pour les structures employeuses, partagée avec les autres produits.
-- Suppression du script de synchronisation et des jobs de réconciliation.
-- Disparition par construction de la dérive quotidienne des employeuses non synchronisées.
-- Intégrité garantie par une vraie contrainte de clé étrangère.
+- Une seule source pour les structures employeuses et les rattachements, partagée avec les autres
+  produits de l'inclusion numérique.
+- Plus de synchronisation des employeuses ni des emplois, et plus de dérive par construction.
+- L'inscription écrit directement dans `main`, dans une seule transaction.
 
 **Négatives ou à surveiller**
 
-- Couplage au schéma de l'Entrepôt : une modification de leur côté peut casser notre client Prisma.
-  Mitigé par la garde CI, pas éliminé.
-- Nos lignes bloquent leurs suppressions.
-- Perte du seul `complement_adresse` (décision 6 révisée : les référents sont lus depuis
-  `main.structure_administrative.contact`, pas abandonnés).
-- Une migration de 4 M de lignes à exécuter en production, dont le coût reste à mesurer.
-- Environ 100 fichiers modifiés dans une seule PR, dont la relecture sera lourde.
+- **Pertes assumées** : les dates d'emploi tenues par la coop, la piste d'audit de la table
+  d'emplois (qui a créé, modifié, supprimé) et le complément d'adresse des employeuses.
+- **Couplage** au schéma de `main`, géré par l'Entrepôt avec Flyway : une évolution de leur côté
+  peut casser notre client. La garde locale le détecte, elle ne l'empêche pas.
+- **Nos lignes bloquent leurs suppressions** une fois la clé étrangère en `RESTRICT` : l'Entrepôt
+  doit repointer avant de supprimer.
+- **Plusieurs agrégats de contexte à garder** : une même personne peut avoir plusieurs employeuses,
+  environ 4 % des utilisateurs, et environ 53 % des affectations de source `coop` n'ont pas de
+  contrat. Les lectures distinguent donc l'employeuse courante, l'employeuse à une date et
+  l'historique, au lieu d'une seule employeuse par utilisateur.
+
+**Dépendances côté Entrepôt**
+
+La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
+
+- **Droits** : le rôle qui applique les migrations de la coop et celui de l'application ont besoin
+  des droits de lecture, d'écriture et de référence sur les tables de `main` qu'elle touche. Ils
+  doivent être posés par Flyway, pour exister dans une base fraîche et pas seulement en production.
+- **Sens de `est_active` pour la source `coop`** : la coop le maintient désormais elle-même, à la
+  place du cycle de réactivation que tenait l'import de l'Entrepôt ; la sémantique est à poser avec
+  lui (#1729).
+- **Clé étrangère de `main.personne.coop_id` vers `coop.users`** : elle vit sur une table de `main`,
+  donc dans Flyway. Elle suppose une personne au plus par utilisateur.
+- **Réconciliation inachevée** : des comptes en conflit, où deux utilisateurs actifs prétendent à la
+  même personne, restent à trancher à la main, et des conseillers numériques absents de `main`,
+  faute d'email concordant, restent à rapprocher.
+
+## Où trouver le détail
+
+Les abilities décrivent chaque comportement ; ce sont des specs exécutables, jouées par les tests
+Cucumber de chaque feature, et elles font foi.
+
+- Feature employeuse : [consulter l'employeuse courante](../../apps/web/src/features/employeuse/abilities/consulter-employeuse-actuelle/consulter-employeuse-actuelle.ability.md),
+  [consulter l'employeuse à une date](../../apps/web/src/features/employeuse/abilities/consulter-employeuse-a-une-date/consulter-employeuse-a-une-date.ability.md),
+  [consulter l'historique des employeuses](../../apps/web/src/features/employeuse/abilities/consulter-historique-employeuses/consulter-historique-employeuses.ability.md),
+  [rattacher à une employeuse](../../apps/web/src/features/employeuse/abilities/rattacher-a-une-employeuse/rattacher-a-une-employeuse.ability.md),
+  [consulter une employeuse](../../apps/web/src/features/employeuse/abilities/consulter-employeuse/consulter-employeuse.ability.md),
+  [lister les employeuses](../../apps/web/src/features/employeuse/abilities/lister-employeuses/lister-employeuses.ability.md)
+  et [rechercher une employeuse](../../apps/web/src/features/employeuse/abilities/rechercher-employeuse/rechercher-employeuse.ability.md).
+- Feature inscription : [initialiser l'inscription](../../apps/web/src/features/inscription/abilities/initialiser-inscription/initialiser-inscription.ability.md),
+  [renseigner sa structure employeuse](../../apps/web/src/features/inscription/abilities/renseigner-structure-employeuse/renseigner-structure-employeuse.ability.md)
+  et [la structure employeuse comme lieu d'activité](../../apps/web/src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md).
+- Les [migrations](../../apps/web/prisma/migrations/) retracent le passage du schéma, jusqu'au
+  retrait des tables d'employeuses et d'emplois de la coop.
+- Le code de la [feature employeuse](../../apps/web/src/features/employeuse/) et de la
+  [feature inscription](../../apps/web/src/features/inscription/) en est l'implémentation ; le
+  [schéma Prisma](../../apps/web/prisma/schema.prisma) décrit les tables de `main` que la coop
+  utilise.
+
+## Références
+
+- [anct-cnum/suite-gestionnaire-numerique#1705](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1705) : synchroniser les structures et les lieux de `main` avec la coop
+- [anct-cnum/suite-gestionnaire-numerique#1707](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1707) : rendre caduque la table d'employeuses de la coop
+- [anct-cnum/suite-gestionnaire-numerique#1729](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1729) : sens de `est_active` sous écriture directe de la coop
+- [inclusion-numerique/coop-mediation-numerique#575](https://github.com/inclusion-numerique/coop-mediation-numerique/pull/575) : relecture de la bascule par l'Entrepôt
+- [ADR-003 : Registre des lieux de l'Entrepôt](./adr-003-registre-des-lieux-entrepot.md)
+- [ADR-012 : La base de la Coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
+- [ADR-014 : Migrations destructives en deux temps](./adr-014-migrations-destructives-en-deux-temps.md)

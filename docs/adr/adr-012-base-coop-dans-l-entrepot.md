@@ -126,7 +126,7 @@ d'autres consommateurs de l'Entrepôt.
 
 ## ADR liés
 
-- [ADR-002 : Migration des structures employeuses de `coop` vers `main`](./adr-002-migration-structures-employeuses-vers-main.md)
+- [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./adr-002-migration-structures-employeuses-vers-main.md)
 - [ADR-003 : Registre des lieux de l'Entrepôt](./adr-003-registre-des-lieux-entrepot.md)
 - [ADR-013 : Compteurs dénormalisés tenus par des triggers](./adr-013-compteurs-tenus-par-la-base.md)
 - [ADR-014 : Migrations destructives en deux temps](./adr-014-migrations-destructives-en-deux-temps.md)
