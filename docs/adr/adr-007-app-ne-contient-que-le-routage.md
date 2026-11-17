@@ -2,151 +2,131 @@
 
 ## Auteurs et historique
 
-| Date       | Auteur        | Action                                                                                                                                                                          |
-| ---------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-30 | Marc Gavanier | Premières server actions dans des fichiers dédiés : `app/_actions/beneficiaire/*.action.ts` (`b4acf93a5`, `e918f5d67`, PR #488)                                                 |
-| 2026-06-25 | Marc Gavanier | Règle posée : pas de composant dans `app/`. Le formulaire du bénéficiaire rejoint la feature et reçoit son action en prop (`c1317e810`, PR #488)                                |
-| 2026-06-26 | Marc Gavanier | Les routes de création et de modification délèguent à une page de la feature ; la closure `'use server'` écrite dans la route est supprimée (`60e95adbe`, PR #488)              |
-| 2026-06-26 | Marc Gavanier | La route de modification suit les quatre étapes : contrôle d'accès, préparation des entrées, récupération par une ability, rendu (`dd22c9cba`, PR #488)                         |
-| 2026-08-18 | Marc Gavanier | Critère énoncé : ce qui n'a pas de spécificité Next sort de `app/`, chargeur de données compris. L'écran d'accueil quitte `app/` pour `features/accueil` (`60cdfb2c1`, PR #592) |
-| 2026-11-12 | Marc Gavanier | Composition entre features : plus de fichier d'assemblage dans `app/`. Chaque feature fournisseuse expose une fonction, la route la passe à la consommatrice (PR #724)          |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git                                                                                                                       |
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
 
 ## Statut
 
-Accepté — migration en cours. Au 17/11/2026, 69 fichiers suivis dans `apps/web/src/app` ne
-sont ni une page, ni un layout, ni une route, ni une page d'erreur, ni une server action de
-`_actions/`. Il y en avait 251 au 29/04/2026. Ce reste mélange des composants à déplacer
-(pages publiques, onboarding, pieds de page), des outils de test de l'API v1 et des fichiers à
-examiner avec le critère ci-dessous. Deux route handlers de déconnexion appellent encore
-`prismaClient` directement.
+Accepté
 
 ## Contexte
 
-Avant la refacto, `app/` portait bien plus que le routage. Une route pouvait contenir à la fois
-le contrôle d'accès, une requête Prisma, une quarantaine de lignes de mise en forme des
-données et tout le JSX de la page. Des composants, des chargeurs de données et des fichiers
-d'assemblage vivaient à côté des `page.tsx`.
+Avant la refacto, le dossier `app/` portait bien plus que le routage. Une route pouvait réunir à
+la fois le contrôle d'accès, une requête en base, la mise en forme des données et tout le rendu de
+la page.
 
-Deux problèmes en découlaient :
+Plusieurs problèmes en découlaient :
 
-- Le code métier dépendait du framework par sa seule adresse. Tout fichier de `app/` est soumis
-  aux conventions de Next. Un changement de version de Next ou de routeur touche alors du code
-  qui n'a rien à voir avec le routage.
-- Le même écran vivait à deux endroits. L'accueil était à la fois dans
-  `app/coop/(accueil-coop)` (la page, six composants, le chargeur) et dans `features/dashboard`.
-  Une feature allait même chercher un composant dans `app/` (`mon-reseau` importait
-  `CommunicationConum`).
+- le code métier dépendait du framework par sa seule adresse : tout fichier de ce dossier suit les
+  conventions de Next, si bien qu'un changement de version de Next touche du code étranger au
+  routage ;
+- un même écran vivait à deux endroits, une partie dans le dossier de routage, une autre dans une
+  feature ;
+- une route qui définit sa server action en ligne crée un point d'entrée sans schéma de
+  validation.
 
-Une route qui définit sa server action en ligne (`'use server'` dans une closure) fabrique
-aussi un point d'entrée sans schéma de validation propre.
+Le découpage du code en features et en abilities, posé par
+l'[ADR-004](./adr-004-architecture-par-features-et-abilities.md), donne une place au code métier ;
+cet ADR décide de ce qui reste dans le dossier de routage.
 
 ## Décision
 
-### Le critère : ce fichier est-il couplé au framework ?
+Le dossier `app/` ne garde que ce qui est couplé à Next. Une route s'y limite à contrôler l'accès,
+préparer ses entrées, récupérer ses données par une ability et rendre un composant de la feature ;
+tout le reste vit dans les features.
 
-Un fichier reste dans `app/` seulement s'il a une spécificité Next. La question n'est pas
-« est-ce un composant ? ». Ce qui reste :
+### Un fichier ne reste dans `app/` que s'il a une spécificité Next
 
-- `page.tsx` et `layout.tsx` : routage, `metadata`, contrôle d'accès, chargement, rendu ;
-- `route.ts` : route handler, mince, qui délègue à la feature ;
-- `_actions/<feature>/<nom>.action.ts` : les server actions ;
-- les fichiers spéciaux de Next (`error.tsx`, `not-found.tsx`…).
+La question n'est pas « est-ce un composant ? », mais « ce fichier est-il couplé au framework ? ».
+Restent dans `app/` :
 
-Tout le reste part dans une feature : composants, presenters, chargeurs de données. Prisma et
-l'agrégation de données ne sont pas du framework. Les imports de `next/link` et `next/image` ne
-suffisent pas à justifier qu'un fichier reste dans `app/`.
+- les pages et les layouts ;
+- les routes minces, qui délèguent à la feature ;
+- les server actions, dans leur dossier dédié ;
+- les fichiers spéciaux de Next.
 
-Un composant qui ne trouve pas sa feature est un signal de conception : une feature manque, ou
-un nom désigne une route plutôt qu'une capacité. S'il sert plusieurs features, il va dans
-`src/components` ou `libraries/`.
+Tout le reste va dans une feature : composants, presenters, chargeurs de données. L'accès à la
+base et l'agrégation de données ne sont pas du framework.
+
+Un composant qui ne trouve pas sa feature est un signal de conception : une feature manque, ou un
+nom désigne une route plutôt qu'une ability. S'il sert plusieurs features, il va dans les
+composants partagés ou dans les bibliothèques.
 
 ### Une page fait quatre choses, dans cet ordre
 
-1. **Contrôle d'accès** : authentification et droit sur la ressource.
-2. **Préparation des entrées** : les paramètres de route et de requête sont lus par un schéma
-   ou un value object (`BeneficiaireId(beneficiaireId)`).
-3. **Récupération** : par une ability, jamais par `prismaClient`. Si rien n'est trouvé,
-   `notFound()`.
-4. **Rendu** : un seul composant page de la feature, avec ses données déjà mises en forme par
-   un presenter.
+1. **Contrôler l'accès** : l'authentification et le droit sur la ressource.
+2. **Préparer les entrées** : les paramètres sont lus par un schéma ou par un value object.
+3. **Récupérer les données** : par une ability, jamais directement dans la base. Si rien n'est
+   trouvé, la page est introuvable.
+4. **Rendre** un seul composant page de la feature, alimenté par un presenter.
 
-Exemple : `app/coop/(full-width-layout)/mes-beneficiaires/[beneficiaireId]/modifier/page.tsx`.
+### Les server actions ne sont jamais déclarées en ligne
 
-### Server actions : jamais en ligne
+Une server action ne vit que dans son fichier dédié, jamais dans une page ou une route. Elle est
+passée en prop au composant de la feature. Ses paramètres, comme l'identifiant de la ressource à
+modifier, transitent par les valeurs du formulaire et non par une closure.
 
-`'use server'` ne s'écrit que dans un fichier dédié sous `app/_actions/`. L'action est passée
-en prop au composant de la feature. Les paramètres (l'identifiant à modifier, par exemple)
-transitent par les valeurs du formulaire, pas par une closure dans la route. Si l'entrée ne
-peut pas être garantie côté client, c'est le schéma de l'action qui l'exige à l'exécution.
+### La route câble les features entre elles
 
-### Composition entre features
-
-Une page assemble parfois plusieurs features : une saisie d'activité a besoin des tags, des
-lieux, de l'employeuse et des rendez-vous. La règle :
+Quand une page assemble plusieurs features :
 
 - la feature consommatrice déclare ce qu'elle attend, sous forme de port ou de paramètre ;
-- la feature fournisseuse expose une fonction à paramètres simples, compatible avec ce port ;
-- la route ou l'action se contente de passer cette fonction. Elle peut répéter ce câblage dans
-  deux routes ;
-- aucun fichier d'assemblage dans `app/`. Une fonction qui compose plusieurs fournisseurs vit
-  dans la feature consommatrice et reçoit ses fournisseurs en paramètres.
+- la feature fournisseuse expose une fonction à paramètres simples, compatible avec cette attente ;
+- la route ou l'action passe cette fonction à la consommatrice, quitte à répéter ce câblage d'une
+  route à l'autre ;
+- aucun fichier d'assemblage ne vit dans `app/`.
 
-Formes d'injection acceptées : `piqure`, composant passé en prop, paramètre (URL, argument).
-
-Le détail normatif est dans
-[`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md),
-règles AR-5, UI-1 et UI-4.
+Les formes d'injection acceptées sont le conteneur d'injection, le composant passé en prop et le
+paramètre.
 
 ## Alternatives écartées
 
-### Un critère « pas de composant dans `app/` »
+### Le critère « pas de composant dans `app/` »
 
-C'était la première formulation (25/06/2026). Elle laissait dans `app/` des fichiers qui ne sont
-pas des composants mais n'ont rien de Next, comme les chargeurs de données. Le critère du
-couplage au framework, énoncé le 18/08/2026, la remplace.
+C'était la première formulation de la règle. Elle laissait dans le dossier de routage des fichiers
+qui ne sont pas des composants mais n'ont rien de Next, comme les chargeurs de données. Le critère
+du couplage au framework la remplace.
 
-### Des fichiers de composition dans `app/` ou dans `src/composition/`
+### Des fichiers de composition dans `app/` ou dans un dossier de composition central
 
-`ports-de-la-saisie.ts` composait quatre features dans `app/`. `src/composition/` en fait
-autant hors de toute feature. Ces fichiers contiennent de la logique qui n'a rien de Next, et
-deviennent des carrefours que personne ne possède. Ils ont été dissous pour la saisie
-d'activité. `src/composition/statistiques` et `src/composition/utilisateurs` restent à revoir.
+Ces fichiers contiennent de la logique qui n'a rien de Next, et deviennent des carrefours que
+personne ne possède.
 
-### Un constructeur de pages générique (middlewares enchaînés)
+### Un constructeur de pages générique à middlewares enchaînés
 
-Il imposerait les quatre étapes par le code. Il n'est pas adopté pour les pages : les routes
-écrivent les quatre étapes directement, ce qui reste lisible pour une route d'une quarantaine
-de lignes. L'API v1 a son propre `routeBuilder` (PR #703).
+Il imposerait les quatre étapes par le code. Il n'est pas adopté : une route d'une quarantaine de
+lignes qui écrit les quatre étapes directement reste lisible.
 
 ## Conséquences
 
 Positives :
 
 - Une route se lit en quatre étapes, sans logique cachée.
-- Le code métier ne dépend plus de Next par son emplacement. Il en garde des usages ponctuels
-  (`next/link`, `next/image`, `next/navigation`).
-- Un composant de page reçoit toutes ses données en props : il se rend seul, dans un test ou
-  dans Storybook.
-- Une server action a toujours son fichier. Celles qui reçoivent une entrée la valident par un
-  schéma (`withInput`).
+- Le code métier ne dépend plus de Next par son emplacement.
+- Un composant de page reçoit toutes ses données en props : il se rend seul, dans un test ou dans
+  Storybook.
+- Une server action a toujours son fichier et, si elle reçoit une entrée, la valide par un schéma.
 
 Négatives :
 
 - Le câblage entre features se répète d'une route à l'autre.
-- Les routes importent parfois profondément dans une ability (`…/abilities/<ability>/ui/pages/…`)
-  plutôt que par un barrel.
-- La migration n'est pas finie : 69 fichiers restent à trier, et deux route handlers lisent
-  encore la base directement.
-- `src/composition/` existe encore et contredit la règle.
+- Les routes importent parfois profondément dans une ability, plutôt que par un point d'entrée.
+- La migration n'est pas terminée : des fichiers restent à trier dans `app/`, et deux routes de
+  déconnexion lisent encore la base directement. Cible à atteindre, ticket à ouvrir.
+- Le dossier de composition central existe encore et contredit la règle. Cible à atteindre, ticket
+  à ouvrir.
+
+## Où trouver le détail
+
+Les abilities de chaque feature décrivent les comportements que les pages exposent ; ce sont des
+specs exécutables, jouées par les tests, et elles font foi. Les règles normatives sur la route
+mince, l'absence de composant dans le dossier de routage et les presenters sont les règles AR-5,
+UI-1 et UI-4 des
+[conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).
 
 ## Références
 
-- `apps/web/src/app/_actions/`
-- [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — AR-5, UI-1, UI-4
-- ADR-004 : architecture par features et abilities
-
-## ADR liés
-
 - [ADR-004 : Architecture par features et abilities](./adr-004-architecture-par-features-et-abilities.md)
 - [ADR-006 : Server actions et injection, à la place de tRPC](./adr-006-server-actions-et-injection.md)
+- [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — règles AR-5, UI-1 et UI-4
