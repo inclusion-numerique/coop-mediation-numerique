@@ -27,7 +27,7 @@ dans deux schémas distincts.
 L'historique des saisies du médiateur est un effet de bord de cette séparation, et la coop
 l'exploite : si une autre source a modifié le lieu, le médiateur peut revenir rapidement à sa
 saisie, par la fenêtre de comparaison de l'ability
-[modifier la fiche du lieu](../../apps/web/src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md).
+[modifier la fiche du lieu](../../src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md).
 
 Un rattrapage quotidien existe côté Dataspace, mais il ne couvre que l'identité du lieu, pas ses
 champs métier. Sans écriture explicite dans le registre, une valeur métier corrigée dans la coop
@@ -39,12 +39,12 @@ resterait invisible pour les autres consommateurs.
 
 Chaque enregistrement relatif à un lieu écrit dans la table de lieux de la coop et dans le registre,
 en une seule transaction. Les cas concernés sont décrits par les abilities
-[modifier la fiche du lieu](../../apps/web/src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md),
-[créer un lieu d'activité](../../apps/web/src/features/lieux-activite/abilities/creer-lieu-activite/creer-lieu-activite.ability.md),
-[ajouter des lieux d'activité](../../apps/web/src/features/lieux-activite/abilities/ajouter-des-lieux-activite/ajouter-des-lieux-activite.ability.md),
-[renseigner ses lieux d'activité à l'inscription](../../apps/web/src/features/inscription/abilities/renseigner-lieux-activite/renseigner-lieux-activite.ability.md),
-[la structure employeuse comme lieu d'activité](../../apps/web/src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md)
-et [fusionner des lieux](../../apps/web/src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
+[modifier la fiche du lieu](../../src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md),
+[créer un lieu d'activité](../../src/features/lieux-activite/abilities/creer-lieu-activite/creer-lieu-activite.ability.md),
+[ajouter des lieux d'activité](../../src/features/lieux-activite/abilities/ajouter-des-lieux-activite/ajouter-des-lieux-activite.ability.md),
+[renseigner ses lieux d'activité à l'inscription](../../src/features/inscription/abilities/renseigner-lieux-activite/renseigner-lieux-activite.ability.md),
+[la structure employeuse comme lieu d'activité](../../src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md)
+et [fusionner des lieux](../../src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
 
 ### Colonnes ouvertes en écriture
 
@@ -88,14 +88,14 @@ l'[ADR-002](./adr-002-migration-structures-employeuses-vers-main.md).
 ### Dépublication
 
 Toute dépublication côté coop est répercutée au registre. Voir
-[modifier la fiche du lieu](../../apps/web/src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md)
-et [fusionner des lieux](../../apps/web/src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
+[modifier la fiche du lieu](../../src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md)
+et [fusionner des lieux](../../src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
 
 ### Adresses et périmètre d'écriture
 
 Les adresses sont partagées dans `main` : la coop cherche ou crée une adresse par la fonction prévue
 à cet effet, repointe le lieu dessus, et ne modifie jamais une adresse existante en place. Voir
-[créer un lieu d'activité](../../apps/web/src/features/lieux-activite/abilities/creer-lieu-activite/creer-lieu-activite.ability.md).
+[créer un lieu d'activité](../../src/features/lieux-activite/abilities/creer-lieu-activite/creer-lieu-activite.ability.md).
 
 Pour les lieux, la coop n'écrit que dans le registre et, par cette fonction, dans la table des
 adresses. Elle n'écrit jamais dans les autres tables de `main` liées aux lieux.
@@ -132,13 +132,13 @@ resteraient sur leur ancienne valeur chez tous les consommateurs.
 Les abilities décrivent chaque comportement ; ce sont des specs exécutables, jouées par les tests
 Cucumber de chaque feature, et elles font foi.
 
-- Feature lieux d'activité : les [abilities](../../apps/web/src/features/lieux-activite/abilities/),
-  dont [modifier la fiche du lieu](../../apps/web/src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md),
-  [créer un lieu d'activité](../../apps/web/src/features/lieux-activite/abilities/creer-lieu-activite/creer-lieu-activite.ability.md)
-  et [ajouter des lieux d'activité](../../apps/web/src/features/lieux-activite/abilities/ajouter-des-lieux-activite/ajouter-des-lieux-activite.ability.md).
-- Feature inscription : [renseigner ses lieux d'activité](../../apps/web/src/features/inscription/abilities/renseigner-lieux-activite/renseigner-lieux-activite.ability.md)
-  et [la structure employeuse comme lieu d'activité](../../apps/web/src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md).
-- Fusion : [fusionner des lieux](../../apps/web/src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
+- Feature lieux d'activité : les [abilities](../../src/features/lieux-activite/abilities/),
+  dont [modifier la fiche du lieu](../../src/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/modifier-la-fiche-du-lieu.ability.md),
+  [créer un lieu d'activité](../../src/features/lieux-activite/abilities/creer-lieu-activite/creer-lieu-activite.ability.md)
+  et [ajouter des lieux d'activité](../../src/features/lieux-activite/abilities/ajouter-des-lieux-activite/ajouter-des-lieux-activite.ability.md).
+- Feature inscription : [renseigner ses lieux d'activité](../../src/features/inscription/abilities/renseigner-lieux-activite/renseigner-lieux-activite.ability.md)
+  et [la structure employeuse comme lieu d'activité](../../src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md).
+- Fusion : [fusionner des lieux](../../src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
 
 ## Références
 

@@ -19,7 +19,7 @@
     "build:analyze": "ANALYZE=true pnpm --silent with-env next build --webpack",
     "start": "next start",
     "lint": "biome check src e2e .storybook && pnpm --silent lint:api",
-    "lint:fix": "biome format src --fix && biome check --write src",
+    "lint:fix": "biome check --write src e2e .storybook",
     "lint:api": "openapi-linter lint ./src/app/api/v1/documentation/v1.openapi.json",
     "tsc": "tsc --noEmit && tsc --noEmit -p e2e",
     "postinstall": "pnpm --silent generate:implementations && DISABLE_ERD=true pnpm --silent prisma generate && pnpm --silent prisma:entrepot:generate",

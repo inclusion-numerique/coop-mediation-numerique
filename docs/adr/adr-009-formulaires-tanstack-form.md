@@ -92,9 +92,9 @@ Négatives :
 Les abilities de la feature bénéficiaire dont les formulaires sont passés à TanStack Form
 décrivent le comportement attendu, et font foi :
 
-- [Créer un bénéficiaire](../../apps/web/src/features/beneficiaire/abilities/creer-beneficiaire/creer-beneficiaire.ability.md)
-- [Modifier un bénéficiaire](../../apps/web/src/features/beneficiaire/abilities/modifier-beneficiaire/modifier-beneficiaire.ability.md)
-- [Importer des bénéficiaires](../../apps/web/src/features/beneficiaire/abilities/importer-beneficiaires/importer-beneficiaires.ability.md)
+- [Créer un bénéficiaire](../../src/features/beneficiaire/abilities/creer-beneficiaire/creer-beneficiaire.ability.md)
+- [Modifier un bénéficiaire](../../src/features/beneficiaire/abilities/modifier-beneficiaire/modifier-beneficiaire.ability.md)
+- [Importer des bénéficiaires](../../src/features/beneficiaire/abilities/importer-beneficiaires/importer-beneficiaires.ability.md)
 
 Les règles normatives sur les formulaires sont dans les
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).

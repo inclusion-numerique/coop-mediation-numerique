@@ -14,7 +14,7 @@ This file provides guidance to coding agents when working with code in this repo
 
 ## Project Overview
 
-La Coop de la médiation numérique is a digital mediation platform for professionals, built for ANCT (Agence Nationale de la Cohésion des Territoires). It uses the French government's design system (DSFR) and is structured as a monorepo using pnpm workspaces.
+La Coop de la médiation numérique is a digital mediation platform for professionals, built for ANCT (Agence Nationale de la Cohésion des Territoires). It uses the French government's design system (DSFR) and is a single pnpm package: a Next.js application at the root of the repository.
 
 ## Common Commands
 
@@ -23,31 +23,32 @@ La Coop de la médiation numérique is a digital mediation platform for professi
 ```bash
 pnpm docker:start          # Start PostgreSQL and MailDev containers
 pnpm db:init                # Generate Prisma client and run migrations
-pnpm start:web              # Start web app at http://localhost:3001
-pnpm dev                    # Start web app + Storybook (http://localhost:6006)
+pnpm dev                    # Start web app at http://localhost:3000
+pnpm storybook              # Start Storybook at http://localhost:6006
 pnpm fixtures:load          # Load test data
 ```
 
 ### Linting & Type Checking
 
 ```bash
-pnpm -F web lint:fix && pnpm -F web tsc   # Lint fix + type check (preferred)
-pnpm -F web lint:biome                    # Check formatting and linting
-pnpm -F web tsc                           # TypeScript check only
+pnpm lint:fix && pnpm tsc   # Lint fix + type check (preferred)
+pnpm lint                   # Check formatting and linting, then the OpenAPI spec
+pnpm tsc                    # TypeScript check only (src, e2e, Storybook)
 ```
 
 ### Testing
 
 ```bash
-pnpm test                                             # Unit tests of every package, then web
-pnpm -F web test                                      # Unit tests
-pnpm -F web test path/to/file.spec.ts                 # Single unit test file (no `--`: Vitest ignores what follows it)
-pnpm -F web test:integration                          # Integration tests: hit DATABASE_URL, run them on a throwaway database
-pnpm -F web test:integration path/to/file.integration.ts     # Single integration test
-pnpm test:e2e                                         # E2E tests with Cypress
+pnpm test                                        # Unit tests
+pnpm test path/to/file.spec.ts                   # Single unit test file (no `--`: Vitest ignores what follows it)
+pnpm test:integration                            # Integration tests: hit DATABASE_URL, run them on a throwaway database
+pnpm test:integration path/to/file.integration.ts  # Single integration test
+pnpm test:cucumber                               # BDD scenarios: same database caveat as integration tests
+pnpm test:e2e                                    # E2E tests with Cypress, interactive
+pnpm cy run --project e2e                        # E2E tests with Cypress, headless
 ```
 
-Le serveur web doit tourner avec `IS_E2E=true` (`IS_E2E=true pnpm start:web`) : c'est ce qui
+Le serveur web doit tourner avec `IS_E2E=true` (`IS_E2E=true pnpm dev`) : c'est ce qui
 bascule l'API Dataspace en mock. Sans ça, les parcours conseiller numérique échouent — l'API
 réelle ne reconnaît pas les utilisateurs de fixtures, et l'inscription les traite comme des
 médiateurs ordinaires. La CI pose la variable dans le `.env` avant de construire.
@@ -69,19 +70,16 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 Architecture decisions and their rationale are recorded in `docs/adr/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
 
-### Monorepo Structure
+### Repository Structure
 
-- **apps/web**: Next.js full-stack application (App Router, React Server Components)
-- **apps/cli**: CLI tools for deployment, jobs, and maintenance
+- **src**: the Next.js full-stack application (App Router, React Server Components), imported through the `@/` alias
+- **prisma**: Prisma schemas and migrations
+- **e2e**: Cypress E2E and component tests, imported through the `@e2e/` alias
+- **.storybook**: Storybook configuration; stories live next to their components in `src`
 - **infrastructure**: Infrastructure as code (HCL / OpenTofu for Scaleway)
-- **packages/ui**: Shared UI components based on DSFR
-- **packages/emails**: Email templates (MJML)
-- **packages/config**: Environment configuration and Scaleway secrets helpers
-- **packages/fixtures**: Test data fixtures
-- **packages/storybook**: Storybook configuration
-- **packages/e2e**: Cypress E2E tests
+- **docker**: images of the application and of PostgreSQL
 
-### Web App Structure (apps/web/src)
+### Application Structure (src)
 
 - **app/**: Next.js App Router pages
   - `(public)/`: Unauthenticated pages
@@ -89,7 +87,11 @@ Architecture decisions and their rationale are recorded in `docs/adr/`; the norm
   - `administration/`: Admin pages
   - `api/`: API routes including REST API v1
   - `_actions/`: server actions, one file per ability, composing its ports
-- **features/**: Feature modules (activites, inscription, mediateurs, etc.)
+- **features/**: Feature modules (activites, inscription, mediateurs, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
+- **libraries/**: shared code without any business concept (UI components, e-mail layout, fixture helpers, paths…)
+- **configuration/**: project configuration, secrets and telemetry
+- **cli/**: CLI tools for deployment, secrets and jobs
+- **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`
 - **jobs/**: Background job implementations
 - **auth/**: Authentication with NextAuth.js
 - **components/**: Shared React components
@@ -104,11 +106,11 @@ Architecture decisions and their rationale are recorded in `docs/adr/`; the norm
 
 ### Server Actions
 
-Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `apps/web/src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withAuth`, `withMaintenance`, `withInput`, `fromResult` come from `@/libraries/nextjs`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
+Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withAuth`, `withMaintenance`, `withInput`, `fromResult` come from `@/libraries/nextjs`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
 
 ### Telemetry
 
-- Only `apps/web/src/configuration/telemetry` imports `@sentry/nextjs`. Each module there has `index.prod.ts`, `index.dev.ts` and `index.ephemeral.ts`; `pnpm -F web generate:implementations` copies the one named by `ENV` (default `dev`) to the git-ignored `index.ts`. Postinstall generates `dev`, CI sets `ENV=ephemeral`, the build regenerates `prod`.
+- Only `src/configuration/telemetry` imports `@sentry/nextjs`. Each module there has `index.prod.ts`, `index.dev.ts` and `index.ephemeral.ts`; `pnpm generate:implementations` copies the one named by `ENV` (default `dev`) to the git-ignored `index.ts`. Postinstall generates `dev`, CI sets `ENV=ephemeral`, the build regenerates `prod`.
 - Composition roots (`app/`, jobs, `auth`) and `implementation/` modules take `errorReporter` or `signaler` from the configuration; domain, commands, UI logic and libraries receive what they need by injection. External calls are wrapped with `instrument` in `configuration/<service>` (e.g. `configuration/ban`).
 - Tests never mock modules nor spy on calls: inject hand-written dependencies and assert on results.
 
@@ -173,7 +175,7 @@ Each ability exposes its contract in `features/<feature>/abilities/<ability>/act
 
 ### Prisma Schema
 
-- Located at `apps/web/prisma/schema.prisma`
+- Located at `prisma/schema.prisma`
 - Use `@@map("snake_case")` for table names
 - Use `@map("snake_case")` for foreign keys
 
@@ -192,7 +194,7 @@ Les agents rédigent les ADR de `docs/adr/` en suivant le modèle [`docs/adr/000
 ## Branch Conventions
 
 Prefix branches with: `feat/`, `fix/`, `chore/`, `refactor/`, `docs/`, `test/`
-Branch names can be of any length: a preview's namespace (see `apps/cli/src/branchNamespace.ts`) is the first 7 characters of the branch slug followed by 6 letters derived from the whole branch name, 14 characters at most, the room left for the preview subdomain.
+Branch names can be of any length: a preview's namespace (see `src/cli/branchNamespace.ts`) is the first 7 characters of the branch slug followed by 6 letters derived from the whole branch name, 14 characters at most, the room left for the preview subdomain.
 
 ## Important Notes
 

@@ -301,21 +301,21 @@ La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
 Les abilities décrivent chaque comportement ; ce sont des specs exécutables, jouées par les tests
 Cucumber de chaque feature, et elles font foi.
 
-- Feature employeuse : [consulter l'employeuse courante](../../apps/web/src/features/employeuse/abilities/consulter-employeuse-actuelle/consulter-employeuse-actuelle.ability.md),
-  [consulter l'employeuse à une date](../../apps/web/src/features/employeuse/abilities/consulter-employeuse-a-une-date/consulter-employeuse-a-une-date.ability.md),
-  [consulter l'historique des employeuses](../../apps/web/src/features/employeuse/abilities/consulter-historique-employeuses/consulter-historique-employeuses.ability.md),
-  [rattacher à une employeuse](../../apps/web/src/features/employeuse/abilities/rattacher-a-une-employeuse/rattacher-a-une-employeuse.ability.md),
-  [consulter une employeuse](../../apps/web/src/features/employeuse/abilities/consulter-employeuse/consulter-employeuse.ability.md),
-  [lister les employeuses](../../apps/web/src/features/employeuse/abilities/lister-employeuses/lister-employeuses.ability.md)
-  et [rechercher une employeuse](../../apps/web/src/features/employeuse/abilities/rechercher-employeuse/rechercher-employeuse.ability.md).
-- Feature inscription : [initialiser l'inscription](../../apps/web/src/features/inscription/abilities/initialiser-inscription/initialiser-inscription.ability.md),
-  [renseigner sa structure employeuse](../../apps/web/src/features/inscription/abilities/renseigner-structure-employeuse/renseigner-structure-employeuse.ability.md)
-  et [la structure employeuse comme lieu d'activité](../../apps/web/src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md).
-- Les [migrations](../../apps/web/prisma/migrations/) retracent le passage du schéma, jusqu'au
+- Feature employeuse : [consulter l'employeuse courante](../../src/features/employeuse/abilities/consulter-employeuse-actuelle/consulter-employeuse-actuelle.ability.md),
+  [consulter l'employeuse à une date](../../src/features/employeuse/abilities/consulter-employeuse-a-une-date/consulter-employeuse-a-une-date.ability.md),
+  [consulter l'historique des employeuses](../../src/features/employeuse/abilities/consulter-historique-employeuses/consulter-historique-employeuses.ability.md),
+  [rattacher à une employeuse](../../src/features/employeuse/abilities/rattacher-a-une-employeuse/rattacher-a-une-employeuse.ability.md),
+  [consulter une employeuse](../../src/features/employeuse/abilities/consulter-employeuse/consulter-employeuse.ability.md),
+  [lister les employeuses](../../src/features/employeuse/abilities/lister-employeuses/lister-employeuses.ability.md)
+  et [rechercher une employeuse](../../src/features/employeuse/abilities/rechercher-employeuse/rechercher-employeuse.ability.md).
+- Feature inscription : [initialiser l'inscription](../../src/features/inscription/abilities/initialiser-inscription/initialiser-inscription.ability.md),
+  [renseigner sa structure employeuse](../../src/features/inscription/abilities/renseigner-structure-employeuse/renseigner-structure-employeuse.ability.md)
+  et [la structure employeuse comme lieu d'activité](../../src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md).
+- Les [migrations](../../prisma/migrations/) retracent le passage du schéma, jusqu'au
   retrait des tables d'employeuses et d'emplois de la coop.
-- Le code de la [feature employeuse](../../apps/web/src/features/employeuse/) et de la
-  [feature inscription](../../apps/web/src/features/inscription/) en est l'implémentation ; le
-  [schéma Prisma](../../apps/web/prisma/schema.prisma) décrit les tables de `main` que la coop
+- Le code de la [feature employeuse](../../src/features/employeuse/) et de la
+  [feature inscription](../../src/features/inscription/) en est l'implémentation ; le
+  [schéma Prisma](../../prisma/schema.prisma) décrit les tables de `main` que la coop
   utilise.
 
 ## Références

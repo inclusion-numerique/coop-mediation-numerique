@@ -9,7 +9,7 @@ description: >-
 
 # /build-form — formulaire TanStack Form (UI-3)
 
-Argument : le **formulaire** à écrire (ou à réécrire). Références : `apps/web/src/libs/form`
+Argument : le **formulaire** à écrire (ou à réécrire). Références : `src/libs/form`
 (`useAppForm`, `handle-submit`), un formulaire existant comme modèle (`CraIndividuelForm`), et
 ADR-009 (`docs/adr/`) pour le pourquoi.
 
@@ -40,7 +40,7 @@ ADR-009 (`docs/adr/`) pour le pourquoi.
 - **Champ requis** : `<RedAsterisk />` dans le label (l'`Input` DSFR n'a pas de prop `asterisk`, UI-5).
 - **Champ sans adaptateur** : **point d'arrêt humain** — construire l'adaptateur d'abord, calqué sur
   le composant DSFR, l'enregistrer dans `use-app-form.ts` (lazy), puis l'utiliser.
-- **Texte riche** : `field.RichTextarea` réutilise la barre d'outils de `packages/ui`, dont la modale
+- **Texte riche** : `field.RichTextarea` réutilise la barre d'outils de `libraries/ui`, dont la modale
   de lien est encore en react-hook-form.
 - **exceljs sous Cucumber** : un classeur construit dans un code exercé par BDD fait
   `import Excel from 'exceljs'` (TS-6).
@@ -56,7 +56,7 @@ ADR-009 (`docs/adr/`) pour le pourquoi.
 
 ## Annexe — réécrire un formulaire react-hook-form
 
-| react-hook-form (`@app/ui/.../Form/*`) | TanStack (`libs/form`)                                      |
+| react-hook-form (`libraries/ui/.../Form/*`) | TanStack (`libs/form`)                                      |
 |----------------------------------------|-------------------------------------------------------------|
 | `InputFormField` (texte, nombre, e-mail) | `field.Input`                                             |
 | `CheckboxFormField`                    | `field.Checkbox`                                            |

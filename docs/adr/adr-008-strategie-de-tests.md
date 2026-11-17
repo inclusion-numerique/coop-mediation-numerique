@@ -110,7 +110,7 @@ Négatives :
 ## Où trouver le détail
 
 Les abilities de chaque feature, dans le
-[dossier des features](../../apps/web/src/features/), décrivent chaque comportement dans leur
+[dossier des features](../../src/features/), décrivent chaque comportement dans leur
 spécification en Gherkin ; ce sont des specs exécutables, qui font foi, et les étapes Cucumber
 placées à côté de chacune les jouent. Les règles normatives sur les tests sont dans la section 7 des
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).

@@ -69,22 +69,22 @@ pnpm fixtures:load
 ### 5. Lancer l'application
 
 ```bash
-pnpm start:web
+pnpm dev
 ```
 
-L'application répond sur http://localhost:3000. `pnpm dev` lance en plus Storybook sur http://localhost:6006.
+L'application répond sur http://localhost:3000. `pnpm storybook` lance Storybook sur http://localhost:6006.
 
 <h2 id="commandes">🛠️ Commandes disponibles</h2>
 
 | Commande                               | Rôle                                                                    |
 | -------------------------------------- | ----------------------------------------------------------------------- |
-| `pnpm start:web`                       | Lance l'application en développement                                    |
-| `pnpm dev`                             | Lance l'application et Storybook                                        |
-| `pnpm lint`                            | Vérifie le code de tous les paquets avec Biome                          |
-| `pnpm -F web lint:fix`                 | Corrige le format et les erreurs que Biome sait corriger                |
-| `pnpm tsc`                             | Vérifie les types de tous les paquets                                   |
+| `pnpm dev`                             | Lance l'application en développement                                    |
+| `pnpm storybook`                       | Lance Storybook                                                         |
+| `pnpm lint`                            | Vérifie le code avec Biome, puis la spécification OpenAPI               |
+| `pnpm lint:fix`                        | Corrige le format et les erreurs que Biome sait corriger                |
+| `pnpm tsc`                             | Vérifie les types                                                       |
 | `pnpm test`                            | Lance les tests unitaires                                               |
-| `pnpm build`                           | Construit les paquets pour la production                                |
+| `pnpm build`                           | Construit l'application pour la production                              |
 | `pnpm docker:start` / `docker:stop`    | Démarre ou arrête PostgreSQL et MailDev                                 |
 | `pnpm docker:reset`                    | Supprime la base locale, la recrée et la réinitialise                   |
 | `pnpm db:init`                         | Génère le client Prisma et applique les migrations                      |
@@ -92,7 +92,7 @@ L'application répond sur http://localhost:3000. `pnpm dev` lance en plus Storyb
 | `pnpm fixtures:load`                   | Charge les données de test                                              |
 | `pnpm lint:commit`                     | Vérifie les messages des commits de la branche depuis `main`            |
 | `pnpm cli <commande>`                  | Lance un outil du CLI : `pnpm cli --help` les liste                     |
-| `pnpm -F web api-v1-doc:generate`      | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour |
+| `pnpm api-v1-doc:generate`             | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour |
 
 <h2 id="tests">🧪 Tests</h2>
 
@@ -100,13 +100,13 @@ L'application répond sur http://localhost:3000. `pnpm dev` lance en plus Storyb
 | --------------------------- | ---------------------------------------------------------------------- |
 | `pnpm test`                 | Unitaires, avec [Vitest](https://vitest.dev/)                          |
 | `pnpm test:integration`     | Intégration, contre la base de `DATABASE_URL`                          |
-| `pnpm -F web test:cucumber` | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
+| `pnpm test:cucumber`        | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
 | `pnpm test:e2e`             | De bout en bout, avec [Cypress](https://www.cypress.io/), en interface |
-| `pnpm -F e2e cy run`        | De bout en bout, sans interface                                        |
+| `pnpm cy run --project e2e` | De bout en bout, sans interface                                        |
 
 - Les tests n'utilisent ni mock ni espion : ils injectent des dépendances écrites à la main et vérifient les valeurs retournées.
 - Les tests d'intégration et les scénarios Cucumber écrivent dans la base : lancez-les sur une base jetable, jamais sur une base qui contient des données utiles. La CI les joue sur une base neuve à chaque exécution.
-- Les tests de bout en bout demandent un serveur lancé avec `IS_E2E=true` (`IS_E2E=true pnpm start:web`), qui remplace l'API Dataspace par un simulateur.
+- Les tests de bout en bout demandent un serveur lancé avec `IS_E2E=true` (`IS_E2E=true pnpm dev`), qui remplace l'API Dataspace par un simulateur.
 
 <h2 id="pratiques">🤝 Pratiques du dépôt</h2>
 
@@ -124,7 +124,7 @@ L'application répond sur http://localhost:3000. `pnpm dev` lance en plus Storyb
 ### Pull requests
 
 - Une PR vise `main` et se fusionne par « Squash and merge » : son titre devient le message du commit, il suit donc lui aussi les Commits Conventionnels (check « Lint PR title »).
-- Les checks Lint, Lint commits, Lint PR title, Test packages, Test web, Integration tests, Cucumber, Components, E2E 0, 1 et 2 et Dependency review doivent passer pour fusionner.
+- Les checks Lint, Lint commits, Lint PR title, Test web, Integration tests, Cucumber, Components, E2E 0, 1 et 2 et Dependency review doivent passer pour fusionner.
 - La fusion dans `main` déploie l'environnement `dev`, puis la production si `dev` a réussi.
 
 ### Code
@@ -133,15 +133,15 @@ Les conventions d'architecture (features, abilities, domaine, server actions) et
 
 <h2 id="base-de-donnees">🗃️ Base de données</h2>
 
-1. Modifier le schéma dans `apps/web/prisma/schema.prisma`.
+1. Modifier le schéma dans `prisma/schema.prisma`.
 2. Générer la migration : `pnpm prisma:generate-migration nom_de_la_migration`.
-3. Relire le SQL généré dans `apps/web/prisma/migrations/`.
+3. Relire le SQL généré dans `prisma/migrations/`.
 
 En production, la base de la Coop est le schéma `coop` de l'Entrepôt de données de l'inclusion numérique : la procédure est décrite dans [le runbook des migrations sur l'Entrepôt](./docs/runbook-migrations-entrepot.md). Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` passe par l'application ou se signale à l'équipe Dataspace, parce que la Coop écrit aussi dans le registre de l'Entrepôt ([ADR-003](./docs/adr/adr-003-registre-des-lieux-entrepot.md)).
 
 <h2 id="taches">⏱️ Tâches</h2>
 
-Les tâches de fond vivent dans `apps/web/src/jobs/`. Chacune a un nom, une charge utile validée par Zod et un exécuteur, et chaque exécution est tracée dans la table `job_executions`.
+Les tâches de fond vivent dans `src/jobs/`. Chacune a un nom, une charge utile validée par Zod et un exécuteur, et chaque exécution est tracée dans la table `job_executions`.
 
 ```bash
 pnpm cli job:execute <tâche> '<charge utile JSON>'

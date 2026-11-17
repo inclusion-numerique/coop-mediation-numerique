@@ -25,7 +25,7 @@ On te donne une **feature** (ex. `beneficiaire`). Couvre :
 - `features/<feature>/` (domain, abilities, db, ui, cucumber)
 - les routes `app/**` qui la servent
 - les imports croisés **entrants/sortants** (isolation §5, AR-2/AR-3)
-- grep `apps/web/src` **et** `packages/` (IS-3) pour les résidus d'anciens dossiers et les consommateurs.
+- grep `src` et `e2e` (IS-3) pour les résidus d'anciens dossiers et les consommateurs.
 
 ## Méthode (dimension par dimension)
 

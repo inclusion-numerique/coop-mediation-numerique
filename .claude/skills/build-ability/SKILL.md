@@ -41,8 +41,8 @@ Pour le reste (mécanique), avance.
   situer sa feature. Si aucune feature ne l'accueille naturellement, c'est peut-être qu'il en manque
   une : le dire plutôt que de forcer.
 - Fixer son contrat : entrée, sortie, erreurs ; lecture (query) ou écriture (mutation → server action).
-- Si elle remplace du code existant, en repérer **tous** les consommateurs (grep `apps/web/src`
-  **et** `packages/` — IS-3).
+- Si elle remplace du code existant, en repérer **tous** les consommateurs (grep `src`
+  et `e2e` — IS-3).
 
 ### 1. Domaine — conception d'abord (point d'arrêt A)
 - Domaine absent ou incomplet → lancer **`domain-modeler`**. Présenter son modèle et ses questions
@@ -78,7 +78,7 @@ abilities/<ability>/
 - `action/` et `ui/` n'importent jamais `db/` ni `implementation/`.
 
 ### 5. Câbler
-- **Mutation** : `apps/web/src/app/_actions/<feature>/<ability>.action.ts`, construite avec
+- **Mutation** : `src/app/_actions/<feature>/<ability>.action.ts`, construite avec
   `actionBuilder()`. Jamais de `'use server'` dans un composant.
 - **Composant client** : reçoit l'action par `inject(KEY)` ; la route la lie avec
   `<ClientBinder bind={KEY} to={action}>`.

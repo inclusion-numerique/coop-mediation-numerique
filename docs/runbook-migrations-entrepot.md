@@ -57,7 +57,7 @@ Inspecter l'état réel :
 
 ```bash
 # Statut Prisma
-pnpm -F @app/web prisma migrate status
+pnpm prisma migrate status
 
 # Ligne en échec dans la table de suivi
 psql "$DATABASE_URL" -c \
@@ -87,12 +87,12 @@ Deux résolutions opposées selon l'état observé à l'étape 3 :
 
 ```bash
 # Cas le plus courant ici (échec de droits → rien d'appliqué) :
-pnpm -F @app/web prisma migrate resolve \
+pnpm prisma migrate resolve \
   --rolled-back 20260618120000_drop_structures_cartographie_nationale
 
 # Vérifier que P3009 a disparu, puis relancer les migrations :
-pnpm -F @app/web prisma migrate status
-DATABASE_URL="$DATABASE_URL" pnpm -F @app/web prisma migrate deploy
+pnpm prisma migrate status
+DATABASE_URL="$DATABASE_URL" pnpm prisma migrate deploy
 ```
 
 > ⚠️ **Cas partiellement appliqué** : si une migration multi-statements a appliqué une partie de
