@@ -57,6 +57,8 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 ## Architecture
 
+Architecture decisions and their rationale are recorded in `docs/adr/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
+
 ### Monorepo Structure
 
 - **apps/web**: Next.js full-stack application (App Router, React Server Components)
@@ -86,7 +88,7 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 - **Backend**: Next.js server actions, Prisma ORM, PostgreSQL
 - **Frontend**: React 19, Next.js 16 (App Router), DSFR (French gov design system) through react-dsfr
-- **Forms**: react-hook-form with Zod validation
+- **Forms**: TanStack Form through `useAppForm` (`libs/form`), validated with Zod; react-hook-form only survives in legacy forms
 - **Testing**: Vitest everywhere (unit and integration, no isolation, no mocks), Cucumber (BDD), Cypress (E2E)
 - **Linting**: Biome (not ESLint for formatting/linting)
 
