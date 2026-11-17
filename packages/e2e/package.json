@@ -8,9 +8,6 @@
     "tsc": "tsc --noEmit",
     "cy": "dotenv -e ../../.env -e ./cypress.env -- cypress"
   },
-  "engines": {
-    "node": "^24.19"
-  },
   "dependencies": {
     "cypress-real-events": "^1.15.1",
     "next": "^16.3.8",

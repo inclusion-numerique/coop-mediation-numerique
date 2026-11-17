@@ -26,7 +26,6 @@
       "@app/config/*": ["./packages/config/src/*"],
       "@app/e2e/*": ["./packages/e2e/cypress/*"],
       "@app/emails/*": ["./packages/emails/src/*"],
-      "@app/lint/*": ["./packages/lint/src/*"],
       "@app/fixtures/*": ["./packages/fixtures/src/*"],
       "@app/storybook/*": ["./packages/storybook/src/*"],
       "@app/ui/*": ["./packages/ui/src/*"]

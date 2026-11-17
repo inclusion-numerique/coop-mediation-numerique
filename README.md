@@ -60,7 +60,6 @@ Les `Packages` contiennent des outils de support et des communs dont l'origine p
 - [e2e](packages/e2e) : Tests de bout en bout opérés par [Cypress](https://www.cypress.io/).
 - [emails](packages/emails) : Templates pour les emails utilisés par l'application.
 - [fixtures](packages/fixtures) : Ensemble de données à insérer dans la base de données pour avoir un ensemble cohérent plutôt qu'un projet vide.
-- [lint](packages/lint) : Configuration des règles de syntaxes à respecter dans le projet.
 - [storybook](packages/storybook) : Configuration de storybook, utilisé pour administrer une bibliothèque des composants disponibles dans l'application.
 - [ui](packages/ui) : Composants et utilitaires génériques provenant être réutilisés et surchargés dans d'autres applications.
 

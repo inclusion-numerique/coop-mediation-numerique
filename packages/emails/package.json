@@ -8,9 +8,6 @@
     "lint": "biome check src",
     "tsc": "tsc --noEmit"
   },
-  "engines": {
-    "node": "^24.19"
-  },
   "overrides": {
     "@faire/mjml-react": {
       "react": "*"
