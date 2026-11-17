@@ -2,34 +2,31 @@
 
 ## Auteurs et historique
 
-| Date       | Auteur        | Action                                                                                                                                             |
-| ---------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-27 | Marc Gavanier | Recalcul des compteurs des médiateurs, des bénéficiaires et des lieux, faussés par l'import des CRA v1 (`e1b183416`, #710)                         |
-| 2026-11-17 | Marc Gavanier | Compteurs tenus par des triggers PostgreSQL, code applicatif d'incrément supprimé (`a0c86b428`, #732, anct-cnum/suite-gestionnaire-numerique#2181) |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git                                                                                          |
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
 
 ## Statut
 
-Accepté — en production ; le contrôle qui a suivi le déploiement n'a trouvé aucun écart.
+Accepté
 
 ## Contexte
 
-Plusieurs tables portent des compteurs dénormalisés :
-
-- `mediateurs` : `activites_count`, `accompagnements_count`, `beneficiaires_count` ;
-- `beneficiaires` : `accompagnements_count` ;
-- `activites` : `accompagnements_count` ;
-- `lieu_inclusion` : `activites_count`.
+Plusieurs tables portent des compteurs dénormalisés : sur les médiateurs, les bénéficiaires, les
+activités et les lieux.
 
 L'application les incrémentait et les décrémentait elle-même, dans une dizaine de chemins
-d'écriture. Ils dérivaient. L'import des CRA v1 ne les avait jamais incrémentés : #710 les a
-recalculés le 27/10/2026. Trois semaines plus tard, sur une copie de la production, 1 067
-médiateurs avaient de nouveau un nombre de bénéficiaires faux et 4 846 bénéficiaires un nombre
-d'accompagnements faux. Les CRA créaient des bénéficiaires anonymes sans compter, la fusion de
-bénéficiaires oubliait l'activité, la fusion de comptes laissait les compteurs de la source.
+d'écriture. Ils dérivaient.
 
-L'issue #2181 proposait de supprimer les compteurs et de compter à la lecture. Les mesures sur une
-copie de la production ont montré que les statistiques devenaient 2 à 4 fois plus lentes :
+L'import des CRA v1 ne les avait jamais incrémentés : un recalcul complet a été nécessaire.
+
+Trois semaines plus tard, sur une copie de la production, 1 067 médiateurs avaient de nouveau un
+nombre de bénéficiaires faux et 4 846 bénéficiaires un nombre d'accompagnements faux. Les CRA
+créaient des bénéficiaires anonymes sans compter, la fusion de bénéficiaires oubliait l'activité,
+la fusion de comptes laissait les compteurs de la source.
+
+Une proposition de supprimer les compteurs et de compter à la lecture a été mesurée sur une copie
+de la production : les statistiques devenaient 2 à 4 fois plus lentes.
 
 - répartition des statistiques nationales : 2,4 s → 5,2 s ;
 - totaux : 0,2 s → 0,85 s ; série par mois : 0,17 s → 0,65 s ;
@@ -38,102 +35,100 @@ copie de la production ont montré que les statistiques devenaient 2 à 4 fois p
 
 ## Décision
 
-Les compteurs restent, et PostgreSQL les tient lui-même. La migration
-`apps/web/prisma/migrations/20261116230000_tenir_les_compteurs_par_la_base` installe le mécanisme.
+Les compteurs restent, et PostgreSQL les tient lui-même par des triggers. L'application n'écrit
+plus jamais un compteur.
 
-### Des triggers par instruction, qui appliquent un delta
+### Des triggers par instruction, qui calculent par différence
 
-Des triggers `AFTER … FOR EACH STATEMENT` sont posés sur `accompagnements`, `activites`,
-`beneficiaires`, `activite_tags` et `activite_coordination_tags`, en insertion, en modification et
-en suppression, et sur `activite_coordination` en modification.
+Les triggers sont déclenchés une fois par instruction, pas une fois par ligne. Chacun transforme
+les lignes ajoutées et retirées par l'instruction en une seule liste signée : +1 pour une ligne
+ajoutée, -1 pour une ligne retirée, les deux pour une ligne modifiée. Il regroupe cette liste par
+clé et fait une seule mise à jour par clé touchée, quelle que soit la taille de l'instruction.
 
-Chacun lit les tables de transition (`nouvelles`, `anciennes`). La fonction
-`coop.compteurs_lignes` en fait une seule liste signée : `+1` pour une ligne ajoutée, `-1` pour une
-ligne retirée, les deux pour une ligne modifiée. Le trigger regroupe par clé et applique la somme
-en une seule mise à jour par clé touchée, quelle que soit la taille de l'instruction. Les clés dont
-la somme vaut zéro ne sont pas touchées.
-
-Une activité supprimée logiquement (`suppression` renseignée) ne compte plus. La passer de active à
-supprimée, ou l'inverse, retire ou rend sa contribution.
+Une activité supprimée logiquement ne compte plus. La restaurer rend sa contribution.
 
 ### Un garde qui ignore les écritures applicatives
 
-Un trigger `BEFORE INSERT OR UPDATE OF <compteur>` est posé sur chaque table qui porte un compteur.
-Si l'écriture ne vient pas d'un trigger de compteur, il remet l'ancienne valeur, ou 0 à
-l'insertion.
-
-Les triggers de compteur se signalent par le réglage de session `coop.compteurs`, posé à `on` le
-temps de leur travail avec `set_config(…, true)`, puis rendu à sa valeur précédente.
+Sur chaque table qui porte un compteur, un garde annule toute écriture du compteur qui ne vient pas
+des triggers de comptage : la valeur précédente est conservée.
 
 Le garde rend la bascule sûre. Pendant le déploiement, l'ancien conteneur peut continuer
 d'incrémenter les compteurs : ses écritures sont ignorées sans erreur.
 
-### Un compteur de plus : les tags
+### Un compteur de plus pour les tags
 
-`tags.accompagnements_count` remplace le recomptage à chaque affichage. Il additionne les
-accompagnements des activités non supprimées et les activités de coordination non supprimées qui
-portent le tag.
+Le nombre d'accompagnements par tag devient lui aussi un compteur tenu par la base. Il remplace un
+recomptage à chaque affichage.
 
-### Un recalcul complet dans la migration
+### Un recalcul complet à la mise en place
 
-La migration recalcule tous les compteurs depuis les données, puis pose les triggers en service.
-Sur une copie de la production, ce recalcul prend environ 45 s. La migration pose un
-`lock_timeout` de 10 s.
+La migration qui installe le mécanisme recalcule tous les compteurs depuis les données, puis pose
+les triggers.
 
-### Ce qui disparaît
+### Le code applicatif d'incrément disparaît
 
-Tout le code applicatif d'incrément, et les utilitaires qui n'existaient que pour lui
-(`refreshFixturesComputedFields`, `perteParMediateur`).
+Tout le code qui incrémentait ou décrémentait un compteur est supprimé, avec les utilitaires qui
+n'existaient que pour lui.
 
 ## Alternatives écartées
 
 ### Supprimer les compteurs et compter à la lecture
 
-C'était la proposition de #2181. Elle rend les statistiques 2 à 4 fois plus lentes (voir le
-contexte).
+Les statistiques devenaient 2 à 4 fois plus lentes (voir le contexte).
 
 ### Des triggers par ligne qui recomptent chaque clé
 
-Simple à écrire, mais un CRA déclenche alors un recomptage complet des activités de son médiateur :
-152 ms par CRA mesurées. Le delta par instruction coûte quelques millisecondes : un CRA individuel
-du médiateur le plus actif passe de 9 à 16 ms.
+Simples à écrire, mais un CRA déclenche alors un recomptage complet des activités de son
+médiateur : 152 ms par CRA mesurées. Le calcul par différence coûte quelques millisecondes : un CRA
+individuel du médiateur le plus actif passe de 9 à 16 ms.
 
 ### Des tables temporaires dans les triggers
 
-Le droit `TEMPORARY` n'est pas garanti sur la base de l'Entrepôt
-([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)). Les triggers travaillent en SQL dynamique sur
-les tables de transition.
+Le droit de créer des tables temporaires n'est pas garanti sur la base de l'Entrepôt
+([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)).
 
 ### Garder l'incrément applicatif et recalculer périodiquement
 
-Le recalcul de #710 a montré que les écarts reviennent en quelques semaines. Un recalcul périodique
-laisse des compteurs faux entre deux passes.
+Le recalcul qui a suivi l'import des CRA v1 a montré que les écarts reviennent en quelques
+semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
 
 ## Conséquences
 
-- Positif : les compteurs ne dépendent plus des chemins d'écriture. Un nouveau chemin les tient à
-  jour sans y penser.
-- Positif : les lectures gardent leur coût d'avant ; le surcoût en écriture est de quelques
-  millisecondes.
-- Positif : `apps/web/src/prisma/compteurs.integration.ts` vérifie le mécanisme sur une vraie base :
-  saisie, suppression et restauration, fusion de bénéficiaires, transfert entre comptes,
-  coordination, garde.
-- Négatif : toute écriture applicative d'un compteur est ignorée sans erreur. Un test qui veut un
+**Positives**
+
+- Les compteurs ne dépendent plus des chemins d'écriture : un nouveau chemin les tient à jour sans
+  y penser.
+- Les lectures gardent leur coût d'avant ; le surcoût en écriture est de quelques millisecondes.
+- Un test d'intégration vérifie le mécanisme sur une vraie base
+  ([ADR-008](./adr-008-strategie-de-tests.md)) : saisie, suppression et restauration, fusion de
+  bénéficiaires, transfert entre comptes, coordination, garde.
+
+**Négatives ou à surveiller**
+
+- **Toute écriture applicative d'un compteur est ignorée sans erreur** : un test qui veut un
   compteur doit semer les vraies lignes qui le produisent.
-- Négatif : une restauration _data-only_ avec les triggers actifs fausse les compteurs, puisque le
-  garde remet à 0 les valeurs insérées. Une restauration complète crée les triggers après les
-  données et n'est pas touchée.
-- Négatif : la règle de comptage vit en PL/pgSQL, hors du domaine TypeScript. La changer demande
-  une migration.
-- Négatif : un traitement en masse sur les tables suivies paie aussi les triggers.
+- **Une restauration des données seules, triggers actifs, fausse les compteurs** : le garde remet
+  les valeurs insérées à zéro. Une restauration complète crée les triggers après les données et
+  n'est pas touchée.
+- **La règle de comptage vit en PL/pgSQL**, hors du domaine TypeScript : la changer demande une
+  migration.
+- **Un traitement en masse sur les tables suivies paie aussi les triggers.**
+
+## Où trouver le détail
+
+La [migration qui installe le mécanisme](../../apps/web/prisma/migrations/20261116230000_tenir_les_compteurs_par_la_base/migration.sql)
+porte les triggers, le garde et le recalcul initial.
+
+Les abilities qui font varier un compteur décrivent l'effet attendu, et font foi :
+
+- [Créer un bénéficiaire](../../apps/web/src/features/beneficiaire/abilities/creer-beneficiaire/creer-beneficiaire.ability.md)
+- [Importer des bénéficiaires](../../apps/web/src/features/beneficiaire/abilities/importer-beneficiaires/importer-beneficiaires.ability.md)
+- [Supprimer des bénéficiaires](../../apps/web/src/features/beneficiaire/abilities/supprimer-beneficiaires/supprimer-beneficiaires.ability.md)
+- [Anonymiser le portefeuille d'un médiateur](../../apps/web/src/features/beneficiaire/abilities/anonymiser-portefeuille/anonymiser-portefeuille.ability.md)
+- [Supprimer une activité de médiation](../../apps/web/src/features/activites/abilities/supprimer-une-activite-de-mediation/supprimer-une-activite-de-mediation.ability.md)
+- [Recevoir une notification d'usager](../../apps/web/src/features/rdvsp/abilities/recevoir-webhook-usager/recevoir-webhook-usager.ability.md)
 
 ## Références
 
-- `apps/web/prisma/migrations/20261116230000_tenir_les_compteurs_par_la_base/migration.sql`
-- `apps/web/src/prisma/compteurs.integration.ts`
-- anct-cnum/suite-gestionnaire-numerique#2181
-
-## ADR liés
-
 - [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./adr-008-strategie-de-tests.md)
-- [ADR-012 : La base de la Coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
+- [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
