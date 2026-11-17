@@ -21,7 +21,6 @@
     "webpack": "5.101.2"
   },
   "dependencies": {
-    "@app/web": "workspace:^",
     "@codegouvfr/react-dsfr": "^1.35.0",
     "@storybook/addon-links": "^10.6.0",
     "@storybook/nextjs": "^10.6.0",

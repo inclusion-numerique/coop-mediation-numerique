@@ -14,19 +14,18 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV HOSTNAME "0.0.0.0"
 
 # Copy Build
-# Build directory as same structure than monorepo
-COPY apps/web/.next/standalone .
+COPY .next/standalone .
 
 # Copy public assets
-COPY apps/web/public ./apps/web/public
+COPY public ./public
 
 # Copy static server files not imported by bundler (csv, json, etc...)
-COPY apps/web/private-static ./apps/web/private-static
+COPY private-static ./private-static
 
 # Copy static built assets (js and css)
-COPY apps/web/.next/static ./apps/web/.next/static
+COPY .next/static ./.next/static
 
-COPY apps/web/dist/run-job.cjs ./apps/web/run-job.cjs
+COPY dist/run-job.cjs ./run-job.cjs
 
 EXPOSE $PORT
 
@@ -36,4 +35,4 @@ RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["dumb-init", "--", "/app/entrypoint.sh"]
 
-CMD ["node", "./apps/web/server.js"]
+CMD ["node", "./server.js"]

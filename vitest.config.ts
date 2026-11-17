@@ -14,15 +14,40 @@ const paquet = (name: string, root: string) => ({
 })
 
 export default defineConfig({
-  resolve: { tsconfigPaths: true },
+  resolve: {
+    tsconfigPaths: true,
+    alias: [
+      {
+        find: /^server-only$/,
+        replacement: depuisIci('./src/libraries/server-only-cli/index.ts'),
+      },
+    ],
+  },
   oxc: { jsx: { runtime: 'automatic' } },
   test: {
     environment: 'node',
     isolate: false,
     setupFiles: [depuisIci('./vitest.setup.ts')],
+    server: { deps: { inline: ['@arckit/nextjs'] } },
     reporters: process.env.CI ? ['default', 'junit'] : ['default'],
-    outputFile: { junit: depuisIci('./junit/packages.xml') },
+    outputFile: { junit: depuisIci('./junit/web.xml') },
     projects: [
+      {
+        extends: true,
+        resolve: { conditions: ['react-server', 'node'] },
+        test: {
+          name: 'unit',
+          include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'integration',
+          include: ['src/**/*.integration.ts'],
+          fileParallelism: false,
+        },
+      },
       paquet('cli', './apps/cli'),
       paquet('config', './packages/config'),
       paquet('emails', './packages/emails'),
@@ -31,11 +56,13 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      include: [
-        'apps/cli/src/**/*.{ts,tsx}',
-        'packages/{config,emails,fixtures,ui}/src/**/*.{ts,tsx}',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.spec.{ts,tsx}',
+        'src/**/*.integration.{ts,tsx}',
+        'src/**/*.stories.{ts,tsx}',
+        'src/generated/**',
       ],
-      exclude: ['**/*.spec.{ts,tsx}', '**/*.stories.{ts,tsx}'],
       reporter: ['json', 'lcov', 'text-summary'],
       reportsDirectory: depuisIci('./coverage'),
     },

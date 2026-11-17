@@ -27,7 +27,7 @@ const nextConfig = {
   // hook webpack ; `serverExternalPackages` exprime la même chose pour les deux bundlers.
   serverExternalPackages: ['html-minifier-terser', 'mjml', 'mjml-core'],
   // This includes files from the monorepo base two directories up
-  outputFileTracingRoot: path.join(dirname, '../../'),
+  outputFileTracingRoot: dirname,
   modularizeImports,
   // L'option `eslint` a été supprimée en Next 16, en même temps que la commande `next lint` :
   // `next build` ne lance plus aucun linter. Le dépôt lint avec Biome, dans un job dédié.

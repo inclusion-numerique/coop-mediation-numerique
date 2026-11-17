@@ -83,8 +83,8 @@ jobs:
             -L 5433:172.16.20.14:5432 \
             "$ENTREPOT_BASTION_USER@$ENTREPOT_BASTION_HOST"
           for _ in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/5433) 2>/dev/null && break; sleep 1; done
-          DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web db:baseline-main
-          DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web prisma migrate deploy
+          DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent db:baseline-main
+          DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent prisma migrate deploy
       - name: Apply infrastructure
         run: |
           pnpm --silent with-env tofu -chdir=infrastructure apply -input=false -auto-approve -var-file=.tfvars.json -var "branch=$BRANCHE" -var "namespace=$ENVIRONNEMENT"
@@ -99,7 +99,7 @@ jobs:
           set -a
           source .env
           set +a
-          pnpm --silent -F @app/web db:migrate-deploy
+          pnpm --silent db:migrate-deploy
       - name: Load fixtures
         if: env.BRANCHE != 'main'
         run: |

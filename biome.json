@@ -3,7 +3,6 @@
   "files": {
     "includes": [
       "**",
-      "**",
       "!**/var",
       "!**/.claude",
       "!**/node_modules",
@@ -28,20 +27,22 @@
       "!**/.vscode",
       "!**/.idea",
       "!**/storybook-static",
-      "!apps/web/.next/",
-      "!apps/web/public/dsfr",
+      "!.next/",
+      "!public/dsfr",
       "!packages/e2e/cypress/videos",
       "!packages/e2e/cypress/screenshots",
       "!packages/e2e/.next/",
       "!packages/ui/.next",
       "!packages/ui/public/dsfr",
       "!var",
-      "!apps/web/.next",
-      "!apps/web/public"
+      "!.next",
+      "!public",
+      "!src/generated",
+      "!src/generated/**"
     ]
   },
   "formatter": {
-    "includes": ["**", "!var", "!apps/web/.next", "!apps/web/public"],
+    "includes": ["**", "!var", "!.next", "!public"],
     "enabled": true,
     "useEditorconfig": true,
     "formatWithErrors": false,
@@ -52,7 +53,13 @@
     "attributePosition": "auto",
     "bracketSpacing": true
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -113,7 +120,9 @@
         "useYield": "error",
         "useValidTypeof": "error"
       },
-      "security": { "noGlobalEval": "error" },
+      "security": {
+        "noGlobalEval": "error"
+      },
       "style": {
         "noDefaultExport": "off",
         "noNegationElse": "off",
@@ -262,7 +271,9 @@
   "overrides": [
     {
       "includes": ["**/*.ability.md"],
-      "formatter": { "enabled": false }
+      "formatter": {
+        "enabled": false
+      }
     },
     {
       "includes": ["packages/e2e/**/*.ts", "packages/e2e/**/*.tsx"],
@@ -281,6 +292,40 @@
           "it",
           "JQuery"
         ]
+      }
+    },
+    {
+      "includes": ["src/features/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@app/web/features/lieux-activite/*",
+                      "@app/web/features/lieux-activite/*/**",
+                      "!@app/web/features/lieux-activite/ui"
+                    ],
+                    "message": "Une feature passe par l'API publique d'une autre : `@app/web/features/lieux-activite` pour le serveur, `@app/web/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/features/lieux-activite/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
       }
     }
   ]

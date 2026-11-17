@@ -34,5 +34,5 @@ runs:
         DOTENV
       shell: bash
     - name: Migrate database
-      run: pnpm --silent -F @app/web db:migrate-deploy
+      run: pnpm --silent db:migrate-deploy
       shell: bash

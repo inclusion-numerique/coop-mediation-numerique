@@ -6,14 +6,14 @@
     "jsx": "react-jsx",
     "paths": {
       "server-only": ["./src/libraries/server-only-cli/index.ts"],
-      "@app/cli/*": ["../../apps/cli/src/*"],
+      "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./src/*"],
-      "@app/config/*": ["../../packages/config/src/*"],
-      "@app/e2e/*": ["../../packages/e2e/cypress/*"],
-      "@app/emails/*": ["../../packages/emails/src/*"],
-      "@app/storybook/*": ["../../packages/storybook/src/*"],
-      "@app/ui/*": ["../../packages/ui/src/*"],
-      "@app/fixtures/*": ["../../packages/fixtures/src/*"]
+      "@app/config/*": ["./packages/config/src/*"],
+      "@app/e2e/*": ["./packages/e2e/cypress/*"],
+      "@app/emails/*": ["./packages/emails/src/*"],
+      "@app/storybook/*": ["./packages/storybook/src/*"],
+      "@app/ui/*": ["./packages/ui/src/*"],
+      "@app/fixtures/*": ["./packages/fixtures/src/*"]
     }
   },
   "//include": "tsx n'applique un tsconfig qu'aux fichiers qu'il COUVRE : hors de cette liste, il retombe sur le runtime JSX classique et exige un `import React`. Cucumber charge des .tsx des paquets partagés (gabarits d'e-mail), qui doivent donc y figurer.",
@@ -23,7 +23,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts",
-    "../../packages/*/src/**/*.ts",
-    "../../packages/*/src/**/*.tsx"
+    "./packages/*/src/**/*.ts",
+    "./packages/*/src/**/*.tsx"
   ]
 }
