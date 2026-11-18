@@ -37,8 +37,8 @@ PRISMA
 awk "$MODELS_REGEX" "$TMP/pull.prisma" > "$TMP/current.models"
 
 REF_HEADER='// Snapshot de référence de l'\''introspection Prisma des tables `main.*` dont dépend la coop.
-// Généré par `pnpm -F web db:refresh-main-reference`. NE PAS éditer à la main.
-// Sert de base de comparaison à `pnpm -F web db:check-main-drift` (garde anti-dérive Flyway, ADR-002).
+// Généré par `pnpm db:refresh-main-reference`. NE PAS éditer à la main.
+// Sert de base de comparaison à `pnpm db:check-main-drift` (garde anti-dérive Flyway, ADR-002).
 '
 
 if [ "$MODE" = "refresh" ]; then
@@ -48,7 +48,7 @@ if [ "$MODE" = "refresh" ]; then
 fi
 
 if [ ! -f "$REF" ]; then
-  echo "✗ Snapshot de référence absent ($REF). Lance : pnpm -F web db:refresh-main-reference" >&2
+  echo "✗ Snapshot de référence absent ($REF). Lance : pnpm db:refresh-main-reference" >&2
   exit 1
 fi
 
@@ -62,5 +62,5 @@ fi
 echo "" >&2
 echo "✗ DÉRIVE détectée entre le schéma main réel et le snapshot de référence (diff ci-dessus)." >&2
 echo "  Si l'évolution Flyway est légitime, mets à jour les modèles main de schema.prisma en" >&2
-echo "  conséquence, puis régénère le snapshot : pnpm -F web db:refresh-main-reference" >&2
+echo "  conséquence, puis régénère le snapshot : pnpm db:refresh-main-reference" >&2
 exit 1

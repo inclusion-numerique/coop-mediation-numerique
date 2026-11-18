@@ -1,6 +1,6 @@
 // Snapshot de référence de l'introspection Prisma des tables `main.*` dont dépend la coop.
-// Généré par `pnpm -F web db:refresh-main-reference`. NE PAS éditer à la main.
-// Sert de base de comparaison à `pnpm -F web db:check-main-drift` (garde anti-dérive Flyway, ADR-002).
+// Généré par `pnpm db:refresh-main-reference`. NE PAS éditer à la main.
+// Sert de base de comparaison à `pnpm db:check-main-drift` (garde anti-dérive Flyway, ADR-002).
 
 model adresse {
   id                       Int                        @id @default(autoincrement())
