@@ -57,6 +57,8 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 ## Architecture
 
+Architecture decisions and their rationale are recorded in `docs/adr/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
+
 ### Monorepo Structure
 
 - **apps/web**: Next.js full-stack application (App Router, React Server Components)
@@ -86,7 +88,7 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 - **Backend**: Next.js server actions, Prisma ORM, PostgreSQL
 - **Frontend**: React 19, Next.js 16 (App Router), DSFR (French gov design system) through react-dsfr
-- **Forms**: react-hook-form with Zod validation
+- **Forms**: TanStack Form through `useAppForm` (`libs/form`), validated with Zod; react-hook-form only survives in legacy forms
 - **Testing**: Vitest everywhere (unit and integration, no isolation, no mocks), Cucumber (BDD), Cypress (E2E)
 - **Linting**: Biome (not ESLint for formatting/linting)
 
@@ -168,6 +170,14 @@ Each ability exposes its contract in `features/<feature>/abilities/<ability>/act
 ### CSS Classes
 
 Use DSFR utility classes: `fr-container`, `fr-grid-row`, `fr-col-12`, `fr-mt-8v`, etc.
+
+## ADR
+
+Les agents rédigent les ADR de `docs/adr/` en suivant le modèle [`docs/adr/000-modele.md`](docs/adr/000-modele.md), qui porte toutes les règles de rédaction. Les trois premières :
+
+- L'ADR pose les décisions et leurs raisons, de façon générique, et renvoie vers les `*.ability.md` (specs exécutables, qui font foi) pour le détail : aucun nom de fonction, de fichier ou de ligne de code, aucun chemin.
+- Pas de journal ni de mise à jour datée : l'historique git porte le détail, le tableau d'historique ne garde que les rédactions et révisions de l'ADR.
+- Un ADR ne référence que des ADR de numéro inférieur, jamais un ADR postérieur : il pose une situation à un instant donné.
 
 ## Branch Conventions
 
