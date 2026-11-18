@@ -1,7 +1,7 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api'
 import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api'
 import { NomDuClientApi, type PorteeApi } from '@/features/clients-api/domain'
-import { prismaClient } from '@/prismaClient'
 
 const testApiClientName = 'test-api-client'
 

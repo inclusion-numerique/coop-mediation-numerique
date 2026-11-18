@@ -1,10 +1,10 @@
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { inviteMediateur } from '@/features/equipe/implementation/email/inviteMediateur'
 import { inviteNewMediateur } from '@/features/equipe/implementation/email/inviteNewMediateur'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import {
   type InvitationEnAttente,
   lienInvitation,

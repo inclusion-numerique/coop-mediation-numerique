@@ -2,6 +2,7 @@
 
 import { getAuthenticatedSessionToken } from '@/auth/getSessionUser'
 import { actionBuilder } from '@/configuration/nextjs'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { withAdmin, withAuth } from '@/features/authentification'
 import {
   PorteeUsurpation,
@@ -12,7 +13,6 @@ import { UsurperUnUtilisateurValidation } from '@/features/utilisateurs/abilitie
 import { identifiantsDe } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { getLoginRedirectUrl } from '@/security/getHomepage'
 
 export const usurperUnUtilisateurAction = actionBuilder()

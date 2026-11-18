@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { conseillerNumeriqueExpression } from '@/features/employeuse/server'
-import { prismaClient } from '@/prismaClient'
 
 type UtilisateursActifsRaw = {
   role: 'mediateurs' | 'conseillers' | 'coordinateurs'

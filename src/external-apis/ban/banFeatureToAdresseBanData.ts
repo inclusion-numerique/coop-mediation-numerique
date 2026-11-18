@@ -1,4 +1,4 @@
-import type { Feature } from '@/external-apis/apiAdresse'
+import type { Feature } from '@/configuration/ban/apiAdresse'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 
 export const banFeatureToAdresseBanData = ({

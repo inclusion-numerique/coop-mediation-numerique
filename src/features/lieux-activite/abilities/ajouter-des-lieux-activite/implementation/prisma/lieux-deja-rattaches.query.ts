@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { IdentifiantCartographie } from '../../../../domain/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/lieu-id'
 import {

@@ -1,9 +1,9 @@
 import { After, Before, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { ProfilInscription } from '@/features/inscription/domain'
 import { UserId } from '@/features/inscription/domain'
 import type { Typologie } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 

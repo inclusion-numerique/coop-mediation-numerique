@@ -1,4 +1,4 @@
-import { type Feature, searchAdresses } from '@/external-apis/apiAdresse'
+import { type Feature, searchAdresses } from '@/configuration/ban/apiAdresse'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 

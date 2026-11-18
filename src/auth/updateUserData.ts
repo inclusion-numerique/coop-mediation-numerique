@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 
 export const updateUserData = async ({
   userId,

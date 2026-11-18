@@ -1,6 +1,6 @@
 import pRetry, { AbortError } from 'p-retry'
-import type { UniteLegale } from '@/external-apis/apiEntrepriseApiModels'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
 import { rechercheApiEntrepriseE2e } from './rechercheApiEntreprise.e2e'
 
 const rechercheApiEntrepriseEndpoint =

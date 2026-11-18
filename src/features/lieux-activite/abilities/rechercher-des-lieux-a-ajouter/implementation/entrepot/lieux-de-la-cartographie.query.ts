@@ -1,5 +1,5 @@
 import { Nom, Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { entrepotPrismaClient } from '@/entrepotPrismaClient'
+import { entrepotPrismaClient } from '@/configuration/prisma/entrepotPrismaClient'
 import type { Prisma } from '@/generated/entrepot/client'
 import { toTitleCase } from '@/utils/toTitleCase'
 import { IdentifiantCartographie } from '../../../../domain/ids-cartographie-nationale'

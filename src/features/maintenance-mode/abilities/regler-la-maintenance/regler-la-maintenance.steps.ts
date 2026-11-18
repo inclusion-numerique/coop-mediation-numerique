@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
 import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance'
@@ -12,7 +13,6 @@ import {
   type RoleDuCompte,
 } from '@/features/maintenance-mode/domain'
 import type { ServerActionResult } from '@/libraries/nextjs'
-import { prismaClient } from '@/prismaClient'
 
 const tentative: { resultat?: ServerActionResult<unknown> } = {}
 

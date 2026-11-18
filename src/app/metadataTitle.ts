@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 /**
  * Best practice is to suffix the metadata title with the name of the website

@@ -1,8 +1,8 @@
 import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { emailSignin } from '@/features/authentification/implementation/email/emailSignin'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 const debugMagicLink = true
 

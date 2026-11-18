@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { lieuToDomain } from '../../../../implementation/prisma/lieu.transfer'
 import type { LigneDuLieu } from '../../../../implementation/prisma/ligne-du-lieu'
 import {

@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import type {
@@ -15,7 +16,6 @@ import {
   seedEmployeuseMain,
   seedLieuActivite,
 } from '@/features/inscription/inscription.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 

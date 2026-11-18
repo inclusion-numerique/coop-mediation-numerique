@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { subDays } from 'date-fns'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
@@ -19,7 +20,6 @@ import {
 } from '@/features/mon-reseau/mon-reseau.cucumber'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
-import { prismaClient } from '@/prismaClient'
 
 type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
 

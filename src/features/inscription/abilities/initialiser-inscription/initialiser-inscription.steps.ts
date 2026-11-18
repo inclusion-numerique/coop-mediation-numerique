@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type DispositifInscription,
   initialiserInscription,
@@ -14,7 +15,6 @@ import {
   currentInscriptionUserId,
   seedLieuActivite,
 } from '@/features/inscription/inscription.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 // Seuls les ports à effets (dispositif, SIRET) sont fakés ; la lecture d'état
 // passe par l'adapteur Prisma RÉEL sur la base seedée (BDD hybride).

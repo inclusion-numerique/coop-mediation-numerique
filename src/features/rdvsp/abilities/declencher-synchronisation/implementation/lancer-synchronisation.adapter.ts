@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { synchroniserCompte } from '../../../implementation/synchroniser-compte.binding'
 import type { LancerSynchronisation } from '../domain/declencher-synchronisation'
 

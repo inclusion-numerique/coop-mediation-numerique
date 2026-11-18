@@ -9,10 +9,10 @@ import {
   DsfrHead,
   getHtmlAttributes,
 } from '@/configuration/dsfr/server-only-index'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
 import Toaster from '@/libraries/ui/toast/Toaster'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 export const metadata: Metadata = {
   title: PublicWebAppConfig.projectTitle,

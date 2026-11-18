@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import type { CriteresDExposition, CurseurDActivite } from '../../domain'
 
 const activiteExposeeSelect = {

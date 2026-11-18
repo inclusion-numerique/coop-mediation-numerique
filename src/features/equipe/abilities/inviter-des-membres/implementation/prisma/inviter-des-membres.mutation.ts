@@ -1,7 +1,7 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
-import { addMutationLog } from '@/utils/addMutationLog'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import {
   fromInvitation,

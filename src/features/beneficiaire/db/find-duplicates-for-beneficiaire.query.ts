@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -8,7 +9,6 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { isDefinedAndNotNull } from '@/utils/isDefinedAndNotNull'
 
 export type FindDuplicatesForBeneficiaireInput = {

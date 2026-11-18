@@ -1,11 +1,11 @@
 import type {
   MatchingEtablissement,
   UniteLegale,
-} from '@/external-apis/apiEntrepriseApiModels'
+} from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
 import type {
   RechercheApiEntrepriseQueryParams,
   RechercheApiResponse,
-} from '@/external-apis/rechercheApiEntreprise'
+} from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
 
 /**
  * Doublure de l'API Recherche d'entreprises pour les parcours e2e.

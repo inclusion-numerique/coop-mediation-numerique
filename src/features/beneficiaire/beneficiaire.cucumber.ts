@@ -1,5 +1,6 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
 import { seedStructures } from '@/fixtures/structures'
@@ -8,7 +9,6 @@ import {
   mediateurAvecActiviteMediateurId,
 } from '@/fixtures/users/mediateurAvecActivite'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 

@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { rdvToDomain } from '../../../../db'
 import type { Lieu } from '../../../../domain/lieu'
 import type { Motif } from '../../../../domain/motif'

@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@/generated/prisma/client'
 import { success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import { relancerLesInscritsInactifs } from './commands/relancer-les-inscrits-inactifs'
 
 const UN_JOUR = 24 * 60 * 60 * 1000

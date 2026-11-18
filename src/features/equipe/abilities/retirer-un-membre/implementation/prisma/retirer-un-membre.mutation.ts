@@ -1,5 +1,5 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { failure, type Result, success } from '@/libraries/result'
-import { addMutationLog } from '@/utils/addMutationLog'
 import {
   enregistrerLArchivage,
   lireLesAdhesionsDeLaPaire,

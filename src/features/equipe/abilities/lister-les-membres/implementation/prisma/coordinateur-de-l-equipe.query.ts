@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   employeuseCodeInsee,
   personneEmployeuseSelect,
@@ -8,7 +9,6 @@ import {
   departementDeLActeur,
 } from '@/libraries/departement'
 import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import type { CoordinateurId } from '../../../../domain'
 import type { CoordinateurDeLaListe } from '../../domain'

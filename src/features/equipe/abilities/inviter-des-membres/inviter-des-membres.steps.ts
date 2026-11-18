@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   inviterDesMembres,
   type MediateursAInviter,
@@ -15,7 +16,6 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

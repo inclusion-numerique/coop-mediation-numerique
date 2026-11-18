@@ -1,4 +1,5 @@
 import { sessionUserSelect } from '@/auth/getSessionUserFromSessionToken'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   fixtureCrasCollectifs,
   fixtureCrasDemarchesAdministratives,
@@ -19,7 +20,6 @@ import { upsertCraFixtures } from '@/fixtures/upsertCraFixtures'
 import { sansDrapeauDispositif } from '@/fixtures/upsertUserFixture'
 import { coordinations, fixtureUsers } from '@/fixtures/users'
 import type { Session } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 const isCoordinateur = (resetedUser: {
   coordinateur: { id: string } | null

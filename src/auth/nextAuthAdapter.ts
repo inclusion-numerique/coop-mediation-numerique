@@ -3,8 +3,11 @@ import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
 import { v4 } from 'uuid'
 import { proConnectProviderId } from '@/auth/proConnect'
+import {
+  extendedPrismaClient,
+  prismaClient,
+} from '@/configuration/prisma/prismaClient'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { extendedPrismaClient, prismaClient } from '@/prismaClient'
 
 /**
  * Ensuring that needed methods are defined when creating adapter

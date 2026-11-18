@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type LieuDuMediateurEnListe,
   listerLesLieuxDuMediateur,
@@ -7,7 +8,6 @@ import {
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const liste: { lieux?: readonly LieuDuMediateurEnListe[] } = {}
 

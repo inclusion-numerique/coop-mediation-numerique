@@ -6,10 +6,10 @@ import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import { getAvecNouvellesTentatives } from '@/cli/getAvecNouvellesTentatives'
 import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
 import { varDirectory } from '@/libraries/chemins/varDirectory'
 import { output } from '@/libraries/console/output'
-import { prismaClient } from '@/prismaClient'
 
 const exec = promisify(callbackExec)
 

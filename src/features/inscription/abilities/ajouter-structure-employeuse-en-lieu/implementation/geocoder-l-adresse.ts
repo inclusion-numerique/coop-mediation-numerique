@@ -1,5 +1,5 @@
+import { siIndisponible } from '@/configuration/ban/apiAdresse'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { siIndisponible } from '@/external-apis/apiAdresse'
 import { geocodeStructureAdresse } from '@/external-apis/ban/geocodeStructureAdresse'
 import type { Geocodage, GeocoderLAdresse } from '../domain/ports'
 

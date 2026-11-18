@@ -11,6 +11,7 @@ import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-com
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { metadataTitle } from '@/app/metadataTitle'
 import { authenticateUser } from '@/auth/authenticateUser'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/server'
@@ -56,7 +57,6 @@ import {
   toNumberOr,
 } from '@/libs/data-table/toNumberOr'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 
 const dateDInscription = (fiche: FicheUtilisateur): Date | null => {
   const jalon = inscription(fiche.cycle)

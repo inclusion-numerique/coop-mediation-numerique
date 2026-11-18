@@ -1,6 +1,6 @@
 import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 
 setDefaultTimeout(60_000)
 

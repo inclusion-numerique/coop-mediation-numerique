@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 export const Support = () => (
   <>

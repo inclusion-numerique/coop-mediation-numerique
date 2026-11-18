@@ -7,6 +7,7 @@ import {
   MesStatistiquesGraphOptions,
   MesStatistiquesPageData,
 } from '@/composition/statistiques/mes-statistiques'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { dureeAccompagnementStatisticsRanges } from '@/features/activites/ui/libelles/duree-accompagnement'
 import {
   materielLabels,
@@ -53,7 +54,6 @@ import {
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libs/statistiques/parts-fixees'
 import { QuantifiedShare } from '@/libs/statistiques/quantifiedShare'
-import { prismaClient } from '@/prismaClient'
 
 /**
  * Base empty data for all tests

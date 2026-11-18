@@ -1,6 +1,6 @@
 import Script from 'next/script'
 import { environnementClient } from '@/configuration/environnement/client'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 // The Next <Script> tag expect a nonce as Next directly inject the code from the script file in an inline <script> tag
 export const Matomo = ({ nonce }: { nonce?: string }) =>

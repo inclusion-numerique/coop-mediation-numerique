@@ -1,7 +1,7 @@
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
-} from '@/external-apis/apiAdresse'
+} from '@/configuration/ban/apiAdresse'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import {
   adresseNonVerifiableMessage,

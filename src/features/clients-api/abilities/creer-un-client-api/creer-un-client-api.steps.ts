@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api'
 import {
   clientSeme,
@@ -8,7 +9,6 @@ import {
   portees,
   retenirLeClient,
 } from '@/features/clients-api/clients-api.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const creation: { resultat?: Awaited<ReturnType<typeof creerUnClientApi>> } = {}
 

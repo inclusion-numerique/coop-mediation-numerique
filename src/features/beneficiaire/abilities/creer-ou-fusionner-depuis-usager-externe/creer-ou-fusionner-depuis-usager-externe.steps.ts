@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   creerOuFusionnerBeneficiairesDepuisUsagersExternes,
   type ExternalUserToMerge,
@@ -10,7 +11,6 @@ import {
   trackBeneficiaire,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { NOM_MAX_LENGTH } from '@/features/beneficiaire/domain/nom'
-import { prismaClient } from '@/prismaClient'
 
 type PortResult = Awaited<
   ReturnType<

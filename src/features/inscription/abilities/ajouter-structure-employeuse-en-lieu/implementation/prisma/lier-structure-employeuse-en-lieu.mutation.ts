@@ -1,4 +1,6 @@
 import { v4 } from 'uuid'
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ecrireLeLieuAuRegistre,
   identiteDuLieu,
@@ -7,8 +9,6 @@ import {
   preparerCorrele,
 } from '@/features/lieux-activite'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
-import { addMutationLog } from '@/utils/addMutationLog'
 import type { LierStructureEmployeuseEnLieu } from '../../domain/ports'
 import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 

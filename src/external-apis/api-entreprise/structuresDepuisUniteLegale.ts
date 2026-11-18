@@ -1,6 +1,6 @@
+import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
 import { getTypologieFromApiEntreprise } from '@/external-apis/api-entreprise/typologieFromApiEntreprise'
 import type { TypologieStructure } from '@/external-apis/api-entreprise/typologieStructure'
-import type { UniteLegale } from '@/external-apis/apiEntrepriseApiModels'
 import { toTitleCase } from '@/utils/toTitleCase'
 
 /**

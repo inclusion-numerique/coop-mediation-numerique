@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-depuis-siret.mutation'
 import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
 import { seedStructures } from '@/fixtures/structures'
 import { conseillerNumerique } from '@/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@/fixtures/users/mediateurSansActivites'
-import { prismaClient } from '@/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
 const PROCONNECT_SIRET = '11111111111111'

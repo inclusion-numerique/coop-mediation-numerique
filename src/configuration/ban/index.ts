@@ -1,5 +1,5 @@
+import { searchAdresse } from '@/configuration/ban/apiAdresse'
 import { instrument } from '@/configuration/telemetry/instrument/server'
-import { searchAdresse } from '@/external-apis/apiAdresse'
 import { communeFieldsFromAddress } from '@/external-apis/ban/communeFieldsFromAddress'
 
 const operation = {

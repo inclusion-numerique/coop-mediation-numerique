@@ -10,6 +10,7 @@ import {
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   consulterLaFicheDuLieu,
   modifierLaFicheDuLieu,
@@ -22,7 +23,6 @@ import {
   ficheSemee,
   semerUneFicheDeLieu,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { depuisLaSaisie } from './action/depuis-la-saisie'
 import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
 import type { FicheDuLieu } from './domain'

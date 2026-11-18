@@ -5,9 +5,9 @@ import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import { SessionUser } from '@/auth/sessionUser'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 import { statistiquesPageTitle } from '@/features/statistiques/ui/pages/titre-des-statistiques'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import styles from './CoopSideMenu.module.css'
 
 const onlyFor =

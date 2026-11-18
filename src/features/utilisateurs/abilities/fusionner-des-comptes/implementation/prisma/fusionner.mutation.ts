@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 import type { FusionAutorisee } from '../../domain'
 
 type Tx = Prisma.TransactionClient

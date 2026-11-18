@@ -1,11 +1,11 @@
 import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type ClientApiId,
   NomDuClientApi,
   PorteeApi,
 } from '@/features/clients-api/domain'
-import { prismaClient } from '@/prismaClient'
 import { verifySecret } from '@/security/hashSecret'
 import { creerUnClientApi } from './abilities/creer-un-client-api'
 

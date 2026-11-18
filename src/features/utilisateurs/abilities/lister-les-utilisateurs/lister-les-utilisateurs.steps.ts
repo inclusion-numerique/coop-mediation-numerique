@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   AUCUN_FILTRE,
   type FiltresUtilisateurs,
@@ -13,7 +14,6 @@ import {
   semerUneEmployeuse,
   semerUnLieu,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 import type { UtilisateursTrouves } from './domain'
 import { rechercherDesUtilisateurs } from './implementation'
 

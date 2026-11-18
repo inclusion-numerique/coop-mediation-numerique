@@ -1,9 +1,9 @@
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { deleteBrevoContactIfOrphan } from './deleteBrevoContactIfOrphan'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import {
   deploymentCanRemoveBrevoContactFromList,
   removeBrevoContactFromList,
-} from './removeBrevoContactFromList'
+} from '../../configuration/brevo/removeBrevoContactFromList'
+import { deleteBrevoContactIfOrphan } from './deleteBrevoContactIfOrphan'
 
 /**
  * Sort un utilisateur de Brevo : retrait de la liste des utilisateurs, puis

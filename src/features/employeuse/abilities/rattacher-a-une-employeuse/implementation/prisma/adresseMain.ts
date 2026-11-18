@@ -1,8 +1,8 @@
-import type { Feature } from '@/external-apis/apiAdresse'
+import type { Feature } from '@/configuration/ban/apiAdresse'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
 
 // Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
 // (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces

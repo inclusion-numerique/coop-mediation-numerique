@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { prismaClient } from '@/prismaClient'
 import { getDepartementsFromCodesInsee } from '@/utils/getDepartementFromCodeInsee'
 
 export const getCommunesAndDepartementsOptions = async () => {

@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ligneUtilisateurSelect,
   ligneUtilisateurToDomain,
@@ -8,7 +9,6 @@ import type { Prisma } from '@/generated/prisma/client'
 import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
 import { toQueryParts } from '@/libs/data-table/toQueryParts'
-import { prismaClient } from '@/prismaClient'
 import type { UtilisateursTrouves } from '../../domain'
 
 export type RechercheDUtilisateursParams = {

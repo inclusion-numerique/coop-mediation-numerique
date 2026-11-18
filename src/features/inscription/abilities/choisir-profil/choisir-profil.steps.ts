@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil'
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import {
@@ -12,7 +13,6 @@ import {
   seedInscriptionValidee,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 let resultat: Result<
   { readonly role: Role; readonly etapeSuivante: InscriptionStep },

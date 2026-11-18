@@ -1,4 +1,4 @@
-import { addMutationLog } from '@/utils/addMutationLog'
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import type { CompteSupprime } from '../../domain'
 
 export const logEffacementReport = (compte: CompteSupprime): void => {

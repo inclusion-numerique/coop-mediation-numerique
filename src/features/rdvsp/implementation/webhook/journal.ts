@@ -1,4 +1,4 @@
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 
 const actif = ServerWebAppConfig.RdvServicePublic.log.webhook.debug
 

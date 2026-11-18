@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { traiterNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
@@ -9,7 +10,6 @@ import {
   ENTETE_SIGNATURE_WEBHOOK,
   signatureValide,
 } from '@/features/rdvsp/implementation/webhook/verifier-signature'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 
 const traiter = async (notification: NotificationWebhook): Promise<void> => {
   if (notification._tag === 'ignoree') {

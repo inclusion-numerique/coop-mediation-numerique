@@ -1,11 +1,11 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { compteRdvToDomain } from '@/features/rdvsp/db'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
 } from '@/features/rdvsp/domain/compte-rdv'
 import { mediateurSansActivitesUserId } from '@/fixtures/users/mediateurSansActivites'
-import { prismaClient } from '@/prismaClient'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
 /**

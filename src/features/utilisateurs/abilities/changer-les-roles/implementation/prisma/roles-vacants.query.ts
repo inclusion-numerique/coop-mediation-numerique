@@ -1,7 +1,7 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 

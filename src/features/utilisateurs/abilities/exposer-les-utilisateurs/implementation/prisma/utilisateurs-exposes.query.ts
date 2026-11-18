@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import type { CriteresDExposition } from '../../domain'
 
 const filtresDeSuppression = {

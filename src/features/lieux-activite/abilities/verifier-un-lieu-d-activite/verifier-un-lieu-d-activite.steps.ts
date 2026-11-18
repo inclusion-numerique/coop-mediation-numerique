@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { LieuId, MediateurId } from '@/features/lieux-activite'
 import { effacerDuRegistre } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { lieuUtilisablePar, verifierUnLieuDActivite } from './implementation'
 
 const contexte: {

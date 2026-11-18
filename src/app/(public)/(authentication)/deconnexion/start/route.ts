@@ -5,9 +5,9 @@ import { generateProconnectSignoutUrl } from '@/app/(public)/(authentication)/de
 import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import { proConnectProviderId } from '@/auth/proConnect'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { refreshProconnectIdToken } from '@/security/getProconnectIdToken'
-import { getServerUrl } from '@/utils/baseUrl'
 import {
   type EncodedState,
   encodeSerializableState,

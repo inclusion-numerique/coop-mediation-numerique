@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type {
   RattacherEmployeuse,
   RenseignerStructureEmployeuseError,
@@ -12,7 +13,6 @@ import {
   seedProfilChoisi,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 let rattachable = true
 let rattachementsDemandes = 0

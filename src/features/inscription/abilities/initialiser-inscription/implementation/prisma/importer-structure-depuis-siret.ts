@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import type { ImporterStructureDepuisSiret } from '@/features/inscription/abilities/initialiser-inscription/domain'
-import { prismaClient } from '@/prismaClient'
 
 /**
  * Repli SIRET : si l'utilisateur a un SIRET et pas encore d'employeuse, on la

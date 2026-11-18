@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   AdresseCourriel,
   RoleUtilisateur,
 } from '@/features/utilisateurs/domain'
-import { prismaClient } from '@/prismaClient'
 import {
   CibleFusionId,
   type CompteAFusionner,

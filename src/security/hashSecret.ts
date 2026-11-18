@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 
 /**
  * Hashes a secret using HMAC with SHA-256.

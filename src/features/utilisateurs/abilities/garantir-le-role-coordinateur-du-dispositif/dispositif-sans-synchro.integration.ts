@@ -2,10 +2,10 @@ import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { sessionUserSelect } from '@/auth/getSessionUserFromSessionToken'
 import { serializePrismaSessionUser } from '@/auth/serializePrismaSessionUser'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
 import { profilDepuisDispositif } from '@/features/inscription'
 import { dispositifDepuisMain } from '@/features/inscription/server'
-import { prismaClient } from '@/prismaClient'
 import { garantirLeRoleCoordinateurDuDispositif } from './implementation'
 
 /**

@@ -8,7 +8,7 @@ import {
   authenticationViaProconnect,
 } from '@/auth/authenticationProvider'
 import LogoCoop from '@/components/LogoCoop'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 const SigninPanel = ({
   error,

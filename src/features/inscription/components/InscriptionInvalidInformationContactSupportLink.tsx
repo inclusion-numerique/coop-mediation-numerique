@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 const InscriptionInvalidInformationContactSupportLink = ({
   className,

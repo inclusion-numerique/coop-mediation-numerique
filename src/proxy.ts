@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 const isCI = environnementServeur.CI
 const isProduction = environnementServeur.NODE_ENV === 'production'

@@ -1,4 +1,4 @@
-import { type Feature, searchAdresse } from '@/external-apis/apiAdresse'
+import { type Feature, searchAdresse } from '@/configuration/ban/apiAdresse'
 import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 
 export type CommuneFields = {

@@ -7,7 +7,7 @@ import { useState } from 'react'
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
-} from '@/external-apis/apiAdresse'
+} from '@/configuration/ban/apiAdresse'
 import {
   adresseNonVerifiableMessage,
   geocodeStructureAdresse,

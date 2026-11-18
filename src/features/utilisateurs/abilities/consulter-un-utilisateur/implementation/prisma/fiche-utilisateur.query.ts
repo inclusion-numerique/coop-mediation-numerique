@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
@@ -21,7 +22,6 @@ import {
 } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
 import type { FicheUtilisateur } from '../../domain'
 
 const ficheSelect = {

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
 

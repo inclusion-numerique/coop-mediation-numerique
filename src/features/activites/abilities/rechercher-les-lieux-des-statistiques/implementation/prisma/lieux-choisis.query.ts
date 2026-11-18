@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { departementDuCode } from '@/libraries/departement'
-import { prismaClient } from '@/prismaClient'
 import { dansLePerimetre } from '../../../../db/perimetre-des-statistiques.sql'
 import {
   communeComptee,

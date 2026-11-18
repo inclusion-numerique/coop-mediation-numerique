@@ -1,12 +1,12 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   listerLesMediateursDuLieu,
   type MediateurDuLieu,
 } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { prismaClient } from '@/prismaClient'
 
 const etat: {
   lieuId?: string

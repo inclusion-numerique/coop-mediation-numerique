@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   anonymiserLesComptesInactifs,
   type CompteExamine,
@@ -8,7 +9,6 @@ import {
   type CompteInactifSeme,
   semerUnCompteInactif,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const maintenant = new Date('2026-10-20T01:00:00.000Z')
 

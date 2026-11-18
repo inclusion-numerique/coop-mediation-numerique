@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 import { environnementClient } from '@/configuration/environnement/client'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 // Routes à ignorer pour le tracing (haut volume, peu d'intérêt)
 const ignoredTraceRoutes = [

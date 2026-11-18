@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { EncodedState } from '@/utils/encodeSerializableState'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import { lireUneInvitation } from '../../../../db/invitation.query'

@@ -1,10 +1,10 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
 } from '@/features/employeuse'
 import type { Prisma } from '@/generated/prisma/client'
 import { DEFAULT_PAGE_SIZE } from '@/libs/data-table/toNumberOr'
-import { prismaClient } from '@/prismaClient'
 import { lue } from '../../../../db/lue'
 import {
   type CoordinateurId,

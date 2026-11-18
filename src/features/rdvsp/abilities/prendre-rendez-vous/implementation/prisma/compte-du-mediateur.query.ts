@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { compteRdvToDomain } from '../../../../db'
 import type { CompteDuMediateur } from '../../domain/prendre-rendez-vous'
 

@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { getUserDisplayName } from '@/utils/user'
 import type { CoordinateurId, MediateurId } from '../../../../domain'
 

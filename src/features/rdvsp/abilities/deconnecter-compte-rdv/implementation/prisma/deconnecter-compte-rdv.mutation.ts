@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import { compteRdvFromDomain, compteRdvToDomain } from '../../../../db'
 import type { DeconnecterCompteRdv } from '../../domain/deconnecter-compte-rdv'
 import { compteApresDeconnexion } from '../../domain/deconnecter-compte-rdv'

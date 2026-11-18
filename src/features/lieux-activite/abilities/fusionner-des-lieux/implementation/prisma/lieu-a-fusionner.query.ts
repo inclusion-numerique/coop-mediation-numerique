@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { toTitleCase } from '@/utils/toTitleCase'
 
 export const lieuAFusionner = async (structureId: string) => {

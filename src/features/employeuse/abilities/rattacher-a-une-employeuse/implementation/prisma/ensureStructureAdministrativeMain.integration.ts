@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { AdresseIndisponible } from '@/external-apis/apiAdresse'
-import { prismaClient } from '@/prismaClient'
+import { AdresseIndisponible } from '@/configuration/ban/apiAdresse'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ensureStructureAdministrativeMain,
   type IdentiteStructureMain,

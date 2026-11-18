@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { inscriptionEtatFromDomain } from '@/features/inscription/db'
 import { rattacherAuLieu } from '@/features/lieux-activite'
-import { prismaClient } from '@/prismaClient'
 import type { EnregistrerReconciliation } from '../../domain'
 import { depuisLeLieuDesire } from '../depuis-le-lieu-desire'
 

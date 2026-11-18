@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
@@ -10,7 +11,6 @@ import {
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { prismaClient } from '@/prismaClient'
 import type { CompteAReaffecter } from '../../domain'
 
 export const compteAReaffecter = async (

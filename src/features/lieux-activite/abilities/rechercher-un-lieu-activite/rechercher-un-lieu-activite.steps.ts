@@ -1,12 +1,12 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
 } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const resultats: { trouves?: readonly LieuActiviteTrouve[] } = {}
 

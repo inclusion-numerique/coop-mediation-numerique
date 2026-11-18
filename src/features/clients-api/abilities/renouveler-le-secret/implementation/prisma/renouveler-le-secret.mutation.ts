@@ -1,10 +1,10 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ClientApiId,
   ClientApiIntrouvable,
 } from '@/features/clients-api/domain'
 import { nouveauSecret } from '@/features/clients-api/implementation/secret'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 export const renouvelerLeSecret = async ({
   clientApiId,

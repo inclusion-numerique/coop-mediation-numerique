@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
 import {
   lieuxSemes,
   semerLieuxDActivite,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const retrait: { retires?: number } = {}
 

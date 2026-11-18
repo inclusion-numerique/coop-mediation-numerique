@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { activiteDeMediationFromDomain } from '../../db/activite-de-mediation.transfer'
 import { recalculerLesPremiersAccompagnements } from '../../db/premier-accompagnement'
 import type { ActiviteDeMediation } from '../../domain'

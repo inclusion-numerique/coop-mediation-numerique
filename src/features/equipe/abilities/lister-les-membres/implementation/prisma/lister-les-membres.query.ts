@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
 import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
-import { prismaClient } from '@/prismaClient'
 import {
   filtresEquipe,
   type LigneEquipeRow,

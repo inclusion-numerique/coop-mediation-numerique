@@ -1,9 +1,9 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { seedPersonnesMain } from '@/fixtures/personnesMainConseillerNumerique'
 import { seedStructures } from '@/fixtures/structures'
 import type { UserFixture } from '@/fixtures/upsertUserFixture'
-import { prismaClient } from '@/prismaClient'
 
 describe('seedPersonnesMain', () => {
   const email = `compte-reel+${v4()}@test.gouv.fr`

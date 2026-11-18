@@ -1,6 +1,6 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
-import { addMutationLog } from '@/utils/addMutationLog'
 import { createStopwatch } from '@/utils/stopwatch'
 import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
 import type {

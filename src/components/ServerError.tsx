@@ -4,8 +4,8 @@ import ovoid from '@codegouvfr/react-dsfr/dsfr/artwork/background/ovoid.svg'
 import technicalError from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/system/technical-error.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { PropsWithChildren, useEffect } from 'react'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 const GenericError = ({
   title,

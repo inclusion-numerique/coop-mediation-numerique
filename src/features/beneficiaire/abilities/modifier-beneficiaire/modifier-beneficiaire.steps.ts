@@ -2,13 +2,13 @@ import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { ModifierBeneficiaireValidation } from '@/features/beneficiaire/abilities/modifier-beneficiaire'
 import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
 import {
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 type ModificationResult = Awaited<ReturnType<typeof modifierBeneficiaire>>
 

@@ -10,11 +10,11 @@ import { sendVerificationRequest } from '@/auth/sendVerificationRequest'
 import { SessionUser } from '@/auth/sessionUser'
 import { updateAccountTokens } from '@/auth/updateAccountTokens'
 import { updateUserData } from '@/auth/updateUserData'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import { registerLastLogin } from '@/security/registerLastLogin'
 
 const sessionUserHasOutdatedData = ({

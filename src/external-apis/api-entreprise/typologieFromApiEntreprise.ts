@@ -1,5 +1,5 @@
+import { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
 import { TypologieStructure } from '@/external-apis/api-entreprise/typologieStructure'
-import { UniteLegale } from '@/external-apis/apiEntrepriseApiModels'
 
 /**
  * Specs :

@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
-import { prismaClient } from '@/prismaClient'
 import {
   activiteDeCoordinationDe,
   activiteDeCoordinationSelect,

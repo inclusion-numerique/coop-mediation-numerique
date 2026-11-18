@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { prismaClient } from '@/prismaClient'
 import { createStopwatch } from '@/utils/stopwatch'
 import { executeAlignerLeRegistreDesPersonnes } from './aligner-le-registre-des-personnes/executeAlignerLeRegistreDesPersonnes'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'

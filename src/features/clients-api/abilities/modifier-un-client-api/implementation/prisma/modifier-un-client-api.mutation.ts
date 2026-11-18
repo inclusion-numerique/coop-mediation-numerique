@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   clientApiSelect,
   depuisDefinition,
@@ -12,7 +13,6 @@ import {
 } from '@/features/clients-api/domain'
 import { nomDejaPris } from '@/features/clients-api/implementation/nom-deja-pris'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 export const modifierUnClientApi = async ({
   clientApiId,

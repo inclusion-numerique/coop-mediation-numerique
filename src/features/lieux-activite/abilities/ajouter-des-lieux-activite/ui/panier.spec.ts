@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   AdresseIndisponible,
   SERVICE_ADRESSE_INDISPONIBLE,
-} from '@/external-apis/apiAdresse'
+} from '@/configuration/ban/apiAdresse'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import {
   auPanier,

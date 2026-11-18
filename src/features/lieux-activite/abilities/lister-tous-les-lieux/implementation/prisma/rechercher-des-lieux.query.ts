@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
 import { toQueryParts } from '@/libs/data-table/toQueryParts'
-import { prismaClient } from '@/prismaClient'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'
 
 export type RechercheDeLieuxParams = {

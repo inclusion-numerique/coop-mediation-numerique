@@ -1,11 +1,11 @@
 import type { SessionUser } from '@/auth/sessionUser'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
 import { stepPath } from '@/features/inscription/ui/step-path'
 import {
   listerLesLieuxPourLInscription,
   MediateurId,
 } from '@/features/lieux-activite'
-import { prismaClient } from '@/prismaClient'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
 const getInscriptionDataContext = async ({

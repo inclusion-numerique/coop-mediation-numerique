@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation'
 import {
   ActiviteId,
@@ -9,7 +10,6 @@ import {
   UtilisateurId,
 } from '@/features/activites/domain'
 import type { Result } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 type Mediateur = { readonly userId: string; readonly mediateurId: string }
 

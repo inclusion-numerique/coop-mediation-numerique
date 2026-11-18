@@ -21,7 +21,7 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
-import { entrepotPrismaClient } from '@/entrepotPrismaClient'
+import { entrepotPrismaClient } from '@/configuration/prisma/entrepotPrismaClient'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { IdsCartographieNationale } from '@/features/lieux-activite/domain/ids-cartographie-nationale'
 import { reconnues } from '@/features/lieux-activite/domain/nomenclatures'

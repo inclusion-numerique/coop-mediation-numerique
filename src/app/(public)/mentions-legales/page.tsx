@@ -4,7 +4,7 @@ import { metadataTitle } from '@/app/metadataTitle'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { projectTitle } from '@/configuration/projet/config'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { contentId } from '@/utils/skipLinks'
 
 export const metadata: Metadata = {

@@ -5,7 +5,7 @@ import { metadataTitle } from '@/app/metadataTitle'
 import { getSessionUser } from '@/auth/getSessionUser'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { getServerUrl } from '@/utils/baseUrl'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { contentId } from '@/utils/skipLinks'
 
 export const dynamic = 'force-dynamic'

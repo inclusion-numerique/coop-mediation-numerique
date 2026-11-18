@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
@@ -9,7 +10,6 @@ import {
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import { supprimerCompte } from './commands/supprimer-compte'
 import {
   type AuteurSuppression,

@@ -1,10 +1,10 @@
 import { formatInTimeZone } from 'date-fns-tz'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementation/email/inactiviteProlongeeAvertissementEmail'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import type { AvertirDeLaSuppression } from '../../domain'
 
 export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({

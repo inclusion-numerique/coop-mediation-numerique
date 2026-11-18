@@ -9,7 +9,7 @@ import { renseignerLieuxActiviteAction } from '@/app/_actions/inscription/rensei
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
-} from '@/external-apis/apiAdresse'
+} from '@/configuration/ban/apiAdresse'
 import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,

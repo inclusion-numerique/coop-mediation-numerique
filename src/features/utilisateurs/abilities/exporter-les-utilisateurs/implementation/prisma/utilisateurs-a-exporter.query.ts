@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ligneUtilisateurSelect,
   ligneUtilisateurToDomain,
@@ -7,7 +8,6 @@ import type {
   FiltresUtilisateurs,
   LigneUtilisateur,
 } from '@/features/utilisateurs/domain'
-import { prismaClient } from '@/prismaClient'
 
 export const utilisateursAExporter = async ({
   mots,

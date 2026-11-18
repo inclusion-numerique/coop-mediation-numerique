@@ -1,10 +1,10 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { identiteAnonymeFromDomain } from '@/features/utilisateurs/db/compte.transfer'
 import type {
   IdentiteAnonyme,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 
 export const couperAcces = ({
   utilisateurId,

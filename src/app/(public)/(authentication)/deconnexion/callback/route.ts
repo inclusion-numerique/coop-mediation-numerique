@@ -6,7 +6,7 @@ import {
   sessionCookie,
 } from '@/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   decodeSerializableState,
   type EncodedState,

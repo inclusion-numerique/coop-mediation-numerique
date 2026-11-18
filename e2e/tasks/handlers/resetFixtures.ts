@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { deleteAll, seed } from '@/fixtures/seeds'
-import { prismaClient } from '@/prismaClient'
 
 export const resetFixtures = async (
   _emptyParametersNeededForTypesafety: Record<string, string>,

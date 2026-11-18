@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   getLieuxActiviteOptions,
   getLieuxDesActivitesOptions,
@@ -7,7 +8,6 @@ import {
   type LieuActiviteOption,
 } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const proposees: { options?: LieuActiviteOption[] } = {}
 

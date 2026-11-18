@@ -1,4 +1,4 @@
-import { searchAdresses, siIndisponible } from '@/external-apis/apiAdresse'
+import { searchAdresses, siIndisponible } from '@/configuration/ban/apiAdresse'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'

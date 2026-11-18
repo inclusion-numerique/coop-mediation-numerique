@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
 import {
   beneficiairesCountAtScenarioStart,
@@ -9,7 +10,6 @@ import {
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
-import { prismaClient } from '@/prismaClient'
 
 type SuppressionResult = Awaited<ReturnType<typeof supprimerBeneficiaires>>
 

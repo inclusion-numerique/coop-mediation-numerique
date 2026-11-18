@@ -1,4 +1,4 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { EmailExterne, TelephoneExterne } from '../../../../domain/identite'
 import { NomOrganisation } from '../../../../domain/libelle'
 import type { Organisation } from '../../../../domain/organisation'

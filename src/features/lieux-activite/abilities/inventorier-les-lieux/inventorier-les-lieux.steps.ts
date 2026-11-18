@@ -6,13 +6,13 @@ import {
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux'
 import {
   FraisACharge as FraisAChargeStockee,
   ModaliteAcces as ModaliteAccesStockee,
   Service as ServiceStocke,
 } from '@/generated/prisma/browser'
-import { prismaClient } from '@/prismaClient'
 
 const semis: {
   lieuId?: string

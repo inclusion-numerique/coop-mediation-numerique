@@ -1,14 +1,14 @@
 import { reinitialiserUneFixtureAction } from '@/app/_actions/utilisateurs/reinitialiser-une-fixture.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { metadataTitle } from '@/app/metadataTitle'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
 import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui'
 import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { UsurpationPage } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 
 export const metadata = {
   title: metadataTitle('Usurpation'),

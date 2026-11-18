@@ -1,11 +1,11 @@
 import { Command } from '@commander-js/extra-typings'
 import { output } from '@/libraries/console/output'
-import { imageNameForBranch, isProtectedImage } from './registryRetention'
 import {
   deleteImage,
   listWebAppImages,
   webAppImagePrefix,
-} from './scalewayRegistry'
+} from '../../../../configuration/scaleway/scalewayRegistry'
+import { imageNameForBranch, isProtectedImage } from './registryRetention'
 
 const protectedBranches = ['main', 'dev']
 

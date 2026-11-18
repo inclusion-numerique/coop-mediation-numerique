@@ -1,5 +1,5 @@
+import { deploymentCanCreateBrevoContact } from '@/configuration/brevo/createBrevoContact'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { deploymentCanCreateBrevoContact } from '@/external-apis/brevo/createBrevoContact'
 import {
   listeDeDiffusionPorts,
   synchroniserLesRolesBrevo,

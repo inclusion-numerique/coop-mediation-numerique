@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { RapportDeRelance } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { relancerLesInscriptionsInachevees } from './commands/relancer-les-inscriptions-inachevees'
 import { effacerLInscription } from './implementation'
 

@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
@@ -9,7 +10,6 @@ import {
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { prismaClient } from '@/prismaClient'
 import type { CibleUsurpation, CompteDeTest } from '../../domain'
 
 export const cibleUsurpation = async (

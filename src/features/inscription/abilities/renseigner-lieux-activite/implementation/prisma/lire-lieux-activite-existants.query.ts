@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,
 } from '@/features/lieux-activite'
-import { prismaClient } from '@/prismaClient'
 import type { LireLieuxActiviteExistants } from '../../domain'
 
 /**

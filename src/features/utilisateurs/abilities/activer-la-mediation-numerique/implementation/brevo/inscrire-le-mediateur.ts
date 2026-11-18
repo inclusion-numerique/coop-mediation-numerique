@@ -1,4 +1,4 @@
-import { deploymentCanCreateBrevoContact } from '@/external-apis/brevo/createBrevoContact'
+import { deploymentCanCreateBrevoContact } from '@/configuration/brevo/createBrevoContact'
 import { contactASynchroniser } from '@/features/utilisateurs/domain'
 import { importerDansLaListe } from '@/features/utilisateurs/implementation/brevo/liste-de-diffusion'
 import { inscritAInscrire } from '../prisma/inscrit-a-inscrire.query'

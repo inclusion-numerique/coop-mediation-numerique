@@ -6,7 +6,7 @@ import { HeaderQuickAccess } from '@/components/HeaderQuickAccess'
 import { HeaderUserMenu } from '@/components/HeaderUserMenu'
 import LogoCoop from '@/components/LogoCoop'
 import { projectTitle } from '@/configuration/projet/config'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { getHomepage } from '@/security/getHomepage'
 import styles from './Header.module.css'
 

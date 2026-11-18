@@ -1,6 +1,6 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
-import { addMutationLog } from '@/utils/addMutationLog'
 
 export const compteQuiActive = (utilisateurId: string) =>
   prismaClient.user.findUnique({

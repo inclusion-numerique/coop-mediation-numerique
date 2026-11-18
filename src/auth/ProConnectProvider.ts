@@ -5,10 +5,10 @@ import jwt from 'jsonwebtoken'
 // résolveur `bundler` de TypeScript 7 la respecte, contrairement à l'ancien `node10`.
 import type { TokenEndpointHandler } from 'next-auth/providers/oauth'
 import { proConnectProviderId } from '@/auth/proConnect'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { getServerUrl } from '@/utils/baseUrl'
 
 const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
 

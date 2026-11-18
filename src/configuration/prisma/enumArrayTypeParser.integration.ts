@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 
 describe('enumArrayTypeParser', () => {
   test('rend un tableau d’enums lu en SQL brut sous forme de tableau', async () => {

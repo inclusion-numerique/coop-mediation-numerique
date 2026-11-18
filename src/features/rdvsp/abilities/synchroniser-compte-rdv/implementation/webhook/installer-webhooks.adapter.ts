@@ -1,5 +1,5 @@
-import { prismaClient } from '@/prismaClient'
-import { getServerUrl } from '@/utils/baseUrl'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
 import type {
   BilanModele,
   OperationSynchronisation,

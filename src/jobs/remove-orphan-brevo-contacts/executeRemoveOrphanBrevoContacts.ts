@@ -1,4 +1,4 @@
-import { deploymentCanCreateBrevoContact } from '@/external-apis/brevo/createBrevoContact'
+import { deploymentCanCreateBrevoContact } from '@/configuration/brevo/createBrevoContact'
 import {
   contactsBrevoPorts,
   retirerLesContactsOrphelins,

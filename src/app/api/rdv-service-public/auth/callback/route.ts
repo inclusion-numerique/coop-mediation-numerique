@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import {
   CODE_AUTORISATION_MANQUANT,
@@ -13,7 +14,6 @@ import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-
 import { declencherSynchronisationBinding } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
-import { getServerUrl } from '@/utils/baseUrl'
 import {
   decodeSerializableState,
   type EncodedState,

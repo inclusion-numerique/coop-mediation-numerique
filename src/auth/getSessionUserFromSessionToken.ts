@@ -1,8 +1,8 @@
 import { serializePrismaSessionUser } from '@/auth/serializePrismaSessionUser'
 import type { SessionUser } from '@/auth/sessionUser'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { personneEmployeuseSelect } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { registerLastSeen } from '@/security/registerLastSeen'
 
 export const sessionUserSelect = {

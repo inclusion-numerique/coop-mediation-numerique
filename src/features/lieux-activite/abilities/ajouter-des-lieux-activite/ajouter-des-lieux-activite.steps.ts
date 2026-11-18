@@ -16,6 +16,7 @@ import {
   Services,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
 import type {
   LieuACreer,
@@ -34,7 +35,6 @@ import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/user-id'
 import { lieuxSemes } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
 

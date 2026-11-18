@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires'
 import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementation'
 import {
@@ -11,7 +12,6 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import { prismaClient } from '@/prismaClient'
 
 let result: { importes: number } | undefined
 

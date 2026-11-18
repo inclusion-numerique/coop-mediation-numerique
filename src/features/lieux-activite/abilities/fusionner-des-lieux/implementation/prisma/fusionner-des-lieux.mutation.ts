@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import { unionArrays } from '@/utils/unionArrays'
 import type { LieuId } from '../../../../domain/lieu-id'
 import {

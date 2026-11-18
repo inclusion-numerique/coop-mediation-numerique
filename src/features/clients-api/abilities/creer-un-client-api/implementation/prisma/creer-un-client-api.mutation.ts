@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   clientApiSelect,
   depuisDefinition,
@@ -11,7 +12,6 @@ import {
 import { nomDejaPris } from '@/features/clients-api/implementation/nom-deja-pris'
 import { nouveauSecret } from '@/features/clients-api/implementation/secret'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 export type ClientApiCree = {
   readonly client: ClientApi

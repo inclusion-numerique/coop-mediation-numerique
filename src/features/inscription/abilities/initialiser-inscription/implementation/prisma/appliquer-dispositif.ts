@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { AppliquerDispositif } from '@/features/inscription/abilities/initialiser-inscription/domain'
 import { profilDepuisDispositif } from '@/features/inscription/domain'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
 /** Crée le médiateur s'il manque — jamais de suppression, comme auparavant. */

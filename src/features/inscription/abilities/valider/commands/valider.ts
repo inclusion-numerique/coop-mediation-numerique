@@ -1,6 +1,6 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import type { UserId } from '@/features/inscription/domain'
 import { type Result, success } from '@/libraries/result'
-import { addMutationLog } from '@/utils/addMutationLog'
 import { createStopwatch } from '@/utils/stopwatch'
 import {
   validerInscription as deciderValidation,

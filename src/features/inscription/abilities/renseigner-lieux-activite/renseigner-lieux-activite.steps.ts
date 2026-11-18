@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { creerLieuActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
 import {
@@ -19,7 +20,6 @@ import {
   CreerLieuActiviteValidation,
 } from '@/features/lieux-activite'
 import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
-import { prismaClient } from '@/prismaClient'
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({

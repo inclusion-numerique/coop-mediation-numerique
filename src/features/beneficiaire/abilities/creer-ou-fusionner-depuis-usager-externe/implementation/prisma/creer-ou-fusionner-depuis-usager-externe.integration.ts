@@ -1,13 +1,13 @@
 import { v4 } from 'uuid'
 import { afterEach, beforeAll, describe, expect, test } from 'vitest'
-import { AdresseIndisponible } from '@/external-apis/apiAdresse'
+import { AdresseIndisponible } from '@/configuration/ban/apiAdresse'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
 import { seedStructures } from '@/fixtures/structures'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from '@/fixtures/users/mediateurAvecActivite'
-import { prismaClient } from '@/prismaClient'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
 

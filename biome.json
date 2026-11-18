@@ -259,7 +259,7 @@
     {
       "includes": [
         "src/configuration/environnement/**",
-        "src/cli/instrument.mts",
+        "src/configuration/telemetry/instrument/cli.mts",
         "src/cli/commands/infrastructure/createTfVarsFileFromEnvironment.ts",
         "prisma.config.ts",
         "prisma/**/prisma.config.ts",

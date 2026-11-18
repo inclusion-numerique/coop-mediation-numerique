@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, type DataTable, Given } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
@@ -11,7 +12,6 @@ import {
   TrancheAge,
   TypeLieu,
 } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import type { DemandeDeStatistiques } from './db/statistiques.sql'
 import {
   CoordinateurId,

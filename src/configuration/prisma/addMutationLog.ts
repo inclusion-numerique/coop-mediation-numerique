@@ -2,9 +2,9 @@
  * Create a mutation for the audit log, without blocking the main thread
  */
 
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 const addMutationLogAsync = (data: Prisma.MutationUncheckedCreateInput) =>
   prismaClient.mutation.create({

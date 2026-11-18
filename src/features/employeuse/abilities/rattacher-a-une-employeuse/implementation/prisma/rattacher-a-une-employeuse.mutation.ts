@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
 } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 import { EmployeuseId } from '../../../../domain/employeuse-id'
 import type { RattacherAUneEmployeuse } from '../../domain/rattacher-a-une-employeuse'
 import {

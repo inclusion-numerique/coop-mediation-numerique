@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 
 // TODO replace with specific link for rdv integration when ready
 export const rdvIntegrationEnSavoirPlusLink =
