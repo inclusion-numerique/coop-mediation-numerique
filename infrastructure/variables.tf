@@ -34,10 +34,6 @@ variable "CONTAINER_NAMESPACE_NAME" {
   type = string
 }
 
-variable "SCW_DEFAULT_REGION" {
-  type = string
-}
-
 variable "MAIN_ROOT_DOMAIN" {
   type = string
 }

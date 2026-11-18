@@ -5,7 +5,6 @@ locals {
     EMAIL_FROM_NAME         = local.email_from_name
     BASE_URL                = local.hostname
     NEXTAUTH_URL            = local.hostname
-    SCW_DEFAULT_REGION      = var.SCW_DEFAULT_REGION
     SMTP_PORT               = local.is_main ? var.SMTP_PORT : "1025"
     ENTREPOT_BASTION_HOST   = var.ENTREPOT_BASTION_HOST
     ENTREPOT_BASTION_USER   = var.ENTREPOT_BASTION_USER
