@@ -15,7 +15,7 @@
     "generate:implementations": "./scripts/generate-implementations.sh",
     "prebuild": "react-dsfr optimize-css --silent",
     "build": "pnpm --silent with-env next build",
-    "build:jobs": "pnpm --silent with-env node build-jobs.mjs",
+    "build:jobs": "pnpm --silent with-env node scripts/build-jobs.mjs",
     "build:analyze": "ANALYZE=true pnpm --silent with-env next build --webpack",
     "start": "next start",
     "lint": "biome check src e2e .storybook && pnpm --silent lint:api",
