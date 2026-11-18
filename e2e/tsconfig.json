@@ -7,5 +7,10 @@
       "@e2e/*": ["./cypress/*"]
     }
   },
-  "include": ["./cypress.config.ts", "./cypress/**/*.ts", "./cypress/**/*.tsx"]
+  "include": [
+    "./cypress.config.ts",
+    "./next.config.ts",
+    "./cypress/**/*.ts",
+    "./cypress/**/*.tsx"
+  ]
 }

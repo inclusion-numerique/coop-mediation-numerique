@@ -24,7 +24,7 @@ export default {
   framework: {
     name: '@storybook/nextjs',
     options: {
-      nextConfigPath: path.resolve(dirname, '../next.config.mjs'),
+      nextConfigPath: path.resolve(dirname, '../next.config.ts'),
     },
   },
   staticDirs: ['../public', './public'],

@@ -16,7 +16,6 @@
     "prebuild": "react-dsfr optimize-css --silent",
     "build": "pnpm --silent with-env next build",
     "build:jobs": "pnpm --silent with-env node scripts/build-jobs.mjs",
-    "build:analyze": "ANALYZE=true pnpm --silent with-env next build --webpack",
     "start": "next start",
     "lint": "biome check src e2e .storybook && pnpm --silent lint:api",
     "lint:fix": "biome check --write src e2e .storybook",
@@ -59,7 +58,8 @@
     "prebuild-storybook": "react-dsfr update-icons --silent",
     "build-storybook": "storybook build",
     "chromatic": "dotenv -- chromatic --exit-zero-on-changes --exit-once-uploaded",
-    "cy": "dotenv -e .env -e e2e/cypress.env -- cypress"
+    "cy": "dotenv -e .env -e e2e/cypress.env -- cypress",
+    "analyze": "pnpm --silent with-env next analyze"
   },
   "dependencies": {
     "@arckit/nextjs": "^2.2.2",
@@ -75,7 +75,6 @@
     "@gouvfr-anct/timetable-to-osm-opening-hours": "^2.1.1",
     "@hookform/resolvers": "^5.9.1",
     "@inquirer/prompts": "^8.7.2",
-    "@next/bundle-analyzer": "^16.3.8",
     "@octokit/core": "^7.0.8",
     "@octokit/plugin-rest-endpoint-methods": "^18.0.0",
     "@prisma/adapter-pg": "7.10.0",
