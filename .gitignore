@@ -1,102 +1,50 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-# ⚠️ Keep in sync with .eslintignore
-
-var
-# dependencies
 node_modules
-.pnp
-.pnp.js
 
-# testing
-/coverage
-/coverage-reports
-**/coverage
-**/coverage-cucumber
-**/junit
-
-# production
-/build
-
-# misc
-.DS_Store
+.env
+.env*.local
+.env.remote
 *.pem
 
-# terraform
-.tfvars
-.tfvars.json
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# local env files
-.env*.local
-.env
-.env.remote
-
-# vercel
-.vercel
-
-# storybook
-build-storybook.log
-
-# typescript
-*.tsbuildinfo
-
-# IDE
-.bruno
-.idea
-
-# audit output
-output/
-.vscode
-
-storybook-static
-
-# next
-/.next/
 /.next/
 /dist/
-
-
-# e2e
-/e2e/cypress/videos
-/e2e/cypress/screenshots
-/e2e/.next/
-/e2e/cypress/downloads
-
-
-# ui
-
-# http rest client
-/*.http
-
-# AI and code generation
-# Système d'automatisation de refacto versionné ; settings.local.json reste ignoré
-/.claude/*
-!/.claude/conventions
-!/.claude/agents
-!/.claude/skills
-!/.claude/workflows
-
-# prisma ERD (generated, regenerate with `pnpm -F web erd`)
+/storybook-static/
+*.tsbuildinfo
+/next-env.d.ts
+/src/generated
+/src/configuration/telemetry/**/server/index.ts
+/src/configuration/telemetry/**/client/index.ts
 /prisma/ERD.md
 /prisma/ERD.svg
 /prisma/ERD.pdf
 
-/src/generated
-/src/configuration/telemetry/**/server/index.ts
-/src/configuration/telemetry/**/client/index.ts
+**/coverage
+**/coverage-cucumber
+**/junit
+/e2e/.next/
+/e2e/cypress/screenshots
+/e2e/cypress/downloads
 
-/.playwright-mcp/
-
-# dossiers de travail par sujet (relevés, exports, notes) — jamais dans le home
+/var/
+/src/libraries/var/
+/output/
 /travail/
+
 /infrastructure/.terraform
 /infrastructure/.tfvars.json
 /infrastructure/*.tfplan
 /infrastructure/outputs.json
 
-/next-env.d.ts
+.pnpm-debug.log*
+
+/*.http
+.bruno
+.idea
+.vscode
+.DS_Store
+/.playwright-mcp/
+
+/.claude/*
+!/.claude/conventions
+!/.claude/agents
+!/.claude/skills
+!/.claude/workflows
