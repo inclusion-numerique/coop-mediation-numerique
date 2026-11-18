@@ -40,7 +40,7 @@ export const Hero = () => (
             />
             <img
               className="fr-border-radius--16 fr-width-full"
-              src="/images/illustrations/landing-page/hero/complexité.webp"
+              src="/images/illustrations/landing-page/hero/complexite.webp"
               alt=""
             />
           </div>

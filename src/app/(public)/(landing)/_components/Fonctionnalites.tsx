@@ -29,7 +29,7 @@ export const Fonctionnalites = () => (
       <div className="fr-col-sm-6 fr-col-offset-lg-1 fr-col-12">
         <Image
           className="fr-responsive-img"
-          src="/images/illustrations/landing-page/fonctionnalites/mes-activités.svg"
+          src="/images/illustrations/landing-page/fonctionnalites/mes-activites.svg"
           alt=""
           width={558}
           height={420}
@@ -58,7 +58,7 @@ export const Fonctionnalites = () => (
       <div className="fr-col-sm-6  fr-col-12">
         <Image
           className="fr-responsive-img"
-          src="/images/illustrations/landing-page/fonctionnalites/mes-bénéficiaire.svg"
+          src="/images/illustrations/landing-page/fonctionnalites/mes-beneficiaires.svg"
           alt=""
           width={558}
           height={420}

@@ -21,7 +21,7 @@ export const Contexte = () => (
       <div className="fr-md-col fr-background-alt--blue-france fr-p-md-12v fr-border-radius--16">
         <Image
           className="fr-responsive-img fr-border-radius--16 fr-border-radius-md-bottom--0"
-          src="/images/illustrations/landing-page/contexte/éloignement-numérique.svg"
+          src="/images/illustrations/landing-page/contexte/eloignement-numerique.svg"
           alt=""
           width={464}
           height={270}
@@ -63,7 +63,7 @@ export const Contexte = () => (
       <div className="fr-md-col fr-background-alt--blue-france fr-p-md-12v fr-border-radius--16">
         <Image
           className="fr-responsive-img fr-border-radius--16 fr-border-radius-md-bottom--0"
-          src="/images/illustrations/landing-page/contexte/médiation-numérique.svg"
+          src="/images/illustrations/landing-page/contexte/mediation-numerique.svg"
           alt=""
           width={464}
           height={270}
