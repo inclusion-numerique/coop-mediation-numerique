@@ -4,7 +4,7 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
-import axiosRetry from 'axios-retry'
+import { getAvecNouvellesTentatives } from '@/cli/getAvecNouvellesTentatives'
 import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
 import { varDirectory } from '@/libraries/chemins/varDirectory'
@@ -130,10 +130,6 @@ const scalewayRdbClient = (secretKey: string) => {
     baseURL: 'https://api.scaleway.com/rdb/v1/regions/fr-par',
     headers: { 'X-Auth-Token': secretKey },
   })
-  axiosRetry(client, {
-    retries: 3,
-    retryDelay: (retryCount) => retryCount * 3000,
-  })
   return client
 }
 
@@ -147,9 +143,9 @@ const fetchAllBackups = async (
   const pageSize = 100
 
   while (true) {
-    const response = await client.get<{
+    const response = await getAvecNouvellesTentatives<{
       database_backups: ScalewayDatabaseBackup[]
-    }>('/backups', {
+    }>(client, '/backups', {
       params: {
         order_by: 'created_at_desc',
         page_size: pageSize,
@@ -237,9 +233,11 @@ const exportAndDownloadBackup = async (
     await new Promise((resolve) => {
       setTimeout(resolve, 3000)
     })
-    const statusResponse = await client.get<ScalewayDatabaseBackup>(
-      `/backups/${selectedBackup.id}`,
-    )
+    const statusResponse =
+      await getAvecNouvellesTentatives<ScalewayDatabaseBackup>(
+        client,
+        `/backups/${selectedBackup.id}`,
+      )
     selectedBackup = statusResponse.data
     waitCount += 1
   }
