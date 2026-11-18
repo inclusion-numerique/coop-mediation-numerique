@@ -433,7 +433,7 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           parallel-finished: true
-          carryforward: "packages,web-unit,web-integration,cucumber"
+          carryforward: "web-unit,web-integration,cucumber"
           fail-on-error: false
 
   dependency-review:
