@@ -14,4 +14,4 @@ Le signalement n'est visible que par l'équipe, qui en accuse réception et vous
 
 ## Contributeurs
 
-Les membres de l'équipe traitent les incidents de sécurité selon la procédure décrite dans le [guide de contribution](./CONTRIBUTING.md#incidents-de-securite).
+Les membres de l'équipe traitent les incidents de sécurité selon la procédure décrite dans le [guide de contribution](./CONTRIBUTING.md#securite).
