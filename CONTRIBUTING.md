@@ -18,6 +18,7 @@
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/), dans la version indiquée par `engines.node` du `package.json`
 - [pnpm](https://pnpm.io/) : il installe de lui-même la version indiquée par `packageManager` du `package.json`
+  - pnpm refuse d'installer une version publiée depuis moins de 15 jours (`minimumReleaseAge` dans `pnpm-workspace.yaml`) : une dépendance toute récente attend, ou s'ajoute aux exclusions de ce fichier pour sa seule version
 - [Docker](https://www.docker.com/) avec Docker Compose, pour la base de données et la messagerie locales
 - [gitleaks](https://github.com/gitleaks/gitleaks#installing) : le hook de pré-commit l'exécute et refuse le commit s'il est absent
 - [OpenTofu](https://opentofu.org/docs/intro/install/), seulement pour lire un plan d'infrastructure en local
@@ -165,7 +166,8 @@ Le planning des tâches qui tournent seules est décrit dans [l'infrastructure](
 
 Les workflows GitHub Actions sont dans `.github/workflows/` :
 
-- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic et revue des dépendances, sur les branches préfixées et sur `main`. Sur `main`, ils tiennent à jour la couverture de référence (Coveralls) et les captures de référence de Chromatic.
+- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic, contrôle du bundle des tâches, revue des dépendances et, quand `infrastructure/` change, plan d'infrastructure, sur les branches préfixées et sur `main`. Sur `main`, ils tiennent à jour la couverture de référence (Coveralls) et les captures de référence de Chromatic.
+- **PR title** : vérifie que le titre d'une PR suit les Commits Conventionnels, puisqu'il devient le message du commit de fusion.
 - **Preview** : poser le label `preview` sur une PR déploie l'environnement de sa branche, et chaque push le redéploie. Retirer le label, fermer ou fusionner la PR le détruit.
 - **Release** : à chaque fusion dans `main`, construit les images et déploie `dev` puis la production.
 - **Remove ephemeral environment** : détruit l'environnement de preview d'une branche.
