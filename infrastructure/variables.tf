@@ -83,6 +83,11 @@ variable "HMAC_SECRET_KEY" {
   sensitive = true
 }
 
+variable "NEXTAUTH_SECRET" {
+  type      = string
+  sensitive = true
+}
+
 variable "RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_ID" {
   type      = string
   sensitive = true
