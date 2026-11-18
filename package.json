@@ -98,7 +98,6 @@
     "date-fns": "^4.4.0",
     "date-fns-tz": "^3.2.0",
     "decimal.js": "^10.6.0",
-    "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
     "downshift": "^9.4.0",
     "exceljs": "^4.4.0",

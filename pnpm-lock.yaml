@@ -280,9 +280,6 @@ importers:
       decimal.js:
         specifier: ^10.6.0
         version: 10.6.0
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
       dotenv-cli:
         specifier: ^11.0.0
         version: 11.1.0
