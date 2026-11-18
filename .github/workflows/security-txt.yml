@@ -1,0 +1,27 @@
+name: security.txt
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SECURITY_TXT_URL: https://coop-numerique.anct.gouv.fr/.well-known/security.txt
+
+jobs:
+  verifier:
+    name: Check security.txt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate against RFC 9116
+        run: pipx run --spec sectxt==0.9.8 sectxt https://coop-numerique.anct.gouv.fr
+      - name: Check that it does not expire within 30 days
+        run: |
+          expires=$(curl --fail --silent --show-error "$SECURITY_TXT_URL" | sed -n 's/^Expires: //p')
+          if [ "$(date --date "$expires" +%s)" -lt "$(date --date '+30 days' +%s)" ]; then
+            echo "::error::security.txt expires on $expires: push Expires back in src/app/.well-known/security.txt/route.ts"
+            exit 1
+          fi

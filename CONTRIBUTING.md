@@ -172,6 +172,7 @@ Les workflows GitHub Actions sont dans `.github/workflows/` :
 - **Release** : à chaque fusion dans `main`, construit les images et déploie `dev` puis la production.
 - **Remove ephemeral environment** : détruit l'environnement de preview d'une branche.
 - **Postgres CI image** : publie l'image PostgreSQL de la CI (`docker/postgres-ci`).
+- **security.txt** : chaque lundi, valide le `security.txt` de la production selon la RFC 9116 avec [sectxt](https://github.com/DigitalTrustCenter/sectxt), et échoue s'il expire dans moins de 30 jours. L'échec est notifié par e-mail à l'auteur du dernier changement de son planning.
 
 Le détail du déploiement et de l'approbation des changements d'infrastructure est dans [l'infrastructure](./infrastructure/README.md#deploiement).
 
