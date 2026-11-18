@@ -48,10 +48,7 @@ pnpm test:e2e                                    # E2E tests with Cypress, inter
 pnpm cy run --project e2e                        # E2E tests with Cypress, headless
 ```
 
-Le serveur web doit tourner avec `IS_E2E=true` (`IS_E2E=true pnpm dev`) : c'est ce qui
-bascule l'API Dataspace en mock. Sans ça, les parcours conseiller numérique échouent — l'API
-réelle ne reconnaît pas les utilisateurs de fixtures, et l'inscription les traite comme des
-médiateurs ordinaires. La CI pose la variable dans le `.env` avant de construire.
+E2E tests need the web server running with `IS_E2E=true` (`IS_E2E=true pnpm dev`): it switches the Dataspace API to a mock. Without it, the conseiller numérique journeys fail, because the real API does not know the fixture users and sign-up treats them as ordinary médiateurs. The sign-in test also needs the simulated ProConnect server (`e2e/cypress/proconnect-simule/serveur.ts`) and the matching `NEXT_PUBLIC_PROCONNECT_*` variables; `.github/workflows/ci.yml` shows the full setup.
 
 ### Database
 
@@ -186,19 +183,19 @@ Use DSFR utility classes: `fr-container`, `fr-grid-row`, `fr-col-12`, `fr-mt-8v`
 
 ## ADR
 
-Les agents rédigent les ADR de `docs/adr/` en suivant le modèle [`docs/adr/000-modele.md`](docs/adr/000-modele.md), qui porte toutes les règles de rédaction. Les trois premières :
+ADRs in `docs/adr/` are written in French, following the template [`docs/adr/000-modele.md`](docs/adr/000-modele.md), which holds every writing rule. The first three:
 
-- L'ADR pose les décisions et leurs raisons, de façon générique, et renvoie vers les `*.ability.md` (specs exécutables, qui font foi) pour le détail : aucun nom de fonction, de fichier ou de ligne de code, aucun chemin.
-- Pas de journal ni de mise à jour datée : l'historique git porte le détail, le tableau d'historique ne garde que les rédactions et révisions de l'ADR.
-- Un ADR ne référence que des ADR de numéro inférieur, jamais un ADR postérieur : il pose une situation à un instant donné.
+- An ADR states decisions and their reasons, generically, and points to the `*.ability.md` files (executable specs, the source of truth) for details: no function, file or line names, no paths.
+- No log and no dated updates: git history holds the details; the history table only lists the drafts and revisions of the ADR.
+- An ADR only references ADRs with a lower number, never a later one: it describes the situation at a given time.
 
 ## Branch Conventions
 
-Prefix branches with: `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/` or `test/`; only these branches trigger the CI
+Prefix branches with: `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/` or `test/`; only these branches trigger the CI.
 Branch names can be of any length: a preview's namespace (see `src/cli/branchNamespace.ts`) is the first 7 characters of the branch slug followed by 6 letters derived from the whole branch name, 14 characters at most, the room left for the preview subdomain.
 
 ## Important Notes
 
-- Merging to `main` triggers automatic production deployment
+- Merging to `main` triggers the release: it deploys `dev`, then production once `dev` succeeded; a change to `infrastructure/` waits for a manual approval of its plan
 - Database connection string uses port 5433 locally (not 5432)
 - Local sign-in goes through the ProConnect integration environment (`PROCONNECT_LOCAL_CLIENT_SECRET`); the email magic link only exists on previews
