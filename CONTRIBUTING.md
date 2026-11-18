@@ -46,6 +46,8 @@ Les valeurs marquées `<secret>` ne sont jamais versionnées. Avec une clé Scal
 pnpm cli dotenv:from-secrets
 ```
 
+Elle ajoute aussi les identifiants SMTP du Secret Manager, qui remplacent ceux de MailDev : retirez du `.env` les lignes `SMTP_*` qu'elle a ajoutées pour que les e-mails restent interceptés en local.
+
 En local, la connexion passe par l'environnement d'intégration de ProConnect : elle demande `PROCONNECT_LOCAL_CLIENT_SECRET`.
 
 ### 3. Démarrer la base de données et la messagerie
@@ -55,7 +57,7 @@ pnpm docker:start
 ```
 
 - **PostgreSQL**, avec les extensions de la Coop et de l'Entrepôt (`docker/postgres`) : `localhost:5433`, utilisateur `coop-mediation-numerique`, mot de passe `password`
-- **MailDev**, qui intercepte les e-mails envoyés : interface sur http://localhost:1080, SMTP sur le port 1025
+- **MailDev**, qui intercepte les e-mails envoyés : interface sur http://localhost:1080, SMTP sur le port 1025 (utilisateur `mailuser`, mot de passe `mailpassword`)
 
 ### 4. Initialiser la base de données
 
