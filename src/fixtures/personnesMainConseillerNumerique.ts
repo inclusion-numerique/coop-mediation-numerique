@@ -166,26 +166,50 @@ export const garantirAffectationEmployeuse = async (
   })
 }
 
+const idsPresentsDansCoop = async (
+  transaction: Prisma.TransactionClient,
+  ids: readonly string[],
+): Promise<ReadonlySet<string>> =>
+  new Set(
+    (
+      await transaction.user.findMany({
+        where: { id: { in: [...ids] } },
+        select: { id: true },
+      })
+    ).map(({ id }) => id),
+  )
+
 export const seedPersonnesMain = async (
   transaction: Prisma.TransactionClient,
   utilisateurs: readonly UserFixture[],
 ) => {
-  await enSerie(
-    utilisateurs.filter(
+  const employes = utilisateurs
+    .filter(
       ({ employeDeLaStructureEmployeuse }) => employeDeLaStructureEmployeuse,
-    ),
-    ({ id }) => garantirAffectationEmployeuse(transaction, id),
+    )
+    .map(({ id }) => id)
+
+  const presents = await idsPresentsDansCoop(transaction, [
+    ...employes,
+    ...idsConseillersNumeriques(),
+    ...contratsRompus.map(({ coopId }) => coopId),
+  ])
+  const estPresent = (coopId: string) => presents.has(coopId)
+
+  await enSerie(employes.filter(estPresent), (coopId) =>
+    garantirAffectationEmployeuse(transaction, coopId),
   )
 
   // Passe 2 — affectation idposte vers la SA main de structureEmployeuse, pour tout CN de fixture.
-  await enSerie(idsConseillersNumeriques(), (coopId) =>
+  await enSerie(idsConseillersNumeriques().filter(estPresent), (coopId) =>
     garantirAffectationIdposte(transaction, coopId),
   )
 
   // Passe 3 — le rôle coordinateur, que la coop déclare et que `main` doit porter.
   await refleterCoordinateurDansMain(transaction)
 
-  await enSerie(contratsRompus, ({ coopId }) =>
-    garantirContratRompu(transaction, coopId),
+  await enSerie(
+    contratsRompus.filter(({ coopId }) => estPresent(coopId)),
+    ({ coopId }) => garantirContratRompu(transaction, coopId),
   )
 }
