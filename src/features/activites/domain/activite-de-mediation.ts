@@ -47,7 +47,7 @@ export type Lieu =
       readonly communeDeRattachement: Commune | null
     }
 
-export type DemarcheAdministrative = {
+type DemarcheAdministrative = {
   readonly thematiques: readonly ThematiqueAdministrative[]
   readonly precision: PrecisionDeDemarche | null
 }
@@ -90,13 +90,13 @@ export type BeneficiaireAccompagne =
       readonly profil: ProfilAnonyme
     }
 
-export type RepartitionParGenre = {
+type RepartitionParGenre = {
   readonly masculin: Effectif
   readonly feminin: Effectif
   readonly nonCommunique: Effectif
 }
 
-export type RepartitionParTrancheDAge = {
+type RepartitionParTrancheDAge = {
   readonly moinsDeDouze: Effectif
   readonly douzeDixHuit: Effectif
   readonly dixHuitVingtQuatre: Effectif
@@ -107,7 +107,7 @@ export type RepartitionParTrancheDAge = {
   readonly nonCommunique: Effectif
 }
 
-export type RepartitionParStatutSocial = {
+type RepartitionParStatutSocial = {
   readonly scolarise: Effectif
   readonly sansEmploi: Effectif
   readonly enEmploi: Effectif

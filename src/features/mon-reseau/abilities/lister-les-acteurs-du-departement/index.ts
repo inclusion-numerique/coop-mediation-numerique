@@ -1,5 +1,2 @@
-export type { CriteresActeurs, ParametresDesActeurs } from './domain'
-export {
-  type ActeursDuDepartementConsultes,
-  listerLesActeursDuDepartement,
-} from './implementation'
+export type { ParametresDesActeurs } from './domain'
+export { listerLesActeursDuDepartement } from './implementation'

@@ -1,14 +1,8 @@
 export { AucuneActivite } from './components/AucuneActivite'
 export { EnTeteDeLaListe } from './components/EnTeteDeLaListe'
 export { HistoriqueDesAccompagnements } from './components/HistoriqueDesAccompagnements'
-export {
-  type ContenuDeLaListe,
-  ListeDeMesActivites,
-} from './components/ListeDeMesActivites'
-export {
-  type ContenuDuTableau,
-  TableauDeMesActivites,
-} from './components/TableauDeMesActivites'
+export { ListeDeMesActivites } from './components/ListeDeMesActivites'
+export { TableauDeMesActivites } from './components/TableauDeMesActivites'
 export {
   cartesDeLaChronologie,
   decompteDeLaListe,

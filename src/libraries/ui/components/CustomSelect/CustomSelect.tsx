@@ -12,7 +12,7 @@ import AsyncSelect from 'react-select/async'
 import { Spinner } from '@/ui/Spinner'
 import styles from './CustomSelect.module.css'
 
-export type CustomSelectProps<
+type CustomSelectProps<
   Option = { label: string; value: string },
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,

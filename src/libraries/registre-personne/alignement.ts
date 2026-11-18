@@ -32,7 +32,7 @@ type ContactCoop = {
   readonly telephone?: string
 }
 
-export type ColonnesAlignees = {
+type ColonnesAlignees = {
   readonly nom?: string
   readonly prenom?: string
   readonly contact?: Prisma.InputJsonObject

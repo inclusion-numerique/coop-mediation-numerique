@@ -47,7 +47,7 @@ const adresseMainToString = (
 
 // Nom employeuse : denomination_antenne sinon denomination_sirene (même règle que le domaine de
 // la feature employeuse, que ce module rejoindra avec l'ability de matérialisation du lieu).
-export const employeuseMainNom = (structure: EmployeuseMainPayload): string =>
+const employeuseMainNom = (structure: EmployeuseMainPayload): string =>
   structure.denominationAntenne ?? structure.denominationSirene ?? ''
 
 // Données de l'employeuse (source de vérité main) sous la forme attendue par `lieu_inclusion`.

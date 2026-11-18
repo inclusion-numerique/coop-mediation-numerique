@@ -23,8 +23,3 @@ export const consulterLesLieuxDuDepartement = async (
     ...(await lieuxEtCommunesDuDepartement(departement.data.code, criteres)),
   })
 }
-
-export type LieuxDuDepartementConsultes = Extract<
-  Awaited<ReturnType<typeof consulterLesLieuxDuDepartement>>,
-  { success: true }
->['data']

@@ -7,7 +7,7 @@ import { prismaClient } from '@/prismaClient'
  * bien réels : on se place au-delà de tout ce qu'ils ont émis à ce jour, sans
  * quoi un test écraserait une vraie ligne.
  */
-export const E2E_RDV_AGENT_ID = 9_900_101
+const E2E_RDV_AGENT_ID = 9_900_101
 
 /**
  * Lie un compte RDV Service Public à un utilisateur, sans passer par le parcours
@@ -62,7 +62,7 @@ export const getRdvAccountFor = async ({ email }: { email: string }) => {
   })
 }
 
-export const E2E_RDV_ORGANISATION_ID = 9_900_102
+const E2E_RDV_ORGANISATION_ID = 9_900_102
 
 /** Statuts que RDV Service Public attribue à un rendez-vous. */
 export type StatutRdvE2e = 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'

@@ -10,7 +10,7 @@ import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import { getHomepage } from '@/security/getHomepage'
 import styles from './Header.module.css'
 
-export type HeaderVariant = 'public' | 'coop'
+type HeaderVariant = 'public' | 'coop'
 
 const Header = ({
   user,

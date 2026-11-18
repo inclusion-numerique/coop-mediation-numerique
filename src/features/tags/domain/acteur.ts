@@ -43,9 +43,3 @@ export const coordinateurDe = (acteur: Role): CoordinateurId | null =>
   acteur._tag === 'Coordinateur' || acteur._tag === 'MediateurEtCoordinateur'
     ? acteur.coordinateurId
     : null
-
-export const equipeDe =
-  (acteur: Acteur) =>
-  (coordinateurId: CoordinateurId): Equipe | null =>
-    acteur.equipes.find((equipe) => equipe.coordinateurId === coordinateurId) ??
-    null

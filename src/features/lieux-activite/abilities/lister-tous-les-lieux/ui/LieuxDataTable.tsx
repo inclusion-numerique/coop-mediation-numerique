@@ -5,7 +5,6 @@ import { getStructureCartographieLink } from '@/libraries/cartographie-nationale
 import type {
   DataTableColumn,
   DataTableConfiguration,
-  DataTableFilterValues,
   DataTableSearchParams,
 } from '@/libs/data-table/DataTableConfiguration'
 import { dateAsDayAndTime } from '@/utils/dateAsDayAndTime'
@@ -185,9 +184,5 @@ export const LieuxDataTable = {
 }
 
 export type LieuxDataTableSearchParams = DataTableSearchParams<
-  DataTableConfiguration<LigneDeLaListe>
->
-
-export type LieuxDataTableFilterValues = DataTableFilterValues<
   DataTableConfiguration<LigneDeLaListe>
 >

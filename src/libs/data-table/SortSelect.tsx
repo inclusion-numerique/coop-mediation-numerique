@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEventHandler } from 'react'
 
-export type SortSelectOption = {
+type SortSelectOption = {
   label: string
   value: string
 }

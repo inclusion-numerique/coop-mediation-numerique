@@ -6,7 +6,7 @@ import { defineModel, type Model } from '@/libraries/model'
  * fait Dataspace porté par un booléen à part) : un conseiller numérique est un
  * médiateur — ou un coordinateur — dans le dispositif, pas un rôle distinct.
  */
-export const roles = ['Mediateur', 'Coordinateur'] as const
+const roles = ['Mediateur', 'Coordinateur'] as const
 
 export const Role = defineModel(z.enum(roles).brand('Role'))
 

@@ -43,7 +43,7 @@ type RdvBase = {
   readonly participations: readonly Participation[]
 }
 
-export type RdvIndividuel = RdvBase & {
+type RdvIndividuel = RdvBase & {
   readonly collectif: false
 }
 
@@ -54,7 +54,7 @@ export type RdvIndividuel = RdvBase & {
  * significatifs (DM-4). Ils restent nullables à l'intérieur de la branche, car
  * RDV SP ne garantit ni l'un ni l'autre sur un atelier.
  */
-export type RdvCollectif = RdvBase & {
+type RdvCollectif = RdvBase & {
   readonly collectif: true
   readonly nom: NomAtelier | null
   readonly participantsMax: NombreParticipantsMax | null

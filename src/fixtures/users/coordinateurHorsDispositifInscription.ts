@@ -1,7 +1,7 @@
 import { previewBranchAuthFallbacks } from '@/auth/previewBranchAuthFallbacks'
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
-export const coordinateurHorsDispositifInscriptionEmail =
+const coordinateurHorsDispositifInscriptionEmail =
   'coordinateur-hors-dispositif-inscription@coop-numerique.anct.gouv.fr'
 
 export const coordinateurHorsDispositifInscription = givenUser({

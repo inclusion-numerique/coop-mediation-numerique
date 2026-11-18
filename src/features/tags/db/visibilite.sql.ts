@@ -15,7 +15,7 @@ export const COLONNES_DU_TAG = Prisma.raw(
 const uuids = (ids: readonly string[]): Prisma.Sql =>
   Prisma.join(ids.map((id) => Prisma.sql`${id}::UUID`))
 
-export const sansProprietaire = Prisma.sql`t.mediateur_id IS NULL AND t.coordinateur_id IS NULL`
+const sansProprietaire = Prisma.sql`t.mediateur_id IS NULL AND t.coordinateur_id IS NULL`
 
 const equipesDe = (acteur: Acteur): readonly string[] => [
   ...new Set([

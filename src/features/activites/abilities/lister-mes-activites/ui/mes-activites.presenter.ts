@@ -96,7 +96,7 @@ export type LigneDuTableau = {
   readonly detail: DetailDActivite
 }
 
-export const ligneDuTableau = (
+const ligneDuTableau = (
   consultee: ActiviteConsultee,
   fuseau: string,
 ): LigneDuTableau => {

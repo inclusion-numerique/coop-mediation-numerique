@@ -15,7 +15,7 @@ export type PageDActeurs = {
   readonly lignes: LignesParPage
 }
 
-export type OptionDeCommune = {
+type OptionDeCommune = {
   readonly value: string
   readonly label: string
 }

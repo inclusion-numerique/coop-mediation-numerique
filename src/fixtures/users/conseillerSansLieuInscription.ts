@@ -1,7 +1,7 @@
 import { previewBranchAuthFallbacks } from '@/auth/previewBranchAuthFallbacks'
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
-export const conseillerSansLieuInscriptionEmail =
+const conseillerSansLieuInscriptionEmail =
   'conseiller-sans-lieu-inscription@coop-numerique.anct.gouv.fr'
 
 export const conseillerSansLieuInscription = givenUser({

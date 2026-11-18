@@ -6,10 +6,7 @@ import type { Prisma } from '@/generated/prisma/client'
 export const coordinateurInscriptionAvecToutCoordinateurId =
   'b0ebe56a-b1eb-49c0-9963-26dbbaa1c15e'
 
-export const coordinateurInscriptionAvecToutConseillerNumeriqueId =
-  '6656ef7e6c7471084348131a'
-
-export const coordinateurInscriptionAvecToutEmail =
+const coordinateurInscriptionAvecToutEmail =
   'coordinateur-inscription-avec-tout@coop-numerique.anct.gouv.fr'
 
 export const coordinateurInscriptionAvecTout = givenUser({

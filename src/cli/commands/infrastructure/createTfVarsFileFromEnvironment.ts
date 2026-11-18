@@ -8,7 +8,7 @@ import {
   requiredInfrastructureVariables,
 } from './infrastructureVariables'
 
-export const infrastructureVariablesFile = path.resolve(
+const infrastructureVariablesFile = path.resolve(
   getDirname(import.meta.url),
   '../../../../infrastructure/.tfvars.json',
 )

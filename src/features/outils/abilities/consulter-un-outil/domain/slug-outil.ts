@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const slugsDOutil = [
+const slugsDOutil = [
   'abc-diag',
   'aidants-connect',
   'cartographie-nationale-des-lieux-d-inclusion-numerique',

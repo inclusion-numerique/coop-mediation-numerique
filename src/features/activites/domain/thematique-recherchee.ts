@@ -3,8 +3,7 @@ import { defineModel, type Model } from '@/libraries/model'
 import { THEMATIQUES_ADMINISTRATIVES } from './thematique-administrative'
 import { THEMATIQUES_DE_MEDIATION } from './thematique-de-mediation'
 
-export const AIDE_AUX_DEMARCHES_ADMINISTRATIVES =
-  'AideAuxDemarchesAdministratives'
+const AIDE_AUX_DEMARCHES_ADMINISTRATIVES = 'AideAuxDemarchesAdministratives'
 
 export const THEMATIQUES_RECHERCHEES = [
   ...THEMATIQUES_DE_MEDIATION,

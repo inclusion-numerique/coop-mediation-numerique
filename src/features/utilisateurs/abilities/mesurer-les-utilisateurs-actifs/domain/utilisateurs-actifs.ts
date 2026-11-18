@@ -1,4 +1,4 @@
-export const categoriesStatistiques = [
+const categoriesStatistiques = [
   'mediateurs',
   'conseillers',
   'coordinateurs',

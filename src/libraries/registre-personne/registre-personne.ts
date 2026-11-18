@@ -152,7 +152,7 @@ const ligneVide: LigneDuRegistre = {
   deletedBy: null,
 }
 
-export type LienDuCompte = 'reliee' | 'a-creer' | 'a-lier' | 'occupee'
+type LienDuCompte = 'reliee' | 'a-creer' | 'a-lier' | 'occupee'
 
 export type ApercuDeLaSynchronisation = {
   readonly lien: LienDuCompte

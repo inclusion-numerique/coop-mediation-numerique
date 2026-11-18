@@ -1,7 +1,4 @@
-export {
-  ajouterUnMembre,
-  type EchecDAjout,
-} from './ajouter-un-membre.mutation'
+export { ajouterUnMembre } from './ajouter-un-membre.mutation'
 export {
   equipeAComplementer,
   mediateursAAjouter,

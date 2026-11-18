@@ -5,15 +5,15 @@ import type {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
-export type AnonymiserPortefeuille = (input: {
+type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<{ readonly anonymises: number }>
 
-export type EffacerNotes = (input: {
+type EffacerNotes = (input: {
   readonly rattachements: RattachementsDuCompte
 }) => Promise<{ readonly effacees: number }>
 
-export type EffacerEmpreinteRdv = (input: {
+type EffacerEmpreinteRdv = (input: {
   readonly utilisateurId: UtilisateurId
 }) => Promise<{
   readonly compteDelie: boolean
@@ -21,7 +21,7 @@ export type EffacerEmpreinteRdv = (input: {
   readonly usagersSupprimes: number
 }>
 
-export type DetacherDesEquipes = (input: {
+type DetacherDesEquipes = (input: {
   readonly rattachements: RattachementsDuCompte
 }) => Promise<{
   readonly invitationsSupprimees: number
@@ -30,11 +30,11 @@ export type DetacherDesEquipes = (input: {
   readonly tagsSupprimes: number
 }>
 
-export type RetirerDesLieux = (input: {
+type RetirerDesLieux = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<{ readonly rattachementsSupprimes: number }>
 
-export type RevoquerPartageStatistiques = (input: {
+type RevoquerPartageStatistiques = (input: {
   readonly rattachements: RattachementsDuCompte
 }) => Promise<{ readonly partagesRevoques: number }>
 

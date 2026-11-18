@@ -15,7 +15,7 @@ export type Signalements = {
   readonly nomSansRapport: boolean
 }
 
-export const COLONNES_DU_RELEVE = [
+const COLONNES_DU_RELEVE = [
   'compte_id',
   'personne_id',
   'lien',

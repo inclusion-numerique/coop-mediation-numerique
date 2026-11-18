@@ -1,43 +1,5 @@
 import axios from 'axios'
-import { proConnectProviderId } from '@/auth/proConnect'
-import type { SessionUser } from '@/auth/sessionUser'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { prismaClient } from '@/prismaClient'
-
-const isJwtUnexpired = (token: string, clockSkewSeconds = 60): boolean => {
-  try {
-    const [, payloadB64] = token.split('.')
-    if (!payloadB64) return false
-    const payloadJson = Buffer.from(payloadB64, 'base64').toString('utf8')
-    const payload = JSON.parse(payloadJson) as { exp?: number }
-    if (!payload?.exp || typeof payload.exp !== 'number') return false
-    const nowInSeconds = Math.floor(Date.now() / 1000)
-
-    return payload.exp > nowInSeconds + clockSkewSeconds
-  } catch {
-    return false
-  }
-}
-
-export const getProconnectIdToken = ({
-  id,
-}: Pick<SessionUser, 'id'>): Promise<string | null> =>
-  prismaClient.account
-    .findFirst({
-      where: {
-        userId: id,
-        provider: proConnectProviderId,
-        id_token: { not: null },
-      },
-      select: {
-        id_token: true,
-      },
-    })
-    .then((result) => {
-      const token = result?.id_token ?? null
-      if (!token) return null
-      return isJwtUnexpired(token) ? token : null
-    })
 
 const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
 

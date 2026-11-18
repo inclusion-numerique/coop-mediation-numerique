@@ -1,7 +1,6 @@
 import type { Prisma } from '@/generated/prisma/client'
 import type {
   DataTableConfiguration,
-  DataTableFilterValues,
   DataTableSearchParams,
 } from '@/libs/data-table/DataTableConfiguration'
 import { dateAsDayAndTime } from '@/utils/dateAsDayAndTime'
@@ -93,6 +92,3 @@ export const EmployeusesDataTable = {
 
 export type EmployeusesSearchParams =
   DataTableSearchParams<EmployeusesDataTableConfiguration>
-
-export type StructuresAdministrativesDataTableFilterValues =
-  DataTableFilterValues<EmployeusesDataTableConfiguration>

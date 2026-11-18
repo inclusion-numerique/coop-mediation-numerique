@@ -72,7 +72,3 @@ export const rechercherDesLieux = async ({
     },
   }
 }
-
-export type LieuxTrouves = Awaited<
-  ReturnType<typeof rechercherDesLieux>
->['searchResult']

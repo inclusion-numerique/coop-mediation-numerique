@@ -20,14 +20,14 @@ export type BeneficiaireSuiviAffiche = {
   readonly nombreDActivites: Effectif
 }
 
-export type LieuAffiche = {
+type LieuAffiche = {
   readonly id: LieuActiviteId
   readonly nom: NomDeStructure
   readonly adresse: AdresseDuLieu | null
   readonly localite: AdresseDuLieu | null
 }
 
-export type TagAffiche = {
+type TagAffiche = {
   readonly id: TagId
   readonly nom: NomDeTag
 }

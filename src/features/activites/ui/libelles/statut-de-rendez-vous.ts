@@ -46,7 +46,7 @@ export type StatutDeRendezVousDansLURL =
   | 'excused'
   | 'noshow'
 
-export const libellesDesStatutsDansLURL: Readonly<
+const libellesDesStatutsDansLURL: Readonly<
   Record<StatutDeRendezVousDansLURL, string>
 > = {
   unknown: 'À venir',

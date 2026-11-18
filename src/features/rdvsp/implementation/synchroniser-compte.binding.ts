@@ -38,7 +38,7 @@ import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
  * était marqué en erreur dans les deux cas — donc l'alerte de reconnexion
  * s'affichait chez des médiateurs dont le compte fonctionnait.
  */
-export class EchecDeSynchronisation extends Error {
+class EchecDeSynchronisation extends Error {
   constructor(
     readonly motif: string,
     diagnostic: string = motif,

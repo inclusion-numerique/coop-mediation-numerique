@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const sourcesAffectation = ['idposte', 'coop', 'autre'] as const
+const sourcesAffectation = ['idposte', 'coop', 'autre'] as const
 
 type SourceConnue = (typeof sourcesAffectation)[number]
 

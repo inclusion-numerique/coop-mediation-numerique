@@ -20,7 +20,7 @@ import {
   thematiquesDeMediation,
 } from '../domain'
 
-export const AIDE_AUX_DEMARCHES = 'AideAuxDemarchesAdministratives'
+const AIDE_AUX_DEMARCHES = 'AideAuxDemarchesAdministratives'
 
 export const CommuneSaisie = z.object({
   nom: z.string(),

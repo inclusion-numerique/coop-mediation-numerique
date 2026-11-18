@@ -2,7 +2,7 @@ import Breadcrumb from '@codegouvfr/react-dsfr/Breadcrumb'
 import { Route } from 'next'
 import { LinkProps } from 'next/link'
 
-export type BreadcrumbParent = {
+type BreadcrumbParent = {
   label: string
   linkProps: Omit<LinkProps & { href: Route }, 'children'>
 }

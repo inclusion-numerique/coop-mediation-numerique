@@ -41,7 +41,7 @@ export type CreerOuFusionnerBeneficiaires = (input: {
   readonly mediateurId: MediateurRedacteurId
 }) => Promise<readonly BeneficiaireFusionne[]>
 
-export type RendezVousASaisir = {
+type RendezVousASaisir = {
   readonly id: RdvId
   readonly debut: Date
   readonly dureeEnMinutes: number

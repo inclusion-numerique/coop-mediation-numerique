@@ -6,6 +6,3 @@ export const RENSEIGNER_LIEUX_ACTIVITE_ERRORS = {
   AdresseNonValidee:
     'L’adresse de ce lieu est introuvable dans la Base Adresse Nationale. Saisissez-la manuellement pour ajouter ce lieu.',
 } as const
-
-export type RenseignerLieuxActiviteErrorKey =
-  (typeof RENSEIGNER_LIEUX_ACTIVITE_ERRORS)[keyof typeof RENSEIGNER_LIEUX_ACTIVITE_ERRORS]

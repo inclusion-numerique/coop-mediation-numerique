@@ -28,7 +28,7 @@ const EXPRESSION_DE_TRI = {
   ReturnType<typeof normaliseePourLaRecherche>
 >
 
-export type RechercheDeLieuxDuDepartement = {
+type RechercheDeLieuxDuDepartement = {
   readonly recherche?: string
   readonly communes?: readonly string[]
   readonly tri?: TriDesLieux
@@ -132,5 +132,3 @@ export const lieuxDuDepartement = async ({
     pageSize,
   }
 }
-
-export type LieuxDuDepartement = Awaited<ReturnType<typeof lieuxDuDepartement>>

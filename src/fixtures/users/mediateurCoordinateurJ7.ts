@@ -3,10 +3,10 @@ import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 const day = 24 * 60 * 60 * 1000
 const date = new Date(Date.now() - 7 * day)
 
-export const mediateurCoordinateurJ7MediateurId =
+const mediateurCoordinateurJ7MediateurId =
   '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d'
 
-export const mediateurCoordinateurJ7CoordinateurId =
+const mediateurCoordinateurJ7CoordinateurId =
   '2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e'
 
 export const mediateurCoordinateurJ7 = givenUser({

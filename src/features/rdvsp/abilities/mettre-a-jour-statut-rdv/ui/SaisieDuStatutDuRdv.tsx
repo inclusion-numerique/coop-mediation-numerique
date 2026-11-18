@@ -15,12 +15,11 @@ export type RdvASaisir = {
   readonly collectif: boolean
 }
 
-export const SaisieDuStatutDuRdvDynamicModal =
-  createDynamicModal<RdvASaisir | null>({
-    id: 'rdv-status-update',
-    isOpenedByDefault: false,
-    initialState: null,
-  })
+const SaisieDuStatutDuRdvDynamicModal = createDynamicModal<RdvASaisir | null>({
+  id: 'rdv-status-update',
+  isOpenedByDefault: false,
+  initialState: null,
+})
 
 export const useOuvrirLaSaisieDuStatut = (): ((rdv: RdvASaisir) => void) =>
   SaisieDuStatutDuRdvDynamicModal.useOpen()

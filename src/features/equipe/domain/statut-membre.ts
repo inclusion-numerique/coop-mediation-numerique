@@ -1,6 +1,6 @@
 export const SEUIL_INACTIVITE_EN_JOURS = 30
 
-export type DerniereActivite =
+type DerniereActivite =
   | { readonly type: 'Aucune' }
   | { readonly type: 'Le'; readonly date: Date }
 

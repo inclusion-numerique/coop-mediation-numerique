@@ -1,9 +1,9 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
-export const mediateurSansEmployeuseInscriptionMediateurId =
+const mediateurSansEmployeuseInscriptionMediateurId =
   'b7e0a2c1-58d3-4f6e-9a41-2c5d8e0f3b74'
 
-export const mediateurSansEmployeuseInscriptionEmail =
+const mediateurSansEmployeuseInscriptionEmail =
   'mediateur-sans-employeuse@coop-numerique.anct.gouv.fr'
 
 /**

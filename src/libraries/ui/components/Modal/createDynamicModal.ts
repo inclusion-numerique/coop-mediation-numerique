@@ -52,5 +52,3 @@ export const createDynamicModal = <T>({
 
   return { ...createModalReturn, useOpen, useState }
 }
-
-export type DynamicModalReturn<T> = ReturnType<typeof createDynamicModal<T>>

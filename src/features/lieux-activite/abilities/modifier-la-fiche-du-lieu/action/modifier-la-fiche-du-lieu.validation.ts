@@ -42,7 +42,7 @@ export const InformationsGeneralesSaisie = z
   })
   .refine(...adresseReconnue)
 
-export const VisibiliteCartographieSaisie = z.object({
+const VisibiliteCartographieSaisie = z.object({
   section: z.literal('VisibiliteCartographie'),
   visiblePourCartographieNationale: z.boolean(),
 })

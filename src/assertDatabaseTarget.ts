@@ -23,7 +23,7 @@ const hostFromUrl = (databaseUrl: string): string => {
   }
 }
 
-export const databaseUrlLooksLikeProduction = (
+const databaseUrlLooksLikeProduction = (
   databaseUrl: string,
   productionDatabaseName?: string,
 ): boolean => {

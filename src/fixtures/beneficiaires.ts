@@ -54,26 +54,25 @@ export const beneficiaireMaximaleMediateurAvecActivite = givenBeneficiaire({
   rdvUserId: null,
 })
 
-export const beneficiaireSansAccompagnementsMediateurAvecActivite =
-  givenBeneficiaire({
-    id: 'b8a9306e-6e3d-410d-bf21-6ca4e17ee371',
-    mediateurId: mediateurAvecActiviteMediateurId,
-    anonyme: false,
-    rdvServicePublicId: null,
-    prenom: 'Félix',
-    nom: 'Sans accompagnements',
-    commune: 'Crolles',
-    communeCodePostal: '38920',
-    communeCodeInsee: '38140',
-    genre: 'Masculin',
-    trancheAge: 'VingtCinqTrenteNeuf',
-    statutSocial: 'EnEmploi',
-    notes: null,
-    creation: new Date('2024-03-03'),
-    modification: new Date('2024-06-06'),
-    suppression: null,
-    rdvUserId: null,
-  })
+const beneficiaireSansAccompagnementsMediateurAvecActivite = givenBeneficiaire({
+  id: 'b8a9306e-6e3d-410d-bf21-6ca4e17ee371',
+  mediateurId: mediateurAvecActiviteMediateurId,
+  anonyme: false,
+  rdvServicePublicId: null,
+  prenom: 'Félix',
+  nom: 'Sans accompagnements',
+  commune: 'Crolles',
+  communeCodePostal: '38920',
+  communeCodeInsee: '38140',
+  genre: 'Masculin',
+  trancheAge: 'VingtCinqTrenteNeuf',
+  statutSocial: 'EnEmploi',
+  notes: null,
+  creation: new Date('2024-03-03'),
+  modification: new Date('2024-06-06'),
+  suppression: null,
+  rdvUserId: null,
+})
 
 export const beneficiaireAnonymeMediateurAvecActivite =
   givenBeneficiaireAnonyme({
@@ -91,7 +90,7 @@ export const beneficiaireAnonymeMediateurAvecActivite =
     suppression: null,
   })
 
-export const beneficiairesMediateurAvecActivite = [
+const beneficiairesMediateurAvecActivite = [
   beneficiaireMinimaleMediateurAvecActivite,
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireSansAccompagnementsMediateurAvecActivite,
@@ -145,26 +144,25 @@ export const beneficiaireMaximaleConseillerNumerique = givenBeneficiaire({
   suppression: null,
 })
 
-export const beneficiaireSansAccompagnementsConseillerNumerique =
-  givenBeneficiaire({
-    id: '2bfb6e40-7add-47b8-86a7-cc58aa32fe01',
-    mediateurId: conseillerNumeriqueMediateurId,
-    anonyme: false,
-    prenom: 'Antoine',
-    rdvServicePublicId: null,
-    nom: 'Sans accompagnements',
-    commune: 'Crolles',
-    communeCodePostal: '38920',
-    communeCodeInsee: '38140',
-    genre: 'Masculin',
-    trancheAge: 'VingtCinqTrenteNeuf',
-    statutSocial: 'SansEmploi',
-    notes: null,
-    creation: new Date('2024-08-03'),
-    modification: new Date('2024-08-06'),
-    suppression: null,
-    rdvUserId: null,
-  })
+const beneficiaireSansAccompagnementsConseillerNumerique = givenBeneficiaire({
+  id: '2bfb6e40-7add-47b8-86a7-cc58aa32fe01',
+  mediateurId: conseillerNumeriqueMediateurId,
+  anonyme: false,
+  prenom: 'Antoine',
+  rdvServicePublicId: null,
+  nom: 'Sans accompagnements',
+  commune: 'Crolles',
+  communeCodePostal: '38920',
+  communeCodeInsee: '38140',
+  genre: 'Masculin',
+  trancheAge: 'VingtCinqTrenteNeuf',
+  statutSocial: 'SansEmploi',
+  notes: null,
+  creation: new Date('2024-08-03'),
+  modification: new Date('2024-08-06'),
+  suppression: null,
+  rdvUserId: null,
+})
 
 export const beneficiaireAnonymeConseillerNumerique = givenBeneficiaireAnonyme({
   id: '1fe1c88b-25a0-4414-92de-7171d2c39ad5',
@@ -182,7 +180,7 @@ export const beneficiaireAnonymeConseillerNumerique = givenBeneficiaireAnonyme({
   rdvUserId: null,
 })
 
-export const beneficiairesConseillerNumerique = [
+const beneficiairesConseillerNumerique = [
   beneficiaireMinimaleConseillerNumerique,
   beneficiaireMaximaleConseillerNumerique,
   beneficiaireSansAccompagnementsConseillerNumerique,
@@ -236,7 +234,7 @@ export const beneficiaireMaximaleCoordinateur = givenBeneficiaire({
   rdvUserId: null,
 })
 
-export const beneficiaireSansAccompagnementsCoordinateur = givenBeneficiaire({
+const beneficiaireSansAccompagnementsCoordinateur = givenBeneficiaire({
   id: 'afcbdd63-7dd9-4342-9fa6-084e7a785406',
   mediateurId: coordinateurInscritAvecToutMediateurId,
   anonyme: false,
@@ -256,7 +254,7 @@ export const beneficiaireSansAccompagnementsCoordinateur = givenBeneficiaire({
   rdvUserId: null,
 })
 
-export const beneficiaireAnonymeCoordinateur = givenBeneficiaireAnonyme({
+const beneficiaireAnonymeCoordinateur = givenBeneficiaireAnonyme({
   id: '6085814c-8ac0-483f-a5d8-3a15493974cd',
   mediateurId: coordinateurInscritAvecToutMediateurId,
   rdvServicePublicId: null,
@@ -272,7 +270,7 @@ export const beneficiaireAnonymeCoordinateur = givenBeneficiaireAnonyme({
   rdvUserId: null,
 })
 
-export const beneficiairesCoordinateur = [
+const beneficiairesCoordinateur = [
   beneficiaireMinimaleCoordinateur,
   beneficiaireMaximaleCoordinateur,
   beneficiaireSansAccompagnementsCoordinateur,

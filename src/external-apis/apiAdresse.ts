@@ -1,9 +1,9 @@
 /**
  * Documentation: https://adresse.data.gouv.fr/api-doc/adresse
  */
-export const apiAdresseEndpoint = 'https://data.geopf.fr/geocodage/search'
+const apiAdresseEndpoint = 'https://data.geopf.fr/geocodage/search'
 
-export type FeatureCollection = {
+type FeatureCollection = {
   type: 'FeatureCollection' // Type de la collection de fonctionnalités
   version: string // Version de la collection de fonctionnalités
   features: Array<Feature> // Liste des fonctionnalités
@@ -19,7 +19,7 @@ export type Feature = {
   properties: Properties // Propriétés de la fonctionnalité
 }
 
-export type Geometry = {
+type Geometry = {
   type: 'Point' // Type de la géométrie
   coordinates: [number, number] // Coordonnées géographiques (longitude, latitude)
 }
@@ -30,9 +30,9 @@ export type Geometry = {
  * locality : lieu-dit
  * municipality : numéro « à la commune »
  */
-export type AdresseType = 'housenumber' | 'street' | 'locality' | 'municipality'
+type AdresseType = 'housenumber' | 'street' | 'locality' | 'municipality'
 
-export type Properties = {
+type Properties = {
   label: string // Adresse complète
   score: number // Score de correspondance
   housenumber: string // Numéro de la maison

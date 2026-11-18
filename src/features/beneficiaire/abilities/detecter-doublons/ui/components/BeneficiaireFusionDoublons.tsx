@@ -17,7 +17,7 @@ import { numberToString } from '@/utils/formatNumber'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 
-export type FusionItemToKeep = 'a' | 'b'
+type FusionItemToKeep = 'a' | 'b'
 
 type FusionItemState = {
   selected: boolean

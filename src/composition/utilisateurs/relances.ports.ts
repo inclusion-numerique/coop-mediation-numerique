@@ -26,7 +26,7 @@ import { supprimerComptePorts } from './supprimer-compte.ports'
 
 const dateFrancaise = (date: Date): string => date.toLocaleDateString('fr-FR')
 
-export const relancesDInscriptionPorts = (
+const relancesDInscriptionPorts = (
   totalInscrits: number,
 ): RelancerLesInscriptionsInacheveesPorts => ({
   envoyerLaRelance: ({ courriel, prenom }, palier) =>
@@ -52,7 +52,7 @@ export const relancesDInscriptionPorts = (
   },
 })
 
-export const relancesDesInscritsPorts = (
+const relancesDesInscritsPorts = (
   totalInscrits: number,
   maintenant: Date,
 ): RelancerLesInscritsInactifsPorts => ({

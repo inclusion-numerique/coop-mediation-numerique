@@ -11,7 +11,7 @@ import { handleSubmit } from '@/libs/form/handle-submit'
 import { useAppForm } from '@/libs/form/use-app-form'
 import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
-export const DateRangeValidation = z
+const DateRangeValidation = z
   .object({
     du: z.date({ message: 'La date de début est requise' }),
     au: z.date({ message: 'La date de fin est requise' }),

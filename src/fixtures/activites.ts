@@ -20,7 +20,7 @@ import { coordinateurInscritAvecToutMediateurId } from '@/fixtures/users/coordin
 import { mediateurAvecActiviteMediateurId } from '@/fixtures/users/mediateurAvecActivite'
 import { Thematique } from '@/generated/prisma/browser'
 
-export const mediateurAvecActiviteCrasIndividuels = [
+const mediateurAvecActiviteCrasIndividuels = [
   givenCraIndividuel({
     id: 'bcb0ad21-5be2-417a-9ff2-d8b4dd9c62b0',
     beneficiaireId: beneficiaireMinimaleMediateurAvecActivite.id,
@@ -70,7 +70,7 @@ export const mediateurAvecActiviteCrasIndividuels = [
   }),
 ]
 
-export const mediateurAvecActiviteCrasDemarchesAdministratives = [
+const mediateurAvecActiviteCrasDemarchesAdministratives = [
   givenCraDemarcheAdministrative({
     id: '1c083c39-beec-4606-ba1a-f1cdf173e5d4',
     beneficiaireId: beneficiaireMinimaleMediateurAvecActivite.id,
@@ -133,7 +133,7 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
   }),
 ]
 
-export const mediateurAvecActiviteCrasCollectifs = [
+const mediateurAvecActiviteCrasCollectifs = [
   givenCraCollectif({
     id: '1b5d4e97-de3d-4e6d-87f2-b1ab28c6af5e',
     mediateurId: mediateurAvecActiviteMediateurId,
@@ -174,7 +174,7 @@ export const mediateurAvecActiviteCrasCollectifs = [
   }),
 ]
 
-export const conseillerNumeriqueCrasIndividuels = [
+const conseillerNumeriqueCrasIndividuels = [
   givenCraIndividuel({
     id: 'fa05c7eb-a4a5-4b90-bc59-8c83eea045ea',
     beneficiaireId: beneficiaireMinimaleConseillerNumerique.id,
@@ -224,7 +224,7 @@ export const conseillerNumeriqueCrasIndividuels = [
   }),
 ]
 
-export const conseillerNumeriqueCrasDemarchesAdministratives = [
+const conseillerNumeriqueCrasDemarchesAdministratives = [
   givenCraDemarcheAdministrative({
     id: '26c0e764-1959-4ff5-b447-fd086e9120a7',
     beneficiaireId: beneficiaireMinimaleConseillerNumerique.id,
@@ -287,7 +287,7 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
   }),
 ]
 
-export const conseillerNumeriqueCrasCollectifs = [
+const conseillerNumeriqueCrasCollectifs = [
   givenCraCollectif({
     id: 'c9740386-4257-489d-b431-d63e2f6570de',
     mediateurId: conseillerNumeriqueMediateurId,
@@ -328,13 +328,7 @@ export const conseillerNumeriqueCrasCollectifs = [
   }),
 ]
 
-export const fixturesActivitesConseillerNumerique = [
-  ...conseillerNumeriqueCrasCollectifs,
-  ...conseillerNumeriqueCrasDemarchesAdministratives,
-  ...conseillerNumeriqueCrasIndividuels,
-]
-
-export const coordinateurCrasIndividuels = [
+const coordinateurCrasIndividuels = [
   givenCraIndividuel({
     id: '4ffd3052-bb5d-4289-897e-45aac4333af2',
     beneficiaireId: beneficiaireMinimaleCoordinateur.id,
@@ -346,7 +340,7 @@ export const coordinateurCrasIndividuels = [
   }),
 ]
 
-export const coordinateurCrasDemarchesAdministratives = [
+const coordinateurCrasDemarchesAdministratives = [
   givenCraDemarcheAdministrative({
     id: 'd250af76-6ad2-4407-87a4-840ad6e593ed',
     beneficiaireId: beneficiaireMinimaleCoordinateur.id,
@@ -362,7 +356,7 @@ export const coordinateurCrasDemarchesAdministratives = [
   }),
 ]
 
-export const coordinateurCrasCollectifs = [
+const coordinateurCrasCollectifs = [
   givenCraCollectif({
     id: '99098367-7fa3-4d82-9ac4-3aa1e87878d0',
     mediateurId: coordinateurInscritAvecToutMediateurId,
@@ -396,11 +390,3 @@ export const fixtureCrasCollectifs = [
   ...conseillerNumeriqueCrasCollectifs,
   ...coordinateurCrasCollectifs,
 ]
-
-export const fixtureCras = [
-  ...fixtureCrasIndividuels,
-  ...fixtureCrasDemarchesAdministratives,
-  ...fixtureCrasCollectifs,
-]
-
-export type ActiviteFixture = (typeof fixtureCras)[number]

@@ -44,7 +44,7 @@ export type Rubrique =
     }
   | { readonly _tag: 'Texte'; readonly titre: string; readonly texte: string }
 
-export type BeneficiaireDuDetail =
+type BeneficiaireDuDetail =
   | {
       readonly _tag: 'Suivi'
       readonly id: string
@@ -53,7 +53,7 @@ export type BeneficiaireDuDetail =
     }
   | { readonly _tag: 'Anonyme'; readonly infos: readonly string[] }
 
-export type ParticipantsDuDetail = {
+type ParticipantsDuDetail = {
   readonly titre: string
   readonly titreDesSuivis: string | null
   readonly suivis: readonly { readonly id: string; readonly nom: string }[]

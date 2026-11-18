@@ -10,7 +10,7 @@ export type AvertirDeLaSuppression = (avertissement: {
   readonly dateDeSuppression: Date
 }) => Promise<void>
 
-export type SupprimerLeCompte = (utilisateurId: UtilisateurId) => Promise<void>
+type SupprimerLeCompte = (utilisateurId: UtilisateurId) => Promise<void>
 
 export type AnonymiserLesComptesInactifsPorts = {
   readonly avertirDeLaSuppression: AvertirDeLaSuppression

@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 
 export type SortDirection = 'asc' | 'desc'
 
-export type SortLinkProps = {
+type SortLinkProps = {
   ordre: SortDirection
   isActive?: boolean
   accessibilityTitle?: string

@@ -1,10 +1,7 @@
 import type { LieuId } from './lieu-id'
 import type { MediateurId } from './mediateur-id'
 import type { RattachementId } from './rattachement-id'
-import {
-  ModifieParUtilisateur,
-  type TracabiliteRattachement,
-} from './tracabilite'
+import { type TracabiliteRattachement } from './tracabilite'
 import type { UserId } from './user-id'
 
 type Base = {
@@ -15,14 +12,14 @@ type Base = {
   readonly tracabilite: TracabiliteRattachement
 }
 
-export type RattachementEnCours = Base & { readonly _tag: 'EnCours' }
+type RattachementEnCours = Base & { readonly _tag: 'EnCours' }
 
-export type RattachementTermine = Base & {
+type RattachementTermine = Base & {
   readonly _tag: 'Termine'
   readonly fin: Date
 }
 
-export type RattachementSupprime = Base & {
+type RattachementSupprime = Base & {
   readonly _tag: 'Supprime'
   readonly suppression: Date
   readonly supprimePar: UserId | null
@@ -33,21 +30,3 @@ export type Rattachement =
   | RattachementEnCours
   | RattachementTermine
   | RattachementSupprime
-
-export const estEnCours = (
-  rattachement: Rattachement,
-): rattachement is RattachementEnCours => rattachement._tag === 'EnCours'
-
-export const terminer = (
-  rattachement: RattachementEnCours,
-  fin: Date,
-  par: UserId,
-): RattachementTermine => ({
-  ...rattachement,
-  _tag: 'Termine',
-  fin,
-  tracabilite: {
-    ...rattachement.tracabilite,
-    derniereModification: ModifieParUtilisateur(fin, par),
-  },
-})

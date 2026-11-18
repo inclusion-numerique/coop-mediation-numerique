@@ -36,5 +36,3 @@ export const tasks = {
 export type Tasks = typeof tasks
 
 export type TaskName = keyof Tasks
-
-export type TaskInput<Name extends TaskName> = Parameters<Tasks[Name]>[0]

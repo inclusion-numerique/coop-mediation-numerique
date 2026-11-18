@@ -116,7 +116,7 @@ export const sectionGenerale = (
   />
 )
 
-export const sectionGeneraleImprimee = ({
+const sectionGeneraleImprimee = ({
   totalCounts,
   accompagnementsParJour,
   accompagnementsParMois,
@@ -160,7 +160,7 @@ export const sectionBeneficiaires = (
   />
 )
 
-export const sectionBeneficiairesImprimee = ({
+const sectionBeneficiairesImprimee = ({
   beneficiaires,
 }: Pick<StatistiquesFournies, 'beneficiaires'>) => (
   <SectionBeneficiairesImprimee
@@ -247,7 +247,7 @@ export const sectionActivites = (
   />
 )
 
-export const sectionActivitesImprimee = ({
+const sectionActivitesImprimee = ({
   activites,
   totalCounts,
   structures,

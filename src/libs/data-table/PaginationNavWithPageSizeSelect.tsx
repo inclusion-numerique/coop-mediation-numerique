@@ -3,7 +3,7 @@ import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import PageSizeSelect from './PageSizeSelect'
 import PaginationNav, { PaginationNavProps } from './PaginationNav'
 
-export type PaginationNavWithPageSizeProps = PaginationNavProps & {
+type PaginationNavWithPageSizeProps = PaginationNavProps & {
   pageSizeOptions: SelectOption[]
   defaultPageSize: number
 }

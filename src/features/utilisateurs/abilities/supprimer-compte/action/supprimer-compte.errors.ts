@@ -8,6 +8,3 @@ export const SUPPRIMER_COMPTE_ERRORS = {
   AccesNonCoupe:
     'La suppression n’a pas pu aboutir, aucune donnée n’a été modifiée. Réessayez dans un instant.',
 } as const
-
-export type SupprimerCompteErrorKey =
-  (typeof SUPPRIMER_COMPTE_ERRORS)[keyof typeof SUPPRIMER_COMPTE_ERRORS]

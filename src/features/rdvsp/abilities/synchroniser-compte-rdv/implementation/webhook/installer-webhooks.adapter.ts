@@ -42,7 +42,7 @@ const webhookUrl = getServerUrl('/api/rdv-service-public/webhook', {
  */
 const destinationJoignable = (): boolean => !webhookUrl.includes('localhost')
 
-export const installWebhookForOrganisation = async ({
+const installWebhookForOrganisation = async ({
   compte,
   organisationId,
   appendLog,

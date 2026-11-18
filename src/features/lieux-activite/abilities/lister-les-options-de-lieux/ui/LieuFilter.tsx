@@ -24,7 +24,7 @@ import { useAppForm } from '@/libs/form/use-app-form'
 import { useHydrated } from '@/libs/form/use-hydrated'
 import { OptionOptions, optionComboBox } from './option-combo-box'
 
-export type LieuFilterType = 'lieu' | 'commune' | 'departement'
+type LieuFilterType = 'lieu' | 'commune' | 'departement'
 export type LieuFilterValue = { type: LieuFilterType; value: string[] }
 
 const libellesDesTypesDeLieu: Record<LieuFilterType, string> = {

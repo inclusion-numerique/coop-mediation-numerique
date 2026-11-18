@@ -91,5 +91,3 @@ export const SaisieDuLieuCard = ({
     </div>
   )
 }
-
-export default SaisieDuLieuCard

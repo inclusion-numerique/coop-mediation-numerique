@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const NOM_DU_TAG_LONGUEUR_MIN = 3
+const NOM_DU_TAG_LONGUEUR_MIN = 3
 export const NOM_DU_TAG_LONGUEUR_MAX = 80
 export const DESCRIPTION_DU_TAG_LONGUEUR_MAX = 280
 

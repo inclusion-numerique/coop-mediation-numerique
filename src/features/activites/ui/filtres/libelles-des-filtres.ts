@@ -24,7 +24,7 @@ export type FilterType =
   | 'thematiqueAdministratives'
   | 'tags'
   | 'source'
-export const generateActivitesPeriodeFilterLabel = ({
+const generateActivitesPeriodeFilterLabel = ({
   au,
   du,
 }: {

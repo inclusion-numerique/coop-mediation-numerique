@@ -5,6 +5,3 @@ export const RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS = {
   EmployeuseIndisponible:
     'Cette structure n’a pas pu être enregistrée, veuillez en choisir une autre',
 } as const
-
-export type RenseignerStructureEmployeuseErrorKey =
-  (typeof RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS)[keyof typeof RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS]

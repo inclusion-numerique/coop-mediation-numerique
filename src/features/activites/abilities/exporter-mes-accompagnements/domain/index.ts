@@ -8,7 +8,6 @@ export type {
   IndividuelExporte,
   LieuExporte,
   Localisation,
-  MediateurExporte,
 } from './activite-exportee'
 export { CodesPostaux } from './codes-postaux'
 export {

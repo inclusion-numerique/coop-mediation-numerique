@@ -11,5 +11,3 @@ export const getUserRoleLabel = (user: {
 
   return 'Rôle non défini'
 }
-
-export type UserRoleLabel = ReturnType<typeof getUserRoleLabel>

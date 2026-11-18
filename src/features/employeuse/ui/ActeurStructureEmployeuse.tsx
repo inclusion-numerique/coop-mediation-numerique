@@ -5,9 +5,9 @@ import Card from '@/components/Card'
 import type { EmploiEmployeuseAffichage } from '../abilities/consulter-employeuse-a-une-date/ui'
 import { ReferentStructure } from './ReferentStructure'
 
-export type ActeurEmploi = { structure: EmploiEmployeuseAffichage }
+type ActeurEmploi = { structure: EmploiEmployeuseAffichage }
 
-export type ActeurStructureEmployeuseProps = {
+type ActeurStructureEmployeuseProps = {
   emploi: ActeurEmploi
   showIsLieuActiviteNotice: boolean
   showReferentStructure: boolean

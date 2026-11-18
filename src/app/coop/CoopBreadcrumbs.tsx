@@ -1,6 +1,6 @@
 import Breadcrumbs, { type BreadcrumbParents } from '@/components/Breadcrumbs'
 
-export type CoopBreadcrumbsProps = {
+type CoopBreadcrumbsProps = {
   currentPage: string
   parents?: BreadcrumbParents
   className?: string

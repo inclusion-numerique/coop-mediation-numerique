@@ -15,7 +15,7 @@ const chartColors = [
   { fill: 'var(--blue-cumulus-925-125)' },
 ]
 
-export type ChartCardUIProps = {
+type ChartCardUIProps = {
   title: string
   chartTitle: string
   titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'

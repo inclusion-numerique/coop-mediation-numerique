@@ -3,7 +3,7 @@ import { defineModel, type Model } from '@/libraries/model'
 
 const rolesProteges = ['Support', 'Admin'] as const
 
-export const rolesUtilisateur = ['User', ...rolesProteges] as const
+const rolesUtilisateur = ['User', ...rolesProteges] as const
 
 export const RoleUtilisateur = defineModel(
   z.enum(rolesUtilisateur).brand('RoleUtilisateur'),

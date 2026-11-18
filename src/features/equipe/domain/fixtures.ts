@@ -17,7 +17,7 @@ export const coordinateurId = CoordinateurId(
 )
 export const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440011')
 export const email = Email('invite@example.com')
-export const reference = ReferenceInvitation({ email, coordinateurId })
+const reference = ReferenceInvitation({ email, coordinateurId })
 
 export const invitationEnAttente: InvitationEnAttente = {
   reference,

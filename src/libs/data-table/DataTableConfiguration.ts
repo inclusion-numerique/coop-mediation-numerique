@@ -5,7 +5,7 @@ import type { SortDirection } from './SortLink'
 
 export type DataTableRow = any
 
-export type DataTableFilter<
+type DataTableFilter<
   DataRow extends DataTableRow = DataTableRow,
   Where extends Record<string, unknown> = Record<string, unknown>,
   FilterName extends string = string,
@@ -91,16 +91,7 @@ type ConfiguredFilters<Configuration extends DataTableConfiguration> = Extract<
   { filters: Required<DataTableColumn['filters']> }
 >
 
-export type DataTableFilterValues<
-  Configuration extends DataTableConfiguration = DataTableConfiguration,
-> = {
-  [key in Exclude<
-    ConfiguredFilters<Configuration>['filters'],
-    undefined
-  >[number]['name']]: string[] | undefined
-}
-
-export type DataTableFilterSearchParams<
+type DataTableFilterSearchParams<
   Configuration extends DataTableConfiguration = DataTableConfiguration,
 > = {
   [key in Exclude<

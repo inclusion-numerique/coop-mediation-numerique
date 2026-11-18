@@ -1,5 +1,4 @@
 export {
-  type LigneDeLaListe,
   lignesDeLaListe,
   nombreDePages,
 } from './liste-des-tags.presenter'

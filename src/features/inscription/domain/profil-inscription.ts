@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const profilsInscription = [
+const profilsInscription = [
   'ConseillerNumerique',
   'CoordinateurConseillerNumerique',
   'Mediateur',
@@ -27,13 +27,6 @@ export const profilInscriptionLabels: Record<ProfilInscriptionValue, string> = {
 
 export const libelleDuProfil = (profil: ProfilInscriptionValue): string =>
   profilInscriptionLabels[profil]
-
-export const profilInscriptionSlugs: Record<ProfilInscriptionValue, string> = {
-  ConseillerNumerique: 'conseiller-numerique',
-  CoordinateurConseillerNumerique: 'coordinateur-conseiller-numerique',
-  Mediateur: 'mediateur',
-  Coordinateur: 'coordinateur',
-}
 
 /**
  * Dérive le profil d'inscription à partir des seuls signaux de rôle de

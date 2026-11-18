@@ -16,7 +16,7 @@ async function outputDirectoryIfItDoesNotExist(): Promise<void> {
   await fs.mkdir(outputDirectory, { recursive: true })
 }
 
-export async function outputHtmlTemplate(
+async function outputHtmlTemplate(
   name: string,
   htmlContent: string,
 ): Promise<void> {
@@ -24,21 +24,13 @@ export async function outputHtmlTemplate(
   await fs.writeFile(`${outputDirectory}/${name}.html`, htmlContent)
 }
 
-export async function outputMjmlTemplate(
+async function outputMjmlTemplate(
   name: string,
   mjmlTemplate: string,
 ): Promise<void> {
   const htmlContent = await compileMjml(mjmlTemplate)
   await outputHtmlTemplate(name, htmlContent)
   await fs.writeFile(`${outputDirectory}/${name}.mjml`, mjmlTemplate)
-}
-
-export function createHtmlTemplateOutput(
-  templateName: string,
-): (htmlContent: string) => Promise<void> {
-  let index = 0
-  return (htmlContent: string): Promise<void> =>
-    outputHtmlTemplate(`${templateName}_${index++}`, htmlContent)
 }
 
 /**

@@ -7,9 +7,9 @@ export type FenetreDesGraphiques =
 
 export type BornesDeLaSerie = { readonly du: Jour; readonly au: Jour }
 
-export const JOURS_D_UNE_FENETRE_GLISSANTE = 30
+const JOURS_D_UNE_FENETRE_GLISSANTE = 30
 
-export const MOIS_D_UNE_FENETRE_GLISSANTE = 12
+const MOIS_D_UNE_FENETRE_GLISSANTE = 12
 
 const jour = (date: Date): Jour => Jour(format(date, 'yyyy-MM-dd'))
 

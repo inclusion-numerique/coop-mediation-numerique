@@ -3,5 +3,4 @@ export {
   criteresDesLieux,
   estFiltre,
   type ParametresDesLieux,
-  TriDesLieuxAffiche,
 } from './criteres-des-lieux'

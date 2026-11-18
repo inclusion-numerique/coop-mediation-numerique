@@ -1,6 +1,2 @@
-export {
-  MaterielCompte,
-  type RepartitionDesAccompagnements,
-  TrancheDeDuree,
-} from './domain'
+export { type RepartitionDesAccompagnements } from './domain'
 export * from './implementation'

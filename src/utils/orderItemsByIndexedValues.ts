@@ -1,9 +1,6 @@
 import { onlyDefinedAndNotNull } from './onlyDefinedAndNotNull'
 
-export const orderItemsByIndexMap = <
-  T extends { id: V },
-  V extends string | number,
->(
+const orderItemsByIndexMap = <T extends { id: V }, V extends string | number>(
   items: T[],
   indexMap: Map<V, number>,
 ): T[] => {

@@ -67,7 +67,3 @@ export const lieuxAFusionner = async (query: string) => {
     moreResults: Math.max(matchesCount - structuresSearchLimit, 0),
   }
 }
-
-export type LieuxAFusionnerTrouves = Awaited<ReturnType<typeof lieuxAFusionner>>
-
-export type LieuTrouve = LieuxAFusionnerTrouves['structures'][number]

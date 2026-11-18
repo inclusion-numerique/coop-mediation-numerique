@@ -31,14 +31,14 @@ const libelleParRole: Record<(typeof rolesFiltres)[number], string> = {
   administrateur: 'Administrateur',
 }
 
-export const libelleDuRole = (role: (typeof rolesFiltres)[number]): string =>
+const libelleDuRole = (role: (typeof rolesFiltres)[number]): string =>
   libelleParRole[role]
 
 export const optionsDesRoles: readonly SelectOption[] = rolesFiltres.map(
   (role) => ({ value: role, label: libelleDuRole(role) }),
 )
 
-export const libelleDuFiltreStatut = (
+const libelleDuFiltreStatut = (
   filtre: (typeof filtresStatut)[number],
 ): string => libelleDuStatut(statutDuFiltre(filtre))
 

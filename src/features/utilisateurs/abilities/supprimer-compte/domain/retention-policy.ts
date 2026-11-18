@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const retentionPolicies = [
+const retentionPolicies = [
   'InscritJamaisActif',
   'InactifDepuisDeuxAns',
 ] as const

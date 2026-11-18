@@ -13,7 +13,7 @@ import {
   rechercheMinimum,
 } from './lieu-a-fusionner-combo-box'
 
-export const RechercheDUnLieu = ({
+const RechercheDUnLieu = ({
   excludeStructureIds = [],
   defaultStructure,
   onSelect,

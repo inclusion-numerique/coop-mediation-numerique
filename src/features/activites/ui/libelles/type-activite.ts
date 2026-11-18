@@ -26,11 +26,10 @@ export const typeActiviteLabels: {
   Collectif: 'Atelier collectif',
 }
 
-export const typeActiviteForSlug: { [key in TypeActiviteSlug]: TypeActivite } =
-  {
-    individuel: 'Individuel',
-    collectif: 'Collectif',
-  }
+const typeActiviteForSlug: { [key in TypeActiviteSlug]: TypeActivite } = {
+  individuel: 'Individuel',
+  collectif: 'Collectif',
+}
 
 export const typeActiviteSlugLabels: {
   [key in TypeActiviteSlug]: string

@@ -5,7 +5,7 @@ import { getDirname } from '@/libraries/chemins/dirname'
 export type DotEnvVariable = { name: string; value: string }
 
 // Appends text after a new line
-export const appendTextToDotEnvFile = async (text: string) => {
+const appendTextToDotEnvFile = async (text: string) => {
   const dotenvFile = path.resolve(getDirname(import.meta.url), '../../.env')
   await appendFile(dotenvFile, `\n${text}\n`)
 }

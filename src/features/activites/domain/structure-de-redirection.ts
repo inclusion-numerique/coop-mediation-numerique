@@ -16,6 +16,3 @@ export const StructureDeRedirection = defineModel(
 )
 
 export type StructureDeRedirection = Model.TypeOf<typeof StructureDeRedirection>
-
-export const structuresDeRedirection: readonly StructureDeRedirection[] =
-  STRUCTURES_DE_REDIRECTION.map(StructureDeRedirection)

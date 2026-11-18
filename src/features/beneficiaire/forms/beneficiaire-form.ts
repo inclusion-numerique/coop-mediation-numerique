@@ -53,5 +53,3 @@ export const beneficiaireFormShape = z.object({
   statutSocial: z.enum(statutsSociaux).nullish(),
   notes: optional(Notes.schema),
 })
-
-export type BeneficiaireFormOutput = z.output<typeof beneficiaireFormShape>

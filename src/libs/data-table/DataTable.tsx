@@ -10,7 +10,7 @@ import {
 } from './DataTableConfiguration'
 import SortLink from './SortLink'
 
-export type DataTableClasses = {
+type DataTableClasses = {
   wrapper?: string
   container?: string
   content?: string

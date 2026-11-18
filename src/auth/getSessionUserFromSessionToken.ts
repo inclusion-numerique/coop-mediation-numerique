@@ -129,10 +129,7 @@ const querySessionUser = async (sessionToken: string) =>
     },
   })
 
-export type PrismaSession = Exclude<
-  Awaited<ReturnType<typeof querySessionUser>>,
-  null
->
+type PrismaSession = Exclude<Awaited<ReturnType<typeof querySessionUser>>, null>
 
 export type PrismaSessionUser = PrismaSession['user']
 export type PrismaSessionUsupper = PrismaSession['usurper']

@@ -12,5 +12,3 @@ export const monthShortLabels = [
   'Nov.',
   'Déc.',
 ] as const
-
-export type MonthShortLabel = (typeof monthShortLabels)[number]

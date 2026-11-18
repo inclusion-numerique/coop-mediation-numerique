@@ -18,7 +18,7 @@ import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { DefaultValues } from '@/libs/form/use-app-form'
 import { contentId } from '@/utils/skipLinks'
 
-export type CraIndividuelPageData = {
+type CraIndividuelPageData = {
   defaultValues: DefaultValues<CraIndividuelData>
   mediateurId: string
   beneficiairesProposes: readonly BeneficiaireTrouveParLeCra[]

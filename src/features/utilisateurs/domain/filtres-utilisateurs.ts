@@ -13,13 +13,13 @@ export const rolesFiltres = [
 export const RoleFiltre = defineModel(z.enum(rolesFiltres).brand('RoleFiltre'))
 export type RoleFiltre = Model.TypeOf<typeof RoleFiltre>
 
-export const LieuActiviteId = defineModel(z.guid().brand('LieuActiviteId'))
-export type LieuActiviteId = Model.TypeOf<typeof LieuActiviteId>
+const LieuActiviteId = defineModel(z.guid().brand('LieuActiviteId'))
+type LieuActiviteId = Model.TypeOf<typeof LieuActiviteId>
 
-export const EmployeuseId = defineModel(
+const EmployeuseId = defineModel(
   z.coerce.number().int().positive().brand('EmployeuseId'),
 )
-export type EmployeuseId = Model.TypeOf<typeof EmployeuseId>
+type EmployeuseId = Model.TypeOf<typeof EmployeuseId>
 
 export type FiltresUtilisateurs = {
   readonly roles: readonly RoleFiltre[]

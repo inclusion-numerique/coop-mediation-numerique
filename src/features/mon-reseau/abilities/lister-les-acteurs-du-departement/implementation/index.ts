@@ -1,4 +1,1 @@
-export {
-  type ActeursDuDepartementConsultes,
-  listerLesActeursDuDepartement,
-} from './lister-les-acteurs-du-departement'
+export { listerLesActeursDuDepartement } from './lister-les-acteurs-du-departement'

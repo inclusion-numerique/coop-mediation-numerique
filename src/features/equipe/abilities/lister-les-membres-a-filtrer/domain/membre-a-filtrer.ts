@@ -4,7 +4,7 @@ import type { Nom } from '../../../domain/nom'
 import type { NomAffiche } from '../../../domain/nom-affiche'
 import type { Prenom } from '../../../domain/prenom'
 
-export type SituationDuMembre = 'Demandeur' | 'Membre' | 'AncienMembre'
+type SituationDuMembre = 'Demandeur' | 'Membre' | 'AncienMembre'
 
 export type MembreAFiltrer = {
   readonly mediateurId: MediateurId
@@ -20,9 +20,7 @@ export type MembreLu = {
   readonly departs: readonly (Date | null)[]
 }
 
-export const situationDe = (
-  departs: readonly (Date | null)[],
-): SituationDuMembre =>
+const situationDe = (departs: readonly (Date | null)[]): SituationDuMembre =>
   departs.length > 0 && departs.every((depart) => depart !== null)
     ? 'AncienMembre'
     : 'Membre'

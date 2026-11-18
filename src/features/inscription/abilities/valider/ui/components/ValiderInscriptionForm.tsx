@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { validerAction } from '@/app/_actions/inscription/valider.action'
 import {
   type ValiderFormData,
-  validerFormShape,
+  ValiderValidation,
 } from '@/features/inscription/abilities/valider'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { handleSubmit } from '@/libs/form/handle-submit'
@@ -37,11 +37,11 @@ const ValiderInscriptionForm = ({
   }
 
   const form = useAppForm({
-    validators: { onSubmit: validerFormShape },
+    validators: { onSubmit: ValiderValidation },
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
-        const result = await validerAction(validerFormShape.parse(value))
+        const result = await validerAction(ValiderValidation.parse(value))
 
         if (!result.success) {
           erreurValidation()

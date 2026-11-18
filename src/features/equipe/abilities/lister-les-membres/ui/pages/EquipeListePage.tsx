@@ -2,13 +2,10 @@ import type { ReactNode } from 'react'
 import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { telephoneDisplayString } from '@/libraries/telephone'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
 import { contentId } from '@/utils/skipLinks'
 import { type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../domain'
 import { ListeDeLEquipe } from '../components/ListeDeLEquipe'
-
-const _pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
 export type ParametresDeLaListe = {
   lignes?: string

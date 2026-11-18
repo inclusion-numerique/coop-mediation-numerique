@@ -10,12 +10,6 @@ import {
   StructureEmployeuseSelectedItems,
 } from './StructureEmployeuseComboBox'
 
-export const structuresEmployeusesCount = ({
-  structuresEmployeuses,
-}: {
-  structuresEmployeuses?: StructureEmployeuse[]
-}) => structuresEmployeuses?.length ?? 0
-
 export const updateStructuresEmployeusesParams = (data: {
   value: { structuresEmployeuses?: StructureEmployeuse[] }
 }) => {

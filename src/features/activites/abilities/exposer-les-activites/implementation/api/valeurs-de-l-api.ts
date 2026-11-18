@@ -74,7 +74,7 @@ export const typeActiviteApiValues = {
   [key in TypeActivite]: string
 }
 
-export const thematiquesNonAdministrativesApiValues = {
+const thematiquesNonAdministrativesApiValues = {
   DiagnosticNumerique: 'diagnostic_numerique',
   PrendreEnMainDuMateriel: 'prendre_en_main_du_materiel',
   MaintenanceDeMateriel: 'maintenance_de_materiel',
@@ -96,7 +96,7 @@ export const thematiquesNonAdministrativesApiValues = {
   AideAuxDemarchesAdministratives: 'aide_aux_demarches_administratives',
 } as const
 
-export const thematiquesAdministrativesApiValues = {
+const thematiquesAdministrativesApiValues = {
   PapiersElectionsCitoyennete: 'papiers_elections_citoyennete',
   FamilleScolarite: 'famille_scolarite',
   SocialSante: 'social_sante',

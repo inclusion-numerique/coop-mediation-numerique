@@ -40,7 +40,7 @@ export type FicheActeur = {
   readonly regard: RegardDuLecteur
 }
 
-export type ActeurLu = {
+type ActeurLu = {
   readonly acteur: Acteur
   readonly profilCreeLe: Date
 }

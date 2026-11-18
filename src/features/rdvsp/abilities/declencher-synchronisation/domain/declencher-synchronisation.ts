@@ -4,7 +4,7 @@ import type { OrganisationId } from '../../../domain/organisation-id'
 import type { RdvAgentId } from '../../../domain/rdv-agent-id'
 import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 
-export type RoleDemandeur = 'User' | 'Admin' | 'Support'
+type RoleDemandeur = 'User' | 'Admin' | 'Support'
 
 export type Demandeur = {
   readonly id: UtilisateurCoopId
@@ -101,7 +101,7 @@ export const SynchronisationEchouee = (
   marquage,
 })
 
-export type ResultatDeclenchement = {
+type ResultatDeclenchement = {
   /** Nombre d'écarts que la passe a corrigés — zéro vaut « rien n'a bougé ». */
   readonly derive: number
   /** Nul quand la passe était sans objet : aucune synchronisation n'a eu lieu. */

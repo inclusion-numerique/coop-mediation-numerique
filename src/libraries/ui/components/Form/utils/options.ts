@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 export type SelectOption<
   T = string,
   E extends Record<string, unknown> = Record<string, unknown>,
@@ -12,7 +10,7 @@ export type SelectOption<
   extra?: E
 }
 
-export type SelectOptionGroup<T extends string = string> = {
+type SelectOptionGroup<T extends string = string> = {
   label: string
   options: SelectOption<T>[]
   disabled?: boolean
@@ -22,15 +20,6 @@ export type SelectOptionGroup<T extends string = string> = {
 export type SelectInputOption<T extends string = string> =
   | SelectOption<T>
   | SelectOptionGroup<T>
-
-export type RichRadioOption<T extends string = string> = {
-  label: string
-  image?: string | ReactNode
-  imageAlt?: string
-  value: T
-  hint?: string
-  disabled?: boolean
-}
 
 export const labelsToOptions = <T extends string>(
   object: Record<T, string>,

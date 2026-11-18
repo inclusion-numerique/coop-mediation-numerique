@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { dureeAccompagnementPersonnaliseeValue } from '@/features/activites/ui/libelles/duree-accompagnement'
 
-export const maxMinutes = 59
-export const maxHeures = 23
+const maxMinutes = 59
+const maxHeures = 23
 
 export const CraDureeValidation = z
   .object({

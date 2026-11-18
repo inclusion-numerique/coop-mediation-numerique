@@ -40,7 +40,7 @@ export type StructureSearchResult = {
  *
  * L'utilisateur n'est pas dans l'input : il vient de la session côté serveur.
  */
-export const EmployeuseChoisieValidation = z.object(
+const EmployeuseChoisieValidation = z.object(
   {
     siret: Siret.schema,
     nom: z.string().trim().min(1),
@@ -78,9 +78,6 @@ export const RenseignerStructureEmployeuseValidation = z.object({
 })
 
 export type EmployeuseChoisie = z.infer<typeof EmployeuseChoisieValidation>
-export type RenseignerStructureEmployeuseData = z.infer<
-  typeof RenseignerStructureEmployeuseValidation
->
 
 export const identiteDeLEmployeuseChoisie = ({
   siret,

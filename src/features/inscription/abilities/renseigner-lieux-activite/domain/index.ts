@@ -13,12 +13,8 @@ export type {
 } from './ports'
 export {
   type AdresseValidee,
-  type LieuActiviteACreer,
   type LieuActiviteConnu,
-  type LieuActiviteDesire,
-  type LieuActiviteExistant,
   type LieuActiviteInput,
-  type Reconciliation,
   reconcilierLieuxActivite,
 } from './reconcilier'
 export {

@@ -39,7 +39,7 @@ export const centreSocial = givenLieuInclusion({
   ],
 })
 
-export const fixtureStructures = [structureEmployeuse, mediateque, centreSocial]
+const fixtureStructures = [structureEmployeuse, mediateque, centreSocial]
 
 type StructureAdministrativeMainFixture = {
   structureCoopId: string
@@ -89,9 +89,9 @@ const givenStructureAdministrativeMain = (
 // SIRET porté par la seule ligne `main` (le lieu fixture n'en a pas) : la recherche d'employeuse
 // écarte les structures sans SIRET, puisqu'il identifie le choix. Sans lui, cette employeuse
 // resterait introuvable dans le parcours d'inscription qui la cherche.
-export const structureEmployeuseSiret = '13002526500013'
+const structureEmployeuseSiret = '13002526500013'
 
-export const fixtureStructuresAdministrativesMain = [
+const fixtureStructuresAdministrativesMain = [
   givenStructureAdministrativeMain(
     structureEmployeuse,
     structureEmployeuseSiret,

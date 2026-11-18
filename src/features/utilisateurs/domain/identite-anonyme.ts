@@ -3,9 +3,9 @@ import { defineModel, type Model } from '@/libraries/model'
 import { AdresseCourriel } from './adresse-courriel'
 import type { CourrielHash } from './courriel-hash'
 
-export const PRENOM_ANONYME = 'Utilisateur'
-export const NOM_ANONYME = 'Supprimé'
-export const DOMAINE_COURRIEL_ANONYME = 'coop-numerique.anct.gouv.fr'
+const PRENOM_ANONYME = 'Utilisateur'
+const NOM_ANONYME = 'Supprimé'
+const DOMAINE_COURRIEL_ANONYME = 'coop-numerique.anct.gouv.fr'
 
 export const IdentiteAnonyme = defineModel(
   z

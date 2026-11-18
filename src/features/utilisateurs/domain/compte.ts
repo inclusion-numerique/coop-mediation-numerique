@@ -21,6 +21,3 @@ export const etatDuCompte = (supprimeLe: Date | null): EtatCompte =>
   supprimeLe === null
     ? { _tag: 'actif' }
     : { _tag: 'supprime', depuis: supprimeLe }
-
-export const estSupprime = (compte: CompteASupprimer): boolean =>
-  compte.etat._tag === 'supprime'

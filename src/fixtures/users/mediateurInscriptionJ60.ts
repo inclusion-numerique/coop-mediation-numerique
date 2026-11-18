@@ -2,7 +2,7 @@ import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 
 const day = 24 * 60 * 60 * 1000
 
-export const mediateurInscriptionJ60MediateurId =
+const mediateurInscriptionJ60MediateurId =
   'c2dc8edd-8298-492f-b8e1-15599b38e43b'
 
 export const mediateurInscriptionJ60 = givenUser({

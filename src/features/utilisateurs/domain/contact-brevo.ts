@@ -64,7 +64,7 @@ export type InscritDeLaListe = {
   readonly contrat: DatesDeContrat
 }
 
-export type RolesBrevo = readonly [RoleBrevo, ...RoleBrevo[]]
+type RolesBrevo = readonly [RoleBrevo, ...RoleBrevo[]]
 
 export type ContactAImporter = {
   readonly utilisateurId: UtilisateurId

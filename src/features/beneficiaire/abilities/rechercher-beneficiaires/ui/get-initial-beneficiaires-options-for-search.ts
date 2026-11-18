@@ -39,7 +39,3 @@ export const getInitialBeneficiairesOptionsForSearch = async ({
     ? [...options, nonAffichesOption(nonAffiches)]
     : options
 }
-
-export type MostUsedBeneficiairesForSearch = Awaited<
-  ReturnType<typeof getInitialBeneficiairesOptionsForSearch>
->

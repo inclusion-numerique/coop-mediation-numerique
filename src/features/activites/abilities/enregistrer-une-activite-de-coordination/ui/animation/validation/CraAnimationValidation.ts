@@ -4,8 +4,6 @@ import { CraDureeValidation } from '@/features/activites/ui/saisie/validation/Cr
 
 const initiativeValues = ['Initiative', 'Demande'] as const
 
-export type InitiativeValue = (typeof initiativeValues)[number]
-
 const typeAnimationValues = [
   'Assemblee',
   'Comite',
@@ -16,8 +14,6 @@ const typeAnimationValues = [
   'Autre',
 ] as const
 
-export type TypeAnimationValue = (typeof typeAnimationValues)[number]
-
 const thematiqueAnimationValues = [
   'Partage',
   'Reseau',
@@ -26,9 +22,6 @@ const thematiqueAnimationValues = [
   'RH',
   'Autre',
 ] as const
-
-export type ThematiqueAnimationValue =
-  (typeof thematiqueAnimationValues)[number]
 
 export const CraAnimationValidation = z
   .object({

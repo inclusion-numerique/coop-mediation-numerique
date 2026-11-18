@@ -11,7 +11,3 @@ import { z } from 'zod'
 export const StructureEmployeuseLieuValidation = z.object({
   estLieuActivite: z.boolean(),
 })
-
-export type StructureEmployeuseLieuData = z.infer<
-  typeof StructureEmployeuseLieuValidation
->

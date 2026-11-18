@@ -44,7 +44,7 @@ export type RdvRow = PrismaRdv & {
   })[]
 }
 
-export const participationToDomain = (
+const participationToDomain = (
   row: PrismaRdvParticipation & { user: PrismaRdvUser },
 ): Participation => ({
   id: ParticipationId(row.id),

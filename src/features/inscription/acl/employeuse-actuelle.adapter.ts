@@ -60,7 +60,7 @@ export const employeuseActuelleAdaptee = async ({
   }
 }
 
-export type EmployeuseActuelleAdaptee = NonNullable<
+type EmployeuseActuelleAdaptee = NonNullable<
   Awaited<ReturnType<typeof employeuseActuelleAdaptee>>
 >
 

@@ -9,8 +9,6 @@ const natureValues = [
   'Autre',
 ] as const
 
-export type NaturePartenariatValue = (typeof natureValues)[number]
-
 const echelonTerritorialValues = [
   'Communal',
   'Intercommunal',
@@ -18,8 +16,6 @@ const echelonTerritorialValues = [
   'Regional',
   'National',
 ] as const
-
-export type EchelonTerritorialValue = (typeof echelonTerritorialValues)[number]
 
 const typeStructurePartenairesValues = [
   'Commune',
@@ -33,9 +29,6 @@ const typeStructurePartenairesValues = [
   'Groupement',
   'Autre',
 ] as const
-
-export type TypeStructurePartenairesValue =
-  (typeof typeStructurePartenairesValues)[number]
 
 export const CraPartenariatValidation = z
   .object({

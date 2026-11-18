@@ -1,4 +1,1 @@
-export {
-  accepterUneInvitation,
-  type EchecDAcceptation,
-} from './accepter-une-invitation.mutation'
+export { accepterUneInvitation } from './accepter-une-invitation.mutation'

@@ -10,7 +10,7 @@ export type CompteurPresente = {
   readonly nombre: number
 }
 
-export type PeriodePresentee = {
+type PeriodePresentee = {
   readonly cle: string
   readonly libelle: string
   readonly compteurs: readonly CompteurPresente[]

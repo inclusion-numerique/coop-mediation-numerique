@@ -1,4 +1,1 @@
-export type {
-  AccompagnementsDuTag,
-  AccompagnementsParTag,
-} from './accompagnements-par-tag'
+export type { AccompagnementsParTag } from './accompagnements-par-tag'

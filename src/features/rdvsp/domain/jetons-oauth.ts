@@ -30,7 +30,7 @@ export type JetonsOAuth = {
 }
 
 /** Marge avant expiration en deçà de laquelle on renouvelle par anticipation. */
-export const MARGE_RENOUVELLEMENT_MS = 60_000
+const MARGE_RENOUVELLEMENT_MS = 60_000
 
 /**
  * Un jeton sans expiration connue est réputé valide : c'est la réponse de l'API

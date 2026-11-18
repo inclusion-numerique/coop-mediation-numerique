@@ -24,7 +24,7 @@ import {
 } from '../../../ui/libelles-de-coordination'
 import type { ActivitesDeCoordinationListees } from '../domain'
 
-export type Rubrique = {
+type Rubrique = {
   readonly titre: string
   readonly elements: readonly string[]
 }
@@ -53,7 +53,7 @@ export type CarteDeCoordination = {
   readonly detail: DetailDeCoordination
 }
 
-export type JourDeCoordinations = {
+type JourDeCoordinations = {
   readonly cle: string
   readonly jour: string
   readonly cartes: readonly CarteDeCoordination[]

@@ -1,7 +1,7 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 import { mediateque } from '@/fixtures/structures'
 
-export const exConseillerApresRuptureMediateurId =
+const exConseillerApresRuptureMediateurId =
   '594f05c4-47d8-4d4a-9d52-26396da59e5a'
 
 export const exConseillerApresRupture = givenUser({

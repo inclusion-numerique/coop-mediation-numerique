@@ -1,4 +1,1 @@
-export {
-  FicheUtilisateurPage,
-  type SectionsDeLaFiche,
-} from './pages/FicheUtilisateurPage'
+export { FicheUtilisateurPage } from './pages/FicheUtilisateurPage'

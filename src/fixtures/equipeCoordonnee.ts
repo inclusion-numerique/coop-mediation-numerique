@@ -38,7 +38,7 @@ const mediateurInviteEnAttente = givenUser({
   employeDeLaStructureEmployeuse: true,
 })
 
-export const conseillerNumeriqueActifId = 'e5f6a7b8-c9d0-1234-ef01-345678901234'
+const conseillerNumeriqueActifId = 'e5f6a7b8-c9d0-1234-ef01-345678901234'
 
 const conseillerNumeriqueActif = givenUser({
   id: 'f6a7b8c9-d0e1-2345-f012-456789012345',
@@ -75,7 +75,7 @@ const conseillerNumeriqueActif = givenUser({
   employeDeLaStructureEmployeuse: true,
 })
 
-export const mediateurActifId = 'c9d0e1f2-a3b4-5678-2345-789012345678'
+const mediateurActifId = 'c9d0e1f2-a3b4-5678-2345-789012345678'
 
 const mediateurActif = givenUser({
   id: 'd0e1f2a3-b4c5-6789-3456-890123456789',
@@ -114,7 +114,7 @@ const mediateurActif = givenUser({
 const sixMonthsAgo = new Date()
 sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 
-export const conseillerNumeriqueInactifMediateurId =
+const conseillerNumeriqueInactifMediateurId =
   'a3b4c5d6-e7f8-9012-6789-123456789012'
 
 const conseillerNumeriqueInactif = givenUser({

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Pictogram } from '@/features/pictograms/pictogram'
 
-export type FonctionnaliteDeLOutil = {
+type FonctionnaliteDeLOutil = {
   title: string
   description: string
   icon: string

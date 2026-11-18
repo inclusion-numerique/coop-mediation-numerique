@@ -9,7 +9,7 @@ import { prismaClient } from '@/prismaClient'
 // Adaptateur (anti-corruption côté rdvsp) : traduit un usager RDV Service Public
 // en primitifs pour le port bénéficiaire. rdvsp ne connaît ni les value objects
 // ni la persistance du bénéficiaire — il ne lit que sa propre table `rdv_users`.
-export type RdvUserForMerge = Pick<
+type RdvUserForMerge = Pick<
   RdvUser,
   | 'id'
   | 'firstName'

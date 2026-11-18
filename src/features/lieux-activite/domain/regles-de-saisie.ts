@@ -21,14 +21,11 @@ import {
 
 export const RESUME_MAX_LENGTH = RESUME_LONGUEUR_MAXIMALE
 
-export const DETAIL_MAX_LENGTH = DETAIL_LONGUEUR_MAXIMALE
+const DETAIL_MAX_LENGTH = DETAIL_LONGUEUR_MAXIMALE
 
 export const texteFacultatif = z.string().trim().nullish()
 
-export const reconnu = (
-  estReconnue: (valeur: string) => boolean,
-  message: string,
-) =>
+const reconnu = (estReconnue: (valeur: string) => boolean, message: string) =>
   texteFacultatif.refine(
     (valeur) => {
       const saisi = nonVide(valeur)

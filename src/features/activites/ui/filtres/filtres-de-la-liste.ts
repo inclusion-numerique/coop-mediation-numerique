@@ -15,9 +15,9 @@ import {
   typeActiviteSlugValues,
 } from '../libelles/type-activite'
 
-export type ThematiqueDansLURL = (typeof THEMATIQUES_RECHERCHEES)[number]
+type ThematiqueDansLURL = (typeof THEMATIQUES_RECHERCHEES)[number]
 
-export type UnOuZero = '0' | '1'
+type UnOuZero = '0' | '1'
 
 export type FiltresDeLaListe = {
   du?: string

@@ -1,5 +1,5 @@
 /** sources found in dataset as of 01/02/2026 */
-export const cartographieNationaleSourcesLabels = {
+const cartographieNationaleSourcesLabels = {
   fredo: 'Fredo',
   'Conseil Départemental de la Charente-Maritime':
     'Conseil Départemental de la Charente-Maritime',
@@ -28,9 +28,6 @@ export type CartographieNationaleKnownSource =
 
 export const coopCartographieNationaleSource =
   'Coop numérique' as const satisfies CartographieNationaleKnownSource
-
-export type CoopCartographieNationaleSource =
-  typeof coopCartographieNationaleSource
 
 export const getCartographieNationaleSourceLabel = (
   source: CartographieNationaleKnownSource | string,

@@ -109,7 +109,7 @@ export const usagerToDomain = (payload: UsagerPayload): Usager => ({
   notifierParSms: payload.notify_by_sms,
 })
 
-export const participationToDomain = (
+const participationToDomain = (
   payload: ParticipationPayload,
 ): Participation => ({
   id: ParticipationId(payload.id),

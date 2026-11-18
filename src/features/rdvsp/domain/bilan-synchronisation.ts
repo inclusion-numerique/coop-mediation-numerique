@@ -42,7 +42,7 @@ export type ModeleSynchronise =
   | 'motifs'
   | 'lieux'
 
-export const modelesSynchronises = [
+const modelesSynchronises = [
   'rdvs',
   'organisations',
   'webhooks',

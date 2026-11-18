@@ -12,7 +12,3 @@ export const AlignerLeRegistreDesPersonnesJobValidation = z.object({
     })
     .optional(),
 })
-
-export type AlignerLeRegistreDesPersonnesJob = z.infer<
-  typeof AlignerLeRegistreDesPersonnesJobValidation
->

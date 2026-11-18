@@ -5,10 +5,7 @@ import type {
   SuggestionsDeLieux,
 } from '../domain/suggestion-de-lieu'
 
-export type SourceDeSuggestion =
-  | 'cartographie_nationale'
-  | 'structure_locale'
-  | 'api'
+type SourceDeSuggestion = 'cartographie_nationale' | 'structure_locale' | 'api'
 
 export type SuggestionAffichee = {
   readonly id: string

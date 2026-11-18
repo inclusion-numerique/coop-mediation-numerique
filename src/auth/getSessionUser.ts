@@ -9,7 +9,7 @@ import {
 import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@/auth/sessionUser'
 
-export const getSessionToken = async (): Promise<string | null> => {
+const getSessionToken = async (): Promise<string | null> => {
   const allCookies = await cookies()
   const sessionToken =
     allCookies.get(secureSessionCookie) ?? allCookies.get(sessionCookie)

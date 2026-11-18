@@ -9,7 +9,7 @@ import { PeriodeEmploi } from './periode-emploi'
 import { SourceAffectation } from './source-affectation'
 
 /** Employeuse de test, construite par les constructeurs du domaine (jamais par `as`). */
-export const employeuse = (
+const employeuse = (
   id: number,
   overrides: Partial<Employeuse> = {},
 ): Employeuse => ({

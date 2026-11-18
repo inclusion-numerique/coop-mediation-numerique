@@ -58,7 +58,7 @@ import {
  *           example: "https://api.example.com/v1/activites"
  */
 export const defaultJsonApiCursorPaginationSize = 500
-export const maxJsonApiCursorPaginationSize = 500
+const maxJsonApiCursorPaginationSize = 500
 export const JsonApiCursorPaginationQueryParamsValidation = z.object({
   page: z
     .object({

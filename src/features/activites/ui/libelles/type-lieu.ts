@@ -17,14 +17,14 @@ export const typeLieuLabels: { [key in TypeLieu]: string } = {
   ADistance: 'À distance',
 }
 
-export const typeLieuIllustrations: Record<TypeLieu, Pictogram> = {
+const typeLieuIllustrations: Record<TypeLieu, Pictogram> = {
   LieuActivite: CityHallIcon,
   Autre: SchoolIcon,
   Domicile: HouseIcon,
   ADistance: InternetIcon,
 }
 
-export const typeLieuOptions = labelsToOptions(typeLieuLabels)
+const typeLieuOptions = labelsToOptions(typeLieuLabels)
 
 export const typeLieuOptionsWithExtras = typeLieuOptions.map(
   ({ label, value }) => ({

@@ -20,7 +20,7 @@ export type AdresseSource = {
 // coordonnées `geom`), sinon on garde l'adresse de l'API Entreprise.
 
 // Au-dessus de ce score, on considère que la BAN a trouvé la bonne adresse et on l'utilise.
-export const BAN_SCORE_THRESHOLD = 0.9
+const BAN_SCORE_THRESHOLD = 0.9
 
 export type ResolvedAdresseMain = {
   nomVoie: string
@@ -45,14 +45,6 @@ const codePostalAdressable = (value: string): string =>
 
 const codeInseeAdressable = (value: string): string =>
   CodeInsee.safe(value) ?? ''
-
-// La clé d'unicité de `main.adresse` ne porte PAS le code INSEE : deux adresses de même
-// (code_postal, commune, voie) y sont la même ligne. On aligne la déduplication dessus.
-export const adresseMainKey = ({
-  codePostal,
-  nomCommune,
-  nomVoie,
-}: ResolvedAdresseMain): string => `${codePostal}__${nomCommune}__${nomVoie}`
 
 export const requeteDeGeocodage = ({
   adresse,

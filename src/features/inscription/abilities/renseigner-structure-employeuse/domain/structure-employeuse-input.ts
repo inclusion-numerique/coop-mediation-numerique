@@ -3,7 +3,7 @@
  * besoin pour faire créer/retrouver la structure, sans dépendre du domaine de la
  * feature structure ni du type BAN externe.
  */
-export type AdresseEmployeuse = {
+type AdresseEmployeuse = {
   readonly id: string
   readonly nom: string
   readonly commune: string

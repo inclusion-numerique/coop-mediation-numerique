@@ -2,7 +2,7 @@ import { prismaClient } from '@/prismaClient'
 import type { Invitation, ReferenceInvitation } from '../domain'
 import { invitationSelect, toInvitation } from './invitation.transfer'
 
-export type CleDInvitation = {
+type CleDInvitation = {
   readonly email_coordinateurId: {
     readonly email: string
     readonly coordinateurId: string

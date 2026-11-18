@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 import { MATERIELS } from '../../../domain'
 
-export const MATERIELS_COMPTES = [...MATERIELS, 'Aucun'] as const
+const MATERIELS_COMPTES = [...MATERIELS, 'Aucun'] as const
 
 export const MaterielCompte = defineModel(
   z.enum(MATERIELS_COMPTES).brand('MaterielCompte'),

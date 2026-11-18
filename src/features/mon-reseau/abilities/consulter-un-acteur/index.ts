@@ -1,4 +1,3 @@
-export type { FicheActeur, LireLaDerniereActivite } from './domain'
 export {
   consulterUnActeur,
   lieuxDeLActeur,

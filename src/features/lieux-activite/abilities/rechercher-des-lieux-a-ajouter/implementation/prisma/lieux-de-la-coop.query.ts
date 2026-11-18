@@ -16,7 +16,7 @@ import {
 import { lieuExploitable } from '../../../../implementation'
 import type { ChercherDansLaCoop } from '../../domain/ports'
 
-export const lieuxDeLaCoop = async (
+const lieuxDeLaCoop = async (
   recherche: string,
   { limite }: { limite: number },
 ) => {

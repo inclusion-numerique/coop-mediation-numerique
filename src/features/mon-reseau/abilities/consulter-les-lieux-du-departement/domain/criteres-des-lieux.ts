@@ -10,14 +10,14 @@ import {
   type ValeurDeParametre,
 } from '../../../domain'
 
-export const TriDesLieuxAffiche = defineModel(
+const TriDesLieuxAffiche = defineModel(
   z
     .unknown()
     .pipe(z.enum(['nomaz', 'nomza', 'majrecent', 'majancien']).catch('nomaz'))
     .brand('TriDesLieuxAffiche'),
 )
 
-export type TriDesLieuxAffiche = Model.TypeOf<typeof TriDesLieuxAffiche>
+type TriDesLieuxAffiche = Model.TypeOf<typeof TriDesLieuxAffiche>
 
 export type CriteresDesLieux = {
   readonly recherche: Recherche | null

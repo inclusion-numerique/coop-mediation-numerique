@@ -5,7 +5,7 @@ export const niveauAtelierValues = NIVEAUX_D_ATELIER
 
 export type NiveauAtelier = (typeof niveauAtelierValues)[number]
 
-export const niveauAtelierLabels: {
+const niveauAtelierLabels: {
   [key in NiveauAtelier]: string
 } = {
   Debutant: 'Débutant',
@@ -21,7 +21,7 @@ export const niveauAtelierStars: {
   Avance: 3,
 }
 
-export const niveauAtelierOptions = labelsToOptions(niveauAtelierLabels)
+const niveauAtelierOptions = labelsToOptions(niveauAtelierLabels)
 
 export const niveauAtelierOptionsWithExtras = niveauAtelierOptions.map(
   ({ label, value }) => ({

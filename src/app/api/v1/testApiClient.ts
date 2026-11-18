@@ -3,7 +3,7 @@ import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-u
 import { NomDuClientApi, type PorteeApi } from '@/features/clients-api/domain'
 import { prismaClient } from '@/prismaClient'
 
-export const testApiClientName = 'test-api-client'
+const testApiClientName = 'test-api-client'
 
 export const testApiClient = {
   initialized: false,

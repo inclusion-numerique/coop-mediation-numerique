@@ -1,2 +1,2 @@
-export type { AccompagnementsDuTag, AccompagnementsParTag } from './domain'
+export type { AccompagnementsParTag } from './domain'
 export * from './implementation'

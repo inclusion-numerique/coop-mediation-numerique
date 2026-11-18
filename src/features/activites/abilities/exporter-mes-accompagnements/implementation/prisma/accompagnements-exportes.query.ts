@@ -16,7 +16,7 @@ import {
   activiteExporteeSelect,
 } from './activite-exportee.transfer'
 
-export const TAILLE_DU_LOT = 500
+const TAILLE_DU_LOT = 500
 
 type Curseur = {
   readonly jour: string

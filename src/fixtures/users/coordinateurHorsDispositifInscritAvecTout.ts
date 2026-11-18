@@ -4,7 +4,7 @@ import { centreSocial, mediateque } from '@/fixtures/structures'
 export const coordinateurHorsDispositifInscritAvecToutCoordinateurId =
   'aa792475-7201-473a-af4a-7d3236539bfd'
 
-export const coordinateurHorsDispositifInscritAvecToutMediateurId =
+const coordinateurHorsDispositifInscritAvecToutMediateurId =
   '63c5708d-fb96-48d4-a356-250c150c06de'
 
 export const coordinateurHorsDispositifInscritAvecTout = givenUser({

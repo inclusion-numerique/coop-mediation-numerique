@@ -6,7 +6,7 @@ import {
 } from '../../../../implementation/prisma/registre'
 import type { LigneDeLaListe } from '../../ui/ligne-de-la-liste'
 
-export const searchStructureSelect = {
+const searchStructureSelect = {
   id: true,
   nom: true,
   adresse: true,

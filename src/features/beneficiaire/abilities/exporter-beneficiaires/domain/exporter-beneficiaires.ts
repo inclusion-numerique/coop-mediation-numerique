@@ -27,7 +27,7 @@ export type BeneficiaireExportRow = {
   readonly communeResidence: CommuneResidence | null
 }
 
-export type ExportBeneficiairesFilters = {
+type ExportBeneficiairesFilters = {
   readonly recherche?: string
 }
 

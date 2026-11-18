@@ -10,7 +10,7 @@ import {
  * A string return type means that no pageNumber is to display.
  * These are unique string so they can be used as "key" props in iterators.
  */
-export const createPagesNumbersToDisplay = (
+const createPagesNumbersToDisplay = (
   totalPages: number,
   pageNumber: number,
 ): (number | string)[] => {

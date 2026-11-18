@@ -1,6 +1,6 @@
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 
-export const isItemActive = (activeHref: string, item: SideMenuProps.Item) =>
+const isItemActive = (activeHref: string, item: SideMenuProps.Item) =>
   'linkProps' in item && item.linkProps?.href === activeHref
 
 export const addActiveStateToItems = (

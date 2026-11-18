@@ -36,7 +36,7 @@ const AUCUNE_LOCALISATION = {
   codeInsee: null,
 }
 
-export const accompagnementDeMarie: AccompagnementExporte = {
+const accompagnementDeMarie: AccompagnementExporte = {
   beneficiaire: { prenom: Prenom('Marie'), nom: NomDeFamille('Curie') },
   residence: {
     commune: NomDeCommune('Orléans'),

@@ -9,7 +9,7 @@ import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import type { Genre } from '@/generated/prisma/client'
 import { type FeuilleImport, valeurCellule } from './feuille-import'
 
-export const ParsedBeneficiaireRowSchema = z.object({
+const ParsedBeneficiaireRowSchema = z.object({
   values: z.object({
     nom: z.string().nullish(),
     prenom: z.string().nullish(),

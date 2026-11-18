@@ -124,7 +124,7 @@ export const employeuseToDomain = (row: EmployeuseRow): Employeuse => ({
   suppression: row.deletedAt,
 })
 
-export const affectationToDomain = (row: AffectationRow): Affectation => ({
+const affectationToDomain = (row: AffectationRow): Affectation => ({
   employeuse: employeuseToDomain(row.structureAdministrative),
   source: SourceAffectation(row.source),
   active: row.estActive,

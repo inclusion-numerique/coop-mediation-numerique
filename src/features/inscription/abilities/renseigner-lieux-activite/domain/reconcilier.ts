@@ -59,8 +59,7 @@ export type LieuActiviteConnu = Identite & {
  * formulaire géocode l'adresse avant de l'ajouter, et refuse la sélection à
  * défaut.
  */
-export type LieuActiviteACreer = Identite &
-  AdresseValidee & { readonly id?: null }
+type LieuActiviteACreer = Identite & AdresseValidee & { readonly id?: null }
 
 /**
  * Lieu d'activité tel que soumis par le formulaire d'inscription : identité

@@ -24,8 +24,3 @@ export const listerLesActeursDuDepartement = async (
 
   return success({ departement: departement.data, criteres, acteurs, communes })
 }
-
-export type ActeursDuDepartementConsultes = Extract<
-  Awaited<ReturnType<typeof listerLesActeursDuDepartement>>,
-  { success: true }
->['data']

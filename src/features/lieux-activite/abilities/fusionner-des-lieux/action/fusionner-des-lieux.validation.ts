@@ -13,5 +13,3 @@ export const FusionnerDesLieuxValidation = z
       path: ['targetStructureId'],
     },
   )
-
-export type FusionnerDesLieuxData = z.infer<typeof FusionnerDesLieuxValidation>

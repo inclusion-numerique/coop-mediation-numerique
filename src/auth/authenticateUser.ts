@@ -2,9 +2,7 @@ import { redirect } from 'next/navigation'
 import { AuthenticationError } from '@/auth/AuthenticationError'
 import { getAuthenticatedSessionUser } from '@/auth/getSessionUser'
 import {
-  type ConseillerNumeriqueUser,
   type CoordinateurUser,
-  isConseillerNumerique,
   isCoordinateur,
   isMediateur,
   type MediateurUser,
@@ -51,13 +49,5 @@ export const authenticateMediateurOrCoordinateur = async (
   const user = await authenticateUser(redirectTo)
   if (isMediateur(user) || isCoordinateur(user)) return user
 
-  redirect(redirectTo)
-}
-
-export const authenticateConseillerNumeriqueOrCoordinateur = async (
-  redirectTo = '/connexion',
-): Promise<ConseillerNumeriqueUser | CoordinateurUser> => {
-  const user = await authenticateUser(redirectTo)
-  if (isConseillerNumerique(user) || isCoordinateur(user)) return user
   redirect(redirectTo)
 }

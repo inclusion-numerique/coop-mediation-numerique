@@ -31,7 +31,7 @@ export { consulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-
 export { consulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/implementation'
 export { consulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/implementation'
 export { listerEmployeuses } from './abilities/lister-employeuses/implementation'
-export { searchStructureEmployeuseCombined } from './abilities/rattacher-a-une-employeuse/implementation'
+
 export {
   rattacherAUneEmployeuseBinding,
   rattacherAUneEmployeuseDepuisSiretBinding,

@@ -3,7 +3,7 @@ import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 const day = 24 * 60 * 60 * 1000
 const date = new Date(Date.now() - 180 * day)
 
-export const coordinateurInscritJ180CoordinateurId =
+const coordinateurInscritJ180CoordinateurId =
   '0d140478-d602-4662-ac80-66dcfb0b00c5'
 
 export const coordinateurInscritJ180 = givenUser({

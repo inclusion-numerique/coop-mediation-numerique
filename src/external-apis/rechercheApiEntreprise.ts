@@ -137,18 +137,3 @@ export const rechercheApiEntreprise = async (
     ...retryOptions,
   })
 }
-
-export const openEtablissementsFromUniteLegale = ({
-  siren,
-  nom_raison_sociale,
-  matching_etablissements,
-  complements,
-}: UniteLegale) =>
-  matching_etablissements
-    .filter((etablissement) => etablissement.etat_administratif === 'A')
-    .map((etablissement) => ({
-      ...etablissement,
-      siren,
-      nom_raison_sociale,
-      complements,
-    }))

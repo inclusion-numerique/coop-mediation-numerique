@@ -49,12 +49,12 @@ export const thematiqueValues = [
 
 export type Thematique = (typeof thematiqueValues)[number]
 
-export const thematiquesNonAdministrativesInfo = {
+const thematiquesNonAdministrativesInfo = {
   AideAuxDemarchesAdministratives:
     'En sélectionnant cette thématique, vous pourrez ajouter des informations spécifiques sur la démarche concernée.',
 } as const
 
-export const thematiquesInfo: {
+const thematiquesInfo: {
   [key in Thematique]?: string
 } = {
   ...thematiquesNonAdministrativesInfo,
@@ -103,7 +103,7 @@ export const thematiqueLabels: {
   ...thematiquesAdministrativesLabels,
 }
 
-export const thematiquesNonAdministrativesHints = {
+const thematiquesNonAdministrativesHints = {
   DiagnosticNumerique: [
     'Évaluation des compétences numériques des bénéficiaires',
     'Réaliser un questionnaire d’évaluation (ex : ABC Diag de Pix)',
@@ -191,7 +191,7 @@ export const thematiquesNonAdministrativesHints = {
   ],
 } as const
 
-export const thematiquesAdministrativesHints = {
+const thematiquesAdministrativesHints = {
   IntelligenceArtificielle: [
     'Comprendre les enjeux autour de l’IA',
     'Utiliser et interagir de manière critique avec les outils d’IA',
@@ -243,14 +243,14 @@ export const thematiquesAdministrativesHints = {
   ],
 } as const
 
-export const thematiqueHints: {
+const thematiqueHints: {
   [key in Thematique]: readonly string[]
 } = {
   ...thematiquesAdministrativesHints,
   ...thematiquesNonAdministrativesHints,
 }
 
-export const thematiquesNonAdministrativesIllustrations = {
+const thematiquesNonAdministrativesIllustrations = {
   DiagnosticNumerique: UserStatsIcon,
   PrendreEnMainDuMateriel: DevicesIcon,
   MaintenanceDeMateriel: SystemIcon,
@@ -272,7 +272,7 @@ export const thematiquesNonAdministrativesIllustrations = {
   AideAuxDemarchesAdministratives: PapersIcon,
 } as const
 
-export const thematiquesAdministrativesIllustrations = {
+const thematiquesAdministrativesIllustrations = {
   PapiersElectionsCitoyennete: NationalIdentityCardIcon,
   FamilleScolarite: ScolarshipIcon,
   SocialSante: HealthIcon,
@@ -286,7 +286,7 @@ export const thematiquesAdministrativesIllustrations = {
   Associations: HumanCooperationIcon,
 } as const
 
-export const thematiqueIllustrations: Record<Thematique, Pictogram> = {
+const thematiqueIllustrations: Record<Thematique, Pictogram> = {
   ...thematiquesNonAdministrativesIllustrations,
   ...thematiquesAdministrativesIllustrations,
 }

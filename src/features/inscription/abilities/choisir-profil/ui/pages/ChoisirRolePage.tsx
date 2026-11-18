@@ -19,7 +19,7 @@ import { handleSubmit } from '@/libs/form/handle-submit'
 import { type DefaultValues, useAppForm } from '@/libs/form/use-app-form'
 import { useHydrated } from '@/libs/form/use-hydrated'
 
-export type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
+type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{
     role: Role
     etapeSuivante: InscriptionStep

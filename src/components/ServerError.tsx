@@ -7,7 +7,7 @@ import { PropsWithChildren, useEffect } from 'react'
 import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
-export const GenericError = ({
+const GenericError = ({
   title,
   subtitle,
   lead,
@@ -112,16 +112,5 @@ export const NotFoundError = () => (
     <br />
     Dans ce cas, pour continuer votre visite vous pouvez consulter notre page
     d’accueil.
-  </GenericError>
-)
-
-export const UnauthorizedError = () => (
-  <GenericError
-    title="Accès refusé"
-    subtitle="Erreur 403"
-    lead="Vous n'avez pas accès à cette page."
-  >
-    Si vous avez tapé l&apos;adresse web dans le navigateur, vérifiez
-    qu&apos;elle est correcte.
   </GenericError>
 )

@@ -1,14 +1,14 @@
 // json:api links for pagination and resource-specific links
-export type JsonApiLink = {
+type JsonApiLink = {
   href: string
   meta?: JsonApiLinkMeta
 }
 
-export type JsonApiLinkMeta = {
+type JsonApiLinkMeta = {
   [key: string]: unknown
 }
 
-export type JsonApiLinks = {
+type JsonApiLinks = {
   self?: JsonApiLink
   next?: JsonApiLink
   prev?: JsonApiLink
@@ -16,21 +16,21 @@ export type JsonApiLinks = {
 }
 
 // json:api relationship structure
-export type JsonApiRelationshipData =
+type JsonApiRelationshipData =
   | { type: string; id: string }
   | { type: string; id: string }[]
 
-export type JsonApiRelationship = {
+type JsonApiRelationship = {
   data: JsonApiRelationshipData
   links?: JsonApiLinks
   meta?: JsonApiRelationshipMeta
 }
 
-export type JsonApiRelationshipMeta = {
+type JsonApiRelationshipMeta = {
   [key: string]: unknown
 }
 
-export type JsonApiRelationships<T extends string> = {
+type JsonApiRelationships<T extends string> = {
   [K in T]: JsonApiRelationship
 }
 
@@ -43,7 +43,7 @@ export type JsonApiListMeta = {
   has_prev_page: boolean
 }
 
-export type JsonApiMeta = {
+type JsonApiMeta = {
   [key: string]: unknown
 }
 

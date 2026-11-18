@@ -1,5 +1,4 @@
 export {
-  type Aidant,
   type LieuPublieExpose,
   lieuPublieExpose,
   lieuxPublies,

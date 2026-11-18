@@ -29,7 +29,7 @@ export type UniteLegale = {
   complements?: Complements // Objet contenant les informations complémentaires (Nullable)
 }
 
-export type Siege = {
+type Siege = {
   activite_principale: string // Activité principale de l'établissement
   activite_principale_registre_metier?: string // Activité principale de l'établissement au Registre des Métiers (Nullable)
   annee_tranche_effectif_salarie?: string // Année de validité de la tranche d'effectif salarié de l'établissement (Nullable)
@@ -120,7 +120,7 @@ export type MatchingEtablissement = {
   type_siae?: string // Type de structure de l'inclusion (Nullable)
 }
 
-export type Dirigeant = DirigeantPP | DirigeantPM
+type Dirigeant = DirigeantPP | DirigeantPM
 
 type DirigeantPP = {
   nom: string // Nom du dirigeant
@@ -140,11 +140,11 @@ type DirigeantPM = {
   type_dirigeant: 'personne morale' // Type de dirigeant : personne morale
 }
 
-export type Finances = {
+type Finances = {
   // Ajoutez ici les propriétés financières si elles sont définies
 }
 
-export type Complements = {
+type Complements = {
   collectivite_territoriale: CollectiviteTerritoriale // Informations sur la collectivité territoriale
   convention_collective_renseignee: boolean // Indique si au moins un établissement a une convention collective renseignée
   egapro_renseignee: boolean // Indique si au moins un établissement a un indice égalité professionnel H/F renseigné
@@ -167,14 +167,14 @@ export type Complements = {
   statut_entrepreneur_spectacle?: string // Statut des établissements ayant fait une demande de licence d'entrepreneur du spectacle (Nullable)
   type_siae?: string // Type de structure de l'inclusion (Nullable)
 }
-export type CollectiviteTerritoriale = {
+type CollectiviteTerritoriale = {
   code_insee: string // Code INSEE de la collectivité territoriale
   code: string // Code de la collectivité territoriale
   niveau: string // Niveau de la collectivité territoriale
   elus: Array<Elu> // Liste des élus
 }
 
-export type Elu = {
+type Elu = {
   nom: string // Nom de l'élu
   prenoms: string // Prénom de l'élu
   annee_de_naissance: string // Année de naissance de l'élu

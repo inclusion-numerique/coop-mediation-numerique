@@ -17,7 +17,7 @@ import type {
 } from '@/features/utilisateurs/domain'
 import type { Siret } from '@/libraries/insee'
 
-export type CoordinationDuMediateur = {
+type CoordinationDuMediateur = {
   readonly coordinateurUtilisateurId: UtilisateurId
   readonly nom: NomAffiche
 }
@@ -42,7 +42,7 @@ export type CoordinateurDeLaFiche = {
   readonly retirable: boolean
 }
 
-export type LiaisonDeLaFiche = {
+type LiaisonDeLaFiche = {
   readonly fournisseur: string
   readonly identifiant: string
 }

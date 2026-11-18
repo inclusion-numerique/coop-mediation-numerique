@@ -1,4 +1,1 @@
-export {
-  type EchecDeRetrait,
-  retirerUnMembre,
-} from './retirer-un-membre.mutation'
+export { retirerUnMembre } from './retirer-un-membre.mutation'

@@ -22,7 +22,7 @@ type CommuneDuClasseur = QuantifiedShare & {
   codePostal: string | null
 }
 
-export type StatistiquesDuClasseur = {
+type StatistiquesDuClasseur = {
   totalCounts: {
     activites: {
       total: number
