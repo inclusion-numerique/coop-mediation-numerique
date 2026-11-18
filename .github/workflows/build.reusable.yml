@@ -27,6 +27,7 @@ jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       environnement: ${{ steps.namespace.outputs.environnement }}
       image: ${{ steps.namespace.outputs.image }}
