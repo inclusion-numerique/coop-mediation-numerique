@@ -67,29 +67,29 @@ flowchart TB
 
 Le médiateur relie son compte La Coop à son compte d'agent RDV Service Public par le flux standard OAuth 2.0 (code d'autorisation). Les jetons sont conservés sur le compte et renouvelés automatiquement avant leur expiration.
 
-Voir [connecter un compte](../../apps/web/src/features/rdvsp/abilities/connecter-compte-rdv/connecter-compte-rdv.ability.md) et [déconnecter un compte](../../apps/web/src/features/rdvsp/abilities/deconnecter-compte-rdv/deconnecter-compte-rdv.ability.md).
+Voir [connecter un compte](../../src/features/rdvsp/abilities/connecter-compte-rdv/connecter-compte-rdv.ability.md) et [déconnecter un compte](../../src/features/rdvsp/abilities/deconnecter-compte-rdv/deconnecter-compte-rdv.ability.md).
 
 #### 2. Webhooks (stratégie principale)
 
 La Coop installe un webhook sur chaque organisation de l'agent et reçoit les créations, modifications et suppressions de rendez-vous et d'usagers presque en temps réel.
 
-Voir [recevoir une notification de rendez-vous](../../apps/web/src/features/rdvsp/abilities/recevoir-webhook-rdv/recevoir-webhook-rdv.ability.md) et [recevoir une notification d'usager](../../apps/web/src/features/rdvsp/abilities/recevoir-webhook-usager/recevoir-webhook-usager.ability.md).
+Voir [recevoir une notification de rendez-vous](../../src/features/rdvsp/abilities/recevoir-webhook-rdv/recevoir-webhook-rdv.ability.md) et [recevoir une notification d'usager](../../src/features/rdvsp/abilities/recevoir-webhook-usager/recevoir-webhook-usager.ability.md).
 
 #### 3. Polling de rattrapage (stratégie de repli)
 
 Quand un webhook manque ou échoue, La Coop interroge l'API pour rattraper l'écart : à la première connexion, à la demande du médiateur, au chargement des écrans qui affichent des rendez-vous, et chaque nuit. Le rattrapage ne parcourt que ce que les webhooks n'ont pas rapporté.
 
-Voir [synchroniser un compte](../../apps/web/src/features/rdvsp/abilities/synchroniser-compte-rdv/synchroniser-compte-rdv.ability.md), [déclencher une synchronisation](../../apps/web/src/features/rdvsp/abilities/declencher-synchronisation/declencher-synchronisation.ability.md), [synchroniser les organisations](../../apps/web/src/features/rdvsp/abilities/synchroniser-organisations/synchroniser-organisations.ability.md) et [synchroniser les rendez-vous](../../apps/web/src/features/rdvsp/abilities/synchroniser-rdvs/synchroniser-rdvs.ability.md).
+Voir [synchroniser un compte](../../src/features/rdvsp/abilities/synchroniser-compte-rdv/synchroniser-compte-rdv.ability.md), [déclencher une synchronisation](../../src/features/rdvsp/abilities/declencher-synchronisation/declencher-synchronisation.ability.md), [synchroniser les organisations](../../src/features/rdvsp/abilities/synchroniser-organisations/synchroniser-organisations.ability.md) et [synchroniser les rendez-vous](../../src/features/rdvsp/abilities/synchroniser-rdvs/synchroniser-rdvs.ability.md).
 
 ### Modèle de données synchronisées
 
-La Coop garde localement les organisations, rendez-vous, participations, usagers, motifs et lieux de l'agent, ainsi que les webhooks installés et l'historique des synchronisations. Le schéma Prisma en est la référence ; les règles de réconciliation sont décrites par les abilities de synchronisation ci-dessus, et le suivi des comptes par [administrer les comptes RDV](../../apps/web/src/features/rdvsp/abilities/administrer-comptes-rdv/administrer-comptes-rdv.ability.md).
+La Coop garde localement les organisations, rendez-vous, participations, usagers, motifs et lieux de l'agent, ainsi que les webhooks installés et l'historique des synchronisations. Le schéma Prisma en est la référence ; les règles de réconciliation sont décrites par les abilities de synchronisation ci-dessus, et le suivi des comptes par [administrer les comptes RDV](../../src/features/rdvsp/abilities/administrer-comptes-rdv/administrer-comptes-rdv.ability.md).
 
 #### Liaison avec nos modèles métier
 
-**Bénéficiaires** : un usager RDV Service Public devient un bénéficiaire de La Coop, créé ou fusionné avec un bénéficiaire existant. Voir [créer ou fusionner depuis un usager externe](../../apps/web/src/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/creer-ou-fusionner-depuis-usager-externe.ability.md) et [prendre un rendez-vous](../../apps/web/src/features/rdvsp/abilities/prendre-rendez-vous/prendre-rendez-vous.ability.md).
+**Bénéficiaires** : un usager RDV Service Public devient un bénéficiaire de La Coop, créé ou fusionné avec un bénéficiaire existant. Voir [créer ou fusionner depuis un usager externe](../../src/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/creer-ou-fusionner-depuis-usager-externe.ability.md) et [prendre un rendez-vous](../../src/features/rdvsp/abilities/prendre-rendez-vous/prendre-rendez-vous.ability.md).
 
-**Activités** : un rendez-vous honoré peut devenir une activité (CRA), et les rendez-vous se mêlent aux activités dans la liste du médiateur. Voir [créer une activité depuis un rendez-vous](../../apps/web/src/features/rdvsp/abilities/creer-activite-depuis-rdv/creer-activite-depuis-rdv.ability.md), [mettre à jour le statut d'un rendez-vous](../../apps/web/src/features/rdvsp/abilities/mettre-a-jour-statut-rdv/mettre-a-jour-statut-rdv.ability.md), [lister les rendez-vous des activités](../../apps/web/src/features/rdvsp/abilities/lister-les-rdvs-des-activites/lister-les-rdvs-des-activites.ability.md) et [lister mes activités](../../apps/web/src/features/activites/abilities/lister-mes-activites/lister-mes-activites.ability.md).
+**Activités** : un rendez-vous honoré peut devenir une activité (CRA), et les rendez-vous se mêlent aux activités dans la liste du médiateur. Voir [créer une activité depuis un rendez-vous](../../src/features/rdvsp/abilities/creer-activite-depuis-rdv/creer-activite-depuis-rdv.ability.md), [mettre à jour le statut d'un rendez-vous](../../src/features/rdvsp/abilities/mettre-a-jour-statut-rdv/mettre-a-jour-statut-rdv.ability.md), [lister les rendez-vous des activités](../../src/features/rdvsp/abilities/lister-les-rdvs-des-activites/lister-les-rdvs-des-activites.ability.md) et [lister mes activités](../../src/features/activites/abilities/lister-mes-activites/lister-mes-activites.ability.md).
 
 ## Justification des choix techniques
 
@@ -191,7 +191,7 @@ Sur un tableau de bord affichant plusieurs blocs (prochains RDVs, compteurs, etc
 
 Les webhooks sont la voie principale : ils tiennent la copie locale à jour presque en temps réel, sans appel inutile ni action du médiateur. Mais un webhook peut ne pas s'installer sur une organisation, ou échouer sans bruit. Le polling de rattrapage couvre ces trous, en ne visant que ce que les webhooks n'ont pas rapporté.
 
-Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisation, webhooks) et le journal de chaque synchronisation sont décrits par les abilities [synchroniser un compte](../../apps/web/src/features/rdvsp/abilities/synchroniser-compte-rdv/synchroniser-compte-rdv.ability.md), [déclencher une synchronisation](../../apps/web/src/features/rdvsp/abilities/declencher-synchronisation/declencher-synchronisation.ability.md) et [administrer les comptes RDV](../../apps/web/src/features/rdvsp/abilities/administrer-comptes-rdv/administrer-comptes-rdv.ability.md).
+Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisation, webhooks) et le journal de chaque synchronisation sont décrits par les abilities [synchroniser un compte](../../src/features/rdvsp/abilities/synchroniser-compte-rdv/synchroniser-compte-rdv.ability.md), [déclencher une synchronisation](../../src/features/rdvsp/abilities/declencher-synchronisation/declencher-synchronisation.ability.md) et [administrer les comptes RDV](../../src/features/rdvsp/abilities/administrer-comptes-rdv/administrer-comptes-rdv.ability.md).
 
 ## Conséquences
 
@@ -334,11 +334,11 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
 
 ## Où trouver le détail
 
-Les abilities des features [rdvsp](../../apps/web/src/features/rdvsp/abilities/), [beneficiaire](../../apps/web/src/features/beneficiaire/abilities/) et [activites](../../apps/web/src/features/activites/abilities/) décrivent chaque comportement de l'intégration. Ce sont des specs exécutables : les tests Cucumber de chaque feature les jouent, et elles font foi. Le code de la [feature rdvsp](../../apps/web/src/features/rdvsp/) en est l'implémentation.
+Les abilities des features [rdvsp](../../src/features/rdvsp/abilities/), [beneficiaire](../../src/features/beneficiaire/abilities/) et [activites](../../src/features/activites/abilities/) décrivent chaque comportement de l'intégration. Ce sont des specs exécutables : les tests Cucumber de chaque feature les jouent, et elles font foi. Le code de la [feature rdvsp](../../src/features/rdvsp/) en est l'implémentation.
 
 ## Références
 
 - [RDV Service Public - Documentation API](https://www.rdv-service-public.fr/api-docs/index.html)
 - [OAuth 2.0 RFC](https://datatracker.ietf.org/doc/html/rfc6749)
-- [schema.prisma](../../apps/web/prisma/schema.prisma) : schéma de données complet
-- [Abilities RDV Service Public](../../apps/web/src/features/rdvsp/abilities/) : specs exécutables de l'intégration
+- [schema.prisma](../../prisma/schema.prisma) : schéma de données complet
+- [Abilities RDV Service Public](../../src/features/rdvsp/abilities/) : specs exécutables de l'intégration

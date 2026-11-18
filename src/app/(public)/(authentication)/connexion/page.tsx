@@ -1,0 +1,44 @@
+import type { Metadata } from 'next'
+import { Route } from 'next'
+import { redirect } from 'next/navigation'
+import SigninPanel from '@/app/(public)/(authentication)/connexion/SigninPanel'
+import { metadataTitle } from '@/app/metadataTitle'
+import { getSessionUser } from '@/auth/getSessionUser'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { getServerUrl } from '@/utils/baseUrl'
+import { contentId } from '@/utils/skipLinks'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+export const metadata: Metadata = {
+  title: metadataTitle('Connexion'),
+}
+
+const SigninPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; suivant?: Route }>
+}) => {
+  const { error, suivant } = await searchParams
+  const user = await getSessionUser()
+
+  const callbackUrl = suivant ?? '/connexion/suivant'
+
+  if (user) {
+    redirect(getServerUrl(callbackUrl))
+  }
+
+  return (
+    <>
+      <SkipLinksPortal />
+      <Breadcrumbs currentPage="Connexion" />
+      <main id={contentId}>
+        <SigninPanel error={error} callbackUrl={callbackUrl} />
+      </main>
+    </>
+  )
+}
+
+export default SigninPage

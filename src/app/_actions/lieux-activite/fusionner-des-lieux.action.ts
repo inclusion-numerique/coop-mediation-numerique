@@ -1,0 +1,29 @@
+'use server'
+
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { FUSIONNER_DES_LIEUX_ERRORS } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.errors'
+import { FusionnerDesLieuxValidation } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.validation'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { fromResult, withInput } from '@/libraries/nextjs'
+
+/**
+ * Fusionner deux lieux est un acte de modération : la source disparaît, et rien
+ * ne la ramène. D'où la garde d'administration, posée ici plutôt que dans
+ * l'ability — c'est l'écran qui est réservé, pas l'écriture.
+ */
+export const fusionnerDesLieuxAction = actionBuilder()
+  .use(withAuth())
+  .use(withAdmin())
+  .use(withInput(FusionnerDesLieuxValidation))
+  .execute(
+    fromResult(
+      async ({ input }) =>
+        fusionnerDesLieux({
+          source: LieuId(input.sourceStructureId),
+          cible: LieuId(input.targetStructureId),
+        }),
+      { onError: FUSIONNER_DES_LIEUX_ERRORS },
+    ),
+  )

@@ -116,17 +116,17 @@ semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
 
 ## Où trouver le détail
 
-La [migration qui installe le mécanisme](../../apps/web/prisma/migrations/20261116230000_tenir_les_compteurs_par_la_base/migration.sql)
+La [migration qui installe le mécanisme](../../prisma/migrations/20261116230000_tenir_les_compteurs_par_la_base/migration.sql)
 porte les triggers, le garde et le recalcul initial.
 
 Les abilities qui font varier un compteur décrivent l'effet attendu, et font foi :
 
-- [Créer un bénéficiaire](../../apps/web/src/features/beneficiaire/abilities/creer-beneficiaire/creer-beneficiaire.ability.md)
-- [Importer des bénéficiaires](../../apps/web/src/features/beneficiaire/abilities/importer-beneficiaires/importer-beneficiaires.ability.md)
-- [Supprimer des bénéficiaires](../../apps/web/src/features/beneficiaire/abilities/supprimer-beneficiaires/supprimer-beneficiaires.ability.md)
-- [Anonymiser le portefeuille d'un médiateur](../../apps/web/src/features/beneficiaire/abilities/anonymiser-portefeuille/anonymiser-portefeuille.ability.md)
-- [Supprimer une activité de médiation](../../apps/web/src/features/activites/abilities/supprimer-une-activite-de-mediation/supprimer-une-activite-de-mediation.ability.md)
-- [Recevoir une notification d'usager](../../apps/web/src/features/rdvsp/abilities/recevoir-webhook-usager/recevoir-webhook-usager.ability.md)
+- [Créer un bénéficiaire](../../src/features/beneficiaire/abilities/creer-beneficiaire/creer-beneficiaire.ability.md)
+- [Importer des bénéficiaires](../../src/features/beneficiaire/abilities/importer-beneficiaires/importer-beneficiaires.ability.md)
+- [Supprimer des bénéficiaires](../../src/features/beneficiaire/abilities/supprimer-beneficiaires/supprimer-beneficiaires.ability.md)
+- [Anonymiser le portefeuille d'un médiateur](../../src/features/beneficiaire/abilities/anonymiser-portefeuille/anonymiser-portefeuille.ability.md)
+- [Supprimer une activité de médiation](../../src/features/activites/abilities/supprimer-une-activite-de-mediation/supprimer-une-activite-de-mediation.ability.md)
+- [Recevoir une notification d'usager](../../src/features/rdvsp/abilities/recevoir-webhook-usager/recevoir-webhook-usager.ability.md)
 
 ## Références
 

@@ -57,19 +57,18 @@ storybook-static
 
 # next
 /.next/
-/apps/web/.next/
-/apps/web/dist/
+/.next/
+/dist/
 
 
 # e2e
-/packages/e2e/cypress/videos
-/packages/e2e/cypress/screenshots
-/packages/e2e/.next/
-/packages/e2e/cypress/downloads
+/e2e/cypress/videos
+/e2e/cypress/screenshots
+/e2e/.next/
+/e2e/cypress/downloads
 
 
 # ui
-/packages/ui/.next
 
 # http rest client
 /*.http
@@ -83,17 +82,14 @@ storybook-static
 !/.claude/workflows
 
 # prisma ERD (generated, regenerate with `pnpm -F web erd`)
-/apps/web/prisma/ERD.md
-/apps/web/prisma/ERD.svg
-/apps/web/prisma/ERD.pdf
+/prisma/ERD.md
+/prisma/ERD.svg
+/prisma/ERD.pdf
 
-/apps/web/src/generated
-/apps/web/src/configuration/telemetry/**/server/index.ts
-/apps/web/src/configuration/telemetry/**/client/index.ts
+/src/generated
+/src/configuration/telemetry/**/server/index.ts
+/src/configuration/telemetry/**/client/index.ts
 
-# workspace scratch (notes de refacto, scripts one-off, artefacts d'outils)
-/refactor/
-/scripts/
 /.playwright-mcp/
 
 # dossiers de travail par sujet (relevés, exports, notes) — jamais dans le home

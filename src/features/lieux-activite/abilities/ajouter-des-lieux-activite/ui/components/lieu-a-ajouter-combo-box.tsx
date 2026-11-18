@@ -1,0 +1,75 @@
+import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
+import {
+  type SuggestionAffichee,
+  suggestionsAffichees,
+} from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+
+const itemToString = (item: SuggestionAffichee | null): string =>
+  item ? item.nom : ''
+
+const itemToKey = (item: SuggestionAffichee): string => item.id
+
+export const rechercheMinimum = 3
+
+export type RechercheLieuAAjouter = {
+  recherche: string
+  enCours: boolean
+  enEchec: boolean
+  nonAffiches: number
+}
+
+const loadSuggestions = async (
+  input: string,
+): Promise<{ items: SuggestionAffichee[] } & RechercheLieuAAjouter> => {
+  const rien = { items: [], recherche: input, enCours: false, nonAffiches: 0 }
+
+  if (input.length < rechercheMinimum) return { ...rien, enEchec: false }
+
+  const resultat = await rechercherDesLieuxAAjouterAction({ recherche: input })
+
+  if (!resultat.success) return { ...rien, enEchec: true }
+
+  const { structures, matchesCount } = suggestionsAffichees(resultat.data)
+
+  return {
+    items: [...structures],
+    recherche: input,
+    enCours: false,
+    enEchec: false,
+    nonAffiches: matchesCount - structures.length,
+  }
+}
+
+const renderItem = ({ item }: { item: SuggestionAffichee }) => (
+  <div className="fr-flex fr-direction-column">
+    <span className="fr-text--bold">{item.nom}</span>
+    <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
+      {item.typologie ? `${item.typologie} · ` : null}
+      {item.adresse}
+      {item.adresse && (item.codePostal || item.commune) ? ', ' : null}
+      {item.codePostal} {item.commune}
+    </span>
+  </div>
+)
+
+export const LieuAAjouterComboBox: ComboBoxData<
+  SuggestionAffichee,
+  RechercheLieuAAjouter
+> = {
+  itemToString,
+  itemToKey,
+  beforeLoadSuggestions: (input) => ({
+    recherche: input,
+    enCours: true,
+    enEchec: false,
+    nonAffiches: 0,
+  }),
+  loadSuggestions,
+}
+
+export const LieuAAjouterOptions: OptionsData<SuggestionAffichee> = {
+  itemToKey,
+  renderItem,
+}

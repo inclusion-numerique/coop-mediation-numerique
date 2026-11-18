@@ -1,0 +1,170 @@
+import assert from 'node:assert'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import {
+  lieuxDuDepartement,
+  nombreDeLieuxDuDepartement,
+} from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement'
+import { prismaClient } from '@/prismaClient'
+
+const semis: {
+  ids: string[]
+  publie?: string
+  frequente?: string
+  delaisse?: string
+  ailleurs?: string
+  mediateurId?: string
+  userId?: string
+  trouves?: string[]
+  nombre?: number
+  aPreciser?: string[]
+} = { ids: [] }
+
+const CODE_INSEE = '17299'
+const CODE_INSEE_AILLEURS = '51454'
+
+const semerUnLieu = async ({
+  publie,
+  codeInsee = CODE_INSEE,
+}: {
+  publie: boolean
+  codeInsee?: string
+}) => {
+  const { id } = await prismaClient.lieuInclusion.create({
+    data: {
+      nom: `Lieu ${v4()}`,
+      adresse: '1 rue de l’Annuaire',
+      commune: 'Rochefort',
+      codePostal: '17300',
+      codeInsee,
+      banId: `${codeInsee}_0001_00001`,
+      visiblePourCartographieNationale: publie,
+    },
+    select: { id: true },
+  })
+
+  semis.ids.push(id)
+
+  return id
+}
+
+Given('trois lieux dans le même département', async () => {
+  semis.publie = await semerUnLieu({ publie: true })
+  semis.frequente = await semerUnLieu({ publie: false })
+  semis.delaisse = await semerUnLieu({ publie: false })
+
+  const user = await prismaClient.user.create({
+    data: { email: `annuaire-${v4()}@example.com` },
+    select: { id: true },
+  })
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId: user.id },
+    select: { id: true },
+  })
+
+  semis.userId = user.id
+  semis.mediateurId = mediateur.id
+
+  await prismaClient.mediateurEnActivite.create({
+    data: {
+      mediateurId: mediateur.id,
+      structureId: semis.frequente,
+      debut: new Date('2026-01-01'),
+    },
+  })
+})
+
+Given('un quatrième lieu publié dans un autre département', async () => {
+  semis.ailleurs = await semerUnLieu({
+    publie: true,
+    codeInsee: CODE_INSEE_AILLEURS,
+  })
+})
+
+Given("le lieu fréquenté n'a pas d'adresse reconnue par la BAN", async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.frequente },
+    data: { banId: null },
+  })
+})
+
+Given('le lieu publié est supprimé', async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.publie },
+    data: { suppression: new Date() },
+  })
+})
+
+When('on liste les lieux de ce département', async () => {
+  const { lieux } = await lieuxDuDepartement({
+    departementCode: '17',
+    searchParams: { lignes: '1000' },
+  })
+
+  const semes = lieux.filter(({ id }) => semis.ids.includes(id))
+
+  semis.trouves = semes.map(({ id }) => id)
+  semis.aPreciser = semes
+    .filter(({ adresseAPreciser }) => adresseAPreciser)
+    .map(({ id }) => id)
+})
+
+When('on compte les lieux de ce département', async () => {
+  semis.nombre = await nombreDeLieuxDuDepartement('17')
+})
+
+Then('le nombre de lieux est celui de l’annuaire du département', async () => {
+  const { totalCount } = await lieuxDuDepartement({
+    departementCode: '17',
+    searchParams: {},
+  })
+  assert.strictEqual(semis.nombre, totalCount)
+})
+
+const proposes = () => semis.trouves ?? []
+
+Then('le lieu publié est proposé', () => {
+  assert.ok(proposes().includes(semis.publie as string))
+})
+
+Then('le lieu fréquenté est proposé', () => {
+  assert.ok(proposes().includes(semis.frequente as string))
+})
+
+Then('le lieu délaissé n’est pas proposé', () => {
+  assert.ok(!proposes().includes(semis.delaisse as string))
+})
+
+Then('le lieu publié n’est pas proposé', () => {
+  assert.ok(!proposes().includes(semis.publie as string))
+})
+
+Then('seul le lieu fréquenté est signalé avec une adresse à préciser', () => {
+  assert.deepStrictEqual(semis.aPreciser, [semis.frequente])
+})
+
+Then('le lieu d’ailleurs n’est pas proposé', () => {
+  assert.ok(!proposes().includes(semis.ailleurs as string))
+})
+
+After(async () => {
+  if (semis.mediateurId) {
+    await prismaClient.mediateurEnActivite.deleteMany({
+      where: { mediateurId: semis.mediateurId },
+    })
+    await prismaClient.mediateur.deleteMany({
+      where: { id: semis.mediateurId },
+    })
+  }
+  if (semis.userId) {
+    await prismaClient.user.deleteMany({ where: { id: semis.userId } })
+  }
+  if (semis.ids.length > 0) {
+    await prismaClient.lieuInclusion.deleteMany({
+      where: { id: { in: semis.ids } },
+    })
+  }
+  semis.ids = []
+  semis.trouves = undefined
+  semis.nombre = undefined
+})

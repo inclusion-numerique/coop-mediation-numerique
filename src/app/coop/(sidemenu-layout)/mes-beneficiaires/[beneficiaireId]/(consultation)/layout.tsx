@@ -1,0 +1,95 @@
+import { notFound } from 'next/navigation'
+import type { PropsWithChildren } from 'react'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/saisie/BeneficiaireEnregistrerUneActivite'
+import type { BeneficiaireCraData } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
+import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
+import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
+import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementation'
+import DeleteBeneficiaireModalContent from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
+import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import PrendreRendezVousAvecBeneficiaireButton from '@/features/rdvsp/abilities/prendre-rendez-vous/ui/components/PrendreRendezVousAvecBeneficiaireButton'
+import RefreshRdvDataOnLoad from '@/features/rdvsp/ui/RefreshRdvDataOnLoad'
+
+// Route hub : lit le bénéficiaire (ability consulter-beneficiaire) et ses doublons
+// (ability detecter-doublons), puis compose les concerns croisés (activité, RDV,
+// suppression, refresh) qu'elle injecte au shell de consultation via des slots.
+const BeneficiaireLayout = async (
+  props: PropsWithChildren<{
+    params: Promise<{ beneficiaireId: string }>
+  }>,
+) => {
+  const { beneficiaireId } = await props.params
+  const { children } = props
+
+  const user = await authenticateMediateur()
+
+  const mediateurId = MediateurId(user.mediateur.id)
+  const beneficiaire = await consulterBeneficiaire({
+    beneficiaireId: BeneficiaireId(beneficiaireId),
+    mediateurId,
+  })
+
+  if (!beneficiaire) {
+    notFound()
+  }
+
+  const duplicates = await findDuplicatesForBeneficiaireById({
+    beneficiaireId: BeneficiaireId(beneficiaire.id),
+    mediateurId,
+  })
+
+  const displayName = displayNameFromIdentity(beneficiaire)
+  const beneficiaireCraData = {
+    id: beneficiaire.id,
+    prenom: beneficiaire.prenom ?? '',
+    nom: beneficiaire.nom ?? '',
+  } satisfies BeneficiaireCraData
+
+  const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
+
+  return (
+    <BeneficiaireConsultationLayout
+      beneficiaire={beneficiaire}
+      hasDuplicates={duplicates.length > 0}
+      hasRdvIntegration={hasRdvIntegration}
+      primaryActions={
+        <BeneficiaireEnregistrerUneActivite
+          beneficiaire={beneficiaireCraData}
+        />
+      }
+      rdvActions={
+        <>
+          <BeneficiaireEnregistrerUneActivite
+            beneficiaire={beneficiaireCraData}
+            size="small"
+            label="Enregistrer un accompagnement individuel"
+          />
+          <PrendreRendezVousAvecBeneficiaireButton
+            beneficiaire={beneficiaireCraData}
+            user={user}
+          />
+        </>
+      }
+      deleteModal={
+        <DeleteBeneficiaireModalContent
+          beneficiaireId={beneficiaire.id}
+          displayName={displayName}
+        />
+      }
+      refreshRdvs={
+        hasRdvIntegration &&
+        user.rdvAccount &&
+        user.rdvAccount.invalidWebhookOrganisationIds.length > 0 ? (
+          <RefreshRdvDataOnLoad synchroniserAuChargement />
+        ) : undefined
+      }
+    >
+      {children}
+    </BeneficiaireConsultationLayout>
+  )
+}
+
+export default BeneficiaireLayout

@@ -1,0 +1,22 @@
+import assert from 'node:assert'
+import { Then, When } from '@cucumber/cucumber'
+import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
+import { clientSeme } from '@/features/clients-api/clients-api.cucumber'
+import type { ClientApi } from '@/features/clients-api/domain'
+
+const liste: { clients: readonly ClientApi[] } = { clients: [] }
+
+const rangDe = (nom: string): number =>
+  liste.clients.findIndex(({ id }) => id === clientSeme(nom).id)
+
+When("l'administration liste les clients API", async () => {
+  liste.clients = await listerLesClientsApi()
+})
+
+Then(
+  '{string} précède {string} dans la liste',
+  (premier: string, second: string) => {
+    assert.ok(rangDe(premier) >= 0 && rangDe(second) >= 0)
+    assert.ok(rangDe(premier) < rangDe(second))
+  },
+)

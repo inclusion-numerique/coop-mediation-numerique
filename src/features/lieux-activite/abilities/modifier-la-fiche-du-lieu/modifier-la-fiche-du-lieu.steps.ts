@@ -1,0 +1,518 @@
+import assert from 'node:assert'
+import { Given, Then, When } from '@cucumber/cucumber'
+import {
+  FormationsLabels,
+  FraisACharge,
+  ModalitesAcces,
+  Presentation,
+  Service,
+  Services,
+  Typologie,
+  Url,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  consulterLaFicheDuLieu,
+  modifierLaFicheDuLieu,
+} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
+import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
+import { UserId } from '@/features/lieux-activite/domain/user-id'
+import {
+  ficheSemee,
+  semerUneFicheDeLieu,
+} from '@/features/lieux-activite/lieux-activite.cucumber'
+import { prismaClient } from '@/prismaClient'
+import { depuisLaSaisie } from './action/depuis-la-saisie'
+import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
+import type { FicheDuLieu } from './domain'
+import { informationsGeneralesSoumises } from './ui/informations-generales-soumises'
+
+const auteur = () => UserId(ficheSemee().userIds[0] ?? '')
+
+const relire = async () => {
+  const fiche = await consulterLaFicheDuLieu(LieuId(ficheSemee().lieuId))
+  assert.ok(fiche, 'La fiche devrait être lisible')
+  return fiche
+}
+
+Given(
+  'une fiche de lieu avec un site web, un téléphone et un courriel',
+  async () => {
+    await semerUneFicheDeLieu()
+  },
+)
+
+When(
+  'le médiateur rattaché enregistre les informations pratiques avec un nouveau site web',
+  async () => {
+    await modifierLaFicheDuLieu({
+      id: LieuId(ficheSemee().lieuId),
+      par: auteur(),
+      modification: {
+        section: 'InformationsPratiques',
+        sitesWeb: [Url('https://nouveau.exemple-reims.fr')],
+        ficheAccesLibre: null,
+        priseRdv: null,
+        horaires: null,
+      },
+    })
+  },
+)
+
+When(
+  'le médiateur rattaché enregistre les informations pratiques sans site web',
+  async () => {
+    await modifierLaFicheDuLieu({
+      id: LieuId(ficheSemee().lieuId),
+      par: auteur(),
+      modification: {
+        section: 'InformationsPratiques',
+        sitesWeb: [],
+        ficheAccesLibre: null,
+        priseRdv: null,
+        horaires: null,
+      },
+    })
+  },
+)
+
+When(
+  "le médiateur rattaché enregistre les modalités d'accès sans téléphone",
+  async () => {
+    await modifierLaFicheDuLieu({
+      id: LieuId(ficheSemee().lieuId),
+      par: auteur(),
+      modification: {
+        section: 'ModalitesAccesAuService',
+        modalitesAcces: ModalitesAcces([]),
+        telephone: null,
+        courriels: [],
+        fraisACharge: FraisACharge([]),
+      },
+    })
+  },
+)
+
+When('un médiateur étranger au lieu enregistre la description', async () => {
+  await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: UserId(ficheSemee().userIds[1] ?? ''),
+    modification: {
+      section: 'Description',
+      presentation: Presentation({ resume: 'Une présentation du lieu' }),
+      formationsLabels: FormationsLabels([]),
+    },
+  })
+})
+
+When('ce lieu est supprimé', async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { suppression: new Date() },
+  })
+})
+
+Then('le site web du lieu est le nouveau', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(lieu.fiche.contact.site_web, [
+    'https://nouveau.exemple-reims.fr',
+  ])
+})
+
+Then('le téléphone et le courriel du lieu sont inchangés', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.contact.telephone, '+33180059880')
+  assert.deepStrictEqual(lieu.fiche.contact.courriels, [
+    'contact@exemple-reims.fr',
+  ])
+})
+
+Then('le site web du lieu est inchangé', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(lieu.fiche.contact.site_web, [
+    'https://www.exemple-reims.fr',
+  ])
+})
+
+Then("le lieu n'a plus de site web", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.contact.site_web, undefined)
+})
+
+Then('le lieu propose toujours la prise de rendez-vous en ligne', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(lieu.fiche.modalitesAcces, ['Prendre un RDV en ligne'])
+})
+
+Then('la description du lieu est enregistrée', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(
+    lieu.fiche.presentation?.resume,
+    'Une présentation du lieu',
+  )
+})
+
+Then('la fiche du lieu est introuvable', async () => {
+  assert.strictEqual(
+    await consulterLaFicheDuLieu(LieuId(ficheSemee().lieuId)),
+    null,
+  )
+})
+
+const adresseBan = {
+  id: '51454_7160_00012',
+  label: '12 rue de la Paix, 51100 Reims',
+  nom: '12 rue de la Paix',
+  commune: 'Reims',
+  codePostal: '51100',
+  codeInsee: '51454',
+  contexte: '51, Marne, Grand Est',
+  latitude: 49.25,
+  longitude: 4.03,
+}
+
+const ETABLISSEMENT = {
+  nom: 'MAISON FRANCE SERVICES',
+  adresse: '12 rue de la Paix',
+  codePostal: '51100',
+  commune: 'Reims',
+  codeInsee: '51454',
+  siret: '13002603200016',
+  source: 'api' as const,
+}
+
+const enregistrerLesInformationsGenerales = async (
+  valeurs: Parameters<typeof informationsGeneralesSoumises>[0],
+) =>
+  modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie(
+      InformationsGeneralesSaisie.parse(informationsGeneralesSoumises(valeurs)),
+    ),
+  })
+
+Given('une fiche de lieu immatriculée', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { siret: ETABLISSEMENT.siret, nomUsage: 'La Maison du Port' },
+  })
+})
+
+When(
+  "le médiateur rattaché enregistre les informations générales avec un établissement de l'Annuaire",
+  async () => {
+    await enregistrerLesInformationsGenerales({
+      id: ficheSemee().lieuId,
+      noSiret: false,
+      siretSearch: ETABLISSEMENT,
+      nom: ETABLISSEMENT.nom,
+      adresseBan,
+      nomUsage: 'La Maison du Port',
+      lieuItinerant: null,
+      complementAdresse: null,
+      typologies: [Typologie.TIERS_LIEUX],
+    })
+  },
+)
+
+When(
+  "le médiateur rattaché enregistre les informations générales en déclarant l'absence de SIRET",
+  async () => {
+    await enregistrerLesInformationsGenerales({
+      id: ficheSemee().lieuId,
+      noSiret: true,
+      siretSearch: null,
+      nom: 'Tiers-lieu du Port',
+      adresseBan,
+      nomUsage: 'La Maison du Port',
+      lieuItinerant: null,
+      complementAdresse: null,
+      typologies: [Typologie.TIERS_LIEUX],
+    })
+  },
+)
+
+Then('le lieu porte le SIRET de cet établissement', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.pivot, ETABLISSEMENT.siret)
+})
+
+Then("le lieu porte le nom d'usage saisi", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.identiteSirene.nomUsage, 'La Maison du Port')
+})
+
+Then("le lieu n'a plus d'immatriculation", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.pivot, null)
+})
+
+Then("le lieu n'a plus de nom d'usage", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.identiteSirene.nomUsage, null)
+})
+
+Then('le nom du lieu est celui qui a été saisi', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.nom, 'Tiers-lieu du Port')
+})
+
+const derniere: { issue?: Awaited<ReturnType<typeof modifierLaFicheDuLieu>> } =
+  {}
+
+Given('une fiche de lieu sans service', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { services: [] },
+  })
+})
+
+Given('une fiche de lieu visible sur la cartographie', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { visiblePourCartographieNationale: true },
+  })
+})
+
+Given(
+  'une fiche de lieu sans adresse reconnue par la Base Adresse Nationale',
+  async () => {
+    await semerUneFicheDeLieu()
+
+    await prismaClient.lieuInclusion.update({
+      where: { id: ficheSemee().lieuId },
+      data: { banId: null },
+    })
+  },
+)
+
+Given(
+  'une fiche de lieu visible sans adresse reconnue par la Base Adresse Nationale',
+  async () => {
+    await semerUneFicheDeLieu()
+
+    await prismaClient.lieuInclusion.update({
+      where: { id: ficheSemee().lieuId },
+      data: { banId: null, visiblePourCartographieNationale: true },
+    })
+  },
+)
+
+Given('une fiche de lieu située à la seule commune', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { adresse: 'Reims', banId: '51454' },
+  })
+})
+
+When('le médiateur rattaché retire le lieu de la cartographie', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'VisibiliteCartographie',
+      visiblePourCartographieNationale: false,
+    }),
+  })
+})
+
+When(
+  'le médiateur rattaché rend le lieu visible sur la cartographie',
+  async () => {
+    derniere.issue = await modifierLaFicheDuLieu({
+      id: LieuId(ficheSemee().lieuId),
+      par: auteur(),
+      modification: depuisLaSaisie({
+        section: 'VisibiliteCartographie',
+        visiblePourCartographieNationale: true,
+      }),
+    })
+  },
+)
+
+When('le médiateur rattaché retire tous les services', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'ServicesEtAccompagnement',
+      services: [],
+      modalitesAccompagnement: [],
+    }),
+  })
+})
+
+When('le médiateur rattaché modifie la description du lieu', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'Description',
+      presentationResume: 'Un lieu qui accueille du public',
+      presentationDetail: null,
+      formationsLabels: [],
+    }),
+  })
+})
+
+Then('la modification est acceptée', () => {
+  assert.strictEqual(derniere.issue?.success, true)
+})
+
+Then('le lieu annonce les services du socle', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(
+    lieu.fiche.services,
+    Services([...SERVICES_PAR_DEFAUT]),
+  )
+})
+
+Then('le lieu est visible sur la cartographie', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.visibilite, 'Publie')
+})
+
+Then("le lieu n'est pas visible sur la cartographie", async () => {
+  const { lieu } = await relire()
+  assert.notStrictEqual(lieu.visibilite, 'Publie')
+})
+
+Then('la modification est refusée', () => {
+  assert.strictEqual(derniere.issue?.success, false)
+})
+
+Then('le lieu annonce toujours son service', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(lieu.fiche.services, [
+    Service.AideAuxDemarchesAdministratives,
+  ])
+})
+
+const inscriptionAuRegistre = () =>
+  prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+    where: { structureCoopId: ficheSemee().lieuId },
+    select: {
+      contact: true,
+      presentationResume: true,
+      source: true,
+      editedBy: true,
+      updatedAtCoop: true,
+      deletedAt: true,
+    },
+  })
+
+Then(
+  'le registre porte le nouveau site web, le téléphone et le courriel du lieu',
+  async () => {
+    const inscription = await inscriptionAuRegistre()
+
+    assert.deepStrictEqual(inscription.contact, {
+      telephone: '+33180059880',
+      courriels: { email: 'contact@exemple-reims.fr' },
+      site_web: 'https://nouveau.exemple-reims.fr',
+    })
+    assert.strictEqual(inscription.editedBy, 'coop')
+    assert.notStrictEqual(inscription.updatedAtCoop, null)
+  },
+)
+
+Then('le registre porte la description du lieu', async () => {
+  const inscription = await inscriptionAuRegistre()
+
+  assert.strictEqual(
+    inscription.presentationResume,
+    'Un lieu qui accueille du public',
+  )
+})
+
+Then("le registre porte toujours le site web d'origine", async () => {
+  const inscription = await inscriptionAuRegistre()
+
+  assert.deepStrictEqual(inscription.contact, {
+    telephone: '+33180059880',
+    courriels: { email: 'contact@exemple-reims.fr' },
+    site_web: 'https://www.exemple-reims.fr',
+  })
+})
+
+Given(
+  'cette fiche est déjà inscrite au registre sous la source « dora »',
+  async () => {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Maison France Services de Reims',
+        structureCoopId: ficheSemee().lieuId,
+        source: 'dora',
+        editedBy: 'carto',
+        updatedAtCarto: new Date('2026-01-01'),
+      },
+      select: { id: true },
+    })
+  },
+)
+
+Then("le registre attribue l'inscription à la coop", async () => {
+  const inscription = await inscriptionAuRegistre()
+
+  assert.strictEqual(inscription.source, 'Coop numérique')
+})
+
+Given(
+  "cette fiche est inscrite au registre, mais une autre source l'y a supprimée",
+  async () => {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Maison France Services de Reims',
+        structureCoopId: ficheSemee().lieuId,
+        source: 'dora',
+        editedBy: 'carto',
+        updatedAtCarto: new Date('2026-01-01'),
+        deletedAt: new Date('2026-02-01'),
+      },
+      select: { id: true },
+    })
+  },
+)
+
+Then('le registre ne dit plus cette inscription supprimée', async () => {
+  const inscription = await inscriptionAuRegistre()
+
+  assert.strictEqual(inscription.deletedAt, null)
+})
+
+const consultation: { fiche?: FicheDuLieu | null } = {}
+
+const consulterEnTantQue = async (mediateurId: string) => {
+  consultation.fiche = await consulterLaFicheDuLieu(
+    LieuId(ficheSemee().lieuId),
+    MediateurId(mediateurId),
+  )
+}
+
+When('le médiateur rattaché consulte la fiche du lieu', async () => {
+  await consulterEnTantQue(ficheSemee().mediateurRattacheId)
+})
+
+When('un médiateur étranger au lieu consulte la fiche du lieu', async () => {
+  await consulterEnTantQue(ficheSemee().mediateurEtrangerId)
+})
+
+Then(
+  'la fiche compte {int} autre(s) médiateur(s) et {int} activité(s)',
+  (autresMediateurs: number, activites: number) => {
+    assert.deepStrictEqual(consultation.fiche?.partage, {
+      autresMediateurs,
+      activites,
+    })
+  },
+)

@@ -1,0 +1,177 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membres.action'
+import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
+import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
+import {
+  CoordinateurId as CoordinateurIdDesActivites,
+  criteresDesStatistiques,
+  MediateurId as MediateurIdDesActivites,
+} from '@/features/activites/domain'
+import {
+  conseillerNumeriqueSql,
+  consulterEmployeuseAUneDate,
+  emploiEmployeuseAffichage,
+} from '@/features/employeuse/server'
+import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
+import { INVITER_DES_MEMBRES_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
+import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
+import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
+import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
+import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
+import { UtilisateurId } from '@/features/mediateurs/domain'
+import {
+  consulterUnActeur,
+  lieuxDeLActeur,
+  nomDeLActeur,
+} from '@/features/mon-reseau/abilities/consulter-un-acteur'
+import {
+  ancienMembreDe,
+  contratVisible,
+  encartDeLEmployeuse,
+  FicheActeurPage,
+  LieuxDeLActeur,
+  TitreDeSection,
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
+import { departementDuCode } from '@/libraries/departement'
+import { ClientBinder } from '@/libs/injection/client-binder'
+
+type Parametres = { params: Promise<{ userId: string; departement: string }> }
+
+export const generateMetadata = async ({
+  params,
+}: Parametres): Promise<Metadata> => {
+  const nom = await nomDeLActeur((await params).userId)
+
+  return nom === null
+    ? notFound()
+    : { title: metadataTitle(`${nom} | Mon réseau`) }
+}
+
+const lireLesStatistiquesSur30Jours = async (
+  coordinateurId: string,
+  mediateurId: string,
+  periode: { readonly du: string; readonly au: string },
+) => {
+  const { accompagnements, personnes } = await compterLesAccompagnements({
+    perimetre: {
+      type: 'Equipe',
+      coordinateur: CoordinateurIdDesActivites(coordinateurId),
+      membres: [MediateurIdDesActivites(mediateurId)],
+    },
+    criteres: criteresDesStatistiques(periode),
+    conseillersNumeriques: conseillerNumeriqueSql,
+    rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+  })
+  return {
+    beneficiairesAccompagnes: personnes.total,
+    accompagnements: accompagnements.total,
+  }
+}
+
+const Page = async ({ params }: Parametres) => {
+  const quiConsulte = await authenticateMediateurOrCoordinateur()
+  const { userId, departement: code } = await params
+  const departement = departementDuCode(code)
+  const maintenant = new Date()
+  const consultation = await consulterUnActeur({
+    quiConsulte,
+    acteurId: userId,
+    lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
+    lireLesStatistiquesSur30Jours,
+    maintenant,
+  })
+
+  if (!departement.success || !consultation.success) return notFound()
+
+  const fiche = consultation.data
+  const { acteur, regard } = fiche
+  const mediation = acteur.profil.mediation
+  const [employeuse, lieux, contrat] = await Promise.all([
+    consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
+    mediation === null ? null : lieuxDeLActeur(mediation.mediateurId),
+    contratVisible(acteur, regard)
+      ? consulterLeContrat({
+          utilisateurId: UtilisateurId(acteur.acteurId),
+          maintenant,
+        })
+      : null,
+  ])
+  const ancienMembre = ancienMembreDe(regard)
+  const encart = encartDeLEmployeuse(acteur, regard)
+
+  return (
+    <ClientBinder
+      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+      to={rechercherUnLieuActiviteAction}
+    >
+      <ClientBinder
+        bind={RETIRER_UN_MEMBRE_ACTION_KEY}
+        to={retirerUnMembreAction}
+      >
+        <ClientBinder
+          bind={INVITER_DES_MEMBRES_ACTION_KEY}
+          to={inviterDesMembresAction}
+        >
+          <ClientBinder
+            bind={SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY}
+            to={supprimerUnAncienMembreAction}
+          >
+            <FicheActeurPage
+              fiche={fiche}
+              departement={departement.data}
+              contrat={
+                contrat === null ? undefined : (
+                  <CarteContrat contrat={contrat} coordinateur={false} />
+                )
+              }
+              employeuse={
+                employeuse === null ? undefined : (
+                  <ActeurStructureEmployeuse
+                    emploi={{
+                      structure: emploiEmployeuseAffichage(employeuse),
+                    }}
+                    showIsLieuActiviteNotice={false}
+                    showReferentStructure={encart.referentVisible}
+                    showReferentStructureConseillerNumeriqueSupportNotice={
+                      encart.avisAuxConseillersNumeriques
+                    }
+                    title={
+                      <TitreDeSection icone="ri-home-smile-2-line">
+                        Structure employeuse
+                      </TitreDeSection>
+                    }
+                  />
+                )
+              }
+              lieux={
+                lieux === null ? undefined : <LieuxDeLActeur lieux={lieux} />
+              }
+              suppressionDesArchives={
+                ancienMembre === null || mediation === null ? undefined : (
+                  <BoutonSupprimerUnAncienMembre
+                    mediateurId={mediation.mediateurId}
+                    coordinateurId={ancienMembre.coordinateurId}
+                    nomAffiche={acteur.nomAffiche}
+                    depuis={ancienMembre.depuis}
+                    jusquA={ancienMembre.fin}
+                  />
+                )
+              }
+            />
+          </ClientBinder>
+        </ClientBinder>
+      </ClientBinder>
+    </ClientBinder>
+  )
+}
+
+export default Page

@@ -1,6 +1,5 @@
 **/.git
 **/var
-**/.turbo
 **/.pnp
 **/.pnp.js
 **/.idea
@@ -19,11 +18,7 @@
 **/next-env.d.ts
 
 # generated files
-apps/web/data
-
-# Unused package in docker app
-packages/
-apps/cli/node_modules
+data
 
 # Test files
 **/*.stories.mdx

@@ -33,7 +33,7 @@ dans plusieurs dossiers, et en supprimer un sans casser les autres était risqu�
 
 ### Une feature, des abilities
 
-Le code métier vit dans `apps/web/src/features/<feature>/`. Une feature couvre un périmètre
+Le code métier vit dans `src/features/<feature>/`. Une feature couvre un périmètre
 fonctionnel complet, y compris son administration et ses statistiques : il n'y a pas de
 feature `administration` ni `statistique` centrale.
 

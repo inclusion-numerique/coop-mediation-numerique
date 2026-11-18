@@ -56,10 +56,11 @@ Chaque pull request peut aussi déployer son propre environnement de preview, vo
 
 <h2 id="contenu">📦 Contenu du dépôt</h2>
 
-- [apps/web](apps/web) : l'application Next.js, interface et serveur
-- [apps/cli](apps/cli) : les outils en ligne de commande du déploiement, des secrets et des tâches
+- [src](src) : l'application Next.js, interface et serveur, avec ses fonctionnalités, ses bibliothèques partagées et les outils en ligne de commande du déploiement, des secrets et des tâches (`src/cli`)
+- [prisma](prisma) : les schémas de la base et leurs migrations
+- [e2e](e2e) : les tests de bout en bout et de composants
+- [.storybook](.storybook) : la configuration de Storybook
 - [infrastructure](infrastructure) : l'infrastructure de chaque environnement, en HCL pour [OpenTofu](https://opentofu.org)
-- [packages](packages) : la configuration (`config`), les composants partagés (`ui`), les gabarits d'e-mails (`emails`), les données de test (`fixtures`), Storybook (`storybook`) et les tests de bout en bout (`e2e`)
 - [docker](docker) : les images de l'application et de PostgreSQL
 
 <h2 id="contribuer">🤗 Contribuer</h2>

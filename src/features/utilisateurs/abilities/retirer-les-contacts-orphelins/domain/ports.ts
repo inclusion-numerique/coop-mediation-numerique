@@ -1,0 +1,10 @@
+import type { AdresseCourriel } from '@/features/utilisateurs/domain'
+import type { ContactBrevo, RetraitDeLaListe } from './contacts'
+
+export type RetirerLesContactsOrphelinsPorts = {
+  readonly listerLesContacts: () => Promise<readonly ContactBrevo[]>
+  readonly supprimerLeContact: (courriel: AdresseCourriel) => Promise<void>
+  readonly retirerLeContactDeLaListe: (
+    courriel: AdresseCourriel,
+  ) => Promise<RetraitDeLaListe>
+}

@@ -29,7 +29,7 @@ le pourquoi : ADR-004 (features et abilities) et ADR-005 (domaine) dans `docs/ad
 2. **Découper.** Lister les cas d'usage, un par ability, nommés par leur intention. Définir l'**ordre**
    (le plus petit et le plus clair d'abord ; une lecture avant les écritures qui en dépendent). Si la
    feature en remplace une existante : repérer l'ancien code et **tous** ses consommateurs (grep
-   `apps/web/src` **et** `packages/`). → **attendre (A)**.
+   `src` et `e2e`). → **attendre (A)**.
 3. **Modéliser le domaine partagé.** Lancer **`domain-modeler`** une fois pour la feature → présenter,
    trancher les questions ouvertes → **attendre (B)**. Puis créer `domain/` (value objects, entité,
    erreurs, index) et le transfer `db/` avec son test aller-retour (DM-10, TS-4).

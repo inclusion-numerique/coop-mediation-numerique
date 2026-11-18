@@ -1,0 +1,63 @@
+import Link from 'next/link'
+import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
+import BackButton from '@/components/BackButton'
+import IconInSquare from '@/components/IconInSquare'
+import SkipLinksPortal from '@/components/SkipLinksPortal'
+import type { ModifierBeneficiaireView } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
+import BeneficiaireForm, {
+  type EnregistrerBeneficiaire,
+} from '@/features/beneficiaire/forms/BeneficiaireForm'
+import { contentId } from '@/utils/skipLinks'
+
+export const ModifierBeneficiairePage = ({
+  view: { beneficiaireId, displayName, defaultValues },
+  save,
+  retour,
+}: {
+  view: ModifierBeneficiaireView
+  save: EnregistrerBeneficiaire
+  retour?: string
+}) => (
+  <div className="fr-container fr-container--medium">
+    <SkipLinksPortal />
+    <CoopBreadcrumbs
+      currentPage="Modifier"
+      parents={[
+        {
+          label: 'Mes bénéficiaires',
+          linkProps: {
+            href: '/coop/mes-beneficiaires',
+          },
+        },
+        {
+          label: displayName,
+          linkProps: { href: `/coop/mes-beneficiaires/${beneficiaireId}` },
+        },
+      ]}
+    />
+    <main id={contentId}>
+      <BackButton />
+      <div className="fr-flex fr-flex-gap-6v fr-align-items-start fr-mb-12v">
+        <IconInSquare iconId="fr-icon-user-setting-line" size="large" />
+        <div className="fr-flex-grow-1">
+          <h1 className="fr-text-title--blue-france fr-mb-2v">{displayName}</h1>
+          <Link
+            className="fr-link"
+            target="_blank"
+            rel="noreferrer"
+            href="https://docs.numerique.gouv.fr/docs/3d5bad76-8e02-4abc-b83a-c2f2965ae5d9/"
+          >
+            En savoir plus sur l’usage et la protection des données de mes
+            bénéficiaires.
+          </Link>
+        </div>
+      </div>
+      <BeneficiaireForm
+        defaultValues={defaultValues}
+        save={save}
+        retour={retour}
+        edit
+      />
+    </main>
+  </div>
+)

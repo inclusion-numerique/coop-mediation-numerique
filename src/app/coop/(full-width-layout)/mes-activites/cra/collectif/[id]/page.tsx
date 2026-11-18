@@ -1,0 +1,129 @@
+import { notFound } from 'next/navigation'
+import { enregistrerUnAtelierCollectifAction } from '@/app/_actions/activites/enregistrer-un-atelier-collectif.action'
+import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/rechercher-beneficiaires.action'
+import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
+import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { lireUneActiviteDeMediation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
+import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
+import CraCollectifPage from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/CraCollectifPage'
+import { formulaireDeLAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/formulaire-de-l-atelier-collectif.presenter'
+import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
+import { ActiviteId, MediateurId } from '@/features/activites/domain'
+import { dureesFrequentesDuMediateur } from '@/features/activites/implementation/prisma/durees-frequentes'
+import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
+import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/ui/saisie/commune/rechercher-des-communes.key'
+import { donneesDeLaSaisieDeMediation } from '@/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'
+import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
+import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { visibilitesDuCra } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import { rechercherDesCommunes } from '@/features/adresse/implementation/api-adresse/rechercher-des-communes'
+import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
+import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
+import { lieuxDuMediateur } from '@/features/lieux-activite'
+import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
+import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
+import { ClientBinder } from '@/libs/injection/client-binder'
+
+const UpdateCraCollectifPage = async ({
+  searchParams,
+  params,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
+}) => {
+  const { id } = await params
+  const { retour } = await searchParams
+
+  const user = await authenticateMediateur()
+  const mediateurId = user.mediateur.id
+
+  const employeuse = await consulterEmployeuseAUneDate({
+    userId: user.id,
+    date: new Date(),
+  })
+
+  if (!employeuse) {
+    return <RattacherEmployeusePage motif="Enregistrer une activité" />
+  }
+
+  const activiteId = ActiviteId.safe(id)
+  const aModifier =
+    activiteId === null
+      ? null
+      : await lireUneActiviteDeMediation({
+          id: activiteId,
+          mediateurId: MediateurId(user.mediateur.id),
+          rendezVousLies,
+        })
+
+  if (aModifier?.activite._tag !== 'Collectif') return notFound()
+
+  const defaultValues = formulaireDeLAtelierCollectif(
+    aModifier.activite,
+    aModifier.affichage,
+  )
+
+  const [lieuxProposes, dureesFrequentes, beneficiairesProposes] =
+    await Promise.all([
+      lieuxDuMediateur(mediateurId),
+      dureesFrequentesDuMediateur(MediateurId(mediateurId)),
+      beneficiairesLesPlusSuivis(mediateurId),
+    ])
+
+  const craPageData = await donneesDeLaSaisieDeMediation<CraCollectifData>()({
+    mediateurId,
+    stateFromUrl: defaultValues,
+    lieuxProposes,
+    dureesFrequentes,
+    tagsInitiaux: tagsInitiauxPar(user),
+  })
+
+  return (
+    <ClientBinder
+      bind={ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY}
+      to={enregistrerUnAtelierCollectifAction}
+    >
+      <ClientBinder
+        bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+        to={rechercherDesTagsAction}
+      >
+        <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
+          <ClientBinder
+            bind={RECHERCHER_DES_LIEUX_DU_CRA_KEY}
+            to={rechercherUnLieuActiviteAction}
+          >
+            <ClientBinder
+              bind={RECHERCHER_DES_COMMUNES_DU_CRA_KEY}
+              to={rechercherDesCommunes}
+            >
+              <ClientBinder
+                bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
+                to={rechercherBeneficiairesAction}
+              >
+                <CraCollectifPage
+                  {...craPageData}
+                  beneficiairesProposes={beneficiairesProposes}
+                  mediateurId={mediateurId}
+                  visibilitesDeTag={visibilitesDuCra(
+                    visibilitesProposeesA(user),
+                    {
+                      departemental: false,
+                    },
+                  )}
+                  retour={retour}
+                />
+              </ClientBinder>
+            </ClientBinder>
+          </ClientBinder>
+        </ClientBinder>
+      </ClientBinder>
+    </ClientBinder>
+  )
+}
+
+export default UpdateCraCollectifPage

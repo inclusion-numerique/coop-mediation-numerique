@@ -10,18 +10,18 @@ description: >-
 
 ## Séquence (dans l'ordre, s'arrêter au premier rouge)
 
-1. **Types** : `pnpm -F web tsc`.
+1. **Types** : `pnpm tsc`.
 2. **Lint/format** : `pnpm exec biome check --write <fichiers modifiés>` (chemins précis, pas tout le dépôt).
 3. **Tests ciblés** selon ce qui a changé :
-   - unit : `pnpm -F web test <chemin>` (sans `--` : Vitest ignore ce qui le suit et lance toute la suite)
-   - intégration : `pnpm -F web test:integration <chemin>`, **jamais sur la base de travail** : `DATABASE_URL` pointé sur une base jetable du conteneur 5433, migrée (`pnpm -F web db:migrate-deploy`) et chargée (`pnpm -F @app/fixtures load`), capée avec `&connection_limit=3` (TS-7), supprimée ensuite
-   - BDD : `pnpm -F web test:cucumber` (suite entière — le scope par chemin en arg ne marche pas, TS-5), sur la même base jetable
+   - unit : `pnpm test <chemin>` (sans `--` : Vitest ignore ce qui le suit et lance toute la suite)
+   - intégration : `pnpm test:integration <chemin>`, **jamais sur la base de travail** : `DATABASE_URL` pointé sur une base jetable du conteneur 5433, migrée (`pnpm db:migrate-deploy`) et chargée (`pnpm fixtures:load`), capée avec `&connection_limit=3` (TS-7), supprimée ensuite
+   - BDD : `pnpm test:cucumber` (suite entière — le scope par chemin en arg ne marche pas, TS-5), sur la même base jetable
    - E2E si pertinent : `pnpm test:e2e`
 4. Tout vert → proposer le commit.
 
 ## Commit (discipline — PR-5/PR-6/PR-8)
 
-- **Stager des chemins PRÉCIS** `apps/web/...` / `packages/...`. **JAMAIS `git add -A`** (sinon `scripts/`, fichiers jetables → casse lint-staged).
+- **Stager des chemins PRÉCIS** `src/...`. **JAMAIS `git add -A`** (sinon `scripts/`, fichiers jetables → casse lint-staged).
 - Vérifier le staging : `git status --short | grep -v '^??'` — confirmer que seuls les fichiers voulus sont indexés (les changements parallèles de l'humain restent hors du commit sauf accord).
 - Message **Conventional Commits** : `type(scope)?: description` au présent ; corps = le **pourquoi** + le quoi en termes d'archi (pas la liste des fichiers). Types : `refactor`/`fix`/`test`/`feat`/`chore`.
 - Sur une branche (pas `main` — un merge sur `main` déclenche un déploiement prod). Brancher si besoin.

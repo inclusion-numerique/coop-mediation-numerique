@@ -27,6 +27,7 @@ jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       environnement: ${{ steps.namespace.outputs.environnement }}
       image: ${{ steps.namespace.outputs.image }}
@@ -42,7 +43,7 @@ jobs:
         id: namespace
         run: |
           NAMESPACE="${BRANCHE//\//-}"
-          ENVIRONNEMENT=$(./apps/cli/node_modules/.bin/tsx -e "import { computeBranchNamespace } from './apps/cli/src/branchNamespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")
+          ENVIRONNEMENT=$(pnpm exec tsx -e "import { computeBranchNamespace } from './src/cli/branchNamespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")
           IMAGE_NAME="coop-mediation-numerique-web-$ENVIRONNEMENT"
           case "$ENVIRONNEMENT" in
             ''|main|dev)
@@ -69,17 +70,17 @@ jobs:
       - name: Build cache
         uses: actions/cache@v6
         with:
-          path: apps/web/.next/cache
-          key: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**/*.ts', 'apps/web/src/**/*.tsx') }}
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
           restore-keys: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - name: Generate production implementations
-        run: ENV=prod pnpm --silent -F @app/web generate:implementations
+        run: ENV=prod pnpm --silent generate:implementations
       - name: Build next app
-        run: SENTRY_ENABLE_RELEASE=true pnpm --silent -F @app/web build
+        run: SENTRY_ENABLE_RELEASE=true pnpm --silent build
       - name: Build jobs runner
-        run: pnpm --silent -F @app/web build:jobs
+        run: pnpm --silent build:jobs
       - name: Check jobs runner
-        run: node apps/web/dist/verifier-le-bundle.cjs
+        run: node dist/verifier-le-bundle.cjs
       - name: Build docker image
         env:
           IMAGE: ${{ steps.namespace.outputs.image }}

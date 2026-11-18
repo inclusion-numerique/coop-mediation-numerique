@@ -1,0 +1,335 @@
+import assert from 'node:assert'
+import { Before, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
+import type {
+  Geocodage,
+  GeocoderLAdresse,
+} from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
+import type { UserId } from '@/features/inscription/domain'
+import {
+  currentInscriptionUserId,
+  rattacherAEmployeuseMain,
+  seedCollegueMediateur,
+  seedEmployeuseMain,
+  seedLieuActivite,
+} from '@/features/inscription/inscription.cucumber'
+import { prismaClient } from '@/prismaClient'
+
+const nomEmployeuse = 'Employeuse lieu d’activité'
+
+// Ce que la Base Adresse Nationale répondrait pour l'adresse de `seedEmployeuseMain`
+// (1 rue de la Paix, 75001 Paris). Les scénarios ne sortent pas sur le réseau :
+// c'est le seul recours qu'a ce cas d'usage, et il se passe en port.
+const ADRESSE_RECONNUE: AdresseBanData = {
+  id: '75101_7038_00001',
+  label: '1 Rue de la Paix 75001 Paris',
+  nom: '1 Rue de la Paix',
+  commune: 'Paris',
+  codePostal: '75001',
+  codeInsee: '75101',
+  contexte: '75, Paris, Île-de-France',
+  latitude: 48.869_36,
+  longitude: 2.331_08,
+}
+
+const ADRESSE_RECONNUE_PAR_LA_BAN: Geocodage = {
+  _tag: 'AdresseReconnue',
+  adresse: ADRESSE_RECONNUE,
+}
+
+const banReconnait: { reponse: Geocodage } = {
+  reponse: ADRESSE_RECONNUE_PAR_LA_BAN,
+}
+
+const geocoderLAdresse: GeocoderLAdresse = async () => banReconnait.reponse
+
+let structureEmployeuseId = 0
+let collegueUserId: UserId | null = null
+let lieuConnuId = ''
+let nomCommuneEmployeuse = ''
+
+// État de module : sans remise à zéro, un collègue d'un scénario précédent
+// ferait passer une assertion du suivant.
+Before(() => {
+  collegueUserId = null
+  banReconnait.reponse = ADRESSE_RECONNUE_PAR_LA_BAN
+  refus.tag = null
+})
+
+// Le refus opposé à la déclaration, quand il y en a un.
+const refus: { tag: string | null } = { tag: null }
+
+const resoudre = (userId: UserId, estLieuActivite: boolean) =>
+  ajouterStructureEmployeuseEnLieu(
+    { userId, estLieuActivite },
+    { geocoderLAdresse },
+  )
+
+const declarerPour = (userId: UserId) => async (estLieuActivite: boolean) => {
+  const resultat = await resoudre(userId, estLieuActivite)
+  assert.ok(resultat.success, 'La déclaration aurait dû aboutir')
+}
+
+const declarer = (estLieuActivite: boolean) =>
+  declarerPour(currentInscriptionUserId())(estLieuActivite)
+
+Given('je suis médiateur', async () => {
+  await prismaClient.mediateur.create({
+    data: { id: v4(), userId: currentInscriptionUserId() },
+  })
+})
+
+Given('j’ai une structure employeuse', async () => {
+  structureEmployeuseId = await seedEmployeuseMain({ nom: nomEmployeuse })
+  await rattacherAEmployeuseMain({
+    userId: currentInscriptionUserId(),
+    structureAdministrativeId: structureEmployeuseId,
+  })
+})
+
+Given(
+  'ma structure employeuse est déjà rattachée comme lieu d’activité',
+  async () => {
+    await declarer(true)
+  },
+)
+
+When(
+  'je déclare que ma structure employeuse n’est pas un lieu d’activité',
+  async () => {
+    await declarer(false)
+  },
+)
+
+Given('j’ai une structure employeuse dénommée comme une mairie', async () => {
+  // « Mairie de X » et « COMMUNE DE X » se normalisent tous deux en « ville X ».
+  const commune = v4()
+  structureEmployeuseId = await seedEmployeuseMain({
+    nom: `Mairie de ${commune}`,
+  })
+  await rattacherAEmployeuseMain({
+    userId: currentInscriptionUserId(),
+    structureAdministrativeId: structureEmployeuseId,
+  })
+  lieuConnuId = ''
+  collegueUserId = null
+  // Mémorisé pour le Given suivant, qui pose le lieu coop homologue.
+  nomCommuneEmployeuse = commune
+})
+
+Given(
+  'la coop connaît déjà ce lieu sous la dénomination de la commune',
+  async () => {
+    // Même adresse que `seedEmployeuseMain` (1 rue de la Paix, Paris 75001).
+    lieuConnuId = await seedLieuActivite({
+      nom: `COMMUNE DE ${nomCommuneEmployeuse}`,
+      // Une commune se déclare comme telle : l'employeuse « Mairie de X » n'a pas
+      // de typologie et la sienne se déduit du nom, MUNI de part et d'autre.
+      typologies: ['MUNI'],
+    })
+  },
+)
+
+Then('je suis rattaché au lieu que la coop connaissait déjà', async () => {
+  const actifs = await prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: { userId: currentInscriptionUserId() },
+      suppression: null,
+      fin: null,
+    },
+    select: { structureId: true },
+  })
+  assert.deepStrictEqual(
+    actifs.map(({ structureId }) => structureId),
+    [lieuConnuId],
+    'Le médiateur n’est pas rattaché au lieu que la coop connaissait',
+  )
+})
+
+Then('ce lieu n’a pas été recréé', async () => {
+  const lieux = await prismaClient.lieuInclusion.count({
+    where: {
+      suppression: null,
+      OR: [
+        { nom: `COMMUNE DE ${nomCommuneEmployeuse}` },
+        { nom: `Mairie de ${nomCommuneEmployeuse}` },
+      ],
+    },
+  })
+  assert.strictEqual(lieux, 1, 'Le lieu a été matérialisé une seconde fois')
+})
+
+Given('un collègue partage ma structure employeuse', async () => {
+  collegueUserId = await seedCollegueMediateur()
+  await rattacherAEmployeuseMain({
+    userId: collegueUserId,
+    structureAdministrativeId: structureEmployeuseId,
+  })
+})
+
+When(
+  'mon collègue déclare que notre structure employeuse est un lieu d’activité',
+  async () => {
+    assert.ok(collegueUserId, 'Aucun collègue n’a été créé pour ce scénario')
+    await declarerPour(collegueUserId)(true)
+  },
+)
+
+/**
+ * Le lieu ne reprend pas l'id de l'employeuse : on le retrouve par la clé de
+ * corrélation employée en production — ici sa seule dénomination suffit, le
+ * scénario n'en manipulant qu'une.
+ */
+const rattachementsActifs = () =>
+  prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: { userId: currentInscriptionUserId() },
+      lieuInclusion: { nom: nomEmployeuse },
+      suppression: null,
+      fin: null,
+    },
+  })
+
+Then(
+  'ma structure employeuse est rattachée comme lieu d’activité',
+  async () => {
+    const actifs = await rattachementsActifs()
+    assert.strictEqual(
+      actifs.length,
+      1,
+      'La structure employeuse n’est pas rattachée comme lieu d’activité',
+    )
+
+    const lieu = await prismaClient.lieuInclusion.findFirst({
+      where: { nom: nomEmployeuse, suppression: null },
+    })
+    assert.ok(lieu, 'Le lieu d’activité n’a pas été matérialisé')
+  },
+)
+
+Then(
+  'ma structure employeuse n’a qu’un seul lieu d’activité actif',
+  async () => {
+    const actifs = await rattachementsActifs()
+    assert.strictEqual(actifs.length, 1, 'Le lieu d’activité a été dupliqué')
+
+    const lieux = await prismaClient.lieuInclusion.count({
+      where: { nom: nomEmployeuse, suppression: null },
+    })
+    assert.strictEqual(lieux, 1, 'Le lieu a été matérialisé deux fois')
+  },
+)
+
+Then(
+  'ma structure employeuse n’est plus rattachée comme lieu d’activité',
+  async () => {
+    const actifs = await rattachementsActifs()
+    assert.strictEqual(
+      actifs.length,
+      0,
+      'La structure employeuse est encore rattachée comme lieu d’activité',
+    )
+  },
+)
+
+/**
+ * Le lieu matérialisé depuis une employeuse est partagé : deux médiateurs de la
+ * même structure s'y rattachent, ils ne s'en créent pas un chacun.
+ */
+Then('nous sommes rattachés au même lieu d’activité', async () => {
+  assert.ok(collegueUserId, 'Aucun collègue n’a été créé pour ce scénario')
+
+  const lieux = await prismaClient.lieuInclusion.count({
+    where: { nom: nomEmployeuse, suppression: null },
+  })
+  assert.strictEqual(
+    lieux,
+    1,
+    'Le lieu a été matérialisé une fois par médiateur',
+  )
+
+  const rattachements = await prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: {
+        userId: { in: [currentInscriptionUserId(), collegueUserId] },
+      },
+      suppression: null,
+      fin: null,
+    },
+    select: { structureId: true },
+  })
+  assert.strictEqual(
+    rattachements.length,
+    2,
+    'Les deux médiateurs ne sont pas rattachés',
+  )
+  assert.strictEqual(
+    new Set(rattachements.map(({ structureId }) => structureId)).size,
+    1,
+    'Les deux médiateurs ne partagent pas le même lieu d’activité',
+  )
+})
+
+Then('ce lieu d’activité est inscrit au registre', async () => {
+  const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
+    where: { nom: nomEmployeuse, suppression: null },
+    select: { id: true },
+  })
+
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieu.id },
+      select: { nom: true, source: true, editedBy: true, updatedAtCoop: true },
+    })
+
+  assert.strictEqual(inscription.nom, nomEmployeuse)
+  assert.strictEqual(inscription.source, 'Coop numérique')
+  assert.strictEqual(inscription.editedBy, 'coop')
+  assert.notStrictEqual(inscription.updatedAtCoop, null)
+})
+
+Given('la Base Adresse Nationale ne reconnaît pas son adresse', () => {
+  banReconnait.reponse = { _tag: 'AdresseInconnue' }
+})
+
+Given('le service d’adresse est indisponible', () => {
+  banReconnait.reponse = { _tag: 'ServiceIndisponible' }
+})
+
+When(
+  'je déclare que ma structure employeuse est un lieu d’activité',
+  async () => {
+    const resultat = await resoudre(currentInscriptionUserId(), true)
+
+    refus.tag = resultat.success ? null : resultat.error._tag
+  },
+)
+
+Then('la déclaration m’est refusée faute d’adresse reconnue', () => {
+  assert.strictEqual(refus.tag, 'AdresseNonReconnue')
+})
+
+Then('la déclaration m’est refusée faute de service d’adresse', () => {
+  assert.strictEqual(refus.tag, 'ServiceAdresseIndisponible')
+})
+
+Then('aucun lieu d’activité n’a été créé', async () => {
+  assert.strictEqual(
+    await prismaClient.lieuInclusion.count({ where: { nom: nomEmployeuse } }),
+    0,
+  )
+})
+
+Then('l’adresse du lieu est celle de la Base Adresse Nationale', async () => {
+  const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
+    where: { nom: nomEmployeuse },
+    select: { adresse: true, banId: true, latitude: true, longitude: true },
+  })
+
+  assert.strictEqual(lieu.adresse, ADRESSE_RECONNUE.nom)
+  assert.strictEqual(lieu.banId, ADRESSE_RECONNUE.id)
+  assert.strictEqual(lieu.latitude, ADRESSE_RECONNUE.latitude)
+  assert.strictEqual(lieu.longitude, ADRESSE_RECONNUE.longitude)
+})

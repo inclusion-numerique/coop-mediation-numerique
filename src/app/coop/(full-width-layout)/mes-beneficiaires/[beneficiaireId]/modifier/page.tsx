@@ -1,0 +1,37 @@
+import { notFound } from 'next/navigation'
+import { modifierBeneficiaireAction } from '@/app/_actions/beneficiaire/modifier-beneficiaire.action'
+import { authenticateMediateur } from '@/auth/authenticateUser'
+import { beneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
+import { presentBeneficiaireAModifier } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
+import { ModifierBeneficiairePage } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+
+const PageModifierBeneficiaire = async (props: {
+  searchParams: Promise<{ retour?: string }>
+  params: Promise<{ beneficiaireId: string }>
+}) => {
+  const user = await authenticateMediateur()
+
+  const { beneficiaireId } = await props.params
+  const { retour } = await props.searchParams
+
+  const beneficiaire = await beneficiaireAEditer({
+    beneficiaireId: BeneficiaireId(beneficiaireId),
+    mediateurId: MediateurId(user.mediateur.id),
+  })
+
+  if (!beneficiaire) {
+    notFound()
+  }
+
+  return (
+    <ModifierBeneficiairePage
+      view={presentBeneficiaireAModifier(beneficiaire)}
+      save={modifierBeneficiaireAction}
+      retour={retour}
+    />
+  )
+}
+
+export default PageModifierBeneficiaire

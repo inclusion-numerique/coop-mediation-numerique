@@ -1,0 +1,25 @@
+'use server'
+
+import { actionBuilder } from '@/configuration/nextjs'
+import { withAdmin, withAuth } from '@/features/authentification'
+import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto'
+import { REGLER_LA_VISIBILITE_CARTO_ERRORS } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.errors'
+import { ReglerLaVisibiliteCartoValidation } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.validation'
+import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import { fromResult, withInput } from '@/libraries/nextjs'
+
+export const reglerLaVisibiliteCartoAction = actionBuilder()
+  .use(withAuth())
+  .use(withAdmin())
+  .use(withInput(ReglerLaVisibiliteCartoValidation))
+  .execute(
+    fromResult(
+      ({ input, user }) =>
+        reglerLaVisibiliteCarto({
+          mediateurId: MediateurId(input.mediateurId),
+          visible: input.visible,
+          auteurId: AuteurId(user.id),
+        }),
+      { onError: REGLER_LA_VISIBILITE_CARTO_ERRORS },
+    ),
+  )

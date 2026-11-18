@@ -25,7 +25,7 @@ review. Le premier domaine modélisé, `beneficiaire`, a demandé **7 itération
 ## Entrée & investigation (avant de modéliser)
 
 On te donne une feature (ou une entité). Ancre le modèle dans le réel :
-1. **Schéma Prisma** : lis le(s) modèle(s) concerné(s) dans `apps/web/prisma/schema.prisma` (champs, nullabilité, enums, relations). C'est la matière première.
+1. **Schéma Prisma** : lis le(s) modèle(s) concerné(s) dans `prisma/schema.prisma` (champs, nullabilité, enums, relations). C'est la matière première.
 2. **Code existant** : repère les types, validations et usages existants (schémas Zod, `src/<feature>/`, composants) pour comprendre la sémantique réelle des champs (un `string | null` cache souvent un état).
 3. **Usages** : qui lit/écrit ces champs, dans quels états — pour détecter les unions discriminées (DM-4/DM-5) et les défauts d'enum (DM-6).
 4. **Domaine déjà présent ?** Si un `domain/` ou des `abilities/*/domain/` existent déjà, ils sont des **entrées légitimes à consolider** (réconcilie-les, ne pars pas de zéro). Si la feature est neuve, modélise depuis Prisma et le besoin exprimé. *(Exception : en mode validation « aveugle », la consigne peut t'interdire de lire la solution existante — respecte-la alors.)*

@@ -1,0 +1,17 @@
+import { departementsRegionByCode } from '@/data/collectivites-territoriales/departementsRegion'
+import { getCartographieDepartementLink } from '@/libraries/cartographie-nationale'
+import type { CodeDepartement } from '@/libraries/insee'
+
+const CARTOGRAPHIE_NATIONALE =
+  'https://cartographie.societenumerique.gouv.fr/cartographie'
+
+export const lienDeLaCartographie = (departement: CodeDepartement): string => {
+  const departementRegion = departementsRegionByCode.get(departement)
+
+  return departementRegion
+    ? getCartographieDepartementLink({
+        region: departementRegion.region,
+        departement: departementRegion.nom,
+      })
+    : CARTOGRAPHIE_NATIONALE
+}

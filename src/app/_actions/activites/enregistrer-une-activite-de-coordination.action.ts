@@ -1,0 +1,32 @@
+'use server'
+
+import { actionBuilder } from '@/configuration/nextjs'
+import { enregistrerUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
+import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.errors'
+import { EnregistrerUneActiviteDeCoordinationValidation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
+import { CoordinateurId, UtilisateurId } from '@/features/activites/domain'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+import { withAuth } from '@/features/authentification'
+import { withMaintenance } from '@/features/maintenance-mode'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { fromResult, withInput } from '@/libraries/nextjs'
+
+export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
+  .use(withAuth())
+  .use(withMaintenance())
+  .use(withInput(EnregistrerUneActiviteDeCoordinationValidation))
+  .execute(
+    fromResult(
+      async ({ user, input }) =>
+        enregistrerUneActiviteDeCoordination({
+          saisie: input,
+          coordinateurId:
+            user.coordinateur == null
+              ? null
+              : CoordinateurId(user.coordinateur.id),
+          auteurId: UtilisateurId(user.id),
+          tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
+        }),
+      { onError: ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS },
+    ),
+  )

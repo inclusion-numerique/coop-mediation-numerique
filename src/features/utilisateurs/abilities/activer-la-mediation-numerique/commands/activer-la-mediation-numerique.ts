@@ -1,0 +1,43 @@
+import {
+  CoordinateurId,
+  MediateurId,
+  rattachements,
+  UtilisateurIntrouvable,
+} from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import { createStopwatch } from '@/utils/stopwatch'
+import { type Activation, activationDe, type NonCoordinateur } from '../domain'
+import {
+  activer,
+  compteQuiActive,
+  inscrireLeMediateur,
+} from '../implementation'
+
+export const activerLaMediationNumerique = async (
+  utilisateurId: string,
+): Promise<Result<Activation, UtilisateurIntrouvable | NonCoordinateur>> => {
+  const chrono = createStopwatch()
+
+  const compte = await compteQuiActive(utilisateurId)
+  if (compte === null) return failure(UtilisateurIntrouvable(utilisateurId))
+
+  const activation = activationDe(
+    rattachements(
+      compte.mediateur === null ? null : MediateurId(compte.mediateur.id),
+      compte.coordinateur === null
+        ? null
+        : CoordinateurId(compte.coordinateur.id),
+    ),
+  )
+  if (!activation.success || activation.data === 'DejaActivee')
+    return activation
+
+  await activer({
+    utilisateurId: compte.id,
+    coordinateurId: compte.coordinateur?.id ?? '',
+    duree: () => chrono.stop().duration,
+  })
+  await inscrireLeMediateur(compte.id)
+
+  return success(activation.data)
+}

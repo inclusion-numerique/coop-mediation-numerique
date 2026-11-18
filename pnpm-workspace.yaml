@@ -1,13 +1,3 @@
-packages:
-  - apps/cli
-  - apps/web
-  - packages/config
-  - packages/e2e
-  - packages/emails
-  - packages/ui
-  - packages/storybook
-  - packages/fixtures
-
 # Délai de quarantaine avant qu'une version publiée soit installable (en MINUTES : 21600 = 15
 # jours). C'est la principale défense du dépôt contre les compromissions de chaîne
 # d'approvisionnement type Shai-Hulud / ChainDrop, où les versions malveillantes ne restent en

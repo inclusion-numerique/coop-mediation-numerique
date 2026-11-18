@@ -1,0 +1,19 @@
+import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
+import { telephoneCanonique } from '@/libraries/telephone'
+
+export const Telephone = defineModel(
+  z
+    .string()
+    .transform((saisi, ctx) => {
+      const canonique = telephoneCanonique(saisi)
+      if (canonique == null) {
+        ctx.addIssue({ code: 'custom', message: 'Invalid' })
+        return z.NEVER
+      }
+      return canonique
+    })
+    .brand('Telephone'),
+)
+
+export type Telephone = Model.TypeOf<typeof Telephone>

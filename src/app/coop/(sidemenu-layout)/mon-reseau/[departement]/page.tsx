@@ -1,0 +1,37 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { metadataTitle } from '@/app/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
+import { ReseauDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui'
+import { departementDuCode } from '@/libraries/departement'
+
+type Parametres = { params: Promise<{ departement: string }> }
+
+export const generateMetadata = async ({
+  params,
+}: Parametres): Promise<Metadata> => {
+  const departement = departementDuCode((await params).departement)
+
+  return departement.success
+    ? { title: metadataTitle(`Mon réseau - ${departement.data.nom}`) }
+    : notFound()
+}
+
+const Page = async ({ params }: Parametres) => {
+  const user = await authenticateMediateurOrCoordinateur()
+  const reseau = await consulterLeReseauDuDepartement(
+    (await params).departement,
+  )
+
+  return reseau.success ? (
+    <ReseauDuDepartementPage
+      reseau={reseau.data}
+      estConseillerNumerique={user.isConseillerNumerique}
+    />
+  ) : (
+    notFound()
+  )
+}
+
+export default Page
