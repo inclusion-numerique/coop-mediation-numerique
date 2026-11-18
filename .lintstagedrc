@@ -1,11 +1,8 @@
 {
-  "*.{js,mjs,jsx,ts,tsx}": [
+  "*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,css}": [
     "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
   ],
-  "*.css": [
-    "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
-  ],
-  "*.{md,json,xml,html,sh,yml,yaml}": [
+  "*.{md,json,yml,yaml}": [
     "biome format --write --no-errors-on-unmatched --files-ignore-unknown=true"
   ]
 }
