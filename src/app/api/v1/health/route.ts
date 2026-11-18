@@ -1,11 +1,11 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { NoQueryParamsValidation } from '@/app/api/v1/ApiV1QueryParams'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/app/api/v1/middlewares'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
 
 export type HealthResponse = {
   status: 'ok' | 'error'

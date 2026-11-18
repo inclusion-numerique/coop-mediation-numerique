@@ -1,14 +1,14 @@
 import Excel from 'exceljs'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
 import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
+import {
+  addExportMetadata,
+  type WorksheetUser,
+} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { addFilters } from '@/libraries/tableur/addFilters'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
-import {
-  addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
 import { colonnesDeLExport } from './colonnes-de-l-export'
 
 const filtresDisponibles = [

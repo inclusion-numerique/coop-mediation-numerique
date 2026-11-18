@@ -1,6 +1,6 @@
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
-import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
+import { AdresseBanValidation } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   ComplementAdresseSaisi,
   NomDuLieuSaisi,

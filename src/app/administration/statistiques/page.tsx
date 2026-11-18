@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation'
 import { rechercherLesLieuxNationauxAction } from '@/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
 import {
   filtreDeLieu,
   vocabulaireDeLaBarre,
@@ -13,10 +11,12 @@ import {
   sectionGenerale,
 } from '@/composition/statistiques/sections'
 import { statistiquesNationalesEnCours } from '@/composition/statistiques/statistiques-nationales'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   criteresDesStatistiques,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { optionsDeTags } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,

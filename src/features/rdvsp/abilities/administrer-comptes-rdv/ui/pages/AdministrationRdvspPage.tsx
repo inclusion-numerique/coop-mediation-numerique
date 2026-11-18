@@ -1,5 +1,4 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import { statutIntegration } from '@/features/rdvsp/domain/sante-compte'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
@@ -9,6 +8,7 @@ import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { AdministrationRdvspData } from '../../implementation/prisma/comptes-rdv.query'
 
 const AdministrationRdvspPage = async ({

@@ -1,10 +1,10 @@
 import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
+import type { StructureSearchResult } from '@/features/employeuse'
 import {
   type TypologieStructure,
   typologieStructureLibelle,
-} from '@/external-apis/api-entreprise/typologieStructure'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
-import type { StructureSearchResult } from '@/features/employeuse'
+} from '@/features/employeuse/domain/typologieStructure'
 import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'

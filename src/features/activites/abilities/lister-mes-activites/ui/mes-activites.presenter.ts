@@ -1,11 +1,11 @@
 import { formatInTimeZone } from 'date-fns-tz'
+import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
 import {
   dateAsDay,
   dateAsDayWithHourInTimezone,
 } from '@/libraries/date/dateAsDay'
 import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import type {
   ActiviteConsultee,
   ChronologieDesActivites,

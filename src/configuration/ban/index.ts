@@ -1,6 +1,6 @@
 import { searchAdresse } from '@/configuration/ban/apiAdresse'
 import { instrument } from '@/configuration/telemetry/instrument/server'
-import { communeFieldsFromAddress } from '@/external-apis/ban/communeFieldsFromAddress'
+import { communeFieldsFromAddress } from '@/features/adresse/implementation/api-adresse/communeFieldsFromAddress'
 
 const operation = {
   name: 'http.ban.search',

@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
-import { authenticateMediateur } from '@/auth/authenticateUser'
 import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites'
 import {
   cartesDeLaChronologie,
@@ -16,6 +15,7 @@ import {
 } from '@/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'

@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/supprimer-une-activite-de-coordination.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateCoordinateur } from '@/auth/authenticateUser'
-import { isMediateur } from '@/auth/userTypeGuards'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   BoutonExporter,
   requeteDeLExport,
@@ -25,6 +23,8 @@ import {
   paginationLue,
 } from '@/features/activites/domain'
 import { filtresActifsDesCoordinations } from '@/features/activites/ui/filtres-actifs-des-coordinations'
+import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
+import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

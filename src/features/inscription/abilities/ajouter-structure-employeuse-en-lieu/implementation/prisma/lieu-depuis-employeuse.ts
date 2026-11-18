@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,

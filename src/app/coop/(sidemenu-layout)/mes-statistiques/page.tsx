@@ -2,8 +2,6 @@ import type { Metadata } from 'next'
 import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { reglerLePartageStatistiquesAction } from '@/app/_actions/mediateurs/regler-le-partage-statistiques.action'
 import { rechercherLesLieuxDeMesStatistiquesAction } from '@/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
 import { filtreDeLieu } from '@/composition/statistiques/barre'
 import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
 import {
@@ -16,6 +14,8 @@ import {
   nombreDAccompagnements,
   toutesLesStatistiques,
 } from '@/composition/statistiques/statistiques-fournies'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'

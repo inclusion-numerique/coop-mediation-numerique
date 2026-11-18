@@ -6,7 +6,7 @@ import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/app/api/v1/middlewares'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
 import {
   type LieuPublieExpose,
   lieuPublieExpose,

@@ -2,27 +2,27 @@ import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+import {
+  inventaireDesLieux,
+  lieuInventorie,
+  type StructureAttributes,
+} from '@/features/lieux-activite/abilities/inventorier-les-lieux'
+import {
   createCompositeCursor,
   cursorListMeta,
   cursorPageHref,
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
-} from '@/app/api/v1/CursorPagination'
+} from '@/libraries/json-api/CursorPagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@/app/api/v1/JsonApiTypes'
-import {
-  withApiV1Errors,
-  withClientApi,
-  withQueryParams,
-} from '@/app/api/v1/middlewares'
-import {
-  inventaireDesLieux,
-  lieuInventorie,
-  type StructureAttributes,
-} from '@/features/lieux-activite/abilities/inventorier-les-lieux'
+} from '@/libraries/json-api/JsonApiTypes'
 
 /**
  * @openapi

@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
 import {
   criteresListeEmployeuses,

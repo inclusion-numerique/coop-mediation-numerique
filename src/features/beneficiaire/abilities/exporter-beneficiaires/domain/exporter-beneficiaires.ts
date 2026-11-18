@@ -10,7 +10,7 @@ import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import type { Telephone } from '@/features/beneficiaire/domain/telephone'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
+import type { WorksheetUser } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 
 export type BeneficiaireExportRow = {
   readonly nom: Nom

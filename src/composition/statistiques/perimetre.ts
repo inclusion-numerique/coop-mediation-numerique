@@ -1,5 +1,3 @@
-import { mediateurCoordonnesEtAnciensIdsFor } from '@/auth/mediateursCoordonnes'
-import type { SessionUser } from '@/auth/sessionUser'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   MediateurId as MediateurIdDesActivites,
@@ -11,6 +9,8 @@ import {
   type PerimetreDesStatistiques,
   perimetreDuDemandeur,
 } from '@/features/activites/domain'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
 
 export const perimetreDeLUtilisateur = (
   user: SessionUser,

@@ -1,5 +1,5 @@
-import { getSessionUserFromId } from '@/auth/getSessionUserFromSessionToken'
-import type { SessionUser } from '@/auth/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 
 export const utilisateurDuPartage = async ({
   proprietaire,

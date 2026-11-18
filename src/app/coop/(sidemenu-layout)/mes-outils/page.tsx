@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/app/metadataTitle'
-import { getAuthenticatedSessionUser } from '@/auth/getSessionUser'
-import { isConseillerNumerique, isCoordinateur } from '@/auth/userTypeGuards'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import {
+  isConseillerNumerique,
+  isCoordinateur,
+} from '@/features/authentification/domain/userTypeGuards'
+import { getAuthenticatedSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import {
   Coordination,
   Dispositif,

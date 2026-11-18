@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/inscription/renseigner-structure-employeuse.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
-import { sessionUserHasStructureEmployeuse } from '@/auth/sessionUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { sessionUserHasStructureEmployeuse } from '@/features/authentification/domain/sessionUser'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import RenseignerStructureEmployeusePage from '@/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
-import { hasInscriptionComplete } from '@/security/getHomepage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

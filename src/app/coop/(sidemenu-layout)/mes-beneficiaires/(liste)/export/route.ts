@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { isMediateur } from '@/auth/userTypeGuards'
+import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   ExportBeneficiairesFilterValidations,
   exporterBeneficiaires,

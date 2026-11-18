@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { Accueil as AccueilDuVisiteur } from '../../domain'
 import { ActionsRapides } from '../components/ActionsRapides'
 import { InformationsCoop } from '../components/InformationsCoop'

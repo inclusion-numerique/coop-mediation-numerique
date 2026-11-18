@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
-import { getSessionUser } from '@/auth/getSessionUser'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import { RDVServicePublicCoopConnexion } from '@/features/pictograms/services/RDVServicePublicCoopConnexion'
 import {
   rdvOauthLinkAccountErrorCallbackPath,

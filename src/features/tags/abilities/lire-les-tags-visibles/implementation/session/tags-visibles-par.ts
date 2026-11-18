@@ -1,4 +1,4 @@
-import type { SessionUser } from '@/auth/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { type Tag, TagId } from '../../../../domain'
 import { acteurDe } from '../../../../implementation/session'
 import {

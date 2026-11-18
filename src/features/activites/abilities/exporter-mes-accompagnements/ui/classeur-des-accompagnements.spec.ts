@@ -1,6 +1,6 @@
 import type { Worksheet } from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
+import type { WorksheetUser } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { classeurDesAccompagnements } from './classeur-des-accompagnements'
 import { collectifExporte, individuelExporte } from './fixtures-d-export'
 

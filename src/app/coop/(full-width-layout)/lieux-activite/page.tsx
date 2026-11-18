@@ -2,9 +2,8 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -24,6 +23,7 @@ import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-vis
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),

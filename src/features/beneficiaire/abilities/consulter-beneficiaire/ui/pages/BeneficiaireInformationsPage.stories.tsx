@@ -4,7 +4,7 @@ import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/co
 import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
-} from '@/fixtures/beneficiaires'
+} from '@/features/beneficiaire/fixtures/beneficiaires'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,
 } from './ViewBeneficiaireInformationsPage'

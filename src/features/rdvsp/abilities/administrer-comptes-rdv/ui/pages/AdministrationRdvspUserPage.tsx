@@ -1,5 +1,4 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
@@ -8,6 +7,7 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { AdministrationRdvspUserData } from '../../implementation/prisma/compte-rdv-detaille.query'
 import AdministrationSyncUserDataButton from '../components/AdministrationSyncUserDataButton'
 

@@ -1,7 +1,19 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { apiV1Url } from '@/app/api/v1/apiV1Url'
+import {
+  type ActiviteAttributes,
+  activiteExposee,
+  activitesExposees,
+  criteresDExposition,
+  curseurDActivite,
+} from '@/features/activites/abilities/exposer-les-activites'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+import { apiV1Url } from '@/libraries/json-api/apiV1Url'
 import {
   type CursorDirection,
   createCompositeCursor,
@@ -10,23 +22,11 @@ import {
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
-} from '@/app/api/v1/CursorPagination'
+} from '@/libraries/json-api/CursorPagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@/app/api/v1/JsonApiTypes'
-import {
-  withApiV1Errors,
-  withClientApi,
-  withQueryParams,
-} from '@/app/api/v1/middlewares'
-import {
-  type ActiviteAttributes,
-  activiteExposee,
-  activitesExposees,
-  criteresDExposition,
-  curseurDActivite,
-} from '@/features/activites/abilities/exposer-les-activites'
+} from '@/libraries/json-api/JsonApiTypes'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 /**

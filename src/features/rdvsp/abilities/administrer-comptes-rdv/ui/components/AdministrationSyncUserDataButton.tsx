@@ -4,9 +4,9 @@ import { Button } from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
+import type { UserId } from '@/features/authentification/domain/user'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { UserId } from '@/utils/user'
 
 const AdministrationSyncUserDataButton = ({
   user: { id },

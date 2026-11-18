@@ -1,4 +1,3 @@
-import { removeBrevoUserContact } from '@/external-apis/brevo/removeBrevoUserContact'
 import {
   effacerLInscription,
   type RelancerLesInscriptionsInacheveesPorts,
@@ -21,6 +20,7 @@ import {
 } from '@/features/utilisateurs/abilities/supprimer-compte'
 import { compterLesInscrits } from '@/features/utilisateurs/db/compter-les-inscrits.query'
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import { removeBrevoUserContact } from '@/features/utilisateurs/implementation/brevo/removeBrevoUserContact'
 import { success } from '@/libraries/result'
 import { supprimerComptePorts } from './supprimer-compte.ports'
 

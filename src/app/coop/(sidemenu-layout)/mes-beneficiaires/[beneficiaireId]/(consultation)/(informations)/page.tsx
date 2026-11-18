@@ -1,6 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
-import { authenticateMediateur } from '@/auth/authenticateUser'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
   compterLesThematiquesAbordees,
@@ -9,6 +8,7 @@ import {
 import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui'
 import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites'
 import { LignesParPage, NumeroDePage } from '@/features/activites/domain'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireInformationsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireInformationsPage'
 import { DeleteBeneficiaireModal } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'

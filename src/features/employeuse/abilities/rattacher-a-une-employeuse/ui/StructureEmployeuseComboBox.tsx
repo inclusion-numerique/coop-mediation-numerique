@@ -1,5 +1,5 @@
 import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
-import { typologieStructureLibelle } from '@/external-apis/api-entreprise/typologieStructure'
+import { typologieStructureLibelle } from '@/features/employeuse/domain/typologieStructure'
 import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'

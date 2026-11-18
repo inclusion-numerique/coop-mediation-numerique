@@ -1,6 +1,4 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import {
   classeurDesCoordinations,
   exporterLesActivitesDeCoordination,
@@ -11,6 +9,8 @@ import {
   criteresDesCoordinations,
 } from '@/features/activites/domain'
 import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 

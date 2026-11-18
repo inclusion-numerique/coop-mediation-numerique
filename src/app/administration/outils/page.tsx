@@ -1,8 +1,7 @@
 import { reglerLaMaintenanceAction } from '@/app/_actions/maintenance-mode/regler-la-maintenance.action'
 import { relancerLesInscriptionsInacheveesAction } from '@/app/_actions/utilisateurs/relancer-les-inscriptions-inachevees.action'
 import { relancerLesInscritsInactifsAction } from '@/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ExportDesAccompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/ui'
 import {
   consulterLaMaintenance,
@@ -20,6 +19,7 @@ import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import Card from '@/libraries/ui/components/Card'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const metadata = {
   title: metadataTitle('Outils administrateur'),

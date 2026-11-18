@@ -5,7 +5,7 @@ import {
   type CompteRdvUtilisable,
   estUtilisable,
 } from '@/features/rdvsp/domain/compte-rdv'
-import { mediateurSansActivitesUserId } from '@/fixtures/users/mediateurSansActivites'
+import { mediateurSansActivitesUserId } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
 /**

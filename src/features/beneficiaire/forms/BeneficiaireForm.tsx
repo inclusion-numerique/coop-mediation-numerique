@@ -7,11 +7,11 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import {
   CommuneComboBox,
   CommuneOptions,
 } from '@/features/adresse/combo-box/CommuneComboBox'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
   ANNEE_NAISSANCE_MIN as anneeNaissanceMin,

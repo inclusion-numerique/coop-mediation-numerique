@@ -4,7 +4,7 @@ import {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
-import { structureCreationDataWithSiretFromUniteLegale } from '@/external-apis/api-entreprise/structuresDepuisUniteLegale'
+import { structureCreationDataWithSiretFromUniteLegale } from '@/features/employeuse/implementation/api-entreprise/structuresDepuisUniteLegale'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
 import {

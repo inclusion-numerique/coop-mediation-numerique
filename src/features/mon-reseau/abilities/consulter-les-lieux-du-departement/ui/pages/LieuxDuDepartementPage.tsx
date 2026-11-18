@@ -1,4 +1,3 @@
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import {
   hrefDuLieuEnListe,
   LieuActiviteCard,
@@ -13,6 +12,7 @@ import type { Departement } from '@/libraries/departement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'

@@ -1,11 +1,11 @@
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
 import {
   LieuxPage,
   type ListeDesLieuxSearchParams,
 } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),

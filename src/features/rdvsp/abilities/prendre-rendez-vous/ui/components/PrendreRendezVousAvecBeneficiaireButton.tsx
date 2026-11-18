@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
-import type { SessionUser } from '@/auth/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 

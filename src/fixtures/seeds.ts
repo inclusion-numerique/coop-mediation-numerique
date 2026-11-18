@@ -2,29 +2,29 @@ import {
   fixtureCrasCollectifs,
   fixtureCrasDemarchesAdministratives,
   fixtureCrasIndividuels,
-} from '@/fixtures/activites'
-import { fixtureBeneficiaires } from '@/fixtures/beneficiaires'
+} from '@/features/activites/fixtures/activites'
+import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtures'
+import { fixtureBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
 import {
   equipeCoordonnee,
   equipeCordonneeIds,
   invitationsEquipe,
   quitterEquipe,
-} from '@/fixtures/equipeCoordonnee'
-import { seedPersonnesMain } from '@/fixtures/personnesMainConseillerNumerique'
-import { seedStructures } from '@/fixtures/structures'
-import { upsertCoordinationFixtures } from '@/fixtures/upsertCoordinationFixture'
-import { upsertCraFixtures } from '@/fixtures/upsertCraFixtures'
-import { upsertInvitationEquipeFixtures } from '@/fixtures/upsertInvitationEquipeFixture'
-import { upsertMediateurCoordonneFixtures } from '@/fixtures/upsertMediateurCoordonneFixture'
-import { upsertUserFixtures } from '@/fixtures/upsertUserFixture'
+} from '@/features/equipe/fixtures/equipeCoordonnee'
+import { upsertCoordinationFixtures } from '@/features/equipe/fixtures/upsertCoordinationFixture'
+import { upsertInvitationEquipeFixtures } from '@/features/equipe/fixtures/upsertInvitationEquipeFixture'
+import { upsertMediateurCoordonneFixtures } from '@/features/equipe/fixtures/upsertMediateurCoordonneFixture'
+import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
+import { upsertUserFixtures } from '@/features/utilisateurs/fixtures/upsertUserFixture'
 import {
   coordinations,
   fixtureUsers,
   rdvServicePublicStagingUsers,
   teamAdministrateurs,
   teamMediateurs,
-} from '@/fixtures/users'
-import { coordinateurInscritAvecToutCoordinateurId } from '@/fixtures/users/coordinateurInscritAvecTout'
+} from '@/features/utilisateurs/fixtures/users'
+import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscritAvecTout'
+import { seedStructures } from '@/fixtures/structures'
 import { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 import { output } from '@/libraries/fixtures/output'

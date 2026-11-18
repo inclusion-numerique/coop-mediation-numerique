@@ -1,8 +1,8 @@
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { EquipeAComplementer } from '../../domain'
 import { AjouterUnMembre } from '../AjouterUnMembre'
 

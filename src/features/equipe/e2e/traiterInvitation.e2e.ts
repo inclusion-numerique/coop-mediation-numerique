@@ -8,12 +8,12 @@ import {
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
-} from '@/fixtures/users/conseillerNumerique'
-import { coordinateurInscritCoordinateurId } from '@/fixtures/users/coordinateurInscrit'
+} from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
+import { coordinateurInscritCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscrit'
 import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
-} from '@/fixtures/users/mediateurInscription'
+} from '@/features/utilisateurs/fixtures/users/mediateurInscription'
 import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
 
 const createInvitationUrl = ({

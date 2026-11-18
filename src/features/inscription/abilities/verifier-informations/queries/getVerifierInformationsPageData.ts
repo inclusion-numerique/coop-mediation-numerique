@@ -1,5 +1,5 @@
-import type { SessionUser } from '@/auth/sessionUser'
-import { sessionUserHasStructureEmployeuse } from '@/auth/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { sessionUserHasStructureEmployeuse } from '@/features/authentification/domain/sessionUser'
 import {
   getNextInscriptionStep,
   type InscriptionContexte,

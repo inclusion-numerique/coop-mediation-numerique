@@ -8,12 +8,16 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
+import type {
+  UserId,
+  UserRdvAccount,
+  UserTimezone,
+} from '@/features/authentification/domain/user'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import { useModalVisibility } from '@/libraries/ui/hooks/useModalVisibility'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { UserId, UserRdvAccount, UserTimezone } from '@/utils/user'
 import type { StatutIntegration } from '../domain/sante-compte'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 

@@ -1,5 +1,5 @@
 import { executeInscriptionFlow } from '@/features/inscription/e2e/executeInscriptionFlow'
-import { coordinateurHorsDispositifInscription } from '@/fixtures/users/coordinateurHorsDispositifInscription'
+import { coordinateurHorsDispositifInscription } from '@/features/utilisateurs/fixtures/users/coordinateurHorsDispositifInscription'
 
 describe("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {

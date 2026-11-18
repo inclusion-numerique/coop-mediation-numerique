@@ -1,12 +1,12 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
-import { seedStructures } from '@/fixtures/structures'
+import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
   mediateurAvecActiviteUserId,
-} from '@/fixtures/users/mediateurAvecActivite'
+} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
+import { seedStructures } from '@/fixtures/structures'
 import type { Prisma } from '@/generated/prisma/client'
 import { EmailExterne } from './domain/identite'
 import { UtilisateurCoopId } from './domain/utilisateur-coop-id'

@@ -1,5 +1,5 @@
+import { tagsColor } from '@/features/activites/ui/graphiques/couleurs'
 import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
-import { tagsColor } from '@/libs/statistiques/couleurs'
 import type { parTagPresentes } from '../par-tag.presenter'
 
 const desc = (

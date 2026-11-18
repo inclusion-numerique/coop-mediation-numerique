@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
-import PublicFooter from '@/app/(public)/PublicFooter'
-import { authenticateUser } from '@/auth/authenticateUser'
-import Header from '@/components/Header'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
 import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/ui'
@@ -11,7 +10,8 @@ import { messageAffiche } from '@/features/maintenance-mode/domain'
 import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
 import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui'
 import { MediateurId } from '@/features/mediateurs/domain'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import Header from '@/features/navigation/ui/en-tete/Header'
+import PublicFooter from '@/features/navigation/ui/pied-de-page/PublicFooter'
 
 const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()

@@ -1,8 +1,7 @@
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import { metadataTitle } from '@/app/metadataTitle'
 import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
@@ -20,6 +19,7 @@ import {
 } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),

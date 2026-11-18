@@ -1,5 +1,3 @@
-import { mediateurCoordonnesEtAnciensIdsFor } from '@/auth/mediateursCoordonnes'
-import type { SessionUser } from '@/auth/sessionUser'
 import {
   rassembler,
   statistiquesEnCours,
@@ -7,6 +5,7 @@ import {
 import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
 import { criteresDesStatistiques, Jour } from '@/features/activites/domain'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
@@ -14,6 +13,7 @@ import {
   CoordinateurId as CoordinateurIdDeLEquipe,
   MediateurId as MediateurIdDeLEquipe,
 } from '@/features/equipe/domain'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { optionsDesStatistiques } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'

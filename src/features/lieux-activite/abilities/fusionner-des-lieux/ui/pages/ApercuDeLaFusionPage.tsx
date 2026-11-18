@@ -1,4 +1,3 @@
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
 import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ApercuDeLaFusion'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
@@ -8,6 +7,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { toTitleCase } from '@/libraries/texte/toTitleCase'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import { nomAffiche } from '../nom-affiche'
 
 export const ApercuDeLaFusionPage = ({

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/app/metadataTitle'
 import { projectTitle } from '@/configuration/projet/config'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'

@@ -2,7 +2,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getSessionUser } from '@/auth/getSessionUser'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import {
   rdvIntegrationEnSavoirPlusLink,

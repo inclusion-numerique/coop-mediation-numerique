@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { SessionUser } from '@/auth/sessionUser'
 import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
+import { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   ActivitesFilters,
   ActivitesFilterValidations,

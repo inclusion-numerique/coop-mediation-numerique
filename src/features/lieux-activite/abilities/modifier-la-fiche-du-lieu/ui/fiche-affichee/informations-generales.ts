@@ -2,9 +2,9 @@ import {
   Itinerance,
   type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
-import { getAdresseBanLabel } from '@/external-apis/ban/adresseBanLabel'
-import { banDefaultValueToAdresseBanData } from '@/external-apis/ban/banDefaultValueToAdresseBanData'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
+import { getAdresseBanLabel } from '@/features/adresse/ui/adresseBanLabel'
+import { banDefaultValueToAdresseBanData } from '@/features/adresse/ui/banDefaultValueToAdresseBanData'
 import type { StructureSearchResult } from '@/features/employeuse'
 import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'

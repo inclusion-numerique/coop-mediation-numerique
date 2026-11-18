@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
 import { ClientsApiPage } from '@/features/clients-api/abilities/lister-les-clients-api/ui'
 

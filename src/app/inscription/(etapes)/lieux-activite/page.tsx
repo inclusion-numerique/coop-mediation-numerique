@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import type { LieuActiviteConnu } from '@/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import {
@@ -10,7 +11,6 @@ import {
 } from '@/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import { hasInscriptionComplete } from '@/security/getHomepage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -2,12 +2,12 @@ import { v4 } from 'uuid'
 import { afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { AdresseIndisponible } from '@/configuration/ban/apiAdresse'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
-import { seedStructures } from '@/fixtures/structures'
+import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
-} from '@/fixtures/users/mediateurAvecActivite'
+} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
+import { seedStructures } from '@/fixtures/structures'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
 

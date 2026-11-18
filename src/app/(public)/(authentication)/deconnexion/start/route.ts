@@ -1,17 +1,17 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
-import type { ProconnectSignoutState } from '@/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
-import { generateProconnectSignoutUrl } from '@/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { proConnectProviderId } from '@/auth/proConnect'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
+import { refreshProconnectIdToken } from '@/features/authentification/implementation/proconnect/getProconnectIdToken'
+import { proConnectProviderId } from '@/features/authentification/implementation/proconnect/proConnect'
+import type { ProconnectSignoutState } from '@/features/authentification/implementation/proconnect/proconnectSignout'
+import { generateProconnectSignoutUrl } from '@/features/authentification/implementation/proconnect/proconnectSignout'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   type EncodedState,
   encodeSerializableState,
 } from '@/libraries/parametres-d-url/encodeSerializableState'
-import { refreshProconnectIdToken } from '@/security/getProconnectIdToken'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

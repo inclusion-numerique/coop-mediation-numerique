@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,

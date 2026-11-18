@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   ContactReferent,
   referentAffichage,

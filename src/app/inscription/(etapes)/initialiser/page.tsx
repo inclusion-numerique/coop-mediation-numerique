@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
-import { hasInscriptionComplete } from '@/security/getHomepage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

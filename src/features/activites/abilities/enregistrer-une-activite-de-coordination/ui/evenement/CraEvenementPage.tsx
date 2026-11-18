@@ -1,4 +1,3 @@
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
 import CraEvenementForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/components/CraEvenementForm'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
@@ -10,6 +9,7 @@ import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButtonWithModal from '@/libraries/ui/components/BackButtonWithModal'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
 
 type CraEvenementPageProps = {

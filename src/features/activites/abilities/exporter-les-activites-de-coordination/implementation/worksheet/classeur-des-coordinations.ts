@@ -2,15 +2,15 @@ import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { formatInTimeZone } from 'date-fns-tz'
 import * as Excel from 'exceljs'
+import {
+  addExportMetadata,
+  type WorksheetUser,
+} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import { htmlToText } from '@/libraries/texte/htmlToText'
-import {
-  addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
 import type {
   ActiviteDeCoordination,
   CriteresDesCoordinations,

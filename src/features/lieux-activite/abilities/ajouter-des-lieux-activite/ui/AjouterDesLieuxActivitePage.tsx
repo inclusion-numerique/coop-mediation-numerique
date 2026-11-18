@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { ajouterDesLieuxActiviteAction } from '@/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
-import { geocodeStructureAdresse } from '@/external-apis/ban/geocodeStructureAdresse'
+import { geocodeStructureAdresse } from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
 import CreerLieuActiviteForm from '@/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,

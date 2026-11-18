@@ -78,21 +78,21 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 ### Application Structure (src)
 
-- **app/**: Next.js App Router pages
+- **app/**: Next.js entry points only (`page`, `layout`, `route`, `error`, `not-found`, metadata files): thin hubs that authenticate, validate input, query an ability and render one feature page component
   - `(public)/`: Unauthenticated pages
   - `coop/`: Main authenticated area
   - `administration/`: Admin pages
   - `api/`: API routes including REST API v1
   - `_actions/`: server actions, one file per ability, composing its ports
-- **features/**: Feature modules (activites, inscription, mediateurs, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
-- **libs/**: older shared modules (forms, data tables, filters, injection, statistics, worksheets), being moved to `libraries/`
-- **libraries/**: shared code without any business concept (UI components, e-mail layout, fixture helpers, paths…)
-- **configuration/**: project configuration, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
-- **cli/**: CLI tools for deployment, secrets and jobs
-- **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`
-- **jobs/**: Background job implementations
-- **auth/**: Authentication with NextAuth.js
-- **components/**: Shared React components
+- **features/**: Feature modules (activites, authentification, navigation, vitrine, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
+- **libraries/**: shared code without any business concept, one purpose per library (UI components, forms, data tables, JSON:API, dates, e-mail layout, paths…)
+- **configuration/**: project configuration, Prisma clients, clients of external services, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
+- **composition/**: wiring between features (statistics pages, account deletion ports), pending a finer analysis
+- **cli/**: CLI entry point; commands stay thin
+- **jobs/**: Serverless Jobs entry point and thin executors
+- **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`; each feature keeps its own fixtures
+- **styles/**: global DSFR stylesheet
+- `proxy.ts`, `instrumentation.ts`, `instrumentation-client.ts`: Next.js conventions, next to `app/`
 
 ### Key Technologies
 

@@ -1,6 +1,11 @@
 import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
+import { addFilters } from '@/features/activites/ui/tableur/filtres-des-activites'
 import type { ActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
+import {
+  addExportMetadata,
+  type WorksheetUser,
+} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import type {
   LabelAndCount,
@@ -9,11 +14,6 @@ import type {
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
-import {
-  addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
-import { addFilters } from '@/libs/worksheet/filtres-des-activites'
 
 type PartDuTotal = { total: number; proportion: number }
 

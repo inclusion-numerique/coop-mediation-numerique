@@ -11,7 +11,7 @@ import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/givenBenefic
 import {
   mediateurSansActivitesMediateurId,
   mediateurSansActivitesUserId,
-} from '@/fixtures/users/mediateurSansActivites'
+} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
 
 const withBrandedFields = (fixture: {
   id: string

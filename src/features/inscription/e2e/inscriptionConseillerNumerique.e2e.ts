@@ -1,6 +1,6 @@
 import { executeInscriptionFlow } from '@/features/inscription/e2e/executeInscriptionFlow'
-import { conseillerInscriptionSansContrat } from '@/fixtures/users/conseillerInscriptionSansContrat'
-import { conseillerSansLieuInscription } from '@/fixtures/users/conseillerSansLieuInscription'
+import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/users/conseillerInscriptionSansContrat'
+import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/users/conseillerSansLieuInscription'
 
 /**
  * Un conseiller numérique renseigne TOUJOURS ses lieux d'activité à l'inscription.

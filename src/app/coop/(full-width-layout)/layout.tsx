@@ -1,8 +1,8 @@
 import React from 'react'
-import MinimalFooter from '@/app/coop/MinimalFooter'
-import { authenticateUser } from '@/auth/authenticateUser'
-import Header from '@/components/Header'
 import CreateCraModal from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModal'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import Header from '@/features/navigation/ui/en-tete/Header'
+import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
 
 const CoopFullWidthLayout = async ({
   children,

@@ -14,7 +14,7 @@ import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
   geocodeStructureAdresse,
-} from '@/external-apis/ban/geocodeStructureAdresse'
+} from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
 import type { LieuActiviteInput } from '@/features/inscription/abilities/renseigner-lieux-activite'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'

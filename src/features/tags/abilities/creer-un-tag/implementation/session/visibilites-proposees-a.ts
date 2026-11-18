@@ -1,4 +1,4 @@
-import type { SessionUser } from '@/auth/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { acteurDe } from '../../../../implementation/session'
 import {
   type OptionDeVisibilite,

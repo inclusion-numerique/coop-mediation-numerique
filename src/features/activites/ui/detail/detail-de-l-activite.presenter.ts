@@ -1,10 +1,10 @@
+import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
 } from '@/libraries/date/dateAsDayAndTime'
 import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import type {
   AccompagnementIndividuel,
   ActiviteConsultee,

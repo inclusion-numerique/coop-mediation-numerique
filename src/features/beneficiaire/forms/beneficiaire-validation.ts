@@ -1,5 +1,5 @@
 import z from 'zod'
-import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
+import { AdresseBanValidation } from '@/features/adresse/domain/AdresseBanValidation'
 import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import { statutsSociaux as statutSocialValues } from '@/features/beneficiaire/domain/statut-social'

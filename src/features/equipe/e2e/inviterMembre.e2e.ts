@@ -1,9 +1,9 @@
 import { appUrl } from '@e2e/support/helpers'
-import { conseillerNumerique } from '@/fixtures/users/conseillerNumerique'
-import { coordinateurInscrit } from '@/fixtures/users/coordinateurInscrit'
-import { mediateurInscription } from '@/fixtures/users/mediateurInscription'
+import { getUserDisplayName } from '@/features/authentification/domain/user'
+import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
+import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/users/coordinateurInscrit'
+import { mediateurInscription } from '@/features/utilisateurs/fixtures/users/mediateurInscription'
 import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
-import { getUserDisplayName } from '@/utils/user'
 
 const searchAndInviteUser = ({
   displayName,

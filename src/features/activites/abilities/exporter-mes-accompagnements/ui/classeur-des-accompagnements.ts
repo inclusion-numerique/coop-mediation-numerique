@@ -1,11 +1,11 @@
 import Excel from 'exceljs'
-import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
-import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
+import { addFilters } from '@/features/activites/ui/tableur/filtres-des-activites'
 import {
   addExportMetadata,
   type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
-import { addFilters } from '@/libs/worksheet/filtres-des-activites'
+} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import type { ExportDesAccompagnements } from '../domain'
 import {
   entetesDuClasseur,

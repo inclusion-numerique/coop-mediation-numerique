@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation'
 import { PropsWithChildren } from 'react'
-import AdministrationSideMenu from '@/app/administration/AdministrationSideMenu'
-import MinimalFooter from '@/app/coop/MinimalFooter'
-import { getSessionUser } from '@/auth/getSessionUser'
-import Header from '@/components/Header'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import Header from '@/features/navigation/ui/en-tete/Header'
+import AdministrationSideMenu from '@/features/navigation/ui/menus/AdministrationSideMenu'
+import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
 
 const AdministrationLayout = async ({ children }: PropsWithChildren) => {
   const user = await getSessionUser()

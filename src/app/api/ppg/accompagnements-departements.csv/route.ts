@@ -5,8 +5,6 @@ import {
 } from '@arckit/nextjs/route'
 import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import {
   accompagnementsParDepartement,
   exportDesAccompagnementsCsv,
@@ -15,6 +13,8 @@ import {
   nomDuFichierDExport,
   PopulationDeMediateurs,
 } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 
 const ExportQueryParamsValidation = z.object({

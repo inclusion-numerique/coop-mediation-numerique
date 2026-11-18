@@ -1,5 +1,5 @@
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
-import type { AdresseAGeocoder } from '@/external-apis/ban/geocodeStructureAdresse'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
+import type { AdresseAGeocoder } from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
 import type { UserId } from '@/features/inscription/domain'
 import type { EmployeuseId } from './employeuse-id'
 

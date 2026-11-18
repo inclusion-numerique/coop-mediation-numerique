@@ -1,26 +1,26 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import {
-  cursorListMeta,
-  cursorPageHref,
-  JsonApiCursorPaginationQueryParamsValidation,
-  prismaCursorPagination,
-} from '@/app/api/v1/CursorPagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/app/api/v1/JsonApiTypes'
-import {
-  withApiV1Errors,
-  withClientApi,
-  withQueryParams,
-} from '@/app/api/v1/middlewares'
-import {
   type CraV1Attributes,
   crasV1Exposes,
   craV1Expose,
   curseurDeCraV1,
 } from '@/features/activites/abilities/exposer-les-cras-v1'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+import {
+  cursorListMeta,
+  cursorPageHref,
+  JsonApiCursorPaginationQueryParamsValidation,
+  prismaCursorPagination,
+} from '@/libraries/json-api/CursorPagination'
+import type {
+  JsonApiListResponse,
+  JsonApiResource,
+} from '@/libraries/json-api/JsonApiTypes'
 
 /**
  * @openapi

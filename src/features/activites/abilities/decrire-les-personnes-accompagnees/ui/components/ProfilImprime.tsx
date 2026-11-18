@@ -1,11 +1,11 @@
-import ProgressBar from '@/libraries/proportions/ProgressBar'
-import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
-import { AccompagnementPieChart } from '@/libs/statistiques/AccompagnementPieChart'
+import { AccompagnementPieChart } from '@/features/activites/ui/graphiques/AccompagnementPieChart'
 import {
   genresColors,
   statusColors,
   tranchesAgeColors,
-} from '@/libs/statistiques/couleurs'
+} from '@/features/activites/ui/graphiques/couleurs'
+import ProgressBar from '@/libraries/proportions/ProgressBar'
+import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
 import type { ProfilPresente } from '../profil.presenter'
 
 const toProgress = ({

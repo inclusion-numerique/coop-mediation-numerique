@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import {
   dateDeDerniereActivite,
@@ -24,6 +23,7 @@ import { departementDuCode } from '@/libraries/departement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 
 const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>

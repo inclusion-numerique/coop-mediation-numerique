@@ -4,14 +4,14 @@ import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membr
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresDesStatistiques,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import {
   conseillerNumeriqueSql,
   consulterEmployeuseAUneDate,

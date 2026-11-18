@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import NextAuth from 'next-auth'
-import { isFirewallUserAgent } from '@/app/api/auth/[...nextauth]/isFirewallUserAgent'
-import { nextAuthOptions } from '@/auth/auth'
+import { nextAuthOptions } from '@/features/authentification/implementation/next-auth/auth'
+import { isFirewallUserAgent } from '@/features/authentification/implementation/next-auth/isFirewallUserAgent'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { BeneficiaireData } from '@/features/beneficiaire/forms/beneficiaire-validation'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'

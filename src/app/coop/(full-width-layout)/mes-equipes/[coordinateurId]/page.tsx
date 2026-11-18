@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { quitterUneEquipeAction } from '@/app/_actions/equipe/quitter-une-equipe.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui'
 import {
   estMembreActif,

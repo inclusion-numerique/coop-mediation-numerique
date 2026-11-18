@@ -5,7 +5,7 @@ import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abiliti
 import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
-} from '@/fixtures/beneficiaires'
+} from '@/features/beneficiaire/fixtures/beneficiaires'
 
 type Accompagnements = ComponentProps<
   typeof ViewBeneficiaireAccompagnementsPage

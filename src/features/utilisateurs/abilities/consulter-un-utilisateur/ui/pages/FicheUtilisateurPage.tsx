@@ -3,7 +3,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import {
   coordinateurDe,
   inscription,
@@ -24,6 +23,7 @@ import AdministrationInfoCard from '@/libraries/ui/components/administration/Adm
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@/libraries/ui/components/administration/AdministrationMailtoLink'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
   etiquettesDuCompte,

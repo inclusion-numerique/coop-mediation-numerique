@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import {
   consulterEmployeuseAUneDate,
@@ -11,6 +10,7 @@ import {
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 
 export const metadata: Metadata = {
   title: metadataTitle('Ma structure employeuse'),

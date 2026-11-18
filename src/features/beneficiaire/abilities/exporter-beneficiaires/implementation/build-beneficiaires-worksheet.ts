@@ -4,12 +4,12 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain'
+import { addExportMetadata } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { htmlToText } from '@/libraries/texte/htmlToText'
-import { addExportMetadata } from '@/libs/worksheet/addExportMetadata'
 import type {
   BeneficiaireExportRow,
   BuildBeneficiairesWorksheet,

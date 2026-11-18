@@ -1,7 +1,7 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { isUserInscriptionEnCours } from '@/auth/isUserInscriptionEnCours'
-import type { SessionUser } from '@/auth/sessionUser'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { isUserInscriptionEnCours } from '@/features/inscription/domain/isUserInscriptionEnCours'
 
 export type EtatInscriptionUtilisateur = {
   role: SessionUser['role']

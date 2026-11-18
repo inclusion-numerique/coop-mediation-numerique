@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
+import type { WorksheetUser } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { criteresEquipe } from '../../../../domain'
 import { classeurEquipe } from './classeur-equipe'
 import type { MembreExporte } from './membre-exporte'

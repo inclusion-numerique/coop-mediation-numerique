@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import {
   listerLesActeursDuDepartement,
   type ParametresDesActeurs,

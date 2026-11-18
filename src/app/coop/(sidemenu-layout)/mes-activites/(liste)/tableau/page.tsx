@@ -1,7 +1,5 @@
 import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
-import { authenticateMediateur } from '@/auth/authenticateUser'
-import { isCoordinateur, isMediateur } from '@/auth/userTypeGuards'
 import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
 import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites'
 import { listerMesActivites } from '@/features/activites/abilities/lister-mes-activites'
@@ -26,6 +24,11 @@ import {
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import {
+  isCoordinateur,
+  isMediateur,
+} from '@/features/authentification/domain/userTypeGuards'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,

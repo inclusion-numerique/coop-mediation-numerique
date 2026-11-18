@@ -1,12 +1,12 @@
 import type { NextRequest } from 'next/server'
-import type { ProconnectSignoutState } from '@/app/(public)/(authentication)/deconnexion/callback/proconnectSignout'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { ProconnectSignoutState } from '@/features/authentification/implementation/proconnect/proconnectSignout'
 import {
   getSessionTokenFromNextRequestCookies,
   secureSessionCookie,
   sessionCookie,
-} from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+} from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   decodeSerializableState,
   type EncodedState,

@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rafraichirAccueilRdvAction } from '@/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   consulterLAccueil,
   type ProfilDAccueil,
@@ -23,6 +22,7 @@ import {
 } from '@/features/activites/abilities/lister-les-dernieres-activites/ui'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { compterLesMembres } from '@/features/equipe'
 import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'

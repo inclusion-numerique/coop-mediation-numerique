@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { AjouterDesLieuxPage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/pages/AjouterDesLieuxPage'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 
 const AjouterLieuPage = async () => {
   const user = await authenticateUser()

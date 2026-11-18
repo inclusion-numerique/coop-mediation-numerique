@@ -3,8 +3,8 @@ import { brevoApiThrottle } from '@/configuration/brevo/createBrevoContact'
 import { deleteBrevoContact } from '@/configuration/brevo/deleteBrevoContact'
 import { removeBrevoContactFromList } from '@/configuration/brevo/removeBrevoContactFromList'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
-import { deleteBrevoContactIfOrphan } from '@/external-apis/brevo/deleteBrevoContactIfOrphan'
 import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
+import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementation/brevo/deleteBrevoContactIfOrphan'
 import type {
   CompteDuContact,
   ContactBrevo,

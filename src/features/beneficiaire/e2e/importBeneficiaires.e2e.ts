@@ -1,5 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
-import { mediateurSansActivites } from '@/fixtures/users/mediateurSansActivites'
+import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
 
 describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
   before(() => {

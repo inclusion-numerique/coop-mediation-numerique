@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { AuthCard } from '@/app/(public)/(authentication)/AuthCard'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'

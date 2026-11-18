@@ -2,7 +2,6 @@
 
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
-import LogoCoop from '@/components/LogoCoop'
 import {
   type ChoisirProfilFormData,
   choisirProfilFormShape,
@@ -20,6 +19,7 @@ import {
 } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { ServerActionResult } from '@/libraries/nextjs'
+import LogoCoop from '@/libraries/ui/components/LogoCoop'
 import { createToast } from '@/libraries/ui/toast/createToast'
 
 type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<

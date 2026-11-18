@@ -3,7 +3,7 @@ import { fusionnerUnTagAction } from '@/app/_actions/tags/fusionner-un-tag.actio
 import { modifierUnTagAction } from '@/app/_actions/tags/modifier-un-tag.action'
 import { rechercherDesDestinationsAction } from '@/app/_actions/tags/rechercher-des-destinations.action'
 import { supprimerUnTagAction } from '@/app/_actions/tags/supprimer-un-tag.action'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { CREER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.key'
 import {
   BoutonCreerUnTag,

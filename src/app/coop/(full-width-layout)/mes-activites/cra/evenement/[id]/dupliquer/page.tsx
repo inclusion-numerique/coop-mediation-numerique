@@ -1,11 +1,11 @@
 import { notFound, redirect } from 'next/navigation'
-import { authenticateCoordinateur } from '@/auth/authenticateUser'
 import { lireUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
 import { formulaireDeLEvenement } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/formulaire-de-la-coordination.presenter'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
 } from '@/features/activites/domain'
+import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const DupliquerCraEvenementPage = async ({

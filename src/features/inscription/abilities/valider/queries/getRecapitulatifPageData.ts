@@ -1,5 +1,5 @@
-import type { SessionUser } from '@/auth/sessionUser'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
 import { stepPath } from '@/features/inscription/ui/step-path'
 import {

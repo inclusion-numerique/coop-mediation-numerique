@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
-import MinimalFooter from '@/app/coop/MinimalFooter'
-import { authenticateUser } from '@/auth/authenticateUser'
-import Header from '@/components/Header'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import Header from '@/features/navigation/ui/en-tete/Header'
+import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
 
 const InscriptionLayout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()

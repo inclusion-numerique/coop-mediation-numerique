@@ -9,14 +9,14 @@ import {
   siIndisponible,
 } from '@/configuration/ban/apiAdresse'
 import {
-  adresseNonVerifiableMessage,
-  geocodeStructureAdresse,
-  SANS_SIRET_A_LA_MAIN,
-} from '@/external-apis/ban/geocodeStructureAdresse'
-import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@/features/adresse/combo-box/AdresseBanComboBox'
+import {
+  adresseNonVerifiableMessage,
+  geocodeStructureAdresse,
+  SANS_SIRET_A_LA_MAIN,
+} from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
 import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'

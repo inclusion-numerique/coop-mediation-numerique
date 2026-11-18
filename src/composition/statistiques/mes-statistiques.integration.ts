@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { getSessionUserFromId } from '@/auth/getSessionUserFromSessionToken'
 import { vocabulaireDeLaBarre } from '@/composition/statistiques/barre'
 import {
   getMesStatistiquesPageData,
@@ -35,22 +34,23 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@/features/activites/ui/libelles/type-lieu'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
-import { seedPersonnesMain } from '@/fixtures/personnesMainConseillerNumerique'
-import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
-import { mediateque, seedStructures } from '@/fixtures/structures'
-import { conseillerNumerique } from '@/fixtures/users/conseillerNumerique'
+import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
+import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
+import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
   mediateurAvecActiviteUserId,
-} from '@/fixtures/users/mediateurAvecActivite'
+} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
 import {
   mediateurSansActivites,
   mediateurSansActivitesUserId,
-} from '@/fixtures/users/mediateurSansActivites'
+} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+import { mediateque, seedStructures } from '@/fixtures/structures'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'

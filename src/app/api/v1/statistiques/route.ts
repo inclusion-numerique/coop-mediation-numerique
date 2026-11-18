@@ -1,25 +1,25 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { apiV1Url } from '@/app/api/v1/apiV1Url'
-import type {
-  JsonApiItemResponse,
-  JsonApiResource,
-} from '@/app/api/v1/JsonApiTypes'
+import { statistiquesNationales } from '@/composition/statistiques/statistiques-nationales'
+import { criteresDesStatistiques } from '@/features/activites/domain'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/app/api/v1/middlewares'
-import { serializeApiRequestParams } from '@/app/api/v1/serializeApiRequestParams'
-import { statistiquesNationales } from '@/composition/statistiques/statistiques-nationales'
-import { criteresDesStatistiques } from '@/features/activites/domain'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
 import {
   FiltresDesStatistiquesValidation,
   type StatistiquesAttributes,
   statistiquesAttributes,
   statistiquesExposees,
 } from '@/features/statistiques/abilities/exposer-les-statistiques'
+import { apiV1Url } from '@/libraries/json-api/apiV1Url'
+import type {
+  JsonApiItemResponse,
+  JsonApiResource,
+} from '@/libraries/json-api/JsonApiTypes'
+import { serializeApiRequestParams } from '@/libraries/json-api/serializeApiRequestParams'
 
 /**
  * @openapi

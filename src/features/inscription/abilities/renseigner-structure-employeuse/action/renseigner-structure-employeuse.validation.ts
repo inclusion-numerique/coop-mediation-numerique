@@ -1,9 +1,9 @@
 import { z } from 'zod'
+import { AdresseBanValidation } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   type TypologieStructure,
   typologiesStructure,
-} from '@/external-apis/api-entreprise/typologieStructure'
-import { AdresseBanValidation } from '@/external-apis/ban/AdresseBanValidation'
+} from '@/features/employeuse/domain/typologieStructure'
 import { Siret } from '@/libraries/insee'
 import type { StructureEmployeuseInput } from '../domain'
 

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { modifierUnClientApiAction } from '@/app/_actions/clients-api/modifier-un-client-api.action'
 import { renouvelerLeSecretAction } from '@/app/_actions/clients-api/renouveler-le-secret.action'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api'
 import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.key'

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { apercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
 import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui'
 

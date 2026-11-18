@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import {
   DEFAULT_PAGE_SIZE,
   generatePageSizeSelectOptions,
@@ -8,6 +7,7 @@ import {
 import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { LigneDuTag } from '../../../../ui'
 import type { LigneDeLaListe } from '../liste-des-tags.presenter'
 

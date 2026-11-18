@@ -1,5 +1,5 @@
-import { getUserDepartement } from '@/auth/getUserDepartement'
-import type { SessionUser } from '@/auth/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
 import { CodeDepartement } from '@/libraries/insee'
 import {
   type Acteur,

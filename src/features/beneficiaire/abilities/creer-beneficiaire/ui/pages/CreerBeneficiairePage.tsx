@@ -1,12 +1,12 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@/features/beneficiaire/forms/BeneficiaireForm'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import type { SaisieEnCours } from '../../../../forms/saisie-en-cours'
 

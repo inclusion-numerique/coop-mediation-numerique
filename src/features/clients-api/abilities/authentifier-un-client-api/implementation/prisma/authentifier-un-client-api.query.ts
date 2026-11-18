@@ -9,7 +9,7 @@ import {
   estValideLe,
   type PorteeApi,
 } from '@/features/clients-api/domain'
-import { verifySecret } from '@/security/hashSecret'
+import { verifySecret } from '@/features/clients-api/implementation/hashSecret'
 
 export const authentifierUnClientApi = async ({
   clientApiId,

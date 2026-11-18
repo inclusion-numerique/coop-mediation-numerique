@@ -1,4 +1,3 @@
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import CraCollectifForm from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/CraCollectifForm'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
@@ -15,6 +14,7 @@ import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButtonWithModal from '@/libraries/ui/components/BackButtonWithModal'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 

@@ -37,13 +37,13 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@/features/activites/ui/libelles/type-lieu'
+import { testSessionUser } from '@/features/authentification/fixtures/testSessionUser'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
-import { testSessionUser } from '@/test/testSessionUser'
 import { MesStatistiques } from './MesStatistiques'
 
 const statistiquesPageData = {

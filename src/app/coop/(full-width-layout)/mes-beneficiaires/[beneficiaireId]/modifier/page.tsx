@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { modifierBeneficiaireAction } from '@/app/_actions/beneficiaire/modifier-beneficiaire.action'
-import { authenticateMediateur } from '@/auth/authenticateUser'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { beneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
 import { presentBeneficiaireAModifier } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
 import { ModifierBeneficiairePage } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'

@@ -5,9 +5,7 @@ import { afficherRdvsDansActivitesAction } from '@/app/_actions/rdvsp/afficher-r
 import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateur } from '@/auth/authenticateUser'
-import { isCoordinateur, isMediateur } from '@/auth/userTypeGuards'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
 import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites'
 import { listerMesActivites } from '@/features/activites/abilities/lister-mes-activites'
@@ -33,6 +31,11 @@ import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/c
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import {
+  isCoordinateur,
+  isMediateur,
+} from '@/features/authentification/domain/userTypeGuards'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,

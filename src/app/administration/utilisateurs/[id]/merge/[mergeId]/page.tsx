@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { apercuDeFusion } from '@/features/utilisateurs/abilities/fusionner-des-comptes'
 import {
   FUSIONNER_DES_COMPTES_ACTION_KEY,

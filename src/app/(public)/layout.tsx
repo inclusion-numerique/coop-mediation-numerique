@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
-import PublicFooter from '@/app/(public)/PublicFooter'
-import { getSessionUser } from '@/auth/getSessionUser'
-import Header from '@/components/Header'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import Header from '@/features/navigation/ui/en-tete/Header'
+import PublicFooter from '@/features/navigation/ui/pied-de-page/PublicFooter'
 
 const PublicLayout = async ({ children }: PropsWithChildren) => {
   const user = await getSessionUser()

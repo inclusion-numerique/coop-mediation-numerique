@@ -1,7 +1,7 @@
 import { type Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
+import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import type { StructureSearchResult } from '@/features/employeuse'
 
 export type InformationsGeneralesFormData = {

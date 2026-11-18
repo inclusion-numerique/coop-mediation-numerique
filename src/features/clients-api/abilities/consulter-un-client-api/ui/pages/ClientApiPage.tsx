@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import type { ClientApi } from '@/features/clients-api/domain'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import { BoutonDocumentation } from '../../../../ui/BoutonDocumentation'
 import { HREF_DES_CLIENTS_API } from '../../../../ui/liens'
 

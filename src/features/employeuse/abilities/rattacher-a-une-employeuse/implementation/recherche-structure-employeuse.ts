@@ -1,5 +1,5 @@
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
-import { structureCreationDataWithSiretFromUniteLegale } from '@/external-apis/api-entreprise/structuresDepuisUniteLegale'
+import { structureCreationDataWithSiretFromUniteLegale } from '@/features/employeuse/implementation/api-entreprise/structuresDepuisUniteLegale'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
 import { rechercherEmployeuse } from '../../rechercher-employeuse/implementation'
