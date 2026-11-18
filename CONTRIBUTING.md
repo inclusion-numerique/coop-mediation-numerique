@@ -37,7 +37,7 @@ L'installation génère aussi le client Prisma.
 ### 2. Configurer les variables d'environnement
 
 ```bash
-cp .env.dist .env
+cp .env.example .env
 ```
 
 Les valeurs marquées `<secret>` ne sont jamais versionnées. Avec une clé Scaleway personnelle (`SCW_ACCESS_KEY` et `SCW_SECRET_KEY`, à demander à l'équipe), cette commande les ajoute au `.env` depuis le Secret Manager de Scaleway :

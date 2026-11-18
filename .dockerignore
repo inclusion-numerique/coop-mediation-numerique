@@ -28,4 +28,3 @@ data
 **/*.integration.tsx
 **/*.e2e.ts
 **/*.e2e.tsx
-

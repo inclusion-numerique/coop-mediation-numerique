@@ -36,7 +36,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
-        run: cp .env.dist .env
+        run: cp .env.example .env
       - name: Tsc
         run: pnpm tsc
       - name: Lint - biome
@@ -80,7 +80,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
-        run: cp .env.dist .env
+        run: cp .env.example .env
       - name: Test application with coverage
         run: pnpm --silent exec vitest run --project unit --coverage
       - name: Upload coverage to Coveralls
@@ -110,7 +110,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
-        run: cp .env.dist .env
+        run: cp .env.example .env
       - name: Build jobs runner
         run: pnpm --silent build:jobs
       - name: Check jobs runner
