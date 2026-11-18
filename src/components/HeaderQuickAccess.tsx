@@ -1,6 +1,6 @@
 'use client'
 
-import * as Popover from '@radix-ui/react-popover'
+import { Popover } from 'radix-ui'
 import { useState } from 'react'
 import { Pictogram } from '@/features/pictograms/pictogram'
 import { AbcDiagLogo } from '@/features/pictograms/services/AbcDiagLogo'
