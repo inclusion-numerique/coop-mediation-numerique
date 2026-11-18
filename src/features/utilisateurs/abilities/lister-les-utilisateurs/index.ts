@@ -1,4 +1,4 @@
 export {
+  ordreDesUtilisateurs,
   rechercherDesUtilisateurs,
-  triDesUtilisateurs,
 } from './implementation'

@@ -9,7 +9,7 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { Prisma } from '@/generated/prisma/client'
-import { isDefinedAndNotNull } from '@/utils/isDefinedAndNotNull'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
 
 export type FindDuplicatesForBeneficiaireInput = {
   beneficiaire: {
@@ -157,5 +157,5 @@ export const findDuplicatesForBeneficiaire = async ({
     ORDER BY c.nom ASC, c.creation DESC
   `
 
-  return rows.map(toDuplicateBeneficiaire).filter(isDefinedAndNotNull)
+  return rows.map(toDuplicateBeneficiaire).filter(onlyDefinedAndNotNull)
 }

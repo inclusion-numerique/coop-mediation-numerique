@@ -1,11 +1,12 @@
 import { metadataTitle } from '@/app/metadataTitle'
 import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
 import {
+  criteresListeEmployeuses,
   type EmployeusesSearchParams,
   employeuseAffichee,
+  etatDeTableEmployeuses,
   listerEmployeuses,
 } from '@/features/employeuse/server'
-import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
 
 export const metadata = {
   title: metadataTitle('Structures employeuses'),
@@ -13,27 +14,20 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const PAR_PAGE_PAR_DEFAUT = 100
-
 const Page = async (props: {
   searchParams: Promise<EmployeusesSearchParams>
 }) => {
   const searchParams = await props.searchParams
+  const criteres = criteresListeEmployeuses(searchParams)
 
-  const { employeuses, total, pages } = await listerEmployeuses({
-    recherche: searchParams.recherche ?? '',
-    page: toNumberOr(searchParams.page)(DEFAULT_PAGE),
-    parPage: toNumberOr(searchParams.lignes)(PAR_PAGE_PAR_DEFAUT),
-    triPar: searchParams.tri ?? null,
-    sens: searchParams.ordre ?? null,
-  })
+  const { employeuses, total } = await listerEmployeuses(criteres)
 
   return (
     <EmployeusesListePage
       employeuses={employeuses.map(employeuseAffichee)}
       trouvees={total}
-      pages={pages}
-      searchParams={searchParams}
+      parPage={criteres.parPage}
+      state={etatDeTableEmployeuses(searchParams)}
     />
   )
 }

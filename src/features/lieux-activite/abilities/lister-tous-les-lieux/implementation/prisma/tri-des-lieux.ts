@@ -1,10 +1,11 @@
+import type { SortDirection } from '@arckit/resultset'
 import type { Prisma } from '@/generated/prisma/client'
-import type { SortReferential } from '@/libraries/data-table/sort/getDataTableOrderBy'
-import type { ColonneTriable } from '../../ui/LieuxDataTable'
+import type { ColonneTriable } from '../../ui/lister-tous-les-lieux-search-params'
 
-export const triDesLieux: SortReferential<
-  ColonneTriable,
-  Prisma.LieuInclusionOrderByWithRelationInput
+type OrdreDesLieux = Prisma.LieuInclusionOrderByWithRelationInput
+
+const triDesLieux: Readonly<
+  Record<ColonneTriable, (direction: SortDirection) => OrdreDesLieux[]>
 > = {
   nom: (direction) => [{ nom: direction }],
   creation: (direction) => [{ creation: direction }],
@@ -13,3 +14,17 @@ export const triDesLieux: SortReferential<
     { mediateursEnActivite: { _count: direction } },
   ],
 }
+
+const estUneColonneTriable = (tri: string): tri is ColonneTriable =>
+  Object.hasOwn(triDesLieux, tri)
+
+export const ordreDesLieux = ({
+  tri,
+  ordre,
+}: {
+  tri?: string
+  ordre?: string
+}): OrdreDesLieux[] =>
+  tri && estUneColonneTriable(tri)
+    ? triDesLieux[tri](ordre === 'desc' ? 'desc' : 'asc')
+    : []

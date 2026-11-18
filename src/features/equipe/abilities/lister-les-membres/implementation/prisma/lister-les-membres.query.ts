@@ -117,6 +117,6 @@ export const listerLesMembres = async ({
     lignes: toLignesEquipe(lignes),
     statistiques,
     nombreDeResultats,
-    nombreDePages: take ? Math.ceil(nombreDeResultats / take) : 1,
+    lignesParPage: take,
   })
 }

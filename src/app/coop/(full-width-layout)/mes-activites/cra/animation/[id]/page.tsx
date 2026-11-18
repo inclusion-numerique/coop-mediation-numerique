@@ -17,7 +17,7 @@ import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/t
 import { visibilitesDuCra } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const UpdateCraAnimationPage = async ({
   searchParams,

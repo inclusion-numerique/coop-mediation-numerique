@@ -8,7 +8,7 @@ import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitial
 import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { UsurpationPage } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Usurpation'),

@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
+import { departementsDesCodesInsee } from '@/libraries/departement'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { getDepartementsFromCodesInsee } from '@/utils/getDepartementFromCodeInsee'
 
 export const getMediateurCommunesAndDepartementsOptions = async ({
   mediateurIds,
@@ -46,7 +46,7 @@ export const getMediateurCommunesAndDepartementsOptions = async ({
       }) satisfies SelectOption,
   )
 
-  const departementsOptions: SelectOption[] = getDepartementsFromCodesInsee(
+  const departementsOptions: SelectOption[] = departementsDesCodesInsee(
     communes.map(({ code }) => code),
   ).map(({ code, nom }) => ({
     value: code,

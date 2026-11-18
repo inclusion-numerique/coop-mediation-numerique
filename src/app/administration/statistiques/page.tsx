@@ -26,7 +26,7 @@ import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/sta
 import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
 import { StatistiquesNationales } from '@/features/statistiques/ui/pages/StatistiquesNationales'
 import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),

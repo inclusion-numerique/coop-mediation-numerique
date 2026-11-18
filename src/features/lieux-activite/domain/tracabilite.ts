@@ -72,11 +72,3 @@ export type Tracabilite = {
   readonly derniereModification: DerniereModification
   readonly suppression: Suppression
 }
-
-export type TracabiliteRattachement = {
-  readonly creation: Creation
-  readonly derniereModification: Exclude<
-    DerniereModification,
-    { readonly _tag: 'ParSource' }
-  >
-}

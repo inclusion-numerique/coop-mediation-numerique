@@ -10,9 +10,9 @@ import {
   libelleDuProfil,
 } from '@/features/inscription/domain'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
+import { pluriel } from '@/libraries/pluriel'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
-import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 
@@ -93,9 +93,11 @@ const RecapitulatifPage = ({
                 />
                 <div className="fr-h2 fr-mb-0">{mediateursCoordonnesCount}</div>
                 <div>
-                  Conseiller{sPluriel(mediateursCoordonnesCount)} numérique
-                  {sPluriel(mediateursCoordonnesCount)} identifié
-                  {sPluriel(mediateursCoordonnesCount)}
+                  {pluriel(
+                    mediateursCoordonnesCount,
+                    'Conseiller numérique identifié',
+                    'Conseillers numériques identifiés',
+                  )}
                 </div>
               </div>
               <Notice

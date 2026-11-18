@@ -34,7 +34,11 @@ export {
 export { historiqueEmployeusesAffichage } from './abilities/consulter-historique-employeuses/ui/historique-employeuses.presenter'
 
 export { employeuseAffichee } from './abilities/lister-employeuses/ui/employeuse-affichee.presenter'
-export type { EmployeusesSearchParams } from './abilities/lister-employeuses/ui/employeuses.data-table'
+export {
+  criteresListeEmployeuses,
+  type EmployeusesSearchParams,
+  etatDeTableEmployeuses,
+} from './abilities/lister-employeuses/ui/lister-employeuses-search-params'
 
 export type { StructureSearchResult } from './abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
 

@@ -19,5 +19,5 @@ export type MembresDeLEquipe = {
   readonly lignes: readonly LigneEquipe[]
   readonly statistiques: StatistiquesEquipe
   readonly nombreDeResultats: number
-  readonly nombreDePages: number
+  readonly lignesParPage: number
 }

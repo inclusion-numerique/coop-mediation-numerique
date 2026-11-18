@@ -2,10 +2,16 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import type { LieuxDataTableSearchParams } from '../LieuxDataTable'
-import LieuxTable from '../LieuxTable'
+import { LieuxPagination } from '../LieuxPagination'
+import { LieuxTable } from '../LieuxTable'
 import type { PageDeLieux } from '../ligne-de-la-liste'
+import {
+  type ListeDesLieuxSearchParams,
+  toDataTableUrlState,
+} from '../lister-tous-les-lieux-search-params'
 import { RechercheDeLieux } from '../RechercheDeLieux'
+
+const baseHref = '/administration/lieux-activite'
 
 export const LieuxPage = ({
   totalCount,
@@ -14,7 +20,7 @@ export const LieuxPage = ({
 }: {
   totalCount: number
   searchResult: PageDeLieux
-  searchParams: LieuxDataTableSearchParams
+  searchParams: ListeDesLieuxSearchParams
 }) => (
   <>
     <AdministrationBreadcrumbs currentPage="Lieux d’activité" />
@@ -39,9 +45,15 @@ export const LieuxPage = ({
         </span>
       </div>
       <LieuxTable
-        data={searchResult}
-        searchParams={searchParams}
-        baseHref="/administration/lieux-activite"
+        lignes={searchResult.structures}
+        state={toDataTableUrlState(searchParams)}
+        baseHref={baseHref}
+      />
+      <LieuxPagination
+        state={toDataTableUrlState(searchParams)}
+        baseHref={baseHref}
+        itemsCount={searchResult.matchesCount}
+        pageSize={searchResult.pageSize}
       />
     </main>
   </>

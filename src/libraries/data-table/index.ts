@@ -1,7 +1,11 @@
 export type { DataTableUrlState } from './data-table-url-state'
 
 export { PaginationNavWithPageSizeSelect } from './pagination/PaginationNavWithPageSizeSelect'
-export { generatePageSizeSelectOptions } from './pagination/page-size-options'
+export {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  generatePageSizeSelectOptions,
+} from './pagination/page-size-options'
 
 export { DataSearchBar } from './search/DataSearchBar'
 export { SelectAllHeaderCell } from './selection/SelectAllHeaderCell'

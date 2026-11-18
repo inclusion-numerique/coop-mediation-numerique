@@ -1,7 +1,4 @@
-export {
-  lignesDeLaListe,
-  nombreDePages,
-} from './liste-des-tags.presenter'
+export { lignesDeLaListe } from './liste-des-tags.presenter'
 export {
   ListeDesTagsPage,
   type ParametresDeLaListe,

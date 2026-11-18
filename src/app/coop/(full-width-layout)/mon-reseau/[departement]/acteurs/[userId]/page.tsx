@@ -42,7 +42,7 @@ import {
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
 import { departementDuCode } from '@/libraries/departement'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = { params: Promise<{ userId: string; departement: string }> }
 

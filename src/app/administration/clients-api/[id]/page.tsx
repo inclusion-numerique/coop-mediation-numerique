@@ -8,7 +8,7 @@ import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilit
 import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.key'
 import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Client API - Détails'),

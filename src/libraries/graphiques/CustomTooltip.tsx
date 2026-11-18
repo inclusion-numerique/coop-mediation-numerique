@@ -7,8 +7,8 @@ import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
 import { numberToString } from '@/libraries/nombre/formatNumber'
-import { isDefinedAndNotNull } from '@/utils/isDefinedAndNotNull'
 import styles from './CustomTooltip.module.css'
 
 const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
@@ -40,7 +40,7 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
 
           return (
             <p key={item.name} className={styles.series}>
-              {isDefinedAndNotNull(formatedName) ? (
+              {onlyDefinedAndNotNull(formatedName) ? (
                 <span>
                   {formatter
                     ? formatter(

@@ -21,6 +21,13 @@ export const valeurLue = <S extends z.ZodType>(
   return lue.success ? lue.data : null
 }
 
+const EntierPositif = z.coerce.number().int().positive()
+
+export const entierPositifLu = (
+  valeur: string | undefined,
+  parDefaut: number,
+): number => valeurLue(EntierPositif, valeur) ?? parDefaut
+
 export const valeursLues = <S extends z.ZodType>(
   schema: S,
   valeur: ValeurDeParametre,

@@ -20,12 +20,9 @@ import {
   MediateurId,
 } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import {
-  DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
-  toNumberOr,
-} from '@/libs/data-table/toNumberOr'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/libraries/data-table'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { entierPositifLu } from '@/libraries/parametres-d-url'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon équipe'),
@@ -51,8 +48,8 @@ const Page = async (props: {
     coordinateurId,
     lecteur: { gestionnaire: gestionnaireDe(user), membreActifDeLEquipe },
     criteres: criteresEquipe(searchParams),
-    page: toNumberOr(searchParams.page)(DEFAULT_PAGE),
-    lignesParPage: toNumberOr(searchParams.lignes)(DEFAULT_PAGE_SIZE),
+    page: entierPositifLu(searchParams.page, DEFAULT_PAGE),
+    lignesParPage: entierPositifLu(searchParams.lignes, DEFAULT_PAGE_SIZE),
   })
 
   if (!membres.success) redirect('/')

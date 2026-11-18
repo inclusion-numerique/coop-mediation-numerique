@@ -25,11 +25,11 @@ import { lieuxDuMediateur } from '@/features/lieux-activite'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import {
   decodeSerializableState,
   type EncodedState,
 } from '@/libraries/parametres-d-url/encodeSerializableState'
-import { ClientBinder } from '@/libs/injection/client-binder'
 
 const CreateCraIndividuelPage = async ({
   searchParams,

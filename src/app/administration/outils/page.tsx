@@ -16,10 +16,10 @@ import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@/features/utilisateu
 import { LancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/ui'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import Card from '@/libraries/ui/components/Card'
-import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Outils administrateur'),

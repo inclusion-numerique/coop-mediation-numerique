@@ -10,7 +10,6 @@ import type { CriteresActeurs } from './criteres-acteurs'
 export type PageDActeurs = {
   readonly acteurs: readonly Acteur[]
   readonly total: Effectif
-  readonly pages: number
   readonly page: NumeroDePage
   readonly lignes: LignesParPage
 }

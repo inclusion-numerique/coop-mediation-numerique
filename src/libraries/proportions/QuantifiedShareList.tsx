@@ -10,7 +10,7 @@ const orderQuantifiedShares = (
   order?: 'asc' | 'desc',
 ) => {
   if (!order) return quantifiedShares
-  return quantifiedShares.sort((a, b) => {
+  return quantifiedShares.toSorted((a, b) => {
     if (a.count > b.count) {
       return order === 'asc' ? 1 : -1
     }

@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
 import { numberToString } from '@/libraries/nombre/formatNumber'
-import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
+import { pluriel } from '@/libraries/pluriel'
 import type { TotauxPresentes } from '../totaux.presenter'
 
 export const ChiffresClesDesAccompagnements = ({
@@ -28,7 +28,11 @@ export const ChiffresClesDesAccompagnements = ({
         />
       </div>
       <div className="fr-text--bold fr-text--sm fr-mb-0 fr-mt-1v">
-        Accompagnement{sPluriel(totalCounts.accompagnements.total)}{' '}
+        {pluriel(
+          totalCounts.accompagnements.total,
+          'Accompagnement',
+          'Accompagnements',
+        )}{' '}
         <Button
           className="fr-px-2v fr-no-print"
           title="Plus d’information à propos des accompagnements"
@@ -50,16 +54,21 @@ export const ChiffresClesDesAccompagnements = ({
           <ul>
             <li>
               {numberToString(totalCounts.accompagnements.individuels.total)}{' '}
-              accompagnement
-              {sPluriel(totalCounts.accompagnements.individuels.total)}{' '}
-              individuel
-              {sPluriel(totalCounts.accompagnements.individuels.total)}
+              {pluriel(
+                totalCounts.accompagnements.individuels.total,
+                'accompagnement individuel',
+                'accompagnements individuels',
+              )}
             </li>
             <li>
               {numberToString(totalCounts.activites.collectifs.participants)}{' '}
-              participation
-              {sPluriel(totalCounts.activites.collectifs.participants)} lors de{' '}
-              {numberToString(totalCounts.activites.collectifs.total)} ateliers*
+              {pluriel(
+                totalCounts.activites.collectifs.participants,
+                'participation',
+                'participations',
+              )}{' '}
+              lors de {numberToString(totalCounts.activites.collectifs.total)}{' '}
+              ateliers*
             </li>
           </ul>
           *Les ateliers collectifs comptent pour 1 accompagnement par
@@ -83,8 +92,11 @@ export const ChiffresClesDesAccompagnements = ({
       </div>
       <div className="fr-mt-2v">
         <div className="fr-text--sm fr-text--bold fr-mb-0">
-          Bénéficiaire{sPluriel(totalCounts.beneficiaires.total)} accompagné
-          {sPluriel(totalCounts.beneficiaires.total)}
+          {pluriel(
+            totalCounts.beneficiaires.total,
+            'Bénéficiaire accompagné',
+            'Bénéficiaires accompagnés',
+          )}
         </div>
         {totalCounts.beneficiaires.nouveaux !== 0 && (
           <div className="fr-text--medium fr-text-label--blue-france">
@@ -121,15 +133,19 @@ export const ChiffresClesDesAccompagnements = ({
       <div className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-mt-4v">
         <div>
           <strong>{numberToString(totalCounts.beneficiaires.suivis)}</strong>{' '}
-          bénéficiaire
-          {sPluriel(totalCounts.beneficiaires.suivis)} suivi
-          {sPluriel(totalCounts.beneficiaires.suivis)}
+          {pluriel(
+            totalCounts.beneficiaires.suivis,
+            'bénéficiaire suivi',
+            'bénéficiaires suivis',
+          )}
         </div>
         <div className="fr-whitespace-nowrap">
           <strong>{numberToString(totalCounts.beneficiaires.anonymes)}</strong>{' '}
-          bénéficiaire
-          {sPluriel(totalCounts.beneficiaires.anonymes)} anonyme
-          {sPluriel(totalCounts.beneficiaires.anonymes)}
+          {pluriel(
+            totalCounts.beneficiaires.anonymes,
+            'bénéficiaire anonyme',
+            'bénéficiaires anonymes',
+          )}
           <Button
             className="fr-px-1v fr-ml-1v fr-no-print"
             title="Plus d’information à propos des bénéficiaires anonymes"

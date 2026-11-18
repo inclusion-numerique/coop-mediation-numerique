@@ -25,7 +25,7 @@ import {
   paginationLue,
 } from '@/features/activites/domain'
 import { filtresActifsDesCoordinations } from '@/features/activites/ui/filtres-actifs-des-coordinations'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités de coordination'),
@@ -49,12 +49,13 @@ const MesCoordinationsRoute = async ({
   const parametres = await searchParams
   const coordinateurId = CoordinateurId(user.coordinateur.id)
   const criteres = criteresDesCoordinations(parametres)
+  const pagination = paginationLue(parametres)
 
   const [listees, options] = await Promise.all([
     listerLesActivitesDeCoordination({
       coordinateurId,
       criteres,
-      pagination: paginationLue(parametres),
+      pagination,
     }),
     optionsDeFiltre({ coordinateurId }),
   ])
@@ -77,6 +78,7 @@ const MesCoordinationsRoute = async ({
         })}
         filtre={estFiltre(criteres)}
         pagination={parametresDeLaPagination(parametres)}
+        lignesParPage={pagination.lignesParPage}
         exporter={
           <BoutonExporter
             filters={filtresActifs}

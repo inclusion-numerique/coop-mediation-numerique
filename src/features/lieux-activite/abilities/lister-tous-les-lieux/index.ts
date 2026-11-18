@@ -1,4 +1,1 @@
-export {
-  rechercherDesLieux,
-  triDesLieux,
-} from './implementation'
+export { rechercherDesLieux } from './implementation'

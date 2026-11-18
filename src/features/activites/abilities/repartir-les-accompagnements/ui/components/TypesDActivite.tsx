@@ -1,5 +1,5 @@
 import { numberToString } from '@/libraries/nombre/formatNumber'
-import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
+import { pluriel } from '@/libraries/pluriel'
 import type { RepartitionPresentee } from '../repartition.presenter'
 import { StatistiqueAccompagnement } from './StatistiqueAccompagnement'
 
@@ -23,8 +23,7 @@ export const TypesDActivite = ({
           <span className="fr-text-mention--grey fr-text--sm fr-mb-0">
             &nbsp;·&nbsp;sur{' '}
             <span className="fr-text--bold">{numberToString(ateliers)}</span>{' '}
-            atelier
-            {sPluriel(ateliers)}
+            {pluriel(ateliers, 'atelier', 'ateliers')}
           </span>
         )}
       </StatistiqueAccompagnement>

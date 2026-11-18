@@ -1,21 +1,18 @@
 import { type ReactNode, Suspense } from 'react'
 import { Spinner } from '@/libraries/ui/components/Spinner'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import { LIGNES_PAR_PAGE } from '../../../../domain'
 import { CarteDActivite } from '../../../../ui/carte/CarteDActivite'
 import { CarteDeRendezVous } from '../../../../ui/carte/CarteDeRendezVous'
+import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
 import type { JourDeLaListe } from '../mes-activites.presenter'
 import { AucuneActivite } from './AucuneActivite'
 
 export type ContenuDeLaListe = {
   readonly decompte: string
   readonly jours: readonly JourDeLaListe[]
-  readonly pages: number
+  readonly total: number
+  readonly lignesParPage: number
   readonly aucuneActivite: boolean
 }
-
-const optionsDeLignes = generatePageSizeSelectOptions([...LIGNES_PAR_PAGE])
 
 const Contenu = async ({
   contenu,
@@ -26,7 +23,8 @@ const Contenu = async ({
   basculeDesRendezVous: ReactNode
   parametres: Record<string, string>
 }) => {
-  const { decompte, jours, pages, aucuneActivite } = await contenu
+  const { decompte, jours, total, lignesParPage, aucuneActivite } =
+    await contenu
 
   if (aucuneActivite && basculeDesRendezVous === null) return <AucuneActivite />
 
@@ -54,13 +52,12 @@ const Contenu = async ({
               )}
             </div>
           ))}
-          <PaginationNavWithPageSizeSelect
+          <PaginationDesActivites
             className="fr-mt-12v"
-            totalPages={pages}
-            baseHref="/coop/mes-activites"
-            searchParams={parametres}
-            defaultPageSize={50}
-            pageSizeOptions={optionsDeLignes}
+            adresse="/coop/mes-activites"
+            parametres={parametres}
+            total={total}
+            lignesParPage={lignesParPage}
           />
         </>
       )}

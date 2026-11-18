@@ -3,15 +3,17 @@ import {
   hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@/features/lieux-activite/ui'
+import {
+  DataSearchBar,
+  generatePageSizeSelectOptions,
+  PaginationNavWithPageSizeSelect,
+} from '@/libraries/data-table'
 import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import DataSearchBar from '@/libs/data-table/DataSearchBar'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
@@ -73,7 +75,7 @@ const LieuxDuDepartementPage = ({
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
             <DataSearchBar
               baseHref={baseHref}
-              searchParams={parametres}
+              state={parametres}
               placeholder="Nom du lieu, adresse ou SIRET..."
               className="fr-flex-grow-1"
             />
@@ -123,9 +125,10 @@ const LieuxDuDepartementPage = ({
 
           <PaginationNavWithPageSizeSelect
             className="fr-mt-12v"
-            totalPages={lieux.totalPages}
+            itemsCount={lieux.totalCount}
+            pageSize={lieux.pageSize}
             baseHref={baseHref}
-            searchParams={parametres}
+            state={parametres}
             defaultPageSize={LIGNES_PAR_DEFAUT}
             pageSizeOptions={pageSizeOptions}
           />

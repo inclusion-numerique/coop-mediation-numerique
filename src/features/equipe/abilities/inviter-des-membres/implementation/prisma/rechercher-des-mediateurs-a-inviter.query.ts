@@ -4,7 +4,7 @@ import {
   personneEstConseillerNumerique,
 } from '@/features/employeuse'
 import type { Prisma } from '@/generated/prisma/client'
-import { DEFAULT_PAGE_SIZE } from '@/libs/data-table/toNumberOr'
+import { DEFAULT_PAGE_SIZE } from '@/libraries/data-table'
 import { lue } from '../../../../db/lue'
 import {
   type CoordinateurId,

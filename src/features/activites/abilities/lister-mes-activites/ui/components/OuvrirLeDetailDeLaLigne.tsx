@@ -11,5 +11,12 @@ export const OuvrirLeDetailDeLaLigne = ({ row }: { row: LigneDuTableau }) => {
     event.preventDefault()
     event.stopPropagation()
   }
-  return <button type="button" title="Voir le détail" onClick={onClick} />
+  return (
+    <button
+      type="button"
+      className="fr-p-0"
+      title="Voir le détail"
+      onClick={onClick}
+    />
+  )
 }

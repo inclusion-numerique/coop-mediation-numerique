@@ -98,7 +98,7 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 - **Backend**: Next.js server actions, Prisma ORM, PostgreSQL
 - **Frontend**: React 19, Next.js 16 (App Router), DSFR (French gov design system) through react-dsfr
-- **Forms**: TanStack Form through `useAppForm` (`src/libs/form`), validated with Zod; react-hook-form only survives in legacy forms
+- **Forms**: TanStack Form through `useAppForm` (`src/libraries/formulaire`), validated with Zod; react-hook-form only survives in legacy forms
 - **Testing**: Vitest everywhere (unit and integration, no isolation, no mocks), Cucumber (BDD), Cypress (E2E)
 - **Linting**: Biome (not ESLint for formatting/linting)
 

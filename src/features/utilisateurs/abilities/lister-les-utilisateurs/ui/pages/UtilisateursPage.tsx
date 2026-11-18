@@ -12,9 +12,15 @@ import AdministrationTitle from '@/libraries/ui/components/administration/Admini
 import type { UtilisateursTrouves } from '../../domain'
 import { EtiquettesDesFiltres } from '../filtres/EtiquettesDesFiltres'
 import { Filtres } from '../filtres/Filtres'
+import {
+  etatDeLaTable,
+  type ParametresDeLaListe,
+} from '../lister-les-utilisateurs-search-params'
 import { RechercheDUtilisateurs } from '../RechercheDUtilisateurs'
-import type { UtilisateursDataTableSearchParams } from '../UtilisateursDataTable'
+import { UtilisateursPagination } from '../UtilisateursPagination'
 import { UtilisateursTable } from '../UtilisateursTable'
+
+const BASE_HREF = '/administration/utilisateurs'
 
 export const UtilisateursPage = ({
   trouves,
@@ -26,7 +32,7 @@ export const UtilisateursPage = ({
   trouves: UtilisateursTrouves
   filtres: FiltresUtilisateurs
   options: OptionsDesFiltres
-  searchParams: UtilisateursDataTableSearchParams
+  searchParams: ParametresDeLaListe
   actions: ReactNode
 }) => (
   <>
@@ -56,9 +62,14 @@ export const UtilisateursPage = ({
       <EtiquettesDesFiltres libelles={libellesDesFiltres(filtres, options)} />
       <UtilisateursTable
         utilisateurs={trouves.utilisateurs}
-        totalPages={trouves.totalPages}
-        searchParams={searchParams}
-        baseHref="/administration/utilisateurs"
+        state={etatDeLaTable(searchParams)}
+        baseHref={BASE_HREF}
+      />
+      <UtilisateursPagination
+        state={etatDeLaTable(searchParams)}
+        baseHref={BASE_HREF}
+        nombreDUtilisateurs={trouves.matchesCount}
+        lignesParPage={trouves.lignesParPage}
       />
     </main>
   </>

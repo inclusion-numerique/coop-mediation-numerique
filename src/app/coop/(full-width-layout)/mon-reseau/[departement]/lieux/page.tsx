@@ -9,7 +9,7 @@ import {
   type ParametresDesLieux,
 } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
 import { LieuxDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle("Annuaire des lieux d'activités"),

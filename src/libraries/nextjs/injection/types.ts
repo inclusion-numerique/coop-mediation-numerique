@@ -9,5 +9,3 @@ import type { ProvidePair } from 'piqure'
 // client/serveur à franchir. C'est ce qui permet aux composants clients (`hook.ts`) de s'y
 // référer sans tirer `node:async_hooks` de `./container` dans le bundle.
 export type InjectionKey<T> = ProvidePair<T>[0]
-
-export type ProvideLazy = <T>(key: InjectionKey<T>, factory: () => T) => void

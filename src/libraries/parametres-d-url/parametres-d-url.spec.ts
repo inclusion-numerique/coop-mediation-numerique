@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import {
   adresseAvec,
+  entierPositifLu,
   periodeLue,
   premiereValeur,
   valeurLue,
@@ -71,4 +72,15 @@ describe('paramètres d’URL', () => {
       '/saisie',
     )
   })
+
+  it('lit un entier positif', () => {
+    expect(entierPositifLu('12', 1)).toBe(12)
+  })
+
+  it.each([undefined, '', 'abc', '12abc', '0', '-3', '1.5'])(
+    'prend la valeur par défaut pour %s',
+    (valeur) => {
+      expect(entierPositifLu(valeur, 7)).toBe(7)
+    },
+  )
 })

@@ -10,17 +10,6 @@ export type SelectOption<
   extra?: E
 }
 
-type SelectOptionGroup<T extends string = string> = {
-  label: string
-  options: SelectOption<T>[]
-  disabled?: boolean
-  hidden?: boolean
-}
-
-export type SelectInputOption<T extends string = string> =
-  | SelectOption<T>
-  | SelectOptionGroup<T>
-
 export const labelsToOptions = <T extends string>(
   object: Record<T, string>,
   { hints }: { hints?: Partial<Record<T, string>> } = {},

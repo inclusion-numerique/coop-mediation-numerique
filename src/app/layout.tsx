@@ -11,8 +11,8 @@ import {
 } from '@/configuration/dsfr/server-only-index'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import Toaster from '@/libraries/ui/toast/Toaster'
-import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: PublicWebAppConfig.projectTitle,

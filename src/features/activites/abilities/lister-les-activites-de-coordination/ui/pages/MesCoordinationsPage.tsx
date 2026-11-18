@@ -19,6 +19,7 @@ export const MesCoordinationsPage = ({
   liste,
   filtre,
   pagination,
+  lignesParPage,
   exporter,
 }: {
   sousTitre?: string
@@ -27,6 +28,7 @@ export const MesCoordinationsPage = ({
   liste: ListeDesCoordinations
   filtre: boolean
   pagination: Readonly<Record<string, string>>
+  lignesParPage: number
   exporter: ReactNode
 }) => (
   <CoopPageContainer size={56}>
@@ -59,6 +61,7 @@ export const MesCoordinationsPage = ({
         liste={liste}
         filtre={filtre}
         pagination={pagination}
+        lignesParPage={lignesParPage}
       />
     </main>
   </CoopPageContainer>

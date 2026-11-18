@@ -31,7 +31,7 @@ import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
 } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
 
@@ -52,10 +52,12 @@ const BeneficiaireAccompagnementsPage = async (props: {
     notFound()
   }
 
+  const pagination = paginationLue(parametres)
+
   const chronologie = await listerLHistoriqueDUnBeneficiaire({
     mediateurId: MediateurDesActivites(user.mediateur.id),
     beneficiaireId: BeneficiaireDesActivites(beneficiaire.id),
-    pagination: paginationLue(parametres),
+    pagination,
     compte: user.rdvAccount?.hasOauthTokens
       ? { _tag: 'Connecte', affichesDansLaListe: true }
       : { _tag: 'NonConnecte' },
@@ -101,7 +103,10 @@ const BeneficiaireAccompagnementsPage = async (props: {
                     chronologie.elements,
                     user.timezone,
                   )}
-                  pages={chronologie.pages}
+                  total={
+                    chronologie.total.activites + chronologie.total.rendezVous
+                  }
+                  lignesParPage={pagination.lignesParPage}
                   adresse={`/coop/mes-beneficiaires/${beneficiaire.id}/accompagnements`}
                   parametres={parametresDePagination(parametres)}
                   saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}

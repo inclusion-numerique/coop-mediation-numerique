@@ -51,12 +51,9 @@ import {
   inscription,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import {
-  DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
-  toNumberOr,
-} from '@/libs/data-table/toNumberOr'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/libraries/data-table'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { entierPositifLu } from '@/libraries/parametres-d-url'
 
 const dateDInscription = (fiche: FicheUtilisateur): Date | null => {
   const jalon = inscription(fiche.cycle)
@@ -84,8 +81,8 @@ const sectionEquipe = async (
       membreActifDeLEquipe: false,
     },
     criteres: criteresEquipe(searchParams),
-    page: toNumberOr(searchParams.page)(DEFAULT_PAGE),
-    lignesParPage: toNumberOr(searchParams.lignes)(DEFAULT_PAGE_SIZE),
+    page: entierPositifLu(searchParams.page, DEFAULT_PAGE),
+    lignesParPage: entierPositifLu(searchParams.lignes, DEFAULT_PAGE_SIZE),
   })
 
   if (!membres.success) return null

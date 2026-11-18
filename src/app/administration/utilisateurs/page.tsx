@@ -6,23 +6,20 @@ import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtre
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
+  ordreDesUtilisateurs,
   rechercherDesUtilisateurs,
-  triDesUtilisateurs,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
 import {
-  UtilisateursDataTable,
-  type UtilisateursDataTableSearchParams,
+  type ParametresDeLaListe,
   UtilisateursPage,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
 import {
   filtresUtilisateurs,
-  type ParametresDeFiltres,
   parametresDesFiltres,
 } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { getDataTableOrderBy } from '@/libraries/data-table/sort/getDataTableOrderBy'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),
@@ -30,9 +27,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async (props: {
-  searchParams: Promise<UtilisateursDataTableSearchParams & ParametresDeFiltres>
-}) => {
+const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   const searchParams = await props.searchParams
   const filtres = filtresUtilisateurs(searchParams)
 
@@ -40,11 +35,7 @@ const Page = async (props: {
     rechercherDesUtilisateurs({
       searchParams,
       filtres,
-      orderBy: getDataTableOrderBy(
-        searchParams,
-        UtilisateursDataTable,
-        triDesUtilisateurs,
-      ),
+      orderBy: ordreDesUtilisateurs(searchParams),
       maintenant: new Date(),
     }),
     optionsDesFiltres(filtres),

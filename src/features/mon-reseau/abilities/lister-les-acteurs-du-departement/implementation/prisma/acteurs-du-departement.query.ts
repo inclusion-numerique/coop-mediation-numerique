@@ -104,7 +104,6 @@ export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
       .map(versActeur)
       .filter((acteur) => acteur !== null),
     total: Effectif(total),
-    pages: Math.ceil(total / criteres.lignes),
     page: criteres.page,
     lignes: criteres.lignes,
   }

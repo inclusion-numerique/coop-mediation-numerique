@@ -4,14 +4,14 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter } from 'next/navigation'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import type { LieuxDataTableSearchParams } from './LieuxDataTable'
+import type { ListeDesLieuxSearchParams } from './lister-tous-les-lieux-search-params'
 
 const CHAMP = 'recherche'
 
 export const RechercheDeLieux = ({
   searchParams = {},
 }: {
-  searchParams?: LieuxDataTableSearchParams
+  searchParams?: ListeDesLieuxSearchParams
 }) => {
   const pathname = usePathname()
   const router = useRouter()

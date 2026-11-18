@@ -4,7 +4,25 @@ import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-n
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import { statutsSociaux as statutSocialValues } from '@/features/beneficiaire/domain/statut-social'
 import { tranchesAge as trancheAgeValues } from '@/features/beneficiaire/domain/tranche-age'
-import { telephoneValidation } from '@/utils/telephoneValidation'
+import { telephoneCanonique } from '@/libraries/telephone'
+
+const telephoneValidation = z
+  .string()
+  .nullish()
+  .transform((saisie, ctx) => {
+    if (saisie == null || saisie.trim() === '') return null
+    const canonique = telephoneCanonique(saisie)
+    if (canonique == null) {
+      ctx.addIssue({
+        code: 'custom',
+        message:
+          'Veuillez renseigner un numéro valide (e.g. 04 55 66 77 88 ou +32 470 12 34 56)',
+      })
+      return z.NEVER
+    }
+    return canonique
+  })
+  .optional()
 
 export const BeneficiaireValidation = z.object({
   id: z.guid().nullish(), // defined if update, nullish if create

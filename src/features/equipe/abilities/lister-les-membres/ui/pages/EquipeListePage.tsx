@@ -6,14 +6,7 @@ import { telephoneDisplayString } from '@/libraries/telephone'
 import { type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../domain'
 import { ListeDeLEquipe } from '../components/ListeDeLEquipe'
-
-export type ParametresDeLaListe = {
-  lignes?: string
-  page?: string
-  recherche?: string
-  statut?: string
-  role?: string
-}
+import type { ParametresDeLaListe } from '../parametres-de-la-liste'
 
 const EquipeListePage = ({
   membres,

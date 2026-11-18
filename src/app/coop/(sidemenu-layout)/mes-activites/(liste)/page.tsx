@@ -52,7 +52,7 @@ import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
 } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités'),
@@ -72,11 +72,12 @@ const MesActivitesRoute = async ({
   const filtree = estFiltreDesActivites(criteres)
   const voirLesRdvs = parametres['voir-rdvs'] === '1'
   const compteRdv = user.rdvAccount?.hasOauthTokens ? user.rdvAccount : null
+  const pagination = paginationLue(parametres)
 
   const chronologie = listerMesActivites({
     mediateurId,
     criteres,
-    pagination: paginationLue(parametres),
+    pagination,
     ordre: ordreChronologiqueLu(parametres.ordre),
     contenu: contenuDeLaChronologie(
       criteres,
@@ -177,7 +178,8 @@ const MesActivitesRoute = async ({
                       contenu={chronologie.then((lue) => ({
                         decompte: decompteDeLaListe(lue, filtree),
                         jours: joursDeLaListe(lue.elements, user.timezone),
-                        pages: lue.pages,
+                        total: lue.total.activites + lue.total.rendezVous,
+                        lignesParPage: pagination.lignesParPage,
                         aucuneActivite: lue.elements.length === 0 && !filtree,
                       }))}
                       basculeDesRendezVous={

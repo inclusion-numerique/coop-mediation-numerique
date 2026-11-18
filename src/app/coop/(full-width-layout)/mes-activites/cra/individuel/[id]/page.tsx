@@ -27,7 +27,7 @@ import { lieuxDuMediateur } from '@/features/lieux-activite'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const UpdateCraIndividuelPage = async ({
   params,

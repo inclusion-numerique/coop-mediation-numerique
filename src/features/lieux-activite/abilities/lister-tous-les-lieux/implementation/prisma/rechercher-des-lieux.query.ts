@@ -1,17 +1,15 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
+import { DEFAULT_PAGE } from '@/libraries/data-table'
 import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
-import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
+import { entierPositifLu } from '@/libraries/parametres-d-url'
+import {
+  type ListeDesLieuxSearchParams,
+  TAILLE_DE_PAGE_PAR_DEFAUT,
+} from '../../ui/lister-tous-les-lieux-search-params'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'
-
-export type RechercheDeLieuxParams = {
-  recherche?: string
-  page?: string
-  lignes?: string
-}
-
-const DEFAULT_PAGE_SIZE = 100
+import { ordreDesLieux } from './tri-des-lieux'
 
 const contient = (part: string) =>
   ({ contains: part, mode: 'insensitive' }) satisfies Prisma.StringFilter
@@ -32,14 +30,12 @@ const dansLesDeuxFiches = (part: string) => ({
 
 export const rechercherDesLieux = async ({
   searchParams = {},
-  orderBy,
 }: {
-  searchParams?: RechercheDeLieuxParams
-  orderBy?: Prisma.LieuInclusionOrderByWithRelationInput[]
+  searchParams?: ListeDesLieuxSearchParams
 }) => {
   const { take, skip } = takeAndSkipFromPage({
-    page: toNumberOr(searchParams?.page)(DEFAULT_PAGE),
-    pageSize: toNumberOr(searchParams?.lignes)(DEFAULT_PAGE_SIZE),
+    page: entierPositifLu(searchParams?.page, DEFAULT_PAGE),
+    pageSize: entierPositifLu(searchParams?.lignes, TAILLE_DE_PAGE_PAR_DEFAUT),
   })
 
   const matchesWhere = {
@@ -51,7 +47,7 @@ export const rechercherDesLieux = async ({
     where: matchesWhere,
     take,
     skip,
-    orderBy,
+    orderBy: ordreDesLieux(searchParams),
   })
 
   const [matchesCount, totalCount] = await Promise.all([
@@ -59,16 +55,13 @@ export const rechercherDesLieux = async ({
     prismaClient.lieuInclusion.count({ where: { suppression: null } }),
   ])
 
-  const totalPages = take ? Math.ceil(matchesCount / take) : 1
-
   return {
     totalCount,
     searchParams,
     searchResult: {
       structures,
       matchesCount,
-      moreResults: Math.max(matchesCount - (take ?? 0), 0),
-      totalPages,
+      pageSize: take,
     },
   }
 }

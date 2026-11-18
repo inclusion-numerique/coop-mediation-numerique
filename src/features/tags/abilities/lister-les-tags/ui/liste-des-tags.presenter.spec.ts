@@ -7,7 +7,7 @@ import {
   role,
   TagId,
 } from '../../../domain'
-import { lignesDeLaListe, nombreDePages } from './liste-des-tags.presenter'
+import { lignesDeLaListe } from './liste-des-tags.presenter'
 
 const mediateurId = MediateurId('00000000-0000-4000-8000-000000000001')
 
@@ -47,11 +47,5 @@ describe('lignesDeLaListe', () => {
         ],
       }).map(({ gerable }) => gerable),
     ).toEqual([true, false])
-  })
-})
-
-describe('nombreDePages', () => {
-  it('arrondit au nombre de pages supérieur', () => {
-    expect(nombreDePages(101, 50)).toBe(3)
   })
 })

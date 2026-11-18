@@ -6,7 +6,7 @@ import { equipeAComplementer } from '@/features/equipe/abilities/ajouter-un-memb
 import { AJOUTER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.key'
 import { RECHERCHER_DES_MEDIATEURS_A_AJOUTER_ACTION_KEY } from '@/features/equipe/abilities/ajouter-un-membre/action/rechercher-des-mediateurs-a-ajouter.key'
 import { AjouterUnMembrePage } from '@/features/equipe/abilities/ajouter-un-membre/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

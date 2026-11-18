@@ -8,7 +8,7 @@ import {
   RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY,
 } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
 import { FusionPage } from '@/features/utilisateurs/abilities/fusionner-des-comptes/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Fusion'),

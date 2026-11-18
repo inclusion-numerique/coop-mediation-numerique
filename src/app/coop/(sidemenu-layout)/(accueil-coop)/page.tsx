@@ -31,7 +31,7 @@ import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter
 import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Accueil'),

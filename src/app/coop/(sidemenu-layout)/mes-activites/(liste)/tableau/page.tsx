@@ -35,7 +35,7 @@ import {
   periodeDesRendezVous,
   rendezVousLies,
 } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
 
@@ -76,10 +76,12 @@ const MesActivitesTableauRoute = async ({
       </MesActivitesPage>
     )
 
+  const pagination = paginationLue(parametres)
+
   const chronologie = listerMesActivites({
     mediateurId,
     criteres,
-    pagination: paginationLue(parametres),
+    pagination,
     ordre: ordreChronologiqueLu(parametres.ordre),
     contenu: 'ActivitesSeules',
     rendezVous: null,
@@ -126,7 +128,8 @@ const MesActivitesTableauRoute = async ({
             contenu={chronologie.then((lue) => ({
               decompte: titreDuDecompte(lue.total.activites, filtree),
               lignes: lignesDuTableau(lue, user.timezone),
-              pages: lue.pages,
+              total: lue.total.activites + lue.total.rendezVous,
+              lignesParPage: pagination.lignesParPage,
             }))}
             parametres={{
               ...parametresDesActivitesDe(criteres),

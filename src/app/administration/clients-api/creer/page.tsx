@@ -3,7 +3,7 @@ import { metadataTitle } from '@/app/metadataTitle'
 import { CREER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/creer-un-client-api/action/creer-un-client-api.key'
 import { CreerUnClientApiPage } from '@/features/clients-api/abilities/creer-un-client-api/ui'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Clients API - Créer'),

@@ -62,7 +62,7 @@ type JourDeCoordinations = {
 export type ListeDesCoordinations = {
   readonly titre: string
   readonly jours: readonly JourDeCoordinations[]
-  readonly pages: number
+  readonly total: number
 }
 
 const titreDe = (activite: ActiviteDeCoordination): string =>
@@ -205,7 +205,7 @@ const titreDeLaListe = (total: number, filtre: boolean): string =>
     : `${total} ${pluriel(total, 'activité enregistrée', 'activités enregistrées')}`
 
 export const listeDesCoordinations = ({
-  listees: { activites, total, pages },
+  listees: { activites, total },
   filtre,
   timezone,
 }: {
@@ -222,5 +222,5 @@ export const listeDesCoordinations = ({
       cartes: activitesDuJour.map(carteDe(timezone)),
     }
   }),
-  pages,
+  total,
 })

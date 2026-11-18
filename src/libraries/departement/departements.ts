@@ -1,4 +1,4 @@
-export type Departement = { nom: string; code: string }
+export type DepartementDuReferentiel = { nom: string; code: string }
 
 export const departements = [
   { code: '01', nom: 'Ain' },
@@ -108,8 +108,8 @@ export const departements = [
   { code: '986', nom: 'Wallis-et-Futuna' },
   { code: '987', nom: 'Polynésie française' },
   { code: '988', nom: 'Nouvelle-Calédonie' },
-] satisfies Departement[]
+] satisfies DepartementDuReferentiel[]
 
-export const departementsByCode = new Map<string, Departement>(
+export const departementsByCode = new Map<string, DepartementDuReferentiel>(
   departements.map((departement) => [departement.code, departement]),
 )
