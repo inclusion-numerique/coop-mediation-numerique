@@ -12,6 +12,8 @@ Signalez-la de façon confidentielle depuis l'onglet [Security](https://github.c
 
 Le signalement n'est visible que par l'équipe, qui en accuse réception et vous tient informé de son traitement.
 
+Sans compte GitHub, écrivez à [support-incubateur@anct.gouv.fr](mailto:support-incubateur@anct.gouv.fr), le contact publié dans le [`security.txt`](https://coop-numerique.anct.gouv.fr/.well-known/security.txt) de l'application.
+
 ## Contributeurs
 
 Les membres de l'équipe traitent les incidents de sécurité selon la procédure décrite dans le [guide de contribution](./CONTRIBUTING.md#securite).
