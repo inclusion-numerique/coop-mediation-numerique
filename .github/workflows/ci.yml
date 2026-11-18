@@ -40,7 +40,7 @@ jobs:
       - name: Tsc
         run: pnpm tsc
       - name: Lint - biome
-        run: pnpm exec biome check src e2e .storybook
+        run: pnpm exec biome check .
       - name: Generate openapi docs for api v1
         run: pnpm --silent api-v1-doc:generate
       - name: Check that openapi spec file is up to date
@@ -310,7 +310,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        conteneur: [ 0, 1, 2 ]
+        conteneur: [0, 1, 2]
     services:
       postgres:
         image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
