@@ -1,8 +1,9 @@
 # ADR-NNN : Titre court qui énonce la décision
 
 Ce fichier est le modèle des ADR du dépôt. Les personnes comme les agents le suivent pour en
-rédiger un : copier ce fichier en `adr-NNN-titre-en-kebab-case.md`, avec le numéro suivant le
-dernier ADR, puis remplacer chaque consigne par le contenu.
+rédiger un : copier ce fichier en `NNNN-titre-en-kebab-case.md`, avec le numéro suivant le
+dernier ADR sur quatre chiffres, comme le veut la convention MADR, puis remplacer chaque consigne
+par le contenu.
 
 ## Règles de rédaction
 

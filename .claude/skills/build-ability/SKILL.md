@@ -18,7 +18,7 @@ contre les conventions AVANT de montrer le travail à l'humain.**
 
 - Les règles : **`.claude/conventions/feature-architecture.md`** — lis-la, applique-la par ID, ne la
   duplique pas ici. Ce skill est le **process** ; la spec est la **règle**.
-- Le pourquoi des règles : `docs/adr/`, en particulier ADR-004 (features et abilities), ADR-005
+- Le pourquoi des règles : `docs/decisions/`, en particulier ADR-004 (features et abilities), ADR-005
   (domaine), ADR-006 (server actions et injection), ADR-007 (routes), ADR-008 (tests).
 - Agents : `domain-modeler` (conception), `convention-reviewer` (auto-revue). *(S'ils ne sont pas
   enregistrés comme types de sous-agents — session non rechargée — émule-les : un agent générique

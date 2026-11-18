@@ -26,7 +26,7 @@ compilateur ne distinguait pas un identifiant de médiateur d'un identifiant de 
 ce sont deux `string`.
 
 Le découpage du code en features et en abilities, posé par
-l'[ADR-004](./adr-004-architecture-par-features-et-abilities.md), donne à chaque feature un
+l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne à chaque feature un
 domaine à elle ; cet ADR décide comment ce domaine se modélise.
 
 ## Décision
@@ -126,5 +126,5 @@ aller-retour) sont dans la section 2 des
 
 ## Références
 
-- [ADR-004 : Architecture par features et abilities](./adr-004-architecture-par-features-et-abilities.md)
+- [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — section 2, modèle de domaine

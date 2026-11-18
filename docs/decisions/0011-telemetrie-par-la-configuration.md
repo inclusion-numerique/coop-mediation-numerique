@@ -32,7 +32,7 @@ pouvait alors disparaître sans laisser de trace.
 ### Des tests qui devaient remplacer Sentry
 
 Un module qui importe Sentry ne se teste qu'en remplaçant ce module. Cela va contre la règle de
-tests posée par l'[ADR-008](./adr-008-strategie-de-tests.md) : ni mock de module, ni espion.
+tests posée par l'[ADR-008](./0008-strategie-de-tests.md) : ni mock de module, ni espion.
 
 ## Décision
 
@@ -56,7 +56,7 @@ l'installation et régénérée au build, qui livre la variante de production.
 Les racines de composition prennent le signaleur d'erreurs dans la configuration. Le domaine, la
 logique d'interface et les bibliothèques reçoivent ce dont ils ont besoin par injection.
 
-Le constructeur d'actions de l'[ADR-006](./adr-006-server-actions-et-injection.md) reçoit le
+Le constructeur d'actions de l'[ADR-006](./0006-server-actions-et-injection.md) reçoit le
 signaleur en option ; la configuration lui fournit le sien.
 
 ### Les appels externes sont signalés à un seul endroit
@@ -102,7 +102,7 @@ sans mock sont dans les
 
 ## Références
 
-- [ADR-006 : Server actions et injection, à la place de tRPC](./adr-006-server-actions-et-injection.md)
-- [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./adr-008-strategie-de-tests.md)
+- [ADR-006 : Server actions et injection, à la place de tRPC](./0006-server-actions-et-injection.md)
+- [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./0008-strategie-de-tests.md)
 - [`AGENTS.md`](../../AGENTS.md) — section « Telemetry »
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — conventions d'architecture des features

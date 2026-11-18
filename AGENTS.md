@@ -65,7 +65,7 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 ## Architecture
 
-Architecture decisions and their rationale are recorded in `docs/adr/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
+Architecture decisions and their rationale are recorded in `docs/decisions/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
 
 ### Repository Structure
 
@@ -183,7 +183,7 @@ Use DSFR utility classes: `fr-container`, `fr-grid-row`, `fr-col-12`, `fr-mt-8v`
 
 ## ADR
 
-ADRs in `docs/adr/` are written in French, following the template [`docs/adr/000-modele.md`](docs/adr/000-modele.md), which holds every writing rule. The first three:
+ADRs in `docs/decisions/` are written in French, following the template [`docs/decisions/adr-template.md`](docs/decisions/adr-template.md), which holds every writing rule. The first three:
 
 - An ADR states decisions and their reasons, generically, and points to the `*.ability.md` files (executable specs, the source of truth) for details: no function, file or line names, no paths.
 - No log and no dated updates: git history holds the details; the history table only lists the drafts and revisions of the ADR.

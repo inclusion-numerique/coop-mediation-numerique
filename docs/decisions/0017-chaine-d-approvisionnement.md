@@ -88,7 +88,7 @@ donc par la quarantaine et le lockfile.
 La documentation de l'API utilise le composant React du visualiseur, qui remplace un chargement
 depuis un CDN sans version fixée. Les polices et l'agent externe du visualiseur sont désactivés,
 et le CDN sort de la politique de sécurité du contenu. Les icônes viennent de react-dsfr
-([ADR-010](./adr-010-styles-dsfr.md)).
+([ADR-010](./0010-styles-dsfr.md)).
 
 ### gitleaks au pré-commit
 
@@ -163,6 +163,6 @@ fixer. Le script échappe toujours à la quarantaine et au lockfile.
 
 ## Références
 
-- [ADR-010 : Styles : utilitaires du DSFR et intégration officielle de react-dsfr](./adr-010-styles-dsfr.md)
-- [ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu](./adr-015-ci-github-actions-et-opentofu.md)
+- [ADR-010 : Styles : utilitaires du DSFR et intégration officielle de react-dsfr](./0010-styles-dsfr.md)
+- [ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu](./0015-ci-github-actions-et-opentofu.md)
 - [Guide de contribution](../../CONTRIBUTING.md)

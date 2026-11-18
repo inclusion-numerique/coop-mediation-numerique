@@ -45,7 +45,7 @@ Avant de la fusionner :
 
 - vérifier en production qu'aucune vue ni fonction ne dépend de l'objet. L'Entrepôt définit des
   vues sur des tables de la coop, que la base de développement n'a pas
-  ([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)) ;
+  ([ADR-012](./0012-base-coop-dans-l-entrepot.md)) ;
 - faire une sauvegarde ciblée des données supprimées quand elles ne sont pas vides ;
 - poser un délai de verrou quand la table est volumineuse.
 
@@ -96,4 +96,4 @@ production, par le bastion de l'Entrepôt.
 
 ## Références
 
-- [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
+- [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./0012-base-coop-dans-l-entrepot.md)

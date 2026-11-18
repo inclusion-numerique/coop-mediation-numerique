@@ -16,7 +16,7 @@ Accepté
 
 Le Dataspace gère les données de l'inclusion numérique ; la coop gère son application. Le Dataspace
 fait autorité sur le schéma `main`, et la coop s'y conforme
-([ADR-002](./adr-002-migration-structures-employeuses-vers-main.md)).
+([ADR-002](./0002-migration-structures-employeuses-vers-main.md)).
 
 Les lieux existent deux fois : dans le registre du Dataspace, `main.lieu_inclusion`, d'où la coop
 affiche leurs données, et dans la table de lieux de la coop, à laquelle se rattachent de nombreuses
@@ -83,7 +83,7 @@ l'affichage final ; la cartographie nationale lit le Dataspace.
 
 Pour chercher des lieux dans la cartographie, la coop utilise un second client Prisma, en lecture
 seule. La cible sur les clients Prisma est décrite par
-l'[ADR-002](./adr-002-migration-structures-employeuses-vers-main.md).
+l'[ADR-002](./0002-migration-structures-employeuses-vers-main.md).
 
 ### Dépublication
 
@@ -142,4 +142,4 @@ Cucumber de chaque feature, et elles font foi.
 
 ## Références
 
-- [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./adr-002-migration-structures-employeuses-vers-main.md)
+- [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./0002-migration-structures-employeuses-vers-main.md)

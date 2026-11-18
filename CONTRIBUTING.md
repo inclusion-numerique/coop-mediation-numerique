@@ -133,7 +133,7 @@ L'application répond sur http://localhost:3000. `pnpm storybook` lance Storyboo
 
 ### Code
 
-Les conventions d'architecture (features, abilities, domaine, server actions) et de style sont décrites dans [AGENTS.md](./AGENTS.md). Les décisions structurantes sont consignées dans les [ADR](./docs/adr).
+Les conventions d'architecture (features, abilities, domaine, server actions) et de style sont décrites dans [AGENTS.md](./AGENTS.md). Les décisions structurantes sont consignées dans les [ADR](./docs/decisions).
 
 <h2 id="base-de-donnees">🗃️ Base de données</h2>
 
@@ -141,7 +141,7 @@ Les conventions d'architecture (features, abilities, domaine, server actions) et
 2. Générer la migration : `pnpm prisma:generate-migration nom_de_la_migration`.
 3. Relire le SQL généré dans `prisma/migrations/`.
 
-En production, la base de la Coop est le schéma `coop` de l'Entrepôt de données de l'inclusion numérique, joignable seulement par un bastion SSH (voir [l'infrastructure](./infrastructure/README.md)). Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` passe par l'application ou se signale à l'équipe Dataspace, parce que la Coop écrit aussi dans le registre de l'Entrepôt ([ADR-003](./docs/adr/adr-003-registre-des-lieux-entrepot.md)).
+En production, la base de la Coop est le schéma `coop` de l'Entrepôt de données de l'inclusion numérique, joignable seulement par un bastion SSH (voir [l'infrastructure](./infrastructure/README.md)). Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` passe par l'application ou se signale à l'équipe Dataspace, parce que la Coop écrit aussi dans le registre de l'Entrepôt ([ADR-003](./docs/decisions/0003-registre-des-lieux-entrepot.md)).
 
 <h2 id="taches">⏱️ Tâches</h2>
 

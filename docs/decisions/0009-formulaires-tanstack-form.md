@@ -101,7 +101,7 @@ Les règles normatives sur les formulaires sont dans les
 
 ## Références
 
-- [ADR-004 : Architecture par features et abilities](./adr-004-architecture-par-features-et-abilities.md)
-- [ADR-006 : Server actions et injection, à la place de tRPC](./adr-006-server-actions-et-injection.md)
+- [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
+- [ADR-006 : Server actions et injection, à la place de tRPC](./0006-server-actions-et-injection.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — formulaires et exception aux forçages de type
 - [TanStack Form](https://tanstack.com/form/latest)

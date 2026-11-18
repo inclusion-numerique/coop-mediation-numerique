@@ -85,7 +85,7 @@ individuel du médiateur le plus actif passe de 9 à 16 ms.
 ### Des tables temporaires dans les triggers
 
 Le droit de créer des tables temporaires n'est pas garanti sur la base de l'Entrepôt
-([ADR-012](./adr-012-base-coop-dans-l-entrepot.md)).
+([ADR-012](./0012-base-coop-dans-l-entrepot.md)).
 
 ### Garder l'incrément applicatif et recalculer périodiquement
 
@@ -100,7 +100,7 @@ semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
   y penser.
 - Les lectures gardent leur coût d'avant ; le surcoût en écriture est de quelques millisecondes.
 - Un test d'intégration vérifie le mécanisme sur une vraie base
-  ([ADR-008](./adr-008-strategie-de-tests.md)) : saisie, suppression et restauration, fusion de
+  ([ADR-008](./0008-strategie-de-tests.md)) : saisie, suppression et restauration, fusion de
   bénéficiaires, transfert entre comptes, coordination, garde.
 
 **Négatives ou à surveiller**
@@ -130,5 +130,5 @@ Les abilities qui font varier un compteur décrivent l'effet attendu, et font fo
 
 ## Références
 
-- [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./adr-008-strategie-de-tests.md)
-- [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
+- [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./0008-strategie-de-tests.md)
+- [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./0012-base-coop-dans-l-entrepot.md)

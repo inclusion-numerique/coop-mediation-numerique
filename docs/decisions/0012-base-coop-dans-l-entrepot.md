@@ -53,7 +53,7 @@ La configuration d'infrastructure choisit l'adresse de la base de l'Entrepôt po
 
 Un second client Prisma lit les schémas de l'Entrepôt. Il n'est jamais passé à la migration :
 l'Entrepôt possède ces schémas. Sa place dans la cible est décidée par
-l'[ADR-002](./adr-002-migration-structures-employeuses-vers-main.md).
+l'[ADR-002](./0002-migration-structures-employeuses-vers-main.md).
 
 ### Développement et previews sur l'instance de l'incubateur
 
@@ -63,14 +63,14 @@ dans l'Entrepôt.
 
 Dans tous les environnements, les migrations de la coop ne touchent jamais la structure de `main` :
 Dataspace fait autorité sur `main` et la coop s'y conforme
-([ADR-002](./adr-002-migration-structures-employeuses-vers-main.md)).
+([ADR-002](./0002-migration-structures-employeuses-vers-main.md)).
 
 ### Ce que cela permet
 
 Les échanges avec `main` deviennent des écritures dans la même base. La migration des structures
-employeuses vers `main` ([ADR-002](./adr-002-migration-structures-employeuses-vers-main.md)) et la
+employeuses vers `main` ([ADR-002](./0002-migration-structures-employeuses-vers-main.md)) et la
 double écriture du registre des lieux en une seule transaction
-([ADR-003](./adr-003-registre-des-lieux-entrepot.md)) reposent sur cette décision.
+([ADR-003](./0003-registre-des-lieux-entrepot.md)) reposent sur cette décision.
 
 ## Alternatives écartées
 
@@ -128,6 +128,6 @@ bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
 
 ## Références
 
-- [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./adr-002-migration-structures-employeuses-vers-main.md)
-- [ADR-003 : Registre des lieux de l'Entrepôt](./adr-003-registre-des-lieux-entrepot.md)
+- [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./0002-migration-structures-employeuses-vers-main.md)
+- [ADR-003 : Registre des lieux de l'Entrepôt](./0003-registre-des-lieux-entrepot.md)
 - [README d'infrastructure](../../infrastructure/README.md)

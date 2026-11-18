@@ -27,7 +27,7 @@ Plusieurs problèmes en découlaient :
   validation.
 
 Le découpage du code en features et en abilities, posé par
-l'[ADR-004](./adr-004-architecture-par-features-et-abilities.md), donne une place au code métier ;
+l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne une place au code métier ;
 cet ADR décide de ce qui reste dans le dossier de routage.
 
 ## Décision
@@ -127,6 +127,6 @@ UI-1 et UI-4 des
 
 ## Références
 
-- [ADR-004 : Architecture par features et abilities](./adr-004-architecture-par-features-et-abilities.md)
-- [ADR-006 : Server actions et injection, à la place de tRPC](./adr-006-server-actions-et-injection.md)
+- [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
+- [ADR-006 : Server actions et injection, à la place de tRPC](./0006-server-actions-et-injection.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — règles AR-5, UI-1 et UI-4

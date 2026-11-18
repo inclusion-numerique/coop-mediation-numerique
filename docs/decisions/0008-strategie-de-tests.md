@@ -13,7 +13,7 @@ Accepté
 ## Contexte
 
 Le découpage en features et en abilities, posé par
-l'[ADR-004](./adr-004-architecture-par-features-et-abilities.md), fait de chaque cas d'usage une
+l'[ADR-004](./0004-architecture-par-features-et-abilities.md), fait de chaque cas d'usage une
 ability. Il fallait une règle de test qui dise, pour chaque ability, quoi tester et à quel niveau.
 
 Avant la refonte, les tests remplaçaient des modules entiers et vérifiaient qu'une fonction avait
@@ -117,7 +117,7 @@ placées à côté de chacune les jouent. Les règles normatives sur les tests s
 
 ## Références
 
-- [ADR-004 : Architecture par features et abilities](./adr-004-architecture-par-features-et-abilities.md)
-- [ADR-005 : Domaine modélisé par des value objects brandés](./adr-005-domaine-en-value-objects-brandes.md)
+- [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
+- [ADR-005 : Domaine modélisé par des value objects brandés](./0005-domaine-en-value-objects-brandes.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — section 7, tests
 - [`CONTRIBUTING.md`](../../CONTRIBUTING.md#tests) — section Tests

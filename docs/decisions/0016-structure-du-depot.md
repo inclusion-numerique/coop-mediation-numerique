@@ -38,7 +38,7 @@ cette structure atteinte.
 
 Le paquet applicatif vit à la racine. Il s'organise en quatre parties : app, features, libraries
 et configuration. Le module d'infrastructure est décrit en OpenTofu
-([ADR-015](./adr-015-ci-github-actions-et-opentofu.md)).
+([ADR-015](./0015-ci-github-actions-et-opentofu.md)).
 
 Le dépôt n'a qu'un paquet pnpm, à la racine. Le module d'infrastructure reste à côté : il n'a pas
 de dépendance npm à déclarer.
@@ -109,5 +109,5 @@ Un linter qui reste rouge n'est plus lu.
 
 ## Références
 
-- [ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu](./adr-015-ci-github-actions-et-opentofu.md)
+- [ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu](./0015-ci-github-actions-et-opentofu.md)
 - [Fichier du workspace pnpm](../../pnpm-workspace.yaml)

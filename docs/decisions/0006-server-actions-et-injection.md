@@ -28,7 +28,7 @@ Plusieurs défauts en découlaient :
   import tirait le code serveur avec lui, et la story plantait.
 
 Le découpage du code en features et en abilities, posé par
-l'[ADR-004](./adr-004-architecture-par-features-et-abilities.md), donne une place à la logique
+l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne une place à la logique
 métier ; cet ADR décide comment une mutation l'atteint depuis l'interface.
 
 ## Décision
@@ -120,6 +120,6 @@ mode d'emploi court est dans la section « Server Actions » de [`AGENTS.md`](..
 
 ## Références
 
-- [ADR-004 : Architecture par features et abilities](./adr-004-architecture-par-features-et-abilities.md)
+- [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — conventions d'architecture des features
 - [`AGENTS.md`](../../AGENTS.md) — section « Server Actions »
