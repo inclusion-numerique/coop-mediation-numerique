@@ -142,5 +142,4 @@ Cucumber de chaque feature, et elles font foi.
 
 ## Références
 
-- [Runbook des migrations dans l'Entrepôt](../runbook-migrations-entrepot.md)
 - [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./adr-002-migration-structures-employeuses-vers-main.md)

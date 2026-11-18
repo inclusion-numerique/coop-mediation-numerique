@@ -123,8 +123,6 @@ bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
 
 ## Où trouver le détail
 
-- Le [runbook des migrations de l'Entrepôt](../runbook-migrations-entrepot.md) décrit l'accès à la
-  base de production, le diagnostic d'une migration échouée et les incidents connus.
 - Le [README d'infrastructure](../../infrastructure/README.md) décrit les bases de chaque
   environnement, l'instance partagée de l'incubateur et l'accès à l'Entrepôt.
 
@@ -132,5 +130,4 @@ bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
 
 - [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./adr-002-migration-structures-employeuses-vers-main.md)
 - [ADR-003 : Registre des lieux de l'Entrepôt](./adr-003-registre-des-lieux-entrepot.md)
-- [Runbook des migrations de l'Entrepôt](../runbook-migrations-entrepot.md)
 - [README d'infrastructure](../../infrastructure/README.md)

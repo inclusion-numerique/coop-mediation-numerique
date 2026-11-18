@@ -51,7 +51,6 @@ Chaque pull request peut aussi déployer son propre environnement de preview, vo
 - [Guide de contribution](./CONTRIBUTING.md) : installer l'environnement de développement et les pratiques du dépôt
 - [Infrastructure](./infrastructure/README.md) : les ressources Scaleway de chaque environnement, les tâches planifiées et le déploiement
 - [Décisions d'architecture (ADR)](./docs/adr)
-- [Migrations sur l'Entrepôt](./docs/runbook-migrations-entrepot.md) : la procédure pour faire évoluer le schéma en production
 - [AGENTS.md](./AGENTS.md) : les conventions de code, rédigées pour les agents de code et utiles à tout le monde
 
 <h2 id="contenu">📦 Contenu du dépôt</h2>

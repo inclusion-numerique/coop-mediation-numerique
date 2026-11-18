@@ -91,10 +91,9 @@ encore migrée.
 
 ## Où trouver le détail
 
-Le [runbook des migrations de l'Entrepôt](../runbook-migrations-entrepot.md) décrit l'accès à la
-base de production, le diagnostic d'une migration échouée et les incidents connus.
+Le [README d'infrastructure](../../infrastructure/README.md) décrit l'accès à la base de
+production, par le bastion de l'Entrepôt.
 
 ## Références
 
 - [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./adr-012-base-coop-dans-l-entrepot.md)
-- [Runbook des migrations de l'Entrepôt](../runbook-migrations-entrepot.md)
