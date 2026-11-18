@@ -76,8 +76,8 @@
     "@inquirer/prompts": "^8.7.2",
     "@octokit/core": "^7.0.8",
     "@octokit/plugin-rest-endpoint-methods": "^18.0.0",
-    "@prisma/adapter-pg": "7.10.0",
-    "@prisma/client": "7.10.0",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
     "@scalar/api-reference-react": "^0.9.87",
     "@sentry/nextjs": "^10.75.0",
     "@sentry/node": "^10.75.0",
@@ -113,7 +113,7 @@
     "nanoid": "^6.0.1",
     "next": "^16.3.8",
     "next-auth": "^4.24.15",
-    "next-swagger-doc": "^0.4.1",
+    "next-swagger-doc": "^0.5.0",
     "nodemailer": "^10.0.10",
     "p-retry": "^8.0.1",
     "p-throttle": "^8.1.1",
@@ -123,7 +123,7 @@
     "piqure": "^2.3.0",
     "postcss": "8.5.23",
     "postgres-array": "3.0.4",
-    "prisma": "7.10.0",
+    "prisma": "7.10.1",
     "radix-ui": "^1.6.7",
     "react": "^19.3.0",
     "react-calendar": "^6.0.1",
@@ -166,7 +166,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitest/coverage-v8": "5.1.0",
     "c8": "^12.0.0",
-    "chromatic": "^18.9.4",
+    "chromatic": "^18.13.9",
     "commander": "^15.0.0",
     "cypress": "^16.1.0",
     "cypress-file-upload": "^5.0.8",
@@ -180,6 +180,6 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "5.1.0",
-    "webpack": "5.108.4"
+    "webpack": "5.112.2"
   }
 }
