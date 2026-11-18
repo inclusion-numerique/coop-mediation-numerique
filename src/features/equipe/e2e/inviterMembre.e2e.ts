@@ -2,8 +2,8 @@ import { appUrl } from '@e2e/support/helpers'
 import { conseillerNumerique } from '@/fixtures/users/conseillerNumerique'
 import { coordinateurInscrit } from '@/fixtures/users/coordinateurInscrit'
 import { mediateurInscription } from '@/fixtures/users/mediateurInscription'
+import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
 import { getUserDisplayName } from '@/utils/user'
-import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 
 const searchAndInviteUser = ({
   displayName,

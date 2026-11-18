@@ -1,4 +1,4 @@
-import { createTestUser } from '../support/helpers'
+import { createTestUser } from '@e2e/support/helpers'
 
 describe('Page d’accueil', () => {
   it('La page d’accueil s’affiche correctement, avec les styles du DSFR', () => {

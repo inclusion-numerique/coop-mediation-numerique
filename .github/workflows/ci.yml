@@ -281,14 +281,14 @@ jobs:
         uses: cypress-io/github-action@v7
         with:
           install: false
-          command: pnpm cy run --project e2e --component --reporter junit --reporter-options mochaFile=junit/components-[hash].xml
+          command: pnpm cy run --component --reporter junit --reporter-options mochaFile=e2e/junit/components-[hash].xml
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: components-cypress
           path: |
-            e2e/cypress/screenshots
+            e2e/screenshots
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}
@@ -364,7 +364,7 @@ jobs:
           PROCONNECT_SIMULE_PORT=8443 \
           PROCONNECT_SIMULE_CERTIFICAT="$RUNNER_TEMP/proconnect-simule/certificat.pem" \
           PROCONNECT_SIMULE_CLE="$RUNNER_TEMP/proconnect-simule/cle.pem" \
-            nohup node e2e/cypress/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
+            nohup node e2e/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
       - name: Build cache
         uses: actions/cache@v6
         with:
@@ -393,19 +393,19 @@ jobs:
         env:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.conteneur }}
-          SPLIT_FILE: timings.json
+          SPLIT_FILE: e2e/timings.json
         with:
           install: false
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
-          command: pnpm cy run --project e2e --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
+          command: pnpm cy run --reporter junit --reporter-options mochaFile=e2e/junit/e2e-[hash].xml
       - name: Upload Cypress screenshots and server log
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-cypress-${{ matrix.conteneur }}
           path: |
-            e2e/cypress/screenshots
+            e2e/screenshots
             server.log
             proconnect-simule.log
           retention-days: 30

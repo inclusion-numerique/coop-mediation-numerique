@@ -15,7 +15,8 @@
     "incremental": true,
     "types": ["node"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@e2e/*": ["./e2e/*"]
     },
     "plugins": [
       {
@@ -23,7 +24,7 @@
       }
     ]
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "src/**/e2e/*.ts", "src/**/*.cy.tsx"],
   "include": [
     "next-env.d.ts",
     "next.config.ts",

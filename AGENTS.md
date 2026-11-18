@@ -45,10 +45,10 @@ pnpm test:integration                            # Integration tests: hit DATABA
 pnpm test:integration path/to/file.integration.ts  # Single integration test
 pnpm test:cucumber                               # BDD scenarios: same database caveat as integration tests
 pnpm test:e2e                                    # E2E tests with Cypress, interactive
-pnpm cy run --project e2e                        # E2E tests with Cypress, headless
+pnpm cy run                                      # E2E tests with Cypress, headless
 ```
 
-E2E tests need the web server running with `IS_E2E=true` (`IS_E2E=true pnpm dev`): it switches the Dataspace API to a mock. Without it, the conseiller numérique journeys fail, because the real API does not know the fixture users and sign-up treats them as ordinary médiateurs. The sign-in test also needs the simulated ProConnect server (`e2e/cypress/proconnect-simule/serveur.ts`) and the matching `NEXT_PUBLIC_PROCONNECT_*` variables; `.github/workflows/ci.yml` shows the full setup.
+E2E tests need the web server running with `IS_E2E=true` (`IS_E2E=true pnpm dev`): it switches the Dataspace API to a mock. Without it, the conseiller numérique journeys fail, because the real API does not know the fixture users and sign-up treats them as ordinary médiateurs. The sign-in test also needs the simulated ProConnect server (`e2e/proconnect-simule/serveur.ts`) and the matching `NEXT_PUBLIC_PROCONNECT_*` variables; `.github/workflows/ci.yml` shows the full setup.
 
 ### Database
 
@@ -71,7 +71,7 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 - **src**: the Next.js full-stack application (App Router, React Server Components), imported through the `@/` alias
 - **prisma**: Prisma schemas and migrations
-- **e2e**: Cypress E2E and component tests, imported through the `@e2e/` alias
+- **e2e**: Cypress tooling (support files, tasks, fixtures, simulated ProConnect, timings); `cypress.config.ts` sits at the root. E2E specs live in their feature as `src/features/<feature>/e2e/*.e2e.ts`, component tests next to their component as `*.cy.tsx`
 - **.storybook**: Storybook configuration; stories live next to their components in `src`
 - **infrastructure**: Infrastructure as code (HCL / OpenTofu for Scaleway)
 - **docker**: images of the application and of PostgreSQL

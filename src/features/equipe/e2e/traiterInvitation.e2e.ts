@@ -14,7 +14,7 @@ import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
 } from '@/fixtures/users/mediateurInscription'
-import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
+import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
 
 const createInvitationUrl = ({
   email,

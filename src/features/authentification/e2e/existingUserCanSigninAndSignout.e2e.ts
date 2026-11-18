@@ -1,5 +1,5 @@
-import identiteSimulee from '../../proconnect-simule/identite.json'
-import { appUrl } from '../../support/helpers'
+import identiteSimulee from '@e2e/proconnect-simule/identite.json'
+import { appUrl } from '@e2e/support/helpers'
 
 describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter avec ProConnect', () => {
   before(() => {

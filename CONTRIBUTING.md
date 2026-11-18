@@ -100,13 +100,13 @@ L'application répond sur http://localhost:3000. `pnpm storybook` lance Storyboo
 
 <h2 id="tests">🧪 Tests</h2>
 
-| Commande                    | Tests                                                                  |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `pnpm test`                 | Unitaires, avec [Vitest](https://vitest.dev/)                          |
-| `pnpm test:integration`     | Intégration, contre la base de `DATABASE_URL`                          |
-| `pnpm test:cucumber`        | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
-| `pnpm test:e2e`             | De bout en bout, avec [Cypress](https://www.cypress.io/), en interface |
-| `pnpm cy run --project e2e` | De bout en bout, sans interface                                        |
+| Commande                | Tests                                                                  |
+| ----------------------- | ---------------------------------------------------------------------- |
+| `pnpm test`             | Unitaires, avec [Vitest](https://vitest.dev/)                          |
+| `pnpm test:integration` | Intégration, contre la base de `DATABASE_URL`                          |
+| `pnpm test:cucumber`    | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
+| `pnpm test:e2e`         | De bout en bout, avec [Cypress](https://www.cypress.io/), en interface |
+| `pnpm cy run`           | De bout en bout, sans interface                                        |
 
 - Les tests n'utilisent ni mock ni espion : ils injectent des dépendances écrites à la main et vérifient les valeurs retournées.
 - Les tests d'intégration et les scénarios Cucumber écrivent dans la base : lancez-les sur une base jetable, jamais sur une base qui contient des données utiles. La CI les joue sur une base neuve à chaque exécution.

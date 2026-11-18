@@ -1,4 +1,4 @@
-import { executeInscriptionFlow } from '@e2e/e2e/inscription/executeInscriptionFlow'
+import { executeInscriptionFlow } from '@/features/inscription/e2e/executeInscriptionFlow'
 import { conseillerInscriptionSansContrat } from '@/fixtures/users/conseillerInscriptionSansContrat'
 import { conseillerSansLieuInscription } from '@/fixtures/users/conseillerSansLieuInscription'
 

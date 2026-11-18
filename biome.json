@@ -264,7 +264,8 @@
         "prisma.config.ts",
         "prisma/**/prisma.config.ts",
         "vitest.config.ts",
-        "scripts/**"
+        "scripts/**",
+        "cypress.config.ts"
       ],
       "linter": {
         "rules": {
@@ -272,6 +273,25 @@
             "noProcessEnv": "off"
           }
         }
+      }
+    },
+    {
+      "includes": ["src/**/e2e/*.ts", "src/**/*.cy.tsx"],
+      "javascript": {
+        "globals": [
+          "cy",
+          "Cypress",
+          "JQuery",
+          "afterEach",
+          "afterAll",
+          "beforeEach",
+          "beforeAll",
+          "before",
+          "after",
+          "describe",
+          "expect",
+          "it"
+        ]
       }
     }
   ]

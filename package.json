@@ -40,7 +40,7 @@
     "cli": "TSX_TSCONFIG_PATH=./tsconfig.node.json dotenv -- tsx --import ./src/cli/instrument.mts src/cli/index.ts",
     "clean": "rm -rf node_modules",
     "lint:commit": "commitlint --from origin/main",
-    "test:e2e": "pnpm cy open --project e2e",
+    "test:e2e": "pnpm cy open",
     "scw": "pnpm with-env scw",
     "fixtures:load": "TSX_TSCONFIG_PATH=./tsconfig.node.json dotenv -- tsx src/fixtures/load.ts",
     "prisma:generate-migration": "pnpm --silent prisma migrate dev --name",

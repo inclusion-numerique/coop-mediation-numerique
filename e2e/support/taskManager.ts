@@ -4,21 +4,21 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '../../../src/utils/encodeSerializableState'
+} from '../../src/utils/encodeSerializableState'
 import { logToFile } from './logToFile'
 
-const packageBaseDirectory = path.resolve(import.meta.dirname, '../..')
+const dossierE2e = path.resolve(import.meta.dirname, '..')
 
-// Execute node subprocess using pnpm -F e2e task <task> <JSON.stringify(input)>
 const executeTask = (task: string, input: unknown) => {
-  const taskCommand = `tsx ${packageBaseDirectory}/cypress/tasks/taskExecutor.ts ${task} '${encodeSerializableState(input)}'`
+  const taskCommand = `tsx ${dossierE2e}/tasks/taskExecutor.ts ${task} '${encodeSerializableState(input)}'`
 
   logToFile({ task, input, taskCommand })
 
-  // Environment variables will be passed to child
-  // Remove NODE_OPTIONS from env to avoid pnpm / tsx to crash
-  const commandEnv = { ...process.env }
-  delete commandEnv.NODE_OPTIONS
+  const commandEnv = {
+    ...process.env,
+    NODE_OPTIONS: undefined,
+    TSX_TSCONFIG_PATH: path.resolve(dossierE2e, 'tsconfig.json'),
+  }
 
   return new Promise((resolve, reject) => {
     childProcess.exec(
