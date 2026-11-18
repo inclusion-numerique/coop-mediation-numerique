@@ -1,19 +1,27 @@
-# Feature Architecture — conventions canoniques (COOP médiation numérique)
+# Feature Architecture — conventions du dépôt (La Coop de la médiation numérique)
 
-> **Source de vérité unique et normative** pour migrer/écrire une feature au standard cible
-> (inspiré ihexa, **adapté COOP** — voir §9). Extrait actionnable de `refactor/*.md`, des
-> mémoires-feedback et de `CLAUDE.md`. Ces sources restent le « pourquoi » ; **ce fichier est le
-> « quoi », citable règle par règle.**
+> **Source de vérité normative** pour écrire une feature au standard du dépôt. Ce fichier est le
+> **« quoi »**, citable règle par règle ; le **« pourquoi »** de chaque choix est consigné dans les
+> ADR de `docs/adr/` (table ci-dessous).
+
+| Sections                     | ADR                                                                                                        |
+|------------------------------|------------------------------------------------------------------------------------------------------------|
+| §1 Architecture, §5 Isolation | ADR-004 (features et abilities), ADR-007 (`app/` ne contient que le routage), ADR-016 (structure du dépôt) |
+| §2 Domain modeling           | ADR-005 (value objects brandés)                                                                            |
+| §4 Structure d'une ability   | ADR-004, ADR-006 (server actions et injection)                                                             |
+| §6 UI                        | ADR-007, ADR-009 (TanStack Form), ADR-010 (styles DSFR)                                                    |
+| §7 Tests                     | ADR-008 (un scénario BDD par ability, Vitest sans mock)                                                    |
+| §9 Choix assumés             | ADR-005, ADR-006, ADR-008, ADR-009                                                                         |
 
 ## 0. Mode d'emploi (agents & skills)
 
 - **Chaque règle a un ID stable** (`DM-3`, `AB-1`…). Cite-les ; ne paraphrase pas.
 - **Sévérités** : `BLOCKER` (corriger avant commit) · `WARN` (corriger ou justifier explicitement) · `INFO` (préférence).
 - **`convention-reviewer`** : note un diff et sort une ligne par violation :
-  `‹ID› ‹SÉVÉRITÉ› ‹cible› — constat — correctif`, où `cible` = `path:line` (violation sur une ligne) **ou** `path/`/`dir/` (violation d'absence ou d'emplacement — fichier manquant, mauvais dossier). Jamais de `:line` inventé. Ne signale **jamais** ce qui est en §9 (divergences assumées). Sur un commit/range **historique**, juge l'état tel qu'introduit et le note dans `Périmètre relu`.
+  `‹ID› ‹SÉVÉRITÉ› ‹cible› — constat — correctif`, où `cible` = `path:line` (violation sur une ligne) **ou** `path/`/`dir/` (violation d'absence ou d'emplacement — fichier manquant, mauvais dossier). Jamais de `:line` inventé. Ne signale **jamais** ce qui est en §9 (choix assumés). Sur un commit/range **historique**, juge l'état tel qu'introduit et le note dans `Périmètre relu`.
 - **`domain-modeler`** : §2 est la checklist de conception à satisfaire **avant** d'écrire du code (rend un modèle à valider, pas du code).
 - **`feature-auditor`** : parcourt §1–§7 dimension par dimension et produit la liste des résidus.
-- **skill `/migrate-ability`** : §4 = structure à produire ; §8 = process ; §2/§3 = qualité.
+- **skills `/build-ability`, `/build-feature`, `/build-form`** : §4 = structure à produire ; §8 = process ; §2/§3 = qualité.
 - **Détection** : chaque règle porte un signal grep-able quand c'est possible (`rg` patterns). Un signal qui matche = candidat violation à confirmer en lecture, pas une certitude.
 
 ---
@@ -53,7 +61,7 @@ features/<feature>/
 
 ## 2. Domain modeling — checklist de conception (DM)
 
-> **À satisfaire AVANT de coder le domaine** (le RETEX PR1 = 7 itérations évitées en appliquant ceci dès le départ). `domain-modeler` répond à chaque point et fait valider le modèle.
+> **À satisfaire AVANT de coder le domaine** (sur `beneficiaire`, le premier domaine modélisé, 7 itérations de relecture auraient été évitées en appliquant ceci dès le départ). `domain-modeler` répond à chaque point et fait valider le modèle.
 
 | ID      | Règle                                                                                                                                                                                                                                                                                                                                                                               | Sévérité | Détection                                                                                  |
 |---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------------------------------------------------------------------------------------------|
@@ -175,26 +183,27 @@ abilities/<ability>/
 | PR-4 | Séquence de gate **avant chaque commit** : `pnpm -F web tsc` → `pnpm biome check --write <fichiers>` → tests ciblés (`test` / `test:integration` / `test:cucumber`) → commit.                               | BLOCKER  |
 | PR-5 | **JAMAIS `git add -A`** (stage des `scripts/`, fichiers jetables → casse lint-staged). Toujours stager des **chemins précis** `apps/web/...`.                                                               | BLOCKER  |
 | PR-6 | Commits **Conventional Commits** : `type(scope)?: description` au présent ; corps = le **pourquoi** + le quoi en termes d'archi (pas la liste de fichiers). Types : `refactor`/`fix`/`test`/`feat`/`chore`. | WARN     |
-| PR-7 | Migration **verticale, ability par ability** ; coexistence ancien/nouveau pendant la transition ; supprimer l'ancien code quand toutes les abilities sont migrées.                                          | INFO     |
+| PR-7 | Construction **verticale, ability par ability** ; quand une ability en remplace du code existant, coexistence ancien/nouveau pendant la transition, puis suppression de l'ancien code une fois tout remplacé. | INFO     |
 | PR-8 | Si gpg `signing failed` (pinentry) : ne pas contourner ; l'utilisateur déverrouille puis « recommence le commit » (rejouer le même `git commit`).                                                           | INFO     |
 | PR-9 | Laisser mourir naturellement un vieux helper lâche avec les refactos progressives ; **ne pas** forcer une passe transverse prématurée.                                                                      | WARN     |
 
 ---
 
-## 9. Divergences ASSUMÉES vs ihexa — NE PAS signaler comme violations (DV)
+## 9. Choix assumés (DV) — NE PAS signaler comme violations
 
-> ihexa est la **référence d'inspiration**, pas la cible littérale. Ces écarts sont **décidés** (cf. `refactor/01`, `02`). Un agent ne doit **jamais** les flaguer.
+> Ces choix sont **décidés**. Un agent ne doit **jamais** les signaler comme des écarts.
 
-| ID   | COOP                                           | ihexa                                              | Pourquoi                                                                       |
-|------|------------------------------------------------|----------------------------------------------------|--------------------------------------------------------------------------------|
-| DV-1 | **Zod** + branded types                        | Effect `Schema`                                    | Plus léger, familier équipe React                                              |
-| DV-2 | `implementation/prisma/`                       | `implementations/{in-memory,drizzle}` swap par ENV | Pas de multi-implémentation ; Cucumber tape la **DB réelle** (pas d'in-memory) |
-| DV-3 | `.ability.md` (Gherkin markdown)               | idem                                               | (le repo l'utilise — **pas** `.feature`)                                       |
-| DV-4 | Routes orchestrent directement                 | `pageBuilder()` middleware                         | Adopté progressivement, pas requis                                             |
-| DV-5 | DI `piqure` adoptée **progressivement**        | DI systématique                                    | Incrémental                                                                    |
-| DV-6 | Pas (encore) de mapping erreur→clé i18n        | `errors.ts` → i18n                                 | À venir, non bloquant                                                          |
-| DV-7 | Vitest (`.spec.ts`/`.integration.ts`) + Cucumber | Vitest + Cucumber only                           | Aligné : sans isolation, sans mock ni espion ; `.integration.ts` reste une convention COOP |
-| DV-8 | `defaultValues: {} as TFormData` dans `formOptions(…)`, `props: {} as {…}` dans `withForm(…)` | — | Imposé par la signature de TanStack Form : ces options ne servent qu'à porter un type, la valeur n'est jamais lue. Seule exception tolérée à CS-5 ; tout autre `as` reste BLOCKER. |
+| ID   | Choix                                                                                              | Pourquoi                                                                                    |
+|------|----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| DV-1 | **Zod** + branded types (`defineModel`), pas Effect Schema                                         | Plus léger, familier de l'écosystème React (ADR-005)                                        |
+| DV-2 | Une seule implémentation par port, dans `implementation/prisma/`                                    | Pas de multi-implémentation ni d'in-memory : Cucumber joue contre la **vraie base** (ADR-008) |
+| DV-3 | Scénarios en `.ability.md` (Gherkin dans du markdown), pas `.feature`                              | Format en place dans tout le dépôt                                                          |
+| DV-4 | Les routes orchestrent directement, sans builder de page                                           | Les quatre étapes d'une page restent lisibles sans abstraction (ADR-007)                    |
+| DV-5 | Injection (`piqure`) adoptée **progressivement**                                                   | Introduite là où elle sert, pas imposée partout d'un coup (ADR-006)                         |
+| DV-6 | Pas (encore) de mapping erreur → clé i18n                                                          | À venir, non bloquant                                                                       |
+| DV-7 | Vitest (`.spec.ts` / `.integration.ts`) + Cucumber, sans isolation, sans mock ni espion            | `.integration.ts` reste une convention du dépôt (ADR-008)                                   |
+| DV-8 | `defaultValues: {} as TFormData` dans `formOptions(…)`, `props: {} as {…}` dans `withForm(…)`        | Imposé par la signature de TanStack Form : ces options ne portent qu'un type, la valeur n'est jamais lue. Seule exception tolérée à CS-5 ; tout autre `as` reste BLOCKER (ADR-009). |
+
 
 ---
 
@@ -202,7 +211,7 @@ abilities/<ability>/
 
 > Vue « radar » pour `convention-reviewer` : les retours récurrents, pointant vers la règle.
 
-- Modèle domaine complet **dès le départ** → §2 (DM-1…10). *Le plus gros levier (RETEX = 7 itérations).*
+- Modèle domaine complet **dès le départ** → §2 (DM-1…10). *Le plus gros levier (7 itérations sur `beneficiaire`).*
 - Contrats d'ability dans `action/` ; input partagé en `domain/` de feature → AB-1, AB-2.
 - Aucune dépendance inter-ability/feature ; duplication découplée > couplage → IS-1, IS-2.
 - Vérifier le remplaçant **avant** suppression → PR-3.

@@ -1,7 +1,7 @@
 ---
 name: feature-auditor
 description: >-
-  Audite une feature ENTIÈRE contre les conventions canoniques COOP, dimension par dimension
+  Audite une feature ENTIÈRE contre les conventions du dépôt, dimension par dimension
   (§1–§7), et produit un instantané de conformité + une liste de résidus PRIORISÉE (résidu réel vs
   acceptable-en-l'état). À lancer pour savoir « où en est » une feature vs le standard, ou ce qu'il
   reste à faire. Diffère de convention-reviewer (qui note un DIFF avant commit) : ici on couvre tout
@@ -25,7 +25,7 @@ On te donne une **feature** (ex. `beneficiaire`). Couvre :
 - `features/<feature>/` (domain, abilities, db, ui, cucumber)
 - les routes `app/**` qui la servent
 - les imports croisés **entrants/sortants** (isolation §5, AR-2/AR-3)
-- grep `apps/web/src` **et** `packages/` (IS-3) pour les résidus de namespace legacy / consommateurs.
+- grep `apps/web/src` **et** `packages/` (IS-3) pour les résidus d'anciens dossiers et les consommateurs.
 
 ## Méthode (dimension par dimension)
 

@@ -3,7 +3,7 @@ export const meta = {
   description:
     "Revue de conventions d'un incrément avant commit : convention-reviewer (structuré) puis vérification adversariale indépendante de chaque finding, pour éliminer les faux positifs.",
   whenToUse:
-    "Avant de committer une tranche de refacto, pour une revue fiabilisée (find → verify). Args optionnel: { scope } (ex. 'main..HEAD' ; défaut = changements non commités).",
+    "Avant de committer un incrément, pour une revue fiabilisée (find → verify). Args optionnel: { scope } (ex. 'main..HEAD' ; défaut = changements non commités).",
   phases: [
     { title: 'Review', detail: 'convention-reviewer sur le diff' },
     { title: 'Verify', detail: 'vérification adversariale de chaque finding' },
@@ -61,10 +61,10 @@ const verified = (
   await parallel(
     toVerify.map((f) => () =>
       agent(
-        `Vérification adversariale d'une violation présumée des conventions COOP (spec: .claude/conventions/feature-architecture.md).\n` +
+        `Vérification adversariale d'une violation présumée des conventions du dépôt (spec: .claude/conventions/feature-architecture.md).\n` +
           `Règle ${f.id} (${f.severity}) — cible ${f.target} — constat: « ${f.finding} ».\n` +
           `Lis la cible réelle et le texte de la règle ${f.id} dans la spec. La violation est-elle RÉELLE ? ` +
-          `Réponds real:false si c'est un faux positif, une divergence assumée §9, ou un point hors-périmètre. En cas de doute, real:false.`,
+          `Réponds real:false si c'est un faux positif, un choix assumé §9, ou un point hors-périmètre. En cas de doute, real:false.`,
         { schema: VERDICT_SCHEMA, label: `verify:${f.id}`, phase: 'Verify' },
       ).then((v) => ({ ...f, verdict: v })),
     )
