@@ -106,7 +106,7 @@ jobs:
           set -a
           source .env
           set +a
-          pnpm --silent -F @app/fixtures load
+          pnpm --silent fixtures:load
       - name: Check that deployed container status is ok
         id: status
         run: |

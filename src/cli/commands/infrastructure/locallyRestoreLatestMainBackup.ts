@@ -615,6 +615,6 @@ export const locallyRestoreLatestMainBackup = new Command(
     // en direct échouerait (P3018, « relation already exists ») ; `db:migrate-deploy` les
     // baseline d'abord (prisma/baseline-main.sh, ADR-002).
     output(
-      'Pour migrer cette base restaurée : pnpm -F web db:migrate-deploy (surtout pas prisma migrate deploy en direct)',
+      'Pour migrer cette base restaurée : pnpm db:migrate-deploy (surtout pas prisma migrate deploy en direct)',
     )
   })
