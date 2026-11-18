@@ -34,10 +34,6 @@ variable "CONTAINER_NAMESPACE_NAME" {
   type = string
 }
 
-variable "SCW_DEFAULT_REGION" {
-  type = string
-}
-
 variable "MAIN_ROOT_DOMAIN" {
   type = string
 }
@@ -79,6 +75,11 @@ variable "PROCONNECT_MAIN_CLIENT_SECRET" {
 }
 
 variable "HMAC_SECRET_KEY" {
+  type      = string
+  sensitive = true
+}
+
+variable "NEXTAUTH_SECRET" {
   type      = string
   sensitive = true
 }

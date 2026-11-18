@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from 'axios'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { outputError } from '@/libraries/console/output'
 
 export type SentryConfig = {
@@ -9,13 +10,10 @@ export type SentryConfig = {
 }
 
 export const readSentryConfigFromEnv = (): SentryConfig => {
-  const url = (process.env.SENTRY_URL ?? 'https://sentry.io').replace(
-    /\/+$/,
-    '',
-  )
-  const org = process.env.SENTRY_ORG ?? ''
-  const project = process.env.SENTRY_PROJECT ?? ''
-  const authToken = process.env.SENTRY_AUTH_TOKEN ?? ''
+  const url = environnementOutillage.SENTRY_URL.replace(/\/+$/, '')
+  const org = environnementOutillage.SENTRY_ORG ?? ''
+  const project = environnementOutillage.SENTRY_PROJECT ?? ''
+  const authToken = environnementOutillage.SENTRY_AUTH_TOKEN ?? ''
 
   if (!org || !project || !authToken) {
     outputError(

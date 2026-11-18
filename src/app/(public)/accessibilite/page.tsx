@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { metadataTitle } from '@/app/metadataTitle'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import { contentId } from '@/utils/skipLinks'
 
@@ -57,7 +58,7 @@ const AccessibilityStatementPage = () => (
       <br />
       <h2>État de conformité</h2>
       <p>
-        <strong>{process.env.NEXT_PUBLIC_APP_NAME}</strong> est{' '}
+        <strong>{projectTitle}</strong> est{' '}
         <strong>
           <span data-printfilter="lowercase">non conforme</span>{' '}
         </strong>
@@ -82,9 +83,9 @@ const AccessibilityStatementPage = () => (
       <h2>Contact</h2>
       <p>
         Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
-        pouvez contacter le responsable de{' '}
-        <span>{process.env.NEXT_PUBLIC_APP_NAME}</span> pour être orienté vers
-        une alternative accessible ou obtenir le contenu sous une autre forme.
+        pouvez contacter le responsable de <span>{projectTitle}</span> pour être
+        orienté vers une alternative accessible ou obtenir le contenu sous une
+        autre forme.
       </p>
       <ul className="basic-information feedback h-card">
         <li>

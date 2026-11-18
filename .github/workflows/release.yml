@@ -60,7 +60,7 @@ jobs:
 
   deploy-dev:
     name: Deploy dev
-    needs: [ build-dev, plan-dev, approve-dev ]
+    needs: [build-dev, plan-dev, approve-dev]
     if: >-
       !cancelled()
       && needs.build-dev.result == 'success'
@@ -78,7 +78,7 @@ jobs:
 
   deploy-production:
     name: Deploy production
-    needs: [ build-production, plan-production, approve-production, deploy-dev ]
+    needs: [build-production, plan-production, approve-production, deploy-dev]
     if: >-
       !cancelled()
       && needs.build-production.result == 'success'

@@ -18,6 +18,7 @@
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/), dans la version indiquée par `engines.node` du `package.json`
 - [pnpm](https://pnpm.io/) : il installe de lui-même la version indiquée par `packageManager` du `package.json`
+  - pnpm refuse d'installer une version publiée depuis moins de 15 jours (`minimumReleaseAge` dans `pnpm-workspace.yaml`) : une dépendance toute récente attend, ou s'ajoute aux exclusions de ce fichier pour sa seule version
 - [Docker](https://www.docker.com/) avec Docker Compose, pour la base de données et la messagerie locales
 - [gitleaks](https://github.com/gitleaks/gitleaks#installing) : le hook de pré-commit l'exécute et refuse le commit s'il est absent
 - [OpenTofu](https://opentofu.org/docs/intro/install/), seulement pour lire un plan d'infrastructure en local
@@ -37,7 +38,7 @@ L'installation génère aussi le client Prisma.
 ### 2. Configurer les variables d'environnement
 
 ```bash
-cp .env.dist .env
+cp .env.example .env
 ```
 
 Les valeurs marquées `<secret>` ne sont jamais versionnées. Avec une clé Scaleway personnelle (`SCW_ACCESS_KEY` et `SCW_SECRET_KEY`, à demander à l'équipe), cette commande les ajoute au `.env` depuis le Secret Manager de Scaleway :
@@ -45,6 +46,8 @@ Les valeurs marquées `<secret>` ne sont jamais versionnées. Avec une clé Scal
 ```bash
 pnpm cli dotenv:from-secrets
 ```
+
+Elle ajoute aussi les identifiants SMTP du Secret Manager, qui remplacent ceux de MailDev : retirez du `.env` les lignes `SMTP_*` qu'elle a ajoutées pour que les e-mails restent interceptés en local.
 
 En local, la connexion passe par l'environnement d'intégration de ProConnect : elle demande `PROCONNECT_LOCAL_CLIENT_SECRET`.
 
@@ -55,7 +58,7 @@ pnpm docker:start
 ```
 
 - **PostgreSQL**, avec les extensions de la Coop et de l'Entrepôt (`docker/postgres`) : `localhost:5433`, utilisateur `coop-mediation-numerique`, mot de passe `password`
-- **MailDev**, qui intercepte les e-mails envoyés : interface sur http://localhost:1080, SMTP sur le port 1025
+- **MailDev**, qui intercepte les e-mails envoyés : interface sur http://localhost:1080, SMTP sur le port 1025 (utilisateur `mailuser`, mot de passe `mailpassword`)
 
 ### 4. Initialiser la base de données
 
@@ -76,33 +79,35 @@ L'application répond sur http://localhost:3000. `pnpm storybook` lance Storyboo
 
 <h2 id="commandes">🛠️ Commandes disponibles</h2>
 
-| Commande                               | Rôle                                                                    |
-| -------------------------------------- | ----------------------------------------------------------------------- |
-| `pnpm dev`                             | Lance l'application en développement                                    |
-| `pnpm storybook`                       | Lance Storybook                                                         |
-| `pnpm lint`                            | Vérifie le code avec Biome, puis la spécification OpenAPI               |
-| `pnpm lint:fix`                        | Corrige le format et les erreurs que Biome sait corriger                |
-| `pnpm tsc`                             | Vérifie les types                                                       |
-| `pnpm test`                            | Lance les tests unitaires                                               |
-| `pnpm build`                           | Construit l'application pour la production                              |
-| `pnpm docker:start` / `docker:stop`    | Démarre ou arrête PostgreSQL et MailDev                                 |
-| `pnpm docker:reset`                    | Supprime la base locale, la recrée et la réinitialise                   |
-| `pnpm db:init`                         | Génère le client Prisma et applique les migrations                      |
-| `pnpm prisma:generate-migration <nom>` | Crée une migration à partir du schéma Prisma                            |
-| `pnpm fixtures:load`                   | Charge les données de test                                              |
-| `pnpm lint:commit`                     | Vérifie les messages des commits de la branche depuis `main`            |
-| `pnpm cli <commande>`                  | Lance un outil du CLI : `pnpm cli --help` les liste                     |
-| `pnpm api-v1-doc:generate`             | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour |
+| Commande                               | Rôle                                                                                                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                             | Lance l'application en développement                                                                                                                                          |
+| `pnpm storybook`                       | Lance Storybook                                                                                                                                                               |
+| `pnpm lint`                            | Vérifie le code avec Biome, puis la spécification OpenAPI                                                                                                                     |
+| `pnpm lint:fix`                        | Corrige le format et les erreurs que Biome sait corriger                                                                                                                      |
+| `pnpm lint:adr`                        | Vérifie le format MADR des ADR de `docs/decisions`                                                                                                                            |
+| `pnpm tsc`                             | Vérifie les types                                                                                                                                                             |
+| `pnpm test`                            | Lance les tests unitaires                                                                                                                                                     |
+| `pnpm build`                           | Construit l'application pour la production                                                                                                                                    |
+| `pnpm docker:start` / `docker:stop`    | Démarre ou arrête PostgreSQL et MailDev                                                                                                                                       |
+| `pnpm docker:reset`                    | Supprime la base locale, la recrée et la réinitialise                                                                                                                         |
+| `pnpm db:init`                         | Génère le client Prisma et applique les migrations                                                                                                                            |
+| `pnpm prisma:generate-migration <nom>` | Crée une migration à partir du schéma Prisma                                                                                                                                  |
+| `pnpm fixtures:load`                   | Charge les données de test                                                                                                                                                    |
+| `pnpm lint:commit`                     | Vérifie les messages des commits de la branche depuis `main`                                                                                                                  |
+| `pnpm cli <commande>`                  | Lance un outil du CLI : `pnpm cli --help` les liste                                                                                                                           |
+| `pnpm api-v1-doc:generate`             | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour                                                                                                       |
+| `pnpm api:bruno`                       | Génère dans `.bruno` une collection [Bruno](https://www.usebruno.com/) de l'API v1, à partir de sa spécification ; le jeton se saisit dans Bruno, en variable secrète `token` |
 
 <h2 id="tests">🧪 Tests</h2>
 
-| Commande                    | Tests                                                                  |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `pnpm test`                 | Unitaires, avec [Vitest](https://vitest.dev/)                          |
-| `pnpm test:integration`     | Intégration, contre la base de `DATABASE_URL`                          |
-| `pnpm test:cucumber`        | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
-| `pnpm test:e2e`             | De bout en bout, avec [Cypress](https://www.cypress.io/), en interface |
-| `pnpm cy run --project e2e` | De bout en bout, sans interface                                        |
+| Commande                | Tests                                                                  |
+| ----------------------- | ---------------------------------------------------------------------- |
+| `pnpm test`             | Unitaires, avec [Vitest](https://vitest.dev/)                          |
+| `pnpm test:integration` | Intégration, contre la base de `DATABASE_URL`                          |
+| `pnpm test:cucumber`    | Scénarios métier, avec [Cucumber](https://cucumber.io/)                |
+| `pnpm test:e2e`         | De bout en bout, avec [Cypress](https://www.cypress.io/), en interface |
+| `pnpm cy run`           | De bout en bout, sans interface                                        |
 
 - Les tests n'utilisent ni mock ni espion : ils injectent des dépendances écrites à la main et vérifient les valeurs retournées.
 - Les tests d'intégration et les scénarios Cucumber écrivent dans la base : lancez-les sur une base jetable, jamais sur une base qui contient des données utiles. La CI les joue sur une base neuve à chaque exécution.
@@ -129,7 +134,7 @@ L'application répond sur http://localhost:3000. `pnpm storybook` lance Storyboo
 
 ### Code
 
-Les conventions d'architecture (features, abilities, domaine, server actions) et de style sont décrites dans [AGENTS.md](./AGENTS.md). Les décisions structurantes sont consignées dans les [ADR](./docs/adr).
+Les conventions d'architecture (features, abilities, domaine, server actions) et de style sont décrites dans [AGENTS.md](./AGENTS.md). Les décisions structurantes sont consignées dans les [ADR](./docs/decisions).
 
 <h2 id="base-de-donnees">🗃️ Base de données</h2>
 
@@ -137,7 +142,7 @@ Les conventions d'architecture (features, abilities, domaine, server actions) et
 2. Générer la migration : `pnpm prisma:generate-migration nom_de_la_migration`.
 3. Relire le SQL généré dans `prisma/migrations/`.
 
-En production, la base de la Coop est le schéma `coop` de l'Entrepôt de données de l'inclusion numérique : la procédure est décrite dans [le runbook des migrations sur l'Entrepôt](./docs/runbook-migrations-entrepot.md). Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` passe par l'application ou se signale à l'équipe Dataspace, parce que la Coop écrit aussi dans le registre de l'Entrepôt ([ADR-003](./docs/adr/adr-003-registre-des-lieux-entrepot.md)).
+En production, la base de la Coop est le schéma `coop` de l'Entrepôt de données de l'inclusion numérique, joignable seulement par un bastion SSH (voir [l'infrastructure](./infrastructure/README.md)). Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` passe par l'application ou se signale à l'équipe Dataspace, parce que la Coop écrit aussi dans le registre de l'Entrepôt ([ADR-003](./docs/decisions/0003-registre-des-lieux-entrepot.md)).
 
 <h2 id="taches">⏱️ Tâches</h2>
 
@@ -163,11 +168,13 @@ Le planning des tâches qui tournent seules est décrit dans [l'infrastructure](
 
 Les workflows GitHub Actions sont dans `.github/workflows/` :
 
-- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic et revue des dépendances, sur les branches préfixées et sur `main`. Sur `main`, ils tiennent à jour la couverture de référence (Coveralls) et les captures de référence de Chromatic.
+- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic, contrôle du bundle des tâches, revue des dépendances et, quand `infrastructure/` change, plan d'infrastructure, sur les branches préfixées et sur `main`. Sur `main`, ils tiennent à jour la couverture de référence (Coveralls) et les captures de référence de Chromatic.
+- **PR title** : vérifie que le titre d'une PR suit les Commits Conventionnels, puisqu'il devient le message du commit de fusion.
 - **Preview** : poser le label `preview` sur une PR déploie l'environnement de sa branche, et chaque push le redéploie. Retirer le label, fermer ou fusionner la PR le détruit.
 - **Release** : à chaque fusion dans `main`, construit les images et déploie `dev` puis la production.
 - **Remove ephemeral environment** : détruit l'environnement de preview d'une branche.
 - **Postgres CI image** : publie l'image PostgreSQL de la CI (`docker/postgres-ci`).
+- **security.txt** : chaque lundi, valide le `security.txt` de la production selon la RFC 9116 avec [sectxt](https://github.com/DigitalTrustCenter/sectxt), et échoue s'il expire dans moins de 30 jours. L'échec est notifié par e-mail à l'auteur du dernier changement de son planning.
 
 Le détail du déploiement et de l'approbation des changements d'infrastructure est dans [l'infrastructure](./infrastructure/README.md#deploiement).
 

@@ -20,26 +20,9 @@ import { getSecretValue } from '@/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@/cli/commands/secrets/setupDatabaseSecret'
 import { deleteSentryEnvironmentIssues } from '@/cli/commands/sentry/deleteSentryEnvironmentIssues'
-import { output, outputError } from '@/libraries/console/output'
+import { outputError } from '@/libraries/console/output'
 
 const main = async () => {
-  if (
-    process.env.DATABASE_URL &&
-    process.env.CLI_TARGET_DEPLOYMENT_DATABASE_URL === process.env.DATABASE_URL
-  ) {
-    output(
-      `⚠️⚠️⚠️ Executing command on target deployment ${
-        process.env.CLI_TARGET_DEPLOYMENT_BRANCH
-      }`,
-    )
-    const databaseUrl = new URL(process.env.DATABASE_URL)
-    output(`⚠️⚠️⚠️ Database: ${databaseUrl.hostname} ${databaseUrl.pathname}`)
-    output('⚠️⚠️⚠️ You have 8 seconds to cancel')
-    await new Promise((resolve) => {
-      setTimeout(resolve, 8000)
-    })
-  }
-
   const program = new Command()
 
   program.addCommand(executeJobCommand)

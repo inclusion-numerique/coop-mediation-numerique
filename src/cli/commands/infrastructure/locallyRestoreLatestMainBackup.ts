@@ -4,7 +4,8 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
-import axiosRetry from 'axios-retry'
+import { getAvecNouvellesTentatives } from '@/cli/getAvecNouvellesTentatives'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
 import { varDirectory } from '@/libraries/chemins/varDirectory'
 import { output } from '@/libraries/console/output'
@@ -129,10 +130,6 @@ const scalewayRdbClient = (secretKey: string) => {
     baseURL: 'https://api.scaleway.com/rdb/v1/regions/fr-par',
     headers: { 'X-Auth-Token': secretKey },
   })
-  axiosRetry(client, {
-    retries: 3,
-    retryDelay: (retryCount) => retryCount * 3000,
-  })
   return client
 }
 
@@ -146,9 +143,9 @@ const fetchAllBackups = async (
   const pageSize = 100
 
   while (true) {
-    const response = await client.get<{
+    const response = await getAvecNouvellesTentatives<{
       database_backups: ScalewayDatabaseBackup[]
-    }>('/backups', {
+    }>(client, '/backups', {
       params: {
         order_by: 'created_at_desc',
         page_size: pageSize,
@@ -236,9 +233,11 @@ const exportAndDownloadBackup = async (
     await new Promise((resolve) => {
       setTimeout(resolve, 3000)
     })
-    const statusResponse = await client.get<ScalewayDatabaseBackup>(
-      `/backups/${selectedBackup.id}`,
-    )
+    const statusResponse =
+      await getAvecNouvellesTentatives<ScalewayDatabaseBackup>(
+        client,
+        `/backups/${selectedBackup.id}`,
+      )
     selectedBackup = statusResponse.data
     waitCount += 1
   }
@@ -508,12 +507,12 @@ export const locallyRestoreLatestMainBackup = new Command(
     // schéma coop depuis la bascule prod. L'ancienne base coop (DATABASE_INSTANCE_ID /
     // BACKUP_DATABASE_NAME), plus alimentée en prod, n'est plus utilisée ici.
     const entrepotInstanceId = (
-      process.env.DATASPACE_DATABASE_INSTANCE_ID ?? ''
+      environnementOutillage.DATASPACE_DATABASE_INSTANCE_ID ?? ''
     ).split('/')[1]
     const entrepotBackupDatabaseName =
-      process.env.DATASPACE_BACKUP_DATABASE_NAME ?? ''
-    const secretKey = process.env.SCW_SECRET_KEY ?? ''
-    const databaseUrl = process.env.DATABASE_URL ?? ''
+      environnementOutillage.DATASPACE_BACKUP_DATABASE_NAME ?? ''
+    const secretKey = environnementOutillage.SCW_SECRET_KEY ?? ''
+    const databaseUrl = environnementOutillage.DATABASE_URL ?? ''
     const databaseUrlObject = new URL(databaseUrl ?? '')
     const user = databaseUrlObject.username
     const database = databaseUrlObject.pathname.split('/')[1]
@@ -613,7 +612,7 @@ export const locallyRestoreLatestMainBackup = new Command(
     // Le dump ramène `main` ET l'historique Prisma de la prod : les migrations qui modélisent
     // `main` sont donc en attente alors que leurs tables existent déjà. `prisma migrate deploy`
     // en direct échouerait (P3018, « relation already exists ») ; `db:migrate-deploy` les
-    // baseline d'abord (prisma/baseline-main.sh, ADR-002).
+    // baseline d'abord (scripts/baseline-main.sh, ADR-002).
     output(
       'Pour migrer cette base restaurée : pnpm db:migrate-deploy (surtout pas prisma migrate deploy en direct)',
     )

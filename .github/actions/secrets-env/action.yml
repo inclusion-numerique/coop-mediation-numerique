@@ -1,5 +1,5 @@
 name: "Secrets environment"
-description: "Create the .env file from .env.dist and the Scaleway Secret Manager, its values masked in the logs"
+description: "Create the .env file from .env.example and the Scaleway Secret Manager, its values masked in the logs"
 
 inputs:
   scw-access-key:
@@ -13,7 +13,7 @@ runs:
   using: "composite"
   steps:
     - name: Create env file
-      run: cp .env.dist .env
+      run: cp .env.example .env
       shell: bash
     - name: Add secrets to env file
       run: pnpm --silent cli dotenv:from-secrets

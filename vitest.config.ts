@@ -4,6 +4,8 @@ import { defineConfig } from 'vitest/config'
 const depuisIci = (chemin: string) =>
   fileURLToPath(new URL(chemin, import.meta.url))
 
+process.loadEnvFile(depuisIci('./.env'))
+
 export default defineConfig({
   resolve: {
     tsconfigPaths: true,
@@ -18,7 +20,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     isolate: false,
-    setupFiles: [depuisIci('./vitest.setup.ts')],
     server: { deps: { inline: ['@arckit/nextjs'] } },
     reporters: process.env.CI ? ['default', 'junit'] : ['default'],
     outputFile: { junit: depuisIci('./junit/web.xml') },
@@ -47,6 +48,8 @@ export default defineConfig({
         'src/**/*.spec.{ts,tsx}',
         'src/**/*.integration.{ts,tsx}',
         'src/**/*.stories.{ts,tsx}',
+        'src/**/*.steps.ts',
+        'src/**/*.cucumber.ts',
         'src/generated/**',
       ],
       reporter: ['json', 'lcov', 'text-summary'],

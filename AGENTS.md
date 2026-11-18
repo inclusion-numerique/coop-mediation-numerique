@@ -45,13 +45,10 @@ pnpm test:integration                            # Integration tests: hit DATABA
 pnpm test:integration path/to/file.integration.ts  # Single integration test
 pnpm test:cucumber                               # BDD scenarios: same database caveat as integration tests
 pnpm test:e2e                                    # E2E tests with Cypress, interactive
-pnpm cy run --project e2e                        # E2E tests with Cypress, headless
+pnpm cy run                                      # E2E tests with Cypress, headless
 ```
 
-Le serveur web doit tourner avec `IS_E2E=true` (`IS_E2E=true pnpm dev`) : c'est ce qui
-bascule l'API Dataspace en mock. Sans ça, les parcours conseiller numérique échouent — l'API
-réelle ne reconnaît pas les utilisateurs de fixtures, et l'inscription les traite comme des
-médiateurs ordinaires. La CI pose la variable dans le `.env` avant de construire.
+E2E tests need the web server running with `IS_E2E=true` (`IS_E2E=true pnpm dev`): it switches the Dataspace API to a mock. Without it, the conseiller numérique journeys fail, because the real API does not know the fixture users and sign-up treats them as ordinary médiateurs. The sign-in test also needs the simulated ProConnect server (`e2e/proconnect-simule/serveur.ts`) and the matching `NEXT_PUBLIC_PROCONNECT_*` variables; `.github/workflows/ci.yml` shows the full setup.
 
 ### Database
 
@@ -68,13 +65,13 @@ pnpm cli job:execute <job-name>     # Execute a background job
 
 ## Architecture
 
-Architecture decisions and their rationale are recorded in `docs/adr/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
+Architecture decisions and their rationale are recorded in `docs/decisions/`; the normative rules, with stable IDs, are in `.claude/conventions/feature-architecture.md`.
 
 ### Repository Structure
 
 - **src**: the Next.js full-stack application (App Router, React Server Components), imported through the `@/` alias
 - **prisma**: Prisma schemas and migrations
-- **e2e**: Cypress E2E and component tests, imported through the `@e2e/` alias
+- **e2e**: Cypress tooling (support files, tasks, fixtures, simulated ProConnect, timings); `cypress.config.ts` sits at the root. E2E specs live in their feature as `src/features/<feature>/e2e/*.e2e.ts`, component tests next to their component as `*.cy.tsx`
 - **.storybook**: Storybook configuration; stories live next to their components in `src`
 - **infrastructure**: Infrastructure as code (HCL / OpenTofu for Scaleway)
 - **docker**: images of the application and of PostgreSQL
@@ -88,8 +85,9 @@ Architecture decisions and their rationale are recorded in `docs/adr/`; the norm
   - `api/`: API routes including REST API v1
   - `_actions/`: server actions, one file per ability, composing its ports
 - **features/**: Feature modules (activites, inscription, mediateurs, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
+- **libs/**: older shared modules (forms, data tables, filters, injection, statistics, worksheets), being moved to `libraries/`
 - **libraries/**: shared code without any business concept (UI components, e-mail layout, fixture helpers, paths…)
-- **configuration/**: project configuration, secrets and telemetry
+- **configuration/**: project configuration, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
 - **cli/**: CLI tools for deployment, secrets and jobs
 - **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`
 - **jobs/**: Background job implementations
@@ -100,17 +98,17 @@ Architecture decisions and their rationale are recorded in `docs/adr/`; the norm
 
 - **Backend**: Next.js server actions, Prisma ORM, PostgreSQL
 - **Frontend**: React 19, Next.js 16 (App Router), DSFR (French gov design system) through react-dsfr
-- **Forms**: TanStack Form through `useAppForm` (`libs/form`), validated with Zod; react-hook-form only survives in legacy forms
+- **Forms**: TanStack Form through `useAppForm` (`src/libs/form`), validated with Zod; react-hook-form only survives in legacy forms
 - **Testing**: Vitest everywhere (unit and integration, no isolation, no mocks), Cucumber (BDD), Cypress (E2E)
 - **Linting**: Biome (not ESLint for formatting/linting)
 
 ### Server Actions
 
-Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withAuth`, `withMaintenance`, `withInput`, `fromResult` come from `@/libraries/nextjs`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
+Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withInput` and `fromResult` come from `@/libraries/nextjs`, `withAuth` from `@/features/authentification`, `withMaintenance` from `@/features/maintenance-mode`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
 
 ### Telemetry
 
-- Only `src/configuration/telemetry` imports `@sentry/nextjs`. Each module there has `index.prod.ts`, `index.dev.ts` and `index.ephemeral.ts`; `pnpm generate:implementations` copies the one named by `ENV` (default `dev`) to the git-ignored `index.ts`. Postinstall generates `dev`, CI sets `ENV=ephemeral`, the build regenerates `prod`.
+- Only `src/configuration/telemetry` imports `@sentry/nextjs`. Modules with environment-specific implementations (`error-reporter/client`, `error-reporter/server`) have `index.prod.ts`, `index.dev.ts` and `index.ephemeral.ts`; `pnpm generate:implementations` copies the one named by `ENV` (default `dev`) to the git-ignored `index.ts`. Postinstall generates `dev`, CI sets `ENV=ephemeral`, the build regenerates `prod`.
 - Composition roots (`app/`, jobs, `auth`) and `implementation/` modules take `errorReporter` or `signaler` from the configuration; domain, commands, UI logic and libraries receive what they need by injection. External calls are wrapped with `instrument` in `configuration/<service>` (e.g. `configuration/ban`).
 - Tests never mock modules nor spy on calls: inject hand-written dependencies and assert on results.
 
@@ -185,19 +183,19 @@ Use DSFR utility classes: `fr-container`, `fr-grid-row`, `fr-col-12`, `fr-mt-8v`
 
 ## ADR
 
-Les agents rédigent les ADR de `docs/adr/` en suivant le modèle [`docs/adr/000-modele.md`](docs/adr/000-modele.md), qui porte toutes les règles de rédaction. Les trois premières :
+ADRs in `docs/decisions/` are written in French, in the [MADR](https://adr.github.io/madr/) format of the template [`docs/decisions/adr-template.md`](docs/decisions/adr-template.md); every writing rule is in [`docs/decisions/README.md`](docs/decisions/README.md). The first three:
 
-- L'ADR pose les décisions et leurs raisons, de façon générique, et renvoie vers les `*.ability.md` (specs exécutables, qui font foi) pour le détail : aucun nom de fonction, de fichier ou de ligne de code, aucun chemin.
-- Pas de journal ni de mise à jour datée : l'historique git porte le détail, le tableau d'historique ne garde que les rédactions et révisions de l'ADR.
-- Un ADR ne référence que des ADR de numéro inférieur, jamais un ADR postérieur : il pose une situation à un instant donné.
+- An ADR states decisions and their reasons, generically, and points to the `*.ability.md` files (executable specs, the source of truth) for details: no function, file or line names, no paths.
+- No log and no dated updates: git history holds the details; the history list only lists the drafts and revisions of the ADR.
+- An ADR only references ADRs with a lower number, never a later one: it describes the situation at a given time.
 
 ## Branch Conventions
 
-Prefix branches with: `feat/`, `fix/`, `chore/`, `refactor/`, `docs/`, `test/`
+Prefix branches with: `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/` or `test/`; only these branches trigger the CI.
 Branch names can be of any length: a preview's namespace (see `src/cli/branchNamespace.ts`) is the first 7 characters of the branch slug followed by 6 letters derived from the whole branch name, 14 characters at most, the room left for the preview subdomain.
 
 ## Important Notes
 
-- Merging to `main` triggers automatic production deployment
+- Merging to `main` triggers the release: it deploys `dev`, then production once `dev` succeeded; a change to `infrastructure/` waits for a manual approval of its plan
 - Database connection string uses port 5433 locally (not 5432)
 - Local sign-in goes through the ProConnect integration environment (`PROCONNECT_LOCAL_CLIENT_SECRET`); the email magic link only exists on previews

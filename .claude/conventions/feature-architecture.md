@@ -2,7 +2,7 @@
 
 > **Source de vérité normative** pour écrire une feature au standard du dépôt. Ce fichier est le
 > **« quoi »**, citable règle par règle ; le **« pourquoi »** de chaque choix est consigné dans les
-> ADR de `docs/adr/` (table ci-dessous).
+> ADR de `docs/decisions/` (table ci-dessous).
 
 | Sections                     | ADR                                                                                                        |
 |------------------------------|------------------------------------------------------------------------------------------------------------|

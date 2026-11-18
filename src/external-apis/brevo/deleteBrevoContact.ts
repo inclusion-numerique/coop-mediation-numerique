@@ -24,4 +24,4 @@ const deleteContactImmediate = async (email: string): Promise<void> => {
 export const deleteBrevoContact = brevoApiThrottle(deleteContactImmediate)
 
 export const deploymentCanDeleteBrevoContact = () =>
-  PublicWebAppConfig.isMain && !PublicWebAppConfig.isE2e
+  PublicWebAppConfig.isMain && !ServerWebAppConfig.isE2e

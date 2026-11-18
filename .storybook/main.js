@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parse } from 'dotenv'
+import { parseEnv } from 'node:util'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -11,7 +11,7 @@ const dotenvVariables = () => {
   if (!existsSync(dotenvFile)) {
     return null
   }
-  return parse(readFileSync(dotenvFile))
+  return parseEnv(readFileSync(dotenvFile, 'utf8'))
 }
 
 // See https://github.com/storybookjs/storybook/blob/111edc3929eb8afff1b58285b0b9c49dd493ae85/code/frameworks/nextjs/README.md
@@ -24,7 +24,7 @@ export default {
   framework: {
     name: '@storybook/nextjs',
     options: {
-      nextConfigPath: path.resolve(dirname, '../next.config.mjs'),
+      nextConfigPath: path.resolve(dirname, '../next.config.ts'),
     },
   },
   staticDirs: ['../public', './public'],

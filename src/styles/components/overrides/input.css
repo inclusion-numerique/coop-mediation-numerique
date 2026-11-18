@@ -30,14 +30,6 @@
   border-radius: 4px;
   box-shadow: none !important;
 
-  &input {
-    padding-top: 16px;
-    padding-bottom: 16px;
-    padding-right: 16px;
-    min-height: 40px !important;
-    height: 40px !important;
-  }
-
   &.fr-input--white {
     background-color: var(--grey-1000-75);
   }

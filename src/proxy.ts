@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
-const nodeEnvironment = process.env.NODE_ENV
-const isCI = !!process.env.CI
-const isProduction = nodeEnvironment === 'production'
+const isCI = environnementServeur.CI
+const isProduction = environnementServeur.NODE_ENV === 'production'
 
 const contentSecurityPolicy = `
   default-src 'self' https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr;
@@ -78,7 +78,7 @@ const redirectToBaseDomain = ({
 const proxy = (request: NextRequest) => {
   const forwardedProto = request.headers.get('X-Forwarded-Proto')
   const requestHost = request.headers.get('host')
-  const baseUrl = process.env.BASE_URL ?? ''
+  const baseUrl = environnementServeur.BASE_URL ?? ''
 
   /**
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
@@ -114,7 +114,7 @@ const proxy = (request: NextRequest) => {
 
   const response = NextResponse.next()
 
-  if (nodeEnvironment === 'development') {
+  if (environnementServeur.NODE_ENV === 'development') {
     response.headers.append('Access-Control-Allow-Headers', '*')
     response.headers.append('Access-Control-Allow-Origin', '*')
   }

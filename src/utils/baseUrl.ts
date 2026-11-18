@@ -1,3 +1,4 @@
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { isBrowser } from '@/utils/isBrowser'
 
 export type GetServerUrlOptions = {
@@ -9,12 +10,12 @@ export const getServerBaseUrl = (options?: GetServerUrlOptions) => {
     // browser can use relative path
     return ''
   }
-  if (process.env.BASE_URL) {
-    return `https://${process.env.BASE_URL}`
+  if (environnementServeur.BASE_URL) {
+    return `https://${environnementServeur.BASE_URL}`
   }
 
   // assume localhost
-  return `http://localhost:${process.env.PORT ?? 3000}`
+  return `http://localhost:${environnementServeur.PORT}`
 }
 
 export const getServerUrl = (path: string, options?: GetServerUrlOptions) =>

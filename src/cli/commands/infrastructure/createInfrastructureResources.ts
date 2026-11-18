@@ -2,12 +2,8 @@ import { randomBytes } from 'node:crypto'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import { computeBranchNamespace } from '@/cli/branchNamespace'
-import {
-  containerNamespaceName,
-  databaseInstanceName,
-  projectSlug,
-  region,
-} from '@/configuration/projet/config'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { projectSlug } from '@/configuration/projet/config'
 import { output, outputError } from '@/libraries/console/output'
 
 type ResourceKind = 'database' | 'container'
@@ -81,7 +77,7 @@ const toContainerName = (value: string) => {
 }
 
 const ensureScwSecretKey = () => {
-  const token = process.env.SCW_SECRET_KEY
+  const token = environnementOutillage.SCW_SECRET_KEY
   if (!token) {
     outputError('Missing SCW_SECRET_KEY env variable for Scaleway API')
     process.exit(1)
@@ -90,15 +86,7 @@ const ensureScwSecretKey = () => {
   return token
 }
 
-const getScwRegion = () => {
-  const scwRegion = region || process.env.SCW_DEFAULT_REGION || 'fr-par'
-  if (!scwRegion) {
-    outputError('Missing Scaleway region (SCW_DEFAULT_REGION)')
-    process.exit(1)
-    return null
-  }
-  return scwRegion
-}
+const getScwRegion = () => environnementOutillage.SCW_DEFAULT_REGION
 
 const buildRdbClient = (scwRegion: string, token: string) =>
   axios.create({
@@ -117,14 +105,20 @@ const fetchRdbInstance = async (scwRegion: string, token: string) => {
   const { data } = await client.get<{ instances: RdbInstance[] }>(
     '/instances',
     {
-      params: { name: databaseInstanceName, page_size: 100 },
+      params: {
+        name: environnementOutillage.DATABASE_INSTANCE_NAME,
+        page_size: 100,
+      },
     },
   )
   const instance = data.instances.find(
-    (candidate) => candidate.name === databaseInstanceName,
+    (candidate) =>
+      candidate.name === environnementOutillage.DATABASE_INSTANCE_NAME,
   )
   if (!instance) {
-    throw new Error(`Database instance "${databaseInstanceName}" not found`)
+    throw new Error(
+      `Database instance "${environnementOutillage.DATABASE_INSTANCE_NAME}" not found`,
+    )
   }
   return instance
 }
@@ -134,14 +128,20 @@ const fetchContainerNamespace = async (scwRegion: string, token: string) => {
   const { data } = await client.get<{ namespaces: ScalewayNamespace[] }>(
     '/namespaces',
     {
-      params: { name: containerNamespaceName, page_size: 100 },
+      params: {
+        name: environnementOutillage.CONTAINER_NAMESPACE_NAME,
+        page_size: 100,
+      },
     },
   )
   const namespace = data.namespaces.find(
-    (candidate) => candidate.name === containerNamespaceName,
+    (candidate) =>
+      candidate.name === environnementOutillage.CONTAINER_NAMESPACE_NAME,
   )
   if (!namespace) {
-    throw new Error(`Container namespace "${containerNamespaceName}" not found`)
+    throw new Error(
+      `Container namespace "${environnementOutillage.CONTAINER_NAMESPACE_NAME}" not found`,
+    )
   }
   return namespace
 }
@@ -195,7 +195,7 @@ const ensureDatabaseUserAndPrivilege = async ({
       output(`  [dry-run] Would create database user "${userName}"`)
     } else {
       const password =
-        process.env.DATABASE_PASSWORD ??
+        environnementOutillage.DATABASE_PASSWORD ??
         `Temp1!${randomBytes(16).toString('hex')}`
       await client.post(`/instances/${instanceId}/users`, {
         name: userName,
@@ -268,7 +268,7 @@ const ensureContainer = async ({
     return
   }
 
-  const registryImage = process.env.WEB_CONTAINER_IMAGE
+  const registryImage = environnementOutillage.WEB_CONTAINER_IMAGE
   if (!registryImage) {
     if (dryRun) {
       outputError(

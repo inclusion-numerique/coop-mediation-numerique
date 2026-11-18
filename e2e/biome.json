@@ -6,9 +6,6 @@
     {
       "includes": ["**/*.ts", "**/*.tsx"],
       "javascript": {
-        "formatter": {
-          "quoteStyle": "single"
-        },
         "globals": [
           "cy",
           "Cypress",
@@ -25,5 +22,12 @@
         ]
       }
     }
-  ]
+  ],
+  "linter": {
+    "rules": {
+      "style": {
+        "noProcessEnv": "off"
+      }
+    }
+  }
 }

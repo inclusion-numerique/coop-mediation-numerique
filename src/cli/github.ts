@@ -1,10 +1,12 @@
 import { Octokit } from '@octokit/core'
 import { restEndpointMethods } from '@octokit/plugin-rest-endpoint-methods'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { projectSlug } from '@/configuration/projet/config'
 
 export const owner = 'inclusion-numerique'
-export const repo = process.env.NEXT_PUBLIC_APP_SLUG || ''
+export const repo = projectSlug
 
-const token = process.env.GITHUB_TOKEN
+const token = environnementOutillage.GITHUB_TOKEN
 
 if (!token) {
   throw new Error(

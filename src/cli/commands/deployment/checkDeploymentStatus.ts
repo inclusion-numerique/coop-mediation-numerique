@@ -1,6 +1,6 @@
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
-import axiosRetry from 'axios-retry'
+import { getAvecNouvellesTentatives } from '@/cli/getAvecNouvellesTentatives'
 import { projectTitle } from '@/configuration/projet/config'
 import { output } from '@/libraries/console/output'
 
@@ -14,15 +14,17 @@ export const checkDeploymentStatus = new Command()
         Accept: 'text/html',
       },
     })
-    axiosRetry(client, {
-      retries: 3,
-      retryDelay: (retryCount) => retryCount * 3000,
-    })
 
-    const statusResponse = await client.get<{ status: string }>('/health')
+    const statusResponse = await getAvecNouvellesTentatives<{ status: string }>(
+      client,
+      '/health',
+    )
     output(`Status is ${statusResponse.data.status}`)
 
-    const homePageResponse = await client.get<string>('/')
+    const homePageResponse = await getAvecNouvellesTentatives<string>(
+      client,
+      '/',
+    )
     if (!homePageResponse.data.startsWith('<!DOCTYPE html>')) {
       throw new Error('Home page is not valid html')
     }

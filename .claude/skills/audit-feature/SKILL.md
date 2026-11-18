@@ -24,4 +24,4 @@ Argument : le **nom de la feature** (ex. `beneficiaire`). À défaut, demande-le
 ## Rappels
 - Spec = `.claude/conventions/feature-architecture.md`. Citer les IDs.
 - Ne jamais signaler les choix assumés (§9).
-- Le pourquoi des règles est dans `docs/adr/`.
+- Le pourquoi des règles est dans `docs/decisions/`.

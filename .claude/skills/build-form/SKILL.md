@@ -11,7 +11,7 @@ description: >-
 
 Argument : le **formulaire** à écrire (ou à réécrire). Références : `src/libs/form`
 (`useAppForm`, `handle-submit`), un formulaire existant comme modèle (`CraIndividuelForm`), et
-ADR-009 (`docs/adr/`) pour le pourquoi.
+ADR-009 (`docs/decisions/`) pour le pourquoi.
 
 ## Construire
 

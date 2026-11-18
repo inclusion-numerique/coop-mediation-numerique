@@ -4,8 +4,15 @@
     "types": ["cypress", "@testing-library/cypress", "node"],
     "paths": {
       "@/*": ["../src/*"],
-      "@e2e/*": ["./cypress/*"]
+      "@e2e/*": ["./*"]
     }
   },
-  "include": ["./cypress.config.ts", "./cypress/**/*.ts", "./cypress/**/*.tsx"]
+  "include": [
+    "../next-env.d.ts",
+    "../cypress.config.ts",
+    "./**/*.ts",
+    "./**/*.json",
+    "../src/**/e2e/*.ts",
+    "../src/**/*.cy.tsx"
+  ]
 }

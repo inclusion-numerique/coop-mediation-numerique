@@ -18,9 +18,12 @@ export const addNextPublicVariablesToDotEnv = new Command()
     await appendEnvVariablesToDotEnvFile({
       comment: 'Next public environment needed at build time',
       environmentVariables: [
-        targetEnv === 'local'
-          ? { name: 'NEXT_PUBLIC_SENTRY_DSN', value: '' }
-          : { name: 'NEXT_PUBLIC_SENTRY_ENVIRONMENT', value: namespace },
+        ...(targetEnv === 'local'
+          ? [{ name: 'NEXT_PUBLIC_SENTRY_DSN', value: '' }]
+          : [
+              { name: 'NEXT_PUBLIC_SENTRY_ENVIRONMENT', value: namespace },
+              { name: 'NEXT_PUBLIC_BRANCH', value: namespace },
+            ]),
         {
           name: 'NEXT_PUBLIC_PROCONNECT_HOSTNAME',
           value: `$PROCONNECT_${targetEnv.toUpperCase()}_HOSTNAME`,

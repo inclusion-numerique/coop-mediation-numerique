@@ -1,21 +1,19 @@
 locals {
   environnement_web = {
-    BREVO_USERS_LIST_ID   = var.BREVO_USERS_LIST_ID
-    EMAIL_FROM_ADDRESS    = local.email_from_address
-    EMAIL_FROM_NAME       = local.email_from_name
-    STACK_WEB_IMAGE       = var.WEB_CONTAINER_IMAGE
-    BASE_URL              = local.hostname
-    NEXTAUTH_URL          = local.hostname
-    BRANCH                = var.branch
-    NAMESPACE             = var.namespace
-    SCW_DEFAULT_REGION    = var.SCW_DEFAULT_REGION
-    SMTP_PORT             = local.is_main ? var.SMTP_PORT : "1025"
-    ENTREPOT_BASTION_HOST = var.ENTREPOT_BASTION_HOST
-    ENTREPOT_BASTION_USER = var.ENTREPOT_BASTION_USER
-    ENTREPOT_BASTION_PORT = var.ENTREPOT_BASTION_PORT
-    ENTREPOT_DB_HOST      = "172.16.20.14"
-    ENTREPOT_DB_PORT      = "5432"
-    ENTREPOT_TUNNEL_PORT  = "5433"
+    BREVO_USERS_LIST_ID     = var.BREVO_USERS_LIST_ID
+    EMAIL_FROM_ADDRESS      = local.email_from_address
+    EMAIL_FROM_NAME         = local.email_from_name
+    BASE_URL                = local.hostname
+    NEXTAUTH_URL            = local.hostname
+    SMTP_PORT               = local.is_main ? var.SMTP_PORT : "1025"
+    ENTREPOT_BASTION_HOST   = var.ENTREPOT_BASTION_HOST
+    ENTREPOT_BASTION_USER   = var.ENTREPOT_BASTION_USER
+    ENTREPOT_BASTION_PORT   = var.ENTREPOT_BASTION_PORT
+    ENTREPOT_DB_HOST        = "172.16.20.14"
+    ENTREPOT_DB_PORT        = "5432"
+    ENTREPOT_TUNNEL_PORT    = "5433"
+    NEXT_TELEMETRY_DISABLED = "1"
+    TZ                      = "UTC"
   }
 
   secrets_web = merge(local.is_main ? { BREVO_API_KEY = var.BREVO_API_KEY } : {}, {
@@ -26,6 +24,7 @@ locals {
     RDV_SERVICE_PUBLIC_WEBHOOK_SECRET      = var.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET
     RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG       = local.is_main ? "0" : "1"
     HMAC_SECRET_KEY                        = var.HMAC_SECRET_KEY
+    NEXTAUTH_SECRET                        = var.NEXTAUTH_SECRET
     SMTP_USERNAME                          = local.is_main ? var.SMTP_USERNAME : var.SMTP_MAILDEV_USERNAME
     SMTP_PASSWORD                          = local.is_main ? var.SMTP_PASSWORD : var.SMTP_MAILDEV_PASSWORD
     SMTP_SERVER                            = local.is_main ? var.SMTP_SERVER : "maildev.coop-numerique.anct.gouv.fr"

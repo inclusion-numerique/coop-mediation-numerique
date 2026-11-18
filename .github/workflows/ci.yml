@@ -35,10 +35,14 @@ jobs:
         uses: actions/checkout@v7
       - name: Setup
         uses: ./.github/actions/setup
+      - name: Create env file
+        run: cp .env.example .env
       - name: Tsc
         run: pnpm tsc
       - name: Lint - biome
-        run: pnpm exec biome check src e2e .storybook
+        run: pnpm exec biome check .
+      - name: Lint - ADR
+        run: pnpm --silent lint:adr --output github
       - name: Generate openapi docs for api v1
         run: pnpm --silent api-v1-doc:generate
       - name: Check that openapi spec file is up to date
@@ -78,7 +82,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
-        run: cp .env.dist .env
+        run: cp .env.example .env
       - name: Test application with coverage
         run: pnpm --silent exec vitest run --project unit --coverage
       - name: Upload coverage to Coveralls
@@ -108,11 +112,11 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
-        run: cp .env.dist .env
+        run: cp .env.example .env
       - name: Build jobs runner
         run: pnpm --silent build:jobs
       - name: Check jobs runner
-        run: node dist/verifier-le-bundle.cjs
+        run: pnpm --silent with-env node dist/verifier-le-bundle.cjs
 
   integration-tests:
     name: Integration tests
@@ -139,7 +143,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       maildev:
-        image: maildev/maildev:2.2.1
+        image: maildev/maildev:3.0.0
         env:
           MAILDEV_INCOMING_USER: mailuser
           MAILDEV_INCOMING_PASS: mailpassword
@@ -203,7 +207,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       maildev:
-        image: maildev/maildev:2.2.1
+        image: maildev/maildev:3.0.0
         env:
           MAILDEV_INCOMING_USER: mailuser
           MAILDEV_INCOMING_PASS: mailpassword
@@ -279,14 +283,14 @@ jobs:
         uses: cypress-io/github-action@v7
         with:
           install: false
-          command: pnpm cy run --project e2e --component --reporter junit --reporter-options mochaFile=junit/components-[hash].xml
+          command: pnpm cy run --component --reporter junit --reporter-options mochaFile=e2e/junit/components-[hash].xml
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: components-cypress
           path: |
-            e2e/cypress/screenshots
+            e2e/screenshots
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}
@@ -308,7 +312,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        conteneur: [ 0, 1, 2 ]
+        conteneur: [0, 1, 2]
     services:
       postgres:
         image: ghcr.io/inclusion-numerique/coop-postgres-ci:pg17-vector-postgis
@@ -325,7 +329,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       maildev:
-        image: maildev/maildev:2.2.1
+        image: maildev/maildev:3.0.0
         env:
           MAILDEV_INCOMING_USER: mailuser
           MAILDEV_INCOMING_PASS: mailpassword
@@ -362,7 +366,7 @@ jobs:
           PROCONNECT_SIMULE_PORT=8443 \
           PROCONNECT_SIMULE_CERTIFICAT="$RUNNER_TEMP/proconnect-simule/certificat.pem" \
           PROCONNECT_SIMULE_CLE="$RUNNER_TEMP/proconnect-simule/cle.pem" \
-            nohup node e2e/cypress/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
+            nohup node e2e/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
       - name: Build cache
         uses: actions/cache@v6
         with:
@@ -391,19 +395,19 @@ jobs:
         env:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.conteneur }}
-          SPLIT_FILE: timings.json
+          SPLIT_FILE: e2e/timings.json
         with:
           install: false
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
-          command: pnpm cy run --project e2e --reporter junit --reporter-options mochaFile=junit/e2e-[hash].xml
+          command: pnpm cy run --reporter junit --reporter-options mochaFile=e2e/junit/e2e-[hash].xml
       - name: Upload Cypress screenshots and server log
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-cypress-${{ matrix.conteneur }}
           path: |
-            e2e/cypress/screenshots
+            e2e/screenshots
             server.log
             proconnect-simule.log
           retention-days: 30
@@ -431,7 +435,7 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           parallel-finished: true
-          carryforward: "packages,web-unit,web-integration,cucumber"
+          carryforward: "web-unit,web-integration,cucumber"
           fail-on-error: false
 
   dependency-review:

@@ -1,8 +1,8 @@
 import axios, { type AxiosInstance } from 'axios'
-import { projectSlug, region } from '@/configuration/projet/config'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { projectSlug } from '@/configuration/projet/config'
 import type { RegistryImage, RegistryTag } from './registryRetention'
 
-const DEFAULT_SCW_REGION = 'fr-par'
 const PAGE_SIZE = 100
 
 export const webAppRegistryNamespace = `${projectSlug}-web-app`
@@ -14,12 +14,12 @@ type ScalewayImage = { id: string; name: string }
 type ScalewayTag = { id: string; name: string; created_at: string }
 
 const registryClient = (): AxiosInstance => {
-  const secretKey = process.env.SCW_SECRET_KEY
+  const secretKey = environnementOutillage.SCW_SECRET_KEY
   if (!secretKey) {
     throw new Error('Missing SCW_SECRET_KEY env variable')
   }
   return axios.create({
-    baseURL: `https://api.scaleway.com/registry/v1/regions/${region || DEFAULT_SCW_REGION}`,
+    baseURL: `https://api.scaleway.com/registry/v1/regions/${environnementOutillage.SCW_DEFAULT_REGION}`,
     headers: { 'X-Auth-Token': secretKey },
   })
 }
@@ -42,7 +42,7 @@ const namespaceId = async (client: AxiosInstance): Promise<string> => {
   }>('/namespaces', {
     params: {
       name: webAppRegistryNamespace,
-      project_id: process.env.SCW_PROJECT_ID,
+      project_id: environnementOutillage.SCW_PROJECT_ID,
     },
   })
   const namespace = data.namespaces.find(

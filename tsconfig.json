@@ -6,21 +6,17 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
-    "sourceMap": true,
-    "inlineSources": false,
     "types": ["node"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@e2e/*": ["./e2e/*"]
     },
     "plugins": [
       {
@@ -28,13 +24,18 @@
       }
     ]
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "src/**/e2e/*.ts", "src/**/*.cy.tsx"],
   "include": [
     "next-env.d.ts",
+    "next.config.ts",
+    "vitest.config.ts",
+    "prisma.config.ts",
+    "prisma/entrepot/prisma.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "src/**/*.mts",
     ".next/types/**/*.ts",
-    "nextAuth.d.ts",
+    ".next/dev/types/**/*.ts",
     ".storybook/**/*.ts",
     ".storybook/**/*.tsx"
   ]

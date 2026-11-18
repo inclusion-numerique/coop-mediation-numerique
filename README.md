@@ -50,8 +50,7 @@ Chaque pull request peut aussi déployer son propre environnement de preview, vo
 
 - [Guide de contribution](./CONTRIBUTING.md) : installer l'environnement de développement et les pratiques du dépôt
 - [Infrastructure](./infrastructure/README.md) : les ressources Scaleway de chaque environnement, les tâches planifiées et le déploiement
-- [Décisions d'architecture (ADR)](./docs/adr)
-- [Migrations sur l'Entrepôt](./docs/runbook-migrations-entrepot.md) : la procédure pour faire évoluer le schéma en production
+- [Décisions d'architecture (ADR)](./docs/decisions)
 - [AGENTS.md](./AGENTS.md) : les conventions de code, rédigées pour les agents de code et utiles à tout le monde
 
 <h2 id="contenu">📦 Contenu du dépôt</h2>
@@ -62,6 +61,10 @@ Chaque pull request peut aussi déployer son propre environnement de preview, vo
 - [.storybook](.storybook) : la configuration de Storybook
 - [infrastructure](infrastructure) : l'infrastructure de chaque environnement, en HCL pour [OpenTofu](https://opentofu.org)
 - [docker](docker) : les images de l'application et de PostgreSQL
+- [public](public) et [private-static](private-static) : les fichiers statiques servis aux navigateurs, et les données que le serveur lit sans les servir
+- [scripts](scripts) : les scripts de build et de génération appelés par le `package.json`
+- [docs](docs) : les décisions d'architecture et les procédures
+- [.github](.github) : l'intégration et le déploiement continus, et Dependabot
 
 <h2 id="contribuer">🤗 Contribuer</h2>
 
@@ -69,4 +72,4 @@ Le [guide de contribution](./CONTRIBUTING.md) explique comment installer le proj
 
 <h2 id="licence">📝 Licence</h2>
 
-Ce projet est distribué sous licence [AGPL-3.0-or-later](./LICENSE).
+Ce projet est un logiciel libre, distribué sous licence [AGPL-3.0-or-later](./LICENSE) : vous pouvez le redistribuer et le modifier selon les termes de la GNU Affero General Public License publiée par la Free Software Foundation, soit la version 3 de la licence, soit, à votre choix, toute version ultérieure.

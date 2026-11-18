@@ -1,52 +1,49 @@
-/**
- * Public config can be used on client side or server side
- */
+import { environnementClient } from '@/configuration/environnement/client'
 import {
+  chromaticAppId,
   mainLiveUrl,
   projectTitle,
   repositoryUrl,
 } from '@/configuration/projet/config'
 
-const isMain = process.env.BRANCH === 'main'
-const isDev = process.env.BRANCH === 'dev'
-const isLocal = !process.env.BRANCH
-const isE2e = !!process.env.IS_E2E
-const isPreview = !isMain && !isDev && !isLocal && !isE2e
+const branche = environnementClient.NEXT_PUBLIC_BRANCH
+const isMain = branche === 'main'
+const isDev = branche === 'dev'
+const isLocal = !branche
 
 export const PublicWebAppConfig = {
-  centreAideDomaine: 'https://docs.numerique.gouv.fr/',
   centreAideUrl:
     'https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/',
-  Branch: process.env.BRANCH ?? '',
+  Branch: branche ?? '',
   isMain,
   isDev,
   isLocal,
-  isPreview,
-  isE2e,
-  Chromatic: {
-    appId: process.env.CHROMATIC_APP_ID ?? '',
-  },
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
+  isPreview: !isMain && !isDev && !isLocal,
+  contactEmail: environnementClient.NEXT_PUBLIC_CONTACT_EMAIL,
   projectTitle,
   mainLiveUrl,
   repository: repositoryUrl,
+  Chromatic: {
+    appId: chromaticAppId,
+  },
   ProConnect: {
-    hostname: process.env.NEXT_PUBLIC_PROCONNECT_HOSTNAME ?? '',
-    clientId: process.env.NEXT_PUBLIC_PROCONNECT_CLIENT_ID ?? '',
+    hostname: environnementClient.NEXT_PUBLIC_PROCONNECT_HOSTNAME,
+    clientId: environnementClient.NEXT_PUBLIC_PROCONNECT_CLIENT_ID,
   },
   RdvServicePublic: {
     OAuth: {
-      hostname: process.env.NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_HOSTNAME ?? '',
+      hostname:
+        environnementClient.NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_HOSTNAME,
       clientId:
-        process.env.NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_CLIENT_ID ?? '',
+        environnementClient.NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_CLIENT_ID,
     },
   },
   Sentry: {
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
-    environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? 'local',
+    dsn: environnementClient.NEXT_PUBLIC_SENTRY_DSN ?? '',
+    environment: environnementClient.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
   },
   Matomo: {
-    host: process.env.NEXT_PUBLIC_MATOMO_HOST ?? '',
-    siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID ?? '',
+    host: environnementClient.NEXT_PUBLIC_MATOMO_HOST ?? '',
+    siteId: environnementClient.NEXT_PUBLIC_MATOMO_SITE_ID ?? '',
   },
 }

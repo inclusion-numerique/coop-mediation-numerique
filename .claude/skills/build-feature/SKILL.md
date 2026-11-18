@@ -14,7 +14,7 @@ délégué à `/build-ability` ; ce skill-ci gère le **découpage, l'ordre, le 
 fin**.
 
 Argument : le **nom de la feature**. Référentiel : `.claude/conventions/feature-architecture.md` ;
-le pourquoi : ADR-004 (features et abilities) et ADR-005 (domaine) dans `docs/adr/`.
+le pourquoi : ADR-004 (features et abilities) et ADR-005 (domaine) dans `docs/decisions/`.
 
 ## Points d'arrêt humains (PR-2)
 - **A. Après le découpage** : valider la liste des abilities et leur ordre.

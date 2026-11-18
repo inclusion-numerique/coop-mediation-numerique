@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { metadataTitle } from '@/app/metadataTitle'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import { contentId } from '@/utils/skipLinks'
 
@@ -21,9 +22,9 @@ const LegalPage = () => (
       <h1>Mentions légales</h1>
       <h2>Éditeur de la plateforme</h2>
       <p>
-        <strong>{process.env.NEXT_PUBLIC_APP_NAME}</strong> est édité au sein de
-        l’Incubateur des Territoires de l’Agence nationale de la cohésion des
-        territoires (ANCT) située :
+        <strong>{projectTitle}</strong> est édité au sein de l’Incubateur des
+        Territoires de l’Agence nationale de la cohésion des territoires (ANCT)
+        située :
       </p>
       <p>
         20 avenue de Ségur <br />

@@ -1,0 +1,26 @@
+import { withSentryConfig } from '@sentry/nextjs/config'
+import type { NextConfig } from 'next'
+import './src/configuration/environnement/client'
+import { environnementOutillage } from './src/configuration/environnement/outillage'
+import { verifierEnvironnementServeurWeb } from './src/configuration/environnement/serveur'
+
+verifierEnvironnementServeurWeb()
+
+const nextConfig: NextConfig = {
+  output: 'standalone',
+  serverExternalPackages: ['html-minifier-terser', 'mjml', 'mjml-core'],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+}
+
+export default withSentryConfig(nextConfig, {
+  silent: false,
+  tunnelRoute: '/monitoring',
+  widenClientFileUpload: true,
+  authToken: environnementOutillage.SENTRY_CI_TOKEN,
+  release: { create: environnementOutillage.SENTRY_ENABLE_RELEASE },
+  sourcemaps: {
+    disable: !environnementOutillage.SENTRY_ENABLE_RELEASE,
+  },
+})
