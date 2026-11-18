@@ -150,7 +150,7 @@
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@cucumber/cucumber": "^13.2.1",
-    "@mermaid-js/mermaid-cli": "^11.17.0",
+    "@mermaid-js/mermaid-cli": "^12.2.0",
     "@storybook/addon-a11y": "^10.6.0",
     "@storybook/react": "^10.6.0",
     "@superfaceai/openapi-linter": "^0.1.0",
