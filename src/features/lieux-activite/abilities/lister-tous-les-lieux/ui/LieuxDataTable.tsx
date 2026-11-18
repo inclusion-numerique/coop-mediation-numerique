@@ -6,10 +6,10 @@ import type {
   DataTableColumn,
   DataTableConfiguration,
   DataTableSearchParams,
-} from '@/libs/data-table/DataTableConfiguration'
-import { dateAsDayAndTime } from '@/utils/dateAsDayAndTime'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
-import { optionalNumberToString } from '@/utils/formatNumber'
+} from '@/libraries/data-table/configuration/DataTableConfiguration'
+import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
 import type { LigneDeLaListe } from './ligne-de-la-liste'
 
 export type ColonneTriable =

@@ -2,18 +2,18 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { adresseAvec } from '@/libraries/parametres-d-url'
-import CustomSelect from '@/libraries/ui/components/CustomSelect/CustomSelect'
-import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@/libs/filters/FilterFooter'
-import { FilterSelection } from '@/libs/filters/FilterSelection'
+import { FilterFooter } from '@/libraries/filtres/FilterFooter'
+import { FilterSelection } from '@/libraries/filtres/FilterSelection'
 import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
-} from '@/libs/filters/helpers'
-import TriggerButton from '@/libs/filters/TriggerButton'
+} from '@/libraries/filtres/helpers'
+import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { adresseAvec } from '@/libraries/parametres-d-url'
+import CustomSelect from '@/libraries/ui/components/CustomSelect/CustomSelect'
+import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
 
 type OptionDeBeneficiaireWithId = OptionDeBeneficiaire & {

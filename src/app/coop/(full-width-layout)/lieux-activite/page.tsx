@@ -5,7 +5,6 @@ import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-
 import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@/app/metadataTitle'
 import { authenticateUser } from '@/auth/authenticateUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -22,8 +21,9 @@ import {
 } from '@/features/lieux-activite/ui'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import { contentId } from '@/utils/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),

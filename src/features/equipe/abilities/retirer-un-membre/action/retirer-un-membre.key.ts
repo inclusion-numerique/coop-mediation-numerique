@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { RetirerUnMembreValidation } from './retirer-un-membre.validation'
 
 export const RETIRER_UN_MEMBRE_ACTION_KEY = keyFor<

@@ -1,9 +1,9 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { failure, type Result, success } from '@/libraries/result'
-import { createStopwatch } from '@/utils/stopwatch'
 import {
   AucuneRuptureEnAttente,
   type ChoisirLaVisibiliteApresRuptureError,

@@ -1,5 +1,5 @@
+import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
 import { thematiquesAccompagnementColors } from '@/libs/statistiques/couleurs'
-import { ProgressItemList } from '@/libs/statistiques/ProgressItemList'
 import type { RepartitionPresentee } from '../repartition.presenter'
 
 const desc = (

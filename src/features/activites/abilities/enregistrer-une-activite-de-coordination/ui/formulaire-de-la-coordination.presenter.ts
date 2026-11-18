@@ -1,5 +1,5 @@
 import { minutesToCraDureeData } from '@/features/activites/ui/saisie/duree'
-import type { DefaultValues } from '@/libs/form/use-app-form'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type {
   Animation,
   Choix,

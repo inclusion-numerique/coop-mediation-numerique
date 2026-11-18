@@ -9,7 +9,7 @@ import type {
 import Select from 'react-select'
 import type { AsyncProps } from 'react-select/async'
 import AsyncSelect from 'react-select/async'
-import { Spinner } from '@/ui/Spinner'
+import { Spinner } from '@/libraries/ui/components/Spinner'
 import styles from './CustomSelect.module.css'
 
 type CustomSelectProps<

@@ -13,8 +13,8 @@ import {
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
 import { Email, lienInvitation } from '@/features/equipe/domain'
 import { ReponseAInvitation } from '@/features/equipe/ui'
+import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import type { EncodedState } from '@/utils/encodeSerializableState'
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),

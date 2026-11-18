@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import IconInSquare from '@/components/IconInSquare'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { AjouterDesLieuxActivitePage } from '../AjouterDesLieuxActivitePage'
 
 export const AjouterDesLieuxPage = ({

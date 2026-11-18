@@ -1,12 +1,12 @@
 import Excel from 'exceljs'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import {
   addExportMetadata,
   type WorksheetUser,
 } from '@/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
 import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
 import type { ContratMembre, MembreAExporter } from '../../domain'
 import { type MembreExporte, membreExporte } from './membre-exporte'

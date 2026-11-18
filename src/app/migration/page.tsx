@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { metadataTitle } from '@/app/metadataTitle'
 import LogoCoop from '@/components/LogoCoop'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Migration vers la nouvelle version de la plateforme !'),

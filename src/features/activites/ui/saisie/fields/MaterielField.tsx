@@ -1,7 +1,10 @@
 import type { Materiel } from '@/features/activites/ui/libelles/materiel'
 import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import {
+  type DefaultValues,
+  withFieldGroup,
+} from '@/libraries/formulaire/use-app-form'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { type DefaultValues, withFieldGroup } from '@/libs/form/use-app-form'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'materiel'> = {}
 

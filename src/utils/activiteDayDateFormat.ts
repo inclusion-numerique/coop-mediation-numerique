@@ -1,4 +1,4 @@
-import { dateFormatter } from '@/utils/formatDate'
+import { dateFormatter } from '@/libraries/date/formatDate'
 
 // date-fn date -> Ven. 22 Mars 2024 (in french)
 const activiteDayDateFormatter = dateFormatter('EEE d MMMM yyyy')

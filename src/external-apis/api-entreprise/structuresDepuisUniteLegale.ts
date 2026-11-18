@@ -1,7 +1,7 @@
 import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
 import { getTypologieFromApiEntreprise } from '@/external-apis/api-entreprise/typologieFromApiEntreprise'
 import type { TypologieStructure } from '@/external-apis/api-entreprise/typologieStructure'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { toTitleCase } from '@/libraries/texte/toTitleCase'
 
 /**
  * SIRENE masque les données des établissements non diffusibles en rendant la

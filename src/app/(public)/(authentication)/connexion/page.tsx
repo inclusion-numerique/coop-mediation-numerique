@@ -4,10 +4,10 @@ import { redirect } from 'next/navigation'
 import SigninPanel from '@/app/(public)/(authentication)/connexion/SigninPanel'
 import { metadataTitle } from '@/app/metadataTitle'
 import { getSessionUser } from '@/auth/getSessionUser'
-import Breadcrumbs from '@/components/Breadcrumbs'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

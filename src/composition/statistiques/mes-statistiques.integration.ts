@@ -52,8 +52,8 @@ import {
   mediateurSansActivitesUserId,
 } from '@/fixtures/users/mediateurSansActivites'
 import { computeProportion } from '@/libraries/proportions'
-import { partsFixees } from '@/libs/statistiques/parts-fixees'
-import { QuantifiedShare } from '@/libs/statistiques/quantifiedShare'
+import { partsFixees } from '@/libraries/proportions/parts-fixees'
+import { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
 
 /**
  * Base empty data for all tests

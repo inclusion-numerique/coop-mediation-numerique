@@ -27,15 +27,15 @@ import {
   BeneficiaireValidation,
 } from '@/features/beneficiaire/forms/beneficiaire-validation'
 import FormSection from '@/features/beneficiaire/forms/FormSection'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { adresseAvec } from '@/libraries/parametres-d-url'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import RequiredFieldsDisclaimer from '@/libraries/ui/components/Form/RequiredFieldsDisclaimer'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
 import type { SaisieEnCours } from './saisie-en-cours'
 
 // Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses

@@ -6,9 +6,9 @@ import {
 import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
-import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
+import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
+import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
-import { toQueryParts } from '@/libs/data-table/toQueryParts'
 import type { UtilisateursTrouves } from '../../domain'
 
 export type RechercheDUtilisateursParams = {

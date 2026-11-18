@@ -1,10 +1,10 @@
-import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
-import { dureeAsString } from '@/utils/dureeAsString'
+} from '@/libraries/date/dateAsDayAndTime'
+import { dureeAsString } from '@/libraries/date/dureeAsString'
+import { pluriel } from '@/libraries/pluriel'
+import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import type {
   AccompagnementIndividuel,
   ActiviteConsultee,

@@ -9,10 +9,13 @@ import {
   type ValiderFormData,
   ValiderValidation,
 } from '@/features/inscription/abilities/valider'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import {
+  type DefaultValues,
+  useAppForm,
+} from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { type DefaultValues, useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
 
 const erreurValidation = () =>
   createToast({

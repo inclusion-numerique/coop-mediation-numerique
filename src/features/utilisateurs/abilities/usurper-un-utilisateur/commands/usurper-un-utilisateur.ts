@@ -1,6 +1,6 @@
 import { UtilisateurIntrouvable } from '@/features/utilisateurs/domain'
+import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { failure, type Result, success } from '@/libraries/result'
-import { createStopwatch } from '@/utils/stopwatch'
 import {
   autoriserUsurpation,
   type CibleUsurpation,

@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { useState } from 'react'
-import { useOnDiff } from '@/hooks/useOnDiff'
+import { useOnDiff } from '@/libraries/ui/hooks/useOnDiff'
 import styles from './RichTextLinkTooltip.module.css'
 
 const tooltipTopOffset = 40

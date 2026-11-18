@@ -27,7 +27,7 @@ import {
   criteresDExposition,
   curseurDActivite,
 } from '@/features/activites/abilities/exposer-les-activites'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 /**
  * @openapi

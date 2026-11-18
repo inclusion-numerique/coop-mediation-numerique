@@ -6,12 +6,12 @@ import {
   type OsmDaysOfWeek,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { useSelector } from '@tanstack/react-form'
-import { withForm } from '@/libs/form/use-app-form'
+import { withForm } from '@/libraries/formulaire/use-app-form'
 import {
   daysTexts,
   type Period,
   periodsTexts,
-} from '@/opening-hours/openingHoursHelpers'
+} from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 import { informationsPratiquesFormOptions } from './informationsPratiquesFormData'
 
 const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]

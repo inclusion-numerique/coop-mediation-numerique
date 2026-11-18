@@ -1,4 +1,6 @@
-import Breadcrumbs, { type BreadcrumbParents } from '@/components/Breadcrumbs'
+import Breadcrumbs, {
+  type BreadcrumbParents,
+} from '@/libraries/ui/components/Breadcrumbs'
 
 type CoopBreadcrumbsProps = {
   currentPage: string

@@ -41,8 +41,8 @@ import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
-import { provide } from '@/libs/injection/client'
-import { partsFixees } from '@/libs/statistiques/parts-fixees'
+import { provide } from '@/libraries/nextjs/injection/client'
+import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import { testSessionUser } from '@/test/testSessionUser'
 import { MesStatistiques } from './MesStatistiques'
 

@@ -3,15 +3,15 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { inject } from '@/libraries/nextjs/injection/client'
 import {
   Options,
   type OptionsData,
 } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
-import { inject } from '@/libs/injection/client'
-import { dateAsDay } from '@/utils/dateAsDay'
 import { RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY } from '../action/fusionner-des-comptes.key'
 import type { CompteTrouve } from '../domain'
 

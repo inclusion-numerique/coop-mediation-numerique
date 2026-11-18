@@ -1,12 +1,12 @@
 import { z } from 'zod'
+import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
+import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
+import type { Genre } from '@/generated/prisma/client'
 import {
   type Commune,
   type CommunesClient,
   createCommunesClient,
-} from '@/communes/communesClient'
-import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
-import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
-import type { Genre } from '@/generated/prisma/client'
+} from '@/libraries/commune/communesClient'
 import { type FeuilleImport, valeurCellule } from './feuille-import'
 
 const ParsedBeneficiaireRowSchema = z.object({

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { departementsByCode } from '@/data/collectivites-territoriales/departements'
+import { departementsByCode } from '@/libraries/departement/departements'
 import { CodeDepartement } from '@/libraries/insee'
 import { defineModel, type Model } from '@/libraries/model'
 import { failure, type Result, success } from '@/libraries/result'

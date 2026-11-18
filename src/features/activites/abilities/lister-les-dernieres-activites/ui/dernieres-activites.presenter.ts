@@ -1,4 +1,4 @@
-import { dateAsDay } from '@/utils/dateAsDay'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { ActiviteConsultee } from '../../../domain'
 import {
   type CarteDActivite,

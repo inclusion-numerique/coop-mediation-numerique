@@ -3,15 +3,15 @@
 import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { FilterFooter } from '@/libraries/filtres/FilterFooter'
+import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import {
   type DateRange,
   DateRangePicker,
 } from '@/libraries/ui/components/Primitives/calendar/DateRangePicker'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@/libs/filters/FilterFooter'
-import TriggerButton from '@/libs/filters/TriggerButton'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
 
 export type PeriodFilterValue = { du: string; au: string }
 

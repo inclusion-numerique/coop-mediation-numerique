@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import type { SortReferential } from '@/libs/data-table/getDataTableOrderBy'
+import type { SortReferential } from '@/libraries/data-table/sort/getDataTableOrderBy'
 import type { ColonneTriable } from '../../ui/UtilisateursDataTable'
 
 export const triDesUtilisateurs: SortReferential<

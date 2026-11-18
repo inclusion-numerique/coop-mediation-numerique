@@ -12,7 +12,7 @@ import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/cre
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/user-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
 

@@ -1,5 +1,5 @@
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 
 export const RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY = keyFor<
   () => Promise<

@@ -6,7 +6,7 @@ import { ActiviteId, MediateurId } from '@/features/activites/domain'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const DupliquerPage = async ({
   params,

@@ -3,9 +3,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useState, useTransition } from 'react'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@/libs/injection/client'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '../action/renouveler-le-secret.key'
 
 export const RenouvelerLeSecret = ({

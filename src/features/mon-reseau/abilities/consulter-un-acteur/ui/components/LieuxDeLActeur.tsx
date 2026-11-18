@@ -2,12 +2,12 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
-import Card from '@/components/Card'
-import IconInSquare from '@/components/IconInSquare'
 import {
   hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@/features/lieux-activite/ui'
+import Card from '@/libraries/ui/components/Card'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { type LieuAffiche } from '../../../../ui/lieu-affiche'
 
 const NOMBRE_AFFICHE_AU_DEPART = 3

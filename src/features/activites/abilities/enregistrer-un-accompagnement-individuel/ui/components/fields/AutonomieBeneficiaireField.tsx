@@ -2,8 +2,11 @@ import { formOptions } from '@tanstack/react-form'
 import Link from 'next/link'
 import { type CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import type { Autonomie } from '@/features/activites/ui/libelles/autonomie'
+import {
+  type DefaultValues,
+  withForm,
+} from '@/libraries/formulaire/use-app-form'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { type DefaultValues, withForm } from '@/libs/form/use-app-form'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

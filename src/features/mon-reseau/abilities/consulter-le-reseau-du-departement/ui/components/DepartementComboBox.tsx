@@ -1,10 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import {
-  Departement,
-  departements,
-} from '@/data/collectivites-territoriales/departements'
+import { Departement, departements } from '@/libraries/departement/departements'
 import { ComboBox } from '@/libraries/ui/components/Primitives/Form/ComboBox'
 import { hrefDuReseau } from '../../../../ui/liens'
 

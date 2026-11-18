@@ -18,7 +18,7 @@ import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-r
 import { optionsDesStatistiques } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { tousLesTagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'
 import { lieuxChoisisDe } from './lieux-choisis'
 import { perimetreDeLUtilisateur } from './perimetre'

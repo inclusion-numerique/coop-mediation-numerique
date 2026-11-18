@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import {
   emptyOpeningHours,
   safeToTimetableOpeningHours,
-} from '@/opening-hours/openingHoursHelpers'
+} from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 import {
   adresseSaisie,
   courrielsSaisis,

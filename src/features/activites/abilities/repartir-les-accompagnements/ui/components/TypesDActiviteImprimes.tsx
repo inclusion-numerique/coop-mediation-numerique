@@ -1,5 +1,8 @@
+import {
+  numberToPercentage,
+  numberToString,
+} from '@/libraries/nombre/formatNumber'
 import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
-import { numberToPercentage, numberToString } from '@/utils/formatNumber'
 import { typeActivitePluralLabels } from '../../../../ui/libelles/type-activite'
 import type { RepartitionPresentee } from '../repartition.presenter'
 

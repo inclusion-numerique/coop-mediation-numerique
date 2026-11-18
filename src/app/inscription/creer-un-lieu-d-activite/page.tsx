@@ -2,11 +2,11 @@ import { redirect } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/app/metadataTitle'
 import { authenticateUser } from '@/auth/authenticateUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import CreerLieuActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/CreerLieuActivitePage'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import { contentId } from '@/utils/skipLinks'
 
 export const metadata = {
   title: metadataTitle('Finaliser mon inscription'),

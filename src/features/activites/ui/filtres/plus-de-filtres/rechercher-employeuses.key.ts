@@ -1,5 +1,5 @@
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { OptionDEmployeuse } from '../filtres-de-la-liste'
 
 export const RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY = keyFor<

@@ -3,13 +3,13 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getSessionUser } from '@/auth/getSessionUser'
-import IconInSquare from '@/components/IconInSquare'
 import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
   rdvServicePublicGettingStartedLink,
 } from '@/features/rdvsp/urls'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const ConnexionReussiePage = async () => {

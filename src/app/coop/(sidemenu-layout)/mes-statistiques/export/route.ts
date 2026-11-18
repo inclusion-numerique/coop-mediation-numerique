@@ -9,7 +9,7 @@ import {
   ActivitesFilterValidations,
 } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

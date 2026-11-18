@@ -1,6 +1,4 @@
 import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import BackButtonWithModal from '@/components/BackButtonWithModal'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import CraPartenariatForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/components/CraPartenariatForm'
 import { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/saisie/tags/ModaleDeCreationDeTag'
@@ -8,9 +6,11 @@ import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButtonWithModal from '@/libraries/ui/components/BackButtonWithModal'
 import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { contentId } from '@/utils/skipLinks'
 
 type CraPartenariatPageProps = {
   defaultValues: DefaultValues<CraPartenariatData>

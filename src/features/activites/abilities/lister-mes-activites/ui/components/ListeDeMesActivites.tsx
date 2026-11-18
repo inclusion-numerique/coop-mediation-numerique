@@ -1,7 +1,7 @@
 import { type ReactNode, Suspense } from 'react'
+import { Spinner } from '@/libraries/ui/components/Spinner'
 import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import { Spinner } from '@/ui/Spinner'
 import { LIGNES_PAR_PAGE } from '../../../../domain'
 import { CarteDActivite } from '../../../../ui/carte/CarteDActivite'
 import { CarteDeRendezVous } from '../../../../ui/carte/CarteDeRendezVous'

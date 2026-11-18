@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { metadataTitle } from '@/app/metadataTitle'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import {
   dateDeDerniereActivite,
@@ -19,7 +18,8 @@ import {
   ModaleDeRetrait,
 } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Modifier une structure'),

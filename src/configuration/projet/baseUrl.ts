@@ -1,5 +1,5 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { isBrowser } from '@/utils/isBrowser'
+import { isBrowser } from '@/libraries/navigateur/isBrowser'
 
 export type GetServerUrlOptions = {
   absolutePath?: boolean // Force absolute path including protocol and hostname instead of relative path

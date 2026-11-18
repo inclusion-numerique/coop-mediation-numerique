@@ -11,8 +11,8 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
+import { download } from '@/libraries/navigateur/download'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { download } from '@/utils/download'
 
 export const BeneficiairesMoreOptionsButton = () => {
   // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère

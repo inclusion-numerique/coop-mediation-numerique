@@ -1,10 +1,10 @@
-import InfoLabelValue from '@/components/InfoLabelValue'
 import { genreLabels } from '@/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
 import {
   effectiveTrancheAge,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain/tranche-age'
+import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
 import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
 
 const BeneficiaireInformationsComplementaires = ({

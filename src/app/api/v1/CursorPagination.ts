@@ -9,7 +9,7 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
 
 /**
  * @openapi

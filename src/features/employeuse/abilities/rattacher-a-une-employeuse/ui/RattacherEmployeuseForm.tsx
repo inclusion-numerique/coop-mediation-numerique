@@ -6,12 +6,12 @@ import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
-import SiretInputInfo from '@/components/siret/SiretInputInfo'
 import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import SiretInputInfo from '@/libraries/siret/SiretInputInfo'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
 import {
   RenseignerStructureEmployeuseValidation,
   type StructureSearchResult,

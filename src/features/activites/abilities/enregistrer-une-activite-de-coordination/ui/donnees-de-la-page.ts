@@ -6,8 +6,8 @@ import {
   type RechercherDesTagsInitiaux,
   tagDuFormulaire,
 } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
-import type { DefaultValues } from '@/libs/form/use-app-form'
 
 type CraCoordinationData =
   | CraAnimationData

@@ -3,14 +3,14 @@ import { redirect } from 'next/navigation'
 import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@/app/metadataTitle'
 import { authenticateUser } from '@/auth/authenticateUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
 } from '@/features/employeuse/server'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 
 export const metadata: Metadata = {
   title: metadataTitle('Ma structure employeuse'),

@@ -6,17 +6,17 @@ import {
   mediateurDe,
 } from '@/features/utilisateurs/domain'
 import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
-import CopyToClipboardButton from '@/libs/clipboard/CopyToClipboardButton'
 import type {
   DataTableColumn,
   DataTableConfiguration,
   DataTableSearchParams,
-} from '@/libs/data-table/DataTableConfiguration'
+} from '@/libraries/data-table/configuration/DataTableConfiguration'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
-import { optionalNumberToString } from '@/utils/formatNumber'
+} from '@/libraries/date/dateAsDayAndTime'
+import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
+import CopyToClipboardButton from '@/libraries/ui/components/CopyToClipboardButton'
 
 export type ColonneTriable =
   | 'creation'

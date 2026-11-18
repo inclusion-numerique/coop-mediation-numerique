@@ -6,10 +6,10 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@/libs/injection/client'
-import { dateAsDayConventional } from '@/utils/dateAsDay'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '../action/supprimer-un-ancien-membre.key'
 
 const BoutonSupprimerUnAncienMembre = ({

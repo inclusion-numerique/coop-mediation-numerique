@@ -1,5 +1,5 @@
+import type { LabelAndCount } from '@/libraries/proportions/quantifiedShare'
 import { AccompagnementBarChart } from '@/libs/statistiques/AccompagnementBarChart'
-import type { LabelAndCount } from '@/libs/statistiques/quantifiedShare'
 
 export const GraphiquesImprimes = ({
   accompagnementsParMois,

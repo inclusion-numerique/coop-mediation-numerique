@@ -7,9 +7,9 @@ import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscripti
 import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
 import type { EmployeuseAffichee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { useHydrated } from '@/libs/form/use-hydrated'
 
 const erreurEnregistrement = () =>
   createToast({

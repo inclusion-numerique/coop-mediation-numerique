@@ -1,8 +1,8 @@
 import { searchAdresses, siIndisponible } from '@/configuration/ban/apiAdresse'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
 
 const loadSuggestions = async (
   input: string,

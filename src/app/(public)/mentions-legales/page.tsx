@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { metadataTitle } from '@/app/metadataTitle'
-import Breadcrumbs from '@/components/Breadcrumbs'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mentions légales'),

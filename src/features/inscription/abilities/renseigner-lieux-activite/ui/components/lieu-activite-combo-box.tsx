@@ -3,8 +3,8 @@ import {
   type SuggestionAffichee,
   suggestionsAffichees,
 } from '@/features/lieux-activite/ui'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
 
 /**
  * Recherche d'un lieu d'activité, par ordre de priorité : les lieux déjà connus

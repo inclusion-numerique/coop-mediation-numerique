@@ -4,8 +4,8 @@ import {
   libellesDeTri,
   trisDesLieux,
 } from '@/features/lieux-activite/domain/tri-des-lieux'
+import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import { pluriel } from '@/libraries/pluriel'
-import SortSelect from '@/libs/data-table/SortSelect'
 import type { LieuDuMediateurEnListe } from '../../domain'
 import { AucunLieu } from '../components/AucunLieu'
 

@@ -1,19 +1,19 @@
 import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
 import type { ActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
+import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import type {
   LabelAndCount,
   QuantifiedShare,
-} from '@/libs/statistiques/quantifiedShare'
+} from '@/libraries/proportions/quantifiedShare'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import {
   addExportMetadata,
   type WorksheetUser,
 } from '@/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
 import { addFilters } from '@/libs/worksheet/filtres-des-activites'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
-import { numberToPercentage } from '@/utils/formatNumber'
 
 type PartDuTotal = { total: number; proportion: number }
 

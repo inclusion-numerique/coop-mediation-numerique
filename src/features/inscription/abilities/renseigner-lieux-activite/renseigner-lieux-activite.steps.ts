@@ -19,7 +19,7 @@ import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
 } from '@/features/lieux-activite'
-import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({

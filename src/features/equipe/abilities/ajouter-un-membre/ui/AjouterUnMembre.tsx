@@ -3,16 +3,16 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useRef, useState, useTransition } from 'react'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { inject } from '@/libraries/nextjs/injection/client'
 import {
   Options,
   type OptionsData,
 } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
-import { inject } from '@/libs/injection/client'
 import { AJOUTER_UN_MEMBRE_ACTION_KEY } from '../action/ajouter-un-membre.key'
 import { RECHERCHER_DES_MEDIATEURS_A_AJOUTER_ACTION_KEY } from '../action/rechercher-des-mediateurs-a-ajouter.key'
 import type { EquipeAComplementer, MediateurAAjouter } from '../domain'

@@ -1,7 +1,7 @@
 import {
   DataTableConfiguration,
   DataTableSearchParams,
-} from './DataTableConfiguration'
+} from '../../libraries/data-table/configuration/DataTableConfiguration'
 
 export type CreateDataTableHrefParams<
   Configuration extends DataTableConfiguration = DataTableConfiguration,

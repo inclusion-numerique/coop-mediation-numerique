@@ -1,11 +1,11 @@
 import Excel from 'exceljs'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import {
   addExportMetadata,
   type WorksheetUser,
 } from '@/libs/worksheet/addExportMetadata'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
 import { addFilters } from '@/libs/worksheet/filtres-des-activites'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
 import type { ExportDesAccompagnements } from '../domain'
 import {
   entetesDuClasseur,

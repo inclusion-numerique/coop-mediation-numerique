@@ -1,8 +1,8 @@
 import type { Workbook, Worksheet } from 'exceljs'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { dureeAccompagnementStatisticsRanges } from '@/features/activites/ui/libelles/duree-accompagnement'
+import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import { computeProportion } from '@/libraries/proportions'
-import { numberToPercentage } from '@/utils/formatNumber'
 import {
   type BuildStatistiquesWorksheetInput,
   buildStatistiquesWorksheet,

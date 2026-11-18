@@ -7,11 +7,11 @@ import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSession
 import { proConnectProviderId } from '@/auth/proConnect'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { refreshProconnectIdToken } from '@/security/getProconnectIdToken'
 import {
   type EncodedState,
   encodeSerializableState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
+import { refreshProconnectIdToken } from '@/security/getProconnectIdToken'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

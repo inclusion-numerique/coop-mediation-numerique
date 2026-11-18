@@ -2,11 +2,11 @@ import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
+import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues, {
   type LabelAndValue,
-} from '@/libs/ui/administration/AdministrationInlineLabelsValues'
-import { dateAsDay } from '@/utils/dateAsDay'
+} from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import type { EmployeuseHistoriqueAffichage } from './historique-employeuses.presenter'
 
 const informationsDeLaStructure = ({

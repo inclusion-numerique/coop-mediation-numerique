@@ -8,8 +8,8 @@ import {
 } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { toQueryParts } from '@/libs/data-table/toQueryParts'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

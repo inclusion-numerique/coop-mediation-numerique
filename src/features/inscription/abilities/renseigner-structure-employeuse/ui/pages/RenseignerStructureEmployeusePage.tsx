@@ -1,5 +1,5 @@
-import IconInSquare from '@/components/IconInSquare'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import RenseignerStructureEmployeuseForm, {
   type EnregistrerStructureEmployeuse,
 } from '../components/RenseignerStructureEmployeuseForm'

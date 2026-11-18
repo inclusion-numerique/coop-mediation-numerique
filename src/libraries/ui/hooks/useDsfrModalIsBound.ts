@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { isBrowser } from '@/utils/isBrowser'
+import { isBrowser } from '@/libraries/navigateur/isBrowser'
 
 /**
  * DSFR Modal need to be bound by dsfr js lib before being used.

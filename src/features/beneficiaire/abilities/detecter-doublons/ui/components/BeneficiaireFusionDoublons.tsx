@@ -9,11 +9,11 @@ import type {
   BeneficiaireDoublon,
   DetecterDoublons,
 } from '@/features/beneficiaire/abilities/detecter-doublons'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { numberToString } from '@/utils/formatNumber'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 

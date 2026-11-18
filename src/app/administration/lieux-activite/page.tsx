@@ -1,6 +1,5 @@
 import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import { metadataTitle } from '@/app/metadataTitle'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import {
   rechercherDesLieux,
   triDesLieux,
@@ -10,7 +9,8 @@ import {
   type LieuxDataTableSearchParams,
   LieuxPage,
 } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui'
-import { getDataTableOrderBy } from '@/libs/data-table/getDataTableOrderBy'
+import { getDataTableOrderBy } from '@/libraries/data-table/sort/getDataTableOrderBy'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),

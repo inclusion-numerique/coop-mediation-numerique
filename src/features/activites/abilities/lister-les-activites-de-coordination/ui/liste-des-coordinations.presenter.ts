@@ -1,10 +1,10 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
+} from '@/libraries/date/dateAsDayAndTime'
+import { pluriel } from '@/libraries/pluriel'
+import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
 import {
   type ActiviteDeCoordination,
   type DureeEnMinutes,

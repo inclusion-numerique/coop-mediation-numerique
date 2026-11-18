@@ -1,4 +1,4 @@
-import { numberToString } from '@/utils/formatNumber'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import { ChartCard, ChartCardDataProps } from '../ChartCard'
 import { StatTile } from '../StatTile'
 

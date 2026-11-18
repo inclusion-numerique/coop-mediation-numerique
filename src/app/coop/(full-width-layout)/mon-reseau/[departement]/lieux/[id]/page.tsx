@@ -2,8 +2,6 @@ import { notFound } from 'next/navigation'
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
-import BackButton from '@/components/BackButton'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import {
   dateDeDerniereActivite,
@@ -23,7 +21,9 @@ import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { filDArianeDuReseau } from '@/features/mon-reseau/ui/fil-d-ariane'
 import { hrefDesLieux } from '@/features/mon-reseau/ui/liens'
 import { departementDuCode } from '@/libraries/departement'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButton from '@/libraries/ui/components/BackButton'
 
 const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>

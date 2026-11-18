@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { conseillersNumeriquesUserIdsSql } from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
-import { monthShortLabels } from '@/utils/monthShortLabels'
+import { monthShortLabels } from '@/libraries/date/monthShortLabels'
 
 type AccompagnementPerMonth = {
   byMediateurs: number

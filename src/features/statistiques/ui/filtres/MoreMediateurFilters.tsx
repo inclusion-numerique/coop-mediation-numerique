@@ -33,9 +33,9 @@ import {
 import { TagScope } from '@/features/statistiques/ui/filtres/portee-de-tag'
 import type { ActiviteSource } from '@/features/statistiques/ui/filtres/source'
 import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { adresseAvec } from '@/libraries/parametres-d-url'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',

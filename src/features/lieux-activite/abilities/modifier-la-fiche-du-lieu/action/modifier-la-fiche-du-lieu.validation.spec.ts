@@ -1,6 +1,6 @@
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 import {
   InformationsGeneralesSaisie,
   InformationsPratiquesSaisie,

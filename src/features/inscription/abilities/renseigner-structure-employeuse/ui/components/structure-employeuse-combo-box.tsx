@@ -5,9 +5,9 @@ import {
 } from '@/external-apis/api-entreprise/typologieStructure'
 import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import type { StructureSearchResult } from '@/features/employeuse'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { addresseFromParts } from '@/utils/addresseFromParts'
 
 /**
  * Structure employeuse choisie dans le ComboBox : la forme produite ici EST

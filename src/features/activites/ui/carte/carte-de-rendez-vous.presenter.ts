@@ -1,5 +1,5 @@
-import { dateAsTimeInTimeZone } from '@/utils/dateAsDayAndTime'
-import { numberToString } from '@/utils/formatNumber'
+import { dateAsTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import type { RendezVousDeLaChronologie } from '../../domain'
 import {
   apparenceDuStatut,

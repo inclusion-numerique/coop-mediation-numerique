@@ -12,7 +12,7 @@ import {
   MediateurId,
 } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (
   request: NextRequest,

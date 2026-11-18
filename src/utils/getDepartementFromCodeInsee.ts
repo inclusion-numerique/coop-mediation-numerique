@@ -1,7 +1,7 @@
 import {
   Departement,
   departementsByCode,
-} from '@/data/collectivites-territoriales/departements'
+} from '@/libraries/departement/departements'
 
 export const getDepartementCodeFromCodeInsee = (codeInsee: string): string =>
   codeInsee.startsWith('97') ? codeInsee.slice(0, 3) : codeInsee.slice(0, 2)

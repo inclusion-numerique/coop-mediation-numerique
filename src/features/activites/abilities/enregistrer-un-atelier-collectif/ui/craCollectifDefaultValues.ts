@@ -1,6 +1,6 @@
 import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
-import type { DefaultValues } from '@/libs/form/use-app-form'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 
 export const craCollectifDefaultValues = (
   stateFromUrl: DefaultValues<CraCollectifData>,

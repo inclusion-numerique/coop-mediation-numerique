@@ -10,9 +10,9 @@ import {
   type AnalyseResponse,
   storeBeneficiaireImportAnalysis,
 } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { isBrowser } from '@/utils/isBrowser'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { isBrowser } from '@/libraries/navigateur/isBrowser'
 
 // Create zod validation so the file is required and of type File
 // And the file must be an xlsx file

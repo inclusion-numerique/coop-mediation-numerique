@@ -1,6 +1,6 @@
+import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
 import { AccompagnementPieChart } from '@/libs/statistiques/AccompagnementPieChart'
 import { canauxAccompagnementColors } from '@/libs/statistiques/couleurs'
-import { QuantifiedShareLegend } from '@/libs/statistiques/QuantifiedShareLegend'
 import type { RepartitionPresentee } from '../repartition.presenter'
 
 export const CanauxDesAccompagnements = ({

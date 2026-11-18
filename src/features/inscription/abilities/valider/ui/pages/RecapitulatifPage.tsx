@@ -1,8 +1,6 @@
 'use client'
 
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import IconInSquare from '@/components/IconInSquare'
-import InfoLabelValue from '@/components/InfoLabelValue'
 import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
 import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
@@ -12,6 +10,8 @@ import {
   libelleDuProfil,
 } from '@/features/inscription/domain'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
 import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'

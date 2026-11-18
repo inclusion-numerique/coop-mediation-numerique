@@ -11,12 +11,12 @@ import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/t
 import { visibilitesDuCra } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 const CreateCraPartenariatPage = async ({
   searchParams,

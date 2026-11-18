@@ -5,7 +5,7 @@ import {
 } from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
 import type { CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { departementCodeFromInseeRegex } from '@/utils/departementCodeFromInseeRegex'
+import { departementCodeFromInseeRegex } from '@/libraries/insee/departementCodeFromInseeRegex'
 
 export const ACTEUR = {
   id: Prisma.raw('u.id'),

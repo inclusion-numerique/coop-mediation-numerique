@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
-import { addresseFromParts } from '@/utils/addresseFromParts'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 
 /**
  * Ce que la carte montre d'une structure administrative : comment elle

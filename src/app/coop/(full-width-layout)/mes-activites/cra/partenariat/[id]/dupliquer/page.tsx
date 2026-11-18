@@ -6,7 +6,7 @@ import {
   ActiviteDeCoordinationId,
   CoordinateurId,
 } from '@/features/activites/domain'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const DupliquerCraPartenariatPage = async ({
   searchParams,

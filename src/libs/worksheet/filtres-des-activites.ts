@@ -1,6 +1,6 @@
 import type { Worksheet } from 'exceljs'
 import type { SessionUser } from '@/auth/sessionUser'
-import { addTitleRow } from '@/libs/worksheet/addTitleRow'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 
 type LibelleDeFiltre = { readonly type: string; readonly label: string }
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { rdvWebsiteLink } from '@/features/rdvsp/urls'
-import { withForm } from '@/libs/form/use-app-form'
+import { withForm } from '@/libraries/formulaire/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 import { OpeningHoursFields } from './OpeningHoursFields'
 

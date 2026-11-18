@@ -1,7 +1,7 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { type Result, success } from '@/libraries/result'
-import { createStopwatch } from '@/utils/stopwatch'
 import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
 import type {
   AuteurId,

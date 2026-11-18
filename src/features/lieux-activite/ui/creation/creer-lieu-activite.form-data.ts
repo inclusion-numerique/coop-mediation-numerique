@@ -11,7 +11,7 @@ import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import type { HorairesSaisis } from '@/features/lieux-activite/domain/horaires.validation'
 import type { FormationLabelPropose as FormationLabel } from '@/features/lieux-activite/domain/nomenclatures'
-import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 
 export type CreerLieuActiviteFormData = {
   nom: string

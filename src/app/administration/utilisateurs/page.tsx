@@ -21,7 +21,7 @@ import {
   parametresDesFiltres,
 } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { getDataTableOrderBy } from '@/libs/data-table/getDataTableOrderBy'
+import { getDataTableOrderBy } from '@/libraries/data-table/sort/getDataTableOrderBy'
 import { ClientBinder } from '@/libs/injection/client-binder'
 
 export const metadata = {

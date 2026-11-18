@@ -18,10 +18,10 @@ import {
   AdresseBanOptions,
 } from '@/features/adresse/combo-box/AdresseBanComboBox'
 import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { withForm } from '@/libs/form/use-app-form'
 import { informationsGeneralesFormOptions } from './informationsGeneralesFormData'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 

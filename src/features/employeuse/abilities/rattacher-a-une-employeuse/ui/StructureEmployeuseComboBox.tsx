@@ -1,8 +1,8 @@
 import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import { typologieStructureLibelle } from '@/external-apis/api-entreprise/typologieStructure'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { addresseFromParts } from '@/utils/addresseFromParts'
 import type { StructureSearchResult } from '../domain/employeuse-choisie'
 
 /**

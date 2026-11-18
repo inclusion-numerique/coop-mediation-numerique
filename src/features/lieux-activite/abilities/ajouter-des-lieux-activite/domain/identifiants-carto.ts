@@ -1,4 +1,4 @@
-import { onlyDefinedAndNotNull } from '@/utils/onlyDefinedAndNotNull'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
 import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
 
 export const identifiantsCarto = (

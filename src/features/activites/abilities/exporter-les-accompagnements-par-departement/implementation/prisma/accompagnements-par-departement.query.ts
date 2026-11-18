@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { departements } from '@/data/collectivites-territoriales/departements'
 import { Prisma } from '@/generated/prisma/client'
 import { NomDepartement } from '@/libraries/departement'
+import { departements } from '@/libraries/departement/departements'
 import { CodeDepartement } from '@/libraries/insee'
 import {
   type AccompagnementsDuDepartement,

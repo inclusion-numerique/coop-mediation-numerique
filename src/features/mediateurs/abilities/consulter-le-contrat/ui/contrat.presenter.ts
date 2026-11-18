@@ -1,5 +1,5 @@
 import { differenceInMonths } from 'date-fns'
-import { dateAsDayConventional } from '@/utils/dateAsDay'
+import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
 import type { Contrat, EcheanceDuContrat, TypeDeContrat } from '../domain'
 
 type BadgeDEcheance = {

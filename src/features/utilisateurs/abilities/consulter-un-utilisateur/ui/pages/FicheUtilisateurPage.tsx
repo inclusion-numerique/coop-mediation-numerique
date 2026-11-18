@@ -4,7 +4,6 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import {
   coordinateurDe,
   inscription,
@@ -12,18 +11,19 @@ import {
   mediateurDe,
 } from '@/features/utilisateurs/domain'
 import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@/libs/ui/administration/AdministrationInlineLabelsValues'
-import AdministrationMailtoLink from '@/libs/ui/administration/AdministrationMailtoLink'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { dateAsDay } from '@/utils/dateAsDay'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
-import { numberToString } from '@/utils/formatNumber'
-import { contentId } from '@/utils/skipLinks'
+} from '@/libraries/date/dateAsDayAndTime'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { numberToString } from '@/libraries/nombre/formatNumber'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
+import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
+import AdministrationMailtoLink from '@/libraries/ui/components/administration/AdministrationMailtoLink'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
   etiquettesDuCompte,

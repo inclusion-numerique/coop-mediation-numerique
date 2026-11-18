@@ -1,7 +1,10 @@
 import classNames from 'classnames'
 import { materielIcons } from '@/features/activites/ui/libelles/materiel'
 import { Materiel } from '@/generated/prisma/browser'
-import { numberToPercentage, numberToString } from '@/utils/formatNumber'
+import {
+  numberToPercentage,
+  numberToString,
+} from '@/libraries/nombre/formatNumber'
 
 export const StatistiqueMateriel = ({
   label,

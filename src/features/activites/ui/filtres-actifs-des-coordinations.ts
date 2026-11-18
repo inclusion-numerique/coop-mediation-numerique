@@ -1,4 +1,4 @@
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import type { CriteresDesCoordinations, NomDeTag, TagId } from '../domain'
 import { libelleDuType } from './libelles-de-coordination'
 

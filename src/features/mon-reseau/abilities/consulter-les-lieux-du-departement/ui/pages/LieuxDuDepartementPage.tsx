@@ -1,17 +1,17 @@
 import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import BackButton from '@/components/BackButton'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import {
   hrefDuLieuEnListe,
   LieuActiviteCard,
 } from '@/features/lieux-activite/ui'
+import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButton from '@/libraries/ui/components/BackButton'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import DataSearchBar from '@/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import SortSelect from '@/libs/data-table/SortSelect'
-import { contentId } from '@/utils/skipLinks'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'

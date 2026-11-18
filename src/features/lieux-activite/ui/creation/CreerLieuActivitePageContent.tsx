@@ -2,8 +2,8 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
-import IconInSquare from '@/components/IconInSquare'
 import LieuActiviteSideMenu from '@/features/lieux-activite/ui/LieuActiviteSideMenu'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import CreerLieuActiviteForm from './CreerLieuActiviteForm'
 import type { CreerLieuActiviteFormData } from './creer-lieu-activite.form-data'
 

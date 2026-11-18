@@ -1,6 +1,6 @@
 import type { TagDuCra } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 
 export const RECHERCHER_DES_TAGS_DU_CRA_KEY = keyFor<
   (input: {

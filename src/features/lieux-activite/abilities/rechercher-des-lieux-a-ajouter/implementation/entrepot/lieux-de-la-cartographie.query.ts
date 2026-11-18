@@ -1,7 +1,7 @@
 import { Nom, Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { entrepotPrismaClient } from '@/configuration/prisma/entrepotPrismaClient'
 import type { Prisma } from '@/generated/entrepot/client'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { toTitleCase } from '@/libraries/texte/toTitleCase'
 import { IdentifiantCartographie } from '../../../../domain/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/lieu-id'
 import { NombreDeLieux } from '../../../../domain/nombres'

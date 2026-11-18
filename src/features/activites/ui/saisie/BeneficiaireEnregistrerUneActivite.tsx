@@ -2,7 +2,7 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { BeneficiaireCraData } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const BeneficiaireEnregistrerUneActivite = ({
   beneficiaire,

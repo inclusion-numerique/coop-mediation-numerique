@@ -18,11 +18,11 @@ import {
 import type { LieuActiviteInput } from '@/features/inscription/abilities/renseigner-lieux-activite'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,

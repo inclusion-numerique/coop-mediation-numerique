@@ -24,7 +24,7 @@ import {
   getMediateurCommunesAndDepartementsOptions,
 } from '@/features/lieux-activite'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

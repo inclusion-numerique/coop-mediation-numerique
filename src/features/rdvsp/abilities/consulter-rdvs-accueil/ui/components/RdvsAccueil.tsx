@@ -3,8 +3,8 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { type ReactNode, useEffect, useState } from 'react'
-import { inject } from '@/libs/injection/client'
-import { numberToString } from '@/utils/formatNumber'
+import { inject } from '@/libraries/nextjs/injection/client'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import type { UserTimezone } from '@/utils/user'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '../../action/rafraichir-accueil-rdv.key'
 import type {

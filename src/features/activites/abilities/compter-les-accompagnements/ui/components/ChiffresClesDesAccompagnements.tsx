@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
+import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
-import { dateAsDayConventional } from '@/utils/dateAsDay'
-import { numberToString } from '@/utils/formatNumber'
 import type { TotauxPresentes } from '../totaux.presenter'
 
 export const ChiffresClesDesAccompagnements = ({

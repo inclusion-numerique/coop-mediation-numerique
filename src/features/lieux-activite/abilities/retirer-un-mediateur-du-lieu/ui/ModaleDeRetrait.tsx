@@ -4,9 +4,9 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
+import { formatDate } from '@/libraries/date/formatDate'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { formatDate } from '@/utils/formatDate'
 import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
 const ModaleDeRetrait = () => {

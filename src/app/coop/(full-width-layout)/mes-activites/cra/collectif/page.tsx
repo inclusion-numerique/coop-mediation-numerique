@@ -24,12 +24,12 @@ import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { lieuxDuMediateur } from '@/features/lieux-activite'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
+import { ClientBinder } from '@/libs/injection/client-binder'
 
 const CreateCraCollectifPage = async ({
   searchParams,

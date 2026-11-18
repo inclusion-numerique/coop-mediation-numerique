@@ -10,7 +10,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

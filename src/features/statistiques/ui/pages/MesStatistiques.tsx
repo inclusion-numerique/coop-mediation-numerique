@@ -5,12 +5,12 @@ import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import { getUserDepartement } from '@/auth/getUserDepartement'
 import type { SessionUser } from '@/auth/sessionUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import Filters from '@/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { contentId } from '@/utils/skipLinks'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,

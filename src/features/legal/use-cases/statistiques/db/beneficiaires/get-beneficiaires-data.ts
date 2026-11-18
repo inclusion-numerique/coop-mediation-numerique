@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { monthShortLabels } from '@/utils/monthShortLabels'
+import { monthShortLabels } from '@/libraries/date/monthShortLabels'
 
 type BeneficiaireType = 'suivi' | 'anonyme'
 

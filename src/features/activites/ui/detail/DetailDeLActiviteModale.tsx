@@ -7,11 +7,11 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, type ReactNode, useEffect, useState } from 'react'
-import Stars from '@/components/Stars'
 import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
+import Stars from '@/libraries/ui/components/Stars'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { inject } from '@/libs/injection/client'
 import type {
   DetailDActivite,
   Rubrique,

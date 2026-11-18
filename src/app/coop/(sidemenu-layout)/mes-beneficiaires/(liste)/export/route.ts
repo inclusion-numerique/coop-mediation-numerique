@@ -7,7 +7,7 @@ import {
   exporterBeneficiaires,
 } from '@/features/beneficiaire/abilities/exporter-beneficiaires'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)

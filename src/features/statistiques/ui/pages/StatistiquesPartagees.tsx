@@ -1,10 +1,10 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import Filters from '@/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,

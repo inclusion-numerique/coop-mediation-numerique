@@ -1,10 +1,10 @@
 import type { PropsWithChildren } from 'react'
 import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import { metadataTitle } from '@/app/metadataTitle'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 
 export const metadata = {
   title: metadataTitle('Statistiques'),

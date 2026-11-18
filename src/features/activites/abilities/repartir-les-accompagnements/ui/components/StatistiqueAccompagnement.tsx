@@ -5,7 +5,10 @@ import {
   typeActivitePluralLabels,
 } from '@/features/activites/ui/libelles/type-activite'
 import { TypeActivite } from '@/generated/prisma/browser'
-import { numberToPercentage, numberToString } from '@/utils/formatNumber'
+import {
+  numberToPercentage,
+  numberToString,
+} from '@/libraries/nombre/formatNumber'
 
 export const StatistiqueAccompagnement = ({
   typeActivite,

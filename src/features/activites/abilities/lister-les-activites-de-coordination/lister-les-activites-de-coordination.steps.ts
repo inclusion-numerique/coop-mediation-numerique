@@ -18,7 +18,7 @@ import {
   NumeroDePage,
   type ParametresDesCoordinations,
 } from '@/features/activites/domain'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 let listees: ActivitesDeCoordinationListees | undefined
 let options: OptionsDeFiltre | undefined

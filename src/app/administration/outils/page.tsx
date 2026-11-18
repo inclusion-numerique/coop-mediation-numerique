@@ -3,8 +3,6 @@ import { relancerLesInscriptionsInacheveesAction } from '@/app/_actions/utilisat
 import { relancerLesInscritsInactifsAction } from '@/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
 import CoopPageContainer from '@/app/coop/CoopPageContainer'
 import { metadataTitle } from '@/app/metadataTitle'
-import Card from '@/components/Card'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { ExportDesAccompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/ui'
 import {
   consulterLaMaintenance,
@@ -16,10 +14,12 @@ import { RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY } from '@/features/util
 import { LancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/ui'
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/action/relancer-les-inscrits-inactifs.key'
 import { LancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/ui'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import Card from '@/libraries/ui/components/Card'
 import { ClientBinder } from '@/libs/injection/client-binder'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@/utils/skipLinks'
 
 export const metadata = {
   title: metadataTitle('Outils administrateur'),
