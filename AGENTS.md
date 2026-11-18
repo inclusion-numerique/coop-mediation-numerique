@@ -183,7 +183,7 @@ Use DSFR utility classes: `fr-container`, `fr-grid-row`, `fr-col-12`, `fr-mt-8v`
 
 ## ADR
 
-ADRs in `docs/decisions/` are written in French, following the template [`docs/decisions/adr-template.md`](docs/decisions/adr-template.md), which holds every writing rule. The first three:
+ADRs in `docs/decisions/` are written in French, in the [MADR](https://adr.github.io/madr/) format of the template [`docs/decisions/adr-template.md`](docs/decisions/adr-template.md); every writing rule is in [`docs/decisions/README.md`](docs/decisions/README.md). The first three:
 
 - An ADR states decisions and their reasons, generically, and points to the `*.ability.md` files (executable specs, the source of truth) for details: no function, file or line names, no paths.
 - No log and no dated updates: git history holds the details; the history table only lists the drafts and revisions of the ADR.

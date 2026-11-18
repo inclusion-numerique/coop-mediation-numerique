@@ -217,7 +217,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.ability.md"],
+      "includes": ["**/*.ability.md", "docs/decisions/*.md"],
       "formatter": {
         "enabled": false
       }

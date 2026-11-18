@@ -1,16 +1,12 @@
-# ADR-013 : Compteurs dénormalisés tenus par des triggers
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Compteurs dénormalisés tenus par des triggers
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Plusieurs tables portent des compteurs dénormalisés : sur les médiateurs, les bénéficiaires, les
 activités et les lieux.
@@ -33,7 +29,17 @@ de la production : les statistiques devenaient 2 à 4 fois plus lentes.
 - statistiques d'un coordinateur : +48 à +63 % ;
 - tri de la liste d'administration par accompagnements : 2 ms → environ 1 s.
 
+## Options envisagées
+
+- Compteurs dénormalisés tenus par des triggers (option retenue)
+- Supprimer les compteurs et compter à la lecture
+- Des triggers par ligne qui recomptent chaque clé
+- Des tables temporaires dans les triggers
+- Garder l'incrément applicatif et recalculer périodiquement
+
 ## Décision
+
+Option retenue : « Compteurs dénormalisés tenus par des triggers ».
 
 Les compteurs restent, et PostgreSQL les tient lui-même par des triggers. L'application n'écrit
 plus jamais un compteur.
@@ -70,29 +76,7 @@ les triggers.
 Tout le code qui incrémentait ou décrémentait un compteur est supprimé, avec les utilitaires qui
 n'existaient que pour lui.
 
-## Alternatives écartées
-
-### Supprimer les compteurs et compter à la lecture
-
-Les statistiques devenaient 2 à 4 fois plus lentes (voir le contexte).
-
-### Des triggers par ligne qui recomptent chaque clé
-
-Simples à écrire, mais un CRA déclenche alors un recomptage complet des activités de son
-médiateur : 152 ms par CRA mesurées. Le calcul par différence coûte quelques millisecondes : un CRA
-individuel du médiateur le plus actif passe de 9 à 16 ms.
-
-### Des tables temporaires dans les triggers
-
-Le droit de créer des tables temporaires n'est pas garanti sur la base de l'Entrepôt
-([ADR-012](./0012-base-coop-dans-l-entrepot.md)).
-
-### Garder l'incrément applicatif et recalculer périodiquement
-
-Le recalcul qui a suivi l'import des CRA v1 a montré que les écarts reviennent en quelques
-semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
-
-## Conséquences
+### Conséquences
 
 **Positives**
 
@@ -114,7 +98,31 @@ semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
   migration.
 - **Un traitement en masse sur les tables suivies paie aussi les triggers.**
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Supprimer les compteurs et compter à la lecture
+
+Les statistiques devenaient 2 à 4 fois plus lentes (voir le contexte).
+
+### Des triggers par ligne qui recomptent chaque clé
+
+Simples à écrire, mais un CRA déclenche alors un recomptage complet des activités de son
+médiateur : 152 ms par CRA mesurées. Le calcul par différence coûte quelques millisecondes : un CRA
+individuel du médiateur le plus actif passe de 9 à 16 ms.
+
+### Des tables temporaires dans les triggers
+
+Le droit de créer des tables temporaires n'est pas garanti sur la base de l'Entrepôt
+([ADR-012](./0012-base-coop-dans-l-entrepot.md)).
+
+### Garder l'incrément applicatif et recalculer périodiquement
+
+Le recalcul qui a suivi l'import des CRA v1 a montré que les écarts reviennent en quelques
+semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 La [migration qui installe le mécanisme](../../prisma/migrations/20261116230000_tenir_les_compteurs_par_la_base/migration.sql)
 porte les triggers, le garde et le recalcul initial.
@@ -128,7 +136,13 @@ Les abilities qui font varier un compteur décrivent l'effet attendu, et font fo
 - [Supprimer une activité de médiation](../../src/features/activites/abilities/supprimer-une-activite-de-mediation/supprimer-une-activite-de-mediation.ability.md)
 - [Recevoir une notification d'usager](../../src/features/rdvsp/abilities/recevoir-webhook-usager/recevoir-webhook-usager.ability.md)
 
-## Références
+### Références
 
 - [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./0008-strategie-de-tests.md)
 - [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./0012-base-coop-dans-l-entrepot.md)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

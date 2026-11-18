@@ -1,18 +1,12 @@
-# ADR-002 : Les structures employeuses vivent dans main (Dataspace)
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Les structures employeuses vivent dans main (Dataspace)
 
-| Date       | Auteur        | Action                                                                                         |
-| ---------- | ------------- | ---------------------------------------------------------------------------------------------- |
-| 2026-07-21 | Marc Gavanier | Rédaction initiale : abandonner la table d'employeuses de la coop au profit de celle de `main` |
-| 2026-07-23 | Marc Gavanier | Périmètre élargi aux emplois après le cadrage avec l'Entrepôt (#1707)                          |
-| 2026-11-17 | Marc Gavanier | Fusion des documents de l'ADR-002 en un seul ADR, aligné sur le code et les abilities          |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 La coop tenait sa propre table de structures employeuses et sa propre table d'emplois, qui reliait
 chaque utilisateur à ses employeuses avec des dates de début et de fin. Le Dataspace tient de son
@@ -36,7 +30,20 @@ La base de la coop vit dans le schéma `coop` de la même base que `main` : lire
 depuis la coop est une requête dans la même base, pas un appel distant. C'est ce qui rend la
 décision possible.
 
+## Options envisagées
+
+- Les structures employeuses vivent dans main (Dataspace) (option retenue)
+- Ne basculer que la structure administrative
+- Migrer les utilisateurs de la coop vers `main.personne`
+- Étendre les affectations avec des dates
+- Écrire dans `main.contrat`
+- Consommer la table d'association entre lieux et employeuses
+- Une clé étrangère en `SET NULL`
+- Un contrôle par job, sans contrainte
+
 ## Décision
+
+Option retenue : « Les structures employeuses vivent dans main (Dataspace) ».
 
 La coop ne fait plus autorité sur les structures employeuses ni sur les emplois. Elle lit le schéma
 `main` du Dataspace, et n'y écrit que ce que l'inscription d'un utilisateur exige.
@@ -207,7 +214,51 @@ La coop consulte les SIRET des employeuses sans les corriger. Leur normalisation
 dédoublonnage et leur vérification relèvent de l'Entrepôt. L'outillage de qualité des SIRET de la
 coop ne porte plus que sur les lieux.
 
-## Alternatives écartées
+### Conséquences
+
+**Positives**
+
+- Une seule source pour les structures employeuses et les rattachements, partagée avec les autres
+  produits de l'inclusion numérique.
+- Plus de synchronisation des employeuses ni des emplois, et plus de dérive par construction.
+- L'inscription écrit directement dans `main`, dans une seule transaction.
+
+**Négatives ou à surveiller**
+
+- **Pertes assumées** : les dates d'emploi tenues par la coop, la piste d'audit de la table
+  d'emplois (qui a créé, modifié, supprimé) et le complément d'adresse des employeuses.
+- **Couplage** au schéma de `main`, géré par l'Entrepôt avec Flyway : une évolution de leur côté
+  peut casser notre client. La garde anti-dérive le détecte, elle ne l'empêche pas : la coop s'y
+  conforme, ou demande à l'équipe Dataspace l'évolution dont elle a besoin.
+- **Coût de la clé étrangère pour le Dataspace** : le rôle de la coop doit pouvoir référencer
+  `main.structure_administrative`, un `TRUNCATE` ou un `DROP` sans cascade est refusé, et une fois
+  en `RESTRICT` nos lignes bloquent la suppression d'une employeuse encore référencée : il faut
+  repointer avant de supprimer. Coût assumé, parce qu'il protège les données de la coop. La
+  contrainte est posée uniquement côté coop et ne demande aucune modification de `main`.
+- **Plusieurs agrégats de contexte à garder** : une même personne peut avoir plusieurs employeuses,
+  environ 4 % des utilisateurs, et environ 53 % des affectations de source `coop` n'ont pas de
+  contrat. Les lectures distinguent donc l'employeuse courante, l'employeuse à une date et
+  l'historique, au lieu d'une seule employeuse par utilisateur.
+
+**Dépendances côté Entrepôt**
+
+La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
+
+- **Droits** : le Dataspace accorde à la coop les droits nécessaires sur les tables de `main`
+  qu'elle lit et écrit (lecture, écriture de données et référence), la coop ne détenant aucun droit
+  de modification de structure sur `main`. Ces droits doivent être posés par Flyway, pour exister
+  dans une base fraîche et pas seulement en production.
+- **Sens de `est_active` pour la source `coop`** : la coop le maintient désormais elle-même, à la
+  place du cycle de réactivation que tenait l'import de l'Entrepôt ; la sémantique est à poser avec
+  lui (#1729).
+- **Clé étrangère de `main.personne.coop_id` vers `coop.users`** : le Dataspace a choisi de la
+  porter ; elle vit sur une table de `main`, donc dans Flyway. Elle suppose une personne au plus
+  par utilisateur.
+- **Réconciliation inachevée** : des comptes en conflit, où deux utilisateurs actifs prétendent à la
+  même personne, restent à trancher à la main, et des conseillers numériques absents de `main`,
+  faute d'email concordant, restent à rapprocher.
+
+## Avantages et inconvénients des options
 
 ### Ne basculer que la structure administrative
 
@@ -252,51 +303,9 @@ Une colonne entière non contrainte, vérifiée par un job périodique, aurait �
 tables au schéma de l'Entrepôt. Elle laisse passer les références cassées jusqu'au prochain
 passage du job, quand une contrainte les refuse au moment de l'écriture.
 
-## Conséquences
+## Plus d'informations
 
-**Positives**
-
-- Une seule source pour les structures employeuses et les rattachements, partagée avec les autres
-  produits de l'inclusion numérique.
-- Plus de synchronisation des employeuses ni des emplois, et plus de dérive par construction.
-- L'inscription écrit directement dans `main`, dans une seule transaction.
-
-**Négatives ou à surveiller**
-
-- **Pertes assumées** : les dates d'emploi tenues par la coop, la piste d'audit de la table
-  d'emplois (qui a créé, modifié, supprimé) et le complément d'adresse des employeuses.
-- **Couplage** au schéma de `main`, géré par l'Entrepôt avec Flyway : une évolution de leur côté
-  peut casser notre client. La garde anti-dérive le détecte, elle ne l'empêche pas : la coop s'y
-  conforme, ou demande à l'équipe Dataspace l'évolution dont elle a besoin.
-- **Coût de la clé étrangère pour le Dataspace** : le rôle de la coop doit pouvoir référencer
-  `main.structure_administrative`, un `TRUNCATE` ou un `DROP` sans cascade est refusé, et une fois
-  en `RESTRICT` nos lignes bloquent la suppression d'une employeuse encore référencée : il faut
-  repointer avant de supprimer. Coût assumé, parce qu'il protège les données de la coop. La
-  contrainte est posée uniquement côté coop et ne demande aucune modification de `main`.
-- **Plusieurs agrégats de contexte à garder** : une même personne peut avoir plusieurs employeuses,
-  environ 4 % des utilisateurs, et environ 53 % des affectations de source `coop` n'ont pas de
-  contrat. Les lectures distinguent donc l'employeuse courante, l'employeuse à une date et
-  l'historique, au lieu d'une seule employeuse par utilisateur.
-
-**Dépendances côté Entrepôt**
-
-La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
-
-- **Droits** : le Dataspace accorde à la coop les droits nécessaires sur les tables de `main`
-  qu'elle lit et écrit (lecture, écriture de données et référence), la coop ne détenant aucun droit
-  de modification de structure sur `main`. Ces droits doivent être posés par Flyway, pour exister
-  dans une base fraîche et pas seulement en production.
-- **Sens de `est_active` pour la source `coop`** : la coop le maintient désormais elle-même, à la
-  place du cycle de réactivation que tenait l'import de l'Entrepôt ; la sémantique est à poser avec
-  lui (#1729).
-- **Clé étrangère de `main.personne.coop_id` vers `coop.users`** : le Dataspace a choisi de la
-  porter ; elle vit sur une table de `main`, donc dans Flyway. Elle suppose une personne au plus
-  par utilisateur.
-- **Réconciliation inachevée** : des comptes en conflit, où deux utilisateurs actifs prétendent à la
-  même personne, restent à trancher à la main, et des conseillers numériques absents de `main`,
-  faute d'email concordant, restent à rapprocher.
-
-## Où trouver le détail
+### Où trouver le détail
 
 Les abilities décrivent chaque comportement ; ce sont des specs exécutables, jouées par les tests
 Cucumber de chaque feature, et elles font foi.
@@ -318,9 +327,17 @@ Cucumber de chaque feature, et elles font foi.
   [schéma Prisma](../../prisma/schema.prisma) décrit les tables de `main` que la coop
   utilise.
 
-## Références
+### Références
 
 - [anct-cnum/suite-gestionnaire-numerique#1705](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1705) : synchroniser les structures et les lieux de `main` avec la coop
 - [anct-cnum/suite-gestionnaire-numerique#1707](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1707) : rendre caduque la table d'employeuses de la coop
 - [anct-cnum/suite-gestionnaire-numerique#1729](https://github.com/anct-cnum/suite-gestionnaire-numerique/issues/1729) : sens de `est_active` sous écriture directe de la coop
 - [inclusion-numerique/coop-mediation-numerique#575](https://github.com/inclusion-numerique/coop-mediation-numerique/pull/575) : relecture de la bascule par l'Entrepôt
+
+### Historique
+
+| Date       | Auteur        | Action                                                                                         |
+| ---------- | ------------- | ---------------------------------------------------------------------------------------------- |
+| 2026-07-21 | Marc Gavanier | Rédaction initiale : abandonner la table d'employeuses de la coop au profit de celle de `main` |
+| 2026-07-23 | Marc Gavanier | Périmètre élargi aux emplois après le cadrage avec l'Entrepôt (#1707)                          |
+| 2026-11-17 | Marc Gavanier | Fusion des documents de l'ADR-002 en un seul ADR, aligné sur le code et les abilities          |

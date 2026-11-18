@@ -1,16 +1,12 @@
-# ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Un scénario BDD par ability, Vitest sans isolation ni mock
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Le découpage en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), fait de chaque cas d'usage une
@@ -27,7 +23,16 @@ les remplaçant.
 Enfin, la suite unitaire était lente : sur un runner à 4 cœurs, Jest avec la couverture V8 la
 faisait en 274 s.
 
+## Options envisagées
+
+- Un scénario BDD par ability, Vitest sans isolation ni mock (option retenue)
+- Un test unitaire et un scénario pour chaque ability
+- Des scénarios BDD sur une base en mémoire
+- Garder les mocks et accélérer Jest
+
 ## Décision
+
+Option retenue : « Un scénario BDD par ability, Vitest sans isolation ni mock ».
 
 Chaque ability est testée par un scénario BDD joué contre une vraie base, et les tests unitaires
 sont réservés à la logique pure. Aucun test ne remplace de module ni n'espionne d'appel : les
@@ -70,24 +75,7 @@ puisque ses fichiers partagent la base.
 L'intégration et Cucumber écrivent dans la base et la vident. Ils tournent sur une base jetable :
 neuve à chaque exécution en CI, créée puis supprimée en local.
 
-## Alternatives écartées
-
-### Un test unitaire et un scénario pour chaque ability
-
-Une ability sans logique pure n'aurait qu'un test unitaire qui recopie un objet littéral. Il ne
-protège rien et double le coût d'un changement.
-
-### Des scénarios BDD sur une base en mémoire
-
-Une base en mémoire ne vérifie ni le SQL brut, ni les contraintes, ni les triggers. Le scénario
-n'aurait plus rien d'un test d'intégration.
-
-### Garder les mocks et accélérer Jest
-
-Ajouter des workers ne règle pas le coût de la couverture. Et garder les mocks impose l'isolation,
-qui est justement ce qui coûte.
-
-## Conséquences
+### Conséquences
 
 Positives :
 
@@ -107,7 +95,26 @@ Négatives :
   production, ils l'effacent.
 - Un test qui sème une valeur calculée par la base doit semer les vraies lignes qui la produisent.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Un test unitaire et un scénario pour chaque ability
+
+Une ability sans logique pure n'aurait qu'un test unitaire qui recopie un objet littéral. Il ne
+protège rien et double le coût d'un changement.
+
+### Des scénarios BDD sur une base en mémoire
+
+Une base en mémoire ne vérifie ni le SQL brut, ni les contraintes, ni les triggers. Le scénario
+n'aurait plus rien d'un test d'intégration.
+
+### Garder les mocks et accélérer Jest
+
+Ajouter des workers ne règle pas le coût de la couverture. Et garder les mocks impose l'isolation,
+qui est justement ce qui coûte.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Les abilities de chaque feature, dans le
 [dossier des features](../../src/features/), décrivent chaque comportement dans leur
@@ -115,9 +122,15 @@ spécification en Gherkin ; ce sont des specs exécutables, qui font foi, et les
 placées à côté de chacune les jouent. Les règles normatives sur les tests sont dans la section 7 des
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).
 
-## Références
+### Références
 
 - [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [ADR-005 : Domaine modélisé par des value objects brandés](./0005-domaine-en-value-objects-brandes.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — section 7, tests
 - [`CONTRIBUTING.md`](../../CONTRIBUTING.md#tests) — section Tests
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

@@ -1,16 +1,12 @@
-# ADR-009 : Formulaires avec TanStack Form
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Formulaires avec TanStack Form
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté.
-
-## Contexte
+## Contexte et problème
 
 Les formulaires reposaient sur react-hook-form, avec une enveloppe par type de champ dans le
 paquet d'interface. Chaque enveloppe reliait le composant du système de design au moteur de
@@ -20,7 +16,15 @@ Chaque nouveau champ demandait une enveloppe de plus dans ce paquet, hors de la 
 l'utilise. Cela allait contre l'organisation par features et abilities posée par l'ADR-004, où
 une feature porte ce dont elle a besoin.
 
+## Options envisagées
+
+- Formulaires avec TanStack Form (option retenue)
+- Garder react-hook-form
+- Migrer tous les formulaires d'un coup
+
 ## Décision
+
+Option retenue : « Formulaires avec TanStack Form ».
 
 Tout nouveau formulaire se construit avec la bibliothèque maison basée sur TanStack Form. Le
 formulaire dérive son type du schéma de validation, et la validation n'intervient qu'à la
@@ -54,20 +58,7 @@ La signature de la bibliothèque impose un forçage de type pour déclarer le ty
 défaut et des propriétés d'un sous-formulaire : ces options ne portent qu'un type, leur valeur
 n'est jamais lue. C'est la seule exception tolérée à l'interdiction des forçages de type.
 
-## Alternatives écartées
-
-### Garder react-hook-form
-
-Il aurait fallu conserver les enveloppes du paquet d'interface et leurs contrôleurs. La migration
-était engagée avec la saisie d'activité : la poursuivre évite de garder deux façons d'écrire un
-formulaire neuf.
-
-### Migrer tous les formulaires d'un coup
-
-Un formulaire passe à TanStack Form quand sa feature est reprise, ability par ability, pas dans
-une passe transverse.
-
-## Conséquences
+### Conséquences
 
 Positives :
 
@@ -87,7 +78,22 @@ Négatives :
   vidé émet une chaîne vide, qu'un écouteur du formulaire doit ramener à null pour que la
   validation la traite comme une valeur absente.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Garder react-hook-form
+
+Il aurait fallu conserver les enveloppes du paquet d'interface et leurs contrôleurs. La migration
+était engagée avec la saisie d'activité : la poursuivre évite de garder deux façons d'écrire un
+formulaire neuf.
+
+### Migrer tous les formulaires d'un coup
+
+Un formulaire passe à TanStack Form quand sa feature est reprise, ability par ability, pas dans
+une passe transverse.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Les abilities de la feature bénéficiaire dont les formulaires sont passés à TanStack Form
 décrivent le comportement attendu, et font foi :
@@ -99,9 +105,15 @@ décrivent le comportement attendu, et font foi :
 Les règles normatives sur les formulaires sont dans les
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).
 
-## Références
+### Références
 
 - [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [ADR-006 : Server actions et injection, à la place de tRPC](./0006-server-actions-et-injection.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — formulaires et exception aux forçages de type
 - [TanStack Form](https://tanstack.com/form/latest)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

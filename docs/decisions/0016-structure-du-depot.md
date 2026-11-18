@@ -1,16 +1,12 @@
-# ADR-016 : Un paquet applicatif et un paquet d'infrastructure
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Un paquet applicatif et un paquet d'infrastructure
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Le dépôt est un monorepo pnpm de plusieurs paquets : l'application Next, le CLI d'exploitation, du
 code applicatif séparé en paquets, de l'outillage de test et de documentation des composants.
@@ -28,7 +24,16 @@ Plusieurs constats s'additionnaient :
 - Chaque paquet a son manifeste, sa configuration TypeScript et ses scripts. Un changement
   transversal touche plusieurs paquets.
 
+## Options envisagées
+
+- Un paquet applicatif et un paquet d'infrastructure (option retenue)
+- Garder le monorepo et Turborepo
+- Garder les paquets sans Turborepo
+- Poser les linters d'architecture tout de suite
+
 ## Décision
+
+Option retenue : « Un paquet applicatif et un paquet d'infrastructure ».
 
 Le dépôt se réduit à deux unités : un paquet applicatif et le module d'infrastructure. La
 structure cible s'atteint par étapes, et les règles d'architecture ne sont outillées qu'une fois
@@ -66,7 +71,26 @@ Posés avant la fin de la restructuration, ils resteraient rouges pendant des se
 demanderaient des exceptions qui en annulent l'intérêt. Aucun linter d'architecture n'est encore
 posé : cible à atteindre, ticket à ouvrir.
 
-## Alternatives écartées
+### Conséquences
+
+#### Positives
+
+- Une seule configuration TypeScript, Biome et de tests pour l'application.
+- Un composant, un e-mail ou une configuration se déplace sans changer de paquet.
+- Plus de déclaration de variables d'environnement par tâche.
+- Les frontières entre couches seront tenues par un linter, sur des règles explicites, plutôt que
+  par des frontières de paquets.
+
+#### Négatives
+
+- La fusion des paquets touche une grande partie des imports. Elle produit des diffs volumineux,
+  difficiles à relire, et des conflits avec les branches ouvertes au même moment.
+- Tant que la fusion n'est pas faite, le dépôt garde la structure à paquets et ses configurations
+  doublées. Cible à atteindre, ticket à ouvrir.
+- Sans linter d'architecture d'ici là, le respect de la structure cible repose sur la relecture.
+  Cible à atteindre, ticket à ouvrir.
+
+## Avantages et inconvénients des options
 
 ### Garder le monorepo et Turborepo
 
@@ -84,30 +108,19 @@ qu'elles prétendent tenir se vérifient mieux par un linter d'architecture dans
 
 Un linter qui reste rouge n'est plus lu.
 
-## Conséquences
+## Plus d'informations
 
-### Positives
-
-- Une seule configuration TypeScript, Biome et de tests pour l'application.
-- Un composant, un e-mail ou une configuration se déplace sans changer de paquet.
-- Plus de déclaration de variables d'environnement par tâche.
-- Les frontières entre couches seront tenues par un linter, sur des règles explicites, plutôt que
-  par des frontières de paquets.
-
-### Négatives
-
-- La fusion des paquets touche une grande partie des imports. Elle produit des diffs volumineux,
-  difficiles à relire, et des conflits avec les branches ouvertes au même moment.
-- Tant que la fusion n'est pas faite, le dépôt garde la structure à paquets et ses configurations
-  doublées. Cible à atteindre, ticket à ouvrir.
-- Sans linter d'architecture d'ici là, le respect de la structure cible repose sur la relecture.
-  Cible à atteindre, ticket à ouvrir.
-
-## Où trouver le détail
+### Où trouver le détail
 
 - Le [fichier du workspace pnpm](../../pnpm-workspace.yaml) déclare les paquets du dépôt.
 
-## Références
+### Références
 
 - [ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu](./0015-ci-github-actions-et-opentofu.md)
 - [Fichier du workspace pnpm](../../pnpm-workspace.yaml)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

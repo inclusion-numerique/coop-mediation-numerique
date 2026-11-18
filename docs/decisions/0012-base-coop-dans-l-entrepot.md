@@ -1,16 +1,12 @@
-# ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# La base de la coop dans le schéma `coop` de l'Entrepôt
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 La coop avait sa propre base, et Dataspace, l'Entrepôt de données de l'inclusion numérique, en
 avait une autre. L'Entrepôt fait référence sur la médiation numérique : son schéma `main` porte les
@@ -22,7 +18,17 @@ délais, des écarts, et une autorité ambiguë sur les données recopiées.
 Les deux bases sont dans des projets d'hébergement différents, et celle de l'Entrepôt n'expose
 qu'un point d'accès privé.
 
+## Options envisagées
+
+- La base de la coop dans le schéma `coop` de l'Entrepôt (option retenue)
+- Migrer table par table, derrière une passerelle applicative
+- Relier les deux bases par `postgres_fdw`
+- Garder deux bases et la synchronisation
+- Exposer la base publiquement, ou relier les réseaux privés
+
 ## Décision
+
+Option retenue : « La base de la coop dans le schéma `coop` de l'Entrepôt ».
 
 Les données de la coop vivent dans un schéma `coop` qui lui est propre. En production, ce schéma
 est dans la base de l'Entrepôt, à côté de `main`, et la synchronisation entre deux bases disparaît.
@@ -72,31 +78,7 @@ employeuses vers `main` ([ADR-002](./0002-migration-structures-employeuses-vers-
 double écriture du registre des lieux en une seule transaction
 ([ADR-003](./0003-registre-des-lieux-entrepot.md)) reposent sur cette décision.
 
-## Alternatives écartées
-
-### Migrer table par table, derrière une passerelle applicative
-
-Chaque table aurait quitté la base de la coop pour vivre entière dans l'Entrepôt, et les références
-restantes seraient passées par une passerelle applicative. Ce plan faisait perdre les jointures et
-l'atomicité des transactions à chaque frontière, pendant toute la durée de la migration. Il a été
-abandonné au profit d'une copie unique suivie d'une bascule.
-
-### Relier les deux bases par `postgres_fdw`
-
-Les deux bases sont sur des instances distinctes, dans des projets distincts. Une jointure à
-travers le réseau n'aurait été ni fiable ni rapide.
-
-### Garder deux bases et la synchronisation
-
-C'est la situation qu'on voulait quitter : délais, écarts, autorité ambiguë.
-
-### Exposer la base publiquement, ou relier les réseaux privés
-
-Un point d'accès public expose la base de l'Entrepôt : le risque était jugé trop grand. Relier les
-réseaux privés de deux projets distincts était lourd et pas éprouvé pour une base managée. Le
-bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
-
-## Conséquences
+### Conséquences
 
 **Positives**
 
@@ -121,13 +103,45 @@ bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
 - **Ressources partagées** : la charge de la coop et celle de l'Entrepôt partagent les mêmes
   ressources, et deux clients Prisma ouvrent des connexions vers la même base.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Migrer table par table, derrière une passerelle applicative
+
+Chaque table aurait quitté la base de la coop pour vivre entière dans l'Entrepôt, et les références
+restantes seraient passées par une passerelle applicative. Ce plan faisait perdre les jointures et
+l'atomicité des transactions à chaque frontière, pendant toute la durée de la migration. Il a été
+abandonné au profit d'une copie unique suivie d'une bascule.
+
+### Relier les deux bases par `postgres_fdw`
+
+Les deux bases sont sur des instances distinctes, dans des projets distincts. Une jointure à
+travers le réseau n'aurait été ni fiable ni rapide.
+
+### Garder deux bases et la synchronisation
+
+C'est la situation qu'on voulait quitter : délais, écarts, autorité ambiguë.
+
+### Exposer la base publiquement, ou relier les réseaux privés
+
+Un point d'accès public expose la base de l'Entrepôt : le risque était jugé trop grand. Relier les
+réseaux privés de deux projets distincts était lourd et pas éprouvé pour une base managée. Le
+bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 - Le [README d'infrastructure](../../infrastructure/README.md) décrit les bases de chaque
   environnement, l'instance partagée de l'incubateur et l'accès à l'Entrepôt.
 
-## Références
+### Références
 
 - [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./0002-migration-structures-employeuses-vers-main.md)
 - [ADR-003 : Registre des lieux de l'Entrepôt](./0003-registre-des-lieux-entrepot.md)
 - [README d'infrastructure](../../infrastructure/README.md)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

@@ -1,18 +1,12 @@
-# ADR-003 : Registre des lieux de l'Entrepôt
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Registre des lieux de l'Entrepôt
 
-| Date       | Auteur        | Action                                                                                                                            |
-| ---------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-09-11 | Marc Gavanier | Rédaction initiale : extraction de la section « Registre des lieux de l'Entrepôt » de `CONTRIBUTING.md`                           |
-| 2026-09-11 | Marc Gavanier | Règles de lecture : le registre prime sauf sur le partage à la cartographie ; « modifié depuis » se dérive des quatre horodatages |
-| 2026-11-17 | Marc Gavanier | Réécriture alignée sur les abilities                                                                                              |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Le Dataspace gère les données de l'inclusion numérique ; la coop gère son application. Le Dataspace
 fait autorité sur le schéma `main`, et la coop s'y conforme
@@ -33,7 +27,15 @@ Un rattrapage quotidien existe côté Dataspace, mais il ne couvre que l'identit
 champs métier. Sans écriture explicite dans le registre, une valeur métier corrigée dans la coop
 resterait invisible pour les autres consommateurs.
 
+## Options envisagées
+
+- Registre des lieux de l'Entrepôt (option retenue)
+- Un trigger PostgreSQL ou une réplication vers `main`
+- S'en remettre au rattrapage quotidien du Dataspace
+
 ## Décision
+
+Option retenue : « Registre des lieux de l'Entrepôt ».
 
 ### Double écriture, en une seule transaction
 
@@ -107,7 +109,14 @@ adresses. Elle n'écrit jamais dans les autres tables de `main` liées aux lieux
 
 Un rattrapage se fait à dates inchangées.
 
-## Alternatives écartées
+### Conséquences
+
+- Une correction faite en SQL direct laisse le registre sur l'ancienne valeur, et les consommateurs
+  avec : d'où la règle opératoire ci-dessus.
+- Un changement de dates en masse fausse durablement l'arbitrage de fraîcheur entre sources.
+- Ouvrir une nouvelle colonne du registre à l'écriture se demande à l'équipe Dataspace.
+
+## Avantages et inconvénients des options
 
 ### Un trigger PostgreSQL ou une réplication vers `main`
 
@@ -120,14 +129,9 @@ adoption. La double écriture applicative garde la décision là où elle est d�
 Il ne couvre que l'identité du lieu. Les champs métier (services, horaires, présentation, contact)
 resteraient sur leur ancienne valeur chez tous les consommateurs.
 
-## Conséquences
+## Plus d'informations
 
-- Une correction faite en SQL direct laisse le registre sur l'ancienne valeur, et les consommateurs
-  avec : d'où la règle opératoire ci-dessus.
-- Un changement de dates en masse fausse durablement l'arbitrage de fraîcheur entre sources.
-- Ouvrir une nouvelle colonne du registre à l'écriture se demande à l'équipe Dataspace.
-
-## Où trouver le détail
+### Où trouver le détail
 
 Les abilities décrivent chaque comportement ; ce sont des specs exécutables, jouées par les tests
 Cucumber de chaque feature, et elles font foi.
@@ -140,6 +144,14 @@ Cucumber de chaque feature, et elles font foi.
   et [la structure employeuse comme lieu d'activité](../../src/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ajouter-structure-employeuse-en-lieu.ability.md).
 - Fusion : [fusionner des lieux](../../src/features/lieux-activite/abilities/fusionner-des-lieux/fusionner-des-lieux.ability.md).
 
-## Références
+### Références
 
 - [ADR-002 : Les structures employeuses vivent dans main (Dataspace)](./0002-migration-structures-employeuses-vers-main.md)
+
+### Historique
+
+| Date       | Auteur        | Action                                                                                                                            |
+| ---------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-09-11 | Marc Gavanier | Rédaction initiale : extraction de la section « Registre des lieux de l'Entrepôt » de `CONTRIBUTING.md`                           |
+| 2026-09-11 | Marc Gavanier | Règles de lecture : le registre prime sauf sur le partage à la cartographie ; « modifié depuis » se dérive des quatre horodatages |
+| 2026-11-17 | Marc Gavanier | Réécriture alignée sur les abilities                                                                                              |

@@ -1,17 +1,12 @@
-# ADR-001 : Intégration avec RDV Service Public
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Hugues Maignol, Marc Gavanier
+---
 
-## Auteurs et historique
+# Intégration avec RDV Service Public
 
-| Date       | Auteur         | Action                                                                              |
-| ---------- | -------------- | ----------------------------------------------------------------------------------- |
-| 2025-11-25 | Hugues Maignol | Rédaction initiale de l'ADR                                                         |
-| 2026-11-17 | Marc Gavanier  | Alignement sur les abilities : le détail renvoie aux specs exécutables, pas au code |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 La Coop de la médiation numérique permet aux médiateurs de suivre leurs activités et leurs bénéficiaires. Parallèlement, [RDV Service Public](https://www.rdv-service-public.fr/) est une plateforme dédiée à la prise de rendez-vous pour les services publics, utilisée notamment par les médiateurs numériques pour gérer leurs rendez-vous avec les usagers.
 
@@ -29,7 +24,17 @@ L'API de RDV Service Public fournit :
 - Un système de webhooks pour notifier des changements de données
 - **Mais ne fournit pas** de mécanismes de filtrage avancés, de comptage optimisé, ni de pagination unifiée avec nos activités
 
+## Options envisagées
+
+- Intégration avec RDV Service Public (option retenue)
+- Appels API directs sans synchronisation
+- Cache en mémoire (Redis) temporaire
+- Synchronisation locale en lecture seule (sans webhooks)
+- Synchronisation bidirectionnelle complète
+
 ## Décision
+
+Option retenue : « Intégration avec RDV Service Public ».
 
 La Coop copie localement, dans sa base PostgreSQL, les données de RDV Service Public dont elle a besoin, plutôt que d'interroger l'API distante à chaque affichage.
 
@@ -91,11 +96,11 @@ La Coop garde localement les organisations, rendez-vous, participations, usagers
 
 **Activités** : un rendez-vous honoré peut devenir une activité (CRA), et les rendez-vous se mêlent aux activités dans la liste du médiateur. Voir [créer une activité depuis un rendez-vous](../../src/features/rdvsp/abilities/creer-activite-depuis-rdv/creer-activite-depuis-rdv.ability.md), [mettre à jour le statut d'un rendez-vous](../../src/features/rdvsp/abilities/mettre-a-jour-statut-rdv/mettre-a-jour-statut-rdv.ability.md), [lister les rendez-vous des activités](../../src/features/rdvsp/abilities/lister-les-rdvs-des-activites/lister-les-rdvs-des-activites.ability.md) et [lister mes activités](../../src/features/activites/abilities/lister-mes-activites/lister-mes-activites.ability.md).
 
-## Justification des choix techniques
+### Justification des choix techniques
 
-### Pourquoi une synchronisation locale ?
+#### Pourquoi une synchronisation locale ?
 
-#### 1. **Intégrité référentielle et clés étrangères**
+##### 1. **Intégrité référentielle et clés étrangères**
 
 En synchronisant les données localement, nous pouvons établir des relations fortes via des clés étrangères entre :
 - Les RDVs et nos activités
@@ -112,7 +117,7 @@ Cela garantit :
 - Gérer manuellement la cohérence (que faire si un RDV référence un usager supprimé ?)
 - Risquer des incohérences en cas d'erreur réseau partielle
 
-#### 2. **Performance des requêtes : comptages et agrégations**
+##### 2. **Performance des requêtes : comptages et agrégations**
 
 L'API RDV Service Public ne fournit pas d'endpoints optimisés pour :
 - Compter le nombre de RDVs avec des filtres complexes
@@ -127,7 +132,7 @@ Nos interfaces nécessitent ces comptages : l'accueil du médiateur (rendez-vous
 
 Pour un médiateur avec 200 RDVs, cela représenterait plusieurs secondes de traitement et une surcharge réseau significative.
 
-#### 3. **Filtrage avancé et recherche**
+##### 3. **Filtrage avancé et recherche**
 
 La liste des activités filtre simultanément les activités La coop et les RDVs RDV Service Public, par plage de dates, bénéficiaire, lieu, type d'activité, thématique ou statut du RDV. Ces filtres s'appliquent en une seule requête SQL sur les deux sources réunies.
 
@@ -143,7 +148,7 @@ Cette approche serait :
 - Consommatrice en mémoire
 - Source d'incohérences (données API pouvant changer entre les appels)
 
-#### 4. **Pagination unifiée**
+##### 4. **Pagination unifiée**
 
 L'API RDV Service Public a sa propre pagination. Fusionner une liste paginée d'activités La coop avec une liste paginée de RDVs distants est mathématiquement complexe :
 
@@ -159,7 +164,7 @@ Il faudrait :
 
 Cela rend la pagination quasi impossible en pratique sans synchronisation locale.
 
-#### 5. **Disponibilité et résilience**
+##### 5. **Disponibilité et résilience**
 
 Avec une synchronisation locale :
 - Les données RDV restent accessibles même si l'API RDV Service Public est indisponible
@@ -171,7 +176,7 @@ Avec une synchronisation locale :
 - Une lenteur de l'API RDV ralentit toute notre application
 - Un dépassement de délai de l'API donne une page blanche à l'utilisateur
 
-#### 6. **Coût et latence réseau**
+##### 6. **Coût et latence réseau**
 
 Chaque appel à l'API RDV Service Public :
 - Ajoute une latence réseau (50 à 200 ms selon la charge)
@@ -187,15 +192,15 @@ Chaque appel à l'API RDV Service Public :
 
 Sur un tableau de bord affichant plusieurs blocs (prochains RDVs, compteurs, etc.), l'approche locale est **10 à 20 fois plus rapide**.
 
-### Pourquoi webhooks et polling en repli ?
+#### Pourquoi webhooks et polling en repli ?
 
 Les webhooks sont la voie principale : ils tiennent la copie locale à jour presque en temps réel, sans appel inutile ni action du médiateur. Mais un webhook peut ne pas s'installer sur une organisation, ou échouer sans bruit. Le polling de rattrapage couvre ces trous, en ne visant que ce que les webhooks n'ont pas rapporté.
 
 Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisation, webhooks) et le journal de chaque synchronisation sont décrits par les abilities [synchroniser un compte](../../src/features/rdvsp/abilities/synchroniser-compte-rdv/synchroniser-compte-rdv.ability.md), [déclencher une synchronisation](../../src/features/rdvsp/abilities/declencher-synchronisation/declencher-synchronisation.ability.md) et [administrer les comptes RDV](../../src/features/rdvsp/abilities/administrer-comptes-rdv/administrer-comptes-rdv.ability.md).
 
-## Conséquences
+### Conséquences
 
-### Avantages
+#### Avantages
 
 1. **Performance** :
    - Requêtes de lecture instantanées (base locale)
@@ -222,7 +227,7 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
    - Polling en repli si les webhooks échouent
    - Données accessibles même en cas d'indisponibilité de l'API
 
-### Inconvénients et limitations
+#### Inconvénients et limitations
 
 1. **Complexité** :
    - Code de synchronisation à maintenir
@@ -246,7 +251,7 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
    - Plus complexe qu'un simple appel API
    - Nécessite des tests robustes de la synchronisation
 
-### Parades en place
+#### Parades en place
 
 - La dérive (drift) entre la copie locale et l'API est calculée à chaque synchronisation et affichée dans l'administration
 - Rattrapage au chargement des écrans qui affichent des rendez-vous
@@ -254,7 +259,7 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
 - Validation à l'exécution des réponses de l'API RDV Service Public
 - Test de contrat sur des payloads réels capturés de l'API
 
-### Pistes envisagées, non réalisées, à reconsidérer plus tard
+#### Pistes envisagées, non réalisées, à reconsidérer plus tard
 
 - Tests d'intégration contre l'API RDV Service Public
 - Barre de progression pendant une synchronisation longue
@@ -262,7 +267,7 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
 - Alerte quand la dérive dépasse un seuil
 - Politique de rétention des journaux de synchronisation et des anciens rendez-vous
 
-## Alternatives considérées
+## Avantages et inconvénients des options
 
 ### Alternative 1 : Appels API directs sans synchronisation
 
@@ -332,13 +337,22 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
 
 **Note** : La Coop permet tout de même de demander un rendez-vous pour un bénéficiaire via l'API RDV, sans gérer le cycle de vie complet du rendez-vous.
 
-## Où trouver le détail
+## Plus d'informations
+
+### Où trouver le détail
 
 Les abilities des features [rdvsp](../../src/features/rdvsp/abilities/), [beneficiaire](../../src/features/beneficiaire/abilities/) et [activites](../../src/features/activites/abilities/) décrivent chaque comportement de l'intégration. Ce sont des specs exécutables : les tests Cucumber de chaque feature les jouent, et elles font foi. Le code de la [feature rdvsp](../../src/features/rdvsp/) en est l'implémentation.
 
-## Références
+### Références
 
 - [RDV Service Public - Documentation API](https://www.rdv-service-public.fr/api-docs/index.html)
 - [OAuth 2.0 RFC](https://datatracker.ietf.org/doc/html/rfc6749)
 - [schema.prisma](../../prisma/schema.prisma) : schéma de données complet
 - [Abilities RDV Service Public](../../src/features/rdvsp/abilities/) : specs exécutables de l'intégration
+
+### Historique
+
+| Date       | Auteur         | Action                                                                              |
+| ---------- | -------------- | ----------------------------------------------------------------------------------- |
+| 2025-11-25 | Hugues Maignol | Rédaction initiale de l'ADR                                                         |
+| 2026-11-17 | Marc Gavanier  | Alignement sur les abilities : le détail renvoie aux specs exécutables, pas au code |

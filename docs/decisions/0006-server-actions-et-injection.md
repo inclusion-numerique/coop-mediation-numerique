@@ -1,16 +1,12 @@
-# ADR-006 : Server actions et injection, à la place de tRPC
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Server actions et injection, à la place de tRPC
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Les mutations passaient par tRPC. L'application comptait 17 routeurs, la plupart dans un dossier
 serveur central, quelques-uns dans des features. Chaque procédure portait au même endroit sa
@@ -31,7 +27,16 @@ Le découpage du code en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne une place à la logique
 métier ; cet ADR décide comment une mutation l'atteint depuis l'interface.
 
+## Options envisagées
+
+- Server actions et injection, à la place de tRPC (option retenue)
+- Garder tRPC
+- Déclarer les server actions dans la page
+- Importer l'action dans le composant client
+
 ## Décision
+
+Option retenue : « Server actions et injection, à la place de tRPC ».
 
 Toute mutation est une server action, construite de la même façon pour toutes les abilities, qui
 compose l'ability sans rien décider elle-même. Les composants clients ne la connaissent pas : ils
@@ -71,26 +76,7 @@ serveur.
 Les clés se créent avec une fonction dédiée, qui en fait des symboles globaux : un symbole local ne
 passe pas la frontière entre composant serveur et composant client.
 
-## Alternatives écartées
-
-### Garder tRPC
-
-Il aurait fallu maintenir deux mécanismes de mutation, et un fournisseur client qui n'apporte rien
-de plus que l'appel direct d'une server action.
-
-### Déclarer les server actions dans la page
-
-Une server action déclarée dans une route fabrique un point d'entrée ad hoc, sans schéma de
-validation. Le schéma de l'action est la frontière : il doit exister, et être le même pour toutes
-les routes qui appellent l'action.
-
-### Importer l'action dans le composant client
-
-C'est ce qui faisait planter les stories. Le mécanisme de simulation de modules de Storybook ne
-règle pas le problème : il résout les chemins sans connaître l'alias de chemin du dépôt, qui
-n'existe que pour TypeScript et le bundler.
-
-## Conséquences
+### Conséquences
 
 Positives :
 
@@ -110,7 +96,28 @@ Négatives :
 - La clé est résolue à l'exécution : le lien entre un composant et son action n'est plus visible
   dans les imports.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Garder tRPC
+
+Il aurait fallu maintenir deux mécanismes de mutation, et un fournisseur client qui n'apporte rien
+de plus que l'appel direct d'une server action.
+
+### Déclarer les server actions dans la page
+
+Une server action déclarée dans une route fabrique un point d'entrée ad hoc, sans schéma de
+validation. Le schéma de l'action est la frontière : il doit exister, et être le même pour toutes
+les routes qui appellent l'action.
+
+### Importer l'action dans le composant client
+
+C'est ce qui faisait planter les stories. Le mécanisme de simulation de modules de Storybook ne
+règle pas le problème : il résout les chemins sans connaître l'alias de chemin du dépôt, qui
+n'existe que pour TypeScript et le bundler.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Les abilities de chaque feature décrivent les comportements que les actions exposent ; ce sont des
 specs exécutables, jouées par les tests, et elles font foi. Les règles normatives sur les contrats
@@ -118,8 +125,14 @@ d'action, les erreurs métier, la route mince et l'injection sont dans les
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md). Le
 mode d'emploi court est dans la section « Server Actions » de [`AGENTS.md`](../../AGENTS.md).
 
-## Références
+### Références
 
 - [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — conventions d'architecture des features
 - [`AGENTS.md`](../../AGENTS.md) — section « Server Actions »
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

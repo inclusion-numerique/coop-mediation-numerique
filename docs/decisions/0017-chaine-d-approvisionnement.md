@@ -1,16 +1,12 @@
-# ADR-017 : Chaîne d'approvisionnement des dépendances
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Chaîne d'approvisionnement des dépendances
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Plusieurs constats s'additionnaient :
 
@@ -22,7 +18,17 @@ Plusieurs constats s'additionnaient :
 - D'autres portes d'entrée existent : un script chargé depuis un CDN sans version fixée, une
   montée de dépendance fusionnée sans relecture, un secret commité par erreur.
 
+## Options envisagées
+
+- Chaîne d'approvisionnement des dépendances (option retenue)
+- Abaisser la quarantaine ponctuellement
+- Autoriser les scripts d'installation par défaut
+- Fusionner les PR de Dependabot
+- Garder le CDN en fixant la version et une empreinte d'intégrité
+
 ## Décision
+
+Option retenue : « Chaîne d'approvisionnement des dépendances ».
 
 Aucun code tiers n'entre dans le dépôt, sur les postes, en CI ou dans le navigateur sans être
 passé par un délai de quarantaine, un lockfile et une décision explicite. Les secrets sont
@@ -104,30 +110,7 @@ parade est de référencer chaque action par l'empreinte exacte de sa version.
 Cible à atteindre, ticket à ouvrir : épingler les actions par empreinte, de façon automatique
 avec Renovate.
 
-## Alternatives écartées
-
-### Abaisser la quarantaine ponctuellement
-
-Une option de ligne de commande peut abaisser le délai pour une installation. Elle ouvre tout le
-lockfile aux versions récentes, pas seulement le paquet visé. L'exclusion nommée garde la
-protection pour tout le reste.
-
-### Autoriser les scripts d'installation par défaut
-
-C'est le comportement historique de npm, et le vecteur des vers. Une liste explicite coûte une
-ligne par paquet natif.
-
-### Fusionner les PR de Dependabot
-
-Il faudrait donner à ses workflows les secrets de la CI et accepter son découpage des montées. Une
-PR créée à la main garde la maîtrise du découpage et de la relecture.
-
-### Garder le CDN en fixant la version et une empreinte d'intégrité
-
-Cela protège d'une modification du fichier, pas d'une version piégée choisie au moment de la
-fixer. Le script échappe toujours à la quarantaine et au lockfile.
-
-## Conséquences
+### Conséquences
 
 **Positives**
 
@@ -150,7 +133,32 @@ fixer. Le script échappe toujours à la quarantaine et au lockfile.
 - Tant que les actions GitHub ne sont pas épinglées par empreinte, elles échappent à la
   quarantaine et au verrouillage.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Abaisser la quarantaine ponctuellement
+
+Une option de ligne de commande peut abaisser le délai pour une installation. Elle ouvre tout le
+lockfile aux versions récentes, pas seulement le paquet visé. L'exclusion nommée garde la
+protection pour tout le reste.
+
+### Autoriser les scripts d'installation par défaut
+
+C'est le comportement historique de npm, et le vecteur des vers. Une liste explicite coûte une
+ligne par paquet natif.
+
+### Fusionner les PR de Dependabot
+
+Il faudrait donner à ses workflows les secrets de la CI et accepter son découpage des montées. Une
+PR créée à la main garde la maîtrise du découpage et de la relecture.
+
+### Garder le CDN en fixant la version et une empreinte d'intégrité
+
+Cela protège d'une modification du fichier, pas d'une version piégée choisie au moment de la
+fixer. Le script échappe toujours à la quarantaine et au lockfile.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 - [Configuration de pnpm](../../pnpm-workspace.yaml) : délai de quarantaine, liste d'exclusions,
   liste des scripts d'installation et surcharges.
@@ -161,8 +169,14 @@ fixer. Le script échappe toujours à la quarantaine et au lockfile.
   le hook de pré-commit refuse le commit, et rôle de ce hook, qui formate les fichiers indexés avec
   Biome et cherche des secrets avec gitleaks.
 
-## Références
+### Références
 
 - [ADR-010 : Styles : utilitaires du DSFR et intégration officielle de react-dsfr](./0010-styles-dsfr.md)
 - [ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu](./0015-ci-github-actions-et-opentofu.md)
 - [Guide de contribution](../../CONTRIBUTING.md)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

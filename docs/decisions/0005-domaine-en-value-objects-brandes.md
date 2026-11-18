@@ -1,16 +1,12 @@
-# ADR-005 : Domaine modélisé par des value objects brandés
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Domaine modélisé par des value objects brandés
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Avant la refacto, le domaine se confondait avec le schéma Prisma. Un bénéficiaire était une
 ligne de table : des `string | null`, des booléens et des champs qui ne prennent leur sens
@@ -29,7 +25,17 @@ Le découpage du code en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne à chaque feature un
 domaine à elle ; cet ADR décide comment ce domaine se modélise.
 
+## Options envisagées
+
+- Domaine modélisé par des value objects brandés (option retenue)
+- Garder les types générés par Prisma comme types du domaine
+- Une bibliothèque de modélisation plus complète, comme Effect
+- Des types nominaux faits à la main, avec des fonctions de validation séparées
+- Un préprocesseur passé à `defineModel`
+
 ## Décision
+
+Option retenue : « Domaine modélisé par des value objects brandés ».
 
 Le domaine ne manipule que des valeurs validées par construction : chaque primitif métier est un
 value object brandé, chaque état une union discriminée. Le domaine est pur, et une couche de
@@ -73,7 +79,28 @@ Le dossier `db` de la feature traduit entre Prisma et le domaine :
 - un test aller-retour par transfert : domaine, puis base, puis domaine rend la même valeur, sur
   un cas minimal et un cas maximal.
 
-## Alternatives écartées
+### Conséquences
+
+Positives :
+
+- Une valeur du domaine a été validée, par construction.
+- Le compilateur refuse de passer un identifiant de médiateur là où un identifiant de
+  bénéficiaire est attendu.
+- Les combinaisons de colonnes incohérentes n'ont plus de représentation dans le domaine.
+- Les tests aller-retour détectent une perte d'information dans le transfert.
+- Une donnée invalide en base est repérée à la lecture, au lieu de s'afficher.
+
+Négatives :
+
+- Un transfert strict refuse des lignes que l'ancien code tolérait. Il a fallu des jobs de
+  normalisation des données, et une variante tolérante du smart constructor pour les lectures
+  qui doivent le rester.
+- Plus de code : un fichier par value object, un transfert et son test par entité.
+- Indexer une table par une valeur brandée ne compile pas directement. Les enums de la feature
+  bénéficiaire ont perdu leur brand pour cette raison ; les features plus récentes gardent le
+  brand et lisent leurs tables par une fonction typée.
+
+## Avantages et inconvénients des options
 
 ### Garder les types générés par Prisma comme types du domaine
 
@@ -97,34 +124,21 @@ Il n'était appliqué que par le smart constructor, pas quand le schéma était 
 autre : un value object imbriqué passait la validation sans être normalisé. Il a été retiré au
 profit de la normalisation dans le schéma.
 
-## Conséquences
+## Plus d'informations
 
-Positives :
-
-- Une valeur du domaine a été validée, par construction.
-- Le compilateur refuse de passer un identifiant de médiateur là où un identifiant de
-  bénéficiaire est attendu.
-- Les combinaisons de colonnes incohérentes n'ont plus de représentation dans le domaine.
-- Les tests aller-retour détectent une perte d'information dans le transfert.
-- Une donnée invalide en base est repérée à la lecture, au lieu de s'afficher.
-
-Négatives :
-
-- Un transfert strict refuse des lignes que l'ancien code tolérait. Il a fallu des jobs de
-  normalisation des données, et une variante tolérante du smart constructor pour les lectures
-  qui doivent le rester.
-- Plus de code : un fichier par value object, un transfert et son test par entité.
-- Indexer une table par une valeur brandée ne compile pas directement. Les enums de la feature
-  bénéficiaire ont perdu leur brand pour cette raison ; les features plus récentes gardent le
-  brand et lisent leurs tables par une fonction typée.
-
-## Où trouver le détail
+### Où trouver le détail
 
 Les règles normatives du modèle de domaine (value objects, unions, pureté, transfert et tests
 aller-retour) sont dans la section 2 des
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).
 
-## Références
+### Références
 
 - [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — section 2, modèle de domaine
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

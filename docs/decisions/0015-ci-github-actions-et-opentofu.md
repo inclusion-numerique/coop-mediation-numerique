@@ -1,16 +1,12 @@
-# ADR-015 : CI sur GitHub Actions, infrastructure en HCL avec OpenTofu
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# CI sur GitHub Actions, infrastructure en HCL avec OpenTofu
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 La CI et les déploiements tournaient sur CircleCI. L'infrastructure était décrite en TypeScript
 avec CDKTF.
@@ -26,7 +22,18 @@ Plusieurs problèmes s'additionnaient :
 
 Le dépôt est hébergé sur GitHub. Une seule personne développe et opère l'application.
 
+## Options envisagées
+
+- CI sur GitHub Actions, infrastructure en HCL avec OpenTofu (option retenue)
+- Rester sur CircleCI
+- Approuver la preview par un environnement protégé
+- Cypress Cloud
+- Pulumi en TypeScript
+- Terraform
+
 ## Décision
+
+Option retenue : « CI sur GitHub Actions, infrastructure en HCL avec OpenTofu ».
 
 La CI, les déploiements et les règles de fusion passent tous par GitHub. L'infrastructure est
 décrite en HCL et appliquée par OpenTofu, avec des plans approuvés au moment de la release.
@@ -75,7 +82,29 @@ On voit l'effet d'un changement avant la fusion, et on l'approuve au moment où 
 Poser le label déploie ; chaque push redéploie tant que le label est là. C'est le modèle courant
 dans l'écosystème (PullPreview, Cloud Posse).
 
-## Alternatives écartées
+### Conséquences
+
+**Positives**
+
+- Un seul outil pour le code, la CI, les règles de fusion et les déploiements.
+- Pas de fusion sans les checks requis, ni avec une branche en retard sur la branche principale.
+- Une preview se demande depuis la PR, sans approbation.
+- Un changement d'infrastructure est visible dans la PR et approuvé à la release.
+- Les jobs de déploiement sont revenus à Node 24, et la dépendance à une version de TypeScript en
+  développement a disparu.
+
+**Négatives ou à surveiller**
+
+- **Les workflows et les actions composites sont du code à maintenir**, avec des scripts dans du
+  YAML.
+- **L'approbation de l'infrastructure repose sur une seule personne** : en son absence, la release
+  reste bloquée.
+- **Le mode strict oblige à remettre la branche à jour** à chaque fusion dans la branche
+  principale, ce qui relance toute la CI.
+- **Le plan de CI d'une branche lit les états réels** : il a besoin des secrets Scaleway.
+- **Certains pièges d'OpenTofu ne se voient pas dans le JSON du plan** : un script les filtre.
+
+## Avantages et inconvénients des options
 
 ### Rester sur CircleCI
 
@@ -102,36 +131,22 @@ chaque ressource dans un nouvel état.
 Le langage est le même. OpenTofu est sous licence libre (MPL) et sous l'égide de la Linux
 Foundation, alors que Terraform est passé sous licence BUSL en 2023.
 
-## Conséquences
+## Plus d'informations
 
-**Positives**
-
-- Un seul outil pour le code, la CI, les règles de fusion et les déploiements.
-- Pas de fusion sans les checks requis, ni avec une branche en retard sur la branche principale.
-- Une preview se demande depuis la PR, sans approbation.
-- Un changement d'infrastructure est visible dans la PR et approuvé à la release.
-- Les jobs de déploiement sont revenus à Node 24, et la dépendance à une version de TypeScript en
-  développement a disparu.
-
-**Négatives ou à surveiller**
-
-- **Les workflows et les actions composites sont du code à maintenir**, avec des scripts dans du
-  YAML.
-- **L'approbation de l'infrastructure repose sur une seule personne** : en son absence, la release
-  reste bloquée.
-- **Le mode strict oblige à remettre la branche à jour** à chaque fusion dans la branche
-  principale, ce qui relance toute la CI.
-- **Le plan de CI d'une branche lit les états réels** : il a besoin des secrets Scaleway.
-- **Certains pièges d'OpenTofu ne se voient pas dans le JSON du plan** : un script les filtre.
-
-## Où trouver le détail
+### Où trouver le détail
 
 - Le [README d'infrastructure](../../infrastructure/README.md#deploiement) décrit le déroulé
   d'une release, l'approbation des changements d'infrastructure et la destruction d'une preview.
 - La [section CI/CD du guide de contribution](../../CONTRIBUTING.md#ci-cd) décrit ce que fait
   chaque workflow et comment demander une preview.
 
-## Références
+### Références
 
 - [README d'infrastructure, déploiement](../../infrastructure/README.md#deploiement)
 - [Guide de contribution, intégration et déploiement continus](../../CONTRIBUTING.md#ci-cd)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

@@ -1,16 +1,12 @@
-# ADR-011 : Télémétrie isolée dans la configuration
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Télémétrie isolée dans la configuration
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté.
-
-## Contexte
+## Contexte et problème
 
 ### Sentry importé partout
 
@@ -34,7 +30,14 @@ pouvait alors disparaître sans laisser de trace.
 Un module qui importe Sentry ne se teste qu'en remplaçant ce module. Cela va contre la règle de
 tests posée par l'[ADR-008](./0008-strategie-de-tests.md) : ni mock de module, ni espion.
 
+## Options envisagées
+
+- Télémétrie isolée dans la configuration (option retenue)
+- Garder l'appel optionnel à Sentry partout
+
 ## Décision
+
+Option retenue : « Télémétrie isolée dans la configuration ».
 
 Sentry n'est connu que de la configuration, qui choisit une implémentation de télémétrie par
 environnement. Le reste de l'application dépend d'interfaces neutres, prises dans la configuration
@@ -64,14 +67,7 @@ signaleur en option ; la configuration lui fournit le sien.
 Un appel à un service externe est enveloppé dans la configuration de ce service. Un échec y est
 signalé une fois : les features qui l'appellent n'ont pas à le signaler elles-mêmes.
 
-## Alternatives écartées
-
-### Garder l'appel optionnel à Sentry partout
-
-Il empêchait le plantage hors de Next, mais au prix d'un signalement perdu sans bruit. Et il
-laissait Sentry importé partout, donc remplacé partout dans les tests.
-
-## Conséquences
+### Conséquences
 
 Positives :
 
@@ -93,16 +89,31 @@ Négatives :
 - Quelques modules hors des racines de composition importent encore le signaleur directement au
   lieu de le recevoir par injection. Cible à atteindre, ticket à ouvrir.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Garder l'appel optionnel à Sentry partout
+
+Il empêchait le plantage hors de Next, mais au prix d'un signalement perdu sans bruit. Et il
+laissait Sentry importé partout, donc remplacé partout dans les tests.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Le mode d'emploi de la télémétrie, ses variantes et la façon de les générer sont dans la section
 « Telemetry » d'[`AGENTS.md`](../../AGENTS.md). Les règles normatives sur l'injection et les tests
 sans mock sont dans les
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).
 
-## Références
+### Références
 
 - [ADR-006 : Server actions et injection, à la place de tRPC](./0006-server-actions-et-injection.md)
 - [ADR-008 : Un scénario BDD par ability, Vitest sans isolation ni mock](./0008-strategie-de-tests.md)
 - [`AGENTS.md`](../../AGENTS.md) — section « Telemetry »
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — conventions d'architecture des features
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

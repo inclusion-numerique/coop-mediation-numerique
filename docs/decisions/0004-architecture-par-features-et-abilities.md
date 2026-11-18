@@ -1,17 +1,12 @@
-# ADR-004 : Architecture par features et abilities
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Architecture par features et abilities
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté — appliqué à toutes les features métier sauf `legal`, qui garde son dossier `use-cases/`.
-Les features techniques `adresse`, `authentification` et `pictograms` n'ont pas d'abilities.
-
-## Contexte
+## Contexte et problème
 
 Avant la refacto (état au 29/04/2026), le code métier était réparti à plusieurs adresses :
 
@@ -29,7 +24,20 @@ Un même concept vivait souvent à deux endroits. L'accueil, par exemple, était
 lire l'implémentation d'une autre. Modifier un cas d'usage demandait de retrouver ses morceaux
 dans plusieurs dossiers, et en supprimer un sans casser les autres était risqué.
 
+## Options envisagées
+
+- Architecture par features et abilities (option retenue)
+- Garder les `use-cases/` et les routeurs tRPC
+- Migrer couche par couche
+- Partager du code entre abilities par import direct
+- Laisser une feature importer une autre par sa frontière publique
+
 ## Décision
+
+Option retenue : « Architecture par features et abilities ».
+
+Appliqué à toutes les features métier sauf `legal`, qui garde son dossier `use-cases/`.
+Les features techniques `adresse`, `authentification` et `pictograms` n'ont pas d'abilities.
 
 ### Une feature, des abilities
 
@@ -81,7 +89,26 @@ Le détail normatif (arborescence, règles AR, AB, IS) est dans
 [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md),
 sections 1, 4 et 5.
 
-## Alternatives écartées
+### Conséquences
+
+Positives :
+
+- Un cas d'usage se lit, se teste et se supprime dans un seul dossier.
+- tRPC a disparu de l'application.
+- Les dossiers métier à la racine de `src/` (`beneficiaire/`, `equipe/`, `mediateurs/`,
+  `structure/`, `rdv-service-public/`) n'existent plus.
+
+Négatives :
+
+- Plus de fichiers et plus de dossiers pour un même comportement.
+- De la duplication volontaire entre abilities, qu'il faut assumer en revue.
+- La composition entre features se fait dans les routes, qui répètent parfois le même câblage.
+- Le dossier `src/composition/` (`statistiques`, `utilisateurs`) assemble encore des features
+  hors de `app/`. Ce n'est pas le modèle cible et il reste à revoir.
+- L'exception des features non refactorées rend la règle moins simple à vérifier tant que la
+  migration n'est pas finie.
+
+## Avantages et inconvénients des options
 
 ### Garder les `use-cases/` et les routeurs tRPC
 
@@ -105,25 +132,14 @@ vingtaine de lignes a été jugée moins coûteuse.
 C'était une étape de la migration. La règle a été durcie : même par `index.ts` ou `server.ts`,
 l'import crée une dépendance entre périmètres qui devraient pouvoir évoluer seuls.
 
-## Conséquences
+## Plus d'informations
 
-Positives :
-
-- Un cas d'usage se lit, se teste et se supprime dans un seul dossier.
-- tRPC a disparu de l'application.
-- Les dossiers métier à la racine de `src/` (`beneficiaire/`, `equipe/`, `mediateurs/`,
-  `structure/`, `rdv-service-public/`) n'existent plus.
-
-Négatives :
-
-- Plus de fichiers et plus de dossiers pour un même comportement.
-- De la duplication volontaire entre abilities, qu'il faut assumer en revue.
-- La composition entre features se fait dans les routes, qui répètent parfois le même câblage.
-- Le dossier `src/composition/` (`statistiques`, `utilisateurs`) assemble encore des features
-  hors de `app/`. Ce n'est pas le modèle cible et il reste à revoir.
-- L'exception des features non refactorées rend la règle moins simple à vérifier tant que la
-  migration n'est pas finie.
-
-## Références
+### Références
 
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — AR-2 à AR-4, AB-1, AB-2, IS-1, IS-2, PR-7
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

@@ -1,16 +1,12 @@
-# ADR-007 : `app/` ne contient que le routage Next
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# `app/` ne contient que le routage Next
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 Avant la refacto, le dossier `app/` portait bien plus que le routage. Une route pouvait réunir à
 la fois le contrôle d'accès, une requête en base, la mise en forme des données et tout le rendu de
@@ -30,7 +26,16 @@ Le découpage du code en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne une place au code métier ;
 cet ADR décide de ce qui reste dans le dossier de routage.
 
+## Options envisagées
+
+- `app/` ne contient que le routage Next (option retenue)
+- Le critère « pas de composant dans `app/` »
+- Des fichiers de composition dans `app/` ou dans un dossier de composition central
+- Un constructeur de pages générique à middlewares enchaînés
+
 ## Décision
+
+Option retenue : « `app/` ne contient que le routage Next ».
 
 Le dossier `app/` ne garde que ce qui est couplé à Next. Une route s'y limite à contrôler l'accès,
 préparer ses entrées, récupérer ses données par une ability et rendre un composant de la feature ;
@@ -80,25 +85,7 @@ Quand une page assemble plusieurs features :
 Les formes d'injection acceptées sont le conteneur d'injection, le composant passé en prop et le
 paramètre.
 
-## Alternatives écartées
-
-### Le critère « pas de composant dans `app/` »
-
-C'était la première formulation de la règle. Elle laissait dans le dossier de routage des fichiers
-qui ne sont pas des composants mais n'ont rien de Next, comme les chargeurs de données. Le critère
-du couplage au framework la remplace.
-
-### Des fichiers de composition dans `app/` ou dans un dossier de composition central
-
-Ces fichiers contiennent de la logique qui n'a rien de Next, et deviennent des carrefours que
-personne ne possède.
-
-### Un constructeur de pages générique à middlewares enchaînés
-
-Il imposerait les quatre étapes par le code. Il n'est pas adopté : une route d'une quarantaine de
-lignes qui écrit les quatre étapes directement reste lisible.
-
-## Conséquences
+### Conséquences
 
 Positives :
 
@@ -117,7 +104,27 @@ Négatives :
 - Le dossier de composition central existe encore et contredit la règle. Cible à atteindre, ticket
   à ouvrir.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Le critère « pas de composant dans `app/` »
+
+C'était la première formulation de la règle. Elle laissait dans le dossier de routage des fichiers
+qui ne sont pas des composants mais n'ont rien de Next, comme les chargeurs de données. Le critère
+du couplage au framework la remplace.
+
+### Des fichiers de composition dans `app/` ou dans un dossier de composition central
+
+Ces fichiers contiennent de la logique qui n'a rien de Next, et deviennent des carrefours que
+personne ne possède.
+
+### Un constructeur de pages générique à middlewares enchaînés
+
+Il imposerait les quatre étapes par le code. Il n'est pas adopté : une route d'une quarantaine de
+lignes qui écrit les quatre étapes directement reste lisible.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Les abilities de chaque feature décrivent les comportements que les pages exposent ; ce sont des
 specs exécutables, jouées par les tests, et elles font foi. Les règles normatives sur la route
@@ -125,8 +132,14 @@ mince, l'absence de composant dans le dossier de routage et les presenters sont 
 UI-1 et UI-4 des
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md).
 
-## Références
+### Références
 
 - [ADR-004 : Architecture par features et abilities](./0004-architecture-par-features-et-abilities.md)
 - [ADR-006 : Server actions et injection, à la place de tRPC](./0006-server-actions-et-injection.md)
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — règles AR-5, UI-1 et UI-4
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

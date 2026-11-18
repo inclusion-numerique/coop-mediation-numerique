@@ -1,16 +1,12 @@
-# ADR-010 : Styles : utilitaires du DSFR et intégration officielle de react-dsfr
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Styles : utilitaires du DSFR et intégration officielle de react-dsfr
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté.
-
-## Contexte
+## Contexte et problème
 
 ### Des styles éparpillés
 
@@ -30,7 +26,15 @@ DSFR dans les fichiers publics de l'application, le script du DSFR était charg�
 icônes venaient d'un CDN, les polices étaient préchargées par du code maison, et le thème clair ou
 sombre passait par un cookie et un bouton propres à l'application.
 
+## Options envisagées
+
+- Styles : utilitaires du DSFR et intégration officielle de react-dsfr (option retenue)
+- Déplacer les fichiers CSS avec leurs composants
+- Garder l'intégration faite à la main
+
 ## Décision
+
+Option retenue : « Styles : utilitaires du DSFR et intégration officielle de react-dsfr ».
 
 L'apparence d'un composant s'écrit avec les classes du DSFR plutôt qu'avec une feuille de style
 qui lui est propre, et le DSFR est intégré exactement comme le documente react-dsfr.
@@ -71,20 +75,7 @@ s'exécute toujours avant le reste de la page.
 Le script de copie, le dossier public du DSFR, la dépendance directe au DSFR, le CDN d'icônes, le
 chargement manuel du script, le préchargement maison des polices, le cookie et le bouton de thème.
 
-## Alternatives écartées
-
-### Déplacer les fichiers CSS avec leurs composants
-
-Chaque déplacement aurait gardé du CSS dont une partie doublait le DSFR. Le déplacement est le
-moment où quelqu'un relit ces règles : c'est là qu'on les convertit.
-
-### Garder l'intégration faite à la main
-
-Elle obligeait à maintenir un script de copie, une version du DSFR découplée de celle de
-react-dsfr, et un mécanisme de thème propre. L'installation documentée par react-dsfr couvre ces
-besoins et élague le CSS inutilisé.
-
-## Conséquences
+### Conséquences
 
 Positives :
 
@@ -104,14 +95,35 @@ Négatives :
   reste nécessaire.
 - Aucun outil ne vérifie une mise en page : une correction CSS se vérifie à l'œil.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Déplacer les fichiers CSS avec leurs composants
+
+Chaque déplacement aurait gardé du CSS dont une partie doublait le DSFR. Le déplacement est le
+moment où quelqu'un relit ces règles : c'est là qu'on les convertit.
+
+### Garder l'intégration faite à la main
+
+Elle obligeait à maintenir un script de copie, une version du DSFR découplée de celle de
+react-dsfr, et un mécanisme de thème propre. L'installation documentée par react-dsfr couvre ces
+besoins et élague le CSS inutilisé.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Les règles normatives sur les styles sont dans les
 [conventions d'architecture des features](../../.claude/conventions/feature-architecture.md) et
 dans la section « CSS Classes » d'[`AGENTS.md`](../../AGENTS.md).
 
-## Références
+### Références
 
 - [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md) — règle sur les `*.module.css`
 - [`AGENTS.md`](../../AGENTS.md) — section « CSS Classes »
 - [react-dsfr](https://react-dsfr.codegouv.studio/) — documentation officielle, installation pour Next.js App Router
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |

@@ -1,16 +1,12 @@
-# ADR-014 : Migrations destructives en deux temps
+---
+status: "accepté"
+date: 2026-11-17
+decision-makers: Marc Gavanier
+---
 
-## Auteurs et historique
+# Migrations destructives en deux temps
 
-| Date       | Auteur        | Action                                                    |
-| ---------- | ------------- | --------------------------------------------------------- |
-| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
-
-## Statut
-
-Accepté
-
-## Contexte
+## Contexte et problème
 
 En production, le déploiement enchaîne d'abord les migrations de la base, puis le déploiement du
 nouveau conteneur.
@@ -25,7 +21,16 @@ colonne lue par la session fait échouer toutes les requêtes authentifiées jus
 Le cas s'est présenté : une migration qui supprimait une colonne et des tables d'employeuses a été
 fusionnée, puis retirée avant la mise en production.
 
+## Options envisagées
+
+- Migrations destructives en deux temps (option retenue)
+- Migrer après la bascule du conteneur
+- Accepter une coupure pendant le déploiement
+- Laisser les colonnes et tables mortes en base
+
 ## Décision
+
+Option retenue : « Migrations destructives en deux temps ».
 
 Une suppression de table ou de colonne se fait en deux pull requests, déployées l'une après
 l'autre. La première retire l'objet du code, la seconde le supprime de la base une fois la
@@ -52,25 +57,7 @@ Avant de la fusionner :
 Si une vue de l'Entrepôt dépend de l'objet, le `DROP` attend que l'équipe de l'Entrepôt l'ait
 revue.
 
-## Alternatives écartées
-
-### Migrer après la bascule du conteneur
-
-Le nouveau code tournerait alors sur l'ancienne base. Une migration en échec laisserait en service
-un code qui attend un schéma absent, sans retour arrière simple. L'ordre actuel garde le retour
-arrière sûr.
-
-### Accepter une coupure pendant le déploiement
-
-Toutes les requêtes authentifiées échoueraient pendant plusieurs minutes, sans fenêtre de
-maintenance annoncée.
-
-### Laisser les colonnes et tables mortes en base
-
-Elles s'accumulent, trompent la lecture du schéma et gardent des données qui n'ont plus de raison
-d'être.
-
-## Conséquences
+### Conséquences
 
 **Positives**
 
@@ -89,11 +76,37 @@ d'être.
 l'infrastructure. Le risque y est inversé : le nouveau code tourne un moment sur une base pas
 encore migrée.
 
-## Où trouver le détail
+## Avantages et inconvénients des options
+
+### Migrer après la bascule du conteneur
+
+Le nouveau code tournerait alors sur l'ancienne base. Une migration en échec laisserait en service
+un code qui attend un schéma absent, sans retour arrière simple. L'ordre actuel garde le retour
+arrière sûr.
+
+### Accepter une coupure pendant le déploiement
+
+Toutes les requêtes authentifiées échoueraient pendant plusieurs minutes, sans fenêtre de
+maintenance annoncée.
+
+### Laisser les colonnes et tables mortes en base
+
+Elles s'accumulent, trompent la lecture du schéma et gardent des données qui n'ont plus de raison
+d'être.
+
+## Plus d'informations
+
+### Où trouver le détail
 
 Le [README d'infrastructure](../../infrastructure/README.md) décrit l'accès à la base de
 production, par le bastion de l'Entrepôt.
 
-## Références
+### Références
 
 - [ADR-012 : La base de la coop dans le schéma `coop` de l'Entrepôt](./0012-base-coop-dans-l-entrepot.md)
+
+### Historique
+
+| Date       | Auteur        | Action                                                    |
+| ---------- | ------------- | --------------------------------------------------------- |
+| 2026-11-17 | Marc Gavanier | Rédaction de l'ADR a posteriori, d'après l'historique git |
