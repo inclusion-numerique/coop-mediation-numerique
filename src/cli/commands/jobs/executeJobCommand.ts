@@ -1,8 +1,4 @@
 import { Argument, Command } from '@commander-js/extra-typings'
-import {
-  configureDeploymentTarget,
-  DeploymentTargetOption,
-} from '@/cli/deploymentTarget'
 import { executeJob, jobExecutors } from '@/jobs/jobExecutors'
 import { JobValidation } from '@/jobs/jobs'
 import { output } from '@/libraries/console/output'
@@ -13,9 +9,7 @@ export const executeJobCommand = new Command()
     new Argument('<name>', 'Job name').choices(Object.keys(jobExecutors)),
   )
   .addArgument(new Argument('[data]', 'Job data'))
-  .addOption(DeploymentTargetOption)
-  .action(async (name, dataAsString, options) => {
-    await configureDeploymentTarget(options)
+  .action(async (name, dataAsString) => {
     const payload: unknown = dataAsString ? JSON.parse(dataAsString) : undefined
 
     const jobPayload = await JobValidation.safeParseAsync({

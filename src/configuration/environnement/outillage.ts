@@ -1,8 +1,6 @@
 import { z } from 'zod'
 
 const schemaOutillage = z.object({
-  CLI_TARGET_DEPLOYMENT_BRANCH: z.string().optional(),
-  CLI_TARGET_DEPLOYMENT_DATABASE_URL: z.string().optional(),
   CONTAINER_NAMESPACE_NAME: z.string().default(''),
   DATABASE_INSTANCE_ID: z.string().optional(),
   DATABASE_INSTANCE_NAME: z.string().default(''),

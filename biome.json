@@ -331,7 +331,6 @@
       "includes": [
         "src/configuration/environnement/**",
         "src/cli/instrument.mts",
-        "src/cli/deploymentTarget.ts",
         "src/cli/commands/infrastructure/createTfVarsFileFromEnvironment.ts",
         "next.config.ts",
         "prisma.config.ts",
