@@ -1,5 +1,6 @@
 import type { SortDirection } from '@arckit/resultset'
-import { type DataTableUrlState, DEFAULT_PAGE } from '@/libraries/data-table'
+import { type DataTableUrlState } from '@/libraries/data-table'
+import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
 import { entierPositifLu } from '@/libraries/parametres-d-url'
 import type { ListerEmployeuses } from '../domain/lister-employeuses'
 

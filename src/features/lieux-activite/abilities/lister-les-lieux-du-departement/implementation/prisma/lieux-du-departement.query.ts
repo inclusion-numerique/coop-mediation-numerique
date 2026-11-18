@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
-import { DEFAULT_PAGE } from '@/libraries/data-table'
+import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
 import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import { entierPositifLu } from '@/libraries/parametres-d-url'
 import type { LieuEnListe } from '../../../../domain/lieu-en-liste'

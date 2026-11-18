@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { DEFAULT_PAGE } from '@/libraries/data-table'
+import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
 import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { entierPositifLu } from '@/libraries/parametres-d-url'
