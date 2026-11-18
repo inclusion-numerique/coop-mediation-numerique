@@ -22,26 +22,24 @@ export const MesLieuxActivitePage = ({
   modaleDeRetrait: ReactNode
   entete?: ReactNode
 }) => (
-  <div className="fr-container fr-container--medium fr-mb-32v">
+  <div className="fr-container fr-container--800 fr-mb-32v">
     {entete}
     <main className="fr-mb-32v">
-      <span className="fr-flex fr-flex-wrap fr-direction-md-row fr-direction-column fr-align-items-md-center fr-flex-gap-4v fr-my-10v">
-        <span className="fr-flex fr-direction-row fr-align-items-end fr-flex-gap-4v">
-          <span
-            className="ri-home-office-line fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
-            aria-hidden
-          />
-          <h1 className="fr-page-title fr-m-0">Mes lieux d’activités</h1>
-        </span>
+      <div className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v fr-my-12v">
+        <span
+          className="ri-home-office-line fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
+          aria-hidden
+        />
+        <h1 className="fr-page-title fr-m-0">Mes lieux d’activités</h1>
         <Button
-          className="fr-ml-md-auto"
+          className="fr-ml-auto"
           priority="secondary"
           linkProps={{ href: '/coop/lieux-activite/ajouter' }}
           iconId="fr-icon-add-line"
         >
           Ajouter un lieu
         </Button>
-      </span>
+      </div>
       {visibilite}
       <div className="fr-flex fr-direction-column fr-pt-4v">
         {lieux.length === 0 ? (

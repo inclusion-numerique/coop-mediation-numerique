@@ -51,7 +51,7 @@ const EquipeListePage = ({
             </span>
             <span>{enTete}</span>
           </div>
-          <div>
+          <div className="fr-mb-12v">
             Équipe coordonnée par{' '}
             <span className="fr-text--bold">{coordinateur.nom}</span>
             <div className="fr-flex fr-text-mention--grey fr-text--sm fr-mt-2v fr-mb-0 fr-flex-gap-2v">
