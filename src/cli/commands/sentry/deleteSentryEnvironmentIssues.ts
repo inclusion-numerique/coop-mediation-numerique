@@ -1,7 +1,7 @@
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { output, outputError } from '@/libraries/console/output'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 import {
   createSentryHttpClient,
   deleteIssuesByIds,
@@ -38,10 +38,10 @@ export const deleteSentryEnvironmentIssues = new Command()
     }
 
     const config: SentryConfig = {
-      url: ServerWebAppConfig.Sentry.url,
-      org: ServerWebAppConfig.Sentry.org,
-      project: ServerWebAppConfig.Sentry.project,
-      authToken: ServerWebAppConfig.Sentry.authToken,
+      url: environnementOutillage.SENTRY_URL,
+      org: environnementOutillage.SENTRY_ORG ?? '',
+      project: environnementOutillage.SENTRY_PROJECT ?? '',
+      authToken: environnementOutillage.SENTRY_AUTH_TOKEN ?? '',
     }
     const http = createSentryHttpClient(config)
 

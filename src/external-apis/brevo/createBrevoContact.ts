@@ -74,4 +74,4 @@ const createContactImmediate = ({
 export const createBrevoContact = brevoApiThrottle(createContactImmediate)
 
 export const deploymentCanCreateBrevoContact = () =>
-  PublicWebAppConfig.isMain && !PublicWebAppConfig.isE2e
+  PublicWebAppConfig.isMain && !ServerWebAppConfig.isE2e

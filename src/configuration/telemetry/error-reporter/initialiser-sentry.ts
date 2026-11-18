@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { environnementClient } from '@/configuration/environnement/client'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 // Routes à ignorer pour le tracing (haut volume, peu d'intérêt)
@@ -10,7 +11,10 @@ const ignoredTraceRoutes = [
 ]
 
 export const initialiserSentry = (): void => {
-  if (!PublicWebAppConfig.Sentry.dsn || process.env.NODE_ENV !== 'production') {
+  if (
+    !PublicWebAppConfig.Sentry.dsn ||
+    environnementClient.NODE_ENV !== 'production'
+  ) {
     return
   }
 

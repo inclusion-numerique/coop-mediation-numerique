@@ -50,4 +50,4 @@ export const removeBrevoContactFromList = brevoApiThrottle(
 )
 
 export const deploymentCanRemoveBrevoContactFromList = () =>
-  PublicWebAppConfig.isMain && !PublicWebAppConfig.isE2e
+  PublicWebAppConfig.isMain && !ServerWebAppConfig.isE2e

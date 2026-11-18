@@ -208,7 +208,8 @@
         "useSingleVarDeclarator": "error",
         "useTemplate": "error",
         "useThrowNewError": "error",
-        "useArrayLiterals": "error"
+        "useArrayLiterals": "error",
+        "noProcessEnv": "error"
       },
       "suspicious": {
         "noAsyncPromiseExecutor": "error",
@@ -322,6 +323,27 @@
         "rules": {
           "style": {
             "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "src/configuration/environnement/**",
+        "src/cli/instrument.mts",
+        "src/cli/deploymentTarget.ts",
+        "src/cli/commands/infrastructure/createTfVarsFileFromEnvironment.ts",
+        "next.config.ts",
+        "prisma.config.ts",
+        "prisma/**/prisma.config.ts",
+        "vitest.config.ts",
+        ".storybook/**",
+        "scripts/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noProcessEnv": "off"
           }
         }
       }

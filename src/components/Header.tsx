@@ -5,6 +5,7 @@ import HeaderBackLink from '@/components/HeaderBackLink'
 import { HeaderQuickAccess } from '@/components/HeaderQuickAccess'
 import { HeaderUserMenu } from '@/components/HeaderUserMenu'
 import LogoCoop from '@/components/LogoCoop'
+import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import { getHomepage } from '@/security/getHomepage'
 import styles from './Header.module.css'
@@ -52,7 +53,7 @@ const Header = ({
                         href={getHomepage(user)}
                         aria-current="page"
                         target="_self"
-                        title={process.env.NEXT_PUBLIC_APP_NAME}
+                        title={projectTitle}
                       >
                         <p className="fr-logo">
                           République

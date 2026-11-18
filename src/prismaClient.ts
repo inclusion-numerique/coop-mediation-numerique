@@ -1,14 +1,15 @@
 import { PrismaPg } from '@prisma/adapter-pg'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { PrismaClient } from '@/generated/prisma/client'
 import { createEnumArrayTypeParser } from '@/prisma/enumArrayTypeParser'
 import { timestampExtension } from '@/prisma/timestampExtension'
 
-const debugLog = process.env.PRISMA_ENABLE_LOGGING === '1'
+const debugLog = environnementServeur.PRISMA_ENABLE_LOGGING
 
 const createPrismaClient = () =>
   new PrismaClient({
     adapter: new PrismaPg(
-      { connectionString: process.env.DATABASE_URL },
+      { connectionString: environnementServeur.DATABASE_URL },
       { userDefinedTypeParser: createEnumArrayTypeParser() },
     ),
     log: debugLog
@@ -47,6 +48,6 @@ export const extendedPrismaClient =
 // consommatrices (`tx: Prisma.TransactionClient`, etc.) ; le hook s'exécute bien au runtime.
 export const prismaClient = extendedPrismaClient as unknown as PrismaClient
 
-if (process.env.NODE_ENV !== 'production') {
+if (environnementServeur.NODE_ENV !== 'production') {
   globalForPrisma.prismaClient = extendedPrismaClient
 }

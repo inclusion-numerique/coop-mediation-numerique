@@ -80,7 +80,7 @@ jobs:
       - name: Build jobs runner
         run: pnpm --silent build:jobs
       - name: Check jobs runner
-        run: node dist/verifier-le-bundle.cjs
+        run: pnpm --silent with-env node dist/verifier-le-bundle.cjs
       - name: Build docker image
         env:
           IMAGE: ${{ steps.namespace.outputs.image }}

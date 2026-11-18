@@ -5,6 +5,7 @@ import { promisify } from 'node:util'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
 import { varDirectory } from '@/libraries/chemins/varDirectory'
 import { output } from '@/libraries/console/output'
@@ -508,12 +509,12 @@ export const locallyRestoreLatestMainBackup = new Command(
     // schéma coop depuis la bascule prod. L'ancienne base coop (DATABASE_INSTANCE_ID /
     // BACKUP_DATABASE_NAME), plus alimentée en prod, n'est plus utilisée ici.
     const entrepotInstanceId = (
-      process.env.DATASPACE_DATABASE_INSTANCE_ID ?? ''
+      environnementOutillage.DATASPACE_DATABASE_INSTANCE_ID ?? ''
     ).split('/')[1]
     const entrepotBackupDatabaseName =
-      process.env.DATASPACE_BACKUP_DATABASE_NAME ?? ''
-    const secretKey = process.env.SCW_SECRET_KEY ?? ''
-    const databaseUrl = process.env.DATABASE_URL ?? ''
+      environnementOutillage.DATASPACE_BACKUP_DATABASE_NAME ?? ''
+    const secretKey = environnementOutillage.SCW_SECRET_KEY ?? ''
+    const databaseUrl = environnementOutillage.DATABASE_URL ?? ''
     const databaseUrlObject = new URL(databaseUrl ?? '')
     const user = databaseUrlObject.username
     const database = databaseUrlObject.pathname.split('/')[1]

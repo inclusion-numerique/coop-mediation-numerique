@@ -1,10 +1,11 @@
 import Script from 'next/script'
+import { environnementClient } from '@/configuration/environnement/client'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 
 // The Next <Script> tag expect a nonce as Next directly inject the code from the script file in an inline <script> tag
 export const Matomo = ({ nonce }: { nonce?: string }) =>
   PublicWebAppConfig.isMain &&
-  process.env.NODE_ENV === 'production' &&
+  environnementClient.NODE_ENV === 'production' &&
   PublicWebAppConfig.Matomo.host ? (
     <Script
       id="matomo"

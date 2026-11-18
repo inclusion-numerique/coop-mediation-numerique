@@ -1,5 +1,10 @@
 import { withSentryConfig } from '@sentry/nextjs/config'
 import type { NextConfig } from 'next'
+import './src/configuration/environnement/client'
+import { environnementOutillage } from './src/configuration/environnement/outillage'
+import { verifierEnvironnementServeurWeb } from './src/configuration/environnement/serveur'
+
+verifierEnvironnementServeurWeb()
 
 const nextConfig: NextConfig = {
   output: 'standalone',
@@ -9,15 +14,13 @@ const nextConfig: NextConfig = {
   },
 }
 
-const enableRelease = process.env.SENTRY_ENABLE_RELEASE === 'true'
-
 export default withSentryConfig(nextConfig, {
   silent: false,
   tunnelRoute: '/monitoring',
   widenClientFileUpload: true,
-  authToken: process.env.SENTRY_CI_TOKEN,
-  release: { create: enableRelease },
+  authToken: environnementOutillage.SENTRY_CI_TOKEN,
+  release: { create: environnementOutillage.SENTRY_ENABLE_RELEASE },
   sourcemaps: {
-    disable: !enableRelease,
+    disable: !environnementOutillage.SENTRY_ENABLE_RELEASE,
   },
 })

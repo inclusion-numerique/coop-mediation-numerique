@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { metadataTitle } from '@/app/metadataTitle'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 import { contentId } from '@/utils/skipLinks'
 
@@ -17,7 +18,7 @@ const ConfidentialityPage = () => (
       id={contentId}
       className="fr-container landing-main-container fr-my-8w"
     >
-      <h1>Politique de confidentialité - {process.env.NEXT_PUBLIC_APP_NAME}</h1>
+      <h1>Politique de confidentialité - {projectTitle}</h1>
 
       <h2>Qui sommes-nous ?</h2>
 

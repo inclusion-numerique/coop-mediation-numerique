@@ -3,6 +3,7 @@
  */
 import * as process from 'node:process'
 import { Option } from '@commander-js/extra-typings'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { output } from '@/libraries/console/output'
 
 export const DeploymentTargetOption = new Option(
@@ -21,10 +22,10 @@ export const configureDeploymentTarget = async ({
   output(`🚀 Deployment target: ${deployment}`)
 
   const cliEnvDeploymentTargetBranch =
-    process.env.CLI_TARGET_DEPLOYMENT_BRANCH ?? ''
+    environnementOutillage.CLI_TARGET_DEPLOYMENT_BRANCH ?? ''
 
   const cliEnvDeploymentDatabaseUrl =
-    process.env.CLI_TARGET_DEPLOYMENT_DATABASE_URL ?? ''
+    environnementOutillage.CLI_TARGET_DEPLOYMENT_DATABASE_URL ?? ''
 
   if (deployment !== cliEnvDeploymentTargetBranch) {
     output(`⚠️  Your .env file is not configured for targeting ${deployment}:`)

@@ -11,16 +11,11 @@ import {
   previewDeletionRunsUrl,
   triggerPreviewDeletion,
 } from '@/cli/triggerPreviewDeletion'
-import {
-  containerNamespaceName,
-  databaseInstanceName,
-  projectSlug,
-  region,
-} from '@/configuration/projet/config'
+import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { projectSlug } from '@/configuration/projet/config'
 import { output, outputError } from '@/libraries/console/output'
 
 const PROTECTED_BRANCHES = ['main', 'dev'] as const
-const DEFAULT_SCW_REGION = 'fr-par'
 const MAX_CONTAINER_NAME_LENGTH = 34
 const STALE_AFTER_DAYS = 30
 
@@ -70,7 +65,7 @@ type NoGitBranchResource = {
 }
 
 const fetchScalewayContainers = async () => {
-  const secretKey = process.env.SCW_SECRET_KEY
+  const secretKey = environnementOutillage.SCW_SECRET_KEY
   if (!secretKey) {
     outputError(
       'Missing SCW_SECRET_KEY env variable, skipping Scaleway containers check',
@@ -78,7 +73,7 @@ const fetchScalewayContainers = async () => {
     return []
   }
 
-  const scwRegion = region || DEFAULT_SCW_REGION
+  const scwRegion = environnementOutillage.SCW_DEFAULT_REGION
   const client = axios.create({
     baseURL: `https://api.scaleway.com/containers/v1beta1/regions/${scwRegion}`,
     headers: { 'X-Auth-Token': secretKey },
@@ -87,16 +82,19 @@ const fetchScalewayContainers = async () => {
   const { data: namespacesData } = await client.get<{
     namespaces: ScalewayNamespace[]
   }>('/namespaces', {
-    params: { name: containerNamespaceName, page_size: 100 },
+    params: {
+      name: environnementOutillage.CONTAINER_NAMESPACE_NAME,
+      page_size: 100,
+    },
   })
 
   const namespace = namespacesData.namespaces.find(
-    (ns) => ns.name === containerNamespaceName,
+    (ns) => ns.name === environnementOutillage.CONTAINER_NAMESPACE_NAME,
   )
 
   if (!namespace) {
     outputError(
-      `Scaleway namespace "${containerNamespaceName}" not found, skipping containers check`,
+      `Scaleway namespace "${environnementOutillage.CONTAINER_NAMESPACE_NAME}" not found, skipping containers check`,
     )
     return []
   }
@@ -169,7 +167,7 @@ const normalizeDatabaseInstanceId = (value: string) =>
   value.trim().split('/').filter(Boolean).pop() ?? value.trim()
 
 const resolveDatabaseInstanceIdentifier = () => {
-  const databaseInstanceId = process.env.DATABASE_INSTANCE_ID
+  const databaseInstanceId = environnementOutillage.DATABASE_INSTANCE_ID
   if (hasValue(databaseInstanceId)) {
     return {
       instanceId: normalizeDatabaseInstanceId(databaseInstanceId!),
@@ -177,7 +175,7 @@ const resolveDatabaseInstanceIdentifier = () => {
     }
   }
 
-  if (hasValue(databaseInstanceName)) {
+  if (hasValue(environnementOutillage.DATABASE_INSTANCE_NAME)) {
     return { instanceId: null, source: 'DATABASE_INSTANCE_NAME' as const }
   }
 
@@ -187,11 +185,11 @@ const resolveDatabaseInstanceIdentifier = () => {
 const getMissingEnvValidationErrors = () => {
   const errors: string[] = []
 
-  if (!hasValue(process.env.GITHUB_TOKEN)) {
+  if (!hasValue(environnementOutillage.GITHUB_TOKEN)) {
     errors.push('GITHUB_TOKEN is required to trigger cleanup workflows.')
   }
 
-  const scwSecretConfigured = hasValue(process.env.SCW_SECRET_KEY)
+  const scwSecretConfigured = hasValue(environnementOutillage.SCW_SECRET_KEY)
   if (!scwSecretConfigured) {
     errors.push(
       'SCW_SECRET_KEY is required to query Scaleway container/database inventory.',
@@ -267,7 +265,7 @@ const parsePreviewDatabaseNamespace = (databaseName: string) => {
 }
 
 const fetchPreviewDatabases = async (): Promise<PreviewDatabase[]> => {
-  const secretKey = process.env.SCW_SECRET_KEY
+  const secretKey = environnementOutillage.SCW_SECRET_KEY
   if (!secretKey) {
     outputError(
       'Missing SCW_SECRET_KEY env variable, skipping preview databases check',
@@ -283,7 +281,7 @@ const fetchPreviewDatabases = async (): Promise<PreviewDatabase[]> => {
     return []
   }
 
-  const scwRegion = region || DEFAULT_SCW_REGION
+  const scwRegion = environnementOutillage.SCW_DEFAULT_REGION
   const client = axios.create({
     baseURL: `https://api.scaleway.com/rdb/v1/regions/${scwRegion}`,
     headers: { 'X-Auth-Token': secretKey },
@@ -295,15 +293,19 @@ const fetchPreviewDatabases = async (): Promise<PreviewDatabase[]> => {
       const { data: instancesData } = await client.get<{
         instances: { id: string; name: string }[]
       }>('/instances', {
-        params: { name: databaseInstanceName, page_size: 100 },
+        params: {
+          name: environnementOutillage.DATABASE_INSTANCE_NAME,
+          page_size: 100,
+        },
       })
 
       const instance = instancesData.instances.find(
-        (candidate) => candidate.name === databaseInstanceName,
+        (candidate) =>
+          candidate.name === environnementOutillage.DATABASE_INSTANCE_NAME,
       )
       if (!instance) {
         outputError(
-          `Database instance "${databaseInstanceName}" not found, skipping preview databases check`,
+          `Database instance "${environnementOutillage.DATABASE_INSTANCE_NAME}" not found, skipping preview databases check`,
         )
         return []
       }

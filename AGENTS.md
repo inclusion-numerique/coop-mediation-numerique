@@ -89,7 +89,7 @@ Architecture decisions and their rationale are recorded in `docs/adr/`; the norm
   - `_actions/`: server actions, one file per ability, composing its ports
 - **features/**: Feature modules (activites, inscription, mediateurs, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
 - **libraries/**: shared code without any business concept (UI components, e-mail layout, fixture helpers, paths…)
-- **configuration/**: project configuration, secrets and telemetry
+- **configuration/**: project configuration, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` anywhere else
 - **cli/**: CLI tools for deployment, secrets and jobs
 - **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`
 - **jobs/**: Background job implementations
