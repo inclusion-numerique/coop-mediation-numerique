@@ -9,6 +9,7 @@ import type { EmployeuseAffichee } from '@/features/inscription/acl/employeuse-a
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { useHydrated } from '@/libs/form/use-hydrated'
 
 const erreurEnregistrement = () =>
   createToast({
@@ -53,6 +54,7 @@ const StructureEmployeuseLieuActivitePage = ({
   // maintenu) jusqu'au changement de page, et n'est remis à zéro qu'en cas d'erreur.
   const isNonLoading = submittedEstLieuActivite === false
   const isOuiLoading = submittedEstLieuActivite === true
+  const isHydrated = useHydrated()
 
   return (
     <InscriptionCard
@@ -84,7 +86,7 @@ const StructureEmployeuseLieuActivitePage = ({
           type="button"
           priority="secondary"
           {...buttonLoadingClassname(isNonLoading, 'fr-mb-0 fr-flex-grow-1')}
-          disabled={isOuiLoading}
+          disabled={!isHydrated || isOuiLoading}
           onClick={() => onSubmit(false)}
         >
           Non
@@ -93,7 +95,7 @@ const StructureEmployeuseLieuActivitePage = ({
           type="button"
           priority="primary"
           {...buttonLoadingClassname(isOuiLoading, 'fr-mb-0 fr-flex-grow-1')}
-          disabled={isNonLoading}
+          disabled={!isHydrated || isNonLoading}
           onClick={() => onSubmit(true)}
         >
           Oui

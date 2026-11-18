@@ -125,11 +125,12 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     // requête nommée à intercepter. On synchronise sur la sortie de l'étape
     // (navigation vers /inscription/lieux-activite après le choix Oui/Non).
     step.check?.()
-    if (step.structureEmployeuseIsLieuActivite) {
-      cy.contains('Oui').click()
-    } else {
-      cy.contains('Non').click()
-    }
+    cy.contains(
+      'button',
+      step.structureEmployeuseIsLieuActivite ? 'Oui' : 'Non',
+    )
+      .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+      .click()
 
     cy.appUrlShouldBe(stepPath('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
