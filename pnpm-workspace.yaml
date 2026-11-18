@@ -1,64 +1,25 @@
-# Délai de quarantaine avant qu'une version publiée soit installable (en MINUTES : 21600 = 15
-# jours). C'est la principale défense du dépôt contre les compromissions de chaîne
-# d'approvisionnement type Shai-Hulud / ChainDrop, où les versions malveillantes ne restent en
-# ligne que quelques heures. Ne pas l'abaisser, même ponctuellement pour débloquer un install :
-# préférer une exclusion ciblée ci-dessous.
 minimumReleaseAge: 21600
 minimumReleaseAgeExclude:
-  # Bibliothèque du standard, publiée par nos soins depuis notre CI avec attestation de
-  # provenance : la quarantaine protège d'une publication compromise en amont, pas de la nôtre.
   - "@gouvfr-anct/lieux-de-mediation-numerique"
   - "@gouvfr-anct/timetable-to-osm-opening-hours"
-  - zod
-  - libphonenumber-js
-  - typescript
-  # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme publiés avec
-  # `typescript`. Exclure `typescript` sans les exclure aussi laisse l'install échouer sur le binaire.
-  - "@typescript/*"
-  - react
-  - react-dom
-  - "@types/node"
-  - "@types/react"
-  - "@types/react-dom"
-  - next
-  # Même motif que TypeScript : Next distribue son compilateur natif dans des paquets par
-  # plateforme (`@next/swc-*`) publiés avec `next`. Exclure `next` sans les exclure aussi
-  # laissait l'install échouer sur le binaire. Remplace l'entrée `@next/env` seule.
-  - "@next/*"
   - "@arckit/resultset"
-  - vitest
-  - "@vitest/*"
+  - next@16.4.6
+  - "@next/*"
+  - libphonenumber-js@1.13.16
 
-# Migré depuis le champ `pnpm` de package.json, que pnpm 10 n'a jamais lu : ces réglages
-# étaient silencieusement inertes (cf. l'avertissement affiché à chaque commande).
 overrides:
-  stylus: 0.0.1-security
   "undici@<7.29.1": ^7.29.1
-  "fast-uri@<3.1.8": ^3.1.8
-  "validator@<13.15.22": ^13.15.22
-  "tmp@<0.2.6": ^0.2.6
-  "glob@>=10.2.0 <10.5.0": ^10.5.0
-  "minimatch@>=5.0.0 <5.1.8": ^5.1.8
-  "follow-redirects@<1.16.0": ^1.16.0
-  "effect@<3.20.0": ^3.20.0
 
-# Seuls ces paquets sont autorisés à exécuter leurs scripts d'installation. Tous les autres
-# sont bloqués par défaut par pnpm — c'est ce qui neutralise le vecteur `preinstall` des
-# vers npm. N'ajouter une entrée qu'avec une raison de compilation native avérée.
 allowBuilds:
-  "@prisma/client": true
   "@prisma/engines": true
   "@sentry/cli": true
-  "@swc/core": true
   cypress: true
   esbuild: true
   prisma: true
-  sharp: true
   "@parcel/watcher": false
   "@scarf/scarf": false
   core-js-pure: false
   puppeteer: false
-  unrs-resolver: false
   yarn: false
   vue-demi: false
 

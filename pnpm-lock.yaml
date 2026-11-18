@@ -163,15 +163,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  stylus: 0.0.1-security
   undici@<7.29.1: ^7.29.1
-  fast-uri@<3.1.8: ^3.1.8
-  validator@<13.15.22: ^13.15.22
-  tmp@<0.2.6: ^0.2.6
-  glob@>=10.2.0 <10.5.0: ^10.5.0
-  minimatch@>=5.0.0 <5.1.8: ^5.1.8
-  follow-redirects@<1.16.0: ^1.16.0
-  effect@<3.20.0: ^3.20.0
 
 importers:
 
@@ -625,7 +617,7 @@ packages:
       '@arckit/pipeline': '>=1'
       '@arckit/resultset': '>=1'
       '@arckit/telemetry': '>=1'
-      effect: ^3.20.0
+      effect: '>=3'
       i18next: '>=25'
       next: '>=15'
       piqure: '>=2'
@@ -1913,7 +1905,7 @@ packages:
       class-transformer: '>=0.4.0'
       class-validator: '>=0.12.0'
       computed-types: ^1.0.0
-      effect: ^3.20.0
+      effect: ^3.10.3
       fluentvalidation-ts: ^3.0.0
       fp-ts: ^2.7.0
       io-ts: ^2.0.0
@@ -11673,7 +11665,7 @@ packages:
       less: ^4.0.0
       sass: ^1.70.0
       sass-embedded: ^1.70.0
-      stylus: 0.0.1-security
+      stylus: '>=0.54.8'
       sugarss: ^5.0.0
       terser: ^5.16.0
       tsx: ^4.8.1
