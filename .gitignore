@@ -98,3 +98,5 @@ storybook-static
 /infrastructure/.tfvars.json
 /infrastructure/*.tfplan
 /infrastructure/outputs.json
+
+/next-env.d.ts

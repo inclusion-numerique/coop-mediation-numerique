@@ -2,8 +2,6 @@
   "//": "tsconfig des exécutions hors Next (Cucumber, tsx). Identique à ./tsconfig.json, à l'alias `server-only` près : la garde de bundling n'a pas de sens dans un runtime serveur, et sa résolution par défaut lève une erreur. Ne PAS mettre cet alias dans ./tsconfig.json, qui est celui que Next utilise — la garde y serait désarmée et la fuite Prisma redeviendrait possible.",
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "//": "`./tsconfig.json` pose `jsx: preserve` parce que Next fait lui-même la transformation. Hors Next, personne ne la fait : tsx retombe alors sur le runtime classique et exige un `import React` que le dépôt n'écrit plus. On redit ici le runtime automatique de la racine.",
-    "jsx": "react-jsx",
     "paths": {
       "server-only": ["./src/libraries/server-only-cli/index.ts"],
       "@/*": ["./src/*"]
