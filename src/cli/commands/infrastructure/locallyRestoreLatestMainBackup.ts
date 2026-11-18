@@ -612,7 +612,7 @@ export const locallyRestoreLatestMainBackup = new Command(
     // Le dump ramène `main` ET l'historique Prisma de la prod : les migrations qui modélisent
     // `main` sont donc en attente alors que leurs tables existent déjà. `prisma migrate deploy`
     // en direct échouerait (P3018, « relation already exists ») ; `db:migrate-deploy` les
-    // baseline d'abord (prisma/baseline-main.sh, ADR-002).
+    // baseline d'abord (scripts/baseline-main.sh, ADR-002).
     output(
       'Pour migrer cette base restaurée : pnpm db:migrate-deploy (surtout pas prisma migrate deploy en direct)',
     )
