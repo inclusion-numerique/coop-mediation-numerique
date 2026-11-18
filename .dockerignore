@@ -1,30 +1,8 @@
-**/.git
-**/var
-**/.pnp
-**/.pnp.js
-**/.idea
-**/.vscode
-**/storybook-static
-
-# local env files
-**/.env*.local
-**/.env
-
-# vercel
-**/.vercel
-
-# typescript
-**/*.tsbuildinfo
-**/next-env.d.ts
-
-# generated files
-data
-
-# Test files
-**/*.stories.mdx
-**/*.spec.ts
-**/*.spec.tsx
-**/*.integration.ts
-**/*.integration.tsx
-**/*.e2e.ts
-**/*.e2e.tsx
+*
+!.next/standalone
+!.next/static
+!public
+!private-static
+!dist/run-job.cjs
+!docker/web/entrypoint.sh
+**/.env*
