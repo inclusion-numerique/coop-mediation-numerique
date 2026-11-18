@@ -79,23 +79,24 @@ L'application répond sur http://localhost:3000. `pnpm storybook` lance Storyboo
 
 <h2 id="commandes">🛠️ Commandes disponibles</h2>
 
-| Commande                               | Rôle                                                                    |
-| -------------------------------------- | ----------------------------------------------------------------------- |
-| `pnpm dev`                             | Lance l'application en développement                                    |
-| `pnpm storybook`                       | Lance Storybook                                                         |
-| `pnpm lint`                            | Vérifie le code avec Biome, puis la spécification OpenAPI               |
-| `pnpm lint:fix`                        | Corrige le format et les erreurs que Biome sait corriger                |
-| `pnpm tsc`                             | Vérifie les types                                                       |
-| `pnpm test`                            | Lance les tests unitaires                                               |
-| `pnpm build`                           | Construit l'application pour la production                              |
-| `pnpm docker:start` / `docker:stop`    | Démarre ou arrête PostgreSQL et MailDev                                 |
-| `pnpm docker:reset`                    | Supprime la base locale, la recrée et la réinitialise                   |
-| `pnpm db:init`                         | Génère le client Prisma et applique les migrations                      |
-| `pnpm prisma:generate-migration <nom>` | Crée une migration à partir du schéma Prisma                            |
-| `pnpm fixtures:load`                   | Charge les données de test                                              |
-| `pnpm lint:commit`                     | Vérifie les messages des commits de la branche depuis `main`            |
-| `pnpm cli <commande>`                  | Lance un outil du CLI : `pnpm cli --help` les liste                     |
-| `pnpm api-v1-doc:generate`             | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour |
+| Commande                               | Rôle                                                                                                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                             | Lance l'application en développement                                                                                                                                          |
+| `pnpm storybook`                       | Lance Storybook                                                                                                                                                               |
+| `pnpm lint`                            | Vérifie le code avec Biome, puis la spécification OpenAPI                                                                                                                     |
+| `pnpm lint:fix`                        | Corrige le format et les erreurs que Biome sait corriger                                                                                                                      |
+| `pnpm tsc`                             | Vérifie les types                                                                                                                                                             |
+| `pnpm test`                            | Lance les tests unitaires                                                                                                                                                     |
+| `pnpm build`                           | Construit l'application pour la production                                                                                                                                    |
+| `pnpm docker:start` / `docker:stop`    | Démarre ou arrête PostgreSQL et MailDev                                                                                                                                       |
+| `pnpm docker:reset`                    | Supprime la base locale, la recrée et la réinitialise                                                                                                                         |
+| `pnpm db:init`                         | Génère le client Prisma et applique les migrations                                                                                                                            |
+| `pnpm prisma:generate-migration <nom>` | Crée une migration à partir du schéma Prisma                                                                                                                                  |
+| `pnpm fixtures:load`                   | Charge les données de test                                                                                                                                                    |
+| `pnpm lint:commit`                     | Vérifie les messages des commits de la branche depuis `main`                                                                                                                  |
+| `pnpm cli <commande>`                  | Lance un outil du CLI : `pnpm cli --help` les liste                                                                                                                           |
+| `pnpm api-v1-doc:generate`             | Régénère la spécification OpenAPI de l'API v1, que la CI vérifie à jour                                                                                                       |
+| `pnpm api:bruno`                       | Génère dans `.bruno` une collection [Bruno](https://www.usebruno.com/) de l'API v1, à partir de sa spécification ; le jeton se saisit dans Bruno, en variable secrète `token` |
 
 <h2 id="tests">🧪 Tests</h2>
 

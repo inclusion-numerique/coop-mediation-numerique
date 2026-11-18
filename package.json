@@ -55,7 +55,8 @@
     "build-storybook": "storybook build",
     "chromatic": "dotenv -- chromatic --exit-zero-on-changes --exit-once-uploaded",
     "cy": "dotenv -e .env -e e2e/cypress.env -- cypress",
-    "analyze": "pnpm --silent with-env next analyze"
+    "analyze": "pnpm --silent with-env next analyze",
+    "api:bruno": "bash ./scripts/api-bruno.sh"
   },
   "dependencies": {
     "@arckit/nextjs": "^2.2.2",
