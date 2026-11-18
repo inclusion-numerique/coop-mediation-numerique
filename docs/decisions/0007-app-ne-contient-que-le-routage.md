@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # `app/` ne contient que le routage Next
 
-## Contexte et problème
+## Context and Problem Statement
 
 Avant la refacto, le dossier `app/` portait bien plus que le routage. Une route pouvait réunir à
 la fois le contrôle d'accès, une requête en base, la mise en forme des données et tout le rendu de
@@ -26,14 +27,14 @@ Le découpage du code en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne une place au code métier ;
 cet ADR décide de ce qui reste dans le dossier de routage.
 
-## Options envisagées
+## Considered Options
 
 - `app/` ne contient que le routage Next (option retenue)
 - Le critère « pas de composant dans `app/` »
 - Des fichiers de composition dans `app/` ou dans un dossier de composition central
 - Un constructeur de pages générique à middlewares enchaînés
 
-## Décision
+## Decision Outcome
 
 Option retenue : « `app/` ne contient que le routage Next ».
 
@@ -85,7 +86,7 @@ Quand une page assemble plusieurs features :
 Les formes d'injection acceptées sont le conteneur d'injection, le composant passé en prop et le
 paramètre.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -104,7 +105,7 @@ Négatives :
 - Le dossier de composition central existe encore et contredit la règle. Cible à atteindre, ticket
   à ouvrir.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Le critère « pas de composant dans `app/` »
 
@@ -122,7 +123,7 @@ personne ne possède.
 Il imposerait les quatre étapes par le code. Il n'est pas adopté : une route d'une quarantaine de
 lignes qui écrit les quatre étapes directement reste lisible.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

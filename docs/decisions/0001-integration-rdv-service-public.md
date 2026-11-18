@@ -1,12 +1,14 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Hugues Maignol, Marc Gavanier
+decision-makers:
+  - Hugues Maignol
+  - Marc Gavanier
 ---
 
 # Intégration avec RDV Service Public
 
-## Contexte et problème
+## Context and Problem Statement
 
 La Coop de la médiation numérique permet aux médiateurs de suivre leurs activités et leurs bénéficiaires. Parallèlement, [RDV Service Public](https://www.rdv-service-public.fr/) est une plateforme dédiée à la prise de rendez-vous pour les services publics, utilisée notamment par les médiateurs numériques pour gérer leurs rendez-vous avec les usagers.
 
@@ -24,7 +26,7 @@ L'API de RDV Service Public fournit :
 - Un système de webhooks pour notifier des changements de données
 - **Mais ne fournit pas** de mécanismes de filtrage avancés, de comptage optimisé, ni de pagination unifiée avec nos activités
 
-## Options envisagées
+## Considered Options
 
 - Intégration avec RDV Service Public (option retenue)
 - Appels API directs sans synchronisation
@@ -32,7 +34,7 @@ L'API de RDV Service Public fournit :
 - Synchronisation locale en lecture seule (sans webhooks)
 - Synchronisation bidirectionnelle complète
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Intégration avec RDV Service Public ».
 
@@ -198,7 +200,7 @@ Les webhooks sont la voie principale : ils tiennent la copie locale à jour pres
 
 Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisation, webhooks) et le journal de chaque synchronisation sont décrits par les abilities [synchroniser un compte](../../src/features/rdvsp/abilities/synchroniser-compte-rdv/synchroniser-compte-rdv.ability.md), [déclencher une synchronisation](../../src/features/rdvsp/abilities/declencher-synchronisation/declencher-synchronisation.ability.md) et [administrer les comptes RDV](../../src/features/rdvsp/abilities/administrer-comptes-rdv/administrer-comptes-rdv.ability.md).
 
-### Conséquences
+### Consequences
 
 #### Avantages
 
@@ -267,7 +269,7 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
 - Alerte quand la dérive dépasse un seuil
 - Politique de rétention des journaux de synchronisation et des anciens rendez-vous
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Alternative 1 : Appels API directs sans synchronisation
 
@@ -337,7 +339,7 @@ Les déclencheurs du rattrapage, le traitement des erreurs (jetons, synchronisat
 
 **Note** : La Coop permet tout de même de demander un rendez-vous pour un bénéficiaire via l'API RDV, sans gérer le cycle de vie complet du rendez-vous.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

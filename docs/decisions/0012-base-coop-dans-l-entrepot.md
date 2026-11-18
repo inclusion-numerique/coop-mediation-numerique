@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # La base de la coop dans le schéma `coop` de l'Entrepôt
 
-## Contexte et problème
+## Context and Problem Statement
 
 La coop avait sa propre base, et Dataspace, l'Entrepôt de données de l'inclusion numérique, en
 avait une autre. L'Entrepôt fait référence sur la médiation numérique : son schéma `main` porte les
@@ -18,7 +19,7 @@ délais, des écarts, et une autorité ambiguë sur les données recopiées.
 Les deux bases sont dans des projets d'hébergement différents, et celle de l'Entrepôt n'expose
 qu'un point d'accès privé.
 
-## Options envisagées
+## Considered Options
 
 - La base de la coop dans le schéma `coop` de l'Entrepôt (option retenue)
 - Migrer table par table, derrière une passerelle applicative
@@ -26,7 +27,7 @@ qu'un point d'accès privé.
 - Garder deux bases et la synchronisation
 - Exposer la base publiquement, ou relier les réseaux privés
 
-## Décision
+## Decision Outcome
 
 Option retenue : « La base de la coop dans le schéma `coop` de l'Entrepôt ».
 
@@ -78,7 +79,7 @@ employeuses vers `main` ([ADR-002](./0002-migration-structures-employeuses-vers-
 double écriture du registre des lieux en une seule transaction
 ([ADR-003](./0003-registre-des-lieux-entrepot.md)) reposent sur cette décision.
 
-### Conséquences
+### Consequences
 
 **Positives**
 
@@ -103,7 +104,7 @@ double écriture du registre des lieux en une seule transaction
 - **Ressources partagées** : la charge de la coop et celle de l'Entrepôt partagent les mêmes
   ressources, et deux clients Prisma ouvrent des connexions vers la même base.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Migrer table par table, derrière une passerelle applicative
 
@@ -127,7 +128,7 @@ Un point d'accès public expose la base de l'Entrepôt : le risque était jugé 
 réseaux privés de deux projets distincts était lourd et pas éprouvé pour une base managée. Le
 bastion SSH servait déjà à d'autres consommateurs de l'Entrepôt.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Migrations destructives en deux temps
 
-## Contexte et problème
+## Context and Problem Statement
 
 En production, le déploiement enchaîne d'abord les migrations de la base, puis le déploiement du
 nouveau conteneur.
@@ -21,14 +22,14 @@ colonne lue par la session fait échouer toutes les requêtes authentifiées jus
 Le cas s'est présenté : une migration qui supprimait une colonne et des tables d'employeuses a été
 fusionnée, puis retirée avant la mise en production.
 
-## Options envisagées
+## Considered Options
 
 - Migrations destructives en deux temps (option retenue)
 - Migrer après la bascule du conteneur
 - Accepter une coupure pendant le déploiement
 - Laisser les colonnes et tables mortes en base
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Migrations destructives en deux temps ».
 
@@ -57,7 +58,7 @@ Avant de la fusionner :
 Si une vue de l'Entrepôt dépend de l'objet, le `DROP` attend que l'équipe de l'Entrepôt l'ait
 revue.
 
-### Conséquences
+### Consequences
 
 **Positives**
 
@@ -76,7 +77,7 @@ revue.
 l'infrastructure. Le risque y est inversé : le nouveau code tourne un moment sur une base pas
 encore migrée.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Migrer après la bascule du conteneur
 
@@ -94,7 +95,7 @@ maintenance annoncée.
 Elles s'accumulent, trompent la lecture du schéma et gardent des données qui n'ont plus de raison
 d'être.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Un scénario BDD par ability, Vitest sans isolation ni mock
 
-## Contexte et problème
+## Context and Problem Statement
 
 Le découpage en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), fait de chaque cas d'usage une
@@ -23,14 +24,14 @@ les remplaçant.
 Enfin, la suite unitaire était lente : sur un runner à 4 cœurs, Jest avec la couverture V8 la
 faisait en 274 s.
 
-## Options envisagées
+## Considered Options
 
 - Un scénario BDD par ability, Vitest sans isolation ni mock (option retenue)
 - Un test unitaire et un scénario pour chaque ability
 - Des scénarios BDD sur une base en mémoire
 - Garder les mocks et accélérer Jest
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Un scénario BDD par ability, Vitest sans isolation ni mock ».
 
@@ -75,7 +76,7 @@ puisque ses fichiers partagent la base.
 L'intégration et Cucumber écrivent dans la base et la vident. Ils tournent sur une base jetable :
 neuve à chaque exécution en CI, créée puis supprimée en local.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -95,7 +96,7 @@ Négatives :
   production, ils l'effacent.
 - Un test qui sème une valeur calculée par la base doit semer les vraies lignes qui la produisent.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Un test unitaire et un scénario pour chaque ability
 
@@ -112,7 +113,7 @@ n'aurait plus rien d'un test d'intégration.
 Ajouter des workers ne règle pas le coût de la couverture. Et garder les mocks impose l'isolation,
 qui est justement ce qui coûte.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

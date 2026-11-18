@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Server actions et injection, à la place de tRPC
 
-## Contexte et problème
+## Context and Problem Statement
 
 Les mutations passaient par tRPC. L'application comptait 17 routeurs, la plupart dans un dossier
 serveur central, quelques-uns dans des features. Chaque procédure portait au même endroit sa
@@ -27,14 +28,14 @@ Le découpage du code en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne une place à la logique
 métier ; cet ADR décide comment une mutation l'atteint depuis l'interface.
 
-## Options envisagées
+## Considered Options
 
 - Server actions et injection, à la place de tRPC (option retenue)
 - Garder tRPC
 - Déclarer les server actions dans la page
 - Importer l'action dans le composant client
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Server actions et injection, à la place de tRPC ».
 
@@ -76,7 +77,7 @@ serveur.
 Les clés se créent avec une fonction dédiée, qui en fait des symboles globaux : un symbole local ne
 passe pas la frontière entre composant serveur et composant client.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -96,7 +97,7 @@ Négatives :
 - La clé est résolue à l'exécution : le lien entre un composant et son action n'est plus visible
   dans les imports.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Garder tRPC
 
@@ -115,7 +116,7 @@ C'est ce qui faisait planter les stories. Le mécanisme de simulation de modules
 règle pas le problème : il résout les chemins sans connaître l'alias de chemin du dépôt, qui
 n'existe que pour TypeScript et le bundler.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

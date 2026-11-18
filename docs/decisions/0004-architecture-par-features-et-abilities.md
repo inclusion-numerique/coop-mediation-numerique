@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Architecture par features et abilities
 
-## Contexte et problème
+## Context and Problem Statement
 
 Avant la refacto (état au 29/04/2026), le code métier était réparti à plusieurs adresses :
 
@@ -24,7 +25,7 @@ Un même concept vivait souvent à deux endroits. L'accueil, par exemple, était
 lire l'implémentation d'une autre. Modifier un cas d'usage demandait de retrouver ses morceaux
 dans plusieurs dossiers, et en supprimer un sans casser les autres était risqué.
 
-## Options envisagées
+## Considered Options
 
 - Architecture par features et abilities (option retenue)
 - Garder les `use-cases/` et les routeurs tRPC
@@ -32,7 +33,7 @@ dans plusieurs dossiers, et en supprimer un sans casser les autres était risqu�
 - Partager du code entre abilities par import direct
 - Laisser une feature importer une autre par sa frontière publique
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Architecture par features et abilities ».
 
@@ -89,7 +90,7 @@ Le détail normatif (arborescence, règles AR, AB, IS) est dans
 [`.claude/conventions/feature-architecture.md`](../../.claude/conventions/feature-architecture.md),
 sections 1, 4 et 5.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -108,7 +109,7 @@ Négatives :
 - L'exception des features non refactorées rend la règle moins simple à vérifier tant que la
   migration n'est pas finie.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Garder les `use-cases/` et les routeurs tRPC
 
@@ -132,7 +133,7 @@ vingtaine de lignes a été jugée moins coûteuse.
 C'était une étape de la migration. La règle a été durcie : même par `index.ts` ou `server.ts`,
 l'import crée une dépendance entre périmètres qui devraient pouvoir évoluer seuls.
 
-## Plus d'informations
+## More Information
 
 ### Références
 

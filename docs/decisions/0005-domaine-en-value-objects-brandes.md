@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Domaine modélisé par des value objects brandés
 
-## Contexte et problème
+## Context and Problem Statement
 
 Avant la refacto, le domaine se confondait avec le schéma Prisma. Un bénéficiaire était une
 ligne de table : des `string | null`, des booléens et des champs qui ne prennent leur sens
@@ -25,7 +26,7 @@ Le découpage du code en features et en abilities, posé par
 l'[ADR-004](./0004-architecture-par-features-et-abilities.md), donne à chaque feature un
 domaine à elle ; cet ADR décide comment ce domaine se modélise.
 
-## Options envisagées
+## Considered Options
 
 - Domaine modélisé par des value objects brandés (option retenue)
 - Garder les types générés par Prisma comme types du domaine
@@ -33,7 +34,7 @@ domaine à elle ; cet ADR décide comment ce domaine se modélise.
 - Des types nominaux faits à la main, avec des fonctions de validation séparées
 - Un préprocesseur passé à `defineModel`
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Domaine modélisé par des value objects brandés ».
 
@@ -79,7 +80,7 @@ Le dossier `db` de la feature traduit entre Prisma et le domaine :
 - un test aller-retour par transfert : domaine, puis base, puis domaine rend la même valeur, sur
   un cas minimal et un cas maximal.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -100,7 +101,7 @@ Négatives :
   bénéficiaire ont perdu leur brand pour cette raison ; les features plus récentes gardent le
   brand et lisent leurs tables par une fonction typée.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Garder les types générés par Prisma comme types du domaine
 
@@ -124,7 +125,7 @@ Il n'était appliqué que par le smart constructor, pas quand le schéma était 
 autre : un value object imbriqué passait la validation sans être normalisé. Il a été retiré au
 profit de la normalisation dans le schéma.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

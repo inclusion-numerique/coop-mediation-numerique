@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Un paquet applicatif et un paquet d'infrastructure
 
-## Contexte et problème
+## Context and Problem Statement
 
 Le dépôt est un monorepo pnpm de plusieurs paquets : l'application Next, le CLI d'exploitation, du
 code applicatif séparé en paquets, de l'outillage de test et de documentation des composants.
@@ -24,14 +25,14 @@ Plusieurs constats s'additionnaient :
 - Chaque paquet a son manifeste, sa configuration TypeScript et ses scripts. Un changement
   transversal touche plusieurs paquets.
 
-## Options envisagées
+## Considered Options
 
 - Un paquet applicatif et un paquet d'infrastructure (option retenue)
 - Garder le monorepo et Turborepo
 - Garder les paquets sans Turborepo
 - Poser les linters d'architecture tout de suite
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Un paquet applicatif et un paquet d'infrastructure ».
 
@@ -71,7 +72,7 @@ Posés avant la fin de la restructuration, ils resteraient rouges pendant des se
 demanderaient des exceptions qui en annulent l'intérêt. Aucun linter d'architecture n'est encore
 posé : cible à atteindre, ticket à ouvrir.
 
-### Conséquences
+### Consequences
 
 #### Positives
 
@@ -90,7 +91,7 @@ posé : cible à atteindre, ticket à ouvrir.
 - Sans linter d'architecture d'ici là, le respect de la structure cible repose sur la relecture.
   Cible à atteindre, ticket à ouvrir.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Garder le monorepo et Turborepo
 
@@ -108,7 +109,7 @@ qu'elles prétendent tenir se vérifient mieux par un linter d'architecture dans
 
 Un linter qui reste rouge n'est plus lu.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

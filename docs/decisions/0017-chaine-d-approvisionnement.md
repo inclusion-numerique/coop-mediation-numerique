@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Chaîne d'approvisionnement des dépendances
 
-## Contexte et problème
+## Context and Problem Statement
 
 Plusieurs constats s'additionnaient :
 
@@ -18,7 +19,7 @@ Plusieurs constats s'additionnaient :
 - D'autres portes d'entrée existent : un script chargé depuis un CDN sans version fixée, une
   montée de dépendance fusionnée sans relecture, un secret commité par erreur.
 
-## Options envisagées
+## Considered Options
 
 - Chaîne d'approvisionnement des dépendances (option retenue)
 - Abaisser la quarantaine ponctuellement
@@ -26,7 +27,7 @@ Plusieurs constats s'additionnaient :
 - Fusionner les PR de Dependabot
 - Garder le CDN en fixant la version et une empreinte d'intégrité
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Chaîne d'approvisionnement des dépendances ».
 
@@ -110,7 +111,7 @@ parade est de référencer chaque action par l'empreinte exacte de sa version.
 Cible à atteindre, ticket à ouvrir : épingler les actions par empreinte, de façon automatique
 avec Renovate.
 
-### Conséquences
+### Consequences
 
 **Positives**
 
@@ -133,7 +134,7 @@ avec Renovate.
 - Tant que les actions GitHub ne sont pas épinglées par empreinte, elles échappent à la
   quarantaine et au verrouillage.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Abaisser la quarantaine ponctuellement
 
@@ -156,7 +157,7 @@ PR créée à la main garde la maîtrise du découpage et de la relecture.
 Cela protège d'une modification du fichier, pas d'une version piégée choisie au moment de la
 fixer. Le script échappe toujours à la quarantaine et au lockfile.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

@@ -41,6 +41,8 @@ jobs:
         run: pnpm tsc
       - name: Lint - biome
         run: pnpm exec biome check .
+      - name: Lint - ADR
+        run: pnpm --silent lint:adr --output github
       - name: Generate openapi docs for api v1
         run: pnpm --silent api-v1-doc:generate
       - name: Check that openapi spec file is up to date

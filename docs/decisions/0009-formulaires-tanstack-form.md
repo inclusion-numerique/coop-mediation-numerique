@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Formulaires avec TanStack Form
 
-## Contexte et problème
+## Context and Problem Statement
 
 Les formulaires reposaient sur react-hook-form, avec une enveloppe par type de champ dans le
 paquet d'interface. Chaque enveloppe reliait le composant du système de design au moteur de
@@ -16,13 +17,13 @@ Chaque nouveau champ demandait une enveloppe de plus dans ce paquet, hors de la 
 l'utilise. Cela allait contre l'organisation par features et abilities posée par l'ADR-004, où
 une feature porte ce dont elle a besoin.
 
-## Options envisagées
+## Considered Options
 
 - Formulaires avec TanStack Form (option retenue)
 - Garder react-hook-form
 - Migrer tous les formulaires d'un coup
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Formulaires avec TanStack Form ».
 
@@ -58,7 +59,7 @@ La signature de la bibliothèque impose un forçage de type pour déclarer le ty
 défaut et des propriétés d'un sous-formulaire : ces options ne portent qu'un type, leur valeur
 n'est jamais lue. C'est la seule exception tolérée à l'interdiction des forçages de type.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -78,7 +79,7 @@ Négatives :
   vidé émet une chaîne vide, qu'un écouteur du formulaire doit ramener à null pour que la
   validation la traite comme une valeur absente.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Garder react-hook-form
 
@@ -91,7 +92,7 @@ formulaire neuf.
 Un formulaire passe à TanStack Form quand sa feature est reprise, ability par ability, pas dans
 une passe transverse.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

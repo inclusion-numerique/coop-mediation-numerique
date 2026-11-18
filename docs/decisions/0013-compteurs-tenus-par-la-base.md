@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Compteurs dénormalisés tenus par des triggers
 
-## Contexte et problème
+## Context and Problem Statement
 
 Plusieurs tables portent des compteurs dénormalisés : sur les médiateurs, les bénéficiaires, les
 activités et les lieux.
@@ -29,7 +30,7 @@ de la production : les statistiques devenaient 2 à 4 fois plus lentes.
 - statistiques d'un coordinateur : +48 à +63 % ;
 - tri de la liste d'administration par accompagnements : 2 ms → environ 1 s.
 
-## Options envisagées
+## Considered Options
 
 - Compteurs dénormalisés tenus par des triggers (option retenue)
 - Supprimer les compteurs et compter à la lecture
@@ -37,7 +38,7 @@ de la production : les statistiques devenaient 2 à 4 fois plus lentes.
 - Des tables temporaires dans les triggers
 - Garder l'incrément applicatif et recalculer périodiquement
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Compteurs dénormalisés tenus par des triggers ».
 
@@ -76,7 +77,7 @@ les triggers.
 Tout le code qui incrémentait ou décrémentait un compteur est supprimé, avec les utilitaires qui
 n'existaient que pour lui.
 
-### Conséquences
+### Consequences
 
 **Positives**
 
@@ -98,7 +99,7 @@ n'existaient que pour lui.
   migration.
 - **Un traitement en masse sur les tables suivies paie aussi les triggers.**
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Supprimer les compteurs et compter à la lecture
 
@@ -120,7 +121,7 @@ Le droit de créer des tables temporaires n'est pas garanti sur la base de l'Ent
 Le recalcul qui a suivi l'import des CRA v1 a montré que les écarts reviennent en quelques
 semaines. Un recalcul périodique laisse des compteurs faux entre deux passes.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

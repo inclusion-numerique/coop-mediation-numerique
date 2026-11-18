@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Styles : utilitaires du DSFR et intégration officielle de react-dsfr
 
-## Contexte et problème
+## Context and Problem Statement
 
 ### Des styles éparpillés
 
@@ -26,13 +27,13 @@ DSFR dans les fichiers publics de l'application, le script du DSFR était charg�
 icônes venaient d'un CDN, les polices étaient préchargées par du code maison, et le thème clair ou
 sombre passait par un cookie et un bouton propres à l'application.
 
-## Options envisagées
+## Considered Options
 
 - Styles : utilitaires du DSFR et intégration officielle de react-dsfr (option retenue)
 - Déplacer les fichiers CSS avec leurs composants
 - Garder l'intégration faite à la main
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Styles : utilitaires du DSFR et intégration officielle de react-dsfr ».
 
@@ -75,7 +76,7 @@ s'exécute toujours avant le reste de la page.
 Le script de copie, le dossier public du DSFR, la dépendance directe au DSFR, le CDN d'icônes, le
 chargement manuel du script, le préchargement maison des polices, le cookie et le bouton de thème.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -95,7 +96,7 @@ Négatives :
   reste nécessaire.
 - Aucun outil ne vérifie une mise en page : une correction CSS se vérifie à l'œil.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Déplacer les fichiers CSS avec leurs composants
 
@@ -108,7 +109,7 @@ Elle obligeait à maintenir un script de copie, une version du DSFR découplée 
 react-dsfr, et un mécanisme de thème propre. L'installation documentée par react-dsfr couvre ces
 besoins et élague le CSS inutilisé.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

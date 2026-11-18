@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Télémétrie isolée dans la configuration
 
-## Contexte et problème
+## Context and Problem Statement
 
 ### Sentry importé partout
 
@@ -30,12 +31,12 @@ pouvait alors disparaître sans laisser de trace.
 Un module qui importe Sentry ne se teste qu'en remplaçant ce module. Cela va contre la règle de
 tests posée par l'[ADR-008](./0008-strategie-de-tests.md) : ni mock de module, ni espion.
 
-## Options envisagées
+## Considered Options
 
 - Télémétrie isolée dans la configuration (option retenue)
 - Garder l'appel optionnel à Sentry partout
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Télémétrie isolée dans la configuration ».
 
@@ -67,7 +68,7 @@ signaleur en option ; la configuration lui fournit le sien.
 Un appel à un service externe est enveloppé dans la configuration de ce service. Un échec y est
 signalé une fois : les features qui l'appellent n'ont pas à le signaler elles-mêmes.
 
-### Conséquences
+### Consequences
 
 Positives :
 
@@ -89,14 +90,14 @@ Négatives :
 - Quelques modules hors des racines de composition importent encore le signaleur directement au
   lieu de le recevoir par injection. Cible à atteindre, ticket à ouvrir.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Garder l'appel optionnel à Sentry partout
 
 Il empêchait le plantage hors de Next, mais au prix d'un signalement perdu sans bruit. Et il
 laissait Sentry importé partout, donc remplacé partout dans les tests.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

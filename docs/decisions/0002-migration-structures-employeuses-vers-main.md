@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Les structures employeuses vivent dans main (Dataspace)
 
-## Contexte et problème
+## Context and Problem Statement
 
 La coop tenait sa propre table de structures employeuses et sa propre table d'emplois, qui reliait
 chaque utilisateur à ses employeuses avec des dates de début et de fin. Le Dataspace tient de son
@@ -30,7 +31,7 @@ La base de la coop vit dans le schéma `coop` de la même base que `main` : lire
 depuis la coop est une requête dans la même base, pas un appel distant. C'est ce qui rend la
 décision possible.
 
-## Options envisagées
+## Considered Options
 
 - Les structures employeuses vivent dans main (Dataspace) (option retenue)
 - Ne basculer que la structure administrative
@@ -41,7 +42,7 @@ décision possible.
 - Une clé étrangère en `SET NULL`
 - Un contrôle par job, sans contrainte
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Les structures employeuses vivent dans main (Dataspace) ».
 
@@ -214,7 +215,7 @@ La coop consulte les SIRET des employeuses sans les corriger. Leur normalisation
 dédoublonnage et leur vérification relèvent de l'Entrepôt. L'outillage de qualité des SIRET de la
 coop ne porte plus que sur les lieux.
 
-### Conséquences
+### Consequences
 
 **Positives**
 
@@ -258,7 +259,7 @@ La décision se tient à deux : plusieurs points relèvent de l'Entrepôt.
   même personne, restent à trancher à la main, et des conseillers numériques absents de `main`,
   faute d'email concordant, restent à rapprocher.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Ne basculer que la structure administrative
 
@@ -303,7 +304,7 @@ Une colonne entière non contrainte, vérifiée par un job périodique, aurait �
 tables au schéma de l'Entrepôt. Elle laisse passer les références cassées jusqu'au prochain
 passage du job, quand une contrainte les refuse au moment de l'écriture.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

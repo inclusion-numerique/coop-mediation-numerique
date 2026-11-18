@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # Registre des lieux de l'Entrepôt
 
-## Contexte et problème
+## Context and Problem Statement
 
 Le Dataspace gère les données de l'inclusion numérique ; la coop gère son application. Le Dataspace
 fait autorité sur le schéma `main`, et la coop s'y conforme
@@ -27,13 +28,13 @@ Un rattrapage quotidien existe côté Dataspace, mais il ne couvre que l'identit
 champs métier. Sans écriture explicite dans le registre, une valeur métier corrigée dans la coop
 resterait invisible pour les autres consommateurs.
 
-## Options envisagées
+## Considered Options
 
 - Registre des lieux de l'Entrepôt (option retenue)
 - Un trigger PostgreSQL ou une réplication vers `main`
 - S'en remettre au rattrapage quotidien du Dataspace
 
-## Décision
+## Decision Outcome
 
 Option retenue : « Registre des lieux de l'Entrepôt ».
 
@@ -109,14 +110,14 @@ adresses. Elle n'écrit jamais dans les autres tables de `main` liées aux lieux
 
 Un rattrapage se fait à dates inchangées.
 
-### Conséquences
+### Consequences
 
 - Une correction faite en SQL direct laisse le registre sur l'ancienne valeur, et les consommateurs
   avec : d'où la règle opératoire ci-dessus.
 - Un changement de dates en masse fausse durablement l'arbitrage de fraîcheur entre sources.
 - Ouvrir une nouvelle colonne du registre à l'écriture se demande à l'équipe Dataspace.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Un trigger PostgreSQL ou une réplication vers `main`
 
@@ -129,7 +130,7 @@ adoption. La double écriture applicative garde la décision là où elle est d�
 Il ne couvre que l'identité du lieu. Les champs métier (services, horaires, présentation, contact)
 resteraient sur leur ancienne valeur chez tous les consommateurs.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 

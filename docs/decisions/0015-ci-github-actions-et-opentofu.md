@@ -1,12 +1,13 @@
 ---
-status: "accepté"
+status: "accepted"
 date: 2026-11-17
-decision-makers: Marc Gavanier
+decision-makers:
+  - Marc Gavanier
 ---
 
 # CI sur GitHub Actions, infrastructure en HCL avec OpenTofu
 
-## Contexte et problème
+## Context and Problem Statement
 
 La CI et les déploiements tournaient sur CircleCI. L'infrastructure était décrite en TypeScript
 avec CDKTF.
@@ -22,7 +23,7 @@ Plusieurs problèmes s'additionnaient :
 
 Le dépôt est hébergé sur GitHub. Une seule personne développe et opère l'application.
 
-## Options envisagées
+## Considered Options
 
 - CI sur GitHub Actions, infrastructure en HCL avec OpenTofu (option retenue)
 - Rester sur CircleCI
@@ -31,7 +32,7 @@ Le dépôt est hébergé sur GitHub. Une seule personne développe et opère l'a
 - Pulumi en TypeScript
 - Terraform
 
-## Décision
+## Decision Outcome
 
 Option retenue : « CI sur GitHub Actions, infrastructure en HCL avec OpenTofu ».
 
@@ -82,7 +83,7 @@ On voit l'effet d'un changement avant la fusion, et on l'approuve au moment où 
 Poser le label déploie ; chaque push redéploie tant que le label est là. C'est le modèle courant
 dans l'écosystème (PullPreview, Cloud Posse).
 
-### Conséquences
+### Consequences
 
 **Positives**
 
@@ -104,7 +105,7 @@ dans l'écosystème (PullPreview, Cloud Posse).
 - **Le plan de CI d'une branche lit les états réels** : il a besoin des secrets Scaleway.
 - **Certains pièges d'OpenTofu ne se voient pas dans le JSON du plan** : un script les filtre.
 
-## Avantages et inconvénients des options
+## Pros and Cons of the Options
 
 ### Rester sur CircleCI
 
@@ -131,7 +132,7 @@ chaque ressource dans un nouvel état.
 Le langage est le même. OpenTofu est sous licence libre (MPL) et sous l'égide de la Linux
 Foundation, alors que Terraform est passé sous licence BUSL en 2023.
 
-## Plus d'informations
+## More Information
 
 ### Où trouver le détail
 
