@@ -115,7 +115,7 @@
     "next-auth": "^4.24.15",
     "next-swagger-doc": "^0.5.0",
     "nodemailer": "^10.0.10",
-    "p-retry": "^8.0.1",
+    "p-retry": "^9.0.0",
     "p-throttle": "^8.1.1",
     "pako": "^3.0.2",
     "picocolors": "^1.1.1",
