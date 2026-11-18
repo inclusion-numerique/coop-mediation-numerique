@@ -16,8 +16,10 @@ se suppriment quand elles ne servent pas.
 [mdbook-lint](https://github.com/joshrotenberg/mdbook-lint) et toutes ses
 règles MADR : en-tête, statut, date, sections obligatoires, options
 envisagées, numérotation, liens entre ADR et conséquences en
-« Good, because… » / « Bad, because… » / « Neutral, because… ». Il vérifie
-ensuite le Markdown avec
+« Good, because… » / « Bad, because… » / « Neutral, because… ». Il signale
+aussi les liens et ancres internes cassés, les blocs de code sans langage, les
+TODO et textes de remplissage oubliés, les ADR trop courts et les titres
+au-delà du niveau 4. Il vérifie ensuite le Markdown avec
 [markdownlint](https://github.com/DavidAnson/markdownlint-cli2) et ses
 réglages par défaut, dont les lignes de 80 caractères au plus. La CI le lance
 à chaque PR.

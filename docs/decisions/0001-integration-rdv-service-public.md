@@ -150,11 +150,9 @@ rendez-vous se mêlent aux activités dans la liste du médiateur. Voir
 et
 [lister mes activités](../../src/features/activites/abilities/lister-mes-activites/lister-mes-activites.ability.md).
 
-### Justification des choix techniques
+### Pourquoi une synchronisation locale ?
 
-#### Pourquoi une synchronisation locale ?
-
-##### 1. **Intégrité référentielle et clés étrangères**
+#### Intégrité référentielle et clés étrangères
 
 En synchronisant les données localement, nous pouvons établir des relations
 fortes via des clés étrangères entre :
@@ -176,7 +174,7 @@ Cela garantit :
   supprimé ?)
 - Risquer des incohérences en cas d'erreur réseau partielle
 
-##### 2. **Performance des requêtes : comptages et agrégations**
+#### Performance des requêtes : comptages et agrégations
 
 L'API RDV Service Public ne fournit pas d'endpoints optimisés pour :
 
@@ -197,7 +195,7 @@ filtres multiples).
 Pour un médiateur avec 200 RDVs, cela représenterait plusieurs secondes de
 traitement et une surcharge réseau significative.
 
-##### 3. **Filtrage avancé et recherche**
+#### Filtrage avancé et recherche
 
 La liste des activités filtre simultanément les activités La coop et les RDVs
 RDV Service Public, par plage de dates, bénéficiaire, lieu, type d'activité,
@@ -219,7 +217,7 @@ Cette approche serait :
 - Consommatrice en mémoire
 - Source d'incohérences (données API pouvant changer entre les appels)
 
-##### 4. **Pagination unifiée**
+#### Pagination unifiée
 
 L'API RDV Service Public a sa propre pagination. Fusionner une liste paginée
 d'activités La coop avec une liste paginée de RDVs distants est
@@ -241,7 +239,7 @@ Il faudrait :
 Cela rend la pagination quasi impossible en pratique sans synchronisation
 locale.
 
-##### 5. **Disponibilité et résilience**
+#### Disponibilité et résilience
 
 Avec une synchronisation locale :
 
@@ -256,7 +254,7 @@ Avec une synchronisation locale :
 - Une lenteur de l'API RDV ralentit toute notre application
 - Un dépassement de délai de l'API donne une page blanche à l'utilisateur
 
-##### 6. **Coût et latence réseau**
+#### Coût et latence réseau
 
 Chaque appel à l'API RDV Service Public :
 
@@ -274,7 +272,7 @@ Chaque appel à l'API RDV Service Public :
 Sur un tableau de bord affichant plusieurs blocs (prochains RDVs, compteurs,
 etc.), l'approche locale est **10 à 20 fois plus rapide**.
 
-#### Pourquoi webhooks et polling en repli ?
+### Pourquoi webhooks et polling en repli ?
 
 Les webhooks sont la voie principale : ils tiennent la copie locale à jour
 presque en temps réel, sans appel inutile ni action du médiateur. Mais un
