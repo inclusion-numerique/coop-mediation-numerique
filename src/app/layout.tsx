@@ -17,18 +17,7 @@ import { PublicWebAppConfig } from '@/PublicWebAppConfig'
 export const metadata: Metadata = {
   title: PublicWebAppConfig.projectTitle,
   robots: PublicWebAppConfig.isMain ? 'index, follow' : 'noindex, nofollow',
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon/favicon.ico',
-    apple: '/favicon/apple-touch-icon.png',
-    other: {
-      rel: 'icon',
-      url: '/favicon/favicon.svg',
-      type: 'image/svg+xml',
-    },
-  },
   description: PublicWebAppConfig.projectTitle,
-  manifest: '/favicon/manifest.webmanifest',
 }
 
 const RootLayout = ({ children }: PropsWithChildren) => (
