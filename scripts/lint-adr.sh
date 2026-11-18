@@ -17,3 +17,4 @@ if [ ! -x "$binaire" ]; then
 fi
 
 "$binaire" lint --quiet --config docs/decisions/.mdbook-lint.toml "$@" docs/decisions/[0-9]*.md
+pnpm exec markdownlint-cli2 "docs/decisions/*.md"

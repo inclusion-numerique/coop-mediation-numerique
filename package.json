@@ -170,6 +170,7 @@
     "esbuild": "^0.28.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
+    "markdownlint-cli2": "^0.24.0",
     "prisma-erd-generator": "^3.2.1",
     "sass": "^1.107.1",
     "storybook": "^10.6.0",
