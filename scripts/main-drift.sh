@@ -1,30 +1,14 @@
 #!/usr/bin/env bash
-#
-# Garde anti-dérive des tables `main.*` de l'Entrepôt dont dépend la coop
-# (`structure_administrative`, `adresse`, `lieu_inclusion`). Ces tables sont possédées par
-# le Dataspace et gérées par Flyway (ADR-002) : on les modélise dans `schema.prisma` sans les
-# migrer. Si Flyway les fait évoluer, notre client Prisma peut casser silencieusement. Ce script
-# compare l'introspection actuelle de `main` au snapshot de référence committé
-# (`prisma/main.reference.prisma`).
-#
-# Lecture seule : `prisma db pull` ne lit que le catalogue (types/colonnes/contraintes), aucune
-# donnée. À lancer EN LOCAL contre DATABASE_URL, jamais en CI (pas d'accès prod depuis la CI).
-#
-#   pnpm -F web db:check-main-drift      # échoue si main a dérivé du snapshot
-#   pnpm -F web db:refresh-main-reference # régénère le snapshot après une évolution Flyway légitime
-#
 set -euo pipefail
 
 MODE="${1:-check}"
-WEB_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-REF="$WEB_DIR/prisma/main.reference.prisma"
+RACINE="$(cd "$(dirname "$0")/.." && pwd)"
+REF="$RACINE/prisma/main.reference.prisma"
 MODELS_REGEX='/^model (structure_administrative|adresse|lieu_inclusion) \{/,/^\}/'
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-# `reference` est inclus car des tables de `main` (hors de notre périmètre) ont des FK vers ce
-# schéma : sans lui, `db pull` échoue (P4002). On n'extrait ensuite que nos deux modèles.
 cat > "$TMP/pull.prisma" <<'PRISMA'
 datasource db {
   provider = "postgresql"
@@ -32,8 +16,7 @@ datasource db {
 }
 PRISMA
 
-# Introspecte le schéma `main` réel (catalogue uniquement).
-(cd "$WEB_DIR" && pnpm --silent with-env prisma db pull --schema "$TMP/pull.prisma" >/dev/null)
+(cd "$RACINE" && pnpm --silent with-env prisma db pull --schema "$TMP/pull.prisma" >/dev/null)
 awk "$MODELS_REGEX" "$TMP/pull.prisma" > "$TMP/current.models"
 
 REF_HEADER='// Snapshot de référence de l'\''introspection Prisma des tables `main.*` dont dépend la coop.
