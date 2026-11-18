@@ -3,11 +3,8 @@ locals {
     BREVO_USERS_LIST_ID   = var.BREVO_USERS_LIST_ID
     EMAIL_FROM_ADDRESS    = local.email_from_address
     EMAIL_FROM_NAME       = local.email_from_name
-    STACK_WEB_IMAGE       = var.WEB_CONTAINER_IMAGE
     BASE_URL              = local.hostname
     NEXTAUTH_URL          = local.hostname
-    BRANCH                = var.branch
-    NAMESPACE             = var.namespace
     SCW_DEFAULT_REGION    = var.SCW_DEFAULT_REGION
     SMTP_PORT             = local.is_main ? var.SMTP_PORT : "1025"
     ENTREPOT_BASTION_HOST = var.ENTREPOT_BASTION_HOST
