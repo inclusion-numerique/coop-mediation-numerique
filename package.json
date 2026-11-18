@@ -72,7 +72,7 @@
     "@faire/mjml-react": "^4.0.1",
     "@gouvfr-anct/lieux-de-mediation-numerique": "^4.4.0",
     "@gouvfr-anct/timetable-to-osm-opening-hours": "^2.1.1",
-    "@hookform/resolvers": "^5.9.1",
+    "@hookform/resolvers": "^7.0.1",
     "@inquirer/prompts": "^8.7.2",
     "@octokit/core": "^7.0.8",
     "@octokit/plugin-rest-endpoint-methods": "^18.0.0",
