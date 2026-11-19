@@ -1,5 +1,5 @@
 import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
-import type { StructureEmployeuseInput } from './structure-employeuse-input'
+import type { SaisieEmployeuse } from './structure-employeuse-input'
 
 /**
  * Rattache l'utilisateur à l'employeuse choisie — création ou réutilisation de
@@ -12,8 +12,8 @@ import type { StructureEmployeuseInput } from './structure-employeuse-input'
  */
 export type RattacherEmployeuse = (input: {
   readonly userId: UserId
-  readonly structureEmployeuse: StructureEmployeuseInput
-}) => Promise<'rattachee' | 'indisponible'>
+  readonly saisie: SaisieEmployeuse
+}) => Promise<{ readonly _tag: string }>
 
 /**
  * Projette l'état d'inscription reçu, qui porte déjà l'étape franchie. Séparé

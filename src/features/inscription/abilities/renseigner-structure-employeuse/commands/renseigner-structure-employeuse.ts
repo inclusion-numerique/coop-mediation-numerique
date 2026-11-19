@@ -6,6 +6,7 @@ import {
   renseignerStructureEmployeuse as deciderRenseignerStructureEmployeuse,
   type RenseignerStructureEmployeuseError,
 } from '../domain/renseigner-structure-employeuse'
+import { saisieEmployeuse } from '../domain/structure-employeuse-input'
 import { getInscriptionEtat, projeterEtapeFranchie } from '../implementation'
 
 /**
@@ -41,10 +42,10 @@ export const renseignerStructureEmployeuse = async ({
 
   const rattachement = await rattacherEmployeuse({
     userId,
-    structureEmployeuse,
+    saisie: saisieEmployeuse(structureEmployeuse),
   })
 
-  if (rattachement === 'indisponible') {
+  if (rattachement._tag !== 'rattachee') {
     return failure(EmployeuseIndisponible(userId))
   }
 

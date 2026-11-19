@@ -21,3 +21,29 @@ export type StructureEmployeuseInput = {
   readonly siret: string
   readonly adresse: AdresseEmployeuse
 }
+
+export type SaisieEmployeuse = {
+  readonly siret: string
+  readonly denomination: string | null
+  readonly adresse: {
+    readonly voie: string
+    readonly commune: string
+    readonly codePostal: string | null
+    readonly codeInsee: string | null
+  }
+}
+
+export const saisieEmployeuse = ({
+  siret,
+  nom,
+  adresse,
+}: StructureEmployeuseInput): SaisieEmployeuse => ({
+  siret,
+  denomination: nom || null,
+  adresse: {
+    voie: adresse.nom,
+    commune: adresse.commune,
+    codePostal: adresse.codePostal || null,
+    codeInsee: adresse.codeInsee || null,
+  },
+})

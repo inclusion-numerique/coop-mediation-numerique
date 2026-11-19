@@ -42,7 +42,6 @@ export {
   contratLePlusRecent,
   contratPourEmployeuse,
   EmployeuseId,
-  IdentiteEmployeuse,
   referentAffichage,
 } from './domain'
 export { employeuseAffichage } from './ui/employeuse.presenter'

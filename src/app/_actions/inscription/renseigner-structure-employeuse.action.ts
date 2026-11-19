@@ -2,12 +2,12 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/server'
 import {
   RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS,
   RenseignerStructureEmployeuseValidation,
 } from '@/features/inscription/abilities/renseigner-structure-employeuse'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
-import { rattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'
@@ -34,7 +34,7 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
             userId: UserId(user.id),
             structureEmployeuse: input.structureEmployeuse,
           },
-          rattacherEmployeuse,
+          rattacherEmployeuse: rattacherAUneEmployeuseSaisieBinding,
           maintenant: new Date(),
         }),
       { onError: RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS },

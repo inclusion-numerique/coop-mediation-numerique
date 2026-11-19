@@ -30,6 +30,7 @@ export { listerEmployeuses } from './abilities/lister-employeuses/implementation
 export {
   rattacherAUneEmployeuseBinding,
   rattacherAUneEmployeuseDepuisSiretBinding,
+  rattacherAUneEmployeuseSaisieBinding,
 } from './abilities/rattacher-a-une-employeuse/implementation/rattacher-a-une-employeuse.binding'
 export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implementation'
 export * from './index'

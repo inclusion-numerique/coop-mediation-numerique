@@ -29,7 +29,7 @@ Before(() => {
  */
 const rattacherEmployeuse: RattacherEmployeuse = async () => {
   rattachementsDemandes += 1
-  return rattachable ? 'rattachee' : 'indisponible'
+  return { _tag: rattachable ? 'rattachee' : 'employeuseIndisponible' }
 }
 
 const structureEmployeuseInput: StructureEmployeuseInput = {
