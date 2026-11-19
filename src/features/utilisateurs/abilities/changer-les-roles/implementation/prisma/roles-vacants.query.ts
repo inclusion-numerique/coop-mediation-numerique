@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
+import { enPosteWhere } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
 
@@ -14,10 +14,7 @@ const doubleRoleInscritDepuis = (maintenant: Date): Prisma.UserWhereInput => ({
 })
 
 const coordinateurDuDispositif: Prisma.UserWhereInput = {
-  AND: [
-    conseillerNumeriqueWhere(true),
-    { personneMain: { is: { isCoordinateur: true } } },
-  ],
+  AND: [enPosteWhere(true), { personneMain: { is: { isCoordinateur: true } } }],
 }
 
 const identifiants = (lignes: readonly { id: string }[]) =>

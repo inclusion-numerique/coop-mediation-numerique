@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   type CritereStatut,
@@ -9,6 +8,7 @@ import {
   type RoleFiltre,
   rolesFiltres,
 } from '../domain'
+import { enPosteWhere } from './conseiller-numerique-en-poste'
 
 const coordinateurQuiCoordonne = {
   OR: [
@@ -100,10 +100,9 @@ const dispositifWhere = ({
   roles,
 }: FiltresUtilisateurs): Prisma.UserWhereInput[] => {
   if (dispositif === null) return []
-  if (dispositif === 'ConseillerNumerique')
-    return [conseillerNumeriqueWhere(true)]
+  if (dispositif === 'ConseillerNumerique') return [enPosteWhere(true)]
   return [
-    conseillerNumeriqueWhere(false),
+    enPosteWhere(false),
     ...(roles.length === 0
       ? [
           {

@@ -1,5 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
+import {
+  enPosteSelect,
+  enPosteWhere,
+} from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import type { Prisma } from '@/generated/prisma/client'
 import type { CriteresDExposition } from '../../domain'
 
@@ -16,9 +19,7 @@ const suppressionSelon = (
 const conseillersSelon = (
   selection: CriteresDExposition['conseillersNumeriques'],
 ): Prisma.UserWhereInput =>
-  selection === 'Indifferent'
-    ? {}
-    : conseillerNumeriqueWhere(selection === 'Seuls')
+  selection === 'Indifferent' ? {} : enPosteWhere(selection === 'Seuls')
 
 const exposeWhere = (criteres: CriteresDExposition): Prisma.UserWhereInput => ({
   role: 'User',
@@ -72,6 +73,7 @@ const exposeSelect = (criteres: CriteresDExposition) => {
       select: {
         id: true,
         cnPgId: true,
+        ...enPosteSelect,
         affectationsEmploi: {
           where: { estActive: true },
           select: {

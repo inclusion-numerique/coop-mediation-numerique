@@ -3,9 +3,9 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { sessionUserSelect } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { serializePrismaSessionUser } from '@/features/authentification/implementation/session/serializePrismaSessionUser'
-import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
 import { profilDepuisDispositif } from '@/features/inscription'
 import { dispositifDepuisMain } from '@/features/inscription/server'
+import { enPosteWhere } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import { garantirLeRoleCoordinateurDuDispositif } from './implementation'
 
 /**
@@ -171,11 +171,11 @@ describe('le dispositif conseiller numérique sans synchro', () => {
   // Remplace : les `where` sur la colonne.
   it('le filtre range chaque compte d’un seul côté', async () => {
     const dans = await prismaClient.user.findMany({
-      where: { id: { in: tous }, ...conseillerNumeriqueWhere(true) },
+      where: { id: { in: tous }, ...enPosteWhere(true) },
       select: { id: true },
     })
     const hors = await prismaClient.user.findMany({
-      where: { id: { in: tous }, ...conseillerNumeriqueWhere(false) },
+      where: { id: { in: tous }, ...enPosteWhere(false) },
       select: { id: true },
     })
 

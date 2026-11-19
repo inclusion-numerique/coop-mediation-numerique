@@ -46,7 +46,7 @@ describe('inscrit de la liste lu en base', () => {
         coordinateur: { id: '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f' },
         personneMain: {
           isCoordinateur: true,
-          affectationsEmploi: [{ source: 'idposte', estActive: true }],
+          conseillerNumeriqueEnPoste: { personneId: 1 },
           contrats: [
             {
               id: 1,
@@ -79,7 +79,7 @@ describe('inscrit de la liste lu en base', () => {
         ...ligne,
         personneMain: {
           isCoordinateur: true,
-          affectationsEmploi: [],
+          conseillerNumeriqueEnPoste: null,
           contrats: [],
         },
       })?.dispositif,

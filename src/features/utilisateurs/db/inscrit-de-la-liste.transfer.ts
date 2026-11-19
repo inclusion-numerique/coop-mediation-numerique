@@ -1,8 +1,4 @@
-import {
-  contratLePlusRecent,
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
+import { contratLePlusRecent } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import { telephoneEnregistrable } from '@/libraries/telephone'
 import {
@@ -19,6 +15,7 @@ import {
   situationDansLeDispositif,
   UtilisateurId,
 } from '../domain'
+import { enPosteSelect, estEnPoste } from './conseiller-numerique-en-poste'
 
 export const inscritDeLaListeSelect = {
   id: true,
@@ -30,7 +27,7 @@ export const inscritDeLaListeSelect = {
   coordinateur: { select: { id: true } },
   personneMain: {
     select: {
-      ...personneConseillerNumeriqueSelect,
+      ...enPosteSelect,
       isCoordinateur: true,
       // Fin et rupture séparées : Brevo a un attribut pour chacune.
       contrats: {
@@ -83,7 +80,7 @@ export const inscritDeLaListeToDomain = (
             : CoordinateurId(row.coordinateur.id),
         ),
         dispositif: situationDansLeDispositif(
-          dispositifDe(personneEstConseillerNumerique(row.personneMain)),
+          dispositifDe(estEnPoste(row.personneMain)),
           row.personneMain?.isCoordinateur ?? false,
         ),
         contrat: datesDuContratLePlusRecent(row.personneMain?.contrats ?? []),

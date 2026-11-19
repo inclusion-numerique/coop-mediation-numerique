@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
+  enPosteSelect,
+  estEnPoste,
+} from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
@@ -91,7 +91,7 @@ const ficheSelect = {
     select: { nom: true, timestamp: true },
     orderBy: { timestamp: 'desc' },
   },
-  personneMain: { select: personneConseillerNumeriqueSelect },
+  personneMain: { select: enPosteSelect },
 } satisfies Prisma.UserSelect
 
 type FicheRow = Prisma.UserGetPayload<{ select: typeof ficheSelect }>
@@ -114,7 +114,7 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     courriel: identite.courriel,
     telephone: telephoneEnregistrable(row.phone),
     role,
-    dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
+    dispositif: dispositifDe(estEnPoste(row.personneMain)),
     siret: Siret.safe(row.siret ?? ''),
     creeLe: row.created,
     cycle,
