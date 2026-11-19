@@ -33,19 +33,12 @@ const rattacherEmployeuse: RattacherEmployeuse = async () => {
 }
 
 const structureEmployeuseInput: StructureEmployeuseInput = {
-  id: null,
   nom: 'Structure de test',
   siret: '35600000000048',
-  adresse: {
-    id: 'adr-1',
-    nom: '1 rue de la Paix',
-    commune: 'Paris',
-    codeInsee: '75101',
-    codePostal: '75001',
-    contexte: '75, Paris',
-    latitude: 0,
-    longitude: 0,
-  },
+  adresse: '1 rue de la Paix',
+  commune: 'Paris',
+  codeInsee: '75101',
+  codePostal: '75001',
 }
 
 Given('j’ai choisi le profil {string}', async (profil: string) => {

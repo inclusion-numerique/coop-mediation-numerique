@@ -1,19 +1,11 @@
+import type { ReactNode } from 'react'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import RenseignerStructureEmployeuseForm, {
-  type EnregistrerStructureEmployeuse,
-} from '../components/RenseignerStructureEmployeuseForm'
 
-/**
- * Page de l'étape « structure employeuse » : chrome d'inscription + formulaire.
- * La route lie la server action `save` ; le formulaire (client) reste découplé.
- */
 const RenseignerStructureEmployeusePage = ({
-  save,
-  nextStepPath,
+  formulaire,
 }: {
-  save: EnregistrerStructureEmployeuse
-  nextStepPath: string
+  formulaire: ReactNode
 }) => (
   <InscriptionCard
     title="Renseignez votre structure employeuse"
@@ -32,10 +24,7 @@ const RenseignerStructureEmployeusePage = ({
       Votre structure employeuse est l’organisation qui vous emploie en tant que
       médiateur numérique. Recherchez-la par son nom, son SIRET ou son adresse.
     </p>
-    <RenseignerStructureEmployeuseForm
-      save={save}
-      nextStepPath={nextStepPath}
-    />
+    {formulaire}
   </InscriptionCard>
 )
 
