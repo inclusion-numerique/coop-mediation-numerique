@@ -7,6 +7,7 @@ import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
+import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -25,7 +26,10 @@ const InitialiserInscriptionPage = async () => {
 
   const { nextStep } = await initialiserInscriptionAvecInfra(
     { userId: UserId(user.id) },
-    { rattacherDepuisSiret: rattacherAUneEmployeuseDepuisSiretBinding },
+    {
+      rattacherDepuisSiret: rattacherAUneEmployeuseDepuisSiretBinding,
+      garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif,
+    },
   )
 
   // Redirect to next step or fallback

@@ -1,7 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { AppliquerDispositif } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import type {
+  AppliquerDispositif,
+  GarantirLeRoleCoordinateur,
+} from '@/features/inscription/abilities/initialiser-inscription/domain'
 import { profilDepuisDispositif } from '@/features/inscription/domain'
-import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
@@ -41,29 +43,33 @@ const garantirMediateur = async (userId: string): Promise<void> => {
  * conseiller numérique qui s'inscrit déclare ses lieux à l'étape
  * `lieux-activite`, où le parcours l'emmène déjà faute de lieu existant.
  */
-export const appliquerDispositif: AppliquerDispositif = async ({ userId }) => {
-  const dispositif = await dispositifDepuisMain(userId)
-  const profilInscription = profilDepuisDispositif(dispositif)
+export const appliquerDispositif =
+  (
+    garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur,
+  ): AppliquerDispositif =>
+  async ({ userId }) => {
+    const dispositif = await dispositifDepuisMain(userId)
+    const profilInscription = profilDepuisDispositif(dispositif)
 
-  if (profilInscription) {
-    await prismaClient.user.update({
-      where: { id: userId },
-      data: { profilInscription },
-      select: { id: true },
-    })
+    if (profilInscription) {
+      await prismaClient.user.update({
+        where: { id: userId },
+        data: { profilInscription },
+        select: { id: true },
+      })
+    }
+
+    // Le rôle coordinateur suit la même règle qu'avant : coordinateur ET dans le
+    // dispositif. La garantie est celle de la connexion et du job nocturne — une
+    // seule définition, plusieurs appelants.
+    await garantirLeRoleCoordinateur(userId)
+
+    if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur) {
+      await garantirMediateur(userId)
+    }
+
+    return {
+      connue: dispositif.connue,
+      estConseillerNumerique: dispositif.estConseillerNumerique,
+    }
   }
-
-  // Le rôle coordinateur suit la même règle qu'avant : coordinateur ET dans le
-  // dispositif. La garantie est celle de la connexion et du job nocturne — une
-  // seule définition, plusieurs appelants.
-  await garantirLeRoleCoordinateurDuDispositif(userId)
-
-  if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur) {
-    await garantirMediateur(userId)
-  }
-
-  return {
-    connue: dispositif.connue,
-    estConseillerNumerique: dispositif.estConseillerNumerique,
-  }
-}

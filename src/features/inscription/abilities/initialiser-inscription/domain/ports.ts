@@ -19,6 +19,8 @@ export type RattacherDepuisSiret = (input: {
   readonly siret: string
 }) => Promise<unknown>
 
+export type GarantirLeRoleCoordinateur = (userId: UserId) => Promise<unknown>
+
 /** État de l'utilisateur nécessaire pour déterminer l'étape suivante. */
 export type LireEtatPourEtapeSuivante = (userId: UserId) => Promise<{
   readonly profil: ProfilInscription | null

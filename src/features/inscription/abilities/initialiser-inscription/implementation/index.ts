@@ -1,4 +1,5 @@
 import {
+  type GarantirLeRoleCoordinateur,
   initialiserInscription,
   type RattacherDepuisSiret,
 } from '@/features/inscription/abilities/initialiser-inscription/domain'
@@ -12,10 +13,14 @@ export const initialiserInscriptionAvecInfra = (
   input: { readonly userId: UserId },
   {
     rattacherDepuisSiret,
-  }: { readonly rattacherDepuisSiret: RattacherDepuisSiret },
+    garantirLeRoleCoordinateur,
+  }: {
+    readonly rattacherDepuisSiret: RattacherDepuisSiret
+    readonly garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur
+  },
 ): Promise<{ readonly nextStep: InscriptionStep | null }> =>
   initialiserInscription(input, {
-    appliquerDispositif,
+    appliquerDispositif: appliquerDispositif(garantirLeRoleCoordinateur),
     importerStructureDepuisSiret:
       importerStructureDepuisSiret(rattacherDepuisSiret),
     lireEtatPourEtapeSuivante,
