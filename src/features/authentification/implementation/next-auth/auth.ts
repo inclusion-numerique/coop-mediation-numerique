@@ -12,9 +12,6 @@ import { updateAccountTokens } from '@/features/authentification/implementation/
 import { updateUserData } from '@/features/authentification/implementation/prisma/updateUserData'
 import { ProConnectProvider } from '@/features/authentification/implementation/proconnect/ProConnectProvider'
 import { proConnectProviderId } from '@/features/authentification/implementation/proconnect/proConnect'
-import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/proconnect/importStructureEmployeuseFromProConnect'
-import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
-import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import { telephoneEnregistrable } from '@/libraries/telephone'
 
 const sessionUserHasOutdatedData = ({
@@ -34,7 +31,16 @@ const sessionUserHasOutdatedData = ({
   user.phone !== telephoneEnregistrable(profile.phone_number) ||
   (profile.siret && user.siret !== profile.siret)
 
-export const nextAuthOptions = {
+export const nextAuthOptions = ({
+  garantirLeRoleCoordinateur,
+  importerLEmployeuseProConnect,
+}: {
+  garantirLeRoleCoordinateur: (userId: string) => Promise<unknown>
+  importerLEmployeuseProConnect: (input: {
+    userId: string
+    siret: string | null | undefined
+  }) => Promise<unknown>
+}): AuthOptions => ({
   adapter: nextAuthAdapter,
   pages: {
     signIn: '/connexion',
@@ -92,11 +98,9 @@ export const nextAuthOptions = {
         // Le dispositif conseiller numérique se DÉRIVE désormais à la lecture : plus rien à
         // recopier ici. Ne subsiste que la ligne `coop.coordinateurs`, qu'aucune dérivation ne peut
         // produire — et la connexion est le bon moment pour la garantir.
-        garantirLeRoleCoordinateurDuDispositif(user.id).catch(
-          (error: unknown) => {
-            signaler(error)
-          },
-        )
+        garantirLeRoleCoordinateur(user.id).catch((error: unknown) => {
+          signaler(error)
+        })
 
         registerLastLogin({ userId: params.user.id }).catch((error) => {
           signaler(error)
@@ -157,14 +161,12 @@ export const nextAuthOptions = {
       // Même chose côté ProConnect : plus rien à recopier depuis l'API, seule la ligne coordinateur
       // reste à garantir. L'enchaînement est conservé — l'import ProConnect s'abstient pour un
       // conseiller numérique, il doit donc passer APRÈS.
-      garantirLeRoleCoordinateurDuDispositif(user.id)
+      garantirLeRoleCoordinateur(user.id)
         .catch((error: unknown) => {
           signaler(error)
         })
         .then(() =>
-          importStructureEmployeuseFromProConnect(
-            rattacherAUneEmployeuseDepuisSiretBinding,
-          )({
+          importerLEmployeuseProConnect({
             userId: user.id,
             siret: profile.siret,
           }),
@@ -185,4 +187,4 @@ export const nextAuthOptions = {
       return session
     },
   },
-} satisfies AuthOptions
+})
