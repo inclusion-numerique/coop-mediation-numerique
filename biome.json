@@ -257,6 +257,30 @@
       }
     },
     {
+      "includes": ["src/libraries/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["@/app/*", "@/app/**"],
+                    "message": "Une library ne dépend pas des points d'entrée : ce qu'elle doit appeler lui est passé en paramètre."
+                  },
+                  {
+                    "group": ["@/features/*", "@/features/**"],
+                    "message": "Une library est sans métier : elle n'importe aucune feature."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "includes": [
         "src/configuration/environnement/**",
         "src/configuration/telemetry/instrument/cli.mts",
