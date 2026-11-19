@@ -3,7 +3,10 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { StatutIntegration } from '@/features/rdvsp/domain/sante-compte'
+import {
+  type CompteDeLaSession,
+  statutDuCompteDeLaSession,
+} from '@/features/rdvsp/domain/sante-compte'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
@@ -17,13 +20,13 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   beneficiaire: { id: string }
   user: {
     readonly id: string
-    readonly rdvAccount: { readonly statut: StatutIntegration } | null
+    readonly rdvAccount: CompteDeLaSession | null
   }
   className?: string
 }) => {
   const [enCours, setEnCours] = useState(false)
 
-  const oauthStatus = user.rdvAccount?.statut ?? 'jamaisConnecte'
+  const oauthStatus = statutDuCompteDeLaSession(user.rdvAccount)
 
   const router = useRouter()
 

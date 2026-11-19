@@ -71,7 +71,8 @@ export type SessionUser = Pick<
         | 'invalidWebhookOrganisationIds'
       > & {
         hasOauthTokens: boolean
-        statut: 'jamaisConnecte' | 'connecte' | 'deconnecte' | 'enPanne'
+        deconnexion: string | null
+        jetonDAcces: boolean
         created: string | null
         updated: string | null
         lastSynced: string | null

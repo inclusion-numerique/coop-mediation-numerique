@@ -12,7 +12,11 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import { useModalVisibility } from '@/libraries/ui/hooks/useModalVisibility'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { StatutIntegration } from '../domain/sante-compte'
+import {
+  type CompteDeLaSession,
+  type StatutIntegration,
+  statutDuCompteDeLaSession,
+} from '../domain/sante-compte'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from './declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from './deconnecter-compte-rdv.key'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
@@ -28,12 +32,12 @@ const GererRdvServicePublicModal = ({
   user: {
     readonly id: string
     readonly timezone: string
-    readonly rdvAccount: {
-      readonly statut: StatutIntegration
-      readonly error: string | null
-      readonly created: string | null
-      readonly lastSynced: string | null
-    } | null
+    readonly rdvAccount:
+      | (CompteDeLaSession & {
+          readonly created: string | null
+          readonly lastSynced: string | null
+        })
+      | null
   }
 }) => {
   const router = useRouter()
@@ -43,7 +47,7 @@ const GererRdvServicePublicModal = ({
   const [state, setState] = useState<'gerer' | 'deconnecter'>('gerer')
 
   const [status, setStatus] = useState<StatutIntegration>(
-    rdvAccount?.statut ?? 'jamaisConnecte',
+    statutDuCompteDeLaSession(rdvAccount),
   )
 
   const [lastSynced, setLastSynced] = useState<Date | null>(

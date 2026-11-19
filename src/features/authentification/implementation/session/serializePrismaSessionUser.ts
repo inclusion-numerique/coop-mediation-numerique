@@ -3,7 +3,6 @@ import type {
   PrismaSessionUser,
   PrismaSessionUsupper,
 } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { statutIntegrationDeLaSession } from '@/features/rdvsp/db/statut-integration'
 import { splitMediateursCoordonnes } from './coordination-de-la-session'
 
 const emploisDeLaSession = (
@@ -53,12 +52,10 @@ export const serializePrismaSessionUser = (
           prismaSessionUser.rdvAccount.refreshToken
         ),
         error: prismaSessionUser.rdvAccount.error ?? null,
-        // Calculé ici une fois pour toutes : les écrans n'ont pas de quoi le
-        // redériver, la session ne leur transmettant aucun jeton.
-        statut: statutIntegrationDeLaSession(
-          prismaSessionUser.rdvAccount,
-          new Date(),
-        ),
+        deconnexion:
+          prismaSessionUser.rdvAccount.deleted?.toISOString() ?? null,
+        jetonDAcces:
+          (prismaSessionUser.rdvAccount.accessToken ?? '').trim() !== '',
         includeRdvsInActivitesList:
           prismaSessionUser.rdvAccount.includeRdvsInActivitesList,
         created: prismaSessionUser.rdvAccount.created.toISOString(),

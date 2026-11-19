@@ -81,3 +81,20 @@ export const statutIntegration = (sante: SanteCompteRdv): StatutIntegration => {
     ? 'enPanne'
     : 'connecte'
 }
+
+export type CompteDeLaSession = {
+  readonly deconnexion: string | null
+  readonly jetonDAcces: boolean
+  readonly error: string | null
+}
+
+const enErreur = (error: string | null): boolean =>
+  error !== null && error.trim() !== ''
+
+export const statutDuCompteDeLaSession = (
+  compte: CompteDeLaSession | null,
+): StatutIntegration => {
+  if (compte === null) return 'jamaisConnecte'
+  if (compte.deconnexion !== null) return 'deconnecte'
+  return !compte.jetonDAcces || enErreur(compte.error) ? 'enPanne' : 'connecte'
+}

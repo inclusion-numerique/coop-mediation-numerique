@@ -12,6 +12,7 @@ import {
   rdvMyHomepageLink,
 } from '@/features/rdvsp/urls'
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
+import { statutDuCompteDeLaSession } from '../domain/sante-compte'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 
@@ -20,7 +21,7 @@ const RdvServicePublicAccess = ({
 }: {
   user: ComponentProps<typeof GererRdvServicePublicModal>['user']
 }) => {
-  const status = user.rdvAccount?.statut ?? 'jamaisConnecte'
+  const status = statutDuCompteDeLaSession(user.rdvAccount)
 
   return (
     <>

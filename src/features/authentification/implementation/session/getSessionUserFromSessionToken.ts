@@ -82,14 +82,11 @@ export const sessionUserSelect = {
   rdvAccount: {
     select: {
       id: true,
-      userId: true,
       created: true,
       updated: true,
       lastSynced: true,
       accessToken: true,
       refreshToken: true,
-      expiresAt: true,
-      scope: true,
       deleted: true,
       error: true,
       syncFrom: true,
