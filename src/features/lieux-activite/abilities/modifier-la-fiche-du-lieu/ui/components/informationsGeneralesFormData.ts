@@ -1,8 +1,8 @@
 import { type Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
-import type { StructureSearchResult } from '@/features/employeuse'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { EtablissementTrouve } from '../rechercher-un-etablissement.key'
 
 export type InformationsGeneralesFormData = {
   id: string
@@ -10,7 +10,7 @@ export type InformationsGeneralesFormData = {
   adresseBan: AdresseBanData | null
   lieuItinerant: boolean | null
   complementAdresse: string | null
-  siretSearch: StructureSearchResult | null
+  siretSearch: EtablissementTrouve | null
   nomUsage: string | null
   noSiret: boolean | null
   typologies: Typologie[]

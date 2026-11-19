@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
@@ -8,6 +9,7 @@ import {
   FicheDuLieuPage,
   ficheAffichee,
 } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+import { RECHERCHER_UN_ETABLISSEMENT_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/rechercher-un-etablissement.key'
 import {
   ModaleDeRetrait,
   retraitsDesMediateurs,
@@ -19,6 +21,7 @@ import {
   LieuDuReseauPage,
 } from '@/features/mon-reseau/ui/LieuDuReseauPage'
 import { departementDuCode } from '@/libraries/departement'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>
@@ -47,38 +50,43 @@ const LieuActiviteDetailPage = async (props: {
   const peutRetirerUnMediateur = user.coordinateur !== null
 
   return (
-    <LieuDuReseauPage>
-      <FicheDuLieuPage
-        fiche={fiche}
-        enregistrer={modifierLaFicheDuLieuAction}
-        creerUnLieuHref={
-          user.mediateur == null ? undefined : '/coop/lieux-activite/creer'
-        }
-        entete={
-          <EnteteDuLieuDuReseau
-            departement={departement.data.code}
-            nom={fiche.nom}
-          />
-        }
-        mediateurs={
-          <>
-            <MediateursDuLieu
-              mediateurs={mediateurs}
+    <ClientBinder
+      bind={RECHERCHER_UN_ETABLISSEMENT_KEY}
+      to={rechercherStructureEmployeuseAction}
+    >
+      <LieuDuReseauPage>
+        <FicheDuLieuPage
+          fiche={fiche}
+          enregistrer={modifierLaFicheDuLieuAction}
+          creerUnLieuHref={
+            user.mediateur == null ? undefined : '/coop/lieux-activite/creer'
+          }
+          entete={
+            <EnteteDuLieuDuReseau
               departement={departement.data.code}
-              retraits={
-                peutRetirerUnMediateur
-                  ? retraitsDesMediateurs(
-                      { id: lieuId, nom: fiche.nom },
-                      mediateurs,
-                    )
-                  : undefined
-              }
+              nom={fiche.nom}
             />
-            {peutRetirerUnMediateur && <ModaleDeRetrait />}
-          </>
-        }
-      />
-    </LieuDuReseauPage>
+          }
+          mediateurs={
+            <>
+              <MediateursDuLieu
+                mediateurs={mediateurs}
+                departement={departement.data.code}
+                retraits={
+                  peutRetirerUnMediateur
+                    ? retraitsDesMediateurs(
+                        { id: lieuId, nom: fiche.nom },
+                        mediateurs,
+                      )
+                    : undefined
+                }
+              />
+              {peutRetirerUnMediateur && <ModaleDeRetrait />}
+            </>
+          }
+        />
+      </LieuDuReseauPage>
+    </ClientBinder>
   )
 }
 
