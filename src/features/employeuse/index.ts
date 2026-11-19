@@ -39,8 +39,6 @@ export {
 
 export {
   ContactReferent,
-  contratLePlusRecent,
-  contratPourEmployeuse,
   EmployeuseId,
   referentAffichage,
 } from './domain'
