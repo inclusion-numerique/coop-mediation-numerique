@@ -3,8 +3,9 @@
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { SUPPRIMER_BENEFICIAIRES_ACTION_KEY } from '../../action/supprimer-beneficiaires.key'
 import { DeleteBeneficiaireModal } from './DeleteBeneficiaireModal'
 
 const DeleteBeneficiaireModalContent = ({
@@ -21,7 +22,9 @@ const DeleteBeneficiaireModalContent = ({
 
   const onDelete = async () => {
     setPending(true)
-    const result = await supprimerBeneficiairesAction({ ids: [beneficiaireId] })
+    const result = await inject(SUPPRIMER_BENEFICIAIRES_ACTION_KEY)({
+      ids: [beneficiaireId],
+    })
     setPending(false)
 
     if (!result.success) {

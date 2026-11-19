@@ -4,6 +4,8 @@ import { expect, within } from 'storybook/test'
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import { beneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/beneficiaire-list-item.fixture'
 import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
+import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/supprimer-des-beneficiaires.key'
+import { provide } from '@/libraries/nextjs/injection/client'
 import { MesBeneficiairesListePage } from './MesBeneficiairesListePage'
 
 const paginated = (
@@ -40,7 +42,7 @@ const items = [
   }),
 ]
 
-// La page reçoit la suppression en prop : les stories fournissent une doublure
+// La page reçoit la suppression par clé : les stories fournissent une doublure
 // plutôt que la vraie server action, qui tirerait tout le graphe serveur dans le
 // bundle du navigateur.
 const supprimerBeneficiaires = async () => ({
@@ -51,9 +53,11 @@ const supprimerBeneficiaires = async () => ({
 const meta: Meta<typeof MesBeneficiairesListePage> = {
   title: 'Mes bénéficiaires/Liste',
   component: MesBeneficiairesListePage,
-  args: { supprimerBeneficiaires },
   decorators: [
-    (Story) => <div className="fr-container fr-py-4v">{Story()}</div>,
+    (Story) => {
+      provide(SUPPRIMER_DES_BENEFICIAIRES_KEY, supprimerBeneficiaires)
+      return <div className="fr-container fr-py-4v">{Story()}</div>
+    },
   ],
 }
 
