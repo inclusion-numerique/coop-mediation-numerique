@@ -1,9 +1,22 @@
 import { appUrl } from '@e2e/support/helpers'
-import { getUserDisplayName } from '@/features/authentification/domain/user'
 import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/users/coordinateurInscrit'
 import { mediateurInscription } from '@/features/utilisateurs/fixtures/users/mediateurInscription'
 import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
+import { nomAffiche } from '@/libraries/nom-affiche'
+
+const nomAfficheDe = (utilisateur: {
+  firstName?: string | null
+  lastName?: string | null
+  name?: string | null
+  email: string
+}) =>
+  nomAffiche({
+    prenom: utilisateur.firstName ?? null,
+    nom: utilisateur.lastName ?? null,
+    nomComplet: utilisateur.name ?? null,
+    courriel: utilisateur.email,
+  })
 
 const searchAndInviteUser = ({
   displayName,
@@ -36,13 +49,13 @@ describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équi
 
     searchAndInviteUser({
       search: 'conseiller',
-      displayName: getUserDisplayName(conseillerNumerique),
+      displayName: nomAfficheDe(conseillerNumerique),
       email: conseillerNumerique.email,
     })
 
     searchAndInviteUser({
       search: 'mediateur',
-      displayName: getUserDisplayName(mediateurInscription),
+      displayName: nomAfficheDe(mediateurInscription),
       email: mediateurInscription.email,
     })
 

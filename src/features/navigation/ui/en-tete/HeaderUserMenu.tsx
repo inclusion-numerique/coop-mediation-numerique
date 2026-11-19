@@ -10,9 +10,9 @@ import {
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { getUserDisplayName } from '@/features/authentification/domain/user'
 import styles from '@/features/navigation/ui/en-tete/HeaderUserMenu.module.css'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
+import { nomAffiche } from '@/libraries/nom-affiche'
 
 const isLimitedToInscription = (
   user: Pick<SessionUser, 'role' | 'inscriptionValidee'>,
@@ -35,7 +35,12 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
   // So we have to use client component and hooks to handle the click outside
   const buttonRef = useRef<HTMLButtonElement>(null)
   const collapseRef = useRef<HTMLDivElement>(null)
-  const displayName = getUserDisplayName(user)
+  const displayName = nomAffiche({
+    prenom: user.firstName,
+    nom: user.lastName,
+    nomComplet: user.name,
+    courriel: user.email,
+  })
   const onClickOrEnterInsideDropdown = (
     event: KeyboardEvent<HTMLDivElement> | ReactMouseEvent<HTMLDivElement>,
   ) => {
