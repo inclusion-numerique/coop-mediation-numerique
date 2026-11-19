@@ -2,9 +2,9 @@ import Excel from 'exceljs'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
 import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+} from '@/libraries/tableur/addExportMetadata'
 import { addFilters } from '@/libraries/tableur/addFilters'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
@@ -28,7 +28,7 @@ export const classeurDesUtilisateurs = ({
   genereLe,
 }: {
   readonly utilisateurs: readonly LigneUtilisateur[]
-  readonly auteur: WorksheetUser
+  readonly auteur: AuteurDExport
   readonly filtres: readonly LibelleDeFiltre[]
   readonly genereLe: Date
 }): Excel.Workbook => {
@@ -38,7 +38,7 @@ export const classeurDesUtilisateurs = ({
   const feuille = classeur.addWorksheet('Utilisateurs')
 
   addExportMetadata(feuille)({
-    user: auteur,
+    auteur: auteur,
     date: genereLe,
     total: utilisateurs.length,
   })

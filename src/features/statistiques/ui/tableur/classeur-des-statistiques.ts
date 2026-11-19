@@ -2,15 +2,15 @@ import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
 import { addFilters } from '@/features/activites/ui/tableur/filtres-des-activites'
 import type { ActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
-import {
-  addExportMetadata,
-  type WorksheetUser,
-} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import type {
   LabelAndCount,
   QuantifiedShare,
 } from '@/libraries/proportions/quantifiedShare'
+import {
+  type AuteurDExport,
+  addExportMetadata,
+} from '@/libraries/tableur/addExportMetadata'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
@@ -226,8 +226,11 @@ const addStatistiquesCommuneResidenceBeneficiaires =
   }
 
 export type BuildStatistiquesWorksheetInput = {
-  user: WorksheetUser
-  mediateur: WorksheetUser
+  auteur: AuteurDExport
+  mediateurScope: {
+    readonly firstName: string | null
+    readonly lastName: string | null
+  } | null
   filters: ActivitesFiltersLabels
   statistiques: StatistiquesDuClasseur
   fuseau: string
@@ -235,8 +238,8 @@ export type BuildStatistiquesWorksheetInput = {
 }
 
 export const buildStatistiquesWorksheet = ({
-  user,
-  mediateur,
+  auteur,
+  mediateurScope,
   filters,
   statistiques,
   fuseau,
@@ -249,12 +252,12 @@ export const buildStatistiquesWorksheet = ({
   const worksheet = workbook.addWorksheet('Statistiques')
 
   addExportMetadata(worksheet)({
-    user,
+    auteur,
     date: worksheetGenerationDate,
     fuseau,
   })
   addFilters(worksheet)(filters, {
-    mediateurScope: user.id === mediateur.id ? null : mediateur,
+    mediateurScope,
     excludeFilters: ['beneficiaires'],
   })
   addStatistiquesGenerales(worksheet)(statistiques)

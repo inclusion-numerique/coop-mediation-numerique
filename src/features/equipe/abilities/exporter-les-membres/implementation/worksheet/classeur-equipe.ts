@@ -1,8 +1,8 @@
 import Excel from 'exceljs'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+} from '@/libraries/tableur/addExportMetadata'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
@@ -82,7 +82,7 @@ export const classeurEquipe = ({
 }: {
   membres: readonly MembreExporte[]
   criteres: CriteresEquipe
-  auteur: WorksheetUser
+  auteur: AuteurDExport
   genereLe?: Date
 }) => {
   const classeur = new Excel.Workbook()
@@ -91,7 +91,7 @@ export const classeurEquipe = ({
   const feuille = classeur.addWorksheet('Équipe')
 
   addExportMetadata(feuille)({
-    user: auteur,
+    auteur: auteur,
     date: genereLe,
     total: membres.length,
   })

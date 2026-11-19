@@ -7,6 +7,7 @@ import {
   exporterBeneficiaires,
 } from '@/features/beneficiaire/abilities/exporter-beneficiaires'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {
@@ -32,7 +33,7 @@ export const GET = async (request: NextRequest) => {
   const workbook = await exporterBeneficiaires({
     mediateurId: MediateurId(user.mediateur.id),
     filters: parsedQueryParams.data,
-    user,
+    auteur: auteurDeLExport(user),
   })
 
   const data = await workbook.xlsx.writeBuffer()

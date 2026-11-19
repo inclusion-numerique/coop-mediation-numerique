@@ -1,17 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import type { WorksheetUser } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import { criteresEquipe } from '../../../../domain'
 import { classeurEquipe } from './classeur-equipe'
 import type { MembreExporte } from './membre-exporte'
 
-const auteur: WorksheetUser = {
-  id: '550e8400-e29b-41d4-a716-446655440071',
-  firstName: 'Ulysse',
-  lastName: 'Osmont',
-  role: 'User',
-  coordinateur: null,
-  isConseillerNumerique: false,
-  mediateur: null,
+const auteur: AuteurDExport = {
+  nom: 'Osmont',
+  prenom: 'Ulysse',
+  role: 'Rôle non défini',
 }
 
 const membre = (surcharges: Partial<MembreExporte> = {}): MembreExporte => ({

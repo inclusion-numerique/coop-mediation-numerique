@@ -1,9 +1,9 @@
 import Excel from 'exceljs'
 import { addFilters } from '@/features/activites/ui/tableur/filtres-des-activites'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+} from '@/libraries/tableur/addExportMetadata'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import type { ExportDesAccompagnements } from '../domain'
@@ -24,7 +24,7 @@ export const classeurDesAccompagnements = ({
   fuseau,
   date = new Date(),
 }: {
-  readonly demandeur: WorksheetUser
+  readonly demandeur: AuteurDExport
   readonly filtres: readonly LibelleDeFiltre[]
   readonly exportDes: ExportDesAccompagnements
   readonly fuseau: string
@@ -35,7 +35,7 @@ export const classeurDesAccompagnements = ({
   const feuille = classeur.addWorksheet('Activités')
 
   addExportMetadata(feuille)({
-    user: demandeur,
+    auteur: demandeur,
     date,
     fuseau,
     total: nombreDAccompagnementsExportes(activites),

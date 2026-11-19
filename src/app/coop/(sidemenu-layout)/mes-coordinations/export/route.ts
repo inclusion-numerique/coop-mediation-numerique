@@ -5,6 +5,7 @@ import { getSessionTokenFromNextRequestCookies } from '@/features/authentificati
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +20,7 @@ export const GET = async (request: NextRequest) => {
   const classeur = await classeurDeMesCoordinations({
     recherche: request.nextUrl.searchParams,
     coordinateurId: user.coordinateur.id,
-    auteur: user,
+    auteur: auteurDeLExport(user),
     fuseau: user.timezone,
     tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
   })

@@ -12,6 +12,7 @@ import {
 } from '@/features/lieux-activite'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
@@ -34,7 +35,7 @@ export const GET = async (request: NextRequest) => {
       coordinateurId: user.coordinateur?.id ?? null,
       equipe: mediateurCoordonnesEtAnciensIdsFor(user),
     },
-    auteur: user,
+    auteur: auteurDeLExport(user),
     fuseau: user.timezone,
     fournisseurs: {
       conseillersNumeriques: conseillerNumeriqueSql,

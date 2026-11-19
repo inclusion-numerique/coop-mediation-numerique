@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,
@@ -36,7 +37,7 @@ export const GET = async (request: NextRequest) => {
 
   const classeur = classeurDesUtilisateurs({
     utilisateurs,
-    auteur,
+    auteur: auteurDeLExport(auteur),
     filtres: libellesDesFiltres(filtres, options),
     genereLe: maintenant,
   })

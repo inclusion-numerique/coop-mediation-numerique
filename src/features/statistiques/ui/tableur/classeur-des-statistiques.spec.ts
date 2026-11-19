@@ -12,20 +12,14 @@ const DATE = new Date('2024-09-11T17:42:00.000Z')
 
 const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
   BuildStatistiquesWorksheetInput,
-  'mediateur' | 'filters'
+  'mediateurScope' | 'filters'
 > = {
   worksheetGenerationDate: DATE,
   fuseau: 'Europe/Paris',
-  user: {
-    id: '1',
-    firstName: 'John',
-    lastName: 'Doe',
-    role: 'User',
-    isConseillerNumerique: true,
-    mediateur: {
-      id: '5',
-    },
-    coordinateur: null,
+  auteur: {
+    nom: 'Doe',
+    prenom: 'John',
+    role: 'Conseiller Numérique',
   },
   statistiques: {
     totalCounts: {
@@ -283,17 +277,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
 const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInput =
   {
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
-    mediateur: {
-      id: '1',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'User',
-      isConseillerNumerique: true,
-      mediateur: {
-        id: '5',
-      },
-      coordinateur: null,
-    },
+    mediateurScope: null,
     filters: [
       {
         label: '29.01.2025 - 11.02.2025',
@@ -391,17 +375,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
 const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetInput =
   {
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
-    mediateur: {
-      id: '1',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'User',
-      isConseillerNumerique: true,
-      mediateur: null,
-      coordinateur: {
-        id: '1',
-      },
-    },
+    mediateurScope: null,
     filters: [
       {
         key: '69382',

@@ -12,6 +12,7 @@ import {
   MediateurId,
 } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (
@@ -53,7 +54,7 @@ export const GET = async (
   const donnees = await classeurDesMembres({
     membres: membres.data,
     criteres,
-    auteur: user,
+    auteur: auteurDeLExport(user),
   }).xlsx.writeBuffer()
 
   return new Response(donnees, {

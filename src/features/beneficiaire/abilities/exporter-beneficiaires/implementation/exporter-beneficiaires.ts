@@ -28,7 +28,7 @@ const toExportRow = (item: BeneficiaireListItem): BeneficiaireExportRow => ({
 export const exporterBeneficiaires: ExporterBeneficiaires = async ({
   mediateurId,
   filters,
-  user,
+  auteur,
 }) => {
   const { items, totalItems } = await listerBeneficiaires({
     mediateurId,
@@ -40,6 +40,6 @@ export const exporterBeneficiaires: ExporterBeneficiaires = async ({
     beneficiaires: items.map(toExportRow),
     filters,
     matchesCount: totalItems,
-    user,
+    auteur,
   })
 }

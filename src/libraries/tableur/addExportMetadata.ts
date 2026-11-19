@@ -1,26 +1,21 @@
 import type { Worksheet } from 'exceljs'
-import { getUserRoleLabel } from '@/features/utilisateurs/ui/tableur/getUserRoleLabel'
-import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { addTitleRow } from './addTitleRow'
 
-export type WorksheetUser = {
-  readonly id: string
-  readonly firstName: string | null
-  readonly lastName: string | null
+export type AuteurDExport = {
+  readonly nom: string | null
+  readonly prenom: string | null
   readonly role: string
-  readonly isConseillerNumerique: boolean
-  readonly mediateur: { readonly id: string } | null
-  readonly coordinateur: { readonly id: string } | null
 }
 
 export const addExportMetadata =
   (worksheet: Worksheet) =>
   ({
     date,
-    user,
+    auteur,
     total,
     fuseau = 'Europe/Paris',
   }: {
-    user: WorksheetUser
+    auteur: AuteurDExport
     date: Date
     total?: number
     fuseau?: string
@@ -29,9 +24,9 @@ export const addExportMetadata =
 
     return worksheet.addRows(
       [
-        ['Nom', user.lastName ?? '-'],
-        ['Prénom', user.firstName ?? '-'],
-        ['Rôle', getUserRoleLabel(user)],
+        ['Nom', auteur.nom ?? '-'],
+        ['Prénom', auteur.prenom ?? '-'],
+        ['Rôle', auteur.role],
         total != null ? ['Total', total] : undefined,
         [
           "Date d'export",

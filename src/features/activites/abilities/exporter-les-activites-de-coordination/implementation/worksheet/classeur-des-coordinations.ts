@@ -2,11 +2,11 @@ import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { formatInTimeZone } from 'date-fns-tz'
 import * as Excel from 'exceljs'
-import {
-  addExportMetadata,
-  type WorksheetUser,
-} from '@/features/utilisateurs/ui/tableur/addExportMetadata'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import {
+  type AuteurDExport,
+  addExportMetadata,
+} from '@/libraries/tableur/addExportMetadata'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
@@ -154,7 +154,7 @@ export const classeurDesCoordinations = ({
   activites: readonly ActiviteDeCoordination[]
   criteres: CriteresDesCoordinations
   tags: readonly TagDeLActivite[]
-  auteur: WorksheetUser
+  auteur: AuteurDExport
   fuseau: string
   genereLe?: Date
 }): Excel.Workbook => {
@@ -163,7 +163,7 @@ export const classeurDesCoordinations = ({
 
   const feuille = classeur.addWorksheet('Activités de coordination')
   addExportMetadata(feuille)({
-    user: auteur,
+    auteur: auteur,
     date: genereLe,
     fuseau,
     total: activites.length,

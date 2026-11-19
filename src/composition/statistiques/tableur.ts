@@ -2,6 +2,7 @@ import type { SessionUser } from '@/features/authentification/domain/sessionUser
 import { generateActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import type { BuildStatistiquesWorksheetInput } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { getMesStatistiquesPageData } from './mes-statistiques'
 
 export const getStatistiquesWorksheetInput = async ({
@@ -30,8 +31,8 @@ export const getStatistiquesWorksheetInput = async ({
 
   return {
     statistiques,
-    user,
-    mediateur: user,
+    auteur: auteurDeLExport(user),
+    mediateurScope: null,
     filters: activitesFiltersLabels,
     fuseau: user.timezone,
   }

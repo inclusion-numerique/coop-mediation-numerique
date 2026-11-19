@@ -4,7 +4,7 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain'
-import { addExportMetadata } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+import { addExportMetadata } from '@/libraries/tableur/addExportMetadata'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
@@ -50,7 +50,7 @@ const toRow = (beneficiaire: BeneficiaireExportRow) => [
 export const buildBeneficiairesWorksheet: BuildBeneficiairesWorksheet = ({
   beneficiaires,
   filters,
-  user,
+  auteur,
   worksheetGenerationDate = new Date(),
   matchesCount,
 }) => {
@@ -61,7 +61,7 @@ export const buildBeneficiairesWorksheet: BuildBeneficiairesWorksheet = ({
   const worksheet = workbook.addWorksheet('Bénéficiaires')
 
   addExportMetadata(worksheet)({
-    user,
+    auteur,
     date: worksheetGenerationDate,
     total: matchesCount,
   })

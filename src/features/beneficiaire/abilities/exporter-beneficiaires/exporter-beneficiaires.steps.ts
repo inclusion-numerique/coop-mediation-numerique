@@ -6,16 +6,12 @@ import {
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
-import type { WorksheetUser } from '@/features/utilisateurs/ui/tableur/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 
-const user: WorksheetUser = {
-  id: '00000000-0000-0000-0000-000000000000',
-  firstName: 'Marie',
-  lastName: 'Médiatrice',
-  role: 'User',
-  coordinateur: null,
-  isConseillerNumerique: false,
-  mediateur: { id: '00000000-0000-0000-0000-000000000001' },
+const user: AuteurDExport = {
+  nom: 'Médiatrice',
+  prenom: 'Marie',
+  role: 'Médiateur',
 }
 
 let workbook: Workbook | undefined
@@ -62,7 +58,7 @@ When(
     workbook = await exporterBeneficiaires({
       mediateurId: testMediateurId,
       filters: { recherche },
-      user,
+      auteur: user,
     })
   },
 )
