@@ -3,11 +3,11 @@
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { adresseAvec } from '@/libraries/parametres-d-url'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import type { VocabulaireDeLaBarre } from './vocabulaire-de-la-barre'
 

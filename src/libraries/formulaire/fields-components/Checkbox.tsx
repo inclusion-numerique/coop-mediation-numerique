@@ -10,8 +10,8 @@ import {
   LabelHTMLAttributes,
   ReactNode,
 } from 'react'
-import { Pictogram } from '@/features/pictograms/pictogram'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
 import { casesCochees } from './cases-cochees'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {

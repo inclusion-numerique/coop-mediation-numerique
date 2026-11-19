@@ -1,4 +1,4 @@
-import { PixOrgaLogo } from '@/features/pictograms/services/PixOrgaLogo'
+import { PixOrgaLogo } from '@/libraries/pictograms/services/PixOrgaLogo'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

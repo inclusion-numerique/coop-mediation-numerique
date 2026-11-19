@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import { rdvStatusValues } from '@/features/rdvsp/ui/rdv-status'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 
 /**

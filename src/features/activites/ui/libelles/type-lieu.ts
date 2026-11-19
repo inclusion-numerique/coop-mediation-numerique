@@ -1,8 +1,8 @@
-import { CityHallIcon } from '@/features/pictograms/buildings/CityHallIcon'
-import { HouseIcon } from '@/features/pictograms/buildings/HouseIcon'
-import { SchoolIcon } from '@/features/pictograms/buildings/SchoolIcon'
-import { InternetIcon } from '@/features/pictograms/digital/InternetIcon'
-import { Pictogram } from '@/features/pictograms/pictogram'
+import { CityHallIcon } from '@/libraries/pictograms/buildings/CityHallIcon'
+import { HouseIcon } from '@/libraries/pictograms/buildings/HouseIcon'
+import { SchoolIcon } from '@/libraries/pictograms/buildings/SchoolIcon'
+import { InternetIcon } from '@/libraries/pictograms/digital/InternetIcon'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
 import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { TYPES_DE_LIEU } from '../../domain'
 

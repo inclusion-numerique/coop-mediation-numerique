@@ -1,4 +1,4 @@
-import { AbcDiagLogo } from '@/features/pictograms/services/AbcDiagLogo'
+import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
 import type { FicheOutil } from '../fiche-outil'
 
 export default {

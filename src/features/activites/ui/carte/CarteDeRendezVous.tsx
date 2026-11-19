@@ -2,8 +2,8 @@
 
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import type { CarteDeRendezVous as Carte } from './carte-de-rendez-vous.presenter'
 import ListCard from './ListCard'

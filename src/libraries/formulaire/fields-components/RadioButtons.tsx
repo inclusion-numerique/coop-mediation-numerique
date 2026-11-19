@@ -11,8 +11,8 @@ import {
   LabelHTMLAttributes,
   ReactNode,
 } from 'react'
-import { Pictogram } from '@/features/pictograms/pictogram'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
 import Stars from '@/libraries/ui/components/Stars'
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {

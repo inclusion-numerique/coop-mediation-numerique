@@ -1,10 +1,10 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
 } from '@/features/rdvsp/oauth'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import BackButton from '@/libraries/ui/components/BackButton'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 

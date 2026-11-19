@@ -3,13 +3,13 @@
 import { Popover } from 'radix-ui'
 import { useState } from 'react'
 import styles from '@/features/navigation/ui/en-tete/HeaderQuickAccess.module.css'
-import { Pictogram } from '@/features/pictograms/pictogram'
-import { AbcDiagLogo } from '@/features/pictograms/services/AbcDiagLogo'
-import { AidantsConnectLogo } from '@/features/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@/features/pictograms/services/CartographieLogo'
-import { LesBasesLogo } from '@/features/pictograms/services/LesBasesLogo'
-import { PixOrgaLogo } from '@/features/pictograms/services/PixOrgaLogo'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
+import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
+import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
+import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
+import { PixOrgaLogo } from '@/libraries/pictograms/services/PixOrgaLogo'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 
 const tools: { label: string; href: string; icon: Pictogram }[] = [
   {

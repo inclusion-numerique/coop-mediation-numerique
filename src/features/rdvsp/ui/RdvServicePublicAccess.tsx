@@ -1,7 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
-import { RDVServicePublicCoopConnexion } from '@/features/pictograms/services/RDVServicePublicCoopConnexion'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
@@ -12,6 +11,7 @@ import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
 } from '@/features/rdvsp/urls'
+import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 

@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { AidantsConnectLogo } from '@/features/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@/features/pictograms/services/CartographieLogo'
-import { LesBasesLogo } from '@/features/pictograms/services/LesBasesLogo'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
+import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
+import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 
 export const Outils = () => (
   <div className="fr-container">

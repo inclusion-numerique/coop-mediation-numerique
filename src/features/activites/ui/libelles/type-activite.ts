@@ -1,6 +1,6 @@
-import { Pictogram } from '@/features/pictograms/pictogram'
-import { SittingAtATableIcon } from '@/features/pictograms/user/SittingAtATableIcon'
-import { TeacherIcon } from '@/features/pictograms/user/TeacherIcon'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { SittingAtATableIcon } from '@/libraries/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@/libraries/pictograms/user/TeacherIcon'
 import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { TYPES_D_ACTIVITE } from '../../domain'
 
