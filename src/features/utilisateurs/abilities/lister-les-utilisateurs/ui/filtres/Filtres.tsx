@@ -1,6 +1,6 @@
 'use client'
 
-import { LieuFilter, type LieuFilterValue } from '@/features/lieux-activite/ui'
+import type { ReactNode } from 'react'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   type OptionsDesFiltres,
@@ -12,20 +12,6 @@ import { FiltreAChoixUnique } from './FiltreAChoixUnique'
 import { FiltreEmployeuses } from './FiltreEmployeuses'
 import { FiltreRoles } from './FiltreRoles'
 
-const valeursDeLieu = (
-  filtres: FiltresUtilisateurs,
-): readonly LieuFilterValue[] => [
-  ...(filtres.lieux.length === 0
-    ? []
-    : [{ type: 'lieu' as const, value: [...filtres.lieux] }]),
-  ...(filtres.communes.length === 0
-    ? []
-    : [{ type: 'commune' as const, value: [...filtres.communes] }]),
-  ...(filtres.departements.length === 0
-    ? []
-    : [{ type: 'departement' as const, value: [...filtres.departements] }]),
-]
-
 const optionsChoisies = (
   options: readonly SelectOption[],
   choisies: readonly (string | number)[],
@@ -35,9 +21,11 @@ const optionsChoisies = (
 export const Filtres = ({
   filtres,
   options,
+  filtreDeLieu,
 }: {
   filtres: FiltresUtilisateurs
   options: OptionsDesFiltres
+  filtreDeLieu: ReactNode
 }) => (
   <div className="fr-flex fr-align-items-start fr-flex-wrap fr-flex-gap-2v">
     <FiltreRoles rolesInitiaux={filtres.roles} />
@@ -67,11 +55,6 @@ export const Filtres = ({
         filtres.employeuses,
       )}
     />
-    <LieuFilter
-      defaultValue={[...valeursDeLieu(filtres)]}
-      lieuxActiviteOptions={[...options.lieux]}
-      communesOptions={[...options.communes]}
-      departementsOptions={[...options.departements]}
-    />
+    {filtreDeLieu}
   </div>
 )

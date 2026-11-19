@@ -3,6 +3,7 @@ import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rech
 import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { LieuFilter } from '@/features/lieux-activite/ui'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
   ordreDesUtilisateurs,
@@ -12,6 +13,7 @@ import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/a
 import {
   type ParametresDeLaListe,
   UtilisateursPage,
+  valeursDeLieu,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
 import {
   filtresUtilisateurs,
@@ -54,6 +56,14 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
           filtres={filtres}
           options={options}
           searchParams={searchParams}
+          filtreDeLieu={
+            <LieuFilter
+              defaultValue={valeursDeLieu(filtres)}
+              lieuxActiviteOptions={[...options.lieux]}
+              communesOptions={[...options.communes]}
+              departementsOptions={[...options.departements]}
+            />
+          }
           actions={
             <BoutonExporterLesUtilisateurs
               parametres={parametresDesFiltres(filtres)}

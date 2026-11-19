@@ -1,7 +1,4 @@
-export {
-  LieuFilter,
-  type LieuFilterValue,
-} from '../abilities/lister-les-options-de-lieux/ui/LieuFilter'
+export { LieuFilter } from '../abilities/lister-les-options-de-lieux/ui/LieuFilter'
 
 export { CreerLieuActivitePageContent } from './creation/CreerLieuActivitePageContent'
 export {

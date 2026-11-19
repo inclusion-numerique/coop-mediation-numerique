@@ -29,12 +29,14 @@ export const UtilisateursPage = ({
   options,
   searchParams,
   actions,
+  filtreDeLieu,
 }: {
   trouves: UtilisateursTrouves
   filtres: FiltresUtilisateurs
   options: OptionsDesFiltres
   searchParams: ParametresDeLaListe
   actions: ReactNode
+  filtreDeLieu: ReactNode
 }) => (
   <CoopPageContainer size="full">
     <SkipLinksPortal />
@@ -50,7 +52,11 @@ export const UtilisateursPage = ({
         <RechercheDUtilisateurs searchParams={searchParams} />
       </div>
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
-        <Filtres filtres={filtres} options={options} />
+        <Filtres
+          filtres={filtres}
+          options={options}
+          filtreDeLieu={filtreDeLieu}
+        />
         <span className="fr-text--semi-bold">
           {trouves.matchesCount}{' '}
           {pluriel(
