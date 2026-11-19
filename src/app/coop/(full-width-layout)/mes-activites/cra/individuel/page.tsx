@@ -3,19 +3,15 @@ import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/reche
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
+import { nouvelleSaisieIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/CraIndividuelPage'
-import { craIndividuelDefaultValues } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/craIndividuelDefaultValues'
-import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { MediateurId } from '@/features/activites/domain'
-import { dureesFrequentesDuMediateur } from '@/features/activites/implementation/prisma/durees-frequentes'
+import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/ui/saisie/commune/rechercher-des-communes.key'
-import { donneesDeLaSaisieDeMediation } from '@/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { visibilitesDuCra } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import { rechercherDesCommunes } from '@/features/adresse/implementation/api-adresse/rechercher-des-communes'
 import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
@@ -26,10 +22,7 @@ import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import {
-  decodeSerializableState,
-  type EncodedState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const CreateCraIndividuelPage = async ({
   searchParams,
@@ -40,9 +33,7 @@ const CreateCraIndividuelPage = async ({
   }>
 }) => {
   const { retour, v } = await searchParams
-
   const user = await authenticateMediateur()
-  const mediateurId = user.mediateur.id
 
   const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
@@ -53,23 +44,15 @@ const CreateCraIndividuelPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
-  const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
-
-  const [lieuxProposes, dureesFrequentes, beneficiairesProposes] =
-    await Promise.all([
-      lieuxDuMediateur(mediateurId),
-      dureesFrequentesDuMediateur(MediateurId(mediateurId)),
-      beneficiairesLesPlusSuivis(mediateurId),
-    ])
-
-  const craPageData = await donneesDeLaSaisieDeMediation<CraIndividuelData>(
-    craIndividuelDefaultValues,
-  )({
-    mediateurId,
-    stateFromUrl: stateFromUrl,
-    lieuxProposes,
-    dureesFrequentes,
-    tagsInitiaux: tagsInitiauxPar(user),
+  const saisie = await nouvelleSaisieIndividuelle({
+    mediateurId: user.mediateur.id,
+    v,
+    fournisseurs: {
+      lieuxDuMediateur,
+      beneficiairesLesPlusSuivis,
+      tagsInitiaux: tagsInitiauxPar(user),
+      visibilitesProposees: visibilitesProposeesA(user),
+    },
   })
 
   return (
@@ -94,18 +77,7 @@ const CreateCraIndividuelPage = async ({
                 bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
                 to={rechercherBeneficiairesAction}
               >
-                <CraIndividuelPage
-                  {...craPageData}
-                  beneficiairesProposes={beneficiairesProposes}
-                  mediateurId={mediateurId}
-                  visibilitesDeTag={visibilitesDuCra(
-                    visibilitesProposeesA(user),
-                    {
-                      departemental: false,
-                    },
-                  )}
-                  retour={retour}
-                />
+                <CraIndividuelPage {...saisie} retour={retour} />
               </ClientBinder>
             </ClientBinder>
           </ClientBinder>

@@ -1,28 +1,21 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
 import {
+  criteresDesStructures,
+  reponseDesStructures,
+  StructuresQueryParamsValidation,
+} from '@/features/clients-api/abilities/lire-les-structures'
+import {
   inventaireDesLieux,
   lieuInventorie,
-  type StructureAttributes,
 } from '@/features/lieux-activite/abilities/inventorier-les-lieux'
-import {
-  createCompositeCursor,
-  cursorListMeta,
-  cursorPageHref,
-  JsonApiCursorPaginationQueryParamsValidation,
-  parseCompositeCursor,
-  prismaCursorPagination,
-} from '@/libraries/json-api/CursorPagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
+import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
+import { curseurLu } from '@/libraries/json-api/pageParCurseur'
 
 /**
  * @openapi
@@ -325,152 +318,27 @@ import type {
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-export type StructureResource = JsonApiResource<
-  'structure',
-  StructureAttributes,
-  never
->
-
-export type StructureListResponse = JsonApiListResponse<StructureResource>
-
-const StructuresQueryParamsValidation =
-  JsonApiCursorPaginationQueryParamsValidation.extend({
-    ids: z
-      .union([z.string(), z.array(z.string())])
-      .optional()
-      .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
-      .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
-      .transform((arr) => Array.from(new Set(arr)))
-      .pipe(z.array(z.guid()).max(100))
-      .default([]),
-    filter: z
-      .object({
-        creation: z
-          .object({ depuis: z.iso.datetime().optional() })
-          .prefault({}),
-        modification: z
-          .object({ depuis: z.iso.datetime().optional() })
-          .prefault({}),
-      })
-      .prefault({}),
-  })
-
-const StructureCursorValidation = z.object({
-  creation_id: z.object({
-    creation: z.coerce.string().pipe(z.iso.datetime()),
-    id: z.guid(),
-  }),
-})
-
-const dateDepuis = (depuis: string | undefined): Date | undefined =>
-  depuis ? new Date(depuis) : undefined
-
-const requeteDesStructures = ({
-  ids,
-  creationDepuis,
-  modificationDepuis,
-}: {
-  ids: string[]
-  creationDepuis: string | undefined
-  modificationDepuis: string | undefined
-}): string =>
-  new URLSearchParams([
-    ...(ids.length > 0 ? [['ids', ids.join(',')]] : []),
-    ...(creationDepuis ? [['filter[creation][depuis]', creationDepuis]] : []),
-    ...(modificationDepuis
-      ? [['filter[modification][depuis]', modificationDepuis]]
-      : []),
-  ]).toString()
-
 export const GET = routeBuilder()
   .use(withClientApi(['Structures']))
   .use(withQueryParams(StructuresQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
-      const cursorPagination = prismaCursorPagination(queryParams)
-      const { ids } = queryParams
-      const creationDepuis = queryParams.filter.creation.depuis
-      const modificationDepuis = queryParams.filter.modification.depuis
+      const pagination = prismaCursorPagination(queryParams)
+      const curseur = curseurLu(pagination)
 
-      const parsedCursor = cursorPagination.cursor
-        ? parseCompositeCursor(cursorPagination.cursor)
-        : undefined
-      const validatedCursor = parsedCursor
-        ? StructureCursorValidation.parse({
-            creation_id: { creation: parsedCursor[0], id: parsedCursor[1] },
-          })
-        : undefined
+      const { lieux, totalCount } = await inventaireDesLieux(
+        criteresDesStructures(queryParams, pagination, curseur),
+      )
 
-      const { lieux, totalCount } = await inventaireDesLieux({
-        ids,
-        creeDepuis: dateDepuis(creationDepuis),
-        modifieDepuis: dateDepuis(modificationDepuis),
-        take: cursorPagination.take,
-        skip: cursorPagination.skip,
-        curseur: validatedCursor?.creation_id,
-      })
-
-      const lastItem = lieux.at(-1)
-      const firstItem = lieux.at(0)
-      const nextCursor =
-        lieux.length === cursorPagination.take && lastItem
-          ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
-          : undefined
-      const previousCursor =
-        parsedCursor && firstItem
-          ? createCompositeCursor(
-              firstItem.creation.toISOString(),
-              firstItem.id,
-            )
-          : undefined
-
-      const query = requeteDesStructures({
-        ids,
-        creationDepuis,
-        modificationDepuis,
-      })
-
-      return NextResponse.json({
-        data: lieux.map((lieu) => ({
-          type: 'structure' as const,
-          id: lieu.id,
-          attributes: lieuInventorie(lieu),
-        })),
-        links: {
-          self: {
-            href: cursorPageHref('/structures', {
-              cursor: cursorPagination.cursor
-                ? {
-                    direction: cursorPagination.isBefore ? 'before' : 'after',
-                    value: cursorPagination.cursor,
-                  }
-                : undefined,
-              query,
-            }),
-          },
-          next: nextCursor
-            ? {
-                href: cursorPageHref('/structures', {
-                  cursor: { direction: 'after', value: nextCursor },
-                  query,
-                }),
-              }
-            : undefined,
-          prev: previousCursor
-            ? {
-                href: cursorPageHref('/structures', {
-                  cursor: { direction: 'before', value: previousCursor },
-                  query,
-                }),
-              }
-            : undefined,
-        },
-        meta: cursorListMeta({
-          totalCount,
-          take: cursorPagination.take,
-          nextCursor,
-          previousCursor,
+      return NextResponse.json(
+        reponseDesStructures({
+          lieux,
+          total: totalCount,
+          pagination,
+          curseur,
+          requete: queryParams,
+          attributs: lieuInventorie,
         }),
-      } satisfies StructureListResponse)
+      )
     }),
   )

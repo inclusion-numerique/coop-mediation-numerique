@@ -1,18 +1,11 @@
 import Link from 'next/link'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { connexionImpossibleMessage } from '@/features/authentification/ui/authenticationErrorMessage'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-
-const errorMessage = (error?: string): string | undefined => {
-  if (error === 'Verification') {
-    return "Le lien de connexion n'est plus valide. Il a peut-être déjà été utilisé ou est expiré."
-  }
-
-  return 'Une erreur est survenue lors de la connexion. Veuillez réessayer.'
-}
 
 const ErrorPage = async ({
   searchParams,
@@ -32,7 +25,7 @@ const ErrorPage = async ({
         </h2>
         <div className="fr-alert fr-alert--error fr-alert--sm fr-mb-6v">
           <h6>Connexion impossible</h6>
-          <p>{errorMessage(error)}</p>
+          <p>{connexionImpossibleMessage(error)}</p>
         </div>
 
         <ul className="fr-btns-group fr-mt-12v">

@@ -21,9 +21,9 @@ import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import {
-  type ActivitesFilters,
-  validateActivitesFilters,
-} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+  type ParametresDeLaPage,
+  parametresDesStatistiques,
+} from '@/features/statistiques/ui/filtres/parametres-de-la-page'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { MesStatistiques } from '@/features/statistiques/ui/pages/MesStatistiques'
@@ -33,23 +33,14 @@ export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),
 }
 const MesStatistiquesPage = async (props: {
-  searchParams: Promise<
-    ActivitesFilters & {
-      graphique_fin?: string
-    }
-  >
+  searchParams: Promise<ParametresDeLaPage>
 }) => {
   const searchParams = await props.searchParams
   const user = await authenticateMediateurOrCoordinateur()
 
   const { statistiques, ...options } = await mesStatistiques({
     user,
-    activitesFilters: validateActivitesFilters(searchParams),
-    graphOptions: {
-      fin: searchParams.graphique_fin
-        ? new Date(searchParams.graphique_fin)
-        : undefined,
-    },
+    ...parametresDesStatistiques(searchParams),
   })
   const toutes = toutesLesStatistiques(statistiques)
   const [{ hasCrasV1 }, liensDePartage] = await Promise.all([

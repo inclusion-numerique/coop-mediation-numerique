@@ -19,7 +19,6 @@ import {
 } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),
@@ -50,22 +49,20 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
         bind={RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY}
         to={rechercherDesEmployeusesAction}
       >
-        <CoopPageContainer size="full">
-          <UtilisateursPage
-            trouves={trouves}
-            filtres={filtres}
-            options={options}
-            searchParams={searchParams}
-            actions={
-              <BoutonExporterLesUtilisateurs
-                parametres={parametresDesFiltres(filtres)}
-                libelles={libellesDesFiltres(filtres, options)}
-                nombre={trouves.matchesCount}
-                recherche={searchParams.recherche ?? null}
-              />
-            }
-          />
-        </CoopPageContainer>
+        <UtilisateursPage
+          trouves={trouves}
+          filtres={filtres}
+          options={options}
+          searchParams={searchParams}
+          actions={
+            <BoutonExporterLesUtilisateurs
+              parametres={parametresDesFiltres(filtres)}
+              libelles={libellesDesFiltres(filtres, options)}
+              nombre={trouves.matchesCount}
+              recherche={searchParams.recherche ?? null}
+            />
+          }
+        />
       </ClientBinder>
     </ClientBinder>
   )

@@ -8,28 +8,11 @@ import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-r
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
 import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites'
-import { listerMesActivites } from '@/features/activites/abilities/lister-mes-activites'
-import {
-  decompteDeLaListe,
-  EnTeteDeLaListe,
-  joursDeLaListe,
-  ListeDeMesActivites,
-  MesActivitesPage,
-  parametresDeNavigation,
-  rendezVousFiltrablesDansLaListe,
-} from '@/features/activites/abilities/lister-mes-activites/ui'
-import {
-  contenuDeLaChronologie,
-  criteresDesActivites,
-  estFiltreDesActivites,
-  MediateurId,
-  ordreChronologiqueLu,
-  paginationLue,
-  parametresDesActivitesDe,
-} from '@/features/activites/domain'
+import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites'
+import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui'
+import { MediateurId } from '@/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
 import {
   isCoordinateur,
@@ -71,35 +54,16 @@ const MesActivitesRoute = async ({
   const user = await authenticateMediateur()
   const parametres = await searchParams
   const mediateurId = MediateurId(user.mediateur.id)
-  const criteres = criteresDesActivites(parametres)
-  const filtree = estFiltreDesActivites(criteres)
-  const voirLesRdvs = parametres['voir-rdvs'] === '1'
-  const compteRdv = user.rdvAccount?.hasOauthTokens ? user.rdvAccount : null
-  const pagination = paginationLue(parametres)
 
-  const chronologie = listerMesActivites({
+  const liste = maListeDActivites({
     mediateurId,
-    criteres,
-    pagination,
-    ordre: ordreChronologiqueLu(parametres.ordre),
-    contenu: contenuDeLaChronologie(
-      criteres,
-      compteRdv === null
-        ? { _tag: 'NonConnecte' }
-        : {
-            _tag: 'Connecte',
-            affichesDansLaListe:
-              compteRdv.includeRdvsInActivitesList || voirLesRdvs,
-          },
-    ),
-    rendezVous:
-      user.rdvAccount == null
-        ? null
-        : {
-            comptes: [user.rdvAccount.id],
-            selection: rendezVousAListerSql,
-            parIds: rendezVousParIds,
-          },
+    parametres,
+    compteRdv: user.rdvAccount,
+    timezone: user.timezone,
+    rendezVous: {
+      selection: rendezVousAListerSql,
+      parIds: rendezVousParIds,
+    },
     rendezVousLies,
     conseillersNumeriques: conseillerNumeriqueSql,
   })
@@ -150,59 +114,26 @@ const MesActivitesRoute = async ({
                   bind={OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY}
                   to={useOuvrirLaSaisieDuStatut}
                 >
-                  <MesActivitesPage
-                    vue="liste"
-                    sousTitre={
+                  <PageDeMaListeDActivites
+                    liste={liste}
+                    options={options}
+                    aussiCoordinateur={
                       isCoordinateur(user) && isMediateur(user)
-                        ? 'Médiation numérique'
-                        : undefined
                     }
                     saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}
-                  >
-                    <EnTeteDeLaListe
-                      filtres={filtresDeLaListe(criteres)}
-                      options={options}
-                      rendezVousFiltrables={rendezVousFiltrablesDansLaListe({
-                        compte: compteRdv,
-                        voirLesRdvs,
-                        statutsDemandes: criteres.statutsDeRendezVous.length,
-                      })}
-                      exportDesAccompagnements={
-                        <ExportDeMesAccompagnements
-                          filtres={filtresDeLaListe(criteres)}
-                          options={options}
-                          nombreDAccompagnements={chronologie.then(
-                            ({ total }) => total.accompagnements,
-                          )}
-                        />
-                      }
-                    />
-                    <ListeDeMesActivites
-                      contenu={chronologie.then((lue) => ({
-                        decompte: decompteDeLaListe(lue, filtree),
-                        jours: joursDeLaListe(lue.elements, user.timezone),
-                        total: lue.total.activites + lue.total.rendezVous,
-                        lignesParPage: pagination.lignesParPage,
-                        aucuneActivite: lue.elements.length === 0 && !filtree,
-                      }))}
-                      basculeDesRendezVous={
-                        compteRdv === null ? null : (
-                          <AfficherLesRdvs
-                            includeRdvsInActivitesList={
-                              compteRdv.includeRdvsInActivitesList
-                            }
-                            syncDataOnLoad={
-                              compteRdv.invalidWebhookOrganisationIds.length > 0
-                            }
-                          />
-                        )
-                      }
-                      parametres={{
-                        ...parametresDesActivitesDe(criteres),
-                        ...parametresDeNavigation(parametres),
-                      }}
-                    />
-                  </MesActivitesPage>
+                    exportDesAccompagnements={
+                      <ExportDeMesAccompagnements
+                        filtres={liste.filtres}
+                        options={options}
+                        nombreDAccompagnements={liste.nombreDAccompagnements}
+                      />
+                    }
+                    basculeDesRendezVous={
+                      liste.bascule === null ? null : (
+                        <AfficherLesRdvs {...liste.bascule} />
+                      )
+                    }
+                  />
                 </ClientBinder>
               </ClientBinder>
             </ClientBinder>

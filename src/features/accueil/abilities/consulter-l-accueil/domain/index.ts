@@ -1,7 +1,7 @@
 export {
   type Accueil,
   consulterLAccueil,
-  type ProfilDAccueil,
+  selonLeProfil,
   type Visiteur,
 } from './accueil'
 export { CoordinateurId } from './coordinateur-id'

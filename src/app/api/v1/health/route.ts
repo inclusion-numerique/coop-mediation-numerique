@@ -5,11 +5,8 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api'
 import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
-
-export type HealthResponse = {
-  status: 'ok' | 'error'
-}
 
 /**
  * @openapi
@@ -34,8 +31,4 @@ export type HealthResponse = {
 export const GET = routeBuilder()
   .use(withClientApi([]))
   .use(withQueryParams(NoQueryParamsValidation))
-  .handle(
-    withApiV1Errors(async () =>
-      NextResponse.json({ status: 'ok' } satisfies HealthResponse),
-    ),
-  )
+  .handle(withApiV1Errors(async () => NextResponse.json(apiDisponible())))

@@ -1,12 +1,9 @@
 import { notFound, redirect } from 'next/navigation'
-import { lireUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
-import { formulaireDeLEvenement } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/formulaire-de-la-coordination.presenter'
 import {
-  ActiviteDeCoordinationId,
-  CoordinateurId,
-} from '@/features/activites/domain'
+  cheminDeDuplicationDeCoordination,
+  saisieDEvenement,
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
 import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const DupliquerCraEvenementPage = async ({
   searchParams,
@@ -22,29 +19,13 @@ const DupliquerCraEvenementPage = async ({
     coordinateur: { id: coordinateurId },
   } = await authenticateCoordinateur()
 
-  const activiteId = ActiviteDeCoordinationId.safe(id)
-  const activite =
-    activiteId === null
-      ? null
-      : await lireUneActiviteDeCoordination({
-          id: activiteId,
-          coordinateurId: CoordinateurId(coordinateurId),
-        })
+  const chemin = await cheminDeDuplicationDeCoordination(saisieDEvenement)({
+    id,
+    coordinateurId,
+    retour,
+  })
 
-  if (activite?._tag !== 'Evenement') return notFound()
-
-  const defaultValues = formulaireDeLEvenement(activite)
-
-  const defaultValuesWithoutId = {
-    ...defaultValues,
-    id: undefined,
-  }
-
-  return redirect(
-    `/coop/mes-activites/cra/evenement?${
-      retour ? `retour=${retour}&` : ''
-    }v=${encodeSerializableState(defaultValuesWithoutId)}`,
-  )
+  return chemin === null ? notFound() : redirect(chemin)
 }
 
 export default DupliquerCraEvenementPage

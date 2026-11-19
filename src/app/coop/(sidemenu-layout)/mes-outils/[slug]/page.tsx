@@ -7,7 +7,8 @@ import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities
 import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
 import { SlugOutil } from '@/features/outils/abilities/consulter-un-outil'
 import {
-  type EmplacementsDeLaFiche,
+  emplacementsDeLOutil,
+  type FournisseursDEmplacements,
   ficheDeLOutil,
   OutilPage,
 } from '@/features/outils/abilities/consulter-un-outil/ui'
@@ -22,34 +23,29 @@ const slugDeLaPage = async ({ params }: Props): Promise<SlugOutil> => {
   return slug ?? notFound()
 }
 
-const accesALaCartographie = async (): Promise<EmplacementsDeLaFiche> => {
-  const user = await getSessionUser()
-
-  return {
-    acces: (
-      <AccesCartographieNationale
-        {...(await visibiliteSurLaCartographie({
-          mediateurId: user?.mediateur ? MediateurId(user.mediateur.id) : null,
-          employeuse: CodeInsee.safe(
-            user?.emplois?.at(0)?.structure.codeInsee ?? '',
-          ),
-        }))}
-      />
-    ),
-  }
+const fournisseurs: FournisseursDEmplacements = {
+  'rdv-service-public': async () => ({
+    avis: <RdvServicePublicMigrationNotice />,
+    acces: <RdvServicePublicAccessCard />,
+  }),
+  'cartographie-nationale-des-lieux-d-inclusion-numerique': async () => {
+    const user = await getSessionUser()
+    return {
+      acces: (
+        <AccesCartographieNationale
+          {...(await visibiliteSurLaCartographie({
+            mediateurId: user?.mediateur
+              ? MediateurId(user.mediateur.id)
+              : null,
+            employeuse: CodeInsee.safe(
+              user?.emplois?.at(0)?.structure.codeInsee ?? '',
+            ),
+          }))}
+        />
+      ),
+    }
+  },
 }
-
-const emplacementsDeLOutil = async (
-  slug: SlugOutil,
-): Promise<EmplacementsDeLaFiche> =>
-  slug === 'rdv-service-public'
-    ? {
-        avis: <RdvServicePublicMigrationNotice />,
-        acces: <RdvServicePublicAccessCard />,
-      }
-    : slug === 'cartographie-nationale-des-lieux-d-inclusion-numerique'
-      ? accesALaCartographie()
-      : {}
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => ({
   title: metadataTitle(
@@ -63,7 +59,7 @@ const Page = async (props: Props) => {
   return (
     <OutilPage
       {...ficheDeLOutil(slug)}
-      emplacements={await emplacementsDeLOutil(slug)}
+      emplacements={await emplacementsDeLOutil(slug, fournisseurs)}
     />
   )
 }

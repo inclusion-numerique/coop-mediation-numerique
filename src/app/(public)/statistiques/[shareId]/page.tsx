@@ -16,9 +16,9 @@ import {
 } from '@/composition/statistiques/statistiques-fournies'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
-  type ActivitesFilters,
-  validateActivitesFilters,
-} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+  type ParametresDeLaPage,
+  parametresDesStatistiquesPartagees,
+} from '@/features/statistiques/ui/filtres/parametres-de-la-page'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { StatistiquesPartagees } from '@/features/statistiques/ui/pages/StatistiquesPartagees'
@@ -28,21 +28,12 @@ type PageProps = {
   params: Promise<{
     shareId: string
   }>
-  searchParams: Promise<
-    ActivitesFilters & {
-      graphique_fin?: string
-    }
-  >
+  searchParams: Promise<ParametresDeLaPage>
 }
 
 const Page = async ({ params, searchParams }: PageProps) => {
   const shareId = (await params).shareId
-  const searchParamsResolved = await searchParams
-
-  const search = {
-    ...searchParamsResolved,
-    au: searchParamsResolved.au ?? new Date().toISOString().slice(0, 10),
-  }
+  const parametres = await searchParams
 
   const partage = await resoudreUnLienDePartage(shareId)
   if (!partage.success) return notFound()
@@ -51,10 +42,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
 
   const { statistiques, ...mesStatistiquesProps } = await mesStatistiques({
     user,
-    activitesFilters: validateActivitesFilters(search),
-    graphOptions: {
-      fin: search.graphique_fin ? new Date(search.graphique_fin) : undefined,
-    },
+    ...parametresDesStatistiquesPartagees(parametres),
   })
   const toutes = toutesLesStatistiques(statistiques)
   const { hasCrasV1 } = await statistiques.hasCrasV1

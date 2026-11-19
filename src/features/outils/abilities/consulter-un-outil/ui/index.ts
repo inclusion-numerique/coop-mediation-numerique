@@ -1,2 +1,6 @@
+export {
+  emplacementsDeLOutil,
+  type FournisseursDEmplacements,
+} from './emplacements-de-l-outil'
 export { ficheDeLOutil } from './fiches'
-export { type EmplacementsDeLaFiche, OutilPage } from './pages/OutilPage'
+export { OutilPage } from './pages/OutilPage'

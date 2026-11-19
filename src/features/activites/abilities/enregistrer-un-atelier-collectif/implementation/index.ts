@@ -1,4 +1,8 @@
-export { lireUneActiviteDeMediation } from '../../../implementation/prisma/lire-une-activite-de-mediation'
+export {
+  cheminDeDuplicationCollective,
+  nouvelleSaisieCollective,
+  saisieCollectiveAModifier,
+} from './page-de-saisie'
 export {
   type EchecDEnregistrement,
   enregistrerUnAtelierCollectif,

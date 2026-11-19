@@ -26,13 +26,15 @@ import AdministrationTitle from '@/libraries/ui/components/administration/Admini
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
+  compteSupprime,
   etiquettesDuCompte,
   renseigne,
   telephoneAffiche,
 } from '../fiche-utilisateur.presenter'
 
 export type SectionsDeLaFiche = {
-  readonly actions: ReactNode
+  readonly roles: ReactNode
+  readonly suppression: ReactNode
   readonly avertissements: ReactNode
   readonly usurpation: ReactNode
   readonly deconnexion: ReactNode
@@ -79,6 +81,9 @@ export const FicheUtilisateurPage = ({
 }) => {
   const mediateur = mediateurDe(fiche.rattachements)
   const coordinateur = coordinateurDe(fiche.rattachements)
+  const supprime = compteSupprime(fiche)
+  const deconnexion = supprime ? null : sections.deconnexion
+  const visibiliteCarto = supprime ? null : sections.visibiliteCarto
 
   return (
     <CoopPageContainer size={64}>
@@ -95,7 +100,14 @@ export const FicheUtilisateurPage = ({
       <main id={contentId}>
         <AdministrationTitle
           icon="fr-icon-user-line"
-          actions={sections.actions}
+          actions={
+            supprime ? null : (
+              <div className="fr-flex fr-flex-gap-2v">
+                {sections.roles}
+                {fiche.role === 'User' && sections.suppression}
+              </div>
+            )
+          }
         >
           {fiche.nomAffiche} <span className="fr-mx-1v" />{' '}
           <BadgeStatutCompte statut={fiche.statut} />
@@ -113,7 +125,7 @@ export const FicheUtilisateurPage = ({
           actions={
             <div>
               {sections.usurpation}
-              {fiche.cycle._tag !== 'Supprime' && (
+              {!supprime && (
                 <Button
                   iconId="fr-icon-git-merge-line"
                   priority="tertiary"
@@ -164,7 +176,7 @@ export const FicheUtilisateurPage = ({
                     <div className="fr-col-auto">
                       {aParis(fiche.derniereConnexion)}
                     </div>
-                    <div className="fr-col-auto">{sections.deconnexion}</div>
+                    <div className="fr-col-auto">{deconnexion}</div>
                   </div>
                 ),
               },
@@ -199,7 +211,7 @@ export const FicheUtilisateurPage = ({
                 {
                   label: 'Visible sur la cartographie',
                   value:
-                    sections.visibiliteCarto ??
+                    visibiliteCarto ??
                     (mediateur.visible ? 'Visible' : 'Non visible'),
                 },
                 {
@@ -266,7 +278,7 @@ export const FicheUtilisateurPage = ({
         {mediateur !== null && sections.lieux}
         <AdministrationInfoCard
           title="Sessions de connexion et comptes liés"
-          actions={sections.deconnexion}
+          actions={deconnexion}
         >
           <AdministrationInlineLabelsValues
             items={[

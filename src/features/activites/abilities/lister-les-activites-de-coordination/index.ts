@@ -4,5 +4,6 @@ export type {
 } from './domain'
 export {
   listerLesActivitesDeCoordination,
+  mesActivitesDeCoordination,
   optionsDeFiltre,
 } from './implementation'

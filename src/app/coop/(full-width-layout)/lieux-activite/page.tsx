@@ -20,10 +20,7 @@ import {
 } from '@/features/lieux-activite/ui'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),
@@ -55,33 +52,29 @@ const LieuActiviteListPage = async ({
         bind={REGLER_MA_VISIBILITE_CARTO_ACTION_KEY}
         to={reglerMaVisibiliteCartoAction}
       >
-        <SkipLinksPortal />
-        <div id={contentId}>
-          <MesLieuxActivitePage
-            lieux={lieux}
-            carte={({ id, lieuInclusion }) => (
-              <LieuActiviteCard
-                key={id}
-                lieu={lieuInclusion}
-                href={hrefDuLieuEnListe(lieuInclusion)}
-                retrait={
-                  <BoutonDeRetrait
-                    mediateurId={MediateurId(mediateur.id)}
-                    structureId={LieuId(lieuInclusion.id)}
-                    variant="lieu"
-                    mediateurDisplayName=""
-                    structureNom={lieuInclusion.nom}
-                    derniereActiviteDate={null}
-                  />
-                }
-                showActionButtons
-              />
-            )}
-            visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
-            modaleDeRetrait={<ModaleDeRetrait />}
-            entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
-          />
-        </div>
+        <MesLieuxActivitePage
+          lieux={lieux}
+          carte={({ id, lieuInclusion }) => (
+            <LieuActiviteCard
+              key={id}
+              lieu={lieuInclusion}
+              href={hrefDuLieuEnListe(lieuInclusion)}
+              retrait={
+                <BoutonDeRetrait
+                  mediateurId={MediateurId(mediateur.id)}
+                  structureId={LieuId(lieuInclusion.id)}
+                  variant="lieu"
+                  mediateurDisplayName=""
+                  structureNom={lieuInclusion.nom}
+                  derniereActiviteDate={null}
+                />
+              }
+              showActionButtons
+            />
+          )}
+          visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
+          modaleDeRetrait={<ModaleDeRetrait />}
+        />
       </ClientBinder>
     </ClientBinder>
   )

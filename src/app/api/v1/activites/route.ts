@@ -1,8 +1,6 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
 import {
-  type ActiviteAttributes,
   activiteExposee,
   activitesExposees,
   criteresDExposition,
@@ -13,21 +11,12 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
-import { apiV1Url } from '@/libraries/json-api/apiV1Url'
 import {
-  type CursorDirection,
-  createCompositeCursor,
-  cursorListMeta,
-  defaultJsonApiCursorPaginationSize,
-  JsonApiCursorPaginationQueryParamsValidation,
-  parseCompositeCursor,
-  prismaCursorPagination,
-} from '@/libraries/json-api/CursorPagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
+  ActivitesQueryParamsValidation,
+  reponseDesActivites,
+} from '@/features/clients-api/abilities/lire-les-activites'
+import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
+import { curseurLu } from '@/libraries/json-api/pageParCurseur'
 
 /**
  * @openapi
@@ -329,146 +318,29 @@ import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSeri
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-type ActiviteRelationships = 'mediateur'
-
-export type ActiviteResource = JsonApiResource<
-  'activite',
-  ActiviteAttributes,
-  ActiviteRelationships
->
-
-export type ActiviteListResponse = JsonApiListResponse<ActiviteResource>
-
-const ActivitesQueryParamsValidation =
-  JsonApiCursorPaginationQueryParamsValidation.extend({
-    filter: z
-      .object({
-        creation: z
-          .object({ depuis: z.iso.datetime().optional() })
-          .prefault({}),
-        modification: z
-          .object({ depuis: z.iso.datetime().optional() })
-          .prefault({}),
-      })
-      .prefault({}),
-  })
-
-const parametresDeLaPage = ({
-  take,
-  creationDepuis,
-  modificationDepuis,
-}: {
-  take: number
-  creationDepuis: string | undefined
-  modificationDepuis: string | undefined
-}): [string, string][] => [
-  ...(take === defaultJsonApiCursorPaginationSize
-    ? []
-    : [['page[size]', String(Math.abs(take))] satisfies [string, string]]),
-  ...(creationDepuis
-    ? [['filter[creation][depuis]', creationDepuis] satisfies [string, string]]
-    : []),
-  ...(modificationDepuis
-    ? [
-        ['filter[modification][depuis]', modificationDepuis] satisfies [
-          string,
-          string,
-        ],
-      ]
-    : []),
-]
-
-const lienDesActivites =
-  (parametres: [string, string][]) =>
-  (cursor?: { direction: CursorDirection; value: string }) =>
-    apiV1Url(
-      '/activites',
-      new URLSearchParams([
-        ...parametres,
-        ...(cursor
-          ? [
-              [
-                `page[${cursor.direction}]`,
-                encodeSerializableState(cursor.value),
-              ] satisfies [string, string],
-            ]
-          : []),
-      ]),
-    )
-
 export const GET = routeBuilder()
   .use(withClientApi(['Activites']))
   .use(withQueryParams(ActivitesQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
-      const cursorPagination = prismaCursorPagination(queryParams)
-      const parsedCursor = cursorPagination.cursor
-        ? parseCompositeCursor(cursorPagination.cursor)
-        : undefined
-
-      const creationDepuis = queryParams.filter.creation.depuis
-      const modificationDepuis = queryParams.filter.modification.depuis
+      const pagination = prismaCursorPagination(queryParams)
+      const curseur = curseurLu(pagination)
 
       const { activites, total } = await activitesExposees({
         criteres: criteresDExposition(queryParams.filter),
-        take: cursorPagination.take,
-        curseur: parsedCursor ? curseurDActivite(parsedCursor) : null,
+        take: pagination.take,
+        curseur: curseur ? curseurDActivite(curseur) : null,
       })
 
-      const lastItem = activites.at(-1)
-      const firstItem = activites.at(0)
-      const nextCursor = lastItem
-        ? createCompositeCursor(
-            lastItem.modification.toISOString(),
-            lastItem.id,
-          )
-        : undefined
-      const previousCursor =
-        parsedCursor && firstItem
-          ? createCompositeCursor(
-              firstItem.modification.toISOString(),
-              firstItem.id,
-            )
-          : undefined
-
-      const lien = lienDesActivites(
-        parametresDeLaPage({
-          take: cursorPagination.take,
-          creationDepuis,
-          modificationDepuis,
+      return NextResponse.json(
+        reponseDesActivites({
+          activites,
+          total,
+          pagination,
+          curseur,
+          filtre: queryParams.filter,
+          attributs: activiteExposee,
         }),
       )
-
-      return NextResponse.json({
-        data: activites.map((activite) => ({
-          type: 'activite' as const,
-          id: activite.id,
-          attributes: activiteExposee(activite),
-        })),
-        links: {
-          self: {
-            href: lien(
-              cursorPagination.cursor
-                ? {
-                    direction: cursorPagination.isBefore ? 'before' : 'after',
-                    value: cursorPagination.cursor,
-                  }
-                : undefined,
-            ),
-          },
-          next: nextCursor
-            ? { href: lien({ direction: 'after', value: nextCursor }) }
-            : undefined,
-          prev: previousCursor
-            ? { href: lien({ direction: 'before', value: previousCursor }) }
-            : undefined,
-        },
-        meta: cursorListMeta({
-          totalCount: total,
-          take: cursorPagination.take,
-          nextCursor,
-          previousCursor,
-        }),
-      } satisfies ActiviteListResponse)
     }),
   )

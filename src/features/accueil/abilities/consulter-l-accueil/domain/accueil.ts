@@ -13,6 +13,23 @@ export type ProfilDAccueil =
       readonly bienvenue: boolean
     }
 
+type ProfilDe<Tag extends ProfilDAccueil['_tag']> = Extract<
+  ProfilDAccueil,
+  { readonly _tag: Tag }
+>
+
+export type SelonLeProfil<T> = {
+  readonly [Tag in ProfilDAccueil['_tag']]: (profil: ProfilDe<Tag>) => T
+}
+
+export const selonLeProfil = <T>(
+  profil: ProfilDAccueil,
+  selon: SelonLeProfil<T>,
+): T =>
+  profil._tag === 'Coordinateur'
+    ? selon.Coordinateur(profil)
+    : selon.Mediateur(profil)
+
 export type Accueil = {
   readonly salutation: Salutation
   readonly profil: ProfilDAccueil

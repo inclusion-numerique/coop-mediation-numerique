@@ -9,6 +9,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { UtilisateursTrouves } from '../../domain'
 import { EtiquettesDesFiltres } from '../filtres/EtiquettesDesFiltres'
 import { Filtres } from '../filtres/Filtres'
@@ -35,7 +36,7 @@ export const UtilisateursPage = ({
   searchParams: ParametresDeLaListe
   actions: ReactNode
 }) => (
-  <>
+  <CoopPageContainer size="full">
     <SkipLinksPortal />
     <AdministrationBreadcrumbs currentPage="Utilisateurs" />
     <main id={contentId}>
@@ -72,5 +73,5 @@ export const UtilisateursPage = ({
         lignesParPage={trouves.lignesParPage}
       />
     </main>
-  </>
+  </CoopPageContainer>
 )

@@ -13,13 +13,8 @@ import { RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY } from '@/features/util
 import { LancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/ui'
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/action/relancer-les-inscrits-inactifs.key'
 import { LancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/ui'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { OutilsAdministrateurPage } from '@/features/utilisateurs/ui/pages/OutilsAdministrateurPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import Card from '@/libraries/ui/components/Card'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const metadata = {
   title: metadataTitle('Outils administrateur'),
@@ -35,55 +30,33 @@ const Page = async () => {
   ])
 
   return (
-    <CoopPageContainer>
-      <SkipLinksPortal />
-      <AdministrationBreadcrumbs currentPage="Outils" />
-      <main id={contentId}>
-        <AdministrationTitle icon="fr-icon-settings-5-line">
-          Outils administrateur
-        </AdministrationTitle>
-        <div className="fr-container fr-my-8w">
-          <div className="fr-grid-row fr-grid-row--gutters">
-            <div className="fr-col-12">
-              <Card title="Mode maintenance">
-                <ClientBinder
-                  bind={REGLER_LA_MAINTENANCE_ACTION_KEY}
-                  to={reglerLaMaintenanceAction}
-                >
-                  <ReglageDeLaMaintenance
-                    etat={maintenance}
-                    historique={historique}
-                  />
-                </ClientBinder>
-              </Card>
-            </div>
-            <div className="fr-col-12">
-              <Card title="Export des accompagnements">
-                <ExportDesAccompagnementsParDepartement />
-              </Card>
-            </div>
-            <div className="fr-col-12">
-              <Card title="Lancer une action planifiée">
-                <div className="fr-flex fr-direction-column fr-flex-gap-6v">
-                  <ClientBinder
-                    bind={RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY}
-                    to={relancerLesInscriptionsInacheveesAction}
-                  >
-                    <LancerLesRelancesDInscription />
-                  </ClientBinder>
-                  <ClientBinder
-                    bind={RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY}
-                    to={relancerLesInscritsInactifsAction}
-                  >
-                    <LancerLesRelancesDesInscrits />
-                  </ClientBinder>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </main>
-    </CoopPageContainer>
+    <OutilsAdministrateurPage
+      maintenance={
+        <ClientBinder
+          bind={REGLER_LA_MAINTENANCE_ACTION_KEY}
+          to={reglerLaMaintenanceAction}
+        >
+          <ReglageDeLaMaintenance etat={maintenance} historique={historique} />
+        </ClientBinder>
+      }
+      exportDesAccompagnements={<ExportDesAccompagnementsParDepartement />}
+      relances={
+        <>
+          <ClientBinder
+            bind={RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY}
+            to={relancerLesInscriptionsInacheveesAction}
+          >
+            <LancerLesRelancesDInscription />
+          </ClientBinder>
+          <ClientBinder
+            bind={RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY}
+            to={relancerLesInscritsInactifsAction}
+          >
+            <LancerLesRelancesDesInscrits />
+          </ClientBinder>
+        </>
+      }
+    />
   )
 }
 

@@ -1,29 +1,22 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
 import {
+  curseurDUtilisateur,
+  reponseDesUtilisateurs,
+  UtilisateursQueryParamsValidation,
+} from '@/features/clients-api/abilities/lire-les-utilisateurs'
+import {
   criteresDExposition,
-  type UtilisateurAttributes,
   utilisateurExpose,
   utilisateursExposes,
 } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs'
-import {
-  createCompositeCursor,
-  cursorListMeta,
-  cursorPageHref,
-  JsonApiCursorPaginationQueryParamsValidation,
-  parseCompositeCursor,
-  prismaCursorPagination,
-} from '@/libraries/json-api/CursorPagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
+import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
+import { curseurLu } from '@/libraries/json-api/pageParCurseur'
 
 /**
  * @openapi
@@ -326,109 +319,29 @@ import type {
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-export type { UtilisateurAttributes }
-
-export type UtilisateurResource = JsonApiResource<
-  'utilisateur',
-  UtilisateurAttributes,
-  never
->
-
-export type UtilisateurListResponse = JsonApiListResponse<UtilisateurResource>
-
-const UtilisateursQueryParamsValidation =
-  JsonApiCursorPaginationQueryParamsValidation.extend({
-    filter: z
-      .object({
-        conseiller_numerique: z
-          .union([z.literal('0'), z.literal('1')])
-          .optional(),
-        conseiller_numerique_id_pg: z
-          .union([z.string(), z.array(z.string())])
-          .optional()
-          .transform((value) => (typeof value === 'string' ? [value] : value)),
-        dataspace_id: z
-          .union([z.string(), z.array(z.string())])
-          .optional()
-          .transform((value) => (typeof value === 'string' ? [value] : value)),
-        soft_deleted: z.union([z.literal('0'), z.literal('1')]).optional(),
-      })
-      .prefault({}),
-  })
-
-const CurseurValidation = z.object({
-  created: z.coerce.string().pipe(z.iso.datetime()),
-  id: z.guid(),
-})
-
 export const GET = routeBuilder()
   .use(withClientApi(['Utilisateurs']))
   .use(withQueryParams(UtilisateursQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
       const pagination = prismaCursorPagination(queryParams)
-      const curseurLu = pagination.cursor
-        ? parseCompositeCursor(pagination.cursor)
-        : undefined
-      const curseur = curseurLu
-        ? CurseurValidation.parse({ created: curseurLu[0], id: curseurLu[1] })
-        : null
+      const curseur = curseurLu(pagination)
 
       const { utilisateurs, total } = await utilisateursExposes({
         criteres: criteresDExposition(queryParams.filter),
         take: pagination.take,
         skip: pagination.skip,
-        cursor: curseur,
+        cursor: curseurDUtilisateur(curseur),
       })
 
-      const dernier = utilisateurs.at(-1)
-      const premier = utilisateurs.at(0)
-      const suivant = dernier
-        ? createCompositeCursor(dernier.created.toISOString(), dernier.id)
-        : undefined
-      const precedent =
-        curseurLu && premier
-          ? createCompositeCursor(premier.created.toISOString(), premier.id)
-          : undefined
-
-      return NextResponse.json({
-        data: utilisateurs.map((utilisateur) => ({
-          type: 'utilisateur' as const,
-          id: utilisateur.id,
-          attributes: utilisateurExpose(utilisateur),
-        })),
-        links: {
-          self: {
-            href: cursorPageHref('/utilisateurs', {
-              cursor: pagination.cursor
-                ? {
-                    direction: pagination.isBefore ? 'before' : 'after',
-                    value: pagination.cursor,
-                  }
-                : undefined,
-            }),
-          },
-          next: suivant
-            ? {
-                href: cursorPageHref('/utilisateurs', {
-                  cursor: { direction: 'after', value: suivant },
-                }),
-              }
-            : undefined,
-          prev: precedent
-            ? {
-                href: cursorPageHref('/utilisateurs', {
-                  cursor: { direction: 'before', value: precedent },
-                }),
-              }
-            : undefined,
-        },
-        meta: cursorListMeta({
-          totalCount: total,
-          take: pagination.take,
-          nextCursor: suivant,
-          previousCursor: precedent,
+      return NextResponse.json(
+        reponseDesUtilisateurs({
+          utilisateurs,
+          total,
+          pagination,
+          curseur,
+          attributs: utilisateurExpose,
         }),
-      } satisfies UtilisateurListResponse)
+      )
     }),
   )

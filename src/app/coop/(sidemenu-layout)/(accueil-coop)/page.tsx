@@ -6,7 +6,7 @@ import { rafraichirAccueilRdvAction } from '@/app/_actions/rdvsp/rafraichir-accu
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   consulterLAccueil,
-  type ProfilDAccueil,
+  selonLeProfil,
   visiteurDe,
 } from '@/features/accueil/abilities/consulter-l-accueil'
 import { Accueil } from '@/features/accueil/abilities/consulter-l-accueil/ui'
@@ -37,49 +37,49 @@ export const metadata: Metadata = {
   title: metadataTitle('Accueil'),
 }
 
-const sectionEquipe = async (profil: ProfilDAccueil): Promise<ReactNode> =>
-  profil._tag === 'Coordinateur' ? (
-    <ResumeDeLEquipe
-      statistiques={
-        await compterLesMembres({
-          coordinateurId: profil.coordinateurId,
-        })
-      }
-    />
-  ) : null
-
-const sectionActivites = async (
-  profil: ProfilDAccueil,
-  timezone: string,
-): Promise<ReactNode> =>
-  profil._tag === 'Coordinateur' ? (
-    <ActivitesDeCoordination
-      activites={activitesDeCoordinationPresentees(
-        await compterLesActivitesDeCoordination({
-          coordinateurId: profil.coordinateurId,
-        }),
-      )}
-    />
-  ) : (
-    <DernieresActivites
-      activites={dernieresActivitesPresentees(
-        await listerLesDernieresActivites({
-          mediateurId: profil.mediateurId,
-          rendezVousLies,
-        }),
-        timezone,
-      )}
-    />
-  )
+type SectionsDeLAccueil = {
+  readonly equipe: ReactNode
+  readonly activites: ReactNode
+}
 
 const Page = async () => {
   const user = await authenticateMediateurOrCoordinateur()
   const accueil = consulterLAccueil(visiteurDe(user))
   if (accueil === null) notFound()
 
-  const [equipe, activites, rdv] = await Promise.all([
-    sectionEquipe(accueil.profil),
-    sectionActivites(accueil.profil, user.timezone),
+  const [{ equipe, activites }, rdv] = await Promise.all([
+    selonLeProfil<Promise<SectionsDeLAccueil>>(accueil.profil, {
+      Coordinateur: async ({ coordinateurId }) => {
+        const [membres, activitesDeCoordination] = await Promise.all([
+          compterLesMembres({ coordinateurId }),
+          compterLesActivitesDeCoordination({ coordinateurId }),
+        ])
+        return {
+          equipe: <ResumeDeLEquipe statistiques={membres} />,
+          activites: (
+            <ActivitesDeCoordination
+              activites={activitesDeCoordinationPresentees(
+                activitesDeCoordination,
+              )}
+            />
+          ),
+        }
+      },
+      Mediateur: async ({ mediateurId }) => ({
+        equipe: null,
+        activites: (
+          <DernieresActivites
+            activites={dernieresActivitesPresentees(
+              await listerLesDernieresActivites({
+                mediateurId,
+                rendezVousLies,
+              }),
+              user.timezone,
+            )}
+          />
+        ),
+      }),
+    }),
     blocRdvAccueil(UtilisateurCoopId(user.id), new Date()),
   ])
 

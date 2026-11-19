@@ -1,3 +1,4 @@
 export { withAdmin } from './with-admin'
+export { withAdminRoute } from './with-admin-route'
 export { withAuth } from './with-auth'
 export { withMediateur } from './with-mediateur'

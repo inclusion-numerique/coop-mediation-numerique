@@ -11,18 +11,13 @@ import {
 import {
   EquipeListePage,
   type ParametresDeLaListe,
+  requeteDeLaListe,
 } from '@/features/equipe/abilities/lister-les-membres/ui'
 import { QUITTER_UNE_EQUIPE_ACTION_KEY } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.key'
 import { BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui'
-import {
-  CoordinateurId,
-  criteresEquipe,
-  MediateurId,
-} from '@/features/equipe/domain'
+import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/libraries/data-table'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import { entierPositifLu } from '@/libraries/parametres-d-url'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon équipe'),
@@ -47,9 +42,7 @@ const Page = async (props: {
   const membres = await listerLesMembres({
     coordinateurId,
     lecteur: { gestionnaire: gestionnaireDe(user), membreActifDeLEquipe },
-    criteres: criteresEquipe(searchParams),
-    page: entierPositifLu(searchParams.page, DEFAULT_PAGE),
-    lignesParPage: entierPositifLu(searchParams.lignes, DEFAULT_PAGE_SIZE),
+    ...requeteDeLaListe(searchParams),
   })
 
   if (!membres.success) redirect('/')

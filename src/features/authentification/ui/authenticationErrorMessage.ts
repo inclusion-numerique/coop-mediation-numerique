@@ -8,3 +8,8 @@ export const signinErrorMessage = (error?: string): string | undefined => {
   }
   return 'Erreur de connexion, veuillez réessayer.'
 }
+
+export const connexionImpossibleMessage = (error?: string): string =>
+  error === 'Verification'
+    ? "Le lien de connexion n'est plus valide. Il a peut-être déjà été utilisé ou est expiré."
+    : 'Une erreur est survenue lors de la connexion. Veuillez réessayer.'

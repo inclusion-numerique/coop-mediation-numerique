@@ -13,16 +13,15 @@ import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres
 import {
   EquipeListePage,
   type ParametresDeLaListe,
+  requeteDeLaListe,
 } from '@/features/equipe/abilities/lister-les-membres/ui'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
-import { CoordinateurId, criteresEquipe } from '@/features/equipe/domain'
+import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
 import { ActionsDuMembre } from '@/features/equipe/ui'
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/libraries/data-table'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import { entierPositifLu } from '@/libraries/parametres-d-url'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon équipe'),
@@ -39,9 +38,7 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
       gestionnaire: gestionnaireDe(user),
       membreActifDeLEquipe: false,
     },
-    criteres: criteresEquipe(searchParams),
-    page: entierPositifLu(searchParams.page, DEFAULT_PAGE),
-    lignesParPage: entierPositifLu(searchParams.lignes, DEFAULT_PAGE_SIZE),
+    ...requeteDeLaListe(searchParams),
   })
 
   if (!membres.success) redirect('/coop')

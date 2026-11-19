@@ -1,7 +1,4 @@
-export {
-  type ActiviteAttributes,
-  activiteExposee,
-} from './api/activite-exposee.transfer'
+export { activiteExposee } from './api/activite-exposee.transfer'
 export {
   criteresDExposition,
   curseurDActivite,

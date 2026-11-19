@@ -1,6 +1,5 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
 import { statistiquesNationales } from '@/composition/statistiques/statistiques-nationales'
 import { criteresDesStatistiques } from '@/features/activites/domain'
 import {
@@ -9,17 +8,14 @@ import {
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
 import {
+  reponseDesStatistiques,
+  statistiquesQueryParamsValidation,
+} from '@/features/clients-api/abilities/lire-les-statistiques'
+import {
   FiltresDesStatistiquesValidation,
-  type StatistiquesAttributes,
   statistiquesAttributes,
   statistiquesExposees,
 } from '@/features/statistiques/abilities/exposer-les-statistiques'
-import { apiV1Url } from '@/libraries/json-api/apiV1Url'
-import type {
-  JsonApiItemResponse,
-  JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
-import { serializeApiRequestParams } from '@/libraries/json-api/serializeApiRequestParams'
 
 /**
  * @openapi
@@ -362,43 +358,25 @@ import { serializeApiRequestParams } from '@/libraries/json-api/serializeApiRequ
  *                   example: {}
  */
 
-export type StatistiqueResource = JsonApiResource<
-  'statistiques',
-  StatistiquesAttributes,
-  never
->
-
-export type StatistiquesResponse = JsonApiItemResponse<StatistiqueResource>
-
-const StatistiquesQueryParamsValidation = z.object({
-  filter: FiltresDesStatistiquesValidation,
-})
-
 export const GET = routeBuilder()
   .use(withClientApi(['Statistiques']))
-  .use(withQueryParams(StatistiquesQueryParamsValidation))
+  .use(
+    withQueryParams(
+      statistiquesQueryParamsValidation(FiltresDesStatistiquesValidation),
+    ),
+  )
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
-      const requete = serializeApiRequestParams(queryParams)
       const fournies = await statistiquesNationales(
         criteresDesStatistiques(queryParams.filter),
         { tags: false },
       )
 
-      return NextResponse.json({
-        data: {
-          type: 'statistiques',
-          id: 'statistiques',
+      return NextResponse.json(
+        reponseDesStatistiques({
           attributes: statistiquesAttributes(statistiquesExposees(fournies)),
-        },
-        links: {
-          self: {
-            href: apiV1Url(
-              requete.length > 0 ? `/statistiques?${requete}` : '/statistiques',
-            ),
-          },
-        },
-        meta: {},
-      } satisfies StatistiquesResponse)
+          queryParams,
+        }),
+      )
     }),
   )

@@ -16,14 +16,12 @@ import {
   BoutonFusionner,
   ModaleDeFusion,
 } from '@/features/tags/abilities/fusionner-un-tag/ui'
-import {
-  listerLesTags,
-  triDemande,
-} from '@/features/tags/abilities/lister-les-tags'
+import { listerLesTags } from '@/features/tags/abilities/lister-les-tags'
 import {
   ListeDesTagsPage,
   lignesDeLaListe,
   type ParametresDeLaListe,
+  requeteDeLaListe,
 } from '@/features/tags/abilities/lister-les-tags/ui'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.key'
 import {
@@ -37,22 +35,14 @@ import {
 } from '@/features/tags/abilities/supprimer-un-tag/ui'
 import { acteurDe } from '@/features/tags/implementation/session'
 import { MenuDActionsDuTag } from '@/features/tags/ui'
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/libraries/data-table'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import { entierPositifLu } from '@/libraries/parametres-d-url'
 
 const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   const searchParams = await props.searchParams
   const user = await authenticateUser()
   const acteur = acteurDe(user)
-  const lignesParPage = entierPositifLu(searchParams.lignes, DEFAULT_PAGE_SIZE)
-
-  const liste = await listerLesTags({
-    acteur,
-    tri: triDemande(searchParams.tri),
-    page: entierPositifLu(searchParams.page, DEFAULT_PAGE),
-    lignesParPage,
-  })
+  const requete = requeteDeLaListe(searchParams)
+  const liste = await listerLesTags({ acteur, ...requete })
 
   return (
     <ClientBinder bind={CREER_UN_TAG_ACTION_KEY} to={creerUnTagAction}>
@@ -72,7 +62,7 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
               <ListeDesTagsPage
                 lignes={lignesDeLaListe(acteur, liste)}
                 total={liste.total}
-                lignesParPage={lignesParPage}
+                lignesParPage={requete.lignesParPage}
                 estCoordinateur={user.coordinateur != null}
                 baseHref="/coop/tags"
                 searchParams={searchParams}

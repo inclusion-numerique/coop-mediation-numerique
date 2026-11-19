@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
@@ -10,46 +9,30 @@ import { messageAffiche } from '@/features/maintenance-mode/domain'
 import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
 import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui'
 import { MediateurId } from '@/features/mediateurs/domain'
-import Header from '@/features/navigation/ui/en-tete/Header'
-import PublicFooter from '@/features/navigation/ui/pied-de-page/PublicFooter'
+import { accesALaCoop } from '@/features/navigation/domain'
+import {
+  AccesReserveAuxUtilisateurs,
+  CoopShell,
+} from '@/features/navigation/ui/coquille'
 
 const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
+  const acces = accesALaCoop({
+    role: user.role,
+    inscriptionAchevee: hasInscriptionComplete(user),
+  })
 
-  // Admin users are not allowed to access this page
-  if (user.role === 'Admin' || user.role === 'Support') {
-    // Admins and support cannot access the coop features
+  if (acces._tag === 'ReserveAuxUtilisateurs') {
     return (
-      <div className="fr-layout">
-        <div id="skip-links" />
-        <Header user={user} fullWidth variant="coop" />
+      <CoopShell cadre="etape" user={user}>
         <InscriptionStepsLayout>
-          <div className="fr-mb-32v fr-p-12v fr-width-full fr-border-radius--8 fr-background-default--grey fr-mt-32v">
-            <h2>
-              Vous êtes connecté en tant{' '}
-              {user.role === 'Admin'
-                ? 'qu’administrateur'
-                : 'que membre de l’équipe de support'}
-            </h2>
-            <p className="fr-text--xl">
-              Vous n’avez pas accès au fonctionnalités de la coop 😬
-            </p>
-            <Link className="fr-link" href="/administration/usurpation">
-              Accéder à l’usurpation pour accéder aux fonctionnalités de la coop
-              en tant qu’utilisateur de test
-              <span
-                className="fr-icon-arrow-right-line fr-icon-arrow-right-line fr-icon--sm fr-ml-1w"
-                aria-hidden
-              />
-            </Link>
-          </div>
+          <AccesReserveAuxUtilisateurs role={acces.role} />
         </InscriptionStepsLayout>
-        <PublicFooter />
-      </div>
+      </CoopShell>
     )
   }
 
-  if (!hasInscriptionComplete(user)) {
+  if (acces._tag === 'InscriptionInachevee') {
     redirect('/inscription')
   }
 
@@ -62,27 +45,27 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (ruptureEnAttente != null) {
     return (
-      <div className="fr-layout">
-        <div id="skip-links" />
-        <Header user={user} fullWidth variant="coop" />
+      <CoopShell cadre="etape" user={user}>
         <InscriptionStepsLayout>
           <ChoixDeVisibiliteApresRupture />
         </InscriptionStepsLayout>
-        <PublicFooter />
-      </div>
+      </CoopShell>
     )
   }
 
   const maintenance = await consulterLaMaintenance()
 
   return (
-    <div className="fr-layout">
-      <div id="skip-links" />
-      {maintenance._tag === 'Active' && (
-        <BanniereDeMaintenance message={messageAffiche(maintenance)} />
-      )}
+    <CoopShell
+      cadre="application"
+      banniere={
+        maintenance._tag === 'Active' ? (
+          <BanniereDeMaintenance message={messageAffiche(maintenance)} />
+        ) : null
+      }
+    >
       {children}
-    </div>
+    </CoopShell>
   )
 }
 

@@ -1,36 +1,16 @@
 import { NextRequest } from 'next/server'
-import { z } from 'zod'
 import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
-import { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
-  ActivitesFilters,
-  ActivitesFilterValidations,
-} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+  exportInterdit,
+  filtresDeLExport,
+} from '@/features/statistiques/ui/export/demande-d-export'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-
-const ExportActivitesValidation = z.object(ActivitesFilterValidations)
-
-const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
-
-const disallowExportFor =
-  (user: SessionUser) => (exportForMediateurIds?: string[]) =>
-    exportForMediateurIds &&
-    user.mediateur?.id &&
-    !exportForMediateurIds.includes(user.mediateur.id) &&
-    !exportForMediateurIds.some((id) =>
-      user.coordinateur?.mediateursCoordonnes.map(toMediateurId).includes(id),
-    ) &&
-    !exportForMediateurIds.some((id) =>
-      user.coordinateur?.ancienMediateursCoordonnes
-        .map(toMediateurId)
-        .includes(id),
-    )
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
@@ -44,17 +24,15 @@ export const GET = async (request: NextRequest) => {
     return new Response('Forbidden', { status: 403 })
   }
 
-  const parsedQueryParams = ExportActivitesValidation.safeParse(
+  const filters = filtresDeLExport(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   )
 
-  if (parsedQueryParams.error) {
+  if (filters === null) {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const filters: ActivitesFilters = parsedQueryParams.data
-
-  if (disallowExportFor(user)(filters.mediateurs)) {
+  if (exportInterdit(user, filters.mediateurs)) {
     return new Response('Cannot export for another mediateur', { status: 403 })
   }
 

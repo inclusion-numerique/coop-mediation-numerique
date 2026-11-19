@@ -1,2 +1,2 @@
-export { type ListeDesTags, TriDesTags, triDemande } from './domain'
+export { type ListeDesTags, TriDesTags } from './domain'
 export * from './implementation'

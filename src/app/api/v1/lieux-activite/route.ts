@@ -1,14 +1,15 @@
 import { routeBuilder } from '@arckit/nextjs/route'
-import { DispositifProgrammeNational } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
 import {
-  type LieuPublieExpose,
+  criteresDesLieuxActivite,
+  LieuxActiviteQueryParamsValidation,
+} from '@/features/clients-api/abilities/lire-les-lieux-activite'
+import {
   lieuPublieExpose,
   lieuxPublies,
 } from '@/features/lieux-activite/abilities/publier-les-lieux'
@@ -205,37 +206,13 @@ export const revalidate = 0
  *                 $ref: '#/components/schemas/LieuInclusionNumerique'
  */
 
-const LieuxActiviteQueryParamsValidation = z.object({
-  ids: z
-    .union([z.string(), z.array(z.string())])
-    .optional()
-    .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
-    .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
-    .transform((arr) => Array.from(new Set(arr)))
-    .pipe(z.array(z.guid()).max(100))
-    .default([]),
-  filter: z
-    .object({
-      dispositif_programmes_nationaux: z
-        .enum(DispositifProgrammeNational)
-        .optional(),
-    })
-    .default({}),
-})
-
 export const GET = routeBuilder()
   .use(withClientApi(['LieuxActivite']))
   .use(withQueryParams(LieuxActiviteQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
-      const lieux = await lieuxPublies({
-        ids: queryParams.ids,
-        dispositifProgrammeNational:
-          queryParams.filter.dispositif_programmes_nationaux,
-      })
+      const lieux = await lieuxPublies(criteresDesLieuxActivite(queryParams))
 
-      return NextResponse.json(
-        lieux.map(lieuPublieExpose) satisfies LieuPublieExpose[],
-      )
+      return NextResponse.json(lieux.map(lieuPublieExpose))
     }),
   )
