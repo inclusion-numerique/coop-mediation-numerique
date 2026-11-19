@@ -5,8 +5,9 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
-import { appliquerLesDifferencesAction } from '@/app/_actions/lieux-activite/appliquer-les-differences.action'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '../../action/appliquer-les-differences.key'
 import type { OrigineDuChoix } from '../../domain'
 import type { DifferenceAffichee } from '../fiche-affichee/reprise-externe'
 import type { ValeurAffichee } from '../fiche-affichee/valeur-affichee'
@@ -124,7 +125,7 @@ export const ModaleDesDifferences = ({
     setEnCours(true)
 
     try {
-      const resultat = await appliquerLesDifferencesAction({
+      const resultat = await inject(APPLIQUER_LES_DIFFERENCES_ACTION_KEY)({
         id: lieuId,
         choix: Object.fromEntries(
           differences.map(({ champ }) => [champ, origineDe(champ)]),

@@ -6,8 +6,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
-import { ajouterDesLieuxActiviteAction } from '@/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
-import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
 import CreerLieuActiviteForm from '@/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
@@ -18,10 +16,13 @@ import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { AJOUTER_DES_LIEUX_ACTIVITE_ACTION_KEY } from '../action/ajouter-des-lieux-activite.key'
 import { LieuAAjouterComboBox } from './components/lieu-a-ajouter-combo-box'
 import { PanierDeLieux } from './components/PanierDeLieux'
 import { RechercheDeLieu } from './components/RechercheDeLieu'
+import { CREER_UN_LIEU_KEY } from './creer-un-lieu.key'
 import { destination } from './destination'
 import { type LieuAuPanier, lieuCree, selectionner } from './panier'
 
@@ -60,7 +61,7 @@ export const AjouterDesLieuxActivitePage = ({
     defaultValues: panierVide,
     onSubmit: async ({ value }) => {
       try {
-        const resultat = await ajouterDesLieuxActiviteAction({
+        const resultat = await inject(AJOUTER_DES_LIEUX_ACTIVITE_ACTION_KEY)({
           lieux: value.lieux,
         })
 
@@ -93,7 +94,7 @@ export const AjouterDesLieuxActivitePage = ({
     const { adresseBan, ...donnees } = toCreerLieuData(valeur)
     if (adresseBan == null) return
 
-    const resultat = await creerUnLieuActiviteAction({ ...donnees, adresseBan })
+    const resultat = await inject(CREER_UN_LIEU_KEY)({ ...donnees, adresseBan })
 
     if (!resultat.success) {
       erreurEnregistrement()
