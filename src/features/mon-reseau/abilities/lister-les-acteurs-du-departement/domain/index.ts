@@ -1,5 +1,5 @@
 export type {
-  CommunesDuDepartement,
+  CommunesDesLieux,
   ListerLesActeursDuDepartement,
   PageDActeurs,
 } from './acteurs-du-departement'

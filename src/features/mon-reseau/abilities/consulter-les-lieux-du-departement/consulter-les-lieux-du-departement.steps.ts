@@ -1,12 +1,22 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
+import { communesDesLieux, lieuxDuDepartement } from '@/features/lieux-activite'
+import {
+  consulterLesLieuxDuDepartement,
+  type ParametresDesLieux,
+} from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
 import { semerUnLieu } from '@/features/mon-reseau/mon-reseau.cucumber'
 
 const AURILLAC = '15014'
 const SAINT_FLOUR = '15187'
 
-type Consultation = Awaited<ReturnType<typeof consulterLesLieuxDuDepartement>>
+const consulterLesLieux = (code: string, parametres: ParametresDesLieux) =>
+  consulterLesLieuxDuDepartement(code, parametres, {
+    lieuxDuDepartement,
+    communesDesLieux,
+  })
+
+type Consultation = Awaited<ReturnType<typeof consulterLesLieux>>
 
 const etat: {
   aurillac?: string
@@ -23,7 +33,7 @@ const proposes = (): readonly string[] => {
 }
 
 const consulter = async (communes: string) => {
-  etat.consultation = await consulterLesLieuxDuDepartement('15', {
+  etat.consultation = await consulterLesLieux('15', {
     communes,
     lignes: '100',
   })
@@ -52,7 +62,7 @@ When(
 When(
   'on consulte les lieux du département « {word} »',
   async (code: string) => {
-    etat.consultation = await consulterLesLieuxDuDepartement(code, {})
+    etat.consultation = await consulterLesLieux(code, {})
   },
 )
 

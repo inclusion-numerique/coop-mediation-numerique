@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { communesDesLieux } from '@/features/lieux-activite'
 import {
   listerLesActeursDuDepartement,
   type ParametresDesActeurs,
@@ -24,6 +25,7 @@ const Page = async ({
   const consultation = await listerLesActeursDuDepartement(
     (await params).departement,
     await searchParams,
+    { communesDesLieux },
   )
 
   return consultation.success ? (

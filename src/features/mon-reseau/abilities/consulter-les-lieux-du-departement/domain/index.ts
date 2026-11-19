@@ -4,3 +4,4 @@ export {
   estFiltre,
   type ParametresDesLieux,
 } from './criteres-des-lieux'
+export type { CommunesDesLieux, LieuxDuDepartement } from './ports'

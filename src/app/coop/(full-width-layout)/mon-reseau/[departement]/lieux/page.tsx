@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { communesDesLieux, lieuxDuDepartement } from '@/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import {
   hrefDuLieuEnListe,
@@ -31,6 +32,7 @@ const Page = async ({
   const consultation = await consulterLesLieuxDuDepartement(
     (await params).departement,
     await searchParams,
+    { lieuxDuDepartement, communesDesLieux },
   )
 
   return consultation.success ? (
@@ -40,6 +42,7 @@ const Page = async ({
     >
       <LieuxDuDepartementPage
         {...consultation.data}
+        communes={[...consultation.data.communes]}
         listeDesLieux={consultation.data.lieux.lieux.map((lieu) => (
           <LieuActiviteCard
             key={lieu.id}

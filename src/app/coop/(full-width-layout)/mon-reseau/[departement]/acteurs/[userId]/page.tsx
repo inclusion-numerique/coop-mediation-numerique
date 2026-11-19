@@ -19,6 +19,11 @@ import {
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
+import {
+  listerLesLieuxDuMediateur,
+  MediateurId as MediateurIdDesLieux,
+  TriDesLieux,
+} from '@/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { LieuxRepliables } from '@/features/lieux-activite/ui'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
@@ -26,7 +31,6 @@ import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contr
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import {
   consulterUnActeur,
-  lieuxDeLActeur,
   nomDeLActeur,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur'
 import {
@@ -95,7 +99,12 @@ const Page = async ({ params }: Parametres) => {
   const mediation = acteur.profil.mediation
   const [employeuse, lieux, contrat] = await Promise.all([
     consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
-    mediation === null ? null : lieuxDeLActeur(mediation.mediateurId),
+    mediation === null
+      ? null
+      : listerLesLieuxDuMediateur({
+          mediateurId: MediateurIdDesLieux(mediation.mediateurId),
+          tri: TriDesLieux(undefined),
+        }),
     contratVisible(acteur, regard)
       ? consulterLeContrat({
           utilisateurId: UtilisateurId(acteur.acteurId),
@@ -151,7 +160,11 @@ const Page = async ({ params }: Parametres) => {
                 )
               }
               lieux={
-                lieux === null ? undefined : <LieuxRepliables lieux={lieux} />
+                lieux === null ? undefined : (
+                  <LieuxRepliables
+                    lieux={lieux.map(({ lieuInclusion }) => lieuInclusion)}
+                  />
+                )
               }
               suppressionDesArchives={
                 ancienMembre === null || mediation === null ? undefined : (

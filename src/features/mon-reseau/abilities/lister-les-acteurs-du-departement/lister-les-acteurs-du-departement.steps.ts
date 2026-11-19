@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { communesDesLieux } from '@/features/lieux-activite'
 import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 import {
   exercerDansLeLieu,
@@ -48,10 +49,14 @@ const semerDansLeCantal = async ({
 }
 
 const consulter = async (parametres: Record<string, string>) => {
-  etat.consultation = await listerLesActeursDuDepartement('15', {
-    lignes: '100',
-    ...parametres,
-  })
+  etat.consultation = await listerLesActeursDuDepartement(
+    '15',
+    {
+      lignes: '100',
+      ...parametres,
+    },
+    { communesDesLieux },
+  )
 }
 
 Given(
@@ -120,7 +125,11 @@ When(
 When(
   'on consulte l’annuaire des acteurs du département « {word} »',
   async (code: string) => {
-    etat.consultation = await listerLesActeursDuDepartement(code, {})
+    etat.consultation = await listerLesActeursDuDepartement(
+      code,
+      {},
+      { communesDesLieux },
+    )
   },
 )
 

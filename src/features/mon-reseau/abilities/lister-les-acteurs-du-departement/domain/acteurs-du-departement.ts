@@ -24,6 +24,6 @@ export type ListerLesActeursDuDepartement = (
   criteres: CriteresActeurs,
 ) => Promise<PageDActeurs>
 
-export type CommunesDuDepartement = (
-  departement: CodeDepartement,
-) => Promise<readonly OptionDeCommune[]>
+export type CommunesDesLieux = (options: {
+  departementCode: CodeDepartement
+}) => Promise<{ readonly communesOptions: readonly OptionDeCommune[] }>

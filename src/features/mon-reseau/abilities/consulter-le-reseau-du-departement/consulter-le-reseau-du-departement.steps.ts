@@ -38,7 +38,9 @@ const semerUnMediateurDuCantal = async ({
 }
 
 Given('le réseau du Cantal tel qu’il est', async () => {
-  const consultation = await consulterLeReseauDuDepartement('15')
+  const consultation = await consulterLeReseauDuDepartement('15', {
+    nombreDeLieuxDuDepartement,
+  })
   etat.acteursAvant = consultation.success ? consultation.data.acteurs : 0
 })
 
@@ -65,13 +67,17 @@ Given(
 )
 
 When('on consulte le réseau du Cantal', async () => {
-  etat.consultation = await consulterLeReseauDuDepartement('15')
+  etat.consultation = await consulterLeReseauDuDepartement('15', {
+    nombreDeLieuxDuDepartement,
+  })
 })
 
 When(
   'on consulte le réseau du département « {word} »',
   async (code: string) => {
-    etat.consultation = await consulterLeReseauDuDepartement(code)
+    etat.consultation = await consulterLeReseauDuDepartement(code, {
+      nombreDeLieuxDuDepartement,
+    })
   },
 )
 
