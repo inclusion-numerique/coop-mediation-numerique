@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { siIndisponible } from '@/configuration/ban/apiAdresse'
+import type { CommuneFields } from '@/configuration/ban/communeFieldsFromAddress'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { CommuneFields } from '@/features/adresse/implementation/api-adresse/communeFieldsFromAddress'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'

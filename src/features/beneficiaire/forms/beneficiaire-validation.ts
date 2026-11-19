@@ -1,9 +1,9 @@
 import z from 'zod'
-import { AdresseBanValidation } from '@/features/adresse/domain/AdresseBanValidation'
 import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import { statutsSociaux as statutSocialValues } from '@/features/beneficiaire/domain/statut-social'
 import { tranchesAge as trancheAgeValues } from '@/features/beneficiaire/domain/tranche-age'
+import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
 import { telephoneCanonique } from '@/libraries/telephone'
 
 const telephoneValidation = z

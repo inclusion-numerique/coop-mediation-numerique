@@ -1,10 +1,10 @@
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
-import { AdresseBanValidation } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   ComplementAdresseSaisi,
   NomDuLieuSaisi,
 } from '@/features/lieux-activite/domain/regles-de-saisie'
+import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
 
 export const IdentiteLieuShape = {
   nom: NomDuLieuSaisi,

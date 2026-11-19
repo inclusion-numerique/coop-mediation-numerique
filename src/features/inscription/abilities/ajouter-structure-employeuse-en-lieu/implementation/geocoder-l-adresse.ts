@@ -1,6 +1,6 @@
 import { siIndisponible } from '@/configuration/ban/apiAdresse'
+import { geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { geocodeStructureAdresse } from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
 import type { Geocodage, GeocoderLAdresse } from '../domain/ports'
 
 export const geocoderLAdresse: GeocoderLAdresse = (adresse) =>

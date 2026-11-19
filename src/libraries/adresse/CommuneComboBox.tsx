@@ -1,9 +1,9 @@
-import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import {
   type Commune,
   rechercherDesCommunes,
-} from '../implementation/api-adresse/rechercher-des-communes'
+} from '@/configuration/ban/rechercher-des-communes'
+import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 
 export type { Commune }
 

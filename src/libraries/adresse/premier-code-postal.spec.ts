@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { premierCodePostal } from './premier-code-postal'
+import { premierCodePostal } from '@/libraries/adresse/premier-code-postal'
 
 describe('premier code postal', () => {
   it('garde le code d’une commune qui n’en a qu’un', () => {

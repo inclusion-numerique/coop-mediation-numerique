@@ -8,16 +8,16 @@ import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
 } from '@/configuration/ban/apiAdresse'
+import { geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
+import {
+  adresseNonVerifiableMessage,
+  SANS_SIRET_A_LA_MAIN,
+} from '@/features/lieux-activite/ui/adresse-non-verifiable'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,
-} from '@/features/adresse/combo-box/AdresseBanComboBox'
-import {
-  adresseNonVerifiableMessage,
-  geocodeStructureAdresse,
-  SANS_SIRET_A_LA_MAIN,
-} from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
-import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+} from '@/libraries/adresse/AdresseBanComboBox'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'

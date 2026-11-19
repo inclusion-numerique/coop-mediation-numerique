@@ -10,11 +10,7 @@ import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
 } from '@/configuration/ban/apiAdresse'
-import {
-  adresseNonVerifiableMessage,
-  CREER_A_LA_MAIN,
-  geocodeStructureAdresse,
-} from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
+import { geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
 import type { LieuActiviteInput } from '@/features/inscription/abilities/renseigner-lieux-activite'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
@@ -23,6 +19,10 @@ import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import {
+  adresseNonVerifiableMessage,
+  CREER_A_LA_MAIN,
+} from '../adresse-non-verifiable'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,

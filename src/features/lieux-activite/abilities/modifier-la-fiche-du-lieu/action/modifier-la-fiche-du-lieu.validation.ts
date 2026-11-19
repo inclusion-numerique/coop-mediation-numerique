@@ -7,7 +7,6 @@ import {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
-import { AdresseBanValidation } from '@/features/adresse/domain/AdresseBanValidation'
 import { FormationLabelPropose } from '@/features/lieux-activite/domain/nomenclatures'
 import {
   AdresseMailSaisie,
@@ -25,6 +24,7 @@ import {
   SiteWebSaisi,
   texteFacultatif,
 } from '@/features/lieux-activite/domain/regles-de-saisie'
+import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
 import { HorairesValidation } from '../../../domain/horaires.validation'
 
 export const InformationsGeneralesSaisie = z

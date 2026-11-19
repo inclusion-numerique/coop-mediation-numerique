@@ -1,9 +1,9 @@
-import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   ContactReferent,
   referentAffichage,
 } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 
 // Matérialisation d'une employeuse en lieu d'activité : quand une personne déclare que son
 // employeur est aussi l'un de ses lieux, on recopie ses données `main` dans une ligne

@@ -1,6 +1,6 @@
-import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { BeneficiaireData } from '@/features/beneficiaire/forms/beneficiaire-validation'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { BeneficiaireSearchItem } from '../domain/rechercher-beneficiaires'
 

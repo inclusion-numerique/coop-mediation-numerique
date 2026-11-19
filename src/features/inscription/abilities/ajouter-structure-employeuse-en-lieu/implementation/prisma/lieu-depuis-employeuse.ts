@@ -1,9 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,
 } from '@/features/inscription/implementation/prisma/employeuse-en-lieu.data'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import type { EmployeuseId } from '../../domain'
 
 /**

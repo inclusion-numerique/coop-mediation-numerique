@@ -1,5 +1,5 @@
 import { type Feature, searchAdresse } from '@/configuration/ban/apiAdresse'
-import { banFeatureToAdresseBanData } from '@/features/adresse/implementation/api-adresse/banFeatureToAdresseBanData'
+import { banFeatureToAdresseBanData } from '@/configuration/ban/banFeatureToAdresseBanData'
 
 export type CommuneFields = {
   commune: string

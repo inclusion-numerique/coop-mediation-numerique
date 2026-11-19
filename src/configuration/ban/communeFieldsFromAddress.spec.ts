@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import type { Feature } from '@/configuration/ban/apiAdresse'
-import { communeDuResultat } from '@/features/adresse/implementation/api-adresse/communeFieldsFromAddress'
+import { communeDuResultat } from '@/configuration/ban/communeFieldsFromAddress'
 
 const evreuxFeature: Feature = {
   type: 'Feature',

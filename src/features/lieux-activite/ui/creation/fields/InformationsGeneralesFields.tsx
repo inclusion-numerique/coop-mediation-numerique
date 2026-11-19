@@ -1,12 +1,12 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
+import { libelleDeTypologie } from '@/features/lieux-activite/ui/libelles-typologie'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,
-} from '@/features/adresse/combo-box/AdresseBanComboBox'
-import { libelleDeTypologie } from '@/features/lieux-activite/ui/libelles-typologie'
-import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+} from '@/libraries/adresse/AdresseBanComboBox'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import RequiredFieldsDisclaimer from '@/libraries/ui/components/Form/RequiredFieldsDisclaimer'

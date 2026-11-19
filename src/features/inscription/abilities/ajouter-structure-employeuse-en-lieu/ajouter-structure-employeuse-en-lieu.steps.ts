@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
 import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import type {
   Geocodage,
@@ -16,6 +15,7 @@ import {
   seedEmployeuseMain,
   seedLieuActivite,
 } from '@/features/inscription/inscription.cucumber'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 

@@ -2,13 +2,13 @@ import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
 } from '@/configuration/ban/apiAdresse'
-import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
+import { type geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
 import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
-  type geocodeStructureAdresse,
-} from '@/features/adresse/implementation/api-adresse/geocodeStructureAdresse'
+} from '@/features/lieux-activite/ui/adresse-non-verifiable'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuxAAjouterData } from '../action/ajouter-des-lieux-activite.validation'
 

@@ -8,11 +8,6 @@ import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
 import {
-  CommuneComboBox,
-  CommuneOptions,
-} from '@/features/adresse/combo-box/CommuneComboBox'
-import type { AdresseBanData } from '@/features/adresse/domain/AdresseBanValidation'
-import {
   ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
   ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
 } from '@/features/beneficiaire/domain/annee-naissance'
@@ -27,6 +22,11 @@ import {
   BeneficiaireValidation,
 } from '@/features/beneficiaire/forms/beneficiaire-validation'
 import FormSection from '@/features/beneficiaire/forms/FormSection'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import {
+  CommuneComboBox,
+  CommuneOptions,
+} from '@/libraries/adresse/CommuneComboBox'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
