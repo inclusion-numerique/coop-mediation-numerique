@@ -45,20 +45,20 @@ describe('add filters', () => {
       worksheet,
       availabelFilters,
     )([
-      { label: 'Médiateur', key: 'mediateur', type: 'roles' },
-      { label: 'Coordinateur', key: 'coordinateur', type: 'roles' },
+      { label: 'Médiateur', type: 'roles' },
+      { label: 'Coordinateur', type: 'roles' },
       {
         label: 'Hors dispositif',
-        key: '0',
+
         type: 'conseiller_numerique',
       },
-      { label: 'Inscrit', key: 'inscrit', type: 'statut' },
-      { label: 'CCAS de Nîmes', key: '27', type: 'lieux' },
-      { label: 'Les bricodeurs', key: '61', type: 'lieux' },
-      { label: 'Lyon', key: '27', type: 'communes' },
-      { label: 'Toulouse', key: '61', type: 'communes' },
-      { label: '27 · Eure', key: '27', type: 'departements' },
-      { label: '61 · Orne', key: '61', type: 'departements' },
+      { label: 'Inscrit', type: 'statut' },
+      { label: 'CCAS de Nîmes', type: 'lieux' },
+      { label: 'Les bricodeurs', type: 'lieux' },
+      { label: 'Lyon', type: 'communes' },
+      { label: 'Toulouse', type: 'communes' },
+      { label: '27 · Eure', type: 'departements' },
+      { label: '61 · Orne', type: 'departements' },
     ])
 
     const worksheetFilterLabels = [
@@ -78,5 +78,29 @@ describe('add filters', () => {
       ['Communes', 'Lyon, Toulouse'],
       ['Départements', '27 · Eure, 61 · Orne'],
     ])
+  })
+
+  it('omet un filtre masqué quand il est vide', () => {
+    const worksheet = new Workbook().addWorksheet('Test')
+
+    addFilters(worksheet, [
+      { label: 'Rôles', type: 'roles' },
+      { label: 'Bénéficiaires', type: 'beneficiaires', masqueSiVide: true },
+    ])([])
+
+    expect(worksheet.getColumn(1).values.slice(1)).toStrictEqual(['Rôles'])
+  })
+
+  it('écrit un filtre masqué quand il est renseigné', () => {
+    const worksheet = new Workbook().addWorksheet('Test')
+
+    addFilters(worksheet, [
+      { label: 'Bénéficiaires', type: 'beneficiaires', masqueSiVide: true },
+    ])([{ label: 'Camille Martin', type: 'beneficiaires' }])
+
+    expect([
+      worksheet.getCell('A1').value,
+      worksheet.getCell('B1').value,
+    ]).toStrictEqual(['Bénéficiaires', 'Camille Martin'])
   })
 })

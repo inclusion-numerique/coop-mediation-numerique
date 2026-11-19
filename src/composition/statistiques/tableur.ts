@@ -32,7 +32,6 @@ export const getStatistiquesWorksheetInput = async ({
   return {
     statistiques,
     auteur: auteurDeLExport(user),
-    mediateurScope: null,
     filters: activitesFiltersLabels,
     fuseau: user.timezone,
   }

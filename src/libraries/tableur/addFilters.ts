@@ -1,14 +1,14 @@
 import type { Worksheet } from 'exceljs'
 
-type AvailableFilter = {
-  label: string
-  type: string
+type FiltreDisponible = {
+  readonly label: string
+  readonly type: string
+  readonly masqueSiVide?: boolean
 }
 
-type Filter = {
-  type: string
-  key: string
-  label: string
+type Filtre = {
+  readonly type: string
+  readonly label: string
 }
 
 const toLabel = ({ label }: { label: string }) => label
@@ -16,12 +16,19 @@ const toLabel = ({ label }: { label: string }) => label
 const onlyType = (type: string) => (filter: { type: string }) =>
   filter.type === type
 
+const visibleAvec =
+  (filters: readonly Filtre[]) =>
+  ({ type, masqueSiVide }: FiltreDisponible) =>
+    !masqueSiVide || filters.some(onlyType(type))
+
 export const addFilters =
-  (worksheet: Worksheet, availableFilters: AvailableFilter[]) =>
-  (filters: Filter[]) =>
+  (worksheet: Worksheet, availableFilters: readonly FiltreDisponible[]) =>
+  (filters: readonly Filtre[]) =>
     worksheet.addRows(
-      availableFilters.map(({ label, type }) => [
-        label,
-        filters.filter(onlyType(type)).map(toLabel).join(', ') || '-',
-      ]),
+      availableFilters
+        .filter(visibleAvec(filters))
+        .map(({ label, type }) => [
+          label,
+          filters.filter(onlyType(type)).map(toLabel).join(', ') || '-',
+        ]),
     )

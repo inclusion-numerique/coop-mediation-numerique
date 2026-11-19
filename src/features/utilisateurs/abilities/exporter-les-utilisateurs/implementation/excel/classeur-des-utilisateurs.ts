@@ -46,7 +46,7 @@ export const classeurDesUtilisateurs = ({
   addFilters(
     feuille,
     filtresDisponibles,
-  )(filtres.map(({ type, cle, valeur }) => ({ type, key: cle, label: valeur })))
+  )(filtres.map(({ type, valeur }) => ({ type, label: valeur })))
 
   const separateur = feuille.addRow([''])
 

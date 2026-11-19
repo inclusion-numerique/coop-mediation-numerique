@@ -12,7 +12,7 @@ const DATE = new Date('2024-09-11T17:42:00.000Z')
 
 const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
   BuildStatistiquesWorksheetInput,
-  'mediateurScope' | 'filters'
+  'filters'
 > = {
   worksheetGenerationDate: DATE,
   fuseau: 'Europe/Paris',
@@ -277,7 +277,6 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
 const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInput =
   {
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
-    mediateurScope: null,
     filters: [
       {
         label: '29.01.2025 - 11.02.2025',
@@ -375,7 +374,6 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
 const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetInput =
   {
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
-    mediateurScope: null,
     filters: [
       {
         key: '69382',
