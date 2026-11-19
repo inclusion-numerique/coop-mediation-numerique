@@ -1,12 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
 import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
 import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 
-export const Outils = () => (
+export const Outils = ({
+  lienRdvServicePublic,
+}: {
+  lienRdvServicePublic: string
+}) => (
   <div className="fr-container">
     <div className="fr-text--center fr-container--medium fr-px-md-8w fr-mx-auto">
       <Image
@@ -107,7 +110,7 @@ export const Outils = () => (
           <span className="fr-mt-auto">
             <Link
               className="fr-link"
-              href={rdvWebsiteLink}
+              href={lienRdvServicePublic}
               target="_blank"
               rel="noreferrer"
               title="Accéder à RDV Service Public - nouvel onglet"

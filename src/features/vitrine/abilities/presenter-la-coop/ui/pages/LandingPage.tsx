@@ -10,7 +10,11 @@ import { QuiSommesNous } from '../components/QuiSommesNous'
 import { Solution } from '../components/Solution'
 import Webinaire from '../components/Webinaire'
 
-export const LandingPage = () => (
+export const LandingPage = ({
+  lienRdvServicePublic,
+}: {
+  lienRdvServicePublic: string
+}) => (
   <>
     <SkipLinksPortal />
     <main id={contentId} className="fr-container--fluid">
@@ -27,7 +31,7 @@ export const LandingPage = () => (
         <Contexte />
       </section>
       <section className="fr-background-alt--brown-caramel-950 fr-pt-md-11w fr-pb-md-15w fr-py-8w">
-        <Outils />
+        <Outils lienRdvServicePublic={lienRdvServicePublic} />
       </section>
       <section className="fr-pt-md-15w fr-pt-8w">
         <Impact />
