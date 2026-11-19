@@ -2,20 +2,18 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
-import {
-  hrefDuLieuEnListe,
-  LieuActiviteCard,
-} from '@/features/lieux-activite/ui'
 import Card from '@/libraries/ui/components/Card'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import { type LieuAffiche } from '../../../../ui/lieu-affiche'
+import type { LieuEnListe } from '../domain/lieu-en-liste'
+import { hrefDuLieuEnListe } from './href-du-lieu'
+import LieuActiviteCard from './LieuActiviteCard'
 
 const NOMBRE_AFFICHE_AU_DEPART = 3
 
-export const LieuxDeLActeur = ({
+export const LieuxRepliables = ({
   lieux,
 }: {
-  lieux: readonly LieuAffiche[]
+  lieux: readonly LieuEnListe[]
 }) => {
   const [tousAffiches, afficherTous] = useState(false)
 

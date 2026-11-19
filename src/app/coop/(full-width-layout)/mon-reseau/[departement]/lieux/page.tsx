@@ -5,6 +5,10 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import {
+  hrefDuLieuEnListe,
+  LieuActiviteCard,
+} from '@/features/lieux-activite/ui'
+import {
   consulterLesLieuxDuDepartement,
   type ParametresDesLieux,
 } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
@@ -34,7 +38,16 @@ const Page = async ({
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <LieuxDuDepartementPage {...consultation.data} />
+      <LieuxDuDepartementPage
+        {...consultation.data}
+        listeDesLieux={consultation.data.lieux.lieux.map((lieu) => (
+          <LieuActiviteCard
+            key={lieu.id}
+            lieu={lieu}
+            href={hrefDuLieuEnListe(lieu)}
+          />
+        ))}
+      />
     </ClientBinder>
   ) : (
     notFound()

@@ -1,7 +1,4 @@
-import {
-  hrefDuLieuEnListe,
-  LieuActiviteCard,
-} from '@/features/lieux-activite/ui'
+import type { ReactNode } from 'react'
 import {
   DataSearchBar,
   generatePageSizeSelectOptions,
@@ -34,11 +31,13 @@ const LieuxDuDepartementPage = ({
   criteres,
   lieux,
   communes,
+  listeDesLieux,
 }: {
   departement: Departement
   criteres: CriteresDesLieux
   lieux: LieuxTrouves
   communes: SelectOption[]
+  listeDesLieux: ReactNode
 }) => {
   const baseHref = hrefDesLieux(departement.code)
   const parametres = parametresDeLURL(criteres)
@@ -115,13 +114,7 @@ const LieuxDuDepartementPage = ({
 
           <hr className="fr-separator-1px" />
 
-          {lieux.lieux.map((lieu) => (
-            <LieuActiviteCard
-              key={lieu.id}
-              lieu={lieu}
-              href={hrefDuLieuEnListe(lieu)}
-            />
-          ))}
+          {listeDesLieux}
 
           <PaginationNavWithPageSizeSelect
             className="fr-mt-12v"

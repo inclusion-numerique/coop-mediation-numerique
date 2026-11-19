@@ -23,6 +23,7 @@ import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retire
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { LieuxRepliables } from '@/features/lieux-activite/ui'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
 import { UtilisateurId } from '@/features/mediateurs/domain'
@@ -36,7 +37,6 @@ import {
   contratVisible,
   encartDeLEmployeuse,
   FicheActeurPage,
-  LieuxDeLActeur,
   TitreDeSection,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
@@ -153,7 +153,7 @@ const Page = async ({ params }: Parametres) => {
                 )
               }
               lieux={
-                lieux === null ? undefined : <LieuxDeLActeur lieux={lieux} />
+                lieux === null ? undefined : <LieuxRepliables lieux={lieux} />
               }
               suppressionDesArchives={
                 ancienMembre === null || mediation === null ? undefined : (
