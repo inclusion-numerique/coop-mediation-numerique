@@ -12,9 +12,9 @@ import {
   PRENOM_MAX_LENGTH,
   Prenom,
 } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { Prisma } from '@/generated/prisma/client'
+import { Telephone } from '@/libraries/telephone'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,
   ExternalUserToMerge,

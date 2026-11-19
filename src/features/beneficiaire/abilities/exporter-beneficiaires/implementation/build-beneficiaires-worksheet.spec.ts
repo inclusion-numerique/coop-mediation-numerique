@@ -9,12 +9,12 @@ import {
   StatutSocial,
   statutSocialLabels,
 } from '@/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import {
   TrancheAge,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain/tranche-age'
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireExportRow } from '../domain/exporter-beneficiaires'
 import { buildBeneficiairesWorksheet } from './build-beneficiaires-worksheet'
 

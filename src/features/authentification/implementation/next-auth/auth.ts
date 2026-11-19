@@ -15,7 +15,7 @@ import { proConnectProviderId } from '@/features/authentification/implementation
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/proconnect/importStructureEmployeuseFromProConnect'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
-import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
+import { telephoneEnregistrable } from '@/libraries/telephone'
 
 const sessionUserHasOutdatedData = ({
   user,

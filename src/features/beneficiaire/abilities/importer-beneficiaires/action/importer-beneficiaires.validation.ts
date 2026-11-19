@@ -12,8 +12,8 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireAImporter } from '../domain/importer-beneficiaires'
 
 // Récupère la valeur d'un value object si elle est valide, sinon `null` : les

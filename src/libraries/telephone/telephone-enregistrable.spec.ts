@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Telephone } from './telephone'
+import { Telephone, telephoneEnregistrable } from './telephone-enregistrable'
 
 describe('Telephone', () => {
   it.each([
@@ -41,5 +41,17 @@ describe('Telephone', () => {
     '+1 899 343 9308', // indicatif de zone nord-américain 899 inexistant
   ])('rejects the invalid number %s', (value) => {
     expect(() => Telephone(value)).toThrow()
+  })
+})
+
+describe('téléphone enregistrable', () => {
+  it.each([
+    [null, null],
+    [undefined, null],
+    ['', null],
+    ['1234', null],
+    ['06 12 34 56 78', '+33612345678'],
+  ])('%s devient %s', (saisi, attendu) => {
+    expect(telephoneEnregistrable(saisi)).toBe(attendu)
   })
 })

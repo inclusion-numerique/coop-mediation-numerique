@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { Telephone } from '@/libraries/telephone'
 import { ContactTelephone } from './contact-telephone'
-import { Telephone } from './telephone'
 
 describe('ContactTelephone', () => {
   it('builds a disponible contact when a telephone is provided', () => {

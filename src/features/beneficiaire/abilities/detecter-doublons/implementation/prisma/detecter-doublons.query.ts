@@ -3,8 +3,8 @@ import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { Email } from '@/features/beneficiaire/domain/email'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { Prisma } from '@/generated/prisma/client'
+import { Telephone } from '@/libraries/telephone'
 import type { DetecterDoublons } from '../../domain/detecter-doublons'
 
 export const detecterDoublons: DetecterDoublons = async ({

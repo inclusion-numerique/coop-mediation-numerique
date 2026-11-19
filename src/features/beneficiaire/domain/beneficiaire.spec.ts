@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { Telephone } from '@/libraries/telephone'
 import { AnneeNaissance } from './annee-naissance'
 import type { BeneficiaireAnonyme, BeneficiaireIdentifie } from './beneficiaire'
 import {
@@ -16,7 +17,6 @@ import { MediateurId } from './mediateur-id'
 import { Nom } from './nom'
 import { Prenom } from './prenom'
 import { StatutSocial } from './statut-social'
-import { Telephone } from './telephone'
 import {
   TrancheAge,
   trancheAgeForBeneficiaire,

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { Telephone } from '@/libraries/telephone'
 import { AnneeNaissance } from '../domain/annee-naissance'
 import type {
   BeneficiaireAnonyme,
@@ -13,7 +14,6 @@ import { Nom } from '../domain/nom'
 import { Notes } from '../domain/notes'
 import { Prenom } from '../domain/prenom'
 import { StatutSocial } from '../domain/statut-social'
-import { Telephone } from '../domain/telephone'
 import { TrancheAge } from '../domain/tranche-age'
 import {
   beneficiaireFromDomain,

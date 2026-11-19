@@ -6,12 +6,12 @@ import { Email } from '@/features/beneficiaire/domain/email'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/givenBeneficiaire'
 import {
   mediateurSansActivitesMediateurId,
   mediateurSansActivitesUserId,
 } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+import { Telephone } from '@/libraries/telephone'
 
 const withBrandedFields = (fixture: {
   id: string

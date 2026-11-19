@@ -8,7 +8,7 @@ import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { proConnectProviderId } from '@/features/authentification/implementation/proconnect/proConnect'
-import { telephoneEnregistrable } from '@/features/utilisateurs/domain'
+import { telephoneEnregistrable } from '@/libraries/telephone'
 
 const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
 

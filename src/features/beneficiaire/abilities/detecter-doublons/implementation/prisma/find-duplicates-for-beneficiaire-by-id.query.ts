@@ -3,7 +3,7 @@ import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/db/find-d
 import { Email } from '@/features/beneficiaire/domain/email'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
+import { Telephone } from '@/libraries/telephone'
 import type { FindDuplicatesForBeneficiaireById } from '../../domain/detecter-doublons'
 
 export const findDuplicatesForBeneficiaireById: FindDuplicatesForBeneficiaireById =

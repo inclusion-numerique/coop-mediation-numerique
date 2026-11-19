@@ -50,6 +50,5 @@ export {
   type StatutMembre,
   type TypeDeStatut,
 } from './statut-membre'
-export { Telephone } from './telephone'
 export { UtilisateurId } from './utilisateur-id'
 export { Voie } from './voie'

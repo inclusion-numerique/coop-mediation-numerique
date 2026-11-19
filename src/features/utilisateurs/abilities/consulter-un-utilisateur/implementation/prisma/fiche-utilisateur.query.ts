@@ -17,11 +17,11 @@ import {
   RoleUtilisateur,
   rattachements,
   statutDe,
-  telephoneEnregistrable,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
+import { telephoneEnregistrable } from '@/libraries/telephone'
 import type { FicheUtilisateur } from '../../domain'
 
 const ficheSelect = {

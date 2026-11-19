@@ -7,8 +7,8 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { statutsSociaux } from '@/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import { Telephone } from '@/libraries/telephone'
 import { optional } from '@/libraries/zod'
 
 /**

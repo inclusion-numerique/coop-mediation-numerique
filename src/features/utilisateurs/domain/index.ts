@@ -101,5 +101,4 @@ export {
   type StatutCompte,
   statutDe,
 } from './statut-compte'
-export { Telephone, telephoneEnregistrable } from './telephone'
 export { UtilisateurId } from './utilisateur-id'

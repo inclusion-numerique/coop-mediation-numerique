@@ -4,6 +4,7 @@ import {
   personneEstConseillerNumerique,
 } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
+import { telephoneEnregistrable } from '@/libraries/telephone'
 import {
   AdresseCourriel,
   CoordinateurId,
@@ -16,7 +17,6 @@ import {
   rattachements,
   SANS_CONTRAT,
   situationDansLeDispositif,
-  telephoneEnregistrable,
   UtilisateurId,
 } from '../domain'
 

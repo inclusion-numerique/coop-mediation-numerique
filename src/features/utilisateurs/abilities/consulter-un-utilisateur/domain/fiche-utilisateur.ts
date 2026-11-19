@@ -12,10 +12,10 @@ import type {
   Rattachements,
   RoleUtilisateur,
   StatutCompte,
-  Telephone,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { Siret } from '@/libraries/insee'
+import { Telephone } from '@/libraries/telephone'
 
 type CoordinationDuMediateur = {
   readonly coordinateurUtilisateurId: UtilisateurId

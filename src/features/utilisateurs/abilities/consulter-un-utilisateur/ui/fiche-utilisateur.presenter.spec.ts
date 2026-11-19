@@ -7,9 +7,9 @@ import {
   NomAffiche,
   RoleUtilisateur,
   rattachements,
-  Telephone,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { Telephone } from '@/libraries/telephone'
 import type {
   CoordinateurDeLaFiche,
   FicheUtilisateur,

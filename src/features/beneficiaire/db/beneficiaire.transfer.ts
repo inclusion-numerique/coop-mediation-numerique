@@ -1,4 +1,5 @@
 import type { Beneficiaire as PrismaBeneficiaire } from '@/generated/prisma/client'
+import { Telephone } from '@/libraries/telephone'
 import { AnneeNaissance } from '../domain/annee-naissance'
 import type {
   Beneficiaire,
@@ -15,7 +16,6 @@ import { Nom } from '../domain/nom'
 import { Notes } from '../domain/notes'
 import { Prenom } from '../domain/prenom'
 import { StatutSocial } from '../domain/statut-social'
-import { Telephone } from '../domain/telephone'
 import { TrancheAge } from '../domain/tranche-age'
 
 const toContactTelephone = (

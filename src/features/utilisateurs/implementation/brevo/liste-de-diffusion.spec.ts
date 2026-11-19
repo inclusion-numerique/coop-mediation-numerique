@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { Telephone } from '@/libraries/telephone'
 import {
   AdresseCourriel,
   Nom,
   Prenom,
   RoleBrevo,
   SANS_CONTRAT,
-  Telephone,
   UtilisateurId,
 } from '../../domain'
 import { versContactBrevo } from './liste-de-diffusion'

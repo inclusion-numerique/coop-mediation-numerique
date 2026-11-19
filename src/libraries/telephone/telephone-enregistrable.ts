@@ -1,6 +1,6 @@
+import { telephoneCanonique } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
-import { telephoneCanonique } from '@/libraries/telephone'
 
 export const Telephone = defineModel(
   z
@@ -17,3 +17,10 @@ export const Telephone = defineModel(
 )
 
 export type Telephone = Model.TypeOf<typeof Telephone>
+
+export const telephoneEnregistrable = (
+  saisi: string | null | undefined,
+): Telephone | null =>
+  saisi === null || saisi === undefined || saisi.trim() === ''
+    ? null
+    : Telephone.safe(saisi)

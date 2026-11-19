@@ -7,9 +7,9 @@ import { Email } from '@/features/beneficiaire/domain/email'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { Prisma } from '@/generated/prisma/client'
 import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
+import { Telephone } from '@/libraries/telephone'
 
 export type FindDuplicatesForBeneficiaireInput = {
   beneficiaire: {
