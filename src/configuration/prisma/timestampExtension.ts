@@ -39,10 +39,10 @@ const NON_CONTENT_FIELDS = new Set<string>([
 ])
 
 const withTimestamp = (
-  model: string,
+  model: string | undefined,
   data: Record<string, unknown> | undefined,
 ): Record<string, unknown> | undefined => {
-  const field = MODIFICATION_FIELD[model]
+  const field = model && MODIFICATION_FIELD[model]
 
   // Modèle non suivi, data absente, ou champ déjà posé explicitement par l'appelant
   // (ex. fusionnerBeneficiaires qui fixe `modification` lui-même) → on n'y touche pas.
@@ -66,22 +66,19 @@ const withTimestamp = (
 export const timestampExtension = Prisma.defineExtension({
   name: 'auto-modification-timestamp',
   query: {
-    $allModels: {
-      update({ model, args, query }) {
+    $allOperations({ model, operation, args, query }) {
+      if (operation === 'update' || operation === 'updateMany') {
         const data = withTimestamp(model, args.data as Record<string, unknown>)
         return query({ ...args, data } as typeof args)
-      },
-      updateMany({ model, args, query }) {
-        const data = withTimestamp(model, args.data as Record<string, unknown>)
-        return query({ ...args, data } as typeof args)
-      },
-      upsert({ model, args, query }) {
+      }
+      if (operation === 'upsert') {
         const update = withTimestamp(
           model,
           args.update as Record<string, unknown>,
         )
         return query({ ...args, update } as typeof args)
-      },
+      }
+      return query(args)
     },
   },
 })
