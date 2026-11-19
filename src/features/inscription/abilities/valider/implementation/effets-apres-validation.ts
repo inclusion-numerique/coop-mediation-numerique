@@ -5,10 +5,6 @@ import {
 } from '@/configuration/brevo/createBrevoContact'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
-import {
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
 import type { EffetsApresValidation } from '../domain/ports'
 
 const isMediateur = (
@@ -33,7 +29,11 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
       phone: true,
       coordinateur: true,
       mediateur: { select: { id: true } },
-      personneMain: { select: personneConseillerNumeriqueSelect },
+      personneMain: {
+        select: {
+          conseillerNumeriqueEnPoste: { select: { personneId: true } },
+        },
+      },
     },
   })
 
@@ -44,9 +44,8 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
       // posait sur `coop.users`.
       contact: toBrevoContact({
         ...user,
-        isConseillerNumerique: personneEstConseillerNumerique(
-          user.personneMain,
-        ),
+        isConseillerNumerique:
+          user.personneMain?.conseillerNumeriqueEnPoste != null,
       }),
       listIds: [ServerWebAppConfig.Brevo.usersListId],
     })
