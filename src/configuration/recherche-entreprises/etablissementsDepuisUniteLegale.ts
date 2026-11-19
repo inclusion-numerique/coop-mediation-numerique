@@ -1,6 +1,8 @@
 import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
-import type { TypologieStructure } from '@/features/employeuse/domain/typologieStructure'
-import { getTypologieFromApiEntreprise } from '@/features/employeuse/implementation/api-entreprise/typologieFromApiEntreprise'
+import {
+  getTypologieFromApiEntreprise,
+  type TypologieAnnuaire,
+} from '@/configuration/recherche-entreprises/typologieFromApiEntreprise'
 import { toTitleCase } from '@/libraries/texte/toTitleCase'
 
 /**
@@ -23,14 +25,14 @@ import { toTitleCase } from '@/libraries/texte/toTitleCase'
  * Un établissement tel que l'API Recherche d'entreprises le décrit, réduit aux
  * champs dont l'application a besoin pour proposer une structure à la création.
  */
-export type StructureDepuisUniteLegale = {
+export type EtablissementDepuisUniteLegale = {
   readonly siret: string
   readonly nom: string
   readonly adresse: string
   readonly commune: string
   readonly codePostal: string
   readonly codeInsee: string
-  readonly typologie: TypologieStructure | null
+  readonly typologie: TypologieAnnuaire | null
 }
 
 const NON_DIFFUSIBLE = /^\[non[\s-]?diffusible]$/i
@@ -63,13 +65,13 @@ const voieSansLocalite = (
   return valeur.slice(0, valeur.length - localite.length).trim() || adresse
 }
 
-export const structureCreationDataWithSiretFromUniteLegale = ({
+export const etablissementsDepuisUniteLegale = ({
   nature_juridique,
   complements,
   nom_raison_sociale,
   nom_complet,
   matching_etablissements,
-}: UniteLegale): StructureDepuisUniteLegale[] => {
+}: UniteLegale): EtablissementDepuisUniteLegale[] => {
   const typologie = getTypologieFromApiEntreprise({
     complements,
     nature_juridique,
@@ -104,10 +106,10 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
 
         return {
           siret,
+          typologie,
           adresse: toTitleCase(
             voieSansLocalite(voie, codePostal, libelle_commune),
           ),
-          typologie,
           // Le code postal était le seul composant d'adresse jamais repris, alors
           // que l'API le fournit. Son absence remontait jusqu'à `main.adresse`,
           // dont la colonne restait vide — et `AdresseEmployeuse` étant totale,

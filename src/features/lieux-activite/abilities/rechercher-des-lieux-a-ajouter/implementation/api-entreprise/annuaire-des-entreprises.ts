@@ -3,8 +3,8 @@ import {
   Siret,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { etablissementsDepuisUniteLegale } from '@/configuration/recherche-entreprises/etablissementsDepuisUniteLegale'
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
-import { structureCreationDataWithSiretFromUniteLegale } from '@/features/employeuse/implementation/api-entreprise/structuresDepuisUniteLegale'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
 import {
@@ -13,9 +13,7 @@ import {
 } from '../../../../domain/suggestion-de-lieu'
 import type { ChercherDansLAnnuaireDesEntreprises } from '../../domain/ports'
 
-type Etablissement = ReturnType<
-  typeof structureCreationDataWithSiretFromUniteLegale
->[number]
+type Etablissement = ReturnType<typeof etablissementsDepuisUniteLegale>[number]
 
 const suggestion = (etablissement: Etablissement): SuggestionDeLieu[] => {
   const siret = Siret.safe(etablissement.siret ?? '')
@@ -54,7 +52,7 @@ export const chercherDansLAnnuaireDesEntreprises: ChercherDansLAnnuaireDesEntrep
 
     return {
       suggestions: resultat.results
-        .flatMap(structureCreationDataWithSiretFromUniteLegale)
+        .flatMap(etablissementsDepuisUniteLegale)
         .flatMap(suggestion),
       nombre: NombreDeLieux(resultat.total_results),
     }

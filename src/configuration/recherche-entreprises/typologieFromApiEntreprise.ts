@@ -1,5 +1,14 @@
-import { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
-import { TypologieStructure } from '@/features/employeuse/domain/typologieStructure'
+import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
+
+export type TypologieAnnuaire =
+  | 'ACIPHC'
+  | 'ASSO'
+  | 'CC'
+  | 'CCAS'
+  | 'CD'
+  | 'CIAS'
+  | 'EPCI'
+  | 'ESS'
 
 /**
  * Specs :
@@ -45,7 +54,7 @@ import { TypologieStructure } from '@/features/employeuse/domain/typologieStruct
  */
 export const getTypologieFromApiEntreprise = (
   uniteLegale: Pick<UniteLegale, 'complements' | 'nature_juridique'>,
-): TypologieStructure | null => {
+): TypologieAnnuaire | null => {
   if (uniteLegale.complements?.est_association) return 'ASSO'
 
   if (uniteLegale.nature_juridique === '7346') return 'CC'

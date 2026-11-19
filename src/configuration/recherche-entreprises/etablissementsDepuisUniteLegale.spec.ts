@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
-import { structureCreationDataWithSiretFromUniteLegale } from '@/features/employeuse/implementation/api-entreprise/structuresDepuisUniteLegale'
+import { etablissementsDepuisUniteLegale } from '@/configuration/recherche-entreprises/etablissementsDepuisUniteLegale'
 
 // Réponse de l'API Recherche d'entreprises réduite à ce que l'adaptateur lit.
 const uniteLegale = (
@@ -23,21 +23,19 @@ const uniteLegale = (
     ],
   }) as unknown as UniteLegale
 
-describe('structureCreationDataWithSiretFromUniteLegale', () => {
+describe('etablissementsDepuisUniteLegale', () => {
   // Cas de production : le code postal était le seul composant d'adresse jamais
   // repris. Vide, il remontait jusqu'à `main.adresse`, et `AdresseEmployeuse`
   // étant totale, l'employeuse s'affichait sans AUCUNE adresse.
   it('reprend le code postal de l’établissement', () => {
-    expect(
-      structureCreationDataWithSiretFromUniteLegale(uniteLegale({})),
-    ).toMatchObject([{ siret: '78430824900019', codePostal: '75007' }])
+    expect(etablissementsDepuisUniteLegale(uniteLegale({}))).toMatchObject([
+      { siret: '78430824900019', codePostal: '75007' },
+    ])
   })
 
   it('rend une chaîne vide quand l’API n’a pas de code postal', () => {
     expect(
-      structureCreationDataWithSiretFromUniteLegale(
-        uniteLegale({ code_postal: undefined }),
-      ),
+      etablissementsDepuisUniteLegale(uniteLegale({ code_postal: undefined })),
     ).toMatchObject([{ codePostal: '' }])
   })
 
@@ -45,14 +43,14 @@ describe('structureCreationDataWithSiretFromUniteLegale', () => {
   // telle quelle, elle donnait « 27 Rue Saint-Guillaume 75007 Paris, 75007
   // Paris » à l'affichage et faisait échouer le géocodage BAN.
   it('retire du libellé de voie le code postal et la commune que l’API répète', () => {
-    expect(
-      structureCreationDataWithSiretFromUniteLegale(uniteLegale({})),
-    ).toMatchObject([{ adresse: '27 Rue Saint-Guillaume' }])
+    expect(etablissementsDepuisUniteLegale(uniteLegale({}))).toMatchObject([
+      { adresse: '27 Rue Saint-Guillaume' },
+    ])
   })
 
   it('laisse intacte une adresse qui ne se termine pas par la localité', () => {
     expect(
-      structureCreationDataWithSiretFromUniteLegale(
+      etablissementsDepuisUniteLegale(
         uniteLegale({ adresse: '27 RUE SAINT-GUILLAUME CEDEX 07' }),
       ),
     ).toMatchObject([{ adresse: '27 Rue Saint-Guillaume Cedex 07' }])
@@ -60,9 +58,7 @@ describe('structureCreationDataWithSiretFromUniteLegale', () => {
 
   it('ne vide pas la voie quand l’adresse se réduit à la localité', () => {
     expect(
-      structureCreationDataWithSiretFromUniteLegale(
-        uniteLegale({ adresse: '75007 PARIS' }),
-      ),
+      etablissementsDepuisUniteLegale(uniteLegale({ adresse: '75007 PARIS' })),
     ).toMatchObject([{ adresse: '75007 Paris' }])
   })
 
@@ -72,7 +68,7 @@ describe('structureCreationDataWithSiretFromUniteLegale', () => {
   // entière, et bloquait l'inscription sans issue (14 employeuses concernées).
   it('traduit `[NON-DIFFUSIBLE]` en absence, sans perdre la commune', () => {
     expect(
-      structureCreationDataWithSiretFromUniteLegale(
+      etablissementsDepuisUniteLegale(
         uniteLegale({
           adresse: '[NON-DIFFUSIBLE]',
           code_postal: '[NON-DIFFUSIBLE]',
@@ -94,9 +90,7 @@ describe('structureCreationDataWithSiretFromUniteLegale', () => {
 
   it('écarte les établissements fermés', () => {
     expect(
-      structureCreationDataWithSiretFromUniteLegale(
-        uniteLegale({ etat_administratif: 'F' }),
-      ),
+      etablissementsDepuisUniteLegale(uniteLegale({ etat_administratif: 'F' })),
     ).toEqual([])
   })
 })
