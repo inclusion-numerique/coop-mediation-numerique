@@ -3,8 +3,8 @@ import type {
   PrismaSessionUser,
   PrismaSessionUsupper,
 } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { splitMediateursCoordonnes } from '@/features/equipe/domain/mediateursCoordonnes'
 import { statutIntegrationDeLaSession } from '@/features/rdvsp/db/statut-integration'
+import { splitMediateursCoordonnes } from './coordination-de-la-session'
 
 const emploisDeLaSession = (
   personneMain: PrismaSessionUser['personneMain'],
