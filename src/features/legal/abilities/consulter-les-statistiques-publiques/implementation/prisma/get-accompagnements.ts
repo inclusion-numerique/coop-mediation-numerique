@@ -1,5 +1,4 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { conseillersNumeriquesUserIdsSql } from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
 import { monthShortLabels } from '@/libraries/date/monthShortLabels'
 
@@ -34,7 +33,10 @@ export const getAccompagnements = async () => {
     -- forme d'ensemble, joint une fois, et non de prédicat évalué sur chacun des millions
     -- d'accompagnements.
     conseillers AS (
-      ${conseillersNumeriquesUserIdsSql}
+      SELECT p.coop_id AS user_id
+      FROM main.conseiller_numerique_en_poste cn
+      JOIN main.personne p ON p.id = cn.personne_id
+      WHERE p.coop_id IS NOT NULL
     ),
     -- Base data: all accompagnements with role
     base_accompagnements AS (
