@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
 import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
+import type { EmployeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { stepPath } from '@/features/inscription/ui/step-path'
 import {
   listerLesLieuxPourLInscription,
@@ -27,12 +27,8 @@ const getInscriptionDataContext = async ({
     'id' | 'mediateur' | 'coordinateur' | 'profilInscription'
   >
 }) => {
-  const [emploi, lieuxActivite, mediateursCoordonnes, userAdditionalData] =
+  const [lieuxActivite, mediateursCoordonnes, userAdditionalData] =
     await Promise.all([
-      // Get structure employeuse
-      employeuseActuelleAdaptee({
-        userId: user.id,
-      }),
       // Get lieux activite if mediateur
       user.mediateur &&
       user.profilInscription !== 'Coordinateur' &&
@@ -56,7 +52,6 @@ const getInscriptionDataContext = async ({
     ])
 
   return {
-    emploi,
     lieuxActivite,
     mediateursCoordonnes,
     importedLieuxFromDataspace:
@@ -66,15 +61,13 @@ const getInscriptionDataContext = async ({
 
 export const getRecapitulatifPageData = async ({
   user,
+  employeuse,
 }: {
   user: InscritDuRecapitulatif
+  employeuse: EmployeuseAffichee | null
 }) => {
-  const {
-    emploi,
-    lieuxActivite,
-    mediateursCoordonnes,
-    importedLieuxFromDataspace,
-  } = await getInscriptionDataContext({ user })
+  const { lieuxActivite, mediateursCoordonnes, importedLieuxFromDataspace } =
+    await getInscriptionDataContext({ user })
 
   const mediateursCoordonnesCount = mediateursCoordonnes?.length
 
@@ -92,7 +85,7 @@ export const getRecapitulatifPageData = async ({
 
   return {
     user,
-    structureEmployeuse: emploi?.structure,
+    structureEmployeuse: employeuse ?? undefined,
     lieuxActivite,
     mediateursCoordonnesCount,
     backHref,

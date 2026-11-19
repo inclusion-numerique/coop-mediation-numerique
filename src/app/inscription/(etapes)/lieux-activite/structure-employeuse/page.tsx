@@ -3,9 +3,13 @@ import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscripti
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import {
+  consulterEmployeuseActuelle,
+  employeuseActuelleAffichage,
+} from '@/features/employeuse/server'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.key'
 import StructureEmployeuseLieuActivitePage from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ui/pages/StructureEmployeuseLieuActivitePage'
-import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
+import { employeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
@@ -28,19 +32,23 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
   }
 
   // User must have an emploi (structure employeuse)
-  const emploi = await employeuseActuelleAdaptee({
+  const employeuseActuelle = await consulterEmployeuseActuelle({
     userId: user.id,
   })
 
-  if (!emploi) {
+  if (!employeuseActuelle) {
     // No structure employeuse, skip this step
     redirect('/inscription/lieux-activite')
   }
 
+  const employeuse = employeuseAffichee(
+    employeuseActuelleAffichage(employeuseActuelle),
+  )
+
   const structureEmployeuse = {
-    ...emploi.structure,
-    siret: emploi.structure.siret ?? '',
-    codeInsee: emploi.structure.codeInsee ?? '',
+    ...employeuse,
+    siret: employeuse.siret ?? '',
+    codeInsee: employeuse.codeInsee ?? '',
   }
 
   return (

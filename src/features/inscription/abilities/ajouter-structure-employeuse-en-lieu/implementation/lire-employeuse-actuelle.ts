@@ -1,17 +1,15 @@
-import { employeuseActuelleId } from '@/features/inscription/acl/employeuse-actuelle.adapter'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { EmployeuseId, type LireEmployeuseActuelle } from '../domain'
 
-/**
- * Passe par la couche anti-corruption de la feature : l'employeuse appartient à
- * une autre feature, et l'inscription ne lit pas `main` en direct.
- *
- * `null` est une réponse, pas une panne — un compte peut n'avoir aucune
- * affectation active (inscription en cours, employeuse jamais déclarée).
- */
 export const lireEmployeuseActuelle: LireEmployeuseActuelle = async (
   userId,
 ) => {
-  const id = await employeuseActuelleId({ userId })
+  const employeuseActuelle = await prismaClient.employeuseActuelle.findFirst({
+    where: { personne: { coopId: userId } },
+    select: { structureAdministrativeId: true },
+  })
 
-  return id === null ? null : EmployeuseId(id)
+  return employeuseActuelle === null
+    ? null
+    : EmployeuseId(employeuseActuelle.structureAdministrativeId)
 }
