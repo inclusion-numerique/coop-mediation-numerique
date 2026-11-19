@@ -3,8 +3,9 @@
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
-import { choisirLaVisibiliteApresRuptureAction } from '@/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY } from '../action/choisir-la-visibilite-apres-rupture.key'
 import type { reponsesApresRupture } from '../domain/reponse-apres-rupture'
 
 export const ChoixDeVisibiliteApresRupture = () => {
@@ -13,7 +14,11 @@ export const ChoixDeVisibiliteApresRupture = () => {
 
   const repondre = (reponse: (typeof reponsesApresRupture)[number]) =>
     demarrer(async () => {
-      const resultat = await choisirLaVisibiliteApresRuptureAction({ reponse })
+      const resultat = await inject(
+        CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY,
+      )({
+        reponse,
+      })
 
       if (!resultat.success) {
         createToast({
