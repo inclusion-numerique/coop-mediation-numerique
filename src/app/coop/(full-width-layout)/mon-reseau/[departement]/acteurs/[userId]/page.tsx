@@ -18,8 +18,6 @@ import {
   emploiEmployeuseAffichage,
 } from '@/features/employeuse/server'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
-import { INVITER_DES_MEMBRES_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
-import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -37,6 +35,8 @@ import {
   contratVisible,
   encartDeLEmployeuse,
   FicheActeurPage,
+  INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
+  RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
   TitreDeSection,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
@@ -114,11 +114,11 @@ const Page = async ({ params }: Parametres) => {
       to={rechercherUnLieuActiviteAction}
     >
       <ClientBinder
-        bind={RETIRER_UN_MEMBRE_ACTION_KEY}
+        bind={RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY}
         to={retirerUnMembreAction}
       >
         <ClientBinder
-          bind={INVITER_DES_MEMBRES_ACTION_KEY}
+          bind={INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY}
           to={inviterDesMembresAction}
         >
           <ClientBinder
