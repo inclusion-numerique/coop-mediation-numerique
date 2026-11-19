@@ -11,9 +11,11 @@ import {
   type FournisseursDEmplacements,
   ficheDeLOutil,
   OutilPage,
+  type SitesDesOutils,
 } from '@/features/outils/abilities/consulter-un-outil/ui'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/RdvServicePublicMigrationNotice'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import { CodeInsee } from '@/libraries/insee'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -22,6 +24,8 @@ const slugDeLaPage = async ({ params }: Props): Promise<SlugOutil> => {
   const slug = SlugOutil.safe((await params).slug)
   return slug ?? notFound()
 }
+
+const sites: SitesDesOutils = { rdvServicePublic: rdvWebsiteLink }
 
 const fournisseurs: FournisseursDEmplacements = {
   'rdv-service-public': async () => ({
@@ -49,7 +53,7 @@ const fournisseurs: FournisseursDEmplacements = {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => ({
   title: metadataTitle(
-    `${ficheDeLOutil(await slugDeLaPage(props)).title} - Mes outils`,
+    `${ficheDeLOutil(await slugDeLaPage(props), sites).title} - Mes outils`,
   ),
 })
 
@@ -58,7 +62,7 @@ const Page = async (props: Props) => {
 
   return (
     <OutilPage
-      {...ficheDeLOutil(slug)}
+      {...ficheDeLOutil(slug, sites)}
       emplacements={await emplacementsDeLOutil(slug, fournisseurs)}
     />
   )

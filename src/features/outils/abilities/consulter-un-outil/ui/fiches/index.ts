@@ -8,7 +8,13 @@ import monInclusionNumerique from './monInclusionNumerique'
 import pix from './pix'
 import rdv from './rdv'
 
-const fiches: Record<ValeurDeSlugOutil, FicheOutil> = {
+export type SitesDesOutils = {
+  readonly rdvServicePublic: string
+}
+
+const fiches = (
+  sites: SitesDesOutils,
+): Record<ValeurDeSlugOutil, FicheOutil> => ({
   'abc-diag': abcDiag,
   'aidants-connect': aidantsConnect,
   'cartographie-nationale-des-lieux-d-inclusion-numerique':
@@ -16,8 +22,10 @@ const fiches: Record<ValeurDeSlugOutil, FicheOutil> = {
   'les-bases-du-numerique-d-interet-general': lesBases,
   'mon-inclusion-numerique': monInclusionNumerique,
   pix,
-  'rdv-service-public': rdv,
-}
+  'rdv-service-public': rdv(sites.rdvServicePublic),
+})
 
-export const ficheDeLOutil = (slug: ValeurDeSlugOutil): FicheOutil =>
-  fiches[slug]
+export const ficheDeLOutil = (
+  slug: ValeurDeSlugOutil,
+  sites: SitesDesOutils,
+): FicheOutil => fiches(sites)[slug]
