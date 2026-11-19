@@ -1,19 +1,9 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { conseillerNumeriqueWhere } from './employeuse.transfer'
+import { enPosteWhere } from './conseiller-numerique-en-poste'
 
-/**
- * Sémantique SQL du filtre « relève du dispositif », qu'aucun test unitaire ne peut établir : ce qui
- * est en jeu est la traduction Prisma, pas la forme de l'objet.
- *
- * Le cas qui justifie ce fichier est le QUATRIÈME : un utilisateur sans `main.personne`. Il ne relève
- * pas du dispositif et doit donc apparaître dans le filtre « hors dispositif » ; s'il tombait des
- * deux côtés, un compte disparaîtrait d'un écran d'annuaire sans la moindre erreur pour le signaler.
- *
- * Les assertions ont été vérifiées par mutation : retirer `estActive` du filtre en fait tomber trois.
- */
-describe('conseillerNumeriqueWhere', () => {
+describe('enPosteWhere', () => {
   const avecIdposteActive = v4()
   const avecIdposteDesactivee = v4()
   const avecCoopSeulement = v4()
@@ -53,12 +43,11 @@ describe('conseillerNumeriqueWhere', () => {
     })
   }
 
-  /** Ids retenus par le filtre, bornés à ce jeu de test — la base en contient bien d'autres. */
   const filtres = async (releveDuDispositif: boolean): Promise<string[]> => {
     const users = await prismaClient.user.findMany({
       where: {
         id: { in: tous },
-        ...conseillerNumeriqueWhere(releveDuDispositif),
+        ...enPosteWhere(releveDuDispositif),
       },
       select: { id: true },
       orderBy: { email: 'asc' },
@@ -78,7 +67,6 @@ describe('conseillerNumeriqueWhere', () => {
     await seedAffectation(avecIdposteActive, 'idposte', true)
     await seedAffectation(avecIdposteDesactivee, 'idposte', false)
     await seedAffectation(avecCoopSeulement, 'coop', true)
-    // `sansPersonne` reste volontairement sans `main.personne`.
   })
 
   afterAll(async () => {
@@ -97,9 +85,6 @@ describe('conseillerNumeriqueWhere', () => {
   it('ne retient que l’affectation idposte active', async () => {
     expect(await filtres(true)).toEqual([avecIdposteActive])
   })
-
-  // Le contrat conum terminé : l'Entrepôt désactive l'affectation, et la personne sort du dispositif
-  // immédiatement — sans attendre qu'une synchro recopie un drapeau.
   it('exclut une affectation idposte désactivée', async () => {
     expect(await filtres(true)).not.toContain(avecIdposteDesactivee)
   })
@@ -116,8 +101,6 @@ describe('conseillerNumeriqueWhere', () => {
     expect(horsDispositif).toContain(avecCoopSeulement)
     expect(horsDispositif).not.toContain(avecIdposteActive)
   })
-
-  // Les deux filtres partitionnent : aucun compte ne peut tomber dans les deux, ni dans aucun.
   it('partitionne l’ensemble des comptes', async () => {
     const dans = await filtres(true)
     const hors = await filtres(false)

@@ -43,10 +43,7 @@ export {
 // `employeuse.transfer` n'importe `Prisma` qu'en TYPE : il est effacé à la
 // compilation et ne ramène donc pas le client dans le bundle.
 export {
-  conseillerNumeriqueWhere,
-  personneConseillerNumeriqueSelect,
   personneEmployeuseSelect,
-  personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from './db/employeuse.transfer'
 export {

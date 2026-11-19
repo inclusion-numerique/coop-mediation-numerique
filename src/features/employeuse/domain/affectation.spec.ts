@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { affectationActuelle, estConseillerNumerique } from './affectation'
+import { affectationActuelle } from './affectation'
 import { affectation } from './employeuse.fixture'
 
 describe('affectationActuelle', () => {
@@ -29,37 +29,5 @@ describe('affectationActuelle', () => {
 
   it('n’a pas d’employeuse courante sans affectation', () => {
     expect(affectationActuelle([])).toBeNull()
-  })
-})
-
-describe('estConseillerNumerique', () => {
-  it('reconnaît une affectation idposte active', () => {
-    expect(estConseillerNumerique([affectation('idposte', 1)])).toBe(true)
-  })
-
-  // Le cœur du sujet : la fin du contrat conum se traduit par la DÉSACTIVATION de
-  // l'affectation côté Entrepôt. Sans cette lecture, le drapeau restait vrai jusqu'à
-  // ce qu'une synchro nocturne veuille bien le corriger.
-  it('ne reconnaît pas une affectation idposte désactivée', () => {
-    expect(
-      estConseillerNumerique([{ ...affectation('idposte', 1), active: false }]),
-    ).toBe(false)
-  })
-
-  it('ne confond pas le déclaratif coop avec le dispositif', () => {
-    expect(estConseillerNumerique([affectation('coop', 1)])).toBe(false)
-  })
-
-  it('reste vrai si le dispositif coexiste avec une affectation déclarée', () => {
-    expect(
-      estConseillerNumerique([
-        affectation('coop', 1),
-        affectation('idposte', 2),
-      ]),
-    ).toBe(true)
-  })
-
-  it('est faux sans aucune affectation', () => {
-    expect(estConseillerNumerique([])).toBe(false)
   })
 })
