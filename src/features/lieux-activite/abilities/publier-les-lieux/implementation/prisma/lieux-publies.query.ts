@@ -1,5 +1,4 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { conseillersNumeriquesUserIdsSql } from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
 import { lieuExploitableSql } from '../../../../implementation'
 import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
@@ -101,7 +100,12 @@ export const lieuxPublies = async ({
         -- Dispositif conseiller numérique dérivé de main (affectation idposte active) : un
         -- ensemble d'identifiants distincts, donc une jointure qui ne démultiplie aucune ligne
         -- de l'agrégat.
-        LEFT JOIN (${conseillersNumeriquesUserIdsSql}) conseillers ON conseillers.user_id = users.id
+        LEFT JOIN (
+          SELECT p.coop_id AS user_id
+          FROM main.conseiller_numerique_en_poste cn
+          JOIN main.personne p ON p.id = cn.personne_id
+          WHERE p.coop_id IS NOT NULL
+        ) conseillers ON conseillers.user_id = users.id
     WHERE ${lieuExploitableSql('structures')}
       AND structures.visible_pour_cartographie_nationale IS true
       -- Un lieu qui n'annonce aucun service n'oriente personne : la carte le

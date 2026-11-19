@@ -1,8 +1,6 @@
 import {
   employeuseCodeInsee,
-  personneConseillerNumeriqueSelect,
   personneEmployeuseSelect,
-  personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
@@ -41,7 +39,11 @@ export const mediateurDuLieuSelect = (lieuId: string) =>
         user: {
           select: {
             ...identiteSelect,
-            personneMain: { select: personneConseillerNumeriqueSelect },
+            personneMain: {
+              select: {
+                conseillerNumeriqueEnPoste: { select: { personneId: true } },
+              },
+            },
             coordinateur: { select: { id: true } },
           },
         },
@@ -165,9 +167,8 @@ export const versMediateurDuLieu = ({
         courriel,
         profil: profilDuMediateur({
           estCoordinateur: mediateur.user.coordinateur !== null,
-          estConseillerNumerique: personneEstConseillerNumerique(
-            mediateur.user.personneMain,
-          ),
+          estConseillerNumerique:
+            mediateur.user.personneMain?.conseillerNumeriqueEnPoste != null,
         }),
         nombreDeLieux,
         coordinateurs: mediateur.coordinations
