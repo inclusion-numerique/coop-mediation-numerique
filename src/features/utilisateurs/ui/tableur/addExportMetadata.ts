@@ -1,19 +1,15 @@
 import type { Worksheet } from 'exceljs'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getUserRoleLabel } from '@/features/utilisateurs/ui/tableur/getUserRoleLabel'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 
-export type WorksheetUser = Pick<
-  SessionUser,
-  | 'firstName'
-  | 'lastName'
-  | 'role'
-  | 'id'
-  | 'coordinateur'
-  | 'emplois'
-  | 'isConseillerNumerique'
-> & {
-  mediateur: { id: string } | null
+export type WorksheetUser = {
+  readonly id: string
+  readonly firstName: string | null
+  readonly lastName: string | null
+  readonly role: string
+  readonly isConseillerNumerique: boolean
+  readonly mediateur: { readonly id: string } | null
+  readonly coordinateur: { readonly id: string } | null
 }
 
 export const addExportMetadata =

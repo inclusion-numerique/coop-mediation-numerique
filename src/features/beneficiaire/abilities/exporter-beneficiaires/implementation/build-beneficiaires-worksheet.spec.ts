@@ -24,7 +24,6 @@ const user: WorksheetUser = {
   lastName: 'Médiatrice',
   role: 'User',
   coordinateur: null,
-  emplois: [],
   isConseillerNumerique: false,
   mediateur: { id: '00000000-0000-0000-0000-000000000001' },
 }

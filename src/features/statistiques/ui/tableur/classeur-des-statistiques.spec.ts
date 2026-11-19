@@ -25,15 +25,6 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     mediateur: {
       id: '5',
     },
-    emplois: [
-      {
-        id: '2',
-        structure: {
-          codeInsee: '00000',
-          nom: 'Le duc',
-        },
-      },
-    ],
     coordinateur: null,
   },
   statistiques: {
@@ -301,15 +292,6 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
       mediateur: {
         id: '5',
       },
-      emplois: [
-        {
-          id: '2',
-          structure: {
-            codeInsee: '00000',
-            nom: 'Le duc',
-          },
-        },
-      ],
       coordinateur: null,
     },
     filters: [
@@ -416,19 +398,8 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
       role: 'User',
       isConseillerNumerique: true,
       mediateur: null,
-      emplois: [
-        {
-          id: '2',
-          structure: {
-            codeInsee: '00000',
-            nom: 'Le duc',
-          },
-        },
-      ],
       coordinateur: {
         id: '1',
-        mediateursCoordonnes: [],
-        ancienMediateursCoordonnes: [],
       },
     },
     filters: [

@@ -25,7 +25,6 @@ const auteur: WorksheetUser = {
   lastName: 'Osmont',
   role: 'User',
   coordinateur: null,
-  emplois: [],
   isConseillerNumerique: false,
   mediateur: null,
 }
