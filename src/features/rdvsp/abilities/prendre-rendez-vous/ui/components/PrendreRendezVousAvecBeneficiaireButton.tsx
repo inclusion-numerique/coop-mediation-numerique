@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import type { StatutIntegration } from '@/features/rdvsp/domain/sante-compte'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
@@ -14,7 +14,10 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   className,
 }: {
   beneficiaire: { id: string }
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
+  user: {
+    readonly id: string
+    readonly rdvAccount: { readonly statut: StatutIntegration } | null
+  }
   className?: string
 }) => {
   const [enCours, setEnCours] = useState(false)

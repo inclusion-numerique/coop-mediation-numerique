@@ -8,11 +8,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
-import type {
-  UserId,
-  UserRdvAccount,
-  UserTimezone,
-} from '@/features/authentification/domain/user'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import { useModalVisibility } from '@/libraries/ui/hooks/useModalVisibility'
@@ -29,7 +24,16 @@ export const GererRdvServicePublicModalInstance = createModal({
 const GererRdvServicePublicModal = ({
   user: { rdvAccount, timezone, id: userId },
 }: {
-  user: UserRdvAccount & UserTimezone & UserId
+  user: {
+    readonly id: string
+    readonly timezone: string
+    readonly rdvAccount: {
+      readonly statut: StatutIntegration
+      readonly error: string | null
+      readonly created: string | null
+      readonly lastSynced: string | null
+    } | null
+  }
 }) => {
   const router = useRouter()
 
