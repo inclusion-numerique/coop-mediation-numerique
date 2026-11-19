@@ -3,15 +3,11 @@ import { Prisma } from '@/generated/prisma/client'
 import { criteresDesStatistiques } from '../domain'
 import { filtreDesStatistiques } from './criteres-des-statistiques.sql'
 
-const conseillersNumeriques = (colonne: string, attendu: boolean) =>
-  Prisma.sql`conseiller(${Prisma.raw(colonne)}) = ${attendu}`
-
 const rendezVousAuxStatuts = (statuts: readonly string[]) =>
   Prisma.sql`SELECT id FROM rendez_vous WHERE statut = ANY(${statuts})`
 
 const filtre = (parametres: Parameters<typeof criteresDesStatistiques>[0]) =>
   filtreDesStatistiques(criteresDesStatistiques(parametres), {
-    conseillersNumeriques,
     rendezVousAuxStatuts,
   })
 

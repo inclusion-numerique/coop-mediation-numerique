@@ -11,7 +11,6 @@ import {
   Jour,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   FiltresDesStatistiquesValidation,
@@ -40,7 +39,6 @@ When("l'API calcule les statistiques de leur médiateur", async () => {
       {
         perimetre: PERIMETRE_NATIONAL,
         criteres,
-        conseillersNumeriques: conseillerNumeriqueSql,
         rendezVousAuxStatuts: rendezVousAuxStatutsSql,
         parJour: fenetre,
         parMois: fenetre,

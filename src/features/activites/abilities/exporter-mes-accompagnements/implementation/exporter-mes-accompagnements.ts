@@ -1,4 +1,3 @@
-import type { FiltreDesConseillersNumeriques } from '../../../db/criteres-des-activites.sql'
 import type { CriteresDesActivites } from '../../../domain'
 import {
   type Demandeur,
@@ -15,11 +14,9 @@ import {
 export const exporterMesAccompagnements = async ({
   demandeur,
   criteres,
-  conseillersNumeriques,
 }: {
   readonly demandeur: Demandeur
   readonly criteres: CriteresDesActivites
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
 }): Promise<ExportDesAccompagnements> => {
   const autorises = mediateursAutorises(demandeur)
   const [activites, avecImportsV1] = await Promise.all([
@@ -27,7 +24,6 @@ export const exporterMesAccompagnements = async ({
       perimetre: perimetreDeLExport(autorises, criteres.mediateurs),
       coordinateurId: demandeur.coordinateurId,
       criteres,
-      conseillersNumeriques,
     }),
     demandeur.coordinateurId === null
       ? importsV1Presents(autorises)

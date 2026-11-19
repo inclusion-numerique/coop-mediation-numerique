@@ -1,15 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { Prisma } from '@/generated/prisma/client'
 import { criteresDesActivites } from '../domain'
 import { filtreDesActivites } from './criteres-des-activites.sql'
 
-const conseillersNumeriques = (colonne: string, attendu: boolean) =>
-  Prisma.sql`conseiller(${Prisma.raw(colonne)}) = ${attendu}`
-
 const filtre = (parametres: Parameters<typeof criteresDesActivites>[0]) =>
-  filtreDesActivites(criteresDesActivites(parametres), {
-    conseillersNumeriques,
-  })
+  filtreDesActivites(criteresDesActivites(parametres))
 
 describe('filtre SQL des activités', () => {
   it('ne restreint rien sans critère', () => {
@@ -55,8 +49,11 @@ describe('filtre SQL des activités', () => {
     expect(filtre({ [cle]: valeur }).sql).toBe(attendu)
   })
 
-  it('délègue le dispositif au filtre reçu', () => {
+  it('lit le dispositif dans la vue des conseillers numériques en poste de main', () => {
     const sql = filtre({ conseiller_numerique: '0' })
-    expect([sql.sql, sql.values]).toEqual(['conseiller(u.id) = ?', [false]])
+    expect([sql.sql, sql.values]).toEqual([
+      'NOT EXISTS (SELECT 1 FROM main.conseiller_numerique_en_poste cn JOIN main.personne p ON p.id = cn.personne_id WHERE p.coop_id = u.id)',
+      [],
+    ])
   })
 })

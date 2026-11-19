@@ -12,7 +12,6 @@ import {
   isMediateur,
 } from '@/features/authentification/domain/userTypeGuards'
 import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
@@ -58,7 +57,6 @@ const MesActivitesTableauRoute = async ({
         compteRdv: user.rdvAccount,
         timezone: user.timezone,
         rendezVousLies,
-        conseillersNumeriques: conseillerNumeriqueSql,
       })
     : null
 

@@ -4,7 +4,6 @@ import {
   Jour,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { rassembler, statistiquesEnCours } from './statistiques-fournies'
@@ -18,7 +17,6 @@ export const statistiquesNationalesEnCours = (
     {
       perimetre: PERIMETRE_NATIONAL,
       criteres,
-      conseillersNumeriques: conseillerNumeriqueSql,
       rendezVousAuxStatuts: rendezVousAuxStatutsSql,
       parJour: fenetreDe({
         debut: criteres.periode.du,

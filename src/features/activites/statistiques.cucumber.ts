@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { After, type DataTable, Given } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   Genre,
@@ -361,7 +360,6 @@ export const demandeDeStatistiques = (
 ): DemandeDeStatistiques => ({
   perimetre: perimetreDe(nom),
   criteres: criteresDesStatistiques(parametres),
-  conseillersNumeriques: conseillerNumeriqueSql,
   rendezVousAuxStatuts: rendezVousAuxStatutsSql,
 })
 

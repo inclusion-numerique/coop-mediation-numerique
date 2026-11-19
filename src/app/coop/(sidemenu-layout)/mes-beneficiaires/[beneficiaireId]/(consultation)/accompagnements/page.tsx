@@ -20,7 +20,6 @@ import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consult
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
@@ -72,7 +71,6 @@ const BeneficiaireAccompagnementsPage = async (props: {
             parIds: rendezVousParIds,
           },
     rendezVousLies,
-    conseillersNumeriques: conseillerNumeriqueSql,
   })
 
   return (

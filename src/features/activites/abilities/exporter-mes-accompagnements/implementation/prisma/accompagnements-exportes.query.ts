@@ -1,9 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import {
-  type FiltreDesConseillersNumeriques,
-  filtreDesActivites,
-} from '../../../../db/criteres-des-activites.sql'
+import { enPosteSql } from '../../../../db/conseiller-numerique-en-poste.sql'
+import { filtreDesActivites } from '../../../../db/criteres-des-activites.sql'
 import { dansLaPeriodeDAppartenance } from '../../../../db/periode-d-appartenance.sql'
 import type {
   CoordinateurId,
@@ -30,7 +28,6 @@ type Selection = {
   readonly perimetre: readonly MediateurId[]
   readonly coordinateurId: CoordinateurId | null
   readonly criteres: CriteresDesActivites
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
 }
 
 const apres = (curseur: Curseur | null): Prisma.Sql =>
@@ -39,14 +36,14 @@ const apres = (curseur: Curseur | null): Prisma.Sql =>
     : Prisma.sql`(act.date, act.creation, act.id) < (${curseur.jour}::date, ${curseur.creation}::timestamp, ${curseur.id}::uuid)`
 
 const activitesRetenues = (
-  { perimetre, coordinateurId, criteres, conseillersNumeriques }: Selection,
+  { perimetre, coordinateurId, criteres }: Selection,
   curseur: Curseur | null,
 ) =>
   prismaClient.$queryRaw<Retenue[]>`
     SELECT act.id::text AS id,
            act.date::text AS jour,
            act.creation::text AS creation,
-           ${conseillersNumeriques('u.id', true)} AS conseiller_numerique
+           ${enPosteSql('u.id', true)} AS conseiller_numerique
     FROM activites act
       LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
       LEFT JOIN mediateurs med ON med.id = act.mediateur_id
@@ -54,7 +51,7 @@ const activitesRetenues = (
     WHERE act.mediateur_id = ANY(${[...perimetre]}::uuid[])
       AND act.suppression IS NULL
       AND ${dansLaPeriodeDAppartenance(coordinateurId)}
-      AND ${filtreDesActivites(criteres, { conseillersNumeriques })}
+      AND ${filtreDesActivites(criteres)}
       AND ${apres(curseur)}
     ORDER BY act.date DESC, act.creation DESC, act.id DESC
     LIMIT ${TAILLE_DU_LOT}`

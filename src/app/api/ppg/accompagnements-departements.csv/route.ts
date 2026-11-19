@@ -13,7 +13,6 @@ import {
   PopulationDeMediateurs,
 } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement'
 import { withAdminRoute } from '@/features/authentification'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 
 const ExportQueryParamsValidation = z.object({
   date: Jour.schema.optional(),
@@ -28,12 +27,10 @@ export const GET = routeBuilder()
     const conseillersNumeriques = await accompagnementsParDepartement({
       population: PopulationDeMediateurs('ConseillersNumeriques'),
       jusquAu,
-      filtreDesConseillersNumeriques: conseillerNumeriqueSql,
     })
     const autresMediateurs = await accompagnementsParDepartement({
       population: PopulationDeMediateurs('AutresMediateurs'),
       jusquAu,
-      filtreDesConseillersNumeriques: conseillerNumeriqueSql,
     })
 
     return csvResponse(

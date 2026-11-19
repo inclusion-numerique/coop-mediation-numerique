@@ -19,7 +19,6 @@ import {
   isMediateur,
 } from '@/features/authentification/domain/userTypeGuards'
 import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
@@ -65,7 +64,6 @@ const MesActivitesRoute = async ({
       parIds: rendezVousParIds,
     },
     rendezVousLies,
-    conseillersNumeriques: conseillerNumeriqueSql,
   })
 
   const options = await optionsDeLaBarre({

@@ -14,7 +14,6 @@ import ViewBeneficiaireInformationsPage from '@/features/beneficiaire/abilities/
 import { DeleteBeneficiaireModal } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
@@ -60,7 +59,6 @@ const BeneficiaireInformationsPage = async (props: {
               parIds: rendezVousParIds,
             },
       rendezVousLies,
-      conseillersNumeriques: conseillerNumeriqueSql,
     }),
   ])
 

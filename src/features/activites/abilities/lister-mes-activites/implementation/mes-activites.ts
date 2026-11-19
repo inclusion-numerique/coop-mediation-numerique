@@ -1,4 +1,3 @@
-import type { FiltreDesConseillersNumeriques } from '../../../db/criteres-des-activites.sql'
 import type { RendezVousLies } from '../../../db/rendez-vous-fournis'
 import { type MediateurId, parametresDesActivitesDe } from '../../../domain'
 import { filtresDeLaListe } from '../../../ui/filtres/filtres-de-la-liste'
@@ -34,7 +33,6 @@ type DemandeDeMesActivites = {
   readonly compteRdv: CompteRendezVous | null
   readonly timezone: string
   readonly rendezVousLies: RendezVousLies
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
 }
 
 export const maListeDActivites = ({
@@ -44,7 +42,6 @@ export const maListeDActivites = ({
   timezone,
   rendezVous,
   rendezVousLies,
-  conseillersNumeriques,
 }: DemandeDeMesActivites & {
   readonly rendezVous: Omit<RendezVousALister, 'comptes'>
 }) => {
@@ -61,7 +58,6 @@ export const maListeDActivites = ({
     rendezVous:
       compteRdv === null ? null : { comptes: [compteRdv.id], ...rendezVous },
     rendezVousLies,
-    conseillersNumeriques,
   })
 
   return {
@@ -95,7 +91,6 @@ export const monTableauDActivites = ({
   compteRdv,
   timezone,
   rendezVousLies,
-  conseillersNumeriques,
 }: DemandeDeMesActivites) => {
   const { criteres, filtree, voirLesRdvs, pagination, ordre } =
     lectureDeLaListe(parametres)
@@ -108,7 +103,6 @@ export const monTableauDActivites = ({
     contenu: 'ActivitesSeules',
     rendezVous: null,
     rendezVousLies,
-    conseillersNumeriques,
   })
 
   return {

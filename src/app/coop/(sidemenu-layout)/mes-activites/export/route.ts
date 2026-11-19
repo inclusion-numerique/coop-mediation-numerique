@@ -4,7 +4,6 @@ import { profilDeLaSession } from '@/features/authentification'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
 import {
   getLieuxDesActivitesOptions,
@@ -38,7 +37,6 @@ export const GET = async (request: NextRequest) => {
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
     fournisseurs: {
-      conseillersNumeriques: conseillerNumeriqueSql,
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
       tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),

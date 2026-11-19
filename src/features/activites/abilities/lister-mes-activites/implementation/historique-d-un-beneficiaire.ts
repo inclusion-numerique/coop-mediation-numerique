@@ -1,4 +1,3 @@
-import type { FiltreDesConseillersNumeriques } from '../../../db/criteres-des-activites.sql'
 import type { RendezVousLies } from '../../../db/rendez-vous-fournis'
 import {
   type BeneficiaireId,
@@ -22,7 +21,6 @@ export const listerLHistoriqueDUnBeneficiaire = ({
   compte,
   rendezVous,
   rendezVousLies,
-  conseillersNumeriques,
 }: {
   readonly mediateurId: MediateurId
   readonly beneficiaireId: BeneficiaireId
@@ -30,7 +28,6 @@ export const listerLHistoriqueDUnBeneficiaire = ({
   readonly compte: RendezVousDuCompte
   readonly rendezVous: RendezVousALister | null
   readonly rendezVousLies: RendezVousLies
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
 }): Promise<ChronologieDesActivites> => {
   const criteres = criteresDesActivites({ beneficiaires: beneficiaireId })
   return listerMesActivites({
@@ -41,6 +38,5 @@ export const listerLHistoriqueDUnBeneficiaire = ({
     contenu: contenuDeLaChronologie(criteres, compte),
     rendezVous,
     rendezVousLies,
-    conseillersNumeriques,
   })
 }

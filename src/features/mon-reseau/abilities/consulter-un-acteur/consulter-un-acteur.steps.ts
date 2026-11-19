@@ -8,7 +8,6 @@ import {
   criteresDesStatistiques,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   consulterUnActeur,
   type QuiConsulte,
@@ -35,7 +34,6 @@ const lireLesStatistiquesSur30Jours = async (
       membres: [MediateurIdDesActivites(mediateurId)],
     },
     criteres: criteresDesStatistiques(periode),
-    conseillersNumeriques: conseillerNumeriqueSql,
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   })
   return {

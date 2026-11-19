@@ -8,7 +8,6 @@ import { criteresDesStatistiques, Jour } from '@/features/activites/domain'
 import { profilDeLaSession } from '@/features/authentification'
 import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import {
   CoordinateurId as CoordinateurIdDeLEquipe,
@@ -61,7 +60,6 @@ export const mesStatistiques = async ({
     {
       perimetre,
       criteres,
-      conseillersNumeriques: conseillerNumeriqueSql,
       rendezVousAuxStatuts: rendezVousAuxStatutsSql,
       parJour: fenetre,
       parMois: fenetre,

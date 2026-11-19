@@ -1,4 +1,3 @@
-import type { FiltreDesConseillersNumeriques } from '../../../db/criteres-des-activites.sql'
 import { criteresDesActivites } from '../../../domain'
 import { tagsUtilisablesDepuis } from '../../../implementation/fournisseurs-de-la-saisie'
 import { filtresDeLaListe } from '../../../ui/filtres/filtres-de-la-liste'
@@ -13,7 +12,6 @@ type Fournisseurs = Pick<
   'lieuxDesActivites' | 'communesEtDepartements' | 'beneficiaires'
 > & {
   readonly tagsVisibles: Parameters<typeof tagsUtilisablesDepuis>[0]
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
 }
 
 export const classeurDeMesAccompagnements = async ({
@@ -36,7 +34,6 @@ export const classeurDeMesAccompagnements = async ({
     exporterMesAccompagnements({
       demandeur,
       criteres,
-      conseillersNumeriques: fournisseurs.conseillersNumeriques,
     }),
     nomsDesFiltresExportes({
       demandeur,

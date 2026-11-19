@@ -13,7 +13,6 @@ import {
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import {
-  conseillerNumeriqueSql,
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
 } from '@/features/employeuse/server'
@@ -68,7 +67,6 @@ const lireLesStatistiquesSur30Jours = async (
       membres: [MediateurIdDesActivites(mediateurId)],
     },
     criteres: criteresDesStatistiques(periode),
-    conseillersNumeriques: conseillerNumeriqueSql,
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   })
   return {
