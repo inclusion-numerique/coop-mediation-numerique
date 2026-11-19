@@ -3,12 +3,23 @@ import type {
   PrismaSessionUser,
   PrismaSessionUsupper,
 } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import {
-  employeuseSessionEmplois,
-  personneToEmployeuseActuelle,
-} from '@/features/employeuse/server'
 import { splitMediateursCoordonnes } from '@/features/equipe/domain/mediateursCoordonnes'
 import { statutIntegrationDeLaSession } from '@/features/rdvsp/db/statut-integration'
+
+const emploisDeLaSession = (
+  personneMain: PrismaSessionUser['personneMain'],
+): SessionUser['emplois'] =>
+  personneMain?.employeuseActuelle
+    ? [
+        {
+          id: String(personneMain.employeuseActuelle.structureAdministrativeId),
+          structure: {
+            nom: personneMain.employeuseActuelle.nom,
+            codeInsee: personneMain.employeuseActuelle.codeInsee,
+          },
+        },
+      ]
+    : []
 
 /**
  * This is the session user that will be publicly sent to the client.
@@ -19,12 +30,7 @@ export const serializePrismaSessionUser = (
   usurper?: PrismaSessionUsupper,
 ): SessionUser => ({
   ...prismaSessionUser,
-  // Employeuse COURANTE lue en pur main (ADR-002 périmètre élargi). Forme `emplois` historique
-  // conservée (0 ou 1 élément) pour ne pas impacter les consommateurs (`emplois.at(0).structure`,
-  // `.length`).
-  emplois: employeuseSessionEmplois(
-    personneToEmployeuseActuelle(prismaSessionUser.personneMain),
-  ),
+  emplois: emploisDeLaSession(prismaSessionUser.personneMain),
   isConseillerNumerique:
     prismaSessionUser.personneMain?.conseillerNumeriqueEnPoste != null,
   coordinateur: splitMediateursCoordonnes(prismaSessionUser.coordinateur),

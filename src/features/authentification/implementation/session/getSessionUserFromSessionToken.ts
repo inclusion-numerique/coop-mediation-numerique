@@ -2,7 +2,6 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { registerLastSeen } from '@/features/authentification/implementation/prisma/registerLastSeen'
 import { serializePrismaSessionUser } from '@/features/authentification/implementation/session/serializePrismaSessionUser'
-import { personneEmployeuseSelect } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 
 export const sessionUserSelect = {
@@ -26,13 +25,11 @@ export const sessionUserSelect = {
   inscriptionValidee: true,
   timezone: true,
   lastSeen: true,
-  // Employeuse COURANTE lue en PUR MAIN (ADR-002 périmètre élargi) : `main.personne` (coop_id) ->
-  // affectation active -> structure. Plus AUCUNE référence à `emploi.structureMain`.
-  // `serializePrismaSessionUser` reconstitue la forme historique `emplois: [{ id, structure }]`
-  // (0 ou 1 élément) via `personneToSessionEmplois`, donc les consommateurs restent inchangés.
   personneMain: {
     select: {
-      ...personneEmployeuseSelect,
+      employeuseActuelle: {
+        select: { structureAdministrativeId: true, nom: true, codeInsee: true },
+      },
       conseillerNumeriqueEnPoste: { select: { personneId: true } },
     },
   },
