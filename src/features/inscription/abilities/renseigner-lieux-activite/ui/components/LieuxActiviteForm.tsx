@@ -5,7 +5,6 @@ import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
-import { renseignerLieuxActiviteAction } from '@/app/_actions/inscription/renseigner-lieux-activite.action'
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
@@ -17,8 +16,10 @@ import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { RENSEIGNER_LIEUX_ACTIVITE_ACTION_KEY } from '../../action/renseigner-lieux-activite.key'
 import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
@@ -159,7 +160,7 @@ const LieuxActiviteForm = ({
   const [rechercheError, setRechercheError] = useState<string | null>(null)
 
   const enregistrerLieux = async (lieux: LieuActiviteInput[]) =>
-    renseignerLieuxActiviteAction({ lieuxActivite: lieux })
+    inject(RENSEIGNER_LIEUX_ACTIVITE_ACTION_KEY)({ lieuxActivite: lieux })
 
   const form = useAppForm({
     validators: { onSubmit: lieuxActiviteFormShape },

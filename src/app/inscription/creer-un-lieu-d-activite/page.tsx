@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
+import { creerLieuActiviteAction } from '@/app/_actions/inscription/creer-lieu-activite.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { CREER_LIEU_ACTIVITE_ACTION_KEY } from '@/features/inscription/abilities/renseigner-lieux-activite/action/creer-lieu-activite.key'
 import CreerLieuActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/CreerLieuActivitePage'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
@@ -36,7 +38,12 @@ const Page = async (props: {
       <ClientBinder bind={LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY} to={rdvWebsiteLink}>
         <SkipLinksPortal />
         <main id={contentId} className="fr-width-full">
-          <CreerLieuActivitePage nom={nom} retourHref={retour} />
+          <ClientBinder
+            bind={CREER_LIEU_ACTIVITE_ACTION_KEY}
+            to={creerLieuActiviteAction}
+          >
+            <CreerLieuActivitePage nom={nom} retourHref={retour} />
+          </ClientBinder>
         </main>
       </ClientBinder>
     </ClientBinder>

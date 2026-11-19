@@ -1,10 +1,11 @@
-import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import {
   type SuggestionAffichee,
   suggestionsAffichees,
 } from '@/features/lieux-activite/ui'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import { RECHERCHER_DES_LIEUX_A_AJOUTER_KEY } from '../rechercher-des-lieux-a-ajouter.key'
 
 /**
  * Recherche d'un lieu d'activité, par ordre de priorité : les lieux déjà connus
@@ -40,7 +41,9 @@ const loadSuggestions = async (
 
   if (input.length < rechercheMinimum) return { ...rien, enEchec: false }
 
-  const resultat = await rechercherDesLieuxAAjouterAction({ recherche: input })
+  const resultat = await inject(RECHERCHER_DES_LIEUX_A_AJOUTER_KEY)({
+    recherche: input,
+  })
 
   if (!resultat.success) return { ...rien, enEchec: true }
 

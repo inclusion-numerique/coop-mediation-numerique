@@ -1,13 +1,14 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { creerLieuActiviteAction } from '@/app/_actions/inscription/creer-lieu-activite.action'
 import {
   type CreerLieuActiviteFormData,
   CreerLieuActivitePageContent,
   toCreerLieuData,
 } from '@/features/lieux-activite/ui'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { CREER_LIEU_ACTIVITE_ACTION_KEY } from '../../action/creer-lieu-activite.key'
 
 const erreurEnregistrement = () =>
   createToast({
@@ -39,7 +40,10 @@ const CreerLieuActivitePage = ({
     if (adresseBan == null) return
 
     try {
-      const result = await creerLieuActiviteAction({ ...data, adresseBan })
+      const result = await inject(CREER_LIEU_ACTIVITE_ACTION_KEY)({
+        ...data,
+        adresseBan,
+      })
 
       if (!result.success) {
         erreurEnregistrement()

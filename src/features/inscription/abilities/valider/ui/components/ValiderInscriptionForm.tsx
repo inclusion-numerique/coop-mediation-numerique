@@ -4,7 +4,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import { validerAction } from '@/app/_actions/inscription/valider.action'
 import {
   type ValiderFormData,
   ValiderValidation,
@@ -15,7 +14,9 @@ import {
   useAppForm,
 } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { VALIDER_ACTION_KEY } from '../../action/valider.key'
 
 const erreurValidation = () =>
   createToast({
@@ -44,7 +45,9 @@ const ValiderInscriptionForm = ({
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
-        const result = await validerAction(ValiderValidation.parse(value))
+        const result = await inject(VALIDER_ACTION_KEY)(
+          ValiderValidation.parse(value),
+        )
 
         if (!result.success) {
           erreurValidation()

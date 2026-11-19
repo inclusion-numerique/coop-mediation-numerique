@@ -1,10 +1,14 @@
 import { redirect } from 'next/navigation'
+import { renseignerLieuxActiviteAction } from '@/app/_actions/inscription/renseigner-lieux-activite.action'
+import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import type { LieuActiviteConnu } from '@/features/inscription/abilities/renseigner-lieux-activite'
+import { RENSEIGNER_LIEUX_ACTIVITE_ACTION_KEY } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.key'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
+import { RECHERCHER_DES_LIEUX_A_AJOUTER_KEY } from '@/features/inscription/abilities/renseigner-lieux-activite/ui/rechercher-des-lieux-a-ajouter.key'
 import {
   listerLesLieuxPourLInscription,
   MediateurId,
@@ -54,7 +58,17 @@ const LieuxActivitePageRoute = async () => {
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <LieuxActivitePage lieuxActivite={lieuxExistants} />
+      <ClientBinder
+        bind={RENSEIGNER_LIEUX_ACTIVITE_ACTION_KEY}
+        to={renseignerLieuxActiviteAction}
+      >
+        <ClientBinder
+          bind={RECHERCHER_DES_LIEUX_A_AJOUTER_KEY}
+          to={rechercherDesLieuxAAjouterAction}
+        >
+          <LieuxActivitePage lieuxActivite={lieuxExistants} />
+        </ClientBinder>
+      </ClientBinder>
     </ClientBinder>
   )
 }
