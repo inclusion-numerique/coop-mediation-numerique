@@ -81,6 +81,43 @@
 * When l'administration filtre la liste sur le lieu "Médiathèque du centre"
 * Then la liste contient exactement "Fred"
 
+## Rule: La ligne affiche l'employeuse actuelle, et la liste se filtre sur elle
+
+> L'employeuse actuelle est celle de l'affectation qui fait foi. Son code INSEE
+> n'est retenu que si son adresse est complète.
+
+### Scenario: Le nom de l'antenne prime sur la dénomination SIRENE
+
+* Given "Adam" est employé par l'antenne "Antenne de Reims" de "Mairie de Reims"
+* When l'administration cherche "Adam" dans la liste
+* Then la ligne de "Adam" affiche l'employeuse "Antenne de Reims"
+
+### Scenario: Le code INSEE de l'employeuse vient de son adresse
+
+* Given "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal "51100"
+* When l'administration cherche "Adam" dans la liste
+* Then la ligne de "Adam" affiche le code INSEE d'employeuse "51454"
+
+### Scenario: Une adresse sans code postal ne donne pas de code INSEE
+
+* Given "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal ""
+* When l'administration cherche "Adam" dans la liste
+* Then la ligne de "Adam" n'affiche aucun code INSEE d'employeuse
+
+### Scenario: Filtrer par département ne retient que les adresses complètes
+
+* Given "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal "51100"
+* And "Bea" est employée par "Centre social" au code INSEE "51108" et au code postal ""
+* When l'administration filtre la liste sur le département "51"
+* Then la liste contient exactement "Adam"
+
+### Scenario: Filtrer par structure employeuse ne retient que l'employeuse actuelle
+
+* Given "Adam" est employé par "Mairie de Reims"
+* And "Adam" est aussi rattaché à "Réseau partenaire" par la source "aidants-connect"
+* When l'administration filtre la liste sur l'employeuse "Réseau partenaire"
+* Then la liste ne contient pas "Adam"
+
 ## Rule: La liste se filtre par dispositif
 
 ### Scenario: Filtrer les conseillers numériques

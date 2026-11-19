@@ -138,7 +138,7 @@ const lieuxWhere = ({ lieux }: FiltresUtilisateurs): Prisma.UserWhereInput[] =>
 const adresseDeLEmployeuse = ({
   communes,
   departements,
-}: FiltresUtilisateurs): Prisma.AdresseMainWhereInput[] => [
+}: FiltresUtilisateurs): Prisma.EmployeuseActuelleWhereInput[] => [
   ...(communes.length === 0 ? [] : [{ codeInsee: { in: [...communes] } }]),
   ...(departements.length === 0
     ? []
@@ -162,17 +162,16 @@ const employeuseWhere = (
         {
           personneMain: {
             is: {
-              affectationsEmploi: {
-                some: {
-                  estActive: true,
-                  structureAdministrative: {
-                    ...(filtres.employeuses.length === 0
-                      ? {}
-                      : { id: { in: [...filtres.employeuses] } }),
-                    ...(adresse.length === 0
-                      ? {}
-                      : { adresse: { is: { AND: adresse } } }),
-                  },
+              employeuseActuelle: {
+                is: {
+                  ...(filtres.employeuses.length === 0
+                    ? {}
+                    : {
+                        structureAdministrativeId: {
+                          in: [...filtres.employeuses],
+                        },
+                      }),
+                  AND: adresse,
                 },
               },
             },

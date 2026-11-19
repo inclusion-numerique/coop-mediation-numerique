@@ -116,8 +116,10 @@ const rattacher = async (
   employeuseId: number,
   source: string,
 ) => {
-  const personne = await prismaClient.personneMain.create({
-    data: { coopId: idDe(prenom) },
+  const personne = await prismaClient.personneMain.upsert({
+    where: { coopId: idDe(prenom) },
+    create: { coopId: idDe(prenom) },
+    update: {},
     select: { id: true },
   })
   await prismaClient.personneAffectationEmploiMain.create({
@@ -136,6 +138,42 @@ Given(
     const employeuseId = await semerUneEmployeuse(nom)
     scenario.employeuses = { ...scenario.employeuses, [nom]: employeuseId }
     await rattacher(prenom, employeuseId, 'coop')
+  },
+)
+
+Given(
+  /^"([^"]+)" est employée? par l'antenne "([^"]+)" de "([^"]+)"$/,
+  async (prenom: string, antenne: string, sirene: string) => {
+    await rattacher(
+      prenom,
+      await semerUneEmployeuse(antenne, { denominationSirene: sirene }),
+      'coop',
+    )
+  },
+)
+
+Given(
+  /^"([^"]+)" est employée? par "([^"]+)" au code INSEE "([^"]+)" et au code postal "([^"]*)"$/,
+  async (
+    prenom: string,
+    nom: string,
+    codeInsee: string,
+    codePostal: string,
+  ) => {
+    await rattacher(
+      prenom,
+      await semerUneEmployeuse(nom, { adresse: { codeInsee, codePostal } }),
+      'coop',
+    )
+  },
+)
+
+Given(
+  /^"([^"]+)" est aussi rattachée? à "([^"]+)" par la source "([^"]+)"$/,
+  async (prenom: string, nom: string, source: string) => {
+    const employeuseId = await semerUneEmployeuse(nom)
+    scenario.employeuses = { ...scenario.employeuses, [nom]: employeuseId }
+    await rattacher(prenom, employeuseId, source)
   },
 )
 
@@ -171,6 +209,13 @@ When(
         employeuses: String(scenario.employeuses[nom] ?? ''),
       }),
     )
+  },
+)
+
+When(
+  "l'administration filtre la liste sur le département {string}",
+  async (departement: string) => {
+    await rechercher('', filtresUtilisateurs({ departements: departement }))
   },
 )
 
@@ -211,6 +256,33 @@ Then('la liste contient exactement {string}', (attendus: string) => {
       .toSorted(),
   )
 })
+
+const ligneDe = (prenom: string): LigneUtilisateur => {
+  const ligne = trouves().find(({ id }) => id === idDe(prenom))
+  assert.ok(ligne, `Ligne de « ${prenom} » absente`)
+  return ligne
+}
+
+Then(
+  "la ligne de {string} affiche l'employeuse {string}",
+  (prenom: string, nom: string) => {
+    assert.strictEqual(ligneDe(prenom).employeuse?.nom, nom)
+  },
+)
+
+Then(
+  "la ligne de {string} affiche le code INSEE d'employeuse {string}",
+  (prenom: string, codeInsee: string) => {
+    assert.strictEqual(ligneDe(prenom).employeuse?.codeInsee, codeInsee)
+  },
+)
+
+Then(
+  "la ligne de {string} n'affiche aucun code INSEE d'employeuse",
+  (prenom: string) => {
+    assert.strictEqual(ligneDe(prenom).employeuse?.codeInsee, null)
+  },
+)
 
 Then('la liste ne contient pas {string}', (prenom: string) => {
   assert.ok(!prenomsTrouves().includes(prenom))

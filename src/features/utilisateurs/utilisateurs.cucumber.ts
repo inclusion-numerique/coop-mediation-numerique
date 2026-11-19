@@ -339,8 +339,9 @@ export type CompteDeListe = {
 const listes: {
   utilisateurs: readonly string[]
   employeuses: readonly number[]
+  adresses: readonly number[]
   lieux: readonly string[]
-} = { utilisateurs: [], employeuses: [], lieux: [] }
+} = { utilisateurs: [], employeuses: [], adresses: [], lieux: [] }
 
 const suivre = (cle: 'utilisateurs', id: string) => {
   listes[cle] = [...listes[cle], id]
@@ -372,12 +373,38 @@ const semerUnMediateurCoordonne = async (
   })
 }
 
-export const semerUneEmployeuse = async (nom: string): Promise<number> => {
-  const { id } = await prismaClient.structureAdministrativeMain.create({
-    data: { denominationAntenne: nom },
-    select: { id: true },
-  })
+export const semerUneEmployeuse = async (
+  nom: string,
+  {
+    denominationSirene = null,
+    adresse = null,
+  }: {
+    denominationSirene?: string | null
+    adresse?: { codeInsee: string; codePostal: string } | null
+  } = {},
+): Promise<number> => {
+  const { id, adresseId } =
+    await prismaClient.structureAdministrativeMain.create({
+      data: {
+        denominationAntenne: nom,
+        denominationSirene,
+        ...(adresse === null
+          ? {}
+          : {
+              adresse: {
+                create: {
+                  ...adresse,
+                  nomCommune: 'Commune de test',
+                  nomVoie: v4(),
+                },
+              },
+            }),
+      },
+      select: { id: true, adresseId: true },
+    })
   listes.employeuses = [...listes.employeuses, id]
+  listes.adresses =
+    adresseId === null ? listes.adresses : [...listes.adresses, adresseId]
   return id
 }
 
@@ -509,9 +536,10 @@ export const semerUnCompteDeListe = async (
 }
 
 After(async () => {
-  const { utilisateurs, employeuses, lieux } = listes
+  const { utilisateurs, employeuses, adresses, lieux } = listes
   listes.utilisateurs = []
   listes.employeuses = []
+  listes.adresses = []
   listes.lieux = []
 
   if (utilisateurs.length === 0) return
@@ -537,6 +565,9 @@ After(async () => {
   })
   await prismaClient.structureAdministrativeMain.deleteMany({
     where: { id: { in: [...employeuses] } },
+  })
+  await prismaClient.adresseMain.deleteMany({
+    where: { id: { in: [...adresses] } },
   })
   await prismaClient.lieuInclusion.deleteMany({
     where: { id: { in: [...lieux] } },
