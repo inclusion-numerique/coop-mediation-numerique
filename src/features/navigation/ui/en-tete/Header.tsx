@@ -3,12 +3,12 @@ import Link from 'next/link'
 import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { getHomepage } from '@/features/authentification/domain/getHomepage'
-import { SessionUser } from '@/features/authentification/domain/sessionUser'
 import styles from '@/features/navigation/ui/en-tete/Header.module.css'
 import HeaderBackLink from '@/features/navigation/ui/en-tete/HeaderBackLink'
 import { HeaderQuickAccess } from '@/features/navigation/ui/en-tete/HeaderQuickAccess'
 import { HeaderUserMenu } from '@/features/navigation/ui/en-tete/HeaderUserMenu'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
+import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
 
 type HeaderVariant = 'public' | 'coop'
 
@@ -18,7 +18,7 @@ const Header = ({
   fullWidth,
   variant,
 }: {
-  user?: SessionUser | null
+  user?: UtilisateurDeLaNavigation | null
   backLink?: boolean
   fullWidth?: boolean
   variant: HeaderVariant // public header with "République Française" logo and text variant

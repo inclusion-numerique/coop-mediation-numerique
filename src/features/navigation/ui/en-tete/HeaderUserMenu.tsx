@@ -9,28 +9,34 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-import { SessionUser } from '@/features/authentification/domain/sessionUser'
 import styles from '@/features/navigation/ui/en-tete/HeaderUserMenu.module.css'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 import { nomAffiche } from '@/libraries/nom-affiche'
+import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
 
 const isLimitedToInscription = (
-  user: Pick<SessionUser, 'role' | 'inscriptionValidee'>,
+  user: Pick<UtilisateurDeLaNavigation, 'role' | 'inscriptionValidee'>,
 ) => user.role === 'User' && !user.inscriptionValidee
 
 const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
 
 const onlyTeamsWith =
-  (user: SessionUser) =>
+  (user: UtilisateurDeLaNavigation) =>
   (coordination: {
-    coordinateur: { mediateursCoordonnes: { mediateurId: string }[] }
+    readonly coordinateur: {
+      readonly mediateursCoordonnes: readonly { readonly mediateurId: string }[]
+    }
   }) =>
     user.mediateur?.id != null &&
     coordination.coordinateur.mediateursCoordonnes
       .map(toMediateurId)
       .includes(user.mediateur.id)
 
-export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
+export const HeaderUserMenu = ({
+  user,
+}: {
+  user: UtilisateurDeLaNavigation
+}) => {
   // The click outside default behavior from dsfr js do not work in this case 🤷‍
   // So we have to use client component and hooks to handle the click outside
   const buttonRef = useRef<HTMLButtonElement>(null)

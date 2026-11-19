@@ -6,12 +6,12 @@ import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
-import { SessionUser } from '@/features/authentification/domain/sessionUser'
 import styles from '@/features/navigation/ui/menus/CoopSideMenu.module.css'
 import { statistiquesPageTitle } from '@/features/statistiques/ui/pages/titre-des-statistiques'
+import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
 
 const onlyFor =
-  (user: SessionUser) =>
+  (user: UtilisateurDeLaNavigation) =>
   ({ mediateurOnly }: { mediateurOnly?: true }) =>
     (mediateurOnly && user.mediateur?.id != null) || !mediateurOnly
 
@@ -28,7 +28,7 @@ const activiteLink = (pathname?: string) => (href: string) => ({
 })
 
 const coordinationItem = (
-  user: SessionUser,
+  user: UtilisateurDeLaNavigation,
   pathname?: string,
 ): SideMenuProps.Item => {
   if (user.coordinateur?.id == null) {
@@ -61,7 +61,7 @@ const coordinationItem = (
   }
 }
 
-const CoopSideMenu = ({ user }: { user: SessionUser }) => {
+const CoopSideMenu = ({ user }: { user: UtilisateurDeLaNavigation }) => {
   const pathname = usePathname()
 
   const firstDayOfThisYear = `${new Date().getFullYear()}-01-01`
