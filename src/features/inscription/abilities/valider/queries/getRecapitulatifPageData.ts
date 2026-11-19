@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
+import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
 import { stepPath } from '@/features/inscription/ui/step-path'
 import {
   listerLesLieuxPourLInscription,
@@ -8,11 +8,22 @@ import {
 } from '@/features/lieux-activite'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
+type InscritDuRecapitulatif = {
+  readonly id: string
+  readonly email: string
+  readonly name: string | null
+  readonly profilInscription: ProfilInscriptionValue | null
+  readonly acceptationCgu: Date | null
+  readonly isConseillerNumerique: boolean
+  readonly mediateur: { readonly id: string } | null
+  readonly coordinateur: { readonly id: string } | null
+}
+
 const getInscriptionDataContext = async ({
   user,
 }: {
   user: Pick<
-    SessionUser,
+    InscritDuRecapitulatif,
     'id' | 'mediateur' | 'coordinateur' | 'profilInscription'
   >
 }) => {
@@ -56,17 +67,7 @@ const getInscriptionDataContext = async ({
 export const getRecapitulatifPageData = async ({
   user,
 }: {
-  user: Pick<
-    SessionUser,
-    | 'profilInscription'
-    | 'id'
-    | 'email'
-    | 'name'
-    | 'mediateur'
-    | 'coordinateur'
-    | 'acceptationCgu'
-    | 'isConseillerNumerique'
-  >
+  user: InscritDuRecapitulatif
 }) => {
   const {
     emploi,
