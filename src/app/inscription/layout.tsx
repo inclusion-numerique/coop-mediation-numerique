@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import {
+  getHomepage,
+  hasInscriptionComplete,
+} from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 
 const InscriptionLayout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
@@ -18,7 +22,12 @@ const InscriptionLayout = async ({ children }: PropsWithChildren) => {
     <div className="fr-layout">
       <div className="fr-layout__inner">
         <div id="skip-links" />
-        <Header user={user} variant="coop" />
+        <Header
+          user={user}
+          accueil={getHomepage(user)}
+          terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+          variant="coop"
+        />
         {user.role === 'Admin' || user.role === 'Support' ? (
           // Admins cannot access the inscription process
           <InscriptionStepsLayout>

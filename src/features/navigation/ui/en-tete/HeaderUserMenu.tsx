@@ -5,12 +5,12 @@ import Link from 'next/link'
 import {
   KeyboardEvent,
   MouseEvent as ReactMouseEvent,
+  type ReactNode,
   RefObject,
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import styles from '@/features/navigation/ui/en-tete/HeaderUserMenu.module.css'
-import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
 
@@ -34,8 +34,10 @@ const onlyTeamsWith =
 
 export const HeaderUserMenu = ({
   user,
+  terminerUsurpation,
 }: {
   user: UtilisateurDeLaNavigation
+  terminerUsurpation: ReactNode
 }) => {
   // The click outside default behavior from dsfr js do not work in this case 🤷‍
   // So we have to use client component and hooks to handle the click outside
@@ -228,7 +230,7 @@ export const HeaderUserMenu = ({
           </Link>
         </li>
       )}
-      {user.usurper && <TerminerUsurpationHeaderUserMenuItem />}
+      {user.usurper && terminerUsurpation}
       <li>
         <Link className="fr-nav__link fr-display-block" href="/deconnexion">
           <span

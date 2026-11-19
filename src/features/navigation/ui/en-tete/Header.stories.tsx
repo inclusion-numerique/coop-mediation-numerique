@@ -11,11 +11,12 @@ type Story = StoryObj<typeof Header>
 
 export const SignedOut: Story = {
   name: 'Utilisateur non connecté',
+  args: { accueil: '/' },
 }
 
 export const SignedIn: Story = {
   name: 'Utilisateur connecté',
-  args: { user: testSessionUser },
+  args: { user: testSessionUser, accueil: '/coop' },
 }
 
 /* TODO: components not working, issue with storybook and next/navigation

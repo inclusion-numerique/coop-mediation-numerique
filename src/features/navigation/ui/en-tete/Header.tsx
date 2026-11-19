@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { projectTitle } from '@/configuration/projet/config'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { getHomepage } from '@/features/authentification/domain/getHomepage'
 import styles from '@/features/navigation/ui/en-tete/Header.module.css'
 import HeaderBackLink from '@/features/navigation/ui/en-tete/HeaderBackLink'
 import { HeaderQuickAccess } from '@/features/navigation/ui/en-tete/HeaderQuickAccess'
@@ -14,11 +14,15 @@ type HeaderVariant = 'public' | 'coop'
 
 const Header = ({
   user,
+  accueil,
+  terminerUsurpation,
   backLink,
   fullWidth,
   variant,
 }: {
   user?: UtilisateurDeLaNavigation | null
+  accueil: string
+  terminerUsurpation?: ReactNode
   backLink?: boolean
   fullWidth?: boolean
   variant: HeaderVariant // public header with "République Française" logo and text variant
@@ -50,7 +54,7 @@ const Header = ({
                   !backLink && (
                     <div className="fr-header__logo">
                       <Link
-                        href={getHomepage(user)}
+                        href={accueil}
                         aria-current="page"
                         target="_self"
                         title={projectTitle}
@@ -82,7 +86,7 @@ const Header = ({
               {!backLink && (
                 <div className="fr-header__service">
                   <Link
-                    href={getHomepage(user)}
+                    href={accueil}
                     aria-current="page"
                     target="_self"
                     title={`Accueil - ${PublicWebAppConfig.projectTitle}`}
@@ -129,7 +133,10 @@ const Header = ({
                   )}
                   <li style={{ position: 'relative' }}>
                     {user ? (
-                      <HeaderUserMenu user={user} />
+                      <HeaderUserMenu
+                        user={user}
+                        terminerUsurpation={terminerUsurpation}
+                      />
                     ) : (
                       <Link
                         href="/connexion"

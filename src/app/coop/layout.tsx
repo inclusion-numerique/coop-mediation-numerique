@@ -1,7 +1,10 @@
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import { choisirLaVisibiliteApresRuptureAction } from '@/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import {
+  getHomepage,
+  hasInscriptionComplete,
+} from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
@@ -16,6 +19,7 @@ import {
   AccesReserveAuxUtilisateurs,
   CoopShell,
 } from '@/features/navigation/ui/coquille'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const Layout = async ({ children }: PropsWithChildren) => {
@@ -27,7 +31,12 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (acces._tag === 'ReserveAuxUtilisateurs') {
     return (
-      <CoopShell cadre="etape" user={user}>
+      <CoopShell
+        cadre="etape"
+        user={user}
+        accueil={getHomepage(user)}
+        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+      >
         <InscriptionStepsLayout>
           <AccesReserveAuxUtilisateurs role={acces.role} />
         </InscriptionStepsLayout>
@@ -48,7 +57,12 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (ruptureEnAttente != null) {
     return (
-      <CoopShell cadre="etape" user={user}>
+      <CoopShell
+        cadre="etape"
+        user={user}
+        accueil={getHomepage(user)}
+        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+      >
         <InscriptionStepsLayout>
           <ClientBinder
             bind={CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY}

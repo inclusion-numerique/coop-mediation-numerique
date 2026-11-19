@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation'
 import { PropsWithChildren } from 'react'
+import { getHomepage } from '@/features/authentification/domain/getHomepage'
 import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import AdministrationSideMenu from '@/features/navigation/ui/menus/AdministrationSideMenu'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 
 const AdministrationLayout = async ({ children }: PropsWithChildren) => {
   const user = await getSessionUser()
@@ -14,7 +16,12 @@ const AdministrationLayout = async ({ children }: PropsWithChildren) => {
   return (
     <>
       <div id="skip-links" />
-      <Header user={user} variant="coop" />
+      <Header
+        user={user}
+        accueil={getHomepage(user)}
+        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+        variant="coop"
+      />
       <div className="fr-flex fr-direction-column fr-direction-md-row">
         <div className="sideMenu">
           <AdministrationSideMenu />

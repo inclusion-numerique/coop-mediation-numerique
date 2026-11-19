@@ -1,13 +1,12 @@
 'use client'
 
+import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
 import styles from '@/features/navigation/ui/menus/CoopSideMenu.module.css'
-import { statistiquesPageTitle } from '@/features/statistiques/ui/pages/titre-des-statistiques'
 import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
 
 const onlyFor =
@@ -61,7 +60,15 @@ const coordinationItem = (
   }
 }
 
-const CoopSideMenu = ({ user }: { user: UtilisateurDeLaNavigation }) => {
+const CoopSideMenu = ({
+  user,
+  titreDesStatistiques,
+  saisieDUneActivite,
+}: {
+  user: UtilisateurDeLaNavigation
+  titreDesStatistiques: string
+  saisieDUneActivite: string
+}) => {
   const pathname = usePathname()
 
   const firstDayOfThisYear = `${new Date().getFullYear()}-01-01`
@@ -88,7 +95,7 @@ const CoopSideMenu = ({ user }: { user: UtilisateurDeLaNavigation }) => {
             className="ri-chat-poll-line fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          {statistiquesPageTitle(user)}
+          {titreDesStatistiques}
         </>
       ),
       linkProps: {
@@ -144,7 +151,11 @@ const CoopSideMenu = ({ user }: { user: UtilisateurDeLaNavigation }) => {
       text: 'Enregistrer une activité',
       linkProps: {
         href: '#',
-        onClick: () => CreateCraModalDefinition.open(),
+        onClick: () =>
+          createModal({
+            id: saisieDUneActivite,
+            isOpenedByDefault: false,
+          }).open(),
         className:
           'fr-btn fr-icon-add-line fr-btn--icon-left fr-width-full fr-my-7v',
       },
