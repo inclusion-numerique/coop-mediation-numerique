@@ -4,6 +4,8 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import CreerLieuActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/CreerLieuActivitePage'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
@@ -31,12 +33,12 @@ const Page = async (props: {
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <>
+      <ClientBinder bind={LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY} to={rdvWebsiteLink}>
         <SkipLinksPortal />
         <main id={contentId} className="fr-width-full">
           <CreerLieuActivitePage nom={nom} retourHref={retour} />
         </main>
-      </>
+      </ClientBinder>
     </ClientBinder>
   )
 }

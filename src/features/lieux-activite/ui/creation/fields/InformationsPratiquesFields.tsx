@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import { withForm } from '@/libraries/formulaire/use-app-form'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
+import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '../lien-de-prise-de-rendez-vous.key'
 import { OpeningHoursFields } from './OpeningHoursFields'
 
 export const InformationsPratiquesFields = withForm({
@@ -63,7 +64,7 @@ export const InformationsPratiquesFields = withForm({
                 Si ce lieu dispose d’un outil de prise de rendez-vous en ligne
                 (ex :{' '}
                 <Link
-                  href={rdvWebsiteLink}
+                  href={inject(LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY)}
                   target="_blank"
                   rel="noreferrer"
                   className="fr-link fr-link--xs"
