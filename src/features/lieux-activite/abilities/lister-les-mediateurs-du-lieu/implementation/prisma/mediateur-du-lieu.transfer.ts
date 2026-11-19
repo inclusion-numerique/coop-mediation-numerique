@@ -1,8 +1,3 @@
-import {
-  employeuseCodeInsee,
-  personneEmployeuseSelect,
-  personneToEmployeuseActuelle,
-} from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   DEPARTEMENT_PAR_DEFAUT,
@@ -60,7 +55,11 @@ export const mediateurDuLieuSelect = (lieuId: string) =>
                 user: {
                   select: {
                     ...identiteSelect,
-                    personneMain: { select: personneEmployeuseSelect },
+                    personneMain: {
+                      select: {
+                        employeuseActuelle: { select: { codeInsee: true } },
+                      },
+                    },
                   },
                 },
               },
@@ -107,19 +106,13 @@ const nomAfficheDe = ({
 
 const departementDuCoordinateur = (
   personneMain: LigneCoordinateur['personneMain'],
-): CodeDepartement => {
-  const actuelle = personneToEmployeuseActuelle(personneMain)
-  return (
-    departementDeLActeur({
-      employeuse: CodeInsee.safe(
-        actuelle === null
-          ? ''
-          : (employeuseCodeInsee(actuelle.employeuse) ?? ''),
-      ),
-      lieux: [],
-    }) ?? DEPARTEMENT_PAR_DEFAUT
-  )
-}
+): CodeDepartement =>
+  departementDeLActeur({
+    employeuse: CodeInsee.safe(
+      personneMain?.employeuseActuelle?.codeInsee ?? '',
+    ),
+    lieux: [],
+  }) ?? DEPARTEMENT_PAR_DEFAUT
 
 const versCoordinateur = (
   coordinateur: LigneCoordinateur,
