@@ -1,8 +1,4 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse'
 import type { Prisma } from '@/generated/prisma/client'
 import { DEFAULT_PAGE_SIZE } from '@/libraries/data-table/pagination/page-size-options'
 import { lue } from '../../../../db/lue'
@@ -52,7 +48,11 @@ export const rechercherDesMediateursAInviter = async ({
             lastName: true,
             name: true,
             email: true,
-            personneMain: { select: personneConseillerNumeriqueSelect },
+            personneMain: {
+              select: {
+                conseillerNumeriqueEnPoste: { select: { personneId: true } },
+              },
+            },
           },
         },
       },
@@ -78,7 +78,7 @@ export const rechercherDesMediateursAInviter = async ({
               }),
               email,
               role: roleMembre(
-                personneEstConseillerNumerique(user.personneMain),
+                user.personneMain?.conseillerNumeriqueEnPoste != null,
               ),
             },
           ]
