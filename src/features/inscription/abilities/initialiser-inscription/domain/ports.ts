@@ -14,6 +14,11 @@ export type AppliquerDispositif = (input: {
 /** Crée la structure employeuse depuis le SIRET de l'utilisateur si applicable. */
 export type ImporterStructureDepuisSiret = (userId: UserId) => Promise<void>
 
+export type RattacherDepuisSiret = (input: {
+  readonly userId: UserId
+  readonly siret: string
+}) => Promise<unknown>
+
 /** État de l'utilisateur nécessaire pour déterminer l'étape suivante. */
 export type LireEtatPourEtapeSuivante = (userId: UserId) => Promise<{
   readonly profil: ProfilInscription | null

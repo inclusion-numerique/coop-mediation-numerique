@@ -3,6 +3,7 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
@@ -22,9 +23,10 @@ const InitialiserInscriptionPage = async () => {
     redirect('/coop')
   }
 
-  const { nextStep } = await initialiserInscriptionAvecInfra({
-    userId: UserId(user.id),
-  })
+  const { nextStep } = await initialiserInscriptionAvecInfra(
+    { userId: UserId(user.id) },
+    { rattacherDepuisSiret: rattacherAUneEmployeuseDepuisSiretBinding },
+  )
 
   // Redirect to next step or fallback
   if (nextStep) {
