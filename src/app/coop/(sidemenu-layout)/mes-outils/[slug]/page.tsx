@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
+import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import { MediateurId } from '@/features/lieux-activite'
@@ -13,10 +15,13 @@ import {
   OutilPage,
   type SitesDesOutils,
 } from '@/features/outils/abilities/consulter-un-outil/ui'
+import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/ui/declencher-synchronisation.key'
+import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/ui/deconnecter-compte-rdv.key'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/RdvServicePublicMigrationNotice'
 import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import { CodeInsee } from '@/libraries/insee'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -30,7 +35,19 @@ const sites: SitesDesOutils = { rdvServicePublic: rdvWebsiteLink }
 const fournisseurs: FournisseursDEmplacements = {
   'rdv-service-public': async () => ({
     avis: <RdvServicePublicMigrationNotice />,
-    acces: <RdvServicePublicAccessCard />,
+    acces: (
+      <ClientBinder
+        bind={DECLENCHER_SYNCHRONISATION_ACTION_KEY}
+        to={declencherSynchronisationAction}
+      >
+        <ClientBinder
+          bind={DECONNECTER_COMPTE_RDV_ACTION_KEY}
+          to={deconnecterCompteRdvAction}
+        >
+          <RdvServicePublicAccessCard />
+        </ClientBinder>
+      </ClientBinder>
+    ),
   }),
   'cartographie-nationale-des-lieux-d-inclusion-numerique': async () => {
     const user = await getSessionUser()

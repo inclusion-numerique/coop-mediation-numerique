@@ -6,14 +6,15 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
-import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { useModalVisibility } from '@/libraries/ui/hooks/useModalVisibility'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 import type { StatutIntegration } from '../domain/sante-compte'
+import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from './declencher-synchronisation.key'
+import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from './deconnecter-compte-rdv.key'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 
 export const GererRdvServicePublicModalInstance = createModal({
@@ -60,7 +61,7 @@ const GererRdvServicePublicModal = ({
 
   const onConfirmDelete = async () => {
     setDeconnexionEnCours(true)
-    const result = await deconnecterCompteRdvAction()
+    const result = await inject(DECONNECTER_COMPTE_RDV_ACTION_KEY)()
 
     if (!result.success) {
       setDeconnexionEnCours(false)
@@ -82,7 +83,7 @@ const GererRdvServicePublicModal = ({
   const onSync = async () => {
     setSynchronisationEnCours(true)
 
-    const resultat = await declencherSynchronisationAction({
+    const resultat = await inject(DECLENCHER_SYNCHRONISATION_ACTION_KEY)({
       utilisateurId: userId,
     })
 

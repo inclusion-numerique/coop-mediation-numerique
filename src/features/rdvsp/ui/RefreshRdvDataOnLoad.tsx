@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
-import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
+import { inject } from '@/libraries/nextjs/injection/client'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from './rattraper-rdvs-sans-webhook.key'
 
 /**
  * Rattrape au chargement les rendez-vous des organisations dont le webhook n'a
@@ -27,7 +28,7 @@ const RefreshRdvDataOnLoad = ({
 
     rattrapageLance.current = true
 
-    rattraperRdvsSansWebhookAction().then((resultat) => {
+    inject(RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY)().then((resultat) => {
       if (resultat.success && resultat.data.derive > 0) {
         router.refresh()
       }

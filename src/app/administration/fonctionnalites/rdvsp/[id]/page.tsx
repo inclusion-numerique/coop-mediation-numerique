@@ -1,7 +1,10 @@
 import { notFound } from 'next/navigation'
+import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { getAdministrationRdvspUserData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/compte-rdv-detaille.query'
 import { AdministrationRdvspUserPage } from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
+import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/ui/declencher-synchronisation.key'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Rendez-vous Service Public - Utilisateur'),
@@ -21,7 +24,14 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     return null
   }
 
-  return <AdministrationRdvspUserPage data={data} />
+  return (
+    <ClientBinder
+      bind={DECLENCHER_SYNCHRONISATION_ACTION_KEY}
+      to={declencherSynchronisationAction}
+    >
+      <AdministrationRdvspUserPage data={data} />
+    </ClientBinder>
+  )
 }
 
 export default Page
