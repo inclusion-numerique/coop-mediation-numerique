@@ -3,7 +3,10 @@ import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import {
+  getAuthenticatedSessionUser,
+  getSessionUser,
+} from '@/features/authentification/implementation/session/getSessionUser'
 import { MediateurId } from '@/features/lieux-activite'
 import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
 import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
@@ -33,22 +36,25 @@ const slugDeLaPage = async ({ params }: Props): Promise<SlugOutil> => {
 const sites: SitesDesOutils = { rdvServicePublic: rdvWebsiteLink }
 
 const fournisseurs: FournisseursDEmplacements = {
-  'rdv-service-public': async () => ({
-    avis: <RdvServicePublicMigrationNotice />,
-    acces: (
-      <ClientBinder
-        bind={DECLENCHER_SYNCHRONISATION_ACTION_KEY}
-        to={declencherSynchronisationAction}
-      >
+  'rdv-service-public': async () => {
+    const user = await getAuthenticatedSessionUser()
+    return {
+      avis: <RdvServicePublicMigrationNotice rdvAccount={user.rdvAccount} />,
+      acces: (
         <ClientBinder
-          bind={DECONNECTER_COMPTE_RDV_ACTION_KEY}
-          to={deconnecterCompteRdvAction}
+          bind={DECLENCHER_SYNCHRONISATION_ACTION_KEY}
+          to={declencherSynchronisationAction}
         >
-          <RdvServicePublicAccessCard />
+          <ClientBinder
+            bind={DECONNECTER_COMPTE_RDV_ACTION_KEY}
+            to={deconnecterCompteRdvAction}
+          >
+            <RdvServicePublicAccessCard user={user} />
+          </ClientBinder>
         </ClientBinder>
-      </ClientBinder>
-    ),
-  }),
+      ),
+    }
+  },
   'cartographie-nationale-des-lieux-d-inclusion-numerique': async () => {
     const user = await getSessionUser()
     return {

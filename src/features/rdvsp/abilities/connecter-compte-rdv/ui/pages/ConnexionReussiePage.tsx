@@ -1,8 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
@@ -12,13 +10,12 @@ import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVService
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
-const ConnexionReussiePage = async () => {
-  const user = await getSessionUser()
-  if (!user) {
-    notFound()
-  }
-
-  const hasSetupRdvspAccount = (user.rdvAccount?.organisations.length ?? 0) > 0
+const ConnexionReussiePage = ({
+  rdvAccount,
+}: {
+  rdvAccount: { readonly organisations: readonly unknown[] } | null
+}) => {
+  const hasSetupRdvspAccount = (rdvAccount?.organisations.length ?? 0) > 0
 
   return (
     <div className="fr-mb-32v fr-mt-10v">

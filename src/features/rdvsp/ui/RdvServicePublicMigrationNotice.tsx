@@ -1,14 +1,12 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import { getAuthenticatedSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 
-const RdvServicePublicMigrationNotice = async () => {
-  const user = await getAuthenticatedSessionUser()
-
-  const hasRdvIntegration = user.rdvAccount?.hasOauthTokens
-
-  // Do not display the notice if the user has a working integration with RDV Service Public
-  if (hasRdvIntegration) {
+const RdvServicePublicMigrationNotice = ({
+  rdvAccount,
+}: {
+  rdvAccount: { readonly hasOauthTokens: boolean } | null
+}) => {
+  if (rdvAccount?.hasOauthTokens) {
     return null
   }
 

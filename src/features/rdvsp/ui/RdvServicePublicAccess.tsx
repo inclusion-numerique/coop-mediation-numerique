@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import type { ComponentProps } from 'react'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
@@ -15,13 +15,11 @@ import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/R
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 
-const RdvServicePublicAccess = async () => {
-  const user = await getSessionUser()
-
-  if (!user) {
-    return null
-  }
-
+const RdvServicePublicAccess = ({
+  user,
+}: {
+  user: ComponentProps<typeof GererRdvServicePublicModal>['user']
+}) => {
   const status = user.rdvAccount?.statut ?? 'jamaisConnecte'
 
   return (

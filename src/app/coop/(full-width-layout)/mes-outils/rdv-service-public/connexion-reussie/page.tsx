@@ -1,8 +1,20 @@
+import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import ConnexionReussiePage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/pages/ConnexionReussiePage'
 
 export const metadata = {
   title: metadataTitle('Connexion à RDV Service Public réussie'),
 }
 
-export default ConnexionReussiePage
+const Page = async () => {
+  const user = await getSessionUser()
+
+  return user === null ? (
+    notFound()
+  ) : (
+    <ConnexionReussiePage rdvAccount={user.rdvAccount} />
+  )
+}
+
+export default Page
