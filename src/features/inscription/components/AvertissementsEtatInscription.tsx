@@ -1,5 +1,4 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import {
   isUserInscriptionEnCours,
   type RoleDuCompte,
@@ -41,7 +40,7 @@ export const AvertissementsEtatInscription = ({
   const valideeSansCompteDeRole =
     estUtilisateurStandard &&
     user.inscriptionValidee != null &&
-    !hasInscriptionComplete(user)
+    sansCompteDeRole
 
   return (
     <>
