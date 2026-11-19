@@ -838,6 +838,7 @@ model StructureAdministrativeMain {
   affectationsEmploi PersonneAffectationEmploiMain[]
   contrats           ContratMain[]
   postes             PosteMain[]
+  employesActuels    EmployeuseActuelle[]
 
   @@unique([siret, denominationAntenne], map: "structure_administrative_siret_antenne_ukey")
   @@map("structure_administrative")
@@ -903,6 +904,7 @@ model PersonneMain {
   formations                 FormationMain[]
   postes                     PosteMain[]
   conseillerNumeriqueEnPoste ConseillerNumeriqueEnPoste?
+  employeuseActuelle         EmployeuseActuelle?
 
   @@map("personne")
   @@schema("main")
@@ -914,6 +916,19 @@ view ConseillerNumeriqueEnPoste {
 
   @@map("conseiller_numerique_en_poste")
   @@schema("main")
+}
+
+view EmployeuseActuelle {
+  personneId                Int                         @unique @map("personne_id")
+  personne                  PersonneMain                @relation(fields: [personneId], references: [id])
+  structureAdministrativeId Int                         @map("structure_administrative_id")
+  structureAdministrative   StructureAdministrativeMain @relation(fields: [structureAdministrativeId], references: [id])
+  source                    String
+  nom                       String?
+  codeInsee                 String?                     @map("code_insee")
+
+  @@map("employeuse_actuelle")
+  @@schema("coop")
 }
 
 /// Affectation emploi (`main.personne_affectations_emploi`, Flyway) : lie une personne à une structure
