@@ -30,7 +30,12 @@ export const sessionUserSelect = {
   // affectation active -> structure. Plus AUCUNE référence à `emploi.structureMain`.
   // `serializePrismaSessionUser` reconstitue la forme historique `emplois: [{ id, structure }]`
   // (0 ou 1 élément) via `personneToSessionEmplois`, donc les consommateurs restent inchangés.
-  personneMain: { select: personneEmployeuseSelect },
+  personneMain: {
+    select: {
+      ...personneEmployeuseSelect,
+      conseillerNumeriqueEnPoste: { select: { personneId: true } },
+    },
+  },
   mediateur: {
     select: {
       id: true,
