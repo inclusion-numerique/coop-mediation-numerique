@@ -238,6 +238,34 @@
                       "!@/features/lieux-activite/ui"
                     ],
                     "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
+                  },
+                  {
+                    "group": ["@/app/*", "@/app/**"],
+                    "message": "Une feature ne dépend pas des points d'entrée : un composant client reçoit sa server action par inject(KEY), liée par la route avec ClientBinder."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/features/**/*.integration.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/features/lieux-activite/*",
+                      "@/features/lieux-activite/*/**",
+                      "!@/features/lieux-activite/ui"
+                    ],
+                    "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
                   }
                 ]
               }
@@ -251,7 +279,17 @@
       "linter": {
         "rules": {
           "style": {
-            "noRestrictedImports": "off"
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["@/app/*", "@/app/**"],
+                    "message": "Une feature ne dépend pas des points d'entrée : un composant client reçoit sa server action par inject(KEY), liée par la route avec ClientBinder."
+                  }
+                ]
+              }
+            }
           }
         }
       }
