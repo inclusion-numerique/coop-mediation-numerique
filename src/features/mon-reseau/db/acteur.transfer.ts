@@ -1,8 +1,6 @@
 import {
   employeuseCodeInsee,
-  personneConseillerNumeriqueSelect,
   personneEmployeuseSelect,
-  personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
@@ -36,7 +34,9 @@ const identiteSelect = {
 
 export const acteurSelect = {
   ...identiteSelect,
-  personneMain: { select: personneConseillerNumeriqueSelect },
+  personneMain: {
+    select: { conseillerNumeriqueEnPoste: { select: { personneId: true } } },
+  },
   coordinateur: { select: { id: true } },
   mediateur: {
     select: {
@@ -138,7 +138,7 @@ const versMediation = (mediateur: LigneMediateur): Mediation | null => {
 
 const versProfil = (ligne: LigneActeur): ProfilActeur | null => {
   const dispositif = dispositifDe(
-    personneEstConseillerNumerique(ligne.personneMain),
+    ligne.personneMain?.conseillerNumeriqueEnPoste != null,
   )
   const mediation =
     ligne.mediateur === null ? null : versMediation(ligne.mediateur)

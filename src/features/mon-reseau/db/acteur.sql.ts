@@ -1,5 +1,4 @@
 import {
-  conseillerNumeriqueSql,
   employeuseCourante,
   employeuseCouranteJoin,
 } from '@/features/employeuse/server'
@@ -45,7 +44,12 @@ export const acteurDesCommunes = (
 )`
 
 export const acteurConseillerNumerique = (releve: boolean) =>
-  conseillerNumeriqueSql('u.id', releve)
+  Prisma.raw(`${releve ? '' : 'NOT '}EXISTS (
+    SELECT 1
+    FROM main.conseiller_numerique_en_poste cn
+    JOIN main.personne p ON p.id = cn.personne_id
+    WHERE p.coop_id = u.id
+  )`)
 
 export const acteurVisibleWhere = {
   deleted: null,
