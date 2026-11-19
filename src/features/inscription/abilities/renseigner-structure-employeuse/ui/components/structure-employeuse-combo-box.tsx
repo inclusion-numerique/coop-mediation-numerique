@@ -1,5 +1,3 @@
-import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
-import type { StructureSearchResult } from '@/features/employeuse'
 import {
   type TypologieStructure,
   typologieStructureLibelle,
@@ -7,7 +5,12 @@ import {
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import {
+  RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_KEY,
+  type StructureEmployeuseTrouvee,
+} from '../rechercher-une-structure-employeuse.key'
 
 /**
  * Structure employeuse choisie dans le ComboBox : la forme produite ici EST
@@ -27,7 +30,9 @@ export type StructureEmployeuseItem = {
  * lui, parle `AdresseBanData`. La projection reste ici, au point de choix — ni
  * la recherche ni la validation n'ont à connaître l'autre forme.
  */
-const toItem = (structure: StructureSearchResult): StructureEmployeuseItem => ({
+const toItem = (
+  structure: StructureEmployeuseTrouvee,
+): StructureEmployeuseItem => ({
   id: structure.id ?? null,
   nom: structure.nom,
   siret: structure.siret,
@@ -61,7 +66,9 @@ const itemToString = (item: StructureEmployeuseItem | null): string =>
 const loadSuggestions =
   (onApiUnavailable: (indisponible: boolean) => void) =>
   async (input: string): Promise<{ items: StructureEmployeuseItem[] }> => {
-    const result = await rechercherStructureEmployeuseAction({ query: input })
+    const result = await inject(RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_KEY)({
+      query: input,
+    })
 
     if (!result.success) return { items: [] }
 

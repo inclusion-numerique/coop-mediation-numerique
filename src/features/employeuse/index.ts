@@ -40,8 +40,6 @@ export {
   etatDeTableEmployeuses,
 } from './abilities/lister-employeuses/ui/lister-employeuses-search-params'
 
-export type { StructureSearchResult } from './abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-
 // `employeuse.transfer` n'importe `Prisma` qu'en TYPE : il est effacé à la
 // compilation et ne ramène donc pas le client dans le bundle.
 export {
