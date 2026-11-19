@@ -13,6 +13,7 @@ import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/ui/sais
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { profilDeLaSession } from '@/features/authentification'
 import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
@@ -20,6 +21,7 @@ import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { lieuxDuMediateur } from '@/features/lieux-activite'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
+import { acteurDe } from '@/features/tags/domain'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
@@ -44,14 +46,16 @@ const CreateCraIndividuelPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
+  const acteur = acteurDe(profilDeLaSession(user))
+
   const saisie = await nouvelleSaisieIndividuelle({
     mediateurId: user.mediateur.id,
     v,
     fournisseurs: {
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
-      tagsInitiaux: tagsInitiauxPar(user),
-      visibilitesProposees: visibilitesProposeesA(user),
+      tagsInitiaux: tagsInitiauxPar(acteur),
+      visibilitesProposees: visibilitesProposeesA(acteur),
     },
   })
 

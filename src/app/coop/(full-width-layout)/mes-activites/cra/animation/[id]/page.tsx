@@ -10,9 +10,11 @@ import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/
 import CraAnimationPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/CraAnimationPage'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { profilDeLaSession } from '@/features/authentification'
 import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
+import { acteurDe } from '@/features/tags/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const UpdateCraAnimationPage = async ({
@@ -27,12 +29,14 @@ const UpdateCraAnimationPage = async ({
 
   const user = await authenticateCoordinateur()
 
+  const acteur = acteurDe(profilDeLaSession(user))
+
   const saisie = await saisieDeCoordinationAModifier(saisieDAnimation)({
     id,
     coordinateurId: user.coordinateur.id,
     fournisseurs: {
-      tagsInitiaux: tagsInitiauxPar(user),
-      visibilitesProposees: visibilitesProposeesA(user),
+      tagsInitiaux: tagsInitiauxPar(acteur),
+      visibilitesProposees: visibilitesProposeesA(acteur),
     },
   })
 

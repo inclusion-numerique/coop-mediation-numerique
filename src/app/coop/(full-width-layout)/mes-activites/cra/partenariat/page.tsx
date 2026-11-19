@@ -10,9 +10,11 @@ import CraPartenariatPage from '@/features/activites/abilities/enregistrer-une-a
 import type { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/validation/CraPartenariatValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { profilDeLaSession } from '@/features/authentification'
 import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
+import { acteurDe } from '@/features/tags/domain'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
@@ -29,12 +31,14 @@ const CreateCraPartenariatPage = async ({
 
   const user = await authenticateCoordinateur()
 
+  const acteur = acteurDe(profilDeLaSession(user))
+
   const saisie = await nouvelleSaisieDeCoordination(saisieDePartenariat)({
     coordinateurId: user.coordinateur.id,
     v,
     fournisseurs: {
-      tagsInitiaux: tagsInitiauxPar(user),
-      visibilitesProposees: visibilitesProposeesA(user),
+      tagsInitiaux: tagsInitiauxPar(acteur),
+      visibilitesProposees: visibilitesProposeesA(acteur),
     },
   })
 

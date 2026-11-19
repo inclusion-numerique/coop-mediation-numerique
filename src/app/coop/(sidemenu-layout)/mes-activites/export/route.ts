@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements'
+import { profilDeLaSession } from '@/features/authentification'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
@@ -10,6 +11,7 @@ import {
   getMediateurCommunesAndDepartementsOptions,
 } from '@/features/lieux-activite'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { acteurDe } from '@/features/tags/domain'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
@@ -38,7 +40,7 @@ export const GET = async (request: NextRequest) => {
       conseillersNumeriques: conseillerNumeriqueSql,
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
-      tagsVisibles: tagsVisiblesPar(user),
+      tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
       beneficiaires: (ids) =>
         getInitialBeneficiairesOptionsForSearch({
           mediateurId: user.mediateur?.id,

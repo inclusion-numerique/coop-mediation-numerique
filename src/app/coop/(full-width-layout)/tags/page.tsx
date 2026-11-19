@@ -3,6 +3,7 @@ import { fusionnerUnTagAction } from '@/app/_actions/tags/fusionner-un-tag.actio
 import { modifierUnTagAction } from '@/app/_actions/tags/modifier-un-tag.action'
 import { rechercherDesDestinationsAction } from '@/app/_actions/tags/rechercher-des-destinations.action'
 import { supprimerUnTagAction } from '@/app/_actions/tags/supprimer-un-tag.action'
+import { profilDeLaSession } from '@/features/authentification'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { CREER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.key'
 import {
@@ -33,14 +34,14 @@ import {
   BoutonSupprimer,
   ModaleDeSuppression,
 } from '@/features/tags/abilities/supprimer-un-tag/ui'
-import { acteurDe } from '@/features/tags/implementation/session'
+import { acteurDe } from '@/features/tags/domain'
 import { MenuDActionsDuTag } from '@/features/tags/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   const searchParams = await props.searchParams
   const user = await authenticateUser()
-  const acteur = acteurDe(user)
+  const acteur = acteurDe(profilDeLaSession(user))
   const requete = requeteDeLaListe(searchParams)
   const liste = await listerLesTags({ acteur, ...requete })
 

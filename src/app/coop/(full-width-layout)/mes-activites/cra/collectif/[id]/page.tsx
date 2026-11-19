@@ -13,6 +13,7 @@ import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/ui/sais
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
+import { profilDeLaSession } from '@/features/authentification'
 import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
@@ -21,6 +22,7 @@ import { lieuxDuMediateur } from '@/features/lieux-activite'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
+import { acteurDe } from '@/features/tags/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const UpdateCraCollectifPage = async ({
@@ -43,6 +45,8 @@ const UpdateCraCollectifPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
+  const acteur = acteurDe(profilDeLaSession(user))
+
   const saisie = await saisieCollectiveAModifier({
     id,
     mediateurId: user.mediateur.id,
@@ -50,8 +54,8 @@ const UpdateCraCollectifPage = async ({
     fournisseurs: {
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
-      tagsInitiaux: tagsInitiauxPar(user),
-      visibilitesProposees: visibilitesProposeesA(user),
+      tagsInitiaux: tagsInitiauxPar(acteur),
+      visibilitesProposees: visibilitesProposeesA(acteur),
     },
   })
 

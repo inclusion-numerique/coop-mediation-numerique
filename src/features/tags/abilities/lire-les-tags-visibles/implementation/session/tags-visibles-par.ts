@@ -1,16 +1,14 @@
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { type Tag, TagId } from '../../../../domain'
-import { acteurDe } from '../../../../implementation/session'
+import { type Acteur, type Tag, TagId } from '../../../../domain'
 import {
   lireLesTagsVisibles,
   lireTousLesTagsVisibles,
 } from '../prisma/lire-les-tags-visibles.query'
 
 export const tagsVisiblesPar =
-  (user: SessionUser) =>
+  (acteur: Acteur) =>
   async (tagIds: readonly string[]): Promise<readonly Tag[]> =>
     lireLesTagsVisibles({
-      acteur: acteurDe(user),
+      acteur,
       tagIds: tagIds.flatMap((id) => {
         const tagId = TagId.safe(id)
         return tagId === null ? [] : [tagId]
@@ -18,6 +16,5 @@ export const tagsVisiblesPar =
     })
 
 export const tousLesTagsVisiblesPar = (
-  user: SessionUser,
-): Promise<readonly Tag[]> =>
-  lireTousLesTagsVisibles({ acteur: acteurDe(user) })
+  acteur: Acteur,
+): Promise<readonly Tag[]> => lireTousLesTagsVisibles({ acteur })

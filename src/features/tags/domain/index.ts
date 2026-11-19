@@ -1,5 +1,6 @@
 export {
   type Acteur,
+  acteurDe,
   coordinateurDe,
   type Equipe,
   mediateurDe,

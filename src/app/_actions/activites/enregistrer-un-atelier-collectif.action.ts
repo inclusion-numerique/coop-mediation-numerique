@@ -9,12 +9,13 @@ import {
   employeuseDeLaDateDepuis,
   tagsUtilisablesDepuis,
 } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
-import { withAuth } from '@/features/authentification'
+import { profilDeLaSession, withAuth } from '@/features/authentification'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { rendezVousHonorePar } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/rendez-vous-honore-par'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const enregistrerUnAtelierCollectifAction = actionBuilder()
@@ -33,7 +34,9 @@ export const enregistrerUnAtelierCollectifAction = actionBuilder()
             consulterEmployeuseAUneDate({ userId: user.id, date }),
           ),
           lieuUtilisable: lieuUtilisablePar(user.mediateur?.id ?? null),
-          tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
+          tagsUtilisables: tagsUtilisablesDepuis(
+            tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+          ),
           marquerLeRendezVousHonore: rendezVousHonorePar(user.id),
         }),
       { onError: ENREGISTRER_UN_ATELIER_COLLECTIF_ERRORS },

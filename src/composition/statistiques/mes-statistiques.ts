@@ -5,6 +5,7 @@ import {
 import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
 import { criteresDesStatistiques, Jour } from '@/features/activites/domain'
+import { profilDeLaSession } from '@/features/authentification'
 import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { conseillerNumeriqueSql } from '@/features/employeuse/server'
@@ -18,6 +19,7 @@ import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-r
 import { optionsDesStatistiques } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { tousLesTagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { acteurDe } from '@/features/tags/domain'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'
 import { lieuxChoisisDe } from './lieux-choisis'
@@ -69,7 +71,7 @@ export const mesStatistiques = async ({
 
   const options = await optionsDesStatistiques({
     lieuxChoisis: () => lieuxChoisisDe(activitesFilters, perimetre),
-    tags: () => tousLesTagsVisiblesPar(user),
+    tags: () => tousLesTagsVisiblesPar(acteurDe(profilDeLaSession(user))),
     beneficiaires: () =>
       getInitialBeneficiairesOptionsForSearch({
         mediateurId: user.mediateur?.id,

@@ -1,14 +1,11 @@
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { TagId } from '../../../../domain'
-import { acteurDe } from '../../../../implementation/session'
+import { type Acteur, TagId } from '../../../../domain'
 import type { TagAffiche } from '../../../../ui/tag-affiche'
 import { tagAffiche } from '../../../../ui/tag-affiche.presenter'
 import { rechercherDesTags } from '../prisma'
 
 export const tagsInitiauxPar =
-  (user: SessionUser) =>
+  (acteur: Acteur) =>
   async (exclus: readonly string[]): Promise<readonly TagAffiche[]> => {
-    const acteur = acteurDe(user)
     const tags = await rechercherDesTags({
       acteur,
       recherche: '',
