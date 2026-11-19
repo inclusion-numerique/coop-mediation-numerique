@@ -1,11 +1,13 @@
 import { unstable_cache } from 'next/cache'
-import { mesurerLesUtilisateursActifs } from '@/features/utilisateurs/abilities/mesurer-les-utilisateurs-actifs'
+import type { MesureDesUtilisateursActifs } from '../domain/ports'
 import { getAccompagnements } from './prisma/get-accompagnements'
 import { getBeneficiaires } from './prisma/get-beneficiaires'
 import { getSuiviBeneficiaires } from './prisma/get-suivi-beneficiaires'
 import { getUtilisateursActifs } from './prisma/get-utilisateurs-actifs'
 
-const getStatistiquesPubliquesPageDataUncached = async () => {
+const getStatistiquesPubliquesPageDataUncached = async (
+  mesure: MesureDesUtilisateursActifs,
+) => {
   const [
     chiffresCles,
     accompagnements,
@@ -13,11 +15,11 @@ const getStatistiquesPubliquesPageDataUncached = async () => {
     suiviBeneficiaires,
     utilisateursActifs,
   ] = await Promise.all([
-    mesurerLesUtilisateursActifs(new Date()),
+    mesure.mesurerLesUtilisateursActifs(new Date()),
     getAccompagnements(),
     getBeneficiaires(),
     getSuiviBeneficiaires(),
-    getUtilisateursActifs(),
+    getUtilisateursActifs(mesure),
   ])
 
   return {
@@ -29,8 +31,11 @@ const getStatistiquesPubliquesPageDataUncached = async () => {
   }
 }
 
-export const getStatistiquesPubliquesPageData = unstable_cache(
-  getStatistiquesPubliquesPageDataUncached,
-  ['statistiques-publiques'],
-  { revalidate: 3600 },
-)
+export const getStatistiquesPubliquesPageData = (
+  mesure: MesureDesUtilisateursActifs,
+) =>
+  unstable_cache(
+    () => getStatistiquesPubliquesPageDataUncached(mesure),
+    ['statistiques-publiques'],
+    { revalidate: 3600 },
+  )()

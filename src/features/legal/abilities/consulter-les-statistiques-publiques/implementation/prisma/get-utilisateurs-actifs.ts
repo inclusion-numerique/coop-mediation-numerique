@@ -1,9 +1,9 @@
-import {
+import type { MesureDesUtilisateursActifs } from '../../domain/ports'
+
+export const getUtilisateursActifs = async ({
   mesurerLesUtilisateursActifs,
   utilisateursActifsParMois,
-} from '@/features/utilisateurs/abilities/mesurer-les-utilisateurs-actifs'
-
-export const getUtilisateursActifs = async () => {
+}: MesureDesUtilisateursActifs) => {
   const [{ total, mediateurs, conseillers, coordinateurs }, perMonth] =
     await Promise.all([
       mesurerLesUtilisateursActifs(new Date()),
