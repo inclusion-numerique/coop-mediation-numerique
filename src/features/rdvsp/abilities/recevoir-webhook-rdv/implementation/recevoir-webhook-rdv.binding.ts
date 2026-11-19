@@ -1,3 +1,4 @@
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/beneficiaires.port'
 import type { EvenementWebhook } from '../../../domain/evenement-webhook'
 import { journaliserWebhook } from '../../../implementation/webhook/journal'
 import { lireNotificationRdv } from './api/lire-notification-rdv'
@@ -11,33 +12,44 @@ import {
 } from './prisma/webhook-rdv.prisma'
 import { recevoirWebhookRdv } from './recevoir-webhook-rdv'
 
-const recevoir = recevoirWebhookRdv({
-  lireNotification: lireNotificationRdv,
-  comptePourWebhook,
-  rdvConnuParId,
-  organisationConnue,
-  enregistrer: enregistrerRdvDeLaNotification,
-  supprimer: supprimerRdvDeLaNotification,
-  rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(journaliserWebhook),
-})
+const recevoirAvec = (
+  creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes,
+) =>
+  recevoirWebhookRdv({
+    lireNotification: lireNotificationRdv,
+    comptePourWebhook,
+    rdvConnuParId,
+    organisationConnue,
+    enregistrer: enregistrerRdvDeLaNotification,
+    supprimer: supprimerRdvDeLaNotification,
+    rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(
+      creerOuFusionner,
+      journaliserWebhook,
+    ),
+  })
 
 /**
  * Composition de l'ability avec ses adaptateurs réels, appelée par la route de
  * notification. Elle ne fait rien de plus que journaliser ce que l'ability a
  * décidé : la lecture, la décision et l'écriture vivent dans la feature.
  */
-export const traiterNotificationRdv = async ({
-  evenement,
-  donnees,
-}: {
-  evenement: EvenementWebhook
-  donnees: unknown
-}) => {
-  const resultat = await recevoir({ evenement, payload: donnees })
+export const traiterNotificationRdvAvec =
+  (creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes) =>
+  async ({
+    evenement,
+    donnees,
+  }: {
+    evenement: EvenementWebhook
+    donnees: unknown
+  }) => {
+    const resultat = await recevoirAvec(creerOuFusionner)({
+      evenement,
+      payload: donnees,
+    })
 
-  journaliserWebhook(
-    resultat._tag === 'traite'
-      ? `rendez-vous ${resultat.action}`
-      : `notification ignorée : ${resultat.raison}`,
-  )
-}
+    journaliserWebhook(
+      resultat._tag === 'traite'
+        ? `rendez-vous ${resultat.action}`
+        : `notification ignorée : ${resultat.raison}`,
+    )
+  }

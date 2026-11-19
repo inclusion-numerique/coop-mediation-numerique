@@ -1,9 +1,14 @@
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { getAdministrationRdvspData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
-import { declencherSynchronisationBinding as declencher } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { peutEtreSynchronise } from '@/features/rdvsp/domain/sante-compte'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import { output } from '@/libraries/console/output'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
+
+const declencher = declencherSynchronisationAvec(
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+)
 
 export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
   output('Starting RDVSP data sync for all eligible users...')

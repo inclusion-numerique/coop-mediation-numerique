@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { traiterNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import { traiterNotificationRdvAvec } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
 import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/aiguiller-notification-webhook'
 import { journaliserWebhook } from '@/features/rdvsp/implementation/webhook/journal'
@@ -12,7 +13,9 @@ import {
 } from '@/features/rdvsp/implementation/webhook/verifier-signature'
 
 const traiter = aiguillerNotificationWebhook({
-  traiterRdv: traiterNotificationRdv,
+  traiterRdv: traiterNotificationRdvAvec(
+    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  ),
   traiterUsager: traiterNotificationUsager,
   journaliser: journaliserWebhook,
 })

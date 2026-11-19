@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,
@@ -14,7 +15,7 @@ import {
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
 import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv.binding'
 import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/redirection'
-import { declencherSynchronisationBinding } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import {
@@ -80,7 +81,9 @@ export const GET = async (request: NextRequest) => {
     return redirection(echec, CONNECTER_COMPTE_RDV_ERRORS[connexion.error._tag])
   }
 
-  declencherSynchronisationBinding({
+  declencherSynchronisationAvec(
+    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  )({
     demandeur: { id: utilisateurId, role: user.role },
     utilisateurId,
     seulementSansWebhook: false,

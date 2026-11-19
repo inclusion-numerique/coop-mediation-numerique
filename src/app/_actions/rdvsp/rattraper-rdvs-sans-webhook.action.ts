@@ -2,11 +2,16 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
-import { declencherSynchronisationBinding as declencher } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import { fromResult } from '@/libraries/nextjs'
+
+const declencher = declencherSynchronisationAvec(
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+)
 
 /**
  * Rattrapage au chargement d'un écran, pour son propre compte : seules les

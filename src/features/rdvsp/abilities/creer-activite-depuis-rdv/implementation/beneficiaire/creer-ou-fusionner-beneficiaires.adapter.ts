@@ -1,5 +1,6 @@
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/beneficiaires.port'
 import type { CreerOuFusionnerBeneficiaires } from '../../domain/creer-activite-depuis-rdv'
+import type { BeneficiaireFusionne } from '../../domain/rdv-pour-activite'
 
 /**
  * Adaptateur vers la feature bénéficiaire, appelée par son API publique et non
@@ -7,21 +8,23 @@ import type { CreerOuFusionnerBeneficiaires } from '../../domain/creer-activite-
  * Public devient un « usager externe », que la feature bénéficiaire rapproche de
  * ses fiches selon ses propres règles de dédoublonnage.
  */
-export const creerOuFusionnerBeneficiaires: CreerOuFusionnerBeneficiaires =
+export const creerOuFusionnerBeneficiaires =
+  (
+    creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes<BeneficiaireFusionne>,
+  ): CreerOuFusionnerBeneficiaires =>
   async ({ usagers, mediateurId }) => {
-    const { merges } =
-      await creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding({
-        usagers: usagers.map((usager) => ({
-          rdvUserId: usager.id,
-          prenom: usager.prenom,
-          nom: usager.nom,
-          email: usager.email,
-          telephone: usager.telephone,
-          adresse: usager.adresse,
-          birthDate: usager.dateNaissance,
-        })),
-        mediateurId,
-      })
+    const { merges } = await creerOuFusionner({
+      usagers: usagers.map((usager) => ({
+        rdvUserId: usager.id,
+        prenom: usager.prenom,
+        nom: usager.nom,
+        email: usager.email,
+        telephone: usager.telephone,
+        adresse: usager.adresse,
+        birthDate: usager.dateNaissance,
+      })),
+      mediateurId,
+    })
 
     return merges
   }

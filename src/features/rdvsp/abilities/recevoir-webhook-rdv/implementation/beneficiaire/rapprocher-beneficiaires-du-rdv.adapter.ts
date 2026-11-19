@@ -1,3 +1,4 @@
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/beneficiaires.port'
 import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementation/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiairesDuRdv } from '../../domain/recevoir-webhook-rdv'
 
@@ -10,6 +11,7 @@ import type { RapprocherBeneficiairesDuRdv } from '../../domain/recevoir-webhook
  */
 export const rapprocherBeneficiairesDuRdv =
   (
+    creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes,
     journaliser: (message: string) => void = () => {
       // Journal facultatif : la route en fournit un, pas les tests.
     },
@@ -23,7 +25,7 @@ export const rapprocherBeneficiairesDuRdv =
       return
     }
 
-    await createOrMergeBeneficiairesFromRdvUserIds({
+    await createOrMergeBeneficiairesFromRdvUserIds(creerOuFusionner)({
       rdvUsers: usagerIds.map((id) => ({ id })),
       mediateurId,
     }).catch((erreur) => {

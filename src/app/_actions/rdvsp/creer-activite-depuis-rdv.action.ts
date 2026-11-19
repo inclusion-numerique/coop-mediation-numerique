@@ -3,6 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementation/url-de-saisie-depuis-un-rendez-vous'
 import { withAuth, withMediateur } from '@/features/authentification'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
 import { CreerActiviteDepuisRdvValidation } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
@@ -13,6 +14,7 @@ import { fromResult, withInput } from '@/libraries/nextjs'
 
 const creerActiviteDepuisRdv = creerActiviteDepuisRdvAvec(
   urlDeSaisieDepuisUnRendezVous,
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
 )
 
 export const creerActiviteDepuisRdvAction = actionBuilder()

@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import type { CreerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
 import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
@@ -8,6 +9,7 @@ const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
     Promise.resolve(
       `/coop/mes-activites/cra/${rendezVous.collectif ? 'collectif' : 'individuel'}?rdv=${rendezVous.id}`,
     ),
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
 )
 
 import { Given, Then, When } from '@cucumber/cucumber'

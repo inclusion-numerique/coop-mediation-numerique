@@ -23,6 +23,7 @@ import {
 } from '../abilities/synchroniser-rdvs/implementation/prisma/etat-connu.query'
 import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/implementation/synchroniser-rdvs'
 import { compteRdvToDomain } from '../db'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../domain/beneficiaires.port'
 import { bilanVide } from '../domain/bilan-synchronisation'
 import { estUtilisable } from '../domain/compte-rdv'
 import { diagnosticErreur } from '../domain/errors'
@@ -81,10 +82,12 @@ export const synchroniserCompte = async ({
   compteId,
   mediateurId,
   organisationIds,
+  creerOuFusionner,
 }: {
   compteId: number
   mediateurId?: string
   organisationIds?: number[]
+  creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes
 }) => {
   const row = await prismaClient.rdvAccount.findUniqueOrThrow({
     where: { id: compteId },
@@ -125,6 +128,7 @@ export const synchroniserCompte = async ({
             supprimerMotifsOrphelins,
             rapprocherBeneficiaires: rapprocherBeneficiaires({
               mediateurId,
+              creerOuFusionner,
               journaliser: tracer,
             }),
           })({ compte: aSynchroniser, organisationIds: portee }),

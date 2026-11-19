@@ -1,10 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
-  type ExternalUserToMerge,
-  type MergedBeneficiaire,
-} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import type { RdvUser } from '@/generated/prisma/client'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../domain/beneficiaires.port'
 
 // Adaptateur (anti-corruption côté rdvsp) : traduit un usager RDV Service Public
 // en primitifs pour le port bénéficiaire. rdvsp ne connaît ni les value objects
@@ -20,9 +16,7 @@ type RdvUserForMerge = Pick<
   | 'birthDate'
 >
 
-export type { MergedBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
-
-const toExternalUser = (rdvUser: RdvUserForMerge): ExternalUserToMerge => ({
+const toExternalUser = (rdvUser: RdvUserForMerge) => ({
   rdvUserId: rdvUser.id,
   nom: rdvUser.lastName,
   prenom: rdvUser.firstName,
@@ -37,31 +31,30 @@ const toExternalUser = (rdvUser: RdvUserForMerge): ExternalUserToMerge => ({
  * au port. Renvoie aussi les usagers écartés (donnée d'infra en échec) pour
  * l'observabilité du job, sans jamais interrompre la synchro.
  */
-export const createOrMergeBeneficiairesFromRdvUserIds = async ({
-  rdvUsers,
-  mediateurId,
-}: {
-  rdvUsers: { id: number }[]
-  mediateurId: string
-}): Promise<{
-  merges: MergedBeneficiaire[]
-  skipped: { readonly rdvUserId: number; readonly reason: unknown }[]
-}> => {
-  const users = await prismaClient.rdvUser.findMany({
-    where: { id: { in: rdvUsers.map((rdvUser) => rdvUser.id) } },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      phoneNumber: true,
-      address: true,
-      birthDate: true,
-    },
-  })
-
-  return creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding({
-    usagers: users.map(toExternalUser),
+export const createOrMergeBeneficiairesFromRdvUserIds =
+  (creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes) =>
+  async ({
+    rdvUsers,
     mediateurId,
-  })
-}
+  }: {
+    rdvUsers: { id: number }[]
+    mediateurId: string
+  }) => {
+    const users = await prismaClient.rdvUser.findMany({
+      where: { id: { in: rdvUsers.map((rdvUser) => rdvUser.id) } },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phoneNumber: true,
+        address: true,
+        birthDate: true,
+      },
+    })
+
+    return creerOuFusionner({
+      usagers: users.map(toExternalUser),
+      mediateurId,
+    })
+  }
