@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import type { ReactNode } from 'react'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
@@ -11,16 +11,11 @@ import type { VerifierInformationsPageData } from '../../queries/getVerifierInfo
  * le composant ne connaît ni le flow ni le `SessionUser`, seulement ce qu'il affiche.
  */
 const VerifierInformationsPage = ({
-  data: {
-    profilLabel,
-    name,
-    email,
-    structureEmployeuse,
-    backHref,
-    nextStepPath,
-  },
+  data: { profilLabel, name, email, backHref, nextStepPath },
+  carteEmployeuse,
 }: {
   data: VerifierInformationsPageData
+  carteEmployeuse: ReactNode
 }) => (
   <InscriptionCard
     title="Vérifiez vos informations"
@@ -50,7 +45,7 @@ const VerifierInformationsPage = ({
         value={email}
       />
     </div>
-    {!!structureEmployeuse && (
+    {!!carteEmployeuse && (
       <>
         <hr className="fr-separator-12v" />
 
@@ -60,10 +55,7 @@ const VerifierInformationsPage = ({
             Ma structure employeuse
           </h2>
         </div>
-        <StructureAdministrativeCard
-          structure={structureEmployeuse}
-          className="fr-mt-4v"
-        />
+        <div className="fr-mt-4v">{carteEmployeuse}</div>
       </>
     )}
     <hr className="fr-separator-12v" />

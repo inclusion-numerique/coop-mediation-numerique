@@ -8,6 +8,7 @@ import {
   consulterEmployeuseActuelle,
   employeuseActuelleAffichage,
 } from '@/features/employeuse/server'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
 import { VALIDER_ACTION_KEY } from '@/features/inscription/abilities/valider/action/valider.key'
 import { getRecapitulatifPageData } from '@/features/inscription/abilities/valider/queries/getRecapitulatifPageData'
 import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
@@ -47,7 +48,16 @@ const RecapitulatifPageRoute = async () => {
       to={rechercherUnLieuActiviteAction}
     >
       <ClientBinder bind={VALIDER_ACTION_KEY} to={validerAction}>
-        <RecapitulatifPage data={data} />
+        <RecapitulatifPage
+          data={data}
+          carteEmployeuse={
+            data.structureEmployeuse && (
+              <StructureAdministrativeCard
+                structure={data.structureEmployeuse}
+              />
+            )
+          }
+        />
       </ClientBinder>
     </ClientBinder>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import type { ReactNode } from 'react'
 import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
@@ -19,7 +19,6 @@ import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRole
 const RecapitulatifPage = ({
   data: {
     user,
-    structureEmployeuse,
     lieuxActivite,
     mediateursCoordonnesCount,
     backHref,
@@ -29,8 +28,10 @@ const RecapitulatifPage = ({
     canCancelInscription,
     showInscriptionSteps,
   },
+  carteEmployeuse,
 }: {
   data: RecapitulatifPageData
+  carteEmployeuse: ReactNode
 }) => (
   <InscriptionCard
     title="Récapitulatif de vos informations"
@@ -132,7 +133,7 @@ const RecapitulatifPage = ({
           )}
         </>
       )}
-    {!!structureEmployeuse && (
+    {!!carteEmployeuse && (
       <>
         <hr className="fr-separator-12v" />
         <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v fr-mb-6v">
@@ -141,10 +142,7 @@ const RecapitulatifPage = ({
             Ma structure employeuse
           </h2>
         </div>
-        <StructureAdministrativeCard
-          structure={structureEmployeuse}
-          className="fr-mt-4v"
-        />
+        <div className="fr-mt-4v">{carteEmployeuse}</div>
       </>
     )}
     {!!lieuxActivite && lieuxActivite.length > 0 && (

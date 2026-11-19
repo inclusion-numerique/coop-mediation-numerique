@@ -7,9 +7,9 @@ import {
   consulterEmployeuseActuelle,
   employeuseActuelleAffichage,
 } from '@/features/employeuse/server'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.key'
 import StructureEmployeuseLieuActivitePage from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ui/pages/StructureEmployeuseLieuActivitePage'
-import { employeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
@@ -41,23 +41,17 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
     redirect('/inscription/lieux-activite')
   }
 
-  const employeuse = employeuseAffichee(
-    employeuseActuelleAffichage(employeuseActuelle),
-  )
-
-  const structureEmployeuse = {
-    ...employeuse,
-    siret: employeuse.siret ?? '',
-    codeInsee: employeuse.codeInsee ?? '',
-  }
-
   return (
     <ClientBinder
       bind={AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY}
       to={ajouterStructureEmployeuseEnLieuAction}
     >
       <StructureEmployeuseLieuActivitePage
-        structureEmployeuse={structureEmployeuse}
+        carteEmployeuse={
+          <StructureAdministrativeCard
+            structure={employeuseActuelleAffichage(employeuseActuelle)}
+          />
+        }
       />
     </ClientBinder>
   )

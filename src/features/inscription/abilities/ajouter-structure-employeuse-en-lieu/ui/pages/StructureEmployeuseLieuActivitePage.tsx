@@ -2,10 +2,8 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import { type ReactNode, useState } from 'react'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
-import type { EmployeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
@@ -20,9 +18,9 @@ const erreurEnregistrement = () =>
   })
 
 const StructureEmployeuseLieuActivitePage = ({
-  structureEmployeuse,
+  carteEmployeuse,
 }: {
-  structureEmployeuse: EmployeuseAffichee
+  carteEmployeuse: ReactNode
 }) => {
   const router = useRouter()
 
@@ -80,10 +78,7 @@ const StructureEmployeuseLieuActivitePage = ({
           vos bénéficiaires (ex&nbsp;: lieu de permanence...)
         </p>
       </div>
-      <StructureAdministrativeCard
-        structure={structureEmployeuse}
-        className="fr-mb-12v"
-      />
+      <div className="fr-mb-12v">{carteEmployeuse}</div>
       <div className="fr-btns-group fr-btns-group--inline fr-width-full fr-flex fr-direction-row">
         <Button
           type="button"
