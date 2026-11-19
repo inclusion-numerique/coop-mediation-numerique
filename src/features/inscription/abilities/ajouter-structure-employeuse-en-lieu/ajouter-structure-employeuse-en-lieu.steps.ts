@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/server'
 import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import type {
   Geocodage,
@@ -64,7 +65,7 @@ const refus: { tag: string | null } = { tag: null }
 const resoudre = (userId: UserId, estLieuActivite: boolean) =>
   ajouterStructureEmployeuseEnLieu(
     { userId, estLieuActivite },
-    { geocoderLAdresse },
+    { geocoderLAdresse, consulterEmployeuseActuelle },
   )
 
 const declarerPour = (userId: UserId) => async (estLieuActivite: boolean) => {

@@ -18,8 +18,8 @@ import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
  * rattachement. Un lieu créé par erreur reste donc orphelin — c'est assumé.
  */
 export const delierStructureEmployeuseEnLieu: DelierStructureEmployeuseEnLieu =
-  async ({ userId, structureEmployeuseId }) => {
-    const lieuData = await lieuDepuisEmployeuse(structureEmployeuseId)
+  async ({ userId, employeuse }) => {
+    const lieuData = lieuDepuisEmployeuse(employeuse)
     const correle = await lieuCorrele(prismaClient, lieuData)
 
     if (!correle) return
@@ -28,7 +28,7 @@ export const delierStructureEmployeuseEnLieu: DelierStructureEmployeuseEnLieu =
       userId,
       nom: 'SupprimerMediateurEnActivite',
       duration: 0,
-      data: { userId, structureId: structureEmployeuseId },
+      data: { userId, structureId: employeuse.id },
     })
 
     const now = new Date()

@@ -2,6 +2,7 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/server'
 import {
   AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS,
   StructureEmployeuseLieuValidation,
@@ -24,7 +25,7 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
             userId: UserId(user.id),
             estLieuActivite: input.estLieuActivite,
           },
-          { geocoderLAdresse },
+          { geocoderLAdresse, consulterEmployeuseActuelle },
         ),
       { onError: AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS },
     ),

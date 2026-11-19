@@ -6,12 +6,15 @@ import {
   EmployeuseIntrouvable,
   ServiceAdresseIndisponible,
 } from '../domain'
-import type { EmployeuseId } from '../domain/employeuse-id'
-import type { Geocodage, GeocoderLAdresse } from '../domain/ports'
+import { EmployeuseId } from '../domain/employeuse-id'
+import type {
+  ConsulterEmployeuseActuelle,
+  Geocodage,
+  GeocoderLAdresse,
+} from '../domain/ports'
 import {
   delierStructureEmployeuseEnLieu,
   lierStructureEmployeuseEnLieu,
-  lireEmployeuseActuelle,
   lireLAdresseDeLEmployeuse,
 } from '../implementation'
 
@@ -23,6 +26,7 @@ import {
  */
 export type PortsDeMaterialisation = {
   readonly geocoderLAdresse: GeocoderLAdresse
+  readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
 }
 
 /**
@@ -63,13 +67,15 @@ export const ajouterStructureEmployeuseEnLieu = async (
   },
   ports: PortsDeMaterialisation,
 ): Promise<Result<void, AjouterStructureEmployeuseEnLieuError>> => {
-  const structureEmployeuseId = await lireEmployeuseActuelle(userId)
+  const actuelle = await ports.consulterEmployeuseActuelle({ userId })
 
-  if (structureEmployeuseId === null)
-    return failure(EmployeuseIntrouvable(userId))
+  if (actuelle === null) return failure(EmployeuseIntrouvable(userId))
+
+  const { employeuse } = actuelle
+  const structureEmployeuseId = EmployeuseId(employeuse.id)
 
   if (!estLieuActivite) {
-    await delierStructureEmployeuseEnLieu({ userId, structureEmployeuseId })
+    await delierStructureEmployeuseEnLieu({ userId, employeuse })
     return success<void>(undefined)
   }
 
@@ -86,7 +92,7 @@ export const ajouterStructureEmployeuseEnLieu = async (
 
   await lierStructureEmployeuseEnLieu({
     userId,
-    structureEmployeuseId,
+    employeuse,
     adresseBan: geocodage.adresse,
   })
 

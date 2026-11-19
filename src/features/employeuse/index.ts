@@ -37,9 +37,5 @@ export {
   etatDeTableEmployeuses,
 } from './abilities/lister-employeuses/ui/lister-employeuses-search-params'
 
-export {
-  ContactReferent,
-  EmployeuseId,
-  referentAffichage,
-} from './domain'
+export { EmployeuseId } from './domain'
 export { employeuseAffichage } from './ui/employeuse.presenter'

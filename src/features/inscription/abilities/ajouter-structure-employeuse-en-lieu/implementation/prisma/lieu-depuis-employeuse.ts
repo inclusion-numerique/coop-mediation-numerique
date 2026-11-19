@@ -1,31 +1,45 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  employeuseMainSelect,
-  employeuseMainToLieuData,
-} from '@/features/inscription/implementation/prisma/employeuse-en-lieu.data'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
-import type { EmployeuseId } from '../../domain'
+import type { EmployeuseLue } from '../../domain'
 
-/**
- * Données du lieu à matérialiser depuis l'employeuse `main` (source de vérité).
- *
- * Le lieu ne porte aucun lien vers l'employeuse — pas de FK, pas d'id repris. On
- * le retrouve donc par la sonde de corrélation des lieux (`lieuCorrele`, dans
- * l'API publique de `features/lieux-activite`),
- * celle-là même qu'emploient les autres chemins de matérialisation d'un lieu :
- * SIRET de provenance sûre, sinon dénomination à la même adresse. C'est ce qui
- * le rend partageable entre deux médiateurs de la même employeuse, alors même
- * que l'employeuse vit dans `main` (id entier) et le lieu dans coop (uuid).
- */
-export const lieuDepuisEmployeuse = async (
-  structureEmployeuseId: EmployeuseId,
+const adresseRetenue = (
+  { adresse }: EmployeuseLue,
   adresseBan?: AdresseBanData,
-) => {
-  const structureMain =
-    await prismaClient.structureAdministrativeMain.findUniqueOrThrow({
-      where: { id: structureEmployeuseId },
-      select: employeuseMainSelect,
-    })
+) =>
+  adresseBan == null
+    ? {
+        adresse: adresse?.voie ?? '',
+        commune: adresse?.commune ?? '',
+        codePostal: adresse?.codePostal ?? '',
+        codeInsee: adresse?.codeInsee ?? null,
+      }
+    : {
+        adresse: adresseBan.nom,
+        commune: adresseBan.commune,
+        codePostal: adresseBan.codePostal,
+        codeInsee: adresseBan.codeInsee,
+        banId: adresseBan.id,
+        latitude: adresseBan.latitude,
+        longitude: adresseBan.longitude,
+      }
 
-  return employeuseMainToLieuData(structureMain, adresseBan)
-}
+const referent = ({ contactReferent }: EmployeuseLue) =>
+  contactReferent._tag === 'renseigne'
+    ? {
+        nomReferent: contactReferent.nom,
+        courrielReferent: contactReferent.courriel,
+        telephoneReferent: contactReferent.telephone,
+      }
+    : { nomReferent: null, courrielReferent: null, telephoneReferent: null }
+
+export const lieuDepuisEmployeuse = (
+  employeuse: EmployeuseLue,
+  adresseBan?: AdresseBanData,
+) => ({
+  nom: employeuse.denomination ?? '',
+  ...adresseRetenue(employeuse, adresseBan),
+  complementAdresse: null,
+  siret: employeuse.siret,
+  synchronisationSiret: employeuse.siret === null ? null : new Date(),
+  rna: employeuse.rna,
+  ...referent(employeuse),
+})

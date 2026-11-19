@@ -36,7 +36,7 @@ import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 /** La fiche posée dans la coop, puis au registre, dans la même transaction. */
 const materialiser = async (
   transaction: Prisma.TransactionClient,
-  lieuData: Awaited<ReturnType<typeof lieuDepuisEmployeuse>>,
+  lieuData: ReturnType<typeof lieuDepuisEmployeuse>,
 ): Promise<{ readonly id: string }> => {
   const cree = await transaction.lieuInclusion.create({
     data: { id: v4(), ...lieuData },
@@ -53,11 +53,8 @@ const materialiser = async (
 }
 
 export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
-  async ({ userId, structureEmployeuseId, adresseBan }) => {
-    const lieuData = await lieuDepuisEmployeuse(
-      structureEmployeuseId,
-      adresseBan,
-    )
+  async ({ userId, employeuse, adresseBan }) => {
+    const lieuData = lieuDepuisEmployeuse(employeuse, adresseBan)
     const maintenant = new Date()
 
     await prismaClient.$transaction(async (transaction) => {
@@ -84,7 +81,7 @@ export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
         userId,
         nom: 'CreerMediateurEnActivite',
         duration: 0,
-        data: { userId, structureId: structureEmployeuseId },
+        data: { userId, structureId: employeuse.id },
       })
 
       await transaction.mediateurEnActivite.create({
