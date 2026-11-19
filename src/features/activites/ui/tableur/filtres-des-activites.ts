@@ -1,5 +1,4 @@
 import type { Worksheet } from 'exceljs'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 
 type LibelleDeFiltre = { readonly type: string; readonly label: string }
@@ -17,7 +16,10 @@ export const addFilters =
       mediateurScope,
       excludeFilters = [],
     }: {
-      mediateurScope: null | Pick<SessionUser, 'firstName' | 'lastName'>
+      mediateurScope: null | {
+        readonly firstName: string | null
+        readonly lastName: string | null
+      }
       excludeFilters?: readonly string[]
     },
   ) => {

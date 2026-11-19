@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { getUserDisplayName } from '@/features/authentification/domain/user'
+import { nomAffiche } from '@/libraries/nom-affiche'
 import type { CoordinateurId, MediateurId } from '../../../../domain'
 
 export type MediateurNomme = {
@@ -39,7 +39,12 @@ export const mediateursNommes = async ({
 
   const nommes = lignes.map(({ id, user, coordinations }) => ({
     ancien: coordinateurId !== null && estUnAncienMembre(coordinations),
-    nom: getUserDisplayName(user),
+    nom: nomAffiche({
+      prenom: user.firstName,
+      nom: user.lastName,
+      nomComplet: user.name,
+      courriel: user.email,
+    }),
     value: { mediateurId: id },
   }))
 
