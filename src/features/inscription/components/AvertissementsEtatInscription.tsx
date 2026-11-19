@@ -1,10 +1,12 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { isUserInscriptionEnCours } from '@/features/inscription/domain/isUserInscriptionEnCours'
+import {
+  isUserInscriptionEnCours,
+  type RoleDuCompte,
+} from '@/features/inscription/domain/isUserInscriptionEnCours'
 
 export type EtatInscriptionUtilisateur = {
-  role: SessionUser['role']
+  role: RoleDuCompte
   inscriptionValidee: Date | string | null
   mediateur: { id: string } | null
   coordinateur: { id: string } | null

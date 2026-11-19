@@ -1,4 +1,4 @@
-import { SessionUser } from '@/features/authentification/domain/sessionUser'
+export type RoleDuCompte = 'User' | 'Support' | 'Admin'
 
 /**
  * « L'utilisateur n'a pas encore validé son inscription » — et rien de plus.
@@ -14,7 +14,7 @@ import { SessionUser } from '@/features/authentification/domain/sessionUser'
  * vers `getHomepage`, donc vers l'inscription — ce qui est le comportement voulu.
  */
 export const isUserInscriptionEnCours = (user?: {
-  role: SessionUser['role']
+  role: RoleDuCompte
   inscriptionValidee: string | Date | null
 }) => {
   if (!user) {
