@@ -20,6 +20,5 @@ export const journaliserLeChangement = ({
     data: {
       id: utilisateurId,
       operations: plan.operations.map(({ _tag }) => _tag),
-      profil: plan.profil,
     },
   })

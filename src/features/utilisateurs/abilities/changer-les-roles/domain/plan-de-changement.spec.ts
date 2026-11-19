@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   CoordinateurId,
-  Dispositif,
   MediateurId,
   RoleUtilisateur,
   rattachements,
@@ -35,7 +34,6 @@ const compte = (
   id: UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'),
   role: RoleUtilisateur('User'),
   supprime: false,
-  dispositif: Dispositif('HorsDispositif'),
   rattachements: rattachements(mediateur, coordinateur),
   ...surcharge,
 })
@@ -124,22 +122,4 @@ describe('plan de changement des rôles', () => {
     )
     expect(plan.success === false && plan.error._tag).toBe('CompteSupprime')
   })
-
-  it.each([
-    [true, true, 'HorsDispositif', 'Mediateur'],
-    [true, false, 'ConseillerNumerique', 'ConseillerNumerique'],
-    [false, true, 'HorsDispositif', 'Coordinateur'],
-    [false, true, 'ConseillerNumerique', 'CoordinateurConseillerNumerique'],
-  ] as const)(
-    'médiateur %s, coordinateur %s, %s : profil %s',
-    (mediateur, coordinateur, dispositif, profil) => {
-      const plan = planDeChangement(
-        compte(mediateurVierge, coordinateurVierge, {
-          dispositif: Dispositif(dispositif),
-        }),
-        demande(mediateur, coordinateur),
-      )
-      expect(plan.success && plan.data.profil).toBe(profil)
-    },
-  )
 })

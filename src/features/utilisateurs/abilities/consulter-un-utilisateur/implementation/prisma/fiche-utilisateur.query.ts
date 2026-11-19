@@ -3,7 +3,6 @@ import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
 } from '@/features/employeuse/server'
-import { ProfilInscription } from '@/features/inscription/domain'
 import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
@@ -36,7 +35,6 @@ const ficheSelect = {
   created: true,
   inscriptionValidee: true,
   deleted: true,
-  profilInscription: true,
   lastLogin: true,
   lastSeen: true,
   mediateur: {
@@ -120,10 +118,6 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     siret: Siret.safe(row.siret ?? ''),
     creeLe: row.created,
     cycle,
-    profilInscription:
-      row.profilInscription === null
-        ? null
-        : ProfilInscription(row.profilInscription),
     derniereConnexion: jalon(row.lastLogin),
     derniereVisite,
     statut: statutDe(

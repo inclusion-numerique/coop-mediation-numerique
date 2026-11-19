@@ -1,11 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
-import {
   CoordinateurId,
-  dispositifDe,
   MediateurId,
   RoleUtilisateur,
   rattachements,
@@ -25,7 +20,6 @@ export const compteAReaffecter = async (
       id: true,
       role: true,
       deleted: true,
-      personneMain: { select: personneConseillerNumeriqueSelect },
       mediateur: {
         select: {
           id: true,
@@ -53,7 +47,6 @@ export const compteAReaffecter = async (
     id,
     role: RoleUtilisateur(row.role),
     supprime: row.deleted !== null,
-    dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
     rattachements: rattachements(
       row.mediateur === null
         ? null

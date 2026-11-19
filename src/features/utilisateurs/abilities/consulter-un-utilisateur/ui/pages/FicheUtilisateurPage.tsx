@@ -182,10 +182,6 @@ export const FicheUtilisateurPage = ({
               },
               { label: 'Dernière visite', value: aParis(fiche.derniereVisite) },
               {
-                label: 'Profil d’inscription',
-                value: renseigne(fiche.profilInscription),
-              },
-              {
                 label: 'Inscription validée',
                 value: inscriptionValidee(inscription(fiche.cycle)),
               },

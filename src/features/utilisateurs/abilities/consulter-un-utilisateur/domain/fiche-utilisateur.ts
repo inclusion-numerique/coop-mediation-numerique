@@ -1,4 +1,3 @@
-import type { ProfilInscription } from '@/features/inscription/domain'
 import type {
   AdresseCourriel,
   CoordinateurId,
@@ -64,7 +63,6 @@ export type FicheUtilisateur = {
   readonly siret: Siret | null
   readonly creeLe: Date
   readonly cycle: CycleDeVie
-  readonly profilInscription: ProfilInscription | null
   readonly derniereConnexion: Jalon
   readonly derniereVisite: Jalon
   readonly statut: StatutCompte

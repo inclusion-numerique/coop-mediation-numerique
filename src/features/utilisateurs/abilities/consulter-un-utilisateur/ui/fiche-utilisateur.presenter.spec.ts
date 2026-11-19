@@ -57,7 +57,6 @@ const fiche = (surcharge: Partial<FicheUtilisateur>): FicheUtilisateur => ({
   siret: null,
   creeLe: new Date('2026-01-01'),
   cycle: { _tag: 'InscriptionEnCours', creeLe: new Date('2026-01-01') },
-  profilInscription: null,
   derniereConnexion: { _tag: 'Jamais' },
   derniereVisite: { _tag: 'Jamais' },
   statut: { _tag: 'Actif' },

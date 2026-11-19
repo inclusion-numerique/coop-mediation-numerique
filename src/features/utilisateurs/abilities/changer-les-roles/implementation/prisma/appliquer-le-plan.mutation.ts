@@ -69,17 +69,13 @@ const appliquer =
 
 export const appliquerLePlan = async (
   utilisateurId: UtilisateurId,
-  { operations, profil }: PlanDeChangement,
+  { operations }: PlanDeChangement,
 ): Promise<void> => {
   await prismaClient.$transaction(async (tx) => {
     await operations.reduce<Promise<void>>(async (precedente, operation) => {
       await precedente
       await appliquer(tx, utilisateurId)(operation)
     }, Promise.resolve())
-    await tx.user.update({
-      where: { id: utilisateurId },
-      data: { profilInscription: profil },
-    })
     await synchroniserPersonne(tx, utilisateurId)
   })
 }
