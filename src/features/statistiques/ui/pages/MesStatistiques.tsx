@@ -1,7 +1,6 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import Filters from '@/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
@@ -64,7 +63,13 @@ export const MesStatistiques = ({
   activites,
   beneficiaires,
 }: OptionsDeLaBarre & {
-  user: SessionUser
+  user: {
+    readonly coordinateur: { readonly id: string } | null
+    readonly mediateur: { readonly id: string } | null
+    readonly emplois: readonly {
+      readonly structure: { readonly codeInsee: string | null }
+    }[]
+  }
   hasCrasV1: boolean
   accompagnementsCount: Promise<number>
   partage: ReactNode
