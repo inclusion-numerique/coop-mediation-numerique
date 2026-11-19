@@ -2,7 +2,7 @@ generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
   moduleFormat    = "cjs"
-  previewFeatures = ["fullTextSearchPostgres", "nativeDistinct", "relationJoins"]
+  previewFeatures = ["fullTextSearchPostgres", "nativeDistinct", "relationJoins", "views"]
 }
 
 generator erd {
@@ -877,33 +877,42 @@ model AdresseMain {
 /// qu'un sous-ensemble des colonnes réelles (celui dont la coop a besoin) ; la table complète est gérée
 /// par Flyway. La contrainte FK `coop_id -> coop.user` est posée côté Flyway sur la base partagée.
 model PersonneMain {
-  id             Int       @id @default(autoincrement())
-  prenom         String?   @db.VarChar(50)
-  nom            String?   @db.VarChar(50)
-  contact        Json?
+  id                    Int       @id @default(autoincrement())
+  prenom                String?   @db.VarChar(50)
+  nom                   String?   @db.VarChar(50)
+  contact               Json?
   /// Identifiant du conseiller numérique côté dispositif. Remplace `coop.users.dataspace_user_id_pg`,
   /// que la synchro nocturne recopiait depuis l'API : c'est la même valeur, à la source.
-  cnPgId         Int?      @unique(map: "personne_cn_pg_id_ukey") @map("cn_pg_id")
-  conseillerNumeriqueId String? @unique(map: "personne_conseiller_numerique_id_ukey") @map("conseiller_numerique_id") @db.VarChar(50)
-  aidantConnectId Int?     @unique(map: "personne_aidant_connect_id_ukey") @map("aidant_connect_id")
-  coopId         String?   @unique(map: "personne_coop_id_ukey") @map("coop_id") @db.Uuid
-  isCoordinateur Boolean?  @map("is_coordinateur")
-  isMediateur    Boolean?  @map("is_mediateur")
-  isVisible      Boolean?  @map("is_visible")
-  createdAt      DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt      DateTime? @map("updated_at") @db.Timestamp(6)
-  updatedAtCoop  DateTime? @map("updated_at_coop") @db.Timestamp(6)
-  editedBy       String?   @map("edited_by") @db.VarChar(50)
-  deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
-  deletedBy      String[]  @map("deleted_by")
+  cnPgId                Int?      @unique(map: "personne_cn_pg_id_ukey") @map("cn_pg_id")
+  conseillerNumeriqueId String?   @unique(map: "personne_conseiller_numerique_id_ukey") @map("conseiller_numerique_id") @db.VarChar(50)
+  aidantConnectId       Int?      @unique(map: "personne_aidant_connect_id_ukey") @map("aidant_connect_id")
+  coopId                String?   @unique(map: "personne_coop_id_ukey") @map("coop_id") @db.Uuid
+  isCoordinateur        Boolean?  @map("is_coordinateur")
+  isMediateur           Boolean?  @map("is_mediateur")
+  isVisible             Boolean?  @map("is_visible")
+  createdAt             DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt             DateTime? @map("updated_at") @db.Timestamp(6)
+  updatedAtCoop         DateTime? @map("updated_at_coop") @db.Timestamp(6)
+  editedBy              String?   @map("edited_by") @db.VarChar(50)
+  deletedAt             DateTime? @map("deleted_at") @db.Timestamp(6)
+  deletedBy             String[]  @map("deleted_by")
 
-  user               User?                           @relation(fields: [coopId], references: [id])
-  affectationsEmploi PersonneAffectationEmploiMain[]
-  contrats           ContratMain[]
-  formations         FormationMain[]
-  postes             PosteMain[]
+  user                       User?                           @relation(fields: [coopId], references: [id])
+  affectationsEmploi         PersonneAffectationEmploiMain[]
+  contrats                   ContratMain[]
+  formations                 FormationMain[]
+  postes                     PosteMain[]
+  conseillerNumeriqueEnPoste ConseillerNumeriqueEnPoste?
 
   @@map("personne")
+  @@schema("main")
+}
+
+view ConseillerNumeriqueEnPoste {
+  personneId Int          @unique @map("personne_id")
+  personne   PersonneMain @relation(fields: [personneId], references: [id])
+
+  @@map("conseiller_numerique_en_poste")
   @@schema("main")
 }
 
