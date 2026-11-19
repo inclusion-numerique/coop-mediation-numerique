@@ -97,11 +97,13 @@ export const seedAffectation = async ({
   employeuseId,
   source,
   active = true,
+  enregistreeLe,
 }: {
   userId: string
   employeuseId: number
   source: string
   active?: boolean
+  enregistreeLe?: Date
 }): Promise<void> => {
   const personneId = await personneDe(userId)
   const { id } = await prismaClient.personneAffectationEmploiMain.create({
@@ -110,6 +112,7 @@ export const seedAffectation = async ({
       structureAdministrativeId: employeuseId,
       source,
       estActive: active,
+      ...(enregistreeLe === undefined ? {} : { createdAt: enregistreeLe }),
     },
     select: { id: true },
   })

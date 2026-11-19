@@ -8,6 +8,7 @@ import { DenominationEmployeuse } from '../domain/denomination-employeuse'
 import type { Employeuse } from '../domain/employeuse'
 import { employeuseALaDate } from '../domain/employeuse-a-la-date'
 import {
+  type AffectationActuelle,
   type EmployeuseActuelle,
   employeuseActuelle,
 } from '../domain/employeuse-actuelle'
@@ -77,6 +78,20 @@ export const personneEmployeuseSelect = {
 
 export type PersonneEmployeusePayload = Prisma.PersonneMainGetPayload<{
   select: typeof personneEmployeuseSelect
+}>
+
+export const personneEmployeuseActuelleSelect = {
+  employeuseActuelle: {
+    select: {
+      source: true,
+      structureAdministrative: { select: employeuseSelect },
+    },
+  },
+  contrats: personneEmployeuseSelect.contrats,
+} satisfies Prisma.PersonneMainSelect
+
+export type PersonneEmployeuseActuellePayload = Prisma.PersonneMainGetPayload<{
+  select: typeof personneEmployeuseActuelleSelect
 }>
 
 type AffectationRow = PersonneEmployeusePayload['affectationsEmploi'][number]
@@ -160,28 +175,34 @@ export const contratsToDomain = (
       : [],
   )
 
-export const personneToAffectations = (
+const personneToAffectations = (
   personne: PersonneEmployeusePayload | null,
 ): Affectation[] =>
   (personne?.affectationsEmploi ?? []).map(affectationToDomain)
 
-export const personneToContrats = (
-  personne: PersonneEmployeusePayload | null,
+const personneToContrats = (
+  personne: { readonly contrats: readonly ContratRow[] } | null,
   maintenant: Date = new Date(),
 ): Contrat[] => contratsToDomain(personne?.contrats ?? [], maintenant)
 
-/**
- * Employeuse courante depuis une personne **déjà chargée**. C'est la voie des
- * lectures de liste, qui imbriquent `personneEmployeuseSelect` dans leur propre
- * requête ; la voie autonome (par `userId`) est l'ability
- * `consulter-employeuse-actuelle`.
- */
+const affectationActuelleToDomain = (
+  personne: PersonneEmployeuseActuellePayload | null,
+): AffectationActuelle | null =>
+  personne?.employeuseActuelle
+    ? {
+        employeuse: employeuseToDomain(
+          personne.employeuseActuelle.structureAdministrative,
+        ),
+        source: SourceAffectation(personne.employeuseActuelle.source),
+      }
+    : null
+
 export const personneToEmployeuseActuelle = (
-  personne: PersonneEmployeusePayload | null,
+  personne: PersonneEmployeuseActuellePayload | null,
   maintenant: Date = new Date(),
 ): EmployeuseActuelle | null =>
   employeuseActuelle(
-    personneToAffectations(personne),
+    affectationActuelleToDomain(personne),
     personneToContrats(personne, maintenant),
   )
 
@@ -195,14 +216,13 @@ export const personneToEmployeusesHistorique = (
     personneToContrats(personne, maintenant),
   )
 
-/** Même composition, pour l'employeuse d'une date donnée. */
 export const personneToEmployeuseALaDate = (
-  personne: PersonneEmployeusePayload | null,
+  personne: PersonneEmployeuseActuellePayload | null,
   date: Date,
   maintenant: Date = new Date(),
 ): Employeuse | null =>
   employeuseALaDate(
-    personneToAffectations(personne),
+    affectationActuelleToDomain(personne)?.employeuse ?? null,
     personneToContrats(personne, maintenant),
     date,
   )

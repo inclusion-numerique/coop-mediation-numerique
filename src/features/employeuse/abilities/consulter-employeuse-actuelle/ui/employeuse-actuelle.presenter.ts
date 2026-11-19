@@ -26,30 +26,3 @@ export const employeuseActuelleAffichage = ({
   fin: finEmploi(periode),
   source,
 })
-
-/**
- * Forme `emplois` du `SessionUser` : 0 ou 1 élément, l'employeuse courante.
- * Conservée telle quelle parce que ses consommateurs (menu d'en-tête, récap
- * d'inscription, dérivation du département, accès carto) lisent
- * `emplois.at(0)?.structure` et `emplois.length`.
- *
- * L'`id` porte désormais l'identifiant `main` : le `structure_coop_id` qu'il
- * exposait n'est lu nulle part, et il disparaît à l'échange final.
- */
-export const employeuseSessionEmplois = (
-  employeuseActuelle: EmployeuseActuelle | null,
-): {
-  id: string
-  structure: { nom: string | null; codeInsee: string | null }
-}[] =>
-  employeuseActuelle
-    ? [
-        {
-          id: String(employeuseActuelle.employeuse.id),
-          structure: {
-            nom: employeuseActuelle.employeuse.denomination,
-            codeInsee: employeuseActuelle.employeuse.adresse?.codeInsee ?? null,
-          },
-        },
-      ]
-    : []

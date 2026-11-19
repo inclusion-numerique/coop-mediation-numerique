@@ -1,10 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  personneEmployeuseSelect,
-  personneToAffectations,
-  personneToContrats,
+  personneEmployeuseActuelleSelect,
+  personneToEmployeuseActuelle,
 } from '../../../../db/employeuse.transfer'
-import { employeuseActuelle } from '../../../../domain/employeuse-actuelle'
 import type { ConsulterEmployeuseActuelle } from '../../domain/consulter-employeuse-actuelle'
 
 export const consulterEmployeuseActuelle: ConsulterEmployeuseActuelle = async ({
@@ -12,13 +10,8 @@ export const consulterEmployeuseActuelle: ConsulterEmployeuseActuelle = async ({
 }) => {
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
-    select: { personneMain: { select: personneEmployeuseSelect } },
+    select: { personneMain: { select: personneEmployeuseActuelleSelect } },
   })
 
-  const personne = user?.personneMain ?? null
-
-  return employeuseActuelle(
-    personneToAffectations(personne),
-    personneToContrats(personne),
-  )
+  return personneToEmployeuseActuelle(user?.personneMain ?? null)
 }

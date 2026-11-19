@@ -18,6 +18,36 @@ l'utilisateur jusqu'à sa personne, puis ses affectations emploi actives.
 * When je consulte l'employeuse courante de cet utilisateur
 * Then l'employeuse courante est "Structure du dispositif"
 
+### Scenario: Hors du dispositif, le déclaratif fait autorité sur les autres sources
+
+* Given un utilisateur affecté à "Structure déclarée" par la source "coop"
+* And ce même utilisateur affecté à "Structure d'un autre service" par la source "aidants-connect"
+* When je consulte l'employeuse courante de cet utilisateur
+* Then l'employeuse courante est "Structure déclarée"
+
+### Scenario: À source égale, l'affectation la plus récente l'emporte
+
+* Given un utilisateur sans affectation
+* And ce même utilisateur affecté à "Ancienne structure" par la source "coop" le "2025-01-01"
+* And ce même utilisateur affecté à "Nouvelle structure" par la source "coop" le "2026-06-01"
+* When je consulte l'employeuse courante de cet utilisateur
+* Then l'employeuse courante est "Nouvelle structure"
+
+### Scenario: À date égale, la dernière affectation enregistrée l'emporte
+
+* Given un utilisateur sans affectation
+* And ce même utilisateur affecté à "Première structure" par la source "coop" le "2026-06-01"
+* And ce même utilisateur affecté à "Seconde structure" par la source "coop" le "2026-06-01"
+* When je consulte l'employeuse courante de cet utilisateur
+* Then l'employeuse courante est "Seconde structure"
+
+### Scenario: Une affectation qui n'est plus active ne désigne pas l'employeuse
+
+* Given un utilisateur affecté à "Structure actuelle" par la source "coop"
+* And ce même utilisateur anciennement affecté à "Structure du dispositif" par la source "idposte"
+* When je consulte l'employeuse courante de cet utilisateur
+* Then l'employeuse courante est "Structure actuelle"
+
 ### Scenario: Un utilisateur sans affectation active n'a pas d'employeuse
 
 * Given un utilisateur sans affectation

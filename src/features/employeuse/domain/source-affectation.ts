@@ -31,14 +31,3 @@ export const SourceAffectation = defineModel(
 )
 
 export type SourceAffectation = Model.TypeOf<typeof SourceAffectation>
-
-/**
- * Ordre d'autorité entre sources : `idposte` fait foi (il vient du dispositif),
- * sinon le déclaratif `coop`, sinon le reste. Exhaustif par construction — une
- * nouvelle source ajoutée à l'enum ne compile pas tant qu'elle n'a pas de rang.
- */
-export const prioriteSource: Record<SourceAffectation, number> = {
-  idposte: 0,
-  coop: 1,
-  autre: 2,
-}

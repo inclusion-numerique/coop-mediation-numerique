@@ -16,11 +16,6 @@ import 'server-only'
  * (pages, server actions, jobs, steps Cucumber) n'ont donc qu'un seul import à
  * connaître.
  *
- * Deux voies de lecture, selon le contexte :
- * - les abilities `consulter…({ userId })` — lecture autonome, un utilisateur ;
- * - `personneEmployeuseSelect` + `personneToEmployeuse…` — composition, pour les
- *   requêtes de liste qui ne peuvent pas se permettre une requête par utilisateur.
- *
  * Le composant de page n'est PAS réexporté ici : y mêler du React entraîne ses
  * feuilles de style dans des contextes qui ne savent pas les lire. La route
  * l'importe directement depuis l'ability.
@@ -37,8 +32,4 @@ export {
   rattacherAUneEmployeuseDepuisSiretBinding,
 } from './abilities/rattacher-a-une-employeuse/implementation/rattacher-a-une-employeuse.binding'
 export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implementation'
-export {
-  employeuseCourante,
-  employeuseCouranteJoin,
-} from './db/employeuse.sql'
 export * from './index'

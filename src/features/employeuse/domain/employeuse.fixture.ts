@@ -4,12 +4,13 @@ import type { Affectation } from './affectation'
 import type { Contrat } from './contrat'
 import { DenominationEmployeuse } from './denomination-employeuse'
 import type { Employeuse } from './employeuse'
+import type { AffectationActuelle } from './employeuse-actuelle'
 import { EmployeuseId } from './employeuse-id'
 import { PeriodeEmploi } from './periode-emploi'
 import { SourceAffectation } from './source-affectation'
 
 /** Employeuse de test, construite par les constructeurs du domaine (jamais par `as`). */
-const employeuse = (
+export const employeuse = (
   id: number,
   overrides: Partial<Employeuse> = {},
 ): Employeuse => ({
@@ -40,6 +41,14 @@ export const affectation = (
   source: SourceAffectation(source),
   active: true,
   depuis,
+})
+
+export const actuelle = (
+  source: string,
+  employeuseId: number,
+): AffectationActuelle => ({
+  employeuse: employeuse(employeuseId),
+  source: SourceAffectation(source),
 })
 
 export const contrat = (

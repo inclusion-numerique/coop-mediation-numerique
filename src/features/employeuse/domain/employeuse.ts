@@ -31,6 +31,3 @@ export type Employeuse = {
   readonly modification: Date | null
   readonly suppression: Date | null
 }
-
-export const employeuseCodeInsee = (employeuse: Employeuse) =>
-  employeuse.adresse?.codeInsee ?? null

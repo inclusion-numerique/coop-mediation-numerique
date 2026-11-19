@@ -1,4 +1,3 @@
-import { type Affectation, affectationActuelle } from './affectation'
 import type { Contrat } from './contrat'
 import type { Employeuse } from './employeuse'
 import { couvre, debutEmploi } from './periode-emploi'
@@ -44,10 +43,7 @@ const contratCouvrant = (
  * ne sert que les dates qu'aucun contrat ne couvre.
  */
 export const employeuseALaDate = (
-  affectations: readonly Affectation[],
+  actuelle: Employeuse | null,
   contrats: readonly Contrat[],
   date: Date,
-): Employeuse | null =>
-  contratCouvrant(contrats, date)?.employeuse ??
-  affectationActuelle(affectations)?.employeuse ??
-  null
+): Employeuse | null => contratCouvrant(contrats, date)?.employeuse ?? actuelle
