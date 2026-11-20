@@ -24,7 +24,10 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
+import {
+  effacerLesPersonnesMainDeDemonstration,
+  seedPersonnesMain,
+} from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
 import { upsertUserFixtures } from '@/features/utilisateurs/fixtures/upsertUserFixture'
 import {
   coordinations,
@@ -44,27 +47,8 @@ import { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 import { output } from '@/libraries/fixtures/output'
 
-/**
- * Le `TRUNCATE` ne porte que sur le schéma `coop` : les lignes `main` des
- * utilisateurs de fixtures (personne, affectations, contrats) lui survivraient,
- * et un parcours qui rattache une employeuse la retrouverait au run suivant —
- * l'utilisateur ne serait plus « sans employeuse ». On les efface donc
- * explicitement, en ne visant que les personnes de fixtures.
- */
-const deleteFixturePersonnesMain = async (
-  transaction: Prisma.TransactionClient,
-) => {
-  const coopId = { in: fixtureUsers.map(({ id }) => id) }
-
-  await transaction.contratMain.deleteMany({ where: { personne: { coopId } } })
-  await transaction.personneAffectationEmploiMain.deleteMany({
-    where: { personne: { coopId } },
-  })
-  await transaction.personneMain.deleteMany({ where: { coopId } })
-}
-
 export const deleteAll = async (transaction: Prisma.TransactionClient) => {
-  await deleteFixturePersonnesMain(transaction)
+  await effacerLesPersonnesMainDeDemonstration(transaction)
 
   const tables = await transaction.$queryRaw<
     { table_name: string }[]

@@ -220,3 +220,15 @@ export const seedPersonnesMain = async (
     ({ coopId }) => garantirContratRompu(transaction, employeuse, coopId),
   )
 }
+
+export const effacerLesPersonnesMainDeDemonstration = async (
+  transaction: Prisma.TransactionClient,
+) => {
+  const coopId = { in: fixtureUsers.map(({ id }) => id) }
+
+  await transaction.contratMain.deleteMany({ where: { personne: { coopId } } })
+  await transaction.personneAffectationEmploiMain.deleteMany({
+    where: { personne: { coopId } },
+  })
+  await transaction.personneMain.deleteMany({ where: { coopId } })
+}

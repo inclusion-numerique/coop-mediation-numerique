@@ -87,9 +87,8 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 - **features/**: Feature modules (activites, authentification, navigation, vitrine, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
 - **libraries/**: shared code without any business concept, one purpose per library (UI components, forms, data tables, JSON:API, dates, e-mail layout, paths…)
 - **configuration/**: project configuration, Prisma clients, clients of external services, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
-- **cli/**: CLI entry point; commands stay thin
+- **cli/**: CLI entry point; commands stay thin; `cli/fixtures` assembles the test data set loaded by `pnpm fixtures:load`, wiring the references each feature's fixtures cite
 - **jobs/**: Serverless Jobs entry point and thin executors
-- **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`; each feature keeps its own fixtures
 - **styles/**: global DSFR stylesheet
 - `proxy.ts`, `instrumentation.ts`, `instrumentation-client.ts`: Next.js conventions, next to `app/`
 
