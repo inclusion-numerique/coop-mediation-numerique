@@ -1,11 +1,8 @@
 export { depuisLePanier } from './action/depuis-le-panier'
-export type {
-  LieuCarto,
-  LieuDemande,
-} from './domain'
 export {
+  activitesEnCoursDeLUtilisateur,
   ajouterDesLieuxActivite,
   detacherDuLieuDecrit,
-  rattacherAuLieu,
   rattacherAuLieuDecrit,
+  rattacherAuLieuDesire,
 } from './implementation'

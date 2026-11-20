@@ -1,8 +1,5 @@
 import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
-import type {
-  CreerLieuActiviteData,
-  LieuCarto,
-} from '@/features/lieux-activite'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite'
 import type { MediateurId } from './mediateur-id'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
@@ -17,21 +14,21 @@ export type LireLieuxActiviteExistants = (
  * pour rester hors du chemin critique et stubbable en test — les deux clients
  * Prisma (coop / entrepôt) ne partageant pas de transaction.
  */
-export type TrouverStructuresCarto = (
+export type TrouverStructuresCarto<StructureCarto> = (
   cartoIds: readonly string[],
-) => Promise<ReadonlyMap<string, LieuCarto>>
+) => Promise<ReadonlyMap<string, StructureCarto>>
 
 /**
  * Applique la réconciliation en une transaction : clôt les activités retirées,
  * crée les nouvelles (id interne / structure carto locale existante / création
  * depuis la structure carto), et projette l'état franchi.
  */
-export type EnregistrerReconciliation = (input: {
+export type EnregistrerReconciliation<StructureCarto> = (input: {
   readonly etatFranchi: InscriptionEnCours
   readonly userId: UserId
   readonly aCloturer: readonly string[]
   readonly aCreer: readonly LieuActiviteInput[]
-  readonly structuresCarto: ReadonlyMap<string, LieuCarto>
+  readonly structuresCarto: ReadonlyMap<string, StructureCarto>
 }) => Promise<void>
 
 /**

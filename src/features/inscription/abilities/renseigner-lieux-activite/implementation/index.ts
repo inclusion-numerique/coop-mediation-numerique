@@ -2,6 +2,4 @@ export { getInscriptionEtat } from '@/features/inscription/db'
 
 export { enregistrerLeLieuSaisi } from './enregistrer-le-lieu-saisi'
 export { enregistrerReconciliation } from './prisma/enregistrer-reconciliation.mutation'
-export { lireLieuxActiviteExistants } from './prisma/lire-lieux-activite-existants.query'
 export { mediateurFromUser } from './prisma/lire-mediateur-de-utilisateur.query'
-export { trouverStructuresCarto } from './trouver-structures-carto'

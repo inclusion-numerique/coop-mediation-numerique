@@ -4,6 +4,7 @@ import { type Result, success } from '@/libraries/result'
 import {
   renseignerLieuxActivite as deciderRenseignerLieuxActivite,
   type LieuActiviteInput,
+  type LireLieuxActiviteExistants,
   type RenseignerLieuxActiviteError,
   reconcilierLieuxActivite,
   type TrouverStructuresCarto,
@@ -11,8 +12,8 @@ import {
 import {
   enregistrerReconciliation,
   getInscriptionEtat,
-  lireLieuxActiviteExistants,
 } from '../implementation'
+import type { RattacherAuLieuDesire } from '../implementation/prisma/enregistrer-reconciliation.mutation'
 
 /**
  * Cas d'usage « renseigner les lieux d'activité » : lit l'état, délègue la
@@ -21,16 +22,20 @@ import {
  * applique la réconciliation et projette l'état en une transaction. Le domaine
  * reste pur et testé par valeur ; ce use case est couvert en intégration (BDD).
  */
-export const renseignerLieuxActivite = async ({
+export const renseignerLieuxActivite = async <StructureCarto>({
   command: { userId, lieuxActivite },
   trouverStructuresCarto,
+  lireLieuxActiviteExistants,
+  rattacherAuLieuDesire,
   maintenant,
 }: {
   readonly command: {
     readonly userId: UserId
     readonly lieuxActivite: readonly LieuActiviteInput[]
   }
-  readonly trouverStructuresCarto: TrouverStructuresCarto
+  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
+  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
+  readonly rattacherAuLieuDesire: RattacherAuLieuDesire<StructureCarto>
   readonly maintenant: Date
 }): Promise<Result<void, RenseignerLieuxActiviteError>> => {
   const decision = deciderRenseignerLieuxActivite(
@@ -56,7 +61,7 @@ export const renseignerLieuxActivite = async ({
       .filter(onlyDefinedAndNotNull),
   )
 
-  await enregistrerReconciliation({
+  await enregistrerReconciliation(rattacherAuLieuDesire)({
     etatFranchi: decision.data.etatFranchi,
     userId,
     aCloturer,

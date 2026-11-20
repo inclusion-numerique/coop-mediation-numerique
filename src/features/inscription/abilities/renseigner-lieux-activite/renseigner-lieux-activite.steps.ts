@@ -16,10 +16,17 @@ import {
   trackLieuActivite,
 } from '@/features/inscription/inscription.cucumber'
 import {
+  activitesEnCoursDeLUtilisateur,
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
+  rattacherAuLieuDesire,
 } from '@/features/lieux-activite'
 import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
+
+const lieuxDeLaCoop = {
+  lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
+  rattacherAuLieuDesire,
+}
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({
@@ -270,6 +277,7 @@ When('je renseigne ce lieu comme lieu d’activité', async () => {
       ],
     },
     trouverStructuresCarto: async () => new Map(),
+    ...lieuxDeLaCoop,
     maintenant: new Date(),
   })
   assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -293,6 +301,7 @@ When('je renseigne un nouveau lieu nommé {string}', async (nom: string) => {
       ],
     },
     trouverStructuresCarto: async () => new Map(),
+    ...lieuxDeLaCoop,
     maintenant: new Date(),
   })
   assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -319,6 +328,7 @@ When(
         ],
       },
       trouverStructuresCarto: async () => new Map(),
+      ...lieuxDeLaCoop,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -342,6 +352,7 @@ When(
         ],
       },
       trouverStructuresCarto: async () => new Map(),
+      ...lieuxDeLaCoop,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -367,6 +378,7 @@ When(
         ],
       },
       trouverStructuresCarto: async () => new Map(),
+      ...lieuxDeLaCoop,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -394,6 +406,7 @@ When(
         lieuxActivite: [nouveauLieu, nouveauLieu],
       },
       trouverStructuresCarto: async () => new Map(),
+      ...lieuxDeLaCoop,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -445,6 +458,7 @@ When(
         ],
       },
       trouverStructuresCarto: async () => new Map(),
+      ...lieuxDeLaCoop,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -531,6 +545,7 @@ When(
         ],
       },
       trouverStructuresCarto: async () => new Map(),
+      ...lieuxDeLaCoop,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
