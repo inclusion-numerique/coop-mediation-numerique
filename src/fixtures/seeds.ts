@@ -3,11 +3,9 @@ import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtur
 import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import {
-  equipeCoordonnee,
-  equipeCordonneeIds,
-  invitationsEquipe,
-  membresDeLEquipeCoordonnee,
-  quitterEquipe,
+  coordinationDeLEquipe,
+  departsDeLEquipe,
+  invitationsDeLEquipe,
 } from '@/features/equipe/fixtures/equipeCoordonnee'
 import { upsertCoordinationFixtures } from '@/features/equipe/fixtures/upsertCoordinationFixture'
 import { upsertInvitationEquipeFixtures } from '@/features/equipe/fixtures/upsertInvitationEquipeFixture'
@@ -35,6 +33,10 @@ import {
   teamMediateurs,
 } from '@/features/utilisateurs/fixtures/users'
 import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscritAvecTout'
+import {
+  equipeCoordonnee,
+  membresDeLEquipeCoordonnee,
+} from '@/features/utilisateurs/fixtures/users/equipeCoordonnee'
 import { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 import { output } from '@/libraries/fixtures/output'
@@ -82,6 +84,11 @@ export const deleteAll = async (transaction: Prisma.TransactionClient) => {
   return tables.map(({ table_name }) => table_name)
 }
 
+const equipeDeDemonstration = {
+  coordinateurId: coordinateurInscritAvecToutCoordinateurId,
+  membres: membresDeLEquipeCoordonnee,
+}
+
 export const seed = async (transaction: Prisma.TransactionClient) => {
   await semerLesLieuxDeDemonstration(transaction)
   await semerLesEmployeusesDeDemonstration(transaction, {
@@ -126,16 +133,17 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
 
   const allCoordinations = [
     ...coordinations,
-    {
-      coordinateurId: coordinateurInscritAvecToutCoordinateurId,
-      mediateurIds: equipeCordonneeIds,
-    },
+    coordinationDeLEquipe(equipeDeDemonstration),
   ]
   await upsertCoordinationFixtures(transaction)(allCoordinations)
 
-  await upsertMediateurCoordonneFixtures(transaction)(quitterEquipe)
+  await upsertMediateurCoordonneFixtures(transaction)(
+    departsDeLEquipe(equipeDeDemonstration),
+  )
 
-  await upsertInvitationEquipeFixtures(transaction)(invitationsEquipe)
+  await upsertInvitationEquipeFixtures(transaction)(
+    invitationsDeLEquipe(equipeDeDemonstration),
+  )
 
   await upsertCraFixtures({
     transaction,
