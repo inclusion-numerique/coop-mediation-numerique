@@ -1,5 +1,4 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
-import { mediateque } from '@/fixtures/structures'
 import type { Prisma } from '@/generated/prisma/client'
 
 export type GivenMediateurInput = {
@@ -8,7 +7,6 @@ export type GivenMediateurInput = {
   email: string
   id: string
   mediateurId: string
-  enActiviteId: string
   emploiId: string
 }
 
@@ -18,7 +16,6 @@ export const givenMediateur = ({
   email,
   id,
   mediateurId,
-  enActiviteId,
   emploiId,
 }: GivenMediateurInput) =>
   givenUser({
@@ -37,18 +34,6 @@ export const givenMediateur = ({
         },
         create: {
           id: mediateurId,
-          enActivite: {
-            connectOrCreate: {
-              where: {
-                id: enActiviteId,
-              },
-              create: {
-                id: enActiviteId,
-                structureId: mediateque.id,
-                debut: new Date(),
-              },
-            },
-          },
         },
       },
     },

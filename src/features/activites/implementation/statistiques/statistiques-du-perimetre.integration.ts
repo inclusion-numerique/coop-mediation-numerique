@@ -2,9 +2,17 @@ import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
+import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
+import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
+import {
+  mediateque,
+  semerLesLieuxDeDemonstration,
+  structureEmployeuse,
+} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
 import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
+import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/users'
 import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import {
   mediateurAvecActivite,
@@ -14,7 +22,6 @@ import {
   mediateurSansActivites,
   mediateurSansActivitesMediateurId,
 } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
-import { mediateque, seedStructures } from '@/fixtures/structures'
 import { Prisma } from '@/generated/prisma/client'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
@@ -50,8 +57,12 @@ import { statistiquesDuPerimetre } from './statistiques-du-perimetre'
 import { rassembler } from './statistiques-fournies'
 
 const demonstration = {
+  employeuse: { structureCoopId: structureEmployeuse.id },
+  semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
+    mediateursDesPersonas,
+  ),
   semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration,
-  semerLesCras: semerLesCrasDeDemonstration,
+  semerLesCras: semerLesCrasDeDemonstration({ mediateque }),
   semerLesCoordinations: semerLesCoordinationsDeDemonstration,
 }
 
@@ -247,11 +258,15 @@ const expectEnum = <T extends string>(
 
 describe('statistiques du périmètre d’un médiateur', () => {
   beforeAll(async () => {
-    await seedStructures(prismaClient)
+    await semerLesLieuxDeDemonstration(prismaClient)
+    await semerLesEmployeusesDeDemonstration(prismaClient, {
+      structureEmployeuse,
+      mediateque,
+    })
     await resetFixtureUser(mediateurAvecActivite, demonstration, false)
     await resetFixtureUser(mediateurSansActivites, demonstration, false)
     await resetFixtureUser(conseillerNumerique, demonstration, false)
-    await seedPersonnesMain(prismaClient, [
+    await seedPersonnesMain(prismaClient, demonstration.employeuse, [
       mediateurAvecActivite,
       mediateurSansActivites,
       conseillerNumerique,

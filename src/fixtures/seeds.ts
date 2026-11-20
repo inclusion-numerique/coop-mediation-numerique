@@ -1,30 +1,40 @@
-import {
-  fixtureCrasCollectifs,
-  fixtureCrasDemarchesAdministratives,
-  fixtureCrasIndividuels,
-} from '@/features/activites/fixtures/activites'
+import { crasDeDemonstration } from '@/features/activites/fixtures/activites'
 import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtures'
 import { fixtureBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
+import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import {
   equipeCoordonnee,
   equipeCordonneeIds,
   invitationsEquipe,
+  membresDeLEquipeCoordonnee,
   quitterEquipe,
 } from '@/features/equipe/fixtures/equipeCoordonnee'
 import { upsertCoordinationFixtures } from '@/features/equipe/fixtures/upsertCoordinationFixture'
 import { upsertInvitationEquipeFixtures } from '@/features/equipe/fixtures/upsertInvitationEquipeFixture'
 import { upsertMediateurCoordonneFixtures } from '@/features/equipe/fixtures/upsertMediateurCoordonneFixture'
+import {
+  activitesDeLEquipeCoordonnee,
+  activitesDesEquipesProduit,
+  activitesDesPersonas,
+  semerLesActivitesDansLesLieux,
+} from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
+import {
+  mediateque,
+  semerLesLieuxDeDemonstration,
+  structureEmployeuse,
+} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
 import { upsertUserFixtures } from '@/features/utilisateurs/fixtures/upsertUserFixture'
 import {
   coordinations,
   fixtureUsers,
+  mediateursDesEquipesProduit,
+  mediateursDesPersonas,
   rdvServicePublicStagingUsers,
   teamAdministrateurs,
   teamMediateurs,
 } from '@/features/utilisateurs/fixtures/users'
 import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscritAvecTout'
-import { seedStructures } from '@/fixtures/structures'
 import { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 import { output } from '@/libraries/fixtures/output'
@@ -73,7 +83,11 @@ export const deleteAll = async (transaction: Prisma.TransactionClient) => {
 }
 
 export const seed = async (transaction: Prisma.TransactionClient) => {
-  await seedStructures(transaction)
+  await semerLesLieuxDeDemonstration(transaction)
+  await semerLesEmployeusesDeDemonstration(transaction, {
+    structureEmployeuse,
+    mediateque,
+  })
 
   await upsertUserFixtures(transaction)('user', fixtureUsers)
 
@@ -102,6 +116,12 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
 
   await upsertUserFixtures(transaction)('equipe user', equipeCoordonnee)
 
+  await semerLesActivitesDansLesLieux(transaction, [
+    ...activitesDesPersonas(mediateursDesPersonas),
+    ...activitesDesEquipesProduit(mediateursDesEquipesProduit),
+    ...activitesDeLEquipeCoordonnee(membresDeLEquipeCoordonnee),
+  ])
+
   const allCoordinations = [
     ...coordinations,
     {
@@ -117,16 +137,18 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
 
   await upsertCraFixtures({
     transaction,
-    crasIndividuels: fixtureCrasIndividuels,
-    crasDemarchesAdministratives: fixtureCrasDemarchesAdministratives,
-    crasCollectifs: fixtureCrasCollectifs,
+    ...crasDeDemonstration({ mediateque }),
   })
 
-  await seedPersonnesMain(transaction, [
-    ...fixtureUsers,
-    ...teamAdministrateurs,
-    ...teamMediateurs,
-    ...rdvServicePublicStagingUsers,
-    ...equipeCoordonnee,
-  ])
+  await seedPersonnesMain(
+    transaction,
+    { structureCoopId: structureEmployeuse.id },
+    [
+      ...fixtureUsers,
+      ...teamAdministrateurs,
+      ...teamMediateurs,
+      ...rdvServicePublicStagingUsers,
+      ...equipeCoordonnee,
+    ],
+  )
 }

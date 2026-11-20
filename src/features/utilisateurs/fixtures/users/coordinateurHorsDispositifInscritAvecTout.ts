@@ -1,10 +1,9 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
-import { centreSocial, mediateque } from '@/fixtures/structures'
 
 export const coordinateurHorsDispositifInscritAvecToutCoordinateurId =
   'aa792475-7201-473a-af4a-7d3236539bfd'
 
-const coordinateurHorsDispositifInscritAvecToutMediateurId =
+export const coordinateurHorsDispositifInscritAvecToutMediateurId =
   '63c5708d-fb96-48d4-a356-250c150c06de'
 
 export const coordinateurHorsDispositifInscritAvecTout = givenUser({
@@ -32,30 +31,6 @@ export const coordinateurHorsDispositifInscritAvecTout = givenUser({
       },
       create: {
         id: coordinateurHorsDispositifInscritAvecToutMediateurId,
-        enActivite: {
-          connectOrCreate: [
-            {
-              where: {
-                id: '088db964-eb01-4738-bd4c-511fbe2eda65',
-              },
-              create: {
-                id: '088db964-eb01-4738-bd4c-511fbe2eda65',
-                structureId: mediateque.id,
-                debut: new Date(),
-              },
-            },
-            {
-              where: {
-                id: '80a86dd3-b358-4abb-9757-eb23b0fb32e4',
-              },
-              create: {
-                id: '80a86dd3-b358-4abb-9757-eb23b0fb32e4',
-                structureId: centreSocial.id,
-                debut: new Date(),
-              },
-            },
-          ],
-        },
       },
     },
   },

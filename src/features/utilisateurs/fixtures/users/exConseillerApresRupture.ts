@@ -1,7 +1,6 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
-import { mediateque } from '@/fixtures/structures'
 
-const exConseillerApresRuptureMediateurId =
+export const exConseillerApresRuptureMediateurId =
   '594f05c4-47d8-4d4a-9d52-26396da59e5a'
 
 export const exConseillerApresRupture = givenUser({
@@ -23,18 +22,6 @@ export const exConseillerApresRupture = givenUser({
       create: {
         id: exConseillerApresRuptureMediateurId,
         isVisible: true,
-        enActivite: {
-          connectOrCreate: {
-            where: {
-              id: '01e3e68a-b42b-4d00-bcb7-e51c5f682371',
-            },
-            create: {
-              id: '01e3e68a-b42b-4d00-bcb7-e51c5f682371',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },

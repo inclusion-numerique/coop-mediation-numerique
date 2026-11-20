@@ -5,8 +5,14 @@ import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer
 import { withAdmin, withAuth } from '@/features/authentification'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
+import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
+import {
+  mediateque,
+  structureEmployeuse,
+} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { reinitialiserUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
+import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/users'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const reinitialiserUneFixtureAction = actionBuilder()
@@ -17,8 +23,12 @@ export const reinitialiserUneFixtureAction = actionBuilder()
     fromResult(
       ({ input }) =>
         reinitialiserUneFixture(input.utilisateurId, {
+          employeuse: { structureCoopId: structureEmployeuse.id },
+          semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
+            mediateursDesPersonas,
+          ),
           semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration,
-          semerLesCras: semerLesCrasDeDemonstration,
+          semerLesCras: semerLesCrasDeDemonstration({ mediateque }),
           semerLesCoordinations: semerLesCoordinationsDeDemonstration,
         }),
       {

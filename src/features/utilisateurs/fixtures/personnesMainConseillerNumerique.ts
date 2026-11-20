@@ -4,9 +4,12 @@ import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtur
 import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/users/conseillerSansLieuInscription'
 import { coordinateurInscription } from '@/features/utilisateurs/fixtures/users/coordinateurInscription'
 import { contratRompuDeLExConseiller } from '@/features/utilisateurs/fixtures/users/exConseillerApresRupture'
-import { structureEmployeuse } from '@/fixtures/structures'
 import type { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
+
+export type EmployeuseDeDemonstration = {
+  readonly structureCoopId: string
+}
 
 /**
  * Les conseillers numériques de fixtures se déclaraient par `isConseillerNumerique: true` sur la
@@ -58,11 +61,12 @@ export const refleterCoordinateurDansMain = async (
 
 export const garantirAffectationIdposte = async (
   transaction: Prisma.TransactionClient,
+  employeuse: EmployeuseDeDemonstration,
   coopId: string,
 ): Promise<void> => {
   const structureAdministrativeMain =
     await transaction.structureAdministrativeMain.findFirst({
-      where: { structureCoopId: structureEmployeuse.id },
+      where: { structureCoopId: employeuse.structureCoopId },
       select: { id: true },
     })
   if (!structureAdministrativeMain) return
@@ -96,6 +100,7 @@ const contratsRompus = [contratRompuDeLExConseiller]
 
 export const garantirContratRompu = async (
   transaction: Prisma.TransactionClient,
+  employeuse: EmployeuseDeDemonstration,
   coopId: string,
 ): Promise<void> => {
   const contratRompu = contratsRompus.find(
@@ -105,7 +110,7 @@ export const garantirContratRompu = async (
 
   const structureAdministrativeMain =
     await transaction.structureAdministrativeMain.findFirst({
-      where: { structureCoopId: structureEmployeuse.id },
+      where: { structureCoopId: employeuse.structureCoopId },
       select: { id: true },
     })
 
@@ -132,11 +137,12 @@ export const garantirContratRompu = async (
 
 export const garantirAffectationEmployeuse = async (
   transaction: Prisma.TransactionClient,
+  employeuse: EmployeuseDeDemonstration,
   coopId: string,
 ): Promise<void> => {
   const structureAdministrativeMain =
     await transaction.structureAdministrativeMain.findFirst({
-      where: { structureCoopId: structureEmployeuse.id },
+      where: { structureCoopId: employeuse.structureCoopId },
       select: { id: true },
     })
   if (!structureAdministrativeMain) return
@@ -181,6 +187,7 @@ const idsPresentsDansCoop = async (
 
 export const seedPersonnesMain = async (
   transaction: Prisma.TransactionClient,
+  employeuse: EmployeuseDeDemonstration,
   utilisateurs: readonly UserFixture[],
 ) => {
   const employes = utilisateurs
@@ -197,12 +204,12 @@ export const seedPersonnesMain = async (
   const estPresent = (coopId: string) => presents.has(coopId)
 
   await enSerie(employes.filter(estPresent), (coopId) =>
-    garantirAffectationEmployeuse(transaction, coopId),
+    garantirAffectationEmployeuse(transaction, employeuse, coopId),
   )
 
   // Passe 2 — affectation idposte vers la SA main de structureEmployeuse, pour tout CN de fixture.
   await enSerie(idsConseillersNumeriques().filter(estPresent), (coopId) =>
-    garantirAffectationIdposte(transaction, coopId),
+    garantirAffectationIdposte(transaction, employeuse, coopId),
   )
 
   // Passe 3 — le rôle coordinateur, que la coop déclare et que `main` doit porter.
@@ -210,6 +217,6 @@ export const seedPersonnesMain = async (
 
   await enSerie(
     contratsRompus.filter(({ coopId }) => estPresent(coopId)),
-    ({ coopId }) => garantirContratRompu(transaction, coopId),
+    ({ coopId }) => garantirContratRompu(transaction, employeuse, coopId),
   )
 }

@@ -1,6 +1,5 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscritAvecTout'
-import { mediateque } from '@/fixtures/structures'
 import { mergeUuids } from '@/libraries/fixtures/mergeUuids'
 
 const mediateurInviteEnAttenteId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -22,16 +21,6 @@ const mediateurInviteEnAttente = givenUser({
       where: { id: mediateurInviteEnAttenteId },
       create: {
         id: mediateurInviteEnAttenteId,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'c3d4e5f6-a7b8-9012-cdef-123456789012' },
-            create: {
-              id: 'c3d4e5f6-a7b8-9012-cdef-123456789012',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },
@@ -59,16 +48,6 @@ const conseillerNumeriqueActif = givenUser({
       create: {
         id: conseillerNumeriqueActifId,
         derniereCreationActivite: new Date(),
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'a7b8c9d0-e1f2-3456-0123-567890123456' },
-            create: {
-              id: 'a7b8c9d0-e1f2-3456-0123-567890123456',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },
@@ -95,16 +74,6 @@ const mediateurActif = givenUser({
       create: {
         id: mediateurActifId,
         derniereCreationActivite: new Date(),
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'e1f2a3b4-c5d6-7890-4567-901234567890' },
-            create: {
-              id: 'e1f2a3b4-c5d6-7890-4567-901234567890',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },
@@ -139,16 +108,6 @@ const conseillerNumeriqueInactif = givenUser({
         id: conseillerNumeriqueInactifMediateurId,
         creation: sixMonthsAgo,
         derniereCreationActivite: sixMonthsAgo,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'c5d6e7f8-a9b0-1234-8901-345678901234' },
-            create: {
-              id: 'c5d6e7f8-a9b0-1234-8901-345678901234',
-              structureId: mediateque.id,
-              debut: sixMonthsAgo,
-            },
-          },
-        },
       },
     },
   },
@@ -178,16 +137,6 @@ const mediateurInactif = givenUser({
         id: mediateurInactifMediateurId,
         creation: sixMonthsAgo,
         derniereCreationActivite: sixMonthsAgo,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'a9b0c1d2-e3f4-5678-2345-789012345678' },
-            create: {
-              id: 'a9b0c1d2-e3f4-5678-2345-789012345678',
-              structureId: mediateque.id,
-              debut: sixMonthsAgo,
-            },
-          },
-        },
       },
     },
   },
@@ -213,16 +162,6 @@ const mediateurAQuitte = givenUser({
       where: { id: mediateurAQuitteId },
       create: {
         id: mediateurAQuitteId,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'e3f4a5b6-c7d8-9012-6789-123456789012' },
-            create: {
-              id: 'e3f4a5b6-c7d8-9012-6789-123456789012',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },
@@ -249,16 +188,6 @@ const conseillerNumeriqueAQuitte = givenUser({
       where: { id: conseillerNumeriqueAQuitteId },
       create: {
         id: conseillerNumeriqueAQuitteId,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'c7d8e9f0-a1b2-3456-0123-567890123456' },
-            create: {
-              id: 'c7d8e9f0-a1b2-3456-0123-567890123456',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },
@@ -287,16 +216,6 @@ const mediateurProfilSupprime = givenUser({
       where: { id: mediateurProfilSupprimeId },
       create: {
         id: mediateurProfilSupprimeId,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'a1b2c3d4-e5f6-7890-4567-901234567890' },
-            create: {
-              id: 'a1b2c3d4-e5f6-7890-4567-901234567890',
-              structureId: mediateque.id,
-              debut: sixMonthsAgo,
-            },
-          },
-        },
       },
     },
   },
@@ -327,16 +246,6 @@ const conseillerNumeriqueProfilSupprime = givenUser({
       where: { id: conseillerNumeriqueProfilSupprimeId },
       create: {
         id: conseillerNumeriqueProfilSupprimeId,
-        enActivite: {
-          connectOrCreate: {
-            where: { id: 'e5f6a7b8-c9d0-1234-8901-234567890123' },
-            create: {
-              id: 'e5f6a7b8-c9d0-1234-8901-234567890123',
-              structureId: mediateque.id,
-              debut: sixMonthsAgo,
-            },
-          },
-        },
       },
     },
   },
@@ -354,6 +263,18 @@ export const equipeCoordonnee = [
   mediateurProfilSupprime,
   conseillerNumeriqueProfilSupprime,
 ]
+
+export const membresDeLEquipeCoordonnee = {
+  inviteEnAttente: mediateurInviteEnAttenteId,
+  conseillerNumeriqueActif: conseillerNumeriqueActifId,
+  mediateurActif: mediateurActifId,
+  conseillerNumeriqueInactif: conseillerNumeriqueInactifMediateurId,
+  mediateurInactif: mediateurInactifMediateurId,
+  mediateurAQuitte: mediateurAQuitteId,
+  conseillerNumeriqueAQuitte: conseillerNumeriqueAQuitteId,
+  mediateurProfilSupprime: mediateurProfilSupprimeId,
+  conseillerNumeriqueProfilSupprime: conseillerNumeriqueProfilSupprimeId,
+}
 
 export const equipeCordonneeIds = [
   conseillerNumeriqueActifId,

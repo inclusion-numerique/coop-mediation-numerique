@@ -1,8 +1,4 @@
-import {
-  fixtureCrasCollectifs,
-  fixtureCrasDemarchesAdministratives,
-  fixtureCrasIndividuels,
-} from '@/features/activites/fixtures/activites'
+import type { CrasDeDemonstration } from '@/features/activites/fixtures/activites'
 import type { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 
@@ -13,9 +9,9 @@ export const upsertCraFixtures = async ({
   crasIndividuels,
 }: {
   transaction: Prisma.TransactionClient
-  crasIndividuels: typeof fixtureCrasIndividuels
-  crasDemarchesAdministratives: typeof fixtureCrasDemarchesAdministratives
-  crasCollectifs: typeof fixtureCrasCollectifs
+  crasIndividuels: CrasDeDemonstration['crasIndividuels']
+  crasDemarchesAdministratives: CrasDeDemonstration['crasDemarchesAdministratives']
+  crasCollectifs: CrasDeDemonstration['crasCollectifs']
 }) => {
   const allCras = [
     ...crasIndividuels,

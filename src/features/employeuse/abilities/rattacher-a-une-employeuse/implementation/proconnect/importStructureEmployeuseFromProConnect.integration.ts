@@ -4,15 +4,26 @@ import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/prisma/rattacher-depuis-siret.mutation'
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/proconnect/importStructureEmployeuseFromProConnect'
+import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
+import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
+import {
+  mediateque,
+  semerLesLieuxDeDemonstration,
+  structureEmployeuse,
+} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
+import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/users'
 import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
-import { seedStructures } from '@/fixtures/structures'
 
 const demonstration = {
+  employeuse: { structureCoopId: structureEmployeuse.id },
+  semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
+    mediateursDesPersonas,
+  ),
   semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration,
-  semerLesCras: semerLesCrasDeDemonstration,
+  semerLesCras: semerLesCrasDeDemonstration({ mediateque }),
   semerLesCoordinations: semerLesCoordinationsDeDemonstration,
 }
 
@@ -50,7 +61,11 @@ describe('importStructureEmployeuseFromProConnect', () => {
   const state = { proconnectMainId: 0, otherMainId: 0 }
 
   beforeAll(async () => {
-    await seedStructures(prismaClient)
+    await semerLesLieuxDeDemonstration(prismaClient)
+    await semerLesEmployeusesDeDemonstration(prismaClient, {
+      structureEmployeuse,
+      mediateque,
+    })
 
     // Résidu d'un run précédent interrompu : la clé (siret, dénomination) est unique.
     await prismaClient.personneAffectationEmploiMain.deleteMany({

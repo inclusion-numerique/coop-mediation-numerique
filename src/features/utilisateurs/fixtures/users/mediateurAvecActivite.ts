@@ -1,5 +1,4 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
-import { mediateque } from '@/fixtures/structures'
 
 const mediateurAvecActiviteUserId = 'd10844c6-b6de-402a-a68d-f8328b1d1b0c'
 
@@ -24,18 +23,6 @@ export const mediateurAvecActivite = givenUser({
       create: {
         id: mediateurAvecActiviteMediateurId,
         derniereCreationActivite: new Date(),
-        enActivite: {
-          connectOrCreate: {
-            where: {
-              id: '4bad4ee5-f446-4739-ae93-9974d81aa0c0',
-            },
-            create: {
-              id: '4bad4ee5-f446-4739-ae93-9974d81aa0c0',
-              structureId: mediateque.id,
-              debut: new Date(),
-            },
-          },
-        },
       },
     },
   },

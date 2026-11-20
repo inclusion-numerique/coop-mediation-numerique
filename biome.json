@@ -251,7 +251,10 @@
       }
     },
     {
-      "includes": ["src/features/**/*.integration.ts"],
+      "includes": [
+        "src/features/**/*.integration.ts",
+        "src/features/**/*.e2e.ts"
+      ],
       "linter": {
         "rules": {
           "style": {
@@ -263,7 +266,8 @@
                     "group": [
                       "@/features/lieux-activite/*",
                       "@/features/lieux-activite/*/**",
-                      "!@/features/lieux-activite/ui"
+                      "!@/features/lieux-activite/ui",
+                      "!@/features/lieux-activite/fixtures/*"
                     ],
                     "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
                   }

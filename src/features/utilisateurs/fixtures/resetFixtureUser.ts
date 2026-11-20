@@ -1,5 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
+  type EmployeuseDeDemonstration,
   garantirAffectationEmployeuse,
   garantirAffectationIdposte,
   garantirContratRompu,
@@ -18,6 +19,10 @@ type Coordination = {
 }
 
 export type DonneesDeDemonstration = {
+  readonly employeuse: EmployeuseDeDemonstration
+  readonly semerLesActivitesDansLesLieux: (
+    mediateurId: string,
+  ) => Promise<unknown>
   readonly semerLesBeneficiaires: (mediateurId: string) => Promise<unknown>
   readonly semerLesCras: (mediateurId: string) => Promise<unknown>
   readonly semerLesCoordinations: (
@@ -199,18 +204,30 @@ export const resetFixtureUser = async (
   // Le dispositif conseiller numérique n'est plus une colonne : une fixture CC recréée doit
   // retrouver son affectation `idposte`, sans quoi la dérivation la voit hors dispositif.
   if (userFixture.isConseillerNumerique) {
-    await garantirAffectationIdposte(prismaClient, userFixture.id)
+    await garantirAffectationIdposte(
+      prismaClient,
+      demonstration.employeuse,
+      userFixture.id,
+    )
   }
 
   if (userFixture.employeDeLaStructureEmployeuse) {
-    await garantirAffectationEmployeuse(prismaClient, userFixture.id)
+    await garantirAffectationEmployeuse(
+      prismaClient,
+      demonstration.employeuse,
+      userFixture.id,
+    )
   }
 
   // Le rôle coordinateur vient de `main` depuis ADR-002 : une fixture qui le déclare côté coop doit
   // le voir reflété, sinon le parcours d'inscription la prend pour un simple conseiller.
   await refleterCoordinateurDansMain(prismaClient)
 
-  await garantirContratRompu(prismaClient, userFixture.id)
+  await garantirContratRompu(
+    prismaClient,
+    demonstration.employeuse,
+    userFixture.id,
+  )
 
   await prismaClient.session.createMany({
     data: sessions,
@@ -221,6 +238,7 @@ export const resetFixtureUser = async (
    */
   if (isMediateur(resetedUser)) {
     const mediateurId = resetedUser.mediateur.id
+    await demonstration.semerLesActivitesDansLesLieux(mediateurId)
     await demonstration.semerLesBeneficiaires(mediateurId)
     await demonstration.semerLesCras(mediateurId)
 
