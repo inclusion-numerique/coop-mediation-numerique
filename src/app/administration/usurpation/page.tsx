@@ -1,8 +1,8 @@
 import { reinitialiserUneFixtureAction } from '@/app/_actions/utilisateurs/reinitialiser-une-fixture.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
+import { environnementServeur } from '@/configuration/environnement/serveur'
+import { estMain } from '@/configuration/projet/deploiement'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
 import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui'
 import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
@@ -28,8 +28,8 @@ const Page = async () => (
     >
       <UsurpationPage
         comptesDeTest={await comptesDeTest()}
-        usurpationLibre={ServerWebAppConfig.Sudo.usurpation}
-        enProduction={PublicWebAppConfig.isMain}
+        usurpationLibre={environnementServeur.SUDO_USURPATION}
+        enProduction={estMain}
         reinitialiser={(utilisateurId) => (
           <BoutonReinitialiser utilisateurId={utilisateurId} />
         )}

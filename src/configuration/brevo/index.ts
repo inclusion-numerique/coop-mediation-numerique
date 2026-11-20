@@ -1,5 +1,4 @@
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { environnementServeur } from '@/configuration/environnement/serveur'
+import { estMain } from '@/configuration/projet/deploiement'
 
-export const brevoActif = () =>
-  PublicWebAppConfig.isMain && !ServerWebAppConfig.isE2e
+export const brevoActif = () => estMain && !environnementServeur.IS_E2E

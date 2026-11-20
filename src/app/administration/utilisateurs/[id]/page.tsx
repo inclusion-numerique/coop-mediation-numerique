@@ -9,8 +9,8 @@ import { changerLesRolesAction } from '@/app/_actions/utilisateurs/changer-les-r
 import { deconnecterUnUtilisateurAction } from '@/app/_actions/utilisateurs/deconnecter-un-utilisateur.action'
 import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-compte.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
@@ -188,7 +188,7 @@ const Page = async (props: {
                               user={etatDeLInscription(fiche)}
                             />
                           ),
-                          usurpation: ServerWebAppConfig.Sudo.usurpation ? (
+                          usurpation: environnementServeur.SUDO_USURPATION ? (
                             <BoutonUsurper
                               utilisateurId={fiche.id}
                               taille="small"

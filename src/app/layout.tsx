@@ -9,6 +9,7 @@ import {
   DsfrHead,
   getHtmlAttributes,
 } from '@/configuration/dsfr/server-only-index'
+import { estMain } from '@/configuration/projet/deploiement'
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { Matomo } from '@/configuration/telemetry/event-tracker/Matomo'
 import { EnvInformation } from '@/features/navigation/ui/EnvInformation'
@@ -18,7 +19,7 @@ import Toaster from '@/libraries/ui/toast/Toaster'
 
 export const metadata: Metadata = {
   title: PublicWebAppConfig.projectTitle,
-  robots: PublicWebAppConfig.isMain ? 'index, follow' : 'noindex, nofollow',
+  robots: estMain ? 'index, follow' : 'noindex, nofollow',
   description: PublicWebAppConfig.projectTitle,
 }
 

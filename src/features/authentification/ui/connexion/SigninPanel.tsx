@@ -1,5 +1,5 @@
 import { Route } from 'next'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { branche, estPreview } from '@/configuration/projet/deploiement'
 import {
   authenticationViaEmailMagicLink,
   authenticationViaProconnect,
@@ -43,15 +43,14 @@ const SigninPanel = ({
     )}
     {authenticationViaEmailMagicLink && (
       <>
-        {PublicWebAppConfig.isPreview && (
+        {estPreview && (
           <p>
             La connexion avec ProConnect est uniquement disponible sur les
             environnement de production <i>main</i> et de recette <i>dev</i>.
             <br />
             <br />
-            Sur cette environnement de preview{' '}
-            <i>{PublicWebAppConfig.Branch}</i>, vous pouvez vous connecter avec
-            votre email.
+            Sur cette environnement de preview <i>{branche}</i>, vous pouvez
+            vous connecter avec votre email.
           </p>
         )}
         <EmailSigninForm callbackUrl={callbackUrl} />

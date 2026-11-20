@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { traiterNotificationRdvAvec } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
@@ -28,7 +28,7 @@ export const POST = async (request: NextRequest) => {
       !signatureValide({
         corpsBrut,
         signature: request.headers.get(ENTETE_SIGNATURE_WEBHOOK),
-        secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
+        secret: environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
       })
     ) {
       journaliserWebhook('signature refusée')

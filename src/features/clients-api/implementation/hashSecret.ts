@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 
 /**
  * Hashes a secret using HMAC with SHA-256.
@@ -8,12 +8,12 @@ import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
  * @returns The hexadecimal representation of the hashed secret.
  */
 export const hashSecret = (secret: string): string => {
-  if (!ServerWebAppConfig.Security.hmacSecretKey) {
+  if (!environnementServeur.HMAC_SECRET_KEY) {
     throw new Error('HMAC_SECRET_KEY is not set')
   }
 
   return crypto
-    .createHmac('sha256', ServerWebAppConfig.Security.hmacSecretKey)
+    .createHmac('sha256', environnementServeur.HMAC_SECRET_KEY)
     .update(secret)
     .digest('hex')
 }

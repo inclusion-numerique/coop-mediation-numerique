@@ -1,4 +1,4 @@
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import {
   type RechercheApiEntrepriseQueryParams,
   type RechercheApiEntrepriseRetryOptions,
@@ -11,6 +11,6 @@ export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,
   retryOptions?: RechercheApiEntrepriseRetryOptions,
 ): Promise<RechercheApiResponse> =>
-  ServerWebAppConfig.isE2e
+  environnementServeur.IS_E2E
     ? rechercheApiEntrepriseE2e(queryParams)
     : rechercherSurLApi(queryParams, retryOptions)

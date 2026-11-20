@@ -1,7 +1,7 @@
 'use server'
 
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { withAdmin, withAuth } from '@/features/authentification'
 import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementation/session/getSessionUser'
@@ -27,7 +27,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
           usurpateurId: user.id,
           jetonDeSession: await getAuthenticatedSessionToken(),
           portee: PorteeUsurpation(
-            ServerWebAppConfig.Sudo.usurpation
+            environnementServeur.SUDO_USURPATION
               ? 'TousLesComptes'
               : 'FixturesSeulement',
           ),
