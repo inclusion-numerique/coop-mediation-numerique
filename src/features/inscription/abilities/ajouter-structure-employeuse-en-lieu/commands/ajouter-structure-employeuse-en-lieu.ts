@@ -9,12 +9,13 @@ import {
 import { EmployeuseId } from '../domain/employeuse-id'
 import type {
   ConsulterEmployeuseActuelle,
+  DetacherDuLieuDecrit,
   Geocodage,
   GeocoderLAdresse,
+  RattacherAuLieuDecrit,
 } from '../domain/ports'
 import {
-  delierStructureEmployeuseEnLieu,
-  lierStructureEmployeuseEnLieu,
+  lieuDepuisEmployeuse,
   lireLAdresseDeLEmployeuse,
 } from '../implementation'
 
@@ -27,6 +28,8 @@ import {
 export type PortsDeMaterialisation = {
   readonly geocoderLAdresse: GeocoderLAdresse
   readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
+  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit
+  readonly detacherDuLieuDecrit: DetacherDuLieuDecrit
 }
 
 /**
@@ -73,9 +76,14 @@ export const ajouterStructureEmployeuseEnLieu = async (
 
   const { employeuse } = actuelle
   const structureEmployeuseId = EmployeuseId(employeuse.id)
+  const trace = { userId, structureId: employeuse.id }
 
   if (!estLieuActivite) {
-    await delierStructureEmployeuseEnLieu({ userId, employeuse })
+    await ports.detacherDuLieuDecrit({
+      userId,
+      lieu: lieuDepuisEmployeuse(employeuse),
+      trace,
+    })
     return success<void>(undefined)
   }
 
@@ -90,10 +98,10 @@ export const ajouterStructureEmployeuseEnLieu = async (
   if (geocodage._tag === 'AdresseInconnue')
     return failure(AdresseNonReconnue(structureEmployeuseId))
 
-  await lierStructureEmployeuseEnLieu({
+  await ports.rattacherAuLieuDecrit({
     userId,
-    employeuse,
-    adresseBan: geocodage.adresse,
+    lieu: lieuDepuisEmployeuse(employeuse, geocodage.adresse),
+    trace,
   })
 
   return success<void>(undefined)

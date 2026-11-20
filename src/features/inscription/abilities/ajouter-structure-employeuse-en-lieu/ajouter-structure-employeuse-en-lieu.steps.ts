@@ -16,6 +16,10 @@ import {
   seedEmployeuseMain,
   seedLieuActivite,
 } from '@/features/inscription/inscription.cucumber'
+import {
+  detacherDuLieuDecrit,
+  rattacherAuLieuDecrit,
+} from '@/features/lieux-activite'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
@@ -65,7 +69,12 @@ const refus: { tag: string | null } = { tag: null }
 const resoudre = (userId: UserId, estLieuActivite: boolean) =>
   ajouterStructureEmployeuseEnLieu(
     { userId, estLieuActivite },
-    { geocoderLAdresse, consulterEmployeuseActuelle },
+    {
+      geocoderLAdresse,
+      consulterEmployeuseActuelle,
+      rattacherAuLieuDecrit,
+      detacherDuLieuDecrit,
+    },
   )
 
 const declarerPour = (userId: UserId) => async (estLieuActivite: boolean) => {

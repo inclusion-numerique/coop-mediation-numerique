@@ -5,5 +5,7 @@ export type {
 } from './domain'
 export {
   ajouterDesLieuxActivite,
+  detacherDuLieuDecrit,
   rattacherAuLieu,
+  rattacherAuLieuDecrit,
 } from './implementation'

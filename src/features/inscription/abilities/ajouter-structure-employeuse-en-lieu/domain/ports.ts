@@ -28,15 +28,39 @@ export type ConsulterEmployeuseActuelle = (input: {
   readonly userId: UserId
 }) => Promise<{ readonly employeuse: EmployeuseLue } | null>
 
-export type LierStructureEmployeuseEnLieu = (input: {
+type LieuDecrit = {
+  readonly nom: string
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee: string | null
+  readonly banId?: string
+  readonly latitude?: number
+  readonly longitude?: number
+  readonly complementAdresse: null
+  readonly siret: string | null
+  readonly synchronisationSiret: Date | null
+  readonly rna: string | null
+  readonly nomReferent: string | null
+  readonly courrielReferent: string | null
+  readonly telephoneReferent: string | null
+}
+
+type TraceDeLEmployeuse = {
   readonly userId: UserId
-  readonly employeuse: EmployeuseLue
-  readonly adresseBan: AdresseBanData
+  readonly structureId: number
+}
+
+export type RattacherAuLieuDecrit = (input: {
+  readonly userId: UserId
+  readonly lieu: LieuDecrit
+  readonly trace: TraceDeLEmployeuse
 }) => Promise<void>
 
-export type DelierStructureEmployeuseEnLieu = (input: {
+export type DetacherDuLieuDecrit = (input: {
   readonly userId: UserId
-  readonly employeuse: EmployeuseLue
+  readonly lieu: LieuDecrit
+  readonly trace: TraceDeLEmployeuse
 }) => Promise<void>
 
 export type LireLAdresseDeLEmployeuse = (

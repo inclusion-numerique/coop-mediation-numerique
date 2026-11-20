@@ -1,9 +1,11 @@
 export {
   ajouterDesLieuxActivite,
   depuisLePanier,
+  detacherDuLieuDecrit,
   type LieuCarto,
   type LieuDemande,
   rattacherAuLieu,
+  rattacherAuLieuDecrit,
 } from './abilities/ajouter-des-lieux-activite'
 
 export { findCartoStructuresByIds } from './abilities/ajouter-des-lieux-activite/implementation/entrepot/structures-carto'
@@ -37,13 +39,6 @@ export { adresseSaisie, localisationSaisie } from './domain/saisie'
 export { TriDesLieux } from './domain/tri-des-lieux'
 export { UserId } from './domain/user-id'
 export {
-  lieuCorrele,
-  preparerCorrele,
-} from './implementation/prisma/lieu-correle'
-
-export {
   avecIdentifiantCarto,
-  ecrireLeLieuAuRegistre,
-  identiteDuLieu,
   inscriptionPourLIdentifiantCarto,
 } from './implementation/prisma/registre'
