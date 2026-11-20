@@ -1,14 +1,36 @@
 import { v4 } from 'uuid'
 import type { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
-import { genres } from '@/features/beneficiaire/domain/genre'
-import { statutsSociaux } from '@/features/beneficiaire/domain/statut-social'
-import { tranchesAge } from '@/features/beneficiaire/domain/tranche-age'
 import type {
   Genre,
   Prisma,
   StatutSocial,
   TrancheAge,
 } from '@/generated/prisma/client'
+
+const genres = [
+  'Masculin',
+  'Feminin',
+  'NonCommunique',
+] as const satisfies readonly Genre[]
+
+const statutsSociaux = [
+  'Retraite',
+  'SansEmploi',
+  'EnEmploi',
+  'Scolarise',
+  'NonCommunique',
+] as const satisfies readonly StatutSocial[]
+
+const tranchesAge = [
+  'SoixanteDixPlus',
+  'SoixanteSoixanteNeuf',
+  'QuaranteCinquanteNeuf',
+  'VingtCinqTrenteNeuf',
+  'DixHuitVingtQuatre',
+  'DouzeDixHuit',
+  'MoinsDeDouze',
+  'NonCommunique',
+] as const satisfies readonly TrancheAge[]
 
 export const createCounterUuid = (root: string, index: number): string =>
   root.slice(0, -5) + index.toString(10).padStart(5, '0')
