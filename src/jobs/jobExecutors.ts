@@ -2,7 +2,6 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
-import { executeAlignerLeRegistreDesPersonnes } from './aligner-le-registre-des-personnes/executeAlignerLeRegistreDesPersonnes'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
@@ -22,7 +21,6 @@ export const jobExecutors: {
   'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
-  'aligner-le-registre-des-personnes': executeAlignerLeRegistreDesPersonnes,
   'retirer-les-roles-vacants': executeRetirerLesRolesVacants,
   'sync-rdvsp-data': executeSyncRdvspData,
   'synchroniser-les-roles-brevo': executeSynchroniserLesRolesBrevo,

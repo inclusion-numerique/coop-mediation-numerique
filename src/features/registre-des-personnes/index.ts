@@ -1,7 +1,4 @@
-export { aUneAutreSource } from './implementation/prisma/alignement'
 export {
-  type ApercuDeLaSynchronisation,
-  apercuDeLaSynchronisation,
   ensurePersonneMain,
   retirerDuRegistre,
   synchroniserPersonne,
