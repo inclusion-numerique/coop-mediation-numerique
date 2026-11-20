@@ -110,11 +110,6 @@ export const rassembler = async (enCours: StatistiquesEnCours) => {
   }
 }
 
-export const statistiquesFournies = (
-  demande: Parameters<typeof statistiquesEnCours>[0],
-  options: Parameters<typeof statistiquesEnCours>[1],
-) => rassembler(statistiquesEnCours(demande, options))
-
 export type StatistiquesFournies = Awaited<ReturnType<typeof rassembler>>
 
 export const toutesLesStatistiques = (enCours: StatistiquesEnCours) =>

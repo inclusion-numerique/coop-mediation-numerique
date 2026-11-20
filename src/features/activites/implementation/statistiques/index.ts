@@ -6,7 +6,6 @@ export {
   rassembler,
   type StatistiquesEnCours,
   type StatistiquesFournies,
-  statistiquesFournies,
   toutesLesStatistiques,
 } from './statistiques-fournies'
 export {
