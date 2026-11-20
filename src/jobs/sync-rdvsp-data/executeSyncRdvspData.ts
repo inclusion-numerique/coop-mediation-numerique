@@ -1,59 +1,36 @@
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
-import { getAdministrationRdvspData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
-import { peutEtreSynchronise } from '@/features/rdvsp/domain/sante-compte'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { synchroniserTousLesComptesRdvAvec } from '@/features/rdvsp/abilities/synchroniser-tous-les-comptes-rdv/implementation'
 import { output } from '@/libraries/console/output'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 
-const declencher = declencherSynchronisationAvec(
-  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+const synchroniserTousLesComptes = synchroniserTousLesComptesRdvAvec(
+  declencherSynchronisationAvec(
+    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  ),
 )
 
 export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
-  output('Starting RDVSP data sync for all eligible users...')
+  const bilan = await synchroniserTousLesComptes(new Date())
 
-  const { users } = await getAdministrationRdvspData()
-
-  const eligibleUsers = users.filter(
-    (utilisateur) =>
-      peutEtreSynchronise(utilisateur.sante) && utilisateur.rdvAccount,
-  )
-
-  output(
-    `Found ${users.length} users with RDV account; ${eligibleUsers.length} eligible for sync`,
-  )
-
-  const synced = await eligibleUsers.reduce(async (precedent, user) => {
-    const acquis = await precedent
-
+  if (bilan.echecs.length > 0) {
     output(
-      `Syncing user ${user.id} (${user.email ?? user.name ?? 'unknown'})...`,
+      bilan.echecs
+        .map(
+          ({ utilisateurId, raison }) =>
+            `Error syncing user ${utilisateurId}: ${raison}`,
+        )
+        .join('\n'),
     )
-
-    const utilisateurId = UtilisateurCoopId(user.id)
-
-    const resultat = await declencher({
-      demandeur: { id: utilisateurId, role: 'User' },
-      utilisateurId,
-      seulementSansWebhook: false,
-    })
-
-    if (!resultat.success) {
-      output(`Error syncing user ${user.id}: ${resultat.error._tag}`)
-      return acquis
-    }
-
-    return acquis + 1
-  }, Promise.resolve(0))
+  }
 
   output(
-    `Completed RDVSP sync. Synced ${synced}/${eligibleUsers.length} eligible users`,
+    `Completed RDVSP sync. Synced ${bilan.synchronises}/${bilan.eligibles} eligible users out of ${bilan.comptes} with RDV account`,
   )
 
   return {
-    totalUsers: users.length,
-    eligibleUsers: eligibleUsers.length,
-    synced,
+    totalUsers: bilan.comptes,
+    eligibleUsers: bilan.eligibles,
+    synced: bilan.synchronises,
   }
 }
