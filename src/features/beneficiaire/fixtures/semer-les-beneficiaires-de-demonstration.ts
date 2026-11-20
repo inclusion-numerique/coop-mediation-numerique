@@ -1,9 +1,13 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { fixtureBeneficiaires } from './beneficiaires'
+import {
+  beneficiairesDeDemonstration,
+  type MediateursDesBeneficiaires,
+} from './beneficiaires'
 
-export const semerLesBeneficiairesDeDemonstration = (mediateurId: string) =>
-  prismaClient.beneficiaire.createMany({
-    data: fixtureBeneficiaires.filter(
-      (beneficiaire) => beneficiaire.mediateurId === mediateurId,
-    ),
-  })
+export const semerLesBeneficiairesDeDemonstration =
+  (mediateurs: MediateursDesBeneficiaires) => (mediateurId: string) =>
+    prismaClient.beneficiaire.createMany({
+      data: beneficiairesDeDemonstration(mediateurs).tous.filter(
+        (beneficiaire) => beneficiaire.mediateurId === mediateurId,
+      ),
+    })

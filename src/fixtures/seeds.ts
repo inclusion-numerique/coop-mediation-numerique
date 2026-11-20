@@ -1,6 +1,6 @@
 import { crasDeDemonstration } from '@/features/activites/fixtures/activites'
 import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtures'
-import { fixtureBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
+import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import {
   equipeCoordonnee,
@@ -101,17 +101,19 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     ...rdvServicePublicStagingUsers,
   ])
 
-  await enSerie(fixtureBeneficiaires, (beneficiaire) =>
-    transaction.beneficiaire
-      .upsert({
-        where: { id: beneficiaire.id },
-        create: beneficiaire,
-        update: beneficiaire,
-      })
-      .catch((error) => {
-        output.error('Error upserting beneficiaire fixture', beneficiaire)
-        throw error
-      }),
+  await enSerie(
+    beneficiairesDeDemonstration(mediateursDesPersonas).tous,
+    (beneficiaire) =>
+      transaction.beneficiaire
+        .upsert({
+          where: { id: beneficiaire.id },
+          create: beneficiaire,
+          update: beneficiaire,
+        })
+        .catch((error) => {
+          output.error('Error upserting beneficiaire fixture', beneficiaire)
+          throw error
+        }),
   )
 
   await upsertUserFixtures(transaction)('equipe user', equipeCoordonnee)

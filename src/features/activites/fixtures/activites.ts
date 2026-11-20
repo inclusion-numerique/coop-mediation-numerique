@@ -4,16 +4,7 @@ import {
   givenCraDemarcheAdministrative,
   givenCraIndividuel,
 } from '@/features/activites/fixtures/givenCra'
-import {
-  beneficiaireAnonymeConseillerNumerique,
-  beneficiaireAnonymeMediateurAvecActivite,
-  beneficiaireMaximaleConseillerNumerique,
-  beneficiaireMaximaleCoordinateur,
-  beneficiaireMaximaleMediateurAvecActivite,
-  beneficiaireMinimaleConseillerNumerique,
-  beneficiaireMinimaleCoordinateur,
-  beneficiaireMinimaleMediateurAvecActivite,
-} from '@/features/beneficiaire/fixtures/beneficiaires'
+import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
 import { conseillerNumeriqueMediateurId } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import { coordinateurInscritAvecToutMediateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscritAvecTout'
 import { mediateurAvecActiviteMediateurId } from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
@@ -26,7 +17,7 @@ export type LieuxDesCras = {
 const mediateurAvecActiviteCrasIndividuels = (lieux: LieuxDesCras) => [
   givenCraIndividuel({
     id: 'bcb0ad21-5be2-417a-9ff2-d8b4dd9c62b0',
-    beneficiaireId: beneficiaireMinimaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.minimaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [Thematique.Sante, Thematique.CultureNumerique],
     date: new Date('2024-06-15'),
@@ -35,7 +26,7 @@ const mediateurAvecActiviteCrasIndividuels = (lieux: LieuxDesCras) => [
   }),
   givenCraIndividuel({
     id: 'f005e2ec-b974-4ccb-a09a-ea17382dc1de',
-    beneficiaireId: beneficiaireMinimaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.minimaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [Thematique.InsertionProfessionnelle, Thematique.Sante],
     date: new Date('2024-08-02'),
@@ -49,7 +40,7 @@ const mediateurAvecActiviteCrasIndividuels = (lieux: LieuxDesCras) => [
   }),
   givenCraIndividuel({
     id: 'b0f901a3-38b0-4c30-89b8-ace056801ca2',
-    beneficiaireId: beneficiaireMaximaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [Thematique.Email, Thematique.Parentalite],
     date: new Date('2024-07-28'),
@@ -60,7 +51,7 @@ const mediateurAvecActiviteCrasIndividuels = (lieux: LieuxDesCras) => [
   }),
   givenCraIndividuel({
     id: 'b72eb129-86e7-4cda-8238-5a57c79999a1',
-    beneficiaireId: beneficiaireMaximaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [Thematique.Email],
     date: new Date('2024-07-28'),
@@ -78,7 +69,7 @@ const mediateurAvecActiviteCrasDemarchesAdministratives = (
 ) => [
   givenCraDemarcheAdministrative({
     id: '1c083c39-beec-4606-ba1a-f1cdf173e5d4',
-    beneficiaireId: beneficiaireMinimaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.minimaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -91,7 +82,7 @@ const mediateurAvecActiviteCrasDemarchesAdministratives = (
   }),
   givenCraDemarcheAdministrative({
     id: '42b5be6b-5140-48e3-9c56-af7b6dda04f0',
-    beneficiaireId: beneficiaireMaximaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -106,7 +97,7 @@ const mediateurAvecActiviteCrasDemarchesAdministratives = (
   }),
   givenCraDemarcheAdministrative({
     id: 'c96812d9-cbfe-4260-9430-77f9befd22aa',
-    beneficiaireId: beneficiaireAnonymeMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.anonymeMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -123,7 +114,7 @@ const mediateurAvecActiviteCrasDemarchesAdministratives = (
   }),
   givenCraDemarcheAdministrative({
     id: '36e41a5c-95ad-405d-8b59-8be586017924',
-    beneficiaireId: beneficiaireMaximaleMediateurAvecActivite.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleMediateurAvecActivite,
     mediateurId: mediateurAvecActiviteMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -146,9 +137,9 @@ const mediateurAvecActiviteCrasCollectifs = (lieux: LieuxDesCras) => [
     date: new Date('2024-08-04'),
     creation: new Date('2024-08-04T08:00:00'),
     beneficiaireIds: [
-      beneficiaireMinimaleMediateurAvecActivite,
-      beneficiaireMaximaleMediateurAvecActivite,
-    ].map((b) => b.id),
+      referencesDesBeneficiaires.minimaleMediateurAvecActivite,
+      referencesDesBeneficiaires.maximaleMediateurAvecActivite,
+    ],
     participantsAnonymes: participantsAnonymesDefault,
     materiel: ['Ordinateur', 'Tablette', 'Autre'],
     structureEmployeuseId: lieux.mediateque.id,
@@ -162,9 +153,9 @@ const mediateurAvecActiviteCrasCollectifs = (lieux: LieuxDesCras) => [
     titreAtelier:
       'Conduites à risque sur internet et les bons usages du numérique',
     beneficiaireIds: [
-      beneficiaireMinimaleMediateurAvecActivite,
-      beneficiaireMaximaleMediateurAvecActivite,
-    ].map((b) => b.id),
+      referencesDesBeneficiaires.minimaleMediateurAvecActivite,
+      referencesDesBeneficiaires.maximaleMediateurAvecActivite,
+    ],
     participantsAnonymes: {
       ...participantsAnonymesDefault,
       total: 10,
@@ -182,7 +173,7 @@ const mediateurAvecActiviteCrasCollectifs = (lieux: LieuxDesCras) => [
 const conseillerNumeriqueCrasIndividuels = (lieux: LieuxDesCras) => [
   givenCraIndividuel({
     id: 'fa05c7eb-a4a5-4b90-bc59-8c83eea045ea',
-    beneficiaireId: beneficiaireMinimaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.minimaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [Thematique.Sante, Thematique.CultureNumerique],
     date: new Date('2024-06-15'),
@@ -191,7 +182,7 @@ const conseillerNumeriqueCrasIndividuels = (lieux: LieuxDesCras) => [
   }),
   givenCraIndividuel({
     id: 'f8ffef47-ef81-46fa-a5c3-49f8aadef935',
-    beneficiaireId: beneficiaireMinimaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.minimaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [Thematique.InsertionProfessionnelle, Thematique.Sante],
     date: new Date('2024-08-02'),
@@ -205,7 +196,7 @@ const conseillerNumeriqueCrasIndividuels = (lieux: LieuxDesCras) => [
   }),
   givenCraIndividuel({
     id: '4edab41b-f924-431f-b59e-def20528d1ef',
-    beneficiaireId: beneficiaireMaximaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [Thematique.Email, Thematique.Parentalite],
     date: new Date('2024-07-28'),
@@ -216,7 +207,7 @@ const conseillerNumeriqueCrasIndividuels = (lieux: LieuxDesCras) => [
   }),
   givenCraIndividuel({
     id: 'a0e12e9c-46c7-4f83-86bd-824d18113bf6',
-    beneficiaireId: beneficiaireMaximaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [Thematique.Email, Thematique.Sante],
     date: new Date('2024-07-28'),
@@ -234,7 +225,7 @@ const conseillerNumeriqueCrasDemarchesAdministratives = (
 ) => [
   givenCraDemarcheAdministrative({
     id: '26c0e764-1959-4ff5-b447-fd086e9120a7',
-    beneficiaireId: beneficiaireMinimaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.minimaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -247,7 +238,7 @@ const conseillerNumeriqueCrasDemarchesAdministratives = (
   }),
   givenCraDemarcheAdministrative({
     id: 'bd477c86-9222-4997-bc7c-f109f401ccd8',
-    beneficiaireId: beneficiaireMaximaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -262,7 +253,7 @@ const conseillerNumeriqueCrasDemarchesAdministratives = (
   }),
   givenCraDemarcheAdministrative({
     id: '863d8cda-e020-4379-b222-5ae468ce6b4b',
-    beneficiaireId: beneficiaireAnonymeConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.anonymeConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -279,7 +270,7 @@ const conseillerNumeriqueCrasDemarchesAdministratives = (
   }),
   givenCraDemarcheAdministrative({
     id: '3c91bec2-8828-4f52-801a-d9be09c2ae80',
-    beneficiaireId: beneficiaireMaximaleConseillerNumerique.id,
+    beneficiaireId: referencesDesBeneficiaires.maximaleConseillerNumerique,
     mediateurId: conseillerNumeriqueMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
@@ -302,9 +293,9 @@ const conseillerNumeriqueCrasCollectifs = (lieux: LieuxDesCras) => [
     date: new Date('2024-08-04'),
     creation: new Date('2024-08-04T08:00:00'),
     beneficiaireIds: [
-      beneficiaireMinimaleConseillerNumerique,
-      beneficiaireMaximaleConseillerNumerique,
-    ].map((b) => b.id),
+      referencesDesBeneficiaires.minimaleConseillerNumerique,
+      referencesDesBeneficiaires.maximaleConseillerNumerique,
+    ],
     participantsAnonymes: participantsAnonymesDefault,
     materiel: ['Ordinateur', 'Tablette', 'Autre'],
     structureEmployeuseId: lieux.mediateque.id,
@@ -318,9 +309,9 @@ const conseillerNumeriqueCrasCollectifs = (lieux: LieuxDesCras) => [
     titreAtelier:
       'Conduites à risque sur internet et les bons usages du numérique',
     beneficiaireIds: [
-      beneficiaireMinimaleConseillerNumerique,
-      beneficiaireMaximaleConseillerNumerique,
-    ].map((b) => b.id),
+      referencesDesBeneficiaires.minimaleConseillerNumerique,
+      referencesDesBeneficiaires.maximaleConseillerNumerique,
+    ],
     participantsAnonymes: {
       ...participantsAnonymesDefault,
       total: 10,
@@ -338,8 +329,8 @@ const conseillerNumeriqueCrasCollectifs = (lieux: LieuxDesCras) => [
 const coordinateurCrasIndividuels = (lieux: LieuxDesCras) => [
   givenCraIndividuel({
     id: '4ffd3052-bb5d-4289-897e-45aac4333af2',
-    beneficiaireId: beneficiaireMinimaleCoordinateur.id,
-    mediateurId: beneficiaireMinimaleCoordinateur.mediateurId,
+    beneficiaireId: referencesDesBeneficiaires.minimaleCoordinateur,
+    mediateurId: coordinateurInscritAvecToutMediateurId,
     thematiques: [Thematique.Sante, Thematique.CultureNumerique],
     date: new Date('2024-06-15'),
     creation: new Date('2024-06-15T09:30:00'),
@@ -350,8 +341,8 @@ const coordinateurCrasIndividuels = (lieux: LieuxDesCras) => [
 const coordinateurCrasDemarchesAdministratives = (lieux: LieuxDesCras) => [
   givenCraDemarcheAdministrative({
     id: 'd250af76-6ad2-4407-87a4-840ad6e593ed',
-    beneficiaireId: beneficiaireMinimaleCoordinateur.id,
-    mediateurId: beneficiaireMinimaleCoordinateur.mediateurId,
+    beneficiaireId: referencesDesBeneficiaires.minimaleCoordinateur,
+    mediateurId: coordinateurInscritAvecToutMediateurId,
     thematiques: [
       Thematique.AideAuxDemarchesAdministratives,
       Thematique.SocialSante,
@@ -371,9 +362,9 @@ const coordinateurCrasCollectifs = (lieux: LieuxDesCras) => [
     date: new Date('2024-08-04'),
     creation: new Date('2024-08-04T08:00:00'),
     beneficiaireIds: [
-      beneficiaireMinimaleCoordinateur,
-      beneficiaireMaximaleCoordinateur,
-    ].map((b) => b.id),
+      referencesDesBeneficiaires.minimaleCoordinateur,
+      referencesDesBeneficiaires.maximaleCoordinateur,
+    ],
     participantsAnonymes: participantsAnonymesDefault,
     materiel: ['Ordinateur', 'Tablette', 'Autre'],
     structureEmployeuseId: lieux.mediateque.id,

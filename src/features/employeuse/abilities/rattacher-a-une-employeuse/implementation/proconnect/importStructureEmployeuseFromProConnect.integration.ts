@@ -22,7 +22,9 @@ const demonstration = {
   semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
     mediateursDesPersonas,
   ),
-  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration,
+  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
+    mediateursDesPersonas,
+  ),
   semerLesCras: semerLesCrasDeDemonstration({ mediateque }),
   semerLesCoordinations: semerLesCoordinationsDeDemonstration,
 }
