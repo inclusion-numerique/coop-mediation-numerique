@@ -5,7 +5,7 @@ import { compileMjml } from './mjml'
 
 const outputDirectory = path.resolve(
   getDirname(import.meta.url),
-  '../var/email',
+  '../../../var/email',
 )
 
 async function outputDirectoryIfItDoesNotExist(): Promise<void> {
