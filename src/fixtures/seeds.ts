@@ -1,6 +1,9 @@
 import { crasDeDemonstration } from '@/features/activites/fixtures/activites'
 import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtures'
-import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires'
+import {
+  beneficiairesDeDemonstration,
+  referencesDesBeneficiaires,
+} from '@/features/beneficiaire/fixtures/beneficiaires'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import {
   coordinationDeLEquipe,
@@ -147,7 +150,11 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
 
   await upsertCraFixtures({
     transaction,
-    ...crasDeDemonstration({ mediateque }),
+    ...crasDeDemonstration({
+      mediateurs: mediateursDesPersonas,
+      beneficiaires: referencesDesBeneficiaires,
+      lieux: { mediateque },
+    }),
   })
 
   await seedPersonnesMain(

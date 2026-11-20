@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { crasDeDemonstration, type LieuxDesCras } from './activites'
+import { crasDeDemonstration, type ReferencesDesCras } from './activites'
 import { upsertCraFixtures } from './upsertCraFixtures'
 
 const duMediateur =
@@ -8,8 +8,8 @@ const duMediateur =
     activite.mediateurId === mediateurId
 
 export const semerLesCrasDeDemonstration =
-  (lieux: LieuxDesCras) => (mediateurId: string) => {
-    const cras = crasDeDemonstration(lieux)
+  (references: ReferencesDesCras) => (mediateurId: string) => {
+    const cras = crasDeDemonstration(references)
 
     return upsertCraFixtures({
       transaction: prismaClient,

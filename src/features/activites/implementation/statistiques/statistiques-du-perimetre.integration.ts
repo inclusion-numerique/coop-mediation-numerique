@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
@@ -64,7 +65,11 @@ const demonstration = {
   semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
     mediateursDesPersonas,
   ),
-  semerLesCras: semerLesCrasDeDemonstration({ mediateque }),
+  semerLesCras: semerLesCrasDeDemonstration({
+    mediateurs: mediateursDesPersonas,
+    beneficiaires: referencesDesBeneficiaires,
+    lieux: { mediateque },
+  }),
   semerLesCoordinations: semerLesCoordinationsDeDemonstration,
 }
 

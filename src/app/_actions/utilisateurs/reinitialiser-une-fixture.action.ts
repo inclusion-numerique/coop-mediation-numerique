@@ -3,6 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
 import { withAdmin, withAuth } from '@/features/authentification'
+import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
 import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
@@ -30,7 +31,11 @@ export const reinitialiserUneFixtureAction = actionBuilder()
           semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
             mediateursDesPersonas,
           ),
-          semerLesCras: semerLesCrasDeDemonstration({ mediateque }),
+          semerLesCras: semerLesCrasDeDemonstration({
+            mediateurs: mediateursDesPersonas,
+            beneficiaires: referencesDesBeneficiaires,
+            lieux: { mediateque },
+          }),
           semerLesCoordinations: semerLesCoordinationsDeDemonstration,
         }),
       {
