@@ -1,5 +1,4 @@
-import { projectTitle } from '@/configuration/projet/config'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail, projectTitle } from '@/configuration/projet/config'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
@@ -161,14 +160,7 @@ export const ConfidentialitePage = () => (
 
       <p>
         Pour exercer vos droits, vous pouvez nous contacter à :
-        <a
-          href={
-            PublicWebAppConfig.contactEmail &&
-            `mailto:${PublicWebAppConfig.contactEmail}`
-          }
-        >
-          {PublicWebAppConfig.contactEmail}
-        </a>
+        <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>
       </p>
       <p>
         Puisque ce sont des droits personnels, nous ne traiterons votre demande

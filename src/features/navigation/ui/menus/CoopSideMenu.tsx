@@ -5,7 +5,7 @@ import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import styles from '@/features/navigation/ui/menus/CoopSideMenu.module.css'
 import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
 
@@ -164,7 +164,7 @@ const CoopSideMenu = ({
     {
       text: 'Contacter le support',
       linkProps: {
-        href: `mailto:${PublicWebAppConfig.contactEmail}`,
+        href: `mailto:${contactEmail}`,
         className:
           'fr-btn fr-btn--tertiary fr-icon-question-answer-line fr-btn--icon-left fr-width-full',
       },

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 
 export const Support = () => (
   <>
@@ -37,9 +37,7 @@ export const Support = () => (
       </p>
       <div className="fr-text-label--blue-france fr-flex fr-flex-gap-2v fr-align-items-center fr-mb-0">
         <span className="ri-mail-line fr-text--light" aria-hidden />
-        <Link href={`mailto:${PublicWebAppConfig.contactEmail}`}>
-          {PublicWebAppConfig.contactEmail}
-        </Link>
+        <Link href={`mailto:${contactEmail}`}>{contactEmail}</Link>
       </div>
     </div>
   </>

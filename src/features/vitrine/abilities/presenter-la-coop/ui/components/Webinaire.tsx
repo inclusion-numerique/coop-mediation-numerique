@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 
 const Webinaire = () => (
   <div className="fr-background-action-low--blue-france fr-py-6w">
@@ -39,9 +39,7 @@ const Webinaire = () => (
           </p>
           <div className="fr-text--lg fr-text-label--blue-france">
             <span className="ri-mail-line fr-mr-1w" aria-hidden />
-            <Link href={`mailto:${PublicWebAppConfig.contactEmail}`}>
-              {PublicWebAppConfig.contactEmail}
-            </Link>
+            <Link href={`mailto:${contactEmail}`}>{contactEmail}</Link>
           </div>
         </div>
       </div>

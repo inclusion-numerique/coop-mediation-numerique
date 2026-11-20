@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
@@ -24,7 +24,7 @@ export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({
   const resultat = await emailTransport.sendMail({
     to: courriel,
     from: expediteur,
-    replyTo: PublicWebAppConfig.contactEmail,
+    replyTo: contactEmail,
     subject: 'Votre compte va bientôt être supprimé ⚠️',
     text: inactiviteProlongeeAvertissementEmail.text(contenu),
     html: await compileMjml(

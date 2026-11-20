@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
@@ -35,7 +35,7 @@ const envoyer = async ({
   const resultat = await emailTransport.sendMail({
     to: coordinateur,
     from: expediteur,
-    replyTo: PublicWebAppConfig.contactEmail,
+    replyTo: contactEmail,
     subject: sujet(invite),
     text: gabarit.text({ mediateur: invite }),
     html: await compileMjml(gabarit.mjml({ mediateur: invite })),

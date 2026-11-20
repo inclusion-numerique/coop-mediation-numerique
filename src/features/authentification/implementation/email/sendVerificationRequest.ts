@@ -1,6 +1,6 @@
 import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail, projectTitle } from '@/configuration/projet/config'
 import { emailSignin } from '@/features/authentification/implementation/email/emailSignin'
 import { compileMjml } from '@/libraries/emails/mjml'
 
@@ -18,8 +18,8 @@ export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
     const result = await transport.sendMail({
       to: identifier,
       from: provider.from,
-      replyTo: PublicWebAppConfig.contactEmail,
-      subject: `Connexion à ${PublicWebAppConfig.projectTitle}`,
+      replyTo: contactEmail,
+      subject: `Connexion à ${projectTitle}`,
       text: emailSignin.text({ url }),
       html: await compileMjml(emailSignin.mjml({ url })),
     })

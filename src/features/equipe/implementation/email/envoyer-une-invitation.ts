@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
@@ -29,7 +29,7 @@ export const envoyerUneInvitation = async ({
   const resultat = await emailTransport.sendMail({
     to: invitation.reference.email,
     from: expediteur,
-    replyTo: PublicWebAppConfig.contactEmail,
+    replyTo: contactEmail,
     subject:
       'Invitation à rejoindre une équipe sur La Coop de la médiation numérique',
     text: gabarit.text({ url: lien, from: de }),

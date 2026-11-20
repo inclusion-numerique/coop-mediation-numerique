@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { centreAideUrl } from '@/configuration/projet/config'
 
 export const generateMetadata = () => {
-  redirect(PublicWebAppConfig.centreAideUrl)
+  redirect(centreAideUrl)
 }
 
 export default () => null

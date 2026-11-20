@@ -6,24 +6,24 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { brandColor } from '@/libraries/emails/styles'
 
 export const emailSignin = {
   text: ({ url }: { url: string }): string =>
-    `Pour vous connecter à ${PublicWebAppConfig.projectTitle}, merci d'utiliser le lien suivant :\n${url}\n\n`,
+    `Pour vous connecter à ${projectTitle}, merci d'utiliser le lien suivant :\n${url}\n\n`,
   mjml: ({ url }: { url: string }): string =>
     renderToMjml(
       <LayoutWithFooter
         headerLogoOnly
-        title={`Connexion à ${PublicWebAppConfig.projectTitle}`}
+        title={`Connexion à ${projectTitle}`}
         preview="Voici votre lien de connexion sécurisé à usage unique :"
       >
         <MjmlSection paddingTop={0}>
           <MjmlColumn>
             <MjmlText fontWeight="600" fontSize="28px" color={brandColor}>
-              Connexion à {PublicWebAppConfig.projectTitle}
+              Connexion à {projectTitle}
             </MjmlText>
             <MjmlSpacer height="16px" />
             <MjmlText>

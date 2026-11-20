@@ -2,7 +2,6 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { projectTitle } from '@/configuration/projet/config'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import styles from '@/features/navigation/ui/en-tete/Header.module.css'
 import HeaderBackLink from '@/features/navigation/ui/en-tete/HeaderBackLink'
 import { HeaderQuickAccess } from '@/features/navigation/ui/en-tete/HeaderQuickAccess'
@@ -89,7 +88,7 @@ const Header = ({
                     href={accueil}
                     aria-current="page"
                     target="_self"
-                    title={`Accueil - ${PublicWebAppConfig.projectTitle}`}
+                    title={`Accueil - ${projectTitle}`}
                   >
                     <p
                       className={classNames(
@@ -105,7 +104,7 @@ const Header = ({
                           variantStyle,
                         )}
                       />
-                      {PublicWebAppConfig.projectTitle}
+                      {projectTitle}
                     </p>
                   </Link>
                 </div>

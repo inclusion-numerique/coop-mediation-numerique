@@ -8,7 +8,7 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { PropsWithChildren, ReactNode } from 'react'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { projectTitle } from '@/configuration/projet/config'
 import Footer from '@/libraries/emails/components/Footer'
 import Head from '@/libraries/emails/components/Head'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
@@ -66,7 +66,7 @@ const LayoutWithFooter = ({
             </MjmlColumn>
             <MjmlColumn width="65%" verticalAlign="middle">
               <MjmlText padding={0} fontWeight="500" fontSize="18px">
-                {PublicWebAppConfig.projectTitle}
+                {projectTitle}
               </MjmlText>
             </MjmlColumn>
           </MjmlSection>

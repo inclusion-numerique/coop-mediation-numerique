@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { projectTitle } from '@/configuration/projet/config'
 import { connexionImpossibleMessage } from '@/features/authentification/ui/authenticationErrorMessage'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
@@ -21,7 +21,7 @@ const ErrorPage = async ({
       />
       <AuthCard>
         <h2 style={{ textAlign: 'center' }} className="fr-mb-12v">
-          Connexion à {PublicWebAppConfig.projectTitle}
+          Connexion à {projectTitle}
         </h2>
         <div className="fr-alert fr-alert--error fr-alert--sm fr-mb-6v">
           <h6>Connexion impossible</h6>

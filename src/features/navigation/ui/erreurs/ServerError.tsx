@@ -4,7 +4,7 @@ import ovoid from '@codegouvfr/react-dsfr/dsfr/artwork/background/ovoid.svg'
 import technicalError from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/system/technical-error.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { PropsWithChildren, useEffect } from 'react'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
 
 const GenericError = ({
@@ -34,10 +34,7 @@ const GenericError = ({
             <li>
               <a
                 className="fr-btn fr-btn--secondary"
-                href={
-                  PublicWebAppConfig.contactEmail &&
-                  `mailto:${PublicWebAppConfig.contactEmail}`
-                }
+                href={contactEmail && `mailto:${contactEmail}`}
               >
                 Contactez-nous
               </a>

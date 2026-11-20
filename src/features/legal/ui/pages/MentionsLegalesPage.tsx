@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { projectTitle } from '@/configuration/projet/config'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail, projectTitle } from '@/configuration/projet/config'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
@@ -64,14 +63,7 @@ export const MentionsLegalesPage = () => (
       <p>
         Si vous rencontrez un défaut d’accessibilité vous empêchant d’accéder à
         un contenu ou une fonctionnalité du site, merci de nous en faire part:{' '}
-        <a
-          href={
-            PublicWebAppConfig.contactEmail &&
-            `mailto:${PublicWebAppConfig.contactEmail}`
-          }
-        >
-          {PublicWebAppConfig.contactEmail}
-        </a>
+        <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>
       </p>
       <p>
         Si vous n’obtenez pas de réponse rapide de notre part, vous êtes en

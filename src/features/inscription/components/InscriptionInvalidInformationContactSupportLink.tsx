@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 
 const InscriptionInvalidInformationContactSupportLink = ({
   className,
@@ -14,7 +14,7 @@ const InscriptionInvalidInformationContactSupportLink = ({
   >
     <Link
       className={classNames('fr-link fr-link--sm fr-mb-0 ', linkClassName)}
-      href={`mailto:${PublicWebAppConfig.contactEmail}`}
+      href={`mailto:${contactEmail}`}
     >
       Ce ne sont pas vos informations&nbsp;? Contactez le support
     </Link>

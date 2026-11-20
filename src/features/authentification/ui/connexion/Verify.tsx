@@ -1,7 +1,7 @@
 import mailSend from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/digital/mail-send.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { cookies } from 'next/headers'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 
 export const Verify = async () => {
@@ -38,15 +38,7 @@ export const Verify = async () => {
         Vous pouvez fermer cet onglet de navigation.
         <br />
         En cas de problème ou de questions, merci de contacter{' '}
-        <a
-          href={
-            PublicWebAppConfig.contactEmail &&
-            `mailto:${PublicWebAppConfig.contactEmail}`
-          }
-        >
-          {PublicWebAppConfig.contactEmail}
-        </a>
-        .
+        <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>.
       </p>
     </AuthCard>
   )

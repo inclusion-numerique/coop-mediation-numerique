@@ -1,4 +1,4 @@
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
@@ -19,7 +19,7 @@ export const sendRemovedFromLieuEmail = async ({
   const result = await emailTransport.sendMail({
     to: mediateurEmail,
     from: expediteur,
-    replyTo: PublicWebAppConfig.contactEmail,
+    replyTo: contactEmail,
     subject: `Vous avez été retiré du lieu ${structureNom}`,
     text: removedFromLieuEmail.text({
       mediateurFirstname,
