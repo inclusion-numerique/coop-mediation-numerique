@@ -239,3 +239,68 @@ After(async () => {
     where: { id: { in: [semé.premierId, semé.secondId] } },
   })
 })
+
+const scenario: {
+  utilisateurId?: string
+  mediateurId?: string
+  lieux: Set<string>
+} = { lieux: new Set() }
+
+export const utilisateurCourant = (): string => {
+  if (scenario.utilisateurId === undefined)
+    throw new Error('Aucun médiateur semé')
+  return scenario.utilisateurId
+}
+
+export const mediateurCourant = (): string => {
+  if (scenario.mediateurId === undefined)
+    throw new Error('Aucun médiateur semé')
+  return scenario.mediateurId
+}
+
+export const suivreLeLieu = (id: string): void => {
+  scenario.lieux.add(id)
+}
+
+Given('je suis un médiateur', async () => {
+  const utilisateurId = v4()
+  await prismaClient.user.create({
+    data: {
+      id: utilisateurId,
+      email: `lieux-reconnus-${utilisateurId}@example.com`,
+    },
+  })
+  const { id } = await prismaClient.mediateur.create({
+    data: { userId: utilisateurId },
+    select: { id: true },
+  })
+  scenario.utilisateurId = utilisateurId
+  scenario.mediateurId = id
+})
+
+After(async () => {
+  const utilisateurId = scenario.utilisateurId
+  const lieux = [...scenario.lieux]
+  scenario.utilisateurId = undefined
+  scenario.mediateurId = undefined
+  scenario.lieux = new Set()
+  if (utilisateurId === undefined) return
+
+  const rattaches = await prismaClient.mediateurEnActivite.findMany({
+    where: { mediateur: { userId: utilisateurId } },
+    select: { structureId: true },
+  })
+  const tous = [
+    ...new Set([...lieux, ...rattaches.map(({ structureId }) => structureId)]),
+  ]
+
+  await prismaClient.mediateurEnActivite.deleteMany({
+    where: { mediateur: { userId: utilisateurId } },
+  })
+  await prismaClient.mediateur.deleteMany({ where: { userId: utilisateurId } })
+  await prismaClient.user.deleteMany({ where: { id: utilisateurId } })
+  await effacerDuRegistre(tous)
+  await prismaClient.lieuInclusion.deleteMany({
+    where: { id: { in: tous }, mediateursEnActivite: { none: {} } },
+  })
+})

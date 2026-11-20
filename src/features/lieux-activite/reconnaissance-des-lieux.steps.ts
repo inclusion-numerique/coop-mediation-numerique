@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Typologie } from '@/generated/prisma/client'
@@ -13,29 +13,11 @@ import {
 } from './domain/creation/creer-lieu-activite.validation'
 import { MediateurId } from './domain/mediateur-id'
 import { UserId } from './domain/user-id'
-import { effacerDuRegistre } from './lieux-activite.cucumber'
-
-const scenario: {
-  utilisateurId?: string
-  mediateurId?: string
-  lieux: Set<string>
-} = { lieux: new Set() }
-
-const utilisateur = (): string => {
-  if (scenario.utilisateurId === undefined)
-    throw new Error('Aucun médiateur semé')
-  return scenario.utilisateurId
-}
-
-const mediateur = (): string => {
-  if (scenario.mediateurId === undefined)
-    throw new Error('Aucun médiateur semé')
-  return scenario.mediateurId
-}
-
-const trackLieuActivite = (id: string): void => {
-  scenario.lieux.add(id)
-}
+import {
+  mediateurCourant as mediateur,
+  suivreLeLieu as trackLieuActivite,
+  utilisateurCourant as utilisateur,
+} from './lieux-activite.cucumber'
 
 const adresseDeTest = {
   adresse: '1 rue de la Paix',
@@ -103,49 +85,6 @@ const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
     lieu: nouveauLieu(saisie, UserId(utilisateur()), new Date()),
     mediateurId: MediateurId(mediateur()),
   })
-
-Given('je suis un médiateur', async () => {
-  const utilisateurId = v4()
-  await prismaClient.user.create({
-    data: {
-      id: utilisateurId,
-      email: `lieux-reconnus-${utilisateurId}@example.com`,
-    },
-  })
-  const { id } = await prismaClient.mediateur.create({
-    data: { userId: utilisateurId },
-    select: { id: true },
-  })
-  scenario.utilisateurId = utilisateurId
-  scenario.mediateurId = id
-})
-
-After(async () => {
-  const utilisateurId = scenario.utilisateurId
-  const lieux = [...scenario.lieux]
-  scenario.utilisateurId = undefined
-  scenario.mediateurId = undefined
-  scenario.lieux = new Set()
-  if (utilisateurId === undefined) return
-
-  const rattaches = await prismaClient.mediateurEnActivite.findMany({
-    where: { mediateur: { userId: utilisateurId } },
-    select: { structureId: true },
-  })
-  const tous = [
-    ...new Set([...lieux, ...rattaches.map(({ structureId }) => structureId)]),
-  ]
-
-  await prismaClient.mediateurEnActivite.deleteMany({
-    where: { mediateur: { userId: utilisateurId } },
-  })
-  await prismaClient.mediateur.deleteMany({ where: { userId: utilisateurId } })
-  await prismaClient.user.deleteMany({ where: { id: utilisateurId } })
-  await effacerDuRegistre(tous)
-  await prismaClient.lieuInclusion.deleteMany({
-    where: { id: { in: tous }, mediateursEnActivite: { none: {} } },
-  })
-})
 
 let lieuDisponibleId = ''
 

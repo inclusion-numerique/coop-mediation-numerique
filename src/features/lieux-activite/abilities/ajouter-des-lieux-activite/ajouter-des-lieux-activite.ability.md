@@ -191,3 +191,61 @@ dispenserait précisément ce job de le vérifier.
 * When je renseigne un lieu de l’annuaire des entreprises portant un SIRET
 * Then le lieu créé porte ce SIRET, non vérifié
 * And le lieu créé porte l’identifiant BAN de son adresse
+
+## Rule: Se rattacher à un lieu décrit le crée ou le rejoint
+
+Un lieu peut n’être connu que par sa description — une dénomination et une
+adresse reconnue par la Base Adresse Nationale —, comme une structure employeuse
+déclarée lieu d’activité. Le lieu se reconnaît par la sonde de corrélation de la
+feature : il est rejoint s’il existe, et partagé par ceux qui s’y rattachent.
+
+### Scenario: Un lieu décrit que la coop ignore est créé et rattaché
+
+* Given je suis un médiateur
+* When je me rattache au lieu décrit
+* Then je suis rattaché au lieu décrit
+
+### Scenario: Se rattacher deux fois au même lieu décrit ne crée qu’un lieu
+
+* Given je suis un médiateur
+* And je me suis déjà rattaché au lieu décrit
+* When je me rattache au lieu décrit
+* Then le lieu décrit n’existe qu’une fois et je n’y suis rattaché qu’une fois
+
+### Scenario: Deux médiateurs rattachés au même lieu décrit le partagent
+
+* Given je suis un médiateur
+* And un collègue médiateur
+* When je me rattache au lieu décrit
+* And mon collègue se rattache au même lieu décrit
+* Then nous sommes rattachés au même lieu
+
+### Scenario: Un lieu décrit que la coop connaît sous une autre dénomination est rejoint
+
+* Given je suis un médiateur
+* And la coop connaît sous le nom de la commune un lieu décrit comme sa mairie
+* When je me rattache au lieu décrit comme la mairie
+* Then je suis rattaché au lieu que la coop connaissait déjà
+* And ce lieu n’a pas été recréé
+
+## Rule: Se détacher d’un lieu décrit clôt le rattachement
+
+### Scenario: Se détacher d’un lieu décrit clôt le rattachement
+
+* Given je suis un médiateur
+* And je me suis déjà rattaché au lieu décrit
+* When je me détache du lieu décrit
+* Then je ne suis plus rattaché au lieu décrit
+
+## Rule: Le lieu décrit matérialisé s’inscrit au registre de l’Entrepôt
+
+Matérialiser un lieu décrit, c’est poser la fiche des deux côtés dans la même
+transaction. Sans quoi ce lieu n’existerait pour le registre national qu’à sa
+première modification. Rien n’est inscrit quand la sonde a corrélé : on rejoint
+alors une fiche que la coop connaissait déjà.
+
+### Scenario: Le lieu décrit matérialisé paraît au registre
+
+* Given je suis un médiateur
+* When je me rattache au lieu décrit
+* Then le lieu décrit est inscrit au registre
