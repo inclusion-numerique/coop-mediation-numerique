@@ -1,5 +1,5 @@
 import { brevoActif } from '@/configuration/brevo'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { listeDesUtilisateurs } from '@/features/utilisateurs/implementation/brevo/brevo-api'
 import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementation/brevo/deleteBrevoContactIfOrphan'
 import { removeBrevoContactFromList } from '@/features/utilisateurs/implementation/brevo/removeBrevoContactFromList'
 
@@ -18,7 +18,7 @@ export const removeBrevoUserContact = async (
 ): Promise<boolean> => {
   if (!brevoActif()) return false
 
-  await removeBrevoContactFromList(email, ServerWebAppConfig.Brevo.usersListId)
+  await removeBrevoContactFromList(email, listeDesUtilisateurs)
   await deleteBrevoContactIfOrphan(email)
 
   return true

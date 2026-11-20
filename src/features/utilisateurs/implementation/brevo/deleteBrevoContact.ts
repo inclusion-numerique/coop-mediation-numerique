@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { cleApiBrevo } from '@/features/utilisateurs/implementation/brevo/brevo-api'
 import { brevoApiThrottle } from './brevoApiThrottle'
 
 const deleteContactImmediate = async (email: string): Promise<void> => {
@@ -9,7 +9,7 @@ const deleteContactImmediate = async (email: string): Promise<void> => {
       `https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`,
       {
         headers: {
-          'api-key': ServerWebAppConfig.Brevo.apiKey,
+          'api-key': cleApiBrevo,
         },
       },
     )

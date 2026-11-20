@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { cleApiBrevo } from '@/features/utilisateurs/implementation/brevo/brevo-api'
 import { brevoApiThrottle } from './brevoApiThrottle'
 
 const CONTACT_ABSENT_DE_LA_LISTE =
@@ -24,7 +24,7 @@ const removeContactFromListImmediate = async (
       },
       {
         headers: {
-          'api-key': ServerWebAppConfig.Brevo.apiKey,
+          'api-key': cleApiBrevo,
           'Content-Type': 'application/json',
         },
       },

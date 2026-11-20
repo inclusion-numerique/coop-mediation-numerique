@@ -1,6 +1,9 @@
 import axios from 'axios'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  cleApiBrevo,
+  listeDesUtilisateurs,
+} from '@/features/utilisateurs/implementation/brevo/brevo-api'
 import { brevoApiThrottle } from '@/features/utilisateurs/implementation/brevo/brevoApiThrottle'
 import { deleteBrevoContact } from '@/features/utilisateurs/implementation/brevo/deleteBrevoContact'
 import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementation/brevo/deleteBrevoContactIfOrphan'
@@ -22,9 +25,9 @@ const TAILLE_DE_PAGE = 500
 
 const lirePage = brevoApiThrottle(async (offset: number) => {
   const reponse = await axios.get<PageDeContacts>(
-    `https://api.brevo.com/v3/contacts/lists/${ServerWebAppConfig.Brevo.usersListId}/contacts`,
+    `https://api.brevo.com/v3/contacts/lists/${listeDesUtilisateurs}/contacts`,
     {
-      headers: { 'api-key': ServerWebAppConfig.Brevo.apiKey },
+      headers: { 'api-key': cleApiBrevo },
       params: {
         offset,
         limit: TAILLE_DE_PAGE,
@@ -71,7 +74,7 @@ export const contactsBrevoPorts: RetirerLesContactsOrphelinsPorts = {
   retirerLeContactDeLaListe: async (courriel) => {
     const retire = await removeBrevoContactFromList(
       courriel,
-      ServerWebAppConfig.Brevo.usersListId,
+      listeDesUtilisateurs,
     )
     await deleteBrevoContactIfOrphan(courriel)
     return retire ? { _tag: 'Retire' } : { _tag: 'DejaAbsent' }

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { cleApiBrevo } from '@/features/utilisateurs/implementation/brevo/brevo-api'
 import { brevoApiThrottle } from './brevoApiThrottle'
 
 type BrevoContactResponse = {
@@ -18,7 +18,7 @@ const getContactListsImmediate = async (
       `https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`,
       {
         headers: {
-          'api-key': ServerWebAppConfig.Brevo.apiKey,
+          'api-key': cleApiBrevo,
         },
       },
     )
