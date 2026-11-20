@@ -4,13 +4,16 @@ import jwt from 'jsonwebtoken'
 // La carte `exports` de next-auth déclare `./providers/*` mais pas `./providers` seul : le
 // résolveur `bundler` de TypeScript 7 la respecte, contrairement à l'ancien `node10`.
 import type { TokenEndpointHandler } from 'next-auth/providers/oauth'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { proConnectProviderId } from '@/features/authentification/implementation/proconnect/proConnect'
 import { telephoneEnregistrable } from '@/libraries/telephone'
+import {
+  proConnectClientId,
+  proConnectHostname,
+} from './proconnect.configuration'
 
-const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
+const issuer = `https://${proConnectHostname}`
 
 export type ProConnectProfile = {
   sub: string
@@ -36,8 +39,8 @@ export const ProConnectProvider = () =>
     type: 'oauth',
     // Allow an email user to login with Inclusion Connect
     allowDangerousEmailAccountLinking: true,
-    clientId: PublicWebAppConfig.ProConnect.clientId,
-    clientSecret: ServerWebAppConfig.ProConnect.clientSecret,
+    clientId: proConnectClientId,
+    clientSecret: environnementServeur.PROCONNECT_CLIENT_SECRET,
     issuer,
     authorization: {
       url: `${issuer}/api/v2/authorize`,
@@ -57,8 +60,8 @@ export const ProConnectProvider = () =>
       }) => {
         const body = {
           grant_type: 'authorization_code',
-          client_id: PublicWebAppConfig.ProConnect.clientId,
-          client_secret: ServerWebAppConfig.ProConnect.clientSecret,
+          client_id: proConnectClientId,
+          client_secret: environnementServeur.PROCONNECT_CLIENT_SECRET,
           redirect_uri: getServerUrl('/api/auth/callback/proconnect'),
           code: context.params.code || 'undefined',
         }

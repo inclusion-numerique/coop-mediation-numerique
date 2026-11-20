@@ -1,5 +1,5 @@
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import { proConnectHostname } from './proconnect.configuration'
 
 const proconnectSignoutRedirectPath = '/deconnexion/callback'
 
@@ -35,5 +35,5 @@ export const generateProconnectSignoutUrl = ({
     id_token_hint: idTokenHint,
   })
 
-  return `https://${PublicWebAppConfig.ProConnect.hostname}/api/v2/session/end?${queryParams.toString()}`
+  return `https://${proConnectHostname}/api/v2/session/end?${queryParams.toString()}`
 }

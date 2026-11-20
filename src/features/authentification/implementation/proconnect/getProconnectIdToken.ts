@@ -1,7 +1,10 @@
 import axios from 'axios'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
+import {
+  proConnectClientId,
+  proConnectHostname,
+} from './proconnect.configuration'
 
-const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
+const issuer = `https://${proConnectHostname}`
 
 export async function refreshProconnectIdToken(
   refreshToken: string,
@@ -9,7 +12,7 @@ export async function refreshProconnectIdToken(
   try {
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
-      client_id: PublicWebAppConfig.ProConnect.clientId,
+      client_id: proConnectClientId,
       refresh_token: refreshToken,
     }).toString()
 
