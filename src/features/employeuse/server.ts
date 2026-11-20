@@ -21,7 +21,10 @@ import 'server-only'
  * l'importe directement depuis l'ability.
  */
 
-export { consulterEmployeuse } from './abilities/consulter-employeuse/implementation'
+export {
+  consulterEmployeuse,
+  nomDeLEmployeuse,
+} from './abilities/consulter-employeuse/implementation'
 export { consulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-une-date/implementation'
 export { consulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/implementation'
 export { consulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/implementation'

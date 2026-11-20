@@ -1,11 +1,16 @@
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
-import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { nomDeLEmployeuse } from '@/features/employeuse/server'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { LieuFilter } from '@/features/lieux-activite/ui'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
+  optionsDesFiltres,
   ordreDesUtilisateurs,
   rechercherDesUtilisateurs,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
@@ -39,7 +44,11 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
       orderBy: ordreDesUtilisateurs(searchParams),
       maintenant: new Date(),
     }),
-    optionsDesFiltres(filtres),
+    optionsDesFiltres(filtres, {
+      communesEtDepartements: getCommunesAndDepartementsOptions,
+      lieux: getLieuxActiviteOptions,
+      nomDeLEmployeuse,
+    }),
   ])
 
   return (

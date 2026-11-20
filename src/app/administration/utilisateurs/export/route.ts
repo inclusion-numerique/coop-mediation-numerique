@@ -1,12 +1,17 @@
 import type { NextRequest } from 'next/server'
-import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { nomDeLEmployeuse } from '@/features/employeuse/server'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { auteurDeLExport } from '@/features/utilisateurs'
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,
 } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
@@ -32,7 +37,11 @@ export const GET = async (request: NextRequest) => {
       filtres,
       maintenant,
     }),
-    optionsDesFiltres(filtres),
+    optionsDesFiltres(filtres, {
+      communesEtDepartements: getCommunesAndDepartementsOptions,
+      lieux: getLieuxActiviteOptions,
+      nomDeLEmployeuse,
+    }),
   ])
 
   const classeur = classeurDesUtilisateurs({
