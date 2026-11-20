@@ -1,8 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import {
-  communesDesLieux,
-  nombreDeLieuxDuDepartement,
-} from '@/features/lieux-activite'
 import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
 import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 
@@ -12,10 +8,14 @@ import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/l
  * ici — y compris les requêtes de comptage, dont l'oubli avait déjà produit une
  * divergence silencieuse entre la liste et son total (`7e8a3e40`).
  */
+const aucunLieu = async () => 0
+
+const aucuneCommune = async () => ({ communesOptions: [] })
+
 describe('port SQL employeuse — composition contre la base', () => {
   it('le comptage de mon-réseau joint l’employeuse courante', async () => {
     const reseau = await consulterLeReseauDuDepartement('75', {
-      nombreDeLieuxDuDepartement,
+      nombreDeLieuxDuDepartement: aucunLieu,
     })
 
     expect(reseau.success && typeof reseau.data.acteurs).toBe('number')
@@ -25,7 +25,7 @@ describe('port SQL employeuse — composition contre la base', () => {
     const consultation = await listerLesActeursDuDepartement(
       '75',
       {},
-      { communesDesLieux },
+      { communesDesLieux: aucuneCommune },
     )
 
     if (!consultation.success) throw new Error('Département inconnu')
