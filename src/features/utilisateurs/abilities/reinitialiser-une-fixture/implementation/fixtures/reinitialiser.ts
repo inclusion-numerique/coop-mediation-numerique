@@ -5,7 +5,10 @@ import {
   nomAffiche,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
+import {
+  type DonneesDeDemonstration,
+  resetFixtureUser,
+} from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import { fixtureUsers } from '@/features/utilisateurs/fixtures/users'
 
 const estDansLesFixtures = (id: string): boolean =>
@@ -24,5 +27,10 @@ export const estUneFixture = async (
 
 export const reinitialiser = async (
   utilisateurId: string,
+  demonstration: DonneesDeDemonstration,
 ): Promise<NomAffiche> =>
-  nomAffiche(identiteToDomain(await resetFixtureUser({ id: utilisateurId })))
+  nomAffiche(
+    identiteToDomain(
+      await resetFixtureUser({ id: utilisateurId }, demonstration),
+    ),
+  )

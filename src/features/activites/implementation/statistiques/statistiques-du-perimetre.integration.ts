@@ -1,6 +1,8 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
+import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
 import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
@@ -22,6 +24,7 @@ import {
   MediateurId,
   perimetreDuDemandeur,
 } from '../../domain'
+import { semerLesCrasDeDemonstration } from '../../fixtures/semer-les-cras-de-demonstration'
 import { dureeAccompagnementStatisticsRanges } from '../../ui/libelles/duree-accompagnement'
 import { materielLabels, materielValues } from '../../ui/libelles/materiel'
 import {
@@ -45,6 +48,12 @@ import {
 import { typeLieuLabels, typeLieuValues } from '../../ui/libelles/type-lieu'
 import { statistiquesDuPerimetre } from './statistiques-du-perimetre'
 import { rassembler } from './statistiques-fournies'
+
+const demonstration = {
+  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration,
+  semerLesCras: semerLesCrasDeDemonstration,
+  semerLesCoordinations: semerLesCoordinationsDeDemonstration,
+}
 
 type ActivitesFilters = Parameters<typeof criteresDesStatistiques>[0]
 
@@ -239,9 +248,9 @@ const expectEnum = <T extends string>(
 describe('statistiques du périmètre d’un médiateur', () => {
   beforeAll(async () => {
     await seedStructures(prismaClient)
-    await resetFixtureUser(mediateurAvecActivite, false)
-    await resetFixtureUser(mediateurSansActivites, false)
-    await resetFixtureUser(conseillerNumerique, false)
+    await resetFixtureUser(mediateurAvecActivite, demonstration, false)
+    await resetFixtureUser(mediateurSansActivites, demonstration, false)
+    await resetFixtureUser(conseillerNumerique, demonstration, false)
     await seedPersonnesMain(prismaClient, [
       mediateurAvecActivite,
       mediateurSansActivites,

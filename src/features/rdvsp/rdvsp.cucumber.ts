@@ -1,12 +1,5 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-  mediateurAvecActiviteUserId,
-} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
-import { seedStructures } from '@/fixtures/structures'
 import type { Prisma } from '@/generated/prisma/client'
 import { EmailExterne } from './domain/identite'
 import { UtilisateurCoopId } from './domain/utilisateur-coop-id'
@@ -18,8 +11,27 @@ setDefaultTimeout(60_000)
  * Les hooks de cycle de vie vivent ici une seule fois ; les fichiers .steps.ts
  * ne définissent que Given/When/Then et s'appuient sur ces helpers.
  */
-export const testUtilisateurId = UtilisateurCoopId(mediateurAvecActiviteUserId)
-export const testMediateurId = mediateurAvecActiviteMediateurId
+export const testUtilisateurId = UtilisateurCoopId(
+  'e10e5c5f-4713-4a14-bba8-3b6051b3b4a2',
+)
+export const testMediateurId = 'dac49361-bef9-4f9b-a774-387e2e4bf664'
+
+const semerLeMediateurDeTest = async (
+  utilisateurId: string,
+  mediateurId: string,
+  courriel: string,
+) => {
+  await prismaClient.user.upsert({
+    where: { id: utilisateurId },
+    create: { id: utilisateurId, email: courriel, isFixture: true },
+    update: {},
+  })
+  await prismaClient.mediateur.upsert({
+    where: { id: mediateurId },
+    create: { id: mediateurId, userId: utilisateurId },
+    update: {},
+  })
+}
 
 /**
  * Plage réservée aux identifiants de test.
@@ -345,8 +357,11 @@ export const rdvEnBase = async (rdvId: number) =>
   })
 
 BeforeAll({ timeout: 120_000 }, async () => {
-  await seedStructures(prismaClient)
-  await resetFixtureUser(mediateurAvecActivite, false)
+  await semerLeMediateurDeTest(
+    testUtilisateurId,
+    testMediateurId,
+    'rdvsp-cucumber@test.local',
+  )
 })
 
 Before(async () => {

@@ -35,6 +35,11 @@ When('ce compte est réinitialisé', async () => {
   assert.ok(reinitialisation.compteId, 'Aucun compte semé')
   reinitialisation.resultat = await reinitialiserUneFixture(
     reinitialisation.compteId,
+    {
+      semerLesBeneficiaires: async () => undefined,
+      semerLesCras: async () => undefined,
+      semerLesCoordinations: async () => undefined,
+    },
   )
 })
 

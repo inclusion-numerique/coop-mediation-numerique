@@ -2,6 +2,9 @@ import { v4 } from 'uuid'
 import { afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { AdresseIndisponible } from '@/configuration/ban/apiAdresse'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
+import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
+import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
 import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import {
   mediateurAvecActivite,
@@ -10,6 +13,12 @@ import {
 import { seedStructures } from '@/fixtures/structures'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
+
+const demonstration = {
+  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration,
+  semerLesCras: semerLesCrasDeDemonstration,
+  semerLesCoordinations: semerLesCoordinationsDeDemonstration,
+}
 
 const evreux = {
   commune: 'Évreux',
@@ -89,7 +98,7 @@ const seedLinkedBeneficiaire = (commune: {
 describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage commune', () => {
   beforeAll(async () => {
     await seedStructures(prismaClient)
-    await resetFixtureUser(mediateurAvecActivite, false)
+    await resetFixtureUser(mediateurAvecActivite, demonstration, false)
   }, 100_000)
 
   afterEach(async () => {

@@ -1,8 +1,7 @@
 import { givenUser } from '@/features/utilisateurs/fixtures/givenUser'
 import { mediateque } from '@/fixtures/structures'
 
-export const mediateurAvecActiviteUserId =
-  'd10844c6-b6de-402a-a68d-f8328b1d1b0c'
+const mediateurAvecActiviteUserId = 'd10844c6-b6de-402a-a68d-f8328b1d1b0c'
 
 export const mediateurAvecActiviteMediateurId =
   '303381cc-3da7-433d-a553-1a5f76465989'

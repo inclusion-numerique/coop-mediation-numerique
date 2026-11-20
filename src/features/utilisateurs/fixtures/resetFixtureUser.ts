@@ -1,17 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  fixtureCrasCollectifs,
-  fixtureCrasDemarchesAdministratives,
-  fixtureCrasIndividuels,
-} from '@/features/activites/fixtures/activites'
-import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtures'
-import { sessionUserSelect } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { fixtureBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
-import {
-  Coordination,
-  upsertCoordinationFixtures,
-} from '@/features/equipe/fixtures/upsertCoordinationFixture'
-import {
   garantirAffectationEmployeuse,
   garantirAffectationIdposte,
   garantirContratRompu,
@@ -23,6 +11,31 @@ import {
   fixtureUsers,
 } from '@/features/utilisateurs/fixtures/users'
 import type { Session } from '@/generated/prisma/client'
+
+type Coordination = {
+  coordinateurId: string
+  mediateurIds: string[]
+}
+
+export type DonneesDeDemonstration = {
+  readonly semerLesBeneficiaires: (mediateurId: string) => Promise<unknown>
+  readonly semerLesCras: (mediateurId: string) => Promise<unknown>
+  readonly semerLesCoordinations: (
+    coordinations: Coordination[],
+  ) => Promise<unknown>
+}
+
+const compteSelect = {
+  id: true,
+  isFixture: true,
+  firstName: true,
+  lastName: true,
+  name: true,
+  email: true,
+  rdvAccount: { select: { id: true } },
+  mediateur: { select: { id: true } },
+  coordinateur: { select: { id: true } },
+} as const
 
 const isCoordinateur = (resetedUser: {
   coordinateur: { id: string } | null
@@ -52,6 +65,7 @@ const toCoordinationFor =
 
 export const resetFixtureUser = async (
   { id }: { id: string },
+  demonstration: DonneesDeDemonstration,
   processCoordinations: boolean = true,
 ) => {
   const userId = id
@@ -60,7 +74,7 @@ export const resetFixtureUser = async (
     where: {
       id,
     },
-    select: sessionUserSelect,
+    select: compteSelect,
   })
 
   const userFixture = fixtureUsers.find((u) => u.id === userId)
@@ -179,7 +193,7 @@ export const resetFixtureUser = async (
     // Le drapeau `isConseillerNumerique` des fixtures n'est plus une colonne : il pilote le semis de
     // l'affectation `idposte` dans `main` (voir `seedPersonnesMain`), pas la ligne `coop.users`.
     data: sansDrapeauDispositif(userFixture),
-    select: sessionUserSelect,
+    select: compteSelect,
   })
 
   // Le dispositif conseiller numérique n'est plus une colonne : une fixture CC recréée doit
@@ -207,32 +221,11 @@ export const resetFixtureUser = async (
    */
   if (isMediateur(resetedUser)) {
     const mediateurId = resetedUser.mediateur.id
-    await prismaClient.beneficiaire.createMany({
-      data: fixtureBeneficiaires.filter(
-        (b) => resetedUser.mediateur?.id === b.mediateurId,
-      ),
-    })
-
-    const mediateurCraIndividuelFixtures = fixtureCrasIndividuels.filter(
-      ({ activite }) => activite.mediateurId === mediateurId,
-    )
-    const mediateurCraDemarcheAdministrativeFixtures =
-      fixtureCrasDemarchesAdministratives.filter(
-        ({ activite }) => activite.mediateurId === mediateurId,
-      )
-    const mediateurCraCollectifFixtures = fixtureCrasCollectifs.filter(
-      ({ activite }) => activite.mediateurId === mediateurId,
-    )
-
-    await upsertCraFixtures({
-      transaction: prismaClient,
-      crasIndividuels: mediateurCraIndividuelFixtures,
-      crasDemarchesAdministratives: mediateurCraDemarcheAdministrativeFixtures,
-      crasCollectifs: mediateurCraCollectifFixtures,
-    })
+    await demonstration.semerLesBeneficiaires(mediateurId)
+    await demonstration.semerLesCras(mediateurId)
 
     if (processCoordinations) {
-      await upsertCoordinationFixtures(prismaClient)(
+      await demonstration.semerLesCoordinations(
         coordinations
           .filter(onlyForMediateur(resetedUser))
           .map(toCoordinationFor(resetedUser)),
@@ -241,7 +234,7 @@ export const resetFixtureUser = async (
   }
 
   if (isCoordinateur(resetedUser) && processCoordinations) {
-    await upsertCoordinationFixtures(prismaClient)(
+    await demonstration.semerLesCoordinations(
       coordinations.filter(onlyForCoordinateur(resetedUser)),
     )
   }
