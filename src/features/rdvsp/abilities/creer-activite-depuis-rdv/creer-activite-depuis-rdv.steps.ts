@@ -1,22 +1,42 @@
 import assert from 'node:assert'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import type { CreerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
 import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
+
+const confies: { usagers: number[] } = { usagers: [] }
 
 const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
   ({ rendezVous }) =>
     Promise.resolve(
       `/coop/mes-activites/cra/${rendezVous.collectif ? 'collectif' : 'individuel'}?rdv=${rendezVous.id}`,
     ),
-  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  async ({ usagers, mediateurId }) => {
+    confies.usagers = [
+      ...confies.usagers,
+      ...usagers.map(({ rdvUserId }) => rdvUserId),
+    ]
+    return {
+      merges: usagers.map(({ prenom, nom, email, telephone, adresse }) => ({
+        id: v4(),
+        prenom,
+        nom,
+        email,
+        telephone,
+        mediateurId,
+        adresse,
+        anneeNaissance: null,
+        commune: null,
+      })),
+      skipped: [],
+    }
+  },
 )
 
-import { Given, Then, When } from '@cucumber/cucumber'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import { RdvId } from '@/features/rdvsp/domain/rdv-id'
 import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
 import {
-  beneficiairesDuMediateurAvecUsagers,
   ID_TEST,
   seedCompteRdv,
   seedCompteRdvAutreMediateur,
@@ -125,20 +145,21 @@ Then('le CRA est prêt à être rédigé', () => {
 })
 
 Then(
-  '{int} bénéficiaire a été créé depuis les participants',
-  async (nombre: number) => {
-    assert.strictEqual(
-      (await beneficiairesDuMediateurAvecUsagers()).length,
-      nombre,
-    )
+  '{int} participant est confié à la création des bénéficiaires',
+  (nombre: number) => {
+    assert.strictEqual(confies.usagers.length, nombre)
   },
 )
 
-Then('aucun bénéficiaire n’a été créé depuis les participants', async () => {
-  assert.strictEqual((await beneficiairesDuMediateurAvecUsagers()).length, 0)
+Then('aucun participant n’est confié à la création des bénéficiaires', () => {
+  assert.deepStrictEqual(confies.usagers, [])
 })
 
 Then('la préparation échoue avec l’erreur {string}', (tag: string) => {
   assert.ok(resultat && !resultat.success, 'La préparation aurait dû échouer')
   assert.strictEqual(resultat.error._tag, tag)
+})
+
+After(() => {
+  confies.usagers = []
 })

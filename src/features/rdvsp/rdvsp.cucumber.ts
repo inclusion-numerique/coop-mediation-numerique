@@ -333,15 +333,6 @@ export const seedParticipation = async ({
   return id
 }
 
-export const beneficiairesDuMediateurAvecUsagers = async () =>
-  await prismaClient.beneficiaire.findMany({
-    where: {
-      mediateurId: testMediateurId,
-      rdvUserId: { in: [...usagersSuivis] },
-    },
-    select: { id: true, rdvUserId: true, prenom: true, nom: true },
-  })
-
 export const rdvEnBase = async (rdvId: number) =>
   await prismaClient.rdv.findUnique({
     where: { id: rdvId },
