@@ -13,7 +13,12 @@ import { VALIDER_ACTION_KEY } from '@/features/inscription/abilities/valider/act
 import { getRecapitulatifPageData } from '@/features/inscription/abilities/valider/queries/getRecapitulatifPageData'
 import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
 import { employeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
+import {
+  listerLesLieuxPourLInscription,
+  MediateurId,
+} from '@/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
@@ -40,6 +45,8 @@ const RecapitulatifPageRoute = async () => {
     employeuse:
       employeuseActuelle &&
       employeuseAffichee(employeuseActuelleAffichage(employeuseActuelle)),
+    listerLesLieux: ({ mediateurId }) =>
+      listerLesLieuxPourLInscription({ mediateurId: MediateurId(mediateurId) }),
   })
 
   return (
@@ -50,6 +57,9 @@ const RecapitulatifPageRoute = async () => {
       <ClientBinder bind={VALIDER_ACTION_KEY} to={validerAction}>
         <RecapitulatifPage
           data={data}
+          cartesDesLieux={data.lieuxActivite.map((lieu) => (
+            <SaisieDuLieuCard key={lieu.id} lieu={lieu} className="fr-mt-4v" />
+          ))}
           carteEmployeuse={
             data.structureEmployeuse && (
               <StructureAdministrativeCard

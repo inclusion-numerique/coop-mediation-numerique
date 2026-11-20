@@ -2,11 +2,11 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
 import type { EmployeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { stepPath } from '@/features/inscription/ui/step-path'
-import {
-  listerLesLieuxPourLInscription,
-  MediateurId,
-} from '@/features/lieux-activite'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
+
+type ListerLesLieux<Lieu> = (input: {
+  readonly mediateurId: string
+}) => Promise<readonly Lieu[]>
 
 type InscritDuRecapitulatif = {
   readonly id: string
@@ -19,9 +19,11 @@ type InscritDuRecapitulatif = {
   readonly coordinateur: { readonly id: string } | null
 }
 
-const getInscriptionDataContext = async ({
+const getInscriptionDataContext = async <Lieu>({
   user,
+  listerLesLieux,
 }: {
+  listerLesLieux: ListerLesLieux<Lieu>
   user: Pick<
     InscritDuRecapitulatif,
     'id' | 'mediateur' | 'coordinateur' | 'profilInscription'
@@ -33,9 +35,7 @@ const getInscriptionDataContext = async ({
       user.mediateur &&
       user.profilInscription !== 'Coordinateur' &&
       user.profilInscription !== 'CoordinateurConseillerNumerique'
-        ? listerLesLieuxPourLInscription({
-            mediateurId: MediateurId(user.mediateur.id),
-          })
+        ? listerLesLieux({ mediateurId: user.mediateur.id })
         : [],
       // Get mediateurs coordonnes count if coordinateur
       user.coordinateur
@@ -59,15 +59,17 @@ const getInscriptionDataContext = async ({
   }
 }
 
-export const getRecapitulatifPageData = async ({
+export const getRecapitulatifPageData = async <Lieu>({
   user,
   employeuse,
+  listerLesLieux,
 }: {
   user: InscritDuRecapitulatif
   employeuse: EmployeuseAffichee | null
+  listerLesLieux: ListerLesLieux<Lieu>
 }) => {
   const { lieuxActivite, mediateursCoordonnes, importedLieuxFromDataspace } =
-    await getInscriptionDataContext({ user })
+    await getInscriptionDataContext({ user, listerLesLieux })
 
   const mediateursCoordonnesCount = mediateursCoordonnes?.length
 
@@ -109,6 +111,7 @@ export const getRecapitulatifPageData = async ({
   }
 }
 
-export type RecapitulatifPageData = Awaited<
-  ReturnType<typeof getRecapitulatifPageData>
+export type RecapitulatifPageData = Omit<
+  Awaited<ReturnType<typeof getRecapitulatifPageData>>,
+  'lieuxActivite'
 >
