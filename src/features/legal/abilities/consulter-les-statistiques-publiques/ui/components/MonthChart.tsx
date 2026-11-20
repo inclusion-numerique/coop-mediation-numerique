@@ -13,9 +13,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import CustomTooltip from '@/libraries/graphiques/CustomTooltip'
-import { StatisticsLegend } from '@/libraries/graphiques/StatisticsLegend'
 import { numberToString } from '@/libraries/nombre/formatNumber'
+import CustomTooltip from './CustomTooltip'
+import { StatisticsLegend } from './StatisticsLegend'
 
 export type ChartSerie = {
   label: string
