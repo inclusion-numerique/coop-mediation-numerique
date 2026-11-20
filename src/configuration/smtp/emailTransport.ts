@@ -1,4 +1,4 @@
 import { createTransport } from 'nodemailer'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { serveurSmtp } from './serveur'
 
-export const emailTransport = createTransport(ServerWebAppConfig.Email.server)
+export const emailTransport = createTransport(serveurSmtp)

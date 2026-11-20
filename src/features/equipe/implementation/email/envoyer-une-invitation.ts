@@ -1,6 +1,6 @@
 import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { inviteMediateur } from '@/features/equipe/implementation/email/inviteMediateur'
 import { inviteNewMediateur } from '@/features/equipe/implementation/email/inviteNewMediateur'
@@ -28,7 +28,7 @@ export const envoyerUneInvitation = async ({
 
   const resultat = await emailTransport.sendMail({
     to: invitation.reference.email,
-    from: ServerWebAppConfig.Email.from,
+    from: expediteur,
     replyTo: PublicWebAppConfig.contactEmail,
     subject:
       'Invitation à rejoindre une équipe sur La Coop de la médiation numérique',

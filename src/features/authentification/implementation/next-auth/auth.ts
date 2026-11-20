@@ -1,7 +1,7 @@
 import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { expediteur, serveurSmtp } from '@/configuration/smtp/serveur'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { sendVerificationRequest } from '@/features/authentification/implementation/email/sendVerificationRequest'
@@ -54,7 +54,8 @@ export const nextAuthOptions = ({
     ? [ProConnectProvider()]
     : [
         Email({
-          ...ServerWebAppConfig.Email,
+          server: serveurSmtp,
+          from: expediteur,
           sendVerificationRequest,
         }),
       ],
