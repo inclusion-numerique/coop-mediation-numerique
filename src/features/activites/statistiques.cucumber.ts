@@ -2,10 +2,10 @@ import assert from 'node:assert'
 import { After, type DataTable, Given } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   Genre,
   Materiel,
+  Prisma,
   StatutSocial,
   Thematique,
   TrancheAge,
@@ -28,7 +28,7 @@ type Personne = {
 let personnes: Readonly<Record<string, Personne>> = {}
 let membres: Readonly<Record<string, readonly string[]>> = {}
 let lieux: Readonly<Record<string, string>> = {}
-let rendezVous: readonly { id: number; compte: number }[] = []
+let rendezVous: readonly { id: number; compte: number; statut: string }[] = []
 let tags: Readonly<Record<string, string>> = {}
 let employeuses: Readonly<Record<string, number>> = {}
 
@@ -110,7 +110,7 @@ const semerUnRendezVous = async (
       rawData: {},
     },
   })
-  rendezVous = [...rendezVous, { id, compte: compte.id }]
+  rendezVous = [...rendezVous, { id, compte: compte.id, statut }]
   return id
 }
 
@@ -354,13 +354,20 @@ export const perimetreDe = (nom: string): PerimetreDesStatistiques => {
       }
 }
 
+const rendezVousSemesAuxStatuts = (statuts: readonly string[]) => {
+  const ids = rendezVous
+    .filter(({ statut }) => statuts.includes(statut))
+    .map(({ id }) => id)
+  return Prisma.sql`SELECT unnest(${ids}::int[])`
+}
+
 export const demandeDeStatistiques = (
   nom: string,
   parametres: Readonly<Record<string, string>> = {},
 ): DemandeDeStatistiques => ({
   perimetre: perimetreDe(nom),
   criteres: criteresDesStatistiques(parametres),
-  rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+  rendezVousAuxStatuts: rendezVousSemesAuxStatuts,
 })
 
 export const parametresDuTableau = (
