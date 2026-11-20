@@ -1,12 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { vocabulaireDeLaBarre } from '@/composition/statistiques/barre'
 import { MesStatistiquesPageData } from '@/composition/statistiques/mes-statistiques'
-import {
-  impressionDesStatistiques,
-  sectionActivites,
-  sectionBeneficiaires,
-  sectionGenerale,
-} from '@/composition/statistiques/sections'
 import {
   dureeAccompagnementParDefautLabels,
   dureeAcompagnementParDefautDefaultValues,
@@ -37,10 +30,24 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@/features/activites/ui/libelles/type-lieu'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
+import {
+  blocsActivites,
+  blocsBeneficiaires,
+  blocsGeneraux,
+  blocsImprimes,
+} from '@/features/activites/ui/statistiques/blocs-des-statistiques'
 import { testSessionUser } from '@/features/authentification/fixtures/testSessionUser'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
+import {
+  impressionDesStatistiques,
+  sectionActivites,
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@/features/statistiques/ui/sections/sections-des-statistiques'
 import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
@@ -271,7 +278,10 @@ const statistiquesPageData = {
   hasCrasV1: {
     hasCrasV1: false,
   },
-  vocabulaire: vocabulaireDeLaBarre,
+  vocabulaire: {
+    ...vocabulaireDesActivites,
+    statutsDeRendezVous: rdvStatusOptions,
+  },
   activiteSourceOptions: [],
 } satisfies MesStatistiquesPageData
 
@@ -305,28 +315,30 @@ export const Statistiques: Story = {
     partage: <PartageStatistiques liens={[]} />,
     impression: impressionDesStatistiques({
       ...statistiquesPageData,
+      imprimees: blocsImprimes,
       statistiques: statistiquesPageData,
     }),
     generale: sectionGenerale(
-      {
+      blocsGeneraux({
         totalCounts: statistiquesPageData.totalCounts,
         periode: statistiquesPageData,
-      },
-      {},
+      }),
     ),
     activites: sectionActivites(
-      {
+      blocsActivites({
         totalCounts: statistiquesPageData.totalCounts,
         repartition: statistiquesPageData.activites,
         tags: statistiquesPageData.activites.tags,
         structures: statistiquesPageData.structures,
         communes: statistiquesPageData.communes,
-      },
+      }),
       { canManageTags: true },
     ),
-    beneficiaires: sectionBeneficiaires({
-      profil: statistiquesPageData.beneficiaires,
-      residences: statistiquesPageData.beneficiaires.communes,
-    }),
+    beneficiaires: sectionBeneficiaires(
+      blocsBeneficiaires({
+        profil: statistiquesPageData.beneficiaires,
+        residences: statistiquesPageData.beneficiaires.communes,
+      }),
+    ),
   },
 }

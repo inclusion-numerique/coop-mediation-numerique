@@ -7,6 +7,7 @@ import {
   rassembler,
   statistiquesEnCours,
 } from '@/features/activites/implementation/statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import { profilDeLaSession } from '@/features/authentification'
 import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
@@ -17,12 +18,12 @@ import {
 } from '@/features/equipe/domain'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import { optionsDesStatistiques } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { tousLesTagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import { vocabulaireDeLaBarre } from './barre'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -93,7 +94,10 @@ export const mesStatistiques = async ({
   return {
     ...options,
     activitesFilters,
-    vocabulaire: vocabulaireDeLaBarre,
+    vocabulaire: {
+      ...vocabulaireDesActivites,
+      statutsDeRendezVous: rdvStatusOptions,
+    },
     statistiques,
   }
 }

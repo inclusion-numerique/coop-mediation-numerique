@@ -1,21 +1,21 @@
 import { notFound } from 'next/navigation'
 import { rechercherLesEmployeusesDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
 import { rechercherLesLieuxDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
-import { filtreDeLieu } from '@/composition/statistiques/barre'
 import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
-import {
-  impressionDesStatistiques,
-  sectionActivites,
-  sectionBeneficiaires,
-  sectionGenerale,
-} from '@/composition/statistiques/sections'
 import {
   nombreDAccompagnements,
   toutesLesStatistiques,
 } from '@/features/activites/implementation/statistiques'
+import {
+  blocsActivites,
+  blocsBeneficiaires,
+  blocsGeneraux,
+  blocsImprimes,
+} from '@/features/activites/ui/statistiques/blocs-des-statistiques'
 import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
+import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {
   type ParametresDeLaPage,
   parametresDesStatistiquesPartagees,
@@ -23,6 +23,12 @@ import {
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { StatistiquesPartagees } from '@/features/statistiques/ui/pages/StatistiquesPartagees'
+import {
+  impressionDesStatistiques,
+  sectionActivites,
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@/features/statistiques/ui/sections/sections-des-statistiques'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type PageProps = {
@@ -66,16 +72,24 @@ const Page = async ({ params, searchParams }: PageProps) => {
           shareId={shareId}
           hasCrasV1={hasCrasV1}
           accompagnementsCount={nombreDAccompagnements(toutes)}
-          filtreDeLieu={filtreDeLieu(mesStatistiquesProps)}
+          filtreDeLieu={<FiltreDeLieu choisis={mesStatistiquesProps} />}
           impression={impressionDesStatistiques({
             ...mesStatistiquesProps,
+            imprimees: blocsImprimes,
             statistiques: toutes,
           })}
-          generale={sectionGenerale(statistiques, { wording: 'generique' })}
-          activites={sectionActivites(statistiques, { wording: 'generique' })}
-          beneficiaires={sectionBeneficiaires(statistiques, {
+          generale={sectionGenerale(blocsGeneraux(statistiques), {
             wording: 'generique',
           })}
+          activites={sectionActivites(blocsActivites(statistiques), {
+            wording: 'generique',
+          })}
+          beneficiaires={sectionBeneficiaires(
+            blocsBeneficiaires(statistiques),
+            {
+              wording: 'generique',
+            },
+          )}
         />
       </ClientBinder>
     </ClientBinder>

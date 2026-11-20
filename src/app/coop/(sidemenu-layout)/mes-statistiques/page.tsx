@@ -2,24 +2,24 @@ import type { Metadata } from 'next'
 import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activites/rechercher-employeuses-des-activites.action'
 import { reglerLePartageStatistiquesAction } from '@/app/_actions/mediateurs/regler-le-partage-statistiques.action'
 import { rechercherLesLieuxDeMesStatistiquesAction } from '@/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action'
-import { filtreDeLieu } from '@/composition/statistiques/barre'
 import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
-import {
-  impressionDesStatistiques,
-  sectionActivites,
-  sectionBeneficiaires,
-  sectionGenerale,
-} from '@/composition/statistiques/sections'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   nombreDAccompagnements,
   toutesLesStatistiques,
 } from '@/features/activites/implementation/statistiques'
+import {
+  blocsActivites,
+  blocsBeneficiaires,
+  blocsGeneraux,
+  blocsImprimes,
+} from '@/features/activites/ui/statistiques/blocs-des-statistiques'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
+import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {
   type ParametresDeLaPage,
   parametresDesStatistiques,
@@ -27,6 +27,12 @@ import {
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import { MesStatistiques } from '@/features/statistiques/ui/pages/MesStatistiques'
+import {
+  impressionDesStatistiques,
+  sectionActivites,
+  sectionBeneficiaires,
+  sectionGenerale,
+} from '@/features/statistiques/ui/sections/sections-des-statistiques'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
@@ -72,19 +78,24 @@ const MesStatistiquesPage = async (props: {
             hasCrasV1={hasCrasV1}
             accompagnementsCount={nombreDAccompagnements(toutes)}
             partage={<PartageStatistiques liens={liensDePartage} />}
-            filtreDeLieu={filtreDeLieu(options)}
+            filtreDeLieu={<FiltreDeLieu choisis={options} />}
             impression={impressionDesStatistiques({
               ...options,
+              imprimees: blocsImprimes,
               statistiques: toutes,
             })}
-            generale={sectionGenerale(statistiques, {
-              debut: options.activitesFilters.du,
-              fin: options.activitesFilters.au,
-            })}
-            activites={sectionActivites(statistiques, {
+            generale={sectionGenerale(
+              blocsGeneraux(statistiques, {
+                debut: options.activitesFilters.du,
+                fin: options.activitesFilters.au,
+              }),
+            )}
+            activites={sectionActivites(blocsActivites(statistiques), {
               canManageTags: true,
             })}
-            beneficiaires={sectionBeneficiaires(statistiques)}
+            beneficiaires={sectionBeneficiaires(
+              blocsBeneficiaires(statistiques),
+            )}
           />
         </ClientBinder>
       </ClientBinder>

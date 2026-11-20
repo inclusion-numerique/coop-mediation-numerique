@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { vocabulaireDeLaBarre } from '@/composition/statistiques/barre'
 import {
   getMesStatistiquesPageData,
   MesStatistiquesGraphOptions,
@@ -34,8 +33,10 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@/features/activites/ui/libelles/type-lieu'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
@@ -189,7 +190,10 @@ const emptyData: MesStatistiquesPageData = {
   hasCrasV1: {
     hasCrasV1: false,
   },
-  vocabulaire: vocabulaireDeLaBarre,
+  vocabulaire: {
+    ...vocabulaireDesActivites,
+    statutsDeRendezVous: rdvStatusOptions,
+  },
 }
 
 const createExpectedData = (
