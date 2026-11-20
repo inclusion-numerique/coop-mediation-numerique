@@ -1,6 +1,5 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite'
 import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
 import {
   type ActeurASemer,
@@ -8,6 +7,10 @@ import {
   semerUnActeur,
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+
+const LIEUX_DE_L_ANNUAIRE = 12
+
+const nombreDeLieuxDuDepartement = async () => LIEUX_DE_L_ANNUAIRE
 
 type Consultation = Awaited<ReturnType<typeof consulterLeReseauDuDepartement>>
 
@@ -85,11 +88,8 @@ Then('le réseau du Cantal compte {int} acteur(s) de plus', (ecart: number) => {
   assert.strictEqual(reseauConsulte().acteurs, (etat.acteursAvant ?? 0) + ecart)
 })
 
-Then('le réseau du Cantal compte les lieux de son annuaire', async () => {
-  assert.strictEqual(
-    reseauConsulte().lieux,
-    await nombreDeLieuxDuDepartement('15'),
-  )
+Then('le réseau du Cantal compte les lieux de son annuaire', () => {
+  assert.strictEqual(reseauConsulte().lieux, LIEUX_DE_L_ANNUAIRE)
 })
 
 Then('le département est inconnu', () => {

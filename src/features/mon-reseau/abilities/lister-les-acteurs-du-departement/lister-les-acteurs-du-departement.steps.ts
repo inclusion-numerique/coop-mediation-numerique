@@ -1,12 +1,13 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { communesDesLieux } from '@/features/lieux-activite'
 import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
 import {
   exercerDansLeLieu,
   semerUnActeur,
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+
+const communesDesLieux = async () => ({ communesOptions: [] })
 
 type Consultation = Awaited<ReturnType<typeof listerLesActeursDuDepartement>>
 

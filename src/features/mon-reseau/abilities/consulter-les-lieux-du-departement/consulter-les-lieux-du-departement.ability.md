@@ -6,17 +6,15 @@
 
 ## Rule: L'annuaire se filtre par commune
 
-### Scenario: Les lieux d'une commune choisie sont les seuls proposés
+### Scenario: La commune choisie est demandée à l'annuaire
 
-* Given un lieu publié à Aurillac et un lieu publié à Saint-Flour
 * When on consulte les lieux du Cantal à Aurillac
-* Then seul le lieu d’Aurillac est proposé
+* Then l’annuaire est demandé pour Aurillac seulement
 
-### Scenario: Une commune invalide ne filtre pas l'annuaire
+### Scenario: Une commune invalide n'est pas demandée à l'annuaire
 
-* Given un lieu publié à Aurillac et un lieu publié à Saint-Flour
 * When on consulte les lieux du Cantal dans la commune « pas-une-commune »
-* Then les deux lieux sont proposés
+* Then l’annuaire est demandé sans commune
 
 ## Rule: Un département inconnu n'a pas d'annuaire des lieux
 
