@@ -9,6 +9,15 @@ import {
 import { rattacherAUneEmployeuseBinding } from '@/features/employeuse/server'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { withInput } from '@/libraries/nextjs'
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@/libraries/registre-personne'
+
+const registreDesPersonnes = {
+  garantirLaPersonne: ensurePersonneMain,
+  synchroniserLaPersonne: synchroniserPersonne,
+}
 
 export const renseignerStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
@@ -19,7 +28,9 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
 
     if (!identite) return { rattachee: false }
 
-    const rattachement = await rattacherAUneEmployeuseBinding({
+    const rattachement = await rattacherAUneEmployeuseBinding(
+      registreDesPersonnes,
+    )({
       userId: user.id,
       identite,
     })

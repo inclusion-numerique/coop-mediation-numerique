@@ -9,7 +9,16 @@ import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@/libraries/registre-personne'
 import { success } from '@/libraries/result'
+
+const registreDesPersonnes = {
+  garantirLaPersonne: ensurePersonneMain,
+  synchroniserLaPersonne: synchroniserPersonne,
+}
 
 /**
  * Étape d'inscription « ma structure employeuse ».
@@ -33,7 +42,8 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
             userId: UserId(user.id),
             structureEmployeuse: input.structure,
           },
-          rattacherEmployeuse: rattacherAUneEmployeuseSaisieBinding,
+          rattacherEmployeuse:
+            rattacherAUneEmployeuseSaisieBinding(registreDesPersonnes),
           maintenant: new Date(),
         })
 

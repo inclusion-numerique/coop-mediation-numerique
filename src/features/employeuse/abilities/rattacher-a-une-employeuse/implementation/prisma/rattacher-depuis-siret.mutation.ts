@@ -3,10 +3,12 @@ import {
   identiteDepuisEtablissement,
 } from '../../../../domain/identite-employeuse'
 import type { RattacherAUneEmployeuseDepuisSiret } from '../../domain/rattacher-a-une-employeuse'
-import type { ServicesDeLEmployeuse } from './ensureStructureAdministrativeMain'
-import { rattacherAUneEmployeuse } from './rattacher-a-une-employeuse.mutation'
+import {
+  rattacherAUneEmployeuse,
+  type ServicesDuRattachement,
+} from './rattacher-a-une-employeuse.mutation'
 
-export type ServicesDuRattachementDepuisSiret = ServicesDeLEmployeuse & {
+export type ServicesDuRattachementDepuisSiret = ServicesDuRattachement & {
   readonly etablissementDepuisSiret: (
     siret: string,
   ) => Promise<EtablissementSirene | null>

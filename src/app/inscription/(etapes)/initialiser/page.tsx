@@ -8,6 +8,15 @@ import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilitie
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@/libraries/registre-personne'
+
+const registreDesPersonnes = {
+  garantirLaPersonne: ensurePersonneMain,
+  synchroniserLaPersonne: synchroniserPersonne,
+}
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -27,7 +36,8 @@ const InitialiserInscriptionPage = async () => {
   const { nextStep } = await initialiserInscriptionAvecInfra(
     { userId: UserId(user.id) },
     {
-      rattacherDepuisSiret: rattacherAUneEmployeuseDepuisSiretBinding,
+      rattacherDepuisSiret:
+        rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
       garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif,
     },
   )

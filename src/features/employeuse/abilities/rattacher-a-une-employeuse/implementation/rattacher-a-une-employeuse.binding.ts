@@ -2,7 +2,10 @@ import { geocoder } from '@/configuration/ban'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { rattacherUneSaisie } from '../domain/rattacher-une-saisie'
 import { etablissementDepuisSiret } from './api/etablissement-depuis-siret'
-import { rattacherAUneEmployeuse } from './prisma/rattacher-a-une-employeuse.mutation'
+import {
+  type RegistreDesPersonnes,
+  rattacherAUneEmployeuse,
+} from './prisma/rattacher-a-une-employeuse.mutation'
 import { rattacherAUneEmployeuseDepuisSiret } from './prisma/rattacher-depuis-siret.mutation'
 
 const services = {
@@ -11,11 +14,14 @@ const services = {
   etablissementDepuisSiret,
 }
 
-export const rattacherAUneEmployeuseBinding = rattacherAUneEmployeuse(services)
+export const rattacherAUneEmployeuseBinding = (
+  registre: RegistreDesPersonnes,
+) => rattacherAUneEmployeuse({ ...services, ...registre })
 
-export const rattacherAUneEmployeuseSaisieBinding = rattacherUneSaisie(
-  rattacherAUneEmployeuseBinding,
-)
+export const rattacherAUneEmployeuseSaisieBinding = (
+  registre: RegistreDesPersonnes,
+) => rattacherUneSaisie(rattacherAUneEmployeuseBinding(registre))
 
-export const rattacherAUneEmployeuseDepuisSiretBinding =
-  rattacherAUneEmployeuseDepuisSiret(services)
+export const rattacherAUneEmployeuseDepuisSiretBinding = (
+  registre: RegistreDesPersonnes,
+) => rattacherAUneEmployeuseDepuisSiret({ ...services, ...registre })

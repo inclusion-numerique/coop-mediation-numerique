@@ -5,6 +5,15 @@ import { isFirewallUserAgent } from '@/features/authentification/implementation/
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/proconnect/importStructureEmployeuseFromProConnect'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@/libraries/registre-personne'
+
+const registreDesPersonnes = {
+  garantirLaPersonne: ensurePersonneMain,
+  synchroniserLaPersonne: synchroniserPersonne,
+}
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -12,7 +21,7 @@ export const revalidate = 0
 const options = nextAuthOptions({
   garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif,
   importerLEmployeuseProConnect: importStructureEmployeuseFromProConnect(
-    rattacherAUneEmployeuseDepuisSiretBinding,
+    rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
   ),
 })
 

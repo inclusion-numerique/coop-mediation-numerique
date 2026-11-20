@@ -41,6 +41,14 @@ const importer = importStructureEmployeuseFromProConnect(
   rattacherAUneEmployeuseDepuisSiret({
     geocoder: async () => null,
     signaler: () => undefined,
+    garantirLaPersonne: ({ coopUserId, email }, transaction) =>
+      transaction.personneMain.upsert({
+        where: { coopId: coopUserId },
+        create: { coopId: coopUserId, contact: { coop: { email } } },
+        update: {},
+        select: { id: true },
+      }),
+    synchroniserLaPersonne: async () => undefined,
     etablissementDepuisSiret: async (siret) =>
       siret === PROCONNECT_SIRET
         ? {

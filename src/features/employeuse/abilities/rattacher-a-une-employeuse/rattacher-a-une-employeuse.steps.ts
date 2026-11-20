@@ -72,6 +72,14 @@ Given(
 const rattacher = rattacherAUneEmployeuse({
   geocoder: async () => null,
   signaler: () => undefined,
+  garantirLaPersonne: ({ coopUserId, email }, transaction) =>
+    transaction.personneMain.upsert({
+      where: { coopId: coopUserId },
+      create: { coopId: coopUserId, contact: { coop: { email } } },
+      update: {},
+      select: { id: true },
+    }),
+  synchroniserLaPersonne: async () => undefined,
 })
 
 When('je le rattache à {string}', async (nom: string) => {
