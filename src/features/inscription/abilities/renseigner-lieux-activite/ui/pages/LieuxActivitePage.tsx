@@ -1,14 +1,9 @@
 'use client'
 
-import type { LieuActiviteInput } from '@/features/inscription/abilities/renseigner-lieux-activite'
-import LieuxActiviteForm from '@/features/inscription/abilities/renseigner-lieux-activite/ui/components/LieuxActiviteForm'
+import type { ReactNode } from 'react'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 
-const LieuxActivitePage = ({
-  lieuxActivite,
-}: {
-  lieuxActivite: LieuActiviteInput[]
-}) => (
+const LieuxActivitePage = ({ formulaire }: { formulaire: ReactNode }) => (
   <InscriptionCard
     title="Renseignez vos lieux d'activité"
     backHref="/inscription/lieux-activite/structure-employeuse"
@@ -22,11 +17,7 @@ const LieuxActivitePage = ({
       </span>
     }
   >
-    <LieuxActiviteForm
-      lieuxExistants={lieuxActivite}
-      nextHref="/inscription/recapitulatif"
-      retourHref="/inscription/lieux-activite"
-    />
+    {formulaire}
   </InscriptionCard>
 )
 

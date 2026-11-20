@@ -34,7 +34,7 @@ export const renseignerLieuxActiviteAction = actionBuilder()
       }): Promise<
         Result<void, RenseignerLieuxActiviteError | AdresseNonValidee>
       > => {
-        const lieuxActivite = depuisLaSaisie(input.lieuxActivite)
+        const lieuxActivite = depuisLaSaisie(input.lieux)
 
         if (!lieuxActivite.success) return lieuxActivite
 

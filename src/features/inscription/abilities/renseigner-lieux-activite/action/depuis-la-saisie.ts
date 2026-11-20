@@ -6,7 +6,7 @@ import {
 } from '../domain'
 import type { RenseignerLieuxActiviteData } from './renseigner-lieux-activite.validation'
 
-type LieuSoumis = RenseignerLieuxActiviteData['lieuxActivite'][number]
+type LieuSoumis = RenseignerLieuxActiviteData['lieux'][number]
 
 const identite = ({
   nom,
@@ -40,7 +40,7 @@ const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null =>
  * formulaire géocode avant d'ajouter ; cette garde est le filet.
  */
 export const depuisLaSaisie = (
-  lieux: RenseignerLieuxActiviteData['lieuxActivite'],
+  lieux: RenseignerLieuxActiviteData['lieux'],
 ): Result<readonly LieuActiviteInput[], AdresseNonValidee> =>
   lieux.reduce<Result<readonly LieuActiviteInput[], AdresseNonValidee>>(
     (precedents, lieu) => {

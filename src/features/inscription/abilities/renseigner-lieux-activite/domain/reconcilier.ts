@@ -45,7 +45,7 @@ type Identite = {
  * Un lieu que la coop connaît déjà : il se rattache tel quel, et rien de son
  * adresse ne sera réécrit.
  */
-export type LieuActiviteConnu = Identite & {
+type LieuActiviteConnu = Identite & {
   readonly id: string
   readonly adresse: string
   readonly commune: string

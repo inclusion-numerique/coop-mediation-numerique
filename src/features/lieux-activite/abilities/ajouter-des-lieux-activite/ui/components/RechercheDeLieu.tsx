@@ -23,7 +23,7 @@ export const RechercheDeLieu = ({
   ...optionsProps
 }: RenduDuComboBox & {
   isPending: boolean
-  onCreer: () => void
+  onCreer: (recherche: string) => void
 }) => {
   const { recherche, enCours, enEchec, nonAffiches } = payload
   const rechercheFaite =
@@ -38,7 +38,7 @@ export const RechercheDeLieu = ({
       priority="secondary"
       className="fr-width-full fr-justify-content-center fr-mb-0"
       disabled={isPending}
-      onClick={onCreer}
+      onClick={() => onCreer(recherche)}
     >
       Créer un lieu d’activité
     </Button>

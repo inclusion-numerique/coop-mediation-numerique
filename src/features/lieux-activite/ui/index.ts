@@ -6,7 +6,4 @@ export { hrefDuLieuEnListe } from './href-du-lieu'
 export { default as LieuActiviteCard } from './LieuActiviteCard'
 export { LieuxRepliables } from './LieuxRepliables'
 export { SaisieDuLieuCard } from './SaisieDuLieuCard'
-export {
-  type SuggestionAffichee,
-  suggestionsAffichees,
-} from './suggestion-de-lieu.presenter'
+export { suggestionsAffichees } from './suggestion-de-lieu.presenter'

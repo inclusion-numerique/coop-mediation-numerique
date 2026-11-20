@@ -22,7 +22,7 @@ export const AjouterDesLieuxPage = ({
         Recherchez dans les lieux déjà référencés. Si vous ne trouvez pas vos
         lieux d’activité, vous pouvez les créer afin d’être référencé.
       </p>
-      <AjouterDesLieuxActivitePage retourHref={retourHref} />
+      <AjouterDesLieuxActivitePage issue={{ _tag: 'Ajout', retourHref }} />
     </div>
   </div>
 )

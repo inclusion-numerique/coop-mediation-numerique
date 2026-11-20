@@ -6,7 +6,6 @@ export type {
 } from './ports'
 export {
   type AdresseValidee,
-  type LieuActiviteConnu,
   type LieuActiviteInput,
   reconcilierLieuxActivite,
 } from './reconcilier'

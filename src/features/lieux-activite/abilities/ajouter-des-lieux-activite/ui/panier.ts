@@ -26,7 +26,7 @@ export const auPanier =
         id: lieuCoop.id,
         structureCartographieNationaleId: null,
         nom: resultat.nom,
-        siret: resultat.pivot,
+        siret: null,
         adresse: resultat.adresse,
         commune: resultat.commune,
         codePostal: resultat.codePostal,
@@ -42,7 +42,7 @@ export const auPanier =
       structureCartographieNationaleId:
         resultat.source === 'cartographie_nationale' ? resultat.id : null,
       nom: resultat.nom,
-      siret: resultat.pivot,
+      siret: resultat.source === 'api' ? (resultat.pivot ?? null) : null,
       adresse: adresseBan.nom,
       commune: adresseBan.commune,
       codePostal: adresseBan.codePostal,
@@ -53,11 +53,24 @@ export const auPanier =
     }
   }
 
-export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean =>
-  (un.id != null && un.id === autre.id) ||
-  (un.structureCartographieNationaleId != null &&
-    un.structureCartographieNationaleId ===
-      autre.structureCartographieNationaleId)
+export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean => {
+  if (un.id != null && autre.id != null) return un.id === autre.id
+
+  if (
+    un.structureCartographieNationaleId != null &&
+    autre.structureCartographieNationaleId != null
+  )
+    return (
+      un.structureCartographieNationaleId ===
+      autre.structureCartographieNationaleId
+    )
+
+  return (
+    un.nom === autre.nom &&
+    un.adresse === autre.adresse &&
+    un.codePostal === autre.codePostal
+  )
+}
 
 export const selectionner =
   (geocoder: GeocoderUnLieu) =>

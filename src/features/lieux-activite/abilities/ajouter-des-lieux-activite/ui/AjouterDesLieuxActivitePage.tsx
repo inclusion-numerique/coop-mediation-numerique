@@ -24,6 +24,7 @@ import { PanierDeLieux } from './components/PanierDeLieux'
 import { RechercheDeLieu } from './components/RechercheDeLieu'
 import { CREER_UN_LIEU_KEY } from './creer-un-lieu.key'
 import { destination } from './destination'
+import { ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY } from './enregistrer-la-selection.key'
 import { type LieuAuPanier, lieuCree, selectionner } from './panier'
 
 type FormValues = {
@@ -38,7 +39,9 @@ const panierShape = z
     path: ['lieux'],
   })
 
-const panierVide: FormValues = { lieux: [], recherche: null }
+export type IssueDeLaSelection =
+  | { readonly _tag: 'Ajout'; readonly retourHref: string }
+  | { readonly _tag: 'Selection'; readonly suivantHref: string }
 
 const erreur = (message: string) => createToast({ priority: 'error', message })
 
@@ -47,39 +50,71 @@ const erreurEnregistrement = () =>
     'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   )
 
+const enregistrerLAjout = async (
+  lieux: LieuAuPanier[],
+  retourHref: string,
+): Promise<string | null> => {
+  const resultat = await inject(AJOUTER_DES_LIEUX_ACTIVITE_ACTION_KEY)({
+    lieux,
+  })
+
+  if (!resultat.success) {
+    erreur(resultat.error)
+    return null
+  }
+
+  createToast({
+    priority: 'success',
+    message:
+      lieux.length === 1
+        ? 'Le lieu d’activité a bien été ajouté'
+        : `Les ${lieux.length} lieux d’activité ont bien été ajoutés.`,
+  })
+
+  return destination(lieux, resultat.data.lieux, retourHref)
+}
+
+const enregistrerLaSelection = async (
+  lieux: LieuAuPanier[],
+  suivantHref: string,
+): Promise<string | null> => {
+  const resultat = await inject(ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY)({
+    lieux,
+  })
+
+  if (!resultat.success) {
+    erreurEnregistrement()
+    return null
+  }
+
+  return suivantHref
+}
+
 export const AjouterDesLieuxActivitePage = ({
-  retourHref,
+  lieuxInitiaux = [],
+  issue,
 }: {
-  retourHref: string
+  lieuxInitiaux?: LieuAuPanier[]
+  issue: IssueDeLaSelection
 }) => {
   const router = useRouter()
-  const [enCreation, setEnCreation] = useState(false)
+  const [enCreation, setEnCreation] = useState<string | null>(null)
   const [rechercheError, setRechercheError] = useState<string | null>(null)
 
   const form = useAppForm({
     validators: { onSubmit: panierShape },
-    defaultValues: panierVide,
+    defaultValues: { lieux: lieuxInitiaux, recherche: null } as FormValues,
     onSubmit: async ({ value }) => {
       try {
-        const resultat = await inject(AJOUTER_DES_LIEUX_ACTIVITE_ACTION_KEY)({
-          lieux: value.lieux,
-        })
+        const suite =
+          issue._tag === 'Ajout'
+            ? await enregistrerLAjout(value.lieux, issue.retourHref)
+            : await enregistrerLaSelection(value.lieux, issue.suivantHref)
 
-        if (!resultat.success) {
-          erreur(resultat.error)
-          return
-        }
+        if (suite == null) return
 
-        router.push(destination(value.lieux, resultat.data.lieux, retourHref))
+        router.push(suite)
         router.refresh()
-
-        createToast({
-          priority: 'success',
-          message:
-            value.lieux.length === 1
-              ? 'Le lieu d’activité a bien été ajouté'
-              : `Les ${value.lieux.length} lieux d’activité ont bien été ajoutés.`,
-        })
       } catch {
         erreurEnregistrement()
       }
@@ -105,7 +140,7 @@ export const AjouterDesLieuxActivitePage = ({
       'lieux',
       lieuCree({ id: resultat.data.id, nom: donnees.nom, adresseBan }),
     )
-    setEnCreation(false)
+    setEnCreation(null)
     createToast({
       priority: 'success',
       message:
@@ -113,10 +148,11 @@ export const AjouterDesLieuxActivitePage = ({
     })
   }
 
-  if (enCreation)
+  if (enCreation != null)
     return (
       <CreerLieuActiviteForm
-        onAnnuler={() => setEnCreation(false)}
+        nom={enCreation}
+        onAnnuler={() => setEnCreation(null)}
         onCreer={creer}
       />
     )
@@ -154,7 +190,7 @@ export const AjouterDesLieuxActivitePage = ({
                 <RechercheDeLieu
                   {...rendu}
                   isPending={isPending}
-                  onCreer={() => setEnCreation(true)}
+                  onCreer={setEnCreation}
                 />
               )}
             </field.ComboBox>
@@ -179,16 +215,22 @@ export const AjouterDesLieuxActivitePage = ({
 
         <hr className="fr-separator-12v" />
 
-        <div className="fr-btns-group">
-          <form.Submit isPending={isPending}>Ajouter</form.Submit>
-          <Button
-            linkProps={{ href: retourHref }}
-            priority="tertiary"
-            className="fr-mb-0 fr-mt-4v"
-          >
-            Annuler
-          </Button>
-        </div>
+        {issue._tag === 'Ajout' ? (
+          <div className="fr-btns-group">
+            <form.Submit isPending={isPending}>Ajouter</form.Submit>
+            <Button
+              linkProps={{ href: issue.retourHref }}
+              priority="tertiary"
+              className="fr-mb-0 fr-mt-4v"
+            >
+              Annuler
+            </Button>
+          </div>
+        ) : (
+          <div className="fr-btns-group fr-btns-group--lg">
+            <form.Submit isPending={isPending}>Suivant</form.Submit>
+          </div>
+        )}
       </form>
     </form.AppForm>
   )
