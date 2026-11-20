@@ -4,19 +4,22 @@ import {
   filtreDeLieu,
   vocabulaireDeLaBarre,
 } from '@/composition/statistiques/barre'
-import { lieuxChoisisDe } from '@/composition/statistiques/lieux-choisis'
 import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/composition/statistiques/sections'
-import { statistiquesNationalesEnCours } from '@/composition/statistiques/statistiques-nationales'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   criteresDesStatistiques,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
+import {
+  lieuxChoisisDe,
+  statistiquesNationalesEnCours,
+} from '@/features/activites/implementation/statistiques'
 import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { optionsDeTags } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,
@@ -48,7 +51,7 @@ const Page = async (props: {
   if (user.role !== 'Admin') notFound()
   const statistiques = statistiquesNationalesEnCours(
     criteresDesStatistiques(activitesFilters),
-    { tags: true },
+    { tags: true, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
   )
   const [tagsCollectifs, lieuxChoisis] = await Promise.all([
     lireLesTagsCollectifs(),

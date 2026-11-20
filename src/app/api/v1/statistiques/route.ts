@@ -1,7 +1,7 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import { statistiquesNationales } from '@/composition/statistiques/statistiques-nationales'
 import { criteresDesStatistiques } from '@/features/activites/domain'
+import { statistiquesNationales } from '@/features/activites/implementation/statistiques'
 import {
   withApiV1Errors,
   withClientApi,
@@ -11,6 +11,7 @@ import {
   reponseDesStatistiques,
   statistiquesQueryParamsValidation,
 } from '@/features/clients-api/abilities/lire-les-statistiques'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   FiltresDesStatistiquesValidation,
   statistiquesAttributes,
@@ -369,7 +370,7 @@ export const GET = routeBuilder()
     withApiV1Errors(async ({ queryParams }) => {
       const fournies = await statistiquesNationales(
         criteresDesStatistiques(queryParams.filter),
-        { tags: false },
+        { tags: false, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
       )
 
       return NextResponse.json(

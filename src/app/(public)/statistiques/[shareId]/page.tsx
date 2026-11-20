@@ -13,7 +13,7 @@ import {
 import {
   nombreDAccompagnements,
   toutesLesStatistiques,
-} from '@/composition/statistiques/statistiques-fournies'
+} from '@/features/activites/implementation/statistiques'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import {
   type ParametresDeLaPage,

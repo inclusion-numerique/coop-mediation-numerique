@@ -4,20 +4,26 @@ import {
   Jour,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import type { RendezVousAuxStatuts } from '../../db/criteres-des-statistiques.sql'
 import { rassembler, statistiquesEnCours } from './statistiques-fournies'
 
 export const statistiquesNationalesEnCours = (
   criteres: CriteresDesStatistiques,
-  { tags }: { readonly tags: boolean },
+  {
+    tags,
+    rendezVousAuxStatuts,
+  }: {
+    readonly tags: boolean
+    readonly rendezVousAuxStatuts: RendezVousAuxStatuts
+  },
 ) => {
   const aujourdhui = Jour(dateAsIsoDay(new Date()))
   return statistiquesEnCours(
     {
       perimetre: PERIMETRE_NATIONAL,
       criteres,
-      rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+      rendezVousAuxStatuts,
       parJour: fenetreDe({
         debut: criteres.periode.du,
         fin: criteres.periode.au ?? aujourdhui,
@@ -30,5 +36,5 @@ export const statistiquesNationalesEnCours = (
 
 export const statistiquesNationales = (
   criteres: CriteresDesStatistiques,
-  options: { readonly tags: boolean },
+  options: Parameters<typeof statistiquesNationalesEnCours>[1],
 ) => rassembler(statistiquesNationalesEnCours(criteres, options))

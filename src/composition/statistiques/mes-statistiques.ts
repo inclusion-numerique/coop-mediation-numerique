@@ -1,10 +1,12 @@
-import {
-  rassembler,
-  statistiquesEnCours,
-} from '@/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
 import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
 import { criteresDesStatistiques, Jour } from '@/features/activites/domain'
+import {
+  lieuxChoisisDe,
+  perimetreDeLUtilisateur,
+  rassembler,
+  statistiquesEnCours,
+} from '@/features/activites/implementation/statistiques'
 import { profilDeLaSession } from '@/features/authentification'
 import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
@@ -21,8 +23,6 @@ import { tousLesTagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-
 import { acteurDe } from '@/features/tags/domain'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { vocabulaireDeLaBarre } from './barre'
-import { lieuxChoisisDe } from './lieux-choisis'
-import { perimetreDeLUtilisateur } from './perimetre'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date

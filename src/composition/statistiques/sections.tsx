@@ -1,8 +1,4 @@
 import type { ReactNode } from 'react'
-import type {
-  StatistiquesEnCours,
-  StatistiquesFournies,
-} from '@/composition/statistiques/statistiques-fournies'
 import {
   ChiffresClesDesAccompagnements,
   ChiffresClesImprimes,
@@ -38,6 +34,10 @@ import {
   TypesDActiviteImprimes,
 } from '@/features/activites/abilities/repartir-les-accompagnements/ui'
 import { TagsDesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
+import type {
+  StatistiquesEnCours,
+  StatistiquesFournies,
+} from '@/features/activites/implementation/statistiques'
 import { ImpressionPrete } from '@/features/statistiques/ui/export/impression-prete'
 import { AutoPrint } from '@/features/statistiques/ui/pages/AutoPrint'
 import { ImpressionDesStatistiques } from '@/features/statistiques/ui/pages/ImpressionDesStatistiques'

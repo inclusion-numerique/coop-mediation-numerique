@@ -1,6 +1,5 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { statistiquesFournies } from '@/composition/statistiques/statistiques-fournies'
 import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
 import {
   comptesRendusSemes,
@@ -11,6 +10,7 @@ import {
   Jour,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
+import { statistiquesFournies } from '@/features/activites/implementation/statistiques'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   FiltresDesStatistiquesValidation,

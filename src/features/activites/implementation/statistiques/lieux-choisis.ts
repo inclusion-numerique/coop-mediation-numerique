@@ -4,8 +4,6 @@ import {
 } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
 import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
-import type { LieuxChoisisDeLaBarre } from '@/features/statistiques/ui/filtres/lieux-choisis'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 
 const valides =
@@ -21,9 +19,13 @@ export const lieuxChoisisDe = async (
     lieux,
     communes,
     departements,
-  }: Pick<ActivitesFilters, 'lieux' | 'communes' | 'departements'>,
+  }: {
+    readonly lieux?: readonly string[]
+    readonly communes?: readonly string[]
+    readonly departements?: readonly string[]
+  },
   perimetre: PerimetreDesStatistiques,
-): Promise<LieuxChoisisDeLaBarre> =>
+) =>
   optionsDesLieuxChoisis(
     await nommerLesLieuxChoisis(
       {

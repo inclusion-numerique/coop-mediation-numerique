@@ -10,11 +10,11 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/composition/statistiques/sections'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   nombreDAccompagnements,
   toutesLesStatistiques,
-} from '@/composition/statistiques/statistiques-fournies'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+} from '@/features/activites/implementation/statistiques'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
