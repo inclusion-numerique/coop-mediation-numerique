@@ -1,3 +1,4 @@
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import { UtilisateurIntrouvable } from '@/features/utilisateurs/domain'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { failure, type Result, success } from '@/libraries/result'
@@ -19,11 +20,13 @@ export const changerLesRoles = async ({
   mediateur,
   coordinateur,
   auteur,
+  synchroniserLaPersonne,
 }: {
   readonly utilisateurId: string
   readonly mediateur: boolean
   readonly coordinateur: boolean
   readonly auteur: AuteurDuChangement
+  readonly synchroniserLaPersonne: SynchroniserLaPersonne
 }): Promise<Result<PlanDeChangement, ChangerLesRolesError>> => {
   const chrono = createStopwatch()
 
@@ -36,7 +39,7 @@ export const changerLesRoles = async ({
   const plan = planDeChangement(compte, demande.data)
   if (!plan.success) return plan
 
-  await appliquerLePlan(compte.id, plan.data)
+  await appliquerLePlan(synchroniserLaPersonne)(compte.id, plan.data)
 
   journaliserLeChangement({
     utilisateurId: compte.id,

@@ -19,6 +19,7 @@ import {
 import { type UtilisateurId } from '@/features/utilisateurs/domain'
 import type { JobExecutor } from '@/jobs/jobExecutors'
 import { output } from '@/jobs/output'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,
@@ -45,6 +46,7 @@ const supprimerLeCompte =
         maintenant,
       },
       ports: supprimerComptePorts,
+      synchroniserLaPersonne: synchroniserPersonne,
     })
 
     if (!resultat.success) throw new Error(resultat.error._tag)

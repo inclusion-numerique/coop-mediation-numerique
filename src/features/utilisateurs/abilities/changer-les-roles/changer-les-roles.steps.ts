@@ -71,6 +71,7 @@ const changer = async (mediateur: boolean, coordinateur: boolean) => {
     inscritLe: new Date('2026-01-01'),
   })
   changement.resultat = await changerLesRoles({
+    synchroniserLaPersonne: async () => undefined,
     utilisateurId: utilisateurId(),
     mediateur,
     coordinateur,

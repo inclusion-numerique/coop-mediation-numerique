@@ -38,7 +38,8 @@ const InitialiserInscriptionPage = async () => {
     {
       rattacherDepuisSiret:
         rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
-      garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif,
+      garantirLeRoleCoordinateur:
+        garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
       synchroniserLaPersonne: synchroniserPersonne,
     },
   )

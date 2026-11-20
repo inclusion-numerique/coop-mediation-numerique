@@ -55,7 +55,9 @@ Given(
 
 When('le rôle coordinateur du dispositif est garanti', async () => {
   garantie.cree = (
-    await garantirLeRoleCoordinateurDuDispositif(utilisateurId())
+    await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
+      utilisateurId(),
+    )
   ).cree
 })
 

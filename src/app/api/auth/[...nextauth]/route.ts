@@ -19,7 +19,8 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const options = nextAuthOptions({
-  garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif,
+  garantirLeRoleCoordinateur:
+    garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
   importerLEmployeuseProConnect: importStructureEmployeuseFromProConnect(
     rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
   ),

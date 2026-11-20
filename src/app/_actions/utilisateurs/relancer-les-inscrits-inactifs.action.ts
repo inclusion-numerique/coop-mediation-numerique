@@ -16,6 +16,7 @@ import {
   type SupprimerComptePorts,
   supprimerUnInscritJamaisActif,
 } from '@/features/utilisateurs/abilities/supprimer-compte'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,
@@ -39,7 +40,11 @@ export const relancerLesInscritsInactifsAction = actionBuilder()
       traites: (
         await lancerLesRelancesDesInscrits(
           maintenant,
-          supprimerUnInscritJamaisActif(supprimerComptePorts, maintenant),
+          supprimerUnInscritJamaisActif(
+            supprimerComptePorts,
+            maintenant,
+            synchroniserPersonne,
+          ),
         )
       ).length,
     }

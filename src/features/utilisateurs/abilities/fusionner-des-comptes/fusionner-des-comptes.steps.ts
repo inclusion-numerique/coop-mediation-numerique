@@ -77,17 +77,23 @@ Given('la cible est supprimée', async () => {
 })
 
 When("l'administration fusionne la source dans la cible", async () => {
-  fusion.resultat = await fusionnerDesComptes({
-    sourceId: source().userId,
-    cibleId: cible().userId,
-  })
+  fusion.resultat = await fusionnerDesComptes(
+    {
+      sourceId: source().userId,
+      cibleId: cible().userId,
+    },
+    async () => undefined,
+  )
 })
 
 When("l'administration fusionne la source avec elle-même", async () => {
-  fusion.resultat = await fusionnerDesComptes({
-    sourceId: source().userId,
-    cibleId: source().userId,
-  })
+  fusion.resultat = await fusionnerDesComptes(
+    {
+      sourceId: source().userId,
+      cibleId: source().userId,
+    },
+    async () => undefined,
+  )
 })
 
 Then('la fusion des comptes aboutit', () => {

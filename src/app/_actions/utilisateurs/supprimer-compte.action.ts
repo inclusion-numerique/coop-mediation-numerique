@@ -19,6 +19,7 @@ import {
 } from '@/features/utilisateurs/abilities/supprimer-compte'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,
@@ -49,6 +50,7 @@ export const supprimerCompteAction = actionBuilder()
             maintenant: new Date(),
           },
           ports: supprimerComptePorts,
+          synchroniserLaPersonne: synchroniserPersonne,
         }),
       { onError: SUPPRIMER_COMPTE_ERRORS },
     ),

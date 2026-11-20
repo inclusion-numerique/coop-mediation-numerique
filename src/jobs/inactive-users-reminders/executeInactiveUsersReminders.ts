@@ -15,6 +15,10 @@ import {
 } from '@/features/utilisateurs/abilities/supprimer-compte'
 import type { RapportDeRelance } from '@/features/utilisateurs/domain'
 import { output } from '@/libraries/console/output'
+import {
+  retirerDuRegistre,
+  synchroniserPersonne,
+} from '@/libraries/registre-personne'
 
 const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,
@@ -47,11 +51,17 @@ export const executeInactiveUsersReminders = async () => {
   output('Executing inactive users reminders job...')
 
   const maintenant = new Date()
-  const inscriptions = resume(await lancerLesRelancesDInscription(maintenant))
+  const inscriptions = resume(
+    await lancerLesRelancesDInscription(maintenant, retirerDuRegistre),
+  )
   const inscrits = resume(
     await lancerLesRelancesDesInscrits(
       maintenant,
-      supprimerUnInscritJamaisActif(supprimerComptePorts, maintenant),
+      supprimerUnInscritJamaisActif(
+        supprimerComptePorts,
+        maintenant,
+        synchroniserPersonne,
+      ),
     ),
   )
 

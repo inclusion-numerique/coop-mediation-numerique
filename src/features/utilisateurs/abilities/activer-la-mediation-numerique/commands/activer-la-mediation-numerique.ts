@@ -1,3 +1,4 @@
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import {
   CoordinateurId,
   MediateurId,
@@ -15,6 +16,7 @@ import {
 
 export const activerLaMediationNumerique = async (
   utilisateurId: string,
+  synchroniserLaPersonne: SynchroniserLaPersonne,
 ): Promise<Result<Activation, UtilisateurIntrouvable | NonCoordinateur>> => {
   const chrono = createStopwatch()
 
@@ -32,7 +34,7 @@ export const activerLaMediationNumerique = async (
   if (!activation.success || activation.data === 'DejaActivee')
     return activation
 
-  await activer({
+  await activer(synchroniserLaPersonne)({
     utilisateurId: compte.id,
     coordinateurId: compte.coordinateur?.id ?? '',
     duree: () => chrono.stop().duration,

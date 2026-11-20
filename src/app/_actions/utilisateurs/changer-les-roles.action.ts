@@ -7,6 +7,7 @@ import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/chan
 import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { success } from '@/libraries/result'
 
 export const changerLesRolesAction = actionBuilder()
@@ -17,6 +18,7 @@ export const changerLesRolesAction = actionBuilder()
     fromResult(
       async ({ input, user }) => {
         const resultat = await changerLesRoles({
+          synchroniserLaPersonne: synchroniserPersonne,
           ...input,
           auteur: {
             _tag: 'administrateur',

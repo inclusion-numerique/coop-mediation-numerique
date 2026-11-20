@@ -75,6 +75,7 @@ const supprimer = async (cible: string, auteur: AuteurSuppression) => {
   scenario.effacement = await supprimerCompte({
     command: { cible: UtilisateurId(cible), auteur, maintenant: new Date() },
     ports,
+    synchroniserLaPersonne: async () => undefined,
   })
 }
 

@@ -1,9 +1,13 @@
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import { rolesVacants } from '../implementation'
 import { changerLesRoles } from './changer-les-roles'
 
 const retirer =
-  (demande: { readonly mediateur: boolean; readonly coordinateur: boolean }) =>
+  (
+    demande: { readonly mediateur: boolean; readonly coordinateur: boolean },
+    synchroniserLaPersonne: SynchroniserLaPersonne,
+  ) =>
   (utilisateurIds: readonly UtilisateurId[]): Promise<number> =>
     utilisateurIds.reduce<Promise<number>>(async (precedent, utilisateurId) => {
       const retires = await precedent
@@ -11,23 +15,33 @@ const retirer =
         utilisateurId,
         ...demande,
         auteur: { _tag: 'systeme' },
+        synchroniserLaPersonne,
       })
       return resultat.success ? retires + 1 : retires
     }, Promise.resolve(0))
 
-export const retirerLesRolesVacants = async (maintenant: Date) => {
+export const retirerLesRolesVacants = async (
+  maintenant: Date,
+  synchroniserLaPersonne: SynchroniserLaPersonne,
+) => {
   const { coordinateursVacants, mediateursVacants } =
     await rolesVacants(maintenant)
 
-  const coordinateursRetires = await retirer({
-    mediateur: true,
-    coordinateur: false,
-  })(coordinateursVacants)
+  const coordinateursRetires = await retirer(
+    {
+      mediateur: true,
+      coordinateur: false,
+    },
+    synchroniserLaPersonne,
+  )(coordinateursVacants)
 
-  const mediateursRetires = await retirer({
-    mediateur: false,
-    coordinateur: true,
-  })(mediateursVacants.filter((id) => !coordinateursVacants.includes(id)))
+  const mediateursRetires = await retirer(
+    {
+      mediateur: false,
+      coordinateur: true,
+    },
+    synchroniserLaPersonne,
+  )(mediateursVacants.filter((id) => !coordinateursVacants.includes(id)))
 
   return { coordinateursRetires, mediateursRetires }
 }

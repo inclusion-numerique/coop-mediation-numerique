@@ -43,7 +43,10 @@ Given('un médiateur sans rôle coordinateur', async () => {
 })
 
 When('il active la médiation numérique', async () => {
-  activation.resultat = await activerLaMediationNumerique(utilisateurId())
+  activation.resultat = await activerLaMediationNumerique(
+    utilisateurId(),
+    async () => undefined,
+  )
 })
 
 Then("l'activation de la médiation aboutit", () => {

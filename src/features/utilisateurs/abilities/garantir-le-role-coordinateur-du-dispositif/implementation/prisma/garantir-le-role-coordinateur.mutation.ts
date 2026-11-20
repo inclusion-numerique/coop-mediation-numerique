@@ -1,19 +1,19 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 
-export const garantirLeRoleCoordinateurDuDispositif = async (
-  userId: string,
-): Promise<{ cree: boolean }> => {
-  const existant = await prismaClient.coordinateur.findUnique({
-    where: { userId },
-    select: { id: true },
-  })
+export const garantirLeRoleCoordinateurDuDispositif =
+  (synchroniserLaPersonne: SynchroniserLaPersonne) =>
+  async (userId: string): Promise<{ cree: boolean }> => {
+    const existant = await prismaClient.coordinateur.findUnique({
+      where: { userId },
+      select: { id: true },
+    })
 
-  if (existant) return { cree: false }
+    if (existant) return { cree: false }
 
-  const [dispositif] = await prismaClient.$queryRaw<
-    { doit_coordonner: boolean }[]
-  >`
+    const [dispositif] = await prismaClient.$queryRaw<
+      { doit_coordonner: boolean }[]
+    >`
     SELECT (
       COALESCE(p.is_coordinateur, false)
       AND EXISTS (
@@ -25,15 +25,15 @@ export const garantirLeRoleCoordinateurDuDispositif = async (
     WHERE p.coop_id = ${userId}::uuid
     LIMIT 1`
 
-  if (!dispositif?.doit_coordonner) return { cree: false }
+    if (!dispositif?.doit_coordonner) return { cree: false }
 
-  await prismaClient.$transaction(async (transaction) => {
-    await transaction.coordinateur.create({
-      data: { userId },
-      select: { id: true },
+    await prismaClient.$transaction(async (transaction) => {
+      await transaction.coordinateur.create({
+        data: { userId },
+        select: { id: true },
+      })
+      await synchroniserLaPersonne(transaction, userId)
     })
-    await synchroniserPersonne(transaction, userId)
-  })
 
-  return { cree: true }
-}
+    return { cree: true }
+  }

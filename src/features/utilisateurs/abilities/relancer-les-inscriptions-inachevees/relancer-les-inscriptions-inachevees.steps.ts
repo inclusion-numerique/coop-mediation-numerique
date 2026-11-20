@@ -63,7 +63,8 @@ When('les inscriptions inachevées sont relancées', async () => {
       envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
         consigner(id, 'avis d’effacement'),
       effacerLInscription: async (id) => {
-        if (id === relance.utilisateurId) await effacerLInscription(id)
+        if (id === relance.utilisateurId)
+          await effacerLInscription(async () => undefined)(id)
       },
       retirerDesListes: async () => undefined,
     },

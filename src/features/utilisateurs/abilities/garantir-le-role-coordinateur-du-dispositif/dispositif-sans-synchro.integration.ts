@@ -73,23 +73,33 @@ describe('le rôle coordinateur et le filtre en poste, lus dans le dispositif', 
   describe('la garantie du rôle coordinateur', () => {
     it('crée la ligne coop, puis ne la recrée pas', async () => {
       expect(
-        await garantirLeRoleCoordinateurDuDispositif(coordinateur),
+        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
+          coordinateur,
+        ),
       ).toEqual({
         cree: true,
       })
       expect(
-        await garantirLeRoleCoordinateurDuDispositif(coordinateur),
+        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
+          coordinateur,
+        ),
       ).toEqual({
         cree: false,
       })
     })
 
     it('ne crée rien pour qui ne coordonne pas dans le dispositif', async () => {
-      expect(await garantirLeRoleCoordinateurDuDispositif(conseiller)).toEqual({
+      expect(
+        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
+          conseiller,
+        ),
+      ).toEqual({
         cree: false,
       })
       expect(
-        await garantirLeRoleCoordinateurDuDispositif(horsDispositif),
+        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
+          horsDispositif,
+        ),
       ).toEqual({
         cree: false,
       })

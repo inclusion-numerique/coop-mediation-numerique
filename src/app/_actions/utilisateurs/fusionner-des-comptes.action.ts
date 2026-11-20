@@ -6,6 +6,7 @@ import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner
 import { FUSIONNER_DES_COMPTES_ERRORS } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.errors'
 import { FusionnerDesComptesValidation } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.validation'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { success } from '@/libraries/result'
 
 export const fusionnerDesComptesAction = actionBuilder()
@@ -15,7 +16,7 @@ export const fusionnerDesComptesAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input }) => {
-        const resultat = await fusionnerDesComptes(input)
+        const resultat = await fusionnerDesComptes(input, synchroniserPersonne)
         return resultat.success ? success(undefined) : resultat
       },
       { onError: FUSIONNER_DES_COMPTES_ERRORS },
