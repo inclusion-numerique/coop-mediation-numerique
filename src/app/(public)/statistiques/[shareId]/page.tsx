@@ -3,7 +3,6 @@ import { rechercherLesEmployeusesDuPartageAction } from '@/app/_actions/statisti
 import { rechercherLesLieuxDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
 import { filtreDeLieu } from '@/composition/statistiques/barre'
 import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
-import { utilisateurDuPartage } from '@/composition/statistiques/partage'
 import {
   impressionDesStatistiques,
   sectionActivites,
@@ -14,7 +13,9 @@ import {
   nombreDAccompagnements,
   toutesLesStatistiques,
 } from '@/features/activites/implementation/statistiques'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
 import {
   type ParametresDeLaPage,
   parametresDesStatistiquesPartagees,
@@ -38,7 +39,10 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const partage = await resoudreUnLienDePartage(shareId)
   if (!partage.success) return notFound()
 
-  const user = await utilisateurDuPartage(partage.data)
+  const user = utilisateurDuPartage(
+    partage.data.proprietaire,
+    await getSessionUserFromId(partage.data.utilisateurId),
+  )
 
   const { statistiques, ...mesStatistiquesProps } = await mesStatistiques({
     user,

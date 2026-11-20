@@ -1,14 +1,17 @@
 import { notFound } from 'next/navigation'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { utilisateurDuPartage } from '@/composition/statistiques/partage'
-import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
+import { getMesStatistiquesPageData } from '@/composition/statistiques/mes-statistiques'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
 } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
+import { entreeDuClasseur } from '@/features/statistiques/ui/tableur/entree-du-classeur'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
@@ -34,9 +37,19 @@ export const GET = async (
 
   const filters: ActivitesFilters = parsedQueryParams.data
 
-  const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
-    user: await utilisateurDuPartage(partage.data),
+  const user = utilisateurDuPartage(
+    partage.data.proprietaire,
+    await getSessionUserFromId(partage.data.utilisateurId),
+  )
+
+  const statistiquesWorksheetInput = entreeDuClasseur({
+    statistiques: await getMesStatistiquesPageData({
+      user,
+      activitesFilters: filters,
+    }),
     filters,
+    auteur: auteurDeLExport(user),
+    fuseau: user.timezone,
   })
 
   const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)

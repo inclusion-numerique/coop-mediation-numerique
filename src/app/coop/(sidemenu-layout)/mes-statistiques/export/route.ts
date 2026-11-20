@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
+import { getMesStatistiquesPageData } from '@/composition/statistiques/mes-statistiques'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
@@ -7,6 +7,8 @@ import {
   filtresDeLExport,
 } from '@/features/statistiques/ui/export/demande-d-export'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
+import { entreeDuClasseur } from '@/features/statistiques/ui/tableur/entree-du-classeur'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
@@ -36,9 +38,14 @@ export const GET = async (request: NextRequest) => {
     return new Response('Cannot export for another mediateur', { status: 403 })
   }
 
-  const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
-    user,
+  const statistiquesWorksheetInput = entreeDuClasseur({
+    statistiques: await getMesStatistiquesPageData({
+      user,
+      activitesFilters: filters,
+    }),
     filters,
+    auteur: auteurDeLExport(user),
+    fuseau: user.timezone,
   })
 
   const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)

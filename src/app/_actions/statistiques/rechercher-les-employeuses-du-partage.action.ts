@@ -1,7 +1,6 @@
 'use server'
 
 import { z } from 'zod'
-import { utilisateurDuPartage } from '@/composition/statistiques/partage'
 import { actionBuilder } from '@/configuration/nextjs'
 import {
   EmployeuseId,
@@ -10,7 +9,9 @@ import {
 import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
 import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
 import { perimetreDesEmployeusesDe } from '@/features/activites/implementation/statistiques'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
@@ -27,7 +28,10 @@ const rechercherDansLePartage = actionBuilder()
     return optionsDEmployeuses(
       await rechercherLesEmployeusesDesActivites({
         perimetre: perimetreDesEmployeusesDe(
-          await utilisateurDuPartage(lien.data),
+          utilisateurDuPartage(
+            lien.data.proprietaire,
+            await getSessionUserFromId(lien.data.utilisateurId),
+          ),
         ),
         recherche,
         exclues: exclues.flatMap((id) => {
