@@ -2,12 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { creerLieuActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
-import {
-  enregistrerLeLieuSaisi,
-  mediateurFromUser,
-} from '@/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -19,7 +14,11 @@ import {
   activitesEnCoursDeLUtilisateur,
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
+  creerLieuActivite,
+  MediateurId,
+  nouveauLieu,
   rattacherAuLieuDesire,
+  UserId,
 } from '@/features/lieux-activite'
 import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 
@@ -28,12 +27,17 @@ const lieuxDeLaCoop = {
   rattacherAuLieuDesire,
 }
 
-const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
-  creerLieuActivite({
-    command: { userId: currentInscriptionUserId(), saisie },
-    mediateurFromUser,
-    enregistrerLeLieuSaisi,
+const creerUnLieuDActivite = async (saisie: CreerLieuActiviteData) => {
+  const { id } = await prismaClient.mediateur.findUniqueOrThrow({
+    where: { userId: currentInscriptionUserId() },
+    select: { id: true },
   })
+
+  return creerLieuActivite({
+    lieu: nouveauLieu(saisie, UserId(currentInscriptionUserId()), new Date()),
+    mediateurId: MediateurId(id),
+  })
+}
 
 let lieuDisponibleId = ''
 let cartoIdDuLieuDisponible: string | null = null

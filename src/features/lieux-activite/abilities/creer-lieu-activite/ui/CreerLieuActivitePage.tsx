@@ -19,37 +19,56 @@ const erreurEnregistrement = () =>
       'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   })
 
-const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
+const CreerLieuActivitePage = ({
+  contentTop,
+  nom,
+  retourHref,
+}: {
+  contentTop?: ReactNode
+  nom?: string
+  retourHref?: string
+}) => {
   const router = useRouter()
 
   const onCreer = async (value: CreerLieuActiviteFormData) => {
     const { adresseBan, ...data } = toCreerLieuData(value)
     if (adresseBan == null) return
 
-    const resultat = await inject(CREER_UN_LIEU_ACTIVITE_ACTION_KEY)({
-      ...data,
-      adresseBan,
-    })
+    try {
+      const resultat = await inject(CREER_UN_LIEU_ACTIVITE_ACTION_KEY)({
+        ...data,
+        adresseBan,
+      })
 
-    if (!resultat.success) {
+      if (!resultat.success) {
+        erreurEnregistrement()
+        return
+      }
+
+      createToast({
+        priority: 'success',
+        message: 'Le lieu d’activité a bien été créé.',
+      })
+
+      if (retourHref == null) {
+        router.push(
+          hrefDuLieu({ id: resultat.data.id, codeInsee: adresseBan.codeInsee }),
+        )
+        return
+      }
+
+      router.push(retourHref)
+      router.refresh()
+    } catch {
       erreurEnregistrement()
-      return
     }
-
-    createToast({
-      priority: 'success',
-      message: 'Le lieu d’activité a bien été créé.',
-    })
-
-    router.push(
-      hrefDuLieu({ id: resultat.data.id, codeInsee: adresseBan.codeInsee }),
-    )
   }
 
   return (
     <CreerLieuActivitePageContent
       contentTop={contentTop}
-      retourHref="/coop/lieux-activite"
+      nom={nom}
+      retourHref={retourHref ?? '/coop/lieux-activite'}
       onCreer={onCreer}
     />
   )

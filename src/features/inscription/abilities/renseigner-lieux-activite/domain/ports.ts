@@ -1,6 +1,4 @@
 import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
-import type { CreerLieuActiviteData } from '@/features/lieux-activite'
-import type { MediateurId } from './mediateur-id'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
 /** Lit les activités en cours de l'utilisateur (pour la réconciliation). */
@@ -30,25 +28,3 @@ export type EnregistrerReconciliation<StructureCarto> = (input: {
   readonly aCreer: readonly LieuActiviteInput[]
   readonly structuresCarto: ReadonlyMap<string, StructureCarto>
 }) => Promise<void>
-
-/**
- * Enregistre le lieu saisi et y rattache le médiateur — ou le rattache au lieu
- * que la coop connaissait déjà sous une autre dénomination. Rend le lieu
- * rattaché.
- *
- * « Enregistrer » plutôt que « créer » : l'inscription demande que le lieu
- * saisi existe et porte son médiateur, pas qu'une fiche de plus soit ouverte.
- */
-export type EnregistrerLeLieuSaisi = (input: {
-  readonly userId: UserId
-  readonly mediateurId: MediateurId
-  readonly saisie: CreerLieuActiviteData
-}) => Promise<{ readonly id: string }>
-
-/**
- * Résout le profil médiateur de l'utilisateur. Un lieu d'activité ne se
- * rattache qu'à soi-même : le médiateur se dérive de l'acteur authentifié au
- * lieu d'être fourni par l'appelant, sans quoi l'invariant ne tiendrait qu'à la
- * discipline de ce dernier.
- */
-export type MediateurFromUser = (userId: UserId) => Promise<MediateurId | null>
