@@ -9,6 +9,7 @@ import { ChoisirLaVisibiliteApresRuptureValidation } from '@/features/mediateurs
 import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
   .use(withAuth())
@@ -18,7 +19,7 @@ export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
   .execute(
     fromResult(
       ({ input, user, mediateur }) =>
-        choisirLaVisibiliteApresRupture({
+        choisirLaVisibiliteApresRupture(synchroniserPersonne)({
           mediateurId: MediateurId(mediateur.id),
           reponse: ReponseApresRupture(input.reponse),
           auteurId: AuteurId(user.id),

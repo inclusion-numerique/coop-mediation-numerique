@@ -1,8 +1,8 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { SynchroniserLaPersonne } from '@/features/mediateurs/db/synchroniser-la-personne'
 import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   AucuneRuptureEnAttente,
@@ -16,71 +16,73 @@ import {
 import { ruptureEnAttente } from '../../domain/rupture-en-attente'
 import { lireMediateurEtContrats } from './mediateur-et-contrats'
 
-export const choisirLaVisibiliteApresRupture = async ({
-  mediateurId,
-  reponse,
-  auteurId,
-  maintenant = new Date(),
-}: {
-  readonly mediateurId: MediateurId
-  readonly reponse: ReponseApresRupture
-  readonly auteurId: AuteurId
-  readonly maintenant?: Date
-}): Promise<Result<void, ChoisirLaVisibiliteApresRuptureError>> => {
-  const stopwatch = createStopwatch()
+export const choisirLaVisibiliteApresRupture =
+  (synchroniserLaPersonne: SynchroniserLaPersonne) =>
+  async ({
+    mediateurId,
+    reponse,
+    auteurId,
+    maintenant = new Date(),
+  }: {
+    readonly mediateurId: MediateurId
+    readonly reponse: ReponseApresRupture
+    readonly auteurId: AuteurId
+    readonly maintenant?: Date
+  }): Promise<Result<void, ChoisirLaVisibiliteApresRuptureError>> => {
+    const stopwatch = createStopwatch()
 
-  const mediateur = await lireMediateurEtContrats(mediateurId)
+    const mediateur = await lireMediateurEtContrats(mediateurId)
 
-  if (mediateur == null) return failure(MediateurIntrouvable(mediateurId))
+    if (mediateur == null) return failure(MediateurIntrouvable(mediateurId))
 
-  const rupture = ruptureEnAttente({
-    contrats: mediateur.contrats,
-    visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
-    maintenant,
-  })
-
-  if (rupture == null) return failure(AucuneRuptureEnAttente(mediateurId))
-
-  const visible = visibiliteApres(reponse)
-
-  const { count } = await prismaClient.$transaction(async (transaction) => {
-    const ecriture = await transaction.mediateur.updateMany({
-      where: {
-        id: mediateur.id,
-        visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
-      },
-      data: { isVisible: visible, visibiliteChoisieLe: maintenant },
+    const rupture = ruptureEnAttente({
+      contrats: mediateur.contrats,
+      visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
+      maintenant,
     })
 
-    if (ecriture.count > 0) {
-      await transaction.user.updateMany({
-        where: { mediateur: { id: mediateur.id } },
-        data: { updated: maintenant },
+    if (rupture == null) return failure(AucuneRuptureEnAttente(mediateurId))
+
+    const visible = visibiliteApres(reponse)
+
+    const { count } = await prismaClient.$transaction(async (transaction) => {
+      const ecriture = await transaction.mediateur.updateMany({
+        where: {
+          id: mediateur.id,
+          visibiliteChoisieLe: mediateur.visibiliteChoisieLe,
+        },
+        data: { isVisible: visible, visibiliteChoisieLe: maintenant },
       })
 
-      const { userId } = await transaction.mediateur.findUniqueOrThrow({
-        where: { id: mediateur.id },
-        select: { userId: true },
-      })
-      await synchroniserPersonne(transaction, userId, maintenant)
-    }
+      if (ecriture.count > 0) {
+        await transaction.user.updateMany({
+          where: { mediateur: { id: mediateur.id } },
+          data: { updated: maintenant },
+        })
 
-    return ecriture
-  })
+        const { userId } = await transaction.mediateur.findUniqueOrThrow({
+          where: { id: mediateur.id },
+          select: { userId: true },
+        })
+        await synchroniserLaPersonne(transaction, userId, maintenant)
+      }
 
-  if (count === 0) return failure(AucuneRuptureEnAttente(mediateurId))
+      return ecriture
+    })
 
-  addMutationLog({
-    userId: auteurId,
-    nom: 'SetMediateurVisibility',
-    duration: stopwatch.stop().duration,
-    data: {
-      mediateurId,
-      reponse,
-      dateRupture: rupture.dateRupture.toISOString(),
-      isVisible: visible,
-    },
-  })
+    if (count === 0) return failure(AucuneRuptureEnAttente(mediateurId))
 
-  return success(undefined)
-}
+    addMutationLog({
+      userId: auteurId,
+      nom: 'SetMediateurVisibility',
+      duration: stopwatch.stop().duration,
+      data: {
+        mediateurId,
+        reponse,
+        dateRupture: rupture.dateRupture.toISOString(),
+        isVisible: visible,
+      },
+    })
+
+    return success(undefined)
+  }

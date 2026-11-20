@@ -8,6 +8,7 @@ import { REGLER_LA_VISIBILITE_CARTO_ERRORS } from '@/features/mediateurs/abiliti
 import { ReglerMaVisibiliteCartoValidation } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.validation'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 export const reglerMaVisibiliteCartoAction = actionBuilder()
   .use(withAuth())
@@ -17,7 +18,7 @@ export const reglerMaVisibiliteCartoAction = actionBuilder()
   .execute(
     fromResult(
       ({ input, user, mediateur }) =>
-        reglerLaVisibiliteCarto({
+        reglerLaVisibiliteCarto(synchroniserPersonne)({
           mediateurId: MediateurId(mediateur.id),
           visible: input.visible,
           auteurId: AuteurId(user.id),

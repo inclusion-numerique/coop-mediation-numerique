@@ -13,7 +13,9 @@ import {
   semerUnExConseiller,
 } from '@/features/mediateurs/mediateurs.cucumber'
 
-type Issue = Awaited<ReturnType<typeof choisirLaVisibiliteApresRupture>>
+type Issue = Awaited<
+  ReturnType<ReturnType<typeof choisirLaVisibiliteApresRupture>>
+>
 
 const derniere: { reponse?: Issue } = {}
 
@@ -26,7 +28,9 @@ const date = (jour: string): Date => {
 
 const repondre = async (reponse: ReponseApresRupture) => {
   const seme = exConseillerSeme()
-  derniere.reponse = await choisirLaVisibiliteApresRupture({
+  derniere.reponse = await choisirLaVisibiliteApresRupture(
+    async () => undefined,
+  )({
     mediateurId: MediateurId(seme.mediateurId),
     reponse,
     auteurId: AuteurId(seme.userId),
