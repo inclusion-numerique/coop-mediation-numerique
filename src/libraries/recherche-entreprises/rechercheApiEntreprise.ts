@@ -1,7 +1,5 @@
 import pRetry, { AbortError } from 'p-retry'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
-import type { UniteLegale } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
-import { rechercheApiEntrepriseE2e } from './rechercheApiEntreprise.e2e'
+import type { UniteLegale } from '@/libraries/recherche-entreprises/apiEntrepriseApiModels'
 
 const rechercheApiEntrepriseEndpoint =
   'https://recherche-entreprises.api.gouv.fr/search'
@@ -108,11 +106,6 @@ export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,
   retryOptions?: RechercheApiEntrepriseRetryOptions,
 ): Promise<RechercheApiResponse> => {
-  // Les parcours e2e ne dépendent pas d'un service public tiers : son
-  // indisponibilité se traduirait par une employeuse silencieusement absente,
-  // donc par une suite rouge sans rapport avec le code testé.
-  if (ServerWebAppConfig.isE2e) return rechercheApiEntrepriseE2e(queryParams)
-
   const queryUrl = `${rechercheApiEntrepriseEndpoint}?${convertQueryParams(queryParams).toString()}`
 
   const executeFetch = async () => {

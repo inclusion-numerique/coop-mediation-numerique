@@ -1,5 +1,5 @@
-import { etablissementsDepuisUniteLegale } from '@/configuration/recherche-entreprises/etablissementsDepuisUniteLegale'
-import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
+import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
+import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises/etablissementsDepuisUniteLegale'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
 import { rechercherEmployeuse } from '../../rechercher-employeuse/implementation'

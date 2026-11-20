@@ -3,8 +3,8 @@ import {
   Siret,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { etablissementsDepuisUniteLegale } from '@/configuration/recherche-entreprises/etablissementsDepuisUniteLegale'
-import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
+import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
+import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises/etablissementsDepuisUniteLegale'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
 import {
