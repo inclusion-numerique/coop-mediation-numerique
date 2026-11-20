@@ -1,6 +1,5 @@
 import { v4 } from 'uuid'
 import { afterEach, beforeAll, describe, expect, test } from 'vitest'
-import { AdresseIndisponible } from '@/configuration/ban/apiAdresse'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
 import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
@@ -19,6 +18,7 @@ import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
+import { AdresseIndisponible } from '@/libraries/ban/apiAdresse'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
 

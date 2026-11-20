@@ -1,6 +1,5 @@
-import { searchAdresse } from '@/configuration/ban/apiAdresse'
-import { communeFieldsFromAddress } from '@/configuration/ban/communeFieldsFromAddress'
 import { instrument } from '@/configuration/telemetry/instrument/server'
+import { searchAdresse } from '@/libraries/ban/apiAdresse'
 
 const operation = {
   name: 'http.ban.search',
@@ -9,6 +8,3 @@ const operation = {
 
 export const geocoder = (requete: string) =>
   instrument(operation, () => searchAdresse(requete))
-
-export const communeDeLAdresse = (adresse: string) =>
-  instrument(operation, () => communeFieldsFromAddress(adresse))

@@ -1,7 +1,6 @@
 import { v4 } from 'uuid'
-import { siIndisponible } from '@/configuration/ban/apiAdresse'
-import type { CommuneFields } from '@/configuration/ban/communeFieldsFromAddress'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { CommuneFields } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementation/communeFieldsFromAddress'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
@@ -14,6 +13,7 @@ import {
 } from '@/features/beneficiaire/domain/prenom'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { Prisma } from '@/generated/prisma/client'
+import { siIndisponible } from '@/libraries/ban/apiAdresse'
 import { Telephone } from '@/libraries/telephone'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,

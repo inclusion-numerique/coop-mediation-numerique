@@ -4,7 +4,6 @@ import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/reche
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
-import { rechercherDesCommunes } from '@/configuration/ban/rechercher-des-communes'
 import { saisieCollectiveAModifier } from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import CraCollectifPage from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/CraCollectifPage'
@@ -23,6 +22,7 @@ import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-a
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
 import { acteurDe } from '@/features/tags/domain'
+import { rechercherDesCommunes } from '@/libraries/ban/rechercher-des-communes'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const UpdateCraCollectifPage = async ({

@@ -1,6 +1,6 @@
-import { searchAdresses, siIndisponible } from '@/configuration/ban/apiAdresse'
-import { banFeatureToAdresseBanData } from '@/configuration/ban/banFeatureToAdresseBanData'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import { searchAdresses, siIndisponible } from '@/libraries/ban/apiAdresse'
+import { banFeatureToAdresseBanData } from '@/libraries/ban/banFeatureToAdresseBanData'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 

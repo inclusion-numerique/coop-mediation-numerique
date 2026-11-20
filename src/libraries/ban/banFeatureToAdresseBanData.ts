@@ -1,5 +1,5 @@
-import type { Feature } from '@/configuration/ban/apiAdresse'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { Feature } from '@/libraries/ban/apiAdresse'
 
 export const banFeatureToAdresseBanData = ({
   properties: { label, id, city, citycode, context, name, postcode },

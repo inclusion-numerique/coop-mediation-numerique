@@ -5,11 +5,6 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
 import { useState } from 'react'
 import {
-  SERVICE_ADRESSE_INDISPONIBLE,
-  siIndisponible,
-} from '@/configuration/ban/apiAdresse'
-import { geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
-import {
   adresseNonVerifiableMessage,
   SANS_SIRET_A_LA_MAIN,
 } from '@/features/lieux-activite/ui/adresse-non-verifiable'
@@ -18,6 +13,11 @@ import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@/libraries/adresse/AdresseBanComboBox'
+import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@/libraries/ban/apiAdresse'
+import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
@@ -67,7 +67,7 @@ export const InformationsGeneralesEditionFields = withForm({
               onSelect={async (item) => {
                 setSiretSearchError(null)
                 form.setFieldValue('adresseBan', null)
-                const adresseBan = await geocodeStructureAdresse(item).catch(
+                const adresseBan = await geocoderPrecisement(item).catch(
                   siIndisponible('indisponible' as const),
                 )
                 if (adresseBan === 'indisponible') {

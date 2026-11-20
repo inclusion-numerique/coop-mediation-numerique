@@ -1,7 +1,13 @@
-import type { AdresseAGeocoder } from '@/configuration/ban/geocodeStructureAdresse'
 import type { UserId } from '@/features/inscription/domain'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import type { EmployeuseId } from './employeuse-id'
+
+type AdresseAGeocoder = {
+  readonly adresse: string
+  readonly codePostal: string
+  readonly commune: string
+  readonly codeInsee: string | null
+}
 
 export type EmployeuseLue = {
   readonly id: number

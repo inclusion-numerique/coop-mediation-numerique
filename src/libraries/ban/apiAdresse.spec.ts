@@ -6,11 +6,11 @@ import {
   searchAdresses,
   siIndisponible,
   urlDeRecherche,
-} from '@/configuration/ban/apiAdresse'
+} from '@/libraries/ban/apiAdresse'
 import {
   reponseAdresseTrouvee,
   reponseSansAdresse,
-} from '@/configuration/ban/apiAdresse.reponses'
+} from '@/libraries/ban/apiAdresse.reponses'
 
 const reponse = (corps: unknown, status = 200) =>
   new Response(JSON.stringify(corps), { status })

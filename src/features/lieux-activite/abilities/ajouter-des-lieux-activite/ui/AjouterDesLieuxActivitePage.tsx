@@ -6,13 +6,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
-import { geocodeStructureAdresse } from '@/configuration/ban/geocodeStructureAdresse'
 import CreerLieuActiviteForm from '@/features/lieux-activite/ui/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
@@ -174,7 +174,7 @@ export const AjouterDesLieuxActivitePage = ({
             <field.ComboBox
               isPending={isPending}
               onSelect={async (item) => {
-                const issue = await selectionner(geocodeStructureAdresse)(
+                const issue = await selectionner(geocoderPrecisement)(
                   form.state.values.lieux,
                   item,
                 )

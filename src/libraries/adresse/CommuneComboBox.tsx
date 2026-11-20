@@ -1,7 +1,7 @@
 import {
   type Commune,
   rechercherDesCommunes,
-} from '@/configuration/ban/rechercher-des-communes'
+} from '@/libraries/ban/rechercher-des-communes'
 import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 

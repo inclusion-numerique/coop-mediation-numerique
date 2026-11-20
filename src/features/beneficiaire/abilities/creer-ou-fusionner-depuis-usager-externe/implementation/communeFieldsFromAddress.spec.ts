@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import type { Feature } from '@/configuration/ban/apiAdresse'
-import { communeDuResultat } from '@/configuration/ban/communeFieldsFromAddress'
+import { communeDuResultat } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementation/communeFieldsFromAddress'
+import type { Feature } from '@/libraries/ban/apiAdresse'
 
 const evreuxFeature: Feature = {
   type: 'Feature',

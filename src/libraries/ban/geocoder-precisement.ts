@@ -1,6 +1,6 @@
-import { type Feature, searchAdresses } from '@/configuration/ban/apiAdresse'
-import { banFeatureToAdresseBanData } from '@/configuration/ban/banFeatureToAdresseBanData'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import { type Feature, searchAdresses } from '@/libraries/ban/apiAdresse'
+import { banFeatureToAdresseBanData } from '@/libraries/ban/banFeatureToAdresseBanData'
 
 /**
  * Les seuls champs nécessaires au géocodage : structures employeuses et lieux
@@ -21,7 +21,7 @@ const isPreciseMatchIn =
   ({ properties }: Feature): boolean =>
     properties.citycode === codeInsee && properties.type !== 'municipality'
 
-export const geocodeStructureAdresse = async (
+export const geocoderPrecisement = async (
   structure: AdresseAGeocoder,
 ): Promise<AdresseBanData | null> => {
   if (!structure.codeInsee) return null
