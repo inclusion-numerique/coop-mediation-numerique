@@ -1,18 +1,29 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
+import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
+import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import {
-  lieuxChoisisDe,
-  perimetreDeLUtilisateur,
-  rassembler,
-  statistiquesDuPerimetre,
-} from '@/features/activites/implementation/statistiques'
-import { dureeAccompagnementStatisticsRanges } from '@/features/activites/ui/libelles/duree-accompagnement'
+  mediateurAvecActivite,
+  mediateurAvecActiviteMediateurId,
+} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
 import {
-  materielLabels,
-  materielValues,
-} from '@/features/activites/ui/libelles/materiel'
+  mediateurSansActivites,
+  mediateurSansActivitesMediateurId,
+} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+import { mediateque, seedStructures } from '@/fixtures/structures'
+import { Prisma } from '@/generated/prisma/client'
+import { computeProportion } from '@/libraries/proportions'
+import { partsFixees } from '@/libraries/proportions/parts-fixees'
+import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
+import {
+  criteresDesStatistiques,
+  MediateurId,
+  perimetreDuDemandeur,
+} from '../../domain'
+import { dureeAccompagnementStatisticsRanges } from '../../ui/libelles/duree-accompagnement'
+import { materielLabels, materielValues } from '../../ui/libelles/materiel'
 import {
   genreLabels,
   genresAffiches,
@@ -20,92 +31,54 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '@/features/activites/ui/libelles/profil'
+} from '../../ui/libelles/profil'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '@/features/activites/ui/libelles/thematique'
+} from '../../ui/libelles/thematique'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '@/features/activites/ui/libelles/type-activite'
-import {
-  typeLieuLabels,
-  typeLieuValues,
-} from '@/features/activites/ui/libelles/type-lieu'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
-import { profilDeLaSession } from '@/features/authentification'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
-import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
-import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
-import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-  mediateurAvecActiviteUserId,
-} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
-import {
-  mediateurSansActivites,
-  mediateurSansActivitesUserId,
-} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
-import { mediateque, seedStructures } from '@/fixtures/structures'
-import { computeProportion } from '@/libraries/proportions'
-import { partsFixees } from '@/libraries/proportions/parts-fixees'
-import { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
-import {
-  donneesDeMesStatistiques,
-  type MesStatistiquesGraphOptions,
-} from './mes-statistiques'
+} from '../../ui/libelles/type-activite'
+import { typeLieuLabels, typeLieuValues } from '../../ui/libelles/type-lieu'
+import { statistiquesDuPerimetre } from './statistiques-du-perimetre'
+import { rassembler } from './statistiques-fournies'
 
-const getMesStatistiquesPageData = ({
-  user,
+type ActivitesFilters = Parameters<typeof criteresDesStatistiques>[0]
+
+const aucunRendezVous = () => Prisma.sql`SELECT NULL WHERE FALSE`
+
+const statistiquesDuMediateur = ({
+  mediateurId,
   activitesFilters,
-  graphOptions,
 }: {
-  user: SessionUser
+  mediateurId: string
   activitesFilters: ActivitesFilters
-  graphOptions: MesStatistiquesGraphOptions
-}) =>
-  donneesDeMesStatistiques(
-    { user, profil: profilDeLaSession(user), activitesFilters, graphOptions },
-    {
-      perimetreDe: perimetreDeLUtilisateur,
-      lancer: statistiquesDuPerimetre(rendezVousAuxStatutsSql),
-      rassembler,
-      lieuxChoisis: lieuxChoisisDe,
-      tagsVisibles: tagsVisiblesDuProfil,
-      beneficiaires: getInitialBeneficiairesOptionsForSearch,
-      membres: membresAFiltrerDuDemandeur,
-      activitesDuPerimetre: decrireLesActivitesDuPerimetre,
-      vocabulaire: {
-        ...vocabulaireDesActivites,
-        statutsDeRendezVous: rdvStatusOptions,
-      },
-    },
+}) => {
+  const perimetre = perimetreDuDemandeur({
+    mediateur: MediateurId(mediateurId),
+    coordinateur: null,
+    equipe: [],
+  })
+  if (perimetre === null) throw new Error('Périmètre introuvable')
+  return rassembler(
+    statistiquesDuPerimetre(aucunRendezVous)({
+      perimetre,
+      filtres: activitesFilters,
+      fin: graphOptions.fin,
+    }),
   )
+}
 
 type MesStatistiquesPageData = Awaited<
-  ReturnType<typeof getMesStatistiquesPageData>
+  ReturnType<typeof statistiquesDuMediateur>
 >
 
-/**
- * Base empty data for all tests
- */
-
-// Fixed graph end date
 const graphOptions = {
   fin: new Date('2024-08-15'),
-} satisfies MesStatistiquesGraphOptions
+}
 
 const emptyData: MesStatistiquesPageData = {
   accompagnementsParJour: [
@@ -216,25 +189,8 @@ const emptyData: MesStatistiquesPageData = {
   structures: [],
   communes: [],
 
-  activitesFilters: {},
-  communesOptions: [],
-  departementsOptions: [],
-  tagsOptions: [],
-  initialBeneficiairesOptions: [],
-  initialMediateursOptions: [],
-  lieuxActiviteOptions: [],
-  structuresEmployeusesOptions: [],
-  activiteSourceOptions,
-  activiteDates: {
-    first: undefined,
-    last: undefined,
-  },
   hasCrasV1: {
     hasCrasV1: false,
-  },
-  vocabulaire: {
-    ...vocabulaireDesActivites,
-    statutsDeRendezVous: rdvStatusOptions,
   },
 }
 
@@ -280,14 +236,7 @@ const expectEnum = <T extends string>(
   item.proportion = computeProportion(count, total)
 }
 
-const employeuseDesActivitesState = { id: 0 }
-const expectedStructureEmployeuseOption = () => ({
-  id: String(employeuseDesActivitesState.id),
-  nom: mediateque.nom,
-  commune: mediateque.commune,
-})
-
-describe('getMesStatistiquesPageData', () => {
+describe('statistiques du périmètre d’un médiateur', () => {
   beforeAll(async () => {
     await seedStructures(prismaClient)
     await resetFixtureUser(mediateurAvecActivite, false)
@@ -298,22 +247,13 @@ describe('getMesStatistiquesPageData', () => {
       mediateurSansActivites,
       conseillerNumerique,
     ])
-    const employeuseDesActivites =
-      await prismaClient.structureAdministrativeMain.findFirstOrThrow({
-        where: { structureCoopId: mediateque.id },
-        select: { id: true },
-      })
-    employeuseDesActivitesState.id = employeuseDesActivites.id
   }, 100_000)
 
   describe('mediateur sans activites', () => {
     test('should give empty data without filters', async () => {
-      const user = await getSessionUserFromId(mediateurSansActivitesUserId)
-
-      const data = await getMesStatistiquesPageData({
-        user,
+      const data = await statistiquesDuMediateur({
+        mediateurId: mediateurSansActivitesMediateurId,
         activitesFilters: {},
-        graphOptions,
       })
       expect(data).toEqual(emptyData)
     })
@@ -323,7 +263,7 @@ describe('getMesStatistiquesPageData', () => {
     const cases: {
       title: string
       activitesFilters: ActivitesFilters
-      expected: Omit<MesStatistiquesPageData, 'activitesFilters'>
+      expected: MesStatistiquesPageData
     }[] = [
       {
         title: 'should compute all data without filters',
@@ -559,54 +499,18 @@ describe('getMesStatistiquesPageData', () => {
             },
           ]
 
-          data.activiteDates.first = new Date('2024-06-15')
-          data.activiteDates.last = new Date('2024-08-05')
-
           return data
         }),
       },
     ]
 
-    const mediateurId = mediateurAvecActiviteMediateurId
-
-    let expectedCommon: Pick<
-      MesStatistiquesPageData,
-      | 'communesOptions'
-      | 'departementsOptions'
-      | 'initialBeneficiairesOptions'
-      | 'lieuxActiviteOptions'
-      | 'activiteSourceOptions'
-      | 'structuresEmployeusesOptions'
-    >
-
-    beforeAll(async () => {
-      expectedCommon = {
-        communesOptions: [],
-        departementsOptions: [],
-        initialBeneficiairesOptions:
-          await getInitialBeneficiairesOptionsForSearch({ mediateurId }),
-        lieuxActiviteOptions: [],
-        structuresEmployeusesOptions: [expectedStructureEmployeuseOption()],
-        activiteSourceOptions,
-      }
-    })
-
     test.each(cases)('$title', async ({ activitesFilters, expected }) => {
-      const user = await getSessionUserFromId(mediateurAvecActiviteUserId)
-
-      const data = await getMesStatistiquesPageData({
-        user,
+      const data = await statistiquesDuMediateur({
+        mediateurId: mediateurAvecActiviteMediateurId,
         activitesFilters,
-        graphOptions,
       })
 
-      const completeExpectedData = {
-        ...expected,
-        ...expectedCommon,
-        activitesFilters,
-      } satisfies MesStatistiquesPageData
-
-      expect(data).toEqual(completeExpectedData)
+      expect(data).toEqual(expected)
     })
   })
 })

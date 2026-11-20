@@ -45,7 +45,7 @@ export type SourcesDeMesStatistiques<
   readonly vocabulaire: VocabulaireDeLaBarre
 }
 
-export type MesStatistiquesGraphOptions = {
+type MesStatistiquesGraphOptions = {
   fin?: Date
   debut?: Date
 }
