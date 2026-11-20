@@ -1,51 +1,61 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
-import {
-  comptesRendusSemes,
-  semerComptesRendus,
-} from '@/features/activites/activites.cucumber'
-import {
-  criteresDesStatistiques,
-  Jour,
-  PERIMETRE_NATIONAL,
-} from '@/features/activites/domain'
-import { statistiquesFournies } from '@/features/activites/implementation/statistiques'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import {
   FiltresDesStatistiquesValidation,
   type StatistiquesExposees,
   statistiquesExposees,
 } from './implementation'
+import type { StatistiquesFourniesAExposer } from './implementation/api/statistiques-exposees.transfer'
 
 const calcul: {
+  fournies?: StatistiquesFourniesAExposer
   statistiques?: StatistiquesExposees
   filtreValide?: boolean
 } = {}
 
-Given('des activités à compter dans les statistiques', async () => {
-  await semerComptesRendus()
-})
+const aucunePart = { total: 0, proportion: 0 }
 
-When("l'API calcule les statistiques de leur médiateur", async () => {
-  const criteres = criteresDesStatistiques(
-    FiltresDesStatistiquesValidation.parse({
-      mediateurs: comptesRendusSemes().mediateurId,
-    }),
-  )
-  const fenetre = fenetreDe({ debut: null, fin: Jour('2026-06-30') })
-  calcul.statistiques = statistiquesExposees(
-    await statistiquesFournies(
-      {
-        perimetre: PERIMETRE_NATIONAL,
-        criteres,
-        rendezVousAuxStatuts: rendezVousAuxStatutsSql,
-        parJour: fenetre,
-        parMois: fenetre,
+Given(
+  'des statistiques fournies qui comptent {int} activités',
+  (total: number) => {
+    calcul.fournies = {
+      accompagnementsParJour: [],
+      accompagnementsParMois: [],
+      beneficiaires: {
+        total: 0,
+        genres: [],
+        trancheAges: [],
+        statutsSocial: [],
       },
-      { territoires: false, tags: false },
-    ),
-  )
+      activites: {
+        total,
+        typeActivites: [],
+        durees: [],
+        typeLieu: [],
+        thematiques: [],
+        thematiquesDemarches: [],
+        materiels: [],
+      },
+      totalCounts: {
+        activites: {
+          total,
+          individuels: aucunePart,
+          collectifs: { ...aucunePart, participants: 0 },
+        },
+        accompagnements: {
+          total: 0,
+          individuels: aucunePart,
+          collectifs: aucunePart,
+        },
+        beneficiaires: { total: 0, nouveaux: 0, suivis: 0, anonymes: 0 },
+      },
+    }
+  },
+)
+
+When("l'API expose ces statistiques", () => {
+  assert.ok(calcul.fournies, 'Aucune statistique fournie')
+  calcul.statistiques = statistiquesExposees(calcul.fournies)
 })
 
 When("l'API reçoit le filtre de types {string}", (types: string) => {
