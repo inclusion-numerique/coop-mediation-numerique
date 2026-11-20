@@ -1,9 +1,32 @@
+import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
+import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { detacherDesEquipes } from '@/features/equipe'
+import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
+import { lancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees'
+import { lancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs'
 import {
-  lancerLesRelancesDesInscrits,
-  lancerLesRelancesDInscription,
-} from '@/composition/utilisateurs/relances.ports'
+  hash,
+  retirerDesListesDeDiffusion,
+  type SupprimerComptePorts,
+  supprimerUnInscritJamaisActif,
+} from '@/features/utilisateurs/abilities/supprimer-compte'
 import type { RapportDeRelance } from '@/features/utilisateurs/domain'
 import { output } from '@/libraries/console/output'
+
+const supprimerComptePorts: SupprimerComptePorts = {
+  anonymiserPortefeuille,
+  effacerNotes,
+  effacerEmpreinteRdv,
+  retirerLesTagsDUnCompte,
+  detacherDesEquipes,
+  retirerDesLieux,
+  revoquerPartageStatistiques,
+  retirerDesListesDeDiffusion,
+  hash,
+}
 
 const resume = (rapports: readonly RapportDeRelance[]) => ({
   traites: rapports.length,
@@ -25,7 +48,12 @@ export const executeInactiveUsersReminders = async () => {
 
   const maintenant = new Date()
   const inscriptions = resume(await lancerLesRelancesDInscription(maintenant))
-  const inscrits = resume(await lancerLesRelancesDesInscrits(maintenant))
+  const inscrits = resume(
+    await lancerLesRelancesDesInscrits(
+      maintenant,
+      supprimerUnInscritJamaisActif(supprimerComptePorts, maintenant),
+    ),
+  )
 
   output(
     `relances : ${inscriptions.traites} inscriptions inachevées (${inscriptions.echecs.length} échecs), ${inscrits.traites} inscrits sans activité (${inscrits.echecs.length} échecs)`,

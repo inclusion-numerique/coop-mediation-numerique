@@ -1,7 +1,7 @@
 import type {
   AdresseCourriel,
+  IdentifiantsRattaches,
   MediateurId,
-  RattachementsDuCompte,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
@@ -9,9 +9,9 @@ type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<{ readonly anonymises: number }>
 
-type EffacerNotes = (input: {
-  readonly rattachements: RattachementsDuCompte
-}) => Promise<{ readonly effacees: number }>
+type EffacerNotes = (
+  input: IdentifiantsRattaches,
+) => Promise<{ readonly effacees: number }>
 
 type EffacerEmpreinteRdv = (input: {
   readonly utilisateurId: UtilisateurId
@@ -21,22 +21,23 @@ type EffacerEmpreinteRdv = (input: {
   readonly usagersSupprimes: number
 }>
 
-type DetacherDesEquipes = (input: {
-  readonly rattachements: RattachementsDuCompte
-}) => Promise<{
+type RetirerLesTagsDUnCompte = (input: IdentifiantsRattaches) => Promise<{
+  readonly transferes: number
+  readonly supprimes: number
+}>
+
+type DetacherDesEquipes = (input: IdentifiantsRattaches) => Promise<{
   readonly invitationsSupprimees: number
   readonly appartenancesRetirees: number
-  readonly tagsTransferes: number
-  readonly tagsSupprimes: number
 }>
 
 type RetirerDesLieux = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<{ readonly rattachementsSupprimes: number }>
 
-type RevoquerPartageStatistiques = (input: {
-  readonly rattachements: RattachementsDuCompte
-}) => Promise<{ readonly partagesRevoques: number }>
+type RevoquerPartageStatistiques = (
+  input: IdentifiantsRattaches,
+) => Promise<{ readonly partagesRevoques: number }>
 
 export type RetirerDesListesDeDiffusion = (
   courriel: AdresseCourriel,
@@ -50,6 +51,7 @@ export type SupprimerComptePorts = {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille
   readonly effacerNotes: EffacerNotes
   readonly effacerEmpreinteRdv: EffacerEmpreinteRdv
+  readonly retirerLesTagsDUnCompte: RetirerLesTagsDUnCompte
   readonly detacherDesEquipes: DetacherDesEquipes
   readonly retirerDesLieux: RetirerDesLieux
   readonly revoquerPartageStatistiques: RevoquerPartageStatistiques

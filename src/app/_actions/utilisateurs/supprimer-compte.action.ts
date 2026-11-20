@@ -1,15 +1,36 @@
 'use server'
 
-import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
 import { actionBuilder } from '@/configuration/nextjs'
+import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
 import { withAdmin, withAuth } from '@/features/authentification'
+import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { detacherDesEquipes } from '@/features/equipe'
+import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import {
+  hash,
+  retirerDesListesDeDiffusion,
   SUPPRIMER_COMPTE_ERRORS,
+  type SupprimerComptePorts,
   SupprimerCompteValidation,
   supprimerCompte,
 } from '@/features/utilisateurs/abilities/supprimer-compte'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+
+const supprimerComptePorts: SupprimerComptePorts = {
+  anonymiserPortefeuille,
+  effacerNotes,
+  effacerEmpreinteRdv,
+  retirerLesTagsDUnCompte,
+  detacherDesEquipes,
+  retirerDesLieux,
+  revoquerPartageStatistiques,
+  retirerDesListesDeDiffusion,
+  hash,
+}
 
 export const supprimerCompteAction = actionBuilder()
   .use(withAuth())

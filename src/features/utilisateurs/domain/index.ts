@@ -81,6 +81,7 @@ export {
 } from './production'
 export {
   coordinateurDe,
+  type IdentifiantsRattaches,
   identifiantsDe,
   mediateurDe,
   type Rattachements,

@@ -24,6 +24,7 @@ export {
   getMediateurCommunesAndDepartementsOptions,
   lieuxDuMediateur,
 } from './abilities/lister-les-options-de-lieux'
+export { retirerDesLieux } from './abilities/retirer-des-lieux'
 
 export {
   type CreerLieuActiviteData,

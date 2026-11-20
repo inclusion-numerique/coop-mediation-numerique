@@ -1,9 +1,14 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
+import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { detacherDesEquipes } from '@/features/equipe'
+import { retirerDesLieux } from '@/features/lieux-activite'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
 import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   type CompteSeme,
@@ -16,11 +21,18 @@ import {
   RetentionPolicy,
   type SupprimerComptePorts,
 } from './domain'
+import { hash } from './implementation'
 
 const ports: SupprimerComptePorts = {
-  ...supprimerComptePorts,
+  anonymiserPortefeuille,
+  effacerNotes,
   effacerEmpreinteRdv: effacerEmpreinteRdvAvec(async () => success(undefined)),
+  retirerLesTagsDUnCompte,
+  detacherDesEquipes,
+  retirerDesLieux,
+  revoquerPartageStatistiques,
   retirerDesListesDeDiffusion: async () => false,
+  hash,
 }
 
 type Effacement = Awaited<ReturnType<typeof supprimerCompte>>

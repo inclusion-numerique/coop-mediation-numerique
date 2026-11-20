@@ -1,15 +1,36 @@
-import { supprimerComptePorts } from '@/composition/utilisateurs/supprimer-compte.ports'
+import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
+import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { detacherDesEquipes } from '@/features/equipe'
+import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import {
   anonymiserLesComptesInactifs,
   avertirDeLaSuppression,
 } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
 import {
+  hash,
   RetentionPolicy,
+  retirerDesListesDeDiffusion,
+  type SupprimerComptePorts,
   supprimerCompte,
 } from '@/features/utilisateurs/abilities/supprimer-compte'
 import { type UtilisateurId } from '@/features/utilisateurs/domain'
 import type { JobExecutor } from '@/jobs/jobExecutors'
 import { output } from '@/jobs/output'
+
+const supprimerComptePorts: SupprimerComptePorts = {
+  anonymiserPortefeuille,
+  effacerNotes,
+  effacerEmpreinteRdv,
+  retirerLesTagsDUnCompte,
+  detacherDesEquipes,
+  retirerDesLieux,
+  revoquerPartageStatistiques,
+  retirerDesListesDeDiffusion,
+  hash,
+}
 
 const supprimerLeCompte =
   (maintenant: Date) =>

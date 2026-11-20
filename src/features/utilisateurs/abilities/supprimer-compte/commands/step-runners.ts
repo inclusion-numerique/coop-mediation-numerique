@@ -1,5 +1,6 @@
 import {
   type CompteASupprimer,
+  identifiantsDe,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
 import type { NomEffacementStep, SupprimerComptePorts } from '../domain'
@@ -29,27 +30,21 @@ const effacerLEmpreinteRdv: FabriqueRunner = (compte, ports) => async () => {
 }
 
 const effacerLesNotes: FabriqueRunner = (compte, ports) => async () => {
-  const { effacees } = await ports.effacerNotes({
-    rattachements: compte.rattachements,
-  })
+  const { effacees } = await ports.effacerNotes(
+    identifiantsDe(compte.rattachements),
+  )
 
   return effacees
 }
 
 const detacherDesEquipes: FabriqueRunner = (compte, ports) => async () => {
-  const {
-    invitationsSupprimees,
-    appartenancesRetirees,
-    tagsTransferes,
-    tagsSupprimes,
-  } = await ports.detacherDesEquipes({ rattachements: compte.rattachements })
+  const identifiants = identifiantsDe(compte.rattachements)
+  const { transferes, supprimes } =
+    await ports.retirerLesTagsDUnCompte(identifiants)
+  const { invitationsSupprimees, appartenancesRetirees } =
+    await ports.detacherDesEquipes(identifiants)
 
-  return (
-    invitationsSupprimees +
-    appartenancesRetirees +
-    tagsTransferes +
-    tagsSupprimes
-  )
+  return invitationsSupprimees + appartenancesRetirees + transferes + supprimes
 }
 
 const retirerDesLieux: FabriqueRunner = (compte, ports) => async () => {
@@ -61,9 +56,9 @@ const retirerDesLieux: FabriqueRunner = (compte, ports) => async () => {
 }
 
 const revoquerLePartage: FabriqueRunner = (compte, ports) => async () => {
-  const { partagesRevoques } = await ports.revoquerPartageStatistiques({
-    rattachements: compte.rattachements,
-  })
+  const { partagesRevoques } = await ports.revoquerPartageStatistiques(
+    identifiantsDe(compte.rattachements),
+  )
 
   return partagesRevoques
 }
