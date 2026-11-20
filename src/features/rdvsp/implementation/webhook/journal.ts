@@ -1,6 +1,6 @@
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 
-const actif = ServerWebAppConfig.RdvServicePublic.log.webhook.debug
+const actif = environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG
 
 /**
  * Journal des notifications reçues, éteint par défaut.

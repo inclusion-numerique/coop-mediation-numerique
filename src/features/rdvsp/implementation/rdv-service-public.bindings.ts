@@ -1,7 +1,10 @@
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import {
+  rdvspOAuthClientId,
+  rdvspOAuthHostname,
+} from '@/features/rdvsp/oauth.configuration'
 import { jetonsCompteToDomain } from '../db'
 import { rdvServicePublicApi, revoquerJetons } from './api'
 
@@ -13,13 +16,13 @@ import { rdvServicePublicApi, revoquerJetons } from './api'
  * la révélerait. Les appelants l'importent par ce chemin explicite.
  */
 export const rdvServicePublicApiBinding = rdvServicePublicApi({
-  hostname: PublicWebAppConfig.RdvServicePublic.OAuth.hostname,
-  clientId: PublicWebAppConfig.RdvServicePublic.OAuth.clientId,
-  clientSecret: ServerWebAppConfig.RdvServicePublic.OAuth.clientSecret,
+  hostname: rdvspOAuthHostname,
+  clientId: rdvspOAuthClientId,
+  clientSecret: environnementServeur.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
   webhookUrl: getServerUrl('/api/rdv-service-public/webhook', {
     absolutePath: true,
   }),
-  webhookSecret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
+  webhookSecret: environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
   // Les jetons renouvelés au fil d'un appel sont persistés sans attendre : sans
   // cela, chaque requête repartirait du jeton périmé et rejouerait un échange.
   onJetonsRenouveles: async (agentId, jetons) => {
@@ -52,7 +55,7 @@ export const rdvServicePublicApiBinding = rdvServicePublicApi({
 })
 
 export const revoquerJetonsBinding = revoquerJetons({
-  hostname: PublicWebAppConfig.RdvServicePublic.OAuth.hostname,
-  clientId: PublicWebAppConfig.RdvServicePublic.OAuth.clientId,
-  clientSecret: ServerWebAppConfig.RdvServicePublic.OAuth.clientSecret,
+  hostname: rdvspOAuthHostname,
+  clientId: rdvspOAuthClientId,
+  clientSecret: environnementServeur.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
 })
