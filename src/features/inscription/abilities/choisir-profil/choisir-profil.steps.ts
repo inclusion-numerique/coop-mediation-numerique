@@ -33,6 +33,7 @@ When('je choisis le profil {string}', async (role: string) => {
       role: Role.schema.parse(role),
     },
     new Date(),
+    async () => undefined,
   )
 })
 

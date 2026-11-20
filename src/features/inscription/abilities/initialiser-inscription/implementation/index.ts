@@ -3,6 +3,7 @@ import {
   initialiserInscription,
   type RattacherDepuisSiret,
 } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import type { SynchroniserLaPersonne } from '@/features/inscription/db/synchroniser-la-personne'
 import type { InscriptionStep, UserId } from '@/features/inscription/domain'
 import { appliquerDispositif } from './prisma/appliquer-dispositif'
 import { importerStructureDepuisSiret } from './prisma/importer-structure-depuis-siret'
@@ -14,13 +15,18 @@ export const initialiserInscriptionAvecInfra = (
   {
     rattacherDepuisSiret,
     garantirLeRoleCoordinateur,
+    synchroniserLaPersonne,
   }: {
     readonly rattacherDepuisSiret: RattacherDepuisSiret
     readonly garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur
+    readonly synchroniserLaPersonne: SynchroniserLaPersonne
   },
 ): Promise<{ readonly nextStep: InscriptionStep | null }> =>
   initialiserInscription(input, {
-    appliquerDispositif: appliquerDispositif(garantirLeRoleCoordinateur),
+    appliquerDispositif: appliquerDispositif(
+      garantirLeRoleCoordinateur,
+      synchroniserLaPersonne,
+    ),
     importerStructureDepuisSiret:
       importerStructureDepuisSiret(rattacherDepuisSiret),
     lireEtatPourEtapeSuivante,

@@ -10,6 +10,7 @@ import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/c
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 export const choisirProfilAction = actionBuilder()
   .use(withAuth())
@@ -21,6 +22,7 @@ export const choisirProfilAction = actionBuilder()
         choisirProfil(
           { userId: UserId(user.id), role: input.role },
           new Date(),
+          synchroniserPersonne,
         ),
       { onError: CHOISIR_PROFIL_ERRORS },
     ),

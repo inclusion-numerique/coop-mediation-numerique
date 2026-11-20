@@ -3,12 +3,15 @@ import type {
   AppliquerDispositif,
   GarantirLeRoleCoordinateur,
 } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import type { SynchroniserLaPersonne } from '@/features/inscription/db/synchroniser-la-personne'
 import { profilDepuisDispositif } from '@/features/inscription/domain'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
 /** Crée le médiateur s'il manque — jamais de suppression, comme auparavant. */
-const garantirMediateur = async (userId: string): Promise<void> => {
+const garantirMediateur = async (
+  userId: string,
+  synchroniserLaPersonne: SynchroniserLaPersonne,
+): Promise<void> => {
   const existant = await prismaClient.mediateur.findUnique({
     where: { userId },
     select: { id: true },
@@ -20,7 +23,7 @@ const garantirMediateur = async (userId: string): Promise<void> => {
       data: { userId },
       select: { id: true },
     })
-    await synchroniserPersonne(transaction, userId)
+    await synchroniserLaPersonne(transaction, userId)
   })
 }
 
@@ -46,6 +49,7 @@ const garantirMediateur = async (userId: string): Promise<void> => {
 export const appliquerDispositif =
   (
     garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur,
+    synchroniserLaPersonne: SynchroniserLaPersonne,
   ): AppliquerDispositif =>
   async ({ userId }) => {
     const dispositif = await dispositifDepuisMain(userId)
@@ -65,7 +69,7 @@ export const appliquerDispositif =
     await garantirLeRoleCoordinateur(userId)
 
     if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur) {
-      await garantirMediateur(userId)
+      await garantirMediateur(userId, synchroniserLaPersonne)
     }
 
     return {
