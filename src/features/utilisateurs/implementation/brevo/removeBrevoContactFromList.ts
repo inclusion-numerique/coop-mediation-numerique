@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { PublicWebAppConfig } from '@/configuration/projet/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { brevoApiThrottle } from './createBrevoContact'
+import { brevoApiThrottle } from './brevoApiThrottle'
 
 const CONTACT_ABSENT_DE_LA_LISTE =
   'Contact already removed from list and/or does not exist'
@@ -48,6 +47,3 @@ const removeContactFromListImmediate = async (
 export const removeBrevoContactFromList = brevoApiThrottle(
   removeContactFromListImmediate,
 )
-
-export const deploymentCanRemoveBrevoContactFromList = () =>
-  PublicWebAppConfig.isMain && !ServerWebAppConfig.isE2e

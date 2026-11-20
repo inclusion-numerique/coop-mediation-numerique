@@ -1,5 +1,5 @@
-import { deleteBrevoContact } from '@/configuration/brevo/deleteBrevoContact'
-import { getBrevoContactLists } from '@/configuration/brevo/getBrevoContactLists'
+import { deleteBrevoContact } from '@/features/utilisateurs/implementation/brevo/deleteBrevoContact'
+import { getBrevoContactLists } from '@/features/utilisateurs/implementation/brevo/getBrevoContactLists'
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

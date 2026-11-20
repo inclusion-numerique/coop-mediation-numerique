@@ -1,9 +1,7 @@
-import {
-  deploymentCanRemoveBrevoContactFromList,
-  removeBrevoContactFromList,
-} from '@/configuration/brevo/removeBrevoContactFromList'
+import { brevoActif } from '@/configuration/brevo'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementation/brevo/deleteBrevoContactIfOrphan'
+import { removeBrevoContactFromList } from '@/features/utilisateurs/implementation/brevo/removeBrevoContactFromList'
 
 /**
  * Sort un utilisateur de Brevo : retrait de la liste des utilisateurs, puis
@@ -18,7 +16,7 @@ import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementati
 export const removeBrevoUserContact = async (
   email: string,
 ): Promise<boolean> => {
-  if (!deploymentCanRemoveBrevoContactFromList()) return false
+  if (!brevoActif()) return false
 
   await removeBrevoContactFromList(email, ServerWebAppConfig.Brevo.usersListId)
   await deleteBrevoContactIfOrphan(email)

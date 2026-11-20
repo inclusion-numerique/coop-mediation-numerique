@@ -1,4 +1,4 @@
-import { deploymentCanCreateBrevoContact } from '@/configuration/brevo/createBrevoContact'
+import { brevoActif } from '@/configuration/brevo'
 import { contactASynchroniser } from '@/features/utilisateurs/domain'
 import { importerDansLaListe } from '@/features/utilisateurs/implementation/brevo/liste-de-diffusion'
 import { inscritAInscrire } from '../prisma/inscrit-a-inscrire.query'
@@ -6,7 +6,7 @@ import { inscritAInscrire } from '../prisma/inscrit-a-inscrire.query'
 export const inscrireALaListeDeDiffusion = async (
   utilisateurId: string,
 ): Promise<void> => {
-  if (!deploymentCanCreateBrevoContact()) return
+  if (!brevoActif()) return
 
   const inscrit = await inscritAInscrire(utilisateurId)
   if (inscrit === null) return

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { brevoApiThrottle } from '@/configuration/brevo/createBrevoContact'
 import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
+import { brevoApiThrottle } from '@/features/utilisateurs/implementation/brevo/brevoApiThrottle'
 import {
   type AdresseCourriel,
   type ContactAImporter,
