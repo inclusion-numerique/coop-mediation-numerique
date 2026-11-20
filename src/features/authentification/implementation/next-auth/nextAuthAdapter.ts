@@ -6,8 +6,8 @@ import {
   extendedPrismaClient,
   prismaClient,
 } from '@/configuration/prisma/prismaClient'
+import type { SynchroniserLaPersonne } from '@/features/authentification/implementation/prisma/synchroniser-la-personne'
 import { proConnectProviderId } from '@/features/authentification/implementation/proconnect/proConnect'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 /**
  * Ensuring that needed methods are defined when creating adapter
@@ -40,12 +40,14 @@ const createAdapter = (): Adapter & {
 
 const prismaAdapter = createAdapter()
 
-const creerLeCompte = (data: Omit<AdapterUser, 'id'>) =>
-  prismaClient.$transaction(async (transaction) => {
-    const compte = await transaction.user.create({ data })
-    await synchroniserPersonne(transaction, compte.id)
-    return compte
-  })
+const creerLeCompte =
+  (synchroniserLaPersonne: SynchroniserLaPersonne) =>
+  (data: Omit<AdapterUser, 'id'>) =>
+    prismaClient.$transaction(async (transaction) => {
+      const compte = await transaction.user.create({ data })
+      await synchroniserLaPersonne(transaction, compte.id)
+      return compte
+    })
 
 // ⚠️ Keycloak returns non standard fields that are expected to be ignored by the client
 const removeNonStandardFields = <T extends AdapterAccount>(data: T): T => ({
@@ -54,40 +56,46 @@ const removeNonStandardFields = <T extends AdapterAccount>(data: T): T => ({
   'not-before-policy': undefined,
 })
 
-export const nextAuthAdapter = {
-  ...prismaAdapter,
-  createUser: async (user: Omit<AdapterUser, 'id'>) => {
-    const { provider, ...rest } = user as Omit<AdapterUser, 'id'> & {
-      // We pass the provider along
-      provider: typeof proConnectProviderId
-    }
-
-    const info = { id: v4(), ...rest }
-
-    if (provider === proConnectProviderId) {
-      return creerLeCompte({ ...info, emailVerified: new Date() })
-    }
-    return creerLeCompte(info)
-  },
-  // Better handle case of missing session when deleting. It should not crash auth process.
-  deleteSession: async (sessionToken) => {
-    try {
-      await prismaAdapter.deleteSession(sessionToken)
-    } catch (error) {
-      // See https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (
-        error &&
-        typeof error === 'object' &&
-        'code' in error &&
-        error.code === 'P2025'
-      ) {
-        // Ok, the session was already destroyed by another process
-        return
+export const nextAuthAdapter = (
+  synchroniserLaPersonne: SynchroniserLaPersonne,
+) =>
+  ({
+    ...prismaAdapter,
+    createUser: async (user: Omit<AdapterUser, 'id'>) => {
+      const { provider, ...rest } = user as Omit<AdapterUser, 'id'> & {
+        // We pass the provider along
+        provider: typeof proConnectProviderId
       }
-      throw error
-    }
-  },
-  // Custom link account
-  linkAccount: (account: AdapterAccount) =>
-    prismaAdapter.linkAccount(removeNonStandardFields(account)),
-} satisfies Adapter
+
+      const info = { id: v4(), ...rest }
+
+      if (provider === proConnectProviderId) {
+        return creerLeCompte(synchroniserLaPersonne)({
+          ...info,
+          emailVerified: new Date(),
+        })
+      }
+      return creerLeCompte(synchroniserLaPersonne)(info)
+    },
+    // Better handle case of missing session when deleting. It should not crash auth process.
+    deleteSession: async (sessionToken) => {
+      try {
+        await prismaAdapter.deleteSession(sessionToken)
+      } catch (error) {
+        // See https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
+        if (
+          error &&
+          typeof error === 'object' &&
+          'code' in error &&
+          error.code === 'P2025'
+        ) {
+          // Ok, the session was already destroyed by another process
+          return
+        }
+        throw error
+      }
+    },
+    // Custom link account
+    linkAccount: (account: AdapterAccount) =>
+      prismaAdapter.linkAccount(removeNonStandardFields(account)),
+  }) satisfies Adapter

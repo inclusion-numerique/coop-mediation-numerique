@@ -8,6 +8,7 @@ import { sendVerificationRequest } from '@/features/authentification/implementat
 import { authenticationViaProconnect } from '@/features/authentification/implementation/next-auth/authenticationProvider'
 import { nextAuthAdapter } from '@/features/authentification/implementation/next-auth/nextAuthAdapter'
 import { registerLastLogin } from '@/features/authentification/implementation/prisma/registerLastLogin'
+import type { SynchroniserLaPersonne } from '@/features/authentification/implementation/prisma/synchroniser-la-personne'
 import { updateAccountTokens } from '@/features/authentification/implementation/prisma/updateAccountTokens'
 import { updateUserData } from '@/features/authentification/implementation/prisma/updateUserData'
 import { ProConnectProvider } from '@/features/authentification/implementation/proconnect/ProConnectProvider'
@@ -34,14 +35,16 @@ const sessionUserHasOutdatedData = ({
 export const nextAuthOptions = ({
   garantirLeRoleCoordinateur,
   importerLEmployeuseProConnect,
+  synchroniserLaPersonne,
 }: {
   garantirLeRoleCoordinateur: (userId: string) => Promise<unknown>
   importerLEmployeuseProConnect: (input: {
     userId: string
     siret: string | null | undefined
   }) => Promise<unknown>
+  synchroniserLaPersonne: SynchroniserLaPersonne
 }): AuthOptions => ({
-  adapter: nextAuthAdapter,
+  adapter: nextAuthAdapter(synchroniserLaPersonne),
   pages: {
     signIn: '/connexion',
     signOut: '/deconnexion',
@@ -85,7 +88,7 @@ export const nextAuthOptions = ({
 
         // Update user with fallback data if not set
         if (!user.firstName || !user.lastName || !user.siret) {
-          updateUserData({
+          updateUserData(synchroniserLaPersonne)({
             userId: user.id,
             firstName: user.firstName || fallbackFirstName,
             lastName: user.lastName || fallbackLastName,
@@ -148,7 +151,7 @@ export const nextAuthOptions = ({
       }
 
       if (sessionUserHasOutdatedData({ user, profile })) {
-        updateUserData({
+        updateUserData(synchroniserLaPersonne)({
           userId: user.id,
           firstName: profile.given_name,
           lastName: profile.usual_name,

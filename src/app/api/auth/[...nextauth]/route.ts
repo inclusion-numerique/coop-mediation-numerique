@@ -24,6 +24,7 @@ const options = nextAuthOptions({
   importerLEmployeuseProConnect: importStructureEmployeuseFromProConnect(
     rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
   ),
+  synchroniserLaPersonne: synchroniserPersonne,
 })
 
 const handler = (
