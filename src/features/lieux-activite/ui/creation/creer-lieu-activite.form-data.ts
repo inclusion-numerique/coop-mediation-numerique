@@ -9,9 +9,9 @@ import type {
 import z from 'zod'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import type { HorairesSaisis } from '@/features/lieux-activite/domain/horaires.validation'
+import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import type { FormationLabelPropose as FormationLabel } from '@/features/lieux-activite/domain/nomenclatures'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
-import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 
 export type CreerLieuActiviteFormData = {
   nom: string

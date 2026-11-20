@@ -1,4 +1,4 @@
-import { getCartographieNationaleSourceLabel } from '@/libraries/cartographie-nationale'
+import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import type { FicheDuLieu } from '../../domain'
 import { type ChampCompare, differences } from '../../domain/differences'
 import { affichee, type ValeurAffichee } from './valeur-affichee'

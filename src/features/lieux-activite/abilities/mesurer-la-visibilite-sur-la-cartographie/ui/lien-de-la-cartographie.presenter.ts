@@ -1,4 +1,4 @@
-import { getCartographieDepartementLink } from '@/libraries/cartographie-nationale'
+import { getCartographieDepartementLink } from '@/features/lieux-activite/domain/cartographie-nationale/liens'
 import { departementsRegionByCode } from '@/libraries/departement/departementsRegion'
 import type { CodeDepartement } from '@/libraries/insee'
 

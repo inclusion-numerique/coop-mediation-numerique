@@ -9,10 +9,10 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/user-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { emptyOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
 

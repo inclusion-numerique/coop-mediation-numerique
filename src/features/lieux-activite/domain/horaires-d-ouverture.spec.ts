@@ -1,6 +1,6 @@
 import { CLOSED_SCHEDULE } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
-import { safeToTimetableOpeningHours } from './openingHoursHelpers'
+import { safeToTimetableOpeningHours } from './horaires-d-ouverture'
 
 describe('safeToTimetableOpeningHours', () => {
   it('returns an empty week instead of throwing on a malformed unquoted comment', () => {

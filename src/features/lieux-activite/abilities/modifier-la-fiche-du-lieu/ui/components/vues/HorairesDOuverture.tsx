@@ -1,6 +1,6 @@
 import { NullableTime } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import classNames from 'classnames'
-import { safeToTimetableOpeningHours } from '@/libraries/horaires-d-ouverture/openingHoursHelpers'
+import { safeToTimetableOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 
 const JOURS_DE_LA_SEMAINE = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 

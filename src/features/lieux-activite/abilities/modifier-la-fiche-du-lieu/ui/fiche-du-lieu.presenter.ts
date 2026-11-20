@@ -1,5 +1,5 @@
+import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import { nomAffiche } from '@/features/lieux-activite/domain/nom-affiche'
-import { getCartographieNationaleSourceLabel } from '@/libraries/cartographie-nationale'
 import { CodeInsee, codeDepartementDuCodeInsee } from '@/libraries/insee'
 import { pluriel } from '@/libraries/pluriel'
 import type { Fiche } from '../../../domain/fiche'
