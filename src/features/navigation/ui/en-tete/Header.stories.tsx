@@ -1,6 +1,19 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { testSessionUser } from '@/features/authentification/fixtures/testSessionUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
+import type { UtilisateurDeLaNavigation } from '../utilisateur-de-la-navigation'
+
+const utilisateur: UtilisateurDeLaNavigation = {
+  role: 'User',
+  inscriptionValidee: null,
+  name: 'Jean Biche',
+  email: 'jean.biche@example.com',
+  firstName: 'Jean',
+  lastName: 'Biche',
+  usurper: null,
+  emplois: [],
+  coordinateur: null,
+  mediateur: null,
+}
 
 export default {
   title: 'Header',
@@ -16,7 +29,7 @@ export const SignedOut: Story = {
 
 export const SignedIn: Story = {
   name: 'Utilisateur connecté',
-  args: { user: testSessionUser, accueil: '/coop' },
+  args: { user: utilisateur, accueil: '/coop' },
 }
 
 /* TODO: components not working, issue with storybook and next/navigation

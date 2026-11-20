@@ -1,12 +1,18 @@
 import type { Workbook, Worksheet } from 'exceljs'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { dureeAccompagnementStatisticsRanges } from '@/features/activites/ui/libelles/duree-accompagnement'
 import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import { computeProportion } from '@/libraries/proportions'
 import {
   type BuildStatistiquesWorksheetInput,
   buildStatistiquesWorksheet,
 } from './classeur-des-statistiques'
+
+const DUREES = [
+  'Moins de 30 min',
+  '30min à 1 h',
+  '1 h à 2 h',
+  '2 h et plus',
+] as const
 
 const DATE = new Date('2024-09-11T17:42:00.000Z')
 
@@ -242,7 +248,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
           proportion: 20,
         },
       ],
-      durees: dureeAccompagnementStatisticsRanges.map(({ label }, index) => ({
+      durees: DUREES.map((label, index) => ({
         label,
         count: index === 2 ? 20 : 0,
         proportion: index === 2 ? 100 : 0,
@@ -844,10 +850,10 @@ describe('build statistiques worksheet for médiateur', () => {
 
     expect(rows).toEqual([
       ...expectQuantifiedShareRows([
-        [dureeAccompagnementStatisticsRanges[0].label, 0],
-        [dureeAccompagnementStatisticsRanges[1].label, 0],
-        [dureeAccompagnementStatisticsRanges[2].label, 20],
-        [dureeAccompagnementStatisticsRanges[3].label, 0],
+        [DUREES[0], 0],
+        [DUREES[1], 0],
+        [DUREES[2], 20],
+        [DUREES[3], 0],
       ]),
       [],
     ])

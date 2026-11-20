@@ -37,9 +37,6 @@ import {
   blocsGeneraux,
   blocsImprimes,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
-import { testSessionUser } from '@/features/authentification/fixtures/testSessionUser'
-import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
-import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
 import {
@@ -293,9 +290,6 @@ export default {
       provide(RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY, async () =>
         ServerActionSuccess([]),
       )
-      provide(REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY, async () =>
-        ServerActionSuccess(undefined),
-      )
       return <Story />
     },
   ],
@@ -307,12 +301,12 @@ export const Statistiques: Story = {
   name: 'Statistiques',
   args: {
     ...statistiquesPageData,
-    user: testSessionUser,
+    user: { coordinateur: null, mediateur: null, emplois: [] },
     hasCrasV1: statistiquesPageData.hasCrasV1.hasCrasV1,
     accompagnementsCount: Promise.resolve(
       statistiquesPageData.totalCounts.accompagnements.total,
     ),
-    partage: <PartageStatistiques liens={[]} />,
+    partage: null,
     impression: impressionDesStatistiques({
       ...statistiquesPageData,
       imprimees: blocsImprimes,
