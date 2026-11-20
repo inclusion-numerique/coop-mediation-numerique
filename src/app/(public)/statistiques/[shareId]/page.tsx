@@ -1,19 +1,30 @@
 import { notFound } from 'next/navigation'
 import { rechercherLesEmployeusesDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
 import { rechercherLesLieuxDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
-import { mesStatistiques } from '@/composition/statistiques/mes-statistiques'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
 import {
+  lieuxChoisisDe,
   nombreDAccompagnements,
+  perimetreDeLUtilisateur,
+  rassembler,
+  statistiquesDuPerimetre,
   toutesLesStatistiques,
 } from '@/features/activites/implementation/statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import {
   blocsActivites,
   blocsBeneficiaires,
   blocsGeneraux,
   blocsImprimes,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
+import { profilDeLaSession } from '@/features/authentification'
 import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
+import { mesStatistiques } from '@/features/statistiques/implementation/mes-statistiques'
 import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {
@@ -29,7 +40,23 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/sections/sections-des-statistiques'
+import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+
+const sourcesDeMesStatistiques = {
+  perimetreDe: perimetreDeLUtilisateur,
+  lancer: statistiquesDuPerimetre(rendezVousAuxStatutsSql),
+  rassembler,
+  lieuxChoisis: lieuxChoisisDe,
+  tagsVisibles: tagsVisiblesDuProfil,
+  beneficiaires: getInitialBeneficiairesOptionsForSearch,
+  membres: membresAFiltrerDuDemandeur,
+  activitesDuPerimetre: decrireLesActivitesDuPerimetre,
+  vocabulaire: {
+    ...vocabulaireDesActivites,
+    statutsDeRendezVous: rdvStatusOptions,
+  },
+}
 
 type PageProps = {
   params: Promise<{
@@ -50,10 +77,14 @@ const Page = async ({ params, searchParams }: PageProps) => {
     await getSessionUserFromId(partage.data.utilisateurId),
   )
 
-  const { statistiques, ...mesStatistiquesProps } = await mesStatistiques({
-    user,
-    ...parametresDesStatistiquesPartagees(parametres),
-  })
+  const { statistiques, ...mesStatistiquesProps } = await mesStatistiques(
+    {
+      user,
+      profil: profilDeLaSession(user),
+      ...parametresDesStatistiquesPartagees(parametres),
+    },
+    sourcesDeMesStatistiques,
+  )
   const toutes = toutesLesStatistiques(statistiques)
   const { hasCrasV1 } = await statistiques.hasCrasV1
 

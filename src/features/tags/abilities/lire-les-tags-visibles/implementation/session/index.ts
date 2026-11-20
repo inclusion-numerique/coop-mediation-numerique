@@ -1,1 +1,2 @@
-export { tagsVisiblesPar, tousLesTagsVisiblesPar } from './tags-visibles-par'
+export { tagsVisiblesDuProfil } from './tags-visibles-du-profil'
+export { tagsVisiblesPar } from './tags-visibles-par'

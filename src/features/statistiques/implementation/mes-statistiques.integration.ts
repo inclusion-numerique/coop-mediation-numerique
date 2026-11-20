@@ -1,11 +1,13 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
-import {
-  getMesStatistiquesPageData,
-  MesStatistiquesGraphOptions,
-  MesStatistiquesPageData,
-} from '@/composition/statistiques/mes-statistiques'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import {
+  lieuxChoisisDe,
+  perimetreDeLUtilisateur,
+  rassembler,
+  statistiquesDuPerimetre,
+} from '@/features/activites/implementation/statistiques'
 import { dureeAccompagnementStatisticsRanges } from '@/features/activites/ui/libelles/duree-accompagnement'
 import {
   materielLabels,
@@ -34,11 +36,16 @@ import {
   typeLieuValues,
 } from '@/features/activites/ui/libelles/type-lieu'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
+import { profilDeLaSession } from '@/features/authentification'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
 import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
+import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
 import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
@@ -55,6 +62,41 @@ import { mediateque, seedStructures } from '@/fixtures/structures'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
+import {
+  donneesDeMesStatistiques,
+  type MesStatistiquesGraphOptions,
+} from './mes-statistiques'
+
+const getMesStatistiquesPageData = ({
+  user,
+  activitesFilters,
+  graphOptions,
+}: {
+  user: SessionUser
+  activitesFilters: ActivitesFilters
+  graphOptions: MesStatistiquesGraphOptions
+}) =>
+  donneesDeMesStatistiques(
+    { user, profil: profilDeLaSession(user), activitesFilters, graphOptions },
+    {
+      perimetreDe: perimetreDeLUtilisateur,
+      lancer: statistiquesDuPerimetre(rendezVousAuxStatutsSql),
+      rassembler,
+      lieuxChoisis: lieuxChoisisDe,
+      tagsVisibles: tagsVisiblesDuProfil,
+      beneficiaires: getInitialBeneficiairesOptionsForSearch,
+      membres: membresAFiltrerDuDemandeur,
+      activitesDuPerimetre: decrireLesActivitesDuPerimetre,
+      vocabulaire: {
+        ...vocabulaireDesActivites,
+        statutsDeRendezVous: rdvStatusOptions,
+      },
+    },
+  )
+
+type MesStatistiquesPageData = Awaited<
+  ReturnType<typeof getMesStatistiquesPageData>
+>
 
 /**
  * Base empty data for all tests

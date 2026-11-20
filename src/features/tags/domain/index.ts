@@ -4,6 +4,7 @@ export {
   coordinateurDe,
   type Equipe,
   mediateurDe,
+  type ProfilDeLActeur,
   type Role,
   role,
 } from './acteur'

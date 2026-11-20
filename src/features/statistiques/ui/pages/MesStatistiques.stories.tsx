@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { MesStatistiquesPageData } from '@/composition/statistiques/mes-statistiques'
+import type { StatistiquesFournies } from '@/features/activites/implementation/statistiques'
 import {
   dureeAccompagnementParDefautLabels,
   dureeAcompagnementParDefautDefaultValues,
@@ -283,7 +283,7 @@ const statistiquesPageData = {
     statutsDeRendezVous: rdvStatusOptions,
   },
   activiteSourceOptions: [],
-} satisfies MesStatistiquesPageData
+} satisfies StatistiquesFournies & Record<string, unknown>
 
 export default {
   title: 'Mes statistiques',
