@@ -21,7 +21,6 @@ export {
   getMediateurCommunesAndDepartementsOptions,
   lieuxDuMediateur,
 } from './abilities/lister-les-options-de-lieux'
-export { retirerDesLieux } from './abilities/retirer-des-lieux'
 
 export { LieuId } from './domain/lieu-id'
 export { MediateurId } from './domain/mediateur-id'

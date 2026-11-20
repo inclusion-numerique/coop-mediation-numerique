@@ -26,15 +26,15 @@
 
 ## Rule: Les données rattachées au compte sont effacées chez leur propriétaire
 
-### Scenario: Le portefeuille, les comptes rendus et les rattachements sont traités
+### Scenario: Chaque propriétaire est appelé à effacer les données du compte
 
 * Given un compte médiateur avec des données rattachées
 * When le titulaire supprime son compte
-* Then le portefeuille de bénéficiaires est anonymisé
-* And le texte libre des comptes rendus est effacé
-* And les comptes rendus du compte existent toujours
-* And les rattachements aux lieux d'activité sont coupés
-* And le partage de statistiques est révoqué
+* Then l'anonymisation du portefeuille est demandée pour ce médiateur
+* And l'effacement des comptes rendus est demandé pour ce médiateur
+* And le retrait des lieux d'activité est demandé pour ce médiateur
+* And la révocation du partage de statistiques est demandée pour ce médiateur
+* And l'effacement de l'empreinte RDV est demandé pour ce compte
 
 ## Rule: Un rôle protégé ne s'efface pas
 

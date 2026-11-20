@@ -1,20 +1,12 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
-import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { detacherDesEquipes } from '@/features/equipe'
-import { retirerDesLieux } from '@/features/lieux-activite'
-import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
-import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   type CompteSeme,
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { success } from '@/libraries/result'
 import { supprimerCompte } from './commands/supprimer-compte'
 import {
   type AuteurSuppression,
@@ -23,14 +15,40 @@ import {
 } from './domain'
 import { hash } from './implementation'
 
+const demandes: {
+  portefeuille: string[]
+  notes: (string | null)[]
+  lieux: string[]
+  partage: (string | null)[]
+  empreinteRdv: string[]
+} = { portefeuille: [], notes: [], lieux: [], partage: [], empreinteRdv: [] }
+
 const ports: SupprimerComptePorts = {
-  anonymiserPortefeuille,
-  effacerNotes,
-  effacerEmpreinteRdv: effacerEmpreinteRdvAvec(async () => success(undefined)),
-  retirerLesTagsDUnCompte,
-  detacherDesEquipes,
-  retirerDesLieux,
-  revoquerPartageStatistiques,
+  anonymiserPortefeuille: async ({ mediateurId }) => {
+    demandes.portefeuille.push(mediateurId)
+    return { anonymises: 0 }
+  },
+  effacerNotes: async ({ mediateurId }) => {
+    demandes.notes.push(mediateurId)
+    return { effacees: 0 }
+  },
+  effacerEmpreinteRdv: async ({ utilisateurId }) => {
+    demandes.empreinteRdv.push(utilisateurId)
+    return { compteDelie: false, rdvsExpurges: 0, usagersSupprimes: 0 }
+  },
+  retirerLesTagsDUnCompte: async () => ({ transferes: 0, supprimes: 0 }),
+  detacherDesEquipes: async () => ({
+    invitationsSupprimees: 0,
+    appartenancesRetirees: 0,
+  }),
+  retirerDesLieux: async ({ mediateurId }) => {
+    demandes.lieux.push(mediateurId)
+    return { rattachementsSupprimes: 0 }
+  },
+  revoquerPartageStatistiques: async ({ mediateurId }) => {
+    demandes.partage.push(mediateurId)
+    return { partagesRevoques: 0 }
+  },
   retirerDesListesDeDiffusion: async () => false,
   hash,
 }
@@ -198,63 +216,33 @@ Then('une reconnexion ProConnect ne retrouve plus le compte', async () => {
   )
 })
 
-Then('le portefeuille de bénéficiaires est anonymisé', async () => {
-  const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: compteSeme().beneficiaireId },
-    select: {
-      prenom: true,
-      nom: true,
-      telephone: true,
-      email: true,
-      notes: true,
-      anonyme: true,
-      suppression: true,
-      anneeNaissance: true,
-    },
-  })
-
-  assert.strictEqual(beneficiaire.prenom, null)
-  assert.strictEqual(beneficiaire.nom, null)
-  assert.strictEqual(beneficiaire.telephone, null)
-  assert.strictEqual(beneficiaire.email, null)
-  assert.strictEqual(beneficiaire.notes, null)
-  assert.strictEqual(beneficiaire.anonyme, true)
-  assert.ok(beneficiaire.suppression)
-  assert.strictEqual(beneficiaire.anneeNaissance, 1980)
+Then("l'anonymisation du portefeuille est demandée pour ce médiateur", () => {
+  assert.deepStrictEqual(demandes.portefeuille, [compteSeme().mediateurId])
 })
 
-Then('le texte libre des comptes rendus est effacé', async () => {
-  const activite = await prismaClient.activite.findUniqueOrThrow({
-    where: { id: compteSeme().activiteId },
-    select: { notes: true },
-  })
-
-  assert.strictEqual(activite.notes, null)
+Then("l'effacement des comptes rendus est demandé pour ce médiateur", () => {
+  assert.deepStrictEqual(demandes.notes, [compteSeme().mediateurId])
 })
 
-Then('les comptes rendus du compte existent toujours', async () => {
-  assert.strictEqual(
-    await prismaClient.activite.count({
-      where: { mediateurId: compteSeme().mediateurId },
-    }),
-    1,
-  )
+Then("le retrait des lieux d'activité est demandé pour ce médiateur", () => {
+  assert.deepStrictEqual(demandes.lieux, [compteSeme().mediateurId])
 })
 
-Then("les rattachements aux lieux d'activité sont coupés", async () => {
-  assert.strictEqual(
-    await prismaClient.mediateurEnActivite.count({
-      where: { mediateurId: compteSeme().mediateurId },
-    }),
-    0,
-  )
+Then(
+  'la révocation du partage de statistiques est demandée pour ce médiateur',
+  () => {
+    assert.deepStrictEqual(demandes.partage, [compteSeme().mediateurId])
+  },
+)
+
+Then("l'effacement de l'empreinte RDV est demandé pour ce compte", () => {
+  assert.deepStrictEqual(demandes.empreinteRdv, [compteSeme().userId])
 })
 
-Then('le partage de statistiques est révoqué', async () => {
-  const partage = await prismaClient.partageStatistiques.findFirstOrThrow({
-    where: { mediateurId: compteSeme().mediateurId },
-    select: { deleted: true },
-  })
-
-  assert.ok(partage.deleted)
+After(() => {
+  demandes.portefeuille = []
+  demandes.notes = []
+  demandes.lieux = []
+  demandes.partage = []
+  demandes.empreinteRdv = []
 })
