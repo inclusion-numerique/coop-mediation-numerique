@@ -57,10 +57,10 @@ pnpm prisma:generate-migration migration_name   # Create new migration
 pnpm docker:reset                               # Reset database and reinitialize
 ```
 
-### CLI Jobs
+### Jobs
 
 ```bash
-pnpm cli job:execute <job-name>     # Execute a background job
+pnpm jobs:run <job-name> '<payload>'  # Execute a background job, through the same entry point as production
 ```
 
 ## Architecture

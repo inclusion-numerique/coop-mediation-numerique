@@ -15,7 +15,7 @@ export type JobExecutor<Name extends JobName, Result = unknown> = (
 ) => Promise<Result>
 
 // Create an object that for each JobName, MUST has a JobExecutor<Name>
-export const jobExecutors: {
+const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
   'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,

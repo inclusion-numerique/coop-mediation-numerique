@@ -8,7 +8,6 @@ import { createTfVarsFileFromEnvironment } from '@/cli/commands/infrastructure/c
 import { locallyRestoreLatestMainBackup } from '@/cli/commands/infrastructure/locallyRestoreLatestMainBackup'
 import { deleteRegistryImage } from '@/cli/commands/infrastructure/registry/deleteRegistryImage'
 import { pruneRegistry } from '@/cli/commands/infrastructure/registry/pruneRegistry'
-import { executeJobCommand } from '@/cli/commands/jobs/executeJobCommand'
 import { createDotEnvFromSecrets } from '@/cli/commands/secrets/createDotEnvFromSecrets'
 import { deleteDatabaseSecret } from '@/cli/commands/secrets/deleteDatabaseSecret'
 import { getDatabasePasswordSecret } from '@/cli/commands/secrets/getDatabasePasswordSecret'
@@ -19,7 +18,6 @@ import { outputError } from '@/libraries/console/output'
 const main = async () => {
   const program = new Command()
 
-  program.addCommand(executeJobCommand)
   program.addCommand(setupDatabaseSecret)
   program.addCommand(deleteDatabaseSecret)
   program.addCommand(getDatabasePasswordSecret)

@@ -43,6 +43,7 @@
     "test:e2e": "pnpm cy open",
     "scw": "pnpm with-env scw",
     "fixtures:load": "TSX_TSCONFIG_PATH=./tsconfig.node.json dotenv -- tsx src/cli/fixtures/load.ts",
+    "jobs:run": "TSX_TSCONFIG_PATH=./tsconfig.node.json dotenv -- tsx src/jobs/run-job.ts",
     "prisma:generate-migration": "pnpm --silent prisma migrate dev --name",
     "db:init": "pnpm prisma generate && pnpm db:migrate-deploy",
     "docker:start": "docker compose up -d --wait",
