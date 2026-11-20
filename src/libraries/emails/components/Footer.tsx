@@ -8,8 +8,10 @@ import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
 const Footer = ({
   padding = '15px 15px 0 15px',
+  urlDeBase,
 }: {
   padding?: string | number
+  urlDeBase: string
 }) => (
   <>
     <MjmlSection padding={padding}>
@@ -25,7 +27,7 @@ const Footer = ({
       <MjmlColumn width="24%" verticalAlign="middle">
         <MjmlImage
           align="left"
-          src={emailAssetUrl('/email/fr.svg')}
+          src={emailAssetUrl(urlDeBase, '/email/fr.svg')}
           alt="République Française"
         />
       </MjmlColumn>
@@ -33,7 +35,7 @@ const Footer = ({
         <MjmlImage
           align="left"
           width={200}
-          src={emailAssetUrl('/email/logo_anct.svg')}
+          src={emailAssetUrl(urlDeBase, '/email/logo_anct.svg')}
           alt="Logo ANCT"
         />
       </MjmlColumn>

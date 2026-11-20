@@ -13,9 +13,20 @@ import { ReactNode } from 'react'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 import { brandColor } from '@/libraries/emails/styles'
 
-const Head = ({ preview, title }: { title: ReactNode; preview: ReactNode }) => (
+const Head = ({
+  preview,
+  title,
+  urlDeBase,
+}: {
+  title: ReactNode
+  preview: ReactNode
+  urlDeBase: string
+}) => (
   <MjmlHead>
-    <MjmlFont name="Marianne" href={emailAssetUrl('/email/fonts.css')} />
+    <MjmlFont
+      name="Marianne"
+      href={emailAssetUrl(urlDeBase, '/email/fonts.css')}
+    />
     <MjmlAttributes>
       <MjmlAll fontFamily="Marianne, Helvetica, Arial, sans-serif" />
       <MjmlSection backgroundColor="white" />

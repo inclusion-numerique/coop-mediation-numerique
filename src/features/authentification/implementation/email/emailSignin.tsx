@@ -6,6 +6,7 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { brandColor } from '@/libraries/emails/styles'
@@ -16,6 +17,8 @@ export const emailSignin = {
   mjml: ({ url }: { url: string }): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         headerLogoOnly
         title={`Connexion à ${projectTitle}`}
         preview="Voici votre lien de connexion sécurisé à usage unique :"

@@ -4,6 +4,7 @@ import {
   MjmlSection,
   MjmlText,
 } from '@faire/mjml-react'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 import { brandColor } from '@/libraries/emails/styles'
 
@@ -48,7 +49,7 @@ const Explanations = () => (
           width="100%"
           fontWeight="500"
           fontSize="18px"
-          href={emailAssetUrl('/')}
+          href={emailAssetUrl(getServerBaseUrl(), '/')}
           backgroundColor="white"
           border="solid 1px #000091"
           color={brandColor}

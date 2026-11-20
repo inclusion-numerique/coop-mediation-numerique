@@ -5,6 +5,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
@@ -34,7 +36,7 @@ export const finishYourSignupAccountDeletedEmail = {
 Votre inscription sur La Coop de la médiation numérique n’ayant pas été finalisée dans les délais, votre compte a été automatiquement supprimé.
 
 Vous pouvez bien sûr revenir à tout moment et créer un nouveau compte en quelques minutes seulement en utilisant ce lien :
-${emailAssetUrl(FINALIZE_PATH)}
+${emailAssetUrl(getServerBaseUrl(), FINALIZE_PATH)}
 
 Besoin d’aide ? Contactez notre équipe en répondant à cet email ou consultez le centre d’aide :
 ${HELP_URL}
@@ -46,6 +48,8 @@ L’équipe de La Coop de la médiation numérique
   mjml: ({ firstname }: { firstname: string | null }): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Votre compte a été supprimé"
         preview="Vous n’avez pas terminé votre inscription sur La Coop de la médiation numérique dans les délais."
         showDivider={false}
@@ -82,7 +86,7 @@ L’équipe de La Coop de la médiation numérique
             <MjmlButton
               fontWeight="500"
               fontSize="16px"
-              href={emailAssetUrl(FINALIZE_PATH)}
+              href={emailAssetUrl(getServerBaseUrl(), FINALIZE_PATH)}
             >
               Je me réinscris sur La Coop
             </MjmlButton>

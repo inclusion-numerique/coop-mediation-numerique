@@ -1,3 +1,4 @@
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import {
   createCompositeCursor,
   cursorPageHref,
@@ -90,6 +91,7 @@ export const reponseDesStructures = <
         ? curseurDeLaStructure(dernier)
         : undefined,
     precedent: curseur && premier ? curseurDeLaStructure(premier) : undefined,
-    lien: (cursor) => cursorPageHref('/structures', { cursor, query }),
+    lien: (cursor) =>
+      cursorPageHref(getServerBaseUrl(), '/structures', { cursor, query }),
   })
 }

@@ -5,6 +5,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
@@ -42,7 +44,7 @@ export const inactiviteProlongeeAvertissementEmail = {
 Nous n'avons constaté aucune activité sur votre compte La Coop de la médiation numérique depuis près de 2 ans. Sans connexion de votre part, votre compte sera supprimé le ${dateDeSuppression} et vos données personnelles seront anonymisées.
 
 Pour conserver votre compte, il vous suffit de vous connecter avant cette date :
-${emailAssetUrl(CONNEXION_PATH)}
+${emailAssetUrl(getServerBaseUrl(), CONNEXION_PATH)}
 
 Besoin d'aide ? Contactez notre équipe en répondant à cet email ou consultez le centre d'aide :
 ${HELP_URL}
@@ -57,6 +59,8 @@ L'équipe de La Coop de la médiation numérique
   }: InactiviteProlongeeAvertissementEmailProps): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Votre compte va bientôt être supprimé"
         preview="Votre compte La Coop va être supprimé après 2 ans d'inactivité."
         showDivider={false}
@@ -97,7 +101,7 @@ L'équipe de La Coop de la médiation numérique
             <MjmlButton
               fontWeight="500"
               fontSize="16px"
-              href={emailAssetUrl(CONNEXION_PATH)}
+              href={emailAssetUrl(getServerBaseUrl(), CONNEXION_PATH)}
             >
               Je me connecte
             </MjmlButton>

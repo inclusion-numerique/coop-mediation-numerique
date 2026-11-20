@@ -8,7 +8,6 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { PropsWithChildren, ReactNode } from 'react'
-import { projectTitle } from '@/configuration/projet/config'
 import Footer from '@/libraries/emails/components/Footer'
 import Head from '@/libraries/emails/components/Head'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
@@ -23,14 +22,18 @@ const LayoutWithFooter = ({
   title,
   preview,
   showDivider = true,
+  projectTitle,
+  urlDeBase,
 }: PropsWithChildren<{
   headerLogoOnly?: boolean
   title: ReactNode
   preview: ReactNode
   showDivider?: boolean
+  projectTitle: string
+  urlDeBase: string
 }>) => (
   <Mjml>
-    <Head title={title} preview={preview} />
+    <Head title={title} preview={preview} urlDeBase={urlDeBase} />
     <MjmlBody backgroundColor={backgroundColor}>
       {/* Section used for a bit of headroom at the top */}
       <MjmlSection backgroundColor={backgroundColor} />
@@ -40,7 +43,7 @@ const LayoutWithFooter = ({
           <MjmlColumn width="20%" verticalAlign="middle">
             <MjmlImage
               align="center"
-              src={emailAssetUrl('/email/fr.svg')}
+              src={emailAssetUrl(urlDeBase, '/email/fr.svg')}
               alt="République Française"
             />
           </MjmlColumn>
@@ -52,7 +55,7 @@ const LayoutWithFooter = ({
               <MjmlImage
                 padding={0}
                 align="left"
-                src={emailAssetUrl('/email/fr.svg')}
+                src={emailAssetUrl(urlDeBase, '/email/fr.svg')}
                 alt="République Française"
               />
             </MjmlColumn>
@@ -60,7 +63,7 @@ const LayoutWithFooter = ({
               <MjmlImage
                 padding="0 10px 0 32px"
                 align="left"
-                src={emailAssetUrl('/email/coop.svg')}
+                src={emailAssetUrl(urlDeBase, '/email/coop.svg')}
                 alt="Logo Coop de la médiation numérique"
               />
             </MjmlColumn>
@@ -84,7 +87,7 @@ const LayoutWithFooter = ({
         </>
       )}
       {children}
-      <Footer />
+      <Footer urlDeBase={urlDeBase} />
       {/* Section used for a bit of padding at the bottom */}
       <MjmlSection backgroundColor={backgroundColor} />
     </MjmlBody>

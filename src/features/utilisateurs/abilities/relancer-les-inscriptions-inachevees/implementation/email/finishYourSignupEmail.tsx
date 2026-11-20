@@ -5,6 +5,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
@@ -48,7 +50,7 @@ En terminant votre inscription, vous pourrez :
 - Rejoindre la communauté de ${totalUsers} médiateur·rices numériques inscrit·es sur La Coop
 
 Pour finaliser votre inscription, utilisez ce lien :
-${emailAssetUrl(FINALIZE_PATH + matomoCampaignId)}
+${emailAssetUrl(getServerBaseUrl(), FINALIZE_PATH + matomoCampaignId)}
 
 Besoin d’aide ? Contactez notre équipe en répondant à cet email ou consultez le centre d’aide :
 ${HELP_URL}
@@ -68,6 +70,8 @@ L’équipe de La Coop de la médiation numérique
   }): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Votre inscription n’est pas finalisée"
         preview="Vous n’avez pas terminé votre inscription sur La Coop de la médiation numérique."
         showDivider={false}
@@ -110,7 +114,10 @@ L’équipe de La Coop de la médiation numérique
             <MjmlButton
               fontWeight="500"
               fontSize="16px"
-              href={emailAssetUrl(FINALIZE_PATH + matomoCampaignId)}
+              href={emailAssetUrl(
+                getServerBaseUrl(),
+                FINALIZE_PATH + matomoCampaignId,
+              )}
             >
               Je finalise mon inscription
             </MjmlButton>

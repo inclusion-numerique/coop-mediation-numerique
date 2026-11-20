@@ -1,3 +1,4 @@
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import { cursorPageHref } from '@/libraries/json-api/CursorPagination'
 import type {
   JsonApiListResponse,
@@ -44,5 +45,6 @@ export const reponseDesCrasV1 = <
     pagination,
     suivant: cras.at(-1)?.createdAt.toISOString(),
     precedent: cras.at(0)?.createdAt.toISOString(),
-    lien: (cursor) => cursorPageHref('/archives-v1/cras', { cursor }),
+    lien: (cursor) =>
+      cursorPageHref(getServerBaseUrl(), '/archives-v1/cras', { cursor }),
   })

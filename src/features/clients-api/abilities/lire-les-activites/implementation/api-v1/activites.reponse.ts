@@ -1,3 +1,4 @@
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import type { FiltreDeDates } from '@/features/clients-api/implementation/api-v1'
 import { apiV1Url } from '@/libraries/json-api/apiV1Url'
 import {
@@ -54,6 +55,7 @@ export const parametresDeLaPage = ({
 const lienDesActivites =
   (parametres: [string, string][]) => (cursor?: CurseurDePage) =>
     apiV1Url(
+      getServerBaseUrl(),
       '/activites',
       new URLSearchParams([
         ...parametres,

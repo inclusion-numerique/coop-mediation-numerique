@@ -5,6 +5,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
@@ -47,7 +49,7 @@ Vous recevez ce message car ${inactivityReason}. Pour cette raison, votre compte
 Vous pouvez bien sûr revenir à tout moment : il vous suffit de créer un nouveau compte pour rejoindre la communauté des médiateur·rices numériques partout en France.
 
 Pour recréer votre compte :
-${emailAssetUrl(SIGNUP_PATH)}
+${emailAssetUrl(getServerBaseUrl(), SIGNUP_PATH)}
 
 Besoin d'aide ? Contactez notre équipe en répondant à cet email ou consultez le centre d'aide :
 ${HELP_URL}
@@ -62,6 +64,8 @@ L'équipe de La Coop de la médiation numérique
 
     return renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Votre compte a été supprimé"
         preview="Votre compte La Coop a été supprimé pour inactivité."
         showDivider={false}
@@ -98,7 +102,7 @@ L'équipe de La Coop de la médiation numérique
             <MjmlButton
               fontWeight="500"
               fontSize="16px"
-              href={emailAssetUrl(SIGNUP_PATH)}
+              href={emailAssetUrl(getServerBaseUrl(), SIGNUP_PATH)}
             >
               Je recrée mon compte
             </MjmlButton>

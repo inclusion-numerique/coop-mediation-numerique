@@ -5,6 +5,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 
@@ -70,8 +72,11 @@ export const nouveauAccountDeletionWarningEmail = {
     })
 
     const ctaUrl = isMediateur
-      ? emailAssetUrl(FIRST_ACTIVITY_PATH + matomoCampaignId)
-      : emailAssetUrl(TEAM_PATH + matomoCampaignId)
+      ? emailAssetUrl(
+          getServerBaseUrl(),
+          FIRST_ACTIVITY_PATH + matomoCampaignId,
+        )
+      : emailAssetUrl(getServerBaseUrl(), TEAM_PATH + matomoCampaignId)
 
     const ctaText = isMediateur
       ? 'Pour enregistrer votre première activité'
@@ -106,8 +111,11 @@ L'équipe de La Coop de la médiation numérique
     })
 
     const ctaUrl = isMediateur
-      ? emailAssetUrl(FIRST_ACTIVITY_PATH + matomoCampaignId)
-      : emailAssetUrl(TEAM_PATH + matomoCampaignId)
+      ? emailAssetUrl(
+          getServerBaseUrl(),
+          FIRST_ACTIVITY_PATH + matomoCampaignId,
+        )
+      : emailAssetUrl(getServerBaseUrl(), TEAM_PATH + matomoCampaignId)
 
     const ctaLabel = isMediateur
       ? "J'enregistre ma 1ère activité"
@@ -115,6 +123,8 @@ L'équipe de La Coop de la médiation numérique
 
     return renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Votre compte va bientôt être supprimé"
         preview="Votre compte La Coop va bientôt être supprimé pour inactivité."
         showDivider={false}

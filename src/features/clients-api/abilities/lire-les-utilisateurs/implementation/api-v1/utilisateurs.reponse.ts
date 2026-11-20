@@ -1,3 +1,4 @@
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import {
   createCompositeCursor,
   cursorPageHref,
@@ -57,6 +58,7 @@ export const reponseDesUtilisateurs = <
     pagination,
     suivant: dernier ? curseurDeLUtilisateur(dernier) : undefined,
     precedent: curseur && premier ? curseurDeLUtilisateur(premier) : undefined,
-    lien: (cursor) => cursorPageHref('/utilisateurs', { cursor }),
+    lien: (cursor) =>
+      cursorPageHref(getServerBaseUrl(), '/utilisateurs', { cursor }),
   })
 }

@@ -72,6 +72,7 @@ export const parseCompositeCursor = (compositeCursor: string) =>
 export type CursorDirection = 'after' | 'before'
 
 export const cursorPageHref = (
+  urlDeBase: string,
   path: string,
   {
     cursor,
@@ -88,7 +89,10 @@ export const cursorPageHref = (
     ...(query ? [query] : []),
   ]
 
-  return apiV1Url(parts.length > 0 ? `${path}?${parts.join('&')}` : path)
+  return apiV1Url(
+    urlDeBase,
+    parts.length > 0 ? `${path}?${parts.join('&')}` : path,
+  )
 }
 
 export const cursorListMeta = ({

@@ -1,5 +1,7 @@
 import { MjmlColumn, MjmlSection, MjmlText } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 
 const STANDARD_TEXT = {
@@ -49,6 +51,8 @@ L’équipe de La Coop de la médiation numérique
   }): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Vous avez été retiré d’un de vos lieux d'activité"
         preview={`${removedByName} vous a retiré du lieu ${structureNom}.`}
         showDivider={false}
