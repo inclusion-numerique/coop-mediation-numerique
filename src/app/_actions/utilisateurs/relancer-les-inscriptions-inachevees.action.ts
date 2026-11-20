@@ -2,8 +2,8 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin, withAuth } from '@/features/authentification'
+import { retirerDuRegistre } from '@/features/registre-des-personnes'
 import { lancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees'
-import { retirerDuRegistre } from '@/libraries/registre-personne'
 
 export const relancerLesInscriptionsInacheveesAction = actionBuilder()
   .use(withAuth())

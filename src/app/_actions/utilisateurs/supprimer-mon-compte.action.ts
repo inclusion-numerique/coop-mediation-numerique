@@ -9,6 +9,7 @@ import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des
 import { withMaintenance } from '@/features/maintenance-mode'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { synchroniserPersonne } from '@/features/registre-des-personnes'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import {
   hash,
@@ -19,7 +20,6 @@ import {
 } from '@/features/utilisateurs/abilities/supprimer-compte'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult } from '@/libraries/nextjs'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,

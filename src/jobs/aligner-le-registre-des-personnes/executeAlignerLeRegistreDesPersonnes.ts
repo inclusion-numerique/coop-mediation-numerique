@@ -1,12 +1,12 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { JobExecutor } from '@/jobs/jobExecutors'
-import { output } from '@/jobs/output'
 import {
   apercuDeLaSynchronisation,
   synchroniserPersonne,
-} from '@/libraries/registre-personne'
+} from '@/features/registre-des-personnes'
+import type { JobExecutor } from '@/jobs/jobExecutors'
+import { output } from '@/jobs/output'
 import {
   aQuelqueChoseADire,
   type CompteAuReleve,

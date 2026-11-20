@@ -7,11 +7,11 @@ import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
-import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/libraries/registre-personne'
+} from '@/features/registre-des-personnes'
+import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 
 const registreDesPersonnes = {
   garantirLaPersonne: ensurePersonneMain,

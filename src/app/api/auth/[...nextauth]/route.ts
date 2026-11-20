@@ -4,11 +4,11 @@ import { nextAuthOptions } from '@/features/authentification/implementation/next
 import { isFirewallUserAgent } from '@/features/authentification/implementation/next-auth/isFirewallUserAgent'
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/proconnect/importStructureEmployeuseFromProConnect'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
-import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/libraries/registre-personne'
+} from '@/features/registre-des-personnes'
+import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 
 const registreDesPersonnes = {
   garantirLaPersonne: ensurePersonneMain,

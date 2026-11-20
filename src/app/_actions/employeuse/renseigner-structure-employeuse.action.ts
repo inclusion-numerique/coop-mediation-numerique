@@ -8,11 +8,11 @@ import {
 } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
 import { rattacherAUneEmployeuseBinding } from '@/features/employeuse/server'
 import { withMaintenance } from '@/features/maintenance-mode'
-import { withInput } from '@/libraries/nextjs'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/libraries/registre-personne'
+} from '@/features/registre-des-personnes'
+import { withInput } from '@/libraries/nextjs'
 
 const registreDesPersonnes = {
   garantirLaPersonne: ensurePersonneMain,

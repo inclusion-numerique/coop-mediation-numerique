@@ -9,8 +9,8 @@ import {
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
+import { synchroniserPersonne } from '@/features/registre-des-personnes'
 import { fromResult, withInput } from '@/libraries/nextjs'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 export const choisirProfilAction = actionBuilder()
   .use(withAuth())

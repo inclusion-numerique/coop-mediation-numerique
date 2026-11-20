@@ -2,12 +2,12 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin, withAuth } from '@/features/authentification'
+import { synchroniserPersonne } from '@/features/registre-des-personnes'
 import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles'
 import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
 import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 import { success } from '@/libraries/result'
 
 export const changerLesRolesAction = actionBuilder()

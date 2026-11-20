@@ -8,11 +8,11 @@ import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/a
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
-import { fromResult, withInput } from '@/libraries/nextjs'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/libraries/registre-personne'
+} from '@/features/registre-des-personnes'
+import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
 const registreDesPersonnes = {

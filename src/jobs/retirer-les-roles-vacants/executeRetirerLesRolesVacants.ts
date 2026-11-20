@@ -1,6 +1,6 @@
+import { synchroniserPersonne } from '@/features/registre-des-personnes'
 import { retirerLesRolesVacants } from '@/features/utilisateurs/abilities/changer-les-roles'
 import { output } from '@/libraries/console/output'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 export const executeRetirerLesRolesVacants = async () => {
   const { coordinateursRetires, mediateursRetires } =

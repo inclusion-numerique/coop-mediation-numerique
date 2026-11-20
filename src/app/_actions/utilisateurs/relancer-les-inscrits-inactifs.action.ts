@@ -8,6 +8,7 @@ import { detacherDesEquipes } from '@/features/equipe'
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { synchroniserPersonne } from '@/features/registre-des-personnes'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import { lancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs'
 import {
@@ -16,7 +17,6 @@ import {
   type SupprimerComptePorts,
   supprimerUnInscritJamaisActif,
 } from '@/features/utilisateurs/abilities/supprimer-compte'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
 
 const supprimerComptePorts: SupprimerComptePorts = {
   anonymiserPortefeuille,

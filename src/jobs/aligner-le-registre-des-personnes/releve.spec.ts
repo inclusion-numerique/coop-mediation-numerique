@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ApercuDeLaSynchronisation } from '@/libraries/registre-personne'
+import type { ApercuDeLaSynchronisation } from '@/features/registre-des-personnes'
 import {
   aQuelqueChoseADire,
   type CompteAuReleve,
