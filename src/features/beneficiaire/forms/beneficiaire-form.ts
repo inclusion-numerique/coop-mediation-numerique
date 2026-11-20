@@ -8,8 +8,8 @@ import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { statutsSociaux } from '@/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import { optional } from '@/features/beneficiaire/forms/champ-optionnel'
 import { Telephone } from '@/libraries/telephone'
-import { optional } from '@/libraries/zod'
 
 /**
  * Normalisation de frontière : une commune incomplète (un des champs clés
