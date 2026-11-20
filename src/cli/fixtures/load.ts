@@ -1,8 +1,8 @@
 import { Command } from '@commander-js/extra-typings'
+import { assertDatabaseIsNotProduction } from '@/cli/fixtures/assertDatabaseTarget'
 import { deleteAll, seed } from '@/cli/fixtures/seeds'
 import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { assertDatabaseIsNotProduction } from '@/configuration/prisma/assertDatabaseTarget'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { output } from '@/libraries/fixtures/output'
 

@@ -1,4 +1,4 @@
-import { octokit, owner, repo } from '@/configuration/github/github'
+import { octokit, owner, repo } from '@/cli/github/github'
 
 export const previewDeletionRunsUrl = `https://github.com/${owner}/${repo}/actions/workflows/remove-ephemeral-env.yml`
 

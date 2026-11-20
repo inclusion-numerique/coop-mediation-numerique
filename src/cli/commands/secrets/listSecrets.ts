@@ -1,5 +1,5 @@
 import { Command } from '@commander-js/extra-typings'
-import { listSecrets as configListSecrets } from '@/configuration/secrets/listSecrets'
+import { listSecrets as configListSecrets } from '@/cli/secrets/listSecrets'
 import { output } from '@/libraries/console/output'
 
 /**

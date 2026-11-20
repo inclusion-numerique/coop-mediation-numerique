@@ -6,12 +6,12 @@ import { differenceInDays, format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import pc from 'picocolors'
 import { computeBranchNamespace } from '@/cli/branchNamespace'
+import { octokit, owner, repo } from '@/cli/github/github'
 import {
   previewDeletionRunsUrl,
   triggerPreviewDeletion,
 } from '@/cli/triggerPreviewDeletion'
 import { environnementOutillage } from '@/configuration/environnement/outillage'
-import { octokit, owner, repo } from '@/configuration/github/github'
 import { projectSlug } from '@/configuration/projet/config'
 import { output, outputError } from '@/libraries/console/output'
 

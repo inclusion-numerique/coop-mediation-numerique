@@ -1,8 +1,8 @@
 import { Argument, Command } from '@commander-js/extra-typings'
-import { databasePasswordSecretName } from '@/configuration/secrets/databasePasswordSecretName'
-import { findSecretByName } from '@/configuration/secrets/findSecretByName'
-import { getSecretValue as configGetSecretValue } from '@/configuration/secrets/getSecretValue'
-import { listSecrets } from '@/configuration/secrets/listSecrets'
+import { databasePasswordSecretName } from '@/cli/secrets/databasePasswordSecretName'
+import { findSecretByName } from '@/cli/secrets/findSecretByName'
+import { getSecretValue as configGetSecretValue } from '@/cli/secrets/getSecretValue'
+import { listSecrets } from '@/cli/secrets/listSecrets'
 import { output } from '@/libraries/console/output'
 
 /**

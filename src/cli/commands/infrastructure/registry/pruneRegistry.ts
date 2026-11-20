@@ -1,14 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import { Command } from '@commander-js/extra-typings'
-import { octokit, owner, repo } from '@/configuration/github/github'
+import { octokit, owner, repo } from '@/cli/github/github'
 import { output } from '@/libraries/console/output'
-import {
-  deleteImage,
-  deleteTag,
-  listImageTags,
-  listWebAppImages,
-  webAppImagePrefix,
-} from '../../../../configuration/scaleway/scalewayRegistry'
 import {
   imageNameForBranch,
   orphanImages,
@@ -17,6 +10,13 @@ import {
   retentionCount,
   tagsBeyondTheMostRecent,
 } from './registryRetention'
+import {
+  deleteImage,
+  deleteTag,
+  listImageTags,
+  listWebAppImages,
+  webAppImagePrefix,
+} from './scalewayRegistry'
 
 const permanentBranches = ['main', 'dev']
 

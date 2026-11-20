@@ -10,7 +10,7 @@ import {
   listProjectEnvironments,
   type SentryConfig,
   updateProjectEnvironmentVisibility,
-} from '../../../configuration/telemetry/sentry-api/sentry-utils'
+} from './sentry-utils'
 
 export const deleteSentryEnvironmentIssues = new Command()
   .command('sentry:delete-environment-issues')

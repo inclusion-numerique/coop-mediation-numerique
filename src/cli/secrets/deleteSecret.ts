@@ -1,3 +1,3 @@
-import { secretClient } from '@/configuration/secrets/secretClient'
+import { secretClient } from '@/cli/secrets/secretClient'
 
 export const deleteSecret = (id: string) => secretClient.delete(`/${id}`)

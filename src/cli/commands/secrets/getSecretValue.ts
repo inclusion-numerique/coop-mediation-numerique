@@ -1,7 +1,7 @@
 import { Argument, Command } from '@commander-js/extra-typings'
-import { findSecretByName } from '@/configuration/secrets/findSecretByName'
-import { getSecretValue as configGetSecretValue } from '@/configuration/secrets/getSecretValue'
-import { listSecrets } from '@/configuration/secrets/listSecrets'
+import { findSecretByName } from '@/cli/secrets/findSecretByName'
+import { getSecretValue as configGetSecretValue } from '@/cli/secrets/getSecretValue'
+import { listSecrets } from '@/cli/secrets/listSecrets'
 import { output } from '@/libraries/console/output'
 
 /**

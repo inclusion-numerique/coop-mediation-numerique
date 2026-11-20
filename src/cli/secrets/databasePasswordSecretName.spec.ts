@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { databasePasswordSecretName } from '@/configuration/secrets/databasePasswordSecretName'
+import { databasePasswordSecretName } from '@/cli/secrets/databasePasswordSecretName'
 
 describe('databasePasswordSecretName', () => {
   it('keeps the secret name of main', () => {

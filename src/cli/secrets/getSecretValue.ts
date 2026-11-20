@@ -1,4 +1,4 @@
-import { requestSecretClientWithRetry } from '@/configuration/secrets/secretClient'
+import { requestSecretClientWithRetry } from '@/cli/secrets/secretClient'
 
 /**
  * Returns decoded secret value
