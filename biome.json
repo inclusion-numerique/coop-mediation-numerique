@@ -338,7 +338,7 @@
       }
     },
     {
-      "includes": ["src/**/e2e/*.ts", "src/**/*.cy.tsx"],
+      "includes": ["src/**/e2e/*.ts", "src/app/**/*.e2e.ts", "src/**/*.cy.tsx"],
       "javascript": {
         "globals": [
           "cy",

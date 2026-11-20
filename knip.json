@@ -16,6 +16,7 @@
       "cypress.config.ts",
       "e2e/support/{e2e,component}.ts",
       "src/**/e2e/*.e2e.ts",
+      "src/app/**/*.e2e.ts",
       "src/**/*.cy.tsx"
     ]
   },
