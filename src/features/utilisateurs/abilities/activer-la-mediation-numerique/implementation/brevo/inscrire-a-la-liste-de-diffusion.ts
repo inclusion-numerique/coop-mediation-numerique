@@ -3,7 +3,7 @@ import { contactASynchroniser } from '@/features/utilisateurs/domain'
 import { importerDansLaListe } from '@/features/utilisateurs/implementation/brevo/liste-de-diffusion'
 import { inscritAInscrire } from '../prisma/inscrit-a-inscrire.query'
 
-export const inscrireLeMediateur = async (
+export const inscrireALaListeDeDiffusion = async (
   utilisateurId: string,
 ): Promise<void> => {
   if (!deploymentCanCreateBrevoContact()) return

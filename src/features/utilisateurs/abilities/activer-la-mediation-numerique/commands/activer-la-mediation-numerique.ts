@@ -10,7 +10,7 @@ import { type Activation, activationDe, type NonCoordinateur } from '../domain'
 import {
   activer,
   compteQuiActive,
-  inscrireLeMediateur,
+  inscrireALaListeDeDiffusion,
 } from '../implementation'
 
 export const activerLaMediationNumerique = async (
@@ -37,7 +37,7 @@ export const activerLaMediationNumerique = async (
     coordinateurId: compte.coordinateur?.id ?? '',
     duree: () => chrono.stop().duration,
   })
-  await inscrireLeMediateur(compte.id)
+  await inscrireALaListeDeDiffusion(compte.id)
 
   return success(activation.data)
 }

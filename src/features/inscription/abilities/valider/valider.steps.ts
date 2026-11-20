@@ -44,7 +44,11 @@ Given('mon inscription est déjà validée', async () => {
 })
 
 When('je valide mon inscription', async () => {
-  resultat = await validerInscription(currentInscriptionUserId(), new Date())
+  resultat = await validerInscription(
+    currentInscriptionUserId(),
+    new Date(),
+    async () => undefined,
+  )
 })
 
 Then('mon inscription est validée', async () => {

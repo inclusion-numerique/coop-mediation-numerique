@@ -9,6 +9,7 @@ import {
 import { validerInscription } from '@/features/inscription/abilities/valider/commands/valider'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
+import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const validerAction = actionBuilder()
@@ -17,7 +18,12 @@ export const validerAction = actionBuilder()
   .use(withInput(ValiderValidation))
   .execute(
     fromResult(
-      async ({ user }) => validerInscription(UserId(user.id), new Date()),
+      async ({ user }) =>
+        validerInscription(
+          UserId(user.id),
+          new Date(),
+          inscrireALaListeDeDiffusion,
+        ),
       { onError: VALIDER_ERRORS },
     ),
   )

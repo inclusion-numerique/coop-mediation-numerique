@@ -1,10 +1,4 @@
-import {
-  createBrevoContact,
-  deploymentCanCreateBrevoContact,
-  toBrevoContact,
-} from '@/configuration/brevo/createBrevoContact'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { ServerWebAppConfig } from '@/configuration/projet/ServerWebAppConfig'
 import type { EffetsApresValidation } from '../domain/ports'
 
 const isMediateur = (
@@ -12,44 +6,14 @@ const isMediateur = (
 ): user is { email: string; mediateur: { id: string } } =>
   user?.mediateur?.id != null
 
-/**
- * Effets consécutifs à la validation (parité avec le legacy) : synchronise le
- * contact Brevo (hors E2E / hors prod, `deploymentCanCreateBrevoContact` le
- * neutralise), puis, pour un médiateur, accepte ses invitations d'équipe en
- * attente et crée les liens de coordination correspondants.
- */
 export const effetsApresValidation: EffetsApresValidation = async (userId) => {
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
     select: {
-      id: true,
       email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      coordinateur: true,
       mediateur: { select: { id: true } },
-      personneMain: {
-        select: {
-          conseillerNumeriqueEnPoste: { select: { personneId: true } },
-        },
-      },
     },
   })
-
-  if (user != null && deploymentCanCreateBrevoContact()) {
-    await createBrevoContact({
-      // Dispositif dérivé de l'affectation `idposte` active (ADR-002) : Brevo
-      // reçoit l'état réel du dispositif, pas la copie qu'une synchro nocturne
-      // posait sur `coop.users`.
-      contact: toBrevoContact({
-        ...user,
-        isConseillerNumerique:
-          user.personneMain?.conseillerNumeriqueEnPoste != null,
-      }),
-      listIds: [ServerWebAppConfig.Brevo.usersListId],
-    })
-  }
 
   if (!isMediateur(user)) return
 
