@@ -1,8 +1,8 @@
 import { appUrl } from '@e2e/support/helpers'
+import { goToMostRecentEmailReceived } from '@e2e/support/maildev'
 import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
 import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/users/coordinateurInscrit'
 import { mediateurInscription } from '@/features/utilisateurs/fixtures/users/mediateurInscription'
-import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
 import { nomAffiche } from '@/libraries/nom-affiche'
 
 const nomAfficheDe = (utilisateur: {

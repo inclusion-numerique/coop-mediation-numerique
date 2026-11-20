@@ -1,4 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
+import { goToMostRecentEmailReceived } from '@e2e/support/maildev'
 import {
   CoordinateurId,
   Email,
@@ -14,7 +15,6 @@ import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
 } from '@/features/utilisateurs/fixtures/users/mediateurInscription'
-import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
 
 const createInvitationUrl = ({
   email,
