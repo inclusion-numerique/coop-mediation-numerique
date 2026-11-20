@@ -1,1 +1,0 @@
-export { profilDepuisDispositif } from './domain'
