@@ -3,7 +3,7 @@ import type {
   UniteLegale,
 } from '@/configuration/recherche-entreprises/apiEntrepriseApiModels'
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises/rechercheApiEntreprise'
-import { SiretApiResponse } from '@/libraries/siret'
+import { SiretApiResponse } from '@/features/employeuse/implementation/api-entreprise/siret-api-response'
 
 // Catégorie juridique INSEE des entrepreneurs individuels (personnes physiques)
 const natureJuridiqueEntrepreneurIndividuel = '1000'
