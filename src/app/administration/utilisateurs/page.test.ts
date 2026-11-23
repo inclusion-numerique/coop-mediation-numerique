@@ -1,5 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
-import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 
 describe('ETQ Visiteur, je ne vois aucune donnée de l’administration', () => {
   before(() => {

@@ -1,6 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { crasDeDemonstration, type ReferencesDesCras } from './activites'
-import { upsertCraFixtures } from './upsertCraFixtures'
+import {
+  crasDeDemonstration,
+  type ReferencesDesCras,
+} from './cras-de-demonstration'
+import { upsertCraFixtures } from './enregistrer-les-cras'
 
 const duMediateur =
   (mediateurId: string) =>

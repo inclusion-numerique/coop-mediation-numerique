@@ -1,18 +1,18 @@
-import { crasDeDemonstration } from '@/features/activites/fixtures/activites'
-import { upsertCraFixtures } from '@/features/activites/fixtures/upsertCraFixtures'
+import { crasDeDemonstration } from '@/features/activites/fixtures/cras-de-demonstration'
+import { upsertCraFixtures } from '@/features/activites/fixtures/enregistrer-les-cras'
 import {
   beneficiairesDeDemonstration,
   referencesDesBeneficiaires,
-} from '@/features/beneficiaire/fixtures/beneficiaires'
+} from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
+import { upsertCoordinationFixtures } from '@/features/equipe/fixtures/enregistrer-les-coordinations'
+import { upsertInvitationEquipeFixtures } from '@/features/equipe/fixtures/enregistrer-les-invitations'
+import { upsertMediateurCoordonneFixtures } from '@/features/equipe/fixtures/enregistrer-les-mediateurs-coordonnes'
 import {
   coordinationDeLEquipe,
   departsDeLEquipe,
   invitationsDeLEquipe,
-} from '@/features/equipe/fixtures/equipeCoordonnee'
-import { upsertCoordinationFixtures } from '@/features/equipe/fixtures/upsertCoordinationFixture'
-import { upsertInvitationEquipeFixtures } from '@/features/equipe/fixtures/upsertInvitationEquipeFixture'
-import { upsertMediateurCoordonneFixtures } from '@/features/equipe/fixtures/upsertMediateurCoordonneFixture'
+} from '@/features/equipe/fixtures/equipe-coordonnee'
 import {
   activitesDeLEquipeCoordonnee,
   activitesDesEquipesProduit,
@@ -24,11 +24,7 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import {
-  effacerLesPersonnesMainDeDemonstration,
-  seedPersonnesMain,
-} from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
-import { upsertUserFixtures } from '@/features/utilisateurs/fixtures/upsertUserFixture'
+import { upsertUserFixtures } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import {
   coordinations,
   fixtureUsers,
@@ -37,12 +33,16 @@ import {
   rdvServicePublicStagingUsers,
   teamAdministrateurs,
   teamMediateurs,
-} from '@/features/utilisateurs/fixtures/users'
-import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscritAvecTout'
+} from '@/features/utilisateurs/fixtures/personas'
+import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-avec-tout'
 import {
   equipeCoordonnee,
   membresDeLEquipeCoordonnee,
-} from '@/features/utilisateurs/fixtures/users/equipeCoordonnee'
+} from '@/features/utilisateurs/fixtures/personas/equipe-coordonnee'
+import {
+  effacerLesPersonnesMainDeDemonstration,
+  seedPersonnesMain,
+} from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
 import { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 import { output } from '@/libraries/fixtures/output'

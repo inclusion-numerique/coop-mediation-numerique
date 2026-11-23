@@ -9,12 +9,12 @@ import {
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
-} from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
-import { coordinateurInscritCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscrit'
+} from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
+import { coordinateurInscritCoordinateurId } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit'
 import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
-} from '@/features/utilisateurs/fixtures/users/mediateurInscription'
+} from '@/features/utilisateurs/fixtures/personas/mediateur-inscription'
 
 const createInvitationUrl = ({
   email,

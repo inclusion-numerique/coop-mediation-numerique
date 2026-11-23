@@ -2,7 +2,7 @@ import { appUrl } from '@e2e/support/helpers'
 import {
   mediateurSansActivites,
   mediateurSansActivitesUserId,
-} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+} from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 
 const statutDeLExport = () =>
   cy

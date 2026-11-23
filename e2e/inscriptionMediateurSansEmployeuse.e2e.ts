@@ -1,7 +1,7 @@
 import { shouldBeOnCoopHomepage } from '@e2e/support/helpers'
 import { profilInscriptionLabels } from '@/features/inscription/domain'
 import { structureEmployeuse } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { mediateurSansEmployeuseInscription } from '@/features/utilisateurs/fixtures/users/mediateurSansEmployeuseInscription'
+import { mediateurSansEmployeuseInscription } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-employeuse-inscription'
 import { executeInscriptionFlow } from './support/executeInscriptionFlow'
 
 /**

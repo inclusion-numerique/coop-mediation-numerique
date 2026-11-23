@@ -5,7 +5,7 @@ import {
   estUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
-import { mediateurSansActivitesUserId } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+import { mediateurSansActivitesUserId } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
 /**

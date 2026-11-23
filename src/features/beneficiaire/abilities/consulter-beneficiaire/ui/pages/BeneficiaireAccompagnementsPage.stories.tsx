@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import type { ComponentProps } from 'react'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
-import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires'
+import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 
 const {
   beneficiaireMaximaleMediateurAvecActivite,

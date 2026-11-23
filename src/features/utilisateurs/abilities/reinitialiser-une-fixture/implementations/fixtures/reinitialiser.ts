@@ -4,11 +4,11 @@ import {
   nomAffiche,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { fixtureUsers } from '@/features/utilisateurs/fixtures/personas'
 import {
   type DonneesDeDemonstration,
   resetFixtureUser,
-} from '@/features/utilisateurs/fixtures/resetFixtureUser'
-import { fixtureUsers } from '@/features/utilisateurs/fixtures/users'
+} from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 
 const estDansLesFixtures = (id: string): boolean =>

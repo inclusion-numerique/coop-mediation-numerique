@@ -4,7 +4,7 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
+import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
 import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
@@ -14,7 +14,7 @@ import {
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { reinitialiserUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/users'
+import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const reinitialiserUneFixtureAction = actionBuilder()

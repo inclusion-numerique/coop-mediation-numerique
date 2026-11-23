@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   beneficiairesDeDemonstration,
   type MediateursDesBeneficiaires,
-} from './beneficiaires'
+} from './beneficiaires-de-demonstration'
 
 export const semerLesBeneficiairesDeDemonstration =
   (mediateurs: MediateursDesBeneficiaires) => (mediateurId: string) =>

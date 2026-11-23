@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
+import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
@@ -11,18 +11,18 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnesMainConseillerNumerique'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/users'
-import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
+import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
+import { conseillerNumerique } from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
-} from '@/features/utilisateurs/fixtures/users/mediateurAvecActivite'
+} from '@/features/utilisateurs/fixtures/personas/mediateur-avec-activite'
 import {
   mediateurSansActivites,
   mediateurSansActivitesMediateurId,
-} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+} from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
+import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
+import { resetFixtureUser } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 import { Prisma } from '@/generated/prisma/client'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { testSessionUser } from '../fixtures/testSessionUser'
+import { testSessionUser } from '../fixtures/utilisateur-de-la-session'
 import { profilDeLaSession } from './profil-de-la-session'
 import type { SessionUser } from './utilisateur-de-la-session'
 

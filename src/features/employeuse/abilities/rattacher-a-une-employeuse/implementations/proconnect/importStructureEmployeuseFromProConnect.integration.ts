@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
-import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
+import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importStructureEmployeuseFromProConnect'
@@ -13,10 +13,10 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/resetFixtureUser'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/users'
-import { conseillerNumerique } from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
-import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
+import { conseillerNumerique } from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
+import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
+import { resetFixtureUser } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 
 const demonstration = {
   employeuse: { structureCoopId: structureEmployeuse.id },

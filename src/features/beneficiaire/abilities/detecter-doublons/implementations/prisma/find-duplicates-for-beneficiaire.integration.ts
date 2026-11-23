@@ -6,11 +6,11 @@ import { Email } from '@/features/beneficiaire/domain/email'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/givenBeneficiaire'
+import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/beneficiaire'
 import {
   mediateurSansActivitesMediateurId,
   mediateurSansActivitesUserId,
-} from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
+} from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 import { Telephone } from '@/libraries/telephone'
 
 const withBrandedFields = (fixture: {
