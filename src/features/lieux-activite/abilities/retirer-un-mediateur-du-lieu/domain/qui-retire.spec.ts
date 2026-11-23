@@ -10,7 +10,7 @@ const auteur = (options: Partial<Parameters<typeof quiRetire>[0]> = {}) =>
     mediateurRetire: marc,
     mediateurDeLAuteur: null,
     estAdministrateur: false,
-    estCoordinateur: false,
+    coordonneLeMediateurRetire: false,
     ...options,
   })
 
@@ -22,8 +22,8 @@ describe('qui peut retirer un médiateur d’un lieu', () => {
     expect(doitEtrePrevenu(lui)).toBe(false)
   })
 
-  it('un coordinateur, qui prévient alors l’intéressé', () => {
-    const coordinateur = auteur({ estCoordinateur: true })
+  it('le coordinateur de son équipe, qui prévient alors l’intéressé', () => {
+    const coordinateur = auteur({ coordonneLeMediateurRetire: true })
 
     expect(peutRetirer(coordinateur)).toBe(true)
     expect(doitEtrePrevenu(coordinateur)).toBe(true)
@@ -33,7 +33,13 @@ describe('qui peut retirer un médiateur d’un lieu', () => {
     expect(peutRetirer(auteur({ estAdministrateur: true }))).toBe(true)
   })
 
-  it('mais pas un médiateur tiers', () => {
+  it('mais pas le coordinateur d’une autre équipe', () => {
+    expect(peutRetirer(auteur({ coordonneLeMediateurRetire: false }))).toBe(
+      false,
+    )
+  })
+
+  it('ni un médiateur tiers', () => {
     expect(peutRetirer(auteur({ mediateurDeLAuteur: alex }))).toBe(false)
   })
 

@@ -10,17 +10,17 @@ export const quiRetire = ({
   mediateurRetire,
   mediateurDeLAuteur,
   estAdministrateur,
-  estCoordinateur,
+  coordonneLeMediateurRetire,
 }: {
   mediateurRetire: MediateurId
   mediateurDeLAuteur: MediateurId | null
   estAdministrateur: boolean
-  estCoordinateur: boolean
+  coordonneLeMediateurRetire: boolean
 }): QuiRetire => {
   if (mediateurDeLAuteur === mediateurRetire)
     return { _tag: 'LeMediateurLuiMeme' }
   if (estAdministrateur) return { _tag: 'UnAdministrateur' }
-  if (estCoordinateur) return { _tag: 'UnCoordinateur' }
+  if (coordonneLeMediateurRetire) return { _tag: 'UnCoordinateur' }
 
   return { _tag: 'QuelquUnDautre' }
 }

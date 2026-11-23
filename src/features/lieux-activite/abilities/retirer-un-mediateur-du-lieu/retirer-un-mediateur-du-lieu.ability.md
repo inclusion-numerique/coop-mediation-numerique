@@ -19,11 +19,18 @@
 > Corriger la fiche d'un lieu est ouvert à tous ; retirer autrui de son lieu
 > d'exercice ne l'est pas.
 
-### Scenario: Un coordinateur retire un médiateur
+### Scenario: Le coordinateur de son équipe retire un médiateur
 
 * Given un médiateur qui exerce dans un lieu
-* When un coordinateur retire ce médiateur du lieu
+* When le coordinateur de son équipe retire ce médiateur du lieu
 * Then ce médiateur n’exerce plus dans ce lieu
+
+### Scenario: Le coordinateur d’une autre équipe ne peut pas retirer un médiateur
+
+* Given un médiateur qui exerce dans un lieu
+* When le coordinateur d’une autre équipe tente de retirer ce médiateur du lieu
+* Then le retrait est refusé
+* And ce médiateur exerce toujours dans ce lieu
 
 ### Scenario: Un médiateur tiers ne peut pas en retirer un autre
 
