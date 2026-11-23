@@ -78,13 +78,13 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 ### Application Structure (src)
 
-- **app/**: Next.js entry points only (`page`, `layout`, `route`, `error`, `not-found`, metadata files): thin hubs that authenticate, validate input, query an ability and render one feature page component
+- **app/**: Next.js entry points only (`page`, `layout`, `route`, `error`, `not-found`, metadata files). A route keeps what Next requires, authentication, data preparation through abilities, and composition: it renders one feature page or layout, with its injections (`ClientBinder`), children and slots coming from other abilities or features. No markup and no UI component in `app`, except `<html>` and `<body>` in the root layout and global error
   - `(public)/`: Unauthenticated pages
   - `coop/`: Main authenticated area
   - `administration/`: Admin pages
   - `api/`: API routes including REST API v1
   - `_actions/`: server actions, one file per ability, composing its ports
-- **features/**: Feature modules (activites, authentification, navigation, vitrine, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
+- **features/**: Feature modules (activites, authentification, navigation, vitrine, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it. Each feature and ability follows the structure of `.claude/conventions/feature-architecture.md` (§1, §4, ST, UI-7): kebab-case names, French for business concepts and English for technical ones, barrels only in `domain/index.ts` and `implementations/<technique>/index.ts`, one folder per technique in `implementations/`, `ui/` organised by role (`pages`, `layouts`, `slots`, `components`, `forms`, `presenters`, `labels`, `hooks`)
 - **libraries/**: shared code without any business concept, one purpose per library (UI components, forms, data tables, JSON:API, dates, e-mail layout, paths…)
 - **configuration/**: project configuration, Prisma clients, clients of external services, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
 - **cli/**: CLI entry point; commands stay thin; `cli/fixtures` assembles the test data set loaded by `pnpm fixtures:load`, wiring the references each feature's fixtures cite
@@ -102,7 +102,7 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 ### Server Actions
 
-Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withInput` and `fromResult` come from `@/libraries/nextjs`, `withAuth` from `@/features/authentification/middlewares/with-auth`, `withMaintenance` from `@/features/maintenance-mode/middlewares/with-maintenance`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
+Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). An injection key only carries a server action and only lives in `action/`: the providing ability's, or the consumer's when it declares an action of another feature it needs. The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withInput` and `fromResult` come from `@/libraries/nextjs`, `withAuth` from `@/features/authentification/middlewares/with-auth`, `withMaintenance` from `@/features/maintenance-mode/middlewares/with-maintenance`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
 
 ### Telemetry
 

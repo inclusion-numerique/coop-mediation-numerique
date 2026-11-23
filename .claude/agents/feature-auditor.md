@@ -35,7 +35,7 @@ par un statut : ✅ conforme · ⚠️ résidu · ❓ à confirmer.
 1. **§1 Architecture (AR)** : domaine pur, isolation, routes = hubs (pas de `prismaClient` en route).
 2. **§2 Domaine (DM)** : value objects brandés, unions discriminées, défauts d'enum, smart constructors, transfer + round-trip.
 3. **§3 Style (CS)** : 0 `let`/`else`/`for`/`as`/`!`.
-4. **§4 Structure d'ability (AB)** : `action/` si server action, `implementations/prisma/`, owner-scoping, barrels. Lister chaque ability et son statut.
+4. **§4 Structure d'ability (AB)** : `action/` si server action, `implementations/<technique>/`, owner-scoping, aucun barrel hors ST-2, `ui/` par rôle (UI-7), nommage et catégories (ST-1, ST-5). Lister chaque ability et son statut.
 5. **§5 Isolation (IS)** : dépendances inter-ability / inter-feature, ACL.
 6. **§6 UI** : pas de composant dans `app`, 0 `*.module.css`, TanStack form, presenters.
 7. **§7 Tests** : BDD par ability (TS-1), unit pour logique pure (TS-2), round-trip (TS-4). Lister par ability : a-unit / a-bdd / logique-pure / e2e / **test manquant**.

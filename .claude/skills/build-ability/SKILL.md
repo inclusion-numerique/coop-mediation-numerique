@@ -66,12 +66,12 @@ Pour le reste (mécanique), avance.
 ```
 abilities/<ability>/
 ├── <ability>.ability.md · <ability>.steps.ts
-├── implementations/prisma/<ability>.{query|mutation}.ts   # filtrée par propriétaire (AB-3)
-├── action/<ability>.{validation,errors,key}.ts           # SI server action (AB-1)
-├── domain/<ability>.ts (+ .spec.ts)                       # si logique propre à l'ability
-├── ui/  → *.presenter.ts (pur) + components/ + pages/     # §6
-└── index.ts
+├── implementations/<technique>/…                          # prisma/<x>.{query|mutation}.ts filtrée par propriétaire (AB-3)
+├── action/<ability>.{validation,errors,key}.ts           # SI server action (AB-1, ST-6)
+├── domain/<ability>.ts (+ .spec.ts)                       # ports + cas d'usage pur
+└── ui/pages · components · forms · slots …                # par rôle (UI-7)
 ```
+Pas d'`index.ts` à la racine de l'ability (AB-6) ; nommage et catégories : ST-1, ST-5.
 - Pas de dépendance vers une autre ability (IS-1) ni vers une autre feature (IS-2) : port dans le
   domaine, implémentation fournie depuis la route.
 - Code commun à plusieurs abilities → remonte à la racine de la feature, sous le même nom (AB-2).
@@ -83,7 +83,8 @@ abilities/<ability>/
 - **Composant client** : reçoit l'action par `inject(KEY)` ; la route la lie avec
   `<ClientBinder bind={KEY} to={action}>`.
 - **Route** = hub mince (AR-5, ADR-007) : contrôle d'accès → entrées via value object → données via
-  l'**ability** (jamais `prismaClient` dans `app/`) → rend **un** composant page de la feature.
+  l'**ability** (jamais `prismaClient` dans `app/`) → rend **une** page de la feature, et lui injecte
+  en slots ce qui vient d'autres abilities ou features. Aucun balisage dans la route (UI-1).
 - **Formulaire** : `/build-form` (TanStack Form, UI-3).
 - Si l'ability remplace du code : coexistence le temps de la transition (PR-7), puis suppression
   seulement une fois le remplaçant câblé (PR-3).

@@ -32,21 +32,33 @@ Arbre canonique d'une feature :
 
 ```
 features/<feature>/
-├── domain/                      # PUR — 0 import infra, 0 import d'une autre feature
+├── domain/                      # PUR : 0 import infra, 0 import d'une autre feature
+│   ├── <sujet>/                 # sous-dossier par sujet dès 3 fichiers (identifiants/, invitation/…)
 │   ├── <value-object>.ts        # defineModel + .brand() + smart constructor
-│   ├── <entity>.ts              # entité (champs readonly, discriminated unions)
-│   ├── <entity>.spec.ts         # tests unitaires domaine
-│   ├── errors.ts                # erreurs métier typées
-│   └── index.ts                 # barrel
+│   ├── <entity>.ts (+ .spec.ts) # entité (champs readonly, discriminated unions)
+│   ├── errors.ts · ports.ts     # erreurs métier typées · ports déclarés par la feature
+│   └── index.ts                 # seul barrel admis avec implementations/<technique>/index.ts
 ├── abilities/<ability>/         # 1 cas d'usage = 1 dossier (voir §4)
 ├── action/ · ui/ · implementations/ # dossiers d'ability remontés à la racine quand leur code sert à plusieurs abilities
 ├── middlewares/                 # middlewares des server actions et des routes (with-*.ts)
-├── implementations/prisma/      # persistance partagée : transferts Prisma ↔ domaine, fragments SQL, requêtes communes
-│   ├── <entity>.transfer.ts
-│   └── <entity>.transfer.spec.ts # round-trip
+├── implementations/<technique>/ # un dossier par choix technique (prisma/, email/, session/, api/…), jamais de fichier à la racine
 ├── fixtures/                    # données de démonstration et de test de la feature
 └── <sujet>.cucumber.ts          # hooks et steps Cucumber partagés par les abilities, seulement à la racine
 ```
+
+Rien d'autre à la racine d'une feature : ni `index.ts`, ni `server.ts`, ni fichier posé à plat.
+
+### Structure et nommage (ST)
+
+| ID   | Règle | Sévérité |
+|------|-------|----------|
+| ST-1 | Noms de fichiers et de dossiers en **kebab-case**, sauf un `.tsx` dont l'export principal est un composant (**PascalCase**). **Français pour le métier**, **anglais pour la technique** (`prisma/`, `session/`, `.query`, `.transfer`). | BLOCKER |
+| ST-2 | **Barrels** admis seulement dans `domain/index.ts` et `implementations/<technique>/index.ts`, d'une feature ou d'une ability : ce sont les seuls emplacements où tout ce qui est derrière l'index partage les mêmes dépendances. Ailleurs (racine de feature ou d'ability, `ui/`, `fixtures/`, `middlewares/`), on importe le fichier qui définit le symbole. Un barrel admis n'est pas obligatoire. | BLOCKER |
+| ST-3 | **Sous-dossier par sujet dès 3 fichiers**, jamais en dessous ; **2 niveaux au plus** sous un dossier de rôle ; au-delà d'une quinzaine de fichiers à plat, regrouper par sujet. | WARN |
+| ST-4 | `implementations/` : **un dossier par technique**, quel que soit son nombre de fichiers. À sa racine, seuls des `*.binding.ts`, qui assemblent plusieurs techniques. | BLOCKER |
+| ST-5 | **Catégorie** (`nom.<catégorie>.ts`) là où elle dit le rôle : `action/` → `.validation`, `.errors`, `.key`, `.transfer` (saisie → domaine) ; `implementations/prisma/` → `.query` (lit), `.mutation` (écrit), `.sql`, `.where`, `.transfer`, `.adapter` ; `implementations/api-v1/` → `.response`, `.params` ; `ui/` → `.presenter`, `.labels`, `.search-params`, `.columns`, `.validation`, `.form-options`, `.form-data`, `.slot.tsx` ; tests → `.spec`, `.integration`, `.stories`, `.cy`. Value objects, entités et fixtures n'en ont pas. | WARN |
+| ST-6 | Une **clé d'injection** (`.key.ts`) ne porte qu'une server action et ne vit que dans `action/` : celui de l'ability qui fournit l'action, ou celui du consommateur qui déclare l'action d'une autre feature dont il a besoin. | BLOCKER |
+| ST-7 | Tests de bout en bout : les **parcours** sur plusieurs pages dans `e2e/*.e2e.ts` ; un test qui ne vérifie qu'une page ou une route est un `page.test.ts` ou `route.test.ts` posé à côté d'elle dans `app`. | BLOCKER |
 
 | ID   | Règle                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Sévérité | Détection                                                                                                                  |
 |------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------|
@@ -54,7 +66,7 @@ features/<feature>/
 | AR-2 | Une feature n'importe **jamais** le code d'une autre feature : ni son `domain/`, ni son `index.ts`, ni son `server.ts`. Quand elle a besoin d'une autre feature, elle déclare un port dans son domaine (AR-3). Exception : une feature non refactorée, sans frontière définie, reste importable.                                                                                                                                                                                                                                                                                           | BLOCKER  | `rg --pcre2 "features/(?!<self>)[a-z-]+" features/<self>`                                                                  |
 | AR-3 | Besoin d'une autre feature = **branded type local** + **port** dans son domaine. L'implémentation est fournie depuis `app/`, où les routes composent les features : **injection**, composant passé en prop, ou paramètre.                                                                                                                                                                                                                                                                                                                                                                  | WARN     | revue manuelle                                                                                                             |
 | AR-4 | Le code partagé entre 2 features vit dans `libraries/` (ou `shared/`), pas dans une feature.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | WARN     | —                                                                                                                          |
-| AR-5 | Routes `app/**` = hubs minces : (1) auth, (2) input via value object/schema, (3) données via une **ability query** (jamais `prismaClient` brut), (4) rend **un** composant page de la feature.                                                                                                                                                                                                                                                                                                                                                                                             | BLOCKER  | `rg "prismaClient\." src/app`                                                                                     |
+| AR-5 | Routes `app/**` = hubs minces : (1) auth, (2) input via value object/schema, (3) données via une **ability** (jamais `prismaClient` brut), (4) rend **une** page ou **un** layout de feature, composé de slots s'il assemble plusieurs abilities ou features (UI-1). | BLOCKER  | `rg "prismaClient\." src/app` |
 | AR-6 | Calibrer l'effort DDD au sous-domaine : Core (`activite`, `beneficiaire`) = riche ; Supporting = modéré ; Generic/externe = ACL minimal. Ne pas over-engineer une feature simple.                                                                                                                                                                                                                                                                                                                                                                                                          | INFO     | —                                                                                                                          |
 | AR-7 | Une feature peut exposer un **fragment SQL** dans son API publique quand un consommateur doit filtrer, trier ou compter dessus dans une requête paginée — recoller en mémoire y fausserait pagination et totaux. Conditions : le fragment ET ses colonnes vivent dans `implementations/prisma/<entity>.sql.ts` (les appelants n'écrivent jamais l'alias ni un nom de colonne en dur) ; les identifiants injectés sont documentés comme non-paramétrables et sous la responsabilité de l'appelant ; **chaque** requête qui l'embarque — requêtes de comptage comprises — est exercée par un test d'intégration. | WARN     | `rg "Prisma.raw" features/*/implementations/prisma` ; alias SQL (`s1.`) écrit en dur chez un consommateur                                      |
 
@@ -104,27 +116,23 @@ features/<feature>/
 
 ```
 abilities/<ability>/
-├── <ability>.ability.md         # Gherkin (BDD) — voir §7
+├── <ability>.ability.md         # Gherkin (BDD), voir §7
 ├── <ability>.steps.ts           # steps Cucumber
-├── action/                      # UNIQUEMENT si l'ability a une server action (mutation)
+├── action/                      # contrats d'action : fournis par l'ability ou consommés par elle
 │   ├── <ability>.validation.ts  # schéma Zod de l'input (form/wire shape)
 │   ├── <ability>.errors.ts      # map erreur domaine → message
-│   └── <ability>.key.ts         # DI key (si binding)
+│   ├── <ability>.key.ts         # clé d'injection (ST-6)
+│   └── <saisie>.transfer.ts     # traduction de la saisie validée vers le domaine
 ├── domain/                      # si logique métier propre à l'ability
-│   ├── <ability>.ts             # signatures de port (types) + logique pure
-│   ├── <ability>.spec.ts        # unit si logique pure isolable
-│   └── index.ts
+│   ├── <ability>.ts (+ .spec.ts)# signatures de port + cas d'usage pur
+│   └── index.ts                 # barrel admis (ST-2)
 ├── implementations/
-│   ├── prisma/
-│   │   ├── <ability>.query.ts   # lecture (SELECT, owner-scoped)
-│   │   ├── <ability>.mutation.ts# écriture
-│   │   └── index.ts
-│   └── index.ts
-├── ui/                          # composants présentationnels (voir §6)
-│   ├── components/ · pages/
-│   └── *.presenter.ts           # mise en forme domaine → props (pure)
-└── index.ts                     # API publique de l'ability
+│   ├── <technique>/             # prisma/ (<x>.query.ts, <x>.mutation.ts), excel/, email/, api/…
+│   └── <x>.binding.ts           # seul fichier admis à la racine (ST-4)
+└── ui/                          # par rôle, voir UI-7
 ```
+
+Pas d'`index.ts` à la racine d'une ability ; pas de `commands/`, `queries/` ni d'autre dossier.
 
 | ID   | Règle                                                                                                                                                                  | Sévérité | Détection                                                     |
 |------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------|
@@ -133,7 +141,7 @@ abilities/<ability>/
 | AB-3 | La query/mutation Prisma est **owner-scopée** (`where: { …, mediateurId, suppression: null }`).                                                                        | BLOCKER  | mutation/query sans filtre propriétaire                       |
 | AB-4 | Le branding (smart constructors) vit dans l'ability **propriétaire** ; le hub passe des ids, pas des entités brandées d'une autre ability.                             | WARN     | hub qui brande pour le compte d'une autre ability             |
 | AB-5 | Erreurs retournées en `Result<T, E>` discriminé (pas de `throw` métier).                                                                                               | WARN     | `throw new` dans une mutation/query                           |
-| AB-6 | Barrels (`index.ts`) exposent l'API publique ; les consommateurs importent le barrel, pas les fichiers internes.                                                       | INFO     | —                                                             |
+| AB-6 | Pas de barrel à la racine d'une ability : les consommateurs importent le fichier qui définit le symbole (ST-2). Le code d'orchestration pur d'une ability vit dans `domain/<ability>.ts`, et reçoit ses dépendances par ses ports. | BLOCKER  | `index.ts` à la racine d'une ability ; dossier `commands/` |
 
 ---
 
@@ -151,12 +159,13 @@ abilities/<ability>/
 
 | ID   | Règle                                                                                                                                                                                                                                                                    | Sévérité | Détection                                                        |
 |------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------------------------|
-| UI-1 | **Pas de composant dans `src/app`** : `app` = routes qui orchestrent et appellent **un** composant page de la feature. Présentationnels dans `features/*/ui`. Concerns croisés injectés en slots par la route-hub.                                                       | BLOCKER  | `.tsx` présentationnel sous `app/**`                             |
+| UI-1 | **`app` ne contient que Next et la composition** : ce que Next exige (`metadata`, `params`, `redirect`, `<html>` du layout racine…), l'authentification, la préparation des données par les abilities, et l'assemblage : **une** page ou **un** layout de feature, avec ses injections (`ClientBinder`), ses enfants et ses slots venus d'autres abilities ou features. Aucun balisage ni composant d'UI dans une route. | BLOCKER  | balise HTML ou composant DSFR dans `app/**` hors layout racine |
 | UI-2 | **Pas de `*.module.css`** : convertir en utilitaires DSFR (`fr-flex`, `fr-mb-8v`, `fr-sr-only`…). Seul le non-tokenisable (pixel-perfect, override global) va dans `styles/components/*.css`. Ne pas déplacer un module.css tel quel.                                    | BLOCKER  | `rg "\.module\.(css\|scss)" features`                            |
 | UI-3 | Formulaires : **TanStack Form** via `libraries/formulaire` (`useAppForm`), **pas** react-hook-form. `import type { DefaultValues } from 'react-hook-form'` toléré. Mapping : `watch`→`useStore`, `setValue`→listeners de champ, inputs→`field.*`. Validation `validators.onSubmit`. | BLOCKER  | `rg "useForm\|Controller\|zodResolver\|useFormContext" features` |
 | UI-4 | Mise en forme domaine→props dans un **presenter pur** (`*.presenter.ts`), pas dans le composant ni la route.                                                                                                                                                             | WARN     | logique de shaping dans `.tsx`/route                             |
 | UI-5 | Input requis : marquer via `<RedAsterisk />` dans le label (DsfrInput n'a pas de prop `asterisk`).                                                                                                                                                                       | INFO     | —                                                                |
 | UI-6 | Champ numérique optionnel : ramener `''→null` (listener) ; l'adaptateur `Input` affiche vide pour une valeur absente.                                                                                                                                                    | INFO     | —                                                                |
+| UI-7 | **`ui/` par rôle** : `pages/` (conteneur racine d'un `page.tsx` de `app`), `layouts/` (conteneur racine d'un `layout.tsx`), `slots/` (`<Nom>.slot.tsx`, composant que `app` injecte dans une page ou un layout), `components/` (constituants d'une page), `forms/` (formulaires, champs, et leurs `.validation`, `.form-options`, `.form-data`). Un fichier qui n'est pas un composant (presenter, libellés, hook, paramètres d'URL, colonnes) va à côté de son seul consommateur, ou dans `presenters/`, `labels/` ou `hooks/` s'il en a plusieurs. Les pages vivent dans les abilities ; un composant ne remonte au niveau de la feature que si plusieurs abilities le partagent. | BLOCKER  | composant de `ui/` importé par `app` hors `pages/`, `layouts/`, `slots/` |
 
 ---
 
@@ -216,8 +225,10 @@ abilities/<ability>/
 - Contrats d'ability dans `action/` ; input partagé en `domain/` de feature → AB-1, AB-2.
 - Aucune dépendance inter-ability/feature ; duplication découplée > couplage → IS-1, IS-2.
 - Vérifier le remplaçant **avant** suppression → PR-3.
-- Pas de composant dans `app` ; module.css→DSFR (pas de déplacement tel quel) → UI-1, UI-2.
-- Barrel de feature = **serveur** : n'y réexporter ni composant React (ses `.css` cassent Cucumber) ni implémentation Prisma consommée par un client (`tsc` ne voit ni l'un ni l'autre — seuls le build prod et la suite BDD les voient) → AR-7, CS note.
+- `app` ne garde que Next et la composition ; module.css→DSFR (pas de déplacement tel quel) → UI-1, UI-2.
+- Pas de barrel hors `domain/index.ts` et `implementations/<technique>/index.ts` ; pas d'index d'ability ni de feature → ST-2, AB-6.
+- kebab-case, français pour le métier, anglais pour la technique ; catégorie là où elle dit le rôle → ST-1, ST-5.
+- `implementations/` par technique, `ui/` par rôle, clés seulement dans `action/` → ST-4, UI-7, ST-6.
 - Fragment SQL partagé : un seul endroit, colonnes comprises, et chaque requête qui l'embarque testée → AR-7.
 - Pas de helper faiblement typé en doublon (primitive partagée) → CS-9.
 - Nommage : préfixes au **minimum** (instancier ≠ créer ; `beneficiaireListItem` pas `createABeneficiaire`) ; préfixe seulement s'il porte une info (`seed/to/from/with`) → (nommage).
