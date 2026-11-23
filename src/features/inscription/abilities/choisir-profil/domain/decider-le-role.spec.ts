@@ -5,7 +5,7 @@ import {
   Role,
   UserId,
 } from '@/features/inscription/domain'
-import { choisirProfil } from './choisir-profil'
+import { deciderLeRole } from './decider-le-role'
 
 const userId = UserId('550e8400-e29b-41d4-a716-446655440000')
 const acceptationCgu = new Date('2026-01-01T10:00:00.000Z')
@@ -23,10 +23,10 @@ const inscriptionEnCours: InscriptionEnCours = {
   },
 }
 
-describe('choisirProfil', () => {
+describe('deciderLeRole', () => {
   it('décide le rôle, son compte et l’état à écrire, CGU datées de l’instant du choix', () => {
     expect(
-      choisirProfil(
+      deciderLeRole(
         { _tag: 'NonDemarree', userId },
         { userId, role: Role('Coordinateur') },
         le,
@@ -55,7 +55,7 @@ describe('choisirProfil', () => {
 
   it('conserve les étapes déjà franchies lors d’un re-choix', () => {
     expect(
-      choisirProfil(
+      deciderLeRole(
         inscriptionEnCours,
         { userId, role: Role('Coordinateur') },
         le,
@@ -84,7 +84,7 @@ describe('choisirProfil', () => {
 
   it('refuse un utilisateur inconnu', () => {
     expect(
-      choisirProfil(null, { userId, role: Role('Mediateur') }, le),
+      deciderLeRole(null, { userId, role: Role('Mediateur') }, le),
     ).toEqual({
       success: false,
       error: { _tag: 'InscriptionIntrouvable', userId },
@@ -93,7 +93,7 @@ describe('choisirProfil', () => {
 
   it('refuse de re-choisir un rôle sur une inscription validée', () => {
     expect(
-      choisirProfil(
+      deciderLeRole(
         { ...inscriptionEnCours, _tag: 'Validee', inscriptionValidee: le },
         { userId, role: Role('Coordinateur') },
         le,

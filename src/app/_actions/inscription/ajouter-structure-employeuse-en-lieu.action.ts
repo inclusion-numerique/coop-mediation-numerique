@@ -5,8 +5,7 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.errors'
 import { StructureEmployeuseLieuValidation } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.validation'
-import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
-import { geocoderLAdresse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban/geocoder-l-adresse'
+import { ajouterStructureEmployeuseEnLieuAvec } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ajouter-structure-employeuse-en-lieu.binding'
 import { UserId } from '@/features/inscription/domain'
 import {
   detacherDuLieuDecrit,
@@ -22,18 +21,14 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        ajouterStructureEmployeuseEnLieu(
-          {
-            userId: UserId(user.id),
-            estLieuActivite: input.estLieuActivite,
-          },
-          {
-            geocoderLAdresse,
-            consulterEmployeuseActuelle,
-            rattacherAuLieuDecrit,
-            detacherDuLieuDecrit,
-          },
-        ),
+        ajouterStructureEmployeuseEnLieuAvec({
+          consulterEmployeuseActuelle,
+          rattacherAuLieuDecrit,
+          detacherDuLieuDecrit,
+        })({
+          userId: UserId(user.id),
+          estLieuActivite: input.estLieuActivite,
+        }),
       { onError: AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS },
     ),
   )

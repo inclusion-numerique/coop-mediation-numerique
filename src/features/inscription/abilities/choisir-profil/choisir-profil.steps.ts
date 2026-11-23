@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
-import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/choisir-profil'
+import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/decider-le-role'
+import { choisirProfilAvec } from '@/features/inscription/abilities/choisir-profil/implementations/choisir-profil.binding'
 import {
   type InscriptionStep,
   ProfilInscription,
@@ -27,13 +27,12 @@ Given(
 )
 
 When('je choisis le profil {string}', async (role: string) => {
-  resultat = await choisirProfil(
+  resultat = await choisirProfilAvec(async () => undefined)(
     {
       userId: currentInscriptionUserId(),
       role: Role.schema.parse(role),
     },
     new Date(),
-    async () => undefined,
   )
 })
 

@@ -5,7 +5,7 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
 import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/renseigner-structure-employeuse.errors'
-import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
+import { renseignerStructureEmployeuseAvec } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/renseigner-structure-employeuse.binding'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import {
@@ -37,13 +37,13 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input, user }) => {
-        const resultat = await renseignerStructureEmployeuse({
+        const resultat = await renseignerStructureEmployeuseAvec(
+          rattacherAUneEmployeuseSaisieBinding(registreDesPersonnes),
+        )({
           command: {
             userId: UserId(user.id),
             structureEmployeuse: input.structure,
           },
-          rattacherEmployeuse:
-            rattacherAUneEmployeuseSaisieBinding(registreDesPersonnes),
           maintenant: new Date(),
         })
 

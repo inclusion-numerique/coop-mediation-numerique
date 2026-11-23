@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import type {
   EmployeuseLue,
   Geocodage,
@@ -13,6 +12,8 @@ import {
   seedEmployeuseMain,
 } from '@/features/inscription/inscription.cucumber'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
+import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l-employeuse.query'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
@@ -60,19 +61,17 @@ const consulterEmployeuseActuelle = async () =>
   etat.employeuse === undefined ? null : { employeuse: etat.employeuse }
 
 const declarer = async (estLieuActivite: boolean) => {
-  const resultat = await ajouterStructureEmployeuseEnLieu(
-    { userId: currentInscriptionUserId(), estLieuActivite },
-    {
-      geocoderLAdresse,
-      consulterEmployeuseActuelle,
-      rattacherAuLieuDecrit: async ({ lieu }) => {
-        etat.rattaches.push(lieu)
-      },
-      detacherDuLieuDecrit: async ({ lieu }) => {
-        etat.detaches.push(lieu)
-      },
+  const resultat = await ajouterStructureEmployeuseEnLieu({
+    lireLAdresseDeLEmployeuse,
+    geocoderLAdresse,
+    consulterEmployeuseActuelle,
+    rattacherAuLieuDecrit: async ({ lieu }) => {
+      etat.rattaches.push(lieu)
     },
-  )
+    detacherDuLieuDecrit: async ({ lieu }) => {
+      etat.detaches.push(lieu)
+    },
+  })({ userId: currentInscriptionUserId(), estLieuActivite })
   etat.refus = resultat.success ? null : resultat.error._tag
 }
 

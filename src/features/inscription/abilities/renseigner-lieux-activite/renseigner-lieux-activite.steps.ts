@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
+import { renseignerLieuxActiviteAvec } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/renseigner-lieux-activite.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -61,7 +61,11 @@ When(
   'je renseigne un lieu connu de la coop comme lieu d’activité',
   async () => {
     etat.lieuRenseigne = v4()
-    const resultat = await renseignerLieuxActivite({
+    const resultat = await renseignerLieuxActiviteAvec({
+      trouverStructuresCarto: async () => new Map(),
+      lireLieuxActiviteExistants: lireLesActivitesEnCours,
+      rattacherAuLieuDesire: confierAuRattachement,
+    })({
       command: {
         userId: currentInscriptionUserId(),
         lieuxActivite: [
@@ -75,9 +79,6 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => new Map(),
-      lireLieuxActiviteExistants: lireLesActivitesEnCours,
-      rattacherAuLieuDesire: confierAuRattachement,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')

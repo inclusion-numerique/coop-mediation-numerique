@@ -1,15 +1,4 @@
 export { AdresseNonValidee } from './adresse-non-validee'
-export type {
-  EnregistrerReconciliation,
-  LireLieuxActiviteExistants,
-  TrouverStructuresCarto,
-} from './ports'
-export {
-  type AdresseValidee,
-  type LieuActiviteInput,
-  reconcilierLieuxActivite,
-} from './reconcilier'
-export {
-  type RenseignerLieuxActiviteError,
-  renseignerLieuxActivite,
-} from './renseigner-lieux-activite'
+export type { RenseignerLieuxActiviteError } from './decider-les-lieux'
+export type { EnregistrerReconciliation } from './ports'
+export type { AdresseValidee, LieuActiviteInput } from './reconcilier'

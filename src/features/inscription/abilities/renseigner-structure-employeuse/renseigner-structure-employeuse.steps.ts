@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
+import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/decider-la-structure-employeuse'
 import { type RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
-import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
 import { type StructureEmployeuseInput } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-input'
+import { renseignerStructureEmployeuseAvec } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/renseigner-structure-employeuse.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -48,12 +48,11 @@ Given('l’employeuse choisie n’est pas rattachable', () => {
 })
 
 When('je renseigne ma structure employeuse', async () => {
-  resultat = await renseignerStructureEmployeuse({
+  resultat = await renseignerStructureEmployeuseAvec(rattacherEmployeuse)({
     command: {
       userId: currentInscriptionUserId(),
       structureEmployeuse: structureEmployeuseInput,
     },
-    rattacherEmployeuse,
     maintenant: new Date(),
   })
 })

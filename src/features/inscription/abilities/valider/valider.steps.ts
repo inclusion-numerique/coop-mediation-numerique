@@ -2,8 +2,8 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { validerInscription } from '@/features/inscription/abilities/valider/commands/valider'
 import { type ValiderInscriptionError } from '@/features/inscription/abilities/valider/domain/valider-inscription'
+import { validerAvec } from '@/features/inscription/abilities/valider/implementations/valider.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -50,10 +50,9 @@ Given('une équipe m’a invité avant mon inscription', async () => {
 })
 
 When('je valide mon inscription', async () => {
-  resultat = await validerInscription(
+  resultat = await validerAvec(async () => undefined)(
     currentInscriptionUserId(),
     new Date(),
-    async () => undefined,
   )
 })
 
