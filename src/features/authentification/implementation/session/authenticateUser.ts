@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { AuthenticationError } from '@/features/authentification/domain/AuthenticationError'
 import {
   type CoordinateurUser,
@@ -6,7 +6,10 @@ import {
   isMediateur,
   type MediateurUser,
 } from '@/features/authentification/domain/userTypeGuards'
-import { getAuthenticatedSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import {
+  getAuthenticatedSessionUser,
+  getSessionUser,
+} from '@/features/authentification/implementation/session/getSessionUser'
 
 /**
  * This gets the session user from request cache and redirects to login
@@ -50,4 +53,10 @@ export const authenticateMediateurOrCoordinateur = async (
   if (isMediateur(user) || isCoordinateur(user)) return user
 
   redirect(redirectTo)
+}
+
+export const authenticateAdmin = async () => {
+  const user = await getSessionUser()
+  if (user?.role !== 'Admin') notFound()
+  return user
 }

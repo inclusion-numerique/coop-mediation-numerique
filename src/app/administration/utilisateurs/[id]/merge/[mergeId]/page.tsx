@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { apercuDeFusion } from '@/features/utilisateurs/abilities/fusionner-des-comptes'
 import {
   FUSIONNER_DES_COMPTES_ACTION_KEY,
@@ -17,6 +18,7 @@ export const metadata = {
 const Page = async (props: {
   params: Promise<{ id: string; mergeId: string }>
 }) => {
+  await authenticateAdmin()
   const { id, mergeId } = await props.params
   const apercu = await apercuDeFusion({ sourceId: mergeId, cibleId: id })
   if (apercu === null) notFound()

@@ -1,4 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
 import {
   criteresListeEmployeuses,
@@ -17,6 +18,7 @@ export const revalidate = 0
 const Page = async (props: {
   searchParams: Promise<EmployeusesSearchParams>
 }) => {
+  await authenticateAdmin()
   const searchParams = await props.searchParams
   const criteres = criteresListeEmployeuses(searchParams)
 

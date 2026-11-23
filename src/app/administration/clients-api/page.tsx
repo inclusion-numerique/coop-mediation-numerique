@@ -1,4 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
 import { ClientsApiPage } from '@/features/clients-api/abilities/lister-les-clients-api/ui'
 
@@ -8,8 +9,9 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async () => (
-  <ClientsApiPage clients={await listerLesClientsApi()} />
-)
+const Page = async () => {
+  await authenticateAdmin()
+  return <ClientsApiPage clients={await listerLesClientsApi()} />
+}
 
 export default Page

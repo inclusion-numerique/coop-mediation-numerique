@@ -97,3 +97,43 @@ describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
     cy.findByRole('cell', { name: 'Léa' }).should('be.visible')
   })
 })
+
+describe('ETQ Visiteur, je ne peux pas faire analyser un fichier d’import', () => {
+  it('L’analyse refuse une requête sans session', () => {
+    cy.request({
+      method: 'POST',
+      url: appUrl('/coop/mes-beneficiaires/importer/analyse'),
+      failOnStatusCode: false,
+    })
+      .its('status')
+      .should('eq', 401)
+  })
+})
+
+describe('ETQ Médiateur, je ne peux pas faire analyser un fichier trop lourd', () => {
+  before(() => {
+    cy.execute('resetFixtures', {})
+  })
+
+  it('L’analyse refuse un fichier de plus de 5 Mo', () => {
+    cy.signin(mediateurSansActivites)
+    cy.visit(appUrl('/coop/mes-beneficiaires/importer'))
+
+    cy.window()
+      .then((fenetre) => {
+        const formulaire = new fenetre.FormData()
+        formulaire.append(
+          'file',
+          new fenetre.Blob([new Uint8Array(5 * 1024 * 1024 + 1)]),
+          'trop-lourd.xlsx',
+        )
+        return fenetre
+          .fetch(appUrl('/coop/mes-beneficiaires/importer/analyse'), {
+            method: 'POST',
+            body: formulaire,
+          })
+          .then(({ status }) => status)
+      })
+      .should('eq', 413)
+  })
+})

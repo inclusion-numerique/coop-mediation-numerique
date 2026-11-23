@@ -3,6 +3,7 @@ import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { estMain } from '@/configuration/projet/deploiement'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
 import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui'
 import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
@@ -17,25 +18,28 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async () => (
-  <ClientBinder
-    bind={USURPER_UN_UTILISATEUR_ACTION_KEY}
-    to={usurperUnUtilisateurAction}
-  >
+const Page = async () => {
+  await authenticateAdmin()
+  return (
     <ClientBinder
-      bind={REINITIALISER_UNE_FIXTURE_ACTION_KEY}
-      to={reinitialiserUneFixtureAction}
+      bind={USURPER_UN_UTILISATEUR_ACTION_KEY}
+      to={usurperUnUtilisateurAction}
     >
-      <UsurpationPage
-        comptesDeTest={await comptesDeTest()}
-        usurpationLibre={environnementServeur.SUDO_USURPATION}
-        enProduction={estMain}
-        reinitialiser={(utilisateurId) => (
-          <BoutonReinitialiser utilisateurId={utilisateurId} />
-        )}
-      />
+      <ClientBinder
+        bind={REINITIALISER_UNE_FIXTURE_ACTION_KEY}
+        to={reinitialiserUneFixtureAction}
+      >
+        <UsurpationPage
+          comptesDeTest={await comptesDeTest()}
+          usurpationLibre={environnementServeur.SUDO_USURPATION}
+          enProduction={estMain}
+          reinitialiser={(utilisateurId) => (
+            <BoutonReinitialiser utilisateurId={utilisateurId} />
+          )}
+        />
+      </ClientBinder>
     </ClientBinder>
-  </ClientBinder>
-)
+  )
+}
 
 export default Page

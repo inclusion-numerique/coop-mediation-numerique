@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { fusionnerDesLieuxAction } from '@/app/_actions/lieux-activite/fusionner-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { apercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
 import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.key'
 import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui'
@@ -13,6 +14,7 @@ export const metadata = {
 const Page = async (props: {
   params: Promise<{ structureId: string; mergeId: string }>
 }) => {
+  await authenticateAdmin()
   const { structureId, mergeId } = await props.params
   const mergeData = await apercuDeLaFusion(mergeId, structureId)
   if (!mergeData) return notFound()

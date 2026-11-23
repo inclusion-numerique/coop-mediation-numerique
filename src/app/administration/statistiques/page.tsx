@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation'
 import { rechercherLesLieuxNationauxAction } from '@/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
@@ -15,7 +14,7 @@ import {
   blocsBeneficiaires,
   blocsGeneraux,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
@@ -49,10 +48,9 @@ const Page = async (props: {
     }
   >
 }) => {
+  await authenticateAdmin()
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
-  const user = await authenticateUser()
-  if (user.role !== 'Admin') notFound()
   const statistiques = statistiquesNationalesEnCours(
     criteresDesStatistiques(activitesFilters),
     { tags: true, rendezVousAuxStatuts: rendezVousAuxStatutsSql },

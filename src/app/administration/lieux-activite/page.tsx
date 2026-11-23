@@ -1,4 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
 import {
   LieuxPage,
@@ -16,6 +17,7 @@ export const revalidate = 0
 const Page = async (props: {
   searchParams: Promise<ListeDesLieuxSearchParams>
 }) => {
+  await authenticateAdmin()
   const searchParams = await props.searchParams
   const { totalCount, searchResult } = await rechercherDesLieux({
     searchParams,

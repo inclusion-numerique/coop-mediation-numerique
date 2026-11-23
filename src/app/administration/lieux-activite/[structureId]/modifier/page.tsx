@@ -5,6 +5,7 @@ import { appliquerLesDifferencesAction } from '@/app/_actions/lieux-activite/app
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
 import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
 }
 
 const Page = async (props: { params: Promise<{ structureId: string }> }) => {
+  await authenticateAdmin()
   const params = await props.params
   const lieuId = LieuId.safe(params.structureId)
   const consultee =

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { ficheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur'
 import {
   FUSIONNER_DES_COMPTES_ACTION_KEY,
@@ -15,6 +16,7 @@ export const metadata = {
 }
 
 const Page = async (props: { params: Promise<{ id: string }> }) => {
+  await authenticateAdmin()
   const { id } = await props.params
   const cible = await ficheUtilisateur({
     utilisateurId: id,
