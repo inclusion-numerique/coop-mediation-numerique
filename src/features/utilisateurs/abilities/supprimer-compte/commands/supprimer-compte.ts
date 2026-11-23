@@ -21,12 +21,12 @@ import {
   type SupprimerCompteError,
   type SupprimerComptePorts,
 } from '../domain'
+import { runnerDe } from '../domain/executeurs-d-etapes'
 import {
   compteASupprimer,
   couperAcces,
   logEffacementReport,
 } from '../implementations/prisma'
-import { runnerDe } from './step-runners'
 
 const runStep = async (
   compte: CompteASupprimer,

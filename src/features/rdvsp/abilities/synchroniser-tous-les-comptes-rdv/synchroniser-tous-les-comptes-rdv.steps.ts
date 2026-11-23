@@ -9,8 +9,8 @@ import {
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
 import { failure, success } from '@/libraries/result'
-import type { DeclencherLaSynchronisation } from './commands/synchroniser-tous-les-comptes-rdv'
 import type { BilanDeSynchronisation } from './domain/bilan'
+import type { DeclencherLaSynchronisation } from './domain/synchroniser-tous-les-comptes-rdv'
 import { synchroniserTousLesComptesRdvAvec } from './implementations/synchroniser-tous-les-comptes-rdv.binding'
 
 const COMPTE = ID_TEST.compte + 40

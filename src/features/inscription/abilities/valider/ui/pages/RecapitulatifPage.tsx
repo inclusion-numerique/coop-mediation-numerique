@@ -12,7 +12,7 @@ import InscriptionInvalidInformationContactSupportLink from '@/features/inscript
 import { pluriel } from '@/libraries/pluriel'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
-import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
+import type { RecapitulatifPageData } from '../../implementations/prisma/recapitulatif.query'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 
 const RecapitulatifPage = ({

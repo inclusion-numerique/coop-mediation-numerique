@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import InscriptionCard from '@/features/inscription/ui/InscriptionCard'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
-import type { VerifierInformationsPageData } from '../../queries/getVerifierInformationsPageData'
+import type { VerifierInformationsPageData } from '../verifier-informations.presenter'
 
 /**
  * Écran de vérification des informations : purement présentationnel. La route

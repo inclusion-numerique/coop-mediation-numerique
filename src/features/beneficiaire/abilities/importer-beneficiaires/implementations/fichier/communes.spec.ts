@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createCommunesClient } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/communesClient'
+import { createCommunesClient } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes'
 
 describe('findCommune', () => {
   describe('getCommunesClient', () => {

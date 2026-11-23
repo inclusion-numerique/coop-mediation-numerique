@@ -5,7 +5,7 @@ import {
   type BilanDeSynchronisation,
   comptesEligibles,
   type EchecDeSynchronisation,
-} from '../domain/bilan'
+} from './bilan'
 
 export type LireLesComptesRdv = () => Promise<readonly CompteRdv[]>
 

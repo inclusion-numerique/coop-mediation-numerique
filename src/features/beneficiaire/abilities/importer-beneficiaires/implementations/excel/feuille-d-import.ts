@@ -1,8 +1,8 @@
 import { Readable } from 'node:stream'
 import type { CellValue, Row, stream } from 'exceljs'
 import Excel from 'exceljs'
-import { importBeneficiaireWorksheetName } from './analyseImportBeneficiairesExcel'
-import type { FeuilleImport, ValeurCellule } from './feuille-import'
+import type { FeuilleImport, ValeurCellule } from '../../domain/feuille-import'
+import { importBeneficiaireWorksheetName } from '../prisma/analyse-de-l-import'
 
 type ValeurStructuree = Exclude<
   CellValue,

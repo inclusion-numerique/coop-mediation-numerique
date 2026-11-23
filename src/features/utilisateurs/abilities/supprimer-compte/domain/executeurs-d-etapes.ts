@@ -3,7 +3,7 @@ import {
   identifiantsDe,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import type { NomEffacementStep, SupprimerComptePorts } from '../domain'
+import type { NomEffacementStep, SupprimerComptePorts } from '.'
 
 type Runner = () => Promise<number>
 

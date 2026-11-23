@@ -3,12 +3,12 @@ import path from 'node:path'
 import type { CellValue } from 'exceljs'
 import Excel from 'exceljs'
 import { describe, expect, it } from 'vitest'
+import { getBeneficiaireImportSheet } from '../excel/feuille-d-import'
 import {
   AnalysisSchema,
   analyseImportBeneficiairesExcel,
   importBeneficiaireWorksheetName,
-} from './analyseImportBeneficiairesExcel'
-import { getBeneficiaireImportSheet } from './getBeneficiaireImportSheet'
+} from './analyse-de-l-import'
 
 const enTetes: ReadonlyArray<ReadonlyArray<CellValue>> = [
   ['Instructions'],
@@ -28,7 +28,7 @@ const feuilleDepuisLignes = async (
 }
 
 const getSheetFromLocalFile = (file: string) => {
-  const filePath = path.resolve(__dirname, `./_test/${file}`)
+  const filePath = path.resolve(__dirname, `../../../../fixtures/${file}`)
 
   const fileBuffer = readFileSync(filePath)
 
@@ -38,7 +38,7 @@ const getSheetFromLocalFile = (file: string) => {
 describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
   it('should parse the downloadable model xlsx file', async () => {
     const workbook = await getSheetFromLocalFile(
-      '../../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
+      '../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
     )
 
     const result = await analyseImportBeneficiairesExcel(workbook)
@@ -76,9 +76,7 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
   })
 
   it('should parse an excel with errors', async () => {
-    const workbook = await getSheetFromLocalFile(
-      'import-beneficiaire_errors.xlsx',
-    )
+    const workbook = await getSheetFromLocalFile('import-avec-erreurs.xlsx')
     const result = await analyseImportBeneficiairesExcel(workbook)
 
     expect(result).toEqual({
@@ -266,7 +264,7 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
       await workbook.xlsx.readFile(
         path.resolve(
           __dirname,
-          '../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
+          '../../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
         ),
       )
       return workbook

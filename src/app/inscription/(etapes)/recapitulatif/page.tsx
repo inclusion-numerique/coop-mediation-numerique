@@ -8,7 +8,7 @@ import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/con
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/employeuse-actuelle.presenter'
 import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
 import { VALIDER_ACTION_KEY } from '@/features/inscription/abilities/valider/action/valider.key'
-import { getRecapitulatifPageData } from '@/features/inscription/abilities/valider/queries/getRecapitulatifPageData'
+import { getRecapitulatifPageData } from '@/features/inscription/abilities/valider/implementations/prisma/recapitulatif.query'
 import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
 import { employeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'

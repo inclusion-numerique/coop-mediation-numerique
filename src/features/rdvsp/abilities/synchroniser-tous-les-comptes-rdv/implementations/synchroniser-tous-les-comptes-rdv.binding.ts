@@ -1,7 +1,7 @@
 import {
   type DeclencherLaSynchronisation,
   synchroniserTousLesComptesRdv,
-} from '../commands/synchroniser-tous-les-comptes-rdv'
+} from '../domain/synchroniser-tous-les-comptes-rdv'
 import { lireLesComptesRdv } from './prisma/comptes-rdv.query'
 
 export const synchroniserTousLesComptesRdvAvec = (
