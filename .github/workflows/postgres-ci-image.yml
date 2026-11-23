@@ -3,6 +3,8 @@ name: Postgres CI image
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "docker/postgres-ci/**"
       - ".github/workflows/postgres-ci-image.yml"
@@ -19,10 +21,11 @@ permissions:
 jobs:
   publish:
     name: Publish Postgres CI image
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
       - name: Build image

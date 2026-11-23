@@ -39,7 +39,7 @@ jobs:
           echo "Rien à supprimer pour « $BRANCHE » : main et dev ne sont jamais détruits"
           exit 1
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
           persist-credentials: false
@@ -94,7 +94,7 @@ jobs:
         run: pnpm --silent cli github:deployment:deactivate "$BRANCHE"
       - name: Create GitHub App token
         id: jeton
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
         with:
           client-id: ${{ vars.COOP_CI_APP_CLIENT_ID }}
           private-key: ${{ secrets.COOP_CI_APP_PRIVATE_KEY }}

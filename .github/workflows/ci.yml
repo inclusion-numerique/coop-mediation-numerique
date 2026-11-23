@@ -32,7 +32,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
@@ -64,7 +64,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Setup
@@ -80,7 +80,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
@@ -88,7 +88,7 @@ jobs:
       - name: Test application with coverage
         run: pnpm --silent exec vitest run --project unit --coverage
       - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           files: coverage/lcov.info
           flag-name: web-unit
@@ -96,7 +96,7 @@ jobs:
           fail-on-error: false
       - name: Publish test summary
         if: ${{ !cancelled() }}
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
         with:
           report_paths: "junit/*.xml"
           check_name: "Unit tests summary"
@@ -110,7 +110,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
       - name: Create env file
@@ -153,7 +153,7 @@ jobs:
           - 1025:1025
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
       - name: Test environment
@@ -170,7 +170,7 @@ jobs:
           set +a
           pnpm --silent exec vitest run --project integration --coverage
       - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           files: coverage/lcov.info
           flag-name: web-integration
@@ -178,7 +178,7 @@ jobs:
           fail-on-error: false
       - name: Publish test summary
         if: ${{ !cancelled() }}
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
         with:
           report_paths: "junit/*.xml"
           check_name: "Integration tests summary"
@@ -217,7 +217,7 @@ jobs:
           - 1025:1025
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
       - name: Test environment
@@ -228,7 +228,7 @@ jobs:
       - name: Run cucumber with coverage
         run: pnpm test:cucumber:coverage --format progress --format junit:junit/cucumber.xml
       - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           files: coverage-cucumber/lcov.info
           flag-name: cucumber
@@ -236,7 +236,7 @@ jobs:
           fail-on-error: false
       - name: Publish test summary
         if: ${{ !cancelled() }}
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
         with:
           report_paths: "junit/*.xml"
           check_name: "Cucumber summary"
@@ -250,7 +250,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Setup
@@ -271,7 +271,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -282,13 +282,13 @@ jobs:
           scw-access-key: ${{ secrets.SCW_ACCESS_KEY }}
           scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
       - name: Run Cypress component tests
-        uses: cypress-io/github-action@v7
+        uses: cypress-io/github-action@0ed14f5d30c4ad6e5e8ffb6f57dbb69150137a3f # v7.4.10
         with:
           install: false
           command: pnpm cy run --component --reporter junit --reporter-options mochaFile=e2e/junit/components-[hash].xml
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: components-cypress
           path: |
@@ -296,7 +296,7 @@ jobs:
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
         with:
           report_paths: "e2e/junit/*.xml"
           check_name: "Components tests summary"
@@ -340,7 +340,7 @@ jobs:
           - 1080:1080
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -370,7 +370,7 @@ jobs:
           PROCONNECT_SIMULE_CLE="$RUNNER_TEMP/proconnect-simule/cle.pem" \
             nohup node e2e/proconnect-simule/serveur.ts > "$GITHUB_WORKSPACE/proconnect-simule.log" 2>&1 &
       - name: Build cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
@@ -393,7 +393,7 @@ jobs:
           cd ~/dist
           NODE_TLS_REJECT_UNAUTHORIZED=0 HOSTNAME=localhost nohup node server.js > "$GITHUB_WORKSPACE/server.log" 2>&1 &
       - name: Run Cypress e2e tests
-        uses: cypress-io/github-action@v7
+        uses: cypress-io/github-action@0ed14f5d30c4ad6e5e8ffb6f57dbb69150137a3f # v7.4.10
         env:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.conteneur }}
@@ -405,7 +405,7 @@ jobs:
           command: pnpm cy run --reporter junit --reporter-options mochaFile=e2e/junit/e2e-[hash].xml
       - name: Upload Cypress screenshots and server log
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: e2e-cypress-${{ matrix.conteneur }}
           path: |
@@ -415,7 +415,7 @@ jobs:
           retention-days: 30
       - name: Publish test summary
         if: ${{ !cancelled() }}
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
         with:
           report_paths: "e2e/junit/*.xml"
           check_name: "E2E tests summary"
@@ -434,7 +434,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Close parallel Coveralls build
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           parallel-finished: true
           carryforward: "web-unit,web-integration,cucumber"
@@ -449,9 +449,9 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Dependency review
-        uses: actions/dependency-review-action@v5
+        uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
         with:
           base-ref: main
           head-ref: ${{ github.sha }}
@@ -465,7 +465,7 @@ jobs:
       changed: ${{ steps.changes.outputs.changed }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Detect infrastructure changes
