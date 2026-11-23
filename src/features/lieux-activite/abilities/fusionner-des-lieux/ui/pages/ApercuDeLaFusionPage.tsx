@@ -1,4 +1,4 @@
-import { type FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/apercu-de-la-fusion.query'
+import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
 import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ApercuDeLaFusion'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
 import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ValiderLaFusion'
@@ -15,7 +15,7 @@ export const ApercuDeLaFusionPage = ({
   mergeData,
 }: {
   structureId: string
-  mergeData: NonNullable<FusionApercue>
+  mergeData: FusionApercue
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />

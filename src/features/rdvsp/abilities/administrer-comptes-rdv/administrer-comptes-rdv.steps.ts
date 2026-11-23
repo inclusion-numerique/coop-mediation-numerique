@@ -7,19 +7,20 @@ import {
   seedRdv,
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
+import type {
+  CompteAdministre,
+  ComptesAdministres,
+} from './domain/comptes-administres'
 import { getAdministrationRdvspUserData } from './implementations/prisma/compte-rdv-detaille.query'
-import {
-  type AdministrationRdvspData,
-  getAdministrationRdvspData,
-} from './implementations/prisma/comptes-rdv.query'
+import { getAdministrationRdvspData } from './implementations/prisma/comptes-rdv.query'
 
 const AGENT_ID = ID_TEST.compte + 20
 const RDV_ID = ID_TEST.rdv + 500
 const ORGANISATION_ID = ID_TEST.organisation + 500
 
 const administration: {
-  liste?: AdministrationRdvspData
-  detail?: Awaited<ReturnType<typeof getAdministrationRdvspUserData>>
+  liste?: ComptesAdministres
+  detail?: CompteAdministre | null
 } = {}
 
 Given(

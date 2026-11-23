@@ -1,5 +1,12 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { estDev, estLocal, estMain } from '@/configuration/projet/deploiement'
+import {
+  branche,
+  estDev,
+  estLocal,
+  estMain,
+  estPreview,
+} from '@/configuration/projet/deploiement'
+import { proConnectProviderId } from '../proconnect/proconnect'
 
 /**
  * Depending on the environment we have a different provider configuration
@@ -7,4 +14,6 @@ import { estDev, estLocal, estMain } from '@/configuration/projet/deploiement'
 export const authenticationViaProconnect =
   estLocal || environnementServeur.IS_E2E || estMain || estDev
 
-export const authenticationViaEmailMagicLink = !authenticationViaProconnect
+export const moyenDeConnexion = authenticationViaProconnect
+  ? ({ via: 'proconnect', fournisseur: proConnectProviderId } as const)
+  : ({ via: 'courriel', branchePreview: estPreview ? branche : null } as const)

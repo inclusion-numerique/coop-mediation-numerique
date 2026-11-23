@@ -2,20 +2,26 @@ import type { Route } from 'next'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
-import SigninPanel from '../components/SigninPanel'
+import SigninPanel, { type MoyenDeConnexion } from '../components/SigninPanel'
 
 export const ConnexionPage = ({
   error,
   callbackUrl,
+  connexion,
 }: {
   error?: string
   callbackUrl: Route
+  connexion: MoyenDeConnexion
 }) => (
   <>
     <SkipLinksPortal />
     <Breadcrumbs currentPage="Connexion" />
     <main id={contentId}>
-      <SigninPanel error={error} callbackUrl={callbackUrl} />
+      <SigninPanel
+        error={error}
+        callbackUrl={callbackUrl}
+        connexion={connexion}
+      />
     </main>
   </>
 )

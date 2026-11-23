@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { champsCommuns } from '../../domain'
+import { champsCommuns, type FusionApercue } from '../../domain'
 import { lieuAFusionnerInclude } from './lieu-a-fusionner'
 import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'
 
@@ -11,7 +11,7 @@ const SANS_EMPLOYEUSE = {
 export const apercuDeLaFusion = async (
   sourceStructureId: string,
   targetStructureId: string,
-) => {
+): Promise<FusionApercue | null> => {
   const [sourceStructure, targetStructure] = await Promise.all([
     prismaClient.lieuInclusion.findUnique({
       where: { id: sourceStructureId },
@@ -34,5 +34,3 @@ export const apercuDeLaFusion = async (
     mergeCommon: champsCommuns(mergeSource, mergeTarget),
   }
 }
-
-export type FusionApercue = Awaited<ReturnType<typeof apercuDeLaFusion>>

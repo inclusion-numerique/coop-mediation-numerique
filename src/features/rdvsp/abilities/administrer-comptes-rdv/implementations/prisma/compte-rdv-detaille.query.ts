@@ -1,10 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { CompteAdministre } from '../../domain/comptes-administres'
 
 export const getAdministrationRdvspUserData = async ({
   userId,
 }: {
   userId: string
-}) => {
+}): Promise<CompteAdministre | null> => {
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
     select: {
@@ -132,7 +133,3 @@ export const getAdministrationRdvspUserData = async ({
     user: { ...user, rdvAccount, webhookStatus },
   }
 }
-
-export type AdministrationRdvspUserData = NonNullable<
-  Awaited<ReturnType<typeof getAdministrationRdvspUserData>>
->

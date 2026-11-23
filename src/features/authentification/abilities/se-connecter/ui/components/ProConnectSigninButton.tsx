@@ -5,21 +5,22 @@ import classNames from 'classnames'
 import { Route } from 'next'
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
-import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 
 const ProConnectSigninButton = ({
   className,
   callbackUrl,
+  fournisseur,
 }: {
   className?: string
   callbackUrl: Route
+  fournisseur: string
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const onClick = () => {
     if (isLoading) return
     setIsLoading(true)
-    signIn(proConnectProviderId, { callbackUrl })
+    signIn(fournisseur, { callbackUrl })
   }
   return (
     <div

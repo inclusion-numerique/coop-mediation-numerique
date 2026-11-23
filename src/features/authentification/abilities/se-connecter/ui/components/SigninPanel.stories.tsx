@@ -10,8 +10,14 @@ export default meta
 
 type Story = StoryObj<typeof SigninPanel>
 
-export const Desktop: Story = {}
+export const Desktop: Story = {
+  args: {
+    callbackUrl: '/connexion/suivant',
+    connexion: { via: 'proconnect', fournisseur: 'proconnect' },
+  },
+}
 export const Mobile: Story = {
+  args: Desktop.args,
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',

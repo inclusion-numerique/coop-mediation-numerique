@@ -9,13 +9,13 @@ import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { AdministrationRdvspData } from '../../implementations/prisma/comptes-rdv.query'
+import type { ComptesAdministres } from '../../domain/comptes-administres'
 
 const AdministrationRdvspPage = async ({
   data: { users, rdvs },
   timezone = 'Europe/Paris',
 }: {
-  data: AdministrationRdvspData
+  data: ComptesAdministres
   timezone?: string
 }) => (
   <CoopPageContainer>
