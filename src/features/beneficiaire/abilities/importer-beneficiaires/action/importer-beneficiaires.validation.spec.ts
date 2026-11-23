@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ParsedBeneficiaireRow } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/analyse-de-l-import'
+import type { ParsedBeneficiaireRow } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { ImporterBeneficiairesValidation } from './importer-beneficiaires.validation'
 
 const row = (

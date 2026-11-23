@@ -1,4 +1,4 @@
-import type { Analysis } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/analyse-de-l-import'
+import type { Analysis } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 
 // Contrat de la réponse d'analyse, partagé entre la route handler (qui la
 // produit) et l'UI (qui la stocke puis la relit). Possédé par la feature pour

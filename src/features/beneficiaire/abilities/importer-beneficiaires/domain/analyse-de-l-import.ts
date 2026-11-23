@@ -1,13 +1,18 @@
 import { z } from 'zod'
-import {
-  type Commune,
-  type CommunesClient,
-  createCommunesClient,
-} from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes'
 import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import type { Genre } from '@/generated/prisma/client'
-import { type FeuilleImport, valeurCellule } from '../../domain/feuille-import'
+import { type FeuilleImport, valeurCellule } from './feuille-import'
+
+type Commune = {
+  readonly codeInsee: string
+  readonly nom: string
+  readonly codePostal: string
+}
+
+export type CommunesClient = {
+  readonly findCommuneByInsee: (code: string) => Commune | null
+}
 
 const ParsedBeneficiaireRowSchema = z.object({
   values: z.object({
@@ -228,17 +233,15 @@ const numerosLignesBeneficiaires = (
     : numerosLignes.slice(0, indexPremiereLigneVide)
 }
 
-export const analyseImportBeneficiairesExcel = async (
-  feuille: FeuilleImport,
-): Promise<Analysis> => {
-  const communesClient = await createCommunesClient()
+export const analyserLaFeuille =
+  (communesClient: CommunesClient) =>
+  (feuille: FeuilleImport): Analysis => {
+    const rows = numerosLignesBeneficiaires(feuille).map((rowNumber) =>
+      parseBeneficiaireRow(feuille, rowNumber, communesClient),
+    )
 
-  const rows = numerosLignesBeneficiaires(feuille).map((rowNumber) =>
-    parseBeneficiaireRow(feuille, rowNumber, communesClient),
-  )
-
-  return {
-    status: rows.some((row) => row.errors) ? 'error' : 'ok',
-    rows,
+    return {
+      status: rows.some((row) => row.errors) ? 'error' : 'ok',
+      rows,
+    }
   }
-}

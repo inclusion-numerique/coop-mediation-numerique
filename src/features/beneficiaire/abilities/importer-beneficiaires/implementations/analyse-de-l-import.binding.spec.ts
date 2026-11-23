@@ -3,12 +3,12 @@ import path from 'node:path'
 import type { CellValue } from 'exceljs'
 import Excel from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import { getBeneficiaireImportSheet } from '../excel/feuille-d-import'
 import {
   AnalysisSchema,
-  analyseImportBeneficiairesExcel,
   importBeneficiaireWorksheetName,
-} from './analyse-de-l-import'
+} from '../domain/analyse-de-l-import'
+import { analyseImportBeneficiairesExcel } from './analyse-de-l-import.binding'
+import { getBeneficiaireImportSheet } from './excel/feuille-d-import'
 
 const enTetes: ReadonlyArray<ReadonlyArray<CellValue>> = [
   ['Instructions'],
@@ -28,7 +28,7 @@ const feuilleDepuisLignes = async (
 }
 
 const getSheetFromLocalFile = (file: string) => {
-  const filePath = path.resolve(__dirname, `../../../../fixtures/${file}`)
+  const filePath = path.resolve(__dirname, `../../../fixtures/${file}`)
 
   const fileBuffer = readFileSync(filePath)
 
@@ -264,7 +264,7 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
       await workbook.xlsx.readFile(
         path.resolve(
           __dirname,
-          '../../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
+          '../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
         ),
       )
       return workbook

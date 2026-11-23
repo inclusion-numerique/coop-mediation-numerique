@@ -82,5 +82,3 @@ export const createCommunesClient = async () => {
     },
   }
 }
-
-export type CommunesClient = Awaited<ReturnType<typeof createCommunesClient>>

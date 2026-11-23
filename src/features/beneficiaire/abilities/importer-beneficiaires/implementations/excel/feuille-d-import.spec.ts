@@ -1,7 +1,7 @@
 import type { Worksheet } from 'exceljs'
 import Excel from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import { importBeneficiaireWorksheetName } from '../prisma/analyse-de-l-import'
+import { importBeneficiaireWorksheetName } from '../../domain/analyse-de-l-import'
 import { getBeneficiaireImportSheet } from './feuille-d-import'
 
 const classeur = async (

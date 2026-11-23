@@ -2,7 +2,7 @@ import type { z } from 'zod'
 import {
   AnalysisSchema,
   type ParsedBeneficiaireRow,
-} from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/analyse-de-l-import'
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
