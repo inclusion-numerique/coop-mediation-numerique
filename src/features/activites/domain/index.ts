@@ -108,7 +108,7 @@ export { NomDeLActivite } from './nom-de-l-activite'
 export { NomDeStructure } from './nom-de-structure'
 export { NomDeTag } from './nom-de-tag'
 export { NomDuMotif } from './nom-du-motif'
-export { Notes, notesDe } from './notes'
+export { Notes, NotesSaisies, notesDe } from './notes'
 export {
   OrdreChronologique,
   ordreChronologiqueLu,
