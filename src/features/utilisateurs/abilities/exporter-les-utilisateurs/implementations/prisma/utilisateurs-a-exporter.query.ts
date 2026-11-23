@@ -1,14 +1,14 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  ligneUtilisateurSelect,
-  ligneUtilisateurToDomain,
-} from '@/features/utilisateurs/db/ligne-utilisateur.transfer'
-import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
-import { utilisateursRattaches } from '@/features/utilisateurs/db/utilisateurs-rattaches.query'
 import type {
   FiltresUtilisateurs,
   LigneUtilisateur,
 } from '@/features/utilisateurs/domain'
+import {
+  ligneUtilisateurSelect,
+  ligneUtilisateurToDomain,
+} from '@/features/utilisateurs/implementations/prisma/ligne-utilisateur.transfer'
+import { utilisateursWhere } from '@/features/utilisateurs/implementations/prisma/utilisateurs.where'
+import { utilisateursRattaches } from '@/features/utilisateurs/implementations/prisma/utilisateurs-rattaches.query'
 
 export const utilisateursAExporter = async ({
   mots,

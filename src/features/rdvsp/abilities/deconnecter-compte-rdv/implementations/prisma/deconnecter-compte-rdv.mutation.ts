@@ -1,6 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, success } from '@/libraries/result'
-import { compteRdvFromDomain, compteRdvToDomain } from '../../../../db'
+import {
+  compteRdvFromDomain,
+  compteRdvToDomain,
+} from '../../../../implementations/prisma/compte-rdv.transfer'
 import type { DeconnecterCompteRdv } from '../../domain/deconnecter-compte-rdv'
 import { compteApresDeconnexion } from '../../domain/deconnecter-compte-rdv'
 import { CompteRdvIntrouvable } from '../../domain/errors'

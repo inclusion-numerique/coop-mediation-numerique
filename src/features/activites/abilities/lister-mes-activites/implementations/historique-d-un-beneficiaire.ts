@@ -1,4 +1,3 @@
-import type { RendezVousLies } from '../../../db/rendez-vous-fournis'
 import {
   type BeneficiaireId,
   type ChronologieDesActivites,
@@ -9,6 +8,7 @@ import {
   type Pagination,
   type RendezVousDuCompte,
 } from '../../../domain'
+import type { RendezVousLies } from '../../../implementations/prisma/rendez-vous-fournis'
 import {
   listerMesActivites,
   type RendezVousALister,

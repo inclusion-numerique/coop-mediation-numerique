@@ -1,15 +1,15 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  activiteConsulteeDe,
-  activiteConsulteeSelect,
-  rdvIdsDes,
-} from '../../../../db/activite-consultee.transfer'
-import type { RendezVousLies } from '../../../../db/rendez-vous-fournis'
-import {
   type ActiviteConsultee,
   type MediateurId,
   RdvId,
 } from '../../../../domain'
+import {
+  activiteConsulteeDe,
+  activiteConsulteeSelect,
+  rdvIdsDes,
+} from '../../../../implementations/prisma/activite-consultee.transfer'
+import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
 
 const NOMBRE_DE_DERNIERES_ACTIVITES = 3
 

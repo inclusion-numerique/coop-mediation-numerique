@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { porteeDe } from '../../../../db/portee-de-tag'
 import { type CoordinateurId, NomDeTag, TagId } from '../../../../domain'
+import { porteeDe } from '../../../../implementations/prisma/portee-de-tag'
 import type { OptionsDeFiltre } from '../../domain'
 
 export const optionsDeFiltre = async ({

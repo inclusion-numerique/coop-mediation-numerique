@@ -1,15 +1,15 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  clientApiSelect,
-  depuisDefinition,
-  versClientApi,
-} from '@/features/clients-api/db/client-api.transfer'
-import {
   type ClientApi,
   type DefinitionDuClientApi,
   NomDejaPris,
 } from '@/features/clients-api/domain'
 import { nomDejaPris } from '@/features/clients-api/implementations/nom-deja-pris'
+import {
+  clientApiSelect,
+  depuisDefinition,
+  versClientApi,
+} from '@/features/clients-api/implementations/prisma/client-api.transfer'
 import { nouveauSecret } from '@/features/clients-api/implementations/secret'
 import { failure, type Result, success } from '@/libraries/result'
 

@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { compteRdvToDomain } from '../../../../db'
+import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 import type { CompteDuMediateur } from '../../domain/prendre-rendez-vous'
 
 export const compteDuMediateur: CompteDuMediateur = async (utilisateurId) => {

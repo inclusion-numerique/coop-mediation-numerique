@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   personneEmployeuseActuelleSelect,
   personneToEmployeuseALaDate,
-} from '../../../../db/employeuse.transfer'
+} from '../../../../implementations/prisma/employeuse.transfer'
 import type { ConsulterEmployeuseAUneDate } from '../../domain/consulter-employeuse-a-une-date'
 
 export const consulterEmployeuseAUneDate: ConsulterEmployeuseAUneDate = async ({

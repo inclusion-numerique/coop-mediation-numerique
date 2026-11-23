@@ -18,7 +18,7 @@ import { repartitionPresentee } from '@/features/activites/abilities/repartir-le
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui'
 import { verifierLaPresenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1'
-import type { DemandeDeStatistiques } from '@/features/activites/db/statistiques.sql'
+import type { DemandeDeStatistiques } from '@/features/activites/implementations/prisma/statistiques.sql'
 
 const aucune = <T>(): Promise<T[]> => Promise.resolve([])
 

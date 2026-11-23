@@ -1,7 +1,6 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
-import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
   ActionNonAutorisee,
   exigerEnAttente,
@@ -12,6 +11,7 @@ import {
   type ReferenceInvitation,
   type UtilisateurId,
 } from '../../../../domain'
+import { lireUneInvitation } from '../../../../implementations/prisma/invitation.query'
 
 export type EchecDAnnulation =
   | ActionNonAutorisee

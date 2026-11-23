@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import type {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
 import type { Prisma } from '@/generated/prisma/client'
 import type { OperationRole, PlanDeChangement } from '../../domain'
 

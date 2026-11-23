@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { jetonsCompteToDomain } from '../../../../db'
 import type { RevoquerJetons } from '../../../../implementations/api'
+import { jetonsCompteToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 
 /**
  * Efface tout ce qu'un compte a laissé dans RDV Service Public.

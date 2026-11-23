@@ -22,12 +22,12 @@ import {
   rdvsDejaImportes,
 } from '../abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
 import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/implementations/synchroniser-rdvs'
-import { compteRdvToDomain } from '../db'
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../domain/beneficiaires.port'
 import { bilanVide } from '../domain/bilan-synchronisation'
 import { estUtilisable } from '../domain/compte-rdv'
 import { diagnosticErreur } from '../domain/errors'
 import { OrganisationId } from '../domain/organisation-id'
+import { compteRdvToDomain } from './prisma/compte-rdv.transfer'
 import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
 
 /**

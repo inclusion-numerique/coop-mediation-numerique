@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   personneEmployeuseSelect,
   personneToEmployeusesHistorique,
-} from '../../../../db/employeuse.transfer'
+} from '../../../../implementations/prisma/employeuse.transfer'
 import type { ConsulterHistoriqueEmployeuses } from '../../domain/consulter-historique-employeuses'
 
 export const consulterHistoriqueEmployeuses: ConsulterHistoriqueEmployeuses =

@@ -5,7 +5,7 @@ import {
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import type { RendezVousAuxStatuts } from '../../db/criteres-des-statistiques.sql'
+import type { RendezVousAuxStatuts } from '../prisma/criteres-des-statistiques.sql'
 import { rassembler, statistiquesEnCours } from './statistiques-fournies'
 
 export const statistiquesNationalesEnCours = (

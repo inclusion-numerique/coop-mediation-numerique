@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { inscriptionEtatFromDomain } from '@/features/inscription/db'
+import { inscriptionEtatFromDomain } from '@/features/inscription/implementations/prisma/inscription-etat.transfer'
 import type { Prisma } from '@/generated/prisma/client'
 import type { EnregistrerReconciliation, LieuActiviteInput } from '../../domain'
 

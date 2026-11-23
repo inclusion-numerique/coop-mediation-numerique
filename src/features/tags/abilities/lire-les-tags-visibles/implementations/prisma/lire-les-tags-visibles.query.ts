@@ -1,12 +1,15 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { type TagRow, tagToDomain } from '../../../../db/tag.transfer'
+import type { Acteur, Tag, TagId } from '../../../../domain'
+import {
+  type TagRow,
+  tagToDomain,
+} from '../../../../implementations/prisma/tag.transfer'
 import {
   COLONNES_DU_TAG,
   TAGS,
   tagVisiblePar,
-} from '../../../../db/visibilite.sql'
-import type { Acteur, Tag, TagId } from '../../../../domain'
+} from '../../../../implementations/prisma/visibilite.sql'
 
 export const lireLesTagsVisibles = async ({
   acteur,

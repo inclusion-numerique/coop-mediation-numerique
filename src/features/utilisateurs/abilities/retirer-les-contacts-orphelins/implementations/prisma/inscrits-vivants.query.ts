@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { inscritVivantWhere } from '@/features/utilisateurs/db/inscrit-vivant.where'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
+import { inscritVivantWhere } from '@/features/utilisateurs/implementations/prisma/inscrit-vivant.where'
 
 export const inscritsVivantsParmi = async (
   identifiants: readonly UtilisateurId[],

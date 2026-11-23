@@ -39,7 +39,7 @@ import {
   TitreDeSection,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/db/derniere-activite.query'
+import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/implementations/prisma/derniere-activite.query'
 import { departementDuCode } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

@@ -2,11 +2,11 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, success } from '@/libraries/result'
-import { compteRdvToDomain } from '../../db/compte-rdv.transfer'
 import { bilanVide } from '../../domain/bilan-synchronisation'
 import { estUtilisable } from '../../domain/compte-rdv'
 import { ApiIndisponible } from '../../domain/errors'
 import { OrganisationId } from '../../domain/organisation-id'
+import { compteRdvToDomain } from '../../implementations/prisma/compte-rdv.transfer'
 import { compteRdvEnBase, ID_TEST, seedCompteRdv } from '../../rdvsp.cucumber'
 import type {
   ResultatSynchronisation,

@@ -1,16 +1,16 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  activiteConsulteeDe,
-  activiteConsulteeSelect,
-  rdvIdsDes,
-} from '../../db/activite-consultee.transfer'
-import type { RendezVousLies } from '../../db/rendez-vous-fournis'
-import {
   type ActiviteConsultee,
   type ActiviteId,
   type MediateurId,
   RdvId,
 } from '../../domain'
+import {
+  activiteConsulteeDe,
+  activiteConsulteeSelect,
+  rdvIdsDes,
+} from './activite-consultee.transfer'
+import type { RendezVousLies } from './rendez-vous-fournis'
 
 export const lireUneActiviteDeMediation = async ({
   id,

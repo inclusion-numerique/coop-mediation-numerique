@@ -1,4 +1,4 @@
-import { estEnPoste } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
+import { estEnPoste } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
 import type { UtilisateurExpose } from '../prisma/utilisateurs-exposes.query'
 import { contratPourEmployeuse } from './contrat-pour-employeuse'
 

@@ -1,5 +1,5 @@
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
 import { success } from '@/libraries/result'
 import { RetentionPolicy, type SupprimerComptePorts } from '../domain'
 import { supprimerCompte } from './supprimer-compte'

@@ -1,9 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { ClientApi } from '@/features/clients-api/domain'
 import {
   clientApiSelect,
   versClientApi,
-} from '@/features/clients-api/db/client-api.transfer'
-import type { ClientApi } from '@/features/clients-api/domain'
+} from '@/features/clients-api/implementations/prisma/client-api.transfer'
 
 export const listerLesClientsApi = async (): Promise<readonly ClientApi[]> => {
   const lignes = await prismaClient.apiClient.findMany({

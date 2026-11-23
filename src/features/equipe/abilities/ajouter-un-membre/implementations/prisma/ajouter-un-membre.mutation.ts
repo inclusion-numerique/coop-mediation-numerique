@@ -1,7 +1,6 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
-import { lireLesAdhesionsDeLaPaire } from '../../../../db/adhesion.query'
 import {
   adherer,
   type CoordinateurId,
@@ -10,6 +9,7 @@ import {
   MediateurId,
   type UtilisateurId,
 } from '../../../../domain'
+import { lireLesAdhesionsDeLaPaire } from '../../../../implementations/prisma/adhesion.query'
 import { UtilisateurIntrouvable, UtilisateurNonMediateur } from '../../domain'
 
 export type EchecDAjout =

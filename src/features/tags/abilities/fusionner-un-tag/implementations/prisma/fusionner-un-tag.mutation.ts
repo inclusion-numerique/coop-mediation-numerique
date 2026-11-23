@@ -1,6 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
-import { tagToDomain } from '../../../../db/tag.transfer'
 import {
   type Acteur,
   ActionNonAutorisee,
@@ -11,6 +10,7 @@ import {
   type TagId,
   TagIntrouvable,
 } from '../../../../domain'
+import { tagToDomain } from '../../../../implementations/prisma/tag.transfer'
 
 export type EchecDeFusion =
   | TagIntrouvable

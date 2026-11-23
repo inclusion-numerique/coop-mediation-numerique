@@ -5,8 +5,8 @@ import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,
 } from '@/features/rdvsp/implementations/oauth/oauth.configuration'
-import { jetonsCompteToDomain } from '../db'
 import { rdvServicePublicApi, revoquerJetons } from './api'
+import { jetonsCompteToDomain } from './prisma/compte-rdv.transfer'
 
 /**
  * Composition de l'adaptateur RDV Service Public avec la configuration de

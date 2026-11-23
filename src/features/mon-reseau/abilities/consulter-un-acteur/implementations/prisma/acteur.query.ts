@@ -1,6 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { acteurVisibleWhere } from '../../../../db/acteur.sql'
-import { acteurSelect, versActeur } from '../../../../db/acteur.transfer'
+import { acteurVisibleWhere } from '../../../../implementations/prisma/acteur.sql'
+import {
+  acteurSelect,
+  versActeur,
+} from '../../../../implementations/prisma/acteur.transfer'
 import type { LireLActeur } from '../../domain'
 
 export const lireLActeur: LireLActeur = async (acteurId) => {

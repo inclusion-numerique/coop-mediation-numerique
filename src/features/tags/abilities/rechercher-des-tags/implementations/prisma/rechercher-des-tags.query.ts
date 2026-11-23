@@ -1,11 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { type TagRow, tagToDomain } from '../../../../db/tag.transfer'
-import {
-  COLONNES_DU_TAG,
-  TAGS,
-  tagVisiblePar,
-} from '../../../../db/visibilite.sql'
 import {
   type Acteur,
   coordinateurDe,
@@ -13,6 +7,15 @@ import {
   type Tag,
   type TagId,
 } from '../../../../domain'
+import {
+  type TagRow,
+  tagToDomain,
+} from '../../../../implementations/prisma/tag.transfer'
+import {
+  COLONNES_DU_TAG,
+  TAGS,
+  tagVisiblePar,
+} from '../../../../implementations/prisma/visibilite.sql'
 
 const utilisationsPar = (acteur: Acteur): Prisma.Sql =>
   Prisma.sql`

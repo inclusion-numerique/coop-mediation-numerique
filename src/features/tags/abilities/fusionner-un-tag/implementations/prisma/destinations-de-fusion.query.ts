@@ -1,17 +1,20 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { type TagRow, tagToDomain } from '../../../../db/tag.transfer'
-import {
-  COLONNES_DU_TAG,
-  porteeAuMoinsAussiLargeQue,
-  TAGS,
-  tagVisiblePar,
-} from '../../../../db/visibilite.sql'
 import {
   type Acteur,
   Effectif,
   peutFusionnerVers,
   type TagId,
 } from '../../../../domain'
+import {
+  type TagRow,
+  tagToDomain,
+} from '../../../../implementations/prisma/tag.transfer'
+import {
+  COLONNES_DU_TAG,
+  porteeAuMoinsAussiLargeQue,
+  TAGS,
+  tagVisiblePar,
+} from '../../../../implementations/prisma/visibilite.sql'
 import type { DestinationDeFusion } from '../../domain'
 
 export const destinationsDeFusion = async ({

@@ -1,10 +1,6 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  enregistrerLArchivage,
-  lireLesAdhesionsDeLaPaire,
-} from '../../../../db/adhesion.query'
-import {
   ActionNonAutorisee,
   archiver,
   type CoordinateurId,
@@ -14,6 +10,10 @@ import {
   peutGererLEquipe,
   type UtilisateurId,
 } from '../../../../domain'
+import {
+  enregistrerLArchivage,
+  lireLesAdhesionsDeLaPaire,
+} from '../../../../implementations/prisma/adhesion.query'
 
 export type EchecDeRetrait = ActionNonAutorisee | PasMembre
 

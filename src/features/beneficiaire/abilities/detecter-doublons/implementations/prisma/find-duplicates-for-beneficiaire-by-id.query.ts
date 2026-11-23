@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
 import { Email } from '@/features/beneficiaire/domain/email'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/implementations/prisma/find-duplicates-for-beneficiaire.query'
 import { Telephone } from '@/libraries/telephone'
 import type { FindDuplicatesForBeneficiaireById } from '../../domain/detecter-doublons'
 

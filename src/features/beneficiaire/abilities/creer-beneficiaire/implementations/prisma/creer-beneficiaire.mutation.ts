@@ -1,8 +1,8 @@
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { beneficiaireFromDomain } from '@/features/beneficiaire/db'
 import { toBeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { beneficiaireFromDomain } from '@/features/beneficiaire/implementations/prisma/beneficiaire.transfer'
 import type { CreerBeneficiaire } from '../../domain/creer-beneficiaire'
 
 export const creerBeneficiaire: CreerBeneficiaire = async ({

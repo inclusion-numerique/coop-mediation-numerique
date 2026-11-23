@@ -1,13 +1,13 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { enPosteSql } from '../../../../db/conseiller-numerique-en-poste.sql'
-import { filtreDesActivites } from '../../../../db/criteres-des-activites.sql'
-import { dansLaPeriodeDAppartenance } from '../../../../db/periode-d-appartenance.sql'
 import type {
   CoordinateurId,
   CriteresDesActivites,
   MediateurId,
 } from '../../../../domain'
+import { enPosteSql } from '../../../../implementations/prisma/conseiller-numerique-en-poste.sql'
+import { filtreDesActivites } from '../../../../implementations/prisma/criteres-des-activites.sql'
+import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/periode-d-appartenance.sql'
 import type { ActiviteExportee } from '../../domain'
 import {
   activiteExporteeDe,

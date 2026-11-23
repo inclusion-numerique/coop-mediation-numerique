@@ -1,5 +1,4 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
-import type { RendezVousLies } from '../db/rendez-vous-fournis'
 import { type ActiviteConsultee, ActiviteId, MediateurId } from '../domain'
 import type { BeneficiaireTrouveParLeCra } from '../ui/saisie/beneficiaire/beneficiaire-du-cra'
 import { donneesDeLaSaisieDeMediation } from '../ui/saisie/donnees-de-la-saisie-de-mediation'
@@ -12,6 +11,7 @@ import {
 import type { CraData } from '../ui/saisie/validation/CraValidation'
 import { dureesFrequentesDuMediateur } from './prisma/durees-frequentes'
 import { lireUneActiviteDeMediation } from './prisma/lire-une-activite-de-mediation'
+import type { RendezVousLies } from './prisma/rendez-vous-fournis'
 
 export type FournisseursDeLaSaisieDeMediation = {
   readonly lieuxDuMediateur: (

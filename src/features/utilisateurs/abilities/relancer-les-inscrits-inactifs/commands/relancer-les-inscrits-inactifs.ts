@@ -1,8 +1,8 @@
-import { noterLaRelance } from '@/features/utilisateurs/db/noter-la-relance.mutation'
 import {
   deroulerLesRelances,
   type RapportDeRelance,
 } from '@/features/utilisateurs/domain'
+import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { success } from '@/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
 import { inscritsSansProduction } from '../implementations'

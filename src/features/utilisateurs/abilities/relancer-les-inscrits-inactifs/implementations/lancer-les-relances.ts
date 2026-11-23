@@ -1,5 +1,5 @@
-import { compterLesInscrits } from '@/features/utilisateurs/db/compter-les-inscrits.query'
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { relancerLesInscritsInactifs } from '../commands/relancer-les-inscrits-inactifs'
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
 import {

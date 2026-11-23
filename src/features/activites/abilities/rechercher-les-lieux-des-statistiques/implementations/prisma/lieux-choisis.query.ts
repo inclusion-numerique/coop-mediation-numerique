@@ -1,12 +1,12 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { departementDuCode } from '@/libraries/departement'
-import { dansLePerimetre } from '../../../../db/perimetre-des-statistiques.sql'
 import {
   communeComptee,
   LieuActiviteId,
   NomDeStructure,
   type PerimetreDesStatistiques,
 } from '../../../../domain'
+import { dansLePerimetre } from '../../../../implementations/prisma/perimetre-des-statistiques.sql'
 import type { LieuDesStatistiques, LieuxChoisis } from '../../domain'
 
 const lieuxDActivite = async (

@@ -2,8 +2,6 @@ import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { failure, type Result, success } from '@/libraries/result'
-import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
-import { lireUneInvitation } from '../../../../db/invitation.query'
 import {
   ActionNonAutorisee,
   CoordinateurIntrouvable,
@@ -19,6 +17,8 @@ import {
   type UtilisateurId,
 } from '../../../../domain'
 import { envoyerUneInvitation } from '../../../../implementations/email'
+import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '../../../../implementations/prisma/invitation.query'
 
 export type EchecDeRelance =
   | ActionNonAutorisee

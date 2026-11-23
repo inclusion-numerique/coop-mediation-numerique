@@ -3,7 +3,6 @@ import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { failure, type Result, success } from '@/libraries/result'
-import { activiteDeCoordinationVersLaBase } from '../../../../db/activite-de-coordination.transfer'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
@@ -16,6 +15,7 @@ import {
   tagsDeLaSaisie,
   type UtilisateurId,
 } from '../../../../domain'
+import { activiteDeCoordinationVersLaBase } from '../../../../implementations/prisma/activite-de-coordination.transfer'
 import {
   ActionNonAutorisee,
   type ActiviteEnregistree,

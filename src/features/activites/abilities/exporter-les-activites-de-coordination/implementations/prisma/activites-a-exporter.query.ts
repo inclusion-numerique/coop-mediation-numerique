@@ -1,14 +1,14 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  activiteDeCoordinationDe,
-  activiteDeCoordinationSelect,
-  filtreDesCoordinations,
-} from '../../../../db/activite-de-coordination.transfer'
-import {
   type ActiviteDeCoordination,
   type CoordinateurId,
   type CriteresDesCoordinations,
 } from '../../../../domain'
+import {
+  activiteDeCoordinationDe,
+  activiteDeCoordinationSelect,
+  filtreDesCoordinations,
+} from '../../../../implementations/prisma/activite-de-coordination.transfer'
 
 export const exporterLesActivitesDeCoordination = async ({
   coordinateurId,

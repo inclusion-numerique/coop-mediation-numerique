@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { enPosteWhere } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
-import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
-import { SANS_ANCIENS_RATTACHEMENTS } from '@/features/utilisateurs/db/utilisateurs-rattaches.query'
 import { AUCUN_FILTRE, FiltreStatut } from '@/features/utilisateurs/domain'
+import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
+import { utilisateursWhere } from '@/features/utilisateurs/implementations/prisma/utilisateurs.where'
+import { SANS_ANCIENS_RATTACHEMENTS } from '@/features/utilisateurs/implementations/prisma/utilisateurs-rattaches.query'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   actifsDeLaCategorie,

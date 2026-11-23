@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   ligneUtilisateurSelect,
   ligneUtilisateurToDomain,
-} from '@/features/utilisateurs/db/ligne-utilisateur.transfer'
-import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
-import { utilisateursRattaches } from '@/features/utilisateurs/db/utilisateurs-rattaches.query'
-import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
+} from '@/features/utilisateurs/implementations/prisma/ligne-utilisateur.transfer'
+import { utilisateursWhere } from '@/features/utilisateurs/implementations/prisma/utilisateurs.where'
+import { utilisateursRattaches } from '@/features/utilisateurs/implementations/prisma/utilisateurs-rattaches.query'
 import type { Prisma } from '@/generated/prisma/client'
 import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
 import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'

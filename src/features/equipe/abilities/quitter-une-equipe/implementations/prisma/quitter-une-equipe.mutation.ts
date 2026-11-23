@@ -2,16 +2,16 @@ import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import type { Result } from '@/libraries/result'
 import { success } from '@/libraries/result'
 import {
-  enregistrerLArchivage,
-  lireLesAdhesionsDeLaPaire,
-} from '../../../../db/adhesion.query'
-import {
   archiver,
   type CoordinateurId,
   type MediateurId,
   type PasMembre,
   type UtilisateurId,
 } from '../../../../domain'
+import {
+  enregistrerLArchivage,
+  lireLesAdhesionsDeLaPaire,
+} from '../../../../implementations/prisma/adhesion.query'
 
 export const quitterUneEquipe = async ({
   mediateurId,

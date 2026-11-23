@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { porteeDe } from '../../../../db/portee-de-tag'
 import { type MediateurId, NomDeTag, TagId } from '../../../../domain'
+import { porteeDe } from '../../../../implementations/prisma/portee-de-tag'
 
 const employeusesDesActivites = async (
   mediateurId: MediateurId,

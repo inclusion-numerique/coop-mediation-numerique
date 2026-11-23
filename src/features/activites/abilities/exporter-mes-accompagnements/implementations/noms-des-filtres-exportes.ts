@@ -1,5 +1,4 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { dansLaPeriodeDAppartenance } from '../../../db/periode-d-appartenance.sql'
 import type {
   BeneficiaireId,
   CriteresDesActivites,
@@ -7,6 +6,7 @@ import type {
   TagDeLActivite,
   TagsUtilisables,
 } from '../../../domain'
+import { dansLaPeriodeDAppartenance } from '../../../implementations/prisma/periode-d-appartenance.sql'
 import {
   type Demandeur,
   mediateursAutorises,

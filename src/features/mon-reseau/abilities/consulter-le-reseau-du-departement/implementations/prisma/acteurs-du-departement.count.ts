@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { Effectif } from '../../../../domain'
 import {
   ACTEUR,
   ACTEUR_VISIBLE,
   acteurDuDepartement,
   DEPUIS_LES_ACTEURS,
-} from '../../../../db/acteur.sql'
-import { Effectif } from '../../../../domain'
+} from '../../../../implementations/prisma/acteur.sql'
 import type { CompterLesActeursDuDepartement } from '../../domain'
 
 export const compterLesActeursDuDepartement: CompterLesActeursDuDepartement =

@@ -1,17 +1,17 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import {
-  type DemandeDeStatistiques,
-  personneAccompagnee,
-} from '../../../../db/statistiques.sql'
-import { valeurEnBase } from '../../../../db/valeur-en-base'
-import {
   Effectif,
   genres,
   repartitionComplete,
   statutsSociaux,
   tranchesDAge,
 } from '../../../../domain'
+import {
+  type DemandeDeStatistiques,
+  personneAccompagnee,
+} from '../../../../implementations/prisma/statistiques.sql'
+import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base'
 import {
   AGE_AVANT_LA_TRANCHE_SUIVANTE,
   PREMIERE_ANNEE_DE_NAISSANCE,

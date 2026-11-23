@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { garderUnSeulCodePostal } from '../../../../db'
+import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal'
 
 /**
  * Anonymise TOUT le portefeuille d'un médiateur, à la suppression de son compte.

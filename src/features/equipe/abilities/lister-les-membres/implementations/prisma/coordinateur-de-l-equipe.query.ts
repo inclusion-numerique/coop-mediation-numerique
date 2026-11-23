@@ -4,8 +4,8 @@ import {
   departementDeLActeur,
 } from '@/libraries/departement'
 import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import type { CoordinateurId } from '../../../../domain'
+import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
 import type { CoordinateurDeLaListe } from '../../domain'
 
 const departementDuCoordinateur = async (

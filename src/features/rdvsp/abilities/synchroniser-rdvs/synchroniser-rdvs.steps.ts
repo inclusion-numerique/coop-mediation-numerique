@@ -11,7 +11,6 @@ import {
   rdvsDejaImportes,
 } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
 import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs'
-import { compteRdvToDomain } from '@/features/rdvsp/db'
 import { AdresseRdv } from '@/features/rdvsp/domain/adresse-rdv'
 import {
   type CompteRdvUtilisable,
@@ -31,6 +30,7 @@ import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
 import { UrlAgent } from '@/features/rdvsp/domain/url-agent'
 import type { Usager } from '@/features/rdvsp/domain/usager'
 import { UsagerId } from '@/features/rdvsp/domain/usager-id'
+import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {
   compteRdvEnBase,
   ID_TEST,

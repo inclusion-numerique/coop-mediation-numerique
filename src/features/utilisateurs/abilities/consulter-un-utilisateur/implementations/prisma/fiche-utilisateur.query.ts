@@ -1,10 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  enPosteSelect,
-  estEnPoste,
-} from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
-import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
-import {
   CoordinateurId,
   coordinateurEstVierge,
   cycleDeVie,
@@ -18,6 +13,11 @@ import {
   statutDe,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import {
+  enPosteSelect,
+  estEnPoste,
+} from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
+import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
 import { telephoneEnregistrable } from '@/libraries/telephone'

@@ -2,11 +2,13 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   lieuFromDomain,
   motifFromDomain,
+  usagerFromDomain,
+} from '../../../../implementations/prisma/entourage.transfer'
+import {
   participationFromDomain,
   rdvFromDomain,
   rdvToDomain,
-  usagerFromDomain,
-} from '../../../../db'
+} from '../../../../implementations/prisma/rdv.transfer'
 import type {
   ComptePourWebhook,
   EnregistrerRdvDeLaNotification,

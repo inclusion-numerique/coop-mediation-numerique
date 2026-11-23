@@ -1,13 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  filtresEquipe,
-  type LigneEquipeRow,
-  lignesEquipeCte,
-  triEquipe,
-} from '../../../../db/ligne-equipe.sql'
-import { toLignesEquipe } from '../../../../db/ligne-equipe.transfer'
-import {
   ConsultationNonAutorisee,
   type CoordinateurId,
   type CriteresEquipe,
@@ -16,6 +9,13 @@ import {
   peutConsulterLEquipe,
   profilDe,
 } from '../../../../domain'
+import {
+  filtresEquipe,
+  type LigneEquipeRow,
+  lignesEquipeCte,
+  triEquipe,
+} from '../../../../implementations/prisma/ligne-equipe.sql'
+import { toLignesEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
 import type { MembreAExporter } from '../../domain'
 import { contratsDesMembres } from './contrats-des-membres.query'
 

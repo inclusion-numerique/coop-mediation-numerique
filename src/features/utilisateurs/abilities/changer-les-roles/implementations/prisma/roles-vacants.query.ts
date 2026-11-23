@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { enPosteWhere } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
+import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
 import type { Prisma } from '@/generated/prisma/client'
 
 const UN_JOUR = 24 * 60 * 60 * 1000

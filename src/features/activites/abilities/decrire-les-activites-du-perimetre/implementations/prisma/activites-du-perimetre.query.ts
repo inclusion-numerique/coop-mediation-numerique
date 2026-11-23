@@ -1,14 +1,14 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  colonnesDeLEmployeuse,
-  employeuseDesActivitesDe,
-  employeusesDesActivites,
-} from '../../../../db/employeuses-des-activites.sql'
-import {
   Jour,
   type PerimetreDesActivites,
   type PerimetreDesStatistiques,
 } from '../../../../domain'
+import {
+  colonnesDeLEmployeuse,
+  employeuseDesActivitesDe,
+  employeusesDesActivites,
+} from '../../../../implementations/prisma/employeuses-des-activites.sql'
 import {
   type ActivitesDuPerimetre,
   perimetreDesActivitesDe,

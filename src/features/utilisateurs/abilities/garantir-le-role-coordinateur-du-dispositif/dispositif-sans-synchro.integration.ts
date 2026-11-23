@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { enPosteWhere } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
+import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
 import { garantirLeRoleCoordinateurDuDispositif } from './implementations'
 
 describe('le rôle coordinateur et le filtre en poste, lus dans le dispositif', () => {

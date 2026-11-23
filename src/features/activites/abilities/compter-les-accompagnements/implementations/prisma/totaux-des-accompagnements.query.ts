@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { Effectif } from '../../../../domain'
 import {
   activitesRetenues,
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
   personneAccompagnee,
-} from '../../../../db/statistiques.sql'
-import { Effectif } from '../../../../domain'
+} from '../../../../implementations/prisma/statistiques.sql'
 import { nouvellesComptees, type TotauxDesAccompagnements } from '../../domain'
 
 type LigneDesActivites = {

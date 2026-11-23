@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
-import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
-import { lireUneInvitation } from '../../../../db/invitation.query'
 import { type Email, referenceDuCode } from '../../../../domain'
+import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '../../../../implementations/prisma/invitation.query'
 import { type VueInvitation, vueInvitation } from '../../domain'
 
 export const consulterUneInvitation = async ({

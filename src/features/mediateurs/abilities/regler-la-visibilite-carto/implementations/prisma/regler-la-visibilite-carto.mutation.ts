@@ -1,7 +1,7 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { SynchroniserLaPersonne } from '@/features/mediateurs/db/synchroniser-la-personne'
 import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import type { SynchroniserLaPersonne } from '@/features/mediateurs/implementations/prisma/synchroniser-la-personne'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { failure, type Result, success } from '@/libraries/result'
 import { MediateurIntrouvable } from '../../domain/errors'

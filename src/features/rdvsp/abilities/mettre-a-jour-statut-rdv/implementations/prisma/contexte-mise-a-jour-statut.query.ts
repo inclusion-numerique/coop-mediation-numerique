@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { compteRdvToDomain } from '../../../../db'
 import { RdvAgentId } from '../../../../domain/rdv-agent-id'
+import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 import type { ContexteMiseAJourStatut } from '../../domain/mettre-a-jour-statut-rdv'
 
 /**

@@ -3,7 +3,7 @@ import type { Prisma } from '@/generated/prisma/client'
 import {
   employeuseSelect,
   employeuseToDomain,
-} from '../../../../db/employeuse.transfer'
+} from '../../../../implementations/prisma/employeuse.transfer'
 import type { RechercherEmployeuse } from '../../domain/rechercher-employeuse'
 
 const LIMITE_PAR_DEFAUT = 50

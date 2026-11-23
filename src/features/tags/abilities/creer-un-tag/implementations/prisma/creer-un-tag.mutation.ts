@@ -1,6 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
-import { porteeFromDomain } from '../../../../db/tag.transfer'
 import {
   type Acteur,
   type DescriptionDuTag,
@@ -11,6 +10,7 @@ import {
   type VisibiliteChoisie,
   VisibiliteNonAutorisee,
 } from '../../../../domain'
+import { porteeFromDomain } from '../../../../implementations/prisma/tag.transfer'
 
 export const creerUnTag = async ({
   acteur,

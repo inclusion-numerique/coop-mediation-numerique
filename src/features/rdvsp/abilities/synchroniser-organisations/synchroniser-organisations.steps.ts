@@ -4,7 +4,6 @@ import type { SynchroniserOrganisations } from '@/features/rdvsp/abilities/synch
 import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
 import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
 import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations'
-import { compteRdvToDomain } from '@/features/rdvsp/db'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
@@ -14,6 +13,7 @@ import { NomOrganisation } from '@/features/rdvsp/domain/libelle'
 import type { Organisation } from '@/features/rdvsp/domain/organisation'
 import { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
+import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {
   compteRdvEnBase,
   ID_TEST,

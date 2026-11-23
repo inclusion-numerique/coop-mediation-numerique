@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   type NomAffiche,
   nomAffiche,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 import type { SessionCourante } from '../../domain'
 
 export const sessionCourante = async (

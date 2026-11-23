@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
 
 export const garantirLeRoleCoordinateurDuDispositif =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>

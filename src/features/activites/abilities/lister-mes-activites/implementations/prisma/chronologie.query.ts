@@ -1,18 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import {
-  activiteConsulteeDe,
-  activiteConsulteeSelect,
-  rdvIdsDes,
-} from '../../../../db/activite-consultee.transfer'
-import { filtreDesActivites } from '../../../../db/criteres-des-activites.sql'
-import {
-  type RendezVousFourni,
-  type RendezVousLies,
-  rendezVousDeLaChronologie,
-  type StatutFourni,
-} from '../../../../db/rendez-vous-fournis'
-import {
   type ChronologieDesActivites,
   type ContenuDeLaChronologie,
   type CriteresDesActivites,
@@ -25,6 +13,18 @@ import {
   RdvId,
   type StatutDeRendezVous,
 } from '../../../../domain'
+import {
+  activiteConsulteeDe,
+  activiteConsulteeSelect,
+  rdvIdsDes,
+} from '../../../../implementations/prisma/activite-consultee.transfer'
+import { filtreDesActivites } from '../../../../implementations/prisma/criteres-des-activites.sql'
+import {
+  type RendezVousFourni,
+  type RendezVousLies,
+  rendezVousDeLaChronologie,
+  type StatutFourni,
+} from '../../../../implementations/prisma/rendez-vous-fournis'
 
 export type RendezVousALister = {
   readonly comptes: readonly number[]

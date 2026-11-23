@@ -1,14 +1,17 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { type TagRow, tagToDomain } from '../../../../db/tag.transfer'
+import { type Acteur, Effectif } from '../../../../domain'
+import {
+  type TagRow,
+  tagToDomain,
+} from '../../../../implementations/prisma/tag.transfer'
 import {
   COLONNES_DU_TAG,
   ORDRE_ALPHABETIQUE,
   ORDRE_DE_VISIBILITE,
   TAGS,
   tagVisiblePar,
-} from '../../../../db/visibilite.sql'
-import { type Acteur, Effectif } from '../../../../domain'
+} from '../../../../implementations/prisma/visibilite.sql'
 import type { ListeDesTags, TriDesTags } from '../../domain'
 
 const ordre = (tri: TriDesTags): Prisma.Sql =>

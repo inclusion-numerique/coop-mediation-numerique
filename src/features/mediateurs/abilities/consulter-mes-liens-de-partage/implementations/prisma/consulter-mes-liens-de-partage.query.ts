@@ -1,5 +1,4 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
 import {
   LienDePartageId,
   type LienDuPerimetre,
@@ -8,6 +7,7 @@ import {
   proprietairesPossibles,
   type Rattachements,
 } from '../../../../domain'
+import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire'
 
 const lienDuProprietaire = async (
   proprietaire: ProprietairePartage,

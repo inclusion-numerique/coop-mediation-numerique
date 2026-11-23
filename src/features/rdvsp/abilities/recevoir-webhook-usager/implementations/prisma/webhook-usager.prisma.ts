@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { usagerFromDomain } from '../../../../db'
+import { usagerFromDomain } from '../../../../implementations/prisma/entourage.transfer'
 import type {
   AnonymiserEtSupprimerUsager,
   BeneficiairesLiesAUsager,

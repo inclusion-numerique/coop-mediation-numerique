@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   employeuseSelect,
   employeuseToDomain,
-} from '../../../../db/employeuse.transfer'
+} from '../../../../implementations/prisma/employeuse.transfer'
 import type { ConsulterEmployeuse } from '../../domain/consulter-employeuse'
 
 export const consulterEmployeuse: ConsulterEmployeuse = async ({

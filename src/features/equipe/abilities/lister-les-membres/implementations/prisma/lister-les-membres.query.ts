@@ -2,15 +2,6 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  filtresEquipe,
-  type LigneEquipeRow,
-  lignesEquipeCte,
-  type StatistiquesEquipeRow,
-  statistiquesEquipeSql,
-  triEquipe,
-} from '../../../../db/ligne-equipe.sql'
-import { toLignesEquipe } from '../../../../db/ligne-equipe.transfer'
-import {
   ConsultationNonAutorisee,
   CoordinateurId,
   CoordinateurIntrouvable,
@@ -19,6 +10,15 @@ import {
   type MediateurId,
   peutConsulterLEquipe,
 } from '../../../../domain'
+import {
+  filtresEquipe,
+  type LigneEquipeRow,
+  lignesEquipeCte,
+  type StatistiquesEquipeRow,
+  statistiquesEquipeSql,
+  triEquipe,
+} from '../../../../implementations/prisma/ligne-equipe.sql'
+import { toLignesEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
 import type { MembresDeLEquipe, StatistiquesEquipe } from '../../domain'
 import { coordinateurDeLEquipe } from './coordinateur-de-l-equipe.query'
 

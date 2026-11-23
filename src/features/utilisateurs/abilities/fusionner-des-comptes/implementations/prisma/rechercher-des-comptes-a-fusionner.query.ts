@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   etatDuCompte,
   nomAffiche,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 import type { CompteTrouve } from '../../domain'
 
 const contient = (mot: string) =>

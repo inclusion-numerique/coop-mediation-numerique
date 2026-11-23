@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { InscritDeLaListe } from '@/features/utilisateurs/domain'
 import {
   inscritDeLaListeSelect,
   inscritDeLaListeToDomain,
-} from '@/features/utilisateurs/db/inscrit-de-la-liste.transfer'
-import { inscritVivantWhere } from '@/features/utilisateurs/db/inscrit-vivant.where'
-import type { InscritDeLaListe } from '@/features/utilisateurs/domain'
+} from '@/features/utilisateurs/implementations/prisma/inscrit-de-la-liste.transfer'
+import { inscritVivantWhere } from '@/features/utilisateurs/implementations/prisma/inscrit-vivant.where'
 
 export const inscritAInscrire = async (
   utilisateurId: string,

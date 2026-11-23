@@ -1,10 +1,10 @@
-import type { SynchroniserLaPersonne } from '@/features/inscription/db/synchroniser-la-personne'
 import {
   InscriptionFlowType,
   type InscriptionStep,
   prochaineEtape,
   type Role,
 } from '@/features/inscription/domain'
+import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne'
 import { type Result, success } from '@/libraries/result'
 import {
   type ChoisirProfilError,

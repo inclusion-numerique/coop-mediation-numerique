@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { compteRdvToDomain } from '@/features/rdvsp/db'
 import type { CompteRdv } from '@/features/rdvsp/domain/compte-rdv'
+import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 
 export const lireLesComptesRdv = async (): Promise<readonly CompteRdv[]> =>
   (

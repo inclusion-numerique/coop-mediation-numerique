@@ -11,13 +11,13 @@ import {
   TrancheAge,
   TypeLieu,
 } from '@/generated/prisma/client'
-import type { DemandeDeStatistiques } from './db/statistiques.sql'
 import {
   CoordinateurId,
   criteresDesStatistiques,
   MediateurId,
   type PerimetreDesStatistiques,
 } from './domain'
+import type { DemandeDeStatistiques } from './implementations/prisma/statistiques.sql'
 
 type Personne = {
   readonly userId: string

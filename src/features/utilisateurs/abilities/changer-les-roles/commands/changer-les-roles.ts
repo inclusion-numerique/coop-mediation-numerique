@@ -1,5 +1,5 @@
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import { UtilisateurIntrouvable } from '@/features/utilisateurs/domain'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { failure, type Result, success } from '@/libraries/result'
 import {

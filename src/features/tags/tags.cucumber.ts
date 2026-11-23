@@ -2,7 +2,6 @@ import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { CodeDepartement } from '@/libraries/insee'
-import type { ColonnesDePortee } from './db/tag.transfer'
 import {
   type Acteur,
   CoordinateurId,
@@ -10,6 +9,7 @@ import {
   NomDuCoordinateur,
   role,
 } from './domain'
+import type { ColonnesDePortee } from './implementations/prisma/tag.transfer'
 
 setDefaultTimeout(60_000)
 

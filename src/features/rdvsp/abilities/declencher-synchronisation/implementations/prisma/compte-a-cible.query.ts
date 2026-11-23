@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { compteRdvToDomain } from '../../../../db'
+import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 import type { CompteACible } from '../../domain/declencher-synchronisation'
 
 /**

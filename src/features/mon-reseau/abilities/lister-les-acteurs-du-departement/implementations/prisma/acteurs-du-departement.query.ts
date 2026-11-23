@@ -1,6 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
+import { Effectif, type Recherche } from '../../../../domain'
 import {
   ACTEUR,
   ACTEUR_VISIBLE,
@@ -8,9 +9,11 @@ import {
   acteurDesCommunes,
   acteurDuDepartement,
   DEPUIS_LES_ACTEURS,
-} from '../../../../db/acteur.sql'
-import { acteurSelect, versActeur } from '../../../../db/acteur.transfer'
-import { Effectif, type Recherche } from '../../../../domain'
+} from '../../../../implementations/prisma/acteur.sql'
+import {
+  acteurSelect,
+  versActeur,
+} from '../../../../implementations/prisma/acteur.transfer'
 import type {
   CriteresActeurs,
   FiltreRole,

@@ -1,16 +1,16 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import {
-  activiteDeCoordinationDe,
-  activiteDeCoordinationSelect,
-  filtreDesCoordinations,
-} from '../../../../db/activite-de-coordination.transfer'
-import {
   type CoordinateurId,
   type CriteresDesCoordinations,
   Effectif,
   type Pagination,
 } from '../../../../domain'
+import {
+  activiteDeCoordinationDe,
+  activiteDeCoordinationSelect,
+  filtreDesCoordinations,
+} from '../../../../implementations/prisma/activite-de-coordination.transfer'
 import type { ActivitesDeCoordinationListees } from '../../domain'
 
 export const listerLesActivitesDeCoordination = async ({

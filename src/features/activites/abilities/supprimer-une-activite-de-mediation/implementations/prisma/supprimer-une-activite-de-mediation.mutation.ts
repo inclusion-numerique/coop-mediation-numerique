@@ -1,13 +1,13 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, type Result, success } from '@/libraries/result'
-import { recalculerLesPremiersAccompagnements } from '../../../../db/premier-accompagnement'
 import {
   type ActiviteId,
   ActiviteIntrouvable,
   type MediateurId,
   type UtilisateurId,
 } from '../../../../domain'
+import { recalculerLesPremiersAccompagnements } from '../../../../implementations/prisma/premier-accompagnement'
 
 type Participant = {
   readonly beneficiaire_id: string

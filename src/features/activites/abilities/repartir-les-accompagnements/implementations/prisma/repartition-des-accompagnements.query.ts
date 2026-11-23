@@ -1,18 +1,18 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import {
-  activitesRetenues,
-  type DemandeDeStatistiques,
-  jointuresDesStatistiques,
-} from '../../../../db/statistiques.sql'
-import { valeurEnBase } from '../../../../db/valeur-en-base'
-import {
   Effectif,
   repartitionComplete,
   thematiquesRecherchees,
   typesDActivite,
   typesDeLieu,
 } from '../../../../domain'
+import {
+  activitesRetenues,
+  type DemandeDeStatistiques,
+  jointuresDesStatistiques,
+} from '../../../../implementations/prisma/statistiques.sql'
+import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base'
 import {
   bornesEnMinutes,
   materielsComptes,

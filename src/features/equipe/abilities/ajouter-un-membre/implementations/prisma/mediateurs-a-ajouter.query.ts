@@ -1,6 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { lue } from '../../../../db/lue'
 import {
   CoordinateurId,
   Email,
@@ -10,6 +9,7 @@ import {
   Prenom,
   UtilisateurId,
 } from '../../../../domain'
+import { lue } from '../../../../implementations/prisma/lue'
 import type { EquipeAComplementer, MediateurAAjouter } from '../../domain'
 
 const LIMITE = 20

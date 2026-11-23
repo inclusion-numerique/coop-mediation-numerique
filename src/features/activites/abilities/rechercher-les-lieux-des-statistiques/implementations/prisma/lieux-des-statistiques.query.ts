@@ -2,13 +2,13 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { type Departement, departementDuCode } from '@/libraries/departement'
 import { departements as REFERENTIEL_DES_DEPARTEMENTS } from '@/libraries/departement/departements'
-import { dansLePerimetre } from '../../../../db/perimetre-des-statistiques.sql'
 import {
   communeComptee,
   LieuActiviteId,
   NomDeStructure,
   type PerimetreDesStatistiques,
 } from '../../../../domain'
+import { dansLePerimetre } from '../../../../implementations/prisma/perimetre-des-statistiques.sql'
 import type { GenreDeLieu, LieuDesStatistiques } from '../../domain'
 
 const LES_PLUS_UTILISES = 10

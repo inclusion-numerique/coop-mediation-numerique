@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
+import { Effectif, Jour } from '../../../../domain'
 import {
   activitesRetenues,
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
-} from '../../../../db/statistiques.sql'
-import { Effectif, Jour } from '../../../../domain'
+} from '../../../../implementations/prisma/statistiques.sql'
 import {
   type AccompagnementsParPeriode,
   type BornesDeLaSerie,

@@ -3,12 +3,12 @@ import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { type Result, success } from '@/libraries/result'
-import { partageDuProprietaire } from '../../../../db/partage-du-proprietaire'
 import type {
   AuteurId,
   PerimetrePartage,
   Rattachements,
 } from '../../../../domain'
+import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire'
 import {
   type AucuneStatistiqueAPartager,
   type PerimetreNonRattache,

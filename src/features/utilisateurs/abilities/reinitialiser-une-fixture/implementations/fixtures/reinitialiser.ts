@@ -1,5 +1,4 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   type NomAffiche,
   nomAffiche,
@@ -10,6 +9,7 @@ import {
   resetFixtureUser,
 } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import { fixtureUsers } from '@/features/utilisateurs/fixtures/users'
+import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 
 const estDansLesFixtures = (id: string): boolean =>
   fixtureUsers.some((fixture) => fixture.id === id)

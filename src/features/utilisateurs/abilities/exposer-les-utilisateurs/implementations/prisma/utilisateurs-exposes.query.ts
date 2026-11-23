@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   enPosteSelect,
   enPosteWhere,
-} from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
+} from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
 import type { Prisma } from '@/generated/prisma/client'
 import type { CriteresDExposition } from '../../domain'
 

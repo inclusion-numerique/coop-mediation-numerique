@@ -1,11 +1,11 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
-import type { RendezVousLies } from '../../../db/rendez-vous-fournis'
 import {
   activiteDeMediationLue,
   type FournisseursDeLaSaisieDeMediation,
   pageDeSaisieDeMediation,
 } from '../../../implementations/page-de-saisie-de-mediation'
+import type { RendezVousLies } from '../../../implementations/prisma/rendez-vous-fournis'
 import {
   cheminDeLaCopie,
   etatDeLUrl,

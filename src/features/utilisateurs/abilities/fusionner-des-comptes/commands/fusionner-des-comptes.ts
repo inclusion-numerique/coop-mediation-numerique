@@ -1,4 +1,4 @@
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   autoriserFusion,

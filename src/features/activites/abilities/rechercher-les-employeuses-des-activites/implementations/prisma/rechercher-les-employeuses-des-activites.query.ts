@@ -1,15 +1,15 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import {
-  colonnesDeLEmployeuse,
-  employeuseDesActivitesDe,
-  employeusesDesActivites,
-} from '../../../../db/employeuses-des-activites.sql'
 import type {
   EmployeuseDesActivites,
   EmployeuseId,
   PerimetreDesActivites,
 } from '../../../../domain'
+import {
+  colonnesDeLEmployeuse,
+  employeuseDesActivitesDe,
+  employeusesDesActivites,
+} from '../../../../implementations/prisma/employeuses-des-activites.sql'
 
 const recherchees = (
   recherche: string,

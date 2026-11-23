@@ -1,12 +1,14 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { Rdv } from '../../../../domain/rdv'
 import {
   lieuFromDomain,
   motifFromDomain,
+  usagerFromDomain,
+} from '../../../../implementations/prisma/entourage.transfer'
+import {
   participationFromDomain,
   rdvFromDomain,
-  usagerFromDomain,
-} from '../../../../db'
-import type { Rdv } from '../../../../domain/rdv'
+} from '../../../../implementations/prisma/rdv.transfer'
 import type {
   AppliquerPlanLot,
   SupprimerMotifsOrphelins,
