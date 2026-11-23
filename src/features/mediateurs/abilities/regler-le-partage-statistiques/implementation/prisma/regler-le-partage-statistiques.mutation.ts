@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
@@ -16,12 +17,20 @@ import {
 
 type Partage = ReturnType<typeof partageDuProprietaire>
 
-const activer = (partage: Partage) =>
-  prismaClient.partageStatistiques.upsert({
+const reactiverAvecUnNouveauLien = (partage: Partage) =>
+  prismaClient.partageStatistiques.updateMany({
+    where: { ...partage, deleted: { not: null } },
+    data: { id: randomUUID(), deleted: null },
+  })
+
+const activer = async (partage: Partage) => {
+  await reactiverAvecUnNouveauLien(partage)
+  await prismaClient.partageStatistiques.upsert({
     where: partage,
     create: partage,
-    update: { deleted: null },
+    update: {},
   })
+}
 
 const desactiver = (partage: Partage, maintenant: Date) =>
   prismaClient.partageStatistiques.updateMany({

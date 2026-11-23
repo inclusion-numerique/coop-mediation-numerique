@@ -79,6 +79,10 @@ Then('le lien du partage est resté le même', async () => {
   assert.strictEqual((await partageDu('mediateur'))?.id, dernier.avant?.id)
 })
 
+Then('le lien du partage a changé', async () => {
+  assert.notStrictEqual((await partageDu('mediateur'))?.id, dernier.avant?.id)
+})
+
 Then('la date de désactivation du partage est restée la même', async () => {
   assert.deepStrictEqual(
     (await partageDu('mediateur'))?.deleted,
