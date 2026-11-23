@@ -1,13 +1,15 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { ReactNode } from 'react'
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
+import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import { PeriodeFilter } from '../filtres/PeriodeFilter'
 import {
   adresseDExport,
   adressesDesExports,
   bornesDuFiltreDePeriode,
+  groupesDesStatistiques,
   type PeriodeChoisie,
   periodeDActivite,
+  type StatistiquesBrutes,
   titreDesStatistiques,
 } from './statistiques-en-administration.presenter'
 
@@ -17,14 +19,14 @@ export const StatistiquesEnAdministration = ({
   premiere,
   derniere,
   periode,
-  chiffresCles,
+  statistiques,
 }: {
   utilisateurId: string
   coordinateur: boolean
   premiere: string | null
   derniere: string | null
   periode: PeriodeChoisie
-  chiffresCles: ReactNode
+  statistiques: StatistiquesBrutes
 }) => {
   const exports = adressesDesExports(utilisateurId)
 
@@ -59,17 +61,36 @@ export const StatistiquesEnAdministration = ({
         </div>
       }
     >
-      <p className="fr-mb-4v">
-        <span className="fr-text--bold">Période d’activité&nbsp;: </span>
-        {periodeDActivite(premiere, derniere)}
-      </p>
-      <div className="fr-mb-6v">
+      <AdministrationInlineLabelsValues
+        className="fr-mb-4v"
+        items={[
+          {
+            label: 'Période d’activité',
+            value: periodeDActivite(premiere, derniere),
+          },
+        ]}
+      />
+      <div className="fr-mb-8v">
         <PeriodeFilter
           {...bornesDuFiltreDePeriode(premiere, periode)}
           maxDate={new Date()}
         />
       </div>
-      <div className="fr-grid-row">{chiffresCles}</div>
+      <div className="fr-grid-row fr-grid-row--gutters">
+        {groupesDesStatistiques({ ...statistiques, periode }).map(
+          ({ titre, lignes }) => (
+            <section key={titre} className="fr-col-12 fr-col-lg-6">
+              <h5 className="fr-mb-3v">{titre}</h5>
+              <AdministrationInlineLabelsValues
+                items={lignes.map(({ libelle, valeur }) => ({
+                  label: libelle,
+                  value: <span className="fr-whitespace-nowrap">{valeur}</span>,
+                }))}
+              />
+            </section>
+          ),
+        )}
+      </div>
     </AdministrationInfoCard>
   )
 }
