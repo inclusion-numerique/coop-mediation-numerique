@@ -12,11 +12,19 @@ import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
+import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui'
+import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu'
+import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
 import {
-  ChiffresClesDesAccompagnements,
-  totauxPresentes,
-} from '@/features/activites/abilities/compter-les-accompagnements/ui'
+  CoordinateurId as CoordinateurDesActivitesDeCoordination,
+  compterLesActivitesDeCoordination,
+} from '@/features/activites/abilities/compter-les-activites-de-coordination'
+import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui'
 import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees'
+import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui'
+import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements'
+import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui'
 import { criteresDesStatistiques } from '@/features/activites/domain'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
 import {
@@ -126,6 +134,23 @@ const sectionLieux = async (fiche: FicheUtilisateur): Promise<ReactNode> => {
   )
 }
 
+const activitesDeCoordinationEnCumul = async (
+  coordinateurId: string | null,
+) => {
+  if (coordinateurId === null) return null
+
+  const presentees = activitesDeCoordinationPresentees(
+    await compterLesActivitesDeCoordination({
+      coordinateurId: CoordinateurDesActivitesDeCoordination(coordinateurId),
+    }),
+  )
+
+  return (
+    presentees.periodes.find(({ cle }) => cle === presentees.periodeParDefaut)
+      ?.compteurs ?? []
+  )
+}
+
 const sectionStatistiques = async (
   fiche: FicheUtilisateur,
   periode: PeriodeChoisie,
@@ -135,29 +160,37 @@ const sectionStatistiques = async (
   )
   if (perimetre === null) return null
 
-  const [totaux, { premiere, derniere }] = await Promise.all([
-    compterLesAccompagnements({
-      perimetre,
-      criteres: criteresDesStatistiques(periode),
-      rendezVousAuxStatuts: rendezVousAuxStatutsSql,
-    }),
+  const coordinateur = coordinateurDe(fiche.rattachements)
+  const demande = {
+    perimetre,
+    criteres: criteresDesStatistiques(periode),
+    rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+  }
+
+  const [
+    totaux,
+    repartition,
+    profil,
+    lieux,
+    coordination,
+    { premiere, derniere },
+  ] = await Promise.all([
+    compterLesAccompagnements(demande).then(totauxPresentes),
+    repartirLesAccompagnements(demande).then(repartitionPresentee),
+    decrireLesPersonnesAccompagnees(demande).then(profilPresente),
+    compterLesAccompagnementsParLieu(demande).then(parLieuPresentes),
+    activitesDeCoordinationEnCumul(coordinateur?.id ?? null),
     decrireLesActivitesDuPerimetre(perimetre),
   ])
 
   return (
     <StatistiquesEnAdministration
       utilisateurId={fiche.id}
-      coordinateur={coordinateurDe(fiche.rattachements) !== null}
+      coordinateur={coordinateur !== null}
       premiere={premiere}
       derniere={derniere}
       periode={periode}
-      chiffresCles={
-        <ChiffresClesDesAccompagnements
-          totalCounts={totauxPresentes(totaux)}
-          debut={periode.du}
-          fin={periode.au}
-        />
-      }
+      statistiques={{ totaux, repartition, profil, lieux, coordination }}
     />
   )
 }

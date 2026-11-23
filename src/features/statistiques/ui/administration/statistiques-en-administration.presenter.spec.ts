@@ -3,6 +3,7 @@ import {
   adresseDExport,
   adressesDesExports,
   bornesDuFiltreDePeriode,
+  groupesDesStatistiques,
   periodeChoisieDans,
   periodeDActivite,
   titreDesStatistiques,
@@ -74,5 +75,125 @@ describe('statistiques en administration', () => {
       minDate: undefined,
       defaultValue: undefined,
     })
+  })
+})
+
+const part = (label: string, count: number, proportion: number) => ({
+  label,
+  count,
+  proportion,
+})
+
+const statistiques = {
+  totaux: {
+    activites: {
+      total: 1107,
+      individuels: { total: 1040, proportion: 94 },
+      collectifs: { total: 67, proportion: 6, participants: 372 },
+    },
+    accompagnements: {
+      total: 1412,
+      individuels: { total: 1040, proportion: 74 },
+      collectifs: { total: 372, proportion: 26 },
+    },
+    beneficiaires: { total: 980, nouveaux: 0, suivis: 120, anonymes: 860 },
+  },
+  repartition: {
+    typeActivites: [part('Individuel', 1040, 94), part('Collectif', 67, 6)],
+    durees: [part('Moins de 30 min', 10, 100)],
+    typeLieu: [part('À distance', 3, 100)],
+    thematiques: [
+      part('E-mail', 2, 20),
+      part('Banque', 0, 0),
+      part('Diagnostic', 8, 80),
+    ],
+    thematiquesDemarches: [],
+    materiels: [part('Ordinateur', 5, 100)],
+  },
+  profil: {
+    genres: [part('Féminin', 6, 60), part('Masculin', 4, 40)],
+    trancheAges: [part('18 - 24 ans', 1, 100)],
+    statutsSocial: [part('Retraité', 1, 100)],
+  },
+  lieux: [part('Médiathèque', 3, 30), part('Mairie', 7, 70)],
+  coordination: null,
+}
+
+describe('groupes des statistiques en administration', () => {
+  it('écrit chaque total avec sa part', () => {
+    expect(groupesDesStatistiques({ ...statistiques, periode: {} })[1]).toEqual(
+      {
+        titre: 'Accompagnements',
+        lignes: [
+          { libelle: 'Total', valeur: '1\u202f412' },
+          { libelle: 'Individuels', valeur: '1\u202f040 (74 %)' },
+          { libelle: 'Collectifs', valeur: '372 (26 %)' },
+        ],
+      },
+    )
+  })
+
+  it('ne donne pas de nouveaux bénéficiaires sans période bornée', () => {
+    expect(
+      groupesDesStatistiques({ ...statistiques, periode: { du: '2024-01-01' } })
+        .find(({ titre }) => titre === 'Bénéficiaires')
+        ?.lignes.at(-1),
+    ).toEqual({
+      libelle: 'Nouveaux',
+      valeur: 'Sur une période choisie seulement',
+    })
+  })
+
+  it('trie les thématiques par nombre et écarte celles à zéro', () => {
+    expect(
+      groupesDesStatistiques({ ...statistiques, periode: {} }).find(
+        ({ titre }) => titre === 'Thématiques',
+      )?.lignes,
+    ).toEqual([
+      { libelle: 'Diagnostic', valeur: '8 (80 %)' },
+      { libelle: 'E-mail', valeur: '2 (20 %)' },
+    ])
+  })
+
+  it('signale une répartition vide', () => {
+    expect(
+      groupesDesStatistiques({ ...statistiques, periode: {} }).find(
+        ({ titre }) => titre === 'Démarches administratives',
+      )?.lignes,
+    ).toEqual([{ libelle: 'Aucune', valeur: '0' }])
+  })
+
+  it('n’ajoute la coordination qu’à un coordinateur', () => {
+    expect(
+      groupesDesStatistiques({ ...statistiques, periode: {} }).some(
+        ({ titre }) => titre.startsWith('Activités de coordination'),
+      ),
+    ).toBe(false)
+  })
+
+  it('compte les activités de coordination en cumul', () => {
+    expect(
+      groupesDesStatistiques({
+        ...statistiques,
+        coordination: [{ libelle: 'Réunion', nombre: 4 }],
+        periode: {},
+      }).at(-1),
+    ).toEqual({
+      titre: 'Activités de coordination, sur toute la période d’activité',
+      lignes: [{ libelle: 'Réunion', valeur: '4' }],
+    })
+  })
+
+  it('arrondit les parts à l’entier', () => {
+    expect(
+      groupesDesStatistiques({
+        ...statistiques,
+        repartition: {
+          ...statistiques.repartition,
+          thematiques: [part('Bureautique', 2, 66.667)],
+        },
+        periode: {},
+      }).find(({ titre }) => titre === 'Thématiques')?.lignes,
+    ).toEqual([{ libelle: 'Bureautique', valeur: '2 (67 %)' }])
   })
 })
