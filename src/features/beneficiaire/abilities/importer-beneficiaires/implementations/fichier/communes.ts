@@ -1,5 +1,6 @@
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
+import { once } from 'lodash-es'
 import { staticFile } from '@/libraries/chemins/staticDirectory'
 
 export type Commune = {
@@ -38,20 +39,17 @@ const parseCommuneCsvLine = (line: string): Commune => {
 // CodeInsee, Commune, CodePostal
 type SerializedCommune = [string, string, string]
 
-const communeMap = new Map<string, SerializedCommune>()
-
-const buildCommuneMap = async () => {
-  const readline = createCommuneReadline()
-
-  for await (const line of readline) {
-    const commune = parseCommuneCsvLine(line)
-    communeMap.set(commune.codeInsee, [
-      commune.codeInsee,
-      commune.nom,
-      commune.codePostal,
-    ])
-  }
-}
+const chargerLesCommunes = once(
+  async (): Promise<ReadonlyMap<string, SerializedCommune>> =>
+    new Map(
+      (await Array.fromAsync(createCommuneReadline()))
+        .map(parseCommuneCsvLine)
+        .map((commune): [string, SerializedCommune] => [
+          commune.codeInsee,
+          [commune.codeInsee, commune.nom, commune.codePostal],
+        ]),
+    ),
+)
 
 const cleanupCommuneCodePostal = (commune: Commune) => {
   if (commune.codePostal.startsWith('"') && commune.codePostal.endsWith('"')) {
@@ -60,13 +58,8 @@ const cleanupCommuneCodePostal = (commune: Commune) => {
   return commune
 }
 
-/**
- * Lazy loads communes.csv file and then o(1) lookup commune by codeInsee
- */
 export const createCommunesClient = async () => {
-  if (communeMap.size === 0) {
-    await buildCommuneMap()
-  }
+  const communeMap = await chargerLesCommunes()
 
   return {
     findCommuneByInsee: (code: string): Commune | null => {
