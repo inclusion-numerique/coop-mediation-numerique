@@ -27,7 +27,11 @@ export default defineConfig({
   },
 
   e2e: {
-    specPattern: ['src/**/e2e/*.e2e.ts', 'src/app/**/*.e2e.ts'],
+    specPattern: [
+      'e2e/*.e2e.ts',
+      'src/app/**/page.test.ts',
+      'src/app/**/route.test.ts',
+    ],
     supportFile: 'e2e/support/e2e.ts',
     setupNodeEvents(on, config) {
       on('task', taskManager)

@@ -251,10 +251,7 @@
       }
     },
     {
-      "includes": [
-        "src/features/**/*.integration.ts",
-        "src/features/**/*.e2e.ts"
-      ],
+      "includes": ["src/features/**/*.integration.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -342,7 +339,11 @@
       }
     },
     {
-      "includes": ["src/**/e2e/*.ts", "src/app/**/*.e2e.ts", "src/**/*.cy.tsx"],
+      "includes": [
+        "src/app/**/page.test.ts",
+        "src/app/**/route.test.ts",
+        "src/**/*.cy.tsx"
+      ],
       "javascript": {
         "globals": [
           "cy",

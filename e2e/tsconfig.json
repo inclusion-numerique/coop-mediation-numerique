@@ -12,8 +12,8 @@
     "../cypress.config.ts",
     "./**/*.ts",
     "./**/*.json",
-    "../src/**/e2e/*.ts",
-    "../src/app/**/*.e2e.ts",
+    "../src/app/**/page.test.ts",
+    "../src/app/**/route.test.ts",
     "../src/**/*.cy.tsx"
   ]
 }
