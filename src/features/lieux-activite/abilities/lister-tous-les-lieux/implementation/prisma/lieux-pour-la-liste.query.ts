@@ -39,7 +39,7 @@ const searchStructureSelect = {
   },
 } satisfies Prisma.LieuInclusionSelect
 
-export const lieuxPourLaListe = async ({
+const identifiantsDeLaPage = async ({
   skip,
   take,
   where,
@@ -49,14 +49,36 @@ export const lieuxPourLaListe = async ({
   take?: number
   skip?: number
   orderBy?: Prisma.LieuInclusionOrderByWithRelationInput[]
+}): Promise<readonly string[]> =>
+  (
+    await prismaClient.lieuInclusion.findMany({
+      where,
+      take,
+      skip,
+      select: { id: true },
+      orderBy: [...(orderBy ?? []), { nom: 'asc' }, { id: 'asc' }],
+    })
+  ).map(({ id }) => id)
+
+const dansLOrdreDe =
+  (ids: readonly string[]) =>
+  (un: { id: string }, autre: { id: string }): number =>
+    ids.indexOf(un.id) - ids.indexOf(autre.id)
+
+export const lieuxPourLaListe = async (page: {
+  where: Prisma.LieuInclusionWhereInput
+  take?: number
+  skip?: number
+  orderBy?: Prisma.LieuInclusionOrderByWithRelationInput[]
 }): Promise<LigneDeLaListe[]> => {
-  const structures = await prismaClient.lieuInclusion.findMany({
-    where,
-    take,
-    skip,
-    select: searchStructureSelect,
-    orderBy: [...(orderBy ?? []), { nom: 'asc' }],
-  })
+  const ids = await identifiantsDeLaPage(page)
+
+  const structures = (
+    await prismaClient.lieuInclusion.findMany({
+      where: { id: { in: [...ids] } },
+      select: searchStructureSelect,
+    })
+  ).toSorted(dansLOrdreDe(ids))
 
   return structures.map(({ inscriptionRegistre, banId, ...coop }) => {
     const registre =
