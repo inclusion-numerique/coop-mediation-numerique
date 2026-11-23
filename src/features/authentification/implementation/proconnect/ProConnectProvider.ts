@@ -12,6 +12,7 @@ import {
   proConnectClientId,
   proConnectHostname,
 } from './proconnect.configuration'
+import { stateConcordant } from './state-concordant'
 
 const issuer = `https://${proConnectHostname}`
 
@@ -56,8 +57,20 @@ export const ProConnectProvider = () =>
       request: async (context: {
         params: {
           code?: string
+          state?: string
+        }
+        checks: {
+          state?: string
         }
       }) => {
+        if (
+          !stateConcordant({
+            recu: context.params.state,
+            attendu: context.checks.state,
+          })
+        ) {
+          throw new Error('Le state du retour de ProConnect ne concorde pas')
+        }
         const body = {
           grant_type: 'authorization_code',
           client_id: proConnectClientId,
