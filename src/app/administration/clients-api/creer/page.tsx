@@ -1,6 +1,6 @@
 import { creerUnClientApiAction } from '@/app/_actions/clients-api/creer-un-client-api.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import { CREER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/creer-un-client-api/action/creer-un-client-api.key'
 import { CreerUnClientApiPage } from '@/features/clients-api/abilities/creer-un-client-api/ui'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

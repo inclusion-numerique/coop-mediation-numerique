@@ -3,7 +3,7 @@ import { relancerLesInscriptionsInacheveesAction } from '@/app/_actions/utilisat
 import { relancerLesInscritsInactifsAction } from '@/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ExportDesAccompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/ui'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import {
   consulterLaMaintenance,
   consulterLHistoriqueDesMaintenances,

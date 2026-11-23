@@ -5,7 +5,7 @@ import { relancerUneInvitationAction } from '@/app/_actions/equipe/relancer-une-
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.key'
 import { BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui'
 import { BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui'
@@ -19,7 +19,7 @@ import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { CoordinateurId } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { ActionsDuMembre } from '@/features/equipe/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

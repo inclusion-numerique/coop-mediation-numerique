@@ -5,4 +5,4 @@ export {
   detacherDuLieuDecrit,
   rattacherAuLieuDecrit,
   rattacherAuLieuDesire,
-} from './implementation'
+} from './implementations'

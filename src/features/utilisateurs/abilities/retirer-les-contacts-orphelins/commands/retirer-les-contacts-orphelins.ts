@@ -5,7 +5,7 @@ import {
   orphelinsParmi,
   type RetirerLesContactsOrphelinsPorts,
 } from '../domain'
-import { inscritsVivantsParmi } from '../implementation'
+import { inscritsVivantsParmi } from '../implementations'
 
 export type BilanDesContacts = {
   readonly contacts: number

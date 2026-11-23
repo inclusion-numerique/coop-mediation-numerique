@@ -1,2 +1,2 @@
 export type { EchecDeSuppression } from './domain'
-export { supprimerUneActiviteDeCoordination } from './implementation'
+export { supprimerUneActiviteDeCoordination } from './implementations'

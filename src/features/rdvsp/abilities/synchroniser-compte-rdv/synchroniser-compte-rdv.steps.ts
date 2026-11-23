@@ -16,8 +16,8 @@ import {
   cloturerJournal,
   echouerJournal,
   ouvrirJournal,
-} from './implementation/prisma/journal-synchronisation.prisma'
-import { synchroniserCompteRdv } from './implementation/synchroniser-compte-rdv'
+} from './implementations/prisma/journal-synchronisation.prisma'
+import { synchroniserCompteRdv } from './implementations/synchroniser-compte-rdv'
 
 const AGENT_ID = ID_TEST.compte + 8
 

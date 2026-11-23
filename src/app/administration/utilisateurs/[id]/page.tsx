@@ -26,12 +26,12 @@ import { profilPresente } from '@/features/activites/abilities/decrire-les-perso
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements'
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui'
 import { criteresDesStatistiques } from '@/features/activites/domain'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
 import {
   authenticateAdmin,
   authenticateUser,
-} from '@/features/authentification/implementation/session/authenticateUser'
-import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+} from '@/features/authentification/implementations/session/authenticateUser'
+import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/server'
@@ -46,7 +46,7 @@ import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { CoordinateurId } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { ActionsDuMembre } from '@/features/equipe/ui'
 import { AvertissementsEtatInscription } from '@/features/inscription/components/AvertissementsEtatInscription'
 import { MediateurId, TriDesLieux } from '@/features/lieux-activite'

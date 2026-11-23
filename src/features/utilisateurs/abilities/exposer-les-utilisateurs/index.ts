@@ -1,2 +1,2 @@
-export { criteresDExposition, utilisateursExposes } from './implementation'
-export { utilisateurExpose } from './implementation/api/utilisateur-expose.transfer'
+export { criteresDExposition, utilisateursExposes } from './implementations'
+export { utilisateurExpose } from './implementations/api/utilisateur-expose.transfer'

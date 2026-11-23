@@ -6,4 +6,4 @@ export {
   RetentionPolicy,
   type SupprimerComptePorts,
 } from './domain'
-export { hash, retirerDesListesDeDiffusion } from './implementation'
+export { hash, retirerDesListesDeDiffusion } from './implementations'

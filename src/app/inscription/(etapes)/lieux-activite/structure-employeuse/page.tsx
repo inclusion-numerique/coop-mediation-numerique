@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import {
   consulterEmployeuseActuelle,
   employeuseActuelleAffichage,

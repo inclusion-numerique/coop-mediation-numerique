@@ -1,1 +1,1 @@
-export { retirerUnMediateurDuLieu } from './implementation'
+export { retirerUnMediateurDuLieu } from './implementations'

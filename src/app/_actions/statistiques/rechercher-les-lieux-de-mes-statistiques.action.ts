@@ -7,7 +7,7 @@ import {
 } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
 import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
 import { withAuth } from '@/features/authentification'
 import { withInput } from '@/libraries/nextjs'
 

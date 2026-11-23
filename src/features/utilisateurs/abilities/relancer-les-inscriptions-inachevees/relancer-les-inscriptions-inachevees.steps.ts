@@ -6,7 +6,7 @@ import type { RapportDeRelance } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@/generated/prisma/client'
 import { relancerLesInscriptionsInachevees } from './commands/relancer-les-inscriptions-inachevees'
-import { effacerLInscription } from './implementation'
+import { effacerLInscription } from './implementations'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 

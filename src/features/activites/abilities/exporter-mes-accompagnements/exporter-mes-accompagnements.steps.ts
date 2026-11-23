@@ -7,7 +7,7 @@ import type { Demandeur, ExportDesAccompagnements } from './domain'
 import {
   exporterMesAccompagnements,
   nomsDesFiltresExportes,
-} from './implementation'
+} from './implementations'
 
 type Seme = { readonly userId: string; readonly mediateurId: string }
 

@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { MediateurId } from '../../domain/mediateur-id'
 import type { VisibiliteSurLaCartographie } from './domain'
-import { visibiliteSurLaCartographie } from './implementation'
+import { visibiliteSurLaCartographie } from './implementations'
 
 const ROCHEFORT = '17299'
 const CHARENTE_MARITIME = '17'

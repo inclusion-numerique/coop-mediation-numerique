@@ -4,7 +4,7 @@ import {
   isConseillerNumerique,
   isCoordinateur,
 } from '@/features/authentification/domain/userTypeGuards'
-import { getAuthenticatedSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { getAuthenticatedSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
 import {
   Coordination,
   Dispositif,

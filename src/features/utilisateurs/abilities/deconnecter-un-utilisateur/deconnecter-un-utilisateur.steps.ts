@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { deconnecterUnUtilisateur } from './implementation'
+import { deconnecterUnUtilisateur } from './implementations'
 
 const deconnexion: {
   utilisateurId?: string

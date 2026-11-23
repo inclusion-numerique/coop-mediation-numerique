@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-invitation.action'
 import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { getSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation'
 import {

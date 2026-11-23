@@ -11,7 +11,7 @@ import {
   choisirProfil as deciderRole,
   type RoleChoisi,
 } from '../domain/choisir-profil'
-import { enregistrerProfilChoisi, getInscriptionEtat } from '../implementation'
+import { enregistrerProfilChoisi, getInscriptionEtat } from '../implementations'
 
 /**
  * Cas d'usage « choisir un rôle » : lit l'état courant, délègue la décision au

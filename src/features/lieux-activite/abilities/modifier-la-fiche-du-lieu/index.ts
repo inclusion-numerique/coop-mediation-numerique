@@ -2,4 +2,4 @@ export {
   appliquerLesDifferences,
   consulterLaFicheDuLieu,
   modifierLaFicheDuLieu,
-} from './implementation'
+} from './implementations'

@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
 import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire'
-import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementation'
+import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations'
 import {
   beneficiairesCountAtScenarioStart,
   mediateurBeneficiairesCount,

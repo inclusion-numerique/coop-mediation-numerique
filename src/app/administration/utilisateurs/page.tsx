@@ -3,7 +3,7 @@ import { rechercherDesCoordinateursAction } from '@/app/_actions/utilisateurs/re
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
 import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import {
   communesDesEmployeuses,
   nomDeLEmployeuse,

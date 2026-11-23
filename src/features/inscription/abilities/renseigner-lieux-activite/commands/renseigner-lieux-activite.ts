@@ -12,8 +12,8 @@ import {
 import {
   enregistrerReconciliation,
   getInscriptionEtat,
-} from '../implementation'
-import type { RattacherAuLieuDesire } from '../implementation/prisma/enregistrer-reconciliation.mutation'
+} from '../implementations'
+import type { RattacherAuLieuDesire } from '../implementations/prisma/enregistrer-reconciliation.mutation'
 
 /**
  * Cas d'usage « renseigner les lieux d'activité » : lit l'état, délègue la

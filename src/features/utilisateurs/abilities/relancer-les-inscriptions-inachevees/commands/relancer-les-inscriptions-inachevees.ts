@@ -5,7 +5,7 @@ import {
 } from '@/features/utilisateurs/domain'
 import { success } from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
-import { inscriptionsInachevees } from '../implementation'
+import { inscriptionsInachevees } from '../implementations'
 
 export const relancerLesInscriptionsInachevees = async ({
   maintenant,

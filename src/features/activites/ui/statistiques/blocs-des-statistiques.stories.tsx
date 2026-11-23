@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import type { ReactNode } from 'react'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
-import type { StatistiquesFournies } from '../../implementation/statistiques'
+import type { StatistiquesFournies } from '../../implementations/statistiques'
 import {
   dureeAccompagnementParDefautLabels,
   dureeAcompagnementParDefautDefaultValues,

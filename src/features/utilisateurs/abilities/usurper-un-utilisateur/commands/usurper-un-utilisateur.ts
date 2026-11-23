@@ -7,7 +7,7 @@ import {
   type PorteeUsurpation,
   type UsurpationHorsFixtures,
 } from '../domain'
-import { cibleUsurpation, ouvrirLUsurpation } from '../implementation'
+import { cibleUsurpation, ouvrirLUsurpation } from '../implementations'
 
 export const usurperUnUtilisateur = async ({
   utilisateurId,

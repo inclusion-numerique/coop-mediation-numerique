@@ -5,7 +5,7 @@ import {
 } from '@/features/utilisateurs/domain'
 import { success } from '@/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
-import { inscritsSansProduction } from '../implementation'
+import { inscritsSansProduction } from '../implementations'
 
 export const relancerLesInscritsInactifs = async ({
   maintenant,

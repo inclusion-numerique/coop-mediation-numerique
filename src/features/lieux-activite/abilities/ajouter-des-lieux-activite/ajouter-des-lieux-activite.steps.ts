@@ -24,7 +24,7 @@ import type {
   LieuDemande,
   LieuExistant,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations'
 import { BanId } from '@/features/lieux-activite/domain/ban-id'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import {

@@ -15,7 +15,7 @@ import {
   semerUnMediateur,
   tagEnBase,
 } from '@/features/tags/tags.cucumber'
-import { creerUnTag } from './implementation'
+import { creerUnTag } from './implementations'
 
 const contexte: {
   acteur?: Acteur

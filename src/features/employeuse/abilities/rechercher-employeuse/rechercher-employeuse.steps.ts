@@ -5,7 +5,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   rechercherDesCommunesDesEmployeuses,
   rechercherEmployeuse,
-} from '@/features/employeuse/abilities/rechercher-employeuse/implementation'
+} from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedEmployeuseMain,

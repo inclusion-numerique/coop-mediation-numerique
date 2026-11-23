@@ -5,12 +5,12 @@ import {
   appliquerPlanLot,
   supprimerMotifsOrphelins,
   supprimerRdvs,
-} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementation/prisma/appliquer-plan-lot.mutation'
+} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/appliquer-plan-lot.mutation'
 import {
   etatConnuDuLot,
   rdvsDejaImportes,
-} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementation/prisma/etat-connu.query'
-import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementation/synchroniser-rdvs'
+} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
+import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs'
 import { compteRdvToDomain } from '@/features/rdvsp/db'
 import { AdresseRdv } from '@/features/rdvsp/domain/adresse-rdv'
 import {

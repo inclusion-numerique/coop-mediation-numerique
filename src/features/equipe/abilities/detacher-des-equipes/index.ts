@@ -1,1 +1,1 @@
-export { detacherDesEquipes } from './implementation'
+export { detacherDesEquipes } from './implementations'

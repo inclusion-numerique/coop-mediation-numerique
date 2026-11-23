@@ -18,7 +18,7 @@ import type { CoordinateurAChoisir, UtilisateursTrouves } from './domain'
 import {
   rechercherDesCoordinateurs,
   rechercherDesUtilisateurs,
-} from './implementation'
+} from './implementations'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 

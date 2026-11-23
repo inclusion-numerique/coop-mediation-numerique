@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import type { Typologie } from '@/generated/prisma/client'
-import { rattacherAuLieuDesire } from './abilities/ajouter-des-lieux-activite/implementation/prisma/rattacher-au-lieu-desire'
+import { rattacherAuLieuDesire } from './abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire'
 import { creerLieuActivite } from './abilities/creer-lieu-activite'
 import { nouveauLieu } from './abilities/creer-lieu-activite/action/depuis-la-saisie'
 import {

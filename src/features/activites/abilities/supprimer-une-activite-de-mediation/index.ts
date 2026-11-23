@@ -1,1 +1,1 @@
-export { supprimerUneActiviteDeMediation } from './implementation'
+export { supprimerUneActiviteDeMediation } from './implementations'

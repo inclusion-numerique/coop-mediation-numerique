@@ -2,4 +2,4 @@ export {
   communesDesLieux,
   lieuxDuDepartement,
   nombreDeLieuxDuDepartement,
-} from './implementation'
+} from './implementations'

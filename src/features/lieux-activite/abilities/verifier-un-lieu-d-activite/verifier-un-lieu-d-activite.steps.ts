@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { LieuId, MediateurId } from '@/features/lieux-activite'
 import { effacerDuRegistre } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { lieuUtilisablePar, verifierUnLieuDActivite } from './implementation'
+import { lieuUtilisablePar, verifierUnLieuDActivite } from './implementations'
 
 const contexte: {
   semis?: { userId: string; mediateurId: string; lieuId: string }

@@ -4,8 +4,8 @@ import {
   FiltresDesStatistiquesValidation,
   type StatistiquesExposees,
   statistiquesExposees,
-} from './implementation'
-import type { StatistiquesFourniesAExposer } from './implementation/api/statistiques-exposees.transfer'
+} from './implementations'
+import type { StatistiquesFourniesAExposer } from './implementations/api/statistiques-exposees.transfer'
 
 const calcul: {
   fournies?: StatistiquesFourniesAExposer

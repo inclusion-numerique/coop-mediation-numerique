@@ -1,2 +1,2 @@
 export type { Accepteur } from './domain'
-export * from './implementation'
+export * from './implementations'

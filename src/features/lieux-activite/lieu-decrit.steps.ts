@@ -6,7 +6,7 @@ import {
   detacherDuLieuDecrit,
   type LieuDecrit,
   rattacherAuLieuDecrit,
-} from './abilities/ajouter-des-lieux-activite/implementation/prisma/rattacher-au-lieu-decrit'
+} from './abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit'
 import {
   effacerDuRegistre,
   suivreLeLieu,

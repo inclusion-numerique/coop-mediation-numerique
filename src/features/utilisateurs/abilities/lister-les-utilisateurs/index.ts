@@ -3,4 +3,4 @@ export {
   ordreDesUtilisateurs,
   rechercherDesCoordinateurs,
   rechercherDesUtilisateurs,
-} from './implementation'
+} from './implementations'

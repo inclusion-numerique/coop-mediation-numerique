@@ -5,16 +5,16 @@ import {
   perimetreDeLUtilisateur,
   rassembler,
   statistiquesDuPerimetre,
-} from '@/features/activites/implementation/statistiques'
+} from '@/features/activites/implementations/statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import { profilDeLaSession } from '@/features/authentification'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
-import { donneesDeMesStatistiques } from '@/features/statistiques/implementation/mes-statistiques'
+import { donneesDeMesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
 import {
   exportInterdit,
   filtresDeLExport,

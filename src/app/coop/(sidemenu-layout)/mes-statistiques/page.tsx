@@ -11,7 +11,7 @@ import {
   rassembler,
   statistiquesDuPerimetre,
   toutesLesStatistiques,
-} from '@/features/activites/implementation/statistiques'
+} from '@/features/activites/implementations/statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import {
   blocsActivites,
@@ -20,7 +20,7 @@ import {
   blocsImprimes,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
 import { profilDeLaSession } from '@/features/authentification'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
@@ -29,7 +29,7 @@ import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-p
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
-import { mesStatistiques } from '@/features/statistiques/implementation/mes-statistiques'
+import { mesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {
   type ParametresDeLaPage,

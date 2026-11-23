@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server'
 import NextAuth from 'next-auth'
-import { nextAuthOptions } from '@/features/authentification/implementation/next-auth/auth'
-import { isFirewallUserAgent } from '@/features/authentification/implementation/next-auth/isFirewallUserAgent'
-import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/proconnect/importStructureEmployeuseFromProConnect'
+import { nextAuthOptions } from '@/features/authentification/implementations/next-auth/auth'
+import { isFirewallUserAgent } from '@/features/authentification/implementations/next-auth/isFirewallUserAgent'
+import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importStructureEmployeuseFromProConnect'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import {
   ensurePersonneMain,

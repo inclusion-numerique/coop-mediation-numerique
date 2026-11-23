@@ -1,14 +1,14 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementation/url-de-saisie-depuis-un-rendez-vous'
+import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementations/url-de-saisie-depuis-un-rendez-vous'
 import { withAuth, withMediateur } from '@/features/authentification'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
 import { CreerActiviteDepuisRdvValidation } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
 import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
-import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
+import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/creer-activite-depuis-rdv.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

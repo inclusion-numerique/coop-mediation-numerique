@@ -10,7 +10,7 @@ import {
   ordreChronologiqueLu,
   paginationLue,
 } from '../../domain'
-import { listerMesActivites } from './implementation'
+import { listerMesActivites } from './implementations'
 
 type Semis = { readonly userIds: string[]; readonly mediateurId: string }
 

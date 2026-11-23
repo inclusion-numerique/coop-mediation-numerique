@@ -1,1 +1,1 @@
-export { visibiliteSurLaCartographie } from './implementation'
+export { visibiliteSurLaCartographie } from './implementations'

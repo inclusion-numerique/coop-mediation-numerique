@@ -2,7 +2,7 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
-import { getAuthenticatedSessionToken } from '@/features/authentification/implementation/session/getSessionUser'
+import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/getSessionUser'
 import { terminerLUsurpation } from '@/features/utilisateurs/abilities/terminer-l-usurpation'
 import { fromResult } from '@/libraries/nextjs'
 

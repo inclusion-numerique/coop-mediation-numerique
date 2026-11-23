@@ -1,1 +1,1 @@
-export { consulterLeReseauDuDepartement } from './implementation'
+export { consulterLeReseauDuDepartement } from './implementations'

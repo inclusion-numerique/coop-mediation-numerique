@@ -6,7 +6,7 @@ import {
   SUPPRIMER_BENEFICIAIRES_ERRORS,
   SupprimerBeneficiairesValidation,
 } from '@/features/beneficiaire/abilities/supprimer-beneficiaires'
-import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
+import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'

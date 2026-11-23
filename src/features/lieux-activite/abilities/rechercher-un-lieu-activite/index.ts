@@ -1,2 +1,2 @@
 export type { LieuActiviteTrouve } from './domain'
-export { rechercherUnLieuActivite } from './implementation'
+export { rechercherUnLieuActivite } from './implementations'

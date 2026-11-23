@@ -7,14 +7,14 @@ import {
 import {
   lieuxChoisisDe,
   statistiquesNationalesEnCours,
-} from '@/features/activites/implementation/statistiques'
+} from '@/features/activites/implementations/statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import {
   blocsActivites,
   blocsBeneficiaires,
   blocsGeneraux,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'

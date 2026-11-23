@@ -1,2 +1,2 @@
 export type { FicheUtilisateur } from './domain'
-export { ficheUtilisateur } from './implementation'
+export { ficheUtilisateur } from './implementations'

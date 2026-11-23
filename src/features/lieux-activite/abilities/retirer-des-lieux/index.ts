@@ -1,1 +1,1 @@
-export { retirerDesLieux } from './implementation'
+export { retirerDesLieux } from './implementations'

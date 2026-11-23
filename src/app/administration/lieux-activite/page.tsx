@@ -1,5 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
 import {
   LieuxPage,

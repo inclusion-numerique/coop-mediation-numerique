@@ -1,4 +1,4 @@
 export {
   classeurDesUtilisateurs,
   utilisateursAExporter,
-} from './implementation'
+} from './implementations'

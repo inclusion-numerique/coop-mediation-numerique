@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { getHomepage } from '@/features/authentification/domain/getHomepage'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import AdministrationSideMenu from '@/features/navigation/ui/menus/AdministrationSideMenu'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'

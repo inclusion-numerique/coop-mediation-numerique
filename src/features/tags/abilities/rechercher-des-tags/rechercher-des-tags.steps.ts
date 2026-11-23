@@ -7,7 +7,7 @@ import {
   semerUnMediateur,
   semerUnTag,
 } from '@/features/tags/tags.cucumber'
-import { rechercherDesTags } from './implementation'
+import { rechercherDesTags } from './implementations'
 
 const contexte: {
   acteur?: Acteur

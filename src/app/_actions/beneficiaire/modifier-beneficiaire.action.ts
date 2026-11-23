@@ -6,7 +6,7 @@ import {
   MODIFIER_BENEFICIAIRE_ERRORS,
   ModifierBeneficiaireValidation,
 } from '@/features/beneficiaire/abilities/modifier-beneficiaire'
-import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
+import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'

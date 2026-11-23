@@ -1,1 +1,1 @@
-export { creerLieuActivite } from './implementation'
+export { creerLieuActivite } from './implementations'

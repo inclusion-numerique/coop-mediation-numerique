@@ -3,7 +3,7 @@ import { branche, estPreview } from '@/configuration/projet/deploiement'
 import {
   authenticationViaEmailMagicLink,
   authenticationViaProconnect,
-} from '@/features/authentification/implementation/next-auth/authenticationProvider'
+} from '@/features/authentification/implementations/next-auth/authenticationProvider'
 import { signinErrorMessage } from '@/features/authentification/ui/authenticationErrorMessage'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import { EmailSigninForm } from '@/features/authentification/ui/connexion/EmailSigninForm'

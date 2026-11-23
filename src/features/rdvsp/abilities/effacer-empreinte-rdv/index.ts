@@ -1,4 +1,4 @@
 export {
   effacerEmpreinteRdv,
   effacerEmpreinteRdvAvec,
-} from './implementation'
+} from './implementations'

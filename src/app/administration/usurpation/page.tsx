@@ -3,7 +3,7 @@ import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { estMain } from '@/configuration/projet/deploiement'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
 import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui'
 import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur'

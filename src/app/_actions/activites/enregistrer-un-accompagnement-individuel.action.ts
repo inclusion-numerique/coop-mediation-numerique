@@ -8,12 +8,12 @@ import { MediateurId, UtilisateurId } from '@/features/activites/domain'
 import {
   employeuseDeLaDateDepuis,
   tagsUtilisablesDepuis,
-} from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+} from '@/features/activites/implementations/fournisseurs-de-la-saisie'
 import { profilDeLaSession, withAuth } from '@/features/authentification'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite'
 import { withMaintenance } from '@/features/maintenance-mode'
-import { rendezVousHonorePar } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/rendez-vous-honore-par'
+import { rendezVousHonorePar } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/rendez-vous-honore-par'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'

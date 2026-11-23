@@ -11,7 +11,7 @@ import {
   lireLesTagsCollectifs,
   lireLesTagsVisibles,
   lireTousLesTagsVisibles,
-} from './implementation'
+} from './implementations'
 
 const contexte: {
   acteur?: Acteur

@@ -4,4 +4,4 @@ export {
   fusionnerDesLieux,
   lieuAFusionner,
   lieuxAFusionner,
-} from './implementation'
+} from './implementations'

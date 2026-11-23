@@ -1,2 +1,2 @@
 export type { ProfilDesPersonnesAccompagnees } from './domain'
-export * from './implementation'
+export * from './implementations'

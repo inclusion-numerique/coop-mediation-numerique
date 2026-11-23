@@ -3,4 +3,4 @@ export {
   activitesExposees,
   criteresDExposition,
   curseurDActivite,
-} from './implementation'
+} from './implementations'

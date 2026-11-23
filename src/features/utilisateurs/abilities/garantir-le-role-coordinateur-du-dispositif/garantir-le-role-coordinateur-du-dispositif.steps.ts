@@ -6,7 +6,7 @@ import {
   semerUnCompteDeListe,
   semerUneEmployeuse,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { garantirLeRoleCoordinateurDuDispositif } from './implementation'
+import { garantirLeRoleCoordinateurDuDispositif } from './implementations'
 
 const garantie: {
   utilisateurId?: string

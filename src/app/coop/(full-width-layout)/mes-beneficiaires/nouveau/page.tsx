@@ -1,5 +1,5 @@
 import { creerBeneficiaireAction } from '@/app/_actions/beneficiaire/creer-beneficiaire.action'
-import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { CreerBeneficiairePage } from '@/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
 import type { SaisieEnCours } from '@/features/beneficiaire/forms/saisie-en-cours'
 import {

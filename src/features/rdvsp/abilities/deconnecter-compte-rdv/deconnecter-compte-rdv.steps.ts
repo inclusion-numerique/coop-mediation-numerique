@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { DeconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
-import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementation/prisma/deconnecter-compte-rdv.mutation'
+import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/deconnecter-compte-rdv.mutation'
 import {
   compteRdvEnBase,
   ID_TEST,

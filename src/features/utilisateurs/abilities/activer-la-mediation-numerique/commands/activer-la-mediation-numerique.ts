@@ -12,7 +12,7 @@ import {
   activer,
   compteQuiActive,
   inscrireALaListeDeDiffusion,
-} from '../implementation'
+} from '../implementations'
 
 export const activerLaMediationNumerique = async (
   utilisateurId: string,

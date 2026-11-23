@@ -6,7 +6,7 @@ import {
   NomDuClientApi,
   PorteeApi,
 } from '@/features/clients-api/domain'
-import { verifySecret } from '@/features/clients-api/implementation/hashSecret'
+import { verifySecret } from '@/features/clients-api/implementations/hashSecret'
 import { creerUnClientApi } from './abilities/creer-un-client-api'
 
 setDefaultTimeout(60_000)

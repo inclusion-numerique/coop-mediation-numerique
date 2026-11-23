@@ -1,4 +1,4 @@
 export {
   mesurerLesUtilisateursActifs,
   utilisateursActifsParMois,
-} from './implementation'
+} from './implementations'

@@ -7,11 +7,11 @@ import {
   seedRdv,
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { getAdministrationRdvspUserData } from './implementation/prisma/compte-rdv-detaille.query'
+import { getAdministrationRdvspUserData } from './implementations/prisma/compte-rdv-detaille.query'
 import {
   type AdministrationRdvspData,
   getAdministrationRdvspData,
-} from './implementation/prisma/comptes-rdv.query'
+} from './implementations/prisma/comptes-rdv.query'
 
 const AGENT_ID = ID_TEST.compte + 20
 const RDV_ID = ID_TEST.rdv + 500

@@ -6,7 +6,7 @@ import {
   FUSIONNER_BENEFICIAIRES_ERRORS,
   FusionnerBeneficiairesValidation,
 } from '@/features/beneficiaire/abilities/fusionner-beneficiaires'
-import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementation'
+import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { ServerActionError, withInput } from '@/libraries/nextjs'

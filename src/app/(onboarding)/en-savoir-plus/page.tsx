@@ -2,7 +2,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CloseButton'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
 

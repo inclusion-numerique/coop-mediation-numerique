@@ -5,4 +5,4 @@ export {
   MediateurId,
   type PerimetreDesActivites,
 } from '../../domain'
-export { rechercherLesEmployeusesDesActivites } from './implementation'
+export { rechercherLesEmployeusesDesActivites } from './implementations'

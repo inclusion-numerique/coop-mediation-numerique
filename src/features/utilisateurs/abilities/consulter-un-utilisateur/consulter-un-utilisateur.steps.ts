@@ -8,7 +8,7 @@ import {
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
 import type { FicheUtilisateur } from './domain'
-import { ficheUtilisateur } from './implementation'
+import { ficheUtilisateur } from './implementations'
 
 const consultation: {
   compte?: CompteSeme

@@ -4,7 +4,7 @@ import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
 import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api'
 import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
 

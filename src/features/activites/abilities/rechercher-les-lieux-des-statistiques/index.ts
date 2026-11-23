@@ -6,4 +6,4 @@ export {
 export {
   nommerLesLieuxChoisis,
   rechercherLesLieuxDesStatistiques,
-} from './implementation'
+} from './implementations'

@@ -8,7 +8,7 @@ import AdministrationInfoCard from '@/libraries/ui/components/administration/Adm
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { AdministrationRdvspUserData } from '../../implementation/prisma/compte-rdv-detaille.query'
+import type { AdministrationRdvspUserData } from '../../implementations/prisma/compte-rdv-detaille.query'
 import AdministrationSyncUserDataButton from '../components/AdministrationSyncUserDataButton'
 
 const renderDriftCell = ({ value }: { value: number }) =>

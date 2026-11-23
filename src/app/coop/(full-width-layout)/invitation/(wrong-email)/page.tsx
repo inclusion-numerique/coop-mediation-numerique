@@ -1,5 +1,5 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 
 const Page = async () => {
   const user = await authenticateUser()

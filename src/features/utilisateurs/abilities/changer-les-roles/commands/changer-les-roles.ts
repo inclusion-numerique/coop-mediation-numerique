@@ -13,7 +13,7 @@ import {
   appliquerLePlan,
   compteAReaffecter,
   journaliserLeChangement,
-} from '../implementation'
+} from '../implementations'
 
 export const changerLesRoles = async ({
   utilisateurId,

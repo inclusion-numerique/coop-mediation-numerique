@@ -6,7 +6,10 @@ import {
   type EtapeInactivite,
   etapeInactivite,
 } from '../domain'
-import { lireLesComptesAExaminer, noterLAvertissement } from '../implementation'
+import {
+  lireLesComptesAExaminer,
+  noterLAvertissement,
+} from '../implementations'
 
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId

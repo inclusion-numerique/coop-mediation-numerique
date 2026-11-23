@@ -1,2 +1,2 @@
 export type { ActivitesDuPerimetre } from './domain'
-export * from './implementation'
+export * from './implementations'

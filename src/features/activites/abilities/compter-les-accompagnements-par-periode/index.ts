@@ -3,4 +3,4 @@ export {
   type FenetreDesGraphiques,
   fenetreDe,
 } from './domain'
-export * from './implementation'
+export * from './implementations'

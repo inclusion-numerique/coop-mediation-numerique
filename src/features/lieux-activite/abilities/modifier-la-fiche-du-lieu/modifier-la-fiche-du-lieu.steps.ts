@@ -14,7 +14,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   consulterLaFicheDuLieu,
   modifierLaFicheDuLieu,
-} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
+} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'

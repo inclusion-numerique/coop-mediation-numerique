@@ -1,2 +1,2 @@
 export type { ParametresDesLieux } from './domain'
-export { consulterLesLieuxDuDepartement } from './implementation'
+export { consulterLesLieuxDuDepartement } from './implementations'

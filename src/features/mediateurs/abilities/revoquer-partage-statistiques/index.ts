@@ -1,1 +1,1 @@
-export { revoquerPartageStatistiques } from './implementation'
+export { revoquerPartageStatistiques } from './implementations'

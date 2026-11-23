@@ -14,7 +14,7 @@ import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
-} from './implementation'
+} from './implementations'
 
 const COMPTE = ID_TEST.compte + 21
 const PREMIER = ID_TEST.rdv + 210

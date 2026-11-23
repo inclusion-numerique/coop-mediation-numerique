@@ -25,7 +25,7 @@ import {
   compteASupprimer,
   couperAcces,
   logEffacementReport,
-} from '../implementation/prisma'
+} from '../implementations/prisma'
 import { runnerDe } from './step-runners'
 
 const runStep = async (

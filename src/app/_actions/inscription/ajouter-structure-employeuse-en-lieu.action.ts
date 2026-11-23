@@ -8,7 +8,7 @@ import {
   StructureEmployeuseLieuValidation,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu'
 import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
-import { geocoderLAdresse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementation'
+import { geocoderLAdresse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations'
 import { UserId } from '@/features/inscription/domain'
 import {
   detacherDuLieuDecrit,

@@ -1,3 +1,3 @@
 export { usurperUnUtilisateur } from './commands/usurper-un-utilisateur'
 export { PorteeUsurpation } from './domain'
-export { comptesDeTest } from './implementation'
+export { comptesDeTest } from './implementations'

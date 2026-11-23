@@ -9,7 +9,7 @@ import {
   tagEnBase,
   tagsDeLActivite,
 } from '@/features/tags/tags.cucumber'
-import { retirerLesTagsDUnCompte, type TagsRetires } from './implementation'
+import { retirerLesTagsDUnCompte, type TagsRetires } from './implementations'
 
 const contexte: {
   mediateurId?: string

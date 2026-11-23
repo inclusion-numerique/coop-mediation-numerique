@@ -9,7 +9,7 @@ import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { AdministrationRdvspData } from '../../implementation/prisma/comptes-rdv.query'
+import type { AdministrationRdvspData } from '../../implementations/prisma/comptes-rdv.query'
 
 const AdministrationRdvspPage = async ({
   data: { users, rdvs },

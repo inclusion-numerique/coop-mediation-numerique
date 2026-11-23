@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type {
   StatistiquesEnCours,
   StatistiquesFournies,
-} from '@/features/activites/implementation/statistiques'
+} from '@/features/activites/implementations/statistiques'
 import {
   ChiffresClesDesAccompagnements,
   ChiffresClesImprimes,

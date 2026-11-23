@@ -4,7 +4,7 @@ import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { ModifierBeneficiaireValidation } from '@/features/beneficiaire/abilities/modifier-beneficiaire'
-import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementation'
+import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations'
 import {
   seedBeneficiaire,
   testMediateurId,

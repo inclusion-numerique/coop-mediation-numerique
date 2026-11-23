@@ -4,7 +4,7 @@ import { renseignerStructureEmployeuseAction } from '@/app/_actions/inscription/
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { sessionUserHasStructureEmployeuse } from '@/features/authentification/domain/sessionUser'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'

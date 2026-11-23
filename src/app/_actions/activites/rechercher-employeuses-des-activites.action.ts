@@ -7,7 +7,7 @@ import {
 } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites'
 import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
 import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
-import { perimetreDesEmployeusesDe } from '@/features/activites/implementation/statistiques'
+import { perimetreDesEmployeusesDe } from '@/features/activites/implementations/statistiques'
 import { withAuth } from '@/features/authentification'
 import { withInput } from '@/libraries/nextjs'
 

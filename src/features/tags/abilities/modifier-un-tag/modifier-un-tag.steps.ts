@@ -7,7 +7,7 @@ import {
   semerUnTag,
   tagEnBase,
 } from '@/features/tags/tags.cucumber'
-import { modifierUnTag } from './implementation'
+import { modifierUnTag } from './implementations'
 
 const contexte: {
   mediateurId?: string

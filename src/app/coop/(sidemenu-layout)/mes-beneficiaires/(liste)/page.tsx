@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementation'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations'
 import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
 import {
   type MesBeneficiairesSearchParams,

@@ -1,2 +1,2 @@
 export type { ParametresDesActeurs } from './domain'
-export { listerLesActeursDuDepartement } from './implementation'
+export { listerLesActeursDuDepartement } from './implementations'

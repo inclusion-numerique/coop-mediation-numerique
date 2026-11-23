@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { getSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
 import ConnexionReussiePage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/pages/ConnexionReussiePage'
 
 export const metadata = {

@@ -11,7 +11,7 @@ import type { CraEvenementData } from '@/features/activites/abilities/enregistre
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
 import { profilDeLaSession } from '@/features/authentification'
-import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
 import { acteurDe } from '@/features/tags/domain'

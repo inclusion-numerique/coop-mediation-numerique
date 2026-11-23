@@ -11,7 +11,7 @@ import {
   effetsApresValidation,
   enregistrerValidation,
   lireFaitsInscription,
-} from '../implementation'
+} from '../implementations'
 
 /**
  * Cas d'usage « valider l'inscription » : lit les faits d'inscription bruts,

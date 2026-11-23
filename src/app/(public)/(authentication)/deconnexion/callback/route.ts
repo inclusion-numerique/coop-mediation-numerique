@@ -1,13 +1,13 @@
 import type { NextRequest } from 'next/server'
 import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/baseUrl'
 import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter'
-import type { ProconnectSignoutState } from '@/features/authentification/implementation/proconnect/proconnectSignout'
+import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnectSignout'
 import {
   getSessionTokenFromNextRequestCookies,
   secureSessionCookie,
   sessionCookie,
-} from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+} from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import {
   decodeSerializableState,
   type EncodedState,

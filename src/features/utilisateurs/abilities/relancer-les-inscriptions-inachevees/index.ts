@@ -1,2 +1,2 @@
-export * from './implementation/email'
-export { lancerLesRelancesDInscription } from './implementation/lancer-les-relances'
+export * from './implementations/email'
+export { lancerLesRelancesDInscription } from './implementations/lancer-les-relances'

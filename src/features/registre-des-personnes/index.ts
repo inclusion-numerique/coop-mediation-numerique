@@ -2,4 +2,4 @@ export {
   ensurePersonneMain,
   retirerDuRegistre,
   synchroniserPersonne,
-} from './implementation/prisma/registre-personne'
+} from './implementations/prisma/registre-personne'

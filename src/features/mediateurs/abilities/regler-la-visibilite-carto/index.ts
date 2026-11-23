@@ -1,1 +1,1 @@
-export { reglerLaVisibiliteCarto } from './implementation'
+export { reglerLaVisibiliteCarto } from './implementations'

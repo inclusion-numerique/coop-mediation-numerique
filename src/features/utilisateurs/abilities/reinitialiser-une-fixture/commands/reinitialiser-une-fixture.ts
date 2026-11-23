@@ -1,7 +1,7 @@
 import type { NomAffiche } from '@/features/utilisateurs/domain'
 import type { DonneesDeDemonstration } from '@/features/utilisateurs/fixtures/resetFixtureUser'
 import { failure, type Result, success } from '@/libraries/result'
-import { estUneFixture, reinitialiser } from '../implementation'
+import { estUneFixture, reinitialiser } from '../implementations'
 
 export type CompteNonFixture = { readonly _tag: 'CompteNonFixture' }
 

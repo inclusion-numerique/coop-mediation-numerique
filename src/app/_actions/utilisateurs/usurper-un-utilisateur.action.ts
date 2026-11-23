@@ -4,7 +4,7 @@ import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin, withAuth } from '@/features/authentification'
 import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
-import { getAuthenticatedSessionToken } from '@/features/authentification/implementation/session/getSessionUser'
+import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/getSessionUser'
 import {
   PorteeUsurpation,
   usurperUnUtilisateur,

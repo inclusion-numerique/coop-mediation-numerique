@@ -8,7 +8,7 @@ import {
   type SynchroniserLesRolesBrevoPorts,
   type TailleDeLot,
 } from '../domain'
-import { inscritsDeLaListe } from '../implementation'
+import { inscritsDeLaListe } from '../implementations'
 
 type Envois<R> = {
   readonly reussis: readonly R[]

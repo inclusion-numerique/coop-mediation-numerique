@@ -1,1 +1,1 @@
-export { rechercherDesLieux } from './implementation'
+export { rechercherDesLieux } from './implementations'

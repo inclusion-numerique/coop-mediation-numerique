@@ -1,1 +1,1 @@
-export { idTokenPourDeconnexion, supprimerSession } from './implementation'
+export { idTokenPourDeconnexion, supprimerSession } from './implementations'

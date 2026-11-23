@@ -11,7 +11,7 @@ import {
   isCoordinateur,
   isMediateur,
 } from '@/features/authentification/domain/userTypeGuards'
-import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,

@@ -1,4 +1,4 @@
 export {
   lieuPublieExpose,
   lieuxPublies,
-} from './implementation'
+} from './implementations'

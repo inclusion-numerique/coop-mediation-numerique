@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import {
   classeurDesMembres,
   exporterLesMembres,
@@ -11,7 +11,7 @@ import {
   criteresEquipe,
   MediateurId,
 } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { auteurDeLExport } from '@/features/utilisateurs'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 

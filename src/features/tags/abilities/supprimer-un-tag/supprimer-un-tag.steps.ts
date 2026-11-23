@@ -13,7 +13,7 @@ import {
   tagsDeLActivite,
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
-import { supprimerUnTag } from './implementation'
+import { supprimerUnTag } from './implementations'
 
 const contexte: {
   proprietaire?: { mediateurId?: string; coordinateurId?: string }

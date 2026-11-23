@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { SynchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
-import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
-import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
-import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/synchroniser-organisations'
+import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
+import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
+import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations'
 import { compteRdvToDomain } from '@/features/rdvsp/db'
 import {
   type CompteRdvUtilisable,

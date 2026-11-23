@@ -6,4 +6,4 @@ export {
   listerLesActivitesDeCoordination,
   mesActivitesDeCoordination,
   optionsDeFiltre,
-} from './implementation'
+} from './implementations'

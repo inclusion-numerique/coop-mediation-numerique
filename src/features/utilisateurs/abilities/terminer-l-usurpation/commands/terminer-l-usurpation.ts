@@ -1,7 +1,7 @@
 import type { NomAffiche } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { type TerminerLUsurpationError, usurpateurARetrouver } from '../domain'
-import { rendreLaSession, sessionCourante } from '../implementation'
+import { rendreLaSession, sessionCourante } from '../implementations'
 
 export const terminerLUsurpation = async (
   jeton: string,

@@ -6,10 +6,10 @@ import {
   MediateurProprietaireId,
 } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
 import type { PrendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
-import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous'
-import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/beneficiaire-a-demander.query'
-import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/compte-du-mediateur.query'
-import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/lier-usager-au-beneficiaire.mutation'
+import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prendre-rendez-vous'
+import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/beneficiaire-a-demander.query'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
+import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/lier-usager-au-beneficiaire.mutation'
 import {
   DemandeRdvId,
   UrlPriseRdv,

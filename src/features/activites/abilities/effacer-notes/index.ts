@@ -1,1 +1,1 @@
-export { effacerNotes } from './implementation'
+export { effacerNotes } from './implementations'

@@ -1,4 +1,4 @@
 export {
   inventaireDesLieux,
   lieuInventorie,
-} from './implementation'
+} from './implementations'

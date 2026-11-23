@@ -7,7 +7,7 @@ import {
 } from '@/features/activites/activites.cucumber'
 import { ActiviteId } from '../../domain'
 import { Horodatage } from './domain'
-import { activitesExposees } from './implementation'
+import { activitesExposees } from './implementations'
 
 const exposition: {
   saisieLe?: Date

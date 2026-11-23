@@ -8,10 +8,10 @@ import {
 } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
 import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
-import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
+import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()

@@ -1,1 +1,1 @@
-export { usageDesTags } from './implementation'
+export { usageDesTags } from './implementations'

@@ -3,7 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth, withMediateur } from '@/features/authentification'
 import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire'
-import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementation'
+import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { withInput } from '@/libraries/nextjs'

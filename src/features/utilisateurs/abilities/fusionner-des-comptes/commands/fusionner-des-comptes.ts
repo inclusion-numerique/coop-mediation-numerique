@@ -11,7 +11,7 @@ import {
   comptesAFusionner,
   fusionner,
   retirerLaSourceDesListes,
-} from '../implementation'
+} from '../implementations'
 
 export const fusionnerDesComptes = async (
   {

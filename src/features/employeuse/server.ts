@@ -24,20 +24,20 @@ import 'server-only'
 export {
   consulterEmployeuse,
   nomDeLEmployeuse,
-} from './abilities/consulter-employeuse/implementation'
-export { consulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-une-date/implementation'
-export { consulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/implementation'
-export { consulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/implementation'
-export { listerEmployeuses } from './abilities/lister-employeuses/implementation'
+} from './abilities/consulter-employeuse/implementations'
+export { consulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-une-date/implementations'
+export { consulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/implementations'
+export { consulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/implementations'
+export { listerEmployeuses } from './abilities/lister-employeuses/implementations'
 
 export {
   rattacherAUneEmployeuseBinding,
   rattacherAUneEmployeuseDepuisSiretBinding,
   rattacherAUneEmployeuseSaisieBinding,
-} from './abilities/rattacher-a-une-employeuse/implementation/rattacher-a-une-employeuse.binding'
+} from './abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 export {
   communesDesEmployeuses,
   rechercherDesCommunesDesEmployeuses,
   rechercherEmployeuse,
-} from './abilities/rechercher-employeuse/implementation'
+} from './abilities/rechercher-employeuse/implementations'
 export * from './index'

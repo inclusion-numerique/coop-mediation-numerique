@@ -9,7 +9,7 @@ import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucum
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,
-} from './implementation'
+} from './implementations'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 

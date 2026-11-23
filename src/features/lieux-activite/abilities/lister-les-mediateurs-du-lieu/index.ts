@@ -1,2 +1,2 @@
 export type { MediateurDuLieu } from './domain'
-export { listerLesMediateursDuLieu } from './implementation'
+export { listerLesMediateursDuLieu } from './implementations'

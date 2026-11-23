@@ -1,6 +1,6 @@
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
-import { rolesVacants } from '../implementation'
+import { rolesVacants } from '../implementations'
 import { changerLesRoles } from './changer-les-roles'
 
 const retirer =

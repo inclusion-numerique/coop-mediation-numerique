@@ -9,7 +9,7 @@ import {
 import { validerInscription } from '@/features/inscription/abilities/valider/commands/valider'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
-import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementation'
+import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const validerAction = actionBuilder()

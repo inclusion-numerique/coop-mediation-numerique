@@ -2,4 +2,4 @@ export {
   FiltresDesStatistiquesValidation,
   statistiquesAttributes,
   statistiquesExposees,
-} from './implementation'
+} from './implementations'

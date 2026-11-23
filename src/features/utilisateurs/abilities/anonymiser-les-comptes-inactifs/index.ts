@@ -3,4 +3,4 @@ export {
   type CompteExamine,
 } from './commands/anonymiser-les-comptes-inactifs'
 
-export { avertirDeLaSuppression } from './implementation'
+export { avertirDeLaSuppression } from './implementations'

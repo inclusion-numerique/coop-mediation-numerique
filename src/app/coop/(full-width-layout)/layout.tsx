@@ -1,7 +1,7 @@
 import React from 'react'
 import CreateCraModal from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModal'
 import { getHomepage } from '@/features/authentification/domain/getHomepage'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'

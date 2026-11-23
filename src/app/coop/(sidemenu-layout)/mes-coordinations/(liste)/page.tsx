@@ -9,7 +9,7 @@ import { mesActivitesDeCoordination } from '@/features/activites/abilities/liste
 import { MesCoordinationsPage } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
 import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
-import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

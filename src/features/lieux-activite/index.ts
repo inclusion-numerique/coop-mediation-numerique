@@ -7,7 +7,7 @@ export {
   rattacherAuLieuDesire,
 } from './abilities/ajouter-des-lieux-activite'
 
-export { findCartoStructuresByIds } from './abilities/ajouter-des-lieux-activite/implementation/entrepot/structures-carto'
+export { findCartoStructuresByIds } from './abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto'
 
 export {
   communesDesLieux,

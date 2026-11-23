@@ -3,4 +3,4 @@ export {
   consulterLAccueil,
   selonLeProfil,
 } from './domain'
-export { type UtilisateurConnecte, visiteurDe } from './implementation'
+export { type UtilisateurConnecte, visiteurDe } from './implementations'

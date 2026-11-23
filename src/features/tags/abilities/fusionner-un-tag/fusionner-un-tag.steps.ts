@@ -14,7 +14,7 @@ import {
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
 import type { DestinationDeFusion } from './domain'
-import { destinationsDeFusion, fusionnerUnTag } from './implementation'
+import { destinationsDeFusion, fusionnerUnTag } from './implementations'
 
 const contexte: {
   acteur?: Acteur

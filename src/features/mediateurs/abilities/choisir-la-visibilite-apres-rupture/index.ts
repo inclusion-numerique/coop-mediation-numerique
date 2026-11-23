@@ -1,4 +1,4 @@
 export {
   choisirLaVisibiliteApresRupture,
   lireLaRuptureEnAttente,
-} from './implementation'
+} from './implementations'

@@ -11,7 +11,7 @@ import {
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

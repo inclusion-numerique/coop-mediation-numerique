@@ -7,7 +7,7 @@ import {
   type RenseignerStructureEmployeuseError,
 } from '../domain/renseigner-structure-employeuse'
 import { saisieEmployeuse } from '../domain/structure-employeuse-input'
-import { getInscriptionEtat, projeterEtapeFranchie } from '../implementation'
+import { getInscriptionEtat, projeterEtapeFranchie } from '../implementations'
 
 /**
  * Cas d'usage « renseigner la structure employeuse » : lit l'état, délègue la
