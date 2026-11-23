@@ -1,16 +1,16 @@
-import type { AdhesionActive, AdhesionArchivee } from './adhesion'
-import { AdhesionId } from './adhesion-id'
-import type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
-import { CoordinateurId } from './coordinateur-id'
-import { Email } from './email'
+import type { AdhesionActive, AdhesionArchivee } from '../domain/adhesion'
+import { AdhesionId } from '../domain/adhesion-id'
+import type { CoordinateurDeLEquipe } from '../domain/coordinateur-de-l-equipe'
+import { CoordinateurId } from '../domain/coordinateur-id'
+import { Email } from '../domain/email'
 import type {
   InvitationAcceptee,
   InvitationEnAttente,
   InvitationRefusee,
-} from './invitation'
-import { MediateurId } from './mediateur-id'
-import { NomAffiche } from './nom-affiche'
-import { ReferenceInvitation } from './reference-invitation'
+} from '../domain/invitation'
+import { MediateurId } from '../domain/mediateur-id'
+import { NomAffiche } from '../domain/nom-affiche'
+import { ReferenceInvitation } from '../domain/reference-invitation'
 
 export const coordinateurId = CoordinateurId(
   '550e8400-e29b-41d4-a716-446655440001',

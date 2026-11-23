@@ -5,7 +5,7 @@ import {
   email,
   invitationEnAttente,
   invitationRefusee,
-} from '../../../domain/fixtures'
+} from '../../../fixtures/domaine'
 import { vueInvitation } from './vue-invitation'
 
 const coordinateur = coordinateurDeLEquipe

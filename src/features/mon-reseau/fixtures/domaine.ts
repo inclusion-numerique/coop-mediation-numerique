@@ -1,12 +1,12 @@
 import { CodeDepartement } from '@/libraries/insee'
 import { NomAffiche } from '@/libraries/nom-affiche'
-import type { Acteur, Mediation } from './acteur'
-import { ActeurId } from './acteur-id'
-import { CoordinateurId } from './coordinateur-id'
-import { Courriel } from './courriel'
-import { Dispositif } from './dispositif'
-import { Effectif } from './effectif'
-import { MediateurId } from './mediateur-id'
+import type { Acteur, Mediation } from '../domain/acteur'
+import { ActeurId } from '../domain/acteur-id'
+import { CoordinateurId } from '../domain/coordinateur-id'
+import { Courriel } from '../domain/courriel'
+import { Dispositif } from '../domain/dispositif'
+import { Effectif } from '../domain/effectif'
+import { MediateurId } from '../domain/mediateur-id'
 
 export const mediation: Mediation = {
   mediateurId: MediateurId('a1b2c3d4-0000-4000-8000-000000000001'),

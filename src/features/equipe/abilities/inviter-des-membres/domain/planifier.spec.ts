@@ -5,7 +5,7 @@ import {
   invitationAcceptee,
   invitationEnAttente,
   invitationRefusee,
-} from '../../../domain/fixtures'
+} from '../../../fixtures/domaine'
 import { planifier } from './planifier'
 
 const maintenant = new Date('2026-10-14T09:00:00Z')

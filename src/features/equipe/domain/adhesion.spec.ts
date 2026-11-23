@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { adherer, archiver } from './adhesion'
 import {
   adhesionActive,
   adhesionArchivee,
   coordinateurId,
   mediateurId,
-} from './fixtures'
+} from '../fixtures/domaine'
+import { adherer, archiver } from './adhesion'
 
 const maintenant = new Date('2026-10-14T09:00:00Z')
 

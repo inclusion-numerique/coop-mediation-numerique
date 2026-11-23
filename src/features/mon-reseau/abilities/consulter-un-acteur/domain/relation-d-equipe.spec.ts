@@ -3,7 +3,7 @@ import { ActeurId, CoordinateurId } from '../../../domain'
 import {
   coordinateurConseillerNumerique,
   mediateurHorsDispositif,
-} from '../../../domain/fixtures'
+} from '../../../fixtures/domaine'
 import { lienDEquipe } from './relation-d-equipe'
 
 const lecteur = {

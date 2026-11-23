@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { actuelle as affectationActuelle, contrat } from './employeuse.fixture'
+import { actuelle as affectationActuelle, contrat } from '../fixtures/domaine'
 import { employeuseActuelle } from './employeuse-actuelle'
 
 describe('employeuseActuelle', () => {

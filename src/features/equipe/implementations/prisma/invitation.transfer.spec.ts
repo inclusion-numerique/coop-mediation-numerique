@@ -3,7 +3,7 @@ import {
   invitationAcceptee,
   invitationEnAttente,
   invitationRefusee,
-} from '../../domain/fixtures'
+} from '../../fixtures/domaine'
 import { fromInvitation, toInvitation } from './invitation.transfer'
 
 describe('transfert d’une invitation', () => {

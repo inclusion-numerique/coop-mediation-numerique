@@ -3,7 +3,7 @@ import { CoordinateurId, Effectif } from '../../../domain'
 import {
   coordinateurConseillerNumerique,
   mediateurHorsDispositif,
-} from '../../../domain/fixtures'
+} from '../../../fixtures/domaine'
 import type { RegardDuLecteur } from '../domain'
 import {
   actionsDEquipe,

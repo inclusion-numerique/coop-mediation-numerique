@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { adhesionActive, adhesionArchivee } from '../../domain/fixtures'
+import { adhesionActive, adhesionArchivee } from '../../fixtures/domaine'
 import { fromAdhesion, toAdhesion } from './adhesion.transfer'
 
 describe('transfert d’une adhésion', () => {

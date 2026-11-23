@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   coordinateurConseillerNumerique,
   mediateurHorsDispositif,
-} from '../domain/fixtures'
+} from '../fixtures/domaine'
 import {
   iconeDuProfil,
   libelleDesLieux,

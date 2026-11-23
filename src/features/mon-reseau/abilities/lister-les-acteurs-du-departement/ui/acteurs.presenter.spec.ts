@@ -3,7 +3,7 @@ import { Dispositif } from '../../../domain'
 import {
   coordinateurConseillerNumerique,
   mediateurHorsDispositif,
-} from '../../../domain/fixtures'
+} from '../../../fixtures/domaine'
 import { criteresActeurs } from '../domain'
 import {
   etiquettesDesFiltres,

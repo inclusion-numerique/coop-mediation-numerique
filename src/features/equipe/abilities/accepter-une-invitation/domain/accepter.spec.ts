@@ -4,7 +4,7 @@ import {
   email,
   invitationAcceptee,
   invitationEnAttente,
-} from '../../../domain/fixtures'
+} from '../../../fixtures/domaine'
 import { accepter } from './accepter'
 
 const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440031')

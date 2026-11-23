@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { contrat, employeuse as employeuseDeTest } from './employeuse.fixture'
+import { contrat, employeuse as employeuseDeTest } from '../fixtures/domaine'
 import { employeuseALaDate } from './employeuse-a-la-date'
 
 const juin2026 = new Date('2026-06-01')

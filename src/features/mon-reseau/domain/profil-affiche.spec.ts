@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { mediation } from '../fixtures/domaine'
 import { CoordinateurId } from './coordinateur-id'
 import { Dispositif } from './dispositif'
-import { mediation } from './fixtures'
 import { profilAffiche } from './profil-affiche'
 
 const coordinateurId = CoordinateurId('a1b2c3d4-0000-4000-8000-000000000009')

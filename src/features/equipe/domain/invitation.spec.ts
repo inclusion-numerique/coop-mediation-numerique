@@ -3,7 +3,7 @@ import {
   invitationAcceptee,
   invitationEnAttente,
   invitationRefusee,
-} from './fixtures'
+} from '../fixtures/domaine'
 import { exigerEnAttente, exigerUneRelancePossible } from './invitation'
 
 describe('une invitation ne se traite qu’une fois', () => {
