@@ -1,45 +1,22 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
-import type { ComponentProps, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import Filters from '@/features/statistiques/ui/components/filtres/Filters'
 import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
+import type { OptionsDeLaBarre } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
 } from '../../../../ui/components/export/ExportStatistiques'
 import { ImpressionPreteProvider } from '../../../../ui/components/impression-prete'
 import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
-import type { VocabulaireDeLaBarre } from '../../../../ui/labels/barre.labels'
 import { statistiquesPageTitle } from '../../../../ui/presenters/titre-des-statistiques'
 import { StatistiquesImpact } from '../components/StatistiquesImpact'
-
-export type OptionsDeLaBarre = {
-  activitesFilters: ActivitesFilters
-  communesOptions: SelectOption[]
-  departementsOptions: SelectOption[]
-  lieuxActiviteOptions: SelectOption[]
-  structuresEmployeusesOptions: ComponentProps<
-    typeof Filters
-  >['structuresEmployeusesOptions']
-  tagsOptions: ComponentProps<typeof Filters>['tagsOptions']
-  initialMediateursOptions: ComponentProps<
-    typeof Filters
-  >['initialMediateursOptions']
-  initialBeneficiairesOptions: ComponentProps<
-    typeof Filters
-  >['initialBeneficiairesOptions']
-  activiteSourceOptions: SelectOption[]
-  activiteDates: { first: Date | undefined }
-  vocabulaire: VocabulaireDeLaBarre
-  filtreDeLieu: ReactNode
-}
 
 export const MesStatistiques = ({
   activitesFilters,

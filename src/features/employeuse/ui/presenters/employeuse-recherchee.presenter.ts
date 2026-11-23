@@ -1,6 +1,6 @@
 import { toTitleCase } from '@/libraries/texte/toTitleCase'
-import type { Employeuse } from '../../../../domain/employeuse'
-import { employeuseAffichage } from '../../../../ui/presenters/employeuse.presenter'
+import type { Employeuse } from '../../domain/employeuse'
+import { employeuseAffichage } from './employeuse.presenter'
 
 /**
  * Résultat de recherche affichable. Les adresses de SIRENE arrivent en

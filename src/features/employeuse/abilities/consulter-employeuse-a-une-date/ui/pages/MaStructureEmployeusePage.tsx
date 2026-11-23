@@ -4,7 +4,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { Employeuse } from '../../../../domain/employeuse'
 import ActeurStructureEmployeuse from '../../../../ui/components/ActeurStructureEmployeuse'
-import { emploiEmployeuseAffichage } from '../presenters/employeuse-emploi.presenter'
+import { emploiEmployeuseAffichage } from '../../../../ui/presenters/employeuse-emploi.presenter'
 
 export const MaStructureEmployeusePage = ({
   employeuse,

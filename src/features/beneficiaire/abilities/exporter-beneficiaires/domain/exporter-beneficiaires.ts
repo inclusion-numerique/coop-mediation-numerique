@@ -1,3 +1,4 @@
+import type { PageSize, Search } from '@arckit/resultset'
 import type { Workbook } from 'exceljs'
 import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
@@ -48,3 +49,12 @@ export type ExporterBeneficiaires = (input: {
   filters: ExportBeneficiairesFilters
   auteur: AuteurDExport
 }) => Promise<Workbook>
+
+export type ListerLesBeneficiairesAExporter = (input: {
+  mediateurId: MediateurId
+  search?: Search
+  pageSize: PageSize
+}) => Promise<{
+  items: readonly BeneficiaireExportRow[]
+  totalItems: number
+}>

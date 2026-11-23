@@ -1,8 +1,8 @@
-import type { Employeuse } from '../../../../domain/employeuse'
+import type { Employeuse } from '../../domain/employeuse'
 import {
   type EmployeuseAffichage,
   employeuseAffichage,
-} from '../../../../ui/presenters/employeuse.presenter'
+} from './employeuse.presenter'
 
 /**
  * Employeuse rattachée à un emploi, telle que l'attendent les cartes

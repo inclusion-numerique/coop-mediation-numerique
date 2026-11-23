@@ -1,10 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import {
-  employeuseSelect,
-  employeuseToDomain,
-} from '../../../../implementations/prisma/employeuse.transfer'
 import type { RechercherEmployeuse } from '../../domain/rechercher-employeuse'
+import { employeuseSelect, employeuseToDomain } from './employeuse.transfer'
 
 const LIMITE_PAR_DEFAUT = 50
 

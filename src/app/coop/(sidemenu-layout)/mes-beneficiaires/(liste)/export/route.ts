@@ -3,7 +3,8 @@ import { isMediateur } from '@/features/authentification/domain/profils-d-utilis
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export.validation'
-import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
+import { exporterBeneficiairesAvec } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
@@ -28,7 +29,7 @@ export const GET = async (request: NextRequest) => {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const workbook = await exporterBeneficiaires({
+  const workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
     mediateurId: MediateurId(user.mediateur.id),
     filters: parsedQueryParams.data,
     auteur: auteurDeLExport(user),

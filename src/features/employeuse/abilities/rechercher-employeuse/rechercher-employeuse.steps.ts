@@ -3,12 +3,12 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
-import { rechercherEmployeuse } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/rechercher-employeuse.query'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedEmployeuseMain,
   supprimerEmployeuseMain,
 } from '@/features/employeuse/employeuse.cucumber'
+import { rechercherEmployeuse } from '@/features/employeuse/implementations/prisma/rechercher-employeuse.query'
 
 let trouvees: Employeuse[] = []
 

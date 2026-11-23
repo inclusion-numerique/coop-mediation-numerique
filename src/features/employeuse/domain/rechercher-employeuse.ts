@@ -1,4 +1,4 @@
-import type { Employeuse } from '../../../domain/employeuse'
+import type { Employeuse } from './employeuse'
 
 /**
  * Recherche d'employeuses parmi celles déjà enregistrées.

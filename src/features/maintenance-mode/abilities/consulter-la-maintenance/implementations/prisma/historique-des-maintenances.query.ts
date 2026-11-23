@@ -3,7 +3,7 @@ import type { PeriodeDeMaintenance } from '@/features/maintenance-mode/domain'
 import {
   periodeDeMaintenance,
   periodeDeMaintenanceSelect,
-} from './periode-de-maintenance'
+} from '../../../../implementations/prisma/periode-de-maintenance'
 
 const TAILLE_DE_L_HISTORIQUE = 20
 

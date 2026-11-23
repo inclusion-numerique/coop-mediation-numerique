@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import {
   adresseCompleteAffichage,
   type EmploiEmployeuseAffichage,
-} from '../../abilities/consulter-employeuse-a-une-date/ui/presenters/employeuse-emploi.presenter'
+} from '../presenters/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from './ActeurStructureEmployeuse'
 
 const structure = (

@@ -2,8 +2,8 @@ import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
 import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises/etablissementsDepuisUniteLegale'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
-import { rechercherEmployeuse } from '../../../rechercher-employeuse/implementations/prisma/rechercher-employeuse.query'
-import { employeuseRecherchee } from '../../../rechercher-employeuse/ui/presenters/employeuse-recherchee.presenter'
+import { rechercherEmployeuse } from '../../../../implementations/prisma/rechercher-employeuse.query'
+import { employeuseRecherchee } from '../../../../ui/presenters/employeuse-recherchee.presenter'
 import type { StructureSearchResult } from '../../domain/employeuse-choisie'
 
 export const searchStructureEmployeuseCombined = async (

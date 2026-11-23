@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/etat-de-maintenance.query'
-import { periodeEnCoursWhere } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/periode-de-maintenance'
 import type { EtatDeMaintenance } from '@/features/maintenance-mode/domain'
+import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
+import { periodeEnCoursWhere } from '@/features/maintenance-mode/implementations/prisma/periode-de-maintenance'
 import {
   type DemandeDeReglage,
   type Reglage,

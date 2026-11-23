@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import Filters from '@/features/statistiques/ui/components/filtres/Filters'
 import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
+import type { OptionsDeLaBarre } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import {
@@ -11,7 +12,6 @@ import {
 } from '../../../../ui/components/export/ExportStatistiques'
 import { ImpressionPreteProvider } from '../../../../ui/components/impression-prete'
 import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
-import type { OptionsDeLaBarre } from '../../../consulter-mes-statistiques/ui/pages/MesStatistiques'
 
 export const StatistiquesPartagees = ({
   shareId,
