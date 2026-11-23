@@ -38,6 +38,7 @@ export const sessionUserSelect = {
       id: true,
       isVisible: true,
       coordinations: {
+        where: { suppression: null },
         select: {
           coordinateur: {
             select: {
