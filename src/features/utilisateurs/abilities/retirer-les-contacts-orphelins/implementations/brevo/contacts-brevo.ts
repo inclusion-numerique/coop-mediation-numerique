@@ -4,10 +4,10 @@ import {
   cleApiBrevo,
   listeDesUtilisateurs,
 } from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevoApiThrottle'
-import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/deleteBrevoContact'
-import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/deleteBrevoContactIfOrphan'
-import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/removeBrevoContactFromList'
+import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle'
+import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact'
+import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan'
+import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list'
 import type {
   CompteDuContact,
   ContactBrevo,

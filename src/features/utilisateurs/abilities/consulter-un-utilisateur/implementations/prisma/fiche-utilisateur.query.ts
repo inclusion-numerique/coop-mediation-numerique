@@ -16,7 +16,7 @@ import {
 import {
   enPosteSelect,
   estEnPoste,
-} from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste'
+} from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
 import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'

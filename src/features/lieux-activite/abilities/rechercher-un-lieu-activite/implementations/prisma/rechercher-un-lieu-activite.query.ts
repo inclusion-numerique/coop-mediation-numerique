@@ -5,8 +5,8 @@ import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { NombreDActivites } from '../../../../domain/nombres'
-import { lieuExploitable } from '../../../../implementations'
 import { adresseDesColonnes } from '../../../../implementations/prisma/adresse-des-colonnes'
+import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 import type { LieuActiviteTrouve } from '../../domain'
 
 export const rechercherUnLieuActivite = async ({

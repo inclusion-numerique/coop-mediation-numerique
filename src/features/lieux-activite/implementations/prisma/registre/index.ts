@@ -6,7 +6,10 @@ export {
 } from './colonnes-a-ecrire'
 
 export { aBougeDepuis, derniereEcriture } from './derniere-ecriture'
-export { ecrireAuRegistre, ecrireLeLieuAuRegistre } from './ecrire-au-registre'
+export {
+  ecrireAuRegistre,
+  ecrireLeLieuAuRegistre,
+} from './ecrire-au-registre.mutation'
 export {
   adresseDeLInscription,
   inscriptionPourLaFiche,
@@ -15,7 +18,7 @@ export {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
-} from './identifiants-carto'
+} from './identifiants-carto.query'
 export { type ColonnesDuRegistre } from './lieu.registre.transfer'
 
-export { retirerDuRegistre } from './retirer-du-registre'
+export { retirerDuRegistre } from './retirer-du-registre.mutation'

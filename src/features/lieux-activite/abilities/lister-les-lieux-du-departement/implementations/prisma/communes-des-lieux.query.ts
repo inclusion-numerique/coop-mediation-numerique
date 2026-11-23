@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { departementCodeFromInseeRegex } from '@/features/lieux-activite/implementations/prisma/departementCodeFromInseeRegex'
+import { departementCodeFromInseeRegex } from '@/features/lieux-activite/implementations/prisma/departement-du-code-insee.sql'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 export const communesDesLieux = async ({

@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable'
+import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 
 export const verifierUnLieuDActivite = async ({
   lieuId,

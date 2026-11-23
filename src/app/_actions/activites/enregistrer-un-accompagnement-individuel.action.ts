@@ -8,7 +8,7 @@ import { MediateurId, UtilisateurId } from '@/features/activites/domain'
 import {
   employeuseDeLaDateDepuis,
   tagsUtilisablesDepuis,
-} from '@/features/activites/implementations/fournisseurs-de-la-saisie'
+} from '@/features/activites/domain/fournisseurs-de-la-saisie'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'

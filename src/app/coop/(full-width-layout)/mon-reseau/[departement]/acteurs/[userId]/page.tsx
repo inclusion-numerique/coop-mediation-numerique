@@ -11,7 +11,7 @@ import {
   criteresDesStatistiques,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
 import { emploiEmployeuseAffichage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'

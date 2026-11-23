@@ -3,7 +3,7 @@ import {
   cleApiBrevo,
   listeDesUtilisateurs,
 } from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevoApiThrottle'
+import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle'
 import {
   type AdresseCourriel,
   type ContactAImporter,

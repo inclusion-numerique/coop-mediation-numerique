@@ -15,7 +15,10 @@ import {
   statutDe,
   UtilisateurId,
 } from '../../domain'
-import { enPosteSelect, estEnPoste } from './conseiller-numerique-en-poste'
+import {
+  enPosteSelect,
+  estEnPoste,
+} from './conseiller-numerique-en-poste.where'
 import { identiteToDomain } from './identite.transfer'
 
 export const ligneUtilisateurSelect = {

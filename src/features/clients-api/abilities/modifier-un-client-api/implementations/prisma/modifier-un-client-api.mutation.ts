@@ -6,12 +6,12 @@ import {
   type DefinitionDuClientApi,
   NomDejaPris,
 } from '@/features/clients-api/domain'
-import { nomDejaPris } from '@/features/clients-api/implementations/nom-deja-pris'
 import {
   clientApiSelect,
   depuisDefinition,
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
+import { nomDejaPris } from '@/features/clients-api/implementations/prisma/nom-deja-pris.query'
 import { failure, type Result, success } from '@/libraries/result'
 
 export const modifierUnClientApi = async ({

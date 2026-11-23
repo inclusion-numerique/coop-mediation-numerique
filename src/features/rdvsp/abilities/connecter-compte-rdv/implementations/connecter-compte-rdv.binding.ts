@@ -1,10 +1,10 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/oauth.configuration'
+import { rdvServicePublicApiBinding } from '../../../implementations/api/rdv-service-public.binding'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOauthCallbackUrl,
 } from '../../../implementations/oauth/oauth'
-import { rdvServicePublicApiBinding } from '../../../implementations/rdv-service-public.bindings'
 import { echangerCodeAutorisation } from './api/echanger-code-autorisation'
 import { connecterCompteRdv } from './connecter-compte-rdv'
 import { compteRdvExistant } from './prisma/compte-rdv-existant.query'

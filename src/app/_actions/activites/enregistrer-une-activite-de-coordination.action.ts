@@ -5,7 +5,7 @@ import { enregistrerUneActiviteDeCoordination } from '@/features/activites/abili
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.errors'
 import { EnregistrerUneActiviteDeCoordinationValidation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
 import { CoordinateurId, UtilisateurId } from '@/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@/features/activites/implementations/fournisseurs-de-la-saisie'
+import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

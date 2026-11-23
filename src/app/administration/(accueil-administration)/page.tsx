@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 
 const Page = async () => {
   await authenticateAdmin()

@@ -4,7 +4,7 @@ import type {
   GarantirLeRoleCoordinateur,
 } from '@/features/inscription/abilities/initialiser-inscription/domain'
 import { profilDepuisDispositif } from '@/features/inscription/domain'
-import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne'
+import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
 /** Crée le médiateur s'il manque — jamais de suppression, comme auparavant. */

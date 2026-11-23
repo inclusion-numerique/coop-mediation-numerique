@@ -6,7 +6,7 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,
-} from '@/features/authentification/implementations/session/getSessionUser'
+} from '@/features/authentification/implementations/session/session-user'
 import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
 import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'

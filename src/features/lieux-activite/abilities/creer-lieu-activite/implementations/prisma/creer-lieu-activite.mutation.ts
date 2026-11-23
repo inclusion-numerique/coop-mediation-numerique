@@ -6,14 +6,16 @@ import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { Lieu } from '../../../../domain/lieu'
+import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
+import {
+  lieuCorrele,
+  preparerCorrele,
+} from '../../../../implementations/prisma/lieu-correle.mutation'
 import {
   ecrireAuRegistre,
   identiteDuLieu,
-  lieuCorrele,
-  lieuFromDomain,
-  preparerCorrele,
   toutesLesColonnes,
-} from '../../../../implementations'
+} from '../../../../implementations/prisma/registre/index'
 import { type EchecDeCreation, MediateurRequis } from '../../domain/errors'
 
 const rattacher = async (

@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { lieuExploitable } from '../../../../implementations'
+import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 
 const lieuSelect = {
   id: true,

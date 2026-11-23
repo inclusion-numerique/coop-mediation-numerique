@@ -3,7 +3,7 @@ import {
   cheminDeDuplicationDeCoordination,
   saisieDePartenariat,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
-import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 
 const DupliquerCraPartenariatPage = async ({
   searchParams,

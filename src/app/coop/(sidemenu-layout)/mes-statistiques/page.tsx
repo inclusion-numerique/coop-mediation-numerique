@@ -20,7 +20,7 @@ import {
 } from '@/features/activites/ui/blocs-des-statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
@@ -29,7 +29,6 @@ import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-p
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
-import { mesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {
   type ParametresDeLaPage,
@@ -37,6 +36,7 @@ import {
 } from '@/features/statistiques/ui/filtres/parametres-de-la-page'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
+import { mesStatistiques } from '@/features/statistiques/ui/mes-statistiques'
 import { MesStatistiques } from '@/features/statistiques/ui/pages/MesStatistiques'
 import {
   impressionDesStatistiques,

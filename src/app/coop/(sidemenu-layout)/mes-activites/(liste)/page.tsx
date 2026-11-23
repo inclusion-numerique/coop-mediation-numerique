@@ -18,7 +18,7 @@ import {
   isCoordinateur,
   isMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,

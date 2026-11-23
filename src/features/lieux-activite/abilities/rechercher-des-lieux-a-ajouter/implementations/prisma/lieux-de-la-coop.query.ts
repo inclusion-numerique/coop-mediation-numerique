@@ -13,7 +13,7 @@ import {
   AdresseLibre,
   type SuggestionDeLieu,
 } from '../../../../domain/suggestion-de-lieu'
-import { lieuExploitable } from '../../../../implementations'
+import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 import type { ChercherDansLaCoop } from '../../domain/ports'
 
 const lieuxDeLaCoop = async (

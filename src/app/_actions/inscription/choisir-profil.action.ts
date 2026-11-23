@@ -9,7 +9,7 @@ import {
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const choisirProfilAction = actionBuilder()

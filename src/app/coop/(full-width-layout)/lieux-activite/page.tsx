@@ -4,7 +4,7 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'

@@ -9,7 +9,7 @@ import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ERRORS } from '@/features/mediateur
 import { ChoisirLaVisibiliteApresRuptureValidation } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.validation'
 import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
-import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const choisirLaVisibiliteApresRuptureAction = actionBuilder()

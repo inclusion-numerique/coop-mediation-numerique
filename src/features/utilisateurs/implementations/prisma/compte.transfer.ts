@@ -11,7 +11,10 @@ import {
   rattachements,
   UtilisateurId,
 } from '../../domain'
-import { enPosteSelect, estEnPoste } from './conseiller-numerique-en-poste'
+import {
+  enPosteSelect,
+  estEnPoste,
+} from './conseiller-numerique-en-poste.where'
 
 export const compteASupprimerSelect = {
   id: true,

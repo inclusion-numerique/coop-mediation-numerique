@@ -5,7 +5,7 @@ import { relancerUneInvitationAction } from '@/app/_actions/equipe/relancer-une-
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.key'
 import { BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui'
 import { BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui'

@@ -3,7 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles'
 import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
 import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'

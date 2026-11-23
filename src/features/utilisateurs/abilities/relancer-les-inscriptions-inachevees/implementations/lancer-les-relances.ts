@@ -1,4 +1,4 @@
-import { removeBrevoUserContact } from '@/features/utilisateurs/implementations/brevo/removeBrevoUserContact'
+import { removeBrevoUserContact } from '@/features/utilisateurs/implementations/brevo/remove-brevo-user-contact'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
 import { relancerLesInscriptionsInachevees } from '../commands/relancer-les-inscriptions-inachevees'

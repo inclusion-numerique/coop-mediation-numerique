@@ -8,7 +8,7 @@ import {
   type RoleFiltre,
   rolesFiltres,
 } from '../../domain'
-import { enPosteWhere } from './conseiller-numerique-en-poste'
+import { enPosteWhere } from './conseiller-numerique-en-poste.where'
 import type { UtilisateursRattaches } from './utilisateurs-rattaches.query'
 
 const coordinateurQuiCoordonne = {

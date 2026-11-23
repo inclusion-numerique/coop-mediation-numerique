@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations'
 import { UserId } from '@/features/inscription/domain'
@@ -10,7 +10,7 @@ import { stepPath } from '@/features/inscription/ui/chemin-de-l-etape'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+} from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 
 const registreDesPersonnes = {

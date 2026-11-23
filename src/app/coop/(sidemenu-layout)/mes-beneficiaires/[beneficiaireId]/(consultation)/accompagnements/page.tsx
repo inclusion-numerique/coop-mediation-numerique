@@ -15,7 +15,7 @@ import {
 } from '@/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'

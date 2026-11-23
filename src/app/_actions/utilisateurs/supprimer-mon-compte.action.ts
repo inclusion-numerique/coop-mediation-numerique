@@ -9,7 +9,7 @@ import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
-import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import {
   hash,

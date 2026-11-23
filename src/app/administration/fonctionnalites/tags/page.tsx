@@ -1,5 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { usageDesTags } from '@/features/tags/abilities/mesurer-l-usage-des-tags'
 import { UsageDesTagsPage } from '@/features/tags/abilities/mesurer-l-usage-des-tags/ui'
 

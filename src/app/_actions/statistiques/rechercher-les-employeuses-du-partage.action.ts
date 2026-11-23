@@ -9,9 +9,9 @@ import {
 import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
 import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
 import { perimetreDesEmployeusesDe } from '@/features/activites/implementations/statistiques'
-import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
+import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { utilisateurDuPartage } from '@/features/statistiques/implementations/utilisateur-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()

@@ -4,7 +4,7 @@ import { modifierUnTagAction } from '@/app/_actions/tags/modifier-un-tag.action'
 import { rechercherDesDestinationsAction } from '@/app/_actions/tags/rechercher-des-destinations.action'
 import { supprimerUnTagAction } from '@/app/_actions/tags/supprimer-un-tag.action'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { CREER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.key'
 import {
   BoutonCreerUnTag,

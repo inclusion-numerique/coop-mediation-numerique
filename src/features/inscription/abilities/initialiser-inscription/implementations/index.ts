@@ -4,7 +4,7 @@ import {
   type RattacherDepuisSiret,
 } from '@/features/inscription/abilities/initialiser-inscription/domain'
 import type { InscriptionStep, UserId } from '@/features/inscription/domain'
-import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne'
+import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
 import { appliquerDispositif } from './prisma/appliquer-dispositif'
 import { importerStructureDepuisSiret } from './prisma/importer-structure-depuis-siret'
 import { lireEtatPourEtapeSuivante } from './prisma/lire-etat-pour-etape-suivante'

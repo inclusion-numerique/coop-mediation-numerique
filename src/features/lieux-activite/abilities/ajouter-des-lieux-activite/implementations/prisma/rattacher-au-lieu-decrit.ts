@@ -6,7 +6,7 @@ import {
   type LieuAMaterialiser,
   lieuCorrele,
   preparerCorrele,
-} from '../../../../implementations/prisma/lieu-correle'
+} from '../../../../implementations/prisma/lieu-correle.mutation'
 import {
   ecrireLeLieuAuRegistre,
   identiteDuLieu,

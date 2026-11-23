@@ -23,13 +23,13 @@ import {
 import {
   creerLActiviteDeMediation,
   modifierLActiviteDeMediation,
-} from '../../../../implementations/prisma/activite-de-mediation.ecriture'
+} from '../../../../implementations/prisma/activite-de-mediation.mutation'
 import {
   creationOuModification,
   enregistrementDeMediation,
   lieuVerifie,
   rendezVousVerifie,
-} from '../../../../implementations/prisma/saisie-de-mediation'
+} from '../../../../implementations/prisma/saisie-de-mediation.query'
 import {
   type AccompagnementEnregistre,
   ActionNonAutorisee,

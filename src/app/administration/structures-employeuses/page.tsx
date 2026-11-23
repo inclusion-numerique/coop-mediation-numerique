@@ -1,5 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations'
 import { employeuseAffichee } from '@/features/employeuse/abilities/lister-employeuses/ui/employeuse-affichee.presenter'
 import {

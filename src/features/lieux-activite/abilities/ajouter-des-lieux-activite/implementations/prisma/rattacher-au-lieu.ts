@@ -7,7 +7,7 @@ import {
 import {
   lieuCorrele,
   preparerCorrele,
-} from '../../../../implementations/prisma/lieu-correle'
+} from '../../../../implementations/prisma/lieu-correle.mutation'
 import {
   colonnesRapporteesParLaCartographie,
   ecrireLeLieuAuRegistre,

@@ -10,19 +10,19 @@ import {
 } from '@/features/activites/implementations/statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
+import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
-import { donneesDeMesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
-import { utilisateurDuPartage } from '@/features/statistiques/implementations/utilisateur-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/entree-du-classeur'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
 } from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
+import { donneesDeMesStatistiques } from '@/features/statistiques/ui/mes-statistiques'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

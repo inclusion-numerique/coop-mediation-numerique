@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { cheminDeDuplicationIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'

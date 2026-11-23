@@ -27,8 +27,8 @@ import { estUtilisable } from '../domain/compte/compte-rdv'
 import { diagnosticErreur } from '../domain/errors'
 import { OrganisationId } from '../domain/identifiants/organisation-id'
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../domain/ports'
+import { rdvServicePublicApiBinding } from './api/rdv-service-public.binding'
 import { compteRdvToDomain } from './prisma/compte-rdv.transfer'
-import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
 
 /**
  * Échec d'une passe, porteur de sa cause.

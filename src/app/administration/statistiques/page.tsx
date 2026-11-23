@@ -14,7 +14,7 @@ import {
   blocsGeneraux,
 } from '@/features/activites/ui/blocs-des-statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
 import { optionsDeTags } from '@/features/statistiques/ui/filtres/barre/options-de-la-barre.presenter'

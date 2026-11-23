@@ -4,7 +4,7 @@ import {
   activiteDeMediationLue,
   type FournisseursDeLaSaisieDeMediation,
   pageDeSaisieDeMediation,
-} from '../../../implementations/page-de-saisie-de-mediation'
+} from '../../../implementations/prisma/page-de-saisie-de-mediation.query'
 import type { RendezVousLies } from '../../../implementations/prisma/rendez-vous-fournis'
 import {
   cheminDeLaCopie,

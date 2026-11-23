@@ -1,5 +1,5 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/ports'
-import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementations/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
+import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementations/prisma/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiaires } from '../../domain/synchroniser-rdvs'
 
 export type DependancesRapprochement = {

@@ -3,7 +3,7 @@ import {
   ClientApiId,
   ClientApiIntrouvable,
 } from '@/features/clients-api/domain'
-import { nouveauSecret } from '@/features/clients-api/implementations/secret'
+import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret'
 import { failure, type Result, success } from '@/libraries/result'
 
 export const renouvelerLeSecret = async ({

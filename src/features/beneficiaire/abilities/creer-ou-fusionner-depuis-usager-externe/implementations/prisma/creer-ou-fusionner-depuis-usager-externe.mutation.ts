@@ -10,7 +10,7 @@ import {
   Prenom,
 } from '@/features/beneficiaire/domain/prenom'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import type { DuplicateBeneficiaire } from '@/features/beneficiaire/implementations/prisma/duplicate-beneficiaire'
+import type { DuplicateBeneficiaire } from '@/features/beneficiaire/implementations/prisma/doublon-de-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/implementations/prisma/find-duplicates-for-beneficiaire.query'
 import type { Prisma } from '@/generated/prisma/client'
 import { siIndisponible } from '@/libraries/ban/apiAdresse'

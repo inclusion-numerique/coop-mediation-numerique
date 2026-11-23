@@ -7,7 +7,7 @@ import {
   type MediateurId,
   type UtilisateurId,
 } from '../../../../domain'
-import { recalculerLesPremiersAccompagnements } from '../../../../implementations/prisma/premier-accompagnement'
+import { recalculerLesPremiersAccompagnements } from '../../../../implementations/prisma/premier-accompagnement.mutation'
 
 type Participant = {
   readonly beneficiaire_id: string

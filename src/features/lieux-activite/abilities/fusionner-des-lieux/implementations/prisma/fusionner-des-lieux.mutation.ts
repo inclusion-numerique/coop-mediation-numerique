@@ -8,7 +8,7 @@ import {
   inscriptionPourLIdentifiantCarto,
   retirerDuRegistre,
   toutesLesColonnes,
-} from '../../../../implementations'
+} from '../../../../implementations/prisma/registre/index'
 import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
 
 type PrismaTransaction = Prisma.TransactionClient

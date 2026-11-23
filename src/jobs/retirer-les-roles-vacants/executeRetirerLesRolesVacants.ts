@@ -1,4 +1,4 @@
-import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesRolesVacants } from '@/features/utilisateurs/abilities/changer-les-roles'
 import { output } from '@/libraries/console/output'
 

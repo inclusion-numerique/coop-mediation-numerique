@@ -2,8 +2,8 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { inviteMediateur } from '@/features/equipe/implementations/email/inviteMediateur'
-import { inviteNewMediateur } from '@/features/equipe/implementations/email/inviteNewMediateur'
+import { inviteMediateur } from '@/features/equipe/implementations/email/invitation-d-un-mediateur'
+import { inviteNewMediateur } from '@/features/equipe/implementations/email/invitation-d-un-nouveau-mediateur'
 import { compileMjml } from '@/libraries/emails/mjml'
 import {
   type InvitationEnAttente,

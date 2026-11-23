@@ -7,7 +7,7 @@ import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreint
 import {
   retirerDuRegistre,
   synchroniserPersonne,
-} from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+} from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import { lancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees'
 import { lancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs'

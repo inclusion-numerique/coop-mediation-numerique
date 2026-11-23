@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import {
   communesDesLieux,
   lieuxDuDepartement,

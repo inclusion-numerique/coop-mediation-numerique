@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proConnect'
+import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect'
 import type { JetonsProconnect } from '../../domain'
 
 export const jetonsProconnect = async (

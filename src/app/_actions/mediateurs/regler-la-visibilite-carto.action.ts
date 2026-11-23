@@ -7,7 +7,7 @@ import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-
 import { REGLER_LA_VISIBILITE_CARTO_ERRORS } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.errors'
 import { ReglerLaVisibiliteCartoValidation } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.validation'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
-import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const reglerLaVisibiliteCartoAction = actionBuilder()

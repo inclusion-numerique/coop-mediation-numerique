@@ -1,5 +1,5 @@
 import { criteresDesActivites } from '../../../domain'
-import { tagsUtilisablesDepuis } from '../../../implementations/fournisseurs-de-la-saisie'
+import { tagsUtilisablesDepuis } from '../../../domain/fournisseurs-de-la-saisie'
 import { filtresDeLaListe } from '../../../ui/filtres/filtres-de-la-liste'
 import { demandeurDe } from '../domain'
 import { classeurDesAccompagnements } from '../ui/classeur-des-accompagnements'

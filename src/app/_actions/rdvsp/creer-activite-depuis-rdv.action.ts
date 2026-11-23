@@ -1,7 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementations/url-de-saisie-depuis-un-rendez-vous'
+import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementations/prisma/url-de-saisie-depuis-un-rendez-vous.query'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'

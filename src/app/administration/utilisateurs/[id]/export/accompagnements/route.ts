@@ -1,11 +1,11 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import {
   getSessionUserFromId,
   getSessionUserFromSessionToken,
-} from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
+} from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import {

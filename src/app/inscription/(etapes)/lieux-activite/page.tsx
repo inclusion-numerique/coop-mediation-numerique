@@ -5,7 +5,7 @@ import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/AjouterDesLieuxActivitePage'
 import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/creer-un-lieu.key'

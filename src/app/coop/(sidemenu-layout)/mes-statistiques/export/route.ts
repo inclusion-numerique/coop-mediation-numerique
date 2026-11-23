@@ -8,19 +8,19 @@ import {
 } from '@/features/activites/implementations/statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
-import { donneesDeMesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/entree-du-classeur'
 import {
   exportInterdit,
   filtresDeLExport,
 } from '@/features/statistiques/ui/export/demande-d-export'
+import { donneesDeMesStatistiques } from '@/features/statistiques/ui/mes-statistiques'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

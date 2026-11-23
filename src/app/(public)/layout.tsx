@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
-import { getSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
+import { getSessionUser } from '@/features/authentification/implementations/session/session-user'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import PublicFooter from '@/features/navigation/ui/pied-de-page/PublicFooter'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'

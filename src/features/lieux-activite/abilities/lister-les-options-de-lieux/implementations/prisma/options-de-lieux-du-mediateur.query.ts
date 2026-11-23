@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { lieuExploitableSql } from '../../../../implementations'
+import { lieuExploitableSql } from '../../../../implementations/prisma/lieu-exploitable.sql'
 import {
   adresseComplete,
   type LieuActiviteOption,

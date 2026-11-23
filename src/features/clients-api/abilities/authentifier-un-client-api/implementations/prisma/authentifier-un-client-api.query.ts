@@ -5,11 +5,11 @@ import {
   estValideLe,
   type PorteeApi,
 } from '@/features/clients-api/domain'
-import { verifySecret } from '@/features/clients-api/implementations/hashSecret'
 import {
   clientApiSelect,
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret'
 
 export const authentifierUnClientApi = async ({
   clientApiId,

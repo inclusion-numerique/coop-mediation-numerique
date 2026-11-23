@@ -1,5 +1,5 @@
 import { CoordinateurId, criteresDesCoordinations } from '../../../domain'
-import { tagsUtilisablesDepuis } from '../../../implementations/fournisseurs-de-la-saisie'
+import { tagsUtilisablesDepuis } from '../../../domain/fournisseurs-de-la-saisie'
 import { parametresDeLaRecherche } from '../ui/parametres-de-la-recherche.presenter'
 import { exporterLesActivitesDeCoordination } from './prisma/activites-a-exporter.query'
 import { tagsRappeles } from './tags-rappeles'

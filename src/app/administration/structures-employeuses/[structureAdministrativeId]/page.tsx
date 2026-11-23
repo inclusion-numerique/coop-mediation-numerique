@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
 import { employeuseConsulteeAffichage } from '@/features/employeuse/abilities/consulter-employeuse/ui/employeuse-consultee.presenter'
 import EmployeusePage from '@/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'

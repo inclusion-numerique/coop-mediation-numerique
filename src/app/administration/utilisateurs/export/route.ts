@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
 import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'

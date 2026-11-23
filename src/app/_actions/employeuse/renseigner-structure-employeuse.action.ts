@@ -11,7 +11,7 @@ import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-ma
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
+} from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { withInput } from '@/libraries/nextjs'
 
 const registreDesPersonnes = {

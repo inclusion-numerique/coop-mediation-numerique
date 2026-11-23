@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
+import { payloadsRdvCaptures } from '../../fixtures/payloads-captures'
 import { rdvPayload } from './payloads'
-import { payloadsRdvCaptures } from './payloads-captures.fixture'
 import { rdvToDomain } from './to-domain'
 
 const AGENT_ID = RdvAgentId(2732)

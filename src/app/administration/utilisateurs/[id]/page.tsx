@@ -30,8 +30,8 @@ import { perimetreDeLUtilisateur } from '@/features/activites/implementations/st
 import {
   authenticateAdmin,
   authenticateUser,
-} from '@/features/authentification/implementations/session/authenticateUser'
-import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
+} from '@/features/authentification/implementations/session/authenticate-user'
+import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/historique-employeuses.presenter'

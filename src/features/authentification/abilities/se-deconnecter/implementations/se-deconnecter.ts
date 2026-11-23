@@ -1,4 +1,4 @@
-import { refreshProconnectIdToken } from '@/features/authentification/implementations/proconnect/getProconnectIdToken'
+import { refreshProconnectIdToken } from '@/features/authentification/implementations/proconnect/proconnect-id-token'
 import { jetonNonExpire } from '../domain'
 import { jetonsProconnect } from './prisma'
 

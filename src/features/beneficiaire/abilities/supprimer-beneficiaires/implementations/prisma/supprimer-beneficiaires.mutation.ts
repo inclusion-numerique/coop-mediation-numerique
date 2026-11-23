@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { failure, success } from '@/libraries/result'
-import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal'
+import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal.mutation'
 import { AucunBeneficiaireValide } from '../../domain/errors'
 import type { SupprimerBeneficiaires } from '../../domain/supprimer-beneficiaires'
 
