@@ -12,17 +12,17 @@ import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
-import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
-import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
-import { hrefDesLieux } from '../../../../ui/liens'
-import { type LieuxTrouves } from '../../../../ui/lieu-affiche'
+import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
+import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane'
+import { hrefDesLieux } from '../../../../ui/presenters/liens'
+import { type LieuxTrouves } from '../../../../ui/presenters/lieu-affiche'
 import { type CriteresDesLieux, estFiltre } from '../../domain'
 import Filtres from '../components/Filtres'
 import {
   etiquettesDesCommunes,
   libelleDesResultats,
   parametresDeLURL,
-} from '../libelles-des-filtres.presenter'
+} from './libelles-des-filtres.presenter'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
 

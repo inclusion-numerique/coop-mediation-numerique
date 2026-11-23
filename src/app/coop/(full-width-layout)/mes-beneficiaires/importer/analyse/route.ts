@@ -5,7 +5,7 @@ import { getSessionTokenFromNextRequestCookies } from '@/features/authentificati
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/excel/feuille-d-import'
 import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/analyse-de-l-import'
-import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/presenters/import-analysis-storage'
 
 const tailleMaximaleDuFichier = 5 * 1024 * 1024
 

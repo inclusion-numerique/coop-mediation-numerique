@@ -1,8 +1,8 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
-import { type OptionsDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
+import { type OptionsDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { departementsByCode } from '@/libraries/departement/departements'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { optionDuCoordinateur } from '../../ui/coordinateur-a-choisir.presenter'
+import { optionDuCoordinateur } from '../../ui/presenters/coordinateur-a-choisir.presenter'
 import { coordinateursChoisis } from '.'
 
 export type SourcesDesOptions = {

@@ -2,7 +2,7 @@ import type { Acteur } from '../../../../domain'
 import {
   type OptionDeVisibilite,
   visibilitesProposees,
-} from '../../ui/visibilites.presenter'
+} from '../../ui/presenters/visibilites.presenter'
 
 export const visibilitesProposeesA = (
   acteur: Acteur,

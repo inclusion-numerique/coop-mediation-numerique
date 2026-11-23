@@ -8,8 +8,8 @@ import { classeurDesUtilisateurs } from '@/features/utilisateurs/abilities/expor
 import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/prisma/utilisateurs-a-exporter.query'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 

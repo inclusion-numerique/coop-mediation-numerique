@@ -2,12 +2,12 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { RoleFiltre } from '../../presenters/valeurs-de-filtre'
 import { Actifs } from './Actifs'
 import { Archives } from './Archives'
 import { Inactifs } from './Inactifs'
 import { InvitationsEnvoyees } from './InvitationsEnvoyees'
 import { RoleFilter } from './RoleFilter'
-import type { RoleFiltre } from './valeurs-de-filtre'
 
 export const FiltresEquipe = ({
   actifs,

@@ -4,11 +4,11 @@ import {
   type DataTableUrlState,
   useDataTableSelection,
 } from '@/libraries/data-table'
+import type { MesBeneficiairesView } from '../presenters/lister-beneficiaires.presenter'
 import { BeneficiairesPagination } from './BeneficiairesPagination'
 import { BeneficiairesSelectionToolbar } from './BeneficiairesSelectionToolbar'
 import { BeneficiairesTable } from './BeneficiairesTable'
 import DeleteBulkBeneficiairesModalContent from './DeleteBulkBeneficiairesModalContent'
-import type { MesBeneficiairesView } from './lister-beneficiaires.presenter'
 
 type ResultsView = Extract<MesBeneficiairesView, { tag: 'results' }>
 

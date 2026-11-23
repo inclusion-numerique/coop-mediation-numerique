@@ -1,5 +1,5 @@
 import { pluriel } from '@/libraries/pluriel'
-import type { TotauxPresentes } from '../totaux.presenter'
+import type { TotauxPresentes } from '../presenters/totaux.presenter'
 
 export const ChiffresClesImprimes = ({
   totalCounts,

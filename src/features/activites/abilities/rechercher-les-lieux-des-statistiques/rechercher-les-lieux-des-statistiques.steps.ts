@@ -6,7 +6,7 @@ import { lieuSeme, perimetreDe } from '../../statistiques.cucumber'
 import { GenreDeLieu, type LieuDesStatistiques } from './domain/index'
 import { nommerLesLieuxChoisis } from './implementations/prisma/lieux-choisis.query'
 import { rechercherLesLieuxDesStatistiques } from './implementations/prisma/lieux-des-statistiques.query'
-import { optionDeLieu } from './ui/options-de-lieux.presenter'
+import { optionDeLieu } from './ui/presenters/options-de-lieux.presenter'
 
 let proposes: readonly LieuDesStatistiques[] = []
 

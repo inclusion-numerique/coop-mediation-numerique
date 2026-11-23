@@ -1,8 +1,8 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
-import { type ListeDesLieuxSearchParams } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/lister-tous-les-lieux-search-params'
 import { LieuxPage } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/pages/LieuxPage'
+import { type ListeDesLieuxSearchParams } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/presenters/lister-tous-les-lieux-search-params'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 

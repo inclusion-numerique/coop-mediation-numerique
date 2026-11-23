@@ -1,6 +1,6 @@
-import { thematiquesAccompagnementColors } from '@/features/activites/ui/graphiques/couleurs'
+import { thematiquesAccompagnementColors } from '@/features/activites/ui/presenters/graphiques/couleurs'
 import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
-import type { RepartitionPresentee } from '../repartition.presenter'
+import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 
 const desc = (
   { count: countA }: { count: number },

@@ -4,7 +4,7 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { getAdministrationRdvspUserData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/compte-rdv-detaille.query'
 import { AdministrationRdvspUserPage } from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
-import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/ui/declencher-synchronisation.key'
+import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

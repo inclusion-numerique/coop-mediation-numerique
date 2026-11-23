@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import InscriptionCard from '@/features/inscription/ui/InscriptionCard'
+import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'

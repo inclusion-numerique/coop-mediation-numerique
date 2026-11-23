@@ -1,10 +1,10 @@
 import React from 'react'
-import CreateCraModal from '@/features/activites/ui/saisie/modale-de-saisie/CreateCraModal'
+import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
 import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import Header from '@/features/navigation/ui/en-tete/Header'
-import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
-import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
+import Header from '@/features/navigation/ui/layouts/Header'
+import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
 const CoopFullWidthLayout = async ({
   children,

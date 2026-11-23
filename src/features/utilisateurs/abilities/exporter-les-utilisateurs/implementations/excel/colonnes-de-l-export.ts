@@ -4,7 +4,7 @@ import {
   type LigneUtilisateur,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import { libelleDuStatut } from '@/features/utilisateurs/ui/statut-compte.presenter'
+import { libelleDuStatut } from '@/features/utilisateurs/ui/presenters/statut-compte.presenter'
 
 type Cellule = string | number | null
 

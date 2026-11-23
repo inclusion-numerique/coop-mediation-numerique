@@ -12,22 +12,22 @@ import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../../domain'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
-import { CarteDActeur } from '../../../../ui/CarteDActeur'
-import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
-import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
-import { hrefDesActeurs } from '../../../../ui/liens'
+import { CarteDActeur } from '../../../../ui/components/CarteDActeur'
+import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
+import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane'
+import { hrefDesActeurs } from '../../../../ui/presenters/liens'
 import {
   type CriteresActeurs,
   estFiltre,
   type PageDActeurs,
 } from '../../domain'
+import Filtres from '../components/Filtres'
 import {
   etiquettesDesFiltres,
   groupesDActeurs,
   libelleDesResultats,
   parametresDeLURL,
-} from '../acteurs.presenter'
-import Filtres from '../components/Filtres'
+} from '../presenters/acteurs.presenter'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
 

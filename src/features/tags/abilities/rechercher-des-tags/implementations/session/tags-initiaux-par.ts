@@ -1,6 +1,6 @@
 import { type Acteur, TagId } from '../../../../domain'
-import type { TagAffiche } from '../../../../ui/tag-affiche'
-import { tagAffiche } from '../../../../ui/tag-affiche.presenter'
+import type { TagAffiche } from '../../../../ui/presenters/tag-affiche'
+import { tagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { rechercherDesTags } from '../prisma'
 
 export const tagsInitiauxPar =

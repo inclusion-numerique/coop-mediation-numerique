@@ -15,7 +15,7 @@ import {
 import {
   type AnalyseResponse,
   getBeneficiaireImportAnalysis,
-} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/presenters/import-analysis-storage'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'

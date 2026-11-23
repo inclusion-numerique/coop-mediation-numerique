@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from 'storybook/test'
-import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
+import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
 import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,

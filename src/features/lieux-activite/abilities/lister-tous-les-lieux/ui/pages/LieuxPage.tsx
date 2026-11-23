@@ -2,14 +2,14 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import { LieuxPagination } from '../LieuxPagination'
-import { LieuxTable } from '../LieuxTable'
-import type { PageDeLieux } from '../ligne-de-la-liste'
+import { LieuxPagination } from '../components/LieuxPagination'
+import { LieuxTable } from '../components/LieuxTable'
+import { RechercheDeLieux } from '../components/RechercheDeLieux'
+import type { PageDeLieux } from '../presenters/ligne-de-la-liste'
 import {
   type ListeDesLieuxSearchParams,
   toDataTableUrlState,
-} from '../lister-tous-les-lieux-search-params'
-import { RechercheDeLieux } from '../RechercheDeLieux'
+} from '../presenters/lister-tous-les-lieux-search-params'
 
 const baseHref = '/administration/lieux-activite'
 

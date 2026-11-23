@@ -5,11 +5,11 @@ import {
   type ParametresDesCoordinations,
   paginationLue,
 } from '../../../../domain'
-import { filtresActifsDesCoordinations } from '../../../../ui/filtres-actifs-des-coordinations'
-import { listeDesCoordinations } from '../../ui/liste-des-coordinations.presenter'
-import { optionsDeFiltrePresentees } from '../../ui/options-de-filtre.presenter'
-import { parametresDeLaPagination } from '../../ui/pagination.presenter'
-import { sousTitreDeMesCoordinations } from '../../ui/sous-titre.presenter'
+import { filtresActifsDesCoordinations } from '../../../../ui/presenters/filtres-actifs-des-coordinations'
+import { listeDesCoordinations } from '../../ui/presenters/liste-des-coordinations.presenter'
+import { optionsDeFiltrePresentees } from '../../ui/presenters/options-de-filtre.presenter'
+import { parametresDeLaPagination } from '../../ui/presenters/pagination.presenter'
+import { sousTitreDeMesCoordinations } from '../../ui/presenters/sous-titre.presenter'
 import { listerLesActivitesDeCoordination } from './activites-de-coordination.query'
 import { optionsDeFiltre } from './options-de-filtre.query'
 

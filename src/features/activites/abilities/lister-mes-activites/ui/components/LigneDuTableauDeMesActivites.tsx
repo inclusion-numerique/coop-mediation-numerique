@@ -1,4 +1,4 @@
-import type { LigneDuTableau } from '../mes-activites.presenter'
+import type { LigneDuTableau } from '../presenters/mes-activites.presenter'
 import { OuvrirLeDetailDeLaLigne } from './OuvrirLeDetailDeLaLigne'
 
 export const LigneDuTableauDeMesActivites = ({

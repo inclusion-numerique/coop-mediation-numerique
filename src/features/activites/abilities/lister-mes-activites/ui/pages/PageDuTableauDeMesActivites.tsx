@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
-import type { OptionsDeLaBarre } from '../../../../ui/filtres/BarreDeFiltres'
-import type { FiltresDeLaListe } from '../../../../ui/filtres/filtres-de-la-liste'
+import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
+import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
 import { AucuneActivite } from '../components/AucuneActivite'
 import { EnTeteDeLaListe } from '../components/EnTeteDeLaListe'
+import { MesActivitesPage } from '../components/MesActivitesPage'
 import {
   type ContenuDuTableau,
   TableauDeMesActivites,
 } from '../components/TableauDeMesActivites'
-import { sousTitreDeMesActivites } from '../lecture-de-la-liste.presenter'
-import { MesActivitesPage } from './MesActivitesPage'
+import { sousTitreDeMesActivites } from '../presenters/lecture-de-la-liste.presenter'
 
 export const PageDuTableauDeMesActivites = ({
   tableau,

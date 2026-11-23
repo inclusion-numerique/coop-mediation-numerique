@@ -8,23 +8,23 @@ import {
   rassembler,
   statistiquesDuPerimetre,
 } from '@/features/activites/implementations/statistiques'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
+import { vocabulaireDesActivites } from '@/features/activites/ui/labels/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/presenters/statut-rdv'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
-import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/classeur-des-statistiques'
-import { entreeDuClasseur } from '@/features/statistiques/ui/entree-du-classeur'
+import { buildStatistiquesWorksheet } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
+import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur'
+import { donneesDeMesStatistiques } from '@/features/statistiques/ui/presenters/mes-statistiques'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
-import { donneesDeMesStatistiques } from '@/features/statistiques/ui/mes-statistiques'
+} from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 const sourcesDeMesStatistiques = {

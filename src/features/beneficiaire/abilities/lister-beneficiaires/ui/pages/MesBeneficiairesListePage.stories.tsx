@@ -1,10 +1,10 @@
 import { Page, PageSize, type Paginated } from '@arckit/resultset'
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from 'storybook/test'
+import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/action/supprimer-des-beneficiaires.key'
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { beneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/beneficiaire-list-item.fixture'
-import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
-import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/supprimer-des-beneficiaires.key'
+import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/presenters/lister-beneficiaires.presenter'
+import { beneficiaireListItem } from '@/features/beneficiaire/fixtures/beneficiaire-list-item'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { MesBeneficiairesListePage } from './MesBeneficiairesListePage'
 

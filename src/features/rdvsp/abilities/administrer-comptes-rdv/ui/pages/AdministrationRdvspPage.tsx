@@ -1,6 +1,6 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { statutIntegration } from '@/features/rdvsp/domain/compte/sante-compte'
-import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
+import RdvServicePublicStatusTag from '@/features/rdvsp/ui/components/RdvServicePublicStatusTag'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'

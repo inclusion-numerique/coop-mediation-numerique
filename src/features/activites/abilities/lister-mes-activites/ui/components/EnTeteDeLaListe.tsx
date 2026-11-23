@@ -2,10 +2,10 @@ import type { ReactNode } from 'react'
 import {
   BarreDeFiltres,
   type OptionsDeLaBarre,
-} from '../../../../ui/filtres/BarreDeFiltres'
-import { FilterTags } from '../../../../ui/filtres/EtiquettesDesFiltres'
-import type { FiltresDeLaListe } from '../../../../ui/filtres/filtres-de-la-liste'
-import { optionsDesSources } from '../../../../ui/libelles/source-de-l-activite.labels'
+} from '../../../../ui/components/filtres/BarreDeFiltres'
+import { FilterTags } from '../../../../ui/components/filtres/EtiquettesDesFiltres'
+import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-activite.labels'
+import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
 
 export const EnTeteDeLaListe = ({
   filtres,

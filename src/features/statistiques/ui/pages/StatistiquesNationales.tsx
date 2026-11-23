@@ -1,9 +1,9 @@
 import type { ComponentProps, ReactNode } from 'react'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
-import Filters from '@/features/statistiques/ui/filtres/Filters'
-import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
+import Filters from '@/features/statistiques/ui/components/filtres/Filters'
+import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
+import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { VocabulaireDeLaBarre } from '../filtres/barre/barre.labels'
+import type { VocabulaireDeLaBarre } from '../labels/barre.labels'
 
 export const StatistiquesNationales = ({
   activitesFilters,

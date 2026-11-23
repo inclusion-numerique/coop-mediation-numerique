@@ -3,13 +3,13 @@
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { BadgeDePortee } from '@/features/activites/ui/BadgeDePortee'
+import { BadgeDePortee } from '@/features/activites/ui/components/BadgeDePortee'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import type { OptionDeTag } from '../options-de-filtre.presenter'
+import type { OptionDeTag } from '../presenters/options-de-filtre.presenter'
 
 export const FiltreDeTags = ({
   tagOptions,

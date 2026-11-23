@@ -3,8 +3,8 @@ import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { Employeuse } from '../../../../domain/employeuse'
-import ActeurStructureEmployeuse from '../../../../ui/ActeurStructureEmployeuse'
-import { emploiEmployeuseAffichage } from '../employeuse-emploi.presenter'
+import ActeurStructureEmployeuse from '../../../../ui/components/ActeurStructureEmployeuse'
+import { emploiEmployeuseAffichage } from '../presenters/employeuse-emploi.presenter'
 
 export const MaStructureEmployeusePage = ({
   employeuse,

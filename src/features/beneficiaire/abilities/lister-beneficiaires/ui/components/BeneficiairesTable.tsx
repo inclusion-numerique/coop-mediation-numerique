@@ -5,9 +5,9 @@ import {
   type DataTableSelection,
   type DataTableUrlState,
 } from '@/libraries/data-table'
+import type { BeneficiaireRow } from '../presenters/beneficiaire-row'
 import { BeneficiairesTableHead } from './BeneficiairesTableHead'
 import { BeneficiaireTableRow } from './BeneficiaireTableRow'
-import type { BeneficiaireRow } from './beneficiaire-row'
 
 export const BeneficiairesTable = ({
   rows,

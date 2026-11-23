@@ -1,14 +1,14 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { type ActiviteConsultee, ActiviteId, MediateurId } from '../../domain'
-import type { BeneficiaireTrouveParLeCra } from '../../ui/saisie/beneficiaire/beneficiaire-du-cra'
-import { donneesDeLaSaisieDeMediation } from '../../ui/saisie/donnees-de-la-saisie-de-mediation'
-import type { LieuDuCra } from '../../ui/saisie/lieu/lieu-du-cra'
+import type { CraData } from '../../ui/forms/cra.validation'
+import type { BeneficiaireTrouveParLeCra } from '../../ui/presenters/saisie/beneficiaire-du-cra'
+import { donneesDeLaSaisieDeMediation } from '../../ui/presenters/saisie/donnees-de-la-saisie-de-mediation'
+import type { LieuDuCra } from '../../ui/presenters/saisie/lieu-du-cra'
 import {
   type RechercherDesTagsInitiaux,
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
-} from '../../ui/saisie/tags/tag-du-cra'
-import type { CraData } from '../../ui/saisie/validation/cra.validation'
+} from '../../ui/presenters/saisie/tag-du-cra'
 import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
 import { lireUneActiviteDeMediation } from './lire-une-activite-de-mediation.query'
 import type { RendezVousLies } from './rendez-vous-fournis'

@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import type { SuggestionAffichee } from '@/features/lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import type { ComboBoxProps } from '@/libraries/formulaire/fields-components/ComboBox'
 import { Input } from '@/libraries/formulaire/fields-components/Input'
 import { Options } from '@/libraries/ui/components/Primitives/Options'

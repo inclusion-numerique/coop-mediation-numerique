@@ -7,10 +7,10 @@ import { getSessionUser } from '@/features/authentification/implementations/sess
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
 import { default as InvitationEnAttente } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttente'
-import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationPlusValide'
+import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/slots/InvitationPlusValide.slot'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
 import { Email, lienInvitation } from '@/features/equipe/domain'
-import { default as ReponseAInvitation } from '@/features/equipe/ui/ReponseAInvitation'
+import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 

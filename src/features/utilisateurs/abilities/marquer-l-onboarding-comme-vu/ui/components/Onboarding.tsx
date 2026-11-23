@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { PropsWithChildren, ReactNode } from 'react'
-import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CloseButton'
 import CompleteOnboardingButton from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CompleteOnboardingButton'
+import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/CloseButton'
 
 const Onboarding = ({
   image,

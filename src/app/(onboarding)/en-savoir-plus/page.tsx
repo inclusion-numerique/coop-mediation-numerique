@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CloseButton'
+import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/CloseButton'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
 
 export const metadata: Metadata = {

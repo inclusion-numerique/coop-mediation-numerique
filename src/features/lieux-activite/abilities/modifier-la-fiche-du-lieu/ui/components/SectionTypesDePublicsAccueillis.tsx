@@ -5,14 +5,14 @@ import type { z } from 'zod'
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
-} from '@/features/lieux-activite/ui/options-du-lieu'
+} from '@/features/lieux-activite/ui/presenters/options-du-lieu'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { TypesDePublicsAccueillisSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { TypesDePublicsAccueillisAffiches } from '../fiche-affichee/types-de-publics-accueillis'
+import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
+import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+import type { TypesDePublicsAccueillisAffiches } from '../presenters/types-de-publics-accueillis'
 import { EtatVide } from './EtatVide'
-import { useEnregistrementDeSection } from './useEnregistrementDeSection'
 import { VueTypesDePublicsAccueillis } from './vues/VueTypesDePublicsAccueillis'
 
 export const SectionTypesDePublicsAccueillis = ({

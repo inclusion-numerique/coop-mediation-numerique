@@ -1,6 +1,6 @@
-import { communeColor } from '@/features/activites/ui/graphiques/couleurs'
+import { communeColor } from '@/features/activites/ui/presenters/graphiques/couleurs'
 import { QuantifiedShareList } from '@/libraries/proportions/QuantifiedShareList'
-import type { PersonnesParCommunePresentees } from '../personnes-par-commune.presenter'
+import type { PersonnesParCommunePresentees } from '../presenters/personnes-par-commune.presenter'
 
 export const CommunesDeResidenceImprimees = ({
   communes,

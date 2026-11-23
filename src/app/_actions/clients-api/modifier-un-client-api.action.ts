@@ -6,7 +6,7 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { MODIFIER_UN_CLIENT_API_ERRORS } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.errors'
 import { ModifierUnClientApiValidation } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.validation'
 import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/implementations/prisma/modifier-un-client-api.mutation'
-import { definitionDepuis } from '@/features/clients-api/ui/client-api.validation'
+import { definitionDepuis } from '@/features/clients-api/ui/forms/client-api.validation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

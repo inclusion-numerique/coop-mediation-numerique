@@ -1,7 +1,7 @@
 import { creerBeneficiaireAction } from '@/app/_actions/beneficiaire/creer-beneficiaire.action'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { CreerBeneficiairePage } from '@/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
-import type { SaisieEnCours } from '@/features/beneficiaire/ui/formulaire/saisie-en-cours'
+import type { SaisieEnCours } from '@/features/beneficiaire/ui/presenters/saisie-en-cours'
 import {
   decodeSerializableState,
   type EncodedState,

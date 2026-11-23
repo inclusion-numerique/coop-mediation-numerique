@@ -5,7 +5,7 @@ import { getSessionUserFromSessionToken } from '@/features/authentification/impl
 import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/export-beneficiaires-filters'
 import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {

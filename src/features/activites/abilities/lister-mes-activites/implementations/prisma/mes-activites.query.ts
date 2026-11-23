@@ -1,6 +1,6 @@
 import { type MediateurId, parametresDesActivitesDe } from '../../../../domain'
 import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
-import { filtresDeLaListe } from '../../../../ui/filtres/filtres-de-la-liste'
+import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
 import {
   basculeDesRendezVous,
   type CompteRendezVousDuMediateur,
@@ -8,18 +8,18 @@ import {
   contenuDeLaListe,
   lectureDeLaListe,
   type ParametresDeLaListe,
-} from '../../ui/lecture-de-la-liste.presenter'
+} from '../../ui/presenters/lecture-de-la-liste.presenter'
 import {
   decompteDeLaListe,
   joursDeLaListe,
   lignesDuTableau,
   titreDuDecompte,
-} from '../../ui/mes-activites.presenter'
+} from '../../ui/presenters/mes-activites.presenter'
 import {
   parametresDeNavigation,
   rendezVousFiltrablesDansLaListe,
   rendezVousFiltrablesDansLeTableau,
-} from '../../ui/navigation.presenter'
+} from '../../ui/presenters/navigation.presenter'
 import { listerMesActivites, type RendezVousALister } from './chronologie.query'
 
 type CompteRendezVous = CompteRendezVousDuMediateur & { readonly id: number }

@@ -4,9 +4,9 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { ApercuDeFusion } from '../../domain'
-import { ApercuDuCompte } from '../ApercuDuCompte'
-import { BoutonValiderLaFusion } from '../BoutonValiderLaFusion'
-import { ChoixDuCompteAFusionner } from '../ChoixDuCompteAFusionner'
+import { ApercuDuCompte } from '../components/ApercuDuCompte'
+import { BoutonValiderLaFusion } from '../components/BoutonValiderLaFusion'
+import { ChoixDuCompteAFusionner } from '../components/ChoixDuCompteAFusionner'
 
 export const FusionPage = ({
   cible,

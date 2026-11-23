@@ -1,9 +1,9 @@
 import { Suspense } from 'react'
 import { DataTable } from '@/libraries/data-table'
 import { Spinner } from '@/libraries/ui/components/Spinner'
-import { etatDeLaTable } from '../../../../ui/etat-de-la-table'
-import { PaginationDesActivites } from '../../../../ui/PaginationDesActivites'
-import type { LigneDuTableau } from '../mes-activites.presenter'
+import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
+import { etatDeLaTable } from '../../../../ui/presenters/etat-de-la-table'
+import type { LigneDuTableau } from '../presenters/mes-activites.presenter'
 import { EnTeteDuTableauDeMesActivites } from './EnTeteDuTableauDeMesActivites'
 import { LigneDuTableauDeMesActivites } from './LigneDuTableauDeMesActivites'
 

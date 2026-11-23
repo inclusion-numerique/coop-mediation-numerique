@@ -16,7 +16,7 @@ import {
   NomDuTag,
   type VisibiliteChoisie,
 } from '@/features/tags/domain'
-import { tagAffiche } from '@/features/tags/ui/tag-affiche.presenter'
+import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

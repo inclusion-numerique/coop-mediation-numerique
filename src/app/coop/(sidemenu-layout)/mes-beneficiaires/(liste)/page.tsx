@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
+import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/action/supprimer-des-beneficiaires.key'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
-import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
+import { MesBeneficiairesListePage } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/pages/MesBeneficiairesListePage'
+import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/presenters/lister-beneficiaires.presenter'
 import {
   type MesBeneficiairesSearchParams,
   toListerBeneficiairesQuery,
-} from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires-search-params'
-import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/supprimer-des-beneficiaires.key'
-import { MesBeneficiairesListePage } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/pages/MesBeneficiairesListePage'
+} from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/presenters/lister-beneficiaires-search-params'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

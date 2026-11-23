@@ -5,7 +5,7 @@ import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import {
   datesDonneesRecolteesEtMisesAJour,
   totalDepuis,
-} from '../statistiquesPubliquesWording'
+} from '../presenters/statistiquesPubliquesWording'
 import { LegendTile } from './LegendTile'
 import { ChartData, ChartSerie, MonthChart } from './MonthChart'
 

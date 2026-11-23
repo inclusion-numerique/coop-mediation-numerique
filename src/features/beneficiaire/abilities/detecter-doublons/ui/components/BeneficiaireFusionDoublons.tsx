@@ -12,7 +12,7 @@ import { pluriel } from '@/libraries/pluriel'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '../fusionner-des-beneficiaires.key'
+import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '../../action/fusionner-des-beneficiaires.key'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 

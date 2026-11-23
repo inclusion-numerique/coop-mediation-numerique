@@ -3,14 +3,14 @@ import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { FiltreActif } from '../../../../ui/filtres-actifs-des-coordinations'
+import type { FiltreActif } from '../../../../ui/presenters/filtres-actifs-des-coordinations'
 import { ActivitesDeCoordinationListe } from '../components/ActivitesDeCoordinationListe'
 import { FiltreDePeriode } from '../components/FiltreDePeriode'
 import { FiltreDeTags } from '../components/FiltreDeTags'
 import { FiltreDeType } from '../components/FiltreDeType'
 import { FiltresActifs } from '../components/FiltresActifs'
-import type { ListeDesCoordinations } from '../liste-des-coordinations.presenter'
-import type { OptionsDeFiltrePresentees } from '../options-de-filtre.presenter'
+import type { ListeDesCoordinations } from '../presenters/liste-des-coordinations.presenter'
+import type { OptionsDeFiltrePresentees } from '../presenters/options-de-filtre.presenter'
 
 export const MesCoordinationsPage = ({
   sousTitre,

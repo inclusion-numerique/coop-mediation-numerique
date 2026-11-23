@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   champsDuClientApi,
   periodeCoherente,
-} from '@/features/clients-api/ui/client-api.validation'
+} from '@/features/clients-api/ui/forms/client-api.validation'
 
 export const ModifierUnClientApiValidation = champsDuClientApi
   .extend({ clientApiId: z.guid() })

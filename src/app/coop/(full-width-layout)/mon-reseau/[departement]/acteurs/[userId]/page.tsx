@@ -13,31 +13,31 @@ import {
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
-import { emploiEmployeuseAffichage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
-import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
+import { emploiEmployeuseAffichage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/presenters/employeuse-emploi.presenter'
+import ActeurStructureEmployeuse from '@/features/employeuse/ui/components/ActeurStructureEmployeuse'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
-import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui/BoutonSupprimerUnAncienMembre'
+import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui/components/BoutonSupprimerUnAncienMembre'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
-import { LieuxRepliables } from '@/features/lieux-activite/ui/LieuxRepliables'
+import { LieuxRepliables } from '@/features/lieux-activite/ui/slots/LieuxRepliables.slot'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
-import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/CarteContrat'
+import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
 import { UtilisateurId } from '@/features/mediateurs/domain'
-import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
-import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/nom-de-l-acteur.query'
 import {
   INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
   RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/actions-sur-l-acteur.key'
-import { TitreDeSection } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/components/TitreDeSection'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/action/actions-sur-l-acteur.key'
+import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
+import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/nom-de-l-acteur.query'
+import { FicheActeurPage } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/pages/FicheActeurPage'
 import {
   ancienMembreDe,
   contratVisible,
   encartDeLEmployeuse,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/fiche-acteur.presenter'
-import { FicheActeurPage } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/pages/FicheActeurPage'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/presenters/fiche-acteur.presenter'
+import { TitreDeSection } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/slots/TitreDeSection.slot'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/implementations/prisma/derniere-activite.query'
 import { departementDuCode } from '@/libraries/departement'

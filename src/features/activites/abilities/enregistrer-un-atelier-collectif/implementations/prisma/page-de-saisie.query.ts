@@ -9,11 +9,11 @@ import type { RendezVousLies } from '../../../../implementations/prisma/rendez-v
 import {
   cheminDeLaCopie,
   etatDeLUrl,
-} from '../../../../ui/saisie/chemin-de-la-copie'
-import { copieDeLAtelier } from '../../ui/copie-de-l-atelier.presenter'
-import { craCollectifDefaultValues } from '../../ui/craCollectifDefaultValues'
-import { formulaireDeLAtelierCollectif } from '../../ui/formulaire-de-l-atelier-collectif.presenter'
-import type { CraCollectifData } from '../../ui/validation/CraCollectifValidation'
+} from '../../../../ui/presenters/saisie/chemin-de-la-copie'
+import type { CraCollectifData } from '../../ui/presenters/CraCollectifValidation'
+import { copieDeLAtelier } from '../../ui/presenters/copie-de-l-atelier.presenter'
+import { craCollectifDefaultValues } from '../../ui/presenters/craCollectifDefaultValues'
+import { formulaireDeLAtelierCollectif } from '../../ui/presenters/formulaire-de-l-atelier-collectif.presenter'
 
 type ActiviteDemandee = {
   readonly id: string

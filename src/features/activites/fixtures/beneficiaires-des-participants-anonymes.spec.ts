@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { describe, expect, it, test } from 'vitest'
-import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
+import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/participantsAnonymes'
 import {
   createBeneficiairesForParticipantsAnonymes,
   createCounterUuid,

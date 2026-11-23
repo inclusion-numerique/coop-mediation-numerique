@@ -3,16 +3,16 @@ import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/
 import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/historique-d-un-beneficiaire.query'
-import { HistoriqueDesAccompagnements } from '@/features/activites/abilities/lister-mes-activites/ui/components/HistoriqueDesAccompagnements'
-import { cartesDeLaChronologie } from '@/features/activites/abilities/lister-mes-activites/ui/mes-activites.presenter'
-import { parametresDePagination } from '@/features/activites/abilities/lister-mes-activites/ui/navigation.presenter'
+import { cartesDeLaChronologie } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/mes-activites.presenter'
+import { parametresDePagination } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/navigation.presenter'
+import { HistoriqueDesAccompagnements } from '@/features/activites/abilities/lister-mes-activites/ui/slots/HistoriqueDesAccompagnements.slot'
+import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/action/ouvrir-la-saisie-du-statut.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
   paginationLue,
 } from '@/features/activites/domain'
-import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
@@ -23,11 +23,11 @@ import {
   rendezVousLies,
   rendezVousParIds,
 } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
+import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
-import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
-} from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
+} from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/SaisieDuStatutDuRdv.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>

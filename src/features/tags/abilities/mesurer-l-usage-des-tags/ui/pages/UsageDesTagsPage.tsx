@@ -4,10 +4,10 @@ import { numberToString } from '@/libraries/nombre/formatNumber'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { LigneDuTag } from '../../../../ui/LigneDuTag'
+import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
 import type { UsageDesTags } from '../../domain'
-import { CounterCard } from '../CounterCard'
-import { tagsDeLaListe } from '../usage-des-tags.presenter'
+import { CounterCard } from '../components/CounterCard'
+import { tagsDeLaListe } from './usage-des-tags.presenter'
 
 export const UsageDesTagsPage = ({
   createursDeTagsUtilises,

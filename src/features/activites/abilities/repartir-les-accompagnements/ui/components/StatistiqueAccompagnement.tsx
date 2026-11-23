@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import {
   typeActivitePictograms,
   typeActivitePluralLabels,
-} from '@/features/activites/ui/libelles/type-activite.labels'
+} from '@/features/activites/ui/labels/libelles/type-activite.labels'
 import { TypeActivite } from '@/generated/prisma/browser'
 import {
   numberToPercentage,

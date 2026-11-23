@@ -3,7 +3,7 @@ import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entrepris
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
 import { rechercherEmployeuse } from '../../../rechercher-employeuse/implementations/prisma/rechercher-employeuse.query'
-import { employeuseRecherchee } from '../../../rechercher-employeuse/ui/employeuse-recherchee.presenter'
+import { employeuseRecherchee } from '../../../rechercher-employeuse/ui/presenters/employeuse-recherchee.presenter'
 import type { StructureSearchResult } from '../../domain/employeuse-choisie'
 
 export const searchStructureEmployeuseCombined = async (

@@ -8,8 +8,8 @@ import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVService
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { ProfilOutils } from '../../domain'
-import { CardOutil } from '../CardOutil'
-import { outilsAccompagnementsVisibles } from '../catalogue'
+import { CardOutil } from '../components/CardOutil'
+import { outilsAccompagnementsVisibles } from './catalogue'
 
 export type RdvServicePublicDansMesOutils = {
   readonly lien: string

@@ -4,7 +4,7 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { EquipeAComplementer } from '../../domain'
-import { AjouterUnMembre } from '../AjouterUnMembre'
+import { AjouterUnMembre } from '../components/AjouterUnMembre'
 
 export const AjouterUnMembrePage = ({
   equipe,

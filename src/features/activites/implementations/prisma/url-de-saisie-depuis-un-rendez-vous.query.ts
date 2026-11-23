@@ -1,11 +1,11 @@
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { MediateurId } from '../../domain'
-import { optionsDeDuree } from '../../ui/saisie/options-de-duree'
+import { optionsDeDuree } from '../../ui/presenters/saisie/options-de-duree'
 import {
   cheminDeSaisieDepuisUnRendezVous,
   type ParticipantDuRendezVous,
   type RendezVousASaisir,
-} from '../../ui/saisie/url-de-saisie-depuis-un-rendez-vous'
+} from '../../ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous'
 import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
 
 export const urlDeSaisieDepuisUnRendezVous = async ({

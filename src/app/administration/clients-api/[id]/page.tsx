@@ -6,9 +6,9 @@ import { authenticateAdmin } from '@/features/authentification/implementations/s
 import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api/implementations/prisma/client-api.query'
 import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui/pages/ClientApiPage'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.key'
-import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui/ModifierUnClientApi'
+import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui/slots/ModifierUnClientApi.slot'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.key'
-import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui/RenouvelerLeSecret'
+import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui/slots/RenouvelerLeSecret.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

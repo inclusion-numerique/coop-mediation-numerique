@@ -9,7 +9,7 @@ import {
   type Jalon,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import { BadgeStatutCompte } from '@/features/utilisateurs/ui/BadgeStatutCompte'
+import { BadgeStatutCompte } from '@/features/utilisateurs/ui/components/BadgeStatutCompte'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import {
   dateAsDayAndTime,
@@ -30,7 +30,7 @@ import {
   etiquettesDuCompte,
   renseigne,
   telephoneAffiche,
-} from '../fiche-utilisateur.presenter'
+} from '../presenters/fiche-utilisateur.presenter'
 
 export type SectionsDeLaFiche = {
   readonly roles: ReactNode

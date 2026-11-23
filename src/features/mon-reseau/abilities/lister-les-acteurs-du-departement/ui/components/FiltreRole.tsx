@@ -6,7 +6,7 @@ import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import { filtresDeRole } from '../../domain'
-import { LIBELLE_DU_ROLE } from '../acteurs.presenter'
+import { LIBELLE_DU_ROLE } from '../presenters/acteurs.presenter'
 
 const OPTIONS = [
   { libelle: 'Tous les rôles', valeur: '' },

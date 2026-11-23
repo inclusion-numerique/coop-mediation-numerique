@@ -4,7 +4,7 @@ import { rechercherDesMediateursAInviterAction } from '@/app/_actions/equipe/rec
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { INVITER_DES_MEMBRES_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
 import { RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/rechercher-des-mediateurs-a-inviter.key'
-import { InviterMembresPage } from '@/features/equipe/abilities/inviter-des-membres/ui/InviterMembresPage'
+import { InviterMembresPage } from '@/features/equipe/abilities/inviter-des-membres/ui/pages/InviterMembresPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

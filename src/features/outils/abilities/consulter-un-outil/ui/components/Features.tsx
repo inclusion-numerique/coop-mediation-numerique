@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { FicheOutil } from '../fiche-outil'
+import type { FicheOutil } from '../presenters/fiche-outil'
 
 export const Features = ({
   features,

@@ -1,4 +1,4 @@
-import type { ValeursDuClientApi } from '@/features/clients-api/ui/client-api.validation'
+import type { ValeursDuClientApi } from '@/features/clients-api/ui/forms/client-api.validation'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
 import { keyFor } from '@/libraries/nextjs/injection/client'
 

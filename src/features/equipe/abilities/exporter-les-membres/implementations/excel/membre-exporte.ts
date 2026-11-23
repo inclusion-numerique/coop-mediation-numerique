@@ -4,8 +4,8 @@ import {
   profilDe,
   type StructureEmployeuseMembre,
 } from '../../../../domain'
-import { libelleDuRole } from '../../../../ui/role-membre.presenter'
-import { libelleStatutMembre } from '../../../../ui/statut-membre.presenter'
+import { libelleDuRole } from '../../../../ui/presenters/role-membre.presenter'
+import { libelleStatutMembre } from '../../../../ui/presenters/statut-membre.presenter'
 import type { ContratMembre } from '../../domain'
 
 export type MembreExporte = {

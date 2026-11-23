@@ -5,7 +5,7 @@ import { getSessionTokenFromNextRequestCookies } from '@/features/authentificati
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
 import { acteurDe } from '@/features/tags/domain'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'

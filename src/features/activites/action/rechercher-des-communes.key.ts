@@ -1,0 +1,6 @@
+import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { CommuneDuCra } from '../ui/presenters/saisie/commune-du-cra'
+
+export const RECHERCHER_DES_COMMUNES_DU_CRA_KEY = keyFor<
+  (texte: string) => Promise<readonly CommuneDuCra[]>
+>('activites.rechercher-des-communes')

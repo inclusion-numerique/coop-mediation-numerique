@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
-import { employeuseConsulteeAffichage } from '@/features/employeuse/abilities/consulter-employeuse/ui/employeuse-consultee.presenter'
 import EmployeusePage from '@/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'
+import { employeuseConsulteeAffichage } from '@/features/employeuse/abilities/consulter-employeuse/ui/presenters/employeuse-consultee.presenter'
 import { EmployeuseId } from '@/features/employeuse/domain'
 
 export const metadata: Metadata = {

@@ -1,6 +1,6 @@
-import { tagsColor } from '@/features/activites/ui/graphiques/couleurs'
+import { tagsColor } from '@/features/activites/ui/presenters/graphiques/couleurs'
 import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
-import type { parTagPresentes } from '../par-tag.presenter'
+import type { parTagPresentes } from '../presenters/par-tag.presenter'
 
 const desc = (
   { count: countA }: { count: number },

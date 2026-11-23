@@ -17,33 +17,33 @@ import {
   blocsBeneficiaires,
   blocsGeneraux,
   blocsImprimes,
-} from '@/features/activites/ui/blocs-des-statistiques'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
+} from '@/features/activites/ui/components/blocs-des-statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/labels/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage/implementations/prisma/consulter-mes-liens-de-partage.query'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
-import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui/PartageStatistiques'
+import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui/slots/PartageStatistiques.slot'
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
-import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
-import {
-  type ParametresDeLaPage,
-  parametresDesStatistiques,
-} from '@/features/statistiques/ui/filtres/parametres-de-la-page'
-import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
-import { mesStatistiques } from '@/features/statistiques/ui/mes-statistiques'
-import { MesStatistiques } from '@/features/statistiques/ui/pages/MesStatistiques'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/presenters/statut-rdv'
+import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/action/rechercher-employeuses-des-statistiques.key'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
 import {
   impressionDesStatistiques,
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@/features/statistiques/ui/sections/sections-des-statistiques'
+} from '@/features/statistiques/ui/components/sections-des-statistiques'
+import { MesStatistiques } from '@/features/statistiques/ui/pages/MesStatistiques'
+import { mesStatistiques } from '@/features/statistiques/ui/presenters/mes-statistiques'
+import {
+  type ParametresDeLaPage,
+  parametresDesStatistiques,
+} from '@/features/statistiques/ui/presenters/parametres-de-la-page'
+import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import type { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/ParticipantsAnonymesCraCollectifValidation'
+import type { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/ParticipantsAnonymesCraCollectifValidation'
 import type {
   Genre,
   Prisma,

@@ -5,21 +5,21 @@ import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modif
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/implementations/prisma/mediateurs-du-lieu.query'
-import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui/MediateursDuLieu'
+import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui/slots/MediateursDuLieu.slot'
 import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.key'
+import { RECHERCHER_UN_ETABLISSEMENT_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/rechercher-un-etablissement.key'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
-import { ficheAffichee } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/fiche-du-lieu.presenter'
-import { FicheDuLieuPage } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/pages/FicheDuLieuPage'
-import { RECHERCHER_UN_ETABLISSEMENT_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/rechercher-un-etablissement.key'
+import { FicheDuLieuPage } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/components/FicheDuLieuPage'
+import { ficheAffichee } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/presenters/fiche-du-lieu.presenter'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.key'
-import { default as ModaleDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/ModaleDeRetrait'
-import { retraitsDesMediateurs } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/RetraitsDesMediateurs'
+import { default as ModaleDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/slots/ModaleDeRetrait.slot'
+import { retraitsDesMediateurs } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/slots/RetraitsDesMediateurs.slot'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import {
   EnteteDuLieuDuReseau,
   LieuDuReseauPage,
-} from '@/features/mon-reseau/ui/LieuDuReseauPage'
+} from '@/features/mon-reseau/ui/pages/LieuDuReseauPage'
 import { departementDuCode } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

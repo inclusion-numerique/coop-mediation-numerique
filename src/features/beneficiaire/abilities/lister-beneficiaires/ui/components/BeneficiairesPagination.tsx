@@ -3,7 +3,7 @@ import {
   generatePageSizeSelectOptions,
   PaginationNavWithPageSizeSelect,
 } from '@/libraries/data-table'
-import { DEFAULT_PAGE_SIZE } from './lister-beneficiaires-search-params'
+import { DEFAULT_PAGE_SIZE } from '../presenters/lister-beneficiaires-search-params'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 

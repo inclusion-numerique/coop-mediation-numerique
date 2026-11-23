@@ -7,7 +7,7 @@ import { authenticateAdmin } from '@/features/authentification/implementations/s
 import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/nom-de-l-employeuse.query'
 import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
-import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/BoutonExporterLesUtilisateurs'
+import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/slots/BoutonExporterLesUtilisateurs.slot'
 import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
@@ -15,13 +15,13 @@ import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abiliti
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
 import { ordreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/tri-des-utilisateurs'
-import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/lister-les-utilisateurs-search-params'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
+import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/lister-les-utilisateurs-search-params'
 import {
   filtresUtilisateurs,
   parametresDesFiltres,
 } from '@/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

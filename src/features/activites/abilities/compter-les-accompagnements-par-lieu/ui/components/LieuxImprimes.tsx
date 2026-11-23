@@ -1,6 +1,6 @@
-import { nombreAccompagnementParLieuColor } from '@/features/activites/ui/graphiques/couleurs'
+import { nombreAccompagnementParLieuColor } from '@/features/activites/ui/presenters/graphiques/couleurs'
 import { QuantifiedShareList } from '@/libraries/proportions/QuantifiedShareList'
-import type { parLieuPresentes } from '../par-lieu.presenter'
+import type { parLieuPresentes } from '../presenters/par-lieu.presenter'
 
 export const LieuxImprimes = ({
   structures,

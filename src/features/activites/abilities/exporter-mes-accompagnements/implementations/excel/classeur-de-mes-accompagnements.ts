@@ -1,11 +1,11 @@
 import { criteresDesActivites } from '../../../../domain'
 import { tagsUtilisablesDepuis } from '../../../../domain/fournisseurs-de-la-saisie'
-import { filtresDeLaListe } from '../../../../ui/filtres/filtres-de-la-liste'
+import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
 import { demandeurDe } from '../../domain'
-import { classeurDesAccompagnements } from '../../ui/classeur-des-accompagnements'
-import { libellesDuClasseur } from '../../ui/export.presenter'
+import { libellesDuClasseur } from '../../ui/presenters/export.presenter'
 import { exporterMesAccompagnements } from '../prisma/accompagnements-a-exporter.query'
 import { nomsDesFiltresExportes } from '../prisma/noms-des-filtres-exportes.query'
+import { classeurDesAccompagnements } from './classeur-des-accompagnements'
 
 type Fournisseurs = Pick<
   Parameters<typeof nomsDesFiltresExportes>[0],

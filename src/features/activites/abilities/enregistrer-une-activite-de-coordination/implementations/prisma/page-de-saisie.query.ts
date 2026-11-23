@@ -9,25 +9,25 @@ import {
   cheminDeLaCopie,
   etatDeLUrl,
   type TypeDeSaisie,
-} from '../../../../ui/saisie/chemin-de-la-copie'
+} from '../../../../ui/presenters/saisie/chemin-de-la-copie'
 import {
   type RechercherDesTagsInitiaux,
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
-} from '../../../../ui/saisie/tags/tag-du-cra'
-import type { CraAnimationData } from '../../ui/animation/validation/CraAnimationValidation'
+} from '../../../../ui/presenters/saisie/tag-du-cra'
+import type { CraAnimationData } from '../../ui/presenters/CraAnimationValidation'
+import type { CraEvenementData } from '../../ui/presenters/CraEvenementValidation'
+import type { CraPartenariatData } from '../../ui/presenters/CraPartenariatValidation'
 import {
   copieDeLaCoordination,
   departDuPartenariat,
-} from '../../ui/copie-de-la-coordination.presenter'
-import { getCraCoordinationPageData } from '../../ui/donnees-de-la-page'
-import type { CraEvenementData } from '../../ui/evenement/validation/CraEvenementValidation'
+} from '../../ui/presenters/copie-de-la-coordination.presenter'
+import { getCraCoordinationPageData } from '../../ui/presenters/donnees-de-la-page'
 import {
   formulaireDeLAnimation,
   formulaireDeLEvenement,
   formulaireDuPartenariat,
-} from '../../ui/formulaire-de-la-coordination.presenter'
-import type { CraPartenariatData } from '../../ui/partenariat/validation/CraPartenariatValidation'
+} from '../../ui/presenters/formulaire-de-la-coordination.presenter'
 import { lireUneActiviteDeCoordination } from './lire-une-activite-de-coordination.query'
 
 type ValeursDeLaCoordination = DefaultValues<

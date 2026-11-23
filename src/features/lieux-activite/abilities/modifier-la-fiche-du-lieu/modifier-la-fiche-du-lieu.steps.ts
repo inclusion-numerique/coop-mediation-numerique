@@ -24,7 +24,7 @@ import {
 import { depuisLaSaisie } from './action/depuis-la-saisie'
 import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
 import type { FicheDuLieu } from './domain'
-import { informationsGeneralesSoumises } from './ui/informations-generales-soumises'
+import { informationsGeneralesSoumises } from './ui/presenters/informations-generales-soumises'
 
 const auteur = () => UserId(ficheSemee().userIds[0] ?? '')
 

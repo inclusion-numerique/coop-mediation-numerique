@@ -6,8 +6,8 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { CompteDeTest } from '../../domain'
-import { BoutonUsurper } from '../BoutonUsurper'
-import { UsurpationLibre } from '../UsurpationLibre'
+import { BoutonUsurper } from '../components/BoutonUsurper'
+import { UsurpationLibre } from '../components/UsurpationLibre'
 
 export const UsurpationPage = ({
   comptesDeTest,

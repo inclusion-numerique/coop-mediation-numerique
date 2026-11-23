@@ -3,7 +3,7 @@ import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   libellesDesFiltres,
   type OptionsDesFiltres,
-} from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
+} from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
@@ -11,15 +11,15 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { UtilisateursTrouves } from '../../domain'
-import { EtiquettesDesFiltres } from '../filtres/EtiquettesDesFiltres'
-import { Filtres } from '../filtres/Filtres'
+import { EtiquettesDesFiltres } from '../components/filtres/EtiquettesDesFiltres'
+import { Filtres } from '../components/filtres/Filtres'
+import { RechercheDUtilisateurs } from '../components/RechercheDUtilisateurs'
+import { UtilisateursPagination } from '../components/UtilisateursPagination'
+import { UtilisateursTable } from '../components/UtilisateursTable'
 import {
   etatDeLaTable,
   type ParametresDeLaListe,
-} from '../lister-les-utilisateurs-search-params'
-import { RechercheDUtilisateurs } from '../RechercheDUtilisateurs'
-import { UtilisateursPagination } from '../UtilisateursPagination'
-import { UtilisateursTable } from '../UtilisateursTable'
+} from '../presenters/lister-les-utilisateurs-search-params'
 
 const BASE_HREF = '/administration/utilisateurs'
 

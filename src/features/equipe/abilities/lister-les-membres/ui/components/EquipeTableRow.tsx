@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { LigneEquipe } from '../../../../domain'
-import type { LigneAffichee } from '../lister-les-membres.presenter'
+import type { LigneAffichee } from '../presenters/lister-les-membres.presenter'
 import { BadgeActivite } from './BadgeActivite'
 
 const largeurMaximale = { maxWidth: 300 }

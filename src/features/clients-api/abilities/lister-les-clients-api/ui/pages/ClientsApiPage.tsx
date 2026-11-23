@@ -5,9 +5,9 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { BoutonDocumentation } from '../../../../ui/BoutonDocumentation'
-import { HREF_DES_CLIENTS_API } from '../../../../ui/liens'
-import { ListeDesClientsApi } from '../ListeDesClientsApi'
+import { BoutonDocumentation } from '../../../../ui/components/BoutonDocumentation'
+import { HREF_DES_CLIENTS_API } from '../../../../ui/presenters/liens'
+import { ListeDesClientsApi } from '../components/ListeDesClientsApi'
 
 export const ClientsApiPage = ({
   clients,

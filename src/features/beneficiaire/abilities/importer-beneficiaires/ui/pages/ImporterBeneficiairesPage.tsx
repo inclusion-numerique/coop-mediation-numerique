@@ -4,7 +4,7 @@ import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import UploadBeneficiaireFileForm from '../components/UploadBeneficiaireFileForm'
+import UploadBeneficiaireFileForm from '../forms/UploadBeneficiaireFileForm'
 
 export const ImporterBeneficiairesPage = () => (
   <div className="fr-container fr-container--medium fr-mb-32v">

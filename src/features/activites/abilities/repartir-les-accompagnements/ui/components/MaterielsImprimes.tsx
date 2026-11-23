@@ -1,4 +1,4 @@
-import type { RepartitionPresentee } from '../repartition.presenter'
+import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 import { StatistiqueMateriel } from './StatistiqueMateriel'
 
 export const MaterielsImprimes = ({

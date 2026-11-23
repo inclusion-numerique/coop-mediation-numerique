@@ -1,13 +1,13 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
-import { employeuseAffichee } from '@/features/employeuse/abilities/lister-employeuses/ui/employeuse-affichee.presenter'
+import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
+import { employeuseAffichee } from '@/features/employeuse/abilities/lister-employeuses/ui/presenters/employeuse-affichee.presenter'
 import {
   criteresListeEmployeuses,
   type EmployeusesSearchParams,
   etatDeTableEmployeuses,
-} from '@/features/employeuse/abilities/lister-employeuses/ui/lister-employeuses-search-params'
-import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
+} from '@/features/employeuse/abilities/lister-employeuses/ui/presenters/lister-employeuses-search-params'
 
 export const metadata = {
   title: metadataTitle('Structures employeuses'),

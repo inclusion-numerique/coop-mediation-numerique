@@ -6,14 +6,14 @@ import {
   getSessionUserFromId,
   getSessionUserFromSessionToken,
 } from '@/features/authentification/implementations/session/session-user-from-session-token'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/get-initial-beneficiaires-options-for-search'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import { getMediateurCommunesAndDepartementsOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
 import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
 import { acteurDe } from '@/features/tags/domain'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'

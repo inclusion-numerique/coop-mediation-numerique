@@ -1,6 +1,6 @@
 import Excel from 'exceljs'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
-import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
+import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import {
   type AuteurDExport,
   addExportMetadata,

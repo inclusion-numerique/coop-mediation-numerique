@@ -1,6 +1,6 @@
 import type { SortDirection } from '@arckit/resultset'
 import type { Prisma } from '@/generated/prisma/client'
-import type { ColonneTriable } from '../../ui/lister-tous-les-lieux-search-params'
+import type { ColonneTriable } from '../../ui/presenters/lister-tous-les-lieux-search-params'
 
 type OrdreDesLieux = Prisma.LieuInclusionOrderByWithRelationInput
 

@@ -1,9 +1,9 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
-import Filters from '@/features/statistiques/ui/filtres/Filters'
-import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
+import Filters from '@/features/statistiques/ui/components/filtres/Filters'
+import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
+import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
 import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
@@ -13,12 +13,12 @@ import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
-} from '../export/ExportStatistiques'
-import { ImpressionPreteProvider } from '../export/impression-prete'
-import type { VocabulaireDeLaBarre } from '../filtres/barre/barre.labels'
-import { BlocEnAttente } from '../sections/BlocEnAttente'
-import { StatistiquesImpact } from '../sections/StatistiquesImpact'
-import { statistiquesPageTitle } from './titre-des-statistiques'
+} from '../components/export/ExportStatistiques'
+import { ImpressionPreteProvider } from '../components/impression-prete'
+import { BlocEnAttente } from '../components/sections/BlocEnAttente'
+import { StatistiquesImpact } from '../components/sections/StatistiquesImpact'
+import type { VocabulaireDeLaBarre } from '../labels/barre.labels'
+import { statistiquesPageTitle } from '../presenters/titre-des-statistiques'
 
 export type OptionsDeLaBarre = {
   activitesFilters: ActivitesFilters

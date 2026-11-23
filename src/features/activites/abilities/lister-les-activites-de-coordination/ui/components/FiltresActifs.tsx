@@ -7,7 +7,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation'
-import type { FiltreActif } from '../../../../ui/filtres-actifs-des-coordinations'
+import type { FiltreActif } from '../../../../ui/presenters/filtres-actifs-des-coordinations'
 
 const removeValue = (valueToRemove: string) => (value: string) =>
   value !== valueToRemove

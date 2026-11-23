@@ -33,11 +33,11 @@ import {
   perimetreDuDemandeur,
 } from '../../domain'
 import { semerLesCrasDeDemonstration } from '../../fixtures/semer-les-cras-de-demonstration'
-import { dureeAccompagnementStatisticsRanges } from '../../ui/libelles/duree-accompagnement.labels'
+import { dureeAccompagnementStatisticsRanges } from '../../ui/labels/libelles/duree-accompagnement.labels'
 import {
   materielLabels,
   materielValues,
-} from '../../ui/libelles/materiel.labels'
+} from '../../ui/labels/libelles/materiel.labels'
 import {
   genreLabels,
   genresAffiches,
@@ -45,21 +45,21 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '../../ui/libelles/profil.labels'
+} from '../../ui/labels/libelles/profil.labels'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '../../ui/libelles/thematique.labels'
+} from '../../ui/labels/libelles/thematique.labels'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '../../ui/libelles/type-activite.labels'
+} from '../../ui/labels/libelles/type-activite.labels'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '../../ui/libelles/type-lieu.labels'
+} from '../../ui/labels/libelles/type-lieu.labels'
 import { statistiquesDuPerimetre } from './statistiques-du-perimetre'
 import { rassembler } from './statistiques-fournies'
 

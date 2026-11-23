@@ -1,16 +1,16 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import Filters from '@/features/statistiques/ui/filtres/Filters'
-import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
+import Filters from '@/features/statistiques/ui/components/filtres/Filters'
+import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
-} from '../export/ExportStatistiques'
-import { ImpressionPreteProvider } from '../export/impression-prete'
-import { BlocEnAttente } from '../sections/BlocEnAttente'
+} from '../components/export/ExportStatistiques'
+import { ImpressionPreteProvider } from '../components/impression-prete'
+import { BlocEnAttente } from '../components/sections/BlocEnAttente'
 import type { OptionsDeLaBarre } from './MesStatistiques'
 
 export const StatistiquesPartagees = ({

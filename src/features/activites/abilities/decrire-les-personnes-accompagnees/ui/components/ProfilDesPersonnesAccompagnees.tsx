@@ -1,12 +1,12 @@
-import { AccompagnementPieChart } from '@/features/activites/ui/graphiques/AccompagnementPieChart'
+import { AccompagnementPieChart } from '@/features/activites/ui/components/graphiques/AccompagnementPieChart'
 import {
   genresColors,
   statusColors,
   tranchesAgeColors,
-} from '@/features/activites/ui/graphiques/couleurs'
+} from '@/features/activites/ui/presenters/graphiques/couleurs'
 import ProgressBar from '@/libraries/proportions/ProgressBar'
 import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
-import type { ProfilPresente } from '../profil.presenter'
+import type { ProfilPresente } from '../presenters/profil.presenter'
 
 const toProgress = ({
   label,

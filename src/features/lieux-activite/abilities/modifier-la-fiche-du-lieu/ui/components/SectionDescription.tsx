@@ -6,10 +6,10 @@ import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/regles-de-sa
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { DescriptionSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { DescriptionAffichee } from '../fiche-affichee/description'
+import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
+import type { DescriptionAffichee } from '../presenters/description'
+import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
 import { EtatVide } from './EtatVide'
-import { useEnregistrementDeSection } from './useEnregistrementDeSection'
 import { VueDescription } from './vues/VueDescription'
 
 export const SectionDescription = ({

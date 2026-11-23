@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
+import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
 import {
   impressionDesStatistiques,
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@/features/statistiques/ui/sections/sections-des-statistiques'
+} from '@/features/statistiques/ui/components/sections-des-statistiques'
 import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { MesStatistiques } from './MesStatistiques'

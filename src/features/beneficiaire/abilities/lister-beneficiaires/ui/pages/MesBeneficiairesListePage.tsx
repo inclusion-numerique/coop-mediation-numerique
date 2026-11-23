@@ -2,11 +2,11 @@ import { BeneficiairesEmpty } from '../components/BeneficiairesEmpty'
 import { BeneficiairesListHeader } from '../components/BeneficiairesListHeader'
 import { BeneficiairesNoResults } from '../components/BeneficiairesNoResults'
 import { BeneficiairesResults } from '../components/BeneficiairesResults'
-import type { MesBeneficiairesView } from '../components/lister-beneficiaires.presenter'
+import type { MesBeneficiairesView } from '../presenters/lister-beneficiaires.presenter'
 import {
   type MesBeneficiairesSearchParams,
   toDataTableUrlState,
-} from '../components/lister-beneficiaires-search-params'
+} from '../presenters/lister-beneficiaires-search-params'
 
 const BASE_HREF = '/coop/mes-beneficiaires'
 

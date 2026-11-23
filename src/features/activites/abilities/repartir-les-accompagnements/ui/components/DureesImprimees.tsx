@@ -1,7 +1,7 @@
-import { AccompagnementPieChart } from '@/features/activites/ui/graphiques/AccompagnementPieChart'
-import { dureesAccompagnementColors } from '@/features/activites/ui/graphiques/couleurs'
+import { AccompagnementPieChart } from '@/features/activites/ui/components/graphiques/AccompagnementPieChart'
+import { dureesAccompagnementColors } from '@/features/activites/ui/presenters/graphiques/couleurs'
 import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
-import type { RepartitionPresentee } from '../repartition.presenter'
+import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 
 export const DureesImprimees = ({
   durees,

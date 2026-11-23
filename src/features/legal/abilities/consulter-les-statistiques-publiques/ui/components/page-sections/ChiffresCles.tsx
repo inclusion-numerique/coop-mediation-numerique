@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { datesDonneesRecolteesEtMisesAJour } from '../../statistiquesPubliquesWording'
+import { datesDonneesRecolteesEtMisesAJour } from '../../presenters/statistiquesPubliquesWording'
 import { StatTile } from '../StatTile'
 
 export const ChiffresCles = ({

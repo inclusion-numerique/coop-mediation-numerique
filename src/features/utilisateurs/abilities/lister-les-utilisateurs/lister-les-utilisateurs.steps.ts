@@ -8,7 +8,7 @@ import {
   filtresUtilisateurs,
   type LigneUtilisateur,
 } from '@/features/utilisateurs/domain'
-import { libelleDuStatut } from '@/features/utilisateurs/ui/statut-compte.presenter'
+import { libelleDuStatut } from '@/features/utilisateurs/ui/presenters/statut-compte.presenter'
 import {
   semerUnCompteDeListe,
   semerUneEmployeuse,

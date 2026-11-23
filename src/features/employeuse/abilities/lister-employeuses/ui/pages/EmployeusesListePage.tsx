@@ -5,9 +5,9 @@ import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import EmployeusesTable from '../EmployeusesTable'
-import type { EmployeuseAffichee } from '../employeuse-affichee.presenter'
-import RechercheEmployeuses from '../RechercheEmployeuses'
+import EmployeusesTable from '../components/EmployeusesTable'
+import RechercheEmployeuses from '../components/RechercheEmployeuses'
+import type { EmployeuseAffichee } from '../presenters/employeuse-affichee.presenter'
 
 const baseHref = '/administration/structures-employeuses'
 

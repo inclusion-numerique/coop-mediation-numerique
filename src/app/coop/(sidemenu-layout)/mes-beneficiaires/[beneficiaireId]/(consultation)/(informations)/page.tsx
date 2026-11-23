@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
 import { compterLesThematiquesAbordees } from '@/features/activites/abilities/compter-les-thematiques-abordees/implementations/prisma/thematiques-abordees.query'
-import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui/thematiques-abordees.presenter'
+import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui/presenters/thematiques-abordees.presenter'
 import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/historique-d-un-beneficiaire.query'
 import { LignesParPage, NumeroDePage } from '@/features/activites/domain'
 import {

@@ -7,8 +7,8 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { DetailDeCoordination } from '../liste-des-coordinations.presenter'
-import { SUPPRIMER_LA_COORDINATION_KEY } from '../supprimer-la-coordination.key'
+import { SUPPRIMER_LA_COORDINATION_KEY } from '../../action/supprimer-la-coordination.key'
+import type { DetailDeCoordination } from '../presenters/liste-des-coordinations.presenter'
 
 export const DetailDeCoordinationDynamicModal = createDynamicModal<
   DetailDeCoordination | undefined

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { resetPagination } from '@/libraries/filtres/helpers'
 import { FiltreStatut } from '../../../../../domain/criteres-equipe'
-import type { FilterParam } from './valeurs-de-filtre'
+import type { FilterParam } from '../../presenters/valeurs-de-filtre'
 
 const parseStatutParam = (param: string | null): FilterParam[] =>
   (param ?? '').split(',').flatMap((valeur) => {

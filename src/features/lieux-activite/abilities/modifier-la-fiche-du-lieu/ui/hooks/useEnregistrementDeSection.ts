@@ -1,0 +1,20 @@
+'use client'
+
+import { createToast } from '@/libraries/ui/toast/createToast'
+import type { ModifierLaFicheDuLieuSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
+import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+
+export const useEnregistrementDeSection =
+  (id: string, enregistrer: EnregistrerUneSection) =>
+  async (modification: ModifierLaFicheDuLieuSaisie['modification']) => {
+    const resultat = await enregistrer({ id, modification })
+
+    createToast(
+      resultat.success
+        ? {
+            priority: 'success',
+            message: 'Le lieu d’activité a bien été modifié.',
+          }
+        : { priority: 'error', message: resultat.error },
+    )
+  }

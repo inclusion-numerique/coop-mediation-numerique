@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { materielIcons } from '@/features/activites/ui/libelles/materiel.labels'
+import { materielIcons } from '@/features/activites/ui/labels/libelles/materiel.labels'
 import { Materiel } from '@/generated/prisma/browser'
 import {
   numberToPercentage,

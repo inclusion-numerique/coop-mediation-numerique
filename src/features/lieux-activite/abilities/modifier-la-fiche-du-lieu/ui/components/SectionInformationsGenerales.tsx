@@ -5,21 +5,21 @@ import { useStore } from '@tanstack/react-form'
 import Link from 'next/link'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import {
-  CONFIRMATION_DU_PARTAGE_MANQUANTE,
-  confirmationDuPartageManquante,
-} from '../confirmation-du-partage'
-import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { InformationsGeneralesAffichees } from '../fiche-affichee/informations-generales'
-import type { PartageAffiche } from '../fiche-du-lieu.presenter'
-import { informationsGeneralesSoumises } from '../informations-generales-soumises'
-import { InformationsGeneralesEditionFields } from './InformationsGeneralesEditionFields'
+import { InformationsGeneralesEditionFields } from '../forms/InformationsGeneralesEditionFields'
+import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
+import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+import type { PartageAffiche } from '../presenters/fiche-du-lieu.presenter'
+import type { InformationsGeneralesAffichees } from '../presenters/informations-generales'
+import { informationsGeneralesSoumises } from '../presenters/informations-generales-soumises'
 import {
   type InformationsGeneralesFormData,
   InformationsGeneralesFormValidation,
   informationsGeneralesFormOptions,
-} from './informationsGeneralesFormData'
-import { useEnregistrementDeSection } from './useEnregistrementDeSection'
+} from '../presenters/informationsGeneralesFormData'
+import {
+  CONFIRMATION_DU_PARTAGE_MANQUANTE,
+  confirmationDuPartageManquante,
+} from './confirmation-du-partage'
 import { VueInformationsGenerales } from './vues/VueInformationsGenerales'
 
 export const SectionInformationsGenerales = ({

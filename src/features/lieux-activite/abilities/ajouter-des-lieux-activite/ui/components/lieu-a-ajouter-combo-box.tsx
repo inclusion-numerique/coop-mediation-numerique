@@ -1,11 +1,11 @@
 import {
   type SuggestionAffichee,
   suggestionsAffichees,
-} from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+} from '@/features/lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import { RECHERCHER_DES_LIEUX_KEY } from '../rechercher-des-lieux.key'
+import { RECHERCHER_DES_LIEUX_KEY } from '../../action/rechercher-des-lieux.key'
 
 const itemToString = (item: SuggestionAffichee | null): string =>
   item ? item.nom : ''

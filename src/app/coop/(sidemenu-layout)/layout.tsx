@@ -1,13 +1,13 @@
 import React from 'react'
-import CreateCraModal from '@/features/activites/ui/saisie/modale-de-saisie/CreateCraModal'
-import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/modale-de-saisie/modale-de-saisie'
+import { CreateCraModalDefinition } from '@/features/activites/ui/presenters/saisie/modale-de-saisie'
+import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
 import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import Header from '@/features/navigation/ui/en-tete/Header'
-import CoopSideMenu from '@/features/navigation/ui/menus/CoopSideMenu'
-import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
-import { statistiquesPageTitle } from '@/features/statistiques/ui/pages/titre-des-statistiques'
-import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
+import Header from '@/features/navigation/ui/layouts/Header'
+import CoopSideMenu from '@/features/navigation/ui/slots/CoopSideMenu.slot'
+import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
+import { statistiquesPageTitle } from '@/features/statistiques/ui/presenters/titre-des-statistiques'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
 const CoopSidemenuLayout = async ({
   children,
