@@ -3,6 +3,7 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
+import { criteresDeLaListe } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/presenters/lister-tous-les-lieux.search-params'
 
 const semis: {
   ids: string[]
@@ -70,7 +71,7 @@ Given(
 )
 
 const chercher = async (recherche: string) => {
-  semis.trouves = await rechercherDesLieux({ searchParams: { recherche } })
+  semis.trouves = await rechercherDesLieux(criteresDeLaListe({ recherche }))
 }
 
 When('l’administration cherche « Cyberbase du Port »', async () => {

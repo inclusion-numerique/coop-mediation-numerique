@@ -1,7 +1,5 @@
-import {
-  type ActivitesFilters,
-  validateActivitesFilters,
-} from './parametres-de-la-barre.search-params'
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
+import { validateActivitesFilters } from './parametres-de-la-barre.search-params'
 
 export type ParametresDeLaPage = ActivitesFilters & {
   graphique_fin?: string

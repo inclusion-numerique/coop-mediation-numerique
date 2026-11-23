@@ -1,7 +1,7 @@
 import { z } from 'zod'
+import { ActivitesFilterValidations } from '@/features/statistiques/domain/filtres-des-activites'
 import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
 import { numberToString } from '@/libraries/nombre/formatNumber'
-import { ActivitesFilterValidations } from './parametres-de-la-barre.search-params'
 
 export type PeriodeChoisie = {
   readonly du?: string

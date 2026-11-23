@@ -31,16 +31,14 @@ import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-r
 import { rdvStatusOptions } from '@/features/rdvsp/ui/presenters/statut-rdv'
 import { StatistiquesNationales } from '@/features/statistiques/abilities/consulter-les-statistiques-nationales/ui/pages/StatistiquesNationales'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/components/sections-des-statistiques'
 import { optionsDeTags } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
-import {
-  type ActivitesFilters,
-  validateActivitesFilters,
-} from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
+import { validateActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { activiteSourceOptions } from '@/features/statistiques/ui/presenters/source-de-l-activite'
 import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
 import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/lire-les-tags-visibles.query'

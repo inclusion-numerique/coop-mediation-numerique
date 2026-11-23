@@ -3,7 +3,7 @@
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { adresseAvec } from '@/libraries/parametres-d-url'

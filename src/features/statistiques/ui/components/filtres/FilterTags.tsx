@@ -3,12 +3,12 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
 import type { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'

@@ -1,6 +1,6 @@
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import type { BuildStatistiquesWorksheetInput } from '../../implementations/excel/classeur-des-statistiques'
 import { generateActivitesFiltersLabels } from '../labels/filtres.labels'
-import type { ActivitesFilters } from './parametres-de-la-barre.search-params'
 
 type OptionsDesLibelles = Parameters<typeof generateActivitesFiltersLabels>[1]
 

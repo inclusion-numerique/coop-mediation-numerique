@@ -1,6 +1,9 @@
 import type { SortDirection } from '@arckit/resultset'
 import type { Prisma } from '@/generated/prisma/client'
-import type { ColonneTriable } from '../../ui/presenters/lister-tous-les-lieux.search-params'
+import type {
+  ColonneTriable,
+  CriteresDeLaListe,
+} from '../../domain/criteres-de-la-liste'
 
 type OrdreDesLieux = Prisma.LieuInclusionOrderByWithRelationInput
 
@@ -15,16 +18,6 @@ const triDesLieux: Readonly<
   ],
 }
 
-const estUneColonneTriable = (tri: string): tri is ColonneTriable =>
-  Object.hasOwn(triDesLieux, tri)
-
-export const ordreDesLieux = ({
-  tri,
-  ordre,
-}: {
-  tri?: string
-  ordre?: string
-}): OrdreDesLieux[] =>
-  tri && estUneColonneTriable(tri)
-    ? triDesLieux[tri](ordre === 'desc' ? 'desc' : 'asc')
-    : []
+export const ordreDesLieux = (
+  tri: CriteresDeLaListe['tri'],
+): OrdreDesLieux[] => (tri ? triDesLieux[tri.colonne](tri.ordre) : [])

@@ -1,5 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
+import { parametresDeLaRecherche } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/parametres-de-la-recherche.search-params'
+import { criteresDesCoordinations } from '@/features/activites/domain'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
@@ -18,7 +20,9 @@ export const GET = async (request: NextRequest) => {
   if (!user?.coordinateur) return new Response('Unauthorized', { status: 401 })
 
   const classeur = await classeurDeMesCoordinations({
-    recherche: request.nextUrl.searchParams,
+    criteres: criteresDesCoordinations(
+      parametresDeLaRecherche(request.nextUrl.searchParams),
+    ),
     coordinateurId: user.coordinateur.id,
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,

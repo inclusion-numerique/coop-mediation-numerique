@@ -4,12 +4,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { use } from 'react'
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
 import { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'

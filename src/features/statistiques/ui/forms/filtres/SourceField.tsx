@@ -1,7 +1,5 @@
-import {
-  ActiviteSource,
-  activiteSourceOptions,
-} from '@/features/statistiques/ui/presenters/source-de-l-activite'
+import { ActiviteSource } from '@/features/statistiques/domain/filtres-des-activites'
+import { activiteSourceOptions } from '@/features/statistiques/ui/presenters/source-de-l-activite'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 

@@ -1,9 +1,9 @@
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import type { VocabulaireDeLaBarre } from '../labels/barre.labels'
 import {
   type FournisseursDesOptions,
   optionsDesStatistiques,
 } from './options-de-la-barre.presenter'
-import type { ActivitesFilters } from './parametres-de-la-barre.search-params'
 
 type Fournisseur<
   OptionDeBeneficiaire,

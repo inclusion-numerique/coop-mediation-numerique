@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import type Filters from '@/features/statistiques/ui/components/filtres/Filters'
 import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/labels/barre.labels'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { LieuxChoisisDeLaBarre } from './lieux-choisis'
 import { TagScope } from './portee-de-tag'

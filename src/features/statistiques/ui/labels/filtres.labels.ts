@@ -1,5 +1,5 @@
+import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import type { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { OptionDeBeneficiaire } from '../presenters/option-de-beneficiaire'
