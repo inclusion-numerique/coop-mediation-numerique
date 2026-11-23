@@ -1,17 +1,23 @@
-'use client'
-
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { inject } from '@/libraries/nextjs/injection/client'
+import type { ReactNode } from 'react'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '../../../../action/ouvrir-la-saisie-du-statut.key'
 import ActiviteCardSpacer from '../../../../ui/components/carte/ActiviteCardSpacer'
 import ListCard from '../../../../ui/components/carte/ListCard'
 import type { CarteDeRendezVous as Carte } from '../presenters/carte-de-rendez-vous.presenter'
 
-export const CarteDeRendezVous = ({ carte }: { carte: Carte }) => {
-  const ouvrirLaSaisieDuStatut = inject(OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY)()
+export type RenseignerLeStatut = (rendezVous: {
+  readonly id: number
+  readonly collectif: boolean
+}) => ReactNode
 
+export const CarteDeRendezVous = ({
+  carte,
+  renseignerLeStatut,
+}: {
+  carte: Carte
+  renseignerLeStatut: RenseignerLeStatut
+}) => {
   return (
     <ListCard
       pictogram={RDVServicePublicLogo}
@@ -32,20 +38,7 @@ export const CarteDeRendezVous = ({ carte }: { carte: Carte }) => {
             {carte.statut.libelle}
           </Badge>
           {carte.aRenseigner ? (
-            <Button
-              priority="tertiary no outline"
-              size="small"
-              className="fr-flex-shrink-0"
-              title="Renseigner le statut du RDV"
-              onClick={() =>
-                ouvrirLaSaisieDuStatut({
-                  id: carte.id,
-                  collectif: carte.collectif,
-                })
-              }
-            >
-              À renseigner
-            </Button>
+            renseignerLeStatut({ id: carte.id, collectif: carte.collectif })
           ) : (
             <Button
               priority="tertiary no outline"

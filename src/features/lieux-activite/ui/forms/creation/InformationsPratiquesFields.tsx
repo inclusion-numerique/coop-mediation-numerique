@@ -2,15 +2,13 @@
 
 import Link from 'next/link'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '../../../action/lien-de-prise-de-rendez-vous.key'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 import { OpeningHoursFields } from './OpeningHoursFields'
 
 export const InformationsPratiquesFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean },
-  render: ({ form, isPending }) => (
+  props: {} as { isPending: boolean; lienDePriseDeRendezVous: string },
+  render: ({ form, isPending, lienDePriseDeRendezVous }) => (
     <>
       <p className="fr-mb-4w fr-text--sm fr-text-mention--grey">
         Ces champs sont optionnels
@@ -64,7 +62,7 @@ export const InformationsPratiquesFields = withForm({
                 Si ce lieu dispose d’un outil de prise de rendez-vous en ligne
                 (ex :{' '}
                 <Link
-                  href={inject(LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY)}
+                  href={lienDePriseDeRendezVous}
                   target="_blank"
                   rel="noreferrer"
                   className="fr-link fr-link--xs"

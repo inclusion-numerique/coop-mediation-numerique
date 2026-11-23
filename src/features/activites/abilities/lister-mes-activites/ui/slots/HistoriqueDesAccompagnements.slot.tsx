@@ -2,7 +2,10 @@ import type { ReactNode } from 'react'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
 import { DetailDeLActiviteModale } from '../../../../ui/components/detail/DetailDeLActiviteModale'
 import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
-import { CarteDeRendezVous } from '../components/CarteDeRendezVous'
+import {
+  CarteDeRendezVous,
+  type RenseignerLeStatut,
+} from '../components/CarteDeRendezVous'
 import type { CarteDuJour } from '../presenters/mes-activites.presenter'
 
 export const HistoriqueDesAccompagnements = ({
@@ -12,6 +15,7 @@ export const HistoriqueDesAccompagnements = ({
   adresse,
   parametres,
   saisieDuStatutDesRendezVous,
+  renseignerLeStatut,
 }: {
   cartes: readonly CarteDuJour[]
   total: number
@@ -19,11 +23,16 @@ export const HistoriqueDesAccompagnements = ({
   adresse: string
   parametres: Record<string, string>
   saisieDuStatutDesRendezVous: ReactNode
+  renseignerLeStatut: RenseignerLeStatut
 }) => (
   <>
     {cartes.map((carte) =>
       carte._tag === 'RendezVous' ? (
-        <CarteDeRendezVous key={carte.carte.id} carte={carte.carte} />
+        <CarteDeRendezVous
+          key={carte.carte.id}
+          carte={carte.carte}
+          renseignerLeStatut={renseignerLeStatut}
+        />
       ) : (
         <CarteDActivite key={carte.carte.id} carte={carte.carte} />
       ),

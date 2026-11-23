@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
 import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
+import type { RenseignerLeStatut } from '../components/CarteDeRendezVous'
 import { EnTeteDeLaListe } from '../components/EnTeteDeLaListe'
 import {
   type ContenuDeLaListe,
@@ -16,6 +17,7 @@ export const PageDeMaListeDActivites = ({
   saisieDuStatutDesRendezVous,
   exportDesAccompagnements,
   basculeDesRendezVous,
+  renseignerLeStatut,
 }: {
   liste: {
     readonly filtres: FiltresDeLaListe
@@ -28,6 +30,7 @@ export const PageDeMaListeDActivites = ({
   saisieDuStatutDesRendezVous: ReactNode
   exportDesAccompagnements: ReactNode
   basculeDesRendezVous: ReactNode
+  renseignerLeStatut: RenseignerLeStatut
 }) => (
   <MesActivitesPage
     vue="liste"
@@ -44,6 +47,7 @@ export const PageDeMaListeDActivites = ({
       contenu={liste.contenu}
       basculeDesRendezVous={basculeDesRendezVous}
       parametres={liste.parametres}
+      renseignerLeStatut={renseignerLeStatut}
     />
   </MesActivitesPage>
 )

@@ -21,7 +21,11 @@ const erreurEnregistrement = () =>
       'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   })
 
-const CreerLieuActivitePage = () => {
+const CreerLieuActivitePage = ({
+  lienDePriseDeRendezVous,
+}: {
+  lienDePriseDeRendezVous: string
+}) => {
   const router = useRouter()
 
   const onCreer = async (value: CreerLieuActiviteFormData) => {
@@ -66,6 +70,7 @@ const CreerLieuActivitePage = () => {
           }
           retourHref="/coop/lieux-activite"
           onCreer={onCreer}
+          lienDePriseDeRendezVous={lienDePriseDeRendezVous}
         />
       </main>
     </>

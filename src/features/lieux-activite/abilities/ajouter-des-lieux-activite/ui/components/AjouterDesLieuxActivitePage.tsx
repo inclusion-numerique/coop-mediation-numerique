@@ -93,9 +93,11 @@ const enregistrerLaSelection = async (
 export const AjouterDesLieuxActivitePage = ({
   lieuxInitiaux = [],
   issue,
+  lienDePriseDeRendezVous,
 }: {
   lieuxInitiaux?: LieuAuPanier[]
   issue: IssueDeLaSelection
+  lienDePriseDeRendezVous: string
 }) => {
   const router = useRouter()
   const [enCreation, setEnCreation] = useState<string | null>(null)
@@ -154,6 +156,7 @@ export const AjouterDesLieuxActivitePage = ({
         nom={enCreation}
         onAnnuler={() => setEnCreation(null)}
         onCreer={creer}
+        lienDePriseDeRendezVous={lienDePriseDeRendezVous}
       />
     )
 

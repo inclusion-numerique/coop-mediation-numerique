@@ -6,7 +6,6 @@ import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities
 import { cartesDeLaChronologie } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/mes-activites.presenter'
 import { parametresDePagination } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/navigation.presenter'
 import { HistoriqueDesAccompagnements } from '@/features/activites/abilities/lister-mes-activites/ui/slots/HistoriqueDesAccompagnements.slot'
-import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/action/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
@@ -25,9 +24,8 @@ import {
 } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
-import SaisieDuStatutDuRdv, {
-  useOuvrirLaSaisieDuStatut,
-} from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/SaisieDuStatutDuRdv.slot'
+import { RenseignerLeStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/RenseignerLeStatut.slot'
+import SaisieDuStatutDuRdv from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/SaisieDuStatutDuRdv.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
@@ -84,32 +82,28 @@ const BeneficiaireAccompagnementsPage = async (props: {
           bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
           to={mettreAJourStatutRdvAction}
         >
-          <ClientBinder
-            bind={OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY}
-            to={useOuvrirLaSaisieDuStatut}
-          >
-            <ViewBeneficiaireAccompagnementsPage
-              beneficiaireId={beneficiaire.id}
-              nombreDAccompagnements={
-                chronologie.total.activites + chronologie.total.rendezVous
-              }
-              accompagnements={
-                <HistoriqueDesAccompagnements
-                  cartes={cartesDeLaChronologie(
-                    chronologie.elements,
-                    user.timezone,
-                  )}
-                  total={
-                    chronologie.total.activites + chronologie.total.rendezVous
-                  }
-                  lignesParPage={pagination.lignesParPage}
-                  adresse={`/coop/mes-beneficiaires/${beneficiaire.id}/accompagnements`}
-                  parametres={parametresDePagination(parametres)}
-                  saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}
-                />
-              }
-            />
-          </ClientBinder>
+          <ViewBeneficiaireAccompagnementsPage
+            beneficiaireId={beneficiaire.id}
+            nombreDAccompagnements={
+              chronologie.total.activites + chronologie.total.rendezVous
+            }
+            accompagnements={
+              <HistoriqueDesAccompagnements
+                cartes={cartesDeLaChronologie(
+                  chronologie.elements,
+                  user.timezone,
+                )}
+                total={
+                  chronologie.total.activites + chronologie.total.rendezVous
+                }
+                lignesParPage={pagination.lignesParPage}
+                adresse={`/coop/mes-beneficiaires/${beneficiaire.id}/accompagnements`}
+                parametres={parametresDePagination(parametres)}
+                saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}
+                renseignerLeStatut={(rdv) => <RenseignerLeStatut rdv={rdv} />}
+              />
+            }
+          />
         </ClientBinder>
       </ClientBinder>
     </ClientBinder>

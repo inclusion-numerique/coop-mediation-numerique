@@ -9,7 +9,6 @@ import { saisieIndividuelleAModifier } from '@/features/activites/abilities/enre
 import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/pages/CraIndividuelPage'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
-import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-communes.key'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-lieux.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
@@ -22,7 +21,6 @@ import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-a
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag/implementations/session/visibilites-proposees-a'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par'
 import { acteurDe } from '@/features/tags/domain'
-import { rechercherDesCommunes } from '@/libraries/ban/rechercher-des-communes'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const UpdateCraIndividuelPage = async ({
@@ -76,15 +74,10 @@ const UpdateCraIndividuelPage = async ({
             to={rechercherUnLieuActiviteAction}
           >
             <ClientBinder
-              bind={RECHERCHER_DES_COMMUNES_DU_CRA_KEY}
-              to={rechercherDesCommunes}
+              bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
+              to={rechercherBeneficiairesAction}
             >
-              <ClientBinder
-                bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
-                to={rechercherBeneficiairesAction}
-              >
-                <CraIndividuelPage {...saisie} retour={retour} />
-              </ClientBinder>
+              <CraIndividuelPage {...saisie} retour={retour} />
             </ClientBinder>
           </ClientBinder>
         </ClientBinder>

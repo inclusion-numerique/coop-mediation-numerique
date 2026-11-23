@@ -13,7 +13,6 @@ import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/aj
 import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/components/AjouterDesLieuxActivitePage'
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/action/lien-de-prise-de-rendez-vous.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
@@ -69,22 +68,18 @@ const LieuxActivitePageRoute = async () => {
           to={rechercherDesLieuxAAjouterAction}
         >
           <ClientBinder bind={CREER_UN_LIEU_KEY} to={creerUnLieuActiviteAction}>
-            <ClientBinder
-              bind={LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY}
-              to={rdvWebsiteLink}
-            >
-              <LieuxActivitePage
-                formulaire={
-                  <AjouterDesLieuxActivitePage
-                    lieuxInitiaux={lieuxExistants}
-                    issue={{
-                      _tag: 'Selection',
-                      suivantHref: '/inscription/recapitulatif',
-                    }}
-                  />
-                }
-              />
-            </ClientBinder>
+            <LieuxActivitePage
+              formulaire={
+                <AjouterDesLieuxActivitePage
+                  lieuxInitiaux={lieuxExistants}
+                  issue={{
+                    _tag: 'Selection',
+                    suivantHref: '/inscription/recapitulatif',
+                  }}
+                  lienDePriseDeRendezVous={rdvWebsiteLink}
+                />
+              }
+            />
           </ClientBinder>
         </ClientBinder>
       </ClientBinder>

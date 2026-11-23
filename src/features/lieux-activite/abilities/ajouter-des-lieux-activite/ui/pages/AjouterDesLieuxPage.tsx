@@ -5,7 +5,13 @@ import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { AjouterDesLieuxActivitePage } from '../components/AjouterDesLieuxActivitePage'
 
-export const AjouterDesLieuxPage = ({ retourHref }: { retourHref: string }) => (
+export const AjouterDesLieuxPage = ({
+  retourHref,
+  lienDePriseDeRendezVous,
+}: {
+  retourHref: string
+  lienDePriseDeRendezVous: string
+}) => (
   <>
     <SkipLinksPortal />
     <div id={contentId}>
@@ -31,7 +37,10 @@ export const AjouterDesLieuxPage = ({ retourHref }: { retourHref: string }) => (
             Recherchez dans les lieux déjà référencés. Si vous ne trouvez pas
             vos lieux d’activité, vous pouvez les créer afin d’être référencé.
           </p>
-          <AjouterDesLieuxActivitePage issue={{ _tag: 'Ajout', retourHref }} />
+          <AjouterDesLieuxActivitePage
+            issue={{ _tag: 'Ajout', retourHref }}
+            lienDePriseDeRendezVous={lienDePriseDeRendezVous}
+          />
         </div>
       </div>
     </div>

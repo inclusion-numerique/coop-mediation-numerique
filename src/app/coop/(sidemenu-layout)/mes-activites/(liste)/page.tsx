@@ -10,7 +10,6 @@ import { ExportDeMesAccompagnements } from '@/features/activites/abilities/expor
 import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/options-de-la-barre.query'
 import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/mes-activites.query'
 import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/pages/PageDeMaListeDActivites'
-import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/action/ouvrir-la-saisie-du-statut.key'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
 import { MediateurId } from '@/features/activites/domain'
@@ -31,9 +30,8 @@ import {
 } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/creer-activite-depuis-rdv.key'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
-import SaisieDuStatutDuRdv, {
-  useOuvrirLaSaisieDuStatut,
-} from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/SaisieDuStatutDuRdv.slot'
+import { RenseignerLeStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/RenseignerLeStatut.slot'
+import SaisieDuStatutDuRdv from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/SaisieDuStatutDuRdv.slot'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/rattraper-rdvs-sans-webhook.key'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
@@ -106,31 +104,25 @@ const MesActivitesRoute = async ({
                 bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
                 to={mettreAJourStatutRdvAction}
               >
-                <ClientBinder
-                  bind={OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY}
-                  to={useOuvrirLaSaisieDuStatut}
-                >
-                  <PageDeMaListeDActivites
-                    liste={liste}
-                    options={options}
-                    aussiCoordinateur={
-                      isCoordinateur(user) && isMediateur(user)
-                    }
-                    saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}
-                    exportDesAccompagnements={
-                      <ExportDeMesAccompagnements
-                        filtres={liste.filtres}
-                        options={options}
-                        nombreDAccompagnements={liste.nombreDAccompagnements}
-                      />
-                    }
-                    basculeDesRendezVous={
-                      liste.bascule === null ? null : (
-                        <AfficherLesRdvs {...liste.bascule} />
-                      )
-                    }
-                  />
-                </ClientBinder>
+                <PageDeMaListeDActivites
+                  liste={liste}
+                  options={options}
+                  aussiCoordinateur={isCoordinateur(user) && isMediateur(user)}
+                  saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}
+                  renseignerLeStatut={(rdv) => <RenseignerLeStatut rdv={rdv} />}
+                  exportDesAccompagnements={
+                    <ExportDeMesAccompagnements
+                      filtres={liste.filtres}
+                      options={options}
+                      nombreDAccompagnements={liste.nombreDAccompagnements}
+                    />
+                  }
+                  basculeDesRendezVous={
+                    liste.bascule === null ? null : (
+                      <AfficherLesRdvs {...liste.bascule} />
+                    )
+                  }
+                />
               </ClientBinder>
             </ClientBinder>
           </ClientBinder>

@@ -29,12 +29,14 @@ const CreerLieuActiviteForm = ({
   onAnnuler,
   onCreer,
   onVisiblePourCartographieNationaleChange,
+  lienDePriseDeRendezVous,
 }: {
   nom?: string
   annulerHref?: string
   onAnnuler?: () => void
   onCreer: (data: CreerLieuActiviteFormData) => Promise<void>
   onVisiblePourCartographieNationaleChange?: (visible: boolean) => void
+  lienDePriseDeRendezVous: string
 }) => {
   const form = useAppForm({
     defaultValues: creerLieuActiviteDefaultValues(nom),
@@ -120,6 +122,7 @@ const CreerLieuActiviteForm = ({
                   <InformationsPratiquesFields
                     form={form}
                     isPending={isPending}
+                    lienDePriseDeRendezVous={lienDePriseDeRendezVous}
                   />
                 </CompleteFields>
               </div>

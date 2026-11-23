@@ -1,13 +1,12 @@
+import { rechercherDesCommunes } from '@/libraries/ban/rechercher-des-communes'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '../../../action/rechercher-des-communes.key'
 import type { CommuneDuCra } from './commune-du-cra'
 
 const loadSuggestions = async (
   texte: string,
 ): Promise<{ items: CommuneDuCra[] }> => ({
-  items: [...(await inject(RECHERCHER_DES_COMMUNES_DU_CRA_KEY)(texte))],
+  items: [...(await rechercherDesCommunes(texte))],
 })
 
 const itemToString = (item: CommuneDuCra | null): string => item?.label ?? ''

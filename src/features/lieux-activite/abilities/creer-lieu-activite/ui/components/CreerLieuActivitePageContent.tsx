@@ -13,12 +13,14 @@ export const CreerLieuActivitePageContent = ({
   retourLabel = 'Retour aux lieux d’activité',
   nom,
   onCreer,
+  lienDePriseDeRendezVous,
 }: {
   contentTop?: ReactNode
   retourHref: string
   retourLabel?: string
   nom?: string
   onCreer: (data: CreerLieuActiviteFormData) => Promise<void>
+  lienDePriseDeRendezVous: string
 }) => {
   const [showSideMenu, setShowSideMenu] = useState(false)
 
@@ -47,6 +49,7 @@ export const CreerLieuActivitePageContent = ({
           annulerHref={retourHref}
           onCreer={onCreer}
           onVisiblePourCartographieNationaleChange={setShowSideMenu}
+          lienDePriseDeRendezVous={lienDePriseDeRendezVous}
         />
       </div>
     </div>
