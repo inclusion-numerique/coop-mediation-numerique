@@ -67,7 +67,7 @@ export const AccompagnementBarChart = ({
           stroke="#ddd"
         />
         <XAxis
-          className="fr-text--xxs"
+          tick={{ fontSize: 12 }}
           dataKey="label"
           scale="point"
           padding={{ left: 14, right: 14 }}
@@ -82,7 +82,7 @@ export const AccompagnementBarChart = ({
           axisLine={false}
           allowDecimals={false}
           domain={isEmpty ? [0, 1] : undefined}
-          className="fr-text--xxs"
+          tick={{ fontSize: 12 }}
           tickFormatter={(value) =>
             isEmpty
               ? ''
