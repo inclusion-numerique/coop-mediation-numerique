@@ -1,18 +1,13 @@
-import { notFound } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import { getHomepage } from '@/features/authentification/domain/getHomepage'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import AdministrationSideMenu from '@/features/navigation/ui/menus/AdministrationSideMenu'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 
 const AdministrationLayout = async ({ children }: PropsWithChildren) => {
-  const user = await getSessionUser()
-
-  if (user?.role !== 'Admin') {
-    notFound()
-  }
+  const user = await authenticateAdmin()
   return (
     <>
       <div id="skip-links" />

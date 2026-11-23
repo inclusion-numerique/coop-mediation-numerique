@@ -11,7 +11,10 @@ import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-com
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import {
+  authenticateAdmin,
+  authenticateUser,
+} from '@/features/authentification/implementation/session/authenticateUser'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/server'
@@ -112,6 +115,7 @@ const Page = async (props: {
   params: Promise<{ id: string }>
   searchParams: Promise<ParametresDeLaListe>
 }) => {
+  await authenticateAdmin()
   const [{ id }, searchParams] = await Promise.all([
     props.params,
     props.searchParams,

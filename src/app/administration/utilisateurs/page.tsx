@@ -1,6 +1,7 @@
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
 import { nomDeLEmployeuse } from '@/features/employeuse/server'
 import {
   getCommunesAndDepartementsOptions,
@@ -34,6 +35,7 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
+  await authenticateAdmin()
   const searchParams = await props.searchParams
   const filtres = filtresUtilisateurs(searchParams)
 
