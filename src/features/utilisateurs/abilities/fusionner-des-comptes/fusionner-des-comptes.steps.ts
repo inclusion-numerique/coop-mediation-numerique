@@ -5,12 +5,12 @@ import {
   type CompteSeme,
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { fusionnerDesComptes } from './commands/fusionner-des-comptes'
+import { fusionnerDesComptesAvec } from './implementations/fusionner-des-comptes.binding'
 
 const fusion: {
   source?: CompteSeme
   cible?: CompteSeme
-  resultat?: Awaited<ReturnType<typeof fusionnerDesComptes>>
+  resultat?: Awaited<ReturnType<ReturnType<typeof fusionnerDesComptesAvec>>>
   contratId?: number
   equipeId?: string
 } = {}
@@ -118,23 +118,17 @@ Given('la cible est supprimée', async () => {
 })
 
 When("l'administration fusionne la source dans la cible", async () => {
-  fusion.resultat = await fusionnerDesComptes(
-    {
-      sourceId: source().userId,
-      cibleId: cible().userId,
-    },
-    async () => undefined,
-  )
+  fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
+    sourceId: source().userId,
+    cibleId: cible().userId,
+  })
 })
 
 When("l'administration fusionne la source avec elle-même", async () => {
-  fusion.resultat = await fusionnerDesComptes(
-    {
-      sourceId: source().userId,
-      cibleId: source().userId,
-    },
-    async () => undefined,
-  )
+  fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
+    sourceId: source().userId,
+    cibleId: source().userId,
+  })
 })
 
 Then('la fusion des comptes aboutit', () => {

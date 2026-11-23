@@ -1,15 +1,7 @@
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
-import {
-  type AnonymiserLesComptesInactifsPorts,
-  type CompteAExaminer,
-  derniereActivite,
-  type EtapeInactivite,
-  etapeInactivite,
-} from '../domain'
-import {
-  lireLesComptesAExaminer,
-  noterLAvertissement,
-} from '../implementations/prisma/index'
+import { type CompteAExaminer, derniereActivite } from './compte-a-examiner'
+import { type EtapeInactivite, etapeInactivite } from './etape-inactivite'
+import type { AnonymiserLesComptesInactifsDependances } from './ports'
 
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId
@@ -23,20 +15,20 @@ const agir = async (
   compte: CompteAExaminer,
   etape: EtapeInactivite,
   maintenant: Date,
-  ports: AnonymiserLesComptesInactifsPorts,
+  dependances: AnonymiserLesComptesInactifsDependances,
 ): Promise<void> => {
   if (etape._tag === 'aAvertir') {
-    await ports.avertirDeLaSuppression({
+    await dependances.avertirDeLaSuppression({
       courriel: compte.courriel,
       prenom: compte.prenom,
       dateDeSuppression: etape.dateDeSuppression,
     })
-    await noterLAvertissement(compte.id, maintenant)
+    await dependances.noterLAvertissement(compte.id, maintenant)
     return
   }
 
   if (etape._tag === 'aSupprimer') {
-    await ports.supprimerLeCompte(compte.id)
+    await dependances.supprimerLeCompte(compte.id)
   }
 }
 
@@ -44,7 +36,7 @@ const examiner =
   (
     maintenant: Date,
     simuler: boolean,
-    ports: AnonymiserLesComptesInactifsPorts,
+    dependances: AnonymiserLesComptesInactifsDependances,
   ) =>
   async (compte: CompteAExaminer): Promise<CompteExamine> => {
     const etape = etapeInactivite({
@@ -57,7 +49,7 @@ const examiner =
       return { utilisateurId: compte.id, etape: etape._tag, issue: 'simule' }
     }
 
-    return agir(compte, etape, maintenant, ports).then(
+    return agir(compte, etape, maintenant, dependances).then(
       (): CompteExamine => ({
         utilisateurId: compte.id,
         etape: etape._tag,
@@ -72,22 +64,22 @@ const examiner =
     )
   }
 
-export const anonymiserLesComptesInactifs = async ({
-  maintenant,
-  simuler,
-  ports,
-}: {
-  readonly maintenant: Date
-  readonly simuler: boolean
-  readonly ports: AnonymiserLesComptesInactifsPorts
-}): Promise<readonly CompteExamine[]> => {
-  const comptes = await lireLesComptesAExaminer(maintenant)
+export const anonymiserLesComptesInactifs =
+  (dependances: AnonymiserLesComptesInactifsDependances) =>
+  async ({
+    maintenant,
+    simuler,
+  }: {
+    readonly maintenant: Date
+    readonly simuler: boolean
+  }): Promise<readonly CompteExamine[]> => {
+    const comptes = await dependances.lireLesComptesAExaminer(maintenant)
 
-  return comptes.reduce<Promise<readonly CompteExamine[]>>(
-    async (precedents, compte) => [
-      ...(await precedents),
-      await examiner(maintenant, simuler, ports)(compte),
-    ],
-    Promise.resolve([]),
-  )
-}
+    return comptes.reduce<Promise<readonly CompteExamine[]>>(
+      async (precedents, compte) => [
+        ...(await precedents),
+        await examiner(maintenant, simuler, dependances)(compte),
+      ],
+      Promise.resolve([]),
+    )
+  }

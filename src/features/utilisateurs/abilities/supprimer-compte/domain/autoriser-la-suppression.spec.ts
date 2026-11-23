@@ -8,8 +8,8 @@ import {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { AuteurSuppression } from './auteur-suppression'
+import { autoriserSuppression } from './autoriser-la-suppression'
 import { RetentionPolicy } from './retention-policy'
-import { autoriserSuppression } from './supprimer-compte'
 
 const compte = (
   surcharge: Partial<CompteASupprimer> = {},

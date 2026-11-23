@@ -6,7 +6,7 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
 import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
-import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/commands/changer-les-roles'
+import { changerLesRolesAvec } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/changer-les-roles.binding'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -18,8 +18,7 @@ export const changerLesRolesAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input, user }) => {
-        const resultat = await changerLesRoles({
-          synchroniserLaPersonne: synchroniserPersonne,
+        const resultat = await changerLesRolesAvec(synchroniserPersonne)({
           ...input,
           auteur: {
             _tag: 'administrateur',

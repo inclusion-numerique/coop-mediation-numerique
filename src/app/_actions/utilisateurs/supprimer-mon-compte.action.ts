@@ -12,14 +12,12 @@ import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreint
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 import { SUPPRIMER_COMPTE_ERRORS } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.errors'
-import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/commands/supprimer-compte'
-import { type SupprimerComptePorts } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion'
-import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash'
+import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
+import { supprimerCompteAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult } from '@/libraries/nextjs'
 
-const supprimerComptePorts: SupprimerComptePorts = {
+const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
@@ -27,8 +25,6 @@ const supprimerComptePorts: SupprimerComptePorts = {
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,
-  retirerDesListesDeDiffusion,
-  hash,
 }
 
 export const supprimerMonCompteAction = actionBuilder()
@@ -37,14 +33,13 @@ export const supprimerMonCompteAction = actionBuilder()
   .execute(
     fromResult(
       ({ user }) =>
-        supprimerCompte({
-          command: {
-            cible: UtilisateurId(user.id),
-            auteur: { _tag: 'titulaire' },
-            maintenant: new Date(),
-          },
-          ports: supprimerComptePorts,
-          synchroniserLaPersonne: synchroniserPersonne,
+        supprimerCompteAvec(
+          supprimerComptePorts,
+          synchroniserPersonne,
+        )({
+          cible: UtilisateurId(user.id),
+          auteur: { _tag: 'titulaire' },
+          maintenant: new Date(),
         }),
       { onError: SUPPRIMER_COMPTE_ERRORS },
     ),

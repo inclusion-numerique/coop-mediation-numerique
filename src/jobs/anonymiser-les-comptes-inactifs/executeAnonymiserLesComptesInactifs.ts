@@ -6,20 +6,15 @@ import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/rev
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/effacer-empreinte-rdv.binding'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
-import { anonymiserLesComptesInactifs } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/commands/anonymiser-les-comptes-inactifs'
-import { avertirDeLaSuppression } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/avertir-de-la-suppression'
-import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/commands/supprimer-compte'
-import {
-  RetentionPolicy,
-  type SupprimerComptePorts,
-} from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion'
-import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash'
+import { anonymiserLesComptesInactifsAvec } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/anonymiser-les-comptes-inactifs.binding'
+import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
+import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
+import { supprimerCompteAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { type UtilisateurId } from '@/features/utilisateurs/domain'
 import type { JobExecutor } from '@/jobs/jobExecutors'
 import { output } from '@/jobs/output'
 
-const supprimerComptePorts: SupprimerComptePorts = {
+const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
@@ -27,24 +22,21 @@ const supprimerComptePorts: SupprimerComptePorts = {
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,
-  retirerDesListesDeDiffusion,
-  hash,
 }
 
 const supprimerLeCompte =
   (maintenant: Date) =>
   async (utilisateurId: UtilisateurId): Promise<void> => {
-    const resultat = await supprimerCompte({
-      command: {
-        cible: utilisateurId,
-        auteur: {
-          _tag: 'systeme',
-          policy: RetentionPolicy('InactifDepuisDeuxAns'),
-        },
-        maintenant,
+    const resultat = await supprimerCompteAvec(
+      supprimerComptePorts,
+      synchroniserPersonne,
+    )({
+      cible: utilisateurId,
+      auteur: {
+        _tag: 'systeme',
+        policy: RetentionPolicy('InactifDepuisDeuxAns'),
       },
-      ports: supprimerComptePorts,
-      synchroniserLaPersonne: synchroniserPersonne,
+      maintenant,
     })
 
     if (!resultat.success) throw new Error(resultat.error._tag)
@@ -56,14 +48,9 @@ export const executeAnonymiserLesComptesInactifs: JobExecutor<
   const simuler = job.payload?.simuler ?? false
   const maintenant = new Date()
 
-  const comptes = await anonymiserLesComptesInactifs({
-    maintenant,
-    simuler,
-    ports: {
-      avertirDeLaSuppression,
-      supprimerLeCompte: supprimerLeCompte(maintenant),
-    },
-  })
+  const comptes = await anonymiserLesComptesInactifsAvec(
+    supprimerLeCompte(maintenant),
+  )({ maintenant, simuler })
 
   const parEtape = (etape: string) =>
     comptes

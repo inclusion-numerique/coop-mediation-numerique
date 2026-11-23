@@ -4,13 +4,13 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { changerLesRoles } from './commands/changer-les-roles'
+import { changerLesRolesAvec } from './implementations/changer-les-roles.binding'
 import { rolesVacants } from './implementations/prisma/roles-vacants.query'
 
 const changement: {
   utilisateurId?: string
   tagId?: string
-  resultat?: Awaited<ReturnType<typeof changerLesRoles>>
+  resultat?: Awaited<ReturnType<ReturnType<typeof changerLesRolesAvec>>>
   vacants?: Awaited<ReturnType<typeof rolesVacants>>
 } = {}
 
@@ -70,8 +70,7 @@ const changer = async (mediateur: boolean, coordinateur: boolean) => {
     creeLe: new Date('2026-01-01'),
     inscritLe: new Date('2026-01-01'),
   })
-  changement.resultat = await changerLesRoles({
-    synchroniserLaPersonne: async () => undefined,
+  changement.resultat = await changerLesRolesAvec(async () => undefined)({
     utilisateurId: utilisateurId(),
     mediateur,
     coordinateur,

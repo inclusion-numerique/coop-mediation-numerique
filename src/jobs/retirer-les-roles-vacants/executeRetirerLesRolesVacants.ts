@@ -1,10 +1,10 @@
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { retirerLesRolesVacants } from '@/features/utilisateurs/abilities/changer-les-roles/commands/retirer-les-roles-vacants'
+import { retirerLesRolesVacantsAvec } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/changer-les-roles.binding'
 import { output } from '@/libraries/console/output'
 
 export const executeRetirerLesRolesVacants = async () => {
   const { coordinateursRetires, mediateursRetires } =
-    await retirerLesRolesVacants(new Date(), synchroniserPersonne)
+    await retirerLesRolesVacantsAvec(synchroniserPersonne)(new Date())
 
   output(`${coordinateursRetires} rôles coordinateur vacants ont été retirés`)
   output(`${mediateursRetires} rôles médiateur vacants ont été retirés`)

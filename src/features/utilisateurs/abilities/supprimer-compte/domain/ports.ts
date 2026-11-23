@@ -1,9 +1,12 @@
 import type {
   AdresseCourriel,
+  CompteASupprimer,
   IdentifiantsRattaches,
+  IdentiteAnonyme,
   MediateurId,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import type { CompteSupprime } from './autoriser-la-suppression'
 
 type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
@@ -57,4 +60,23 @@ export type SupprimerComptePorts = {
   readonly revoquerPartageStatistiques: RevoquerPartageStatistiques
   readonly retirerDesListesDeDiffusion: RetirerDesListesDeDiffusion
   readonly hash: Hash
+}
+
+type LireLeCompteASupprimer = (
+  utilisateurId: UtilisateurId,
+) => Promise<CompteASupprimer | null>
+
+type CouperLAcces = (input: {
+  readonly utilisateurId: UtilisateurId
+  readonly identite: IdentiteAnonyme
+  readonly supprimeLe: Date
+  readonly dejaAnonymise: boolean
+}) => Promise<void>
+
+type JournaliserLEffacement = (compte: CompteSupprime) => void
+
+export type SupprimerCompteDependances = SupprimerComptePorts & {
+  readonly lireLeCompteASupprimer: LireLeCompteASupprimer
+  readonly couperLAcces: CouperLAcces
+  readonly journaliserLEffacement: JournaliserLEffacement
 }

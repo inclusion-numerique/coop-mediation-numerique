@@ -13,14 +13,12 @@ import { synchroniserPersonne } from '@/features/registre-des-personnes/implemen
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 import { SUPPRIMER_COMPTE_ERRORS } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.errors'
 import { SupprimerCompteValidation } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.validation'
-import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/commands/supprimer-compte'
-import { type SupprimerComptePorts } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion'
-import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash'
+import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
+import { supprimerCompteAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
-const supprimerComptePorts: SupprimerComptePorts = {
+const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
@@ -28,8 +26,6 @@ const supprimerComptePorts: SupprimerComptePorts = {
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,
-  retirerDesListesDeDiffusion,
-  hash,
 }
 
 export const supprimerCompteAction = actionBuilder()
@@ -39,17 +35,16 @@ export const supprimerCompteAction = actionBuilder()
   .execute(
     fromResult(
       ({ input, user }) =>
-        supprimerCompte({
-          command: {
-            cible: UtilisateurId(input.utilisateurId),
-            auteur: {
-              _tag: 'administrateur',
-              administrateurId: AuteurId(user.id),
-            },
-            maintenant: new Date(),
+        supprimerCompteAvec(
+          supprimerComptePorts,
+          synchroniserPersonne,
+        )({
+          cible: UtilisateurId(input.utilisateurId),
+          auteur: {
+            _tag: 'administrateur',
+            administrateurId: AuteurId(user.id),
           },
-          ports: supprimerComptePorts,
-          synchroniserLaPersonne: synchroniserPersonne,
+          maintenant: new Date(),
         }),
       { onError: SUPPRIMER_COMPTE_ERRORS },
     ),

@@ -12,12 +12,10 @@ import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreint
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 import { lancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/lancer-les-relances.binding'
-import { supprimerUnInscritJamaisActif } from '@/features/utilisateurs/abilities/supprimer-compte/commands/supprimer-un-inscrit-jamais-actif'
-import { type SupprimerComptePorts } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion'
-import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash'
+import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
+import { supprimerUnInscritJamaisActifAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 
-const supprimerComptePorts: SupprimerComptePorts = {
+const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
@@ -25,8 +23,6 @@ const supprimerComptePorts: SupprimerComptePorts = {
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,
-  retirerDesListesDeDiffusion,
-  hash,
 }
 
 export const relancerLesInscritsInactifsAction = actionBuilder()
@@ -39,7 +35,7 @@ export const relancerLesInscritsInactifsAction = actionBuilder()
       traites: (
         await lancerLesRelancesDesInscrits(
           maintenant,
-          supprimerUnInscritJamaisActif(
+          supprimerUnInscritJamaisActifAvec(
             supprimerComptePorts,
             maintenant,
             synchroniserPersonne,
