@@ -5,10 +5,10 @@ import {
   type EchecDeLot,
   enLots,
   type IdentifiantDImport,
+  type LectureDesInscrits,
   type SynchroniserLesRolesBrevoPorts,
   type TailleDeLot,
-} from '../domain'
-import { inscritsDeLaListe } from '../implementations/prisma/index'
+} from './index'
 
 type Envois<R> = {
   readonly reussis: readonly R[]
@@ -42,37 +42,42 @@ const echecs = (
   lots: readonly (readonly AdresseCourriel[])[],
 ): readonly EchecDeLot[] => lots.map((courriels) => ({ _tag: tag, courriels }))
 
-export const synchroniserLesRolesBrevo = async (
-  ports: SynchroniserLesRolesBrevoPorts,
-): Promise<BilanDeSynchronisation> => {
-  const { inscrits, illisibles } = await inscritsDeLaListe()
-  const { aImporter, aRetirer } = contactsASynchroniser(inscrits)
-
-  const imports = await envoyerParLots<
-    (typeof aImporter)[number],
-    IdentifiantDImport
-  >(
-    aImporter,
-    ports.importer.tailleMax,
-    ports.importer.envoyer,
-    ({ courriel }) => courriel,
-  )
-  const retraits = await envoyerParLots(
-    aRetirer,
-    ports.retirer.tailleMax,
-    ports.retirer.envoyer,
-    (courriel) => courriel,
-  )
-
-  return {
-    inscrits: inscrits.length,
-    importes: imports.faits,
-    retires: retraits.faits,
-    illisibles,
-    imports: imports.reussis,
-    echecs: [
-      ...echecs('ImportEchoue', imports.echecs),
-      ...echecs('RetraitEchoue', retraits.echecs),
-    ],
+export type SynchroniserLesRolesBrevoDependances =
+  SynchroniserLesRolesBrevoPorts & {
+    readonly lireLesInscrits: () => Promise<LectureDesInscrits>
   }
-}
+
+export const synchroniserLesRolesBrevo =
+  (ports: SynchroniserLesRolesBrevoDependances) =>
+  async (): Promise<BilanDeSynchronisation> => {
+    const { inscrits, illisibles } = await ports.lireLesInscrits()
+    const { aImporter, aRetirer } = contactsASynchroniser(inscrits)
+
+    const imports = await envoyerParLots<
+      (typeof aImporter)[number],
+      IdentifiantDImport
+    >(
+      aImporter,
+      ports.importer.tailleMax,
+      ports.importer.envoyer,
+      ({ courriel }) => courriel,
+    )
+    const retraits = await envoyerParLots(
+      aRetirer,
+      ports.retirer.tailleMax,
+      ports.retirer.envoyer,
+      (courriel) => courriel,
+    )
+
+    return {
+      inscrits: inscrits.length,
+      importes: imports.faits,
+      retires: retraits.faits,
+      illisibles,
+      imports: imports.reussis,
+      echecs: [
+        ...echecs('ImportEchoue', imports.echecs),
+        ...echecs('RetraitEchoue', retraits.echecs),
+      ],
+    }
+  }

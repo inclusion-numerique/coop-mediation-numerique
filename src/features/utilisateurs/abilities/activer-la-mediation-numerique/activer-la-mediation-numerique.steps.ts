@@ -3,11 +3,13 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { activerLaMediationNumerique } from './commands/activer-la-mediation-numerique'
+import { activerLaMediationNumeriqueAvec } from './implementations/activer-la-mediation-numerique.binding'
 
 const activation: {
   utilisateurId?: string
-  resultat?: Awaited<ReturnType<typeof activerLaMediationNumerique>>
+  resultat?: Awaited<
+    ReturnType<ReturnType<typeof activerLaMediationNumeriqueAvec>>
+  >
 } = {}
 
 const utilisateurId = (): string => {
@@ -43,10 +45,9 @@ Given('un médiateur sans rôle coordinateur', async () => {
 })
 
 When('il active la médiation numérique', async () => {
-  activation.resultat = await activerLaMediationNumerique(
-    utilisateurId(),
+  activation.resultat = await activerLaMediationNumeriqueAvec(
     async () => undefined,
-  )
+  )(utilisateurId())
 })
 
 Then("l'activation de la médiation aboutit", () => {

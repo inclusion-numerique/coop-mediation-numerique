@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { terminerLUsurpation } from './commands/terminer-l-usurpation'
+import { terminerLUsurpation } from './implementations/terminer-l-usurpation.binding'
 
 const fin: {
   usurpateurId?: string

@@ -1,14 +1,16 @@
 import { removeBrevoUserContact } from '@/features/utilisateurs/implementations/brevo/remove-brevo-user-contact'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
+import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
-import { relancerLesInscriptionsInachevees } from '../commands/relancer-les-inscriptions-inachevees'
 import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
+import { relancerLesInscriptionsInachevees } from '../domain/relancer-les-inscriptions-inachevees'
 import {
   sendAccountDeletedEmail,
   sendDeletionWarningEmail,
   sendFinishYourSignupEmail,
 } from './email'
 import { effacerLInscription } from './prisma'
+import { inscriptionsInachevees } from './prisma/inscriptions-inachevees.query'
 
 const dateFrancaise = (date: Date): string => date.toLocaleDateString('fr-FR')
 
@@ -16,6 +18,8 @@ const relancesDInscriptionPorts = (
   totalInscrits: number,
   retirerDuRegistre: RetirerDuRegistre,
 ): RelancerLesInscriptionsInacheveesPorts => ({
+  lireLesComptesARelancer: inscriptionsInachevees,
+  noterLaRelance: noterLaRelance('Inscription'),
   envoyerLaRelance: ({ courriel, prenom }, palier) =>
     sendFinishYourSignupEmail({
       email: courriel,

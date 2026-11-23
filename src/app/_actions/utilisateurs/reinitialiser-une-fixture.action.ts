@@ -13,7 +13,7 @@ import {
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
-import { reinitialiserUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/commands/reinitialiser-une-fixture'
+import { reinitialiserUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/reinitialiser-une-fixture.binding'
 import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

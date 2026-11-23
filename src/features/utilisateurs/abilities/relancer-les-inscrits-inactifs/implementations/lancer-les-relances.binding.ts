@@ -1,13 +1,15 @@
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
-import { relancerLesInscritsInactifs } from '../commands/relancer-les-inscrits-inactifs'
+import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
+import { relancerLesInscritsInactifs } from '../domain/relancer-les-inscrits-inactifs'
 import {
   sendGettingStartedEmail,
   sendNouveauAccountDeletedEmail,
   sendNouveauAccountDeletionWarningEmail,
   sendNouveauAccountEmail,
 } from './email'
+import { inscritsSansProduction } from './prisma/inscrits-sans-production.query'
 
 const dateFrancaise = (date: Date): string => date.toLocaleDateString('fr-FR')
 
@@ -15,6 +17,8 @@ const relancesDesInscritsPorts = (
   totalInscrits: number,
   supprimerLeCompte: RelancerLesInscritsInactifsPorts['supprimerLeCompte'],
 ): RelancerLesInscritsInactifsPorts => ({
+  lireLesComptesARelancer: inscritsSansProduction,
+  noterLaRelance: noterLaRelance('Nouveau'),
   envoyerLaRelance: (destinataire, palier) =>
     palier === 7
       ? sendGettingStartedEmail({

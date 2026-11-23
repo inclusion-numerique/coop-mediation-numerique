@@ -1,9 +1,18 @@
 import type {
+  CompteARelancer,
   DestinataireDeRelance,
   EffacementImpossible,
   PalierDeRelance,
+  Relance,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+
+type NoterLaRelance = (
+  utilisateurId: UtilisateurId,
+  relance: Relance,
+  suppressionAnnoncee: Date | null,
+) => Promise<void>
+
 import type { Result } from '@/libraries/result'
 
 export type RelancerLesInscritsInactifsPorts = {
@@ -21,4 +30,6 @@ export type RelancerLesInscritsInactifsPorts = {
   readonly supprimerLeCompte: (
     utilisateurId: UtilisateurId,
   ) => Promise<Result<void, EffacementImpossible>>
+  readonly lireLesComptesARelancer: () => Promise<readonly CompteARelancer[]>
+  readonly noterLaRelance: NoterLaRelance
 }

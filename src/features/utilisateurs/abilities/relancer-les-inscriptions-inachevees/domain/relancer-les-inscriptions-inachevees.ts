@@ -2,10 +2,8 @@ import {
   deroulerLesRelances,
   type RapportDeRelance,
 } from '@/features/utilisateurs/domain'
-import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { success } from '@/libraries/result'
-import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
-import { inscriptionsInachevees } from '../implementations/prisma/inscriptions-inachevees.query'
+import type { RelancerLesInscriptionsInacheveesPorts } from './ports'
 
 export const relancerLesInscriptionsInachevees = async ({
   maintenant,
@@ -15,7 +13,7 @@ export const relancerLesInscriptionsInachevees = async ({
   readonly ports: RelancerLesInscriptionsInacheveesPorts
 }): Promise<readonly RapportDeRelance[]> =>
   deroulerLesRelances(
-    await inscriptionsInachevees(),
+    await ports.lireLesComptesARelancer(),
     {
       relancer: ports.envoyerLaRelance,
       avertir: ports.envoyerLAvertissement,
@@ -25,7 +23,7 @@ export const relancerLesInscriptionsInachevees = async ({
         await ports.envoyerLAvisDEffacement(destinataire)
         return success(undefined)
       },
-      noter: noterLaRelance('Inscription'),
+      noter: ports.noterLaRelance,
     },
     maintenant,
   )

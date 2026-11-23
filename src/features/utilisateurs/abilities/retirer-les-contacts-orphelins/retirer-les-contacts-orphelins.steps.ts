@@ -3,11 +3,12 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
+import type { CompteDuContact, ContactBrevo } from './domain'
 import {
   type BilanDesContacts,
   retirerLesContactsOrphelins,
-} from './commands/retirer-les-contacts-orphelins'
-import type { CompteDuContact, ContactBrevo } from './domain'
+} from './domain/retirer-les-contacts-orphelins'
+import { inscritsVivantsParmi } from './implementations/prisma/inscrits-vivants.query'
 
 const compte = (identifiant: string): CompteDuContact => ({
   _tag: 'Compte',
@@ -62,6 +63,7 @@ Given("un contact dont le compte n'existe plus, déjà sorti de la liste", () =>
 
 When('les contacts orphelins sont retirés', async () => {
   reconciliation.bilan = await retirerLesContactsOrphelins({
+    inscritsVivantsParmi,
     listerLesContacts: async () => reconciliation.contacts,
     supprimerLeContact: async (courriel) => {
       reconciliation.supprimes = [...reconciliation.supprimes, courriel]
@@ -73,7 +75,7 @@ When('les contacts orphelins sont retirés', async () => {
       reconciliation.retires = [...reconciliation.retires, courriel]
       return { _tag: 'Retire' }
     },
-  })
+  })()
 })
 
 Then('le contact anonymisé est supprimé', () => {

@@ -5,7 +5,7 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ERRORS } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.errors'
-import { activerLaMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/commands/activer-la-mediation-numerique'
+import { activerLaMediationNumeriqueAvec } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/activer-la-mediation-numerique.binding'
 import { fromResult } from '@/libraries/nextjs'
 
 export const activerLaMediationNumeriqueAction = actionBuilder()
@@ -13,7 +13,8 @@ export const activerLaMediationNumeriqueAction = actionBuilder()
   .use(withMaintenance())
   .execute(
     fromResult(
-      ({ user }) => activerLaMediationNumerique(user.id, synchroniserPersonne),
+      ({ user }) =>
+        activerLaMediationNumeriqueAvec(synchroniserPersonne)(user.id),
       {
         onError: ACTIVER_LA_MEDIATION_NUMERIQUE_ERRORS,
       },
