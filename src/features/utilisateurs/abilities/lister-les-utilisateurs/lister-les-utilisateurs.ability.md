@@ -132,3 +132,62 @@
 
 * When l'administration cherche "Gus" dans la liste
 * Then le total dépasse le nombre de comptes trouvés
+
+## Rule: Les anciens rattachements retrouvent un compte, sur demande
+
+> Un compte supprimé n'a plus de nom : on le retrouve par l'environnement où
+> il travaillait. Sans la demande, seuls les rattachements actuels comptent.
+> Avec elle, une employeuse compte aussi si elle l'a été, ou si elle porte une
+> activité du compte ; un lieu compte aussi s'il accueille une activité du
+> compte ; une équipe compte aussi si le compte l'a quittée.
+
+### Scenario: Une ancienne employeuse n'est retenue que sur demande
+
+* Given "Jade" a été employée par "Mairie de Laon"
+* When l'administration filtre la liste sur l'employeuse "Mairie de Laon"
+* Then la liste ne contient pas "Jade"
+
+### Scenario: Retrouver un compte par son ancienne employeuse
+
+* Given "Jade" a été employée par "Mairie de Laon"
+* When l'administration filtre la liste sur l'employeuse "Mairie de Laon" en incluant les anciens rattachements
+* Then la liste contient exactement "Jade"
+
+### Scenario: Retrouver un compte par l'employeuse de ses activités
+
+* Given "Jade" a enregistré une activité pour l'employeuse "Mairie de Soissons"
+* When l'administration filtre la liste sur l'employeuse "Mairie de Soissons" en incluant les anciens rattachements
+* Then la liste contient exactement "Jade"
+
+### Scenario: Le lieu d'une activité n'est retenu que sur demande
+
+* Given "Jade" a enregistré une activité à "Médiathèque de Laon"
+* When l'administration filtre la liste sur le lieu "Médiathèque de Laon"
+* Then la liste ne contient pas "Jade"
+
+### Scenario: Retrouver un compte par le lieu de ses activités
+
+* Given "Jade" a enregistré une activité à "Médiathèque de Laon"
+* When l'administration filtre la liste sur le lieu "Médiathèque de Laon" en incluant les anciens rattachements
+* Then la liste contient exactement "Jade"
+
+## Rule: La liste se filtre par coordinateur
+
+### Scenario: Filtrer sur l'équipe actuelle d'un coordinateur
+
+* Given "Adam" est membre de l'équipe de "Gus"
+* And "Fred" a quitté l'équipe de "Gus"
+* When l'administration filtre la liste sur le coordinateur "Gus"
+* Then la liste contient exactement "Adam"
+
+### Scenario: Inclure les anciens membres de l'équipe
+
+* Given "Adam" est membre de l'équipe de "Gus"
+* And "Fred" a quitté l'équipe de "Gus"
+* When l'administration filtre la liste sur le coordinateur "Gus" en incluant les anciens rattachements
+* Then la liste contient exactement "Adam, Fred"
+
+### Scenario: Chercher un coordinateur à choisir
+
+* When l'administration cherche le coordinateur "Gus"
+* Then les coordinateurs proposés sont exactement "Gus"

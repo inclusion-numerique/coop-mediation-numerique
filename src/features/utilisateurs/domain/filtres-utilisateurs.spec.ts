@@ -50,13 +50,33 @@ describe('filtres de la liste des utilisateurs', () => {
     ).toBe(dispositif)
   })
 
+  it('ne retient que les rattachements actuels par défaut', () => {
+    expect(filtresUtilisateurs({}).rattachements).toBe('Actuels')
+  })
+
+  it('historique=1 inclut les anciens rattachements', () => {
+    expect(filtresUtilisateurs({ historique: '1' }).rattachements).toBe(
+      'ActuelsEtAnciens',
+    )
+  })
+
+  it('lit les coordinateurs et écarte les identifiants invalides', () => {
+    expect(
+      filtresUtilisateurs({
+        coordinateurs: '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f,pas-un-uuid',
+      }).coordinateurs,
+    ).toEqual(['0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'])
+  })
+
   it('se réécrit en paramètres d’URL à l’identique', () => {
     const parametres = {
       roles: 'mediateur',
       statut: 'actif',
       conseiller_numerique: '1',
       employeuses: '12',
+      coordinateurs: '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f',
       departements: '75',
+      historique: '1',
     }
 
     expect(parametresDesFiltres(filtresUtilisateurs(parametres))).toEqual(

@@ -4,6 +4,9 @@ import { libellesDesFiltres } from './libelles-des-filtres.presenter'
 
 const options = {
   employeuses: [{ value: '12', label: 'Mairie de Reims' }],
+  coordinateurs: [
+    { value: '1a2b3c4d-1f2b-4c3d-8e4f-5a6b7c8d9e0f', label: 'Gus Martin' },
+  ],
   lieux: [
     { value: '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f', label: 'Médiathèque' },
   ],
@@ -20,6 +23,8 @@ describe('libellés des filtres', () => {
           conseiller_numerique: '0',
           statut: 'inactif30',
           employeuses: '12',
+          coordinateurs: '1a2b3c4d-1f2b-4c3d-8e4f-5a6b7c8d9e0f',
+          historique: '1',
           lieux: '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f',
           communes: '51454',
           departements: '51',
@@ -31,9 +36,11 @@ describe('libellés des filtres', () => {
       'Hors dispositif',
       'Inactif J+30',
       'Employeuse : Mairie de Reims',
+      'Coordinateur : Gus Martin',
       'Lieu d’activité : Médiathèque',
       'Commune : Reims',
       'Département : 51 · Marne',
+      'Avec les anciens rattachements',
     ])
   })
 
