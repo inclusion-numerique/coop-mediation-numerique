@@ -1,8 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
-import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/server'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
 import { RechercherDesCommunesValidation } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.validation'
 import { withInput } from '@/libraries/nextjs'
 

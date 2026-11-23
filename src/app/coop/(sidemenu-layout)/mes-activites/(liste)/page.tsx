@@ -22,7 +22,7 @@ import { authenticateMediateur } from '@/features/authentification/implementatio
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-} from '@/features/lieux-activite'
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
 import AfficherLesRdvs from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/AfficherLesRdvs'
 import {

@@ -8,7 +8,7 @@ import {
 import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withInput } from '@/libraries/nextjs'
 
 export const rechercherLesLieuxDeMesStatistiquesAction = actionBuilder()

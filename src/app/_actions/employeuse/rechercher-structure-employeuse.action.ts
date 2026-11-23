@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { searchStructureEmployeuseCombined } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/recherche-structure-employeuse'
 import { withInput } from '@/libraries/nextjs'
 

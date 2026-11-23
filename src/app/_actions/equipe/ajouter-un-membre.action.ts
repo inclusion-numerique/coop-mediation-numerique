@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre'
 import { AJOUTER_UN_MEMBRE_ERRORS } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.errors'
 import { AjouterUnMembreValidation } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.validation'

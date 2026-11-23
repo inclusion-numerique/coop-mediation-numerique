@@ -1,8 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { profilDeLaSession, withAuth } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { modifierUnTag } from '@/features/tags/abilities/modifier-un-tag'
 import { MODIFIER_UN_TAG_ERRORS } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.errors'
 import { ModifierUnTagValidation } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.validation'

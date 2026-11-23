@@ -1,8 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
-import { synchroniserPersonne } from '@/features/registre-des-personnes'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner-des-comptes'
 import { FUSIONNER_DES_COMPTES_ERRORS } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.errors'
 import { FusionnerDesComptesValidation } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.validation'

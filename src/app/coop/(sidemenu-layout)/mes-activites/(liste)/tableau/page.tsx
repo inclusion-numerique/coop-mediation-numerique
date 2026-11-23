@@ -15,7 +15,7 @@ import { authenticateMediateur } from '@/features/authentification/implementatio
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-} from '@/features/lieux-activite'
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import {
   periodeDesRendezVous,
   rendezVousLies,

@@ -2,7 +2,8 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'

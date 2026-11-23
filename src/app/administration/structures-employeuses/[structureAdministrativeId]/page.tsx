@@ -2,12 +2,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
+import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
+import { employeuseConsulteeAffichage } from '@/features/employeuse/abilities/consulter-employeuse/ui/employeuse-consultee.presenter'
 import EmployeusePage from '@/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'
-import {
-  consulterEmployeuse,
-  EmployeuseId,
-  employeuseConsulteeAffichage,
-} from '@/features/employeuse/server'
+import { EmployeuseId } from '@/features/employeuse/domain'
 
 export const metadata: Metadata = {
   title: metadataTitle('Structure employeuse'),

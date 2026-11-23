@@ -1,13 +1,13 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
-import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
+import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations'
+import { employeuseAffichee } from '@/features/employeuse/abilities/lister-employeuses/ui/employeuse-affichee.presenter'
 import {
   criteresListeEmployeuses,
   type EmployeusesSearchParams,
-  employeuseAffichee,
   etatDeTableEmployeuses,
-  listerEmployeuses,
-} from '@/features/employeuse/server'
+} from '@/features/employeuse/abilities/lister-employeuses/ui/lister-employeuses-search-params'
+import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
 
 export const metadata = {
   title: metadataTitle('Structures employeuses'),

@@ -1,7 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import {
   RENSEIGNER_LIEUX_ACTIVITE_ERRORS,
   RenseignerLieuxActiviteValidation,
@@ -15,10 +15,10 @@ import type {
 import { UserId } from '@/features/inscription/domain'
 import {
   activitesEnCoursDeLUtilisateur,
-  findCartoStructuresByIds,
   rattacherAuLieuDesire,
-} from '@/features/lieux-activite'
-import { withMaintenance } from '@/features/maintenance-mode'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
+import { findCartoStructuresByIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import type { Result } from '@/libraries/result'
 

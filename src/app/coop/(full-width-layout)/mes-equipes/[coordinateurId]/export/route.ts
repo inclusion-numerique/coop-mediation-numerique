@@ -12,7 +12,7 @@ import {
   MediateurId,
 } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
-import { auteurDeLExport } from '@/features/utilisateurs'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (

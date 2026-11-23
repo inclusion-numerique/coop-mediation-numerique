@@ -1,8 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
-import { retirerDuRegistre } from '@/features/registre-des-personnes'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { retirerDuRegistre } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { lancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees'
 
 export const relancerLesInscriptionsInacheveesAction = actionBuilder()

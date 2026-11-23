@@ -12,7 +12,7 @@ import {
   nomDuFichierDExport,
   PopulationDeMediateurs,
 } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement'
-import { withAdminRoute } from '@/features/authentification'
+import { withAdminRoute } from '@/features/authentification/middlewares/with-admin-route'
 
 const ExportQueryParamsValidation = z.object({
   date: Jour.schema.optional(),

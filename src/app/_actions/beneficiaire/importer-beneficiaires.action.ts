@@ -1,11 +1,12 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import { ImporterBeneficiairesValidation } from '@/features/beneficiaire/abilities/importer-beneficiaires'
 import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { withInput } from '@/libraries/nextjs'
 
 export const importerBeneficiairesAction = actionBuilder()

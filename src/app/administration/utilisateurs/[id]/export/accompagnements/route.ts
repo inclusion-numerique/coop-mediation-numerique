@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements'
-import { profilDeLaSession } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
 import {
   getSessionUserFromId,
@@ -11,11 +11,11 @@ import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/med
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
-} from '@/features/lieux-activite'
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
-import { auteurDeLExport } from '@/features/utilisateurs'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'

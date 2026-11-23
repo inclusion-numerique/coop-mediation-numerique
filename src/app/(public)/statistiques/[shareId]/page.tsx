@@ -17,7 +17,7 @@ import {
   blocsGeneraux,
   blocsImprimes,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
-import { profilDeLaSession } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'

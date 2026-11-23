@@ -1,17 +1,17 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/server'
+import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
 import { UserId } from '@/features/inscription/domain'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/features/registre-des-personnes'
+} from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

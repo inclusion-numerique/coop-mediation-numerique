@@ -1,8 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { PRENDRE_RENDEZ_VOUS_ERRORS } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.errors'
 import { PrendreRendezVousValidation } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.validation'
 import { MediateurProprietaireId } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'

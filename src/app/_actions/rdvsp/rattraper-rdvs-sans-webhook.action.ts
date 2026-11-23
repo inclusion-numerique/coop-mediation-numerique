@@ -1,9 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'

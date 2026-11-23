@@ -7,7 +7,7 @@ import {
   statistiquesDuPerimetre,
 } from '@/features/activites/implementations/statistiques'
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
-import { profilDeLaSession } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
@@ -22,7 +22,7 @@ import {
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/tableur/entree-du-classeur'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { auteurDeLExport } from '@/features/utilisateurs'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 const sourcesDeMesStatistiques = {

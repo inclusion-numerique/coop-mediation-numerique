@@ -4,10 +4,8 @@ import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rech
 import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
-import {
-  communesDesEmployeuses,
-  nomDeLEmployeuse,
-} from '@/features/employeuse/server'
+import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
+import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {

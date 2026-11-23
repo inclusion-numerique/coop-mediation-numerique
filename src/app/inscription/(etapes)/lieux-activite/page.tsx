@@ -7,15 +7,13 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
-import {
-  listerLesLieuxPourLInscription,
-  MediateurId,
-} from '@/features/lieux-activite'
 import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/AjouterDesLieuxActivitePage'
 import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/creer-un-lieu.key'
 import { ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/enregistrer-la-selection.key'
 import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/rechercher-des-lieux.key'
+import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
 import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

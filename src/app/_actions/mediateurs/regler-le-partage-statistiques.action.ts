@@ -1,9 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
 import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'
 import { ReglerLePartageStatistiquesValidation } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.validation'

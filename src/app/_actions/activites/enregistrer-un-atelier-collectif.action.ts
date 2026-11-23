@@ -9,10 +9,11 @@ import {
   employeuseDeLaDateDepuis,
   tagsUtilisablesDepuis,
 } from '@/features/activites/implementations/fournisseurs-de-la-saisie'
-import { profilDeLaSession, withAuth } from '@/features/authentification'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
 import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { rendezVousHonorePar } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/rendez-vous-honore-par'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'

@@ -1,14 +1,15 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import {
   FUSIONNER_BENEFICIAIRES_ERRORS,
   FusionnerBeneficiairesValidation,
 } from '@/features/beneficiaire/abilities/fusionner-beneficiaires'
 import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { ServerActionError, withInput } from '@/libraries/nextjs'
 
 export const fusionnerBeneficiairesAction = actionBuilder()

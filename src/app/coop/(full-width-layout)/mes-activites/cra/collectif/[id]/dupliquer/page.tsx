@@ -1,8 +1,8 @@
 import { notFound, redirect } from 'next/navigation'
 import { cheminDeDuplicationCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 
 const DupliquerPage = async ({

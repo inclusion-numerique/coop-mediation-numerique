@@ -1,8 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ERRORS } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.errors'
 import { AfficherRdvsDansActivitesValidation } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.validation'
 import { afficherRdvsDansActivites } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations'

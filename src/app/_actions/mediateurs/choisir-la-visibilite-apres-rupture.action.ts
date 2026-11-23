@@ -1,14 +1,15 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { choisirLaVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
 import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ERRORS } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.errors'
 import { ChoisirLaVisibiliteApresRuptureValidation } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.validation'
 import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
-import { synchroniserPersonne } from '@/features/registre-des-personnes'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const choisirLaVisibiliteApresRuptureAction = actionBuilder()

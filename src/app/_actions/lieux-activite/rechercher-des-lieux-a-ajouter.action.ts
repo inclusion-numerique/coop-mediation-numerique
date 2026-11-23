@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { rechercherDesLieuxAAjouter } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter'
 import { RechercheDeLieu } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
 import { withInput } from '@/libraries/nextjs'

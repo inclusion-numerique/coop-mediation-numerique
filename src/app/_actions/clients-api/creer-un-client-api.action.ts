@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api'
 import { CREER_UN_CLIENT_API_ERRORS } from '@/features/clients-api/abilities/creer-un-client-api/action/creer-un-client-api.errors'
 import {

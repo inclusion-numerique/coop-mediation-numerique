@@ -4,11 +4,11 @@ import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/r
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
 import { MaStructureEmployeusePage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/pages/MaStructureEmployeusePage'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

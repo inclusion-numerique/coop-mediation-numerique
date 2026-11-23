@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret'
 import { RENOUVELER_LE_SECRET_ERRORS } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.errors'
 import { RenouvelerLeSecretValidation } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.validation'

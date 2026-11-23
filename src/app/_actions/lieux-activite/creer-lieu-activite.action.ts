@@ -1,14 +1,14 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite'
 import { CREER_LIEU_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const creerUnLieuActiviteAction = actionBuilder()

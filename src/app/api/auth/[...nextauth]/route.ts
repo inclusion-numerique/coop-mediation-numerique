@@ -3,11 +3,11 @@ import NextAuth from 'next-auth'
 import { nextAuthOptions } from '@/features/authentification/implementations/next-auth/auth'
 import { isFirewallUserAgent } from '@/features/authentification/implementations/next-auth/isFirewallUserAgent'
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importStructureEmployeuseFromProConnect'
-import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
+import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/features/registre-des-personnes'
+} from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 
 const registreDesPersonnes = {

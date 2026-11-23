@@ -3,10 +3,8 @@ import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscripti
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
-import {
-  consulterEmployeuseActuelle,
-  employeuseActuelleAffichage,
-} from '@/features/employeuse/server'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations'
+import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/employeuse-actuelle.presenter'
 import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.key'
 import StructureEmployeuseLieuActivitePage from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ui/pages/StructureEmployeuseLieuActivitePage'

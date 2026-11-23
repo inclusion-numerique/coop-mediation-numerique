@@ -1,11 +1,11 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import {
   ajouterDesLieuxActivite,
   depuisLePanier,
-} from '@/features/lieux-activite'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
 import { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
 import { LieuxAAjouterValidation } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 import {
@@ -14,7 +14,7 @@ import {
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 /**

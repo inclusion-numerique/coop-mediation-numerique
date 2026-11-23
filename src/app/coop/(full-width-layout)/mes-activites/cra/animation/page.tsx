@@ -10,7 +10,7 @@ import CraAnimationPage from '@/features/activites/abilities/enregistrer-une-act
 import type { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/animation/validation/CraAnimationValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { profilDeLaSession } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'

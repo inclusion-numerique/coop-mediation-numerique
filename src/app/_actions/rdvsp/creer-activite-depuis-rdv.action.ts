@@ -2,9 +2,10 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementations/url-de-saisie-depuis-un-rendez-vous'
-import { withAuth, withMediateur } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
 import { CreerActiviteDepuisRdvValidation } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
 import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'

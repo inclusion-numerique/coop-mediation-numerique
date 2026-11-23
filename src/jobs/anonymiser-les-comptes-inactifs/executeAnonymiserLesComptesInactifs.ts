@@ -1,10 +1,10 @@
 import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
 import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { detacherDesEquipes } from '@/features/equipe'
+import { detacherDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes'
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques'
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
-import { synchroniserPersonne } from '@/features/registre-des-personnes'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte'
 import {
   anonymiserLesComptesInactifs,

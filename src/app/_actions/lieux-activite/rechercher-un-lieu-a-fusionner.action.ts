@@ -2,7 +2,8 @@
 
 import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { lieuxAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
 import { withInput } from '@/libraries/nextjs'
 

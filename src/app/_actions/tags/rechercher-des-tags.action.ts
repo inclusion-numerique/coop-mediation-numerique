@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { profilDeLaSession, withAuth } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags'
 import { RechercherDesTagsValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { acteurDe, TagId } from '@/features/tags/domain'

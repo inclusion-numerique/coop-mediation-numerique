@@ -1,15 +1,15 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import {
   CHOISIR_PROFIL_ERRORS,
   ChoisirProfilValidation,
 } from '@/features/inscription/abilities/choisir-profil'
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import { UserId } from '@/features/inscription/domain'
-import { withMaintenance } from '@/features/maintenance-mode'
-import { synchroniserPersonne } from '@/features/registre-des-personnes'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const choisirProfilAction = actionBuilder()

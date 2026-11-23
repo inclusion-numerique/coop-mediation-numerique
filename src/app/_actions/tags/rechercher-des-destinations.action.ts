@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { profilDeLaSession, withAuth } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { destinationsDeFusion } from '@/features/tags/abilities/fusionner-un-tag'
 import { RechercherDesDestinationsValidation } from '@/features/tags/abilities/fusionner-un-tag/action/rechercher-des-destinations.validation'
 import { destinationsAffichees } from '@/features/tags/abilities/fusionner-un-tag/ui/destinations.presenter'

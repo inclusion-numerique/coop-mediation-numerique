@@ -1,8 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { METTRE_A_JOUR_STATUT_RDV_ERRORS } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.errors'
 import { MettreAJourStatutRdvValidation } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.validation'
 import { mettreAJourStatutRdvBinding } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/mettre-a-jour-statut-rdv.binding'

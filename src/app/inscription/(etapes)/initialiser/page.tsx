@@ -3,14 +3,14 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
-import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
+import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
-} from '@/features/registre-des-personnes'
+} from '@/features/registre-des-personnes/implementations/prisma/registre-personne'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
 
 const registreDesPersonnes = {

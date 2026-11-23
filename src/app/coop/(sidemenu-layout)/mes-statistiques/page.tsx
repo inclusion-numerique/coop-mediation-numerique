@@ -19,7 +19,7 @@ import {
   blocsGeneraux,
   blocsImprimes,
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
-import { profilDeLaSession } from '@/features/authentification'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'

@@ -8,7 +8,8 @@ import {
 import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
 import { PERIMETRE_NATIONAL } from '@/features/activites/domain'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withInput } from '@/libraries/nextjs'
 
 export const rechercherLesLieuxNationauxAction = actionBuilder()

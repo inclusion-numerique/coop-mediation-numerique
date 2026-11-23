@@ -1,12 +1,9 @@
 import type { NextRequest } from 'next/server'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
-import {
-  communesDesEmployeuses,
-  nomDeLEmployeuse,
-} from '@/features/employeuse/server'
+import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
+import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { auteurDeLExport } from '@/features/utilisateurs'
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,
@@ -14,6 +11,7 @@ import {
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 

@@ -2,9 +2,10 @@
 
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
 import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/getSessionUser'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import {
   PorteeUsurpation,
   usurperUnUtilisateur,

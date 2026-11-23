@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api'
 import { MODIFIER_UN_CLIENT_API_ERRORS } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.errors'
 import { ModifierUnClientApiValidation } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.validation'

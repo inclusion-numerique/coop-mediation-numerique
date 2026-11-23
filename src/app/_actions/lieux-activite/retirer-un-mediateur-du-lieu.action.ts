@@ -1,14 +1,14 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.errors'
 import { RetirerUnMediateurDuLieuValidation } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.validation'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 /** Le nom sous lequel l'auteur du retrait apparaît dans l'e-mail envoyé. */

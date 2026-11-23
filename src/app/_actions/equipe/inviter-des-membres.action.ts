@@ -1,7 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import {
   type InvitationsEnvoyees,
   inviterDesMembres,
@@ -16,7 +16,7 @@ import {
   Email,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { failure, type Result } from '@/libraries/result'
 

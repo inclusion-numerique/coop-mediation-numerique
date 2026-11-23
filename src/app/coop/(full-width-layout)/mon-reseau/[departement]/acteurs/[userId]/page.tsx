@@ -12,19 +12,15 @@ import {
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
-import {
-  consulterEmployeuseAUneDate,
-  emploiEmployeuseAffichage,
-} from '@/features/employeuse/server'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
+import { emploiEmployeuseAffichage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
-import {
-  listerLesLieuxDuMediateur,
-  MediateurId as MediateurIdDesLieux,
-  TriDesLieux,
-} from '@/features/lieux-activite'
+import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/mediateur-id'
+import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { LieuxRepliables } from '@/features/lieux-activite/ui'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
@@ -43,7 +39,7 @@ import {
   TitreDeSection,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
+import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/db/derniere-activite.query'
 import { departementDuCode } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

@@ -1,8 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { profilDeLaSession, withAuth } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fusionnerUnTag } from '@/features/tags/abilities/fusionner-un-tag'
 import { FUSIONNER_UN_TAG_ERRORS } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.errors'
 import { FusionnerUnTagValidation } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.validation'
