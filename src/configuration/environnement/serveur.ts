@@ -12,7 +12,10 @@ const schemaServeur = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   CI: z.string().optional().transform(Boolean),
-  IS_E2E: z.string().optional().transform(Boolean),
+  IS_E2E: z
+    .string()
+    .optional()
+    .transform((valeur) => valeur === 'true' || valeur === '1'),
   BASE_URL: z.string().optional(),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: texte,

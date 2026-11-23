@@ -1,10 +1,11 @@
 import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { contactEmail, projectTitle } from '@/configuration/projet/config'
 import { emailSignin } from '@/features/authentification/implementation/email/emailSignin'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-const debugMagicLink = true
+const debugMagicLink = environnementServeur.NODE_ENV === 'development'
 
 export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
   async ({ url, provider, identifier }) => {
