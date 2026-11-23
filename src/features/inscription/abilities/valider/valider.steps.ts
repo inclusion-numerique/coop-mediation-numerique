@@ -7,11 +7,13 @@ import { validerInscription } from '@/features/inscription/abilities/valider/com
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,
+  seedInvitationEnAttente,
   seedProfilChoisi,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
 
 let resultat: Result<void, ValiderInscriptionError>
+let equipeId: string
 
 Given('mon profil d’inscription est {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
@@ -41,6 +43,10 @@ Given('mon inscription est déjà validée', async () => {
     where: { id: currentInscriptionUserId() },
     data: { inscriptionValidee: new Date() },
   })
+})
+
+Given('une équipe m’a invité avant mon inscription', async () => {
+  equipeId = await seedInvitationEnAttente()
 })
 
 When('je valide mon inscription', async () => {
@@ -85,3 +91,26 @@ Then('la validation est refusée car l’inscription est déjà validée', () =>
   assert.ok(!resultat.success, 'La validation aurait dû être refusée')
   assert.strictEqual(resultat.error._tag, 'InscriptionDejaValidee')
 })
+
+Then(
+  'l’invitation de l’équipe est acceptée et rattachée à mon compte médiateur',
+  async () => {
+    const [invitation, mediateur] = await Promise.all([
+      prismaClient.invitationEquipe.findFirstOrThrow({
+        where: { coordinateurId: equipeId },
+        select: { acceptee: true, mediateurId: true },
+      }),
+      prismaClient.mediateur.findUniqueOrThrow({
+        where: { userId: currentInscriptionUserId() },
+        select: { id: true },
+      }),
+    ])
+    assert.deepStrictEqual(
+      {
+        acceptee: invitation.acceptee !== null,
+        mediateurId: invitation.mediateurId,
+      },
+      { acceptee: true, mediateurId: mediateur.id },
+    )
+  },
+)
