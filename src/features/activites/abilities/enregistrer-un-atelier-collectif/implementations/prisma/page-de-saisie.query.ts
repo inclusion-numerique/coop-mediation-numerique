@@ -10,9 +10,9 @@ import {
   cheminDeLaCopie,
   etatDeLUrl,
 } from '../../../../ui/presenters/saisie/chemin-de-la-copie'
-import type { CraCollectifData } from '../../ui/presenters/CraCollectifValidation'
+import type { CraCollectifData } from '../../ui/forms/cra-collectif.validation'
+import { craCollectifDefaultValues } from '../../ui/forms/valeurs-par-defaut-du-cra-collectif'
 import { copieDeLAtelier } from '../../ui/presenters/copie-de-l-atelier.presenter'
-import { craCollectifDefaultValues } from '../../ui/presenters/craCollectifDefaultValues'
 import { formulaireDeLAtelierCollectif } from '../../ui/presenters/formulaire-de-l-atelier-collectif.presenter'
 
 type ActiviteDemandee = {

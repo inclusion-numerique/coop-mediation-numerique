@@ -10,7 +10,7 @@ import {
   formulaireCommunDeMediation,
 } from '../../../../ui/presenters/saisie/formulaire-de-mediation.presenter'
 import { suiviDuFormulaire } from '../../../../ui/presenters/saisie/suivi-du-formulaire'
-import type { CraIndividuelData } from './CraIndividuelValidation'
+import type { CraIndividuelData } from '../forms/cra-individuel.validation'
 
 const orientationDuFormulaire = (orientation: Orientation) => {
   if (orientation._tag === 'Oriente') {

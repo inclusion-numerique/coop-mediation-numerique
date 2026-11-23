@@ -15,7 +15,7 @@ import {
 } from 'recharts'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import CustomTooltip from './CustomTooltip'
-import { StatisticsLegend } from './StatisticsLegend'
+import { StatisticsLegend } from './legende-des-statistiques'
 
 export type ChartSerie = {
   label: string

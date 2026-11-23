@@ -10,9 +10,9 @@ import {
   cheminDeLaCopie,
   etatDeLUrl,
 } from '../../../../ui/presenters/saisie/chemin-de-la-copie'
-import type { CraIndividuelData } from '../../ui/presenters/CraIndividuelValidation'
+import type { CraIndividuelData } from '../../ui/forms/cra-individuel.validation'
+import { craIndividuelDefaultValues } from '../../ui/forms/valeurs-par-defaut-du-cra-individuel'
 import { copieDeLAccompagnement } from '../../ui/presenters/copie-de-l-accompagnement.presenter'
-import { craIndividuelDefaultValues } from '../../ui/presenters/craIndividuelDefaultValues'
 import { formulaireDeLAccompagnementIndividuel } from '../../ui/presenters/formulaire-de-l-accompagnement-individuel.presenter'
 
 type ActiviteDemandee = {

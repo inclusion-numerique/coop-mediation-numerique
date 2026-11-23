@@ -7,7 +7,7 @@ import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/
 import {
   CraAnimationData,
   CraAnimationValidation,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraAnimationValidation'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-animation.validation'
 import { saisieDeLAnimation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/saisie-du-formulaire.presenter'
 import {
   debutDispositifConum,

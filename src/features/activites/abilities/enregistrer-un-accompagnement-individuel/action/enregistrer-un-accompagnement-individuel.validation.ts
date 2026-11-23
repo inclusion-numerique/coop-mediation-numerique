@@ -4,7 +4,7 @@ import {
   communDeLaSaisie,
   communeSaisie,
   saisieDeMediation,
-} from '../../../action/saisie-de-mediation'
+} from '../../../action/saisie-de-mediation.validation'
 import {
   Autonomie,
   BeneficiaireId,

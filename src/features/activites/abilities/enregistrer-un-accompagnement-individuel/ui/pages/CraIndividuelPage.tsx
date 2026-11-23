@@ -1,5 +1,5 @@
 import CraIndividuelForm from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/CraIndividuelForm'
-import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/CraIndividuelValidation'
+import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie/ModaleDeCreationDeTag'
 import {
   type BeneficiaireTrouveParLeCra,

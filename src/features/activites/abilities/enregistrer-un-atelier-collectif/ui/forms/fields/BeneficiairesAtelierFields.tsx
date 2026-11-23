@@ -3,13 +3,13 @@ import { formOptions, useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { Fragment, useCallback } from 'react'
-import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/CraCollectifValidation'
+import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import {
   countGenreNonCommunique,
   countStatutSocialNonCommunique,
   countTrancheAgeNonCommunique,
   participantsAnonymesDefault,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/participantsAnonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import {
   genreLabels,
   genresAffiches as genreValues,

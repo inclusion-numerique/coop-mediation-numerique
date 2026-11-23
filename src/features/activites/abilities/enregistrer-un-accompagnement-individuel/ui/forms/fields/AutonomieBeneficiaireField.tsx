@@ -1,6 +1,6 @@
 import { formOptions } from '@tanstack/react-form'
 import Link from 'next/link'
-import { type CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/CraIndividuelValidation'
+import { type CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import type { Autonomie } from '@/features/activites/ui/labels/libelles/autonomie.labels'
 import {
   type DefaultValues,

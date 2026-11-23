@@ -4,6 +4,10 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
+import {
+  CraIndividuelData,
+  CraIndividuelValidation,
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import { AutonomieBeneficiaireField } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/AutonomieBeneficiaireField'
 import { BeneficiaireAnonymeFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/BeneficiaireAnonymeFields'
 import {
@@ -12,10 +16,6 @@ import {
 } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/BeneficiaireFields'
 import { OrientationFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/OrientationFields'
 import { saisieDeLAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/saisie-du-formulaire.presenter'
-import {
-  CraIndividuelData,
-  CraIndividuelValidation,
-} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/CraIndividuelValidation'
 import { MaterielField } from '@/features/activites/ui/forms/saisie/MaterielField'
 import { RendezVousFields } from '@/features/activites/ui/forms/saisie/RendezVousFields'
 import { TagsFields } from '@/features/activites/ui/forms/saisie/TagsFields'

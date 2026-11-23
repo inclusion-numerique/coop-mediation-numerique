@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { ParticipantsAnonymesCraCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/ParticipantsAnonymesCraCollectifValidation'
-import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/participantsAnonymes'
+import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
+import { ParticipantsAnonymesCraCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
 
 describe('ParticipantsAnonymesCraCollectifValidation', () => {
   const validData = {

@@ -4,13 +4,13 @@ import { useStore } from '@tanstack/react-form'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { InformationsPratiquesSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
-import type { InformationsPratiquesAffichees } from '../presenters/informations-pratiques'
 import {
   type InformationsPratiquesFormData,
   informationsPratiquesFormOptions,
-} from '../presenters/informationsPratiquesFormData'
+} from '../forms/informations-pratiques.form-data'
+import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
+import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+import type { InformationsPratiquesAffichees } from '../presenters/informations-pratiques'
 import { ChampsHoraires } from './ChampsHoraires'
 import { EtatVide } from './EtatVide'
 import { VueInformationsPratiques } from './vues/VueInformationsPratiques'

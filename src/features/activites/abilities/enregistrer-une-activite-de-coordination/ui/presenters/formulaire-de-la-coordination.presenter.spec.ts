@@ -24,9 +24,9 @@ import {
   TypeDeStructurePartenaire,
 } from '../../../../domain'
 import { EnregistrerUneActiviteDeCoordinationValidation } from '../../action/enregistrer-une-activite-de-coordination.validation'
-import { CraAnimationValidation } from './CraAnimationValidation'
-import { CraEvenementValidation } from './CraEvenementValidation'
-import { CraPartenariatValidation } from './CraPartenariatValidation'
+import { CraAnimationValidation } from '../forms/cra-animation.validation'
+import { CraEvenementValidation } from '../forms/cra-evenement.validation'
+import { CraPartenariatValidation } from '../forms/cra-partenariat.validation'
 import {
   formulaireDeLAnimation,
   formulaireDeLEvenement,

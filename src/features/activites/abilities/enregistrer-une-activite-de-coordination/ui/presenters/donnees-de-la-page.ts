@@ -1,6 +1,6 @@
-import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraAnimationValidation'
-import { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraEvenementValidation'
-import { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraPartenariatValidation'
+import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-animation.validation'
+import { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-evenement.validation'
+import { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-partenariat.validation'
 import { dureeAccompagnementParDefautLabels } from '@/features/activites/ui/labels/libelles/duree-accompagnement.labels'
 import {
   type RechercherDesTagsInitiaux,

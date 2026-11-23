@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   communDeLaSaisie,
   saisieDeMediation,
-} from '../../../action/saisie-de-mediation'
+} from '../../../action/saisie-de-mediation.validation'
 import {
   BeneficiaireId,
   Effectif,

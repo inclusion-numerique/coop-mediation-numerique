@@ -12,7 +12,7 @@ import {
   periodsTexts,
 } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import { informationsPratiquesFormOptions } from '../presenters/informationsPratiquesFormData'
+import { informationsPratiquesFormOptions } from '../forms/informations-pratiques.form-data'
 
 const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]
 

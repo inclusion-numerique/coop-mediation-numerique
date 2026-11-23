@@ -10,7 +10,7 @@ import {
   ModalitesAccesAuServiceFormValidation,
   ModalitesAccesAuServiceSaisie,
 } from '../../action/modifier-la-fiche-du-lieu.validation'
-import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
+import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
 import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
 import type { ModalitesAccesAuServiceAffichees } from '../presenters/modalites-acces-au-service'
 import { EtatVide } from './EtatVide'

@@ -1,7 +1,7 @@
 import type { z } from 'zod'
-import type { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraAnimationValidation'
-import type { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraEvenementValidation'
-import type { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraPartenariatValidation'
+import type { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-animation.validation'
+import type { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-evenement.validation'
+import type { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-partenariat.validation'
 import { craDureeDataToMinutes } from '@/features/activites/ui/presenters/saisie/duree'
 import type { EnregistrerUneActiviteDeCoordinationValidation } from '../../action/enregistrer-une-activite-de-coordination.validation'
 

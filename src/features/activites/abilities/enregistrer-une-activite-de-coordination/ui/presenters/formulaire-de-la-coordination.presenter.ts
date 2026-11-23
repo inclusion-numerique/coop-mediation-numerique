@@ -7,9 +7,9 @@ import type {
   Evenement,
   Partenariat,
 } from '../../../../domain'
-import type { CraAnimationData } from './CraAnimationValidation'
-import type { CraEvenementData } from './CraEvenementValidation'
-import type { CraPartenariatData } from './CraPartenariatValidation'
+import type { CraAnimationData } from '../forms/cra-animation.validation'
+import type { CraEvenementData } from '../forms/cra-evenement.validation'
+import type { CraPartenariatData } from '../forms/cra-partenariat.validation'
 
 const AUTRE = 'Autre' as const
 

@@ -1,5 +1,5 @@
 import CraCollectifForm from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/CraCollectifForm'
-import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/CraCollectifValidation'
+import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie/ModaleDeCreationDeTag'
 import {
   type BeneficiaireTrouveParLeCra,

@@ -1,6 +1,6 @@
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import type { SaisieDeSection } from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { InformationsGeneralesFormData } from './informationsGeneralesFormData'
+import type { InformationsGeneralesFormData } from '../forms/informations-generales.form-data'
 
 type Saisie = Extract<SaisieDeSection, { section: 'InformationsGenerales' }>
 

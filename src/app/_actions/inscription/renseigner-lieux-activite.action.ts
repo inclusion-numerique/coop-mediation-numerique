@@ -2,9 +2,9 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { depuisLaSaisie } from '@/features/inscription/abilities/renseigner-lieux-activite/action/depuis-la-saisie'
 import { RENSEIGNER_LIEUX_ACTIVITE_ERRORS } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.errors'
 import { RenseignerLieuxActiviteValidation } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.validation'
+import { depuisLaSaisie } from '@/features/inscription/abilities/renseigner-lieux-activite/action/saisie-des-lieux.transfer'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
 import type {
   AdresseNonValidee,

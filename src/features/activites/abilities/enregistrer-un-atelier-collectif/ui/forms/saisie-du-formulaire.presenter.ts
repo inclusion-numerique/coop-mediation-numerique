@@ -1,5 +1,5 @@
 import type { z } from 'zod'
-import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/CraCollectifValidation'
+import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import { craDureeDataToMinutes } from '@/features/activites/ui/presenters/saisie/duree'
 import { clearAdministrativeData } from '@/features/activites/ui/presenters/saisie/effacer-les-donnees-administratives'
 import type { EnregistrerUnAtelierCollectifValidation } from '../../action/enregistrer-un-atelier-collectif.validation'

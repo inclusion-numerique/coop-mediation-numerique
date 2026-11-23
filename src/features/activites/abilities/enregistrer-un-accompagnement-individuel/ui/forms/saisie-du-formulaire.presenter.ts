@@ -1,5 +1,5 @@
 import type { z } from 'zod'
-import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/CraIndividuelValidation'
+import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import { craDureeDataToMinutes } from '@/features/activites/ui/presenters/saisie/duree'
 import { clearAdministrativeData } from '@/features/activites/ui/presenters/saisie/effacer-les-donnees-administratives'
 import type { EnregistrerUnAccompagnementIndividuelValidation } from '../../action/enregistrer-un-accompagnement-individuel.validation'

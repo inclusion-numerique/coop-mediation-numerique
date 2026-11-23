@@ -6,8 +6,8 @@ import {
   nouvelleSaisieDeCoordination,
   saisieDePartenariat,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/page-de-saisie.query'
+import type { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-partenariat.validation'
 import CraPartenariatPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/pages/CraPartenariatPage'
-import type { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraPartenariatValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'

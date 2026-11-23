@@ -15,9 +15,9 @@ import {
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
 } from '../../../../ui/presenters/saisie/tag-du-cra'
-import type { CraAnimationData } from '../../ui/presenters/CraAnimationValidation'
-import type { CraEvenementData } from '../../ui/presenters/CraEvenementValidation'
-import type { CraPartenariatData } from '../../ui/presenters/CraPartenariatValidation'
+import type { CraAnimationData } from '../../ui/forms/cra-animation.validation'
+import type { CraEvenementData } from '../../ui/forms/cra-evenement.validation'
+import type { CraPartenariatData } from '../../ui/forms/cra-partenariat.validation'
 import {
   copieDeLaCoordination,
   departDuPartenariat,

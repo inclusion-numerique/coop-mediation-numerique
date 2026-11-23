@@ -7,7 +7,7 @@ import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/
 import {
   CraPartenariatData,
   CraPartenariatValidation,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/CraPartenariatValidation'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-partenariat.validation'
 import { saisieDuPartenariat } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/saisie-du-formulaire.presenter'
 import {
   debutDispositifConum,

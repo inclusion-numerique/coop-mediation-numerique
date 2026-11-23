@@ -1,4 +1,4 @@
-import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/CraIndividuelValidation'
+import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import { communeDuCra } from '@/features/activites/ui/presenters/saisie/commune-du-cra'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 

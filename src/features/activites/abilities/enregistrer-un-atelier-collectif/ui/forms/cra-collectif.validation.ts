@@ -1,5 +1,5 @@
 import z from 'zod'
-import { ParticipantsAnonymesCraCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/ParticipantsAnonymesCraCollectifValidation'
+import { ParticipantsAnonymesCraCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
 import { BeneficiaireCraValidation } from '@/features/activites/ui/forms/beneficiaire-du-cra.validation'
 import { CraValidation } from '@/features/activites/ui/forms/cra.validation'
 import { niveauAtelierValues } from '@/features/activites/ui/labels/libelles/niveau-atelier.labels'

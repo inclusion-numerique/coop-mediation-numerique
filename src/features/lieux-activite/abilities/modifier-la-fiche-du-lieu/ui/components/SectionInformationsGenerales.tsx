@@ -6,16 +6,16 @@ import Link from 'next/link'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { InformationsGeneralesEditionFields } from '../forms/InformationsGeneralesEditionFields'
-import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
-import type { PartageAffiche } from '../presenters/fiche-du-lieu.presenter'
-import type { InformationsGeneralesAffichees } from '../presenters/informations-generales'
-import { informationsGeneralesSoumises } from '../presenters/informations-generales-soumises'
 import {
   type InformationsGeneralesFormData,
   InformationsGeneralesFormValidation,
   informationsGeneralesFormOptions,
-} from '../presenters/informationsGeneralesFormData'
+} from '../forms/informations-generales.form-data'
+import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
+import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+import type { PartageAffiche } from '../presenters/fiche-du-lieu.presenter'
+import type { InformationsGeneralesAffichees } from '../presenters/informations-generales'
+import { informationsGeneralesSoumises } from '../presenters/informations-generales-soumises'
 import {
   CONFIRMATION_DU_PARTAGE_MANQUANTE,
   confirmationDuPartageManquante,

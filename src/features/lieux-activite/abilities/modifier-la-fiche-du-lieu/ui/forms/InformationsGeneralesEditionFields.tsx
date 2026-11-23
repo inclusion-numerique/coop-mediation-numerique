@@ -22,7 +22,7 @@ import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { informationsGeneralesFormOptions } from '../presenters/informationsGeneralesFormData'
+import { informationsGeneralesFormOptions } from './informations-generales.form-data'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 
 export const InformationsGeneralesEditionFields = withForm({

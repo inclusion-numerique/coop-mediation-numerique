@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { depuisLePanier } from './depuis-le-panier'
+import { depuisLePanier } from './panier.transfer'
 
 const lieuSoumis = (champs: Record<string, unknown> = {}) => ({
   id: null,

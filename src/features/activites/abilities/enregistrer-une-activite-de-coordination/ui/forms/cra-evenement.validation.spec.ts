@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CraEvenementValidation } from './CraEvenementValidation'
+import { CraEvenementValidation } from './cra-evenement.validation'
 
 describe('validation de la saisie d’un évènement', () => {
   it('demande le nombre de participants quand il est vide', () => {

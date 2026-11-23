@@ -9,7 +9,7 @@ import {
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { ServicesEtAccompagnementSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
+import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
 import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
 import type { ServicesEtAccompagnementAffiches } from '../presenters/services-et-accompagnement'
 import { EtatVide } from './EtatVide'

@@ -3,7 +3,7 @@ import {
   countTotalGenre,
   countTotalStatutSocial,
   countTotalTrancheAge,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/participantsAnonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 
 const participantsAnonymesMax = 10_000

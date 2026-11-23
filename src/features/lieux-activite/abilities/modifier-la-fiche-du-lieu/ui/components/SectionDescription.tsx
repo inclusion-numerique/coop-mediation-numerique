@@ -6,7 +6,7 @@ import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/regles-de-sa
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { DescriptionSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import { useEnregistrementDeSection } from '../hooks/useEnregistrementDeSection'
+import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
 import type { DescriptionAffichee } from '../presenters/description'
 import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
 import { EtatVide } from './EtatVide'

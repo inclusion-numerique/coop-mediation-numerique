@@ -5,7 +5,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
-import { depuisLaSaisie } from './depuis-la-saisie'
+import { depuisLaSaisie } from './saisie-de-la-fiche.transfer'
 
 const adresseBan = {
   id: '80144_0018_00090',

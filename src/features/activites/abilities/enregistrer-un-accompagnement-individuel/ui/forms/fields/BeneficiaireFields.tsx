@@ -2,7 +2,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/CraIndividuelValidation'
+import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,

@@ -6,8 +6,8 @@ import type {
 } from '../../../../domain'
 import { formulaireCommunDeMediation } from '../../../../ui/presenters/saisie/formulaire-de-mediation.presenter'
 import { suiviDuFormulaire } from '../../../../ui/presenters/saisie/suivi-du-formulaire'
-import type { CraCollectifData } from './CraCollectifValidation'
-import type { ParticipantsAnonymesCraCollectifData } from './ParticipantsAnonymesCraCollectifValidation'
+import type { CraCollectifData } from '../forms/cra-collectif.validation'
+import type { ParticipantsAnonymesCraCollectifData } from '../forms/participants-anonymes-du-cra-collectif.validation'
 
 const anonymesDuFormulaire = ({
   total,

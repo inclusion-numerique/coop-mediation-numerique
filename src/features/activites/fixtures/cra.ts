@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/ParticipantsAnonymesCraCollectifValidation'
+import { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
 import { createBeneficiairesForParticipantsAnonymes } from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
 import type { Prisma, TypeLieu } from '@/generated/prisma/client'
 import { mergeUuids } from '@/libraries/fixtures/mergeUuids'

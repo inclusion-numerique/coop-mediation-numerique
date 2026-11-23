@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { UserId } from '../../../domain/identifiants/utilisateur-id'
-import { nouveauLieu } from './depuis-la-saisie'
+import { nouveauLieu } from './saisie-du-lieu.transfer'
 
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
 const maintenant = new Date('2026-09-07T10:00:00Z')

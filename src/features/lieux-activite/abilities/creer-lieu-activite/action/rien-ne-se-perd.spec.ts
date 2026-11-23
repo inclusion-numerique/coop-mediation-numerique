@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
-import { nouveauLieu } from './depuis-la-saisie'
+import { nouveauLieu } from './saisie-du-lieu.transfer'
 
 const adresseBan = {
   id: '51454_7160_00012',
