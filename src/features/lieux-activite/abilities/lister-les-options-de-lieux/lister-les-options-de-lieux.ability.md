@@ -44,24 +44,27 @@
 
 ## Rule: Le filtre de l'administration ne propose que des lieux exploitables
 
+> L'administration cherche un lieu par son nom, sa commune ou son code postal,
+> parmi tous les lieux, sans liste chargée d'avance.
+
 ### Scenario: Un lieu exploitable est proposé à l'administration
 
 * Given un médiateur qui exerce dans un lieu
-* When on demande les lieux pour filtrer dans l'administration
+* When on cherche ce lieu par son nom pour filtrer dans l'administration
 * Then ce lieu figure parmi les lieux proposés
 
 ### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à l'administration
 
 * Given un médiateur qui exerce dans un lieu
 * And ce lieu n'a pas d'adresse reconnue par la BAN
-* When on demande les lieux pour filtrer dans l'administration
+* When on cherche ce lieu par son nom pour filtrer dans l'administration
 * Then ce lieu ne figure pas parmi les lieux proposés
 
 ### Scenario: Un lieu supprimé n'est pas proposé à l'administration
 
 * Given un médiateur qui exerce dans un lieu
 * And ce lieu est supprimé
-* When on demande les lieux pour filtrer dans l'administration
+* When on cherche ce lieu par son nom pour filtrer dans l'administration
 * Then ce lieu ne figure pas parmi les lieux proposés
 
 ## Rule: Pour filtrer, on propose les lieux des activités comptées dans les statistiques et les lieux actuels du médiateur

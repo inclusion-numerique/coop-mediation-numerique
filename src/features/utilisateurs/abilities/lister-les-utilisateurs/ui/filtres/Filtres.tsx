@@ -1,17 +1,20 @@
 'use client'
 
-import type { ReactNode } from 'react'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   type OptionsDesFiltres,
   optionsDesDispositifs,
   optionsDesStatuts,
 } from '@/features/utilisateurs/ui'
+import { departements } from '@/libraries/departement/departements'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '../../action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '../../action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '../../action/rechercher-des-employeuses.key'
+import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '../../action/rechercher-des-lieux.key'
 import { CaseDesAnciensRattachements } from './CaseDesAnciensRattachements'
+import { rechercherParmi } from './combo-box-de-recherche'
 import { FiltreAChoixUnique } from './FiltreAChoixUnique'
 import { FiltreARecherche } from './FiltreARecherche'
 import { FiltreRoles } from './FiltreRoles'
@@ -22,14 +25,16 @@ const optionsChoisies = (
 ): readonly SelectOption[] =>
   options.filter(({ value }) => choisies.map(String).includes(value))
 
+const optionsDesDepartements: readonly SelectOption[] = departements.map(
+  ({ code, nom }) => ({ value: code, label: `${code} · ${nom}` }),
+)
+
 export const Filtres = ({
   filtres,
   options,
-  filtreDeLieu,
 }: {
   filtres: FiltresUtilisateurs
   options: OptionsDesFiltres
-  filtreDeLieu: ReactNode
 }) => (
   <div className="fr-flex fr-align-items-start fr-flex-wrap fr-flex-gap-2v">
     <FiltreRoles rolesInitiaux={filtres.roles} />
@@ -81,7 +86,44 @@ export const Filtres = ({
       }
       initiales={optionsChoisies(options.coordinateurs, filtres.coordinateurs)}
     />
-    {filtreDeLieu}
+    <FiltreARecherche
+      parametre="lieux"
+      titre="Lieu d’activité"
+      libelle="Filtrer par lieu d’activité"
+      placeholder="Nom, commune ou code postal du lieu"
+      selection={{
+        singular: 'lieu sélectionné',
+        plural: 'lieux sélectionnés',
+      }}
+      rechercher={(input) => inject(RECHERCHER_DES_LIEUX_ACTION_KEY)(input)}
+      initiales={optionsChoisies(options.lieux, filtres.lieux)}
+    />
+    <FiltreARecherche
+      parametre="communes"
+      titre="Commune"
+      libelle="Filtrer par commune de l’employeuse"
+      placeholder="Nom ou code postal de la commune"
+      selection={{
+        singular: 'commune sélectionnée',
+        plural: 'communes sélectionnées',
+      }}
+      rechercher={(input) => inject(RECHERCHER_DES_COMMUNES_ACTION_KEY)(input)}
+      longueurMinimale={2}
+      initiales={optionsChoisies(options.communes, filtres.communes)}
+    />
+    <FiltreARecherche
+      parametre="departements"
+      titre="Département"
+      libelle="Filtrer par département de l’employeuse"
+      placeholder="Nom ou numéro du département"
+      selection={{
+        singular: 'département sélectionné',
+        plural: 'départements sélectionnés',
+      }}
+      rechercher={rechercherParmi(optionsDesDepartements)}
+      longueurMinimale={1}
+      initiales={optionsChoisies(options.departements, filtres.departements)}
+    />
     <CaseDesAnciensRattachements
       coche={filtres.rattachements === 'ActuelsEtAnciens'}
     />

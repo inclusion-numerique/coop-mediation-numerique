@@ -32,3 +32,21 @@ l'autocomplétion d'inscription et le rapprochement en administration.
 * Given l'employeuse "Structure fermée" est enregistrée puis supprimée
 * When je recherche l'employeuse "Structure fermée"
 * Then la recherche ne trouve rien
+
+## Rule: La commune d'une employeuse se cherche sans accent ni tiret
+
+> L'administration filtre les comptes par la commune de leur employeuse : la
+> recherche porte sur les communes des adresses connues, et tolère une saisie
+> partielle, sans accent ni tiret, ou un début de code postal.
+
+### Scenario: Chercher une commune par un début de nom sans accent ni tiret
+
+* Given une adresse d'employeuse à "Saint-Étienne-de-Testé" au code INSEE "99901" et au code postal "99901"
+* When je cherche la commune "saint etienne de tes"
+* Then la commune de code INSEE "99901" est proposée
+
+### Scenario: Chercher une commune par son code postal
+
+* Given une adresse d'employeuse à "Saint-Étienne-de-Testé" au code INSEE "99901" et au code postal "99901"
+* When je cherche la commune "9990"
+* Then la commune de code INSEE "99901" est proposée

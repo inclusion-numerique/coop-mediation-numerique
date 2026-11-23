@@ -1,27 +1,27 @@
-import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { rechercherDesCommunesAction } from '@/app/_actions/utilisateurs/rechercher-des-communes.action'
 import { rechercherDesCoordinateursAction } from '@/app/_actions/utilisateurs/rechercher-des-coordinateurs.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
+import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import { nomDeLEmployeuse } from '@/features/employeuse/server'
 import {
-  getCommunesAndDepartementsOptions,
-  getLieuxActiviteOptions,
-} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { LieuFilter } from '@/features/lieux-activite/ui'
+  communesDesEmployeuses,
+  nomDeLEmployeuse,
+} from '@/features/employeuse/server'
+import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
   optionsDesFiltres,
   ordreDesUtilisateurs,
   rechercherDesUtilisateurs,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
+import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
+import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-lieux.key'
 import {
   type ParametresDeLaListe,
   UtilisateursPage,
-  valeursDeLieu,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
 import {
   filtresUtilisateurs,
@@ -49,47 +49,44 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
       maintenant: new Date(),
     }),
     optionsDesFiltres(filtres, {
-      communesEtDepartements: getCommunesAndDepartementsOptions,
-      lieux: getLieuxActiviteOptions,
+      communes: communesDesEmployeuses,
+      lieux: lieuxChoisis,
       nomDeLEmployeuse,
     }),
   ])
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={RECHERCHER_DES_COMMUNES_ACTION_KEY}
+      to={rechercherDesCommunesAction}
     >
       <ClientBinder
-        bind={RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY}
-        to={rechercherDesEmployeusesAction}
+        bind={RECHERCHER_DES_LIEUX_ACTION_KEY}
+        to={rechercherDesLieuxAction}
       >
         <ClientBinder
-          bind={RECHERCHER_DES_COORDINATEURS_ACTION_KEY}
-          to={rechercherDesCoordinateursAction}
+          bind={RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY}
+          to={rechercherDesEmployeusesAction}
         >
-          <UtilisateursPage
-            trouves={trouves}
-            filtres={filtres}
-            options={options}
-            searchParams={searchParams}
-            filtreDeLieu={
-              <LieuFilter
-                defaultValue={valeursDeLieu(filtres)}
-                lieuxActiviteOptions={[...options.lieux]}
-                communesOptions={[...options.communes]}
-                departementsOptions={[...options.departements]}
-              />
-            }
-            actions={
-              <BoutonExporterLesUtilisateurs
-                parametres={parametresDesFiltres(filtres)}
-                libelles={libellesDesFiltres(filtres, options)}
-                nombre={trouves.matchesCount}
-                recherche={searchParams.recherche ?? null}
-              />
-            }
-          />
+          <ClientBinder
+            bind={RECHERCHER_DES_COORDINATEURS_ACTION_KEY}
+            to={rechercherDesCoordinateursAction}
+          >
+            <UtilisateursPage
+              trouves={trouves}
+              filtres={filtres}
+              options={options}
+              searchParams={searchParams}
+              actions={
+                <BoutonExporterLesUtilisateurs
+                  parametres={parametresDesFiltres(filtres)}
+                  libelles={libellesDesFiltres(filtres, options)}
+                  nombre={trouves.matchesCount}
+                  recherche={searchParams.recherche ?? null}
+                />
+              }
+            />
+          </ClientBinder>
         </ClientBinder>
       </ClientBinder>
     </ClientBinder>

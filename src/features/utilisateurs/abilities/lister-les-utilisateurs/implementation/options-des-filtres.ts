@@ -1,15 +1,15 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import type { OptionsDesFiltres } from '@/features/utilisateurs/ui'
+import { departementsByCode } from '@/libraries/departement/departements'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { optionDuCoordinateur } from '../ui/coordinateur-a-choisir.presenter'
 import { coordinateursChoisis } from './prisma'
 
 export type SourcesDesOptions = {
-  readonly communesEtDepartements: () => Promise<{
-    readonly communesOptions: readonly SelectOption[]
-    readonly departementsOptions: readonly SelectOption[]
-  }>
-  readonly lieux: () => Promise<readonly SelectOption[]>
+  readonly communes: (
+    codesInsee: readonly string[],
+  ) => Promise<readonly SelectOption[]>
+  readonly lieux: (ids: readonly string[]) => Promise<readonly SelectOption[]>
   readonly nomDeLEmployeuse: (id: number) => Promise<string | null>
 }
 
@@ -26,18 +26,23 @@ const employeusesChoisies = async (
   )
 }
 
+const departementsChoisis = (
+  codes: FiltresUtilisateurs['departements'],
+): readonly SelectOption[] =>
+  codes.flatMap((code) => {
+    const departement = departementsByCode.get(code)
+    return departement === undefined
+      ? []
+      : [{ value: code, label: `${code} · ${departement.nom}` }]
+  })
+
 export const optionsDesFiltres = async (
   filtres: FiltresUtilisateurs,
   sources: SourcesDesOptions,
 ): Promise<OptionsDesFiltres> => {
-  const [
-    { communesOptions, departementsOptions },
-    lieux,
-    employeuses,
-    coordinateurs,
-  ] = await Promise.all([
-    sources.communesEtDepartements(),
-    sources.lieux(),
+  const [communes, lieux, employeuses, coordinateurs] = await Promise.all([
+    sources.communes(filtres.communes),
+    sources.lieux(filtres.lieux),
     employeusesChoisies(filtres.employeuses, sources.nomDeLEmployeuse),
     coordinateursChoisis(filtres.coordinateurs),
   ])
@@ -46,7 +51,7 @@ export const optionsDesFiltres = async (
     employeuses,
     coordinateurs: coordinateurs.map(optionDuCoordinateur),
     lieux,
-    communes: communesOptions,
-    departements: departementsOptions,
+    communes,
+    departements: departementsChoisis(filtres.departements),
   }
 }
