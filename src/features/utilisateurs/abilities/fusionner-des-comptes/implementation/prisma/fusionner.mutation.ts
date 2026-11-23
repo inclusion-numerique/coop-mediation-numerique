@@ -37,7 +37,6 @@ const rolesDe = (tx: Tx, userId: string) =>
       mediateur: {
         select: {
           id: true,
-          invitations: { select: { coordinateurId: true } },
           coordinations: { select: { coordinateurId: true } },
           enActivite: { select: { structureId: true } },
         },
@@ -55,6 +54,18 @@ const rolesDe = (tx: Tx, userId: string) =>
 type Roles = Awaited<ReturnType<typeof rolesDe>>
 type MediateurDesRoles = NonNullable<Roles['mediateur']>
 type CoordinateurDesRoles = NonNullable<Roles['coordinateur']>
+
+const adresse = (email: string): Prisma.StringFilter => ({
+  equals: email,
+  mode: 'insensitive',
+})
+
+const invitationsDe = (
+  mediateurId: string,
+  email: string,
+): Prisma.InvitationEquipeWhereInput => ({
+  OR: [{ mediateurId }, { email: adresse(email) }],
+})
 
 const fusionnerLePartage = async (
   tx: Tx,
@@ -101,25 +112,28 @@ const fusionnerLesMediateurs = async (
     }),
   )
 
+  const invitationsDeLaSource = invitationsDe(sourceId, source.email)
+  const invitationsDeLaCible = invitationsDe(cibleId, cible.email)
+
+  const equipesDeLaCible = (
+    await tx.invitationEquipe.findMany({
+      where: invitationsDeLaCible,
+      select: { coordinateurId: true },
+    })
+  ).map(({ coordinateurId }) => coordinateurId)
+
+  await tx.invitationEquipe.updateMany({
+    where: { email: adresse(cible.email), mediateurId: null },
+    data: { mediateurId: cibleId },
+  })
   await tx.invitationEquipe.updateMany({
     where: {
-      email: source.email,
-      coordinateurId: {
-        in: source.mediateur.invitations
-          .map(({ coordinateurId }) => coordinateurId)
-          .filter(
-            absentsDe(
-              cible.mediateur.invitations.map(
-                ({ coordinateurId }) => coordinateurId,
-              ),
-            ),
-          ),
-      },
+      ...invitationsDeLaSource,
+      coordinateurId: { notIn: equipesDeLaCible },
     },
     data: { mediateurId: cibleId, email: cible.email },
   })
-  await tx.invitationEquipe.deleteMany({ where: { email: source.email } })
-  await tx.invitationEquipe.deleteMany({ where: { mediateurId: sourceId } })
+  await tx.invitationEquipe.deleteMany({ where: invitationsDeLaSource })
 
   await tx.mediateurEnActivite.updateMany({
     where: {
