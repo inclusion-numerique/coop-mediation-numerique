@@ -6,16 +6,18 @@ import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.a
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.key'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/slots/BoutonInviterUnePersonne.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { default as EquipeListePage } from '@/features/equipe/abilities/lister-les-membres/ui/pages/EquipeListePage'
 import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/presenters/parametres-de-la-liste.search-params'
 import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/presenters/requete-de-la-liste.search-params'
-import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { default as BoutonRetirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre/ui/slots/BoutonRetirerUnMembre.slot'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
+import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui/slots/BoutonSupprimerUnAncienMembre.slot'
+import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/annuler-une-invitation.key'
+import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/relancer-une-invitation.key'
 import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { default as ActionsDuMembre } from '@/features/equipe/ui/slots/ActionsDuMembre.slot'
@@ -73,6 +75,10 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
                 <ActionsDuMembre
                   ligne={ligne}
                   coordinateurId={coordinateurId}
+                  retirer={(membre) => <BoutonRetirerUnMembre {...membre} />}
+                  supprimer={(ancienMembre) => (
+                    <BoutonSupprimerUnAncienMembre {...ancienMembre} />
+                  )}
                 />
               )}
             />

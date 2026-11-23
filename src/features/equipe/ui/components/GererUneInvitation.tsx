@@ -9,8 +9,8 @@ import { dateAsDay } from '@/libraries/date/dateAsDay'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { ANNULER_UNE_INVITATION_ACTION_KEY } from '../../abilities/annuler-une-invitation/action/annuler-une-invitation.key'
-import { RELANCER_UNE_INVITATION_ACTION_KEY } from '../../abilities/relancer-une-invitation/action/relancer-une-invitation.key'
+import { ANNULER_UNE_INVITATION_ACTION_KEY } from '../../action/annuler-une-invitation.key'
+import { RELANCER_UNE_INVITATION_ACTION_KEY } from '../../action/relancer-une-invitation.key'
 
 type EnCours = 'aucune' | 'annulation' | 'relance'
 

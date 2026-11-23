@@ -6,8 +6,8 @@ import { useState } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '../../abilities/accepter-une-invitation/action/accepter-une-invitation.key'
-import { REFUSER_UNE_INVITATION_ACTION_KEY } from '../../abilities/refuser-une-invitation/action/refuser-une-invitation.key'
+import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '../../action/accepter-une-invitation.key'
+import { REFUSER_UNE_INVITATION_ACTION_KEY } from '../../action/refuser-une-invitation.key'
 
 const ReponseAInvitation = ({
   email,
