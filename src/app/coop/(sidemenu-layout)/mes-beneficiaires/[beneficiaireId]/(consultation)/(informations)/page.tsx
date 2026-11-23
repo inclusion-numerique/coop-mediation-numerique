@@ -1,4 +1,3 @@
-import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
 import { compterLesThematiquesAbordees } from '@/features/activites/abilities/compter-les-thematiques-abordees/implementations/prisma/thematiques-abordees.query'
 import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui/presenters/thematiques-abordees.presenter'
@@ -11,7 +10,8 @@ import {
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireInformationsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireInformationsPage'
-import { DeleteBeneficiaireModal } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'
+import { BoutonModifierLeBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/slots/BoutonModifierLeBeneficiaire.slot'
+import { BoutonSupprimerLeBeneficiaire } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/slots/BoutonSupprimerLeBeneficiaire.slot'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import {
@@ -71,30 +71,10 @@ const BeneficiaireInformationsPage = async (props: {
           chronologie.total.activites + chronologie.total.rendezVous,
       }}
       actions={
-        <div>
-          <Button
-            iconId="fr-icon-edit-line"
-            iconPosition="right"
-            size="small"
-            priority="tertiary no outline"
-            linkProps={{
-              href: `/coop/mes-beneficiaires/${beneficiaire.id}/modifier`,
-            }}
-          >
-            Modifier
-          </Button>
-          <Button
-            iconId="fr-icon-delete-bin-line"
-            className="fr-ml-1v"
-            iconPosition="right"
-            size="small"
-            priority="tertiary no outline"
-            type="button"
-            {...DeleteBeneficiaireModal.buttonProps}
-          >
-            Supprimer
-          </Button>
-        </div>
+        <>
+          <BoutonModifierLeBeneficiaire beneficiaireId={beneficiaire.id} />
+          <BoutonSupprimerLeBeneficiaire />
+        </>
       }
     />
   )

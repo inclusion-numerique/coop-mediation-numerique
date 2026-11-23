@@ -3,11 +3,8 @@ import { Route } from 'next'
 import { redirect } from 'next/navigation'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import SigninPanel from '@/features/authentification/abilities/se-connecter/ui/pages/SigninPanel'
+import { ConnexionPage } from '@/features/authentification/abilities/se-connecter/ui/pages/ConnexionPage'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -30,15 +27,7 @@ const SigninPage = async ({
     redirect(getServerUrl(callbackUrl))
   }
 
-  return (
-    <>
-      <SkipLinksPortal />
-      <Breadcrumbs currentPage="Connexion" />
-      <main id={contentId}>
-        <SigninPanel error={error} callbackUrl={callbackUrl} />
-      </main>
-    </>
-  )
+  return <ConnexionPage error={error} callbackUrl={callbackUrl} />
 }
 
 export default SigninPage

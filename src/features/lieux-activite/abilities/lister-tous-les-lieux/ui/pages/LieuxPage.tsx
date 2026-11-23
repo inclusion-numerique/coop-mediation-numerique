@@ -1,7 +1,9 @@
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import { LieuxPagination } from '../components/LieuxPagination'
 import { LieuxTable } from '../components/LieuxTable'
 import { RechercheDeLieux } from '../components/RechercheDeLieux'
@@ -22,7 +24,8 @@ export const LieuxPage = ({
   searchResult: PageDeLieux
   searchParams: ListeDesLieuxSearchParams
 }) => (
-  <>
+  <CoopPageContainer size="full">
+    <SkipLinksPortal />
     <AdministrationBreadcrumbs currentPage="Lieux d’activité" />
     <main id={contentId}>
       <AdministrationTitle icon="fr-icon-home-4-line">
@@ -56,5 +59,5 @@ export const LieuxPage = ({
         pageSize={searchResult.pageSize}
       />
     </main>
-  </>
+  </CoopPageContainer>
 )

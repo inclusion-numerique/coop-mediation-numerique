@@ -3,8 +3,6 @@ import { authenticateAdmin } from '@/features/authentification/implementations/s
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
 import { LieuxPage } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/pages/LieuxPage'
 import { type ListeDesLieuxSearchParams } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/presenters/lister-tous-les-lieux-search-params'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),
@@ -22,14 +20,11 @@ const Page = async (props: {
   })
 
   return (
-    <CoopPageContainer size="full">
-      <SkipLinksPortal />
-      <LieuxPage
-        totalCount={totalCount}
-        searchResult={searchResult}
-        searchParams={searchParams}
-      />
-    </CoopPageContainer>
+    <LieuxPage
+      totalCount={totalCount}
+      searchResult={searchResult}
+      searchParams={searchParams}
+    />
   )
 }
 

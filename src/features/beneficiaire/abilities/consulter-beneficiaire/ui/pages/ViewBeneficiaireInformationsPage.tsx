@@ -38,7 +38,7 @@ const ViewBeneficiaireInformationsPage = ({
             Créé le {dateAsDay(beneficiaire.creation)}
           </p>
         </div>
-        {actions}
+        <div>{actions}</div>
       </div>
       <BeneficiaireThematiques thematiques={thematiquesAbordees} />
       <BeneficiaireCoordonnees beneficiaire={beneficiaire} />

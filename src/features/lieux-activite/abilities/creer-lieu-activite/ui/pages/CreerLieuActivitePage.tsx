@@ -1,13 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import type { ReactNode } from 'react'
 import { CreerLieuActivitePageContent } from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/components/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@/features/lieux-activite/ui/forms/creer-lieu-activite.form-data'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { inject } from '@/libraries/nextjs/injection/client'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { hrefDuLieu } from '../../../../ui/presenters/href-du-lieu'
 import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../../action/creer-lieu-activite.key'
@@ -19,7 +21,7 @@ const erreurEnregistrement = () =>
       'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   })
 
-const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
+const CreerLieuActivitePage = () => {
   const router = useRouter()
 
   const onCreer = async (value: CreerLieuActiviteFormData) => {
@@ -47,11 +49,26 @@ const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
   }
 
   return (
-    <CreerLieuActivitePageContent
-      contentTop={contentTop}
-      retourHref="/coop/lieux-activite"
-      onCreer={onCreer}
-    />
+    <>
+      <SkipLinksPortal />
+      <main id={contentId}>
+        <CreerLieuActivitePageContent
+          contentTop={
+            <CoopBreadcrumbs
+              parents={[
+                {
+                  label: `Mes lieux d'activités`,
+                  linkProps: { href: '/coop/lieux-activite/' },
+                },
+              ]}
+              currentPage="Créer un lieu d'activité"
+            />
+          }
+          retourHref="/coop/lieux-activite"
+          onCreer={onCreer}
+        />
+      </main>
+    </>
   )
 }
 
