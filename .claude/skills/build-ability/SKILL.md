@@ -58,9 +58,9 @@ Pour le reste (mécanique), avance.
   puis le code minimal (TS-2). Pas de spec vide pour une query sans logique.
 
 ### 3. Transfer layer (première ability de la feature ou nouveaux champs)
-- `db/<entity>.transfer.ts` : smart constructors Prisma → domaine, assignation naturelle
+- `implementations/prisma/<entity>.transfer.ts` : smart constructors Prisma → domaine, assignation naturelle
   domaine → Prisma, `null ↔ NonCommunique` (DM-10). Zéro `as` / `!`.
-- `db/<entity>.transfer.spec.ts` : **aller-retour** min, max et chaque variante d'union (TS-4).
+- `implementations/prisma/<entity>.transfer.spec.ts` : **aller-retour** min, max et chaque variante d'union (TS-4).
 
 ### 4. Implémenter l'ability (structure §4)
 ```
@@ -75,7 +75,7 @@ abilities/<ability>/
 - Pas de dépendance vers une autre ability (IS-1) ni vers une autre feature (IS-2) : port dans le
   domaine, implémentation fournie depuis la route.
 - Code commun à plusieurs abilities → remonte à la racine de la feature, sous le même nom (AB-2).
-- `action/` et `ui/` n'importent jamais `db/` ni `implementations/`.
+- `action/` et `ui/` n'importent jamais `implementations/`.
 
 ### 5. Câbler
 - **Mutation** : `src/app/_actions/<feature>/<ability>.action.ts`, construite avec

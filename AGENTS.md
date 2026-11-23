@@ -71,7 +71,7 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 - **src**: the Next.js full-stack application (App Router, React Server Components), imported through the `@/` alias
 - **prisma**: Prisma schemas and migrations
-- **e2e**: Cypress tooling (support files, tasks, fixtures, simulated ProConnect, timings); `cypress.config.ts` sits at the root. E2E specs live in their feature as `src/features/<feature>/e2e/*.e2e.ts`, component tests next to their component as `*.cy.tsx`
+- **e2e**: Cypress tooling (support files, tasks, fixtures, simulated ProConnect, timings); `cypress.config.ts` sits at the root. Journeys across several pages live in `e2e/*.e2e.ts`, tests of a single page or route next to it in `src/app` as `page.test.ts` or `route.test.ts`, component tests next to their component as `*.cy.tsx`
 - **.storybook**: Storybook configuration; stories live next to their components in `src`
 - **infrastructure**: Infrastructure as code (HCL / OpenTofu for Scaleway)
 - **docker**: images of the application and of PostgreSQL
@@ -140,7 +140,7 @@ Each ability exposes its contract in `features/<feature>/abilities/<ability>/act
 - Return validated types
 - Pure (no side effects, no infra imports)
 
-### Transfer Layer (`db/`)
+### Transfer Layer (`implementations/prisma/`)
 
 - Smart constructors for Prisma → domain (validates DB data)
 - Natural assignment for domain → Prisma (branded types are structurally assignable)

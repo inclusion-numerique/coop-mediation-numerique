@@ -39,7 +39,7 @@ Pour le modèle, prends et **justifie** explicitement chaque décision :
 - **DM-3/DM-4/DM-5/DM-6** : pour chaque `| null` et chaque booléen/paire de champs existants, décider : union discriminée ? défaut d'enum ? absence légitime ? — et dire **pourquoi**.
 - **DM-7** : champs toujours ensemble → value object composite.
 - **DM-8** : définir les fonctions de domaine (signatures) prenant des types validés, pures.
-- **DM-2/DM-10** : plan du transfer layer (`db/`) — smart constructors Prisma→domaine, assignation naturelle en sortie, mapping `null ↔ NonCommunique`, round-trip min+max. Zéro `as`/`!`.
+- **DM-2/DM-10** : plan du transfer layer (`implementations/prisma/`) — smart constructors Prisma→domaine, assignation naturelle en sortie, mapping `null ↔ NonCommunique`, round-trip min+max. Zéro `as`/`!`.
 - **AR-6** : fixer le **niveau DDD** (Core riche / Supporting modéré / Generic-ACL minimal) et calibrer l'effort en conséquence — **ne pas over-engineer** une feature simple.
 
 Les vrais **points de bascule de modélisation** (ceux qui ont causé les itérations sur `beneficiaire` : faut-il une union ? intégrer l'adresse dans la commune ? etc.) ne sont pas tranchables seul → tu les remontes en **questions ouvertes** à l'humain, avec une recommandation argumentée.
@@ -81,7 +81,7 @@ DM qui la justifie.>
 - cas de round-trip à tester (min, max, chaque variante d'union)
 
 ### Fichiers domain/ à créer (carte pour l'implémentation)
-- domain/<vo>.ts · domain/<entity>.ts · domain/errors.ts · domain/index.ts · db/<entity>.transfer.ts (+ .spec)
+- domain/<vo>.ts · domain/<entity>.ts · domain/errors.ts · domain/index.ts · implementations/prisma/<entity>.transfer.ts (+ .spec)
 
 ### ❓ Questions ouvertes (points de bascule — à trancher avec toi)
 1. <question> — recommandation : <…> (pourquoi)
