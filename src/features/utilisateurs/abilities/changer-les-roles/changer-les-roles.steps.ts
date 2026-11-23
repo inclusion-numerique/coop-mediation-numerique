@@ -5,7 +5,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { changerLesRoles } from './commands/changer-les-roles'
-import { rolesVacants } from './implementations'
+import { rolesVacants } from './implementations/prisma/roles-vacants.query'
 
 const changement: {
   utilisateurId?: string

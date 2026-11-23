@@ -11,10 +11,8 @@ import {
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  consulterLaFicheDuLieu,
-  modifierLaFicheDuLieu,
-} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations'
+import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
+import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/modifier-la-fiche-du-lieu.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'

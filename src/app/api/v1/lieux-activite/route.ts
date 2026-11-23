@@ -8,11 +8,9 @@ import {
 import {
   criteresDesLieuxActivite,
   LieuxActiviteQueryParamsValidation,
-} from '@/features/clients-api/abilities/lire-les-lieux-activite'
-import {
-  lieuPublieExpose,
-  lieuxPublies,
-} from '@/features/lieux-activite/abilities/publier-les-lieux'
+} from '@/features/clients-api/abilities/lire-les-lieux-activite/implementations/api-v1/lieux-activite.parametres'
+import { lieuPublieExpose } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/api/lieu-publie.transfer'
+import { lieuxPublies } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/prisma/lieux-publies.query'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

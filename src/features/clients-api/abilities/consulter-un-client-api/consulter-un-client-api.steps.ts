@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api'
+import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api/implementations/prisma/client-api.query'
 import {
   clientSeme,
   portees,

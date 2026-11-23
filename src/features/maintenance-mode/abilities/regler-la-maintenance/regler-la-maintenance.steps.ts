@@ -2,8 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
-import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance'
+import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/etat-de-maintenance.query'
+import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
 import {
   type EtatDeMaintenance,
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,

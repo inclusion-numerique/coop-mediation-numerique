@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { perimetreDe } from '../../statistiques.cucumber'
-import { type PresenceDeCrasV1, verifierLaPresenceDeCrasV1 } from '.'
+import { type PresenceDeCrasV1 } from './domain/index'
+import { verifierLaPresenceDeCrasV1 } from './implementations/prisma/presence-de-cras-v1.query'
 
 let presence: PresenceDeCrasV1 | undefined
 

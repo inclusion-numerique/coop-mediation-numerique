@@ -6,8 +6,8 @@ import {
   type EmployeuseDesActivites,
   EmployeuseId,
   MediateurId,
-  rechercherLesEmployeusesDesActivites,
-} from '.'
+} from '../../domain/index'
+import { rechercherLesEmployeusesDesActivites } from './implementations/prisma/rechercher-les-employeuses-des-activites.query'
 
 type Semis = {
   readonly userIds: readonly string[]

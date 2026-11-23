@@ -1,15 +1,15 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
+import { compterLesThematiquesAbordees } from '@/features/activites/abilities/compter-les-thematiques-abordees/implementations/prisma/thematiques-abordees.query'
+import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui/thematiques-abordees.presenter'
+import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites/implementations/historique-d-un-beneficiaire'
+import { LignesParPage, NumeroDePage } from '@/features/activites/domain'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
-  compterLesThematiquesAbordees,
   MediateurId as MediateurDesActivites,
-} from '@/features/activites/abilities/compter-les-thematiques-abordees'
-import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui'
-import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites'
-import { LignesParPage, NumeroDePage } from '@/features/activites/domain'
+} from '@/features/activites/domain/index'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations'
+import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireInformationsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireInformationsPage'
 import { DeleteBeneficiaireModal } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -18,7 +18,7 @@ import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
-} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 
 const BeneficiaireInformationsPage = async (props: {
   params: Promise<{ beneficiaireId: string }>

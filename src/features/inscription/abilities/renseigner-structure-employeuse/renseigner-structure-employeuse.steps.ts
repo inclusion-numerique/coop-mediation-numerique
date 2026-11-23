@@ -1,12 +1,10 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type {
-  RattacherEmployeuse,
-  RenseignerStructureEmployeuseError,
-  StructureEmployeuseInput,
-} from '@/features/inscription/abilities/renseigner-structure-employeuse'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
+import { type RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
+import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
+import { type StructureEmployeuseInput } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-input'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
   currentInscriptionUserId,

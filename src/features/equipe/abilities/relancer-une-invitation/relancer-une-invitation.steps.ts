@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation'
+import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/relancer-une-invitation.mutation'
 import {
   CoordinateurId,
   Email,

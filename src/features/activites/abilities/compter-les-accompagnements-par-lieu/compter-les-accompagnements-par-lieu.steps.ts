@@ -1,10 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { demandeDeStatistiques } from '../../statistiques.cucumber'
-import {
-  type AccompagnementsParLieu,
-  compterLesAccompagnementsParLieu,
-} from '.'
+import { type AccompagnementsParLieu } from './domain/index'
+import { compterLesAccompagnementsParLieu } from './implementations/prisma/accompagnements-par-lieu.query'
 
 let parLieu: AccompagnementsParLieu | undefined
 

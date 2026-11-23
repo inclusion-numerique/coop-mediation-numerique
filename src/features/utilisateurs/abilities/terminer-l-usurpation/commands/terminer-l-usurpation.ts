@@ -1,7 +1,10 @@
 import type { NomAffiche } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { type TerminerLUsurpationError, usurpateurARetrouver } from '../domain'
-import { rendreLaSession, sessionCourante } from '../implementations'
+import {
+  rendreLaSession,
+  sessionCourante,
+} from '../implementations/prisma/session-courante'
 
 export const terminerLUsurpation = async (
   jeton: string,

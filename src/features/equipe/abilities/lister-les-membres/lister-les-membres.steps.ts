@@ -1,10 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { subDays } from 'date-fns'
-import {
-  listerLesMembres,
-  type MembresDeLEquipe,
-} from '@/features/equipe/abilities/lister-les-membres'
+import { type MembresDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/domain/index'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   CoordinateurId,
   criteresEquipe,

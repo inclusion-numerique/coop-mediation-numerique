@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
+import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/index'
 import type { JetonsOAuth } from '@/features/rdvsp/domain/compte/jetons-oauth'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import {

@@ -1,5 +1,6 @@
 import type { UserId } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
+import { getInscriptionEtat } from '../../../implementations/prisma/get-inscription-etat.query'
 import type { RattacherEmployeuse, StructureEmployeuseInput } from '../domain'
 import { EmployeuseIndisponible } from '../domain'
 import {
@@ -7,7 +8,7 @@ import {
   type RenseignerStructureEmployeuseError,
 } from '../domain/renseigner-structure-employeuse'
 import { saisieEmployeuse } from '../domain/structure-employeuse-input'
-import { getInscriptionEtat, projeterEtapeFranchie } from '../implementations'
+import { projeterEtapeFranchie } from '../implementations/prisma/projeter-etape-franchie'
 
 /**
  * Cas d'usage « renseigner la structure employeuse » : lit l'état, délègue la

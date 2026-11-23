@@ -1,9 +1,9 @@
 import { notFound, redirect } from 'next/navigation'
-import { cheminDeDuplicationCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
+import { cheminDeDuplicationCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/page-de-saisie'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
-import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 
 const DupliquerPage = async ({
   params,

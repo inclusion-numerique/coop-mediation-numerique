@@ -1,4 +1,4 @@
-import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { type FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/apercu-de-la-fusion.query'
 import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ApercuDeLaFusion'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
 import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ValiderLaFusion'

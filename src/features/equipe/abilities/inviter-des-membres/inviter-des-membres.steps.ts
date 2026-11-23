@@ -1,11 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  inviterDesMembres,
-  type MediateursAInviter,
-  rechercherDesMediateursAInviter,
-} from '@/features/equipe/abilities/inviter-des-membres'
+import { type MediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
+import { inviterDesMembres } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/inviter-des-membres.mutation'
+import { rechercherDesMediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/rechercher-des-mediateurs-a-inviter.query'
 import { CoordinateurId, Email, UtilisateurId } from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,

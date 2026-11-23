@@ -3,7 +3,7 @@ import { rechercherEmployeusesDesActivitesAction } from '@/app/_actions/activite
 import { reglerLePartageStatistiquesAction } from '@/app/_actions/mediateurs/regler-le-partage-statistiques.action'
 import { rechercherLesLieuxDeMesStatistiquesAction } from '@/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre/implementations/prisma/activites-du-perimetre.query'
 import {
   lieuxChoisisDe,
   nombreDAccompagnements,
@@ -22,12 +22,12 @@ import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabu
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
-import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage'
+import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/membres-a-filtrer-du-demandeur'
+import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage/implementations/prisma/consulter-mes-liens-de-partage.query'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
-import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
+import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui/PartageStatistiques'
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {
@@ -44,7 +44,7 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/sections/sections-des-statistiques'
-import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const sourcesDeMesStatistiques = {

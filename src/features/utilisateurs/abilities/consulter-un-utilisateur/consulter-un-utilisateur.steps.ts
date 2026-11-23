@@ -8,7 +8,7 @@ import {
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
 import type { FicheUtilisateur } from './domain'
-import { ficheUtilisateur } from './implementations'
+import { ficheUtilisateur } from './implementations/prisma/fiche-utilisateur.query'
 
 const consultation: {
   compte?: CompteSeme

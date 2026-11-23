@@ -5,10 +5,10 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { creerUnTag } from '@/features/tags/abilities/creer-un-tag'
 import { CREER_UN_TAG_ERRORS } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.errors'
 import type { VisibiliteValidation } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.validation'
 import { CreerUnTagValidation } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.validation'
+import { creerUnTag } from '@/features/tags/abilities/creer-un-tag/implementations/prisma/creer-un-tag.mutation'
 import {
   acteurDe,
   CoordinateurId,

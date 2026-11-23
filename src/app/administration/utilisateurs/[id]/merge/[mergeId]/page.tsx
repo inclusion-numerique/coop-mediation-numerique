@@ -3,12 +3,12 @@ import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { apercuDeFusion } from '@/features/utilisateurs/abilities/fusionner-des-comptes'
 import {
   FUSIONNER_DES_COMPTES_ACTION_KEY,
   RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY,
 } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
-import { FusionPage } from '@/features/utilisateurs/abilities/fusionner-des-comptes/ui'
+import { apercuDeFusion } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/apercu-de-fusion.query'
+import { FusionPage } from '@/features/utilisateurs/abilities/fusionner-des-comptes/ui/pages/FusionPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

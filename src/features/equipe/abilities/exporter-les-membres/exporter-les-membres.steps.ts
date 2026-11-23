@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres'
+import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/exporter-les-membres.query'
 import {
   CoordinateurId,
   criteresEquipe,

@@ -1,16 +1,14 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import {
-  crasV1Exposes,
-  craV1Expose,
-  curseurDeCraV1,
-} from '@/features/activites/abilities/exposer-les-cras-v1'
+import { craV1Expose } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/cra-v1-expose.transfer'
+import { curseurDeCraV1 } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/curseur-de-cra-v1'
+import { crasV1Exposes } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/prisma/cras-v1-exposes.query'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1'
+import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1/implementations/api-v1/cras-v1.reponse'
 import {
   JsonApiCursorPaginationQueryParamsValidation,
   prismaCursorPagination,

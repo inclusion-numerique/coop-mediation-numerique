@@ -6,7 +6,7 @@ import {
   semerUnCompteDeListe,
   semerUneEmployeuse,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { garantirLeRoleCoordinateurDuDispositif } from './implementations'
+import { garantirLeRoleCoordinateurDuDispositif } from './implementations/prisma/garantir-le-role-coordinateur.mutation'
 
 const garantie: {
   utilisateurId?: string

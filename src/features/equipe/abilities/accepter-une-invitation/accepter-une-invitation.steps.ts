@@ -1,9 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  type Accepteur,
-  accepterUneInvitation,
-} from '@/features/equipe/abilities/accepter-une-invitation'
+import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitation/domain/index'
+import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
 import {
   CoordinateurId,
   Email,

@@ -8,7 +8,7 @@ import {
   type SynchroniserLesRolesBrevoPorts,
   type TailleDeLot,
 } from '../domain'
-import { inscritsDeLaListe } from '../implementations'
+import { inscritsDeLaListe } from '../implementations/prisma/index'
 
 type Envois<R> = {
   readonly reussis: readonly R[]

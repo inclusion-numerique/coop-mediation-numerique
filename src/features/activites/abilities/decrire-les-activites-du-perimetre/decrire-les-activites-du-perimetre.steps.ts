@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { perimetreDe } from '../../statistiques.cucumber'
-import { type ActivitesDuPerimetre, decrireLesActivitesDuPerimetre } from '.'
+import { type ActivitesDuPerimetre } from './domain/index'
+import { decrireLesActivitesDuPerimetre } from './implementations/prisma/activites-du-perimetre.query'
 
 let decrites: ActivitesDuPerimetre | undefined
 

@@ -3,7 +3,8 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { criteresDExposition, utilisateursExposes } from './implementations'
+import { criteresDExposition } from './implementations/api/criteres-d-exposition'
+import { utilisateursExposes } from './implementations/prisma/utilisateurs-exposes.query'
 
 const exposition: {
   utilisateurId?: string

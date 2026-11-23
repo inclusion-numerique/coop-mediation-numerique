@@ -1,6 +1,6 @@
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
-import { rolesVacants } from '../implementations'
+import { rolesVacants } from '../implementations/prisma/roles-vacants.query'
 import { changerLesRoles } from './changer-les-roles'
 
 const retirer =

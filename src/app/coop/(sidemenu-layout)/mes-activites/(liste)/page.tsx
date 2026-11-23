@@ -6,10 +6,10 @@ import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activit
 import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
-import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites'
-import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites'
-import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui'
+import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/components/ExportDeMesAccompagnements'
+import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/options-de-la-barre'
+import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites/implementations/mes-activites'
+import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/pages/PageDeMaListeDActivites'
 import { MediateurId } from '@/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
@@ -19,18 +19,16 @@ import {
   isMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
-import {
-  getLieuxDesActivitesOptions,
-  getMediateurCommunesAndDepartementsOptions,
-} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import { getMediateurCommunesAndDepartementsOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
+import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
 import AfficherLesRdvs from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/ui/AfficherLesRdvs'
+import { periodeDesRendezVous } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/periode-des-rendez-vous.query'
 import {
-  periodeDesRendezVous,
   rendezVousAListerSql,
   rendezVousLies,
   rendezVousParIds,
-} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
 import SaisieDuStatutDuRdv, {

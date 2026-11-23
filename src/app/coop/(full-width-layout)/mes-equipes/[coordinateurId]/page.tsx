@@ -3,18 +3,16 @@ import { redirect } from 'next/navigation'
 import { quitterUneEquipeAction } from '@/app/_actions/equipe/quitter-une-equipe.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import { BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui'
+import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/BoutonExporter'
 import {
   estMembreActif,
   listerLesMembres,
-} from '@/features/equipe/abilities/lister-les-membres'
-import {
-  EquipeListePage,
-  type ParametresDeLaListe,
-  requeteDeLaListe,
-} from '@/features/equipe/abilities/lister-les-membres/ui'
+} from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { default as EquipeListePage } from '@/features/equipe/abilities/lister-les-membres/ui/pages/EquipeListePage'
+import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/parametres-de-la-liste'
+import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/requete-de-la-liste'
 import { QUITTER_UNE_EQUIPE_ACTION_KEY } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.key'
-import { BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui'
+import { default as BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui/BoutonQuitterLEquipe'
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

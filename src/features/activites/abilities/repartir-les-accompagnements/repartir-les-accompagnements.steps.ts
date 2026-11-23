@@ -2,10 +2,8 @@ import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import type { Repartition } from '../../domain'
 import { demandeDeStatistiques } from '../../statistiques.cucumber'
-import {
-  type RepartitionDesAccompagnements,
-  repartirLesAccompagnements,
-} from '.'
+import { type RepartitionDesAccompagnements } from './domain/index'
+import { repartirLesAccompagnements } from './implementations/prisma/repartition-des-accompagnements.query'
 
 let repartition: RepartitionDesAccompagnements | undefined
 

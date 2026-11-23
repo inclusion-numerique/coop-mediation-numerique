@@ -4,7 +4,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   anonymiserLesComptesInactifs,
   type CompteExamine,
-} from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
+} from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/commands/anonymiser-les-comptes-inactifs'
 import {
   type CompteInactifSeme,
   semerUnCompteInactif,

@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret'
+import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/implementations/prisma/renouveler-le-secret.mutation'
 import {
   clientSeme,
   leSecretOuvreLAcces,

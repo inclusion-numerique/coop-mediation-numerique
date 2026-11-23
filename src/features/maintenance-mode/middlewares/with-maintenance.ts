@@ -1,6 +1,6 @@
 import type { PipeMiddleware, ServerActionResult } from '@/libraries/nextjs'
 import { ServerActionError } from '@/libraries/nextjs'
-import { consulterLaMaintenance } from '../abilities/consulter-la-maintenance'
+import { consulterLaMaintenance } from '../abilities/consulter-la-maintenance/implementations/prisma/etat-de-maintenance.query'
 import {
   messageAffiche,
   peutModifierPendantLaMaintenance,

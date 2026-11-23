@@ -6,12 +6,13 @@ import {
 } from '@/features/inscription/domain'
 import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
 import { type Result, success } from '@/libraries/result'
+import { getInscriptionEtat } from '../../../implementations/prisma/get-inscription-etat.query'
 import {
   type ChoisirProfilError,
   choisirProfil as deciderRole,
   type RoleChoisi,
 } from '../domain/choisir-profil'
-import { enregistrerProfilChoisi, getInscriptionEtat } from '../implementations'
+import { enregistrerProfilChoisi } from '../implementations/prisma/enregistrer-profil-choisi.mutation'
 
 /**
  * Cas d'usage « choisir un rôle » : lit l'état courant, délègue la décision au

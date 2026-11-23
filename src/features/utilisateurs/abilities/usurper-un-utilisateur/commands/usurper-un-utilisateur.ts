@@ -7,7 +7,8 @@ import {
   type PorteeUsurpation,
   type UsurpationHorsFixtures,
 } from '../domain'
-import { cibleUsurpation, ouvrirLUsurpation } from '../implementations'
+import { cibleUsurpation } from '../implementations/prisma/cible-usurpation.query'
+import { ouvrirLUsurpation } from '../implementations/prisma/ouvrir-l-usurpation.mutation'
 
 export const usurperUnUtilisateur = async ({
   utilisateurId,

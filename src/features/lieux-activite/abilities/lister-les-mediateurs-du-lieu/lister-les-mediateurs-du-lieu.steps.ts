@@ -2,10 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  listerLesMediateursDuLieu,
-  type MediateurDuLieu,
-} from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
+import { type MediateurDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/domain/index'
+import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/implementations/prisma/mediateurs-du-lieu.query'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 
 const etat: {

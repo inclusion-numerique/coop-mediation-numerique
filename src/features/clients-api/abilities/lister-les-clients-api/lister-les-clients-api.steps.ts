@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
-import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
+import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api/implementations/prisma/clients-api.query'
 import { clientSeme } from '@/features/clients-api/clients-api.cucumber'
 import type { ClientApi } from '@/features/clients-api/domain'
 

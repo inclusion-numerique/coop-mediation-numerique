@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
-import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire'
-import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations'
+import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire/action/creer-beneficiaire.validation'
+import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations/prisma/creer-beneficiaire.mutation'
 import {
   beneficiairesCountAtScenarioStart,
   mediateurBeneficiairesCount,

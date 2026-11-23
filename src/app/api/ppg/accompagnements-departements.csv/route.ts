@@ -5,13 +5,15 @@ import {
 } from '@arckit/nextjs/route'
 import { z } from 'zod'
 import {
-  accompagnementsParDepartement,
-  exportDesAccompagnementsCsv,
   Jour,
   lignesDExport,
-  nomDuFichierDExport,
   PopulationDeMediateurs,
-} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement'
+} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/domain/index'
+import {
+  exportDesAccompagnementsCsv,
+  nomDuFichierDExport,
+} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/csv/export-des-accompagnements.csv'
+import { accompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/prisma/accompagnements-par-departement.query'
 import { withAdminRoute } from '@/features/authentification/middlewares/with-admin-route'
 
 const ExportQueryParamsValidation = z.object({

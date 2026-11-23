@@ -1,14 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
-import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
-import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
-import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import {
-  classeurDesUtilisateurs,
-  utilisateursAExporter,
-} from '@/features/utilisateurs/abilities/exporter-les-utilisateurs'
-import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
+import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/nom-de-l-employeuse'
+import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
+import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
+import { classeurDesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/excel/classeur-des-utilisateurs'
+import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/prisma/utilisateurs-a-exporter.query'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/options-des-filtres'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'

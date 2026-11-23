@@ -2,10 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  rechercherDesCommunesDesEmployeuses,
-  rechercherEmployeuse,
-} from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
+import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
+import { rechercherEmployeuse } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/rechercher-employeuse.query'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedEmployeuseMain,

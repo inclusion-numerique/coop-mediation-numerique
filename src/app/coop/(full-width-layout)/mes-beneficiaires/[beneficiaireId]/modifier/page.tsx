@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { modifierBeneficiaireAction } from '@/app/_actions/beneficiaire/modifier-beneficiaire.action'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { beneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations'
+import { beneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/beneficiaire-a-editer.query'
 import { presentBeneficiaireAModifier } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
 import { ModifierBeneficiairePage } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'

@@ -3,41 +3,29 @@ import type {
   StatistiquesEnCours,
   StatistiquesFournies,
 } from '@/features/activites/implementations/statistiques'
-import {
-  ChiffresClesDesAccompagnements,
-  ChiffresClesImprimes,
-} from '../abilities/compter-les-accompagnements/ui'
-import { CommunesDesAccompagnements } from '../abilities/compter-les-accompagnements-par-commune/ui'
-import {
-  LieuxDesAccompagnements,
-  LieuxImprimes,
-} from '../abilities/compter-les-accompagnements-par-lieu/ui'
-import {
-  GraphiqueDesAccompagnements,
-  GraphiquesImprimes,
-} from '../abilities/compter-les-accompagnements-par-periode/ui'
+import { ChiffresClesDesAccompagnements } from '../abilities/compter-les-accompagnements/ui/components/ChiffresClesDesAccompagnements'
+import { ChiffresClesImprimes } from '../abilities/compter-les-accompagnements/ui/components/ChiffresClesImprimes'
+import { CommunesDesAccompagnements } from '../abilities/compter-les-accompagnements-par-commune/ui/components/CommunesDesAccompagnements'
+import { LieuxDesAccompagnements } from '../abilities/compter-les-accompagnements-par-lieu/ui/components/LieuxDesAccompagnements'
+import { LieuxImprimes } from '../abilities/compter-les-accompagnements-par-lieu/ui/components/LieuxImprimes'
+import { GraphiqueDesAccompagnements } from '../abilities/compter-les-accompagnements-par-periode/ui/components/GraphiqueDesAccompagnements'
 import { GraphiqueEnAttente } from '../abilities/compter-les-accompagnements-par-periode/ui/components/GraphiqueEnAttente'
-import {
-  CommunesDeResidence,
-  CommunesDeResidenceImprimees,
-} from '../abilities/compter-les-personnes-accompagnees-par-commune/ui'
-import {
-  ProfilDesPersonnesAccompagnees,
-  ProfilImprime,
-} from '../abilities/decrire-les-personnes-accompagnees/ui'
-import {
-  CanauxDesAccompagnements,
-  CanauxImprimes,
-  DemarchesDesAccompagnements,
-  DureesDesAccompagnements,
-  DureesImprimees,
-  MaterielsImprimes,
-  MaterielsUtilises,
-  ThematiquesDesAccompagnements,
-  TypesDActivite,
-  TypesDActiviteImprimes,
-} from '../abilities/repartir-les-accompagnements/ui'
-import { TagsDesAccompagnements } from '../abilities/repartir-les-accompagnements-par-tag/ui'
+import { GraphiquesImprimes } from '../abilities/compter-les-accompagnements-par-periode/ui/components/GraphiquesImprimes'
+import { CommunesDeResidence } from '../abilities/compter-les-personnes-accompagnees-par-commune/ui/components/CommunesDeResidence'
+import { CommunesDeResidenceImprimees } from '../abilities/compter-les-personnes-accompagnees-par-commune/ui/components/CommunesDeResidenceImprimees'
+import { ProfilDesPersonnesAccompagnees } from '../abilities/decrire-les-personnes-accompagnees/ui/components/ProfilDesPersonnesAccompagnees'
+import { ProfilImprime } from '../abilities/decrire-les-personnes-accompagnees/ui/components/ProfilImprime'
+import { CanauxDesAccompagnements } from '../abilities/repartir-les-accompagnements/ui/components/CanauxDesAccompagnements'
+import { CanauxImprimes } from '../abilities/repartir-les-accompagnements/ui/components/CanauxImprimes'
+import { DemarchesDesAccompagnements } from '../abilities/repartir-les-accompagnements/ui/components/DemarchesDesAccompagnements'
+import { DureesDesAccompagnements } from '../abilities/repartir-les-accompagnements/ui/components/DureesDesAccompagnements'
+import { DureesImprimees } from '../abilities/repartir-les-accompagnements/ui/components/DureesImprimees'
+import { MaterielsImprimes } from '../abilities/repartir-les-accompagnements/ui/components/MaterielsImprimes'
+import { MaterielsUtilises } from '../abilities/repartir-les-accompagnements/ui/components/MaterielsUtilises'
+import { ThematiquesDesAccompagnements } from '../abilities/repartir-les-accompagnements/ui/components/ThematiquesDesAccompagnements'
+import { TypesDActivite } from '../abilities/repartir-les-accompagnements/ui/components/TypesDActivite'
+import { TypesDActiviteImprimes } from '../abilities/repartir-les-accompagnements/ui/components/TypesDActiviteImprimes'
+import { TagsDesAccompagnements } from '../abilities/repartir-les-accompagnements-par-tag/ui/components/TagsDesAccompagnements'
 
 type Donnee<T> = T | Promise<T>
 

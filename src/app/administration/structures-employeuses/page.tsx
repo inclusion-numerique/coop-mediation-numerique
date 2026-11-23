@@ -1,6 +1,6 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations'
+import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import { employeuseAffichee } from '@/features/employeuse/abilities/lister-employeuses/ui/employeuse-affichee.presenter'
 import {
   criteresListeEmployeuses,

@@ -6,10 +6,8 @@ import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import {
-  classeurDesUtilisateurs,
-  utilisateursAExporter,
-} from './implementations'
+import { classeurDesUtilisateurs } from './implementations/excel/classeur-des-utilisateurs'
+import { utilisateursAExporter } from './implementations/prisma/utilisateurs-a-exporter.query'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 

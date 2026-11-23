@@ -10,7 +10,7 @@ import {
   ordreChronologiqueLu,
   paginationLue,
 } from '../../domain'
-import { listerMesActivites } from './implementations'
+import { listerMesActivites } from './implementations/prisma/chronologie.query'
 
 type Semis = { readonly userIds: string[]; readonly mediateurId: string }
 

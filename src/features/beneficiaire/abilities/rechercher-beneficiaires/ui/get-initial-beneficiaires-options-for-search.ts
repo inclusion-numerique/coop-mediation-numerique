@@ -1,4 +1,4 @@
-import { getInitialBeneficiairesOptions } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations'
+import { getInitialBeneficiairesOptions } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/rechercher-beneficiaires.query'
 import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'

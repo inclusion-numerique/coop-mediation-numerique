@@ -6,20 +6,16 @@ import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modif
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
-import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
-import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/implementations/prisma/mediateurs-du-lieu.query'
+import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui/MediateursDuLieu'
 import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.key'
-import {
-  FicheDuLieuEnAdministrationPage,
-  ficheAffichee,
-} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
+import { ficheAffichee } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/fiche-du-lieu.presenter'
+import { FicheDuLieuEnAdministrationPage } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/pages/FicheDuLieuEnAdministrationPage'
 import { RECHERCHER_UN_ETABLISSEMENT_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/rechercher-un-etablissement.key'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.key'
-import {
-  ModaleDeRetrait,
-  retraitsDesMediateurs,
-} from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import { default as ModaleDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/ModaleDeRetrait'
+import { retraitsDesMediateurs } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/RetraitsDesMediateurs'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

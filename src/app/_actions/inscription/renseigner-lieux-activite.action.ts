@@ -2,22 +2,18 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import {
-  RENSEIGNER_LIEUX_ACTIVITE_ERRORS,
-  RenseignerLieuxActiviteValidation,
-} from '@/features/inscription/abilities/renseigner-lieux-activite'
 import { depuisLaSaisie } from '@/features/inscription/abilities/renseigner-lieux-activite/action/depuis-la-saisie'
+import { RENSEIGNER_LIEUX_ACTIVITE_ERRORS } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.errors'
+import { RenseignerLieuxActiviteValidation } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.validation'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
 import type {
   AdresseNonValidee,
   RenseignerLieuxActiviteError,
 } from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
 import { UserId } from '@/features/inscription/domain'
-import {
-  activitesEnCoursDeLUtilisateur,
-  rattacherAuLieuDesire,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
 import { findCartoStructuresByIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto'
+import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/activites-en-cours.query'
+import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import type { Result } from '@/libraries/result'

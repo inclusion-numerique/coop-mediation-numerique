@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe'
+import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe/implementations/prisma/quitter-une-equipe.mutation'
 import {
   CoordinateurId,
   MediateurId,

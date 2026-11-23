@@ -3,7 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
+import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
 import { RechercherDesCommunesValidation } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.validation'
 import { withInput } from '@/libraries/nextjs'
 

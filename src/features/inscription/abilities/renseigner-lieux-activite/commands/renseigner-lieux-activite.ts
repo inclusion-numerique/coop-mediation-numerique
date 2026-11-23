@@ -1,6 +1,7 @@
 import type { UserId } from '@/features/inscription/domain'
 import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
 import { type Result, success } from '@/libraries/result'
+import { getInscriptionEtat } from '../../../implementations/prisma/get-inscription-etat.query'
 import {
   renseignerLieuxActivite as deciderRenseignerLieuxActivite,
   type LieuActiviteInput,
@@ -9,11 +10,8 @@ import {
   reconcilierLieuxActivite,
   type TrouverStructuresCarto,
 } from '../domain'
-import {
-  enregistrerReconciliation,
-  getInscriptionEtat,
-} from '../implementations'
 import type { RattacherAuLieuDesire } from '../implementations/prisma/enregistrer-reconciliation.mutation'
+import { enregistrerReconciliation } from '../implementations/prisma/enregistrer-reconciliation.mutation'
 
 /**
  * Cas d'usage « renseigner les lieux d'activité » : lit l'état, délègue la

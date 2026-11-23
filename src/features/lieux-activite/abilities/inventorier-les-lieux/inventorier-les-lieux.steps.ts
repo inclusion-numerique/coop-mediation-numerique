@@ -7,7 +7,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux'
+import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/prisma/inventaire-des-lieux.query'
 import {
   FraisACharge as FraisAChargeStockee,
   ModaliteAcces as ModaliteAccesStockee,

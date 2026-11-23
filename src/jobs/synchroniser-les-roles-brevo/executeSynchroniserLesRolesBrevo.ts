@@ -1,9 +1,7 @@
 import { brevoActif } from '@/configuration/brevo'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import {
-  listeDeDiffusionPorts,
-  synchroniserLesRolesBrevo,
-} from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo'
+import { synchroniserLesRolesBrevo } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/commands/synchroniser-les-roles-brevo'
+import { listeDeDiffusionPorts } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/brevo/liste-de-diffusion.ports'
 import { output } from '@/libraries/console/output'
 
 export const executeSynchroniserLesRolesBrevo = async () => {

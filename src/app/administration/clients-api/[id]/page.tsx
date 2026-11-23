@@ -3,12 +3,12 @@ import { modifierUnClientApiAction } from '@/app/_actions/clients-api/modifier-u
 import { renouvelerLeSecretAction } from '@/app/_actions/clients-api/renouveler-le-secret.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api'
-import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui'
+import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api/implementations/prisma/client-api.query'
+import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui/pages/ClientApiPage'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.key'
-import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui'
+import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui/ModifierUnClientApi'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.key'
-import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui'
+import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui/RenouvelerLeSecret'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

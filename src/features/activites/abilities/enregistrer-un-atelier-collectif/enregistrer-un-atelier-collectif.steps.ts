@@ -4,10 +4,12 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type AtelierEnregistre,
+  type SaisieCollective,
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/domain/index'
+import {
   type EchecDEnregistrement,
   enregistrerUnAtelierCollectif,
-  type SaisieCollective,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/prisma/enregistrer-un-atelier-collectif.mutation'
 import {
   ActiviteId,
   aucuneParticipationAnonyme,

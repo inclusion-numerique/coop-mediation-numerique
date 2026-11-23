@@ -2,16 +2,12 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import {
-  ajouterDesLieuxActivite,
-  depuisLePanier,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
 import { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
 import { LieuxAAjouterValidation } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
-import {
-  lireLieuxDejaRattaches,
-  trouverStructuresCarto,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations'
+import { depuisLePanier } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/depuis-le-panier'
+import { trouverStructuresCarto } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/trouver-structures-carto'
+import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

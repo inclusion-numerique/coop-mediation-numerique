@@ -2,9 +2,9 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation'
 import { ANNULER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.errors'
 import { AnnulerUneInvitationValidation } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.validation'
+import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation/implementations/prisma/annuler-une-invitation.mutation'
 import {
   CoordinateurId,
   Email,

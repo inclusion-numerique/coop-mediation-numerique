@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
 import {
   type MesBeneficiairesSearchParams,

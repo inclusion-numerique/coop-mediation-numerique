@@ -1,6 +1,6 @@
 import { PageSize, Search } from '@arckit/resultset'
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import type {
   BeneficiaireExportRow,
   ExporterBeneficiaires,

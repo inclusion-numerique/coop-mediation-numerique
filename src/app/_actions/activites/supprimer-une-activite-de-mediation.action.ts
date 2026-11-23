@@ -1,9 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ERRORS } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.errors'
 import { SupprimerUneActiviteDeMediationValidation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/action/supprimer-une-activite-de-mediation.validation'
+import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
 import {
   ActiviteId,
   MediateurId,

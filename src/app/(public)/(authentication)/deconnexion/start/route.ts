@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter'
+import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/se-deconnecter'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout'
 import { generateProconnectSignoutUrl } from '@/features/authentification/implementations/proconnect/proconnect-signout'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'

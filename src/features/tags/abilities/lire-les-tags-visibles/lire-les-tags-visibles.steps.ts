@@ -11,7 +11,7 @@ import {
   lireLesTagsCollectifs,
   lireLesTagsVisibles,
   lireTousLesTagsVisibles,
-} from './implementations'
+} from './implementations/prisma/lire-les-tags-visibles.query'
 
 const contexte: {
   acteur?: Acteur

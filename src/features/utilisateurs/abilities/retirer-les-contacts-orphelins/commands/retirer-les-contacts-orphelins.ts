@@ -5,7 +5,7 @@ import {
   orphelinsParmi,
   type RetirerLesContactsOrphelinsPorts,
 } from '../domain'
-import { inscritsVivantsParmi } from '../implementations'
+import { inscritsVivantsParmi } from '../implementations/prisma/inscrits-vivants.query'
 
 export type BilanDesContacts = {
   readonly contacts: number

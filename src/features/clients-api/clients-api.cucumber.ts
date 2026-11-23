@@ -7,7 +7,7 @@ import {
   PorteeApi,
 } from '@/features/clients-api/domain'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret'
-import { creerUnClientApi } from './abilities/creer-un-client-api'
+import { creerUnClientApi } from './abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
 
 setDefaultTimeout(60_000)
 

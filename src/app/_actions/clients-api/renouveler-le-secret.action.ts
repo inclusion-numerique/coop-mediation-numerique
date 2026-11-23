@@ -3,9 +3,9 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret'
 import { RENOUVELER_LE_SECRET_ERRORS } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.errors'
 import { RenouvelerLeSecretValidation } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.validation'
+import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/implementations/prisma/renouveler-le-secret.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

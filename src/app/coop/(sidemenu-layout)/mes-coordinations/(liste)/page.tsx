@@ -1,12 +1,10 @@
 import type { Metadata } from 'next'
 import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/supprimer-une-activite-de-coordination.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import {
-  BoutonExporter,
-  requeteDeLExport,
-} from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui'
-import { mesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination'
-import { MesCoordinationsPage } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui'
+import { BoutonExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/BoutonExporter'
+import { requeteDeLExport } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/requete-de-l-export.presenter'
+import { mesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/mes-activites-de-coordination'
+import { MesCoordinationsPage } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/pages/MesCoordinationsPage'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
 import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'

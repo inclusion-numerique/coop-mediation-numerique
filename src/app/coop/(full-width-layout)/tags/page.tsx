@@ -6,34 +6,26 @@ import { supprimerUnTagAction } from '@/app/_actions/tags/supprimer-un-tag.actio
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { CREER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.key'
-import {
-  BoutonCreerUnTag,
-  ModaleDeCreation,
-  visibilitesProposees,
-} from '@/features/tags/abilities/creer-un-tag/ui'
+import { BoutonCreerUnTag } from '@/features/tags/abilities/creer-un-tag/ui/BoutonCreerUnTag'
+import { ModaleDeCreation } from '@/features/tags/abilities/creer-un-tag/ui/ModaleDeCreation'
+import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/visibilites.presenter'
 import { FUSIONNER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.key'
 import { RECHERCHER_DES_DESTINATIONS_ACTION_KEY } from '@/features/tags/abilities/fusionner-un-tag/action/rechercher-des-destinations.key'
-import {
-  BoutonFusionner,
-  ModaleDeFusion,
-} from '@/features/tags/abilities/fusionner-un-tag/ui'
-import { listerLesTags } from '@/features/tags/abilities/lister-les-tags'
+import { BoutonFusionner } from '@/features/tags/abilities/fusionner-un-tag/ui/BoutonFusionner'
+import { ModaleDeFusion } from '@/features/tags/abilities/fusionner-un-tag/ui/ModaleDeFusion'
+import { listerLesTags } from '@/features/tags/abilities/lister-les-tags/implementations/prisma/lister-les-tags.query'
+import { lignesDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/liste-des-tags.presenter'
 import {
   ListeDesTagsPage,
-  lignesDeLaListe,
   type ParametresDeLaListe,
-  requeteDeLaListe,
-} from '@/features/tags/abilities/lister-les-tags/ui'
+} from '@/features/tags/abilities/lister-les-tags/ui/pages/ListeDesTagsPage'
+import { requeteDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/requete-de-la-liste'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.key'
-import {
-  BoutonModifier,
-  ModaleDeModification,
-} from '@/features/tags/abilities/modifier-un-tag/ui'
+import { BoutonModifier } from '@/features/tags/abilities/modifier-un-tag/ui/BoutonModifier'
+import { ModaleDeModification } from '@/features/tags/abilities/modifier-un-tag/ui/ModaleDeModification'
 import { SUPPRIMER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/supprimer-un-tag/action/supprimer-un-tag.key'
-import {
-  BoutonSupprimer,
-  ModaleDeSuppression,
-} from '@/features/tags/abilities/supprimer-un-tag/ui'
+import { BoutonSupprimer } from '@/features/tags/abilities/supprimer-un-tag/ui/BoutonSupprimer'
+import { ModaleDeSuppression } from '@/features/tags/abilities/supprimer-un-tag/ui/ModaleDeSuppression'
 import { acteurDe } from '@/features/tags/domain'
 import { MenuDActionsDuTag } from '@/features/tags/ui/MenuDActionsDuTag'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

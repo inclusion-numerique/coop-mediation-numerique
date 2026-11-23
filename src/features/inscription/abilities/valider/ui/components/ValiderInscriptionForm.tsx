@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import {
   type ValiderFormData,
   ValiderValidation,
-} from '@/features/inscription/abilities/valider'
+} from '@/features/inscription/abilities/valider/action/valider.validation'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import {
   type DefaultValues,

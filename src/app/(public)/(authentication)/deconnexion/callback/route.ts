@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/baseUrl'
-import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter'
+import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma/index'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout'
 import {
   getSessionTokenFromNextRequestCookies,

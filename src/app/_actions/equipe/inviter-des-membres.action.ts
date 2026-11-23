@@ -2,13 +2,11 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import {
-  type InvitationsEnvoyees,
-  inviterDesMembres,
-} from '@/features/equipe/abilities/inviter-des-membres'
 import { INVITER_DES_MEMBRES_ERRORS } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.errors'
 import { InviterDesMembresValidation } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.validation'
 import type { AucuneInvitationAEnvoyer } from '@/features/equipe/abilities/inviter-des-membres/domain'
+import { type InvitationsEnvoyees } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
+import { inviterDesMembres } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/inviter-des-membres.mutation'
 import {
   ActionNonAutorisee,
   CoordinateurId,

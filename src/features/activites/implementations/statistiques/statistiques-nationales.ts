@@ -1,4 +1,4 @@
-import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode'
+import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/domain/index'
 import {
   type CriteresDesStatistiques,
   Jour,

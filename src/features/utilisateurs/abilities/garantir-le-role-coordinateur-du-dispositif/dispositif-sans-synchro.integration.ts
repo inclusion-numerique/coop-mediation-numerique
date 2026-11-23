@@ -2,7 +2,7 @@ import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
-import { garantirLeRoleCoordinateurDuDispositif } from './implementations'
+import { garantirLeRoleCoordinateurDuDispositif } from './implementations/prisma/garantir-le-role-coordinateur.mutation'
 
 describe('le rôle coordinateur et le filtre en poste, lus dans le dispositif', () => {
   const conseiller = v4()

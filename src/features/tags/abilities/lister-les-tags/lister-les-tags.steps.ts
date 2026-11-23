@@ -11,7 +11,8 @@ import {
   semerUnMediateur,
   semerUnTag,
 } from '@/features/tags/tags.cucumber'
-import { type ListeDesTags, listerLesTags, TriDesTags } from '.'
+import { type ListeDesTags, TriDesTags } from './domain/index'
+import { listerLesTags } from './implementations/prisma/lister-les-tags.query'
 
 const contexte: {
   acteur?: Acteur

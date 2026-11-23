@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { demandeDeStatistiques } from '../../statistiques.cucumber'
-import { type AccompagnementsParTag, repartirLesAccompagnementsParTag } from '.'
+import { type AccompagnementsParTag } from './domain/index'
+import { repartirLesAccompagnementsParTag } from './implementations/prisma/accompagnements-par-tag.query'
 
 let parTag: AccompagnementsParTag | undefined
 

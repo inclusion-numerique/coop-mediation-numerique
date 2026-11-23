@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import { ApiClientScope } from '@/generated/prisma/browser'
 import {
   apiV1AuthorizationHeader,

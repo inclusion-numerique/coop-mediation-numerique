@@ -1,1 +1,0 @@
-export { rechercherDesLieux } from './implementations'

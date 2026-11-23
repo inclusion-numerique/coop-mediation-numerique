@@ -9,11 +9,9 @@ import {
   planDeChangement,
   rolesDemandes,
 } from '../domain'
-import {
-  appliquerLePlan,
-  compteAReaffecter,
-  journaliserLeChangement,
-} from '../implementations'
+import { appliquerLePlan } from '../implementations/prisma/appliquer-le-plan.mutation'
+import { compteAReaffecter } from '../implementations/prisma/compte-a-reaffecter.query'
+import { journaliserLeChangement } from '../implementations/prisma/journaliser-le-changement'
 
 export const changerLesRoles = async ({
   utilisateurId,

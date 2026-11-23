@@ -8,11 +8,11 @@ import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementat
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { failure, type Result, success } from '@/libraries/result'
 import { type Activation, activationDe, type NonCoordinateur } from '../domain'
+import { inscrireALaListeDeDiffusion } from '../implementations/brevo/inscrire-a-la-liste-de-diffusion'
 import {
   activer,
   compteQuiActive,
-  inscrireALaListeDeDiffusion,
-} from '../implementations'
+} from '../implementations/prisma/activer.mutation'
 
 export const activerLaMediationNumerique = async (
   utilisateurId: string,

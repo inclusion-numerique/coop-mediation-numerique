@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { lieuxPublies } from '@/features/lieux-activite/abilities/publier-les-lieux'
+import { lieuxPublies } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/prisma/lieux-publies.query'
 
 const semis: {
   lieuId?: string

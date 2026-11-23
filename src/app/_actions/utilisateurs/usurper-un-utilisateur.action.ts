@@ -6,12 +6,10 @@ import { getLoginRedirectUrl } from '@/features/authentification/domain/page-d-a
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-user'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import {
-  PorteeUsurpation,
-  usurperUnUtilisateur,
-} from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
 import { USURPER_UN_UTILISATEUR_ERRORS } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.errors'
 import { UsurperUnUtilisateurValidation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.validation'
+import { usurperUnUtilisateur } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/commands/usurper-un-utilisateur'
+import { PorteeUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/index'
 import { identifiantsDe } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'

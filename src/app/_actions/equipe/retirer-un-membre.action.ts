@@ -2,9 +2,9 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { retirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre'
 import { RETIRER_UN_MEMBRE_ERRORS } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.errors'
 import { RetirerUnMembreValidation } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.validation'
+import { retirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre/implementations/prisma/retirer-un-membre.mutation'
 import {
   CoordinateurId,
   MediateurId,

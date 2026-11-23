@@ -2,10 +2,10 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type ActivitesDeCoordinationListees,
-  listerLesActivitesDeCoordination,
   type OptionsDeFiltre,
-  optionsDeFiltre,
-} from '@/features/activites/abilities/lister-les-activites-de-coordination'
+} from '@/features/activites/abilities/lister-les-activites-de-coordination/domain/index'
+import { listerLesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { optionsDeFiltre } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/options-de-filtre.query'
 import {
   coordinationsSemees,
   semerDesAnimationsDeJanvier,

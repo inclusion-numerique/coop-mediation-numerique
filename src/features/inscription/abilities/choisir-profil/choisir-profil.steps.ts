@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil'
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
+import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/choisir-profil'
 import {
   type InscriptionStep,
   ProfilInscription,

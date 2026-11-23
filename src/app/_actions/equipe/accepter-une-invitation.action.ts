@@ -3,12 +3,10 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import {
-  type Accepteur,
-  accepterUneInvitation,
-} from '@/features/equipe/abilities/accepter-une-invitation'
 import { ACCEPTER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.errors'
 import { AccepterUneInvitationValidation } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.validation'
+import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitation/domain/index'
+import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
 import {
   CoordinateurId,
   Email,

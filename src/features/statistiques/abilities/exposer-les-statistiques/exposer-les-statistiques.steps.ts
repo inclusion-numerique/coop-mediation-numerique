@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { FiltresDesStatistiquesValidation } from './implementations/api/filtres-des-statistiques'
+import type { StatistiquesFourniesAExposer } from './implementations/api/statistiques-exposees.transfer'
 import {
-  FiltresDesStatistiquesValidation,
   type StatistiquesExposees,
   statistiquesExposees,
-} from './implementations'
-import type { StatistiquesFourniesAExposer } from './implementations/api/statistiques-exposees.transfer'
+} from './implementations/api/statistiques-exposees.transfer'
 
 const calcul: {
   fournies?: StatistiquesFourniesAExposer

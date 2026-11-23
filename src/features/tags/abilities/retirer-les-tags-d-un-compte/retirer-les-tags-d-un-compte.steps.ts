@@ -9,7 +9,10 @@ import {
   tagEnBase,
   tagsDeLActivite,
 } from '@/features/tags/tags.cucumber'
-import { retirerLesTagsDUnCompte, type TagsRetires } from './implementations'
+import {
+  retirerLesTagsDUnCompte,
+  type TagsRetires,
+} from './implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 
 const contexte: {
   mediateurId?: string

@@ -2,10 +2,8 @@ import type { NextRequest } from 'next/server'
 import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
-import {
-  ExportBeneficiairesFilterValidations,
-  exporterBeneficiaires,
-} from '@/features/beneficiaire/abilities/exporter-beneficiaires'
+import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/export-beneficiaires-filters'
+import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

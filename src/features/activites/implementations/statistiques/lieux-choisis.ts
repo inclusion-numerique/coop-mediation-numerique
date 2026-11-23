@@ -1,9 +1,7 @@
-import {
-  LieuActiviteId,
-  nommerLesLieuxChoisis,
-} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
-import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
+import { nommerLesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-choisis.query'
+import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/options-de-lieux.presenter'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
+import { LieuActiviteId } from '@/features/activites/domain/index'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 
 const valides =

@@ -7,17 +7,19 @@ import {
   getAuthenticatedSessionUser,
   getSessionUser,
 } from '@/features/authentification/implementations/session/session-user'
-import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
-import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
+import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/implementations/prisma/visibilite-sur-la-cartographie.query'
+import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui/AccesCartographieNationale'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { SlugOutil } from '@/features/outils/abilities/consulter-un-outil'
+import { SlugOutil } from '@/features/outils/abilities/consulter-un-outil/domain/index'
 import {
   emplacementsDeLOutil,
   type FournisseursDEmplacements,
+} from '@/features/outils/abilities/consulter-un-outil/ui/emplacements-de-l-outil'
+import {
   ficheDeLOutil,
-  OutilPage,
   type SitesDesOutils,
-} from '@/features/outils/abilities/consulter-un-outil/ui'
+} from '@/features/outils/abilities/consulter-un-outil/ui/fiches/index'
+import { OutilPage } from '@/features/outils/abilities/consulter-un-outil/ui/pages/OutilPage'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/ui/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/ui/deconnecter-compte-rdv.key'

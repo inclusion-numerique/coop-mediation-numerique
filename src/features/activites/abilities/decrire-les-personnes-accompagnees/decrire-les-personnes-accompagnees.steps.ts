@@ -2,10 +2,8 @@ import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import type { Repartition } from '../../domain'
 import { demandeDeStatistiques } from '../../statistiques.cucumber'
-import {
-  decrireLesPersonnesAccompagnees,
-  type ProfilDesPersonnesAccompagnees,
-} from '.'
+import { type ProfilDesPersonnesAccompagnees } from './domain/index'
+import { decrireLesPersonnesAccompagnees } from './implementations/prisma/profil-des-personnes-accompagnees.query'
 
 let profil: ProfilDesPersonnesAccompagnees | undefined
 

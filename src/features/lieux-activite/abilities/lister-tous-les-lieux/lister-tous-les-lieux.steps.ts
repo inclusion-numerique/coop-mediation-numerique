@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
+import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
 
 const semis: {
   ids: string[]

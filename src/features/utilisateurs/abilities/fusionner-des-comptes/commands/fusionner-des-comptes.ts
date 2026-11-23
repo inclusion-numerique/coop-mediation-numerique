@@ -7,11 +7,9 @@ import {
   type FusionnerError,
   SourceIntrouvable,
 } from '../domain'
-import {
-  comptesAFusionner,
-  fusionner,
-  retirerLaSourceDesListes,
-} from '../implementations'
+import { retirerLaSourceDesListes } from '../implementations/brevo/retirer-la-source-des-listes'
+import { comptesAFusionner } from '../implementations/prisma/comptes-a-fusionner.query'
+import { fusionner } from '../implementations/prisma/fusionner.mutation'
 
 export const fusionnerDesComptes = async (
   {

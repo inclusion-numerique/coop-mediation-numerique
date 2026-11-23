@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   type ChoisirProfilFormData,
   choisirProfilFormShape,
-} from '@/features/inscription/abilities/choisir-profil'
+} from '@/features/inscription/abilities/choisir-profil/action/choisir-profil.validation'
 import {
   type InscriptionStep,
   profilInscriptionLabels,

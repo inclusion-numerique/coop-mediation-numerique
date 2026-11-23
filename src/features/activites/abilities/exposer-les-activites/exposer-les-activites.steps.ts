@@ -7,7 +7,7 @@ import {
 } from '@/features/activites/activites.cucumber'
 import { ActiviteId } from '../../domain'
 import { Horodatage } from './domain'
-import { activitesExposees } from './implementations'
+import { activitesExposees } from './implementations/prisma/activites-exposees.query'
 
 const exposition: {
   saisieLe?: Date

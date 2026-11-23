@@ -1,9 +1,9 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { enregistrerUnAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ERRORS } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.errors'
 import { EnregistrerUnAccompagnementIndividuelValidation } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.validation'
+import { enregistrerUnAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/enregistrer-un-accompagnement-individuel.mutation'
 import { MediateurId, UtilisateurId } from '@/features/activites/domain'
 import {
   employeuseDeLaDateDepuis,
@@ -11,11 +11,11 @@ import {
 } from '@/features/activites/domain/fournisseurs-de-la-saisie'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations'
-import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite/implementations/prisma/lieu-utilisable-par'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { rendezVousHonorePar } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/rendez-vous-honore-par'
-import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

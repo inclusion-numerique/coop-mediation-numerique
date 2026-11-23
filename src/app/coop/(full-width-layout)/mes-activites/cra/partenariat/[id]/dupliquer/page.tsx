@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import {
   cheminDeDuplicationDeCoordination,
   saisieDePartenariat,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/page-de-saisie'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 
 const DupliquerCraPartenariatPage = async ({

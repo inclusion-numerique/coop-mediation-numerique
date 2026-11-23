@@ -4,13 +4,13 @@ import { activerLaMediationNumeriqueAction } from '@/app/_actions/utilisateurs/a
 import { supprimerMonCompteAction } from '@/app/_actions/utilisateurs/supprimer-mon-compte.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
-import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
+import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/CarteContrat'
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.key'
-import { CarteMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/ui'
+import { CarteMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/ui/CarteMediationNumerique'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
-import { CarteSupprimerMonCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui'
+import { CarteSupprimerMonCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/CarteSupprimerMonCompte'
 import { MonProfilPage } from '@/features/utilisateurs/ui/MonProfilPage'
 import {
   identiteDuProfil,

@@ -7,14 +7,12 @@ import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-u
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.key'
-import { BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui'
-import { BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres'
-import {
-  EquipeListePage,
-  type ParametresDeLaListe,
-  requeteDeLaListe,
-} from '@/features/equipe/abilities/lister-les-membres/ui'
+import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/BoutonExporter'
+import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/BoutonInviterUnePersonne'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { default as EquipeListePage } from '@/features/equipe/abilities/lister-les-membres/ui/pages/EquipeListePage'
+import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/parametres-de-la-liste'
+import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/requete-de-la-liste'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'

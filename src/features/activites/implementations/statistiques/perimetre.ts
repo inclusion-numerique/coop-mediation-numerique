@@ -1,14 +1,14 @@
 import {
-  CoordinateurId as CoordinateurIdDesActivites,
-  MediateurId as MediateurIdDesActivites,
-  type PerimetreDesActivites,
-} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites'
-import {
   CoordinateurId,
   MediateurId,
   type PerimetreDesStatistiques,
   perimetreDuDemandeur,
 } from '@/features/activites/domain'
+import {
+  CoordinateurId as CoordinateurIdDesActivites,
+  MediateurId as MediateurIdDesActivites,
+  type PerimetreDesActivites,
+} from '@/features/activites/domain/index'
 
 type Coordination = { readonly mediateurId: string }
 

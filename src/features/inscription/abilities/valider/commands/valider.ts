@@ -7,11 +7,9 @@ import {
   validerInscription as deciderValidation,
   type ValiderInscriptionError,
 } from '../domain/valider-inscription'
-import {
-  effetsApresValidation,
-  enregistrerValidation,
-  lireFaitsInscription,
-} from '../implementations'
+import { effetsApresValidation } from '../implementations/effets-apres-validation'
+import { enregistrerValidation } from '../implementations/prisma/enregistrer-validation.mutation'
+import { lireFaitsInscription } from '../implementations/prisma/lire-faits-inscription.query'
 
 /**
  * Cas d'usage « valider l'inscription » : lit les faits d'inscription bruts,

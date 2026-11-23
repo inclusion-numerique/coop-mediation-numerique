@@ -2,15 +2,13 @@
 
 import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import {
-  GenreDeLieu,
-  rechercherLesLieuxDesStatistiques,
-} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
 import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
-import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
+import { GenreDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/domain/index'
+import { rechercherLesLieuxDesStatistiques } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-des-statistiques.query'
+import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/options-de-lieux.presenter'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
 import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 

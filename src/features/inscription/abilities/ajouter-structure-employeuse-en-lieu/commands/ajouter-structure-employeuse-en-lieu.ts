@@ -14,10 +14,8 @@ import type {
   GeocoderLAdresse,
   RattacherAuLieuDecrit,
 } from '../domain/ports'
-import {
-  lieuDepuisEmployeuse,
-  lireLAdresseDeLEmployeuse,
-} from '../implementations'
+import { lieuDepuisEmployeuse } from '../implementations/lieu-depuis-employeuse'
+import { lireLAdresseDeLEmployeuse } from '../implementations/lire-l-adresse-de-l-employeuse'
 
 /**
  * Le géocodeur est le seul recours au réseau de ce cas d'usage : il se passe

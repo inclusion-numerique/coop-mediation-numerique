@@ -3,12 +3,9 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Thematique } from '@/generated/prisma/client'
-import {
-  BeneficiaireId,
-  compterLesThematiquesAbordees,
-  MediateurId,
-  type ThematiqueAbordee,
-} from '.'
+import { BeneficiaireId, MediateurId } from '../../domain/index'
+import { type ThematiqueAbordee } from './domain/index'
+import { compterLesThematiquesAbordees } from './implementations/prisma/thematiques-abordees.query'
 
 type Semis = {
   readonly userIds: readonly string[]

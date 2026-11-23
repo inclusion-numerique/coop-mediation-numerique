@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api'
+import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
 import {
   clientSeme,
   jour,

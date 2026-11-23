@@ -4,7 +4,8 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { CoordinateurId } from '../../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../../domain/identifiants/mediateur-id'
-import { listerLesMembresAFiltrer, type MembreAFiltrer } from '.'
+import { type MembreAFiltrer } from './domain/index'
+import { listerLesMembresAFiltrer } from './implementations/prisma/membres-a-filtrer.query'
 
 type Seme = { userId: string; mediateurId: string; coordinateurId?: string }
 

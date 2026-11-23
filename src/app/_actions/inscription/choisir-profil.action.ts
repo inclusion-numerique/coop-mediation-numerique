@@ -2,10 +2,8 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import {
-  CHOISIR_PROFIL_ERRORS,
-  ChoisirProfilValidation,
-} from '@/features/inscription/abilities/choisir-profil'
+import { CHOISIR_PROFIL_ERRORS } from '@/features/inscription/abilities/choisir-profil/action/choisir-profil.errors'
+import { ChoisirProfilValidation } from '@/features/inscription/abilities/choisir-profil/action/choisir-profil.validation'
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

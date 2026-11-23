@@ -3,11 +3,9 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
-import {
-  FUSIONNER_BENEFICIAIRES_ERRORS,
-  FusionnerBeneficiairesValidation,
-} from '@/features/beneficiaire/abilities/fusionner-beneficiaires'
-import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations'
+import { FUSIONNER_BENEFICIAIRES_ERRORS } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/action/fusionner-beneficiaires.errors'
+import { FusionnerBeneficiairesValidation } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/action/fusionner-beneficiaires.validation'
+import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations/prisma/index'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { ServerActionError, withInput } from '@/libraries/nextjs'

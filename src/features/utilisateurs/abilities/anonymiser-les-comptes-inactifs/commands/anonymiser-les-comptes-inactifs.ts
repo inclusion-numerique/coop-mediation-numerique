@@ -9,7 +9,7 @@ import {
 import {
   lireLesComptesAExaminer,
   noterLAvertissement,
-} from '../implementations'
+} from '../implementations/prisma/index'
 
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId

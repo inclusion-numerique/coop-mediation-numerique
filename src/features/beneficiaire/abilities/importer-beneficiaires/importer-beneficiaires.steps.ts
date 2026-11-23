@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires'
-import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations'
+import { type BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/importer-beneficiaires'
+import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/importer-beneficiaires.mutation'
 import {
   testMediateurId,
   trackBeneficiaire,

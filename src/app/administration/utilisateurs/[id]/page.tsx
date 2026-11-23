@@ -11,20 +11,18 @@ import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-com
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
-import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui'
-import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu'
-import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
-import {
-  CoordinateurId as CoordinateurDesActivitesDeCoordination,
-  compterLesActivitesDeCoordination,
-} from '@/features/activites/abilities/compter-les-activites-de-coordination'
-import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui'
-import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
-import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees'
-import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui'
-import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements'
-import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/totaux.presenter'
+import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
+import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/par-lieu.presenter'
+import { CoordinateurId as CoordinateurDesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain/index'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/activites-de-coordination.presenter'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre/implementations/prisma/activites-du-perimetre.query'
+import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
+import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/profil.presenter'
+import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
+import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/repartition.presenter'
 import { criteresDesStatistiques } from '@/features/activites/domain'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
 import {
@@ -32,16 +30,14 @@ import {
   authenticateUser,
 } from '@/features/authentification/implementations/session/authenticate-user'
 import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
-import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations'
+import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/historique-employeuses.presenter'
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.key'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres'
-import {
-  ListeDeLEquipe,
-  type ParametresDeLaListe,
-  requeteDeLaListe,
-} from '@/features/equipe/abilities/lister-les-membres/ui'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { ListeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/components/ListeDeLEquipe'
+import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/parametres-de-la-liste'
+import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/requete-de-la-liste'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
@@ -49,35 +45,33 @@ import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { default as ActionsDuMembre } from '@/features/equipe/ui/ActionsDuMembre'
 import { AvertissementsEtatInscription } from '@/features/inscription/ui/AvertissementsEtatInscription'
-import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
-import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
+import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
+import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/components/LieuxDActiviteEnAdministration'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
-import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui/VisibiliteCartoDuMediateur'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesEnAdministration } from '@/features/statistiques/ui/StatistiquesEnAdministration'
 import {
   type PeriodeChoisie,
   periodeChoisieDans,
 } from '@/features/statistiques/ui/statistiques-en-administration.presenter'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.key'
-import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui'
-import {
-  type FicheUtilisateur,
-  ficheUtilisateur,
-} from '@/features/utilisateurs/abilities/consulter-un-utilisateur'
+import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui/BoutonChangerLesRoles'
+import { type FicheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/domain/index'
+import { ficheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/implementations/prisma/fiche-utilisateur.query'
 import {
   etatDeLInscription,
-  FicheUtilisateurPage,
   rolesModifiables,
-} from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui'
+} from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui/fiche-utilisateur.presenter'
+import { FicheUtilisateurPage } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui/pages/FicheUtilisateurPage'
 import { DECONNECTER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.key'
-import { BoutonDeconnecter } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/ui'
+import { BoutonDeconnecter } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/ui/BoutonDeconnecter'
 import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
-import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui'
+import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/BoutonSupprimerLeCompte'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
-import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
+import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/BoutonUsurper'
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

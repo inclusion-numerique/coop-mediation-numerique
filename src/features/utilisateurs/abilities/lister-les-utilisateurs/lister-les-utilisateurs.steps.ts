@@ -15,10 +15,8 @@ import {
   semerUnLieu,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
 import type { CoordinateurAChoisir, UtilisateursTrouves } from './domain'
-import {
-  rechercherDesCoordinateurs,
-  rechercherDesUtilisateurs,
-} from './implementations'
+import { rechercherDesCoordinateurs } from './implementations/prisma/coordinateurs-a-choisir.query'
+import { rechercherDesUtilisateurs } from './implementations/prisma/rechercher-des-utilisateurs.query'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 

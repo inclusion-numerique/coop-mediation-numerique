@@ -2,9 +2,9 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { supprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ERRORS } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.errors'
 import { SupprimerUnAncienMembreValidation } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.validation'
+import { supprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/implementations/prisma/supprimer-un-ancien-membre.mutation'
 import {
   CoordinateurId,
   MediateurId,

@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/lister-employeuses'
-import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations'
+import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import {
   seedAffectation,
   seedEmployeuseMain,

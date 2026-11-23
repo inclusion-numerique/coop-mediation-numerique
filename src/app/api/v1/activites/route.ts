@@ -1,20 +1,18 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
+import { activiteExposee } from '@/features/activites/abilities/exposer-les-activites/implementations/api/activite-exposee.transfer'
 import {
-  activiteExposee,
-  activitesExposees,
   criteresDExposition,
   curseurDActivite,
-} from '@/features/activites/abilities/exposer-les-activites'
+} from '@/features/activites/abilities/exposer-les-activites/implementations/api/criteres-d-exposition'
+import { activitesExposees } from '@/features/activites/abilities/exposer-les-activites/implementations/prisma/activites-exposees.query'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import {
-  ActivitesQueryParamsValidation,
-  reponseDesActivites,
-} from '@/features/clients-api/abilities/lire-les-activites'
+import { ActivitesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.parametres'
+import { reponseDesActivites } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.reponse'
 import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
 import { curseurLu } from '@/libraries/json-api/pageParCurseur'
 

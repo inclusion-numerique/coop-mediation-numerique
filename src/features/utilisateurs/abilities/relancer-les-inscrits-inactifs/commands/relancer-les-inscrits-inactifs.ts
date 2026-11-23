@@ -5,7 +5,7 @@ import {
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { success } from '@/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
-import { inscritsSansProduction } from '../implementations'
+import { inscritsSansProduction } from '../implementations/prisma/inscrits-sans-production.query'
 
 export const relancerLesInscritsInactifs = async ({
   maintenant,

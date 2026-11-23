@@ -5,7 +5,7 @@ import {
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { success } from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
-import { inscriptionsInachevees } from '../implementations'
+import { inscriptionsInachevees } from '../implementations/prisma/inscriptions-inachevees.query'
 
 export const relancerLesInscriptionsInachevees = async ({
   maintenant,

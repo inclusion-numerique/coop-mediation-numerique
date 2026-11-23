@@ -2,12 +2,10 @@ import { notFound } from 'next/navigation'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
-import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites'
-import {
-  cartesDeLaChronologie,
-  HistoriqueDesAccompagnements,
-  parametresDePagination,
-} from '@/features/activites/abilities/lister-mes-activites/ui'
+import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites/implementations/historique-d-un-beneficiaire'
+import { HistoriqueDesAccompagnements } from '@/features/activites/abilities/lister-mes-activites/ui/components/HistoriqueDesAccompagnements'
+import { cartesDeLaChronologie } from '@/features/activites/abilities/lister-mes-activites/ui/mes-activites.presenter'
+import { parametresDePagination } from '@/features/activites/abilities/lister-mes-activites/ui/navigation.presenter'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
@@ -16,7 +14,7 @@ import {
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
-import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations'
+import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
@@ -24,7 +22,7 @@ import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
-} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+} from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
 import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/creer-activite-depuis-rdv.key'
 import SaisieDuStatutDuRdv, {

@@ -2,11 +2,11 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { MediateurId } from '../../domain/index'
 import {
-  MediateurId,
   type OptionsDeFiltreDesActivites,
   optionsDeFiltreDesActivites,
-} from '.'
+} from './implementations/prisma/options-de-filtre-des-activites.query'
 
 type Semis = {
   readonly userIds: readonly string[]

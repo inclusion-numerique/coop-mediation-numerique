@@ -5,10 +5,10 @@ import { estMain } from '@/configuration/projet/deploiement'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
-import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui'
-import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
+import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui/BoutonReinitialiser'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
-import { UsurpationPage } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
+import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
+import { UsurpationPage } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/pages/UsurpationPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

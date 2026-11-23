@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api'
+import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/implementations/prisma/modifier-un-client-api.mutation'
 import {
   clientSeme,
   jour,

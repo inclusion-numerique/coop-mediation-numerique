@@ -2,10 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  type EchecDeSuppression,
-  supprimerUneActiviteDeCoordination,
-} from '@/features/activites/abilities/supprimer-une-activite-de-coordination'
+import { type EchecDeSuppression } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
+import { supprimerUneActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/supprimer-une-activite-de-coordination.mutation'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,

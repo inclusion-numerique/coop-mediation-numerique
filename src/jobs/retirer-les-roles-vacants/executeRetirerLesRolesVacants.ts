@@ -1,5 +1,5 @@
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { retirerLesRolesVacants } from '@/features/utilisateurs/abilities/changer-les-roles'
+import { retirerLesRolesVacants } from '@/features/utilisateurs/abilities/changer-les-roles/commands/retirer-les-roles-vacants'
 import { output } from '@/libraries/console/output'
 
 export const executeRetirerLesRolesVacants = async () => {

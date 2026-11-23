@@ -1,9 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  consulterUneInvitation,
-  type VueInvitation,
-} from '@/features/equipe/abilities/consulter-une-invitation'
+import { type VueInvitation } from '@/features/equipe/abilities/consulter-une-invitation/domain/index'
+import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
 import {
   CoordinateurId,
   codeInvitation,

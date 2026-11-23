@@ -4,7 +4,7 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { DECONNECTER_COMPTE_RDV_ERRORS } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/action/deconnecter-compte-rdv.errors'
-import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations'
+import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/deconnecter-compte-rdv.mutation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { fromResult } from '@/libraries/nextjs'
 

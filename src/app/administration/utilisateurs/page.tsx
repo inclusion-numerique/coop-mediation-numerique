@@ -4,23 +4,19 @@ import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rech
 import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations'
-import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations'
-import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
-import {
-  optionsDesFiltres,
-  ordreDesUtilisateurs,
-  rechercherDesUtilisateurs,
-} from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
+import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/nom-de-l-employeuse'
+import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
+import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
+import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/BoutonExporterLesUtilisateurs'
 import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
 import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-lieux.key'
-import {
-  type ParametresDeLaListe,
-  UtilisateursPage,
-} from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/options-des-filtres'
+import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
+import { ordreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/tri-des-utilisateurs'
+import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/lister-les-utilisateurs-search-params'
+import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
 import {
   filtresUtilisateurs,
   parametresDesFiltres,

@@ -5,7 +5,7 @@ import {
   type BeneficiaireSortField,
   beneficiaireSortFields,
 } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import {
   seedBeneficiaire,
   testMediateurId,

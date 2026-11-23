@@ -4,10 +4,8 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import type {
-  BeneficiaireDoublon,
-  DetecterDoublons,
-} from '@/features/beneficiaire/abilities/detecter-doublons'
+import { type DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/detecter-doublons'
+import { type BeneficiaireDoublon } from '@/features/beneficiaire/abilities/detecter-doublons/domain/types'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'

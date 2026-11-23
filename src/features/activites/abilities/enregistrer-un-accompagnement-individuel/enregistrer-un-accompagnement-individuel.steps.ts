@@ -4,10 +4,12 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type AccompagnementEnregistre,
+  type SaisieIndividuelle,
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/domain/index'
+import {
   type EchecDEnregistrement,
   enregistrerUnAccompagnementIndividuel,
-  type SaisieIndividuelle,
-} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel'
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/enregistrer-un-accompagnement-individuel.mutation'
 import {
   ActiviteId,
   BeneficiaireId,
