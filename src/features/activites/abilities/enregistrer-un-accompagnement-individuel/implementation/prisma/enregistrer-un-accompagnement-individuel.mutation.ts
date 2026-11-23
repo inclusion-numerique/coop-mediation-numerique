@@ -111,6 +111,7 @@ export const enregistrerUnAccompagnementIndividuel = async ({
   const rendezVous = await rendezVousVerifie(
     saisie.rdvId,
     enregistrement.data.id,
+    mediateurId,
   )
   if (!rendezVous.success) return rendezVous
 

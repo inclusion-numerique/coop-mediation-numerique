@@ -81,16 +81,38 @@ export const lieuVerifie = async (
     : failure(LieuInutilisable())
 }
 
+const rendezVousDUnAutreMediateur = async (
+  rdvId: RdvId,
+  mediateurId: string,
+): Promise<boolean> =>
+  (await prismaClient.rdv.count({
+    where: {
+      id: rdvId,
+      rdvAccount: { user: { mediateur: { id: { not: mediateurId } } } },
+    },
+  })) > 0
+
+const rendezVousDejaSaisi = async (
+  rdvId: RdvId,
+  activiteId: ActiviteId,
+): Promise<boolean> =>
+  (await prismaClient.activite.count({
+    where: { rdvId, suppression: null, id: { not: activiteId } },
+  })) > 0
+
 export const rendezVousVerifie = async (
   rdvId: RdvId | null,
   activiteId: ActiviteId,
+  mediateurId: string,
 ): Promise<Result<null, RendezVousIndisponible>> => {
   if (rdvId === null) return success(null)
-  const deja = await prismaClient.activite.findFirst({
-    where: { rdvId, suppression: null, id: { not: activiteId } },
-    select: { id: true },
-  })
-  return deja === null ? success(null) : failure(RendezVousIndisponible())
+  const [dUnAutre, dejaSaisi] = await Promise.all([
+    rendezVousDUnAutreMediateur(rdvId, mediateurId),
+    rendezVousDejaSaisi(rdvId, activiteId),
+  ])
+  return dUnAutre || dejaSaisi
+    ? failure(RendezVousIndisponible())
+    : success(null)
 }
 
 export const creationOuModification = (
