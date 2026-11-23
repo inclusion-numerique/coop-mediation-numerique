@@ -69,7 +69,7 @@ const toIdentifie = (row: PrismaBeneficiaire): BeneficiaireIdentifie => ({
     ? AnneeNaissance(row.anneeNaissance)
     : null,
   communeResidence: toCommuneResidence(row),
-  notes: row.notes ? Notes(row.notes) : null,
+  notes: row.notes ? Notes.safe(row.notes) : null,
 })
 
 export const beneficiaireToDomain = (row: PrismaBeneficiaire): Beneficiaire =>

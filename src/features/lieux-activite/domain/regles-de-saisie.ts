@@ -9,6 +9,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { z } from 'zod'
+import { assainirLeTexteRiche } from '@/libraries/texte-riche'
 import {
   type AdresseSaisie,
   adresseSaisie,
@@ -96,10 +97,15 @@ export const PresentationResumeSaisie = z
 
 export const PresentationDetailSaisi = z
   .string()
-  .trim()
-  .max(
-    DETAIL_MAX_LENGTH,
-    `Cette description doit faire au plus ${DETAIL_MAX_LENGTH} caractères`,
+  .transform(assainirLeTexteRiche)
+  .pipe(
+    z
+      .string()
+      .trim()
+      .max(
+        DETAIL_MAX_LENGTH,
+        `Cette description doit faire au plus ${DETAIL_MAX_LENGTH} caractères`,
+      ),
   )
   .nullish()
 

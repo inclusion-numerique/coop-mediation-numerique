@@ -17,4 +17,14 @@ describe('notes d’une activité', () => {
   it('des notes saisies trop longues sont refusées', () => {
     expect(NotesSaisies.safeParse('a'.repeat(10_001)).success).toBe(false)
   })
+
+  it('retire d’une note le code qui s’exécuterait à l’affichage', () => {
+    expect(notesDe('<p>Atelier</p><script>alert(1)</script>')).toBe(
+      Notes('<p>Atelier</p>'),
+    )
+  })
+
+  it('une note qui ne contient que du code ne donne pas de notes', () => {
+    expect(notesDe('<p><script>alert(1)</script></p>')).toBeNull()
+  })
 })
