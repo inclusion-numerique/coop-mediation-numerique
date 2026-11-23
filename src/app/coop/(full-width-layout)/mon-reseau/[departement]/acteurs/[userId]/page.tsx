@@ -52,6 +52,7 @@ type Parametres = { params: Promise<{ userId: string; departement: string }> }
 export const generateMetadata = async ({
   params,
 }: Parametres): Promise<Metadata> => {
+  await authenticateMediateurOrCoordinateur()
   const nom = await nomDeLActeur((await params).userId)
 
   return nom === null
