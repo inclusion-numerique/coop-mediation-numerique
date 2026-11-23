@@ -2,6 +2,7 @@ import {
   type FormationLabelPropose,
   formationsLabelsProposees,
 } from '@/features/lieux-activite/domain/nomenclatures'
+import { assainirLeTexteRiche } from '@/libraries/texte-riche'
 import type { Fiche } from '../../../../domain/fiche'
 import { aucuneValeur } from './section-vide'
 
@@ -14,7 +15,9 @@ export type DescriptionAffichee = {
 
 export const description = (fiche: Fiche): DescriptionAffichee => ({
   presentationResume: fiche.presentation?.resume ?? null,
-  presentationDetail: fiche.presentation?.detail ?? null,
+  presentationDetail: fiche.presentation?.detail
+    ? assainirLeTexteRiche(fiche.presentation.detail)
+    : null,
   formationsLabels: formationsLabelsProposees(fiche.formationsLabels),
   estVide: aucuneValeur([
     fiche.presentation?.resume,

@@ -1,5 +1,5 @@
 import { failure, type Result, success } from '@/libraries/result'
-import { InvitationDejaTraitee } from './errors'
+import { InvitationDejaTraitee, RelanceTropRecente } from './errors'
 import type { MediateurId } from './mediateur-id'
 import type { ReferenceInvitation } from './reference-invitation'
 
@@ -39,3 +39,17 @@ export const exigerEnAttente = (
   invitation.statut === 'EnAttente'
     ? success(invitation)
     : failure(InvitationDejaTraitee(invitation.reference, invitation.statut))
+
+const DELAI_ENTRE_DEUX_ENVOIS_EN_MS = 60 * 60 * 1000
+
+const dernierEnvoi = (invitation: InvitationEnAttente): Date =>
+  invitation.renvoyeeLe ?? invitation.envoyeeLe
+
+export const exigerUneRelancePossible = (
+  invitation: InvitationEnAttente,
+  maintenant: Date,
+): Result<InvitationEnAttente, RelanceTropRecente> =>
+  maintenant.getTime() - dernierEnvoi(invitation).getTime() >=
+  DELAI_ENTRE_DEUX_ENVOIS_EN_MS
+    ? success(invitation)
+    : failure(RelanceTropRecente())

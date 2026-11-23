@@ -27,6 +27,7 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@/libraries/adresse/CommuneComboBox'
+import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
@@ -128,18 +129,21 @@ const BeneficiaireForm = ({
         // saisie du formulaire + l'identifiant retourné : `data.communeResidence`
         // est déjà l'aperçu BAN attendu, inutile d'adapter le retour domaine.
         router.push(
-          adresseAvec(retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`, {
-            v: cra
-              ? encodeSerializableState(
-                  craAvecBeneficiaire(cra, {
-                    id: beneficiaire.id,
-                    prenom: data.prenom,
-                    nom: data.nom,
-                    communeResidence: data.communeResidence ?? null,
-                  }),
-                )
-              : null,
-          }),
+          adresseAvec(
+            cheminInterne(retour, `/coop/mes-beneficiaires/${beneficiaire.id}`),
+            {
+              v: cra
+                ? encodeSerializableState(
+                    craAvecBeneficiaire(cra, {
+                      id: beneficiaire.id,
+                      prenom: data.prenom,
+                      nom: data.nom,
+                      communeResidence: data.communeResidence ?? null,
+                    }),
+                  )
+                : null,
+            },
+          ),
         )
         router.refresh()
       } catch {
@@ -165,11 +169,12 @@ const BeneficiaireForm = ({
     anneeNaissanceInt >= anneeNaissanceMin &&
     anneeNaissanceInt <= anneeNaissanceMax
 
-  const backUrl =
-    retour ||
-    (defaultValues.id
+  const backUrl = cheminInterne(
+    retour,
+    defaultValues.id
       ? `/coop/mes-beneficiaires/${defaultValues.id}`
-      : '/coop/mes-beneficiaires')
+      : '/coop/mes-beneficiaires',
+  )
 
   // Efface le téléphone lorsque « N'a pas de téléphone » est coché.
   const eraseTelephoneIfNeeded = ({ value }: { value?: boolean | null }) => {

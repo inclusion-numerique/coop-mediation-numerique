@@ -11,7 +11,6 @@ import {
 import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import { profilDeLaSession } from '@/features/authentification'
 import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
@@ -34,7 +33,7 @@ const sourcesDeMesStatistiques = {
   rassembler,
   lieuxChoisis: lieuxChoisisDe,
   tagsVisibles: tagsVisiblesDuProfil,
-  beneficiaires: getInitialBeneficiairesOptionsForSearch,
+  beneficiaires: async () => [],
   membres: membresAFiltrerDuDemandeur,
   activitesDuPerimetre: decrireLesActivitesDuPerimetre,
   vocabulaire: {
@@ -46,7 +45,9 @@ const sourcesDeMesStatistiques = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const ExportActivitesValidation = z.object(ActivitesFilterValidations)
+const ExportActivitesValidation = z
+  .object(ActivitesFilterValidations)
+  .omit({ beneficiaires: true })
 
 export const GET = async (
   request: NextRequest,

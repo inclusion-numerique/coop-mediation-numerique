@@ -16,19 +16,19 @@ const dernier: { retrait?: Issue } = {}
 
 const auteur = (options: {
   mediateurId: string | null
-  estCoordinateur?: boolean
+  coordonneLeMediateurRetire?: boolean
 }) => ({
   userId: UserId(ficheSemee().userIds[0] ?? ''),
   mediateurId:
     options.mediateurId == null ? null : MediateurId(options.mediateurId),
   estAdministrateur: false,
-  estCoordinateur: options.estCoordinateur === true,
+  coordonneLeMediateurRetire: options.coordonneLeMediateurRetire === true,
   nomAffiche: 'Une personne de la coop',
 })
 
 const retirer = async (options: {
   mediateurId: string | null
-  estCoordinateur?: boolean
+  coordonneLeMediateurRetire?: boolean
 }) => {
   dernier.retrait = await retirerUnMediateurDuLieu({
     mediateurId: MediateurId(ficheSemee().mediateurRattacheId),
@@ -59,9 +59,16 @@ When('ce médiateur se retire à nouveau du lieu', async () => {
   await retirer({ mediateurId: ficheSemee().mediateurRattacheId })
 })
 
-When('un coordinateur retire ce médiateur du lieu', async () => {
-  await retirer({ mediateurId: null, estCoordinateur: true })
+When('le coordinateur de son équipe retire ce médiateur du lieu', async () => {
+  await retirer({ mediateurId: null, coordonneLeMediateurRetire: true })
 })
+
+When(
+  'le coordinateur d’une autre équipe tente de retirer ce médiateur du lieu',
+  async () => {
+    await retirer({ mediateurId: null, coordonneLeMediateurRetire: false })
+  },
+)
 
 When(
   'un médiateur étranger tente de retirer ce médiateur du lieu',

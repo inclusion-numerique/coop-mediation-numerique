@@ -33,7 +33,7 @@ jobs:
       image: ${{ steps.namespace.outputs.image }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
@@ -68,7 +68,7 @@ jobs:
           NAMESPACE: ${{ steps.namespace.outputs.namespace }}
         run: pnpm --silent cli dotenv:add-next-public "$NAMESPACE"
       - name: Build cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-deploy-${{ steps.namespace.outputs.namespace }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}

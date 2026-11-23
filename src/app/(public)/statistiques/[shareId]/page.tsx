@@ -19,7 +19,6 @@ import {
 } from '@/features/activites/ui/statistiques/blocs-des-statistiques'
 import { profilDeLaSession } from '@/features/authentification'
 import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
@@ -49,7 +48,7 @@ const sourcesDeMesStatistiques = {
   rassembler,
   lieuxChoisis: lieuxChoisisDe,
   tagsVisibles: tagsVisiblesDuProfil,
-  beneficiaires: getInitialBeneficiairesOptionsForSearch,
+  beneficiaires: async () => [],
   membres: membresAFiltrerDuDemandeur,
   activitesDuPerimetre: decrireLesActivitesDuPerimetre,
   vocabulaire: {

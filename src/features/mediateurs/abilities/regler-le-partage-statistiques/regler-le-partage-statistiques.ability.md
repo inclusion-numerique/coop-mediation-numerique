@@ -3,8 +3,9 @@
 > Le lien de partage est une URL publique : quiconque le détient consulte les
 > statistiques partagées, avec leurs filtres et leurs exports. Un médiateur
 > partage ses statistiques, un coordinateur celles de son équipe, ses propres
-> activités incluses. Le compte active et désactive chaque partage à volonté,
-> et retrouve le même lien en le réactivant.
+> activités incluses. Le compte active et désactive chaque partage à volonté.
+> Réactiver un partage donne un nouveau lien : un lien désactivé ne redevient
+> jamais valable.
 
 ## Rule: Le compte active le partage de ses statistiques
 
@@ -49,10 +50,10 @@
 * When ce compte désactive le partage de ses statistiques
 * Then ce compte n'a aucun partage
 
-## Rule: Réactiver le partage redonne le même lien
+## Rule: Réactiver le partage donne un nouveau lien
 
-> Le lien déjà diffusé redevient valable : le compte n'a pas à le
-> redistribuer.
+> Désactiver un partage sert à couper un lien qui a trop circulé : le
+> réactiver ne doit pas lui redonner accès.
 
 ### Scenario: Un médiateur réactive le partage de ses statistiques
 
@@ -60,7 +61,7 @@
 * And ce partage est désactivé
 * When ce compte active le partage de ses statistiques
 * Then le partage du médiateur est actif
-* And le lien du partage est resté le même
+* And le lien du partage a changé
 
 ## Rule: Un compte médiateur et coordinateur choisit ce qu'il partage
 

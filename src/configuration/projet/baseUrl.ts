@@ -1,4 +1,5 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
+import { cheminInterne } from '@/libraries/chemin-interne'
 import { isBrowser } from '@/libraries/navigateur/isBrowser'
 
 export type GetServerUrlOptions = {
@@ -19,4 +20,4 @@ export const getServerBaseUrl = (options?: GetServerUrlOptions) => {
 }
 
 export const getServerUrl = (path: string, options?: GetServerUrlOptions) =>
-  `${getServerBaseUrl(options)}${path}`
+  `${getServerBaseUrl(options)}${cheminInterne(path)}`

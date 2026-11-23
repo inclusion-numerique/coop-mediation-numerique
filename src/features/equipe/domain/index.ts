@@ -21,6 +21,7 @@ export * from './errors'
 export { type Gestionnaire, peutGererLEquipe } from './gestionnaire'
 export {
   exigerEnAttente,
+  exigerUneRelancePossible,
   type Invitation,
   type InvitationEnAttente,
   type Invite,

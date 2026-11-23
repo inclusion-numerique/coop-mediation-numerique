@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/baseUrl'
 import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter'
 import type { ProconnectSignoutState } from '@/features/authentification/implementation/proconnect/proconnectSignout'
 import {
@@ -19,6 +20,14 @@ const cookiesEffaces = [
   `${secureSessionCookie}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`,
   `${sessionCookie}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`,
 ]
+
+const cheminDeLApplication = (adresse: string): string => {
+  const base = getServerBaseUrl({ absolutePath: true })
+  return adresse.startsWith(`${base}/`) ? adresse.slice(base.length) : adresse
+}
+
+const destinationApresDeconnexion = (callbackUrl: string) =>
+  getServerUrl(cheminDeLApplication(callbackUrl), { absolutePath: true })
 
 export const GET = async (request: NextRequest) => {
   const { state } = Object.fromEntries(
@@ -42,7 +51,7 @@ export const GET = async (request: NextRequest) => {
   return new Response('OK', {
     status: 303,
     headers: [
-      ['location', decodedState.callbackUrl],
+      ['location', destinationApresDeconnexion(decodedState.callbackUrl)],
       ...cookiesEffaces.map((cookie): [string, string] => [
         'Set-Cookie',
         cookie,

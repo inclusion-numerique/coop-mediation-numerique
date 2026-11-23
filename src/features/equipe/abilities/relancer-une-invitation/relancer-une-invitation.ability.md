@@ -9,6 +9,12 @@
 * Then la relance réussit
 * And l'invitation porte la date de sa relance
 
+### Scenario: Une invitation tout juste envoyée ne se relance pas
+
+* Given un coordinateur qui vient d'inviter une personne
+* When le coordinateur relance cette invitation
+* Then la relance est refusée
+
 ### Scenario: Une invitation refusée ne se relance pas
 
 * Given un coordinateur dont l'invitation a été refusée

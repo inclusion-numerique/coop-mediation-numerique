@@ -48,4 +48,12 @@ describe('paramètres de la page des statistiques partagées', () => {
       ).activitesFilters.au,
     ).toBe('2026-03-31')
   })
+
+  it('ignore le filtre des bénéficiaires d’un partage', () => {
+    expect(
+      parametresDesStatistiquesPartagees({
+        beneficiaires: ['00000000-0000-4000-8000-000000000001'],
+      }).activitesFilters.beneficiaires,
+    ).toBeUndefined()
+  })
 })

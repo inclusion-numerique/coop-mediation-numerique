@@ -13,6 +13,7 @@ import {
   NatureDePartenariat,
   NomDeLActivite,
   NomDeStructure,
+  NotesSaisies,
   notesDe,
   Organisateur,
   Precision,
@@ -35,7 +36,7 @@ const commun = {
   id: z.guid().nullish(),
   date: DateDActivite.schema,
   tags: z.array(z.guid()).default([]),
-  notes: texte,
+  notes: NotesSaisies,
 }
 
 const effectif = z.coerce

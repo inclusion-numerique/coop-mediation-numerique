@@ -9,6 +9,7 @@ import {
   LieuActiviteId,
   type LieuSaisi,
   Materiel,
+  NotesSaisies,
   notesDe,
   PrecisionDeDemarche,
   RdvId,
@@ -39,7 +40,7 @@ export const saisieDeMediation = {
   precisionsDemarche: z.string().nullish(),
   materiel: z.array(z.union([Materiel.schema, z.literal('Aucun')])).default([]),
   tags: z.array(z.guid()).default([]),
-  notes: z.string().nullish(),
+  notes: NotesSaisies,
   rdvId: z.number().int().positive().nullish(),
 }
 

@@ -22,5 +22,6 @@ export const parametresDesStatistiquesPartagees = (
 ) =>
   parametresDesStatistiques({
     ...parametres,
+    beneficiaires: undefined,
     au: parametres.au ?? aujourdhui.toISOString().slice(0, 10),
   })

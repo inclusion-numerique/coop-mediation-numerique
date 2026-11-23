@@ -19,7 +19,7 @@ export type AuteurDuRetrait = {
   readonly userId: UserId
   readonly mediateurId: MediateurId | null
   readonly estAdministrateur: boolean
-  readonly estCoordinateur: boolean
+  readonly coordonneLeMediateurRetire: boolean
   readonly nomAffiche: string
 }
 
@@ -38,7 +38,7 @@ export const retirerUnMediateurDuLieu = async ({
     mediateurRetire: mediateurId,
     mediateurDeLAuteur: auteur.mediateurId,
     estAdministrateur: auteur.estAdministrateur,
-    estCoordinateur: auteur.estCoordinateur,
+    coordonneLeMediateurRetire: auteur.coordonneLeMediateurRetire,
   })
 
   if (!peutRetirer(qui)) return failure(RetraitNonAutorise(mediateurId))

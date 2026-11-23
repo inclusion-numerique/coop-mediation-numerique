@@ -36,6 +36,7 @@ import { TagsFields } from '@/features/activites/ui/saisie/fields/TagsFields'
 import { ThematiquesFields } from '@/features/activites/ui/saisie/fields/ThematiquesFields'
 import type { LieuDuCra } from '@/features/activites/ui/saisie/lieu/lieu-du-cra'
 import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
@@ -90,7 +91,7 @@ const CraIndividuelForm = ({
         priority: 'success',
         message: 'L’accompagnement individuel a bien été enregistré.',
       })
-      router.push(retour ?? '/coop/mes-activites')
+      router.push(cheminInterne(retour, '/coop/mes-activites'))
       router.refresh()
     },
   })

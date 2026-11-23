@@ -26,15 +26,11 @@ describe("filtres de l'export", () => {
   })
 })
 
+const coordinateurSeul = { ...mediateurCoordinateur, mediateur: null }
+
 describe('export interdit', () => {
   it("autorise l'export sans médiateur demandé", () => {
     expect(exportInterdit(mediateurCoordinateur, undefined)).toBe(false)
-  })
-
-  it("autorise l'export d'un demandeur qui n'est pas médiateur", () => {
-    expect(
-      exportInterdit({ mediateur: null, coordinateur: null }, [autre]),
-    ).toBe(false)
   })
 
   it("autorise l'export de ses propres statistiques", () => {
@@ -51,5 +47,17 @@ describe('export interdit', () => {
 
   it("interdit l'export d'un autre médiateur", () => {
     expect(exportInterdit(mediateurCoordinateur, [autre])).toBe(true)
+  })
+
+  it("interdit l'export qui mêle un médiateur autorisé et un autre", () => {
+    expect(exportInterdit(mediateurCoordinateur, [coordonne, autre])).toBe(true)
+  })
+
+  it('autorise un coordinateur à exporter un médiateur coordonné', () => {
+    expect(exportInterdit(coordinateurSeul, [coordonne])).toBe(false)
+  })
+
+  it("interdit à un coordinateur d'exporter un médiateur hors de son équipe", () => {
+    expect(exportInterdit(coordinateurSeul, [autre])).toBe(true)
   })
 })
