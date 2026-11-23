@@ -3,6 +3,12 @@ import cypressSplit from 'cypress-split'
 import { taskManager } from './e2e/support/taskManager'
 import { cypressProjectId } from './src/configuration/projet/config'
 
+const cheminLitteral = (chemin: string): string =>
+  chemin.replace(/[()[\]]/g, '\\$&')
+
+const cheminsLitteraux = (specPattern: string | string[]): string | string[] =>
+  Array.isArray(specPattern) ? specPattern.map(cheminLitteral) : specPattern
+
 export default defineConfig({
   projectId: cypressProjectId,
   fixturesFolder: 'e2e/fixtures',
@@ -22,7 +28,7 @@ export default defineConfig({
     indexHtmlFile: 'e2e/support/component-index.html',
     setupNodeEvents(on, config) {
       cypressSplit(on, config)
-      return config
+      return { ...config, specPattern: cheminsLitteraux(config.specPattern) }
     },
   },
 
@@ -48,7 +54,7 @@ export default defineConfig({
         return launchOptions
       })
       cypressSplit(on, config)
-      return config
+      return { ...config, specPattern: cheminsLitteraux(config.specPattern) }
     },
     baseUrl:
       process.env.CYPRESS_BASE_URL ??
