@@ -3,13 +3,13 @@ import type { LigneEquipe } from '../../domain'
 import GererUneInvitation from '../components/GererUneInvitation'
 import { nomAffiche } from './membre.presenter'
 
-export type MembreAGerer = {
+type MembreAGerer = {
   mediateurId: string
   coordinateurId: string
   nomAffiche: string
 }
 
-export type AncienMembreAGerer = MembreAGerer & {
+type AncienMembreAGerer = MembreAGerer & {
   depuis: Date
   jusquA: Date
 }
