@@ -4,7 +4,6 @@ import {
   typeActivitePictograms,
   typeActivitePluralLabels,
 } from '@/features/activites/ui/labels/libelles/type-activite.labels'
-import { TypeActivite } from '@/generated/prisma/browser'
 import {
   numberToPercentage,
   numberToString,
@@ -17,7 +16,7 @@ export const StatistiqueAccompagnement = ({
   className,
   children,
 }: {
-  typeActivite: TypeActivite
+  typeActivite: keyof typeof typeActivitePictograms
   count: number
   proportion: number
   className?: string

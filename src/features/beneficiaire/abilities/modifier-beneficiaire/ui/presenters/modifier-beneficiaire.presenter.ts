@@ -2,7 +2,6 @@ import type { DefaultValues } from 'react-hook-form'
 import type { BeneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
-import type { Beneficiaire } from '@/generated/prisma/client'
 import { telephoneDisplayString } from '@/libraries/telephone'
 
 /**
@@ -13,7 +12,10 @@ const beneficiaireCommuneResidenceToPreviewBanData = ({
   commune,
   communeCodeInsee,
   communeCodePostal,
-}: Pick<Beneficiaire, 'communeCodePostal' | 'communeCodeInsee' | 'commune'>) =>
+}: Pick<
+  BeneficiaireAEditer,
+  'communeCodePostal' | 'communeCodeInsee' | 'commune'
+>) =>
   commune && communeCodePostal && communeCodeInsee
     ? // We only need data for preview in UI
       {

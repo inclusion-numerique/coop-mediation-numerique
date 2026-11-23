@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
+import type { Genre } from '@/features/beneficiaire/domain/genre'
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
-import type { Genre } from '@/generated/prisma/client'
 import { type FeuilleImport, valeurCellule } from './feuille-import'
 
 type Commune = {

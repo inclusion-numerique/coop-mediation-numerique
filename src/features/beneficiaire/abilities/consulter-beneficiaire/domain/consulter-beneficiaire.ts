@@ -1,6 +1,6 @@
+import type { BeneficiaireEnregistre } from '@/features/beneficiaire/domain/beneficiaire-enregistre'
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { Beneficiaire } from '@/generated/prisma/client'
 
 /**
  * Projection de lecture des informations propres d'un bénéficiaire (les champs
@@ -8,7 +8,7 @@ import type { Beneficiaire } from '@/generated/prisma/client'
  * thématiques) sont composés par le hub, pas par cette ability.
  */
 export type BeneficiaireInformations = Pick<
-  Beneficiaire,
+  BeneficiaireEnregistre,
   | 'id'
   | 'mediateurId'
   | 'rdvUserId'

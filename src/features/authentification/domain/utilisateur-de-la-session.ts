@@ -1,27 +1,24 @@
-import type {
-  Coordinateur,
-  Mediateur,
-  RdvAccount,
-  RdvOrganisation,
-  User,
-} from '@/generated/prisma/client'
+type RoleDeLaSession = 'User' | 'Support' | 'Admin'
 
-// Serializable user interface
-export type SessionUser = Pick<
-  User,
-  | 'id'
-  | 'firstName'
-  | 'lastName'
-  | 'name'
-  | 'email'
-  | 'phone'
-  | 'siret'
-  | 'role'
-  | 'isFixture'
-  | 'profilInscription'
-  | 'acceptationCgu'
-  | 'timezone'
-> & {
+type ProfilDInscriptionDeLaSession =
+  | 'ConseillerNumerique'
+  | 'CoordinateurConseillerNumerique'
+  | 'Mediateur'
+  | 'Coordinateur'
+
+export type SessionUser = {
+  id: string
+  firstName: string | null
+  lastName: string | null
+  name: string | null
+  email: string
+  phone: string | null
+  siret: string | null
+  role: RoleDeLaSession
+  isFixture: boolean
+  profilInscription: ProfilDInscriptionDeLaSession | null
+  acceptationCgu: Date | null
+  timezone: string
   /**
    * Dispositif conseiller numérique DÉRIVÉ de l'affectation `idposte` active, et non plus lu dans
    * une colonne. Il reste un booléen dans la session : les écrans n'ont pas à connaître la règle.
@@ -41,7 +38,7 @@ export type SessionUser = Pick<
     structure: { nom: string | null; codeInsee: string | null }
   }[]
   mediateur:
-    | (Pick<Mediateur, 'id' | 'isVisible'> & {
+    | ({ id: string; isVisible: boolean } & {
         coordinations: {
           coordinateur: {
             id: string
@@ -57,19 +54,18 @@ export type SessionUser = Pick<
       })
     | null
   coordinateur:
-    | (Pick<Coordinateur, 'id'> & {
+    | ({ id: string } & {
         mediateursCoordonnes: { mediateurId: string }[]
         ancienMediateursCoordonnes: { mediateurId: string }[]
       })
     | null
   rdvAccount:
-    | (Pick<
-        RdvAccount,
-        | 'id'
-        | 'error'
-        | 'includeRdvsInActivitesList'
-        | 'invalidWebhookOrganisationIds'
-      > & {
+    | ({
+        id: number
+        error: string | null
+        includeRdvsInActivitesList: boolean
+        invalidWebhookOrganisationIds: number[]
+      } & {
         hasOauthTokens: boolean
         deconnexion: string | null
         jetonDAcces: boolean
@@ -77,7 +73,7 @@ export type SessionUser = Pick<
         updated: string | null
         lastSynced: string | null
         syncFrom: string | null
-        organisations: Pick<RdvOrganisation, 'id' | 'name' | 'email'>[]
+        organisations: { id: number; name: string; email: string | null }[]
       })
     | null
 }

@@ -1,4 +1,4 @@
-import type { Beneficiaire } from '@/generated/prisma/client'
+import type { BeneficiaireEnregistre } from '@/features/beneficiaire/domain/beneficiaire-enregistre'
 
 // Politique de fusion : champs « remplissables ». Pour chacun, on garde la
 // valeur de la destination si elle est présente, sinon on comble depuis la
@@ -20,10 +20,10 @@ const fieldsToMerge = [
   'genre',
   'trancheAge',
   'statutSocial',
-] as const satisfies readonly (keyof Beneficiaire)[]
+] as const satisfies readonly (keyof BeneficiaireEnregistre)[]
 
 export type MergeableBeneficiaire = Pick<
-  Beneficiaire,
+  BeneficiaireEnregistre,
   (typeof fieldsToMerge)[number]
 >
 
