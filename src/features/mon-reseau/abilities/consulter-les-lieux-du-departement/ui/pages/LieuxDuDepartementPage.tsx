@@ -15,7 +15,6 @@ import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane'
 import { hrefDesLieux } from '../../../../ui/presenters/liens'
-import { type LieuxTrouves } from '../../../../ui/presenters/lieu-affiche'
 import { type CriteresDesLieux, estFiltre } from '../../domain'
 import Filtres from '../components/Filtres'
 import {
@@ -23,6 +22,7 @@ import {
   libelleDesResultats,
   parametresDeLURL,
 } from './libelles-des-filtres.presenter'
+import { type LieuxTrouves } from './lieu-affiche'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
 

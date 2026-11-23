@@ -1,7 +1,7 @@
 import {
   type SuggestionAffichee,
   suggestionsAffichees,
-} from '@/features/lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'

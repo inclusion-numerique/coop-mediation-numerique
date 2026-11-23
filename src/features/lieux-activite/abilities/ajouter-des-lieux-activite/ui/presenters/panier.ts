@@ -1,8 +1,8 @@
+import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
 } from '@/features/lieux-activite/ui/presenters/adresse-non-verifiable'
-import type { SuggestionAffichee } from '@/features/lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import {
   SERVICE_ADRESSE_INDISPONIBLE,

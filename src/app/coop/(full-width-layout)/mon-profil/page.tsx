@@ -9,9 +9,9 @@ import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contr
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.key'
 import { CarteMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/ui/slots/CarteMediationNumerique.slot'
+import { MonProfilPage } from '@/features/utilisateurs/abilities/consulter-mon-profil/ui/pages/MonProfilPage'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
 import { CarteSupprimerMonCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/slots/CarteSupprimerMonCompte.slot'
-import { MonProfilPage } from '@/features/utilisateurs/ui/pages/MonProfilPage'
 import {
   identiteDuProfil,
   sectionsDuProfil,

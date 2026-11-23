@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { CreerLieuActivitePageContent } from '@/features/lieux-activite/ui/components/creation/CreerLieuActivitePageContent'
+import { CreerLieuActivitePageContent } from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/components/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,

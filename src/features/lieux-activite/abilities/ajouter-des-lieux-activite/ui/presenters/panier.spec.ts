@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { SuggestionAffichee } from '@/features/lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
+import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import {
   AdresseIndisponible,
   SERVICE_ADRESSE_INDISPONIBLE,

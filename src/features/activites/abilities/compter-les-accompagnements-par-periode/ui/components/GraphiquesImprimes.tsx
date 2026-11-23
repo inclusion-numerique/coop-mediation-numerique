@@ -1,4 +1,4 @@
-import { AccompagnementBarChart } from '@/features/activites/ui/components/graphiques/AccompagnementBarChart'
+import { AccompagnementBarChart } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/AccompagnementBarChart'
 import type { LabelAndCount } from '@/libraries/proportions/quantifiedShare'
 
 export const GraphiquesImprimes = ({

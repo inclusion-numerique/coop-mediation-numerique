@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
-import { CarteDeRendezVous } from '../../../../ui/components/carte/CarteDeRendezVous'
 import { DetailDeLActiviteModale } from '../../../../ui/components/detail/DetailDeLActiviteModale'
 import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
+import { CarteDeRendezVous } from '../components/CarteDeRendezVous'
 import type { CarteDuJour } from '../presenters/mes-activites.presenter'
 
 export const HistoriqueDesAccompagnements = ({

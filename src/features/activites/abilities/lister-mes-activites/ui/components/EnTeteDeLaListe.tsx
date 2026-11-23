@@ -3,9 +3,9 @@ import {
   BarreDeFiltres,
   type OptionsDeLaBarre,
 } from '../../../../ui/components/filtres/BarreDeFiltres'
-import { FilterTags } from '../../../../ui/components/filtres/EtiquettesDesFiltres'
 import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-activite.labels'
 import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
+import { FilterTags } from './EtiquettesDesFiltres'
 
 export const EnTeteDeLaListe = ({
   filtres,

@@ -6,12 +6,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
+import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import CreerLieuActiviteForm from '@/features/lieux-activite/ui/forms/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@/features/lieux-activite/ui/forms/creer-lieu-activite.form-data'
-import type { SuggestionAffichee } from '@/features/lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'

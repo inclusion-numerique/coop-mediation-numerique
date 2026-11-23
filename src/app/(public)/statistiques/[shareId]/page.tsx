@@ -23,6 +23,7 @@ import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-l
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/presenters/statut-rdv'
+import { StatistiquesPartagees } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartagees'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/action/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
@@ -32,7 +33,6 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/components/sections-des-statistiques'
-import { StatistiquesPartagees } from '@/features/statistiques/ui/pages/StatistiquesPartagees'
 import { mesStatistiques } from '@/features/statistiques/ui/presenters/mes-statistiques'
 import {
   type ParametresDeLaPage,

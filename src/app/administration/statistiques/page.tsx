@@ -17,13 +17,13 @@ import { vocabulaireDesActivites } from '@/features/activites/ui/labels/libelles
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/presenters/statut-rdv'
+import { StatistiquesNationales } from '@/features/statistiques/abilities/consulter-les-statistiques-nationales/ui/pages/StatistiquesNationales'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
 import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/components/sections-des-statistiques'
-import { StatistiquesNationales } from '@/features/statistiques/ui/pages/StatistiquesNationales'
 import { optionsDeTags } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,

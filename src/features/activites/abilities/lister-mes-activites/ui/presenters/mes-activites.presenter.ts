@@ -19,14 +19,14 @@ import {
   nomDuBeneficiaire,
 } from '../../../../ui/presenters/carte/carte-d-activite.presenter'
 import {
-  type CarteDeRendezVous,
-  carteDeRendezVous,
-} from '../../../../ui/presenters/carte/carte-de-rendez-vous.presenter'
-import {
   type DetailDActivite,
   detailDeLActivite,
 } from '../../../../ui/presenters/detail/detail-de-l-activite.presenter'
 import { valeurDe } from '../../../../ui/presenters/libelles/valeur-de'
+import {
+  type CarteDeRendezVous,
+  carteDeRendezVous,
+} from './carte-de-rendez-vous.presenter'
 
 export type CarteDuJour =
   | { readonly _tag: 'Activite'; readonly carte: CarteDActivite }

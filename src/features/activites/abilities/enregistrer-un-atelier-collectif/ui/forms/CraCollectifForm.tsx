@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import { BeneficiairesAtelierFields } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/fields/BeneficiairesAtelierFields'
 import { NiveauAtelierField } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/fields/NiveauAtelierField'
+import { saisieDeLAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/saisie-du-formulaire.presenter'
 import {
   type CraCollectifData,
   CraCollectifValidation,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/CraCollectifValidation'
-import { saisieDeLAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/saisie-du-formulaire.presenter'
 import { MaterielField } from '@/features/activites/ui/forms/saisie/MaterielField'
 import { RendezVousFields } from '@/features/activites/ui/forms/saisie/RendezVousFields'
 import { TagsFields } from '@/features/activites/ui/forms/saisie/TagsFields'

@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
-import { AccompagnementBarChart } from '@/features/activites/ui/components/graphiques/AccompagnementBarChart'
+import { AccompagnementBarChart } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/AccompagnementBarChart'
 import type { LabelAndCount } from '@/libraries/proportions/quantifiedShare'
 
 export const GraphiqueDesAccompagnements = ({

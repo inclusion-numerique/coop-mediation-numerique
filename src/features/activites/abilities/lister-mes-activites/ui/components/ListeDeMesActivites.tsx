@@ -1,10 +1,10 @@
 import { type ReactNode, Suspense } from 'react'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
-import { CarteDeRendezVous } from '../../../../ui/components/carte/CarteDeRendezVous'
 import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
 import type { JourDeLaListe } from '../presenters/mes-activites.presenter'
 import { AucuneActivite } from './AucuneActivite'
+import { CarteDeRendezVous } from './CarteDeRendezVous'
 
 export type ContenuDeLaListe = {
   readonly decompte: string

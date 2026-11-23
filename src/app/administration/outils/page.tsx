@@ -8,11 +8,11 @@ import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/co
 import { consulterLHistoriqueDesMaintenances } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/historique-des-maintenances.query'
 import { REGLER_LA_MAINTENANCE_ACTION_KEY } from '@/features/maintenance-mode/abilities/regler-la-maintenance/action/regler-la-maintenance.key'
 import { ReglageDeLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/ui/slots/ReglageDeLaMaintenance.slot'
+import { OutilsAdministrateurPage } from '@/features/utilisateurs/abilities/consulter-les-outils-d-administration/ui/pages/OutilsAdministrateurPage'
 import { RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/action/relancer-les-inscriptions-inachevees.key'
 import { LancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/ui/slots/LancerLesRelancesDInscription.slot'
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/action/relancer-les-inscrits-inactifs.key'
 import { LancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/ui/slots/LancerLesRelancesDesInscrits.slot'
-import { OutilsAdministrateurPage } from '@/features/utilisateurs/ui/pages/OutilsAdministrateurPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

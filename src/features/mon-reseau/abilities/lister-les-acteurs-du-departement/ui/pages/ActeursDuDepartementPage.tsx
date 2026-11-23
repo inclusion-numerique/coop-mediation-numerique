@@ -12,7 +12,6 @@ import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../../domain'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
-import { CarteDActeur } from '../../../../ui/components/CarteDActeur'
 import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane'
 import { hrefDesActeurs } from '../../../../ui/presenters/liens'
@@ -21,6 +20,7 @@ import {
   estFiltre,
   type PageDActeurs,
 } from '../../domain'
+import { CarteDActeur } from '../components/CarteDActeur'
 import Filtres from '../components/Filtres'
 import {
   etiquettesDesFiltres,
