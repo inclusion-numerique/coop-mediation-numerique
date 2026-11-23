@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
+import InscriptionCard from '@/features/inscription/ui/InscriptionCard'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
 import type { VerifierInformationsPageData } from '../../queries/getVerifierInformationsPageData'

@@ -6,7 +6,7 @@ import {
   hasInscriptionComplete,
 } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
-import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
+import InscriptionStepsLayout from '@/features/inscription/ui/InscriptionStepsLayout'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'

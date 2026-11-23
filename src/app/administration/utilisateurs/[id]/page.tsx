@@ -48,7 +48,7 @@ import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abiliti
 import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { ActionsDuMembre } from '@/features/equipe/ui'
-import { AvertissementsEtatInscription } from '@/features/inscription/components/AvertissementsEtatInscription'
+import { AvertissementsEtatInscription } from '@/features/inscription/ui/AvertissementsEtatInscription'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'

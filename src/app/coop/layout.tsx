@@ -6,7 +6,7 @@ import {
   hasInscriptionComplete,
 } from '@/features/authentification/domain/getHomepage'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
-import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
+import InscriptionStepsLayout from '@/features/inscription/ui/InscriptionStepsLayout'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
 import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/ui'
 import { messageAffiche } from '@/features/maintenance-mode/domain'

@@ -3,12 +3,12 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import type { ReactNode } from 'react'
 import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
-import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
 import {
   computeUserProfile,
   libelleDuProfil,
 } from '@/features/inscription/domain'
+import InscriptionCard from '@/features/inscription/ui/InscriptionCard'
+import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/ui/InscriptionInvalidInformationContactSupportLink'
 import { pluriel } from '@/libraries/pluriel'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'

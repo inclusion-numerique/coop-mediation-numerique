@@ -16,12 +16,12 @@ import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
-} from '@/features/beneficiaire/forms/beneficiaire-options'
+} from '@/features/beneficiaire/ui/formulaire/beneficiaire-options'
 import {
   BeneficiaireData,
   BeneficiaireValidation,
-} from '@/features/beneficiaire/forms/beneficiaire-validation'
-import FormSection from '@/features/beneficiaire/forms/FormSection'
+} from '@/features/beneficiaire/ui/formulaire/beneficiaire-validation'
+import FormSection from '@/features/beneficiaire/ui/formulaire/FormSection'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import {
   CommuneComboBox,

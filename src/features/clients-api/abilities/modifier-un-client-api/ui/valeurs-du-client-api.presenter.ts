@@ -1,5 +1,5 @@
 import type { ClientApi } from '@/features/clients-api/domain'
-import type { ValeursDuClientApi } from '@/features/clients-api/formulaire'
+import type { ValeursDuClientApi } from '@/features/clients-api/ui/formulaire/client-api.validation'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const valeursDuClientApi = ({

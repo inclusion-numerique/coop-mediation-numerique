@@ -1,7 +1,7 @@
 import {
   AvertissementsEtatInscription,
   type EtatInscriptionUtilisateur,
-} from '@/features/inscription/components/AvertissementsEtatInscription'
+} from '@/features/inscription/ui/AvertissementsEtatInscription'
 
 const PREMIERE_ETAPE = 'Inscription restée à la première étape'
 const VALIDEE_SANS_ROLE = 'Inscription validée sans compte de rôle'

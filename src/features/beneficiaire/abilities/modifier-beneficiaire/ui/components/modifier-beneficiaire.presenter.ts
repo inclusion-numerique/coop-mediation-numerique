@@ -1,7 +1,7 @@
 import type { DefaultValues } from 'react-hook-form'
 import type { BeneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
-import type { BeneficiaireData } from '@/features/beneficiaire/forms/beneficiaire-validation'
+import type { BeneficiaireData } from '@/features/beneficiaire/ui/formulaire/beneficiaire-validation'
 import type { Beneficiaire } from '@/generated/prisma/client'
 import { telephoneDisplayString } from '@/libraries/telephone'
 
