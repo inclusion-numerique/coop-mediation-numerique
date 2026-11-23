@@ -1,6 +1,8 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import type { OptionsDesFiltres } from '@/features/utilisateurs/ui'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { optionDuCoordinateur } from '../ui/coordinateur-a-choisir.presenter'
+import { coordinateursChoisis } from './prisma'
 
 export type SourcesDesOptions = {
   readonly communesEtDepartements: () => Promise<{
@@ -28,15 +30,21 @@ export const optionsDesFiltres = async (
   filtres: FiltresUtilisateurs,
   sources: SourcesDesOptions,
 ): Promise<OptionsDesFiltres> => {
-  const [{ communesOptions, departementsOptions }, lieux, employeuses] =
-    await Promise.all([
-      sources.communesEtDepartements(),
-      sources.lieux(),
-      employeusesChoisies(filtres.employeuses, sources.nomDeLEmployeuse),
-    ])
+  const [
+    { communesOptions, departementsOptions },
+    lieux,
+    employeuses,
+    coordinateurs,
+  ] = await Promise.all([
+    sources.communesEtDepartements(),
+    sources.lieux(),
+    employeusesChoisies(filtres.employeuses, sources.nomDeLEmployeuse),
+    coordinateursChoisis(filtres.coordinateurs),
+  ])
 
   return {
     employeuses,
+    coordinateurs: coordinateurs.map(optionDuCoordinateur),
     lieux,
     communes: communesOptions,
     departements: departementsOptions,

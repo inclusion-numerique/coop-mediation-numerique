@@ -42,6 +42,7 @@ export type SectionsDeLaFiche = {
   readonly equipe: ReactNode
   readonly employeuses: ReactNode
   readonly lieux: ReactNode
+  readonly statistiques: ReactNode
 }
 
 const aParis = (jalon: Jalon): string =>
@@ -270,6 +271,7 @@ export const FicheUtilisateurPage = ({
             )}
           </AdministrationInfoCard>
         )}
+        {sections.statistiques}
         {(mediateur !== null || coordinateur !== null) && sections.employeuses}
         {mediateur !== null && sections.lieux}
         <AdministrationInfoCard

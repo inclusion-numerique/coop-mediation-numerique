@@ -554,6 +554,9 @@ After(async () => {
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateur: parUtilisateur },
   })
+  await prismaClient.activite.deleteMany({
+    where: { mediateur: parUtilisateur },
+  })
   await prismaClient.personneAffectationEmploiMain.deleteMany({
     where: { personne: { coopId: { in: [...utilisateurs] } } },
   })
@@ -577,9 +580,6 @@ After(async () => {
     where: {
       OR: [{ mediateur: parUtilisateur }, { coordinateur: parUtilisateur }],
     },
-  })
-  await prismaClient.activite.deleteMany({
-    where: { mediateur: parUtilisateur },
   })
   await prismaClient.beneficiaire.deleteMany({
     where: { mediateur: parUtilisateur },

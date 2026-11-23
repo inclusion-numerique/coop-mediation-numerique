@@ -7,9 +7,13 @@ import {
   optionsDesDispositifs,
   optionsDesStatuts,
 } from '@/features/utilisateurs/ui'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '../../action/rechercher-des-coordinateurs.key'
+import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '../../action/rechercher-des-employeuses.key'
+import { CaseDesAnciensRattachements } from './CaseDesAnciensRattachements'
 import { FiltreAChoixUnique } from './FiltreAChoixUnique'
-import { FiltreEmployeuses } from './FiltreEmployeuses'
+import { FiltreARecherche } from './FiltreARecherche'
 import { FiltreRoles } from './FiltreRoles'
 
 const optionsChoisies = (
@@ -49,12 +53,37 @@ export const Filtres = ({
       options={optionsDesStatuts}
       valeurInitiale={filtres.statut}
     />
-    <FiltreEmployeuses
-      employeusesInitiales={optionsChoisies(
-        options.employeuses,
-        filtres.employeuses,
-      )}
+    <FiltreARecherche
+      parametre="employeuses"
+      titre="Employeuse"
+      libelle="Filtrer par structure employeuse"
+      placeholder="Nom, SIRET ou commune de la structure"
+      selection={{
+        singular: 'employeuse sélectionnée',
+        plural: 'employeuses sélectionnées',
+      }}
+      rechercher={(input) =>
+        inject(RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY)(input)
+      }
+      initiales={optionsChoisies(options.employeuses, filtres.employeuses)}
+    />
+    <FiltreARecherche
+      parametre="coordinateurs"
+      titre="Coordinateur"
+      libelle="Filtrer par coordinateur"
+      placeholder="Nom, prénom ou courriel du coordinateur"
+      selection={{
+        singular: 'coordinateur sélectionné',
+        plural: 'coordinateurs sélectionnés',
+      }}
+      rechercher={(input) =>
+        inject(RECHERCHER_DES_COORDINATEURS_ACTION_KEY)(input)
+      }
+      initiales={optionsChoisies(options.coordinateurs, filtres.coordinateurs)}
     />
     {filtreDeLieu}
+    <CaseDesAnciensRattachements
+      coche={filtres.rattachements === 'ActuelsEtAnciens'}
+    />
   </div>
 )

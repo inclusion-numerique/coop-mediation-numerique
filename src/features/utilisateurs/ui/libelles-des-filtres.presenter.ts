@@ -14,9 +14,11 @@ export type TypeDeFiltre =
   | 'conseiller_numerique'
   | 'statut'
   | 'employeuses'
+  | 'coordinateurs'
   | 'lieux'
   | 'communes'
   | 'departements'
+  | 'historique'
 
 export type LibelleDeFiltre = {
   readonly type: TypeDeFiltre
@@ -56,8 +58,11 @@ export const optionsDesDispositifs: readonly SelectOption[] = [
   { value: '0', label: 'Hors dispositif' },
 ]
 
+const LIBELLE_DES_ANCIENS_RATTACHEMENTS = 'Avec les anciens rattachements'
+
 export type OptionsDesFiltres = {
   readonly employeuses: readonly SelectOption[]
+  readonly coordinateurs: readonly SelectOption[]
   readonly lieux: readonly SelectOption[]
   readonly communes: readonly SelectOption[]
   readonly departements: readonly SelectOption[]
@@ -65,6 +70,7 @@ export type OptionsDesFiltres = {
 
 const prefixes: Partial<Record<TypeDeFiltre, string>> = {
   employeuses: 'Employeuse : ',
+  coordinateurs: 'Coordinateur : ',
   lieux: 'Lieu d’activité : ',
   communes: 'Commune : ',
   departements: 'Département : ',
@@ -118,7 +124,21 @@ export const libellesDesFiltres = (
         },
       ]),
   ...libellesParmi('employeuses', options.employeuses)(filtres.employeuses),
+  ...libellesParmi(
+    'coordinateurs',
+    options.coordinateurs,
+  )(filtres.coordinateurs),
   ...libellesParmi('lieux', options.lieux)(filtres.lieux),
   ...libellesParmi('communes', options.communes)(filtres.communes),
   ...libellesParmi('departements', options.departements)(filtres.departements),
+  ...(filtres.rattachements === 'ActuelsEtAnciens'
+    ? [
+        {
+          type: 'historique' as const,
+          cle: '1',
+          valeur: LIBELLE_DES_ANCIENS_RATTACHEMENTS,
+          libelle: LIBELLE_DES_ANCIENS_RATTACHEMENTS,
+        },
+      ]
+    : []),
 ]

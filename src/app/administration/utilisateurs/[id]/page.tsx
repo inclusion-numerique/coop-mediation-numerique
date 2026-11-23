@@ -11,10 +11,19 @@ import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-com
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
+import {
+  ChiffresClesDesAccompagnements,
+  totauxPresentes,
+} from '@/features/activites/abilities/compter-les-accompagnements/ui'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { criteresDesStatistiques } from '@/features/activites/domain'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
 import {
   authenticateAdmin,
   authenticateUser,
 } from '@/features/authentification/implementation/session/authenticateUser'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/server'
@@ -37,6 +46,12 @@ import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/l
 import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import {
+  type PeriodeChoisie,
+  periodeChoisieDans,
+  StatistiquesEnAdministration,
+} from '@/features/statistiques/ui/administration'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.key'
 import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui'
 import {
@@ -111,9 +126,45 @@ const sectionLieux = async (fiche: FicheUtilisateur): Promise<ReactNode> => {
   )
 }
 
+const sectionStatistiques = async (
+  fiche: FicheUtilisateur,
+  periode: PeriodeChoisie,
+): Promise<ReactNode> => {
+  const perimetre = perimetreDeLUtilisateur(
+    await getSessionUserFromId(fiche.id),
+  )
+  if (perimetre === null) return null
+
+  const [totaux, { premiere, derniere }] = await Promise.all([
+    compterLesAccompagnements({
+      perimetre,
+      criteres: criteresDesStatistiques(periode),
+      rendezVousAuxStatuts: rendezVousAuxStatutsSql,
+    }),
+    decrireLesActivitesDuPerimetre(perimetre),
+  ])
+
+  return (
+    <StatistiquesEnAdministration
+      utilisateurId={fiche.id}
+      coordinateur={coordinateurDe(fiche.rattachements) !== null}
+      premiere={premiere}
+      derniere={derniere}
+      periode={periode}
+      chiffresCles={
+        <ChiffresClesDesAccompagnements
+          totalCounts={totauxPresentes(totaux)}
+          debut={periode.du}
+          fin={periode.au}
+        />
+      }
+    />
+  )
+}
+
 const Page = async (props: {
   params: Promise<{ id: string }>
-  searchParams: Promise<ParametresDeLaListe>
+  searchParams: Promise<ParametresDeLaListe & PeriodeChoisie>
 }) => {
   await authenticateAdmin()
   const [{ id }, searchParams] = await Promise.all([
@@ -129,10 +180,11 @@ const Page = async (props: {
 
   const mediateur = mediateurDe(fiche.rattachements)
 
-  const [equipe, lieux, employeuses] = await Promise.all([
+  const [equipe, lieux, employeuses, statistiques] = await Promise.all([
     sectionEquipe(fiche, searchParams),
     sectionLieux(fiche),
     consulterHistoriqueEmployeuses({ userId: fiche.id }),
+    sectionStatistiques(fiche, periodeChoisieDans(searchParams)),
   ])
 
   return (
@@ -218,6 +270,7 @@ const Page = async (props: {
                             />
                           ),
                           lieux,
+                          statistiques,
                         }}
                       />
                     </ClientBinder>

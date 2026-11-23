@@ -14,8 +14,11 @@ import {
   semerUneEmployeuse,
   semerUnLieu,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import type { UtilisateursTrouves } from './domain'
-import { rechercherDesUtilisateurs } from './implementation'
+import type { CoordinateurAChoisir, UtilisateursTrouves } from './domain'
+import {
+  rechercherDesCoordinateurs,
+  rechercherDesUtilisateurs,
+} from './implementation'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 
@@ -25,6 +28,7 @@ const scenario: {
   employeuses: Readonly<Record<string, number>>
   lieux: Readonly<Record<string, string>>
   trouves?: UtilisateursTrouves
+  coordinateursProposes?: readonly CoordinateurAChoisir[]
 } = { marqueur: '', comptes: {}, employeuses: {}, lieux: {} }
 
 const maintenant = () => new Date()
@@ -115,6 +119,7 @@ const rattacher = async (
   prenom: string,
   employeuseId: number,
   source: string,
+  estActive = true,
 ) => {
   const personne = await prismaClient.personneMain.upsert({
     where: { coopId: idDe(prenom) },
@@ -127,7 +132,7 @@ const rattacher = async (
       personneId: personne.id,
       structureAdministrativeId: employeuseId,
       source,
-      estActive: true,
+      estActive,
     },
   })
 }
@@ -177,6 +182,103 @@ Given(
   },
 )
 
+const semerLEmployeuse = async (nom: string): Promise<number> => {
+  const employeuseId = await semerUneEmployeuse(nom)
+  scenario.employeuses = { ...scenario.employeuses, [nom]: employeuseId }
+  return employeuseId
+}
+
+const semerLeLieu = async (nom: string): Promise<string> => {
+  const lieuId = await semerUnLieu(nom)
+  scenario.lieux = { ...scenario.lieux, [nom]: lieuId }
+  return lieuId
+}
+
+const mediateurDe = async (prenom: string): Promise<string> =>
+  (
+    await prismaClient.mediateur.findUniqueOrThrow({
+      where: { userId: idDe(prenom) },
+      select: { id: true },
+    })
+  ).id
+
+const coordinateurDe = async (prenom: string): Promise<string> =>
+  (
+    await prismaClient.coordinateur.findUniqueOrThrow({
+      where: { userId: idDe(prenom) },
+      select: { id: true },
+    })
+  ).id
+
+const enregistrerUneActivite = async (
+  prenom: string,
+  lieu: { structureId?: string; structureEmployeuseMainId?: number },
+) => {
+  await prismaClient.activite.create({
+    data: {
+      mediateurId: await mediateurDe(prenom),
+      type: 'Individuel',
+      typeLieu: 'LieuActivite',
+      date: new Date('2024-06-01'),
+      duree: 60,
+      ...lieu,
+    },
+  })
+}
+
+Given(
+  /^"([^"]+)" a été employée? par "([^"]+)"$/,
+  async (prenom: string, nom: string) => {
+    await rattacher(prenom, await semerLEmployeuse(nom), 'coop', false)
+  },
+)
+
+Given(
+  "{string} a enregistré une activité pour l'employeuse {string}",
+  async (prenom: string, nom: string) => {
+    await enregistrerUneActivite(prenom, {
+      structureEmployeuseMainId: await semerLEmployeuse(nom),
+    })
+  },
+)
+
+Given(
+  '{string} a enregistré une activité à {string}',
+  async (prenom: string, nom: string) => {
+    await enregistrerUneActivite(prenom, {
+      structureId: await semerLeLieu(nom),
+    })
+  },
+)
+
+const rejoindreLEquipe = async (
+  membre: string,
+  coordinateur: string,
+  suppression: Date | null,
+) => {
+  await prismaClient.mediateurCoordonne.create({
+    data: {
+      mediateurId: await mediateurDe(membre),
+      coordinateurId: await coordinateurDe(coordinateur),
+      suppression,
+    },
+  })
+}
+
+Given(
+  "{string} est membre de l'équipe de {string}",
+  async (membre: string, coordinateur: string) => {
+    await rejoindreLEquipe(membre, coordinateur, null)
+  },
+)
+
+Given(
+  "{string} a quitté l'équipe de {string}",
+  async (membre: string, coordinateur: string) => {
+    await rejoindreLEquipe(membre, coordinateur, new Date())
+  },
+)
+
 Given('{string} est conseiller numérique', async (prenom: string) => {
   await rattacher(prenom, await semerUneEmployeuse('Employeuse CN'), 'idposte')
 })
@@ -208,6 +310,76 @@ When(
       filtresUtilisateurs({
         employeuses: String(scenario.employeuses[nom] ?? ''),
       }),
+    )
+  },
+)
+
+When(
+  "l'administration filtre la liste sur l'employeuse {string} en incluant les anciens rattachements",
+  async (nom: string) => {
+    await rechercher(
+      '',
+      filtresUtilisateurs({
+        employeuses: String(scenario.employeuses[nom] ?? ''),
+        historique: '1',
+      }),
+    )
+  },
+)
+
+When(
+  "l'administration filtre la liste sur le lieu {string} en incluant les anciens rattachements",
+  async (nom: string) => {
+    await rechercher(
+      '',
+      filtresUtilisateurs({ lieux: scenario.lieux[nom], historique: '1' }),
+    )
+  },
+)
+
+When(
+  "l'administration filtre la liste sur le coordinateur {string}",
+  async (prenom: string) => {
+    await rechercher(
+      '',
+      filtresUtilisateurs({ coordinateurs: await coordinateurDe(prenom) }),
+    )
+  },
+)
+
+When(
+  "l'administration filtre la liste sur le coordinateur {string} en incluant les anciens rattachements",
+  async (prenom: string) => {
+    await rechercher(
+      '',
+      filtresUtilisateurs({
+        coordinateurs: await coordinateurDe(prenom),
+        historique: '1',
+      }),
+    )
+  },
+)
+
+When(
+  "l'administration cherche le coordinateur {string}",
+  async (prenom: string) => {
+    scenario.coordinateursProposes = await rechercherDesCoordinateurs({
+      recherche: `${prenom} ${scenario.marqueur}`,
+      limite: 20,
+    })
+  },
+)
+
+Then(
+  'les coordinateurs proposés sont exactement {string}',
+  async (attendus: string) => {
+    assert.ok(scenario.coordinateursProposes, 'Aucune recherche faite')
+    const ids = await Promise.all(
+      attendus.split(',').map((prenom) => coordinateurDe(prenom.trim())),
+    )
+    assert.deepStrictEqual(
+      scenario.coordinateursProposes.map(({ id }) => id).toSorted(),
+      ids.toSorted(),
     )
   },
 )

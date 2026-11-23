@@ -74,6 +74,7 @@ When(
       auteur: auteurDeLExport(auteur),
       filtres: libellesDesFiltres(filtres, {
         employeuses: [],
+        coordinateurs: [],
         lieux: [],
         communes: [],
         departements: [],

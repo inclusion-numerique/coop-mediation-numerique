@@ -116,18 +116,49 @@ const dispositifWhere = ({
   ]
 }
 
-const lieuxWhere = ({ lieux }: FiltresUtilisateurs): Prisma.UserWhereInput[] =>
-  lieux.length === 0
+const avecLesAnciens = ({ rattachements }: FiltresUtilisateurs): boolean =>
+  rattachements === 'ActuelsEtAnciens'
+
+const activiteVivante = (
+  critere: Prisma.ActiviteWhereInput,
+): Prisma.UserWhereInput => ({
+  mediateur: { is: { activites: { some: { ...critere, suppression: null } } } },
+})
+
+const lieuxWhere = (filtres: FiltresUtilisateurs): Prisma.UserWhereInput[] => {
+  if (filtres.lieux.length === 0) return []
+
+  const lieux = [...filtres.lieux]
+  const rattache: Prisma.UserWhereInput = {
+    mediateur: {
+      is: {
+        enActivite: {
+          some: { structureId: { in: lieux }, suppression: null, fin: null },
+        },
+      },
+    },
+  }
+
+  return [
+    avecLesAnciens(filtres)
+      ? { OR: [rattache, activiteVivante({ structureId: { in: lieux } })] }
+      : rattache,
+  ]
+}
+
+const coordinateursWhere = (
+  filtres: FiltresUtilisateurs,
+): Prisma.UserWhereInput[] =>
+  filtres.coordinateurs.length === 0
     ? []
     : [
         {
           mediateur: {
             is: {
-              enActivite: {
+              coordinations: {
                 some: {
-                  structureId: { in: [...lieux] },
-                  suppression: null,
-                  fin: null,
+                  coordinateurId: { in: [...filtres.coordinateurs] },
+                  ...(avecLesAnciens(filtres) ? {} : { suppression: null }),
                 },
               },
             },
@@ -151,34 +182,57 @@ const adresseDeLEmployeuse = ({
       ]),
 ]
 
-const employeuseWhere = (
+const employeuseActuelleOu = (
+  critere: Prisma.EmployeuseActuelleWhereInput,
+): Prisma.UserWhereInput => ({
+  personneMain: { is: { employeuseActuelle: { is: critere } } },
+})
+
+const anciennesEmployeuses = (
+  employeuses: Prisma.IntFilter,
+): Prisma.UserWhereInput[] => [
+  {
+    personneMain: {
+      is: {
+        affectationsEmploi: {
+          some: { structureAdministrativeId: employeuses },
+        },
+      },
+    },
+  },
+  activiteVivante({ structureEmployeuseMainId: employeuses }),
+]
+
+const parEmployeuse = (
+  filtres: FiltresUtilisateurs,
+): Prisma.UserWhereInput[] => {
+  if (filtres.employeuses.length === 0) return []
+
+  const employeuses = { in: [...filtres.employeuses] }
+  const actuelle = employeuseActuelleOu({
+    structureAdministrativeId: employeuses,
+  })
+
+  return [
+    avecLesAnciens(filtres)
+      ? { OR: [actuelle, ...anciennesEmployeuses(employeuses)] }
+      : actuelle,
+  ]
+}
+
+const parAdresseDeLEmployeuse = (
   filtres: FiltresUtilisateurs,
 ): Prisma.UserWhereInput[] => {
   const adresse = adresseDeLEmployeuse(filtres)
-
-  return filtres.employeuses.length === 0 && adresse.length === 0
-    ? []
-    : [
-        {
-          personneMain: {
-            is: {
-              employeuseActuelle: {
-                is: {
-                  ...(filtres.employeuses.length === 0
-                    ? {}
-                    : {
-                        structureAdministrativeId: {
-                          in: [...filtres.employeuses],
-                        },
-                      }),
-                  AND: adresse,
-                },
-              },
-            },
-          },
-        },
-      ]
+  return adresse.length === 0 ? [] : [employeuseActuelleOu({ AND: adresse })]
 }
+
+const employeuseWhere = (
+  filtres: FiltresUtilisateurs,
+): Prisma.UserWhereInput[] => [
+  ...parEmployeuse(filtres),
+  ...parAdresseDeLEmployeuse(filtres),
+]
 
 const estUnIdentifiant = (mot: string): boolean =>
   z.guid().safeParse(mot).success
@@ -211,5 +265,6 @@ export const utilisateursWhere = ({
       : [statutWhere(critereDuStatut(filtres.statut, maintenant))]),
     ...lieuxWhere(filtres),
     ...employeuseWhere(filtres),
+    ...coordinateursWhere(filtres),
   ],
 })
