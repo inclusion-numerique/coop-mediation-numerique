@@ -1,11 +1,11 @@
 import type { PipeMiddleware, ServerActionResult } from '@/libraries/nextjs'
 import { ServerActionError } from '@/libraries/nextjs'
-import { consulterLaMaintenance } from './abilities/consulter-la-maintenance'
+import { consulterLaMaintenance } from '../abilities/consulter-la-maintenance'
 import {
   messageAffiche,
   peutModifierPendantLaMaintenance,
   type RoleDuCompte,
-} from './domain'
+} from '../domain'
 
 export const withMaintenance =
   (): PipeMiddleware<

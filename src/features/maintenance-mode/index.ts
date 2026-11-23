@@ -1,1 +1,1 @@
-export { withMaintenance } from './with-maintenance'
+export { withMaintenance } from './middlewares/with-maintenance'
