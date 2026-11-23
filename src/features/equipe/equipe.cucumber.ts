@@ -188,17 +188,20 @@ export const semerUneInvitation = async ({
   email,
   mediateurId,
   statut = 'EnAttente',
+  envoyeeLe = new Date(),
 }: {
   coordinateurId: string
   email: string
   mediateurId?: string
   statut?: 'EnAttente' | 'Acceptee' | 'Refusee'
+  envoyeeLe?: Date
 }): Promise<void> => {
   await prismaClient.invitationEquipe.create({
     data: {
       email,
       coordinateurId,
       mediateurId: mediateurId ?? null,
+      creation: envoyeeLe,
       acceptee: statut === 'Acceptee' ? new Date() : null,
       refusee: statut === 'Refusee' ? new Date() : null,
     },

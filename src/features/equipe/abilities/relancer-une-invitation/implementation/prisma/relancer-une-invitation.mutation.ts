@@ -9,11 +9,13 @@ import {
   CoordinateurIntrouvable,
   EnvoiEchoue,
   exigerEnAttente,
+  exigerUneRelancePossible,
   type Gestionnaire,
   type InvitationDejaTraitee,
   InvitationIntrouvable,
   peutGererLEquipe,
   type ReferenceInvitation,
+  type RelanceTropRecente,
   type UtilisateurId,
 } from '../../../../domain'
 import { envoyerUneInvitation } from '../../../../implementation/email'
@@ -22,6 +24,7 @@ export type EchecDeRelance =
   | ActionNonAutorisee
   | InvitationIntrouvable
   | InvitationDejaTraitee
+  | RelanceTropRecente
   | CoordinateurIntrouvable
   | EnvoiEchoue
 
@@ -56,6 +59,9 @@ export const relancerUneInvitation = async ({
 
   const enAttente = exigerEnAttente(lue.invitation)
   if (!enAttente.success) return enAttente
+
+  const relancable = exigerUneRelancePossible(enAttente.data, maintenant)
+  if (!relancable.success) return relancable
 
   const coordinateur = await lireLeCoordinateur(reference.coordinateurId)
   if (coordinateur === null) return failure(CoordinateurIntrouvable())

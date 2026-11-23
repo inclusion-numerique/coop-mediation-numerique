@@ -30,13 +30,19 @@ const emailInvite = (): string => {
   return contexte.email
 }
 
-const inviter = async (statut: 'EnAttente' | 'Refusee') => {
+const ilYADeuxJours = () => new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+
+const inviter = async (
+  statut: 'EnAttente' | 'Refusee',
+  envoyeeLe: Date = ilYADeuxJours(),
+) => {
   contexte.coordinateur = await semerUnCoordinateur()
   contexte.email = `relance-${coordinateur().coordinateurId}@example.com`
   await semerUneInvitation({
     coordinateurId: coordinateur().coordinateurId,
     email: emailInvite(),
     statut,
+    envoyeeLe,
   })
 }
 
@@ -60,6 +66,10 @@ Given(
     await inviter('EnAttente')
   },
 )
+
+Given("un coordinateur qui vient d'inviter une personne", async () => {
+  await inviter('EnAttente', new Date())
+})
 
 Given("un coordinateur dont l'invitation a été refusée", async () => {
   await inviter('Refusee')

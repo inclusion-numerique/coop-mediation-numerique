@@ -36,6 +36,12 @@ export type PasMembre = { readonly _tag: 'PasMembre' }
 
 export const PasMembre = (): PasMembre => ({ _tag: 'PasMembre' })
 
+export type RelanceTropRecente = { readonly _tag: 'RelanceTropRecente' }
+
+export const RelanceTropRecente = (): RelanceTropRecente => ({
+  _tag: 'RelanceTropRecente',
+})
+
 export type ActionNonAutorisee = { readonly _tag: 'ActionNonAutorisee' }
 
 export const ActionNonAutorisee = (): ActionNonAutorisee => ({
