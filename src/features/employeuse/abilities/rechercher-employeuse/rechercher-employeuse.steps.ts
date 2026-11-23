@@ -1,6 +1,11 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { rechercherEmployeuse } from '@/features/employeuse/abilities/rechercher-employeuse/implementation'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import {
+  rechercherDesCommunesDesEmployeuses,
+  rechercherEmployeuse,
+} from '@/features/employeuse/abilities/rechercher-employeuse/implementation'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedEmployeuseMain,
@@ -44,4 +49,43 @@ Then('la recherche ne trouve pas {string}', (nom: string) => {
 
 Then('la recherche ne trouve rien', () => {
   assert.deepStrictEqual(trouvees, [])
+})
+
+const communes: { semees: readonly number[]; proposees: readonly string[] } = {
+  semees: [],
+  proposees: [],
+}
+
+Given(
+  "une adresse d'employeuse à {string} au code INSEE {string} et au code postal {string}",
+  async (nomCommune: string, codeInsee: string, codePostal: string) => {
+    const { id } = await prismaClient.adresseMain.create({
+      data: { nomCommune, codeInsee, codePostal, nomVoie: v4() },
+      select: { id: true },
+    })
+    communes.semees = [...communes.semees, id]
+  },
+)
+
+When('je cherche la commune {string}', async (recherche: string) => {
+  communes.proposees = (
+    await rechercherDesCommunesDesEmployeuses({ recherche, limite: 20 })
+  ).map(({ value }) => value)
+})
+
+Then('la commune de code INSEE {string} est proposée', (codeInsee: string) => {
+  assert.ok(
+    communes.proposees.includes(codeInsee),
+    `« ${codeInsee} » absent des résultats : ${communes.proposees.join(', ')}`,
+  )
+})
+
+After(async () => {
+  const aSupprimer = communes.semees
+  communes.semees = []
+  communes.proposees = []
+  if (aSupprimer.length === 0) return
+  await prismaClient.adresseMain.deleteMany({
+    where: { id: { in: [...aSupprimer] } },
+  })
 })

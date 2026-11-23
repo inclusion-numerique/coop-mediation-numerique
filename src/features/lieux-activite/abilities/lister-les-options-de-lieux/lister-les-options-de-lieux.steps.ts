@@ -2,14 +2,13 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  getLieuxActiviteOptions,
   getLieuxDesActivitesOptions,
   getMediateursLieuxActiviteOptions,
-  type LieuActiviteOption,
+  rechercherDesLieuxAChoisir,
 } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
-const proposees: { options?: LieuActiviteOption[] } = {}
+const proposees: { options?: readonly { readonly value: string }[] } = {}
 
 const demander = async (mediateurIds: string[]) => {
   proposees.options = await getMediateursLieuxActiviteOptions({ mediateurIds })
@@ -38,9 +37,19 @@ Given('ce médiateur a quitté ce lieu', async () => {
   })
 })
 
-When("on demande les lieux pour filtrer dans l'administration", async () => {
-  proposees.options = await getLieuxActiviteOptions()
-})
+When(
+  "on cherche ce lieu par son nom pour filtrer dans l'administration",
+  async () => {
+    const { nom } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: ficheSemee().lieuId },
+      select: { nom: true },
+    })
+    proposees.options = await rechercherDesLieuxAChoisir({
+      recherche: nom,
+      limite: 1000,
+    })
+  },
+)
 
 When(
   'on demande les lieux pour filtrer les activités de ce médiateur',

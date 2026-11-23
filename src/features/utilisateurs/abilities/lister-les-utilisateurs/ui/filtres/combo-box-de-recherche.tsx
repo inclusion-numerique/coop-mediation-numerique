@@ -3,38 +3,77 @@ import type { ServerActionResult } from '@/libraries/nextjs/action/result'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 
-const LONGUEUR_MINIMALE = 3
-
 export type Rechercher = (input: {
   recherche: string
 }) => Promise<ServerActionResult<readonly SelectOption[], string>>
 
+export type EtatDeLaRecherche = 'TropCourte' | 'SansResultat' | 'Indisponible'
+
+export type SuiviDeLaRecherche = { etat?: EtatDeLaRecherche }
+
 const cleDe = ({ value }: SelectOption): string => value
 
+const sansSuggestion = (etat: EtatDeLaRecherche) => ({ items: [], etat })
+
 const chargerLesSuggestions =
-  (rechercher: Rechercher, dejaChoisies: () => readonly SelectOption[]) =>
-  async (recherche: string): Promise<{ items: SelectOption[] }> => {
-    if (recherche.trim().length < LONGUEUR_MINIMALE) return { items: [] }
+  (
+    rechercher: Rechercher,
+    dejaChoisies: () => readonly SelectOption[],
+    longueurMinimale: number,
+  ) =>
+  async (
+    recherche: string,
+  ): Promise<{ items: SelectOption[] } & SuiviDeLaRecherche> => {
+    if (recherche.trim().length < longueurMinimale)
+      return sansSuggestion('TropCourte')
 
     const resultat = await rechercher({ recherche })
+    if (!resultat.success) return sansSuggestion('Indisponible')
 
     const choisies = new Set(dejaChoisies().map(cleDe))
+    const items = resultat.data.filter((option) => !choisies.has(cleDe(option)))
 
-    return {
-      items: resultat.success
-        ? resultat.data.filter((option) => !choisies.has(cleDe(option)))
-        : [],
-    }
+    return items.length === 0 ? sansSuggestion('SansResultat') : { items }
   }
 
 export const comboBoxDeRecherche = (
   rechercher: Rechercher,
   dejaChoisies: () => readonly SelectOption[],
-): ComboBoxData<SelectOption> => ({
+  longueurMinimale: number,
+): ComboBoxData<SelectOption, SuiviDeLaRecherche> => ({
   itemToString: (option) => option?.label ?? '',
   itemToKey: cleDe,
-  loadSuggestions: chargerLesSuggestions(rechercher, dejaChoisies),
+  loadSuggestions: chargerLesSuggestions(
+    rechercher,
+    dejaChoisies,
+    longueurMinimale,
+  ),
 })
+
+const sansAccent = (texte: string): string =>
+  texte
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+
+export const rechercherParmi =
+  (options: readonly SelectOption[]): Rechercher =>
+  async ({ recherche }) => ({
+    success: true,
+    data: options.filter(({ label }) =>
+      sansAccent(label).includes(sansAccent(recherche)),
+    ),
+  })
+
+export const messageDeLaRecherche = (
+  etat: EtatDeLaRecherche,
+  longueurMinimale: number,
+): string =>
+  ({
+    TropCourte: `Saisissez au moins ${longueurMinimale} caractère${longueurMinimale > 1 ? 's' : ''}`,
+    SansResultat: 'Aucun résultat',
+    Indisponible: 'La recherche est indisponible, réessayez',
+  })[etat]
 
 export const OptionsDeRecherche: OptionsData<SelectOption> = {
   itemToKey: cleDe,

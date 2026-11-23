@@ -4,6 +4,7 @@ import {
   ligneUtilisateurToDomain,
 } from '@/features/utilisateurs/db/ligne-utilisateur.transfer'
 import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
+import { utilisateursRattaches } from '@/features/utilisateurs/db/utilisateurs-rattaches.query'
 import type {
   FiltresUtilisateurs,
   LigneUtilisateur,
@@ -19,7 +20,12 @@ export const utilisateursAExporter = async ({
   readonly maintenant: Date
 }): Promise<readonly LigneUtilisateur[]> => {
   const lignes = await prismaClient.user.findMany({
-    where: utilisateursWhere({ mots, filtres, maintenant }),
+    where: utilisateursWhere({
+      mots,
+      filtres,
+      maintenant,
+      rattaches: await utilisateursRattaches(filtres),
+    }),
     select: ligneUtilisateurSelect,
     orderBy: [{ created: 'desc' }, { lastName: 'asc' }],
   })

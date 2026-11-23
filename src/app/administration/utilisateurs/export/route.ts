@@ -1,11 +1,11 @@
 import type { NextRequest } from 'next/server'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { nomDeLEmployeuse } from '@/features/employeuse/server'
 import {
-  getCommunesAndDepartementsOptions,
-  getLieuxActiviteOptions,
-} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
+  communesDesEmployeuses,
+  nomDeLEmployeuse,
+} from '@/features/employeuse/server'
+import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { auteurDeLExport } from '@/features/utilisateurs'
 import {
   classeurDesUtilisateurs,
@@ -38,8 +38,8 @@ export const GET = async (request: NextRequest) => {
       maintenant,
     }),
     optionsDesFiltres(filtres, {
-      communesEtDepartements: getCommunesAndDepartementsOptions,
-      lieux: getLieuxActiviteOptions,
+      communes: communesDesEmployeuses,
+      lieux: lieuxChoisis,
       nomDeLEmployeuse,
     }),
   ])

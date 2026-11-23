@@ -17,6 +17,7 @@ import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import {
   comboBoxDeRecherche,
+  messageDeLaRecherche,
   OptionsDeRecherche,
   type Rechercher,
 } from './combo-box-de-recherche'
@@ -31,6 +32,7 @@ export const FiltreARecherche = ({
   selection,
   rechercher,
   initiales,
+  longueurMinimale = 3,
 }: {
   parametre: string
   titre: string
@@ -39,6 +41,7 @@ export const FiltreARecherche = ({
   selection: { singular: string; plural: string }
   rechercher: Rechercher
   initiales: readonly SelectOption[]
+  longueurMinimale?: number
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -64,12 +67,16 @@ export const FiltreARecherche = ({
   }
 
   const choisir = (option: SelectOption) => {
-    setChoisies((precedentes) => [...precedentes, option])
-    queueMicrotask(() => form.setFieldValue('choix', null))
+    const selectionnees = [...choisies, option]
+    setChoisies(selectionnees)
+    queueMicrotask(() => appliquer(selectionnees))
   }
 
-  const retirer = (option: SelectOption) =>
-    setChoisies(choisies.filter(matchingOption(option)))
+  const retirer = (option: SelectOption) => {
+    const restantes = choisies.filter(matchingOption(option))
+    setChoisies(restantes)
+    appliquer(restantes)
+  }
 
   const effacer = () => {
     setChoisies([])
@@ -96,12 +103,17 @@ export const FiltreARecherche = ({
               <field.ComboBox
                 isPending={enAttente}
                 onSelect={choisir}
-                {...comboBoxDeRecherche(rechercher, () => choisies)}
+                {...comboBoxDeRecherche(
+                  rechercher,
+                  () => choisies,
+                  longueurMinimale,
+                )}
               >
                 {({
                   getLabelProps,
                   getInputProps,
                   getToggleButtonProps: _,
+                  payload,
                   ...optionsProps
                 }) => (
                   <>
@@ -120,9 +132,16 @@ export const FiltreARecherche = ({
                     <Options
                       {...optionsProps}
                       {...OptionsDeRecherche}
+                      showEmpty={payload.etat !== undefined}
                       anchorRef={champRef}
                       className="fr-index-2000"
-                    />
+                    >
+                      {payload.etat === undefined ? null : (
+                        <span className="fr-text-mention--grey">
+                          {messageDeLaRecherche(payload.etat, longueurMinimale)}
+                        </span>
+                      )}
+                    </Options>
                   </>
                 )}
               </field.ComboBox>

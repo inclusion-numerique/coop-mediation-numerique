@@ -35,5 +35,9 @@ export {
   rattacherAUneEmployeuseDepuisSiretBinding,
   rattacherAUneEmployeuseSaisieBinding,
 } from './abilities/rattacher-a-une-employeuse/implementation/rattacher-a-une-employeuse.binding'
-export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implementation'
+export {
+  communesDesEmployeuses,
+  rechercherDesCommunesDesEmployeuses,
+  rechercherEmployeuse,
+} from './abilities/rechercher-employeuse/implementation'
 export * from './index'
