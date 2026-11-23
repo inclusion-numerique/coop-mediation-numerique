@@ -6,6 +6,7 @@ import type { ProconnectSignoutState } from '@/features/authentification/impleme
 import { generateProconnectSignoutUrl } from '@/features/authentification/implementation/proconnect/proconnectSignout'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { cheminInterne } from '@/libraries/chemin-interne'
 import {
   type EncodedState,
   encodeSerializableState,
@@ -18,11 +19,10 @@ const redirectionVers = (location: string) =>
   new Response('OK', { status: 303, headers: { location } })
 
 export const GET = async (request: NextRequest) => {
-  const callbackUrlRaw = request.nextUrl.searchParams.get('callbackUrl') || '/'
-
-  const callbackUrl = callbackUrlRaw.startsWith('http')
-    ? callbackUrlRaw
-    : getServerUrl(callbackUrlRaw, { absolutePath: true })
+  const callbackUrl = getServerUrl(
+    cheminInterne(request.nextUrl.searchParams.get('callbackUrl')),
+    { absolutePath: true },
+  )
 
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
   const user = sessionToken

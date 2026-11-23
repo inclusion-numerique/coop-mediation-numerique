@@ -20,6 +20,7 @@ import {
   debutDispositifConum,
   derniereDateDuFormulaire,
 } from '@/features/activites/ui/saisie/validation/CraDateValidation'
+import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
@@ -72,7 +73,7 @@ const CraAnimationForm = ({
         priority: 'success',
         message: 'L’animation a bien été enregistrée.',
       })
-      router.push(retour ?? '/coop/mes-coordinations')
+      router.push(cheminInterne(retour, '/coop/mes-coordinations'))
       router.refresh()
     },
   })
