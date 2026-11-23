@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { PropsWithChildren } from 'react'
-import styles from '@/features/authentification/ui/components/AuthCard.module.css'
+import styles from '@/features/authentification/ui/AuthCard.module.css'
 
 export const AuthCard = ({
   children,
