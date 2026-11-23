@@ -7,9 +7,11 @@ import {
   optionsDesDispositifs,
   optionsDesStatuts,
 } from '@/features/utilisateurs/ui'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '../../action/rechercher-des-employeuses.key'
 import { FiltreAChoixUnique } from './FiltreAChoixUnique'
-import { FiltreEmployeuses } from './FiltreEmployeuses'
+import { FiltreARecherche } from './FiltreARecherche'
 import { FiltreRoles } from './FiltreRoles'
 
 const optionsChoisies = (
@@ -49,11 +51,19 @@ export const Filtres = ({
       options={optionsDesStatuts}
       valeurInitiale={filtres.statut}
     />
-    <FiltreEmployeuses
-      employeusesInitiales={optionsChoisies(
-        options.employeuses,
-        filtres.employeuses,
-      )}
+    <FiltreARecherche
+      parametre="employeuses"
+      titre="Employeuse"
+      libelle="Filtrer par structure employeuse"
+      placeholder="Nom, SIRET ou commune de la structure"
+      selection={{
+        singular: 'employeuse sélectionnée',
+        plural: 'employeuses sélectionnées',
+      }}
+      rechercher={(input) =>
+        inject(RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY)(input)
+      }
+      initiales={optionsChoisies(options.employeuses, filtres.employeuses)}
     />
     {filtreDeLieu}
   </div>

@@ -15,45 +15,64 @@ import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { EmployeuseOptions, employeuseComboBox } from './employeuse-combo-box'
+import {
+  comboBoxDeRecherche,
+  OptionsDeRecherche,
+  type Rechercher,
+} from './combo-box-de-recherche'
 
 const aucune = (): SelectOption | null => null
 
-export const FiltreEmployeuses = ({
-  employeusesInitiales,
+export const FiltreARecherche = ({
+  parametre,
+  titre,
+  libelle,
+  placeholder,
+  selection,
+  rechercher,
+  initiales,
 }: {
-  employeusesInitiales: readonly SelectOption[]
+  parametre: string
+  titre: string
+  libelle: string
+  placeholder: string
+  selection: { singular: string; plural: string }
+  rechercher: Rechercher
+  initiales: readonly SelectOption[]
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [ouvert, setOuvert] = useState(false)
-  const [employeuses, setEmployeuses] = useState(employeusesInitiales)
+  const [choisies, setChoisies] = useState(initiales)
   const champRef = useRef<HTMLDivElement>(null)
   const enAttente = !useHydrated()
 
-  useEffect(() => setEmployeuses(employeusesInitiales), [employeusesInitiales])
+  useEffect(() => setChoisies(initiales), [initiales])
 
-  const form = useAppForm({ defaultValues: { employeuse: aucune() } })
+  const form = useAppForm({ defaultValues: { choix: aucune() } })
 
-  const appliquer = (choisies: readonly SelectOption[], fermer = false) => {
+  const appliquer = (
+    selectionnees: readonly SelectOption[],
+    fermer = false,
+  ) => {
     const params = new URLSearchParams(searchParams.toString())
-    update(params)('employeuses', [...choisies])
+    update(params)(parametre, [...selectionnees])
     resetPagination(params)
     if (fermer) setOuvert(false)
-    form.setFieldValue('employeuse', null)
+    form.setFieldValue('choix', null)
     router.replace(`?${params}`, { scroll: false })
   }
 
   const choisir = (option: SelectOption) => {
-    setEmployeuses((precedentes) => [...precedentes, option])
-    queueMicrotask(() => form.setFieldValue('employeuse', null))
+    setChoisies((precedentes) => [...precedentes, option])
+    queueMicrotask(() => form.setFieldValue('choix', null))
   }
 
   const retirer = (option: SelectOption) =>
-    setEmployeuses(employeuses.filter(matchingOption(option)))
+    setChoisies(choisies.filter(matchingOption(option)))
 
   const effacer = () => {
-    setEmployeuses([])
+    setChoisies([])
     appliquer([], true)
   }
 
@@ -61,23 +80,23 @@ export const FiltreEmployeuses = ({
     <Popover
       open={ouvert}
       onOpenChange={setOuvert}
-      onInteractOutside={() => appliquer(employeuses)}
-      onEscapeKeyDown={() => appliquer(employeuses)}
+      onInteractOutside={() => appliquer(choisies)}
+      onEscapeKeyDown={() => appliquer(choisies)}
       trigger={
-        <TriggerButton isOpen={ouvert} isFilled={employeuses.length > 0}>
-          Employeuse
-          {employeuses.length > 0 && <>&nbsp;·&nbsp;{employeuses.length}</>}
+        <TriggerButton isOpen={ouvert} isFilled={choisies.length > 0}>
+          {titre}
+          {choisies.length > 0 && <>&nbsp;·&nbsp;{choisies.length}</>}
         </TriggerButton>
       }
     >
-      <form style={{ width: 384 }} action={() => appliquer(employeuses, true)}>
+      <form style={{ width: 384 }} action={() => appliquer(choisies, true)}>
         <form.AppForm>
-          <form.AppField name="employeuse">
+          <form.AppField name="choix">
             {(field) => (
               <field.ComboBox
                 isPending={enAttente}
                 onSelect={choisir}
-                {...employeuseComboBox(() => employeuses)}
+                {...comboBoxDeRecherche(rechercher, () => choisies)}
               >
                 {({
                   getLabelProps,
@@ -93,14 +112,14 @@ export const FiltreEmployeuses = ({
                         nativeLabelProps={getLabelProps()}
                         nativeInputProps={{
                           ...getInputProps(),
-                          placeholder: 'Nom, SIRET ou commune de la structure',
+                          placeholder,
                         }}
-                        label="Filtrer par structure employeuse"
+                        label={libelle}
                       />
                     </div>
                     <Options
                       {...optionsProps}
-                      {...EmployeuseOptions}
+                      {...OptionsDeRecherche}
                       anchorRef={champRef}
                       className="fr-index-2000"
                     />
@@ -110,15 +129,12 @@ export const FiltreEmployeuses = ({
             )}
           </form.AppField>
         </form.AppForm>
-        {employeuses.length > 0 && (
+        {choisies.length > 0 && (
           <>
             <FilterSelection
-              options={[...employeuses]}
+              options={[...choisies]}
               onRemoveFilter={retirer}
-              label={{
-                singular: 'employeuse sélectionnée',
-                plural: 'employeuses sélectionnées',
-              }}
+              label={selection}
             />
             <FilterFooter onClearFilters={effacer} />
           </>
