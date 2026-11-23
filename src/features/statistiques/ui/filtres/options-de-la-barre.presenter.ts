@@ -85,7 +85,7 @@ export const optionsDesStatistiques = async <OptionDeBeneficiaire>(
     initialBeneficiairesOptions,
     initialMediateursOptions: membres.map((membre) => ({
       label: libelleDuMembre(membre),
-      value: { mediateurId: membre.mediateurId, email: membre.email },
+      value: { mediateurId: membre.mediateurId },
     })),
     lieuxActiviteOptions,
     structuresEmployeusesOptions: employeuses.map(({ id, nom, commune }) => ({

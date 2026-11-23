@@ -49,6 +49,15 @@ describe('options des statistiques', () => {
     ])
   })
 
+  it('n’envoie pas l’e-mail des membres au navigateur', async () => {
+    const options = await optionsDesStatistiques(fournisseurs)
+    expect(options.initialMediateursOptions.map(({ value }) => value)).toEqual([
+      { mediateurId: 'm1' },
+      { mediateurId: 'm2' },
+      { mediateurId: 'm3' },
+    ])
+  })
+
   it('reprend la portée des tags et les employeuses', async () => {
     const options = await optionsDesStatistiques(fournisseurs)
     expect(options.tagsOptions).toEqual([
