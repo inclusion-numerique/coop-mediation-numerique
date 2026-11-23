@@ -5,7 +5,7 @@ import {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
 } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 const resultats: { trouves?: readonly LieuActiviteTrouve[] } = {}

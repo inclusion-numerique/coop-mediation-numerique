@@ -1,9 +1,9 @@
-import { JAMAIS, type Jalon, plusRecent } from './jalon'
 import {
   coordinateurDe,
   mediateurDe,
   type Rattachements,
 } from './rattachements'
+import { JAMAIS, type Jalon, plusRecent } from './relances/jalon'
 
 export type ActiviteMediateur = {
   readonly derniereActivite: Jalon

@@ -3,11 +3,14 @@ import { getServerUrl } from '@/configuration/projet/baseUrl'
 import type {
   BilanModele,
   OperationSynchronisation,
-} from '../../../../domain/bilan-synchronisation'
-import type { CompteRdvUtilisable } from '../../../../domain/compte-rdv'
-import type { OrganisationId } from '../../../../domain/organisation-id'
+} from '../../../../domain/compte/bilan-synchronisation'
+import type { CompteRdvUtilisable } from '../../../../domain/compte/compte-rdv'
+import type { OrganisationId } from '../../../../domain/identifiants/organisation-id'
 import type { RdvServicePublicApi } from '../../../../domain/ports'
-import { abonnementsDeLaCoop, estAJour } from '../../../../domain/webhook'
+import {
+  abonnementsDeLaCoop,
+  estAJour,
+} from '../../../../domain/webhook/webhook'
 
 /** Journal de la passe, tenu par l'orchestrateur qui appelle cet adaptateur. */
 export type AppendLog = (log: string | string[]) => void

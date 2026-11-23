@@ -1,5 +1,5 @@
 import { derniereActiviteDe, type SituationDActivite } from './activite'
-import type { CycleDeVie } from './cycle-de-vie'
+import type { CycleDeVie } from './relances/cycle-de-vie'
 import type { RoleUtilisateur } from './role-utilisateur'
 
 export const paliersInscription = [7, 30, 60, 90] as const

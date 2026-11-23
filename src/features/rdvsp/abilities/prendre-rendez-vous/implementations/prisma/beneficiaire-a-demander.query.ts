@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { UsagerId } from '../../../../domain/identifiants/usager-id'
 import {
   EmailExterne,
   NomExterne,
   PrenomExterne,
   TelephoneExterne,
 } from '../../../../domain/identite'
-import { UsagerId } from '../../../../domain/usager-id'
 import {
   type BeneficiaireCible,
   BeneficiaireCibleId,

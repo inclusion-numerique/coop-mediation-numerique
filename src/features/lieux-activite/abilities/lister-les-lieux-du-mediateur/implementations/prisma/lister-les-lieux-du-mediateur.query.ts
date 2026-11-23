@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import type { MediateurId } from '../../../../domain/mediateur-id'
-import { RattachementId } from '../../../../domain/rattachement-id'
+import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
+import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
 import {
   ordonnancement,
   type TriDesLieux,

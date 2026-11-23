@@ -10,7 +10,7 @@ import {
   supprimerRdvDeLaNotification,
 } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.prisma'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/recevoir-webhook-rdv'
-import { EvenementWebhook } from '@/features/rdvsp/domain/evenement-webhook'
+import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import {
   ID_TEST,
   rdvEnBase,

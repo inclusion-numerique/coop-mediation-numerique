@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { CoordinateurId } from './coordinateur-id'
-import { MediateurId } from './mediateur-id'
+import { CoordinateurId } from './identifiants/coordinateur-id'
+import { MediateurId } from './identifiants/mediateur-id'
 import {
   coordinateurDe,
   identifiantsDe,

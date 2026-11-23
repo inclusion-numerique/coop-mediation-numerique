@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
-import type { CompteRdvLie } from '../../../domain/compte-rdv'
+import type { CompteRdvLie } from '../../../domain/compte/compte-rdv'
+import { JetonAcces } from '../../../domain/compte/jetons-oauth'
 import { AccesRefuse, ApiIndisponible } from '../../../domain/errors'
-import { JetonAcces } from '../../../domain/jetons-oauth'
-import { OrganisationId } from '../../../domain/organisation-id'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { RdvId } from '../../../domain/rdv-id'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { RdvId } from '../../../domain/identifiants/rdv-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import { synchroniserRdvs } from './synchroniser-rdvs'
 
 /**

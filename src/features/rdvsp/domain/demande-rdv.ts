@@ -1,13 +1,13 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
+import type { RdvId } from './identifiants/rdv-id'
+import type { UsagerId } from './identifiants/usager-id'
 import type {
   EmailExterne,
   NomExterne,
   PrenomExterne,
   TelephoneExterne,
 } from './identite'
-import type { RdvId } from './rdv-id'
-import type { UsagerId } from './usager-id'
 
 export const DemandeRdvId = defineModel(
   z.number().int().positive().brand('DemandeRdvId'),

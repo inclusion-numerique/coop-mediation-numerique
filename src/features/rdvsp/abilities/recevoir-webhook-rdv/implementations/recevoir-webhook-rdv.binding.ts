@@ -1,5 +1,5 @@
-import type { EvenementWebhook } from '../../../domain/evenement-webhook'
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/ports'
+import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import { journaliserWebhook } from '../../../implementations/webhook/journal'
 import { lireNotificationRdv } from './api/lire-notification-rdv'
 import { rapprocherBeneficiairesDuRdv } from './beneficiaire/rapprocher-beneficiaires-du-rdv.adapter'

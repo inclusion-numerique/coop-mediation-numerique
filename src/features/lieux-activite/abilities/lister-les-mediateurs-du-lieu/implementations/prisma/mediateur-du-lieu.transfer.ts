@@ -5,9 +5,9 @@ import {
 } from '@/libraries/departement'
 import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { nomAffiche } from '@/libraries/nom-affiche'
-import { MediateurId } from '../../../../domain/mediateur-id'
-import { RattachementId } from '../../../../domain/rattachement-id'
-import { UserId } from '../../../../domain/utilisateur-id'
+import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
+import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
+import { UserId } from '../../../../domain/identifiants/utilisateur-id'
 import {
   type CoordinateurDuMediateur,
   Courriel,

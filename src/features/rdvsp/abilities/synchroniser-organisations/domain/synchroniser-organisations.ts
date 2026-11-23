@@ -1,8 +1,8 @@
 import type { Result } from '@/libraries/result'
-import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
+import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { ErreurRdvApi } from '../../../domain/errors'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { Organisation } from '../../../domain/organisation'
-import type { OrganisationId } from '../../../domain/organisation-id'
 import type { PlanSynchronisation } from './plan-synchronisation'
 
 /**

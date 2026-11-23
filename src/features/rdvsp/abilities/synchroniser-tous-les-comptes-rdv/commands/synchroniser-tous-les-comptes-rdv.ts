@@ -1,5 +1,5 @@
-import type { CompteRdv } from '@/features/rdvsp/domain/compte-rdv'
-import type { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import type { CompteRdv } from '@/features/rdvsp/domain/compte/compte-rdv'
+import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import type { Result } from '@/libraries/result'
 import {
   type BilanDeSynchronisation,

@@ -1,12 +1,12 @@
 import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import { NomAffiche } from '@/libraries/nom-affiche'
-import { IdentifiantCartographie } from '../domain/ids-cartographie-nationale'
+import { IdentifiantCartographie } from '../domain/cartographie-nationale/ids-cartographie-nationale'
+import { VisibiliteCartographie } from '../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../domain/identifiants/lieu-id'
 import type { LieuEnListe } from '../domain/lieu-en-liste'
-import { LieuId } from '../domain/lieu-id'
 import { NombreDeMediateurs } from '../domain/nombres'
 import { SourceCartographie } from '../domain/tracabilite'
-import { VisibiliteCartographie } from '../domain/visibilite-cartographie'
 import { carteDuLieu } from './lieu-activite-card.presenter'
 
 const maintenant = new Date('2026-11-09T12:00:00Z')

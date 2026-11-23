@@ -1,13 +1,13 @@
 import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../domain/adresse-employeuse'
-import type { Affectation } from '../domain/affectation'
-import type { Contrat } from '../domain/contrat'
+import type { Affectation } from '../domain/affectation/affectation'
+import type { Contrat } from '../domain/affectation/contrat'
+import { PeriodeEmploi } from '../domain/affectation/periode-emploi'
+import { SourceAffectation } from '../domain/affectation/source-affectation'
+import type { AffectationActuelle } from '../domain/consultation/employeuse-actuelle'
 import { DenominationEmployeuse } from '../domain/denomination-employeuse'
 import type { Employeuse } from '../domain/employeuse'
-import type { AffectationActuelle } from '../domain/employeuse-actuelle'
 import { EmployeuseId } from '../domain/employeuse-id'
-import { PeriodeEmploi } from '../domain/periode-emploi'
-import { SourceAffectation } from '../domain/source-affectation'
 
 /** Employeuse de test, construite par les constructeurs du domaine (jamais par `as`). */
 export const employeuse = (

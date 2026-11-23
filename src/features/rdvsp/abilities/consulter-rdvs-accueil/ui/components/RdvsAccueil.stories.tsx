@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { RdvId } from '@/features/rdvsp/domain/rdv-id'
+import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { success } from '@/libraries/result'

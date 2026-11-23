@@ -6,7 +6,7 @@ import { useState } from 'react'
 import {
   type CompteDeLaSession,
   statutDuCompteDeLaSession,
-} from '@/features/rdvsp/domain/sante-compte'
+} from '@/features/rdvsp/domain/compte/sante-compte'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'

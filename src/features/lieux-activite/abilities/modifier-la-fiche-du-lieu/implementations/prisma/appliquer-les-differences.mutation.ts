@@ -1,7 +1,7 @@
 import { failure, type Result, success } from '@/libraries/result'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
+import type { UserId } from '../../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../../domain/lieu'
-import type { LieuId } from '../../../../domain/lieu-id'
-import type { UserId } from '../../../../domain/utilisateur-id'
 import {
   type ChoixDesDifferences,
   differences,

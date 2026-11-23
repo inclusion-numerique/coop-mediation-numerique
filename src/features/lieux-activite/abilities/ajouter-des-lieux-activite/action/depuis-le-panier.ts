@@ -1,8 +1,8 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { failure, type Result, success } from '@/libraries/result'
-import { BanId } from '../../../domain/ban-id'
-import { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
-import { LieuId } from '../../../domain/lieu-id'
+import { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import { BanId } from '../../../domain/identifiants/ban-id'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { adresseSaisie, localisationSaisie } from '../../../domain/saisie'
 import {
   AdresseNonValidee,

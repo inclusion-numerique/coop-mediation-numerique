@@ -10,8 +10,8 @@ import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lie
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>

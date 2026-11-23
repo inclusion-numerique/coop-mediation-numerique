@@ -16,8 +16,8 @@ import {
   type UsagerDeLaDemande,
 } from '@/features/rdvsp/domain/demande-rdv'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
-import { UsagerId } from '@/features/rdvsp/domain/usager-id'
 import {
   beneficiaireEnBase,
   ID_TEST,

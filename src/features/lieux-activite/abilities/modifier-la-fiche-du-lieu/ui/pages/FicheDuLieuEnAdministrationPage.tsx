@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import type { LieuId } from '../../../../domain/lieu-id'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { EnteteDeLaFicheEnAdministration } from '../components/EnteteDeLaFicheEnAdministration'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'

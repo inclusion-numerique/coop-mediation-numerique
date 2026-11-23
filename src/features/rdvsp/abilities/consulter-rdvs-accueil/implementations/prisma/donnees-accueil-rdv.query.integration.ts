@@ -3,7 +3,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
-} from '@/features/rdvsp/domain/compte-rdv'
+} from '@/features/rdvsp/domain/compte/compte-rdv'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import { mediateurSansActivitesUserId } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'

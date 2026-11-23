@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { MediateurId } from '../../../domain/mediateur-id'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { doitEtrePrevenu, peutRetirer, quiRetire } from './qui-retire'
 
 const marc = MediateurId('550e8400-e29b-41d4-a716-446655440021')

@@ -1,4 +1,4 @@
-import type { EvenementWebhook } from '../../../domain/evenement-webhook'
+import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 
 /**
  * Bénéficiaire de La Coop rattaché à l'usager notifié. L'identifiant est

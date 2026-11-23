@@ -1,21 +1,25 @@
 import type { Result } from '@/libraries/result'
 import type { Agent } from './agent'
-import type { CompteRdvUtilisable } from './compte-rdv'
+import type { CompteRdvUtilisable } from './compte/compte-rdv'
+import type { JetonsOAuth } from './compte/jetons-oauth'
 import type { DemandeRdv, DemandeRdvCreee } from './demande-rdv'
 import type { ErreurRdvApi } from './errors'
-import type { JetonsOAuth } from './jetons-oauth'
+import type { OrganisationId } from './identifiants/organisation-id'
+import type { RdvAgentId } from './identifiants/rdv-agent-id'
+import type { RdvId } from './identifiants/rdv-id'
+import type { UsagerId } from './identifiants/usager-id'
 import type { Organisation } from './organisation'
-import type { OrganisationId } from './organisation-id'
 import type { RdvSynchronise } from './rdv'
-import type { RdvAgentId } from './rdv-agent-id'
-import type { RdvId } from './rdv-id'
 import type {
   StatutPresence,
   StatutPresenceModifiable,
 } from './statut-presence'
 import type { Usager } from './usager'
-import type { UsagerId } from './usager-id'
-import type { AbonnementWebhook, WebhookId, WebhookInstalle } from './webhook'
+import type {
+  AbonnementWebhook,
+  WebhookId,
+  WebhookInstalle,
+} from './webhook/webhook'
 
 export type FiltresRdvs = {
   /** Restreint aux rendez-vous de cet agent, comme le fait la synchronisation. */

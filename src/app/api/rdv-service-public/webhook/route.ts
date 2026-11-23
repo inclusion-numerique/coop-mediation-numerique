@@ -4,7 +4,7 @@ import { signaler } from '@/configuration/telemetry/error-reporter/server/signal
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { traiterNotificationRdvAvec } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/recevoir-webhook-usager.binding'
-import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/aiguiller-notification-webhook'
+import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'
 import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal'
 import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/lire-notification-webhook'
 import {

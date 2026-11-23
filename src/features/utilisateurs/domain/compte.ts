@@ -1,8 +1,8 @@
-import type { AdresseCourriel } from './adresse-courriel'
 import type { Dispositif } from './dispositif'
+import type { UtilisateurId } from './identifiants/utilisateur-id'
+import type { AdresseCourriel } from './identite/adresse-courriel'
 import type { RattachementsDuCompte } from './rattachements'
 import type { RoleUtilisateur } from './role-utilisateur'
-import type { UtilisateurId } from './utilisateur-id'
 
 export type EtatCompte =
   | { readonly _tag: 'actif' }

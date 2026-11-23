@@ -1,6 +1,6 @@
 import { type Failure, type Result, success } from '@/libraries/result'
 import type { ErreurRdvApi } from '../../../domain/errors'
-import type { OrganisationId } from '../../../domain/organisation-id'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvSynchronise } from '../../../domain/rdv'
 
 export type LectureOrganisation = {

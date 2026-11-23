@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { LieuId } from '../../../../domain/lieu-id'
-import type { MediateurId } from '../../../../domain/mediateur-id'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
+import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable'
 
 export const verifierUnLieuDActivite = async ({

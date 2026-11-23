@@ -1,8 +1,8 @@
-import type { Email } from '../../../domain/courriel'
-import type { MediateurId } from '../../../domain/mediateur-id'
-import type { Nom } from '../../../domain/nom'
-import type { NomAffiche } from '../../../domain/nom-affiche'
-import type { Prenom } from '../../../domain/prenom'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
+import type { Email } from '../../../domain/identite/courriel'
+import type { Nom } from '../../../domain/identite/nom'
+import type { NomAffiche } from '../../../domain/identite/nom-affiche'
+import type { Prenom } from '../../../domain/identite/prenom'
 
 type SituationDuMembre = 'Demandeur' | 'Membre' | 'AncienMembre'
 

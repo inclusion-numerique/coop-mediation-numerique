@@ -1,5 +1,5 @@
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { Organisation } from '../../../domain/organisation'
-import type { OrganisationId } from '../../../domain/organisation-id'
 
 /**
  * Ce qu'une synchronisation doit accomplir, décidé avant d'écrire quoi que ce

@@ -3,9 +3,9 @@ import {
   bilanSynchronisationVide,
   bilanVide,
   deriveTotale,
-} from '../../../domain/bilan-synchronisation'
+} from '../../../domain/compte/bilan-synchronisation'
 import { diagnosticErreur } from '../../../domain/errors'
-import { organisationsAccessibles } from '../../../domain/organisation-id'
+import { organisationsAccessibles } from '../../../domain/identifiants/organisation-id'
 import {
   type CloturerJournal,
   compteVuParLaPasse,

@@ -1,14 +1,17 @@
 import type { RdvAccount } from '@/generated/prisma/client'
-import { type CompteRdv, MessageErreurCompte } from '../../domain/compte-rdv'
+import {
+  type CompteRdv,
+  MessageErreurCompte,
+} from '../../domain/compte/compte-rdv'
 import {
   JetonAcces,
   JetonRafraichissement,
   type JetonsOAuth,
   PorteeOAuth,
-} from '../../domain/jetons-oauth'
-import { OrganisationId } from '../../domain/organisation-id'
-import { RdvAgentId } from '../../domain/rdv-agent-id'
-import { UtilisateurCoopId } from '../../domain/utilisateur-coop-id'
+} from '../../domain/compte/jetons-oauth'
+import { OrganisationId } from '../../domain/identifiants/organisation-id'
+import { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
+import { UtilisateurCoopId } from '../../domain/identifiants/utilisateur-coop-id'
 import { absentSiVide } from './vide'
 
 /**

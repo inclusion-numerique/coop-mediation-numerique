@@ -13,8 +13,8 @@ import {
   BoutonDeRetrait,
   ModaleDeRetrait,
 } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import {
   hrefDuLieuEnListe,

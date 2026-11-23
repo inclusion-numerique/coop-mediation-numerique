@@ -10,7 +10,8 @@ import {
   Services,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { BanId } from '../../../domain/ban-id'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import { BanId } from '../../../domain/identifiants/ban-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import {
   adresseSaisie,
@@ -26,7 +27,6 @@ import {
   telephoneSaisi,
   urlSaisie,
 } from '../../../domain/saisie'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import type { ModificationLieu } from '../domain/modification-lieu'
 import type { SaisieDeSection } from './modifier-la-fiche-du-lieu.validation'
 

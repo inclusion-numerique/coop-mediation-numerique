@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
+import type { UsagerId } from '../../../domain/identifiants/usager-id'
 import type {
   EmailExterne,
   NomExterne,
   PrenomExterne,
   TelephoneExterne,
 } from '../../../domain/identite'
-import type { UsagerId } from '../../../domain/usager-id'
 
 /**
  * Le bénéficiaire vu depuis RDV Service Public.

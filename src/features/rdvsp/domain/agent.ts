@@ -1,5 +1,5 @@
+import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { EmailExterne, NomExterne, PrenomExterne } from './identite'
-import type { RdvAgentId } from './rdv-agent-id'
 
 /**
  * L'agent RDV Service Public derrière un compte La Coop. Son e-mail est la clé

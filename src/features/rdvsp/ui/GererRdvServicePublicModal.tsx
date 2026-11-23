@@ -16,7 +16,7 @@ import {
   type CompteDeLaSession,
   type StatutIntegration,
   statutDuCompteDeLaSession,
-} from '../domain/sante-compte'
+} from '../domain/compte/sante-compte'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from './declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from './deconnecter-compte-rdv.key'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'

@@ -3,19 +3,19 @@ import {
   type CompteRdv,
   type CompteRdvUtilisable,
   estUtilisable,
-} from '../../../domain/compte-rdv'
+} from '../../../domain/compte/compte-rdv'
 import {
   CompteNonLie,
   type ErreurRdvApi,
   RdvIntrouvable,
 } from '../../../domain/errors'
-import type { RdvAgentId } from '../../../domain/rdv-agent-id'
-import type { RdvId } from '../../../domain/rdv-id'
+import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import type {
   StatutPresence,
   StatutPresenceModifiable,
 } from '../../../domain/statut-presence'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import { RdvNonAutorise } from './errors'
 
 export type ErreurMiseAJourStatut = RdvNonAutorise | ErreurRdvApi

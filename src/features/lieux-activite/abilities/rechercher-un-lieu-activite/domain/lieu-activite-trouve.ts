@@ -1,5 +1,5 @@
 import type { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { LieuId } from '../../../domain/lieu-id'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { NombreDActivites } from '../../../domain/nombres'
 
 export type LieuActiviteTrouve = {

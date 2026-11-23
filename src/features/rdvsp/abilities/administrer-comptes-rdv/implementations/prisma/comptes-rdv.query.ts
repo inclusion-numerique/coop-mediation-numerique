@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { santeDuCompte } from '@/features/rdvsp/domain/sante-compte'
+import { santeDuCompte } from '@/features/rdvsp/domain/compte/sante-compte'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 
 export const getAdministrationRdvspData = async () => {

@@ -1,5 +1,5 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { statutIntegration } from '@/features/rdvsp/domain/sante-compte'
+import { statutIntegration } from '@/features/rdvsp/domain/compte/sante-compte'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'

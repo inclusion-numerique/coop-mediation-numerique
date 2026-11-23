@@ -14,10 +14,12 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import { BanId } from '../../../domain/ban-id'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
+import { BanId } from '../../../domain/identifiants/ban-id'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { UserId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
-import { LieuId } from '../../../domain/lieu-id'
 import {
   adresseSaisie,
   courrielsSaisis,
@@ -31,8 +33,6 @@ import {
   telephoneSaisi,
   urlSaisie,
 } from '../../../domain/saisie'
-import type { UserId } from '../../../domain/utilisateur-id'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 
 const cochees = <Valeur>(
   valeurs: readonly Valeur[] | null | undefined,

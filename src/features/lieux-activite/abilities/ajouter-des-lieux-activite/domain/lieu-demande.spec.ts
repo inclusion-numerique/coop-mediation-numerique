@@ -4,8 +4,8 @@ import {
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { BanId } from '../../../domain/ban-id'
-import { LieuId } from '../../../domain/lieu-id'
+import { BanId } from '../../../domain/identifiants/ban-id'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { estExistant } from './lieu-demande'
 
 const identite = { nom: Nom('Tiers-lieu du Port') }

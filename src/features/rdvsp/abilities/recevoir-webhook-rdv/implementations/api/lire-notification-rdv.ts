@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { failure, success } from '@/libraries/result'
-import { RdvAgentId } from '../../../../domain/rdv-agent-id'
+import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
 import { rdvPayload } from '../../../../implementations/api/payloads'
 import { rdvToDomain } from '../../../../implementations/api/to-domain'
 import type { LireNotificationRdv } from '../../domain/recevoir-webhook-rdv'

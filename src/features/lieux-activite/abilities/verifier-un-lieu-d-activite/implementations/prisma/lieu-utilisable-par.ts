@@ -1,5 +1,5 @@
-import { LieuId } from '../../../../domain/lieu-id'
-import { MediateurId } from '../../../../domain/mediateur-id'
+import { LieuId } from '../../../../domain/identifiants/lieu-id'
+import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { verifierUnLieuDActivite } from './verifier-un-lieu-d-activite.query'
 
 export const lieuUtilisablePar =

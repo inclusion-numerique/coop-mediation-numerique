@@ -1,5 +1,5 @@
-import type { CoordinateurId } from './coordinateur-id'
-import type { MediateurId } from './mediateur-id'
+import type { CoordinateurId } from './identifiants/coordinateur-id'
+import type { MediateurId } from './identifiants/mediateur-id'
 
 export type Rattachements<M, C> =
   | { readonly _tag: 'aucun' }

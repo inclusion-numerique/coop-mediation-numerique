@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { RdvId } from '../../../domain/rdv-id'
+import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { StatutPresenceModifiable } from '../../../domain/statut-presence'
 
 /**

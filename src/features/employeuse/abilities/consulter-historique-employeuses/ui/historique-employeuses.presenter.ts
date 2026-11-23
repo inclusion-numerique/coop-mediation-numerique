@@ -1,9 +1,9 @@
-import type { EmployeuseHistorique } from '../../../domain/employeuses-historique'
 import {
   debutEmploi,
   estTerminee,
   finEmploi,
-} from '../../../domain/periode-emploi'
+} from '../../../domain/affectation/periode-emploi'
+import type { EmployeuseHistorique } from '../../../domain/consultation/employeuses-historique'
 import { employeuseAffichage } from '../../../ui/employeuse.presenter'
 
 /**

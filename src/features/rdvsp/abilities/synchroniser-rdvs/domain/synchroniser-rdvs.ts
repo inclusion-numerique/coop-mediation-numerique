@@ -1,8 +1,8 @@
 import type { Result } from '@/libraries/result'
-import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
+import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { ErreurRdvApi } from '../../../domain/errors'
-import type { OrganisationId } from '../../../domain/organisation-id'
-import type { RdvId } from '../../../domain/rdv-id'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { BilanModele } from './plan-modele'
 import type { EtatConnu, PlanLot } from './plan-rdvs'
 

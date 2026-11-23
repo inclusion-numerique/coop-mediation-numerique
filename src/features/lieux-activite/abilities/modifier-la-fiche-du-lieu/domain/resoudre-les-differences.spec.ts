@@ -22,12 +22,12 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { UserId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
-import { LieuId } from '../../../domain/lieu-id'
 import { ModificationInconnue } from '../../../domain/tracabilite'
-import { UserId } from '../../../domain/utilisateur-id'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import { differences } from './differences'
 import { resoudreLesDifferences } from './resoudre-les-differences'
 

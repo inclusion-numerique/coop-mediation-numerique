@@ -7,7 +7,7 @@ import {
   rdvMyHomepageLink,
 } from '@/features/rdvsp/ui/urls'
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
-import { statutDuCompteDeLaSession } from '../domain/sante-compte'
+import { statutDuCompteDeLaSession } from '../domain/compte/sante-compte'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 

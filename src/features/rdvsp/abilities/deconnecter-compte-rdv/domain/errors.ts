@@ -1,4 +1,4 @@
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 
 /**
  * Le médiateur n'a aucun compte RDV Service Public à délier. Rendu en `Result`

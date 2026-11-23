@@ -6,7 +6,7 @@ import {
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import { toTitleCase } from '@/libraries/texte/toTitleCase'
-import { LieuId } from '../../../../domain/lieu-id'
+import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
 import {

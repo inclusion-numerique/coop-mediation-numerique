@@ -1,8 +1,8 @@
 import { failure, type Result, success } from '@/libraries/result'
-import type { AdhesionId } from './adhesion-id'
-import type { CoordinateurId } from './coordinateur-id'
 import { DejaMembre, PasMembre } from './errors'
-import type { MediateurId } from './mediateur-id'
+import type { AdhesionId } from './identifiants/adhesion-id'
+import type { CoordinateurId } from './identifiants/coordinateur-id'
+import type { MediateurId } from './identifiants/mediateur-id'
 
 type SocleAdhesion = {
   readonly id: AdhesionId

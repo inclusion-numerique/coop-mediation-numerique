@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { RdvAgentId } from '../../../../domain/rdv-agent-id'
-import { RdvId } from '../../../../domain/rdv-id'
+import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
+import { RdvId } from '../../../../domain/identifiants/rdv-id'
+import { UsagerId } from '../../../../domain/identifiants/usager-id'
 import { StatutPresence } from '../../../../domain/statut-presence'
-import { UsagerId } from '../../../../domain/usager-id'
 import type { LireRdvPourActivite } from '../../domain/creer-activite-depuis-rdv'
 
 /**

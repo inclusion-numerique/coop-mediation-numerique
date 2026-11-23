@@ -1,9 +1,9 @@
 import type { Result } from '@/libraries/result'
-import type { EvenementWebhook } from '../../../domain/evenement-webhook'
-import type { OrganisationId } from '../../../domain/organisation-id'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { Rdv } from '../../../domain/rdv'
-import type { RdvAgentId } from '../../../domain/rdv-agent-id'
-import type { RdvId } from '../../../domain/rdv-id'
+import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import type { RdvConnu } from './decision-webhook'
 
 type RaisonNonTraitee = 'payloadInexploitable' | 'aucunAgent' | 'compteInconnu'

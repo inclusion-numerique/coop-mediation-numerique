@@ -3,13 +3,13 @@ import {
   Pivot,
   Services,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { estPublie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
+import type { UserId } from '../../../domain/identifiants/utilisateur-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { servicesALaPublication } from '../../../domain/publication'
 import { ModifieParUtilisateur } from '../../../domain/tracabilite'
-import type { UserId } from '../../../domain/utilisateur-id'
-import { estPublie } from '../../../domain/visibilite-cartographie'
 import {
   contactAvecJoignabilite,
   contactAvecSitesWeb,

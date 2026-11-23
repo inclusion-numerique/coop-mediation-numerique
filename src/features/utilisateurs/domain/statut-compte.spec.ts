@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { ActiviteCoordinateur, ActiviteMediateur } from './activite'
-import { cycleDeVie } from './cycle-de-vie'
-import { JAMAIS, jalon } from './jalon'
 import { rattachements } from './rattachements'
+import { cycleDeVie } from './relances/cycle-de-vie'
+import { JAMAIS, jalon } from './relances/jalon'
 import { RoleUtilisateur } from './role-utilisateur'
 import { type SituationDuCompte, statutDe } from './statut-compte'
 

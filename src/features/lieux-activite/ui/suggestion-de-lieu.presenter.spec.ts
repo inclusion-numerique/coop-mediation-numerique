@@ -4,8 +4,8 @@ import {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { IdentifiantCartographie } from '../domain/ids-cartographie-nationale'
-import { LieuId } from '../domain/lieu-id'
+import { IdentifiantCartographie } from '../domain/cartographie-nationale/ids-cartographie-nationale'
+import { LieuId } from '../domain/identifiants/lieu-id'
 import { NombreDeLieux } from '../domain/nombres'
 import { SourceExterne } from '../domain/source-externe'
 import {

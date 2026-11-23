@@ -1,16 +1,16 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@/generated/prisma/client'
 import { nomAffiche } from '@/libraries/nom-affiche'
+import { IdentifiantCartographie } from '../../domain/cartographie-nationale/ids-cartographie-nationale'
+import { VisibiliteCartographie } from '../../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../../domain/identifiants/lieu-id'
 import { NomUsage } from '../../domain/identite-sirene'
-import { IdentifiantCartographie } from '../../domain/ids-cartographie-nationale'
 import type {
   LieuEnListe,
   ModificationEnListe,
 } from '../../domain/lieu-en-liste'
-import { LieuId } from '../../domain/lieu-id'
 import { NombreDeMediateurs } from '../../domain/nombres'
 import { SourceCartographie } from '../../domain/tracabilite'
-import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
 import { adresseDesColonnes } from './adresse-des-colonnes'
 import { adresseDeLInscription, inscriptionPourLaFiche } from './registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'

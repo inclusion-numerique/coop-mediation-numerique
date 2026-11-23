@@ -2,8 +2,8 @@ import { z } from 'zod'
 import {
   EvenementWebhook,
   evenementsWebhook,
-} from '../../domain/evenement-webhook'
-import type { NotificationWebhook } from '../../domain/notification-webhook'
+} from '../../domain/webhook/evenement-webhook'
+import type { NotificationWebhook } from '../../domain/webhook/notification-webhook'
 
 const enveloppePayload = z.object({
   data: z.unknown(),

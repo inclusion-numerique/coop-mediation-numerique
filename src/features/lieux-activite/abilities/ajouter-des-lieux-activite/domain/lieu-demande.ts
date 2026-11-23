@@ -3,9 +3,9 @@ import type {
   Localisation,
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { BanId } from '../../../domain/ban-id'
-import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
-import type { LieuId } from '../../../domain/lieu-id'
+import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import type { BanId } from '../../../domain/identifiants/ban-id'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
 
 export type AdresseValidee = {
   readonly adresse: Adresse

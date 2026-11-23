@@ -1,9 +1,9 @@
 import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { LieuId } from '../../../domain/lieu-id'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { RattachementId } from '../../../domain/identifiants/rattachement-id'
 import { NombreDeMediateurs } from '../../../domain/nombres'
-import { RattachementId } from '../../../domain/rattachement-id'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import type { LieuDuMediateurEnListe } from '../domain'
 import { lieuEnAdministration } from './lieu-en-administration.presenter'
 

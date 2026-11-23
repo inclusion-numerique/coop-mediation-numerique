@@ -1,4 +1,4 @@
-import type { MediateurId } from '../../../domain/mediateur-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { LieuCarto } from './lieu-carto'
 import type { LieuDejaRattache } from './lieu-demande'
 

@@ -13,7 +13,7 @@ import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages
 import { employeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

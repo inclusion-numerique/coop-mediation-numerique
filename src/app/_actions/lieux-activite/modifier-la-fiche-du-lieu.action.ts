@@ -7,8 +7,8 @@ import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modif
 import { depuisLaSaisie } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/depuis-la-saisie'
 import { MODIFIER_LA_FICHE_DU_LIEU_ERRORS } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.errors'
 import { ModifierLaFicheDuLieuValidation } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.validation'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

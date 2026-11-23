@@ -3,7 +3,7 @@ import {
   type BilanSynchronisation,
   deriveDuModele,
   type ModeleSynchronise,
-} from '../../../../domain/bilan-synchronisation'
+} from '../../../../domain/compte/bilan-synchronisation'
 import type {
   CloturerJournal,
   EchouerJournal,

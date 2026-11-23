@@ -1,7 +1,7 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { LieuId } from '../../../domain/lieu-id'
-import { MediateurId } from '../../../domain/mediateur-id'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { demandeDAjout } from './demande-d-ajout'
 import type { LieuDemande } from './lieu-demande'
 

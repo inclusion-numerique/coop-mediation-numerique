@@ -1,9 +1,9 @@
-import type { CompteRdv } from '@/features/rdvsp/domain/compte-rdv'
+import type { CompteRdv } from '@/features/rdvsp/domain/compte/compte-rdv'
 import {
   peutEtreSynchronise,
   santeDuCompte,
-} from '@/features/rdvsp/domain/sante-compte'
-import type { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+} from '@/features/rdvsp/domain/compte/sante-compte'
+import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 
 export type EchecDeSynchronisation = {
   readonly utilisateurId: UtilisateurCoopId

@@ -2,10 +2,10 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import { failure, type Result, success } from '@/libraries/result'
+import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../../../../domain/identifiants/lieu-id'
+import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { Lieu } from '../../../../domain/lieu'
-import { LieuId } from '../../../../domain/lieu-id'
-import type { MediateurId } from '../../../../domain/mediateur-id'
-import { estPublie } from '../../../../domain/visibilite-cartographie'
 import {
   ecrireAuRegistre,
   identiteDuLieu,

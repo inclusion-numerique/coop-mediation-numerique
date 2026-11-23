@@ -1,4 +1,4 @@
-import { estUtilisable } from '../../../domain/compte-rdv'
+import { estUtilisable } from '../../../domain/compte/compte-rdv'
 import type {
   CompteDuMediateur,
   ConsulterRdvsAccueil,

@@ -1,9 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { sendRemovedFromLieuEmail } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/sendRemovedFromLieuEmail'
 import { failure, type Result, success } from '@/libraries/result'
-import type { LieuId } from '../../../../domain/lieu-id'
-import type { MediateurId } from '../../../../domain/mediateur-id'
-import type { UserId } from '../../../../domain/utilisateur-id'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
+import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
+import type { UserId } from '../../../../domain/identifiants/utilisateur-id'
 import {
   type EchecDeRetrait,
   PasEnActiviteSurCeLieu,

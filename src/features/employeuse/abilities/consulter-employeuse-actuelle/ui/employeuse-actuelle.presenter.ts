@@ -1,5 +1,8 @@
-import type { EmployeuseActuelle } from '../../../domain/employeuse-actuelle'
-import { debutEmploi, finEmploi } from '../../../domain/periode-emploi'
+import {
+  debutEmploi,
+  finEmploi,
+} from '../../../domain/affectation/periode-emploi'
+import type { EmployeuseActuelle } from '../../../domain/consultation/employeuse-actuelle'
 import {
   type EmployeuseAffichage,
   employeuseAffichage,

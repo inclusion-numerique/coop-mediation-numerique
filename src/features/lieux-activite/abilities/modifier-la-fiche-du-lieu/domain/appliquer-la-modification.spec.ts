@@ -28,12 +28,12 @@ import {
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { UserId } from '../../../domain/identifiants/utilisateur-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
-import { LieuId } from '../../../domain/lieu-id'
 import { ModificationInconnue } from '../../../domain/tracabilite'
-import { UserId } from '../../../domain/utilisateur-id'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import { appliquerModification } from './appliquer-la-modification'
 
 const maintenant = new Date('2026-09-02T11:00:00Z')

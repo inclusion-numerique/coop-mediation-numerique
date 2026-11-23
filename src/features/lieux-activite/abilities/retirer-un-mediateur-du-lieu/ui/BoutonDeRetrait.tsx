@@ -2,8 +2,8 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import type { LieuId } from '../../../domain/lieu-id'
-import type { MediateurId } from '../../../domain/mediateur-id'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
 const BoutonDeRetrait = ({

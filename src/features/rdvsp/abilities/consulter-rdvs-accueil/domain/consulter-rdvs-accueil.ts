@@ -1,5 +1,8 @@
-import type { CompteRdv, CompteRdvUtilisable } from '../../../domain/compte-rdv'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type {
+  CompteRdv,
+  CompteRdvUtilisable,
+} from '../../../domain/compte/compte-rdv'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import type { DonneesAccueilRdv } from './donnees-accueil-rdv'
 import type { WidgetRdvAccueil } from './widget-rdv'
 

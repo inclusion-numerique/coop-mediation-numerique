@@ -5,7 +5,7 @@ import {
   type LieuDuMediateurEnListe,
   listerLesLieuxDuMediateur,
 } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 

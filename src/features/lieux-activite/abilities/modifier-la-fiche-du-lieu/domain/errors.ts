@@ -1,4 +1,4 @@
-import type { LieuId } from '../../../domain/lieu-id'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
 
 export type FicheIntrouvable = {
   readonly _tag: 'FicheIntrouvable'

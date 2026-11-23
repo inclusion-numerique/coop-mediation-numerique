@@ -9,7 +9,7 @@ import {
   mettreAJourUsager,
 } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.prisma'
 import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/recevoir-webhook-usager'
-import { EvenementWebhook } from '@/features/rdvsp/domain/evenement-webhook'
+import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import {
   beneficiaireEnBase,
   ID_TEST,

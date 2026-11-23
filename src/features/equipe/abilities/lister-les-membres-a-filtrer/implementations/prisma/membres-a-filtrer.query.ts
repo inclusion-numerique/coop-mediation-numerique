@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import type { CoordinateurId } from '../../../../domain/coordinateur-id'
-import { Email } from '../../../../domain/courriel'
-import { MediateurId } from '../../../../domain/mediateur-id'
-import { Nom } from '../../../../domain/nom'
-import { NomAffiche, nomAffiche } from '../../../../domain/nom-affiche'
-import { Prenom } from '../../../../domain/prenom'
+import type { CoordinateurId } from '../../../../domain/identifiants/coordinateur-id'
+import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
+import { Email } from '../../../../domain/identite/courriel'
+import { Nom } from '../../../../domain/identite/nom'
+import { NomAffiche, nomAffiche } from '../../../../domain/identite/nom-affiche'
+import { Prenom } from '../../../../domain/identite/prenom'
 import {
   type MembreAFiltrer,
   type MembreLu,

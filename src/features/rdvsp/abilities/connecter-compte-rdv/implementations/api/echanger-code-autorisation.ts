@@ -5,7 +5,7 @@ import {
   JetonAcces,
   JetonRafraichissement,
   PorteeOAuth,
-} from '../../../../domain/jetons-oauth'
+} from '../../../../domain/compte/jetons-oauth'
 import type { EchangerCodeAutorisation } from '../../domain/connecter-compte-rdv'
 import { CodeAutorisationRefuse } from '../../domain/errors'
 

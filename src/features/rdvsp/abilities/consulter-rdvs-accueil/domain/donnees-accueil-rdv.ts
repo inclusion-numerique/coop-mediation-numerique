@@ -1,5 +1,5 @@
-import type { OrganisationId } from '../../../domain/organisation-id'
-import type { RdvId } from '../../../domain/rdv-id'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { StatutPresence } from '../../../domain/statut-presence'
 
 /**

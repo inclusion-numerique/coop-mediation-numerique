@@ -31,15 +31,15 @@ import {
   type LieuDecrit,
   rattacherAuLieuDecrit,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit'
-import { BanId } from '@/features/lieux-activite/domain/ban-id'
-import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import {
   IdentifiantCartographie,
   IdsCartographieNationale,
-} from '@/features/lieux-activite/domain/ids-cartographie-nationale'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
+} from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
+import type { Fiche } from '@/features/lieux-activite/domain/fiche'
+import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import {
   effacerDuRegistre,
   lieuxSemes,

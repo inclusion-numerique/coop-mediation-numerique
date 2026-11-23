@@ -1,6 +1,6 @@
 import { Courriel } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { MediateurId } from '../../../domain/mediateur-id'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { champsCommuns } from './champs-communs'
 import type { ChampsPartageables } from './lieu-a-fusionner'
 

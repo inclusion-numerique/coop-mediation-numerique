@@ -1,13 +1,16 @@
 import { failure, type Result, success } from '@/libraries/result'
-import { type CompteRdv, estUtilisable } from '../../../domain/compte-rdv'
+import {
+  type CompteRdv,
+  estUtilisable,
+} from '../../../domain/compte/compte-rdv'
 import {
   CompteNonLie,
   type ErreurRdvApi,
   RdvIntrouvable,
 } from '../../../domain/errors'
-import type { RdvId } from '../../../domain/rdv-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import type { StatutPresence } from '../../../domain/statut-presence'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import { RdvNonAutorise } from './errors'
 import type {
   BeneficiaireFusionne,

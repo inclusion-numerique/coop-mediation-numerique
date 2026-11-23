@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { LieuId } from '../../../../domain/lieu-id'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurDuLieu } from '../../domain'
 import {
   mediateurDuLieuSelect,

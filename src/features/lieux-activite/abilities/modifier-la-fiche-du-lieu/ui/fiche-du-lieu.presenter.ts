@@ -2,9 +2,9 @@ import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/d
 import { nomAffiche } from '@/features/lieux-activite/domain/nom-affiche'
 import { CodeInsee, codeDepartementDuCodeInsee } from '@/libraries/insee'
 import { pluriel } from '@/libraries/pluriel'
+import { estPublie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
 import type { Lieu } from '../../../domain/lieu'
-import { estPublie } from '../../../domain/visibilite-cartographie'
 import { estPartage, type FicheDuLieu, type PartageDuLieu } from '../domain'
 import {
   type DescriptionAffichee,

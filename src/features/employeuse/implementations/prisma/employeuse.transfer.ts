@@ -1,25 +1,25 @@
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../../domain/adresse-employeuse'
-import type { Affectation } from '../../domain/affectation'
-import { ContactReferent } from '../../domain/contact-referent'
-import type { Contrat } from '../../domain/contrat'
-import { DenominationEmployeuse } from '../../domain/denomination-employeuse'
-import type { Employeuse } from '../../domain/employeuse'
-import { employeuseALaDate } from '../../domain/employeuse-a-la-date'
+import type { Affectation } from '../../domain/affectation/affectation'
+import type { Contrat } from '../../domain/affectation/contrat'
+import { PeriodeEmploi } from '../../domain/affectation/periode-emploi'
+import { SourceAffectation } from '../../domain/affectation/source-affectation'
+import { employeuseALaDate } from '../../domain/consultation/employeuse-a-la-date'
 import {
   type AffectationActuelle,
   type EmployeuseActuelle,
   employeuseActuelle,
-} from '../../domain/employeuse-actuelle'
-import { EmployeuseId } from '../../domain/employeuse-id'
+} from '../../domain/consultation/employeuse-actuelle'
 import {
   type EmployeuseHistorique,
   employeusesHistorique,
-} from '../../domain/employeuses-historique'
-import { PeriodeEmploi } from '../../domain/periode-emploi'
+} from '../../domain/consultation/employeuses-historique'
+import { ContactReferent } from '../../domain/contact-referent'
+import { DenominationEmployeuse } from '../../domain/denomination-employeuse'
+import type { Employeuse } from '../../domain/employeuse'
+import { EmployeuseId } from '../../domain/employeuse-id'
 import { Rna } from '../../domain/rna'
-import { SourceAffectation } from '../../domain/source-affectation'
 
 /** Colonnes de `main.structure_administrative` dont le domaine a besoin. */
 export const employeuseSelect = {

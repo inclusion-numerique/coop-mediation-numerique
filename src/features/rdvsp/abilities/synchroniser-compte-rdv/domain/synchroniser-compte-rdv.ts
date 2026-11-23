@@ -2,10 +2,10 @@ import type { Result } from '@/libraries/result'
 import type {
   BilanModele,
   BilanSynchronisation,
-} from '../../../domain/bilan-synchronisation'
-import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
+} from '../../../domain/compte/bilan-synchronisation'
+import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { ErreurRdvApi } from '../../../domain/errors'
-import type { OrganisationId } from '../../../domain/organisation-id'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 
 export type PorteeDemandee = {
   readonly compte: CompteRdvUtilisable

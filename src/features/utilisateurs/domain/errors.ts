@@ -1,4 +1,4 @@
-import type { UtilisateurId } from './utilisateur-id'
+import type { UtilisateurId } from './identifiants/utilisateur-id'
 
 export type UtilisateurIntrouvable = {
   readonly _tag: 'UtilisateurIntrouvable'

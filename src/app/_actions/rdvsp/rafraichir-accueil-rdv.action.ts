@@ -8,7 +8,7 @@ import type { RafraichissementAccueil } from '@/features/rdvsp/abilities/consult
 import { consulterRdvsAccueilBinding as consulter } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/consulter-rdvs-accueil.binding'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { fromResult } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

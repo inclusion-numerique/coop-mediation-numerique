@@ -1,7 +1,7 @@
 import type { Result } from '@/libraries/result'
-import type { EvenementWebhook } from '../../../domain/evenement-webhook'
+import type { UsagerId } from '../../../domain/identifiants/usager-id'
 import type { Usager } from '../../../domain/usager'
-import type { UsagerId } from '../../../domain/usager-id'
+import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import type { BeneficiaireLie } from './decision-webhook-usager'
 
 type ResultatWebhookUsager =

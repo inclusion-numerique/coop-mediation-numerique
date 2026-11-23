@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { failure, type Result, success } from '@/libraries/result'
+import type { JetonsOAuth } from '../../domain/compte/jetons-oauth'
 import { ApiIndisponible, type ErreurRdvApi } from '../../domain/errors'
-import type { JetonsOAuth } from '../../domain/jetons-oauth'
 
 export type RevoquerJetons = (
   jetons: JetonsOAuth,

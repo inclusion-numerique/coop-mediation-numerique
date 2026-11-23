@@ -23,14 +23,14 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import { NomAffiche } from '@/libraries/nom-affiche'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { Lieu } from '../../../domain/lieu'
-import { LieuId } from '../../../domain/lieu-id'
 import {
   ModificationInconnue,
   ModifieParSource,
   SourceCartographie,
 } from '../../../domain/tracabilite'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import {
   type FicheDuLieu,
   NombreDActivites,

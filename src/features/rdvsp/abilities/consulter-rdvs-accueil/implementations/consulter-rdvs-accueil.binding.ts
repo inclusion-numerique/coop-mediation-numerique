@@ -1,4 +1,4 @@
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import {
   synchroniserAuChargement as synchroniserAuChargementDuCompte,
   type WidgetRdvAccueil,

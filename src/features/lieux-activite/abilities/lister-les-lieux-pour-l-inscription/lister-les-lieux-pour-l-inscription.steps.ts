@@ -4,7 +4,7 @@ import {
   type LieuPourLInscription,
   listerLesLieuxPourLInscription,
 } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 const listes = new Map<'inscription', readonly LieuPourLInscription[]>()

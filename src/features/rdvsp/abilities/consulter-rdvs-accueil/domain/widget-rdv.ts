@@ -1,4 +1,4 @@
-import type { CompteRdv } from '../../../domain/compte-rdv'
+import type { CompteRdv } from '../../../domain/compte/compte-rdv'
 import type { DonneesAccueilRdv } from './donnees-accueil-rdv'
 
 /**

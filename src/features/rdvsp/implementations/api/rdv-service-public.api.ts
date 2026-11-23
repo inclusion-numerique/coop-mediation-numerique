@@ -1,7 +1,11 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 import type { z } from 'zod'
 import { type Failure, failure, type Result, success } from '@/libraries/result'
-import type { CompteRdvUtilisable } from '../../domain/compte-rdv'
+import type { CompteRdvUtilisable } from '../../domain/compte/compte-rdv'
+import {
+  type JetonsOAuth,
+  jetonsARenouveler,
+} from '../../domain/compte/jetons-oauth'
 import type { DemandeRdv } from '../../domain/demande-rdv'
 import {
   AccesRefuse,
@@ -12,17 +16,16 @@ import {
   RdvIntrouvable,
   ReponseInattendue,
 } from '../../domain/errors'
-import { type JetonsOAuth, jetonsARenouveler } from '../../domain/jetons-oauth'
-import type { OrganisationId } from '../../domain/organisation-id'
+import type { OrganisationId } from '../../domain/identifiants/organisation-id'
+import type { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
+import type { RdvId } from '../../domain/identifiants/rdv-id'
+import type { UsagerId } from '../../domain/identifiants/usager-id'
 import type {
   FiltresRdvs,
   FiltresUsagers,
   RdvServicePublicApi,
 } from '../../domain/ports'
-import type { RdvAgentId } from '../../domain/rdv-agent-id'
-import type { RdvId } from '../../domain/rdv-id'
 import { StatutPresence } from '../../domain/statut-presence'
-import type { UsagerId } from '../../domain/usager-id'
 import {
   demandeRdvPayload,
   jetonsPayload,

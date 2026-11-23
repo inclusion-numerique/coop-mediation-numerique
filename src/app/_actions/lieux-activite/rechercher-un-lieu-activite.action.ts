@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { rechercherUnLieuActivite } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { withInput } from '@/libraries/nextjs'
 
 /**

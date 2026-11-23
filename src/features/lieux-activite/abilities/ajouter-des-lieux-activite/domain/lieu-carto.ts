@@ -1,14 +1,14 @@
 import { v4 } from 'uuid'
+import type { IdsCartographieNationale } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
-import type { IdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { Lieu } from '../../../domain/lieu'
-import { LieuId } from '../../../domain/lieu-id'
 import {
   ModificationInconnue,
   ModifieParSource,
   type SourceCartographie,
 } from '../../../domain/tracabilite'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 
 export type LieuCarto = {
   readonly idsCartographieNationale: IdsCartographieNationale

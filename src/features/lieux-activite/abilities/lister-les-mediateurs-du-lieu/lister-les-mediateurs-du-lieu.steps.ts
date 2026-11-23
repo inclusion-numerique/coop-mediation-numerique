@@ -6,7 +6,7 @@ import {
   listerLesMediateursDuLieu,
   type MediateurDuLieu,
 } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 
 const etat: {
   lieuId?: string

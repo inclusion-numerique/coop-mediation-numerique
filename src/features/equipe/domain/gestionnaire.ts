@@ -1,4 +1,4 @@
-import type { CoordinateurId } from './coordinateur-id'
+import type { CoordinateurId } from './identifiants/coordinateur-id'
 
 export type Gestionnaire =
   | { readonly type: 'Administrateur' }

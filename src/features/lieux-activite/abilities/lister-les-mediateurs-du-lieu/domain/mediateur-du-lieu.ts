@@ -2,9 +2,9 @@ import { z } from 'zod'
 import type { CodeDepartement } from '@/libraries/insee'
 import { defineModel, type Model } from '@/libraries/model'
 import type { NomAffiche } from '@/libraries/nom-affiche'
-import type { MediateurId } from '../../../domain/mediateur-id'
-import type { RattachementId } from '../../../domain/rattachement-id'
-import type { UserId } from '../../../domain/utilisateur-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
+import type { RattachementId } from '../../../domain/identifiants/rattachement-id'
+import type { UserId } from '../../../domain/identifiants/utilisateur-id'
 import type { ProfilDuMediateur } from './profil-du-mediateur'
 
 export const Courriel = defineModel(

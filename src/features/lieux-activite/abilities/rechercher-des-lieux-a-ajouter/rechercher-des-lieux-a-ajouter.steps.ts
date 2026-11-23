@@ -7,8 +7,8 @@ import {
   rechercherDesLieuxAAjouter,
 } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain'
 import { chercherDansLaCoop } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations'
-import { IdentifiantCartographie } from '@/features/lieux-activite/domain/ids-cartographie-nationale'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { IdentifiantCartographie } from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { NombreDeLieux } from '@/features/lieux-activite/domain/nombres'
 import {
   AdresseLibre,

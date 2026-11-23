@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { Email } from '../../../domain/courriel'
-import { MediateurId } from '../../../domain/mediateur-id'
-import { Nom } from '../../../domain/nom'
-import { NomAffiche } from '../../../domain/nom-affiche'
-import { Prenom } from '../../../domain/prenom'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
+import { Email } from '../../../domain/identite/courriel'
+import { Nom } from '../../../domain/identite/nom'
+import { NomAffiche } from '../../../domain/identite/nom-affiche'
+import { Prenom } from '../../../domain/identite/prenom'
 import { type MembreLu, membresDansLOrdre } from './membre-a-filtrer'
 
 const membre = (

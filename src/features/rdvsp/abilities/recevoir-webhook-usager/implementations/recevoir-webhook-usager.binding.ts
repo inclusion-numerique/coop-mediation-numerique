@@ -1,4 +1,4 @@
-import type { EvenementWebhook } from '../../../domain/evenement-webhook'
+import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import { journaliserWebhook } from '../../../implementations/webhook/journal'
 import { lireNotificationUsager } from './api/lire-notification-usager'
 import {

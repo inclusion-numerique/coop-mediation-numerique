@@ -1,4 +1,4 @@
-import type { EmployeuseHistorique } from '../../../domain/employeuses-historique'
+import type { EmployeuseHistorique } from '../../../domain/consultation/employeuses-historique'
 
 /**
  * Toutes les employeuses d'un utilisateur, en cours et passées.

@@ -2,8 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { CoordinateurId } from '../../domain/coordinateur-id'
-import { MediateurId } from '../../domain/mediateur-id'
+import { CoordinateurId } from '../../domain/identifiants/coordinateur-id'
+import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import { listerLesMembresAFiltrer, type MembreAFiltrer } from '.'
 
 type Seme = { userId: string; mediateurId: string; coordinateurId?: string }

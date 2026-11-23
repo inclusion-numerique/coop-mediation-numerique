@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { AdresseRdv } from '../../../domain/adresse-rdv'
 import { DureeEnMinutes } from '../../../domain/duree-en-minutes'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { EmailExterne, NomExterne } from '../../../domain/identite'
 import { NomAtelier, NomMotif } from '../../../domain/libelle'
 import { NomLieu } from '../../../domain/lieu'
-import { OrganisationId } from '../../../domain/organisation-id'
 import { StatutPresence } from '../../../domain/statut-presence'
 import {
   lieuModifie,

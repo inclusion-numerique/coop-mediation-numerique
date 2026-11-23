@@ -15,10 +15,10 @@ import {
   consulterLaFicheDuLieu,
   modifierLaFicheDuLieu,
 } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
-import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
 import {
   ficheSemee,
   semerUneFicheDeLieu,

@@ -1,8 +1,11 @@
 import type { Result } from '@/libraries/result'
-import { type CompteRdv, estUtilisable } from '../../../domain/compte-rdv'
-import type { OrganisationId } from '../../../domain/organisation-id'
-import type { RdvAgentId } from '../../../domain/rdv-agent-id'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import {
+  type CompteRdv,
+  estUtilisable,
+} from '../../../domain/compte/compte-rdv'
+import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 
 type RoleDemandeur = 'User' | 'Admin' | 'Support'
 

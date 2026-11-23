@@ -1,7 +1,7 @@
 import type { Fiche } from '../../../domain/fiche'
+import type { UserId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import { ModifieParUtilisateur } from '../../../domain/tracabilite'
-import type { UserId } from '../../../domain/utilisateur-id'
 import type { ChoixDesDifferences, Difference } from './differences'
 
 export const resoudreLesDifferences = ({

@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { MediateurId } from '../../../../domain/mediateur-id'
+import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import {
   champsDAffichage,
   inscriptionPourLaFiche,

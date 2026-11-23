@@ -20,7 +20,7 @@ import {
   ModaleDeRetrait,
   retraitsDesMediateurs,
 } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

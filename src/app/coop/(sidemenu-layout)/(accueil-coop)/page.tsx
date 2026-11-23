@@ -30,7 +30,7 @@ import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accuei
 import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

@@ -1,6 +1,6 @@
 import type { FrIconClassName, RiIconClassName } from '@codegouvfr/react-dsfr'
 import { Tag } from '@codegouvfr/react-dsfr/Tag'
-import type { StatutIntegration } from '../domain/sante-compte'
+import type { StatutIntegration } from '../domain/compte/sante-compte'
 
 /**
  * Une déconnexion voulue et un compte jamais relié portent le même libellé : dans

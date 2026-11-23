@@ -7,6 +7,13 @@ import type {
 } from '@/generated/prisma/client'
 import { AdresseRdv } from '../../domain/adresse-rdv'
 import { DureeEnMinutes } from '../../domain/duree-en-minutes'
+import { MotifId } from '../../domain/identifiants/motif-id'
+import { OrganisationId } from '../../domain/identifiants/organisation-id'
+import { ParticipationId } from '../../domain/identifiants/participation-id'
+import { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
+import { RdvId } from '../../domain/identifiants/rdv-id'
+import { RdvUuid } from '../../domain/identifiants/rdv-uuid'
+import { UsagerId } from '../../domain/identifiants/usager-id'
 import {
   EmailExterne,
   NomExterne,
@@ -16,19 +23,12 @@ import {
 import { NomAtelier, NomMotif } from '../../domain/libelle'
 import { type Lieu, LieuId, NomLieu } from '../../domain/lieu'
 import { CategorieMotifId, type Motif } from '../../domain/motif'
-import { MotifId } from '../../domain/motif-id'
 import { NombreParticipantsMax } from '../../domain/nombre-participants-max'
-import { OrganisationId } from '../../domain/organisation-id'
 import type { Participation } from '../../domain/participation'
-import { ParticipationId } from '../../domain/participation-id'
 import type { Rdv } from '../../domain/rdv'
-import { RdvAgentId } from '../../domain/rdv-agent-id'
-import { RdvId } from '../../domain/rdv-id'
-import { RdvUuid } from '../../domain/rdv-uuid'
 import { StatutPresence } from '../../domain/statut-presence'
 import { UrlAgent } from '../../domain/url-agent'
 import type { Usager } from '../../domain/usager'
-import { UsagerId } from '../../domain/usager-id'
 import { absentSiVide } from './vide'
 
 /**

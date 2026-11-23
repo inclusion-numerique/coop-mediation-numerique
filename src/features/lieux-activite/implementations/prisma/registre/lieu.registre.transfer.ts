@@ -1,7 +1,7 @@
 import type { Contact } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { serialiserIdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
+import { serialiserIdsCartographieNationale } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import { estPublie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Lieu } from '../../../domain/lieu'
-import { estPublie } from '../../../domain/visibilite-cartographie'
 import * as vocabulaire from '../vocabulaire'
 import type { LigneDuRegistre } from './ligne-du-registre'
 

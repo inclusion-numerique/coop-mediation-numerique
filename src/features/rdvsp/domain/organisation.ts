@@ -1,6 +1,6 @@
+import type { OrganisationId } from './identifiants/organisation-id'
 import type { EmailExterne, TelephoneExterne } from './identite'
 import type { NomOrganisation } from './libelle'
-import type { OrganisationId } from './organisation-id'
 
 /**
  * Organisation RDV Service Public. `verticale` distingue les déclinaisons du

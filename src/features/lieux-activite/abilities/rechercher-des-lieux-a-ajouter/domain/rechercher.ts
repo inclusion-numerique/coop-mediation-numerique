@@ -1,4 +1,4 @@
-import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
+import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { NombreDeLieux } from '../../../domain/nombres'
 import { SourceExterne } from '../../../domain/source-externe'
 import {

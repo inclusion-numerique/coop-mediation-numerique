@@ -20,12 +20,17 @@ import {
   Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { BanId } from '../../domain/ban-id'
+import { IdsCartographieNationale } from '../../domain/cartographie-nationale/ids-cartographie-nationale'
+import {
+  estPublie,
+  VisibiliteCartographie,
+} from '../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../domain/fiche'
+import { BanId } from '../../domain/identifiants/ban-id'
+import { LieuId } from '../../domain/identifiants/lieu-id'
+import { UserId } from '../../domain/identifiants/utilisateur-id'
 import { NomUsage } from '../../domain/identite-sirene'
-import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
-import { LieuId } from '../../domain/lieu-id'
 import {
   complementAdresseSaisi,
   horairesDeLaSource,
@@ -41,11 +46,6 @@ import {
   type Suppression,
   Supprime,
 } from '../../domain/tracabilite'
-import { UserId } from '../../domain/utilisateur-id'
-import {
-  estPublie,
-  VisibiliteCartographie,
-} from '../../domain/visibilite-cartographie'
 import type { LigneDuLieu, LigneDuLieuCoop } from './ligne-du-lieu'
 import { ficheDuRegistre } from './registre/fiche-du-registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'

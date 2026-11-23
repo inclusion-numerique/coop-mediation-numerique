@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { OrganisationId } from '../../../../domain/organisation-id'
-import { RdvId } from '../../../../domain/rdv-id'
+import { OrganisationId } from '../../../../domain/identifiants/organisation-id'
+import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { StatutPresence } from '../../../../domain/statut-presence'
 import type { LireDonneesAccueilRdv } from '../../domain/consulter-rdvs-accueil'
 import type { RdvEnUneLigne } from '../../domain/donnees-accueil-rdv'

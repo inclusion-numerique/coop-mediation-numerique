@@ -2,9 +2,9 @@ import type { Adresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { format, isAfter, isBefore, subDays, subYears } from 'date-fns'
 import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import { pluriel } from '@/libraries/pluriel'
+import { estPublie } from '../domain/cartographie-nationale/visibilite-cartographie'
 import type { LieuEnListe, ModificationEnListe } from '../domain/lieu-en-liste'
 import { nomAffiche } from '../domain/nom-affiche'
-import { estPublie } from '../domain/visibilite-cartographie'
 import {
   type CartographyStatus,
   getCartographyStatus,

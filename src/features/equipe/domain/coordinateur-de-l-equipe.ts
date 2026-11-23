@@ -1,6 +1,6 @@
 import type { Telephone } from '@/libraries/telephone'
-import type { Email } from './courriel'
-import type { NomAffiche } from './nom-affiche'
+import type { Email } from './identite/courriel'
+import type { NomAffiche } from './identite/nom-affiche'
 
 export type CoordinateurDeLEquipe = {
   readonly nom: NomAffiche

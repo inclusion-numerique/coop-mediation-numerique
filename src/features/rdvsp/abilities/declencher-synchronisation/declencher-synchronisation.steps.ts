@@ -8,8 +8,8 @@ import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchroni
 import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/marquer-echec.mutation'
-import type { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import {
   compteRdvEnBase,
   ID_TEST,

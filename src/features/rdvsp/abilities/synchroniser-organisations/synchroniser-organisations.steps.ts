@@ -7,11 +7,11 @@ import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchronis
 import {
   type CompteRdvUtilisable,
   estUtilisable,
-} from '@/features/rdvsp/domain/compte-rdv'
+} from '@/features/rdvsp/domain/compte/compte-rdv'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { NomOrganisation } from '@/features/rdvsp/domain/libelle'
 import type { Organisation } from '@/features/rdvsp/domain/organisation'
-import { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {

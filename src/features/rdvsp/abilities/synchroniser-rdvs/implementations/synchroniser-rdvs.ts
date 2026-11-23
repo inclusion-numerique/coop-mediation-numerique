@@ -1,13 +1,13 @@
 import { type Result, success } from '@/libraries/result'
-import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
+import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { ErreurRdvApi } from '../../../domain/errors'
 import {
   type OrganisationId,
   organisationsAccessibles,
-} from '../../../domain/organisation-id'
+} from '../../../domain/identifiants/organisation-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { RdvServicePublicApi } from '../../../domain/ports'
 import type { Rdv, RdvSynchronise } from '../../../domain/rdv'
-import type { RdvId } from '../../../domain/rdv-id'
 import {
   type RdvsLus,
   rassemblerLectures,

@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import {
   compteRdvEnBase,
   ID_TEST,

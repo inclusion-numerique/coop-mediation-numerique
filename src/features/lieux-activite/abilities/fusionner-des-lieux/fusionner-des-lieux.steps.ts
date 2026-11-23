@@ -3,7 +3,7 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 
 const semis: {
   absorbeId?: string

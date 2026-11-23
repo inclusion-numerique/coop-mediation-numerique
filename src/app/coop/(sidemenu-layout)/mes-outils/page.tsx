@@ -10,7 +10,7 @@ import {
   Dispositif,
 } from '@/features/outils/abilities/lister-mes-outils'
 import { MesOutilsPage } from '@/features/outils/abilities/lister-mes-outils/ui'
-import { statutDuCompteDeLaSession } from '@/features/rdvsp/domain/sante-compte'
+import { statutDuCompteDeLaSession } from '@/features/rdvsp/domain/compte/sante-compte'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 

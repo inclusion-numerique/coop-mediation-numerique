@@ -1,6 +1,6 @@
 import { correler } from '@/features/lieux-activite/domain/lieu-identite'
 import type { Prisma } from '@/generated/prisma/client'
-import { serialiserIdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
+import { serialiserIdsCartographieNationale } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import type { Lieu } from '../../../domain/lieu'
 import {
   candidatDuRegistre,

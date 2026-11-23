@@ -9,7 +9,7 @@ import {
 } from '@/features/authentification/implementations/session/getSessionUser'
 import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie'
 import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { SlugOutil } from '@/features/outils/abilities/consulter-un-outil'
 import {
   emplacementsDeLOutil,

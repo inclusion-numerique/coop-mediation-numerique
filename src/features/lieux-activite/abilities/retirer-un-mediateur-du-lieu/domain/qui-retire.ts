@@ -1,4 +1,4 @@
-import type { MediateurId } from '../../../domain/mediateur-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 
 export type QuiRetire =
   | { readonly _tag: 'LeMediateurLuiMeme' }
