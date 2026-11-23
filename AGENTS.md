@@ -102,12 +102,12 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 ### Server Actions
 
-Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withInput` and `fromResult` come from `@/libraries/nextjs`, `withAuth` from `@/features/authentification`, `withMaintenance` from `@/features/maintenance-mode`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
+Each ability exposes its contract in `features/<feature>/abilities/<ability>/action/` (`.validation.ts`, `.errors.ts`, `.key.ts`). The server action lives in `src/app/_actions/<feature>/<ability>.action.ts` and is built with `actionBuilder()` from `@/configuration/nextjs`, already wired to the error reporter (`withInput` and `fromResult` come from `@/libraries/nextjs`, `withAuth` from `@/features/authentification/middlewares/with-auth`, `withMaintenance` from `@/features/maintenance-mode/middlewares/with-maintenance`). Client components call it through `inject(KEY)`; the route binds it with `<ClientBinder bind={KEY} to={action}>`.
 
 ### Telemetry
 
 - Only `src/configuration/telemetry` imports `@sentry/nextjs`. Modules with environment-specific implementations (`error-reporter/client`, `error-reporter/server`) have `index.prod.ts`, `index.dev.ts` and `index.ephemeral.ts`; `pnpm generate:implementations` copies the one named by `ENV` (default `dev`) to the git-ignored `index.ts`. Postinstall generates `dev`, CI sets `ENV=ephemeral`, the build regenerates `prod`.
-- Composition roots (`app/`, jobs, `auth`) and `implementation/` modules take `errorReporter` or `signaler` from the configuration; domain, commands, UI logic and libraries receive what they need by injection. External calls are wrapped with `instrument` in `configuration/<service>` (e.g. `configuration/ban`).
+- Composition roots (`app/`, jobs, `auth`) and `implementations/` modules take `errorReporter` or `signaler` from the configuration; domain, commands, UI logic and libraries receive what they need by injection. External calls are wrapped with `instrument` in `configuration/<service>` (e.g. `configuration/ban`).
 - Tests never mock modules nor spy on calls: inject hand-written dependencies and assert on results.
 
 ### Client/Server Components

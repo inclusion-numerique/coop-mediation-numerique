@@ -66,7 +66,7 @@ Pour le reste (mécanique), avance.
 ```
 abilities/<ability>/
 ├── <ability>.ability.md · <ability>.steps.ts
-├── implementation/prisma/<ability>.{query|mutation}.ts   # filtrée par propriétaire (AB-3)
+├── implementations/prisma/<ability>.{query|mutation}.ts   # filtrée par propriétaire (AB-3)
 ├── action/<ability>.{validation,errors,key}.ts           # SI server action (AB-1)
 ├── domain/<ability>.ts (+ .spec.ts)                       # si logique propre à l'ability
 ├── ui/  → *.presenter.ts (pur) + components/ + pages/     # §6
@@ -75,7 +75,7 @@ abilities/<ability>/
 - Pas de dépendance vers une autre ability (IS-1) ni vers une autre feature (IS-2) : port dans le
   domaine, implémentation fournie depuis la route.
 - Code commun à plusieurs abilities → remonte à la racine de la feature, sous le même nom (AB-2).
-- `action/` et `ui/` n'importent jamais `db/` ni `implementation/`.
+- `action/` et `ui/` n'importent jamais `db/` ni `implementations/`.
 
 ### 5. Câbler
 - **Mutation** : `src/app/_actions/<feature>/<ability>.action.ts`, construite avec

@@ -17,7 +17,7 @@ changeset contre la source de vérité, de façon reproductible, **sans faux pos
 `.claude/conventions/feature-architecture.md` (racine du repo). C'est l'**unique** référentiel normatif.
 - Tu ne juges que contre des règles qui y figurent, **citées par leur ID** (`DM-3`, `AB-1`, `UI-2`…).
 - Tu n'inventes **aucune** règle. Si quelque chose te gêne mais n'est couvert par aucune règle → ne le signale pas (au plus, une note `INFO` séparée clairement marquée « hors référentiel »).
-- **§9 (choix assumés) = liste anti-faux-positifs.** Ne flague **JAMAIS** Zod, `implementation/prisma/`, `.ability.md`, routes orchestrant directement, DI progressive, absence d'i18n, `.integration.ts`. Les signaler serait l'erreur la plus grave que tu puisses commettre.
+- **§9 (choix assumés) = liste anti-faux-positifs.** Ne flague **JAMAIS** Zod, `implementations/prisma/`, `.ability.md`, routes orchestrant directement, DI progressive, absence d'i18n, `.integration.ts`. Les signaler serait l'erreur la plus grave que tu puisses commettre.
 
 ## Périmètre
 
