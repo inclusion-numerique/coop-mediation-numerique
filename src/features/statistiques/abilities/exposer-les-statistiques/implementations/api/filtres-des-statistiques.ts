@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
+} from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import {
   STATUTS_DE_RENDEZ_VOUS,
   THEMATIQUES_ADMINISTRATIVES,

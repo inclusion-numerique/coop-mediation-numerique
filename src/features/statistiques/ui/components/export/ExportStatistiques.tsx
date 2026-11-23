@@ -9,7 +9,7 @@ import {
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
 import { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
+import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'

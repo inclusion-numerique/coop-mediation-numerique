@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   parametresDesStatistiques,
   parametresDesStatistiquesPartagees,
-} from './parametres-de-la-page'
+} from './parametres-de-la-page.search-params'
 
 describe('paramètres de la page des statistiques', () => {
   it('lit la fin du graphique', () => {

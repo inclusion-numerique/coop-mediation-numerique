@@ -6,7 +6,7 @@ import type {
   OptionDEmployeuse,
   OptionDeTag,
   PeriodeCouverte,
-} from '../../presenters/filtres/filtres-de-la-liste'
+} from '../../presenters/filtres/filtres-de-la-liste.search-params'
 import { LieuFilter } from './FiltreDeLieu'
 import { PeriodeFilter } from './FiltreDePeriode'
 import { ActiviteTypeFilter } from './FiltreDeType'

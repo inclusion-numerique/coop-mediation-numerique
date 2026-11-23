@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { minutesToCraDureeData, minutesToCustomCraDureeData } from './duree'
-import { cheminDeSaisieDepuisUnRendezVous } from './url-de-saisie-depuis-un-rendez-vous'
+import { cheminDeSaisieDepuisUnRendezVous } from './url-de-saisie-depuis-un-rendez-vous.presenter'
 
 const rendezVous = {
   id: 4242,

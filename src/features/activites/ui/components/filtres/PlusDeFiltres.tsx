@@ -27,7 +27,7 @@ import {
   updateThematiqueNonAdministrativesParams,
 } from '@/features/activites/ui/forms/filtres/ThematiqueNonAdministrativesField'
 import type { SourceDansLURL } from '@/features/activites/ui/labels/libelles/source-de-l-activite.labels'
-import type { OptionDeTag } from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste'
+import type { OptionDeTag } from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste.search-params'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from '../../forms/plus-de-filtres.form-options'

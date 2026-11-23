@@ -28,7 +28,7 @@ import { optionsDeTags } from '@/features/statistiques/ui/presenters/options-de-
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
+} from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { activiteSourceOptions } from '@/features/statistiques/ui/presenters/source-de-l-activite'
 import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
 import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/lire-les-tags-visibles.query'

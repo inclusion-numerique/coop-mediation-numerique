@@ -9,7 +9,7 @@ import {
   cheminDeLaCopie,
   etatDeLUrl,
   type TypeDeSaisie,
-} from '../../../../ui/presenters/saisie/chemin-de-la-copie'
+} from '../../../../ui/presenters/saisie/chemin-de-la-copie.presenter'
 import {
   type RechercherDesTagsInitiaux,
   type VisibiliteDuTagDuCra,

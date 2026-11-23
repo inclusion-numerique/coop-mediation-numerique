@@ -1,8 +1,8 @@
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
 import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
-import { colonnesDesUtilisateurs } from './colonnes-des-utilisateurs'
 import { UtilisateursTableHead } from './UtilisateursTableHead'
 import { UtilisateurTableRow } from './UtilisateurTableRow'
+import { colonnesDesUtilisateurs } from './utilisateurs.columns'
 
 const AucunResultat = () => (
   <tr>

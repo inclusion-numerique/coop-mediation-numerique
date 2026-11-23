@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hrefDuLieu } from './href-du-lieu'
+import { hrefDuLieu } from './href-du-lieu.presenter'
 
 describe('lien vers la fiche d’un lieu', () => {
   it('mène sous le département du lieu', () => {

@@ -5,7 +5,7 @@ import {
   cheminDeSaisieDepuisUnRendezVous,
   type ParticipantDuRendezVous,
   type RendezVousASaisir,
-} from '../../ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous'
+} from '../../ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous.presenter'
 import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
 
 export const urlDeSaisieDepuisUnRendezVous = async ({

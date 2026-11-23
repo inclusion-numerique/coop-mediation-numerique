@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
-import { cheminDeLaCopie, etatDeLUrl } from './chemin-de-la-copie'
+import { cheminDeLaCopie, etatDeLUrl } from './chemin-de-la-copie.presenter'
 
 describe('chemin de la copie', () => {
   it('rouvre la saisie du même type avec les valeurs copiées', () => {

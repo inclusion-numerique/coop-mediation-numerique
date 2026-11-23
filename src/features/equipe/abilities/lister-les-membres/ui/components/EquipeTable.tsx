@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { DataTable } from '@/libraries/data-table'
 import type { LigneEquipe } from '../../../../domain'
-import type { EtatDeLaListe } from '../presenters/etat-de-la-liste'
+import type { EtatDeLaListe } from '../presenters/etat-de-la-liste.search-params'
 import type { LigneAffichee } from '../presenters/lister-les-membres.presenter'
 import { EquipeTableHead } from './EquipeTableHead'
 import { EquipeTableRow } from './EquipeTableRow'

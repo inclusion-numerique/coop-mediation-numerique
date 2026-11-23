@@ -1,6 +1,6 @@
 import type { SortDirection } from '@arckit/resultset'
 import type { DataTableUrlState } from '@/libraries/data-table'
-import type { ParametresDeLaListe } from './parametres-de-la-liste'
+import type { ParametresDeLaListe } from './parametres-de-la-liste.search-params'
 
 export type EtatDeLaListe = DataTableUrlState & {
   readonly statut?: string

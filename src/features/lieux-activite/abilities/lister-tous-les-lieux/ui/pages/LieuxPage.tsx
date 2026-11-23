@@ -11,7 +11,7 @@ import type { PageDeLieux } from '../presenters/ligne-de-la-liste'
 import {
   type ListeDesLieuxSearchParams,
   toDataTableUrlState,
-} from '../presenters/lister-tous-les-lieux-search-params'
+} from '../presenters/lister-tous-les-lieux.search-params'
 
 const baseHref = '/administration/lieux-activite'
 

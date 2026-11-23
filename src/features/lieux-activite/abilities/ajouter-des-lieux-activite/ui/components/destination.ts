@@ -1,4 +1,4 @@
-import { hrefDuLieu } from '../../../../ui/presenters/href-du-lieu'
+import { hrefDuLieu } from '../../../../ui/presenters/href-du-lieu.presenter'
 import type { LieuAuPanier } from '../presenters/panier'
 
 export const destination = (

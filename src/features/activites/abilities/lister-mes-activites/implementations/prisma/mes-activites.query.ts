@@ -1,6 +1,6 @@
 import { type MediateurId, parametresDesActivitesDe } from '../../../../domain'
 import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
-import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
+import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
 import {
   basculeDesRendezVous,
   type CompteRendezVousDuMediateur,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parametresDeLaRecherche } from './parametres-de-la-recherche.presenter'
+import { parametresDeLaRecherche } from './parametres-de-la-recherche.search-params'
 
 describe('paramètres de la recherche', () => {
   it("garde les paramètres de l'export et oublie les autres", () => {

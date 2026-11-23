@@ -3,7 +3,7 @@ import {
   type FournisseursDesOptions,
   optionsDesStatistiques,
 } from './options-de-la-barre.presenter'
-import type { ActivitesFilters } from './parametres-de-la-barre'
+import type { ActivitesFilters } from './parametres-de-la-barre.search-params'
 
 type Fournisseur<
   OptionDeBeneficiaire,

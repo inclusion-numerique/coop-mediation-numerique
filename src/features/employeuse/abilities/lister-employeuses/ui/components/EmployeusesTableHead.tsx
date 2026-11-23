@@ -5,7 +5,7 @@ import {
 import {
   type EmployeuseColumn,
   employeusesColumns,
-} from '../presenters/employeuses-columns'
+} from '../presenters/employeuses.columns'
 
 const EnTeteDeColonne = ({
   column,

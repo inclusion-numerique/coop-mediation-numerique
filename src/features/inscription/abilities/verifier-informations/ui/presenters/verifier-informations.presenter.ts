@@ -7,7 +7,7 @@ import {
   profilInscriptionLabels,
 } from '@/features/inscription/domain'
 import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
-import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape'
+import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 
 // Une employeuse peut n'avoir aucune dénomination en base, mais la carte attend
 // un libellé : la projection porte le contrat d'affichage et décide du repli,

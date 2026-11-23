@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { filDArianeDesLieux } from './fil-d-ariane'
+import { filDArianeDesLieux } from './fil-d-ariane.presenter'
 
 describe('fil d’Ariane du réseau', () => {
   it('passe par l’annuaire des lieux pour atteindre un lieu', () => {

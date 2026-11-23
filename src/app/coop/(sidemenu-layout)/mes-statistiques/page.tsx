@@ -42,7 +42,7 @@ import { mesStatistiques } from '@/features/statistiques/ui/presenters/mes-stati
 import {
   type ParametresDeLaPage,
   parametresDesStatistiques,
-} from '@/features/statistiques/ui/presenters/parametres-de-la-page'
+} from '@/features/statistiques/ui/presenters/parametres-de-la-page.search-params'
 import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

@@ -6,7 +6,7 @@ import {
   departements,
 } from '@/libraries/departement/departements'
 import { ComboBox } from '@/libraries/ui/components/Primitives/Form/ComboBox'
-import { hrefDuReseau } from '../../../../ui/presenters/liens'
+import { hrefDuReseau } from '../../../../ui/presenters/liens.presenter'
 
 const itemToString = (departement: DepartementDuReferentiel | null): string =>
   departement ? `${departement.nom} · ${departement.code}` : ''

@@ -4,7 +4,7 @@ import {
   type OptionsDeLaBarre,
 } from '../../../../ui/components/filtres/BarreDeFiltres'
 import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-activite.labels'
-import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
+import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
 import { FilterTags } from './EtiquettesDesFiltres'
 
 export const EnTeteDeLaListe = ({

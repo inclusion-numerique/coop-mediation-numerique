@@ -9,7 +9,7 @@ import { MoreCoordinateurFilters } from '@/features/statistiques/ui/components/f
 import { MoreMediateurFilters } from '@/features/statistiques/ui/components/filtres/MoreMediateurFilters'
 import { PeriodeFilter } from '@/features/statistiques/ui/components/filtres/PeriodeFilter'
 import type { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
+import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { TagScope } from '@/features/statistiques/ui/presenters/portee-de-tag'
 import type { StructureEmployeuseOption } from '@/features/statistiques/ui/presenters/structure-employeuse-option'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'

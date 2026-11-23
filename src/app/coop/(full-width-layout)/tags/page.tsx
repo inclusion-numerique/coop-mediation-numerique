@@ -19,7 +19,7 @@ import {
   type ParametresDeLaListe,
 } from '@/features/tags/abilities/lister-les-tags/ui/pages/ListeDesTagsPage'
 import { lignesDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/presenters/liste-des-tags.presenter'
-import { requeteDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/presenters/requete-de-la-liste'
+import { requeteDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/presenters/requete-de-la-liste.search-params'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.key'
 import { ModaleDeModification } from '@/features/tags/abilities/modifier-un-tag/ui/components/ModaleDeModification'
 import { BoutonModifier } from '@/features/tags/abilities/modifier-un-tag/ui/slots/BoutonModifier.slot'

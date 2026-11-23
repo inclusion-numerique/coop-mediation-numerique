@@ -7,7 +7,7 @@ import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les
 import { lieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/lieux-du-departement.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/components/LieuActiviteCard'
-import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu'
+import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
 import { type ParametresDesLieux } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/index'
 import { default as LieuxDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui/pages/LieuxDuDepartementPage'

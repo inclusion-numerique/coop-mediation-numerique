@@ -1,6 +1,6 @@
 import { criteresDesActivites } from '../../../../domain'
 import { tagsUtilisablesDepuis } from '../../../../domain/fournisseurs-de-la-saisie'
-import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
+import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
 import { demandeurDe } from '../../domain'
 import { libellesDuClasseur } from '../../ui/presenters/export.presenter'
 import { exporterMesAccompagnements } from '../prisma/accompagnements-a-exporter.query'

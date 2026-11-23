@@ -4,7 +4,7 @@ import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
-import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
+import type { ActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { VocabulaireDeLaBarre } from '../labels/barre.labels'
 import type { MediateurOption } from '../presenters/mediateur-option'

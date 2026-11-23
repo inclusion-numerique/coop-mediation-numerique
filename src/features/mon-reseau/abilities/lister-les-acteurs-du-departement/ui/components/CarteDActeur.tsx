@@ -2,7 +2,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { Acteur } from '../../../../domain'
 import { ProfilEtContact } from '../../../../ui/components/ProfilEtContact'
-import { hrefDeLActeur } from '../../../../ui/presenters/liens'
+import { hrefDeLActeur } from '../../../../ui/presenters/liens.presenter'
 import { libelleDesLieux } from '../../../../ui/presenters/profil.presenter'
 
 export const CarteDActeur = ({

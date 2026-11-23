@@ -3,7 +3,7 @@ import {
   SortableColumnHeader,
 } from '@/libraries/data-table'
 import { TRI_PAR_DEFAUT } from '../../domain'
-import { colonnesDesUtilisateurs } from './colonnes-des-utilisateurs'
+import { colonnesDesUtilisateurs } from './utilisateurs.columns'
 
 export const UtilisateursTableHead = ({
   state,

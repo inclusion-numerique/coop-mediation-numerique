@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter } from 'next/navigation'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import type { ParametresDeLaListe } from '../presenters/lister-les-utilisateurs-search-params'
+import type { ParametresDeLaListe } from '../presenters/lister-les-utilisateurs.search-params'
 
 const CHAMP = 'recherche'
 

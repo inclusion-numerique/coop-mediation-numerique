@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_PAGE_SIZE,
   toListerBeneficiairesQuery,
-} from './lister-beneficiaires-search-params'
+} from './lister-beneficiaires.search-params'
 
 describe('toListerBeneficiairesQuery', () => {
   it('defaults to page 1 and the default page size with no params', () => {

@@ -1,4 +1,4 @@
-import { hrefDesLieux, hrefDuReseau } from './liens'
+import { hrefDesLieux, hrefDuReseau } from './liens.presenter'
 
 export const libelleDuReseau = (departement: string): string =>
   `Mon réseau (${departement})`

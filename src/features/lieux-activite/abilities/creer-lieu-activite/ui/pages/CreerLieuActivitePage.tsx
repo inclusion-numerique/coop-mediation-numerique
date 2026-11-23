@@ -11,7 +11,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { inject } from '@/libraries/nextjs/injection/client'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { hrefDuLieu } from '../../../../ui/presenters/href-du-lieu'
+import { hrefDuLieu } from '../../../../ui/presenters/href-du-lieu.presenter'
 import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../../action/creer-lieu-activite.key'
 
 const erreurEnregistrement = () =>

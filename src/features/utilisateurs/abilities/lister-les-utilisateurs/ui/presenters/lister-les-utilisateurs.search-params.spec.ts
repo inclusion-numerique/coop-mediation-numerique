@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { etatDeLaTable } from './lister-les-utilisateurs-search-params'
+import { etatDeLaTable } from './lister-les-utilisateurs.search-params'
 
 describe('etatDeLaTable', () => {
   it('garde les filtres pour les liens de tri et de pagination', () => {

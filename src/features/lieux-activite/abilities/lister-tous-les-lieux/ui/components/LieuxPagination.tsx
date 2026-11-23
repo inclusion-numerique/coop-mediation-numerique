@@ -3,7 +3,7 @@ import {
   generatePageSizeSelectOptions,
   PaginationNavWithPageSizeSelect,
 } from '@/libraries/data-table'
-import { TAILLE_DE_PAGE_PAR_DEFAUT } from '../presenters/lister-tous-les-lieux-search-params'
+import { TAILLE_DE_PAGE_PAR_DEFAUT } from '../presenters/lister-tous-les-lieux.search-params'
 
 const pageSizeOptions = generatePageSizeSelectOptions([
   10, 20, 50, 100, 250, 500, 1000,

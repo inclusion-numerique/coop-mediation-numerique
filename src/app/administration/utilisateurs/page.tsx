@@ -16,7 +16,7 @@ import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-
 import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
 import { ordreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/tri-des-utilisateurs'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
-import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/lister-les-utilisateurs-search-params'
+import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/lister-les-utilisateurs.search-params'
 import {
   filtresUtilisateurs,
   parametresDesFiltres,

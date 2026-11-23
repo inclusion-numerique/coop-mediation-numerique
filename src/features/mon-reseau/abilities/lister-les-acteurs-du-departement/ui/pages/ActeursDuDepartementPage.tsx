@@ -13,8 +13,8 @@ import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../../domain'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
-import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane'
-import { hrefDesActeurs } from '../../../../ui/presenters/liens'
+import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
+import { hrefDesActeurs } from '../../../../ui/presenters/liens.presenter'
 import {
   type CriteresActeurs,
   estFiltre,

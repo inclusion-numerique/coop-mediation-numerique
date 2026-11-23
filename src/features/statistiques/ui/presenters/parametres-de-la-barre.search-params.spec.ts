@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateActivitesFilters } from './parametres-de-la-barre'
+import { validateActivitesFilters } from './parametres-de-la-barre.search-params'
 
 describe('critères de la page des statistiques', () => {
   it('ne retient rien sans paramètre', () => {

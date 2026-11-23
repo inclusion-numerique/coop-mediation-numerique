@@ -4,7 +4,7 @@ import {
   generateActivitesFiltersLabels,
 } from '../../../../ui/labels/filtres/filtres.labels'
 import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-activite.labels'
-import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste'
+import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
 
 export const libellesDeLExport = (
   filtres: FiltresDeLaListe,

@@ -6,7 +6,7 @@ import Card from '@/libraries/ui/components/Card'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import type { LieuEnListe } from '../../domain/lieu-en-liste'
 import LieuActiviteCard from '../components/LieuActiviteCard'
-import { hrefDuLieuEnListe } from '../presenters/href-du-lieu'
+import { hrefDuLieuEnListe } from '../presenters/href-du-lieu.presenter'
 
 const NOMBRE_AFFICHE_AU_DEPART = 3
 

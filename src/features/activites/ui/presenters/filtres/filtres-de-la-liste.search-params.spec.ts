@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { criteresDesActivites } from '../../../domain'
-import { filtresDeLaListe } from './filtres-de-la-liste'
+import { filtresDeLaListe } from './filtres-de-la-liste.search-params'
 
 describe('filtres de la liste', () => {
   it('reprend les critères dans le vocabulaire de l’URL', () => {

@@ -11,7 +11,7 @@ import {
   profilInscriptionLabels,
   type Role,
 } from '@/features/inscription/domain'
-import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape'
+import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import {
   type DefaultValues,

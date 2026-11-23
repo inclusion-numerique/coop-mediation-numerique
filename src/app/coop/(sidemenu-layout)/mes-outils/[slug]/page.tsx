@@ -23,7 +23,7 @@ import {
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/action/deconnecter-compte-rdv.key'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'
-import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/slots/RdvServicePublicAccess.slot'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/slots/RdvServicePublicMigrationNotice.slot'
 import { CodeInsee } from '@/libraries/insee'

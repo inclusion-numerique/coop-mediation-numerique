@@ -1,6 +1,6 @@
 import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
 import type { EmployeuseAffichee } from '../presenters/employeuse-affichee.presenter'
-import { employeusesColumns } from '../presenters/employeuses-columns'
+import { employeusesColumns } from '../presenters/employeuses.columns'
 import { EmployeusesPagination } from './EmployeusesPagination'
 import { EmployeusesTableHead } from './EmployeusesTableHead'
 import { EmployeuseTableRow } from './EmployeuseTableRow'

@@ -6,7 +6,7 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import { BoutonDocumentation } from '../../../../ui/components/BoutonDocumentation'
-import { HREF_DES_CLIENTS_API } from '../../../../ui/presenters/liens'
+import { HREF_DES_CLIENTS_API } from '../../../../ui/presenters/liens.presenter'
 import { ListeDesClientsApi } from '../components/ListeDesClientsApi'
 
 export const ClientsApiPage = ({

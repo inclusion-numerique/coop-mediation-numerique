@@ -7,7 +7,7 @@ import { entierPositifLu } from '@/libraries/parametres-d-url'
 import {
   type ListeDesLieuxSearchParams,
   TAILLE_DE_PAGE_PAR_DEFAUT,
-} from '../../ui/presenters/lister-tous-les-lieux-search-params'
+} from '../../ui/presenters/lister-tous-les-lieux.search-params'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'
 import { ordreDesLieux } from './tri-des-lieux'
 

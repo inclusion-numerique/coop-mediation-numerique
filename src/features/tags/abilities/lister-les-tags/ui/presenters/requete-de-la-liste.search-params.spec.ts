@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { requeteDeLaListe } from './requete-de-la-liste'
+import { requeteDeLaListe } from './requete-de-la-liste.search-params'
 
 describe('requête de la liste des tags', () => {
   it('trie par ordre alphabétique sur la première page par défaut', () => {

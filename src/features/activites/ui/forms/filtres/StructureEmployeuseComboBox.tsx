@@ -1,5 +1,5 @@
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
-import type { OptionDEmployeuse } from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste'
+import type { OptionDEmployeuse } from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste.search-params'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'

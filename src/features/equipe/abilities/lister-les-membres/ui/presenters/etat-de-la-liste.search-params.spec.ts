@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { etatDeLaListe } from './etat-de-la-liste'
+import { etatDeLaListe } from './etat-de-la-liste.search-params'
 
 describe('état de la liste de l’équipe', () => {
   it('garde les filtres de statut et de rôle pour les liens de tri et de pagination', () => {

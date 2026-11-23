@@ -22,7 +22,7 @@ import { donneesDeMesStatistiques } from '@/features/statistiques/ui/presenters/
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '@/features/statistiques/ui/presenters/parametres-de-la-barre'
+} from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

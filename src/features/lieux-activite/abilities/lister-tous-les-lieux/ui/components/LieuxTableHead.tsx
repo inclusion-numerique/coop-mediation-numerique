@@ -2,7 +2,7 @@ import {
   type DataTableUrlState,
   SortableColumnHeader,
 } from '@/libraries/data-table'
-import type { ColonneTriable } from '../presenters/lister-tous-les-lieux-search-params'
+import type { ColonneTriable } from '../presenters/lister-tous-les-lieux.search-params'
 
 const EnTeteTriable = ({
   label,

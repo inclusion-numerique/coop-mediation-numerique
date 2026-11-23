@@ -4,7 +4,7 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { HREF_DES_CLIENTS_API } from '../../../../ui/presenters/liens'
+import { HREF_DES_CLIENTS_API } from '../../../../ui/presenters/liens.presenter'
 import { CreerUnClientApi } from '../components/CreerUnClientApi'
 
 export const CreerUnClientApiPage = ({

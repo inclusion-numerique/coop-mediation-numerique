@@ -1,7 +1,7 @@
 import { CoordinateurId, criteresDesCoordinations } from '../../../../domain'
 import { tagsUtilisablesDepuis } from '../../../../domain/fournisseurs-de-la-saisie'
 import { tagsRappeles } from '../../domain/tags-rappeles'
-import { parametresDeLaRecherche } from '../../ui/presenters/parametres-de-la-recherche.presenter'
+import { parametresDeLaRecherche } from '../../ui/presenters/parametres-de-la-recherche.search-params'
 import { exporterLesActivitesDeCoordination } from '../prisma/activites-a-exporter.query'
 import { classeurDesCoordinations } from './classeur-des-coordinations'
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { etatDeLaTable } from './etat-de-la-table'
+import { etatDeLaTable } from './etat-de-la-table.search-params'
 
 describe('état de la table des activités', () => {
   it('garde les paramètres de la liste dans l’état', () => {

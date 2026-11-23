@@ -9,7 +9,7 @@ import type { RendezVousLies } from '../../../../implementations/prisma/rendez-v
 import {
   cheminDeLaCopie,
   etatDeLUrl,
-} from '../../../../ui/presenters/saisie/chemin-de-la-copie'
+} from '../../../../ui/presenters/saisie/chemin-de-la-copie.presenter'
 import type { CraIndividuelData } from '../../ui/forms/cra-individuel.validation'
 import { craIndividuelDefaultValues } from '../../ui/forms/valeurs-par-defaut-du-cra-individuel'
 import { copieDeLAccompagnement } from '../../ui/presenters/copie-de-l-accompagnement.presenter'

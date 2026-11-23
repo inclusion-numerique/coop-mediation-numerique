@@ -5,7 +5,7 @@ import type {
   FiltresDeLaListe,
   OptionDeBeneficiaire,
   OptionDeMediateur,
-} from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste'
+} from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste.search-params'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 

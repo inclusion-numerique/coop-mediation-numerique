@@ -6,7 +6,7 @@ import type { MesBeneficiairesView } from '../presenters/lister-beneficiaires.pr
 import {
   type MesBeneficiairesSearchParams,
   toDataTableUrlState,
-} from '../presenters/lister-beneficiaires-search-params'
+} from '../presenters/lister-beneficiaires.search-params'
 
 const BASE_HREF = '/coop/mes-beneficiaires'
 
