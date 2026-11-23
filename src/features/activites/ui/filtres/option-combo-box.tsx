@@ -1,6 +1,6 @@
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
 
 const itemToString = (item: SelectOption | null): string => item?.label ?? ''
 

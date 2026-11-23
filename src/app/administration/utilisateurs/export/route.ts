@@ -1,15 +1,21 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { nomDeLEmployeuse } from '@/features/employeuse/server'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import { auteurDeLExport } from '@/features/utilisateurs'
 import {
   classeurDesUtilisateurs,
   utilisateursAExporter,
 } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { toQueryParts } from '@/libs/data-table/toQueryParts'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -31,12 +37,16 @@ export const GET = async (request: NextRequest) => {
       filtres,
       maintenant,
     }),
-    optionsDesFiltres(filtres),
+    optionsDesFiltres(filtres, {
+      communesEtDepartements: getCommunesAndDepartementsOptions,
+      lieux: getLieuxActiviteOptions,
+      nomDeLEmployeuse,
+    }),
   ])
 
   const classeur = classeurDesUtilisateurs({
     utilisateurs,
-    auteur,
+    auteur: auteurDeLExport(auteur),
     filtres: libellesDesFiltres(filtres, options),
     genereLe: maintenant,
   })

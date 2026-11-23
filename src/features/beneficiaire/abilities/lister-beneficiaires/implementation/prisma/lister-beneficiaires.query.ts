@@ -5,6 +5,7 @@ import {
   type Sort,
   type SortDirection,
 } from '@arckit/resultset'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
@@ -15,7 +16,6 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type {
   Prisma,
@@ -23,7 +23,7 @@ import type {
   StatutSocial as PrismaStatutSocial,
   TrancheAge as PrismaTrancheAge,
 } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
+import { Telephone } from '@/libraries/telephone'
 import type {
   BeneficiaireListItem,
   BeneficiaireSortField,

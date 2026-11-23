@@ -1,8 +1,8 @@
-import type { Feature } from '@/external-apis/apiAdresse'
-import { banFeatureToAdresseBanData } from '@/external-apis/ban/banFeatureToAdresseBanData'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { Feature } from '@/libraries/ban/apiAdresse'
+import { banFeatureToAdresseBanData } from '@/libraries/ban/banFeatureToAdresseBanData'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
 
 // Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
 // (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces
@@ -20,7 +20,7 @@ export type AdresseSource = {
 // coordonnées `geom`), sinon on garde l'adresse de l'API Entreprise.
 
 // Au-dessus de ce score, on considère que la BAN a trouvé la bonne adresse et on l'utilise.
-export const BAN_SCORE_THRESHOLD = 0.9
+const BAN_SCORE_THRESHOLD = 0.9
 
 export type ResolvedAdresseMain = {
   nomVoie: string
@@ -45,14 +45,6 @@ const codePostalAdressable = (value: string): string =>
 
 const codeInseeAdressable = (value: string): string =>
   CodeInsee.safe(value) ?? ''
-
-// La clé d'unicité de `main.adresse` ne porte PAS le code INSEE : deux adresses de même
-// (code_postal, commune, voie) y sont la même ligne. On aligne la déduplication dessus.
-export const adresseMainKey = ({
-  codePostal,
-  nomCommune,
-  nomVoie,
-}: ResolvedAdresseMain): string => `${codePostal}__${nomCommune}__${nomVoie}`
 
 export const requeteDeGeocodage = ({
   adresse,

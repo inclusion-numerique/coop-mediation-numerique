@@ -1,12 +1,12 @@
 import Excel from 'exceljs'
-import { telephoneDisplayString } from '@/libraries/telephone'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
+} from '@/libraries/tableur/addExportMetadata'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
+import { telephoneDisplayString } from '@/libraries/telephone'
 import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
 import type { ContratMembre, MembreAExporter } from '../../domain'
 import { type MembreExporte, membreExporte } from './membre-exporte'
@@ -82,7 +82,7 @@ export const classeurEquipe = ({
 }: {
   membres: readonly MembreExporte[]
   criteres: CriteresEquipe
-  auteur: WorksheetUser
+  auteur: AuteurDExport
   genereLe?: Date
 }) => {
   const classeur = new Excel.Workbook()
@@ -91,7 +91,7 @@ export const classeurEquipe = ({
   const feuille = classeur.addWorksheet('Équipe')
 
   addExportMetadata(feuille)({
-    user: auteur,
+    auteur: auteur,
     date: genereLe,
     total: membres.length,
   })

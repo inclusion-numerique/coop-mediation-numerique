@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import type { JetonsOAuth } from '@/features/rdvsp/domain/jetons-oauth'
@@ -14,7 +15,6 @@ import {
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
 import { failure, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 const rdvServicePublic: {
   disponible: boolean

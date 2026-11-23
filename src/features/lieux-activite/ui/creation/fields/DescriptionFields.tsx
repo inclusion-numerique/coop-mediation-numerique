@@ -3,8 +3,8 @@
 import { useSelector } from '@tanstack/react-form'
 import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/regles-de-saisie'
 import { formationLabelOptions } from '@/features/lieux-activite/ui/options'
+import { withForm } from '@/libraries/formulaire/use-app-form'
 import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
-import { withForm } from '@/libs/form/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const DescriptionFields = withForm({

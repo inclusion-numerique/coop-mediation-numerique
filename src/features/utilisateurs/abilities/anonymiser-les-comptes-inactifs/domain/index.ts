@@ -1,8 +1,6 @@
 export {
   type CompteAExaminer,
   derniereActivite,
-  type PresenceCoordinateur,
-  type PresenceMediateur,
 } from './compte-a-examiner'
 export {
   ANNEES_AVANT_SUPPRESSION,
@@ -13,5 +11,4 @@ export {
 export type {
   AnonymiserLesComptesInactifsPorts,
   AvertirDeLaSuppression,
-  SupprimerLeCompte,
 } from './ports'

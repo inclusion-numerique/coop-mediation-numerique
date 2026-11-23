@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-invitation.action'
 import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { getSessionUser } from '@/auth/getSessionUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation'
 import {
@@ -13,8 +13,8 @@ import {
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
 import { Email, lienInvitation } from '@/features/equipe/domain'
 import { ReponseAInvitation } from '@/features/equipe/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
-import type { EncodedState } from '@/utils/encodeSerializableState'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),

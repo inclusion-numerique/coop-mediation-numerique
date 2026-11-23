@@ -1,4 +1,5 @@
 export {
-  FicheUtilisateurPage,
-  type SectionsDeLaFiche,
-} from './pages/FicheUtilisateurPage'
+  etatDeLInscription,
+  rolesModifiables,
+} from './fiche-utilisateur.presenter'
+export { FicheUtilisateurPage } from './pages/FicheUtilisateurPage'

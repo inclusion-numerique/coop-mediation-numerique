@@ -9,24 +9,19 @@ import {
   StatutSocial,
   statutSocialLabels,
 } from '@/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import {
   TrancheAge,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain/tranche-age'
-import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireExportRow } from '../domain/exporter-beneficiaires'
 import { buildBeneficiairesWorksheet } from './build-beneficiaires-worksheet'
 
-const user: WorksheetUser = {
-  id: '00000000-0000-0000-0000-000000000000',
-  firstName: 'Marie',
-  lastName: 'Médiatrice',
-  role: 'User',
-  coordinateur: null,
-  emplois: [],
-  isConseillerNumerique: false,
-  mediateur: { id: '00000000-0000-0000-0000-000000000001' },
+const user: AuteurDExport = {
+  nom: 'Médiatrice',
+  prenom: 'Marie',
+  role: 'Médiateur',
 }
 
 const beneficiaire: BeneficiaireExportRow = {
@@ -53,7 +48,7 @@ const cellValues = (worksheetName: string) => {
     beneficiaires: [beneficiaire],
     filters: { recherche: 'Dupont' },
     matchesCount: 1,
-    user,
+    auteur: user,
     worksheetGenerationDate: new Date('2024-06-01T10:00:00.000Z'),
   })
   const worksheet = workbook.getWorksheet(worksheetName)

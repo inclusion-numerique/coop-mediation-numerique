@@ -1,2 +1,6 @@
-export { type Accueil, consulterLAccueil, type ProfilDAccueil } from './domain'
+export {
+  type Accueil,
+  consulterLAccueil,
+  selonLeProfil,
+} from './domain'
 export { type UtilisateurConnecte, visiteurDe } from './implementation'

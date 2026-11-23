@@ -1,9 +1,5 @@
-import {
-  contratLePlusRecent,
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
+import { telephoneEnregistrable } from '@/libraries/telephone'
 import {
   AdresseCourriel,
   CoordinateurId,
@@ -16,9 +12,9 @@ import {
   rattachements,
   SANS_CONTRAT,
   situationDansLeDispositif,
-  telephoneEnregistrable,
   UtilisateurId,
 } from '../domain'
+import { enPosteSelect, estEnPoste } from './conseiller-numerique-en-poste'
 
 export const inscritDeLaListeSelect = {
   id: true,
@@ -30,7 +26,7 @@ export const inscritDeLaListeSelect = {
   coordinateur: { select: { id: true } },
   personneMain: {
     select: {
-      ...personneConseillerNumeriqueSelect,
+      ...enPosteSelect,
       isCoordinateur: true,
       // Fin et rupture séparées : Brevo a un attribut pour chacune.
       contrats: {
@@ -51,14 +47,17 @@ type ContratRow = NonNullable<
 const departageAEgaliteDeDebut = (a: ContratRow, b: ContratRow): number =>
   Number(b.dateRupture !== null) - Number(a.dateRupture !== null) || b.id - a.id
 
+const plusRecentEnPremier = (a: ContratRow, b: ContratRow): number =>
+  (b.dateDebut?.getTime() ?? 0) - (a.dateDebut?.getTime() ?? 0)
+
 export const datesDuContratLePlusRecent = (
   contrats: readonly ContratRow[],
 ): DatesDeContrat => {
-  const contrat = contratLePlusRecent(
-    contrats.toSorted(departageAEgaliteDeDebut),
-    (row) => row.dateDebut,
-  )
-  return contrat === null
+  const contrat = contrats
+    .toSorted(departageAEgaliteDeDebut)
+    .toSorted(plusRecentEnPremier)
+    .at(0)
+  return contrat === undefined
     ? SANS_CONTRAT
     : { fin: contrat.dateFin, rupture: contrat.dateRupture }
 }
@@ -83,7 +82,7 @@ export const inscritDeLaListeToDomain = (
             : CoordinateurId(row.coordinateur.id),
         ),
         dispositif: situationDansLeDispositif(
-          dispositifDe(personneEstConseillerNumerique(row.personneMain)),
+          dispositifDe(estEnPoste(row.personneMain)),
           row.personneMain?.isCoordinateur ?? false,
         ),
         contrat: datesDuContratLePlusRecent(row.personneMain?.contrats ?? []),

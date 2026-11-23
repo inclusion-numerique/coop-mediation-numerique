@@ -1,60 +1,22 @@
 import { Suspense } from 'react'
-import DataTable from '@/libs/data-table/DataTable'
-import type { DataTableConfiguration } from '@/libs/data-table/DataTableConfiguration'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import { Spinner } from '@/ui/Spinner'
-import { LIGNES_PAR_PAGE } from '../../../../domain'
+import { DataTable } from '@/libraries/data-table'
+import { Spinner } from '@/libraries/ui/components/Spinner'
+import { etatDeLaTable } from '../../../../ui/pagination/etat-de-la-table'
+import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
 import type { LigneDuTableau } from '../mes-activites.presenter'
-import { OuvrirLeDetailDeLaLigne } from './OuvrirLeDetailDeLaLigne'
+import { EnTeteDuTableauDeMesActivites } from './EnTeteDuTableauDeMesActivites'
+import { LigneDuTableauDeMesActivites } from './LigneDuTableauDeMesActivites'
 
 export type ContenuDuTableau = {
   readonly decompte: string
   readonly lignes: readonly LigneDuTableau[]
-  readonly pages: number
+  readonly total: number
+  readonly lignesParPage: number
 }
 
-const optionsDeLignes = generatePageSizeSelectOptions([...LIGNES_PAR_PAGE])
+const ADRESSE = '/coop/mes-activites/tableau'
 
-const colonnes = {
-  rowKey: ({ id }: LigneDuTableau) => id,
-  columns: [
-    {
-      name: 'activite',
-      header: 'Activité',
-      cell: ({ type, personnes }: LigneDuTableau) => (
-        <>
-          <p className="fr-text-mention--grey fr-text--xs fr-mb-0-5v">{type}</p>
-          <p className="fr-text--sm fr-mb-0">{personnes}</p>
-        </>
-      ),
-      cellClassName: 'tableau-des-activites__type',
-    },
-    {
-      name: 'date',
-      header: 'Date',
-      cell: ({ jour }: LigneDuTableau) => jour,
-      defaultSortable: true,
-      defaultSortableDirection: 'desc' as const,
-    },
-    {
-      name: 'duree',
-      header: 'Durée',
-      cell: ({ duree }: LigneDuTableau) => duree,
-    },
-    {
-      name: 'lieu_d_activite',
-      header: 'Lieu d’activité',
-      cell: ({ lieu }: LigneDuTableau) => lieu,
-      cellClassName: 'tableau-des-activites__lieu',
-    },
-    {
-      name: 'creation',
-      header: 'Enregistrée le',
-      cell: ({ enregistreeLe }: LigneDuTableau) => enregistreeLe,
-    },
-  ],
-} satisfies DataTableConfiguration<LigneDuTableau>
+const NOMBRE_DE_COLONNES = 6
 
 const Contenu = async ({
   contenu,
@@ -63,24 +25,31 @@ const Contenu = async ({
   contenu: Promise<ContenuDuTableau>
   parametres: Record<string, string>
 }) => {
-  const { decompte, lignes, pages } = await contenu
+  const { decompte, lignes, total, lignesParPage } = await contenu
   return (
     <>
       <p className="fr-text--bold fr-text--lg fr-my-6v">{decompte}</p>
-      <DataTable
-        className="fr-table--nowrap fr-width-full fr-mb-8v"
-        rows={[...lignes]}
-        configuration={colonnes}
-        searchParams={parametres}
-        baseHref="/coop/mes-activites/tableau"
-        rowButtonComponent={OuvrirLeDetailDeLaLigne}
-      />
-      <PaginationNavWithPageSizeSelect
-        defaultPageSize={50}
-        pageSizeOptions={optionsDeLignes}
-        totalPages={pages}
-        searchParams={parametres}
-        baseHref="/coop/mes-activites/tableau"
+      <DataTable className="fr-table--nowrap fr-width-full fr-mb-8v">
+        <EnTeteDuTableauDeMesActivites
+          state={etatDeLaTable(parametres)}
+          baseHref={ADRESSE}
+        />
+        <tbody>
+          {lignes.map((ligne) => (
+            <LigneDuTableauDeMesActivites key={ligne.id} ligne={ligne} />
+          ))}
+          {lignes.length === 0 && (
+            <tr>
+              <td colSpan={NOMBRE_DE_COLONNES}>Aucun résultat</td>
+            </tr>
+          )}
+        </tbody>
+      </DataTable>
+      <PaginationDesActivites
+        adresse={ADRESSE}
+        parametres={parametres}
+        total={total}
+        lignesParPage={lignesParPage}
       />
     </>
   )

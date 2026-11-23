@@ -5,7 +5,7 @@ export const autonomieValues = AUTONOMIES
 
 export type Autonomie = (typeof autonomieValues)[number]
 
-export const autonomieLabels: {
+const autonomieLabels: {
   [key in Autonomie]: string
 } = {
   EntierementAccompagne: 'Avec guidage',
@@ -21,7 +21,7 @@ export const autonomieStars: {
   Autonome: 3,
 }
 
-export const autonomieOptions = labelsToOptions(autonomieLabels)
+const autonomieOptions = labelsToOptions(autonomieLabels)
 
 export const autonomieOptionsWithExtras = autonomieOptions.map(
   ({ label, value }) => ({

@@ -1,13 +1,13 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import Card from '@/components/Card'
+import Card from '@/libraries/ui/components/Card'
 import type { EmploiEmployeuseAffichage } from '../abilities/consulter-employeuse-a-une-date/ui'
 import { ReferentStructure } from './ReferentStructure'
 
-export type ActeurEmploi = { structure: EmploiEmployeuseAffichage }
+type ActeurEmploi = { structure: EmploiEmployeuseAffichage }
 
-export type ActeurStructureEmployeuseProps = {
+type ActeurStructureEmployeuseProps = {
   emploi: ActeurEmploi
   showIsLieuActiviteNotice: boolean
   showReferentStructure: boolean

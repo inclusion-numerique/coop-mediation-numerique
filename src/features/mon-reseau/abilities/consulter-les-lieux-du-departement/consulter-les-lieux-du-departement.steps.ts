@@ -1,42 +1,37 @@
 import assert from 'node:assert'
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
-import { semerUnLieu } from '@/features/mon-reseau/mon-reseau.cucumber'
+import { After, Then, When } from '@cucumber/cucumber'
+import {
+  consulterLesLieuxDuDepartement,
+  type ParametresDesLieux,
+} from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
 
 const AURILLAC = '15014'
-const SAINT_FLOUR = '15187'
-
-type Consultation = Awaited<ReturnType<typeof consulterLesLieuxDuDepartement>>
 
 const etat: {
-  aurillac?: string
-  saintFlour?: string
-  consultation?: Consultation
+  communesDemandees?: readonly string[]
+  consultation?: Awaited<ReturnType<typeof consulterLesLieux>>
 } = {}
 
-const proposes = (): readonly string[] => {
-  const consultation = etat.consultation
-  if (consultation === undefined || !consultation.success) {
-    throw new Error('Aucun annuaire consulté')
-  }
-  return consultation.data.lieux.lieux.map(({ id }) => id)
+const annuaireVide = async ({
+  searchParams,
+}: {
+  searchParams: { readonly communes: readonly string[] }
+}) => {
+  etat.communesDemandees = searchParams.communes
+  return { lieux: [], totalCount: 0, page: 1, pageSize: 100 }
 }
+
+const aucuneCommune = async () => ({ communesOptions: [] })
+
+const consulterLesLieux = (code: string, parametres: ParametresDesLieux) =>
+  consulterLesLieuxDuDepartement(code, parametres, {
+    lieuxDuDepartement: annuaireVide,
+    communesDesLieux: aucuneCommune,
+  })
 
 const consulter = async (communes: string) => {
-  etat.consultation = await consulterLesLieuxDuDepartement('15', {
-    communes,
-    lignes: '100',
-  })
+  etat.consultation = await consulterLesLieux('15', { communes })
 }
-
-Given('un lieu publié à Aurillac et un lieu publié à Saint-Flour', async () => {
-  etat.aurillac = await semerUnLieu({ codeInsee: AURILLAC, publie: true })
-  etat.saintFlour = await semerUnLieu({
-    codeInsee: SAINT_FLOUR,
-    commune: 'Saint-Flour',
-    publie: true,
-  })
-})
 
 When('on consulte les lieux du Cantal à Aurillac', async () => {
   await consulter(AURILLAC)
@@ -52,18 +47,16 @@ When(
 When(
   'on consulte les lieux du département « {word} »',
   async (code: string) => {
-    etat.consultation = await consulterLesLieuxDuDepartement(code, {})
+    etat.consultation = await consulterLesLieux(code, {})
   },
 )
 
-Then('seul le lieu d’Aurillac est proposé', () => {
-  assert.ok(proposes().includes(etat.aurillac ?? ''))
-  assert.ok(!proposes().includes(etat.saintFlour ?? ''))
+Then('l’annuaire est demandé pour Aurillac seulement', () => {
+  assert.deepStrictEqual(etat.communesDemandees, [AURILLAC])
 })
 
-Then('les deux lieux sont proposés', () => {
-  assert.ok(proposes().includes(etat.aurillac ?? ''))
-  assert.ok(proposes().includes(etat.saintFlour ?? ''))
+Then('l’annuaire est demandé sans commune', () => {
+  assert.deepStrictEqual(etat.communesDemandees, [])
 })
 
 Then('l’annuaire des lieux est introuvable', () => {
@@ -74,7 +67,6 @@ Then('l’annuaire des lieux est introuvable', () => {
 })
 
 After(() => {
-  etat.aurillac = undefined
-  etat.saintFlour = undefined
+  etat.communesDemandees = undefined
   etat.consultation = undefined
 })

@@ -1,10 +1,8 @@
-import { ProfilInscription } from '@/features/inscription/domain'
 import {
   CompteSupprime,
   type CoordinateurId,
   coordinateurDe,
   coordinateurEstVierge,
-  type Dispositif,
   estRoleProtege,
   type MediateurId,
   mediateurDe,
@@ -31,7 +29,6 @@ export type CompteAReaffecter = {
   readonly id: UtilisateurId
   readonly role: RoleUtilisateur
   readonly supprime: boolean
-  readonly dispositif: Dispositif
   readonly rattachements: Rattachements<
     MediateurAReaffecter,
     CoordinateurAReaffecter
@@ -49,19 +46,6 @@ export type OperationRole =
 
 export type PlanDeChangement = {
   readonly operations: readonly OperationRole[]
-  readonly profil: ProfilInscription
-}
-
-const profilApres = (
-  demande: RolesDemandes,
-  dispositif: Dispositif,
-): ProfilInscription => {
-  const conseiller = dispositif === 'ConseillerNumerique'
-  if (demande.mediateur)
-    return ProfilInscription(conseiller ? 'ConseillerNumerique' : 'Mediateur')
-  return ProfilInscription(
-    conseiller ? 'CoordinateurConseillerNumerique' : 'Coordinateur',
-  )
 }
 
 const operationsDuMediateur = (
@@ -122,6 +106,5 @@ export const planDeChangement = (
     operations: [...mediateur.data, ...coordinateur.data].toSorted(
       (premiere, seconde) => ordre[premiere._tag] - ordre[seconde._tag],
     ),
-    profil: profilApres(demande, compte.dispositif),
   })
 }

@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
-import { OnboardingMesOutilsCoordinateur } from './OnboardingMesOutilsCoordinateur'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { OnboardingMesOutilsCoordinateur } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingMesOutilsCoordinateur'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

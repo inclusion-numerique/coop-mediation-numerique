@@ -1,4 +1,3 @@
-export { EnteteDeLaFicheEnAdministration } from './components/EnteteDeLaFicheEnAdministration'
-export type { EnregistrerUneSection } from './enregistrer-une-section'
-export { type FicheAffichee, ficheAffichee } from './fiche-du-lieu.presenter'
+export { ficheAffichee } from './fiche-du-lieu.presenter'
+export { FicheDuLieuEnAdministrationPage } from './pages/FicheDuLieuEnAdministrationPage'
 export { FicheDuLieuPage } from './pages/FicheDuLieuPage'

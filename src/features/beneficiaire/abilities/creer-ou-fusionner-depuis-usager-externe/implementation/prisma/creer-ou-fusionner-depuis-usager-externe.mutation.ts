@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
-import { siIndisponible } from '@/external-apis/apiAdresse'
-import type { CommuneFields } from '@/external-apis/ban/communeFieldsFromAddress'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { CommuneFields } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementation/communeFieldsFromAddress'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
@@ -11,10 +11,10 @@ import {
   PRENOM_MAX_LENGTH,
   Prenom,
 } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
+import { siIndisponible } from '@/libraries/ban/apiAdresse'
+import { Telephone } from '@/libraries/telephone'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,
   ExternalUserToMerge,

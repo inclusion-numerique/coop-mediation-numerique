@@ -11,5 +11,3 @@ export const MATERIELS = [
 export const Materiel = defineModel(z.enum(MATERIELS).brand('Materiel'))
 
 export type Materiel = Model.TypeOf<typeof Materiel>
-
-export const materiels: readonly Materiel[] = MATERIELS.map(Materiel)

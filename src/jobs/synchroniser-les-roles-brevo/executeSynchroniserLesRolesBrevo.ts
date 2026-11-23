@@ -1,5 +1,5 @@
+import { brevoActif } from '@/configuration/brevo'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { deploymentCanCreateBrevoContact } from '@/external-apis/brevo/createBrevoContact'
 import {
   listeDeDiffusionPorts,
   synchroniserLesRolesBrevo,
@@ -7,7 +7,7 @@ import {
 import { output } from '@/libraries/console/output'
 
 export const executeSynchroniserLesRolesBrevo = async () => {
-  if (!deploymentCanCreateBrevoContact()) {
+  if (!brevoActif()) {
     output('Synchronisation Brevo ignorée hors du déploiement main')
     return { skipped: true }
   }

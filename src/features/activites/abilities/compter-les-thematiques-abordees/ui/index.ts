@@ -1,4 +1,1 @@
-export {
-  type ThematiqueAbordeePresentee,
-  thematiquesAbordeesPresentees,
-} from './thematiques-abordees.presenter'
+export { thematiquesAbordeesPresentees } from './thematiques-abordees.presenter'

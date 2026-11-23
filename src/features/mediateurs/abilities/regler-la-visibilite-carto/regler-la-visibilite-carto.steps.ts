@@ -1,14 +1,14 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import {
   semerUnMediateurVisible,
   visibiliteSemee,
 } from '@/features/mediateurs/mediateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 
-type Issue = Awaited<ReturnType<typeof reglerLaVisibiliteCarto>>
+type Issue = Awaited<ReturnType<ReturnType<typeof reglerLaVisibiliteCarto>>>
 
 const dernier: { reglage?: Issue } = {}
 
@@ -22,7 +22,7 @@ const regler = async ({
   par: 'mediateur' | 'administrateur'
 }) => {
   const semee = visibiliteSemee()
-  dernier.reglage = await reglerLaVisibiliteCarto({
+  dernier.reglage = await reglerLaVisibiliteCarto(async () => undefined)({
     mediateurId: MediateurId(semee.mediateurId),
     visible,
     auteurId: AuteurId(

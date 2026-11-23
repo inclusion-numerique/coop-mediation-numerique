@@ -4,9 +4,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Image from 'next/image'
+import { download } from '@/libraries/navigateur/download'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { download } from '@/utils/download'
-import { numberToString } from '@/utils/formatNumber'
 import type { FiltreActif } from '../../../ui/filtres-actifs-des-coordinations'
 
 const ExportActiviteModal = createModal({

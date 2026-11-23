@@ -39,3 +39,12 @@
 * Then 1 rendez-vous est sélectionné
 * And le statut affiché de son premier rendez-vous est "passe"
 * And le statut affiché de son second rendez-vous est "seen"
+
+## Rule: Les statistiques retrouvent les rendez-vous par leur statut
+
+### Scenario: Seuls les rendez-vous honorés sont retrouvés pour les statistiques
+
+* Given un compte RDV ayant 2 rendez-vous en mars 2026
+* And la présence à son second rendez-vous est honorée
+* When je retrouve les rendez-vous honorés pour les statistiques
+* Then seul son second rendez-vous est retrouvé

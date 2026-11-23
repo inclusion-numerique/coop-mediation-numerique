@@ -1,8 +1,6 @@
-import {
-  contratPourEmployeuse,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
+import { estEnPoste } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import type { UtilisateurExpose } from '../prisma/utilisateurs-exposes.query'
+import { contratPourEmployeuse } from './contrat-pour-employeuse'
 
 export type UtilisateurAttributes = {
   email: string
@@ -156,9 +154,7 @@ export const utilisateurExpose = (
   mediateur: mediateurDe(utilisateur),
   coordinateur: coordinateurDe(utilisateur),
   conseiller_numerique: {
-    is_conseiller_numerique: personneEstConseillerNumerique(
-      utilisateur.personneMain,
-    ),
+    is_conseiller_numerique: estEnPoste(utilisateur.personneMain),
     id_pg: utilisateur.personneMain?.cnPgId ?? null,
   },
 })

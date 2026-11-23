@@ -1,11 +1,11 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import type {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 import type { OperationRole, PlanDeChangement } from '../../domain'
 
 type Transaction = Prisma.TransactionClient
@@ -67,19 +67,17 @@ const appliquer =
     await retirerLeCoordinateur(tx, utilisateurId, operation.coordinateurId)
   }
 
-export const appliquerLePlan = async (
-  utilisateurId: UtilisateurId,
-  { operations, profil }: PlanDeChangement,
-): Promise<void> => {
-  await prismaClient.$transaction(async (tx) => {
-    await operations.reduce<Promise<void>>(async (precedente, operation) => {
-      await precedente
-      await appliquer(tx, utilisateurId)(operation)
-    }, Promise.resolve())
-    await tx.user.update({
-      where: { id: utilisateurId },
-      data: { profilInscription: profil },
+export const appliquerLePlan =
+  (synchroniserLaPersonne: SynchroniserLaPersonne) =>
+  async (
+    utilisateurId: UtilisateurId,
+    { operations }: PlanDeChangement,
+  ): Promise<void> => {
+    await prismaClient.$transaction(async (tx) => {
+      await operations.reduce<Promise<void>>(async (precedente, operation) => {
+        await precedente
+        await appliquer(tx, utilisateurId)(operation)
+      }, Promise.resolve())
+      await synchroniserLaPersonne(tx, utilisateurId)
     })
-    await synchroniserPersonne(tx, utilisateurId)
-  })
-}
+  }

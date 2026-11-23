@@ -1,12 +1,10 @@
 export type { DispositifInscription } from './dispositif-inscription'
-export { etapeApresInitialisation } from './etape-apres-initialisation'
-export {
-  type InitialiserInscription,
-  initialiserInscription,
-} from './initialiser-inscription'
+
+export { initialiserInscription } from './initialiser-inscription'
 export type {
   AppliquerDispositif,
+  GarantirLeRoleCoordinateur,
   ImporterStructureDepuisSiret,
-  InitialiserInscriptionPorts,
   LireEtatPourEtapeSuivante,
+  RattacherDepuisSiret,
 } from './ports'

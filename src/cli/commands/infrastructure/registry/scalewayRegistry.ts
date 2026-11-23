@@ -5,7 +5,7 @@ import type { RegistryImage, RegistryTag } from './registryRetention'
 
 const PAGE_SIZE = 100
 
-export const webAppRegistryNamespace = `${projectSlug}-web-app`
+const webAppRegistryNamespace = `${projectSlug}-web-app`
 
 export const webAppImagePrefix = `${projectSlug}-web-`
 

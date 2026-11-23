@@ -3,8 +3,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
-import { fusionnerDesLieuxAction } from '@/app/_actions/lieux-activite/fusionner-des-lieux.action'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '../../action/fusionner-des-lieux.key'
 
 const ValiderLaFusion = ({
   sourceStructure,
@@ -32,7 +33,7 @@ const ValiderLaFusion = ({
 
   const handleValiderFusion = async () => {
     try {
-      const resultat = await fusionnerDesLieuxAction({
+      const resultat = await inject(FUSIONNER_DES_LIEUX_ACTION_KEY)({
         sourceStructureId: sourceStructure.id,
         targetStructureId: targetStructure.id,
       })

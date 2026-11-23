@@ -1,8 +1,8 @@
 import { differenceInMonths } from 'date-fns'
-import { dateAsDayConventional } from '@/utils/dateAsDay'
+import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
 import type { Contrat, EcheanceDuContrat, TypeDeContrat } from '../domain'
 
-export type BadgeDEcheance = {
+type BadgeDEcheance = {
   readonly libelle: string
   readonly severite: 'warning' | 'error'
   readonly icone: boolean

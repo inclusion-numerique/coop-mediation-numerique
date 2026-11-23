@@ -1,3 +1,4 @@
+import { createApiClient } from '@e2e/tasks/handlers/clientApi.tasks'
 import { createInvitation } from '@e2e/tasks/handlers/createInvitation'
 import { deleteAllData } from '@e2e/tasks/handlers/deleteAllData'
 import {
@@ -26,6 +27,7 @@ export const tasks = {
   deleteAllData,
   resetFixtures,
   createInvitation,
+  createApiClient,
   createCoordinateurFor,
   connectRdvAccountFor,
   getRdvAccountFor,
@@ -36,5 +38,3 @@ export const tasks = {
 export type Tasks = typeof tasks
 
 export type TaskName = keyof Tasks
-
-export type TaskInput<Name extends TaskName> = Parameters<Tasks[Name]>[0]

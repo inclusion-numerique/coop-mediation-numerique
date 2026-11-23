@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { nomAffiche } from '@/libraries/nom-affiche'
-import { prismaClient } from '@/prismaClient'
 import type { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import { lieuCoopToDomain, lieuToDomain } from '../../../../implementation'

@@ -6,10 +6,10 @@ import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import { getAvecNouvellesTentatives } from '@/cli/getAvecNouvellesTentatives'
 import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { createVarDirectory } from '@/libraries/chemins/createVarDirectory'
 import { varDirectory } from '@/libraries/chemins/varDirectory'
 import { output } from '@/libraries/console/output'
-import { prismaClient } from '@/prismaClient'
 
 const exec = promisify(callbackExec)
 
@@ -49,7 +49,7 @@ const missingSchema = (block: string): string | null =>
   block.match(/relation "([^".]+)\.[^"]+" does not exist/)?.[1] ??
   null
 
-export const classifyRestoreErrors = (
+const classifyRestoreErrors = (
   stderr: string,
   restoredSchemas: readonly string[],
 ): { ignorable: readonly string[]; blocking: readonly string[] } => {
@@ -355,7 +355,7 @@ const databaseNameFromUrl = (databaseUrl: string): string =>
 // production par erreur (cf. incident 2026-07-08, où DATABASE_URL pointait sur un tunnel
 // `localhost` vers `dataspace_prod`). L'hôte n'est donc PAS un signal fiable — le tunnel est
 // en loopback — ; le signal fiable est le NOM de la base cible.
-export const targetLooksLikeProduction = (
+const targetLooksLikeProduction = (
   databaseUrl: string,
   productionDatabaseName: string,
 ): boolean => {
@@ -368,7 +368,7 @@ export const targetLooksLikeProduction = (
   )
 }
 
-export const assertRestoreTargetIsNotProduction = ({
+const assertRestoreTargetIsNotProduction = ({
   databaseUrl,
   productionDatabaseName,
   confirmProduction,

@@ -2,9 +2,9 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { resetPagination } from '@/libraries/filtres/helpers'
+import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { resetPagination } from '@/libs/filters/helpers'
-import TriggerButton from '@/libs/filters/TriggerButton'
 import type { RoleFiltre } from './valeurs-de-filtre'
 
 const roleOptions: { label: string; value: RoleFiltre | '' }[] = [

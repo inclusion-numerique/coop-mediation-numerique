@@ -1,5 +1,4 @@
-import { conseillerNumeriqueExpression } from '@/features/employeuse/server'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 
 type UtilisateursActifsRaw = {
   role: 'mediateurs' | 'conseillers' | 'coordinateurs'
@@ -68,7 +67,12 @@ export const utilisateursActifsParMois = async (): Promise<
       LEFT JOIN coordinateurs c ON u.id = c.user_id
       JOIN activites a ON a.mediateur_id = m.id
       WHERE a.suppression IS NULL
-        AND ${conseillerNumeriqueExpression('u.id', false)}
+        AND NOT EXISTS (
+          SELECT 1
+          FROM main.conseiller_numerique_en_poste cn
+          JOIN main.personne p ON p.id = cn.personne_id
+          WHERE p.coop_id = u.id
+        )
         AND c.id IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
@@ -84,7 +88,12 @@ export const utilisateursActifsParMois = async (): Promise<
       LEFT JOIN coordinateurs c ON u.id = c.user_id
       JOIN activites a ON a.mediateur_id = m.id
       WHERE a.suppression IS NULL
-        AND ${conseillerNumeriqueExpression('u.id', true)}
+        AND EXISTS (
+          SELECT 1
+          FROM main.conseiller_numerique_en_poste cn
+          JOIN main.personne p ON p.id = cn.personne_id
+          WHERE p.coop_id = u.id
+        )
         AND c.id IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL

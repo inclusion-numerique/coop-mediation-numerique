@@ -10,12 +10,11 @@ import type { CriteresActeurs } from './criteres-acteurs'
 export type PageDActeurs = {
   readonly acteurs: readonly Acteur[]
   readonly total: Effectif
-  readonly pages: number
   readonly page: NumeroDePage
   readonly lignes: LignesParPage
 }
 
-export type OptionDeCommune = {
+type OptionDeCommune = {
   readonly value: string
   readonly label: string
 }
@@ -25,6 +24,6 @@ export type ListerLesActeursDuDepartement = (
   criteres: CriteresActeurs,
 ) => Promise<PageDActeurs>
 
-export type CommunesDuDepartement = (
-  departement: CodeDepartement,
-) => Promise<readonly OptionDeCommune[]>
+export type CommunesDesLieux = (options: {
+  departementCode: CodeDepartement
+}) => Promise<{ readonly communesOptions: readonly OptionDeCommune[] }>

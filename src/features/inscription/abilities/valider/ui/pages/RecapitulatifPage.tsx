@@ -1,9 +1,7 @@
 'use client'
 
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import IconInSquare from '@/components/IconInSquare'
-import InfoLabelValue from '@/components/InfoLabelValue'
-import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import type { ReactNode } from 'react'
 import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
@@ -11,16 +9,15 @@ import {
   computeUserProfile,
   libelleDuProfil,
 } from '@/features/inscription/domain'
-import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
-import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
+import { pluriel } from '@/libraries/pluriel'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 
 const RecapitulatifPage = ({
   data: {
     user,
-    structureEmployeuse,
-    lieuxActivite,
     mediateursCoordonnesCount,
     backHref,
     mustAcceptCgu = false,
@@ -29,8 +26,12 @@ const RecapitulatifPage = ({
     canCancelInscription,
     showInscriptionSteps,
   },
+  carteEmployeuse,
+  cartesDesLieux,
 }: {
   data: RecapitulatifPageData
+  carteEmployeuse: ReactNode
+  cartesDesLieux: readonly ReactNode[]
 }) => (
   <InscriptionCard
     title="Récapitulatif de vos informations"
@@ -93,9 +94,11 @@ const RecapitulatifPage = ({
                 />
                 <div className="fr-h2 fr-mb-0">{mediateursCoordonnesCount}</div>
                 <div>
-                  Conseiller{sPluriel(mediateursCoordonnesCount)} numérique
-                  {sPluriel(mediateursCoordonnesCount)} identifié
-                  {sPluriel(mediateursCoordonnesCount)}
+                  {pluriel(
+                    mediateursCoordonnesCount,
+                    'Conseiller numérique identifié',
+                    'Conseillers numériques identifiés',
+                  )}
                 </div>
               </div>
               <Notice
@@ -130,7 +133,7 @@ const RecapitulatifPage = ({
           )}
         </>
       )}
-    {!!structureEmployeuse && (
+    {!!carteEmployeuse && (
       <>
         <hr className="fr-separator-12v" />
         <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v fr-mb-6v">
@@ -139,21 +142,18 @@ const RecapitulatifPage = ({
             Ma structure employeuse
           </h2>
         </div>
-        <StructureAdministrativeCard
-          structure={structureEmployeuse}
-          className="fr-mt-4v"
-        />
+        <div className="fr-mt-4v">{carteEmployeuse}</div>
       </>
     )}
-    {!!lieuxActivite && lieuxActivite.length > 0 && (
+    {cartesDesLieux.length > 0 && (
       <>
         <hr className="fr-separator-12v" />
         <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v fr-mb-6v">
           <IconInSquare iconId="ri-home-office-line" size="small" />
           <h2 className="fr-h6 fr-mb-0 fr-text-title--blue-france">
-            {lieuxActivite.length === 1
+            {cartesDesLieux.length === 1
               ? 'Mon lieu d’activité'
-              : `Mes lieux d’activité · ${lieuxActivite.length}`}
+              : `Mes lieux d’activité · ${cartesDesLieux.length}`}
           </h2>
         </div>
         <Notice
@@ -167,9 +167,7 @@ const RecapitulatifPage = ({
         />
         {/* Les lieux sont affichés dans l'ordre inverse (le plus récent en haut) dans la formulaire lieux activité, on reproduit cela pour */}
         {/* que l'affichage soit cohérent */}
-        {lieuxActivite.toReversed().map((lieu) => (
-          <SaisieDuLieuCard key={lieu.id} lieu={lieu} className="fr-mt-4v" />
-        ))}
+        {cartesDesLieux.toReversed()}
       </>
     )}
     <hr className="fr-separator-12v" />

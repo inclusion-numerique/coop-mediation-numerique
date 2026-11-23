@@ -43,7 +43,3 @@ type Divergences =
 export type LigneDuRegistre = [Divergences] extends [never]
   ? LieuInclusionRegistreMain
   : { readonly VOCABULAIRE_DESALIGNE_AVEC_LE_REGISTRE: Divergences }
-
-export const nomenclaturesAlignees: [Divergences] extends [never]
-  ? true
-  : { readonly VOCABULAIRE_DESALIGNE_AVEC_LE_REGISTRE: Divergences } = true

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import {
   AdresseIndisponible,
   SERVICE_ADRESSE_INDISPONIBLE,
-} from '@/external-apis/apiAdresse'
-import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+} from '@/libraries/ban/apiAdresse'
 import {
   auPanier,
   type LieuAuPanier,
@@ -78,8 +78,23 @@ describe('deux entrées désignent le même lieu', () => {
     expect(memeLieu(auxPanier({ id: 'a' }), auxPanier({ id: 'b' }))).toBe(false)
   })
 
-  it('ni si aucune des deux n’en porte', () => {
-    expect(memeLieu(auxPanier(), auxPanier())).toBe(false)
+  it('sans identité, si leur nom et leur adresse coïncident', () => {
+    expect(memeLieu(auxPanier(), auxPanier())).toBe(true)
+  })
+
+  it('mais pas, sans identité, si leurs adresses diffèrent', () => {
+    expect(memeLieu(auxPanier(), auxPanier({ adresse: '3 rue Haute' }))).toBe(
+      false,
+    )
+  })
+
+  it('ni si leur SIRET seul coïncide', () => {
+    expect(
+      memeLieu(
+        auxPanier({ siret: '13002603200016' }),
+        auxPanier({ siret: '13002603200016', adresse: '3 rue Haute' }),
+      ),
+    ).toBe(false)
   })
 })
 
@@ -93,7 +108,7 @@ describe('un résultat de recherche devient une entrée du panier', () => {
       id: 'lieu-coop',
       structureCartographieNationaleId: null,
       nom: 'Tiers-lieu du Port',
-      siret: '13002603200016',
+      siret: null,
       adresse: '12 quai du Port',
       commune: 'Rochefort',
       codePostal: '17300',
@@ -137,6 +152,20 @@ describe('un résultat de recherche devient une entrée du panier', () => {
       expect(lieu?.structureCartographieNationaleId).toBeNull()
     },
   )
+
+  it('en retenant comme SIRET le pivot d’un résultat de l’annuaire', async () => {
+    const lieu = await auPanier(reconnue)(resultat({ source: 'api' }))
+
+    expect(lieu?.siret).toBe('13002603200016')
+  })
+
+  it('sans prendre pour SIRET le pivot de la cartographie, qui peut être un RNA', async () => {
+    const lieu = await auPanier(reconnue)(
+      resultat({ source: 'cartographie_nationale', pivot: 'W751234567' }),
+    )
+
+    expect(lieu?.siret).toBeNull()
+  })
 
   it('rend null quand la BAN ne reconnaît pas l’adresse', async () => {
     expect(await auPanier(introuvable)(resultat())).toBeNull()

@@ -4,7 +4,7 @@ export const SOURCES_DANS_L_URL = ['', 'v1', 'v2'] as const
 
 export type SourceDansLURL = (typeof SOURCES_DANS_L_URL)[number]
 
-export const libellesDesSources: Readonly<Record<SourceDansLURL, string>> = {
+const libellesDesSources: Readonly<Record<SourceDansLURL, string>> = {
   '': 'Toutes les sources de données',
   v1: 'Espace Coop (V1)',
   v2: 'La Coop de la médiation numérique',

@@ -1,4 +1,4 @@
-import type { DefaultValues } from '@/libs/form/use-app-form'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type { LieuDuCra } from './lieu/lieu-du-cra'
 import { optionsDeDuree } from './options-de-duree'
 import {

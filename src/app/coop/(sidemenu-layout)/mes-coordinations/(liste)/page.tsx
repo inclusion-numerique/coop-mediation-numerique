@@ -1,31 +1,16 @@
 import type { Metadata } from 'next'
 import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/supprimer-une-activite-de-coordination.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateCoordinateur } from '@/auth/authenticateUser'
-import { isMediateur } from '@/auth/userTypeGuards'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   BoutonExporter,
   requeteDeLExport,
 } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui'
-import {
-  listerLesActivitesDeCoordination,
-  optionsDeFiltre,
-} from '@/features/activites/abilities/lister-les-activites-de-coordination'
-import {
-  listeDesCoordinations,
-  MesCoordinationsPage,
-  optionsDeFiltrePresentees,
-  parametresDeLaPagination,
-} from '@/features/activites/abilities/lister-les-activites-de-coordination/ui'
+import { mesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination'
+import { MesCoordinationsPage } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
-import {
-  CoordinateurId,
-  criteresDesCoordinations,
-  estFiltre,
-  paginationLue,
-} from '@/features/activites/domain'
-import { filtresActifsDesCoordinations } from '@/features/activites/ui/filtres-actifs-des-coordinations'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
+import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités de coordination'),
@@ -47,19 +32,13 @@ const MesCoordinationsRoute = async ({
 }) => {
   const user = await authenticateCoordinateur()
   const parametres = await searchParams
-  const coordinateurId = CoordinateurId(user.coordinateur.id)
-  const criteres = criteresDesCoordinations(parametres)
 
-  const [listees, options] = await Promise.all([
-    listerLesActivitesDeCoordination({
-      coordinateurId,
-      criteres,
-      pagination: paginationLue(parametres),
-    }),
-    optionsDeFiltre({ coordinateurId }),
-  ])
-
-  const filtresActifs = filtresActifsDesCoordinations(criteres, options.tags)
+  const { page, total } = await mesActivitesDeCoordination({
+    coordinateurId: user.coordinateur.id,
+    parametres,
+    timezone: user.timezone,
+    aussiMediateur: isMediateur(user),
+  })
 
   return (
     <ClientBinder
@@ -67,21 +46,12 @@ const MesCoordinationsRoute = async ({
       to={supprimerUneActiviteDeCoordinationAction}
     >
       <MesCoordinationsPage
-        sousTitre={isMediateur(user) ? 'Coordination' : undefined}
-        options={optionsDeFiltrePresentees(options, new Date())}
-        filtresActifs={filtresActifs}
-        liste={listeDesCoordinations({
-          listees,
-          filtre: estFiltre(criteres),
-          timezone: user.timezone,
-        })}
-        filtre={estFiltre(criteres)}
-        pagination={parametresDeLaPagination(parametres)}
+        {...page}
         exporter={
           <BoutonExporter
-            filters={filtresActifs}
+            filters={page.filtresActifs}
             requete={requeteDeLExport(parametres)}
-            activitesCount={listees.total}
+            activitesCount={total}
           />
         }
       />

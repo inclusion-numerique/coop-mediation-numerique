@@ -2,13 +2,13 @@
 
 import { useRouter } from 'next/navigation'
 import {
-  Departement,
+  type DepartementDuReferentiel,
   departements,
-} from '@/data/collectivites-territoriales/departements'
+} from '@/libraries/departement/departements'
 import { ComboBox } from '@/libraries/ui/components/Primitives/Form/ComboBox'
 import { hrefDuReseau } from '../../../../ui/liens'
 
-const itemToString = (departement: Departement | null): string =>
+const itemToString = (departement: DepartementDuReferentiel | null): string =>
   departement ? `${departement.nom} · ${departement.code}` : ''
 
 const normalizeForSearch = (value: string): string =>
@@ -18,7 +18,7 @@ const normalizeForSearch = (value: string): string =>
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[-']/g, '')
 
-const filterDepartements = (inputValue: string): Departement[] => {
+const filterDepartements = (inputValue: string): DepartementDuReferentiel[] => {
   const normalizedInput = normalizeForSearch(inputValue)
   return departements.filter(
     (departement) =>
@@ -29,18 +29,18 @@ const filterDepartements = (inputValue: string): Departement[] => {
 
 const loadSuggestions = async (
   inputValue: string,
-): Promise<{ items: Departement[] }> => ({
+): Promise<{ items: DepartementDuReferentiel[] }> => ({
   items: filterDepartements(inputValue),
 })
 
 const DepartementComboBox = ({
   defaultDepartement,
 }: {
-  defaultDepartement: Departement
+  defaultDepartement: DepartementDuReferentiel
 }) => {
   const router = useRouter()
 
-  const handleSelect = (departement: Departement) => {
+  const handleSelect = (departement: DepartementDuReferentiel) => {
     router.push(hrefDuReseau(departement.code))
   }
 

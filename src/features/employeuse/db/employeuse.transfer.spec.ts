@@ -162,14 +162,10 @@ describe('contratsToDomain', () => {
 describe('personneToEmployeuseActuelle', () => {
   it('compose la personne chargée en employeuse courante', () => {
     const actuelle = personneToEmployeuseActuelle({
-      affectationsEmploi: [
-        {
-          source: 'coop',
-          estActive: true,
-          createdAt: new Date('2026-01-01'),
-          structureAdministrative: ligneComplete,
-        },
-      ],
+      employeuseActuelle: {
+        source: 'coop',
+        structureAdministrative: ligneComplete,
+      },
       contrats: [
         {
           structureAdministrative: ligneComplete,

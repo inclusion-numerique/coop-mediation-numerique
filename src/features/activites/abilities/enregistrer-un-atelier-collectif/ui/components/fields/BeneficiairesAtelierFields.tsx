@@ -3,7 +3,6 @@ import { formOptions, useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { Fragment, useCallback } from 'react'
-import IconInSquare from '@/components/IconInSquare'
 import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
   countGenreNonCommunique,
@@ -25,10 +24,11 @@ import {
   BeneficiaireSelectedItems,
 } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import { DefaultValues, withForm } from '@/libraries/formulaire/use-app-form'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { pluriel } from '@/libraries/pluriel'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { DefaultValues, withForm } from '@/libs/form/use-app-form'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
 

@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type ValiderInscriptionError } from '@/features/inscription/abilities/valider'
 import { validerInscription } from '@/features/inscription/abilities/valider/commands/valider'
 import { ProfilInscription } from '@/features/inscription/domain'
@@ -9,7 +10,6 @@ import {
   seedProfilChoisi,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 let resultat: Result<void, ValiderInscriptionError>
 
@@ -44,7 +44,11 @@ Given('mon inscription est déjà validée', async () => {
 })
 
 When('je valide mon inscription', async () => {
-  resultat = await validerInscription(currentInscriptionUserId(), new Date())
+  resultat = await validerInscription(
+    currentInscriptionUserId(),
+    new Date(),
+    async () => undefined,
+  )
 })
 
 Then('mon inscription est validée', async () => {

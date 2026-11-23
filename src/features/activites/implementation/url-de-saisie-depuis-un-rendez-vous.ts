@@ -1,4 +1,4 @@
-import { getServerUrl } from '@/utils/baseUrl'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { MediateurId } from '../domain'
 import { optionsDeDuree } from '../ui/saisie/options-de-duree'
 import {

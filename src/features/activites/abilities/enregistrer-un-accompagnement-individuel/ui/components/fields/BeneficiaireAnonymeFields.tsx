@@ -10,10 +10,10 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@/features/activites/ui/saisie/commune/commune-combo-box'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import { withForm } from '@/libraries/formulaire/use-app-form'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { withForm } from '@/libs/form/use-app-form'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

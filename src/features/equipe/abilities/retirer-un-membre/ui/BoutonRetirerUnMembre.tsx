@@ -6,9 +6,9 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@/libs/injection/client'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '../action/retirer-un-membre.key'
 
 const BoutonRetirerUnMembre = ({

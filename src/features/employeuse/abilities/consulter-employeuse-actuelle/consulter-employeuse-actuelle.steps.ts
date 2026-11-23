@@ -46,6 +46,30 @@ Given(
   },
 )
 
+Given(
+  'ce même utilisateur affecté à {string} par la source {string} le {string}',
+  async (nom: string, source: string, date: string) => {
+    await seedAffectation({
+      userId: utilisateurId,
+      employeuseId: await employeuseNommee(nom),
+      source,
+      enregistreeLe: new Date(date),
+    })
+  },
+)
+
+Given(
+  'ce même utilisateur anciennement affecté à {string} par la source {string}',
+  async (nom: string, source: string) => {
+    await seedAffectation({
+      userId: utilisateurId,
+      employeuseId: await employeuseNommee(nom),
+      source,
+      active: false,
+    })
+  },
+)
+
 Given('un utilisateur sans affectation', async () => {
   employeusesParNom.clear()
   utilisateurId = await seedUtilisateur()

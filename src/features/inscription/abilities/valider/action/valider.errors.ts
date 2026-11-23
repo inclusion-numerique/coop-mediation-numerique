@@ -5,6 +5,3 @@ export const VALIDER_ERRORS = {
   CompteDeRoleIntrouvable:
     'Impossible de valider une inscription sans profil médiateur ou coordinateur',
 } as const
-
-export type ValiderErrorKey =
-  (typeof VALIDER_ERRORS)[keyof typeof VALIDER_ERRORS]

@@ -12,10 +12,10 @@ import {
   typeActiviteOptions,
   typeActiviteSlugOptions,
 } from '@/features/activites/ui/libelles/type-activite'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { FilterFooter } from '@/libraries/filtres/FilterFooter'
+import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@/libs/filters/FilterFooter'
-import TriggerButton from '@/libs/filters/TriggerButton'
 
 export const ActiviteTypeFilter = ({
   defaultValue = {},

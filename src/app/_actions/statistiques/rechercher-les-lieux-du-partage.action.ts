@@ -1,8 +1,6 @@
 'use server'
 
 import { z } from 'zod'
-import { utilisateurDuPartage } from '@/composition/statistiques/partage'
-import { perimetreDeLUtilisateur } from '@/composition/statistiques/perimetre'
 import { actionBuilder } from '@/configuration/nextjs'
 import {
   GenreDeLieu,
@@ -10,7 +8,10 @@ import {
 } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
 import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
+import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
@@ -25,7 +26,10 @@ const rechercherDansLePartage = actionBuilder()
     const lien = await resoudreUnLienDePartage(partage)
     if (!lien.success) return []
     const perimetre = perimetreDeLUtilisateur(
-      await utilisateurDuPartage(lien.data),
+      utilisateurDuPartage(
+        lien.data.proprietaire,
+        await getSessionUserFromId(lien.data.utilisateurId),
+      ),
     )
     return perimetre === null
       ? []

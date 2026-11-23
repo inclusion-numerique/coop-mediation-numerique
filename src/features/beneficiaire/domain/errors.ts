@@ -8,12 +8,3 @@ export type BeneficiaireNotFound = {
 export const BeneficiaireNotFound = (
   id: BeneficiaireId,
 ): BeneficiaireNotFound => ({ _tag: 'BeneficiaireNotFound', id })
-
-export type BeneficiaireAlreadyExists = {
-  readonly _tag: 'BeneficiaireAlreadyExists'
-  readonly id: BeneficiaireId
-}
-
-export const BeneficiaireAlreadyExists = (
-  id: BeneficiaireId,
-): BeneficiaireAlreadyExists => ({ _tag: 'BeneficiaireAlreadyExists', id })

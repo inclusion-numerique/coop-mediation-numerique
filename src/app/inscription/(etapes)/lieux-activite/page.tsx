@@ -1,16 +1,24 @@
 import { redirect } from 'next/navigation'
+import { renseignerLieuxActiviteAction } from '@/app/_actions/inscription/renseigner-lieux-activite.action'
+import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
+import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
-import type { LieuActiviteConnu } from '@/features/inscription/abilities/renseigner-lieux-activite'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import {
   listerLesLieuxPourLInscription,
   MediateurId,
 } from '@/features/lieux-activite'
+import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/AjouterDesLieuxActivitePage'
+import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/creer-un-lieu.key'
+import { ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/enregistrer-la-selection.key'
+import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/rechercher-des-lieux.key'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { ClientBinder } from '@/libs/injection/client-binder'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -38,7 +46,7 @@ const LieuxActivitePageRoute = async () => {
     mediateurId: MediateurId(user.mediateur.id),
   })
 
-  const lieuxExistants: LieuActiviteConnu[] = lieuxActivite.map((lieu) => ({
+  const lieuxExistants = lieuxActivite.map((lieu) => ({
     id: lieu.id ?? '',
     structureCartographieNationaleId:
       lieu.structureCartographieNationaleId ?? null,
@@ -54,7 +62,34 @@ const LieuxActivitePageRoute = async () => {
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <LieuxActivitePage lieuxActivite={lieuxExistants} />
+      <ClientBinder
+        bind={ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY}
+        to={renseignerLieuxActiviteAction}
+      >
+        <ClientBinder
+          bind={RECHERCHER_DES_LIEUX_KEY}
+          to={rechercherDesLieuxAAjouterAction}
+        >
+          <ClientBinder bind={CREER_UN_LIEU_KEY} to={creerUnLieuActiviteAction}>
+            <ClientBinder
+              bind={LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY}
+              to={rdvWebsiteLink}
+            >
+              <LieuxActivitePage
+                formulaire={
+                  <AjouterDesLieuxActivitePage
+                    lieuxInitiaux={lieuxExistants}
+                    issue={{
+                      _tag: 'Selection',
+                      suivantHref: '/inscription/recapitulatif',
+                    }}
+                  />
+                }
+              />
+            </ClientBinder>
+          </ClientBinder>
+        </ClientBinder>
+      </ClientBinder>
     </ClientBinder>
   )
 }

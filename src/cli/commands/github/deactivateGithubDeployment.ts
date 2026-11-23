@@ -1,6 +1,6 @@
 import { Command } from '@commander-js/extra-typings'
 import { computeBranchNamespace } from '@/cli/branchNamespace'
-import { octokit, owner, repo } from '@/cli/github'
+import { octokit, owner, repo } from '@/cli/github/github'
 import { output } from '@/libraries/console/output'
 
 export const deactivateGithubDeployment = new Command()

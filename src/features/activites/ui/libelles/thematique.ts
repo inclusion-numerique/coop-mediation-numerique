@@ -1,31 +1,31 @@
-import { HouseIcon } from '@/features/pictograms/buildings/HouseIcon'
-import { AIIcon } from '@/features/pictograms/digital/AIIcon'
-import { DevicesIcon } from '@/features/pictograms/digital/DevicesIcon'
-import { InternetIcon } from '@/features/pictograms/digital/InternetIcon'
-import { MailSendIcon } from '@/features/pictograms/digital/MailSendIcon'
-import { MediaIcon } from '@/features/pictograms/digital/MediaIcon'
-import { NetworkIcon } from '@/features/pictograms/digital/NetworkIcon'
-import { DocumentContentIcon } from '@/features/pictograms/document/DocumentContentIcon'
-import { DocumentSearchIcon } from '@/features/pictograms/document/DocumentSearchIcon'
-import { NationalIdentityCardIcon } from '@/features/pictograms/document/NationalIdentityCardIcon'
-import { PapersIcon } from '@/features/pictograms/document/PapersIcon'
-import { HumanCooperationIcon } from '@/features/pictograms/environment/HumanCooperationIcon'
-import { CareIcon } from '@/features/pictograms/health/CareIcon'
-import { HealthIcon } from '@/features/pictograms/health/HealthIcon'
-import { JusticeIcon } from '@/features/pictograms/institutions/JusticeIcon'
-import { MoneyIcon } from '@/features/pictograms/institutions/MoneyIcon'
-import { ActivitiesIcon } from '@/features/pictograms/leisure/ActivitiesIcon'
-import { CommunityIcon } from '@/features/pictograms/leisure/CommunityIcon'
-import { JourneyIcon } from '@/features/pictograms/leisure/JourneyIcon'
-import { TransportationIcon } from '@/features/pictograms/map/TransportationIcon'
-import { Pictogram } from '@/features/pictograms/pictogram'
-import { PadlockIcon } from '@/features/pictograms/system/PadlockIcon'
-import { SystemIcon } from '@/features/pictograms/system/SystemIcon'
-import { ParentIcon } from '@/features/pictograms/user/ParentIcon'
-import { UserStatsIcon } from '@/features/pictograms/user/UserStatsIcon'
-import { PairIcon } from '@/features/pictograms/work/PairIcon'
-import { ProfessionalIcon } from '@/features/pictograms/work/ProfessionalIcon'
-import { ScolarshipIcon } from '@/features/pictograms/work/ScolarshipIcon'
+import { HouseIcon } from '@/libraries/pictograms/buildings/HouseIcon'
+import { AIIcon } from '@/libraries/pictograms/digital/AIIcon'
+import { DevicesIcon } from '@/libraries/pictograms/digital/DevicesIcon'
+import { InternetIcon } from '@/libraries/pictograms/digital/InternetIcon'
+import { MailSendIcon } from '@/libraries/pictograms/digital/MailSendIcon'
+import { MediaIcon } from '@/libraries/pictograms/digital/MediaIcon'
+import { NetworkIcon } from '@/libraries/pictograms/digital/NetworkIcon'
+import { DocumentContentIcon } from '@/libraries/pictograms/document/DocumentContentIcon'
+import { DocumentSearchIcon } from '@/libraries/pictograms/document/DocumentSearchIcon'
+import { NationalIdentityCardIcon } from '@/libraries/pictograms/document/NationalIdentityCardIcon'
+import { PapersIcon } from '@/libraries/pictograms/document/PapersIcon'
+import { HumanCooperationIcon } from '@/libraries/pictograms/environment/HumanCooperationIcon'
+import { CareIcon } from '@/libraries/pictograms/health/CareIcon'
+import { HealthIcon } from '@/libraries/pictograms/health/HealthIcon'
+import { JusticeIcon } from '@/libraries/pictograms/institutions/JusticeIcon'
+import { MoneyIcon } from '@/libraries/pictograms/institutions/MoneyIcon'
+import { ActivitiesIcon } from '@/libraries/pictograms/leisure/ActivitiesIcon'
+import { CommunityIcon } from '@/libraries/pictograms/leisure/CommunityIcon'
+import { JourneyIcon } from '@/libraries/pictograms/leisure/JourneyIcon'
+import { TransportationIcon } from '@/libraries/pictograms/map/TransportationIcon'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { PadlockIcon } from '@/libraries/pictograms/system/PadlockIcon'
+import { SystemIcon } from '@/libraries/pictograms/system/SystemIcon'
+import { ParentIcon } from '@/libraries/pictograms/user/ParentIcon'
+import { UserStatsIcon } from '@/libraries/pictograms/user/UserStatsIcon'
+import { PairIcon } from '@/libraries/pictograms/work/PairIcon'
+import { ProfessionalIcon } from '@/libraries/pictograms/work/ProfessionalIcon'
+import { ScolarshipIcon } from '@/libraries/pictograms/work/ScolarshipIcon'
 import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import {
   THEMATIQUES_ADMINISTRATIVES,
@@ -49,12 +49,12 @@ export const thematiqueValues = [
 
 export type Thematique = (typeof thematiqueValues)[number]
 
-export const thematiquesNonAdministrativesInfo = {
+const thematiquesNonAdministrativesInfo = {
   AideAuxDemarchesAdministratives:
     'En sélectionnant cette thématique, vous pourrez ajouter des informations spécifiques sur la démarche concernée.',
 } as const
 
-export const thematiquesInfo: {
+const thematiquesInfo: {
   [key in Thematique]?: string
 } = {
   ...thematiquesNonAdministrativesInfo,
@@ -103,7 +103,7 @@ export const thematiqueLabels: {
   ...thematiquesAdministrativesLabels,
 }
 
-export const thematiquesNonAdministrativesHints = {
+const thematiquesNonAdministrativesHints = {
   DiagnosticNumerique: [
     'Évaluation des compétences numériques des bénéficiaires',
     'Réaliser un questionnaire d’évaluation (ex : ABC Diag de Pix)',
@@ -191,7 +191,7 @@ export const thematiquesNonAdministrativesHints = {
   ],
 } as const
 
-export const thematiquesAdministrativesHints = {
+const thematiquesAdministrativesHints = {
   IntelligenceArtificielle: [
     'Comprendre les enjeux autour de l’IA',
     'Utiliser et interagir de manière critique avec les outils d’IA',
@@ -243,14 +243,14 @@ export const thematiquesAdministrativesHints = {
   ],
 } as const
 
-export const thematiqueHints: {
+const thematiqueHints: {
   [key in Thematique]: readonly string[]
 } = {
   ...thematiquesAdministrativesHints,
   ...thematiquesNonAdministrativesHints,
 }
 
-export const thematiquesNonAdministrativesIllustrations = {
+const thematiquesNonAdministrativesIllustrations = {
   DiagnosticNumerique: UserStatsIcon,
   PrendreEnMainDuMateriel: DevicesIcon,
   MaintenanceDeMateriel: SystemIcon,
@@ -272,7 +272,7 @@ export const thematiquesNonAdministrativesIllustrations = {
   AideAuxDemarchesAdministratives: PapersIcon,
 } as const
 
-export const thematiquesAdministrativesIllustrations = {
+const thematiquesAdministrativesIllustrations = {
   PapiersElectionsCitoyennete: NationalIdentityCardIcon,
   FamilleScolarite: ScolarshipIcon,
   SocialSante: HealthIcon,
@@ -286,7 +286,7 @@ export const thematiquesAdministrativesIllustrations = {
   Associations: HumanCooperationIcon,
 } as const
 
-export const thematiqueIllustrations: Record<Thematique, Pictogram> = {
+const thematiqueIllustrations: Record<Thematique, Pictogram> = {
   ...thematiquesNonAdministrativesIllustrations,
   ...thematiquesAdministrativesIllustrations,
 }

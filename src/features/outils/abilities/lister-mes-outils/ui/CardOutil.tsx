@@ -3,7 +3,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
-import { Pictogram } from '@/features/pictograms/pictogram'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
 
 export const CardOutil = ({
   pictogram: Pictogram,

@@ -4,7 +4,7 @@ import {
   decodeSerializableState,
   type EncodedState,
   encodeSerializableState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
 import { ReferenceInvitation } from './reference-invitation'
 
 const PREFIXE = '/invitations/'

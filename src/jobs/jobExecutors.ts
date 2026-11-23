@@ -1,8 +1,7 @@
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { prismaClient } from '@/prismaClient'
-import { createStopwatch } from '@/utils/stopwatch'
-import { executeAlignerLeRegistreDesPersonnes } from './aligner-le-registre-des-personnes/executeAlignerLeRegistreDesPersonnes'
+import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
@@ -16,13 +15,12 @@ export type JobExecutor<Name extends JobName, Result = unknown> = (
 ) => Promise<Result>
 
 // Create an object that for each JobName, MUST has a JobExecutor<Name>
-export const jobExecutors: {
+const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
   'anonymiser-les-comptes-inactifs': executeAnonymiserLesComptesInactifs,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
-  'aligner-le-registre-des-personnes': executeAlignerLeRegistreDesPersonnes,
   'retirer-les-roles-vacants': executeRetirerLesRolesVacants,
   'sync-rdvsp-data': executeSyncRdvspData,
   'synchroniser-les-roles-brevo': executeSynchroniserLesRolesBrevo,

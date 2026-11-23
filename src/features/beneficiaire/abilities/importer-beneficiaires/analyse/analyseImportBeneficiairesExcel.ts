@@ -3,13 +3,13 @@ import {
   type Commune,
   type CommunesClient,
   createCommunesClient,
-} from '@/communes/communesClient'
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/communesClient'
 import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import type { Genre } from '@/generated/prisma/client'
 import { type FeuilleImport, valeurCellule } from './feuille-import'
 
-export const ParsedBeneficiaireRowSchema = z.object({
+const ParsedBeneficiaireRowSchema = z.object({
   values: z.object({
     nom: z.string().nullish(),
     prenom: z.string().nullish(),

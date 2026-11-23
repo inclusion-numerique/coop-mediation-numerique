@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { failure, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import {
   BeneficiaireDestinationIntrouvable,
   BeneficiaireSourceIntrouvable,

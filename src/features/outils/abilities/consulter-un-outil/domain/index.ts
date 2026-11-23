@@ -1,1 +1,1 @@
-export { SlugOutil, slugsDOutil, type ValeurDeSlugOutil } from './slug-outil'
+export { SlugOutil, type ValeurDeSlugOutil } from './slug-outil'

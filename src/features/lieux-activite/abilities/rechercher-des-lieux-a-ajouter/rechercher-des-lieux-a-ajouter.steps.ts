@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   RechercheDeLieu,
   rechercherDesLieuxAAjouter,
@@ -13,7 +14,6 @@ import {
   AdresseLibre,
   type SuggestionDeLieu,
 } from '@/features/lieux-activite/domain/suggestion-de-lieu'
-import { prismaClient } from '@/prismaClient'
 
 const scenario: {
   lieuATrouver?: string

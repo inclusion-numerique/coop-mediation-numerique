@@ -3,9 +3,9 @@ import {
   Siret,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { toTitleCase } from '@/libraries/texte/toTitleCase'
 import { LieuId } from '../../../../domain/lieu-id'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
@@ -16,7 +16,7 @@ import {
 import { lieuExploitable } from '../../../../implementation'
 import type { ChercherDansLaCoop } from '../../domain/ports'
 
-export const lieuxDeLaCoop = async (
+const lieuxDeLaCoop = async (
   recherche: string,
   { limite }: { limite: number },
 ) => {

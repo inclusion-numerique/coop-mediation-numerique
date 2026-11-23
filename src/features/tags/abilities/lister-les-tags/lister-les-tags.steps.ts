@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Acteur } from '@/features/tags/domain'
 import {
   acteurMediateur,
@@ -10,7 +11,6 @@ import {
   semerUnMediateur,
   semerUnTag,
 } from '@/features/tags/tags.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { type ListeDesTags, listerLesTags, TriDesTags } from '.'
 
 const contexte: {

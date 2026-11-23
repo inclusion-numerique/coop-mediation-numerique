@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
+import { Telephone } from '@/libraries/telephone'
 import {
   Commune,
   Email,
@@ -9,7 +10,6 @@ import {
   NomStructure,
   Prenom,
   RoleMembre,
-  Telephone,
   UtilisateurId,
 } from '../../../../domain'
 import { TypeContrat } from '../../domain'

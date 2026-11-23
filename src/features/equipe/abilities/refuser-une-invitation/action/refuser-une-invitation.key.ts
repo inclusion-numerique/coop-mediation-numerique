@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { RefuserUneInvitationValidation } from './refuser-une-invitation.validation'
 
 export const REFUSER_UNE_INVITATION_ACTION_KEY = keyFor<

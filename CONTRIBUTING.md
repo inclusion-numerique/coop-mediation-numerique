@@ -149,18 +149,17 @@ En production, la base de la Coop est le schéma `coop` de l'Entrepôt de donné
 Les tâches de fond vivent dans `src/jobs/`. Chacune a un nom, une charge utile validée par Zod et un exécuteur, et chaque exécution est tracée dans la table `job_executions`.
 
 ```bash
-pnpm cli job:execute <tâche> '<charge utile JSON>'
+pnpm jobs:run <tâche> '<charge utile JSON>'
 ```
 
-| Tâche                               | Rôle                                                                                                                  |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `sync-rdvsp-data`                   | Synchronise les rendez-vous depuis RDV Service Public                                                                 |
-| `inactive-users-reminders`          | Relance par e-mail les inscriptions inachevées                                                                        |
-| `anonymiser-les-comptes-inactifs`   | Anonymise les comptes inactifs ; `{"simuler": true}` pour un passage à blanc                                          |
-| `retirer-les-roles-vacants`         | Retire le rôle jamais utilisé d'un double rôle inscrit depuis plus de 30 jours                                        |
-| `synchroniser-les-roles-brevo`      | Recalcule les rôles Brevo des inscrits et les envoie                                                                  |
-| `remove-orphan-brevo-contacts`      | Supprime les contacts Brevo qui n'ont plus de compte                                                                  |
-| `aligner-le-registre-des-personnes` | Aligne l'identité des comptes sur le registre des personnes ; passage à blanc par défaut, `{"appliquer": true}` écrit |
+| Tâche                             | Rôle                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------ |
+| `sync-rdvsp-data`                 | Synchronise les rendez-vous depuis RDV Service Public                          |
+| `inactive-users-reminders`        | Relance par e-mail les inscriptions inachevées                                 |
+| `anonymiser-les-comptes-inactifs` | Anonymise les comptes inactifs ; `{"simuler": true}` pour un passage à blanc   |
+| `retirer-les-roles-vacants`       | Retire le rôle jamais utilisé d'un double rôle inscrit depuis plus de 30 jours |
+| `synchroniser-les-roles-brevo`    | Recalcule les rôles Brevo des inscrits et les envoie                           |
+| `remove-orphan-brevo-contacts`    | Supprime les contacts Brevo qui n'ont plus de compte                           |
 
 Le planning des tâches qui tournent seules est décrit dans [l'infrastructure](./infrastructure/README.md#taches-planifiees). Une tâche n'a sa place ici que tant qu'elle a une raison de tourner : une reprise de données ou un correctif ponctuel disparaît une fois passé, sa trace reste dans `job_executions` et dans l'historique git.
 

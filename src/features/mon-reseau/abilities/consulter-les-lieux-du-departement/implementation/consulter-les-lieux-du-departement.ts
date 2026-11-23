@@ -3,12 +3,23 @@ import {
   departementDuCode,
 } from '@/libraries/departement'
 import { failure, success } from '@/libraries/result'
-import { criteresDesLieux, type ParametresDesLieux } from '../domain'
-import { lieuxEtCommunesDuDepartement } from './lieux-activite'
+import {
+  type CommunesDesLieux,
+  criteresDesLieux,
+  type LieuxDuDepartement,
+  type ParametresDesLieux,
+} from '../domain'
 
-export const consulterLesLieuxDuDepartement = async (
+export const consulterLesLieuxDuDepartement = async <Lieux>(
   code: string,
   parametres: ParametresDesLieux,
+  {
+    lieuxDuDepartement,
+    communesDesLieux,
+  }: {
+    lieuxDuDepartement: LieuxDuDepartement<Lieux>
+    communesDesLieux: CommunesDesLieux
+  },
 ) => {
   const departement = departementDuCode(code)
 
@@ -16,15 +27,25 @@ export const consulterLesLieuxDuDepartement = async (
     return failure<DepartementInconnu>(departement.error)
 
   const criteres = criteresDesLieux(parametres)
+  const { recherche, communes, tri, page, lignes } = criteres
+  const [lieux, { communesOptions }] = await Promise.all([
+    lieuxDuDepartement({
+      departementCode: departement.data.code,
+      searchParams: {
+        recherche: recherche ?? undefined,
+        communes,
+        tri,
+        page: String(page),
+        lignes: String(lignes),
+      },
+    }),
+    communesDesLieux({ departementCode: departement.data.code }),
+  ])
 
   return success({
     departement: departement.data,
     criteres,
-    ...(await lieuxEtCommunesDuDepartement(departement.data.code, criteres)),
+    lieux,
+    communes: communesOptions,
   })
 }
-
-export type LieuxDuDepartementConsultes = Extract<
-  Awaited<ReturnType<typeof consulterLesLieuxDuDepartement>>,
-  { success: true }
->['data']

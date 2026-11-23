@@ -1,6 +1,9 @@
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { getServerUrl } from '@/utils/baseUrl'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
+import {
+  rdvspOAuthClientId,
+  rdvspOAuthHostname,
+} from '@/features/rdvsp/oauth.configuration'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 export const rdvServicePublicOauthCallbackUrl = getServerUrl(
   '/api/rdv-service-public/auth/callback',
@@ -8,9 +11,9 @@ export const rdvServicePublicOauthCallbackUrl = getServerUrl(
 )
 
 export const rdvServicePublicOAuthConfig = {
-  clientId: PublicWebAppConfig.RdvServicePublic.OAuth.clientId,
+  clientId: rdvspOAuthClientId,
   redirectUri: rdvServicePublicOauthCallbackUrl,
-  oauthHostname: PublicWebAppConfig.RdvServicePublic.OAuth.hostname,
+  oauthHostname: rdvspOAuthHostname,
   responseType: 'code',
   scope: 'write',
 }

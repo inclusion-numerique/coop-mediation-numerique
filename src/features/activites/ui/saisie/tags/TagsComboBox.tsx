@@ -4,10 +4,10 @@ import {
   tagDuFormulaire,
 } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
+import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
-import { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { inject } from '@/libs/injection/client'
 
 const itemToKey = (item: { id: string }): string => item.id
 

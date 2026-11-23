@@ -20,14 +20,14 @@ import {
   debutDispositifConum,
   derniereDateDuFormulaire,
 } from '@/features/activites/ui/saisie/validation/CraDateValidation'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replaceRouteWithoutRerender'
+import { inject } from '@/libraries/nextjs/injection/client'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { inject } from '@/libs/injection/client'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
-import { replaceRouteWithoutRerender } from '@/utils/replaceRouteWithoutRerender'
 
 type CraEvenementFormProps = {
   defaultValues: DefaultValues<CraEvenementData> & { coordinateurId: string }

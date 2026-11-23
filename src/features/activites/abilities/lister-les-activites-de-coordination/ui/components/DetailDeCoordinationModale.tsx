@@ -3,10 +3,10 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@/libs/injection/client'
 import type { DetailDeCoordination } from '../liste-des-coordinations.presenter'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '../supprimer-la-coordination.key'
 

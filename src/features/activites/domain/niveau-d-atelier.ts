@@ -12,6 +12,3 @@ export const NiveauDAtelier = defineModel(
 )
 
 export type NiveauDAtelier = Model.TypeOf<typeof NiveauDAtelier>
-
-export const niveauxDAtelier: readonly NiveauDAtelier[] =
-  NIVEAUX_D_ATELIER.map(NiveauDAtelier)

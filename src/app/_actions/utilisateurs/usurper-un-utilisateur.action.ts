@@ -1,8 +1,10 @@
 'use server'
 
-import { getAuthenticatedSessionToken } from '@/auth/getSessionUser'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAdmin, withAuth } from '@/features/authentification'
+import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
+import { getAuthenticatedSessionToken } from '@/features/authentification/implementation/session/getSessionUser'
 import {
   PorteeUsurpation,
   usurperUnUtilisateur,
@@ -12,8 +14,6 @@ import { UsurperUnUtilisateurValidation } from '@/features/utilisateurs/abilitie
 import { identifiantsDe } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { getLoginRedirectUrl } from '@/security/getHomepage'
 
 export const usurperUnUtilisateurAction = actionBuilder()
   .use(withAuth())
@@ -27,7 +27,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
           usurpateurId: user.id,
           jetonDeSession: await getAuthenticatedSessionToken(),
           portee: PorteeUsurpation(
-            ServerWebAppConfig.Sudo.usurpation
+            environnementServeur.SUDO_USURPATION
               ? 'TousLesComptes'
               : 'FixturesSeulement',
           ),

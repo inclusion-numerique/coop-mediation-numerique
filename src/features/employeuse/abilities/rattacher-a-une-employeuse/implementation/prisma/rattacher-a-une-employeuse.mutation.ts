@@ -1,8 +1,5 @@
-import {
-  ensurePersonneMain,
-  synchroniserPersonne,
-} from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { Prisma } from '@/generated/prisma/client'
 import { EmployeuseId } from '../../../../domain/employeuse-id'
 import type { RattacherAUneEmployeuse } from '../../domain/rattacher-a-une-employeuse'
 import {
@@ -14,6 +11,20 @@ import {
   type ServicesDeLEmployeuse,
 } from './ensureStructureAdministrativeMain'
 
+export type RegistreDesPersonnes = {
+  readonly garantirLaPersonne: (
+    compte: { readonly coopUserId: string; readonly email: string },
+    transaction: Prisma.TransactionClient,
+  ) => Promise<{ readonly id: number }>
+  readonly synchroniserLaPersonne: (
+    transaction: Prisma.TransactionClient,
+    utilisateurId: string,
+  ) => Promise<unknown>
+}
+
+export type ServicesDuRattachement = ServicesDeLEmployeuse &
+  RegistreDesPersonnes
+
 /**
  * L'employeuse d'abord (elle peut échouer sans conséquence pour l'appelant),
  * puis la personne et son affectation dans une seule transaction : on ne veut
@@ -21,7 +32,7 @@ import {
  * affectation active laissée en double avec la précédente.
  */
 export const rattacherAUneEmployeuse =
-  (services: ServicesDeLEmployeuse): RattacherAUneEmployeuse =>
+  (services: ServicesDuRattachement): RattacherAUneEmployeuse =>
   async ({ userId, identite }) => {
     const employeuse = await ensureStructureAdministrativeMain(services)({
       coopId: null,
@@ -46,7 +57,7 @@ export const rattacherAUneEmployeuse =
         select: { email: true },
       })
 
-      const personne = await ensurePersonneMain(
+      const personne = await services.garantirLaPersonne(
         { coopUserId: userId, email },
         transaction,
       )
@@ -66,7 +77,7 @@ export const rattacherAUneEmployeuse =
         transaction,
       )
 
-      await synchroniserPersonne(transaction, userId)
+      await services.synchroniserLaPersonne(transaction, userId)
     })
 
     return { _tag: 'rattachee', employeuseId: EmployeuseId(employeuse.id) }

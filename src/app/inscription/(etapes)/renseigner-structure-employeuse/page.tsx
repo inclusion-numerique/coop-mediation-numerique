@@ -1,10 +1,15 @@
 import { redirect } from 'next/navigation'
+import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/inscription/renseigner-structure-employeuse.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
-import { sessionUserHasStructureEmployeuse } from '@/auth/sessionUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { sessionUserHasStructureEmployeuse } from '@/features/authentification/domain/sessionUser'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.key'
+import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
+import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import RenseignerStructureEmployeusePage from '@/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -24,12 +29,21 @@ const RenseignerStructureEmployeusePageRoute = async () => {
     redirect('/inscription/lieux-activite/structure-employeuse')
   }
 
-  const nextStepPath = '/inscription/lieux-activite/structure-employeuse'
-
   return (
     <RenseignerStructureEmployeusePage
-      save={renseignerStructureEmployeuseAction}
-      nextStepPath={nextStepPath}
+      formulaire={
+        <ClientBinder
+          bind={RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY}
+          to={renseignerStructureEmployeuseAction}
+        >
+          <ClientBinder
+            bind={RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY}
+            to={rechercherStructureEmployeuseAction}
+          >
+            <RattacherEmployeuseForm nextStepPath="/inscription/lieux-activite/structure-employeuse" />
+          </ClientBinder>
+        </ClientBinder>
+      }
     />
   )
 }

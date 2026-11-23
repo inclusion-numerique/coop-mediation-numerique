@@ -1,5 +1,4 @@
-import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
-import { dureeAsString } from '@/utils/dureeAsString'
+import { dureeAsString } from '@/libraries/date/dureeAsString'
 
 export const dureeAccompagnementPersonnaliseeValue = 'personnaliser' as const
 
@@ -52,7 +51,3 @@ export const dureeAcompagnementParDefautDefaultValues = [
   '120',
   dureeAccompagnementPersonnaliseeValue,
 ] as const satisfies readonly DefaultDureeAccompagnementParDefaut[]
-
-export const dureeAccompagnementParDefautOptions = labelsToOptions(
-  dureeAccompagnementParDefautLabels,
-)

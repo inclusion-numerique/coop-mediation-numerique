@@ -1,11 +1,11 @@
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { acceptInvitation } from '@/features/equipe/implementation/email/acceptInvitation'
 import { declineInvitation } from '@/features/equipe/implementation/email/declineInvitation'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import type { Email } from '../../domain'
 
 const reponses = {
@@ -34,8 +34,8 @@ const envoyer = async ({
 
   const resultat = await emailTransport.sendMail({
     to: coordinateur,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject: sujet(invite),
     text: gabarit.text({ mediateur: invite }),
     html: await compileMjml(gabarit.mjml({ mediateur: invite })),

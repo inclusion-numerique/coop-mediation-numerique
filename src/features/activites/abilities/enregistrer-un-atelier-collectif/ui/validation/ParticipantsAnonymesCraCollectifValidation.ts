@@ -4,7 +4,7 @@ import {
   countTotalStatutSocial,
   countTotalTrancheAge,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/participantsAnonymes'
-import { numberToString } from '@/utils/formatNumber'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 
 const participantsAnonymesMax = 10_000
 const participantsAnonymesMaxLocaleString = numberToString(
@@ -125,6 +125,3 @@ export type ParticipantsAnonymesCraCollectifData = {
   statutSocialRetraite: number
   statutSocialNonCommunique: number
 }
-
-export type ParticipantsAnonymesCraCollectifDataKey =
-  keyof ParticipantsAnonymesCraCollectifData

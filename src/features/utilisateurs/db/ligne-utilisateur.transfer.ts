@@ -1,8 +1,3 @@
-import {
-  personneEmployeuseSelect,
-  personneEstConseillerNumerique,
-  personneToEmployeuseActuelle,
-} from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import { CodeInsee } from '@/libraries/insee'
 import {
@@ -20,6 +15,7 @@ import {
   statutDe,
   UtilisateurId,
 } from '../domain'
+import { enPosteSelect, estEnPoste } from './conseiller-numerique-en-poste'
 import { identiteToDomain } from './identite.transfer'
 
 export const ligneUtilisateurSelect = {
@@ -51,7 +47,12 @@ export const ligneUtilisateurSelect = {
       },
     },
   },
-  personneMain: { select: personneEmployeuseSelect },
+  personneMain: {
+    select: {
+      employeuseActuelle: { select: { nom: true, codeInsee: true } },
+      ...enPosteSelect,
+    },
+  },
 } satisfies Prisma.UserSelect
 
 export type LigneUtilisateurRow = Prisma.UserGetPayload<{
@@ -77,15 +78,14 @@ const coordinateurToDomain = (
 
 const employeuseToDomain = (
   personne: LigneUtilisateurRow['personneMain'],
-  maintenant: Date,
 ): EmployeuseDeLaLigne | null => {
-  const actuelle = personneToEmployeuseActuelle(personne, maintenant)
+  const actuelle = personne?.employeuseActuelle
 
-  return actuelle === null
+  return actuelle == null
     ? null
     : {
-        nom: NomEmployeuse.safe(actuelle.employeuse.denomination ?? ''),
-        codeInsee: CodeInsee.safe(actuelle.employeuse.adresse?.codeInsee ?? ''),
+        nom: NomEmployeuse.safe(actuelle.nom ?? ''),
+        codeInsee: CodeInsee.safe(actuelle.codeInsee ?? ''),
       }
 }
 
@@ -145,7 +145,7 @@ export const ligneUtilisateurToDomain = (
       maintenant,
     ),
     rattachements: rattache,
-    dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
-    employeuse: employeuseToDomain(row.personneMain, maintenant),
+    dispositif: dispositifDe(estEnPoste(row.personneMain)),
+    employeuse: employeuseToDomain(row.personneMain),
   }
 }

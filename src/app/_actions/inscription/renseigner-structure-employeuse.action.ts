@@ -2,15 +2,23 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
-import {
-  RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS,
-  RenseignerStructureEmployeuseValidation,
-} from '@/features/inscription/abilities/renseigner-structure-employeuse'
+import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
+import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/server'
+import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
-import { rattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode'
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@/features/registre-des-personnes'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
+
+const registreDesPersonnes = {
+  garantirLaPersonne: ensurePersonneMain,
+  synchroniserLaPersonne: synchroniserPersonne,
+}
 
 /**
  * Étape d'inscription « ma structure employeuse ».
@@ -28,15 +36,19 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
   .use(withInput(RenseignerStructureEmployeuseValidation))
   .execute(
     fromResult(
-      ({ input, user }) =>
-        renseignerStructureEmployeuse({
+      async ({ input, user }) => {
+        const resultat = await renseignerStructureEmployeuse({
           command: {
             userId: UserId(user.id),
-            structureEmployeuse: input.structureEmployeuse,
+            structureEmployeuse: input.structure,
           },
-          rattacherEmployeuse,
+          rattacherEmployeuse:
+            rattacherAUneEmployeuseSaisieBinding(registreDesPersonnes),
           maintenant: new Date(),
-        }),
+        })
+
+        return resultat.success ? success({ rattachee: true }) : resultat
+      },
       { onError: RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS },
     ),
   )

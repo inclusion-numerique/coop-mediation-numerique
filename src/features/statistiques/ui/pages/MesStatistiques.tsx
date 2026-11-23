@@ -1,16 +1,15 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import { getUserDepartement } from '@/auth/getUserDepartement'
-import type { SessionUser } from '@/auth/sessionUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import Filters from '@/features/statistiques/ui/filtres/Filters'
 import { FilterTags } from '@/features/statistiques/ui/filtres/FilterTags'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { contentId } from '@/utils/skipLinks'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
@@ -64,7 +63,13 @@ export const MesStatistiques = ({
   activites,
   beneficiaires,
 }: OptionsDeLaBarre & {
-  user: SessionUser
+  user: {
+    readonly coordinateur: { readonly id: string } | null
+    readonly mediateur: { readonly id: string } | null
+    readonly emplois: readonly {
+      readonly structure: { readonly codeInsee: string | null }
+    }[]
+  }
   hasCrasV1: boolean
   accompagnementsCount: Promise<number>
   partage: ReactNode

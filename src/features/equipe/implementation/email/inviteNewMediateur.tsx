@@ -7,6 +7,8 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import Explanations from '@/features/equipe/implementation/email/Explanations'
 import Invitation from '@/features/equipe/implementation/email/Invitation'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
@@ -15,10 +17,12 @@ import { backgroundColor } from '@/libraries/emails/styles'
 
 export const inviteNewMediateur = {
   text: ({ url, from }: { url: string; from: string }): string =>
-    `Pour accepter l'invitation à rejoindre l’équipe de coordination de ${from}, merci d'utiliser le lien suivant :\n${emailAssetUrl(url)}\n\n`,
+    `Pour accepter l'invitation à rejoindre l’équipe de coordination de ${from}, merci d'utiliser le lien suivant :\n${emailAssetUrl(getServerBaseUrl(), url)}\n\n`,
   mjml: ({ url, from }: { url: string; from: string }): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title="Invitation à rejoindre une équipe sur La Coop de la médiation numérique"
         preview={`Vous êtes invité par ${from} à rejoindre son équipe de coordination.`}
       >
@@ -65,7 +69,7 @@ export const inviteNewMediateur = {
               width="100%"
               fontWeight="500"
               fontSize="18px"
-              href={emailAssetUrl(url)}
+              href={emailAssetUrl(getServerBaseUrl(), url)}
             >
               Voir l’invitation
             </MjmlButton>

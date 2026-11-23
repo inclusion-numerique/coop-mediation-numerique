@@ -1,5 +1,4 @@
 import { subDays } from 'date-fns'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
 import {
   type CoordinateurId,
@@ -73,7 +72,12 @@ const colonnesUtilisateur = Prisma.sql`
   users.last_name AS last_name,
   users.name AS name,
   users.phone AS phone,
-  ${conseillerNumeriqueSql('users.id', true)} AS is_conseiller_numerique`
+  EXISTS (
+    SELECT 1
+    FROM main.conseiller_numerique_en_poste cn
+    JOIN main.personne p ON p.id = cn.personne_id
+    WHERE p.coop_id = users.id
+  ) AS is_conseiller_numerique`
 
 export const lignesEquipeCte = ({
   coordinateurId,

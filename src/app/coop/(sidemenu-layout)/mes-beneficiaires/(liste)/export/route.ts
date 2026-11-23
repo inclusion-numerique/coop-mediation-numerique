@@ -1,13 +1,14 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { isMediateur } from '@/auth/userTypeGuards'
+import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   ExportBeneficiairesFilterValidations,
   exporterBeneficiaires,
 } from '@/features/beneficiaire/abilities/exporter-beneficiaires'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { auteurDeLExport } from '@/features/utilisateurs'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
@@ -32,7 +33,7 @@ export const GET = async (request: NextRequest) => {
   const workbook = await exporterBeneficiaires({
     mediateurId: MediateurId(user.mediateur.id),
     filters: parsedQueryParams.data,
-    user,
+    auteur: auteurDeLExport(user),
   })
 
   const data = await workbook.xlsx.writeBuffer()

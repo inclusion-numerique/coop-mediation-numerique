@@ -1,6 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { ensurePersonneMain } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 
 const COOP_SOURCE = 'coop'
 
@@ -56,25 +55,4 @@ export const deactivateCoopAffectationsExcept = async (
     },
     data: { estActive: false },
   })
-}
-
-export const dualWriteEmployeuseAffectation = async (
-  {
-    coopUserId,
-    email,
-    structureMainId,
-  }: {
-    coopUserId: string
-    email: string
-    structureMainId: number | null
-  },
-  prisma: PrismaLike = prismaClient,
-): Promise<void> => {
-  const personne = await ensurePersonneMain({ coopUserId, email }, prisma)
-  if (structureMainId !== null) {
-    await ensureAffectationEmploiMain(
-      { personneId: personne.id, structureAdministrativeId: structureMainId },
-      prisma,
-    )
-  }
 }

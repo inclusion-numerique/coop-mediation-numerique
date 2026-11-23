@@ -1,20 +1,20 @@
 import {
-  SERVICE_ADRESSE_INDISPONIBLE,
-  siIndisponible,
-} from '@/external-apis/apiAdresse'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
-import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
-  type geocodeStructureAdresse,
-} from '@/external-apis/ban/geocodeStructureAdresse'
+} from '@/features/lieux-activite/ui/adresse-non-verifiable'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@/libraries/ban/apiAdresse'
+import { type geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuxAAjouterData } from '../action/ajouter-des-lieux-activite.validation'
 
 export type LieuAuPanier = LieuxAAjouterData['lieux'][number]
 
-export type GeocoderUnLieu = typeof geocodeStructureAdresse
+export type GeocoderUnLieu = typeof geocoderPrecisement
 
 export const auPanier =
   (geocoder: GeocoderUnLieu) =>
@@ -26,7 +26,7 @@ export const auPanier =
         id: lieuCoop.id,
         structureCartographieNationaleId: null,
         nom: resultat.nom,
-        siret: resultat.pivot,
+        siret: null,
         adresse: resultat.adresse,
         commune: resultat.commune,
         codePostal: resultat.codePostal,
@@ -42,7 +42,7 @@ export const auPanier =
       structureCartographieNationaleId:
         resultat.source === 'cartographie_nationale' ? resultat.id : null,
       nom: resultat.nom,
-      siret: resultat.pivot,
+      siret: resultat.source === 'api' ? (resultat.pivot ?? null) : null,
       adresse: adresseBan.nom,
       commune: adresseBan.commune,
       codePostal: adresseBan.codePostal,
@@ -53,11 +53,24 @@ export const auPanier =
     }
   }
 
-export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean =>
-  (un.id != null && un.id === autre.id) ||
-  (un.structureCartographieNationaleId != null &&
-    un.structureCartographieNationaleId ===
-      autre.structureCartographieNationaleId)
+export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean => {
+  if (un.id != null && autre.id != null) return un.id === autre.id
+
+  if (
+    un.structureCartographieNationaleId != null &&
+    autre.structureCartographieNationaleId != null
+  )
+    return (
+      un.structureCartographieNationaleId ===
+      autre.structureCartographieNationaleId
+    )
+
+  return (
+    un.nom === autre.nom &&
+    un.adresse === autre.adresse &&
+    un.codePostal === autre.codePostal
+  )
+}
 
 export const selectionner =
   (geocoder: GeocoderUnLieu) =>

@@ -1,10 +1,3 @@
-import {
-  employeuseCodeInsee,
-  personneConseillerNumeriqueSelect,
-  personneEmployeuseSelect,
-  personneEstConseillerNumerique,
-  personneToEmployeuseActuelle,
-} from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   DEPARTEMENT_PAR_DEFAUT,
@@ -36,7 +29,9 @@ const identiteSelect = {
 
 export const acteurSelect = {
   ...identiteSelect,
-  personneMain: { select: personneConseillerNumeriqueSelect },
+  personneMain: {
+    select: { conseillerNumeriqueEnPoste: { select: { personneId: true } } },
+  },
   coordinateur: { select: { id: true } },
   mediateur: {
     select: {
@@ -52,7 +47,11 @@ export const acteurSelect = {
               user: {
                 select: {
                   ...identiteSelect,
-                  personneMain: { select: personneEmployeuseSelect },
+                  personneMain: {
+                    select: {
+                      employeuseActuelle: { select: { codeInsee: true } },
+                    },
+                  },
                 },
               },
             },
@@ -93,19 +92,13 @@ const nomAfficheDe = ({
 
 const departementDuCoordinateur = (
   personneMain: LigneCoordinateurDeLActeur['personneMain'],
-): CodeDepartement => {
-  const actuelle = personneToEmployeuseActuelle(personneMain)
-  return (
-    departementDeLActeur({
-      employeuse: CodeInsee.safe(
-        actuelle === null
-          ? ''
-          : (employeuseCodeInsee(actuelle.employeuse) ?? ''),
-      ),
-      lieux: [],
-    }) ?? DEPARTEMENT_PAR_DEFAUT
-  )
-}
+): CodeDepartement =>
+  departementDeLActeur({
+    employeuse: CodeInsee.safe(
+      personneMain?.employeuseActuelle?.codeInsee ?? '',
+    ),
+    lieux: [],
+  }) ?? DEPARTEMENT_PAR_DEFAUT
 
 const versCoordinateurDeLActeur = (
   coordinateur: LigneCoordinateurDeLActeur,
@@ -138,7 +131,7 @@ const versMediation = (mediateur: LigneMediateur): Mediation | null => {
 
 const versProfil = (ligne: LigneActeur): ProfilActeur | null => {
   const dispositif = dispositifDe(
-    personneEstConseillerNumerique(ligne.personneMain),
+    ligne.personneMain?.conseillerNumeriqueEnPoste != null,
   )
   const mediation =
     ligne.mediateur === null ? null : versMediation(ligne.mediateur)

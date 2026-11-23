@@ -17,9 +17,6 @@ export type EnregistrerValidation = (input: {
   readonly aEnregistrer: ValidationAEnregistrer
 }) => Promise<void>
 
-/**
- * Effets consécutifs à la validation, hors du chemin de l'écriture : synchro du
- * contact Brevo et, pour un médiateur, acceptation des invitations d'équipe en
- * attente (liens de coordination). Idempotents, rejouables sans dommage.
- */
 export type EffetsApresValidation = (userId: UserId) => Promise<void>
+
+export type InscrireALaListeDeDiffusion = (userId: UserId) => Promise<void>

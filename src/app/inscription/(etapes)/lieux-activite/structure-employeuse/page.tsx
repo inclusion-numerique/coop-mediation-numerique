@@ -1,9 +1,16 @@
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import {
+  consulterEmployeuseActuelle,
+  employeuseActuelleAffichage,
+} from '@/features/employeuse/server'
+import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.key'
 import StructureEmployeuseLieuActivitePage from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ui/pages/StructureEmployeuseLieuActivitePage'
-import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -25,25 +32,28 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
   }
 
   // User must have an emploi (structure employeuse)
-  const emploi = await employeuseActuelleAdaptee({
+  const employeuseActuelle = await consulterEmployeuseActuelle({
     userId: user.id,
   })
 
-  if (!emploi) {
+  if (!employeuseActuelle) {
     // No structure employeuse, skip this step
     redirect('/inscription/lieux-activite')
   }
 
-  const structureEmployeuse = {
-    ...emploi.structure,
-    siret: emploi.structure.siret ?? '',
-    codeInsee: emploi.structure.codeInsee ?? '',
-  }
-
   return (
-    <StructureEmployeuseLieuActivitePage
-      structureEmployeuse={structureEmployeuse}
-    />
+    <ClientBinder
+      bind={AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY}
+      to={ajouterStructureEmployeuseEnLieuAction}
+    >
+      <StructureEmployeuseLieuActivitePage
+        carteEmployeuse={
+          <StructureAdministrativeCard
+            structure={employeuseActuelleAffichage(employeuseActuelle)}
+          />
+        }
+      />
+    </ClientBinder>
   )
 }
 

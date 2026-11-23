@@ -1,5 +1,4 @@
 export {
-  type ActiviteAttributes,
   activiteExposee,
   activitesExposees,
   criteresDExposition,

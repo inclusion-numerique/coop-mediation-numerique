@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { OnboardingMonEquipeCoordinateur } from '@/app/(onboarding)/en-savoir-plus/coordinateur/mon-equipe/OnboardingMonEquipeCoordinateur'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { OnboardingMonEquipeCoordinateur } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingMonEquipeCoordinateur'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -1,9 +1,9 @@
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { finishYourSignupDeletionWarningEmail } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementation/email/finishYourSignupDeletionWarningEmail'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 
 export const sendDeletionWarningEmail = async ({
   email,
@@ -20,8 +20,8 @@ export const sendDeletionWarningEmail = async ({
 }) => {
   const result = await emailTransport.sendMail({
     to: email,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject: `Votre compte va bientôt être supprimé ⚠️`,
     text: finishYourSignupDeletionWarningEmail.text({
       firstname,

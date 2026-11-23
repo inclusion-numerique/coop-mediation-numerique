@@ -21,7 +21,7 @@ export const StatutPresence = defineModel(
 
 export type StatutPresence = Model.TypeOf<typeof StatutPresence>
 
-export const statutsPresenceModifiables = [
+const statutsPresenceModifiables = [
   'seen',
   'excused',
   'revoked',

@@ -1,4 +1,5 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/beneficiaires.port'
 import { synchroniserCompte } from '../../../implementation/synchroniser-compte.binding'
 import type { LancerSynchronisation } from '../domain/declencher-synchronisation'
 
@@ -9,28 +10,30 @@ import type { LancerSynchronisation } from '../domain/declencher-synchronisation
  * l'ability raisonne sur un `CompteRdv`, qui ne porte pas le médiateur — c'est
  * une donnée de rattachement, pas une donnée de compte.
  */
-export const lancerSynchronisation: LancerSynchronisation = async ({
-  utilisateurId,
-  organisationIds,
-}) => {
-  const utilisateur = await prismaClient.user.findUniqueOrThrow({
-    where: { id: utilisateurId },
-    select: {
-      mediateur: { select: { id: true } },
-      rdvAccount: { select: { id: true } },
-    },
-  })
+export const lancerSynchronisation =
+  (
+    creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes,
+  ): LancerSynchronisation =>
+  async ({ utilisateurId, organisationIds }) => {
+    const utilisateur = await prismaClient.user.findUniqueOrThrow({
+      where: { id: utilisateurId },
+      select: {
+        mediateur: { select: { id: true } },
+        rdvAccount: { select: { id: true } },
+      },
+    })
 
-  if (utilisateur.rdvAccount === null) {
-    return { derive: 0 }
+    if (utilisateur.rdvAccount === null) {
+      return { derive: 0 }
+    }
+
+    const { drift } = await synchroniserCompte({
+      compteId: utilisateur.rdvAccount.id,
+      mediateurId: utilisateur.mediateur?.id,
+      organisationIds:
+        organisationIds === undefined ? undefined : [...organisationIds],
+      creerOuFusionner,
+    })
+
+    return { derive: drift }
   }
-
-  const { drift } = await synchroniserCompte({
-    compteId: utilisateur.rdvAccount.id,
-    mediateurId: utilisateur.mediateur?.id,
-    organisationIds:
-      organisationIds === undefined ? undefined : [...organisationIds],
-  })
-
-  return { derive: drift }
-}

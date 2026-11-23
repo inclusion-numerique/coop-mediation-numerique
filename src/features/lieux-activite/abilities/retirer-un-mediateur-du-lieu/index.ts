@@ -1,4 +1,1 @@
-export {
-  type AuteurDuRetrait,
-  retirerUnMediateurDuLieu,
-} from './implementation'
+export { retirerUnMediateurDuLieu } from './implementation'

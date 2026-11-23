@@ -1,8 +1,4 @@
-export {
-  type OptionsDeLaBarre,
-  optionsDeLaBarre,
-  periodeLaPlusLarge,
-} from './options-de-la-barre'
+export { optionsDeLaBarre } from './options-de-la-barre'
 export {
   type OptionsDeFiltreDesActivites,
   optionsDeFiltreDesActivites,

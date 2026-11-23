@@ -3,7 +3,7 @@ import { defineModel, type Model } from '@/libraries/model'
 import type { AuteurSuppression } from './auteur-suppression'
 import type { NomRetentionPolicy } from './retention-policy'
 
-export const motifsSuppression = [
+const motifsSuppression = [
   'DemandeDuTitulaire',
   'DecisionAdministrateur',
   'InactiviteApresInscription',

@@ -2,7 +2,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 import { libelleDeTypologie } from '@/features/lieux-activite/ui/libelles-typologie'
-import { addresseFromParts } from '@/utils/addresseFromParts'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 
 export type LieuSaisi = {
   readonly nom: string
@@ -91,5 +91,3 @@ export const SaisieDuLieuCard = ({
     </div>
   )
 }
-
-export default SaisieDuLieuCard

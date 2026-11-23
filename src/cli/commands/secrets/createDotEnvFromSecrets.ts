@@ -1,7 +1,7 @@
 import { Command } from '@commander-js/extra-typings'
 import { appendEnvVariablesToDotEnvFile } from '@/cli/dotEnvFile'
-import { getSecretValue } from '@/configuration/secrets/getSecretValue'
-import { listSecrets } from '@/configuration/secrets/listSecrets'
+import { getSecretValue } from '@/cli/secrets/getSecretValue'
+import { listSecrets } from '@/cli/secrets/listSecrets'
 import { output } from '@/libraries/console/output'
 
 /**

@@ -2,7 +2,7 @@ import { formOptions } from '@tanstack/react-form'
 import type { SourceDansLURL } from '@/features/activites/ui/libelles/source-de-l-activite'
 import type { StructureEmployeuse } from './StructureEmployeuseComboBox'
 
-export type ValeursDePlusDeFiltres = {
+type ValeursDePlusDeFiltres = {
   readonly structuresEmployeuses: StructureEmployeuse[]
   readonly thematiqueNonAdministratives: string[]
   readonly thematiqueAdministratives: string[]

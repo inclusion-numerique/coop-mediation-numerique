@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { DEPARTEMENT_PAR_DEFAUT, departementDuCode } from './departement'
+import {
+  DEPARTEMENT_PAR_DEFAUT,
+  departementDuCode,
+  departementsDesCodesInsee,
+} from './departement'
 import { departementDeLActeur } from './departement-de-l-acteur'
 
 describe('département', () => {
@@ -16,6 +20,26 @@ describe('département', () => {
       success: false,
       error: { _tag: 'DepartementInconnu', code },
     })
+  })
+
+  it('déduit les départements des codes INSEE, sans doublon', () => {
+    expect(departementsDesCodesInsee(['69123', '69381', '2A004'])).toEqual([
+      { code: '69', nom: 'Rhône' },
+      { code: '2A', nom: 'Corse-du-Sud' },
+    ])
+  })
+
+  it('garde les trois chiffres des départements et collectivités d’outre-mer', () => {
+    expect(departementsDesCodesInsee(['97411', '98818'])).toEqual([
+      { code: '974', nom: 'La Réunion' },
+      { code: '988', nom: 'Nouvelle-Calédonie' },
+    ])
+  })
+
+  it('écarte les codes INSEE invalides', () => {
+    expect(departementsDesCodesInsee(['abc', '69123'])).toEqual([
+      { code: '69', nom: 'Rhône' },
+    ])
   })
 
   it('a Paris pour département par défaut', () => {

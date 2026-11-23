@@ -1,5 +1,5 @@
+import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
-import { dureeAsString } from '@/utils/dureeAsString'
 import type { ActiviteConsultee, ActiviteDeMediation } from '../../domain'
 import {
   type DetailDActivite,

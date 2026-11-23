@@ -1,9 +1,9 @@
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { removedFromLieuEmail } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementation/email/removedFromLieuEmail'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 
 export const sendRemovedFromLieuEmail = async ({
   mediateurEmail,
@@ -18,8 +18,8 @@ export const sendRemovedFromLieuEmail = async ({
 }) => {
   const result = await emailTransport.sendMail({
     to: mediateurEmail,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject: `Vous avez été retiré du lieu ${structureNom}`,
     text: removedFromLieuEmail.text({
       mediateurFirstname,

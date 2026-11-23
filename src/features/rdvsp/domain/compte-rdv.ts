@@ -23,7 +23,7 @@ type CompteRdvBase = {
 }
 
 /** Compte créé côté La Coop, mais dont le parcours OAuth n'a jamais abouti. */
-export type CompteRdvNonLie = CompteRdvBase & {
+type CompteRdvNonLie = CompteRdvBase & {
   readonly _tag: 'nonLie'
 }
 
@@ -38,7 +38,7 @@ export type CompteRdvLie = CompteRdvBase & {
  * injoignable). Les jetons sont conservés : l'erreur peut être transitoire, et
  * une reconnexion OAuth n'a rien de destructif.
  */
-export type CompteRdvEnErreur = CompteRdvBase & {
+type CompteRdvEnErreur = CompteRdvBase & {
   readonly _tag: 'enErreur'
   readonly jetons: JetonsOAuth
   readonly erreur: MessageErreurCompte

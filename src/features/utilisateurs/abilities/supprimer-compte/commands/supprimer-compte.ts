@@ -1,3 +1,4 @@
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import {
   type CompteASupprimer,
   estCourrielAnonymise,
@@ -58,6 +59,7 @@ const executerLePlan = (
 export const supprimerCompte = async ({
   command: { cible, auteur, maintenant },
   ports,
+  synchroniserLaPersonne,
 }: {
   readonly command: {
     readonly cible: UtilisateurId
@@ -65,6 +67,7 @@ export const supprimerCompte = async ({
     readonly maintenant: Date
   }
   readonly ports: SupprimerComptePorts
+  readonly synchroniserLaPersonne: SynchroniserLaPersonne
 }): Promise<Result<CompteSupprime, SupprimerCompteError>> => {
   const compte = await compteASupprimer(cible)
 
@@ -75,7 +78,7 @@ export const supprimerCompte = async ({
   if (!autorisation.success) return autorisation
 
   try {
-    await couperAcces({
+    await couperAcces(synchroniserLaPersonne)({
       utilisateurId: compte.id,
       identite: identiteAnonyme(ports.hash(`${compte.id}-${compte.courriel}`)),
       supprimeLe: maintenant,

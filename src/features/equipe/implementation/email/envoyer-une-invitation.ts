@@ -1,10 +1,10 @@
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { inviteMediateur } from '@/features/equipe/implementation/email/inviteMediateur'
 import { inviteNewMediateur } from '@/features/equipe/implementation/email/inviteNewMediateur'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import {
   type InvitationEnAttente,
   lienInvitation,
@@ -28,8 +28,8 @@ export const envoyerUneInvitation = async ({
 
   const resultat = await emailTransport.sendMail({
     to: invitation.reference.email,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject:
       'Invitation à rejoindre une équipe sur La Coop de la médiation numérique',
     text: gabarit.text({ url: lien, from: de }),

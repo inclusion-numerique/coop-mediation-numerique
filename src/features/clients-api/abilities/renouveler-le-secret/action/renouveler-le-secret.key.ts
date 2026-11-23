@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { RenouvelerLeSecretValidation } from './renouveler-le-secret.validation'
 
 export const RENOUVELER_LE_SECRET_ACTION_KEY = keyFor<

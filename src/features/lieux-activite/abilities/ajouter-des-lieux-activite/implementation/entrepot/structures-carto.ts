@@ -21,7 +21,8 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
-import { entrepotPrismaClient } from '@/entrepotPrismaClient'
+import { entrepotPrismaClient } from '@/configuration/prisma/entrepotPrismaClient'
+import { coopCartographieNationaleSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { IdsCartographieNationale } from '@/features/lieux-activite/domain/ids-cartographie-nationale'
 import { reconnues } from '@/features/lieux-activite/domain/nomenclatures'
@@ -34,7 +35,6 @@ import {
   telephoneValide,
 } from '@/features/lieux-activite/domain/saisie'
 import { SourceCartographie } from '@/features/lieux-activite/domain/tracabilite'
-import { coopCartographieNationaleSource } from '@/libraries/cartographie-nationale'
 import type { LieuCarto } from '../../domain'
 
 const lieuSelect = {

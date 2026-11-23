@@ -1,34 +1,41 @@
-import type { SessionUser } from '@/auth/sessionUser'
-import { employeuseActuelleAdaptee } from '@/features/inscription/acl/employeuse-actuelle.adapter'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
+import type { EmployeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
 import { stepPath } from '@/features/inscription/ui/step-path'
-import {
-  listerLesLieuxPourLInscription,
-  MediateurId,
-} from '@/features/lieux-activite'
-import { prismaClient } from '@/prismaClient'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
-const getInscriptionDataContext = async ({
+type ListerLesLieux<Lieu> = (input: {
+  readonly mediateurId: string
+}) => Promise<readonly Lieu[]>
+
+type InscritDuRecapitulatif = {
+  readonly id: string
+  readonly email: string
+  readonly name: string | null
+  readonly profilInscription: ProfilInscriptionValue | null
+  readonly acceptationCgu: Date | null
+  readonly isConseillerNumerique: boolean
+  readonly mediateur: { readonly id: string } | null
+  readonly coordinateur: { readonly id: string } | null
+}
+
+const getInscriptionDataContext = async <Lieu>({
   user,
+  listerLesLieux,
 }: {
+  listerLesLieux: ListerLesLieux<Lieu>
   user: Pick<
-    SessionUser,
+    InscritDuRecapitulatif,
     'id' | 'mediateur' | 'coordinateur' | 'profilInscription'
   >
 }) => {
-  const [emploi, lieuxActivite, mediateursCoordonnes, userAdditionalData] =
+  const [lieuxActivite, mediateursCoordonnes, userAdditionalData] =
     await Promise.all([
-      // Get structure employeuse
-      employeuseActuelleAdaptee({
-        userId: user.id,
-      }),
       // Get lieux activite if mediateur
       user.mediateur &&
       user.profilInscription !== 'Coordinateur' &&
       user.profilInscription !== 'CoordinateurConseillerNumerique'
-        ? listerLesLieuxPourLInscription({
-            mediateurId: MediateurId(user.mediateur.id),
-          })
+        ? listerLesLieux({ mediateurId: user.mediateur.id })
         : [],
       // Get mediateurs coordonnes count if coordinateur
       user.coordinateur
@@ -45,7 +52,6 @@ const getInscriptionDataContext = async ({
     ])
 
   return {
-    emploi,
     lieuxActivite,
     mediateursCoordonnes,
     importedLieuxFromDataspace:
@@ -53,27 +59,17 @@ const getInscriptionDataContext = async ({
   }
 }
 
-export const getRecapitulatifPageData = async ({
+export const getRecapitulatifPageData = async <Lieu>({
   user,
+  employeuse,
+  listerLesLieux,
 }: {
-  user: Pick<
-    SessionUser,
-    | 'profilInscription'
-    | 'id'
-    | 'email'
-    | 'name'
-    | 'mediateur'
-    | 'coordinateur'
-    | 'acceptationCgu'
-    | 'isConseillerNumerique'
-  >
+  user: InscritDuRecapitulatif
+  employeuse: EmployeuseAffichee | null
+  listerLesLieux: ListerLesLieux<Lieu>
 }) => {
-  const {
-    emploi,
-    lieuxActivite,
-    mediateursCoordonnes,
-    importedLieuxFromDataspace,
-  } = await getInscriptionDataContext({ user })
+  const { lieuxActivite, mediateursCoordonnes, importedLieuxFromDataspace } =
+    await getInscriptionDataContext({ user, listerLesLieux })
 
   const mediateursCoordonnesCount = mediateursCoordonnes?.length
 
@@ -91,7 +87,7 @@ export const getRecapitulatifPageData = async ({
 
   return {
     user,
-    structureEmployeuse: emploi?.structure,
+    structureEmployeuse: employeuse ?? undefined,
     lieuxActivite,
     mediateursCoordonnesCount,
     backHref,
@@ -115,6 +111,7 @@ export const getRecapitulatifPageData = async ({
   }
 }
 
-export type RecapitulatifPageData = Awaited<
-  ReturnType<typeof getRecapitulatifPageData>
+export type RecapitulatifPageData = Omit<
+  Awaited<ReturnType<typeof getRecapitulatifPageData>>,
+  'lieuxActivite'
 >

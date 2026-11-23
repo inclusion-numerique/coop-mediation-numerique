@@ -9,7 +9,7 @@ import type { statutsPresence } from '../domain/statut-presence'
  */
 export type RdvStatus = (typeof statutsPresence)[number] | 'past'
 
-export const rdvStatusLabels: {
+const rdvStatusLabels: {
   [key in RdvStatus]: string
 } = {
   unknown: 'À venir',
@@ -19,7 +19,7 @@ export const rdvStatusLabels: {
   excused: 'Annulé par bénéficiaire',
   noshow: 'Absence',
 }
-export const rdvStatusPluralLabels: {
+const rdvStatusPluralLabels: {
   [key in RdvStatus]: string
 } = {
   unknown: 'À venir',

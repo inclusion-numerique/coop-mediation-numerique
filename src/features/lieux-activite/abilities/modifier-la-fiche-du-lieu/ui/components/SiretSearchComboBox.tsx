@@ -1,30 +1,35 @@
-import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
-import type { StructureSearchResult } from '@/features/employeuse'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { addresseFromParts } from '@/utils/addresseFromParts'
+import {
+  type EtablissementTrouve,
+  RECHERCHER_UN_ETABLISSEMENT_KEY,
+} from '../rechercher-un-etablissement.key'
 
-const itemToString = (item: StructureSearchResult | null): string =>
+const itemToString = (item: EtablissementTrouve | null): string =>
   item ? `${item.nom} · ${item.siret}` : ''
 
-const itemToKey = (item: StructureSearchResult): string =>
+const itemToKey = (item: EtablissementTrouve): string =>
   `${item.siret}-${item.adresse}`
 
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: StructureSearchResult[] }> => {
+): Promise<{ items: EtablissementTrouve[] }> => {
   if (input.length < 3) {
     return { items: [] }
   }
 
-  const resultat = await rechercherStructureEmployeuseAction({ query: input })
+  const resultat = await inject(RECHERCHER_UN_ETABLISSEMENT_KEY)({
+    query: input,
+  })
 
   return resultat.success
     ? { items: [...resultat.data.structures] }
     : { items: [] }
 }
 
-const renderItem = ({ item }: { item: StructureSearchResult }) => (
+const renderItem = ({ item }: { item: EtablissementTrouve }) => (
   <div className="fr-flex fr-direction-column">
     <span className="fr-text--bold">{item.nom}</span>
     <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
@@ -33,13 +38,13 @@ const renderItem = ({ item }: { item: StructureSearchResult }) => (
   </div>
 )
 
-export const SiretSearchComboBox: ComboBoxData<StructureSearchResult> = {
+export const SiretSearchComboBox: ComboBoxData<EtablissementTrouve> = {
   itemToString,
   itemToKey,
   loadSuggestions,
 }
 
-export const SiretSearchOptions: OptionsData<StructureSearchResult> = {
+export const SiretSearchOptions: OptionsData<EtablissementTrouve> = {
   itemToKey,
   renderItem,
 }

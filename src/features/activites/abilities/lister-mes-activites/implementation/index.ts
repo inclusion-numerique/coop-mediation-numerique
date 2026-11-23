@@ -1,5 +1,3 @@
 export { listerLHistoriqueDUnBeneficiaire } from './historique-d-un-beneficiaire'
-export {
-  listerMesActivites,
-  type RendezVousALister,
-} from './prisma/chronologie.query'
+export { maListeDActivites, monTableauDActivites } from './mes-activites'
+export { listerMesActivites } from './prisma/chronologie.query'

@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   lieuxDuDepartement,
   nombreDeLieuxDuDepartement,
 } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement'
-import { prismaClient } from '@/prismaClient'
 
 const semis: {
   ids: string[]
@@ -13,6 +13,7 @@ const semis: {
   frequente?: string
   delaisse?: string
   ailleurs?: string
+  autreCommune?: string
   mediateurId?: string
   userId?: string
   trouves?: string[]
@@ -22,6 +23,7 @@ const semis: {
 
 const CODE_INSEE = '17299'
 const CODE_INSEE_AILLEURS = '51454'
+const CODE_INSEE_AUTRE_COMMUNE = '17300'
 
 const semerUnLieu = async ({
   publie,
@@ -81,6 +83,16 @@ Given('un quatrième lieu publié dans un autre département', async () => {
   })
 })
 
+Given(
+  'un quatrième lieu publié dans une autre commune du département',
+  async () => {
+    semis.autreCommune = await semerUnLieu({
+      publie: true,
+      codeInsee: CODE_INSEE_AUTRE_COMMUNE,
+    })
+  },
+)
+
 Given("le lieu fréquenté n'a pas d'adresse reconnue par la BAN", async () => {
   await prismaClient.lieuInclusion.update({
     where: { id: semis.frequente },
@@ -95,10 +107,10 @@ Given('le lieu publié est supprimé', async () => {
   })
 })
 
-When('on liste les lieux de ce département', async () => {
+const lister = async (communes?: readonly string[]) => {
   const { lieux } = await lieuxDuDepartement({
     departementCode: '17',
-    searchParams: { lignes: '1000' },
+    searchParams: { lignes: '1000', communes },
   })
 
   const semes = lieux.filter(({ id }) => semis.ids.includes(id))
@@ -107,7 +119,18 @@ When('on liste les lieux de ce département', async () => {
   semis.aPreciser = semes
     .filter(({ adresseAPreciser }) => adresseAPreciser)
     .map(({ id }) => id)
+}
+
+When('on liste les lieux de ce département', async () => {
+  await lister()
 })
+
+When(
+  'on liste les lieux de ce département dans la commune des trois premiers',
+  async () => {
+    await lister([CODE_INSEE])
+  },
+)
 
 When('on compte les lieux de ce département', async () => {
   semis.nombre = await nombreDeLieuxDuDepartement('17')
@@ -141,6 +164,10 @@ Then('le lieu publié n’est pas proposé', () => {
 
 Then('seul le lieu fréquenté est signalé avec une adresse à préciser', () => {
   assert.deepStrictEqual(semis.aPreciser, [semis.frequente])
+})
+
+Then('le lieu de l’autre commune n’est pas proposé', () => {
+  assert.ok(!proposes().includes(semis.autreCommune ?? ''))
 })
 
 Then('le lieu d’ailleurs n’est pas proposé', () => {

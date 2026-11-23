@@ -4,11 +4,7 @@ import type {
   THEMATIQUES_RECHERCHEES,
   TYPES_D_ACTIVITE,
 } from '../domain'
-
-export type FiltreDesConseillersNumeriques = (
-  colonneUtilisateur: string,
-  conseillersNumeriques: boolean,
-) => Prisma.Sql
+import { enPosteSql } from './conseiller-numerique-en-poste.sql'
 
 const TYPE_EN_BASE: Readonly<
   Record<(typeof TYPES_D_ACTIVITE)[number], string>
@@ -83,9 +79,6 @@ export const enConjonction = (conditions: readonly Prisma.Sql[]): Prisma.Sql =>
 
 export const conditionsCommunes = (
   criteres: CriteresCommunsDesActivites,
-  {
-    conseillersNumeriques,
-  }: { readonly conseillersNumeriques: FiltreDesConseillersNumeriques },
 ): readonly Prisma.Sql[] => [
   ...siNonVide(
     criteres.types,
@@ -118,7 +111,7 @@ export const conditionsCommunes = (
     (mediateurs) => Prisma.sql`act.mediateur_id = ANY(${mediateurs}::uuid[])`,
   ),
   ...siDefini(criteres.dispositif, (dispositif) =>
-    conseillersNumeriques('u.id', dispositif === 'ConseillersNumeriques'),
+    enPosteSql('u.id', dispositif === 'ConseillersNumeriques'),
   ),
   ...siDefini(criteres.demarche, (demarche) =>
     demarche === 'Avec'
@@ -157,9 +150,6 @@ export const conditionsCommunes = (
 
 export const filtreDesActivites = (
   criteres: CriteresDesActivites,
-  dependances: {
-    readonly conseillersNumeriques: FiltreDesConseillersNumeriques
-  },
 ): Prisma.Sql =>
   enConjonction([
     ...siDefini(
@@ -167,5 +157,5 @@ export const filtreDesActivites = (
       ({ du, au }) =>
         Prisma.sql`act.date::date BETWEEN ${du}::date AND ${au}::date`,
     ),
-    ...conditionsCommunes(criteres, dependances),
+    ...conditionsCommunes(criteres),
   ])

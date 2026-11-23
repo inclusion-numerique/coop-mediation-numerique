@@ -1,17 +1,24 @@
 import { notFound } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
-import { authenticateMediateur } from '@/auth/authenticateUser'
+import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
+import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
+import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/saisie/BeneficiaireEnregistrerUneActivite'
 import type { BeneficiaireCraData } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { SUPPRIMER_BENEFICIAIRES_ACTION_KEY } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/action/supprimer-beneficiaires.key'
 import DeleteBeneficiaireModalContent from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
 import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.key'
 import PrendreRendezVousAvecBeneficiaireButton from '@/features/rdvsp/abilities/prendre-rendez-vous/ui/components/PrendreRendezVousAvecBeneficiaireButton'
 import RefreshRdvDataOnLoad from '@/features/rdvsp/ui/RefreshRdvDataOnLoad'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/ui/rattraper-rdvs-sans-webhook.key'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 // Route hub : lit le bénéficiaire (ability consulter-beneficiaire) et ses doublons
 // (ability detecter-doublons), puis compose les concerns croisés (activité, RDV,
@@ -67,23 +74,38 @@ const BeneficiaireLayout = async (
             size="small"
             label="Enregistrer un accompagnement individuel"
           />
-          <PrendreRendezVousAvecBeneficiaireButton
-            beneficiaire={beneficiaireCraData}
-            user={user}
-          />
+          <ClientBinder
+            bind={PRENDRE_RENDEZ_VOUS_ACTION_KEY}
+            to={prendreRendezVousAction}
+          >
+            <PrendreRendezVousAvecBeneficiaireButton
+              beneficiaire={beneficiaireCraData}
+              user={user}
+            />
+          </ClientBinder>
         </>
       }
       deleteModal={
-        <DeleteBeneficiaireModalContent
-          beneficiaireId={beneficiaire.id}
-          displayName={displayName}
-        />
+        <ClientBinder
+          bind={SUPPRIMER_BENEFICIAIRES_ACTION_KEY}
+          to={supprimerBeneficiairesAction}
+        >
+          <DeleteBeneficiaireModalContent
+            beneficiaireId={beneficiaire.id}
+            displayName={displayName}
+          />
+        </ClientBinder>
       }
       refreshRdvs={
         hasRdvIntegration &&
         user.rdvAccount &&
         user.rdvAccount.invalidWebhookOrganisationIds.length > 0 ? (
-          <RefreshRdvDataOnLoad synchroniserAuChargement />
+          <ClientBinder
+            bind={RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY}
+            to={rattraperRdvsSansWebhookAction}
+          >
+            <RefreshRdvDataOnLoad synchroniserAuChargement />
+          </ClientBinder>
         ) : undefined
       }
     >

@@ -6,6 +6,7 @@ RACINE="$(cd "$(dirname "$0")/.." && pwd)"
 MIGRATIONS_MAIN=(
   "20260722155232_baseline_main_external|main.structure_administrative"
   "20260723171939_ajouter_personne_affectations_contrat_main|main.personne"
+  "20261119170000_baseline_main_conseiller_numerique_en_poste|main.conseiller_numerique_en_poste"
 )
 
 baseline_necessaire() {

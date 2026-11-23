@@ -3,10 +3,14 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
-import type { SessionUser } from '@/auth/sessionUser'
+import {
+  type CompteDeLaSession,
+  statutDuCompteDeLaSession,
+} from '@/features/rdvsp/domain/sante-compte'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '../../action/prendre-rendez-vous.key'
 
 const PrendreRendezVousAvecBeneficiaireButton = ({
   beneficiaire,
@@ -14,12 +18,15 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   className,
 }: {
   beneficiaire: { id: string }
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
+  user: {
+    readonly id: string
+    readonly rdvAccount: CompteDeLaSession | null
+  }
   className?: string
 }) => {
   const [enCours, setEnCours] = useState(false)
 
-  const oauthStatus = user.rdvAccount?.statut ?? 'jamaisConnecte'
+  const oauthStatus = statutDuCompteDeLaSession(user.rdvAccount)
 
   const router = useRouter()
 
@@ -29,7 +36,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
 
   const onClick = async () => {
     setEnCours(true)
-    const result = await prendreRendezVousAction({
+    const result = await inject(PRENDRE_RENDEZ_VOUS_ACTION_KEY)({
       beneficiaireId: beneficiaire.id,
     })
 

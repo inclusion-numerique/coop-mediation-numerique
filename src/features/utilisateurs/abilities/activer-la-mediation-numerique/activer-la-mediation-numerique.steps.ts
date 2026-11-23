@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { activerLaMediationNumerique } from './commands/activer-la-mediation-numerique'
 
 const activation: {
@@ -43,7 +43,10 @@ Given('un médiateur sans rôle coordinateur', async () => {
 })
 
 When('il active la médiation numérique', async () => {
-  activation.resultat = await activerLaMediationNumerique(utilisateurId())
+  activation.resultat = await activerLaMediationNumerique(
+    utilisateurId(),
+    async () => undefined,
+  )
 })
 
 Then("l'activation de la médiation aboutit", () => {

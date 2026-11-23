@@ -23,7 +23,7 @@ export type PortéeSynchronisation = {
   readonly organisationIds?: readonly OrganisationId[]
 }
 
-export type RdvsSynchronises = BilanSynchronisationRdvs & {
+type RdvsSynchronises = BilanSynchronisationRdvs & {
   readonly organisationIdsInaccessibles: readonly OrganisationId[]
 }
 

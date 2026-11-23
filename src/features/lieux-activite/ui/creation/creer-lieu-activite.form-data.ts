@@ -7,11 +7,11 @@ import type {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
 import type { HorairesSaisis } from '@/features/lieux-activite/domain/horaires.validation'
+import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import type { FormationLabelPropose as FormationLabel } from '@/features/lieux-activite/domain/nomenclatures'
-import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 
 export type CreerLieuActiviteFormData = {
   nom: string

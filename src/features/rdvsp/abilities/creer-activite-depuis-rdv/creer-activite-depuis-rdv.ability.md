@@ -7,19 +7,19 @@
 * Given un rendez-vous à convertir avec un participant "seen"
 * When je prépare un CRA depuis ce rendez-vous
 * Then le CRA est prêt à être rédigé
-* And 1 bénéficiaire a été créé depuis les participants
+* And 1 participant est confié à la création des bénéficiaires
 
 ### Scenario: Participant dont la présence n'a pas encore été saisie
 
 * Given un rendez-vous à convertir avec un participant "unknown"
 * When je prépare un CRA depuis ce rendez-vous
-* Then 1 bénéficiaire a été créé depuis les participants
+* Then 1 participant est confié à la création des bénéficiaires
 
 ### Scenario: Participant absent
 
 * Given un rendez-vous à convertir avec un participant "noshow"
 * When je prépare un CRA depuis ce rendez-vous
-* Then aucun bénéficiaire n’a été créé depuis les participants
+* Then aucun participant n’est confié à la création des bénéficiaires
 
 ### Scenario: Rendez-vous déclaré non honoré, présence jamais saisie
 
@@ -28,20 +28,20 @@ alors même que le médiateur a déclaré l'absence.
 
 * Given un rendez-vous à convertir "noshow" avec un participant "unknown"
 * When je prépare un CRA depuis ce rendez-vous
-* Then aucun bénéficiaire n’a été créé depuis les participants
+* Then aucun participant n’est confié à la création des bénéficiaires
 
 ### Scenario: Participant présent d'un rendez-vous annulé
 
 * Given un rendez-vous à convertir "revoked" avec un participant "seen"
 * When je prépare un CRA depuis ce rendez-vous
-* Then 1 bénéficiaire a été créé depuis les participants
+* Then 1 participant est confié à la création des bénéficiaires
 
 ### Scenario: Atelier partiellement honoré
 
 * Given un rendez-vous à convertir avec un participant "seen"
 * And un second participant "excused" sur ce rendez-vous
 * When je prépare un CRA depuis ce rendez-vous
-* Then 1 bénéficiaire a été créé depuis les participants
+* Then 1 participant est confié à la création des bénéficiaires
 
 ## Rule: On ne convertit que ses propres rendez-vous
 
@@ -50,7 +50,7 @@ alors même que le médiateur a déclaré l'absence.
 * Given un rendez-vous à convertir appartenant à un autre médiateur
 * When je prépare un CRA depuis ce rendez-vous
 * Then la préparation échoue avec l’erreur "RdvNonAutorise"
-* And aucun bénéficiaire n’a été créé depuis les participants
+* And aucun participant n’est confié à la création des bénéficiaires
 
 ### Scenario: Rendez-vous inconnu de La Coop
 

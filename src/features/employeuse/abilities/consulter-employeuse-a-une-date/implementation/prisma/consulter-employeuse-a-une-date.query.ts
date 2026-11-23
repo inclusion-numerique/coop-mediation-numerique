@@ -1,6 +1,6 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  personneEmployeuseSelect,
+  personneEmployeuseActuelleSelect,
   personneToEmployeuseALaDate,
 } from '../../../../db/employeuse.transfer'
 import type { ConsulterEmployeuseAUneDate } from '../../domain/consulter-employeuse-a-une-date'
@@ -11,7 +11,7 @@ export const consulterEmployeuseAUneDate: ConsulterEmployeuseAUneDate = async ({
 }) => {
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
-    select: { personneMain: { select: personneEmployeuseSelect } },
+    select: { personneMain: { select: personneEmployeuseActuelleSelect } },
   })
 
   return personneToEmployeuseALaDate(user?.personneMain ?? null, date)

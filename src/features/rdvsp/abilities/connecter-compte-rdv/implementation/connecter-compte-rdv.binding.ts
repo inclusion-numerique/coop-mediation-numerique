@@ -1,5 +1,5 @@
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import { environnementServeur } from '@/configuration/environnement/serveur'
+import { rdvspOAuthHostname } from '@/features/rdvsp/oauth.configuration'
 import { rdvServicePublicApiBinding } from '../../../implementation/rdv-service-public.bindings'
 import {
   rdvServicePublicOAuthConfig,
@@ -17,9 +17,9 @@ import { enregistrerCompteConnecte } from './prisma/enregistrer-compte-connecte.
  */
 export const connecterCompteRdvBinding = connecterCompteRdv({
   echangerCode: echangerCodeAutorisation({
-    hostname: PublicWebAppConfig.RdvServicePublic.OAuth.hostname,
+    hostname: rdvspOAuthHostname,
     clientId: rdvServicePublicOAuthConfig.clientId,
-    clientSecret: ServerWebAppConfig.RdvServicePublic.OAuth.clientSecret,
+    clientSecret: environnementServeur.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
     redirectUri: rdvServicePublicOauthCallbackUrl,
   }),
   identifierAgent: rdvServicePublicApiBinding.identifierAgent,

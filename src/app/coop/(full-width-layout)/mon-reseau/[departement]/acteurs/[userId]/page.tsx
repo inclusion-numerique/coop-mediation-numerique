@@ -4,31 +4,33 @@ import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membr
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresDesStatistiques,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import {
-  conseillerNumeriqueSql,
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
 } from '@/features/employeuse/server'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/ActeurStructureEmployeuse'
-import { INVITER_DES_MEMBRES_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
-import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui'
+import {
+  listerLesLieuxDuMediateur,
+  MediateurId as MediateurIdDesLieux,
+  TriDesLieux,
+} from '@/features/lieux-activite'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { LieuxRepliables } from '@/features/lieux-activite/ui'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import {
   consulterUnActeur,
-  lieuxDeLActeur,
   nomDeLActeur,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur'
 import {
@@ -36,13 +38,14 @@ import {
   contratVisible,
   encartDeLEmployeuse,
   FicheActeurPage,
-  LieuxDeLActeur,
+  INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
+  RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
   TitreDeSection,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
 import { departementDuCode } from '@/libraries/departement'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = { params: Promise<{ userId: string; departement: string }> }
 
@@ -68,7 +71,6 @@ const lireLesStatistiquesSur30Jours = async (
       membres: [MediateurIdDesActivites(mediateurId)],
     },
     criteres: criteresDesStatistiques(periode),
-    conseillersNumeriques: conseillerNumeriqueSql,
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   })
   return {
@@ -97,7 +99,12 @@ const Page = async ({ params }: Parametres) => {
   const mediation = acteur.profil.mediation
   const [employeuse, lieux, contrat] = await Promise.all([
     consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
-    mediation === null ? null : lieuxDeLActeur(mediation.mediateurId),
+    mediation === null
+      ? null
+      : listerLesLieuxDuMediateur({
+          mediateurId: MediateurIdDesLieux(mediation.mediateurId),
+          tri: TriDesLieux(undefined),
+        }),
     contratVisible(acteur, regard)
       ? consulterLeContrat({
           utilisateurId: UtilisateurId(acteur.acteurId),
@@ -114,11 +121,11 @@ const Page = async ({ params }: Parametres) => {
       to={rechercherUnLieuActiviteAction}
     >
       <ClientBinder
-        bind={RETIRER_UN_MEMBRE_ACTION_KEY}
+        bind={RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY}
         to={retirerUnMembreAction}
       >
         <ClientBinder
-          bind={INVITER_DES_MEMBRES_ACTION_KEY}
+          bind={INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY}
           to={inviterDesMembresAction}
         >
           <ClientBinder
@@ -153,7 +160,11 @@ const Page = async ({ params }: Parametres) => {
                 )
               }
               lieux={
-                lieux === null ? undefined : <LieuxDeLActeur lieux={lieux} />
+                lieux === null ? undefined : (
+                  <LieuxRepliables
+                    lieux={lieux.map(({ lieuInclusion }) => lieuInclusion)}
+                  />
+                )
               }
               suppressionDesArchives={
                 ancienMembre === null || mediation === null ? undefined : (

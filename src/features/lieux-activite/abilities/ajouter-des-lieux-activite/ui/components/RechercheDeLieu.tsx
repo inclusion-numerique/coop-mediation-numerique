@@ -1,8 +1,8 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { SuggestionAffichee } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
+import type { ComboBoxProps } from '@/libraries/formulaire/fields-components/ComboBox'
+import { Input } from '@/libraries/formulaire/fields-components/Input'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxProps } from '@/libs/form/fields-components/ComboBox'
-import { Input } from '@/libs/form/fields-components/Input'
 import {
   LieuAAjouterOptions,
   type RechercheLieuAAjouter,
@@ -23,7 +23,7 @@ export const RechercheDeLieu = ({
   ...optionsProps
 }: RenduDuComboBox & {
   isPending: boolean
-  onCreer: () => void
+  onCreer: (recherche: string) => void
 }) => {
   const { recherche, enCours, enEchec, nonAffiches } = payload
   const rechercheFaite =
@@ -38,7 +38,7 @@ export const RechercheDeLieu = ({
       priority="secondary"
       className="fr-width-full fr-justify-content-center fr-mb-0"
       disabled={isPending}
-      onClick={onCreer}
+      onClick={() => onCreer(recherche)}
     >
       Créer un lieu d’activité
     </Button>

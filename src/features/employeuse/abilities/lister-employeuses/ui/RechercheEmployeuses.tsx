@@ -4,13 +4,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { usePathname, useRouter } from 'next/navigation'
 import { type FormEventHandler, useRef } from 'react'
-import type { EmployeusesSearchParams } from './employeuses.data-table'
+import type { DataTableUrlState } from '@/libraries/data-table'
 
-const RechercheEmployeuses = ({
-  searchParams = {},
-}: {
-  searchParams?: EmployeusesSearchParams
-}) => {
+const RechercheEmployeuses = ({ state }: { state: DataTableUrlState }) => {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -25,7 +21,7 @@ const RechercheEmployeuses = ({
 
     const newSearchParams = Object.fromEntries(
       Object.entries({
-        ...searchParams,
+        ...state,
         recherche,
       }).filter((entry): entry is [string, string] => !!entry[1]),
     )
@@ -41,7 +37,7 @@ const RechercheEmployeuses = ({
         role="search"
       >
         <input
-          defaultValue={searchParams.recherche}
+          defaultValue={state.recherche}
           className="fr-input fr-input--white"
           autoFocus
           id="recherche"

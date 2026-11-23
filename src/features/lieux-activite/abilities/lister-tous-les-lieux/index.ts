@@ -1,5 +1,1 @@
-export {
-  type LieuxTrouves,
-  rechercherDesLieux,
-  triDesLieux,
-} from './implementation'
+export { rechercherDesLieux } from './implementation'

@@ -1,5 +1,5 @@
-import { prismaClient } from '@/prismaClient'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { toTitleCase } from '@/libraries/texte/toTitleCase'
 
 export const lieuAFusionner = async (structureId: string) => {
   const structure = await prismaClient.lieuInclusion.findUnique({

@@ -1,11 +1,12 @@
 import Excel from 'exceljs'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
-import { addFilters } from '@/libs/worksheet/filtres-des-activites'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
+} from '@/libraries/tableur/addExportMetadata'
+import { addFilters } from '@/libraries/tableur/addFilters'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import type { ExportDesAccompagnements } from '../domain'
 import {
   entetesDuClasseur,
@@ -17,6 +18,24 @@ export type LibelleDeFiltre = { readonly type: string; readonly label: string }
 
 const COLONNE_DE_LA_DATE = 1
 
+const filtresDisponibles = [
+  { label: 'Période', type: 'periode' },
+  { label: 'Source', type: 'source' },
+  { label: 'Lieux d’accompagnement', type: 'lieux' },
+  { label: 'Communes', type: 'communes' },
+  { label: 'Départements', type: 'departements' },
+  { label: 'Type d’accompagnement', type: 'types' },
+  { label: 'Rôle', type: 'conseiller_numerique' },
+  {
+    label: 'Thématiques non administratives',
+    type: 'thematiqueNonAdministratives',
+  },
+  { label: 'Thématiques administratives', type: 'thematiqueAdministratives' },
+  { label: 'Tags', type: 'tags' },
+  { label: 'Bénéficiaires', type: 'beneficiaires', masqueSiVide: true },
+  { label: 'Médiateurs', type: 'mediateurs', masqueSiVide: true },
+]
+
 export const classeurDesAccompagnements = ({
   demandeur,
   filtres,
@@ -24,7 +43,7 @@ export const classeurDesAccompagnements = ({
   fuseau,
   date = new Date(),
 }: {
-  readonly demandeur: WorksheetUser
+  readonly demandeur: AuteurDExport
   readonly filtres: readonly LibelleDeFiltre[]
   readonly exportDes: ExportDesAccompagnements
   readonly fuseau: string
@@ -35,12 +54,14 @@ export const classeurDesAccompagnements = ({
   const feuille = classeur.addWorksheet('Activités')
 
   addExportMetadata(feuille)({
-    user: demandeur,
+    auteur: demandeur,
     date,
     fuseau,
     total: nombreDAccompagnementsExportes(activites),
   })
-  addFilters(feuille)(filtres, { mediateurScope: null })
+  addTitleRow(feuille)('Filtres')
+  addFilters(feuille, filtresDisponibles)(filtres)
+  feuille.addRow([])
 
   const premiereLigneDuTableau = feuille.addRow(['']).number + 1
 

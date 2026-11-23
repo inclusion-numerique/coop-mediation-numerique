@@ -1,8 +1,11 @@
 import { formatInTimeZone } from 'date-fns-tz'
+import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
+import {
+  dateAsDay,
+  dateAsDayWithHourInTimezone,
+} from '@/libraries/date/dateAsDay'
+import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
-import { dateAsDay, dateAsDayWithHourInTimezone } from '@/utils/dateAsDay'
-import { dureeAsString } from '@/utils/dureeAsString'
 import type {
   ActiviteConsultee,
   ChronologieDesActivites,
@@ -96,7 +99,7 @@ export type LigneDuTableau = {
   readonly detail: DetailDActivite
 }
 
-export const ligneDuTableau = (
+const ligneDuTableau = (
   consultee: ActiviteConsultee,
   fuseau: string,
 ): LigneDuTableau => {

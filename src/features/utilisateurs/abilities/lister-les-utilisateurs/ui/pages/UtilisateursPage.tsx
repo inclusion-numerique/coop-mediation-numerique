@@ -1,20 +1,27 @@
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   libellesDesFiltres,
   type OptionsDesFiltres,
 } from '@/features/utilisateurs/ui'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@/utils/skipLinks'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { UtilisateursTrouves } from '../../domain'
 import { EtiquettesDesFiltres } from '../filtres/EtiquettesDesFiltres'
 import { Filtres } from '../filtres/Filtres'
+import {
+  etatDeLaTable,
+  type ParametresDeLaListe,
+} from '../lister-les-utilisateurs-search-params'
 import { RechercheDUtilisateurs } from '../RechercheDUtilisateurs'
-import type { UtilisateursDataTableSearchParams } from '../UtilisateursDataTable'
+import { UtilisateursPagination } from '../UtilisateursPagination'
 import { UtilisateursTable } from '../UtilisateursTable'
+
+const BASE_HREF = '/administration/utilisateurs'
 
 export const UtilisateursPage = ({
   trouves,
@@ -22,14 +29,16 @@ export const UtilisateursPage = ({
   options,
   searchParams,
   actions,
+  filtreDeLieu,
 }: {
   trouves: UtilisateursTrouves
   filtres: FiltresUtilisateurs
   options: OptionsDesFiltres
-  searchParams: UtilisateursDataTableSearchParams
+  searchParams: ParametresDeLaListe
   actions: ReactNode
+  filtreDeLieu: ReactNode
 }) => (
-  <>
+  <CoopPageContainer size="full">
     <SkipLinksPortal />
     <AdministrationBreadcrumbs currentPage="Utilisateurs" />
     <main id={contentId}>
@@ -43,7 +52,11 @@ export const UtilisateursPage = ({
         <RechercheDUtilisateurs searchParams={searchParams} />
       </div>
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
-        <Filtres filtres={filtres} options={options} />
+        <Filtres
+          filtres={filtres}
+          options={options}
+          filtreDeLieu={filtreDeLieu}
+        />
         <span className="fr-text--semi-bold">
           {trouves.matchesCount}{' '}
           {pluriel(
@@ -56,10 +69,15 @@ export const UtilisateursPage = ({
       <EtiquettesDesFiltres libelles={libellesDesFiltres(filtres, options)} />
       <UtilisateursTable
         utilisateurs={trouves.utilisateurs}
-        totalPages={trouves.totalPages}
-        searchParams={searchParams}
-        baseHref="/administration/utilisateurs"
+        state={etatDeLaTable(searchParams)}
+        baseHref={BASE_HREF}
+      />
+      <UtilisateursPagination
+        state={etatDeLaTable(searchParams)}
+        baseHref={BASE_HREF}
+        nombreDUtilisateurs={trouves.matchesCount}
+        lignesParPage={trouves.lignesParPage}
       />
     </main>
-  </>
+  </CoopPageContainer>
 )

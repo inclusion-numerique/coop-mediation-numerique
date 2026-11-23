@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const visibilitesCartographie = ['Publie', 'NonPublie'] as const
+const visibilitesCartographie = ['Publie', 'NonPublie'] as const
 
 export const VisibiliteCartographie = defineModel(
   z.enum(visibilitesCartographie).brand('VisibiliteCartographie'),

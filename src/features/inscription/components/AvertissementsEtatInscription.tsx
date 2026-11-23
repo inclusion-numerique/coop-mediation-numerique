@@ -1,10 +1,11 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { isUserInscriptionEnCours } from '@/auth/isUserInscriptionEnCours'
-import type { SessionUser } from '@/auth/sessionUser'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import {
+  isUserInscriptionEnCours,
+  type RoleDuCompte,
+} from '@/features/inscription/domain/isUserInscriptionEnCours'
 
 export type EtatInscriptionUtilisateur = {
-  role: SessionUser['role']
+  role: RoleDuCompte
   inscriptionValidee: Date | string | null
   mediateur: { id: string } | null
   coordinateur: { id: string } | null
@@ -39,7 +40,7 @@ export const AvertissementsEtatInscription = ({
   const valideeSansCompteDeRole =
     estUtilisateurStandard &&
     user.inscriptionValidee != null &&
-    !hasInscriptionComplete(user)
+    sansCompteDeRole
 
   return (
     <>

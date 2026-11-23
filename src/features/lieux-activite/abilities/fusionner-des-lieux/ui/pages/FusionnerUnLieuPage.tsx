@@ -1,9 +1,9 @@
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 export const FusionnerUnLieuPage = ({
   structureId,

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const dispositifs = ['ConseillerNumerique', 'HorsDispositif'] as const
+const dispositifs = ['ConseillerNumerique', 'HorsDispositif'] as const
 
 export const Dispositif = defineModel(z.enum(dispositifs).brand('Dispositif'))
 

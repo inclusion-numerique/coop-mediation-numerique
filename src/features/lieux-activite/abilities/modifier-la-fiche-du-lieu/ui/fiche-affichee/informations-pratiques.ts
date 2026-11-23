@@ -2,7 +2,7 @@ import {
   CLOSED_SCHEDULE,
   type Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { safeToTimetableOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { safeToTimetableOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import type { Fiche } from '../../../../domain/fiche'
 import { aucuneValeur } from './section-vide'
 

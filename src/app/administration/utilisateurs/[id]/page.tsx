@@ -9,8 +9,9 @@ import { changerLesRolesAction } from '@/app/_actions/utilisateurs/changer-les-r
 import { deconnecterUnUtilisateurAction } from '@/app/_actions/utilisateurs/deconnecter-un-utilisateur.action'
 import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-compte.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { environnementServeur } from '@/configuration/environnement/serveur'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/server'
@@ -19,11 +20,12 @@ import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres
 import {
   ListeDeLEquipe,
   type ParametresDeLaListe,
+  requeteDeLaListe,
 } from '@/features/equipe/abilities/lister-les-membres/ui'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
-import { CoordinateurId, criteresEquipe } from '@/features/equipe/domain'
+import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
 import { ActionsDuMembre } from '@/features/equipe/ui'
 import { AvertissementsEtatInscription } from '@/features/inscription/components/AvertissementsEtatInscription'
@@ -38,30 +40,19 @@ import {
   type FicheUtilisateur,
   ficheUtilisateur,
 } from '@/features/utilisateurs/abilities/consulter-un-utilisateur'
-import { FicheUtilisateurPage } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui'
+import {
+  etatDeLInscription,
+  FicheUtilisateurPage,
+  rolesModifiables,
+} from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui'
 import { DECONNECTER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.key'
 import { BoutonDeconnecter } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/ui'
 import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
 import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
-import {
-  coordinateurDe,
-  inscription,
-  mediateurDe,
-} from '@/features/utilisateurs/domain'
-import {
-  DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
-  toNumberOr,
-} from '@/libs/data-table/toNumberOr'
-import { ClientBinder } from '@/libs/injection/client-binder'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-
-const dateDInscription = (fiche: FicheUtilisateur): Date | null => {
-  const jalon = inscription(fiche.cycle)
-  return jalon._tag === 'Le' ? jalon.date : null
-}
+import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Détails'),
@@ -83,9 +74,7 @@ const sectionEquipe = async (
       gestionnaire: gestionnaireDe(administrateur),
       membreActifDeLEquipe: false,
     },
-    criteres: criteresEquipe(searchParams),
-    page: toNumberOr(searchParams.page)(DEFAULT_PAGE),
-    lignesParPage: toNumberOr(searchParams.lignes)(DEFAULT_PAGE_SIZE),
+    ...requeteDeLaListe(searchParams),
   })
 
   if (!membres.success) return null
@@ -135,8 +124,6 @@ const Page = async (props: {
   if (fiche === null) notFound()
 
   const mediateur = mediateurDe(fiche.rattachements)
-  const coordinateur = coordinateurDe(fiche.rattachements)
-  const compteSupprime = fiche.cycle._tag === 'Supprime'
 
   const [equipe, lieux, employeuses] = await Promise.all([
     sectionEquipe(fiche, searchParams),
@@ -184,55 +171,35 @@ const Page = async (props: {
                       <FicheUtilisateurPage
                         fiche={fiche}
                         sections={{
-                          actions: compteSupprime ? null : (
-                            <div className="fr-flex fr-flex-gap-2v">
-                              <BoutonChangerLesRoles
-                                utilisateurId={fiche.id}
-                                mediateur={{
-                                  actuel: mediateur !== null,
-                                  retirable: mediateur?.retirable ?? true,
-                                }}
-                                coordinateur={{
-                                  actuel: coordinateur !== null,
-                                  retirable: coordinateur?.retirable ?? true,
-                                }}
-                              />
-                              {fiche.role === 'User' && (
-                                <BoutonSupprimerLeCompte
-                                  utilisateurId={fiche.id}
-                                  nom={fiche.nomAffiche}
-                                />
-                              )}
-                            </div>
+                          roles: (
+                            <BoutonChangerLesRoles
+                              utilisateurId={fiche.id}
+                              {...rolesModifiables(fiche)}
+                            />
+                          ),
+                          suppression: (
+                            <BoutonSupprimerLeCompte
+                              utilisateurId={fiche.id}
+                              nom={fiche.nomAffiche}
+                            />
                           ),
                           avertissements: (
                             <AvertissementsEtatInscription
-                              user={{
-                                role: fiche.role,
-                                inscriptionValidee: dateDInscription(fiche),
-                                mediateur:
-                                  mediateur === null
-                                    ? null
-                                    : { id: mediateur.id },
-                                coordinateur:
-                                  coordinateur === null
-                                    ? null
-                                    : { id: coordinateur.id },
-                              }}
+                              user={etatDeLInscription(fiche)}
                             />
                           ),
-                          usurpation: ServerWebAppConfig.Sudo.usurpation ? (
+                          usurpation: environnementServeur.SUDO_USURPATION ? (
                             <BoutonUsurper
                               utilisateurId={fiche.id}
                               taille="small"
                               className="fr-mr-2v"
                             />
                           ) : null,
-                          deconnexion: compteSupprime ? null : (
+                          deconnexion: (
                             <BoutonDeconnecter utilisateurId={fiche.id} />
                           ),
                           visibiliteCarto:
-                            mediateur === null || compteSupprime ? null : (
+                            mediateur === null ? null : (
                               <VisibiliteCartoDuMediateur
                                 mediateurId={mediateur.id}
                                 visible={mediateur.visible}

@@ -10,8 +10,8 @@ import {
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
   type PeriodeDeMaintenance,
 } from '@/features/maintenance-mode/domain'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { inject } from '@/libs/injection/client'
 import { REGLER_LA_MAINTENANCE_ACTION_KEY } from '../action/regler-la-maintenance.key'
 
 const formatDeDate = new Intl.DateTimeFormat('fr-FR', {

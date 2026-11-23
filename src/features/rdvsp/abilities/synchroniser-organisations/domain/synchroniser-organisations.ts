@@ -19,7 +19,7 @@ export type BilanSynchronisation = {
   readonly count: number
 }
 
-export type OrganisationsSynchronisees = {
+type OrganisationsSynchronisees = {
   readonly bilan: BilanSynchronisation
   readonly organisationIdsRecues: readonly OrganisationId[]
 }

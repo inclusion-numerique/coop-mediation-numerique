@@ -1,1 +1,1 @@
-export { type IdentiteAffichable, NomAffiche, nomAffiche } from './nom-affiche'
+export { NomAffiche, nomAffiche } from './nom-affiche'

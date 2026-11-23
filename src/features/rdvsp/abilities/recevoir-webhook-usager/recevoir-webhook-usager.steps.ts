@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { RecevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/api/lire-notification-usager'
 import {
@@ -16,7 +17,6 @@ import {
   seedUsagerRdv,
   testMediateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const USAGER_ID = ID_TEST.usager + 500
 

@@ -1,15 +1,16 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ID_TEST,
   seedCompteRdv,
   seedParticipation,
   seedRdv,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { StatutRdv } from '../../domain/statut-rdv'
 import {
   rendezVousAListerSql,
+  rendezVousAuxStatutsSql,
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
@@ -83,6 +84,17 @@ When('je sélectionne les rendez-vous du compte', async () => {
 
 When('je sélectionne les rendez-vous passés du compte', async () => {
   await selectionner([StatutRdv('passe')])
+})
+
+When('je retrouve les rendez-vous honorés pour les statistiques', async () => {
+  const lignes = await prismaClient.$queryRaw<{ id: number }[]>`
+    SELECT id FROM (${rendezVousAuxStatutsSql(['seen'])}) r
+    WHERE id = ANY(${[PREMIER, SECOND]}::int[])`
+  selectionnes = lignes.map(({ id }) => id)
+})
+
+Then('seul son second rendez-vous est retrouvé', () => {
+  assert.deepStrictEqual(selectionnes, [SECOND])
 })
 
 Then('{int} rendez-vous est sélectionné', (attendu: number) => {

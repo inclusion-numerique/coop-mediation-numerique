@@ -1,3 +1,4 @@
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   autoriserFusion,
@@ -12,13 +13,16 @@ import {
   retirerLaSourceDesListes,
 } from '../implementation'
 
-export const fusionnerDesComptes = async ({
-  sourceId,
-  cibleId,
-}: {
-  readonly sourceId: string
-  readonly cibleId: string
-}): Promise<Result<FusionAutorisee, FusionnerError>> => {
+export const fusionnerDesComptes = async (
+  {
+    sourceId,
+    cibleId,
+  }: {
+    readonly sourceId: string
+    readonly cibleId: string
+  },
+  synchroniserLaPersonne: SynchroniserLaPersonne,
+): Promise<Result<FusionAutorisee, FusionnerError>> => {
   const { source, cible } = await comptesAFusionner({ sourceId, cibleId })
 
   if (source === null) return failure(SourceIntrouvable())
@@ -27,7 +31,7 @@ export const fusionnerDesComptes = async ({
   const autorisation = autoriserFusion(source, cible)
   if (!autorisation.success) return autorisation
 
-  await fusionner(autorisation.data)
+  await fusionner(synchroniserLaPersonne)(autorisation.data)
   await retirerLaSourceDesListes(source.courriel)
 
   return success(autorisation.data)

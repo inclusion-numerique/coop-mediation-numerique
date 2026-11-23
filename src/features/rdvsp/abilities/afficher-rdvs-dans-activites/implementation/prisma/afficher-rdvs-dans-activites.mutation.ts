@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { failure, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import {
   type AfficherRdvsDansActivites,
   CompteRdvIntrouvable,

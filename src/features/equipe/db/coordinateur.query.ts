@@ -1,4 +1,5 @@
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { Telephone } from '@/libraries/telephone'
 import {
   type CoordinateurDeLEquipe,
   type CoordinateurId,
@@ -7,7 +8,6 @@ import {
   NomAffiche,
   nomAffiche,
   Prenom,
-  Telephone,
 } from '../domain'
 import { lue } from './lue'
 

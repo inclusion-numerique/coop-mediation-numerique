@@ -8,6 +8,7 @@ import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ERRORS } from '@/features/mediateur
 import { ChoisirLaVisibiliteApresRuptureValidation } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.validation'
 import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import { synchroniserPersonne } from '@/features/registre-des-personnes'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
@@ -18,7 +19,7 @@ export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
   .execute(
     fromResult(
       ({ input, user, mediateur }) =>
-        choisirLaVisibiliteApresRupture({
+        choisirLaVisibiliteApresRupture(synchroniserPersonne)({
           mediateurId: MediateurId(mediateur.id),
           reponse: ReponseApresRupture(input.reponse),
           auteurId: AuteurId(user.id),

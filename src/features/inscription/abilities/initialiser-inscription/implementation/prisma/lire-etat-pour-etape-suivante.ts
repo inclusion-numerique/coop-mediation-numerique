@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { LireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/domain'
 import { ProfilInscription } from '@/features/inscription/domain'
-import { prismaClient } from '@/prismaClient'
 
 export const lireEtatPourEtapeSuivante: LireEtatPourEtapeSuivante = async (
   userId,

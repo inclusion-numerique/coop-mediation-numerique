@@ -1,4 +1,4 @@
-import { numberToString } from '@/utils/formatNumber'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 
 export const infobulleDesAccompagnements = (
   accompagnements: number,

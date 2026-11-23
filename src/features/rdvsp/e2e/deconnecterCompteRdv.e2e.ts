@@ -1,5 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
-import { mediateurSansActivites } from '@/fixtures/users/mediateurSansActivites'
+import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/users/mediateurSansActivites'
 
 /**
  * Couvre le câblage de la déconnexion : la server action, la modale et le

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
+import type { Telephone } from '@/libraries/telephone'
 import type { AdresseCourriel } from './adresse-courriel'
 import type { Dispositif } from './dispositif'
 import type { Nom } from './nom'
@@ -9,7 +10,6 @@ import {
   mediateurDe,
   type RattachementsDuCompte,
 } from './rattachements'
-import type { Telephone } from './telephone'
 import type { UtilisateurId } from './utilisateur-id'
 
 export const RoleBrevo = defineModel(
@@ -64,7 +64,7 @@ export type InscritDeLaListe = {
   readonly contrat: DatesDeContrat
 }
 
-export type RolesBrevo = readonly [RoleBrevo, ...RoleBrevo[]]
+type RolesBrevo = readonly [RoleBrevo, ...RoleBrevo[]]
 
 export type ContactAImporter = {
   readonly utilisateurId: UtilisateurId

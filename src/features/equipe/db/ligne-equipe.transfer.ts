@@ -1,5 +1,6 @@
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
+import { Telephone } from '@/libraries/telephone'
 import {
   type AdresseStructure,
   Commune,
@@ -13,7 +14,6 @@ import {
   roleMembre,
   type StatutMembre,
   type StructureEmployeuseMembre,
-  Telephone,
   type TypeDeStatut,
   UtilisateurId,
   Voie,

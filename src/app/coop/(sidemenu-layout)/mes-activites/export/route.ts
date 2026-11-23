@@ -1,30 +1,18 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@/auth/mediateursCoordonnes'
-import {
-  exporterMesAccompagnements,
-  nomsDesFiltresExportes,
-} from '@/features/activites/abilities/exporter-mes-accompagnements'
-import {
-  classeurDesAccompagnements,
-  libellesDuClasseur,
-} from '@/features/activites/abilities/exporter-mes-accompagnements/ui'
-import {
-  CoordinateurId,
-  criteresDesActivites,
-  MediateurId,
-} from '@/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
-import { filtresDeLaListe } from '@/features/activites/ui/filtres/filtres-de-la-liste'
+import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements'
+import { profilDeLaSession } from '@/features/authentification'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,
 } from '@/features/lieux-activite'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { acteurDe } from '@/features/tags/domain'
+import { auteurDeLExport } from '@/features/utilisateurs'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -39,47 +27,25 @@ export const GET = async (request: NextRequest) => {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const criteres = criteresDesActivites(
-    Object.fromEntries(request.nextUrl.searchParams.entries()),
-  )
-  const equipe = mediateurCoordonnesEtAnciensIdsFor(user)
-  const demandeur = {
-    mediateurId: user.mediateur ? MediateurId(user.mediateur.id) : null,
-    coordinateurId: user.coordinateur
-      ? CoordinateurId(user.coordinateur.id)
-      : null,
-    equipe: equipe.map((id) => MediateurId(id)),
-  }
-
-  const [exportDes, noms] = await Promise.all([
-    exporterMesAccompagnements({
-      demandeur,
-      criteres,
-      conseillersNumeriques: conseillerNumeriqueSql,
-    }),
-    nomsDesFiltresExportes({
-      demandeur,
-      criteres,
+  const classeur = await classeurDeMesAccompagnements({
+    parametres: Object.fromEntries(request.nextUrl.searchParams.entries()),
+    demandeur: {
+      mediateurId: user.mediateur?.id ?? null,
+      coordinateurId: user.coordinateur?.id ?? null,
+      equipe: mediateurCoordonnesEtAnciensIdsFor(user),
+    },
+    auteur: auteurDeLExport(user),
+    fuseau: user.timezone,
+    fournisseurs: {
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
-      tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
+      tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
       beneficiaires: (ids) =>
         getInitialBeneficiairesOptionsForSearch({
           mediateurId: user.mediateur?.id,
           includeBeneficiaireIds: [...ids],
         }),
-    }),
-  ])
-
-  const classeur = classeurDesAccompagnements({
-    demandeur: user,
-    filtres: libellesDuClasseur(
-      filtresDeLaListe(criteres),
-      noms,
-      exportDes.colonnes.source,
-    ),
-    exportDes,
-    fuseau: user.timezone,
+    },
   })
 
   const data = await classeur.xlsx.writeBuffer()

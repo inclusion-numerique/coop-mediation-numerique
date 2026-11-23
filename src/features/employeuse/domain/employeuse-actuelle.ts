@@ -1,4 +1,3 @@
-import { type Affectation, affectationActuelle } from './affectation'
 import { type Contrat, contratDeLEmployeuse } from './contrat'
 import type { Employeuse } from './employeuse'
 import type { PeriodeEmploi } from './periode-emploi'
@@ -22,16 +21,19 @@ const periodePour = (
 ): PeriodeEmploi =>
   contratDeLEmployeuse(contrats, employeuse)?.periode ?? { _tag: 'inconnue' }
 
-export const employeuseActuelle = (
-  affectations: readonly Affectation[],
-  contrats: readonly Contrat[],
-): EmployeuseActuelle | null => {
-  const affectation = affectationActuelle(affectations)
-  if (!affectation) return null
-
-  return {
-    employeuse: affectation.employeuse,
-    source: affectation.source,
-    periode: periodePour(contrats, affectation.employeuse),
-  }
+export type AffectationActuelle = {
+  readonly employeuse: Employeuse
+  readonly source: SourceAffectation
 }
+
+export const employeuseActuelle = (
+  affectation: AffectationActuelle | null,
+  contrats: readonly Contrat[],
+): EmployeuseActuelle | null =>
+  affectation === null
+    ? null
+    : {
+        employeuse: affectation.employeuse,
+        source: affectation.source,
+        periode: periodePour(contrats, affectation.employeuse),
+      }

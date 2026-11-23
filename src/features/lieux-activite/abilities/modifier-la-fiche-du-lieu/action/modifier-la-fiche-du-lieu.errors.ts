@@ -8,6 +8,3 @@ export const MODIFIER_LA_FICHE_DU_LIEU_ERRORS = {
   PublicationSansService: PUBLICATION_SANS_SERVICE,
   PublicationSansAdresse: PUBLICATION_SANS_ADRESSE,
 } as const
-
-export type ModifierLaFicheDuLieuErrorKey =
-  (typeof MODIFIER_LA_FICHE_DU_LIEU_ERRORS)[keyof typeof MODIFIER_LA_FICHE_DU_LIEU_ERRORS]

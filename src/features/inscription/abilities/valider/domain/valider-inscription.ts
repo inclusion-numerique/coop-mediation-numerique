@@ -10,14 +10,12 @@ import { failure, type Result, success } from '@/libraries/result'
  * coordinateur) n'existe en base : l'état fantôme né de l'incident des comptes
  * sans rôle, qu'on refuse de rendre validable.
  */
-export type CompteDeRoleIntrouvable = {
+type CompteDeRoleIntrouvable = {
   readonly _tag: 'CompteDeRoleIntrouvable'
   readonly userId: UserId
 }
 
-export const CompteDeRoleIntrouvable = (
-  userId: UserId,
-): CompteDeRoleIntrouvable => ({
+const CompteDeRoleIntrouvable = (userId: UserId): CompteDeRoleIntrouvable => ({
   _tag: 'CompteDeRoleIntrouvable',
   userId,
 })

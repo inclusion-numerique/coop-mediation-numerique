@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
-import { ProfilInscription } from '@/features/inscription/domain'
+  enPosteSelect,
+  estEnPoste,
+} from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   CoordinateurId,
@@ -16,12 +16,11 @@ import {
   RoleUtilisateur,
   rattachements,
   statutDe,
-  telephoneEnregistrable,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
+import { telephoneEnregistrable } from '@/libraries/telephone'
 import type { FicheUtilisateur } from '../../domain'
 
 const ficheSelect = {
@@ -36,7 +35,6 @@ const ficheSelect = {
   created: true,
   inscriptionValidee: true,
   deleted: true,
-  profilInscription: true,
   lastLogin: true,
   lastSeen: true,
   mediateur: {
@@ -93,7 +91,7 @@ const ficheSelect = {
     select: { nom: true, timestamp: true },
     orderBy: { timestamp: 'desc' },
   },
-  personneMain: { select: personneConseillerNumeriqueSelect },
+  personneMain: { select: enPosteSelect },
 } satisfies Prisma.UserSelect
 
 type FicheRow = Prisma.UserGetPayload<{ select: typeof ficheSelect }>
@@ -116,14 +114,10 @@ const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
     courriel: identite.courriel,
     telephone: telephoneEnregistrable(row.phone),
     role,
-    dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
+    dispositif: dispositifDe(estEnPoste(row.personneMain)),
     siret: Siret.safe(row.siret ?? ''),
     creeLe: row.created,
     cycle,
-    profilInscription:
-      row.profilInscription === null
-        ? null
-        : ProfilInscription(row.profilInscription),
     derniereConnexion: jalon(row.lastLogin),
     derniereVisite,
     statut: statutDe(

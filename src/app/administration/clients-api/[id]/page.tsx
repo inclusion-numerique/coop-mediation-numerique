@@ -1,14 +1,14 @@
 import { notFound } from 'next/navigation'
 import { modifierUnClientApiAction } from '@/app/_actions/clients-api/modifier-un-client-api.action'
 import { renouvelerLeSecretAction } from '@/app/_actions/clients-api/renouveler-le-secret.action'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api'
 import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.key'
 import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.key'
 import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Client API - Détails'),

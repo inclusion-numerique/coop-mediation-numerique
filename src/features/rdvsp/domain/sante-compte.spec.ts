@@ -5,6 +5,7 @@ import { RdvAgentId } from './rdv-agent-id'
 import {
   peutEtreSynchronise,
   santeDuCompte,
+  statutDuCompteDeLaSession,
   statutIntegration,
 } from './sante-compte'
 import { UtilisateurCoopId } from './utilisateur-coop-id'
@@ -148,5 +149,43 @@ describe('peutEtreSynchronise', () => {
     [{ _tag: 'deconnecteParUtilisateur', quand: maintenant } as const, false],
   ])('pour un compte « %o » : %s', (sante, attendu) => {
     expect(peutEtreSynchronise(sante)).toBe(attendu)
+  })
+})
+
+describe('statutDuCompteDeLaSession', () => {
+  const lie = { deconnexion: null, jetonDAcces: true, error: null }
+
+  it('rend « jamaisConnecte » sans compte', () => {
+    expect(statutDuCompteDeLaSession(null)).toBe('jamaisConnecte')
+  })
+
+  it('rend « deconnecte » pour un compte débranché, même en erreur', () => {
+    expect(
+      statutDuCompteDeLaSession({
+        deconnexion: '2026-08-01T00:00:00.000Z',
+        jetonDAcces: false,
+        error: 'invalid_grant',
+      }),
+    ).toBe('deconnecte')
+  })
+
+  it("rend « enPanne » pour un compte sans jeton d'accès", () => {
+    expect(statutDuCompteDeLaSession({ ...lie, jetonDAcces: false })).toBe(
+      'enPanne',
+    )
+  })
+
+  it('rend « enPanne » pour un compte en erreur', () => {
+    expect(statutDuCompteDeLaSession({ ...lie, error: 'invalid_grant' })).toBe(
+      'enPanne',
+    )
+  })
+
+  it('ignore une erreur vide', () => {
+    expect(statutDuCompteDeLaSession({ ...lie, error: '  ' })).toBe('connecte')
+  })
+
+  it('rend « connecte » pour un compte lié sans erreur', () => {
+    expect(statutDuCompteDeLaSession(lie)).toBe('connecte')
   })
 })

@@ -1,0 +1,15 @@
+import classNames from 'classnames'
+import { PropsWithChildren } from 'react'
+import styles from '@/features/authentification/ui/components/AuthCard.module.css'
+
+export const AuthCard = ({
+  children,
+  className,
+  id,
+}: PropsWithChildren<{ id?: string; className?: string }>) => (
+  <div className={classNames(styles.card, className)} id={id}>
+    <main role="main" className={styles.inner}>
+      {children}
+    </main>
+  </div>
+)

@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { failure, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import { garderUnSeulCodePostal } from '../../../../db'
 import { AucunBeneficiaireValide } from '../../domain/errors'
 import type { SupprimerBeneficiaires } from '../../domain/supprimer-beneficiaires'

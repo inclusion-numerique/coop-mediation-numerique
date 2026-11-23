@@ -6,12 +6,16 @@ import {
   EmployeuseIntrouvable,
   ServiceAdresseIndisponible,
 } from '../domain'
-import type { EmployeuseId } from '../domain/employeuse-id'
-import type { Geocodage, GeocoderLAdresse } from '../domain/ports'
+import { EmployeuseId } from '../domain/employeuse-id'
+import type {
+  ConsulterEmployeuseActuelle,
+  DetacherDuLieuDecrit,
+  Geocodage,
+  GeocoderLAdresse,
+  RattacherAuLieuDecrit,
+} from '../domain/ports'
 import {
-  delierStructureEmployeuseEnLieu,
-  lierStructureEmployeuseEnLieu,
-  lireEmployeuseActuelle,
+  lieuDepuisEmployeuse,
   lireLAdresseDeLEmployeuse,
 } from '../implementation'
 
@@ -23,6 +27,9 @@ import {
  */
 export type PortsDeMaterialisation = {
   readonly geocoderLAdresse: GeocoderLAdresse
+  readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
+  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit
+  readonly detacherDuLieuDecrit: DetacherDuLieuDecrit
 }
 
 /**
@@ -63,13 +70,20 @@ export const ajouterStructureEmployeuseEnLieu = async (
   },
   ports: PortsDeMaterialisation,
 ): Promise<Result<void, AjouterStructureEmployeuseEnLieuError>> => {
-  const structureEmployeuseId = await lireEmployeuseActuelle(userId)
+  const actuelle = await ports.consulterEmployeuseActuelle({ userId })
 
-  if (structureEmployeuseId === null)
-    return failure(EmployeuseIntrouvable(userId))
+  if (actuelle === null) return failure(EmployeuseIntrouvable(userId))
+
+  const { employeuse } = actuelle
+  const structureEmployeuseId = EmployeuseId(employeuse.id)
+  const trace = { userId, structureId: employeuse.id }
 
   if (!estLieuActivite) {
-    await delierStructureEmployeuseEnLieu({ userId, structureEmployeuseId })
+    await ports.detacherDuLieuDecrit({
+      userId,
+      lieu: lieuDepuisEmployeuse(employeuse),
+      trace,
+    })
     return success<void>(undefined)
   }
 
@@ -84,10 +98,10 @@ export const ajouterStructureEmployeuseEnLieu = async (
   if (geocodage._tag === 'AdresseInconnue')
     return failure(AdresseNonReconnue(structureEmployeuseId))
 
-  await lierStructureEmployeuseEnLieu({
+  await ports.rattacherAuLieuDecrit({
     userId,
-    structureEmployeuseId,
-    adresseBan: geocodage.adresse,
+    lieu: lieuDepuisEmployeuse(employeuse, geocodage.adresse),
+    trace,
   })
 
   return success<void>(undefined)

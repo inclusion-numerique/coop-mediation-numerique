@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { beneficiaireFromDomain } from '@/features/beneficiaire/db'
 import { toBeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireNotFound } from '@/features/beneficiaire/domain/errors'
 import { failure, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import type { ModifierBeneficiaire } from '../../domain/beneficiaire-a-modifier'
 
 export const modifierBeneficiaire: ModifierBeneficiaire = async ({

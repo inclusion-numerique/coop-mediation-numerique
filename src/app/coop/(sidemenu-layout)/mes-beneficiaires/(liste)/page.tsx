@@ -1,15 +1,17 @@
 import type { Metadata } from 'next'
 import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateur } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementation'
 import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
 import {
   type MesBeneficiairesSearchParams,
   toListerBeneficiairesQuery,
 } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires-search-params'
+import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/components/supprimer-des-beneficiaires.key'
 import { MesBeneficiairesListePage } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/pages/MesBeneficiairesListePage'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes bénéficiaires'),
@@ -33,11 +35,12 @@ const MesBeneficiairesPage = async (props: {
   )
 
   return (
-    <MesBeneficiairesListePage
-      view={view}
-      searchParams={searchParams}
-      supprimerBeneficiaires={supprimerBeneficiairesAction}
-    />
+    <ClientBinder
+      bind={SUPPRIMER_DES_BENEFICIAIRES_KEY}
+      to={supprimerBeneficiairesAction}
+    >
+      <MesBeneficiairesListePage view={view} searchParams={searchParams} />
+    </ClientBinder>
   )
 }
 

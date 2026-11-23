@@ -3,10 +3,11 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
+import { formatDate } from '@/libraries/date/formatDate'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { formatDate } from '@/utils/formatDate'
+import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '../action/retirer-un-mediateur-du-lieu.key'
 import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
 const ModaleDeRetrait = () => {
@@ -26,7 +27,7 @@ const ModaleDeRetrait = () => {
     if (isPending) return
 
     setIsPending(true)
-    const resultat = await retirerUnMediateurDuLieuAction({
+    const resultat = await inject(RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY)({
       mediateurId,
       lieuId: structureId,
     })

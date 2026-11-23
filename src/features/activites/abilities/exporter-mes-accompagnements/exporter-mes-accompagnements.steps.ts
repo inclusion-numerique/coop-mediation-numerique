@@ -1,8 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { CoordinateurId, criteresDesActivites, MediateurId } from '../../domain'
 import type { Demandeur, ExportDesAccompagnements } from './domain'
 import {
@@ -303,7 +302,6 @@ const exporter = async (parametres: Record<string, string>) => {
   contexte.exporte = await exporterMesAccompagnements({
     demandeur: contexte.demandeur,
     criteres: criteresDesActivites(parametres),
-    conseillersNumeriques: conseillerNumeriqueSql,
   })
 }
 

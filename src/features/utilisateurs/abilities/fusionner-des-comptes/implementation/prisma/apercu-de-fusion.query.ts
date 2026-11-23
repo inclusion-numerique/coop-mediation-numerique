@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { identiteToDomain } from '@/features/utilisateurs/db/identite.transfer'
 import {
   etatDuCompte,
@@ -5,7 +6,6 @@ import {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { type ApercuDeFusion, type CompteApercu, communs } from '../../domain'
 
 const apercuSelect = {

@@ -17,8 +17,6 @@ import { rolesACreerPourRole } from './roles-a-creer'
  */
 export const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
 
-export type RoleDisponible = (typeof rolesDisponibles)[number]
-
 export type RoleChoisi = {
   readonly userId: UserId
   readonly role: Role

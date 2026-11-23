@@ -1,10 +1,10 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   inscritDeLaListeSelect,
   inscritDeLaListeToDomain,
 } from '@/features/utilisateurs/db/inscrit-de-la-liste.transfer'
 import { inscritVivantWhere } from '@/features/utilisateurs/db/inscrit-vivant.where'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
-import { prismaClient } from '@/prismaClient'
 import type { LectureDesInscrits } from '../../domain'
 
 export const inscritsDeLaListe = async (): Promise<LectureDesInscrits> => {

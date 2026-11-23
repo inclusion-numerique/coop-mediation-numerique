@@ -1,5 +1,5 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import type { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
-import { addMutationLog } from '@/utils/addMutationLog'
 import type { PlanDeChangement } from '../../domain'
 
 export const journaliserLeChangement = ({
@@ -20,6 +20,5 @@ export const journaliserLeChangement = ({
     data: {
       id: utilisateurId,
       operations: plan.operations.map(({ _tag }) => _tag),
-      profil: plan.profil,
     },
   })

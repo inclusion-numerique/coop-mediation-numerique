@@ -1,9 +1,9 @@
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/ui/filtres/plus-de-filtres/rechercher-employeuses-des-statistiques.key'
 import type { StructureEmployeuseOption } from '@/features/statistiques/ui/filtres/plus-de-filtres/structure-employeuse-option'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import type { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { inject } from '@/libs/injection/client'
 
 export type StructureEmployeuse = StructureEmployeuseOption
 

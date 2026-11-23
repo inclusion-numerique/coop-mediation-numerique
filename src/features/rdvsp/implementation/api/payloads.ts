@@ -38,7 +38,7 @@ const booleenOptionnel = z
 
 const statutPresencePayload = z.enum(statutsPresence)
 
-export const agentPayload = z.object({
+const agentPayload = z.object({
   id: z.number().int(),
   email: z.string(),
   first_name: z.string(),
@@ -47,7 +47,7 @@ export const agentPayload = z.object({
 
 export const mePayload = z.object({ agent: agentPayload })
 
-export const organisationPayload = z.object({
+const organisationPayload = z.object({
   id: z.number().int(),
   name: z.string(),
   email: texteOptionnel,
@@ -80,7 +80,7 @@ export const usagerPayload = z.object({
   notify_by_sms: booleenOptionnel,
 })
 
-export const participationPayload = z.object({
+const participationPayload = z.object({
   id: z.number().int(),
   status: statutPresencePayload,
   send_reminder_notification: booleenOptionnel,
@@ -205,7 +205,7 @@ export const usagersPagePayload = z.object({
   meta: metaPayload,
 })
 
-export const webhookPayload = z.object({
+const webhookPayload = z.object({
   id: z.number().int().positive(),
   target_url: z.string(),
   organisation_id: z.number().int().positive(),

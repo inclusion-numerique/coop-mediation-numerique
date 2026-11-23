@@ -1,6 +1,6 @@
 export type ValeurCellule = string | number | boolean | null
 
-export type LigneImport = ReadonlyArray<ValeurCellule>
+type LigneImport = ReadonlyArray<ValeurCellule>
 
 export type FeuilleImport = ReadonlyArray<LigneImport>
 

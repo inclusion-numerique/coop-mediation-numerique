@@ -2,12 +2,12 @@ import {
   Itinerance,
   type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
-import { getAdresseBanLabel } from '@/external-apis/ban/adresseBanLabel'
-import { banDefaultValueToAdresseBanData } from '@/external-apis/ban/banDefaultValueToAdresseBanData'
-import type { StructureSearchResult } from '@/features/employeuse'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import { getAdresseBanLabel } from '@/libraries/adresse/adresseBanLabel'
+import { banDefaultValueToAdresseBanData } from '@/libraries/adresse/banDefaultValueToAdresseBanData'
 import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
+import type { EtablissementTrouve } from '../rechercher-un-etablissement.key'
 
 export type InformationsGeneralesAffichees = {
   readonly nom: string
@@ -20,7 +20,7 @@ export type InformationsGeneralesAffichees = {
   readonly longitude: number | null
   readonly banId: string | null
   readonly adresseBan: AdresseBanData
-  readonly siretSearch: StructureSearchResult | null
+  readonly siretSearch: EtablissementTrouve | null
   readonly lieuItinerant: boolean | null
   readonly typologies: readonly Typologie[]
   readonly siret: string | null
@@ -43,7 +43,7 @@ const adresseBanDepuis = (fiche: Fiche): AdresseBanData => {
   return { ...adresse, label: getAdresseBanLabel(adresse) }
 }
 
-const rechercheSiret = (fiche: Fiche): StructureSearchResult | null =>
+const rechercheSiret = (fiche: Fiche): EtablissementTrouve | null =>
   fiche.pivot == null
     ? null
     : {
@@ -53,7 +53,6 @@ const rechercheSiret = (fiche: Fiche): StructureSearchResult | null =>
         commune: fiche.adresse?.commune ?? '',
         codePostal: fiche.adresse?.code_postal ?? '',
         codeInsee: fiche.adresse?.code_insee ?? '',
-        source: 'database',
       }
 
 export const informationsGenerales = ({

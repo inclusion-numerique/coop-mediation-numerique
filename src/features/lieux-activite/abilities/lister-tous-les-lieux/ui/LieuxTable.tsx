@@ -1,44 +1,33 @@
-import DataTable from '@/libs/data-table/DataTable'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import {
-  LieuxDataTable,
-  type LieuxDataTableSearchParams,
-} from './LieuxDataTable'
-import type { PageDeLieux } from './ligne-de-la-liste'
+import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
+import { LieuTableRow } from './LieuTableRow'
+import { LieuxTableHead } from './LieuxTableHead'
+import type { LigneDeLaListe } from './ligne-de-la-liste'
 
-const defaultPageSize = 100
+const NOMBRE_DE_COLONNES = 10
 
-const pageSizeOptions = generatePageSizeSelectOptions([
-  10, 20, 50, 100, 250, 500, 1000,
-])
-
-const LieuxTable = ({
-  data: { structures, totalPages },
-  searchParams,
+export const LieuxTable = ({
+  lignes,
+  state,
   baseHref,
 }: {
-  data: PageDeLieux
-  searchParams: LieuxDataTableSearchParams
+  lignes: readonly LigneDeLaListe[]
+  state: DataTableUrlState
   baseHref: string
 }) => (
-  <>
-    <DataTable
-      className="fr-table--nowrap fr-width-full fr-mb-8v"
-      rows={structures}
-      configuration={LieuxDataTable}
-      searchParams={searchParams}
-      baseHref={baseHref}
-      classes={{ table: 'fr-table--transparent' }}
-    />
-    <PaginationNavWithPageSizeSelect
-      defaultPageSize={defaultPageSize}
-      pageSizeOptions={pageSizeOptions}
-      totalPages={totalPages}
-      baseHref={baseHref}
-      searchParams={searchParams}
-    />
-  </>
+  <DataTable
+    className="fr-table--nowrap fr-width-full fr-mb-8v"
+    tableClassName="fr-table--transparent"
+  >
+    <LieuxTableHead state={state} baseHref={baseHref} />
+    <tbody>
+      {lignes.map((ligne) => (
+        <LieuTableRow key={ligne.id} ligne={ligne} />
+      ))}
+      {lignes.length === 0 && (
+        <tr>
+          <td colSpan={NOMBRE_DE_COLONNES}>Aucun résultat</td>
+        </tr>
+      )}
+    </tbody>
+  </DataTable>
 )
-
-export default LieuxTable

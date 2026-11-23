@@ -1,8 +1,8 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import BackButton from '@/components/BackButton'
-import ContactSupportLink from '@/components/ContactSupportLink'
+import ContactSupportLink from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/components/ContactSupportLink'
+import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 
 export const ImporterBeneficiairesErreurPage = () => (
   <div className="fr-container fr-container--medium">

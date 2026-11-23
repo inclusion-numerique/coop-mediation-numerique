@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   AdresseCourriel,
   type ContactAImporter,
@@ -10,7 +11,6 @@ import {
   type CompteDeListe,
   semerUnCompteDeListe,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { synchroniserLesRolesBrevo } from './commands/synchroniser-les-roles-brevo'
 import {
   type BilanDeSynchronisation,

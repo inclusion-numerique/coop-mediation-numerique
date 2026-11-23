@@ -4,12 +4,8 @@ export {
   EmployeuseIntrouvable,
   ServiceAdresseIndisponible,
 } from './ajouter-structure-employeuse-en-lieu'
-export { EmployeuseId } from './employeuse-id'
 export type {
-  DelierStructureEmployeuseEnLieu,
+  EmployeuseLue,
   Geocodage,
   GeocoderLAdresse,
-  LierStructureEmployeuseEnLieu,
-  LireEmployeuseActuelle,
-  LireLAdresseDeLEmployeuse,
 } from './ports'

@@ -1,8 +1,8 @@
-import { CityHallIcon } from '@/features/pictograms/buildings/CityHallIcon'
-import { HouseIcon } from '@/features/pictograms/buildings/HouseIcon'
-import { SchoolIcon } from '@/features/pictograms/buildings/SchoolIcon'
-import { InternetIcon } from '@/features/pictograms/digital/InternetIcon'
-import { Pictogram } from '@/features/pictograms/pictogram'
+import { CityHallIcon } from '@/libraries/pictograms/buildings/CityHallIcon'
+import { HouseIcon } from '@/libraries/pictograms/buildings/HouseIcon'
+import { SchoolIcon } from '@/libraries/pictograms/buildings/SchoolIcon'
+import { InternetIcon } from '@/libraries/pictograms/digital/InternetIcon'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
 import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { TYPES_DE_LIEU } from '../../domain'
 
@@ -17,14 +17,14 @@ export const typeLieuLabels: { [key in TypeLieu]: string } = {
   ADistance: 'À distance',
 }
 
-export const typeLieuIllustrations: Record<TypeLieu, Pictogram> = {
+const typeLieuIllustrations: Record<TypeLieu, Pictogram> = {
   LieuActivite: CityHallIcon,
   Autre: SchoolIcon,
   Domicile: HouseIcon,
   ADistance: InternetIcon,
 }
 
-export const typeLieuOptions = labelsToOptions(typeLieuLabels)
+const typeLieuOptions = labelsToOptions(typeLieuLabels)
 
 export const typeLieuOptionsWithExtras = typeLieuOptions.map(
   ({ label, value }) => ({

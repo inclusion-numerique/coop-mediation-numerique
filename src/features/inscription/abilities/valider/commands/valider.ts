@@ -1,7 +1,8 @@
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import type { UserId } from '@/features/inscription/domain'
+import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { type Result, success } from '@/libraries/result'
-import { addMutationLog } from '@/utils/addMutationLog'
-import { createStopwatch } from '@/utils/stopwatch'
+import type { InscrireALaListeDeDiffusion } from '../domain/ports'
 import {
   validerInscription as deciderValidation,
   type ValiderInscriptionError,
@@ -23,6 +24,7 @@ import {
 export const validerInscription = async (
   userId: UserId,
   maintenant: Date,
+  inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion,
 ): Promise<Result<void, ValiderInscriptionError>> => {
   const stopwatch = createStopwatch()
 
@@ -37,6 +39,7 @@ export const validerInscription = async (
     userId,
     aEnregistrer: decision.data.aEnregistrer,
   })
+  await inscrireALaListeDeDiffusion(userId)
   await effetsApresValidation(userId)
 
   addMutationLog({

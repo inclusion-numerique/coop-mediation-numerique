@@ -1,8 +1,10 @@
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/beneficiaires.port'
 import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementation/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiaires } from '../../domain/synchroniser-rdvs'
 
 export type DependancesRapprochement = {
   readonly mediateurId: string
+  readonly creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes
   readonly journaliser?: (message: string) => void
 }
 
@@ -16,6 +18,7 @@ export type DependancesRapprochement = {
 export const rapprocherBeneficiaires =
   ({
     mediateurId,
+    creerOuFusionner,
     journaliser = () => {
       // Journal facultatif : la synchronisation par job en fournit un, pas les tests.
     },
@@ -25,7 +28,9 @@ export const rapprocherBeneficiaires =
       return
     }
 
-    const { skipped } = await createOrMergeBeneficiairesFromRdvUserIds({
+    const { skipped } = await createOrMergeBeneficiairesFromRdvUserIds(
+      creerOuFusionner,
+    )({
       rdvUsers: usagerIds.map((id) => ({ id })),
       mediateurId,
     }).catch((erreur) => {

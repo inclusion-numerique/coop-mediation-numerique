@@ -20,14 +20,14 @@ export const FiltreRole = defineModel(z.enum(filtresDeRole).brand('FiltreRole'))
 
 export type FiltreRole = Model.TypeOf<typeof FiltreRole>
 
-export const TriActeurs = defineModel(
+const TriActeurs = defineModel(
   z
     .unknown()
     .pipe(z.enum(['nomaz', 'nomza']).catch('nomaz'))
     .brand('TriActeurs'),
 )
 
-export type TriActeurs = Model.TypeOf<typeof TriActeurs>
+type TriActeurs = Model.TypeOf<typeof TriActeurs>
 
 export type CriteresActeurs = {
   readonly recherche: Recherche | null

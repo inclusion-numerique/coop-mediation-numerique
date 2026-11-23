@@ -4,20 +4,21 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import { fusionnerBeneficiairesAction } from '@/app/_actions/beneficiaire/fusionner-beneficiaires.action'
 import type {
   BeneficiaireDoublon,
   DetecterDoublons,
 } from '@/features/beneficiaire/abilities/detecter-doublons'
+import { inject } from '@/libraries/nextjs/injection/client'
+import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { numberToString } from '@/utils/formatNumber'
+import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '../fusionner-des-beneficiaires.key'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 
-export type FusionItemToKeep = 'a' | 'b'
+type FusionItemToKeep = 'a' | 'b'
 
 type FusionItemState = {
   selected: boolean
@@ -132,7 +133,9 @@ const BeneficiaireFusionDoublons = ({
     })
 
     setPending(true)
-    const result = await fusionnerBeneficiairesAction({ fusions: fusionData })
+    const result = await inject(FUSIONNER_DES_BENEFICIAIRES_KEY)({
+      fusions: fusionData,
+    })
 
     if (!result.success) {
       setPending(false)

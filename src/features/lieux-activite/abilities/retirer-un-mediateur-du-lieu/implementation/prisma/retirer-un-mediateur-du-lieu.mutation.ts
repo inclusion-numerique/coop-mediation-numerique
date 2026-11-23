@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { sendRemovedFromLieuEmail } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementation/email/sendRemovedFromLieuEmail'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 import type { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import type { UserId } from '../../../../domain/user-id'

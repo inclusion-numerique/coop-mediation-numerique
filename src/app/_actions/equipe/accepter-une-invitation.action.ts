@@ -1,8 +1,8 @@
 'use server'
 
-import type { SessionUser } from '@/auth/sessionUser'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import {
   type Accepteur,
   accepterUneInvitation,

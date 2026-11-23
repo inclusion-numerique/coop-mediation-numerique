@@ -57,10 +57,10 @@ pnpm prisma:generate-migration migration_name   # Create new migration
 pnpm docker:reset                               # Reset database and reinitialize
 ```
 
-### CLI Jobs
+### Jobs
 
 ```bash
-pnpm cli job:execute <job-name>     # Execute a background job
+pnpm jobs:run <job-name> '<payload>'  # Execute a background job, through the same entry point as production
 ```
 
 ## Architecture
@@ -78,27 +78,25 @@ Architecture decisions and their rationale are recorded in `docs/decisions/`; th
 
 ### Application Structure (src)
 
-- **app/**: Next.js App Router pages
+- **app/**: Next.js entry points only (`page`, `layout`, `route`, `error`, `not-found`, metadata files): thin hubs that authenticate, validate input, query an ability and render one feature page component
   - `(public)/`: Unauthenticated pages
   - `coop/`: Main authenticated area
   - `administration/`: Admin pages
   - `api/`: API routes including REST API v1
   - `_actions/`: server actions, one file per ability, composing its ports
-- **features/**: Feature modules (activites, inscription, mediateurs, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
-- **libs/**: older shared modules (forms, data tables, filters, injection, statistics, worksheets), being moved to `libraries/`
-- **libraries/**: shared code without any business concept (UI components, e-mail layout, fixture helpers, paths…)
-- **configuration/**: project configuration, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
-- **cli/**: CLI tools for deployment, secrets and jobs
-- **fixtures/**: assembly of the test data set loaded by `pnpm fixtures:load`
-- **jobs/**: Background job implementations
-- **auth/**: Authentication with NextAuth.js
-- **components/**: Shared React components
+- **features/**: Feature modules (activites, authentification, navigation, vitrine, etc.); everything a feature needs (e-mail templates, components, fixtures) lives in it
+- **libraries/**: shared code without any business concept, one purpose per library (UI components, forms, data tables, JSON:API, dates, e-mail layout, paths…)
+- **configuration/**: project configuration, Prisma clients, clients of external services, secrets and telemetry; `configuration/environnement` validates the environment with zod (`client`, `serveur`, `outillage`), and Biome forbids reading `process.env` outside it, tool configuration files and a few CLI bridges listed in `biome.json`
+- **cli/**: CLI entry point; commands stay thin; `cli/fixtures` assembles the test data set loaded by `pnpm fixtures:load`, wiring the references each feature's fixtures cite
+- **jobs/**: Serverless Jobs entry point and thin executors
+- **styles/**: global DSFR stylesheet
+- `proxy.ts`, `instrumentation.ts`, `instrumentation-client.ts`: Next.js conventions, next to `app/`
 
 ### Key Technologies
 
 - **Backend**: Next.js server actions, Prisma ORM, PostgreSQL
 - **Frontend**: React 19, Next.js 16 (App Router), DSFR (French gov design system) through react-dsfr
-- **Forms**: TanStack Form through `useAppForm` (`src/libs/form`), validated with Zod; react-hook-form only survives in legacy forms
+- **Forms**: TanStack Form through `useAppForm` (`src/libraries/formulaire`), validated with Zod; react-hook-form only survives in legacy forms
 - **Testing**: Vitest everywhere (unit and integration, no isolation, no mocks), Cucumber (BDD), Cypress (E2E)
 - **Linting**: Biome (not ESLint for formatting/linting)
 

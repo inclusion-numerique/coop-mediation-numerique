@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   choisirLaVisibiliteApresRupture,
   lireLaRuptureEnAttente,
@@ -11,9 +12,10 @@ import {
   semerUnContratDeLExConseiller,
   semerUnExConseiller,
 } from '@/features/mediateurs/mediateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 
-type Issue = Awaited<ReturnType<typeof choisirLaVisibiliteApresRupture>>
+type Issue = Awaited<
+  ReturnType<ReturnType<typeof choisirLaVisibiliteApresRupture>>
+>
 
 const derniere: { reponse?: Issue } = {}
 
@@ -26,7 +28,9 @@ const date = (jour: string): Date => {
 
 const repondre = async (reponse: ReponseApresRupture) => {
   const seme = exConseillerSeme()
-  derniere.reponse = await choisirLaVisibiliteApresRupture({
+  derniere.reponse = await choisirLaVisibiliteApresRupture(
+    async () => undefined,
+  )({
     mediateurId: MediateurId(seme.mediateurId),
     reponse,
     auteurId: AuteurId(seme.userId),

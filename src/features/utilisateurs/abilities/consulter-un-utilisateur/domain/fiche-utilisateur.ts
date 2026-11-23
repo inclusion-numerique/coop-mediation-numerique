@@ -1,4 +1,3 @@
-import type { ProfilInscription } from '@/features/inscription/domain'
 import type {
   AdresseCourriel,
   CoordinateurId,
@@ -12,12 +11,12 @@ import type {
   Rattachements,
   RoleUtilisateur,
   StatutCompte,
-  Telephone,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { Siret } from '@/libraries/insee'
+import { Telephone } from '@/libraries/telephone'
 
-export type CoordinationDuMediateur = {
+type CoordinationDuMediateur = {
   readonly coordinateurUtilisateurId: UtilisateurId
   readonly nom: NomAffiche
 }
@@ -42,7 +41,7 @@ export type CoordinateurDeLaFiche = {
   readonly retirable: boolean
 }
 
-export type LiaisonDeLaFiche = {
+type LiaisonDeLaFiche = {
   readonly fournisseur: string
   readonly identifiant: string
 }
@@ -64,7 +63,6 @@ export type FicheUtilisateur = {
   readonly siret: Siret | null
   readonly creeLe: Date
   readonly cycle: CycleDeVie
-  readonly profilInscription: ProfilInscription | null
   readonly derniereConnexion: Jalon
   readonly derniereVisite: Jalon
   readonly statut: StatutCompte

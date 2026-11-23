@@ -1,66 +1,31 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,
-  type MotifEchecConnexion,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors'
 import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
-import type { ErreurConnexionCompte } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
+import {
+  type DestinationsDeRetour,
+  issuesDuRetour,
+  motifDiagnostic,
+} from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
 import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv.binding'
-import { declencherSynchronisationBinding } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/redirection'
+import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
-import { getServerUrl } from '@/utils/baseUrl'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/utils/encodeSerializableState'
+} from '@/libraries/parametres-d-url/encodeSerializableState'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-type DestinationsDeRetour = {
-  redirectToSuccess?: string
-  redirectToError?: string
-}
-
-/**
- * Ce que l'on remonte à Sentry en plus du tag.
- *
- * `CodeAutorisationRefuse` porte le motif exact rendu par RDV Service Public —
- * un `invalid_client` et un code réellement expiré arrivent tous deux ici, et
- * l'écran de retour les rend d'une seule phrase. Sans ce détail, les deux sont
- * indiscernables depuis la supervision. Les autres erreurs restent réduites à
- * leur tag : `EmailAgentDifferent` porte deux adresses, qui n'ont rien à faire
- * dans un événement Sentry.
- */
-const motifDiagnostic = (erreur: ErreurConnexionCompte): string =>
-  erreur._tag === 'CodeAutorisationRefuse'
-    ? `${erreur._tag} (${erreur.detail})`
-    : erreur._tag
-
-const redirection = (chemin: string, motif?: MotifEchecConnexion) =>
-  NextResponse.redirect(
-    getServerUrl(
-      motif === undefined
-        ? chemin
-        : `${chemin}?${new URLSearchParams({ ...motif }).toString()}`,
-      { absolutePath: true },
-    ),
-  )
-
-/**
- * Route de retour du parcours OAuth de RDV Service Public.
- *
- * Elle ne fait plus que ce qu'une route doit faire : authentifier la session,
- * lire les paramètres de l'URL, appeler la feature, rediriger. L'échange de
- * jetons, l'identification de l'agent, le contrôle d'adresse et l'écriture du
- * compte vivent dans l'ability `connecter-compte-rdv` ; les codes rendus à
- * l'écran de retour, dans sa couche `action`.
- */
 export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
   const user = await getSessionUserFromSessionToken(sessionToken)
@@ -69,7 +34,8 @@ export const GET = async (request: NextRequest) => {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const state = request.nextUrl.searchParams.get('state')
+  const { searchParams } = request.nextUrl
+  const state = searchParams.get('state')
 
   if (!state) {
     return NextResponse.json(
@@ -78,27 +44,20 @@ export const GET = async (request: NextRequest) => {
     )
   }
 
-  const destinations = decodeSerializableState(
-    state as EncodedState<DestinationsDeRetour>,
-    {},
+  const { succes, echec } = issuesDuRetour(
+    decodeSerializableState(state as EncodedState<DestinationsDeRetour>, {}),
   )
 
-  const succes = destinations.redirectToSuccess ?? '/coop'
-  const echec = destinations.redirectToError ?? '/coop'
-
-  // Refus de l'utilisateur ou panne côté fournisseur : aucun code n'arrivera, le
-  // motif est relayé tel quel.
-  const refus = request.nextUrl.searchParams.get('error')
+  const refus = searchParams.get('error')
 
   if (refus) {
     return redirection(echec, {
       error: refus,
-      error_description:
-        request.nextUrl.searchParams.get('error_description') ?? '',
+      error_description: searchParams.get('error_description') ?? '',
     })
   }
 
-  const code = request.nextUrl.searchParams.get('code')
+  const code = searchParams.get('code')
 
   if (!code) {
     return redirection(echec, CODE_AUTORISATION_MANQUANT)
@@ -122,10 +81,9 @@ export const GET = async (request: NextRequest) => {
     return redirection(echec, CONNECTER_COMPTE_RDV_ERRORS[connexion.error._tag])
   }
 
-  // Première synchronisation en tâche de fond : elle peut durer plusieurs
-  // minutes, l'utilisateur n'a pas à l'attendre pour être redirigé. L'ability
-  // relit le compte qui vient d'être écrit — la route n'a pas à le lui passer.
-  declencherSynchronisationBinding({
+  declencherSynchronisationAvec(
+    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  )({
     demandeur: { id: utilisateurId, role: user.role },
     utilisateurId,
     seulementSansWebhook: false,

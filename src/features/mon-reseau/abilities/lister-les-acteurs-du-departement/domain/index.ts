@@ -1,7 +1,6 @@
 export type {
-  CommunesDuDepartement,
+  CommunesDesLieux,
   ListerLesActeursDuDepartement,
-  OptionDeCommune,
   PageDActeurs,
 } from './acteurs-du-departement'
 export {
@@ -11,5 +10,4 @@ export {
   FiltreRole,
   filtresDeRole,
   type ParametresDesActeurs,
-  TriActeurs,
 } from './criteres-acteurs'

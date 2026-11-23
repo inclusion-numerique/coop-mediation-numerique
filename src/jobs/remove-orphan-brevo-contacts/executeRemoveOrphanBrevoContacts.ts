@@ -1,4 +1,4 @@
-import { deploymentCanCreateBrevoContact } from '@/external-apis/brevo/createBrevoContact'
+import { brevoActif } from '@/configuration/brevo'
 import {
   contactsBrevoPorts,
   retirerLesContactsOrphelins,
@@ -6,7 +6,7 @@ import {
 import { output } from '@/libraries/console/output'
 
 export const executeRemoveOrphanBrevoContacts = async () => {
-  if (!deploymentCanCreateBrevoContact()) {
+  if (!brevoActif()) {
     output('Skipping reconciliation - not on main deployment')
     return { skipped: true }
   }

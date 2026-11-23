@@ -1,6 +1,6 @@
 import type { Effectif, Tag } from '../../../domain'
 
-export type TagListe = {
+type TagListe = {
   readonly tag: Tag
   readonly accompagnements: Effectif
 }

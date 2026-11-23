@@ -2,13 +2,13 @@ import Excel from 'exceljs'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
 import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
-import { addFilters } from '@/libs/worksheet/addFilters'
-import { addTitleRow } from '@/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
+} from '@/libraries/tableur/addExportMetadata'
+import { addFilters } from '@/libraries/tableur/addFilters'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import { colonnesDeLExport } from './colonnes-de-l-export'
 
 const filtresDisponibles = [
@@ -28,7 +28,7 @@ export const classeurDesUtilisateurs = ({
   genereLe,
 }: {
   readonly utilisateurs: readonly LigneUtilisateur[]
-  readonly auteur: WorksheetUser
+  readonly auteur: AuteurDExport
   readonly filtres: readonly LibelleDeFiltre[]
   readonly genereLe: Date
 }): Excel.Workbook => {
@@ -38,7 +38,7 @@ export const classeurDesUtilisateurs = ({
   const feuille = classeur.addWorksheet('Utilisateurs')
 
   addExportMetadata(feuille)({
-    user: auteur,
+    auteur: auteur,
     date: genereLe,
     total: utilisateurs.length,
   })
@@ -46,7 +46,7 @@ export const classeurDesUtilisateurs = ({
   addFilters(
     feuille,
     filtresDisponibles,
-  )(filtres.map(({ type, cle, valeur }) => ({ type, key: cle, label: valeur })))
+  )(filtres.map(({ type, valeur }) => ({ type, label: valeur })))
 
   const separateur = feuille.addRow([''])
 

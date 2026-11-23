@@ -1,9 +1,10 @@
 export {
   type Acteur,
+  acteurDe,
   coordinateurDe,
   type Equipe,
-  equipeDe,
   mediateurDe,
+  type ProfilDeLActeur,
   type Role,
   role,
 } from './acteur'
@@ -18,14 +19,12 @@ export {
 } from './errors'
 export { MediateurId } from './mediateur-id'
 export { NomDuCoordinateur } from './nom-du-coordinateur'
-export { memeNom, NomDuTag, NomDuTagCanonique } from './nom-du-tag'
+export { memeNom, NomDuTag } from './nom-du-tag'
 export {
-  auMoinsAussiLarge,
   type Portee,
-  type Proprietaire,
   type TypeDePortee,
 } from './portee'
-export { peutFusionnerVers, peutGerer, peutVoir } from './regles'
+export { peutFusionnerVers, peutGerer } from './regles'
 export {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,
   NOM_DU_TAG_LONGUEUR_MAX,

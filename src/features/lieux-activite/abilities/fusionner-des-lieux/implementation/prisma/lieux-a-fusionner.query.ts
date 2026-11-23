@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { toTitleCase } from '@/libraries/texte/toTitleCase'
 
 const LIMITE = 50
 
@@ -67,7 +67,3 @@ export const lieuxAFusionner = async (query: string) => {
     moreResults: Math.max(matchesCount - structuresSearchLimit, 0),
   }
 }
-
-export type LieuxAFusionnerTrouves = Awaited<ReturnType<typeof lieuxAFusionner>>
-
-export type LieuTrouve = LieuxAFusionnerTrouves['structures'][number]

@@ -2,17 +2,17 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import IconInSquare from '@/components/IconInSquare'
 import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
 } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-combo-box'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import { withForm } from '@/libraries/formulaire/use-app-form'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { withForm } from '@/libs/form/use-app-form'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

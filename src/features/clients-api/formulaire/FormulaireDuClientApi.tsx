@@ -4,12 +4,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { libellesDesPortees, porteesApi } from '@/features/clients-api/domain'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
 import {
   ClientApiValidation,
   type ValeursDuClientApi,

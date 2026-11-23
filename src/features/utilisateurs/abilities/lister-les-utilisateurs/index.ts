@@ -1,6 +1,5 @@
-export type { UtilisateursTrouves } from './domain'
 export {
-  type RechercheDUtilisateursParams,
+  optionsDesFiltres,
+  ordreDesUtilisateurs,
   rechercherDesUtilisateurs,
-  triDesUtilisateurs,
 } from './implementation'

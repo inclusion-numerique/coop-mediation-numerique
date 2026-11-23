@@ -4,6 +4,7 @@ import type Excel from 'exceljs'
 import { v4 } from 'uuid'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import {
   classeurDesUtilisateurs,
@@ -70,7 +71,7 @@ When(
         filtres,
         maintenant,
       }),
-      auteur,
+      auteur: auteurDeLExport(auteur),
       filtres: libellesDesFiltres(filtres, {
         employeuses: [],
         lieux: [],

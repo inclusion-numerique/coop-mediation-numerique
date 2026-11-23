@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 import type { ProfilActeur } from './acteur'
 
-export const profilsAffiches = [
+const profilsAffiches = [
   'ConseillerNumerique',
   'Mediateur',
   'CoordinateurConseillerNumerique',

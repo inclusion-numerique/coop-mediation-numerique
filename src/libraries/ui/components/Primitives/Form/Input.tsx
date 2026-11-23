@@ -285,5 +285,3 @@ export const Input = memo(
 )
 
 Input.displayName = symToStr({ Input })
-
-export default Input

@@ -1,29 +1,31 @@
 import { notFound } from 'next/navigation'
+import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import { appliquerLesDifferencesAction } from '@/app/_actions/lieux-activite/appliquer-les-differences.action'
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
-import BackButton from '@/components/BackButton'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
-import {
-  dateDeDerniereActivite,
-  MediateursDuLieu,
-} from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
+import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.key'
 import {
   FicheDuLieuPage,
   ficheAffichee,
 } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+import { RECHERCHER_UN_ETABLISSEMENT_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/rechercher-un-etablissement.key'
+import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.key'
 import {
-  BoutonDeRetrait,
   ModaleDeRetrait,
+  retraitsDesMediateurs,
 } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { filDArianeDuReseau } from '@/features/mon-reseau/ui/fil-d-ariane'
-import { hrefDesLieux } from '@/features/mon-reseau/ui/liens'
+import {
+  EnteteDuLieuDuReseau,
+  LieuDuReseauPage,
+} from '@/features/mon-reseau/ui/LieuDuReseauPage'
 import { departementDuCode } from '@/libraries/departement'
-import { contentId } from '@/utils/skipLinks'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>
@@ -52,66 +54,55 @@ const LieuActiviteDetailPage = async (props: {
   const peutRetirerUnMediateur = user.coordinateur !== null
 
   return (
-    <>
-      <SkipLinksPortal />
-      <main
-        id={contentId}
-        className="fr-container fr-flex fr-justify-content-center"
-        style={{ maxWidth: 2500 }}
+    <ClientBinder
+      bind={APPLIQUER_LES_DIFFERENCES_ACTION_KEY}
+      to={appliquerLesDifferencesAction}
+    >
+      <ClientBinder
+        bind={RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY}
+        to={retirerUnMediateurDuLieuAction}
       >
-        <FicheDuLieuPage
-          fiche={fiche}
-          enregistrer={modifierLaFicheDuLieuAction}
-          creerUnLieuHref={
-            user.mediateur == null ? undefined : '/coop/lieux-activite/creer'
-          }
-          entete={
-            <>
-              <CoopBreadcrumbs
-                parents={[
-                  ...filDArianeDuReseau(departement.data.code),
-                  {
-                    label: "Annuaire des lieux d'activités",
-                    linkProps: { href: hrefDesLieux(departement.data.code) },
-                  },
-                ]}
-                currentPage={fiche.nom}
-              />
-              <BackButton className="fr-mt-8v" />
-            </>
-          }
-          mediateurs={
-            <>
-              <MediateursDuLieu
-                mediateurs={mediateurs}
-                departement={departement.data.code}
-                retraits={
-                  peutRetirerUnMediateur
-                    ? Object.fromEntries(
-                        mediateurs.map((mediateur) => [
-                          mediateur.rattachementId,
-                          <BoutonDeRetrait
-                            key={mediateur.rattachementId}
-                            structureId={lieuId}
-                            mediateurId={mediateur.mediateurId}
-                            mediateurDisplayName={mediateur.nomAffiche}
-                            structureNom={fiche.nom}
-                            derniereActiviteDate={dateDeDerniereActivite(
-                              mediateur.derniereActiviteIci,
-                            )}
-                            variant="mediateur"
-                          />,
-                        ]),
-                      )
-                    : undefined
-                }
-              />
-              {peutRetirerUnMediateur && <ModaleDeRetrait />}
-            </>
-          }
-        />
-      </main>
-    </>
+        <ClientBinder
+          bind={RECHERCHER_UN_ETABLISSEMENT_KEY}
+          to={rechercherStructureEmployeuseAction}
+        >
+          <LieuDuReseauPage>
+            <FicheDuLieuPage
+              fiche={fiche}
+              enregistrer={modifierLaFicheDuLieuAction}
+              creerUnLieuHref={
+                user.mediateur == null
+                  ? undefined
+                  : '/coop/lieux-activite/creer'
+              }
+              entete={
+                <EnteteDuLieuDuReseau
+                  departement={departement.data.code}
+                  nom={fiche.nom}
+                />
+              }
+              mediateurs={
+                <>
+                  <MediateursDuLieu
+                    mediateurs={mediateurs}
+                    departement={departement.data.code}
+                    retraits={
+                      peutRetirerUnMediateur
+                        ? retraitsDesMediateurs(
+                            { id: lieuId, nom: fiche.nom },
+                            mediateurs,
+                          )
+                        : undefined
+                    }
+                  />
+                  {peutRetirerUnMediateur && <ModaleDeRetrait />}
+                </>
+              }
+            />
+          </LieuDuReseauPage>
+        </ClientBinder>
+      </ClientBinder>
+    </ClientBinder>
   )
 }
 

@@ -1,8 +1,9 @@
-import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
-import { typologieStructureLibelle } from '@/external-apis/api-entreprise/typologieStructure'
+import { typologieStructureLibelle } from '@/features/employeuse/domain/typologieStructure'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { addresseFromParts } from '@/utils/addresseFromParts'
+import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../action/rechercher-structure-employeuse.key'
 import type { StructureSearchResult } from '../domain/employeuse-choisie'
 
 /**
@@ -22,7 +23,9 @@ const itemToString = (item: StructureSearchResult | null): string =>
 const loadSuggestions =
   (onApiUnavailable: (indisponible: boolean) => void) =>
   async (input: string): Promise<{ items: StructureSearchResult[] }> => {
-    const result = await rechercherStructureEmployeuseAction({ query: input })
+    const result = await inject(RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY)({
+      query: input,
+    })
 
     if (!result.success) return { items: [] }
 

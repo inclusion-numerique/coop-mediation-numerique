@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import ConnexionErreurPage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/pages/ConnexionErreurPage'
 
 export const metadata = {

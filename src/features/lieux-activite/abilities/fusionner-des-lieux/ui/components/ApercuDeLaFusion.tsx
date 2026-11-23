@@ -1,5 +1,5 @@
-import { MergeDiff } from '@/libs/ui/administration/MergeDiff'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { toTitleCase } from '@/libraries/texte/toTitleCase'
+import { MergeDiff } from '@/libraries/ui/components/administration/MergeDiff'
 import type { ChampsPartageables, LieuAFusionner } from '../../domain'
 import { nomAffiche } from '../nom-affiche'
 

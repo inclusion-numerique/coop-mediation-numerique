@@ -6,9 +6,7 @@ import {
 } from '@/libraries/insee'
 import type { LieuEnListe } from '../domain/lieu-en-liste'
 
-export const departementDuLieu = (
-  codeInsee: string | null,
-): CodeDepartement => {
+const departementDuLieu = (codeInsee: string | null): CodeDepartement => {
   const code = CodeInsee.safe(codeInsee ?? '')
   return code === null
     ? DEPARTEMENT_PAR_DEFAUT

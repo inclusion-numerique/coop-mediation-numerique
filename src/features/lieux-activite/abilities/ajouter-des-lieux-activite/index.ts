@@ -1,16 +1,8 @@
 export { depuisLePanier } from './action/depuis-le-panier'
-export type {
-  AdresseValidee,
-  EchecDAjout,
-  LieuACreer,
-  LieuCarto,
-  LieuDejaRattache,
-  LieuDemande,
-  LieuExistant,
-} from './domain'
 export {
+  activitesEnCoursDeLUtilisateur,
   ajouterDesLieuxActivite,
-  lireLieuxDejaRattaches,
-  rattacherAuLieu,
-  trouverStructuresCarto,
+  detacherDuLieuDecrit,
+  rattacherAuLieuDecrit,
+  rattacherAuLieuDesire,
 } from './implementation'

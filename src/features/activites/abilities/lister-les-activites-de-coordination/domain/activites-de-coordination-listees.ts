@@ -13,7 +13,7 @@ export type ActivitesDeCoordinationListees = {
   readonly pages: Effectif
 }
 
-export type TagDisponible = {
+type TagDisponible = {
   readonly id: TagId
   readonly nom: NomDeTag
   readonly portee: PorteeDeTag

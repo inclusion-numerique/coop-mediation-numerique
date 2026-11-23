@@ -13,7 +13,7 @@ export type DecisionWebhookUsager =
   | { readonly _tag: 'mettreAJour' }
   | { readonly _tag: 'anonymiserEtSupprimer' }
 
-export type RaisonIgnoreUsager = 'creationDeferee' | 'usagerNonSuivi'
+type RaisonIgnoreUsager = 'creationDeferee' | 'usagerNonSuivi'
 
 /**
  * Que faire d'une notification portant sur un usager.

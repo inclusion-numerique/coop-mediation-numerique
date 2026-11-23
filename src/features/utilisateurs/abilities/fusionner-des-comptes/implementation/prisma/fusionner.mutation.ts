@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import type { Prisma } from '@/generated/prisma/client'
-import { synchroniserPersonne } from '@/libraries/registre-personne'
-import { prismaClient } from '@/prismaClient'
 import type { FusionAutorisee } from '../../domain'
 
 type Tx = Prisma.TransactionClient
@@ -397,39 +397,41 @@ const retirerLaSource = async (tx: Tx, sourceId: string) => {
   await tx.user.delete({ where: { id: sourceId } })
 }
 
-export const fusionner = async ({
-  source,
-  cible,
-}: FusionAutorisee): Promise<void> => {
-  await prismaClient.$transaction(
-    async (tx) => {
-      await garantirLesRoles(tx, source.id, cible.id)
+export const fusionner =
+  (synchroniserLaPersonne: SynchroniserLaPersonne) =>
+  async ({ source, cible }: FusionAutorisee): Promise<void> => {
+    await prismaClient.$transaction(
+      async (tx) => {
+        await garantirLesRoles(tx, source.id, cible.id)
 
-      const [rolesSource, rolesCible] = await Promise.all([
-        rolesDe(tx, source.id),
-        rolesDe(tx, cible.id),
-      ])
+        const [rolesSource, rolesCible] = await Promise.all([
+          rolesDe(tx, source.id),
+          rolesDe(tx, cible.id),
+        ])
 
-      if (rolesSource.mediateur !== null && rolesCible.mediateur !== null)
-        await fusionnerLesMediateurs(
-          tx,
-          { email: rolesSource.email, mediateur: rolesSource.mediateur },
-          { email: rolesCible.email, mediateur: rolesCible.mediateur },
+        if (rolesSource.mediateur !== null && rolesCible.mediateur !== null)
+          await fusionnerLesMediateurs(
+            tx,
+            { email: rolesSource.email, mediateur: rolesSource.mediateur },
+            { email: rolesCible.email, mediateur: rolesCible.mediateur },
+          )
+
+        if (
+          rolesSource.coordinateur !== null &&
+          rolesCible.coordinateur !== null
         )
+          await fusionnerLesCoordinateurs(
+            tx,
+            rolesSource.coordinateur,
+            rolesCible.coordinateur,
+          )
 
-      if (rolesSource.coordinateur !== null && rolesCible.coordinateur !== null)
-        await fusionnerLesCoordinateurs(
-          tx,
-          rolesSource.coordinateur,
-          rolesCible.coordinateur,
-        )
-
-      await fusionnerLesPersonnes(tx, source.id, cible.id)
-      await reattribuerLesTraces(tx, source.id, cible.id)
-      await transfererLesLiaisons(tx, source.id, cible.id)
-      await retirerLaSource(tx, source.id)
-      await synchroniserPersonne(tx, cible.id)
-    },
-    { timeout: 60_000 },
-  )
-}
+        await fusionnerLesPersonnes(tx, source.id, cible.id)
+        await reattribuerLesTraces(tx, source.id, cible.id)
+        await transfererLesLiaisons(tx, source.id, cible.id)
+        await retirerLaSource(tx, source.id)
+        await synchroniserLaPersonne(tx, cible.id)
+      },
+      { timeout: 60_000 },
+    )
+  }

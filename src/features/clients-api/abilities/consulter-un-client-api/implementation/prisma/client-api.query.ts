@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   clientApiSelect,
   versClientApi,
@@ -8,7 +9,6 @@ import {
   ClientApiIntrouvable,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 export const consulterUnClientApi = async (
   clientApiId: string,

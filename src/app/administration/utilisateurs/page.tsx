@@ -1,28 +1,31 @@
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import { metadataTitle } from '@/app/metadataTitle'
-import { optionsDesFiltres } from '@/composition/utilisateurs/options-des-filtres'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { nomDeLEmployeuse } from '@/features/employeuse/server'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { LieuFilter } from '@/features/lieux-activite/ui'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
 import {
+  optionsDesFiltres,
+  ordreDesUtilisateurs,
   rechercherDesUtilisateurs,
-  triDesUtilisateurs,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
 import {
-  UtilisateursDataTable,
-  type UtilisateursDataTableSearchParams,
+  type ParametresDeLaListe,
   UtilisateursPage,
+  valeursDeLieu,
 } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
 import {
   filtresUtilisateurs,
-  type ParametresDeFiltres,
   parametresDesFiltres,
 } from '@/features/utilisateurs/domain'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { getDataTableOrderBy } from '@/libs/data-table/getDataTableOrderBy'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),
@@ -30,9 +33,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async (props: {
-  searchParams: Promise<UtilisateursDataTableSearchParams & ParametresDeFiltres>
-}) => {
+const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   const searchParams = await props.searchParams
   const filtres = filtresUtilisateurs(searchParams)
 
@@ -40,14 +41,14 @@ const Page = async (props: {
     rechercherDesUtilisateurs({
       searchParams,
       filtres,
-      orderBy: getDataTableOrderBy(
-        searchParams,
-        UtilisateursDataTable,
-        triDesUtilisateurs,
-      ),
+      orderBy: ordreDesUtilisateurs(searchParams),
       maintenant: new Date(),
     }),
-    optionsDesFiltres(filtres),
+    optionsDesFiltres(filtres, {
+      communesEtDepartements: getCommunesAndDepartementsOptions,
+      lieux: getLieuxActiviteOptions,
+      nomDeLEmployeuse,
+    }),
   ])
 
   return (
@@ -59,22 +60,28 @@ const Page = async (props: {
         bind={RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY}
         to={rechercherDesEmployeusesAction}
       >
-        <CoopPageContainer size="full">
-          <UtilisateursPage
-            trouves={trouves}
-            filtres={filtres}
-            options={options}
-            searchParams={searchParams}
-            actions={
-              <BoutonExporterLesUtilisateurs
-                parametres={parametresDesFiltres(filtres)}
-                libelles={libellesDesFiltres(filtres, options)}
-                nombre={trouves.matchesCount}
-                recherche={searchParams.recherche ?? null}
-              />
-            }
-          />
-        </CoopPageContainer>
+        <UtilisateursPage
+          trouves={trouves}
+          filtres={filtres}
+          options={options}
+          searchParams={searchParams}
+          filtreDeLieu={
+            <LieuFilter
+              defaultValue={valeursDeLieu(filtres)}
+              lieuxActiviteOptions={[...options.lieux]}
+              communesOptions={[...options.communes]}
+              departementsOptions={[...options.departements]}
+            />
+          }
+          actions={
+            <BoutonExporterLesUtilisateurs
+              parametres={parametresDesFiltres(filtres)}
+              libelles={libellesDesFiltres(filtres, options)}
+              nombre={trouves.matchesCount}
+              recherche={searchParams.recherche ?? null}
+            />
+          }
+        />
       </ClientBinder>
     </ClientBinder>
   )

@@ -1,10 +1,10 @@
-import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
+import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
-import { dureeAsString } from '@/utils/dureeAsString'
+} from '@/libraries/date/dateAsDayAndTime'
+import { dureeAsString } from '@/libraries/date/dureeAsString'
+import { pluriel } from '@/libraries/pluriel'
 import type {
   AccompagnementIndividuel,
   ActiviteConsultee,
@@ -44,7 +44,7 @@ export type Rubrique =
     }
   | { readonly _tag: 'Texte'; readonly titre: string; readonly texte: string }
 
-export type BeneficiaireDuDetail =
+type BeneficiaireDuDetail =
   | {
       readonly _tag: 'Suivi'
       readonly id: string
@@ -53,7 +53,7 @@ export type BeneficiaireDuDetail =
     }
   | { readonly _tag: 'Anonyme'; readonly infos: readonly string[] }
 
-export type ParticipantsDuDetail = {
+type ParticipantsDuDetail = {
   readonly titre: string
   readonly titreDesSuivis: string | null
   readonly suivis: readonly { readonly id: string; readonly nom: string }[]

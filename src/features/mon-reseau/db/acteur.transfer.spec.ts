@@ -32,7 +32,7 @@ const ligneMaximale: LigneActeur = {
   name: 'S. Bernard',
   email: 'sacha.bernard@example.org',
   personneMain: {
-    affectationsEmploi: [{ source: 'idposte', estActive: true }],
+    conseillerNumeriqueEnPoste: { personneId: 1 },
   },
   coordinateur: { id: 'b1b2c3d4-0000-4000-8000-000000000005' },
   mediateur: {

@@ -18,6 +18,3 @@ export const lignesDeLaListe = (
     accompagnements,
     gerable: peutGerer(acteur)(tag.portee),
   }))
-
-export const nombreDePages = (total: number, lignesParPage: number): number =>
-  lignesParPage > 0 ? Math.ceil(total / lignesParPage) : 1

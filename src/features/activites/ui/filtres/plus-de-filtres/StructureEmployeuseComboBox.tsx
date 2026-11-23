@@ -1,9 +1,9 @@
 import type { OptionDEmployeuse } from '@/features/activites/ui/filtres/filtres-de-la-liste'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/ui/filtres/plus-de-filtres/rechercher-employeuses.key'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import type { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
-import { inject } from '@/libs/injection/client'
 
 export type StructureEmployeuse = OptionDEmployeuse
 

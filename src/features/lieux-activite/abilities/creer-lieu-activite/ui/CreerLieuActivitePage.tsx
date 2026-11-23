@@ -2,14 +2,15 @@
 
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { CreerLieuActivitePageContent } from '@/features/lieux-activite/ui/creation/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@/features/lieux-activite/ui/creation/creer-lieu-activite.form-data'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { hrefDuLieu } from '../../../ui/href-du-lieu'
+import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../action/creer-lieu-activite.key'
 
 const erreurEnregistrement = () =>
   createToast({
@@ -25,7 +26,10 @@ const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
     const { adresseBan, ...data } = toCreerLieuData(value)
     if (adresseBan == null) return
 
-    const resultat = await creerUnLieuActiviteAction({ ...data, adresseBan })
+    const resultat = await inject(CREER_UN_LIEU_ACTIVITE_ACTION_KEY)({
+      ...data,
+      adresseBan,
+    })
 
     if (!resultat.success) {
       erreurEnregistrement()

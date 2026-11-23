@@ -1,19 +1,19 @@
 import type {
   AdresseCourriel,
+  IdentifiantsRattaches,
   MediateurId,
-  RattachementsDuCompte,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
-export type AnonymiserPortefeuille = (input: {
+type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<{ readonly anonymises: number }>
 
-export type EffacerNotes = (input: {
-  readonly rattachements: RattachementsDuCompte
-}) => Promise<{ readonly effacees: number }>
+type EffacerNotes = (
+  input: IdentifiantsRattaches,
+) => Promise<{ readonly effacees: number }>
 
-export type EffacerEmpreinteRdv = (input: {
+type EffacerEmpreinteRdv = (input: {
   readonly utilisateurId: UtilisateurId
 }) => Promise<{
   readonly compteDelie: boolean
@@ -21,22 +21,23 @@ export type EffacerEmpreinteRdv = (input: {
   readonly usagersSupprimes: number
 }>
 
-export type DetacherDesEquipes = (input: {
-  readonly rattachements: RattachementsDuCompte
-}) => Promise<{
-  readonly invitationsSupprimees: number
-  readonly appartenancesRetirees: number
-  readonly tagsTransferes: number
-  readonly tagsSupprimes: number
+type RetirerLesTagsDUnCompte = (input: IdentifiantsRattaches) => Promise<{
+  readonly transferes: number
+  readonly supprimes: number
 }>
 
-export type RetirerDesLieux = (input: {
+type DetacherDesEquipes = (input: IdentifiantsRattaches) => Promise<{
+  readonly invitationsSupprimees: number
+  readonly appartenancesRetirees: number
+}>
+
+type RetirerDesLieux = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<{ readonly rattachementsSupprimes: number }>
 
-export type RevoquerPartageStatistiques = (input: {
-  readonly rattachements: RattachementsDuCompte
-}) => Promise<{ readonly partagesRevoques: number }>
+type RevoquerPartageStatistiques = (
+  input: IdentifiantsRattaches,
+) => Promise<{ readonly partagesRevoques: number }>
 
 export type RetirerDesListesDeDiffusion = (
   courriel: AdresseCourriel,
@@ -50,6 +51,7 @@ export type SupprimerComptePorts = {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille
   readonly effacerNotes: EffacerNotes
   readonly effacerEmpreinteRdv: EffacerEmpreinteRdv
+  readonly retirerLesTagsDUnCompte: RetirerLesTagsDUnCompte
   readonly detacherDesEquipes: DetacherDesEquipes
   readonly retirerDesLieux: RetirerDesLieux
   readonly revoquerPartageStatistiques: RevoquerPartageStatistiques

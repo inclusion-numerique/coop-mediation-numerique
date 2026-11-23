@@ -3,33 +3,28 @@ import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/reche
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
-import { authenticateMediateur } from '@/auth/authenticateUser'
+import { nouvelleSaisieCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import CraCollectifPage from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/CraCollectifPage'
-import { craCollectifDefaultValues } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/craCollectifDefaultValues'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
-import { MediateurId } from '@/features/activites/domain'
-import { dureesFrequentesDuMediateur } from '@/features/activites/implementation/prisma/durees-frequentes'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/ui/saisie/commune/rechercher-des-communes.key'
-import { donneesDeLaSaisieDeMediation } from '@/features/activites/ui/saisie/donnees-de-la-saisie-de-mediation'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { visibilitesDuCra } from '@/features/activites/ui/saisie/tags/tag-du-cra'
-import { rechercherDesCommunes } from '@/features/adresse/implementation/api-adresse/rechercher-des-communes'
+import { profilDeLaSession } from '@/features/authentification'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
 import { lieuxDuMediateur } from '@/features/lieux-activite'
 import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
 import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { ClientBinder } from '@/libs/injection/client-binder'
-import {
-  decodeSerializableState,
-  type EncodedState,
-} from '@/utils/encodeSerializableState'
+import { acteurDe } from '@/features/tags/domain'
+import { rechercherDesCommunes } from '@/libraries/ban/rechercher-des-communes'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const CreateCraCollectifPage = async ({
   searchParams,
@@ -40,9 +35,7 @@ const CreateCraCollectifPage = async ({
   }>
 }) => {
   const { retour, v } = await searchParams
-
   const user = await authenticateMediateur()
-  const mediateurId = user.mediateur.id
 
   const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
@@ -53,23 +46,17 @@ const CreateCraCollectifPage = async ({
     return <RattacherEmployeusePage motif="Enregistrer une activité" />
   }
 
-  const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
+  const acteur = acteurDe(profilDeLaSession(user))
 
-  const [lieuxProposes, dureesFrequentes, beneficiairesProposes] =
-    await Promise.all([
-      lieuxDuMediateur(mediateurId),
-      dureesFrequentesDuMediateur(MediateurId(mediateurId)),
-      beneficiairesLesPlusSuivis(mediateurId),
-    ])
-
-  const craPageData = await donneesDeLaSaisieDeMediation<CraCollectifData>(
-    craCollectifDefaultValues,
-  )({
-    mediateurId,
-    stateFromUrl: stateFromUrl,
-    lieuxProposes,
-    dureesFrequentes,
-    tagsInitiaux: tagsInitiauxPar(user),
+  const saisie = await nouvelleSaisieCollective({
+    mediateurId: user.mediateur.id,
+    v,
+    fournisseurs: {
+      lieuxDuMediateur,
+      beneficiairesLesPlusSuivis,
+      tagsInitiaux: tagsInitiauxPar(acteur),
+      visibilitesProposees: visibilitesProposeesA(acteur),
+    },
   })
 
   return (
@@ -94,18 +81,7 @@ const CreateCraCollectifPage = async ({
                 bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
                 to={rechercherBeneficiairesAction}
               >
-                <CraCollectifPage
-                  {...craPageData}
-                  beneficiairesProposes={beneficiairesProposes}
-                  mediateurId={mediateurId}
-                  visibilitesDeTag={visibilitesDuCra(
-                    visibilitesProposeesA(user),
-                    {
-                      departemental: false,
-                    },
-                  )}
-                  retour={retour}
-                />
+                <CraCollectifPage {...saisie} retour={retour} />
               </ClientBinder>
             </ClientBinder>
           </ClientBinder>

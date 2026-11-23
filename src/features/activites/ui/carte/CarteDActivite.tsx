@@ -1,7 +1,7 @@
 'use client'
 
 import type { MouseEventHandler } from 'react'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { TruncateText } from '@/libraries/ui/components/Primitives/TruncatedText'
 import { DetailDeLActiviteDynamicModal } from '../detail/DetailDeLActiviteModale'
 import { typeActivitePictograms } from '../libelles/type-activite'

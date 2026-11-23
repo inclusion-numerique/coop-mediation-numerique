@@ -1,11 +1,6 @@
-import {
-  conseillerNumeriqueSql,
-  employeuseCourante,
-  employeuseCouranteJoin,
-} from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
 import type { CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { departementCodeFromInseeRegex } from '@/utils/departementCodeFromInseeRegex'
+import { departementCodeFromInseeRegex } from './departementCodeFromInseeRegex'
 
 export const ACTEUR = {
   id: Prisma.raw('u.id'),
@@ -18,7 +13,8 @@ export const ACTEUR = {
 
 export const DEPUIS_LES_ACTEURS = Prisma.sql`
   FROM users u
-  ${employeuseCouranteJoin('u.id')}
+  LEFT JOIN main.personne pe ON pe.coop_id = u.id
+  LEFT JOIN coop.employeuse_actuelle ea ON ea.personne_id = pe.id
   LEFT JOIN mediateurs m ON m.user_id = u.id
   LEFT JOIN mediateurs_en_activite mea
     ON mea.mediateur_id = m.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
@@ -33,19 +29,24 @@ export const ACTEUR_VISIBLE = Prisma.sql`(
 )`
 
 export const acteurDuDepartement = (code: CodeDepartement) => Prisma.sql`(
-  SUBSTRING(${employeuseCourante().codeInsee} FROM ${departementCodeFromInseeRegex}) = ${code}
+  SUBSTRING(ea.code_insee FROM ${departementCodeFromInseeRegex}) = ${code}
   OR SUBSTRING(s2.code_insee FROM ${departementCodeFromInseeRegex}) = ${code}
 )`
 
 export const acteurDesCommunes = (
   codesInsee: readonly CodeInsee[],
 ) => Prisma.sql`(
-  ${employeuseCourante().codeInsee} = ANY(${[...codesInsee]}::TEXT[])
+  ea.code_insee = ANY(${[...codesInsee]}::TEXT[])
   OR s2.code_insee = ANY(${[...codesInsee]}::TEXT[])
 )`
 
 export const acteurConseillerNumerique = (releve: boolean) =>
-  conseillerNumeriqueSql('u.id', releve)
+  Prisma.raw(`${releve ? '' : 'NOT '}EXISTS (
+    SELECT 1
+    FROM main.conseiller_numerique_en_poste cn
+    JOIN main.personne p ON p.id = cn.personne_id
+    WHERE p.coop_id = u.id
+  )`)
 
 export const acteurVisibleWhere = {
   deleted: null,

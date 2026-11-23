@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ligneUtilisateurSelect,
   ligneUtilisateurToDomain,
@@ -5,10 +6,10 @@ import {
 import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
-import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
-import { DEFAULT_PAGE, toNumberOr } from '@/libs/data-table/toNumberOr'
-import { toQueryParts } from '@/libs/data-table/toQueryParts'
-import { prismaClient } from '@/prismaClient'
+import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
+import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
+import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
+import { entierPositifLu } from '@/libraries/parametres-d-url'
 import type { UtilisateursTrouves } from '../../domain'
 
 export type RechercheDUtilisateursParams = {
@@ -30,9 +31,10 @@ export const rechercherDesUtilisateurs = async ({
   readonly orderBy: readonly Prisma.UserOrderByWithRelationInput[]
   readonly maintenant: Date
 }): Promise<UtilisateursTrouves> => {
+  const lignesParPage = entierPositifLu(searchParams.lignes, LIGNES_PAR_PAGE)
   const { take, skip } = takeAndSkipFromPage({
-    page: toNumberOr(searchParams.page)(DEFAULT_PAGE),
-    pageSize: toNumberOr(searchParams.lignes)(LIGNES_PAR_PAGE),
+    page: entierPositifLu(searchParams.page, DEFAULT_PAGE),
+    pageSize: lignesParPage,
   })
 
   const where = utilisateursWhere({
@@ -56,7 +58,7 @@ export const rechercherDesUtilisateurs = async ({
   return {
     totalCount,
     matchesCount,
-    totalPages: take ? Math.ceil(matchesCount / take) : 1,
+    lignesParPage,
     utilisateurs: lignes.map((ligne) =>
       ligneUtilisateurToDomain(ligne, maintenant),
     ),

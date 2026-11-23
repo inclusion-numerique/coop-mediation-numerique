@@ -1,5 +1,4 @@
 export {
-  type CompteRdvRow,
   compteRdvFromDomain,
   compteRdvToDomain,
   jetonsCompteToDomain,
@@ -11,8 +10,6 @@ export {
 } from './entourage.transfer'
 export {
   participationFromDomain,
-  participationToDomain,
-  type RdvRow,
   rdvFromDomain,
   rdvToDomain,
 } from './rdv.transfer'

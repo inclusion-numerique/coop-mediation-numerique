@@ -1,5 +1,8 @@
-import { sPluriel } from '@/libraries/ui/utils/pluriel/sPluriel'
-import { numberToPercentage, numberToString } from '@/utils/formatNumber'
+import {
+  numberToPercentage,
+  numberToString,
+} from '@/libraries/nombre/formatNumber'
+import { pluriel } from '@/libraries/pluriel'
 import { typeActivitePluralLabels } from '../../../../ui/libelles/type-activite'
 import type { RepartitionPresentee } from '../repartition.presenter'
 
@@ -15,9 +18,7 @@ export const TypesDActiviteImprimes = ({
       <li key={value}>
         <b>{numberToString(count)}</b> {typeActivitePluralLabels[value]}
         {value === 'Collectif' &&
-          `, ${participations} sur participation${sPluriel(
-            participations,
-          )} au total`}{' '}
+          `, ${participations} sur ${pluriel(participations, 'participation', 'participations')} au total`}{' '}
         ({numberToPercentage(proportion)} des activités)
       </li>
     ))}

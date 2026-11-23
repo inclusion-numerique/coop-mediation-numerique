@@ -1,13 +1,15 @@
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import BackButton from '@/components/BackButton'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
+import {
+  DataSearchBar,
+  generatePageSizeSelectOptions,
+  PaginationNavWithPageSizeSelect,
+} from '@/libraries/data-table'
+import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import DataSearchBar from '@/libs/data-table/DataSearchBar'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import SortSelect from '@/libs/data-table/SortSelect'
-import { contentId } from '@/utils/skipLinks'
 import type { Acteur } from '../../../../domain'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { CarteDActeur } from '../../../../ui/CarteDActeur'
@@ -97,7 +99,7 @@ const ActeursDuDepartementPage = ({
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
             <DataSearchBar
               baseHref={baseHref}
-              searchParams={parametres}
+              state={parametres}
               placeholder="Nom, prénom ou adresse mail..."
               className="fr-flex-grow-1"
             />
@@ -160,9 +162,10 @@ const ActeursDuDepartementPage = ({
 
           <PaginationNavWithPageSizeSelect
             className="fr-mt-12v"
-            totalPages={acteurs.pages}
+            itemsCount={acteurs.total}
+            pageSize={acteurs.lignes}
             baseHref={baseHref}
-            searchParams={parametres}
+            state={parametres}
             defaultPageSize={LIGNES_PAR_DEFAUT}
             pageSizeOptions={pageSizeOptions}
           />

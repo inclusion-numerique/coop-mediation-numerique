@@ -1,22 +1,19 @@
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import { DEFAULT_PAGE_SIZE } from '@/libs/data-table/toNumberOr'
-import { LIGNES_PAR_PAGE } from '../../../../domain'
 import { CoordinationEmptyState } from '../../../../ui/CoordinationEmptyState'
+import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
 import type { ListeDesCoordinations } from '../liste-des-coordinations.presenter'
 import { CarteDeCoordination } from './CarteDeCoordination'
 import { DetailDeCoordinationModale } from './DetailDeCoordinationModale'
 
-const optionsDeLignes = generatePageSizeSelectOptions([...LIGNES_PAR_PAGE])
-
 export const ActivitesDeCoordinationListe = ({
-  liste: { titre, jours, pages },
+  liste: { titre, jours, total },
   filtre,
   pagination,
+  lignesParPage,
 }: {
   liste: ListeDesCoordinations
   filtre: boolean
   pagination: Readonly<Record<string, string>>
+  lignesParPage: number
 }) =>
   jours.length === 0 ? (
     <CoordinationEmptyState isFiltered={filtre} />
@@ -36,13 +33,12 @@ export const ActivitesDeCoordinationListe = ({
           ))}
         </div>
       ))}
-      <PaginationNavWithPageSizeSelect
+      <PaginationDesActivites
         className="fr-mt-12v"
-        totalPages={pages}
-        baseHref="/coop/mes-coordinations"
-        searchParams={pagination}
-        defaultPageSize={DEFAULT_PAGE_SIZE}
-        pageSizeOptions={optionsDeLignes}
+        adresse="/coop/mes-coordinations"
+        parametres={pagination}
+        total={total}
+        lignesParPage={lignesParPage}
       />
     </div>
   )

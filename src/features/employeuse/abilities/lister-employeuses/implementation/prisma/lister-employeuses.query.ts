@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import {
   employeuseSelect,
   employeuseToDomain,
@@ -29,9 +29,6 @@ const conditionsDeRecherche = (
     })),
 })
 
-// Colonnes triables, et ce qu'elles trient réellement en base. Ces clés sont
-// celles que le tableau propose au tri (`ui/employeuses.data-table`) : les deux
-// listes se répondent. Une colonne inconnue retombe sur l'ordre par défaut.
 const trisDisponibles: Record<
   string,
   (

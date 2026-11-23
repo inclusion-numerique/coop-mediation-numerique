@@ -4,7 +4,6 @@ import {
   conditionsCommunes,
   enBase,
   enConjonction,
-  type FiltreDesConseillersNumeriques,
   siDefini,
   siNonVide,
 } from './criteres-des-activites.sql'
@@ -35,7 +34,6 @@ const STATUT_FOURNI: Readonly<
 export const filtreDesStatistiques = (
   criteres: CriteresDesStatistiques,
   dependances: {
-    readonly conseillersNumeriques: FiltreDesConseillersNumeriques
     readonly rendezVousAuxStatuts: RendezVousAuxStatuts
   },
 ): Prisma.Sql =>
@@ -48,7 +46,7 @@ export const filtreDesStatistiques = (
       criteres.periode.au,
       (au) => Prisma.sql`act.date::date <= ${au}::date`,
     ),
-    ...conditionsCommunes(criteres, dependances),
+    ...conditionsCommunes(criteres),
     ...siNonVide(
       criteres.statutsDeRendezVous,
       (statuts) =>

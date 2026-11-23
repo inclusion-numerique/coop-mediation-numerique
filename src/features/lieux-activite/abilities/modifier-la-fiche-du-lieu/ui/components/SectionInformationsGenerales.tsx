@@ -3,8 +3,8 @@
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import { useStore } from '@tanstack/react-form'
 import Link from 'next/link'
-import EditCardTanStack from '@/components/EditCardTanStack'
-import { useAppForm } from '@/libs/form/use-app-form'
+import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import {
   CONFIRMATION_DU_PARTAGE_MANQUANTE,
   confirmationDuPartageManquante,

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite'
 import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
 import { ReseauDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui'
 import { departementDuCode } from '@/libraries/departement'
@@ -22,6 +23,7 @@ const Page = async ({ params }: Parametres) => {
   const user = await authenticateMediateurOrCoordinateur()
   const reseau = await consulterLeReseauDuDepartement(
     (await params).departement,
+    { nombreDeLieuxDuDepartement },
   )
 
   return reseau.success ? (

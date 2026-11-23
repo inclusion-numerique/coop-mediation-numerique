@@ -1,50 +1,27 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { subDays } from 'date-fns'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
-import {
-  CoordinateurId as CoordinateurIdDesActivites,
-  criteresDesStatistiques,
-  MediateurId as MediateurIdDesActivites,
-} from '@/features/activites/domain'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   consulterUnActeur,
   type QuiConsulte,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur'
+import { Effectif } from '@/features/mon-reseau/domain'
 import {
   type ActeurASemer,
   type ActeurSeme,
   semerUnActeur,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs'
-import { prismaClient } from '@/prismaClient'
 
 type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
 
-const lireLesStatistiquesSur30Jours = async (
-  coordinateurId: string,
-  mediateurId: string,
-  periode: { readonly du: string; readonly au: string },
-) => {
-  const { accompagnements, personnes } = await compterLesAccompagnements({
-    perimetre: {
-      type: 'Equipe',
-      coordinateur: CoordinateurIdDesActivites(coordinateurId),
-      membres: [MediateurIdDesActivites(mediateurId)],
-    },
-    criteres: criteresDesStatistiques(periode),
-    conseillersNumeriques: conseillerNumeriqueSql,
-    rendezVousAuxStatuts: rendezVousAuxStatutsSql,
-  })
-  return {
-    beneficiairesAccompagnes: personnes.total,
-    accompagnements: accompagnements.total,
-  }
-}
+const aucuneActiviteSur30Jours = async () => ({
+  beneficiairesAccompagnes: Effectif(0),
+  accompagnements: Effectif(0),
+})
 
 const etat: {
+  derniereActivite?: Date
   acteur?: ActeurSeme
   lecteur?: ActeurSeme
   consultation?: Consultation
@@ -95,8 +72,11 @@ const consulter = async (acteurId: string) => {
   etat.consultation = await consulterUnActeur({
     quiConsulte: quiConsulte(),
     acteurId,
-    lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
-    lireLesStatistiquesSur30Jours,
+    lireLaDerniereActivite: async () =>
+      etat.derniereActivite === undefined
+        ? { _tag: 'Jamais' }
+        : { _tag: 'Le', date: etat.derniereActivite },
+    lireLesStatistiquesSur30Jours: aucuneActiviteSur30Jours,
     maintenant: new Date(),
   })
 }
@@ -134,10 +114,7 @@ Given(
   'un médiateur Alex Martin dont la dernière activité date de {int} jours',
   async (jours: number) => {
     await semerAlexMartin()
-    await prismaClient.mediateur.update({
-      where: { id: lActeur().mediateurId ?? '' },
-      data: { derniereCreationActivite: subDays(new Date(), jours) },
-    })
+    etat.derniereActivite = subDays(new Date(), jours)
   },
 )
 
@@ -258,6 +235,7 @@ Then('l’acteur ne peut pas rejoindre son équipe', () => {
 })
 
 After(() => {
+  etat.derniereActivite = undefined
   etat.acteur = undefined
   etat.lecteur = undefined
   etat.consultation = undefined

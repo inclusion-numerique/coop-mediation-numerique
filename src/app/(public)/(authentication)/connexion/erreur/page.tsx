@@ -1,18 +1,11 @@
 import Link from 'next/link'
-import { AuthCard } from '@/app/(public)/(authentication)/AuthCard'
-import Breadcrumbs from '@/components/Breadcrumbs'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
+import { projectTitle } from '@/configuration/projet/config'
+import { connexionImpossibleMessage } from '@/features/authentification/ui/authenticationErrorMessage'
+import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
+import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-
-const errorMessage = (error?: string): string | undefined => {
-  if (error === 'Verification') {
-    return "Le lien de connexion n'est plus valide. Il a peut-être déjà été utilisé ou est expiré."
-  }
-
-  return 'Une erreur est survenue lors de la connexion. Veuillez réessayer.'
-}
 
 const ErrorPage = async ({
   searchParams,
@@ -28,11 +21,11 @@ const ErrorPage = async ({
       />
       <AuthCard>
         <h2 style={{ textAlign: 'center' }} className="fr-mb-12v">
-          Connexion à {PublicWebAppConfig.projectTitle}
+          Connexion à {projectTitle}
         </h2>
         <div className="fr-alert fr-alert--error fr-alert--sm fr-mb-6v">
           <h6>Connexion impossible</h6>
-          <p>{errorMessage(error)}</p>
+          <p>{connexionImpossibleMessage(error)}</p>
         </div>
 
         <ul className="fr-btns-group fr-mt-12v">

@@ -1,36 +1,47 @@
 import { NextRequest } from 'next/server'
-import { z } from 'zod'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import { SessionUser } from '@/auth/sessionUser'
-import { getStatistiquesWorksheetInput } from '@/composition/statistiques/tableur'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
 import {
-  ActivitesFilters,
-  ActivitesFilterValidations,
-} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+  lieuxChoisisDe,
+  perimetreDeLUtilisateur,
+  rassembler,
+  statistiquesDuPerimetre,
+} from '@/features/activites/implementation/statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
+import { profilDeLaSession } from '@/features/authentification'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
+import { donneesDeMesStatistiques } from '@/features/statistiques/implementation/mes-statistiques'
+import {
+  exportInterdit,
+  filtresDeLExport,
+} from '@/features/statistiques/ui/export/demande-d-export'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { entreeDuClasseur } from '@/features/statistiques/ui/tableur/entree-du-classeur'
+import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { auteurDeLExport } from '@/features/utilisateurs'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+
+const sourcesDeMesStatistiques = {
+  perimetreDe: perimetreDeLUtilisateur,
+  lancer: statistiquesDuPerimetre(rendezVousAuxStatutsSql),
+  rassembler,
+  lieuxChoisis: lieuxChoisisDe,
+  tagsVisibles: tagsVisiblesDuProfil,
+  beneficiaires: getInitialBeneficiairesOptionsForSearch,
+  membres: membresAFiltrerDuDemandeur,
+  activitesDuPerimetre: decrireLesActivitesDuPerimetre,
+  vocabulaire: {
+    ...vocabulaireDesActivites,
+    statutsDeRendezVous: rdvStatusOptions,
+  },
+}
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-
-const ExportActivitesValidation = z.object(ActivitesFilterValidations)
-
-const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
-
-const disallowExportFor =
-  (user: SessionUser) => (exportForMediateurIds?: string[]) =>
-    exportForMediateurIds &&
-    user.mediateur?.id &&
-    !exportForMediateurIds.includes(user.mediateur.id) &&
-    !exportForMediateurIds.some((id) =>
-      user.coordinateur?.mediateursCoordonnes.map(toMediateurId).includes(id),
-    ) &&
-    !exportForMediateurIds.some((id) =>
-      user.coordinateur?.ancienMediateursCoordonnes
-        .map(toMediateurId)
-        .includes(id),
-    )
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
@@ -44,23 +55,26 @@ export const GET = async (request: NextRequest) => {
     return new Response('Forbidden', { status: 403 })
   }
 
-  const parsedQueryParams = ExportActivitesValidation.safeParse(
+  const filters = filtresDeLExport(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   )
 
-  if (parsedQueryParams.error) {
+  if (filters === null) {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const filters: ActivitesFilters = parsedQueryParams.data
-
-  if (disallowExportFor(user)(filters.mediateurs)) {
+  if (exportInterdit(user, filters.mediateurs)) {
     return new Response('Cannot export for another mediateur', { status: 403 })
   }
 
-  const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
-    user,
+  const statistiquesWorksheetInput = entreeDuClasseur({
+    statistiques: await donneesDeMesStatistiques(
+      { user, profil: profilDeLaSession(user), activitesFilters: filters },
+      sourcesDeMesStatistiques,
+    ),
     filters,
+    auteur: auteurDeLExport(user),
+    fuseau: user.timezone,
   })
 
   const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)

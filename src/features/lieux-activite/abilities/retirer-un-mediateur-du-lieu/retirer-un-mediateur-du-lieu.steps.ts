@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
@@ -8,7 +9,6 @@ import {
   ficheSemee,
   semerUneFicheDeLieu,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 type Issue = Awaited<ReturnType<typeof retirerUnMediateurDuLieu>>
 

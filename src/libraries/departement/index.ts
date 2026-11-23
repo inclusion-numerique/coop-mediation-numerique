@@ -3,9 +3,7 @@ export {
   type Departement,
   DepartementInconnu,
   departementDuCode,
+  departementsDesCodesInsee,
   NomDepartement,
 } from './departement'
-export {
-  departementDeLActeur,
-  type TerritoireDeLActeur,
-} from './departement-de-l-acteur'
+export { departementDeLActeur } from './departement-de-l-acteur'

@@ -2,16 +2,16 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter } from 'next/navigation'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import type { UtilisateursDataTableSearchParams } from './UtilisateursDataTable'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import type { ParametresDeLaListe } from './lister-les-utilisateurs-search-params'
 
 const CHAMP = 'recherche'
 
 export const RechercheDUtilisateurs = ({
   searchParams = {},
 }: {
-  searchParams?: UtilisateursDataTableSearchParams
+  searchParams?: ParametresDeLaListe
 }) => {
   const pathname = usePathname()
   const router = useRouter()

@@ -1,10 +1,3 @@
-import {
-  employeuseCodeInsee,
-  personneConseillerNumeriqueSelect,
-  personneEmployeuseSelect,
-  personneEstConseillerNumerique,
-  personneToEmployeuseActuelle,
-} from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   DEPARTEMENT_PAR_DEFAUT,
@@ -41,7 +34,11 @@ export const mediateurDuLieuSelect = (lieuId: string) =>
         user: {
           select: {
             ...identiteSelect,
-            personneMain: { select: personneConseillerNumeriqueSelect },
+            personneMain: {
+              select: {
+                conseillerNumeriqueEnPoste: { select: { personneId: true } },
+              },
+            },
             coordinateur: { select: { id: true } },
           },
         },
@@ -58,7 +55,11 @@ export const mediateurDuLieuSelect = (lieuId: string) =>
                 user: {
                   select: {
                     ...identiteSelect,
-                    personneMain: { select: personneEmployeuseSelect },
+                    personneMain: {
+                      select: {
+                        employeuseActuelle: { select: { codeInsee: true } },
+                      },
+                    },
                   },
                 },
               },
@@ -105,19 +106,13 @@ const nomAfficheDe = ({
 
 const departementDuCoordinateur = (
   personneMain: LigneCoordinateur['personneMain'],
-): CodeDepartement => {
-  const actuelle = personneToEmployeuseActuelle(personneMain)
-  return (
-    departementDeLActeur({
-      employeuse: CodeInsee.safe(
-        actuelle === null
-          ? ''
-          : (employeuseCodeInsee(actuelle.employeuse) ?? ''),
-      ),
-      lieux: [],
-    }) ?? DEPARTEMENT_PAR_DEFAUT
-  )
-}
+): CodeDepartement =>
+  departementDeLActeur({
+    employeuse: CodeInsee.safe(
+      personneMain?.employeuseActuelle?.codeInsee ?? '',
+    ),
+    lieux: [],
+  }) ?? DEPARTEMENT_PAR_DEFAUT
 
 const versCoordinateur = (
   coordinateur: LigneCoordinateur,
@@ -165,9 +160,8 @@ export const versMediateurDuLieu = ({
         courriel,
         profil: profilDuMediateur({
           estCoordinateur: mediateur.user.coordinateur !== null,
-          estConseillerNumerique: personneEstConseillerNumerique(
-            mediateur.user.personneMain,
-          ),
+          estConseillerNumerique:
+            mediateur.user.personneMain?.conseillerNumeriqueEnPoste != null,
         }),
         nombreDeLieux,
         coordinateurs: mediateur.coordinations

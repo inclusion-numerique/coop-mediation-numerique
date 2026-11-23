@@ -45,7 +45,7 @@ type Identite = {
  * Un lieu que la coop connaît déjà : il se rattache tel quel, et rien de son
  * adresse ne sera réécrit.
  */
-export type LieuActiviteConnu = Identite & {
+type LieuActiviteConnu = Identite & {
   readonly id: string
   readonly adresse: string
   readonly commune: string
@@ -59,8 +59,7 @@ export type LieuActiviteConnu = Identite & {
  * formulaire géocode l'adresse avant de l'ajouter, et refuse la sélection à
  * défaut.
  */
-export type LieuActiviteACreer = Identite &
-  AdresseValidee & { readonly id?: null }
+type LieuActiviteACreer = Identite & AdresseValidee & { readonly id?: null }
 
 /**
  * Lieu d'activité tel que soumis par le formulaire d'inscription : identité

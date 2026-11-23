@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { detacherDesEquipes } from '@/features/equipe'
 import {
   equipeSemee,
   semerUnMediateurCoordonne,
 } from '@/features/equipe/equipe.cucumber'
-import { prismaClient } from '@/prismaClient'
 
 const porteur = (): string => {
   const [mediateurId] = equipeSemee().mediateurIds

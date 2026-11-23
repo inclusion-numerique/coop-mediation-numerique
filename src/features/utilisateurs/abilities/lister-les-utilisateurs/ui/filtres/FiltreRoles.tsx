@@ -8,10 +8,10 @@ import {
   type RoleFiltre as RoleFiltreType,
 } from '@/features/utilisateurs/domain'
 import { optionsDesRoles } from '@/features/utilisateurs/ui'
+import { FilterFooter } from '@/libraries/filtres/FilterFooter'
+import { resetPagination } from '@/libraries/filtres/helpers'
+import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@/libs/filters/FilterFooter'
-import { resetPagination } from '@/libs/filters/helpers'
-import TriggerButton from '@/libs/filters/TriggerButton'
 
 export const FiltreRoles = ({
   rolesInitiaux,

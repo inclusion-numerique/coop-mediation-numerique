@@ -1,13 +1,14 @@
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../domain/adresse-employeuse'
-import { type Affectation, estConseillerNumerique } from '../domain/affectation'
+import type { Affectation } from '../domain/affectation'
 import { ContactReferent } from '../domain/contact-referent'
 import type { Contrat } from '../domain/contrat'
 import { DenominationEmployeuse } from '../domain/denomination-employeuse'
 import type { Employeuse } from '../domain/employeuse'
 import { employeuseALaDate } from '../domain/employeuse-a-la-date'
 import {
+  type AffectationActuelle,
   type EmployeuseActuelle,
   employeuseActuelle,
 } from '../domain/employeuse-actuelle'
@@ -79,6 +80,20 @@ export type PersonneEmployeusePayload = Prisma.PersonneMainGetPayload<{
   select: typeof personneEmployeuseSelect
 }>
 
+export const personneEmployeuseActuelleSelect = {
+  employeuseActuelle: {
+    select: {
+      source: true,
+      structureAdministrative: { select: employeuseSelect },
+    },
+  },
+  contrats: personneEmployeuseSelect.contrats,
+} satisfies Prisma.PersonneMainSelect
+
+export type PersonneEmployeuseActuellePayload = Prisma.PersonneMainGetPayload<{
+  select: typeof personneEmployeuseActuelleSelect
+}>
+
 type AffectationRow = PersonneEmployeusePayload['affectationsEmploi'][number]
 
 export type EmployeuseRow = Prisma.StructureAdministrativeMainGetPayload<{
@@ -124,7 +139,7 @@ export const employeuseToDomain = (row: EmployeuseRow): Employeuse => ({
   suppression: row.deletedAt,
 })
 
-export const affectationToDomain = (row: AffectationRow): Affectation => ({
+const affectationToDomain = (row: AffectationRow): Affectation => ({
   employeuse: employeuseToDomain(row.structureAdministrative),
   source: SourceAffectation(row.source),
   active: row.estActive,
@@ -160,28 +175,34 @@ export const contratsToDomain = (
       : [],
   )
 
-export const personneToAffectations = (
+const personneToAffectations = (
   personne: PersonneEmployeusePayload | null,
 ): Affectation[] =>
   (personne?.affectationsEmploi ?? []).map(affectationToDomain)
 
-export const personneToContrats = (
-  personne: PersonneEmployeusePayload | null,
+const personneToContrats = (
+  personne: { readonly contrats: readonly ContratRow[] } | null,
   maintenant: Date = new Date(),
 ): Contrat[] => contratsToDomain(personne?.contrats ?? [], maintenant)
 
-/**
- * Employeuse courante depuis une personne **déjà chargée**. C'est la voie des
- * lectures de liste, qui imbriquent `personneEmployeuseSelect` dans leur propre
- * requête ; la voie autonome (par `userId`) est l'ability
- * `consulter-employeuse-actuelle`.
- */
+const affectationActuelleToDomain = (
+  personne: PersonneEmployeuseActuellePayload | null,
+): AffectationActuelle | null =>
+  personne?.employeuseActuelle
+    ? {
+        employeuse: employeuseToDomain(
+          personne.employeuseActuelle.structureAdministrative,
+        ),
+        source: SourceAffectation(personne.employeuseActuelle.source),
+      }
+    : null
+
 export const personneToEmployeuseActuelle = (
-  personne: PersonneEmployeusePayload | null,
+  personne: PersonneEmployeuseActuellePayload | null,
   maintenant: Date = new Date(),
 ): EmployeuseActuelle | null =>
   employeuseActuelle(
-    personneToAffectations(personne),
+    affectationActuelleToDomain(personne),
     personneToContrats(personne, maintenant),
   )
 
@@ -195,65 +216,13 @@ export const personneToEmployeusesHistorique = (
     personneToContrats(personne, maintenant),
   )
 
-/** Même composition, pour l'employeuse d'une date donnée. */
 export const personneToEmployeuseALaDate = (
-  personne: PersonneEmployeusePayload | null,
+  personne: PersonneEmployeuseActuellePayload | null,
   date: Date,
   maintenant: Date = new Date(),
 ): Employeuse | null =>
   employeuseALaDate(
-    personneToAffectations(personne),
+    affectationActuelleToDomain(personne)?.employeuse ?? null,
     personneToContrats(personne, maintenant),
     date,
   )
-
-/**
- * Sélection MINIMALE pour trancher le dispositif conseiller numérique : la règle ne regarde que la
- * source et l'état de l'affectation. Les lectures de liste l'imbriquent au lieu de
- * `personneEmployeuseSelect`, qui ramènerait structures et contrats pour rien.
- */
-export const personneConseillerNumeriqueSelect = {
-  affectationsEmploi: { select: { source: true, estActive: true } },
-} satisfies Prisma.PersonneMainSelect
-
-export type PersonneConseillerNumeriquePayload = Prisma.PersonneMainGetPayload<{
-  select: typeof personneConseillerNumeriqueSelect
-}>
-
-/**
- * Dispositif conseiller numérique depuis une personne **déjà chargée**. Accepte aussi bien la
- * sélection minimale que `personneEmployeuseSelect` (plus riche) : la session, qui charge déjà la
- * seconde pour l'employeuse, ne paie donc aucune requête de plus.
- */
-export const personneEstConseillerNumerique = (
-  personne: PersonneConseillerNumeriquePayload | null,
-): boolean =>
-  estConseillerNumerique(
-    (personne?.affectationsEmploi ?? []).map((affectation) => ({
-      source: SourceAffectation(affectation.source),
-      active: affectation.estActive,
-    })),
-  )
-
-/**
- * Filtre Prisma « relève / ne relève pas du dispositif conseiller numérique », posé sur un
- * `coop.users`. Remplace la colonne `is_conseiller_numerique` dans les `where`.
- *
- * Le piège est le cas nul : un user SANS `main.personne` ne relève pas du dispositif et doit donc
- * apparaître dans le filtre « hors dispositif », faute de quoi il s'évanouirait des deux côtés — un
- * compte disparu d'un écran d'annuaire, sans la moindre erreur pour le signaler. C'est la raison
- * d'être de `conseiller-numerique-where.integration.ts`, qui épingle ce comportement.
- *
- * (`NOT { is }` et `isNot` ont été comparés en base : les deux incluent la relation nulle. Le choix
- * de `NOT` est donc de lisibilité, et c'est bien le test qui garantit la sémantique, pas la forme.)
- */
-const affectationIdposteActive = {
-  affectationsEmploi: { some: { source: 'idposte', estActive: true } },
-} satisfies Prisma.PersonneMainWhereInput
-
-export const conseillerNumeriqueWhere = (
-  releveDuDispositif: boolean,
-): Prisma.UserWhereInput =>
-  releveDuDispositif
-    ? { personneMain: { is: affectationIdposteActive } }
-    : { NOT: { personneMain: { is: affectationIdposteActive } } }

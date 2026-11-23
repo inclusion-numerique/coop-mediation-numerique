@@ -6,9 +6,10 @@ import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@/features/acti
 import { EnregistrerUneActiviteDeCoordinationValidation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
 import { CoordinateurId, UtilisateurId } from '@/features/activites/domain'
 import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
-import { withAuth } from '@/features/authentification'
+import { profilDeLaSession, withAuth } from '@/features/authentification'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
+import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
@@ -25,7 +26,9 @@ export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
               ? null
               : CoordinateurId(user.coordinateur.id),
           auteurId: UtilisateurId(user.id),
-          tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
+          tagsUtilisables: tagsUtilisablesDepuis(
+            tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+          ),
         }),
       { onError: ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS },
     ),

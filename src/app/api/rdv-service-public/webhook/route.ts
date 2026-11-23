@@ -1,53 +1,34 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { traiterNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
+import { traiterNotificationRdvAvec } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
-import type { NotificationWebhook } from '@/features/rdvsp/domain/notification-webhook'
+import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/aiguiller-notification-webhook'
 import { journaliserWebhook } from '@/features/rdvsp/implementation/webhook/journal'
 import { lireNotificationWebhook } from '@/features/rdvsp/implementation/webhook/lire-notification-webhook'
 import {
   ENTETE_SIGNATURE_WEBHOOK,
   signatureValide,
 } from '@/features/rdvsp/implementation/webhook/verifier-signature'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
 
-const traiter = async (notification: NotificationWebhook): Promise<void> => {
-  if (notification._tag === 'ignoree') {
-    journaliserWebhook(`modèle non traité : ${notification.modele}`)
-    return
-  }
+const traiter = aiguillerNotificationWebhook({
+  traiterRdv: traiterNotificationRdvAvec(
+    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  ),
+  traiterUsager: traiterNotificationUsager,
+  journaliser: journaliserWebhook,
+})
 
-  journaliserWebhook(`traitement d'une notification ${notification._tag}`)
-
-  const { evenement, donnees } = notification
-
-  await (notification._tag === 'rdv'
-    ? traiterNotificationRdv({ evenement, donnees })
-    : traiterNotificationUsager({ evenement, donnees }))
-}
-
-/**
- * Route de notification de RDV Service Public.
- *
- * Elle authentifie l'envoi, lit l'enveloppe et aiguille — c'est tout ce qu'une
- * route fait ici. Le contenu de `data` n'est pas validé à ce niveau : chaque
- * ability valide la forme qu'elle attend, et renonce proprement si elle a
- * changé.
- *
- * La signature est vérifiée avant toute chose : sans elle, l'URL serait un point
- * d'écriture ouvert sur les rendez-vous et les usagers.
- */
 export const POST = async (request: NextRequest) => {
   try {
-    // Le corps brut, et pas l'objet analysé : la signature porte sur les octets
-    // reçus, qu'une re-sérialisation ne reproduirait pas à l'identique.
     const corpsBrut = await request.text()
 
     if (
       !signatureValide({
         corpsBrut,
         signature: request.headers.get(ENTETE_SIGNATURE_WEBHOOK),
-        secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
+        secret: environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
       })
     ) {
       journaliserWebhook('signature refusée')

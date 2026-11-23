@@ -1,6 +1,6 @@
-import { Pictogram } from '@/features/pictograms/pictogram'
-import { SittingAtATableIcon } from '@/features/pictograms/user/SittingAtATableIcon'
-import { TeacherIcon } from '@/features/pictograms/user/TeacherIcon'
+import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { SittingAtATableIcon } from '@/libraries/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@/libraries/pictograms/user/TeacherIcon'
 import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { TYPES_D_ACTIVITE } from '../../domain'
 
@@ -26,11 +26,10 @@ export const typeActiviteLabels: {
   Collectif: 'Atelier collectif',
 }
 
-export const typeActiviteForSlug: { [key in TypeActiviteSlug]: TypeActivite } =
-  {
-    individuel: 'Individuel',
-    collectif: 'Collectif',
-  }
+const typeActiviteForSlug: { [key in TypeActiviteSlug]: TypeActivite } = {
+  individuel: 'Individuel',
+  collectif: 'Collectif',
+}
 
 export const typeActiviteSlugLabels: {
   [key in TypeActiviteSlug]: string

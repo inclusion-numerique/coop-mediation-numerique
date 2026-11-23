@@ -1,9 +1,9 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { lieuExploitable } from '../../../../implementation'
 import { type LieuActiviteOption } from './option-de-lieu'
 
-export const mediateurStructureSelect = () =>
+const mediateurStructureSelect = () =>
   ({
     nom: true,
     id: true,

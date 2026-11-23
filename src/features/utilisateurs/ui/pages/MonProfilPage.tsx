@@ -1,18 +1,18 @@
 import type { ReactNode } from 'react'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { CarteInformationsProConnect } from '../CarteInformationsProConnect'
+import type { IdentiteDuProfil } from '../mon-profil.presenter'
+
+const Section = ({ children }: { children: ReactNode }) =>
+  children === null ? null : <section className="fr-mb-4v">{children}</section>
 
 export const MonProfilPage = ({
   identite,
   sections,
 }: {
-  identite: {
-    readonly nom: string | null
-    readonly courriel: string
-    readonly telephone: string | null
-  }
+  identite: IdentiteDuProfil
   sections: {
     readonly contrats: ReactNode
     readonly mediation: ReactNode
@@ -38,9 +38,9 @@ export const MonProfilPage = ({
             phone={identite.telephone}
           />
         </section>
-        {sections.contrats}
-        {sections.mediation}
-        {sections.suppression}
+        <Section>{sections.contrats}</Section>
+        <Section>{sections.mediation}</Section>
+        <Section>{sections.suppression}</Section>
       </main>
     </div>
   </>

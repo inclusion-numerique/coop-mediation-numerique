@@ -5,23 +5,23 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
 import { useState } from 'react'
 import {
-  SERVICE_ADRESSE_INDISPONIBLE,
-  siIndisponible,
-} from '@/external-apis/apiAdresse'
-import {
   adresseNonVerifiableMessage,
-  geocodeStructureAdresse,
   SANS_SIRET_A_LA_MAIN,
-} from '@/external-apis/ban/geocodeStructureAdresse'
+} from '@/features/lieux-activite/ui/adresse-non-verifiable'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,
-} from '@/features/adresse/combo-box/AdresseBanComboBox'
-import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+} from '@/libraries/adresse/AdresseBanComboBox'
+import {
+  SERVICE_ADRESSE_INDISPONIBLE,
+  siIndisponible,
+} from '@/libraries/ban/apiAdresse'
+import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
+import { withForm } from '@/libraries/formulaire/use-app-form'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { withForm } from '@/libs/form/use-app-form'
 import { informationsGeneralesFormOptions } from './informationsGeneralesFormData'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 
@@ -67,7 +67,7 @@ export const InformationsGeneralesEditionFields = withForm({
               onSelect={async (item) => {
                 setSiretSearchError(null)
                 form.setFieldValue('adresseBan', null)
-                const adresseBan = await geocodeStructureAdresse(item).catch(
+                const adresseBan = await geocoderPrecisement(item).catch(
                   siIndisponible('indisponible' as const),
                 )
                 if (adresseBan === 'indisponible') {

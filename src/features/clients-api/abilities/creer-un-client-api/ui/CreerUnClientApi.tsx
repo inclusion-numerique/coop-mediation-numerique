@@ -1,7 +1,7 @@
 'use client'
 
 import { FormulaireDuClientApi } from '@/features/clients-api/formulaire/FormulaireDuClientApi'
-import { inject } from '@/libs/injection/client'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { CREER_UN_CLIENT_API_ACTION_KEY } from '../action/creer-un-client-api.key'
 
 export const CreerUnClientApi = ({ aujourdHui }: { aujourdHui: string }) => (

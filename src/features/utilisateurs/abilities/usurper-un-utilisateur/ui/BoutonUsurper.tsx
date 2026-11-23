@@ -3,9 +3,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@/libs/injection/client'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '../action/usurper-un-utilisateur.key'
 
 export const BoutonUsurper = ({

@@ -3,7 +3,7 @@ import { type LigneEquipe, profilDe } from '../../../domain'
 import { libelleDuRole } from '../../../ui/role-membre.presenter'
 import { libelleStatutMembre } from '../../../ui/statut-membre.presenter'
 
-export type SeveriteDuStatut = 'info' | 'success' | 'warning' | 'neutre'
+type SeveriteDuStatut = 'info' | 'success' | 'warning' | 'neutre'
 
 export type LigneAffichee = {
   readonly cle: string

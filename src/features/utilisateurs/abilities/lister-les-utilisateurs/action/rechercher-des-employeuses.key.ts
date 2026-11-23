@@ -1,6 +1,6 @@
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { keyFor } from '@/libs/injection/client'
 
 export const RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY = keyFor<
   (input: {

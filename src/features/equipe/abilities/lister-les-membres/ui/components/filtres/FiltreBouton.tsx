@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { resetPagination } from '@/libs/filters/helpers'
+import { resetPagination } from '@/libraries/filtres/helpers'
 import { FiltreStatut } from '../../../../../domain/criteres-equipe'
 import type { FilterParam } from './valeurs-de-filtre'
 

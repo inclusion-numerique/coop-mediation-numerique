@@ -41,7 +41,7 @@ export type Identite = {
   readonly nom: NomDeFamille | null
 }
 
-export type MediateurExporte = Identite & {
+type MediateurExporte = Identite & {
   readonly conseillerNumerique: boolean
 }
 

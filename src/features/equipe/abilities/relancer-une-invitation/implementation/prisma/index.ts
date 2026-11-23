@@ -1,4 +1,1 @@
-export {
-  type EchecDeRelance,
-  relancerUneInvitation,
-} from './relancer-une-invitation.mutation'
+export { relancerUneInvitation } from './relancer-une-invitation.mutation'

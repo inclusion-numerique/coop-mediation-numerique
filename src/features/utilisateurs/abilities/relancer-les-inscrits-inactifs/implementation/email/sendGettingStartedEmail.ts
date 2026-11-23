@@ -1,9 +1,9 @@
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { gettingStartedEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementation/email/gettingStartedEmail'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 
 export const sendGettingStartedEmail = async ({
   email,
@@ -20,8 +20,8 @@ export const sendGettingStartedEmail = async ({
 }) => {
   const result = await emailTransport.sendMail({
     to: email,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject: 'Bien commencer sur La Coop 🚀',
     text: gettingStartedEmail.text({
       firstname,

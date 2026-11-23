@@ -1,7 +1,7 @@
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { CodeDepartement } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
 import type { ColonnesDePortee } from './db/tag.transfer'
 import {
   type Acteur,

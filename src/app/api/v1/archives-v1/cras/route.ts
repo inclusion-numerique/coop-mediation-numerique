@@ -1,26 +1,20 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import {
-  cursorListMeta,
-  cursorPageHref,
-  JsonApiCursorPaginationQueryParamsValidation,
-  prismaCursorPagination,
-} from '@/app/api/v1/CursorPagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/app/api/v1/JsonApiTypes'
-import {
-  withApiV1Errors,
-  withClientApi,
-  withQueryParams,
-} from '@/app/api/v1/middlewares'
-import {
-  type CraV1Attributes,
   crasV1Exposes,
   craV1Expose,
   curseurDeCraV1,
 } from '@/features/activites/abilities/exposer-les-cras-v1'
+import {
+  withApiV1Errors,
+  withClientApi,
+  withQueryParams,
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1'
+import {
+  JsonApiCursorPaginationQueryParamsValidation,
+  prismaCursorPagination,
+} from '@/libraries/json-api/CursorPagination'
 
 /**
  * @openapi
@@ -297,72 +291,21 @@ import {
  *                   $ref: '#/components/schemas/ListMetadata'
  */
 
-type CraV1Relationships = 'user'
-
-export type CraV1Resource = JsonApiResource<
-  'craV1',
-  CraV1Attributes,
-  CraV1Relationships
->
-
-export type CraV1ListResponse = JsonApiListResponse<CraV1Resource>
-
 export const GET = routeBuilder()
   .use(withClientApi(['Activites']))
   .use(withQueryParams(JsonApiCursorPaginationQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
-      const cursorPagination = prismaCursorPagination(queryParams)
+      const pagination = prismaCursorPagination(queryParams)
 
       const { cras, total } = await crasV1Exposes({
-        take: cursorPagination.take,
-        skip: cursorPagination.skip,
-        creeLe: cursorPagination.cursor
-          ? curseurDeCraV1(cursorPagination.cursor)
-          : null,
+        take: pagination.take,
+        skip: pagination.skip,
+        creeLe: pagination.cursor ? curseurDeCraV1(pagination.cursor) : null,
       })
 
-      const nextCursor = cras.at(-1)?.createdAt.toISOString()
-      const previousCursor = cras.at(0)?.createdAt.toISOString()
-
-      return NextResponse.json({
-        data: cras.map((cra) => ({
-          type: 'craV1' as const,
-          id: cra.id,
-          attributes: craV1Expose(cra),
-        })),
-        links: {
-          self: {
-            href: cursorPageHref('/archives-v1/cras', {
-              cursor: cursorPagination.cursor
-                ? {
-                    direction: cursorPagination.isBefore ? 'before' : 'after',
-                    value: cursorPagination.cursor,
-                  }
-                : undefined,
-            }),
-          },
-          next: nextCursor
-            ? {
-                href: cursorPageHref('/archives-v1/cras', {
-                  cursor: { direction: 'after', value: nextCursor },
-                }),
-              }
-            : undefined,
-          prev: previousCursor
-            ? {
-                href: cursorPageHref('/archives-v1/cras', {
-                  cursor: { direction: 'before', value: previousCursor },
-                }),
-              }
-            : undefined,
-        },
-        meta: cursorListMeta({
-          totalCount: total,
-          take: cursorPagination.take,
-          nextCursor,
-          previousCursor,
-        }),
-      } satisfies CraV1ListResponse)
+      return NextResponse.json(
+        reponseDesCrasV1({ cras, total, pagination, attributs: craV1Expose }),
+      )
     }),
   )

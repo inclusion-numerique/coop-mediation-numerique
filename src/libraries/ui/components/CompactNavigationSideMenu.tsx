@@ -14,7 +14,7 @@ import styles from './CompactNavigationSideMenu.module.css'
  * This will use all the side menu items with an href starting with # to compute the active item
  */
 
-export type CompactNavigationSideMenuProps = {
+type CompactNavigationSideMenuProps = {
   className?: string
   contentId: string
   id?: string

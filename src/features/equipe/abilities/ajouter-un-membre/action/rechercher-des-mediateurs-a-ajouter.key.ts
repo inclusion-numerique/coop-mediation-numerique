@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { MediateurAAjouter } from '../domain'
 import type { RechercherDesMediateursAAjouterValidation } from './rechercher-des-mediateurs-a-ajouter.validation'
 

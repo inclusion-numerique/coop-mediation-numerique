@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
-import { addresseFromParts } from '@/utils/addresseFromParts'
+import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 
 /**
  * Ce que la carte montre d'une structure administrative : comment elle
@@ -14,7 +14,7 @@ import { addresseFromParts } from '@/utils/addresseFromParts'
  * Le nom peut manquer : quatorze employeuses de production n'en portent pas,
  * et l'annuaire des entreprises masque celui des établissements non diffusibles.
  */
-export type StructureAdministrativeAffichee = {
+type StructureAdministrativeAffichee = {
   readonly nom: string | null
   readonly adresse?: string | null
   readonly commune?: string | null
@@ -23,7 +23,7 @@ export type StructureAdministrativeAffichee = {
   readonly rna?: string | null
 }
 
-export const StructureAdministrativeCard = ({
+const StructureAdministrativeCard = ({
   structure: { nom, adresse, rna, siret, codePostal, commune },
   topRight,
   className,

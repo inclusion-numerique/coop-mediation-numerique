@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { creerActiviteDepuisRdvAction } from '@/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
-import { authenticateMediateur } from '@/auth/authenticateUser'
 import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites'
 import {
   cartesDeLaChronologie,
@@ -16,11 +15,11 @@ import {
 } from '@/features/activites/domain'
 import { OUVRIR_LA_SAISIE_DU_STATUT_DU_RDV_KEY } from '@/features/activites/ui/carte/ouvrir-la-saisie-du-statut.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
+import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
 import {
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
@@ -31,7 +30,7 @@ import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities
 import SaisieDuStatutDuRdv, {
   useOuvrirLaSaisieDuStatut,
 } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/SaisieDuStatutDuRdv'
-import { ClientBinder } from '@/libs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 type Parametres = Record<string, string | string[] | undefined>
 
@@ -52,10 +51,12 @@ const BeneficiaireAccompagnementsPage = async (props: {
     notFound()
   }
 
+  const pagination = paginationLue(parametres)
+
   const chronologie = await listerLHistoriqueDUnBeneficiaire({
     mediateurId: MediateurDesActivites(user.mediateur.id),
     beneficiaireId: BeneficiaireDesActivites(beneficiaire.id),
-    pagination: paginationLue(parametres),
+    pagination,
     compte: user.rdvAccount?.hasOauthTokens
       ? { _tag: 'Connecte', affichesDansLaListe: true }
       : { _tag: 'NonConnecte' },
@@ -70,7 +71,6 @@ const BeneficiaireAccompagnementsPage = async (props: {
             parIds: rendezVousParIds,
           },
     rendezVousLies,
-    conseillersNumeriques: conseillerNumeriqueSql,
   })
 
   return (
@@ -101,7 +101,10 @@ const BeneficiaireAccompagnementsPage = async (props: {
                     chronologie.elements,
                     user.timezone,
                   )}
-                  pages={chronologie.pages}
+                  total={
+                    chronologie.total.activites + chronologie.total.rendezVous
+                  }
+                  lignesParPage={pagination.lignesParPage}
                   adresse={`/coop/mes-beneficiaires/${beneficiaire.id}/accompagnements`}
                   parametres={parametresDePagination(parametres)}
                   saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}

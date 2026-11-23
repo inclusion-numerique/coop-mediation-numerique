@@ -1,8 +1,8 @@
 'use server'
 
-import type { SessionUser } from '@/auth/sessionUser'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import type { SessionUser } from '@/features/authentification/domain/sessionUser'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'

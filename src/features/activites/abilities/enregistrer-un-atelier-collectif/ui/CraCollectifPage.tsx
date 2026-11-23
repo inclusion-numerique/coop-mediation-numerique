@@ -1,6 +1,3 @@
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import BackButtonWithModal from '@/components/BackButtonWithModal'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import CraCollectifForm from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/components/CraCollectifForm'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import {
@@ -13,12 +10,15 @@ import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@/features/activites/ui/saisie/tags/tag-du-cra'
+import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButtonWithModal from '@/libraries/ui/components/BackButtonWithModal'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import RequiredFieldsDisclamer from '@/libraries/ui/components/Form/RequiredFieldsDisclamer'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { DefaultValues } from '@/libs/form/use-app-form'
-import { contentId } from '@/utils/skipLinks'
 
-export type CraCollectifPageData = {
+type CraCollectifPageData = {
   defaultValues: DefaultValues<CraCollectifData>
   mediateurId: string
   lieuxProposes: readonly LieuDuCra[]

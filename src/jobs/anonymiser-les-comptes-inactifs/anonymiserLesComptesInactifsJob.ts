@@ -8,7 +8,3 @@ export const AnonymiserLesComptesInactifsJobValidation = z.object({
     })
     .optional(),
 })
-
-export type AnonymiserLesComptesInactifsJob = z.infer<
-  typeof AnonymiserLesComptesInactifsJobValidation
->

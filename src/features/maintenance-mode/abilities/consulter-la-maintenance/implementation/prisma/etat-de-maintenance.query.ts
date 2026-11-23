@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { EtatDeMaintenance } from '@/features/maintenance-mode/domain'
-import { prismaClient } from '@/prismaClient'
 import {
   periodeDeMaintenance,
   periodeDeMaintenanceSelect,

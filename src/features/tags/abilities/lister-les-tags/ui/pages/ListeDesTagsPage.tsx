@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import SortSelect from '@/libs/data-table/SortSelect'
-import { DEFAULT_PAGE_SIZE } from '@/libs/data-table/toNumberOr'
-import { contentId } from '@/utils/skipLinks'
+import {
+  DEFAULT_PAGE_SIZE,
+  generatePageSizeSelectOptions,
+  PaginationNavWithPageSizeSelect,
+} from '@/libraries/data-table'
+import SortSelect from '@/libraries/data-table/sort/SortSelect'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { LigneDuTag } from '../../../../ui'
 import type { LigneDeLaListe } from '../liste-des-tags.presenter'
 
@@ -20,7 +22,7 @@ export type ParametresDeLaListe = {
 export const ListeDesTagsPage = ({
   lignes,
   total,
-  totalPages,
+  lignesParPage,
   estCoordinateur,
   baseHref,
   searchParams,
@@ -30,7 +32,7 @@ export const ListeDesTagsPage = ({
 }: {
   lignes: readonly LigneDeLaListe[]
   total: number
-  totalPages: number
+  lignesParPage: number
   estCoordinateur: boolean
   baseHref: string
   searchParams: ParametresDeLaListe
@@ -102,9 +104,10 @@ export const ListeDesTagsPage = ({
           className="fr-mt-12v"
           defaultPageSize={DEFAULT_PAGE_SIZE}
           pageSizeOptions={pageSizeOptions}
-          totalPages={totalPages}
+          itemsCount={total}
+          pageSize={lignesParPage}
           baseHref={baseHref}
-          searchParams={searchParams}
+          state={searchParams}
         />
       </main>
     </div>

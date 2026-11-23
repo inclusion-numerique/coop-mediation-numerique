@@ -4,27 +4,27 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRef, useState } from 'react'
-import {
-  labelsToOptions,
-  SelectOption,
-} from '@/libraries/ui/components/Form/utils/options'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { FilterFooter } from '@/libs/filters/FilterFooter'
-import { FilterSelection } from '@/libs/filters/FilterSelection'
+import { FilterFooter } from '@/libraries/filtres/FilterFooter'
+import { FilterSelection } from '@/libraries/filtres/FilterSelection'
 import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
   resetPagination,
   update,
-} from '@/libs/filters/helpers'
-import TriggerButton from '@/libs/filters/TriggerButton'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
+} from '@/libraries/filtres/helpers'
+import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import {
+  labelsToOptions,
+  SelectOption,
+} from '@/libraries/ui/components/Form/utils/options'
+import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import { OptionOptions, optionComboBox } from './option-combo-box'
 
-export type LieuFilterType = 'lieu' | 'commune' | 'departement'
+type LieuFilterType = 'lieu' | 'commune' | 'departement'
 export type LieuFilterValue = { type: LieuFilterType; value: string[] }
 
 const libellesDesTypesDeLieu: Record<LieuFilterType, string> = {

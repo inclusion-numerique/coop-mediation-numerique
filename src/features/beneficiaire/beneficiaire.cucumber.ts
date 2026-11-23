@@ -1,14 +1,8 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
-import { seedStructures } from '@/fixtures/structures'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-} from '@/fixtures/users/mediateurAvecActivite'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 
@@ -18,7 +12,28 @@ setDefaultTimeout(60_000)
  * ne définissent que Given/When/Then et s'appuient sur ces helpers, ce qui évite
  * les interférences entre hooks de plusieurs fichiers.
  */
-export const testMediateurId = MediateurId(mediateurAvecActiviteMediateurId)
+const UTILISATEUR_DE_TEST = 'e59fda11-a62a-4cc4-aadc-7c8ebf837026'
+
+export const testMediateurId = MediateurId(
+  '1599abd5-e053-4a2e-835c-99b9e56a2538',
+)
+
+const semerLeMediateurDeTest = async (
+  utilisateurId: string,
+  mediateurId: string,
+  courriel: string,
+) => {
+  await prismaClient.user.upsert({
+    where: { id: utilisateurId },
+    create: { id: utilisateurId, email: courriel, isFixture: true },
+    update: {},
+  })
+  await prismaClient.mediateur.upsert({
+    where: { id: mediateurId },
+    create: { id: mediateurId, userId: utilisateurId },
+    update: {},
+  })
+}
 
 const trackedBeneficiaireIds = new Set<string>()
 
@@ -52,8 +67,11 @@ export const seedBeneficiaire = async (
 }
 
 BeforeAll({ timeout: 120_000 }, async () => {
-  await seedStructures(prismaClient)
-  await resetFixtureUser(mediateurAvecActivite, false)
+  await semerLeMediateurDeTest(
+    UTILISATEUR_DE_TEST,
+    testMediateurId,
+    'beneficiaire-cucumber@test.local',
+  )
 })
 
 Before(async () => {

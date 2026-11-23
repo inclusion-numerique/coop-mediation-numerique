@@ -7,7 +7,7 @@ export const WebhookId = defineModel(
 )
 export type WebhookId = Model.TypeOf<typeof WebhookId>
 
-export const abonnementsWebhook = [
+const abonnementsWebhook = [
   'rdv',
   'absence',
   'plage_ouverture',

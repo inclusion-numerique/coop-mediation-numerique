@@ -1,3 +1,4 @@
+import type { SynchroniserLaPersonne } from '@/features/inscription/db/synchroniser-la-personne'
 import {
   InscriptionFlowType,
   type InscriptionStep,
@@ -23,6 +24,7 @@ import { enregistrerProfilChoisi, getInscriptionEtat } from '../implementation'
 export const choisirProfil = async (
   { userId, role }: RoleChoisi,
   maintenant: Date,
+  synchroniserLaPersonne: SynchroniserLaPersonne,
 ): Promise<
   Result<
     { readonly role: Role; readonly etapeSuivante: InscriptionStep },
@@ -37,7 +39,9 @@ export const choisirProfil = async (
 
   if (!decision.success) return decision
 
-  await enregistrerProfilChoisi(decision.data.aEnregistrer)
+  await enregistrerProfilChoisi(synchroniserLaPersonne)(
+    decision.data.aEnregistrer,
+  )
 
   // Un conseiller numérique ne franchit jamais `choisir-role` (routé avant, à
   // l'initialisation) : à cet écran le contexte Dataspace est inerte.

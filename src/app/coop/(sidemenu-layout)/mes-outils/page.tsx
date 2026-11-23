@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/app/metadataTitle'
-import { getAuthenticatedSessionUser } from '@/auth/getSessionUser'
-import { isConseillerNumerique, isCoordinateur } from '@/auth/userTypeGuards'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import {
+  isConseillerNumerique,
+  isCoordinateur,
+} from '@/features/authentification/domain/userTypeGuards'
+import { getAuthenticatedSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
 import {
   Coordination,
   Dispositif,
 } from '@/features/outils/abilities/lister-mes-outils'
 import { MesOutilsPage } from '@/features/outils/abilities/lister-mes-outils/ui'
+import { statutDuCompteDeLaSession } from '@/features/rdvsp/domain/sante-compte'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
 import { rdvWebsiteLink } from '@/features/rdvsp/urls'
 
@@ -16,7 +20,7 @@ export const metadata: Metadata = {
 
 const Page = async () => {
   const user = await getAuthenticatedSessionUser()
-  const statutRdv = user.rdvAccount?.statut ?? 'jamaisConnecte'
+  const statutRdv = statutDuCompteDeLaSession(user.rdvAccount)
 
   return (
     <MesOutilsPage

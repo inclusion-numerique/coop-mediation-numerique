@@ -16,9 +16,6 @@ export {
 export type { CompteTrouve } from './compte-trouve'
 export {
   CibleIntrouvable,
-  CibleSupprimee,
   type FusionnerError,
-  FusionSurLeMemeCompte,
-  RoleProtege,
   SourceIntrouvable,
 } from './errors'

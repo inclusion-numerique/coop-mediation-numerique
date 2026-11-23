@@ -29,7 +29,7 @@ const LieuActiviteInputValidation = z.object({
  * (au moins un). L'utilisateur vient de l'authentification, pas de l'input.
  */
 export const RenseignerLieuxActiviteValidation = z.object({
-  lieuxActivite: z
+  lieux: z
     .array(LieuActiviteInputValidation, {
       error: 'Veuillez renseigner au moins un lieu d’activité',
     })

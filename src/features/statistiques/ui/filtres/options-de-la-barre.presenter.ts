@@ -100,7 +100,3 @@ export const optionsDesStatistiques = async <OptionDeBeneficiaire>(
     activiteSourceOptions,
   }
 }
-
-export type OptionsDesStatistiques = Awaited<
-  ReturnType<typeof optionsDesStatistiques>
->

@@ -3,34 +3,18 @@
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { ServerActionResult } from '@/libraries/nextjs'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { DeleteBulkBeneficiairesModal } from './DeleteBulkBeneficiairesModal'
-
-/**
- * La suppression est reçue en prop, pas importée. Deux raisons, dans cet ordre.
- *
- * Storybook n'applique pas la transformation `'use server'` de Next : là où la
- * compilation remplace le module par une référence, il agrège le vrai module et
- * tire tout le graphe serveur derrière lui, jusqu'à la garde `server-only` qui se
- * déclenche — à raison. L'extraction des stories échouait pour cette seule raison.
- *
- * Et l'ability `lister-beneficiaires` cesse au passage de dépendre de l'ability
- * `supprimer-beneficiaires` : elle ne déclare plus qu'un besoin, pas une provenance.
- */
-export type SupprimerBeneficiaires = (input: {
-  ids: string[]
-}) => Promise<ServerActionResult<unknown>>
+import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from './supprimer-des-beneficiaires.key'
 
 const DeleteBulkBeneficiairesModalContent = ({
   selectedIds,
   onSuccess,
-  supprimerBeneficiaires,
 }: {
   selectedIds: string[]
   onSuccess: () => void
-  supprimerBeneficiaires: SupprimerBeneficiaires
 }) => {
   const router = useRouter()
   const [pending, setPending] = useState(false)
@@ -38,7 +22,9 @@ const DeleteBulkBeneficiairesModalContent = ({
 
   const onDelete = async () => {
     setPending(true)
-    const result = await supprimerBeneficiaires({ ids: selectedIds })
+    const result = await inject(SUPPRIMER_DES_BENEFICIAIRES_KEY)({
+      ids: selectedIds,
+    })
     setPending(false)
 
     if (!result.success) {

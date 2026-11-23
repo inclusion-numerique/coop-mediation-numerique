@@ -1,7 +1,3 @@
-import {
-  personneConseillerNumeriqueSelect,
-  personneEstConseillerNumerique,
-} from '@/features/employeuse/server'
 import { Prisma } from '@/generated/prisma/client'
 import {
   AdresseCourriel,
@@ -15,6 +11,7 @@ import {
   rattachements,
   UtilisateurId,
 } from '../domain'
+import { enPosteSelect, estEnPoste } from './conseiller-numerique-en-poste'
 
 export const compteASupprimerSelect = {
   id: true,
@@ -23,7 +20,7 @@ export const compteASupprimerSelect = {
   deleted: true,
   mediateur: { select: { id: true } },
   coordinateur: { select: { id: true } },
-  personneMain: { select: personneConseillerNumeriqueSelect },
+  personneMain: { select: enPosteSelect },
 } satisfies Prisma.UserSelect
 
 export type CompteASupprimerRow = Prisma.UserGetPayload<{
@@ -41,7 +38,7 @@ export const compteASupprimerToDomain = (
     row.mediateur === null ? null : MediateurId(row.mediateur.id),
     row.coordinateur === null ? null : CoordinateurId(row.coordinateur.id),
   ),
-  dispositif: dispositifDe(personneEstConseillerNumerique(row.personneMain)),
+  dispositif: dispositifDe(estEnPoste(row.personneMain)),
 })
 
 export const identiteAnonymeFromDomain = (

@@ -1,5 +1,5 @@
-import { nombreAccompagnementParCommuneColor } from '@/libs/statistiques/couleurs'
-import { QuantifiedShareList } from '@/libs/statistiques/QuantifiedShareList'
+import { nombreAccompagnementParCommuneColor } from '@/features/activites/ui/graphiques/couleurs'
+import { QuantifiedShareList } from '@/libraries/proportions/QuantifiedShareList'
 import type { parCommunePresentes } from '../par-commune.presenter'
 
 export const CommunesDesAccompagnements = ({

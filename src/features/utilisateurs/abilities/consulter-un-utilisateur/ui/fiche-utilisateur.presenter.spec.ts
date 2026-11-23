@@ -7,17 +7,21 @@ import {
   NomAffiche,
   RoleUtilisateur,
   rattachements,
-  Telephone,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { Telephone } from '@/libraries/telephone'
 import type {
   CoordinateurDeLaFiche,
   FicheUtilisateur,
   MediateurDeLaFiche,
 } from '../domain'
 import {
+  compteSupprime,
+  dateDInscription,
+  etatDeLInscription,
   etiquettesDuCompte,
   renseigne,
+  rolesModifiables,
   telephoneAffiche,
 } from './fiche-utilisateur.presenter'
 
@@ -53,7 +57,6 @@ const fiche = (surcharge: Partial<FicheUtilisateur>): FicheUtilisateur => ({
   siret: null,
   creeLe: new Date('2026-01-01'),
   cycle: { _tag: 'InscriptionEnCours', creeLe: new Date('2026-01-01') },
-  profilInscription: null,
   derniereConnexion: { _tag: 'Jamais' },
   derniereVisite: { _tag: 'Jamais' },
   statut: { _tag: 'Actif' },
@@ -93,5 +96,82 @@ describe('présentation de la fiche utilisateur', () => {
     expect(
       telephoneAffiche(fiche({ telephone: Telephone('+33612345678') })),
     ).toBe('06 12 34 56 78')
+  })
+
+  it('date l’inscription d’un compte inscrit', () => {
+    expect(
+      dateDInscription(
+        fiche({
+          cycle: { _tag: 'Inscrit', inscritLe: new Date('2026-02-01') },
+        }),
+      ),
+    ).toEqual(new Date('2026-02-01'))
+  })
+
+  it('n’a pas de date d’inscription tant que l’inscription est en cours', () => {
+    expect(dateDInscription(fiche({}))).toBeNull()
+  })
+
+  it('décrit l’état d’inscription d’un médiateur inscrit', () => {
+    expect(
+      etatDeLInscription(
+        fiche({
+          cycle: { _tag: 'Inscrit', inscritLe: new Date('2026-02-01') },
+          rattachements: rattachements<
+            MediateurDeLaFiche,
+            CoordinateurDeLaFiche
+          >(mediateur, null),
+        }),
+      ),
+    ).toEqual({
+      role: 'User',
+      inscriptionValidee: new Date('2026-02-01'),
+      mediateur: { id: mediateur.id },
+      coordinateur: null,
+    })
+  })
+
+  it('propose d’ajouter les rôles absents', () => {
+    expect(rolesModifiables(fiche({}))).toEqual({
+      mediateur: { actuel: false, retirable: true },
+      coordinateur: { actuel: false, retirable: true },
+    })
+  })
+
+  it('reprend la possibilité de retirer les rôles actuels', () => {
+    expect(
+      rolesModifiables(
+        fiche({
+          rattachements: rattachements(
+            { ...mediateur, retirable: false },
+            coordinateur,
+          ),
+        }),
+      ),
+    ).toEqual({
+      mediateur: { actuel: true, retirable: false },
+      coordinateur: { actuel: true, retirable: true },
+    })
+  })
+
+  it('reconnaît un compte supprimé', () => {
+    expect(
+      compteSupprime(
+        fiche({
+          cycle: {
+            _tag: 'Supprime',
+            depuis: new Date('2026-03-01'),
+            avant: {
+              _tag: 'InscriptionEnCours',
+              creeLe: new Date('2026-01-01'),
+            },
+          },
+        }),
+      ),
+    ).toBe(true)
+  })
+
+  it('ne tient pas un compte actif pour supprimé', () => {
+    expect(compteSupprime(fiche({}))).toBe(false)
   })
 })

@@ -1,5 +1,4 @@
 import axios, { type AxiosInstance } from 'axios'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { outputError } from '@/libraries/console/output'
 
 export type SentryConfig = {
@@ -7,22 +6,6 @@ export type SentryConfig = {
   org: string
   project: string
   authToken: string
-}
-
-export const readSentryConfigFromEnv = (): SentryConfig => {
-  const url = environnementOutillage.SENTRY_URL.replace(/\/+$/, '')
-  const org = environnementOutillage.SENTRY_ORG ?? ''
-  const project = environnementOutillage.SENTRY_PROJECT ?? ''
-  const authToken = environnementOutillage.SENTRY_AUTH_TOKEN ?? ''
-
-  if (!org || !project || !authToken) {
-    outputError(
-      'Missing Sentry configuration. Please set SENTRY_ORG, SENTRY_PROJECT, and SENTRY_AUTH_TOKEN.',
-    )
-    process.exit(1)
-  }
-
-  return { url, org, project, authToken }
 }
 
 export const createSentryHttpClient = (config: SentryConfig): AxiosInstance => {
@@ -36,7 +19,7 @@ export const createSentryHttpClient = (config: SentryConfig): AxiosInstance => {
   })
 }
 
-export const parseNextCursorFromLinkHeader = (
+const parseNextCursorFromLinkHeader = (
   linkHeader: string | undefined,
 ): string | undefined => {
   if (!linkHeader) return undefined

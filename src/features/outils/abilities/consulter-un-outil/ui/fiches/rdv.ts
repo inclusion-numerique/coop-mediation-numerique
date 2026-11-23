@@ -1,12 +1,11 @@
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import type { FicheOutil } from '../fiche-outil'
 
-export default {
+export default (website: string): FicheOutil => ({
   title: 'RDV Service Public',
   description:
     'Un outil de prise de rendez-vous en ligne, simplifiant votre organisation et rappelant aux usagers leurs rendez-vous par SMS.',
-  website: rdvWebsiteLink,
+  website,
   pictogram: RDVServicePublicLogo,
   illustration: '/images/illustrations/mes-outils/rdv-service-public.webp',
   features: [
@@ -32,4 +31,4 @@ export default {
   classes: {
     access: 'fr-background-alt--blue-ecume fr-border-none',
   },
-} satisfies FicheOutil
+})

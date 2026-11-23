@@ -1,7 +1,7 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import IconInSquare from '@/components/IconInSquare'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import RattacherEmployeuseForm from '../RattacherEmployeuseForm'
 
 const RattacherEmployeusePage = ({ motif }: { motif: string }) => (

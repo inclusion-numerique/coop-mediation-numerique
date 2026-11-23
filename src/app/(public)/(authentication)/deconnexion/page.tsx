@@ -1,12 +1,12 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { AuthCard } from '@/app/(public)/(authentication)/AuthCard'
-import SignoutButton from '@/app/(public)/(authentication)/deconnexion/SignoutButton'
-import { metadataTitle } from '@/app/metadataTitle'
-import { getSessionUser } from '@/auth/getSessionUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { contentId } from '@/utils/skipLinks'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
+import SignoutButton from '@/features/authentification/ui/deconnexion/SignoutButton'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

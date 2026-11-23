@@ -1,8 +1,8 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type DispositifPersonne,
   dispositifInconnu,
 } from '@/features/inscription/domain'
-import { prismaClient } from '@/prismaClient'
 
 type DispositifRow = {
   est_conseiller_numerique: boolean

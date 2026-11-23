@@ -1,5 +1,2 @@
-export type { CriteresDesLieux, ParametresDesLieux } from './domain'
-export {
-  consulterLesLieuxDuDepartement,
-  type LieuxDuDepartementConsultes,
-} from './implementation'
+export type { ParametresDesLieux } from './domain'
+export { consulterLesLieuxDuDepartement } from './implementation'

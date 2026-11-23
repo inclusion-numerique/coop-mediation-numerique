@@ -1,7 +1,7 @@
 ---
 name: build-form
 description: >-
-  Écrire un formulaire avec TanStack Form (libs/form, useAppForm) : adaptateurs de champs, logique
+  Écrire un formulaire avec TanStack Form (libraries/formulaire, useAppForm) : adaptateurs de champs, logique
   entre champs, validation, soumission par server action injectée, et pièges connus. Sert aussi à
   réécrire un des formulaires qui utilisent encore react-hook-form (tableau de correspondance en
   annexe).
@@ -9,7 +9,7 @@ description: >-
 
 # /build-form — formulaire TanStack Form (UI-3)
 
-Argument : le **formulaire** à écrire (ou à réécrire). Références : `src/libs/form`
+Argument : le **formulaire** à écrire (ou à réécrire). Références : `src/libraries/formulaire`
 (`useAppForm`, `handle-submit`), un formulaire existant comme modèle (`CraIndividuelForm`), et
 ADR-009 (`docs/decisions/`) pour le pourquoi.
 
@@ -56,7 +56,7 @@ ADR-009 (`docs/decisions/`) pour le pourquoi.
 
 ## Annexe — réécrire un formulaire react-hook-form
 
-| react-hook-form (`libraries/ui/.../Form/*`) | TanStack (`libs/form`)                                      |
+| react-hook-form (`libraries/ui/.../Form/*`) | TanStack (`libraries/formulaire`)                                      |
 |----------------------------------------|-------------------------------------------------------------|
 | `InputFormField` (texte, nombre, e-mail) | `field.Input`                                             |
 | `CheckboxFormField`                    | `field.Checkbox`                                            |

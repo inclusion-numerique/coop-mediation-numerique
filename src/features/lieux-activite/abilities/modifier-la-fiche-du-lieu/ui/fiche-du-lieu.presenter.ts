@@ -1,7 +1,7 @@
+import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import { nomAffiche } from '@/features/lieux-activite/domain/nom-affiche'
-import { getCartographieNationaleSourceLabel } from '@/libraries/cartographie-nationale'
+import { CodeInsee, codeDepartementDuCodeInsee } from '@/libraries/insee'
 import { pluriel } from '@/libraries/pluriel'
-import { getDepartementCodeFromCodeInsee } from '@/utils/getDepartementFromCodeInsee'
 import type { Fiche } from '../../../domain/fiche'
 import type { Lieu } from '../../../domain/lieu'
 import { estPublie } from '../../../domain/visibilite-cartographie'
@@ -68,10 +68,12 @@ const partageAffiche = (partage: PartageDuLieu): PartageAffiche | null =>
       }
     : null
 
-const departementCode = (fiche: Fiche): string =>
-  fiche.adresse?.code_insee == null
+const departementCode = (fiche: Fiche): string => {
+  const codeInsee = CodeInsee.safe(fiche.adresse?.code_insee ?? '')
+  return codeInsee === null
     ? DEPARTEMENT_PAR_DEFAUT
-    : getDepartementCodeFromCodeInsee(fiche.adresse.code_insee)
+    : codeDepartementDuCodeInsee(codeInsee)
+}
 
 const misAJourPar = (lieu: Lieu, auteurCoop: string | null): string | null => {
   const { derniereModification } = lieu.tracabilite

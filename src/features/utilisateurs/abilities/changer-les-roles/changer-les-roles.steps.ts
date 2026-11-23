@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { changerLesRoles } from './commands/changer-les-roles'
 import { rolesVacants } from './implementation'
 
@@ -71,6 +71,7 @@ const changer = async (mediateur: boolean, coordinateur: boolean) => {
     inscritLe: new Date('2026-01-01'),
   })
   changement.resultat = await changerLesRoles({
+    synchroniserLaPersonne: async () => undefined,
     utilisateurId: utilisateurId(),
     mediateur,
     coordinateur,

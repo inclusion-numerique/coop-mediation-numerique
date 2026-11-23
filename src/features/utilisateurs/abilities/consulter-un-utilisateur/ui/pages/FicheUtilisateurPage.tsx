@@ -3,8 +3,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import {
   coordinateurDe,
   inscription,
@@ -12,27 +10,31 @@ import {
   mediateurDe,
 } from '@/features/utilisateurs/domain'
 import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@/libs/ui/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@/libs/ui/administration/AdministrationInlineLabelsValues'
-import AdministrationMailtoLink from '@/libs/ui/administration/AdministrationMailtoLink'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { dateAsDay } from '@/utils/dateAsDay'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
-import { numberToString } from '@/utils/formatNumber'
-import { contentId } from '@/utils/skipLinks'
+} from '@/libraries/date/dateAsDayAndTime'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { numberToString } from '@/libraries/nombre/formatNumber'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
+import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
+import AdministrationMailtoLink from '@/libraries/ui/components/administration/AdministrationMailtoLink'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
+  compteSupprime,
   etiquettesDuCompte,
   renseigne,
   telephoneAffiche,
 } from '../fiche-utilisateur.presenter'
 
 export type SectionsDeLaFiche = {
-  readonly actions: ReactNode
+  readonly roles: ReactNode
+  readonly suppression: ReactNode
   readonly avertissements: ReactNode
   readonly usurpation: ReactNode
   readonly deconnexion: ReactNode
@@ -79,6 +81,9 @@ export const FicheUtilisateurPage = ({
 }) => {
   const mediateur = mediateurDe(fiche.rattachements)
   const coordinateur = coordinateurDe(fiche.rattachements)
+  const supprime = compteSupprime(fiche)
+  const deconnexion = supprime ? null : sections.deconnexion
+  const visibiliteCarto = supprime ? null : sections.visibiliteCarto
 
   return (
     <CoopPageContainer size={64}>
@@ -95,7 +100,14 @@ export const FicheUtilisateurPage = ({
       <main id={contentId}>
         <AdministrationTitle
           icon="fr-icon-user-line"
-          actions={sections.actions}
+          actions={
+            supprime ? null : (
+              <div className="fr-flex fr-flex-gap-2v">
+                {sections.roles}
+                {fiche.role === 'User' && sections.suppression}
+              </div>
+            )
+          }
         >
           {fiche.nomAffiche} <span className="fr-mx-1v" />{' '}
           <BadgeStatutCompte statut={fiche.statut} />
@@ -113,7 +125,7 @@ export const FicheUtilisateurPage = ({
           actions={
             <div>
               {sections.usurpation}
-              {fiche.cycle._tag !== 'Supprime' && (
+              {!supprime && (
                 <Button
                   iconId="fr-icon-git-merge-line"
                   priority="tertiary"
@@ -164,15 +176,11 @@ export const FicheUtilisateurPage = ({
                     <div className="fr-col-auto">
                       {aParis(fiche.derniereConnexion)}
                     </div>
-                    <div className="fr-col-auto">{sections.deconnexion}</div>
+                    <div className="fr-col-auto">{deconnexion}</div>
                   </div>
                 ),
               },
               { label: 'Dernière visite', value: aParis(fiche.derniereVisite) },
-              {
-                label: 'Profil d’inscription',
-                value: renseigne(fiche.profilInscription),
-              },
               {
                 label: 'Inscription validée',
                 value: inscriptionValidee(inscription(fiche.cycle)),
@@ -199,7 +207,7 @@ export const FicheUtilisateurPage = ({
                 {
                   label: 'Visible sur la cartographie',
                   value:
-                    sections.visibiliteCarto ??
+                    visibiliteCarto ??
                     (mediateur.visible ? 'Visible' : 'Non visible'),
                 },
                 {
@@ -266,7 +274,7 @@ export const FicheUtilisateurPage = ({
         {mediateur !== null && sections.lieux}
         <AdministrationInfoCard
           title="Sessions de connexion et comptes liés"
-          actions={sections.deconnexion}
+          actions={deconnexion}
         >
           <AdministrationInlineLabelsValues
             items={[

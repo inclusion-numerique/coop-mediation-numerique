@@ -3,7 +3,6 @@ import type {
   CriteresDesStatistiques,
   PerimetreDesStatistiques,
 } from '../domain'
-import type { FiltreDesConseillersNumeriques } from './criteres-des-activites.sql'
 import {
   filtreDesStatistiques,
   type RendezVousAuxStatuts,
@@ -13,7 +12,6 @@ import { dansLePerimetre } from './perimetre-des-statistiques.sql'
 export type DemandeDeStatistiques = {
   readonly perimetre: PerimetreDesStatistiques
   readonly criteres: CriteresDesStatistiques
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
   readonly rendezVousAuxStatuts: RendezVousAuxStatuts
 }
 
@@ -34,12 +32,11 @@ export const jointuresDesStatistiques = (
 export const activitesRetenues = ({
   perimetre,
   criteres,
-  conseillersNumeriques,
   rendezVousAuxStatuts,
 }: DemandeDeStatistiques): Prisma.Sql =>
   Prisma.sql`act.suppression IS NULL
     AND ${dansLePerimetre(perimetre)}
-    AND ${filtreDesStatistiques(criteres, { conseillersNumeriques, rendezVousAuxStatuts })}`
+    AND ${filtreDesStatistiques(criteres, { rendezVousAuxStatuts })}`
 
 export const personneAccompagnee = (
   demande: DemandeDeStatistiques,

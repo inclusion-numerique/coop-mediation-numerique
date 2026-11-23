@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   type CritereStatut,
@@ -9,6 +8,7 @@ import {
   type RoleFiltre,
   rolesFiltres,
 } from '../domain'
+import { enPosteWhere } from './conseiller-numerique-en-poste'
 
 const coordinateurQuiCoordonne = {
   OR: [
@@ -100,10 +100,9 @@ const dispositifWhere = ({
   roles,
 }: FiltresUtilisateurs): Prisma.UserWhereInput[] => {
   if (dispositif === null) return []
-  if (dispositif === 'ConseillerNumerique')
-    return [conseillerNumeriqueWhere(true)]
+  if (dispositif === 'ConseillerNumerique') return [enPosteWhere(true)]
   return [
-    conseillerNumeriqueWhere(false),
+    enPosteWhere(false),
     ...(roles.length === 0
       ? [
           {
@@ -139,7 +138,7 @@ const lieuxWhere = ({ lieux }: FiltresUtilisateurs): Prisma.UserWhereInput[] =>
 const adresseDeLEmployeuse = ({
   communes,
   departements,
-}: FiltresUtilisateurs): Prisma.AdresseMainWhereInput[] => [
+}: FiltresUtilisateurs): Prisma.EmployeuseActuelleWhereInput[] => [
   ...(communes.length === 0 ? [] : [{ codeInsee: { in: [...communes] } }]),
   ...(departements.length === 0
     ? []
@@ -163,17 +162,16 @@ const employeuseWhere = (
         {
           personneMain: {
             is: {
-              affectationsEmploi: {
-                some: {
-                  estActive: true,
-                  structureAdministrative: {
-                    ...(filtres.employeuses.length === 0
-                      ? {}
-                      : { id: { in: [...filtres.employeuses] } }),
-                    ...(adresse.length === 0
-                      ? {}
-                      : { adresse: { is: { AND: adresse } } }),
-                  },
+              employeuseActuelle: {
+                is: {
+                  ...(filtres.employeuses.length === 0
+                    ? {}
+                    : {
+                        structureAdministrativeId: {
+                          in: [...filtres.employeuses],
+                        },
+                      }),
+                  AND: adresse,
                 },
               },
             },

@@ -2,12 +2,17 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { DeclencherSynchronisationValidation } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.validation'
-import { declencherSynchronisationBinding as declencher } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
+
+const declencher = declencherSynchronisationAvec(
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+)
 
 /**
  * Synchronisation complète, déclenchée à la main : le bouton de la modale de

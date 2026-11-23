@@ -1,9 +1,9 @@
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { nouveauAccountDeletionWarningEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementation/email/nouveauAccountDeletionWarningEmail'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 
 export const sendNouveauAccountDeletionWarningEmail = async ({
   email,
@@ -24,8 +24,8 @@ export const sendNouveauAccountDeletionWarningEmail = async ({
 }) => {
   const result = await emailTransport.sendMail({
     to: email,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject: `Votre compte va bientôt être supprimé ⚠️`,
     text: nouveauAccountDeletionWarningEmail.text({
       firstname,

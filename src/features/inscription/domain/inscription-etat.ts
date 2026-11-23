@@ -60,14 +60,8 @@ export const isNonDemarree = (
   etat: InscriptionEtat,
 ): etat is InscriptionNonDemarree => etat._tag === 'NonDemarree'
 
-export const isEnCours = (etat: InscriptionEtat): etat is InscriptionEnCours =>
-  etat._tag === 'EnCours'
-
 export const isValidee = (etat: InscriptionEtat): etat is InscriptionValidee =>
   etat._tag === 'Validee'
-
-export const roleDeLInscription = (etat: InscriptionEtat): Role | null =>
-  etat._tag === 'NonDemarree' ? null : etat.role
 
 export const conseillerNumeriqueDeLInscription = (
   etat: InscriptionEtat,

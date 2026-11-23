@@ -29,19 +29,6 @@ export type MergedBeneficiaire = {
   readonly commune: string | null
 }
 
-// Issue par usager : fusionné, ou écarté — jamais un throw qui interromprait le
-// lot. Un usager est écarté sur une erreur d'infrastructure, ou faute d'identité
-// exploitable : un champ isolé non normalisable est absorbé en amont (`.safe`)
-// et vaut `null`, mais une fiche identifiée sans nom ni prénom n'est pas
-// écrivable — le modèle de lecture du bénéficiaire les exige tous les deux.
-export type MergeOutcome =
-  | { readonly _tag: 'Merged'; readonly beneficiaire: MergedBeneficiaire }
-  | {
-      readonly _tag: 'Skipped'
-      readonly rdvUserId: number
-      readonly reason: unknown
-    }
-
 export type CreerOuFusionnerBeneficiairesDepuisUsagersExternes = (input: {
   usagers: ExternalUserToMerge[]
   mediateurId: string

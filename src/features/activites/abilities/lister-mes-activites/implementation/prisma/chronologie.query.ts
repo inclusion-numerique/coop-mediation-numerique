@@ -1,14 +1,11 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import {
   activiteConsulteeDe,
   activiteConsulteeSelect,
   rdvIdsDes,
 } from '../../../../db/activite-consultee.transfer'
-import {
-  type FiltreDesConseillersNumeriques,
-  filtreDesActivites,
-} from '../../../../db/criteres-des-activites.sql'
+import { filtreDesActivites } from '../../../../db/criteres-des-activites.sql'
 import {
   type RendezVousFourni,
   type RendezVousLies,
@@ -98,7 +95,6 @@ export const listerMesActivites = async ({
   contenu,
   rendezVous,
   rendezVousLies,
-  conseillersNumeriques,
 }: {
   readonly mediateurId: MediateurId
   readonly criteres: CriteresDesActivites
@@ -107,7 +103,6 @@ export const listerMesActivites = async ({
   readonly contenu: ContenuDeLaChronologie
   readonly rendezVous: RendezVousALister | null
   readonly rendezVousLies: RendezVousLies
-  readonly conseillersNumeriques: FiltreDesConseillersNumeriques
 }): Promise<ChronologieDesActivites> => {
   const sens = sensDe(SENS)(ordre)
   const activitesRetenues = Prisma.sql`
@@ -120,7 +115,7 @@ export const listerMesActivites = async ({
     WHERE ${lit(contenu, 'Activites')}
       AND act.mediateur_id = ${mediateurId}::uuid
       AND act.suppression IS NULL
-      AND ${filtreDesActivites(criteres, { conseillersNumeriques })}`
+      AND ${filtreDesActivites(criteres)}`
   const selectionDesRendezVous =
     rendezVous === null || !lit(contenu, 'RendezVous')
       ? AUCUN_RENDEZ_VOUS

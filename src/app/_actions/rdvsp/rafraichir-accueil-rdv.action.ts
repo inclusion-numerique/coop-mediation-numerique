@@ -2,14 +2,19 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { withMaintenance } from '@/features/maintenance-mode'
 import type { RafraichissementAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/rafraichissement-accueil'
 import { consulterRdvsAccueilBinding as consulter } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
-import { declencherSynchronisationBinding as declencher } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
 import { fromResult } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
+
+const declencher = declencherSynchronisationAvec(
+  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+)
 
 /**
  * Rattrape les rendez-vous des organisations sans webhook, puis relit la

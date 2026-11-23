@@ -1,8 +1,9 @@
-import { departements } from '@/data/collectivites-territoriales/departements'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { NomDepartement } from '@/libraries/departement'
+import { departements } from '@/libraries/departement/departements'
 import { CodeDepartement } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
+import { enPosteSql } from '../../../../db/conseiller-numerique-en-poste.sql'
 import {
   type AccompagnementsDuDepartement,
   type Jour,
@@ -15,19 +16,12 @@ const codeDepartementSql = Prisma.sql`SUBSTRING(
   FROM '^(97[0-9]|98[0-9]|[0-9]{2}|2[AB])'
 )`
 
-export type FiltreDesConseillersNumeriques = (
-  colonneUtilisateur: string,
-  conseillersNumeriques: boolean,
-) => Prisma.Sql
-
 export const accompagnementsParDepartement = async ({
   population,
   jusquAu,
-  filtreDesConseillersNumeriques,
 }: {
   readonly population: PopulationDeMediateurs
   readonly jusquAu: Jour | null
-  readonly filtreDesConseillersNumeriques: FiltreDesConseillersNumeriques
 }): Promise<readonly AccompagnementsDuDepartement[]> => {
   const comptes = await prismaClient.$queryRaw<
     { departement: string; count: number }[]
@@ -41,7 +35,7 @@ export const accompagnementsParDepartement = async ({
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                LEFT JOIN users u ON med.user_id = u.id
       WHERE act.suppression IS NULL
-        AND ${filtreDesConseillersNumeriques('u.id', population === 'ConseillersNumeriques')}
+        AND ${enPosteSql('u.id', population === 'ConseillersNumeriques')}
           ${jusquAu === null ? Prisma.empty : Prisma.sql`AND DATE(act.date) <= ${jusquAu}::date`}
         AND ${codeDepartementSql} IS NOT NULL
       GROUP BY ${codeDepartementSql}

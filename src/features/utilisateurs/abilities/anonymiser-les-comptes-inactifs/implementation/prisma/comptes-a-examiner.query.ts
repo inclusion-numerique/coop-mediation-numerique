@@ -1,4 +1,5 @@
 import { addDays, subYears } from 'date-fns'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   AdresseCourriel,
   jalon,
@@ -6,7 +7,6 @@ import {
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { prismaClient } from '@/prismaClient'
 import {
   ANNEES_AVANT_SUPPRESSION,
   type CompteAExaminer,

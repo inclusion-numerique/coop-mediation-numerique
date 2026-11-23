@@ -13,20 +13,18 @@ export const FiltreRole = defineModel(
 )
 export type FiltreRole = Model.TypeOf<typeof FiltreRole>
 
-export const TriEquipe = defineModel(
+const TriEquipe = defineModel(
   z.enum(['membre', 'structureEmployeuse', 'statut']).brand('TriEquipe'),
 )
-export type TriEquipe = Model.TypeOf<typeof TriEquipe>
+type TriEquipe = Model.TypeOf<typeof TriEquipe>
 
-export const OrdreDeTri = defineModel(
-  z.enum(['asc', 'desc']).brand('OrdreDeTri'),
-)
-export type OrdreDeTri = Model.TypeOf<typeof OrdreDeTri>
+const OrdreDeTri = defineModel(z.enum(['asc', 'desc']).brand('OrdreDeTri'))
+type OrdreDeTri = Model.TypeOf<typeof OrdreDeTri>
 
-export const Recherche = defineModel(
+const Recherche = defineModel(
   z.string().trim().min(1).max(100).brand('Recherche'),
 )
-export type Recherche = Model.TypeOf<typeof Recherche>
+type Recherche = Model.TypeOf<typeof Recherche>
 
 export type CriteresEquipe = {
   readonly recherche: Recherche | null

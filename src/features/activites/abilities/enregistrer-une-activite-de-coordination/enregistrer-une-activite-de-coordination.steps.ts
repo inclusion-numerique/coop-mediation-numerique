@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type ActiviteEnregistree,
   type EchecDEnregistrement,
@@ -23,7 +24,6 @@ import {
   UtilisateurId,
 } from '@/features/activites/domain'
 import type { Result } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 type Coordinateur = { readonly userId: string; readonly coordinateurId: string }
 

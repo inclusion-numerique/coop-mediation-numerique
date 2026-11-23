@@ -8,9 +8,9 @@ import type { Nom } from '@/features/beneficiaire/domain/nom'
 import type { Notes } from '@/features/beneficiaire/domain/notes'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import type { Telephone } from '@/features/beneficiaire/domain/telephone'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import type { Telephone } from '@/libraries/telephone'
 
 export type BeneficiaireExportRow = {
   readonly nom: Nom
@@ -27,7 +27,7 @@ export type BeneficiaireExportRow = {
   readonly communeResidence: CommuneResidence | null
 }
 
-export type ExportBeneficiairesFilters = {
+type ExportBeneficiairesFilters = {
   readonly recherche?: string
 }
 
@@ -35,7 +35,7 @@ export type BuildBeneficiairesWorksheet = (input: {
   beneficiaires: readonly BeneficiaireExportRow[]
   filters: ExportBeneficiairesFilters
   matchesCount: number
-  user: WorksheetUser
+  auteur: AuteurDExport
   worksheetGenerationDate?: Date
 }) => Workbook
 
@@ -46,5 +46,5 @@ export type BuildBeneficiairesWorksheet = (input: {
 export type ExporterBeneficiaires = (input: {
   mediateurId: MediateurId
   filters: ExportBeneficiairesFilters
-  user: WorksheetUser
+  auteur: AuteurDExport
 }) => Promise<Workbook>

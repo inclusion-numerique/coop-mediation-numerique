@@ -1,10 +1,9 @@
 export { APPARENCE_DE_VISIBILITE } from './ApparenceDeVisibilite'
-export { infobulleDesAccompagnements } from './accompagnements.presenter'
+
 export { BadgeDePortee } from './BadgeDePortee'
 export { ElementDuMenu } from './ElementDuMenu'
-export { equipeAffichee } from './equipe-affichee.presenter'
+
 export { LigneDuTag } from './LigneDuTag'
 export { MenuDActionsDuTag } from './MenuDActionsDuTag'
-export { nomDeLEquipe } from './nom-de-l-equipe.presenter'
-export type { EquipeAffichee, TagAffiche } from './tag-affiche'
-export { tagAffiche } from './tag-affiche.presenter'
+
+export type { TagAffiche } from './tag-affiche'

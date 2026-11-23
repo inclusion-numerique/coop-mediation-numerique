@@ -2,15 +2,12 @@ export type {
   ActiviteConsultee,
   AffichageDeLActivite,
   BeneficiaireSuiviAffiche,
-  LieuAffiche,
   RendezVousAffiche,
-  TagAffiche,
 } from './activite-consultee'
 export {
   type ActiviteDeCoordination,
   type Animation,
   type Evenement,
-  type Intervenants,
   intervenantsDe,
   type Partenariat,
   partenairesDe,
@@ -27,7 +24,6 @@ export {
   type AtelierCollectif,
   aucuneParticipationAnonyme,
   type BeneficiaireAccompagne,
-  type DemarcheAdministrative,
   type Equipement,
   equipementDe,
   type Lieu,
@@ -39,16 +35,12 @@ export {
   type ProfilAnonyme,
   participantsAnonymesDe,
   participantsDeLAtelier,
-  type RepartitionParGenre,
-  type RepartitionParStatutSocial,
-  type RepartitionParTrancheDAge,
-  type SaisieDesParticipantsAnonymes,
   type Thematiques,
   thematiquesDe,
 } from './activite-de-mediation'
 export { ActiviteId } from './activite-id'
 export { AdresseDuLieu } from './adresse-du-lieu'
-export { AUTONOMIES, Autonomie, autonomies } from './autonomie'
+export { AUTONOMIES, Autonomie } from './autonomie'
 export { BeneficiaireId } from './beneficiaire-id'
 export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
 export {
@@ -66,7 +58,6 @@ export {
   type CriteresDesActivites,
   criteresDesActivites,
   estFiltre as estFiltreDesActivites,
-  type ParametresDesActivites,
   parametresDe as parametresDesActivitesDe,
 } from './criteres-des-activites'
 export {
@@ -88,7 +79,7 @@ export {
   derniereDateDActivite,
   PREMIERE_DATE_D_ACTIVITE,
 } from './date-d-activite'
-export { DUREE_MAXIMALE_EN_MINUTES, DureeEnMinutes } from './duree-en-minutes'
+export { DureeEnMinutes } from './duree-en-minutes'
 export { EchelonTerritorial } from './echelon-territorial'
 export { Effectif } from './effectif'
 export type {
@@ -97,25 +88,19 @@ export type {
 } from './employeuse-des-activites'
 export { EmployeuseId } from './employeuse-id'
 export * from './errors'
-export { FILTRES_D_ORIGINE, FiltreDOrigine } from './filtre-d-origine'
-export { FILTRES_DE_DEMARCHE, FiltreDeDemarche } from './filtre-de-demarche'
-export {
-  FILTRES_DE_DISPOSITIF,
-  FiltreDeDispositif,
-} from './filtre-de-dispositif'
+
 export { GENRES, Genre, genres } from './genre'
 export { IdentifiantCraV1 } from './identifiant-cra-v1'
 export { Initiative } from './initiative'
 export { Jour } from './jour'
 export { LienAgent } from './lien-agent'
 export { LieuActiviteId } from './lieu-activite-id'
-export { MATERIELS, Materiel, materiels } from './materiel'
+export { MATERIELS, Materiel } from './materiel'
 export { MediateurId } from './mediateur-id'
 export { NatureDePartenariat } from './nature-de-partenariat'
 export {
   NIVEAUX_D_ATELIER,
   NiveauDAtelier,
-  niveauxDAtelier,
 } from './niveau-d-atelier'
 export { NomDeCommune } from './nom-de-commune'
 export { NomDeFamille } from './nom-de-famille'
@@ -125,7 +110,6 @@ export { NomDeTag } from './nom-de-tag'
 export { NomDuMotif } from './nom-du-motif'
 export { Notes, notesDe } from './notes'
 export {
-  ORDRES_CHRONOLOGIQUES,
   OrdreChronologique,
   ordreChronologiqueLu,
 } from './ordre-chronologique'
@@ -148,7 +132,6 @@ export { PrecisionDeDemarche } from './precision-de-demarche'
 export { Prenom } from './prenom'
 export { RdvId } from './rdv-id'
 export {
-  type LigneDeRepartition,
   type Repartition,
   repartitionComplete,
 } from './repartition'
@@ -161,10 +144,7 @@ export {
   type MarquerLeRendezVousHonore,
   origineDeLaSaisie,
 } from './saisie-de-mediation'
-export {
-  SOURCES_DE_L_ACTIVITE,
-  SourceDeLActivite,
-} from './source-de-l-activite'
+export { SourceDeLActivite } from './source-de-l-activite'
 export {
   STATUTS_DE_RENDEZ_VOUS,
   StatutDeRendezVous,
@@ -173,7 +153,6 @@ export { STATUTS_SOCIAUX, StatutSocial, statutsSociaux } from './statut-social'
 export {
   STRUCTURES_DE_REDIRECTION,
   StructureDeRedirection,
-  structuresDeRedirection,
 } from './structure-de-redirection'
 export { TagId } from './tag-id'
 export { type TagsUtilisables, tagsDeLaSaisie } from './tags-utilisables'
@@ -189,7 +168,6 @@ export {
   thematiquesDeMediation,
 } from './thematique-de-mediation'
 export {
-  AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
   estAdministrative,
   THEMATIQUES_RECHERCHEES,
   ThematiqueRecherchee,

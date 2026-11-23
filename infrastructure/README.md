@@ -96,13 +96,10 @@ pnpm with-env tofu -chdir=infrastructure plan -var-file=.tfvars.json -var "branc
 | Commande                                                    | Rôle                                                                                                                                 |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `pnpm cli infrastructure:vars-from-env`                     | Écrit `infrastructure/.tfvars.json` à partir des variables d'environnement                                                           |
-| `pnpm cli infrastructure:inventory`                         | Affiche l'inventaire des environnements et permet d'en nettoyer les restes                                                           |
-| `pnpm cli infrastructure:delete-preview <branches>`         | Déclenche la destruction des previews de branches séparées par des virgules                                                          |
 | `pnpm cli infrastructure:prune-registry`                    | Supprime les images des branches disparues et les anciennes images de `main` et `dev` ; à blanc par défaut, `--apply` pour supprimer |
 | `pnpm cli infrastructure:delete-registry-image <branche>`   | Supprime l'image d'une preview (jamais `main` ni `dev`)                                                                              |
 | `pnpm cli dotenv:from-secrets`                              | Ajoute au `.env` les secrets du Secret Manager                                                                                       |
 | `pnpm cli dotenv:from-infrastructure`                       | Ajoute au `.env` les sorties OpenTofu lues dans `infrastructure/outputs.json`                                                        |
-| `pnpm cli secrets:list` / `secrets:get <nom>`               | Liste les secrets ou en lit un                                                                                                       |
 | `pnpm cli secrets:database-password <namespace>`            | Lit le mot de passe de la base d'un environnement                                                                                    |
 | `pnpm cli secrets:database:setup <namespace>`               | Crée le secret du mot de passe de la base d'une preview                                                                              |
 | `pnpm cli secrets:database:delete <namespace>`              | Supprime ce secret (jamais `main` ni `dev`)                                                                                          |

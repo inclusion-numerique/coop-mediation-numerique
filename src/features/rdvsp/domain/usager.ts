@@ -12,7 +12,7 @@ import type { UsagerId } from './usager-id'
  * chaînes de saisie que La Coop recopie sans les interpréter, et leur donner un
  * type métier laisserait croire à une validation qui n'existe pas (AR-6).
  */
-export type CoordonneesUsager = {
+type CoordonneesUsager = {
   readonly adresse: string | null
   readonly complementAdresse: string | null
   readonly numeroAllocataire: string | null

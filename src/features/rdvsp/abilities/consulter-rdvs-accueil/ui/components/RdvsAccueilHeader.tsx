@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
 import { rdvStatusValues } from '@/features/rdvsp/ui/rdv-status'
-import { Spinner } from '@/ui/Spinner'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import { Spinner } from '@/libraries/ui/components/Spinner'
 
 /**
  * Le lien reprend les valeurs de `rdvStatus`, et non `statutsRdv` du domaine :

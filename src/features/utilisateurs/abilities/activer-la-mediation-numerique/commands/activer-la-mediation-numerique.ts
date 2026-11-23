@@ -1,20 +1,22 @@
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/db/registre-des-personnes'
 import {
   CoordinateurId,
   MediateurId,
   rattachements,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
+import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { failure, type Result, success } from '@/libraries/result'
-import { createStopwatch } from '@/utils/stopwatch'
 import { type Activation, activationDe, type NonCoordinateur } from '../domain'
 import {
   activer,
   compteQuiActive,
-  inscrireLeMediateur,
+  inscrireALaListeDeDiffusion,
 } from '../implementation'
 
 export const activerLaMediationNumerique = async (
   utilisateurId: string,
+  synchroniserLaPersonne: SynchroniserLaPersonne,
 ): Promise<Result<Activation, UtilisateurIntrouvable | NonCoordinateur>> => {
   const chrono = createStopwatch()
 
@@ -32,12 +34,12 @@ export const activerLaMediationNumerique = async (
   if (!activation.success || activation.data === 'DejaActivee')
     return activation
 
-  await activer({
+  await activer(synchroniserLaPersonne)({
     utilisateurId: compte.id,
     coordinateurId: compte.coordinateur?.id ?? '',
     duree: () => chrono.stop().duration,
   })
-  await inscrireLeMediateur(compte.id)
+  await inscrireALaListeDeDiffusion(compte.id)
 
   return success(activation.data)
 }

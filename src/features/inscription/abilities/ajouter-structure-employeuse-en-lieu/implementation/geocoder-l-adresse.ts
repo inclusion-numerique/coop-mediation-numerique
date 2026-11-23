@@ -1,10 +1,10 @@
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { siIndisponible } from '@/external-apis/apiAdresse'
-import { geocodeStructureAdresse } from '@/external-apis/ban/geocodeStructureAdresse'
+import { siIndisponible } from '@/libraries/ban/apiAdresse'
+import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import type { Geocodage, GeocoderLAdresse } from '../domain/ports'
 
 export const geocoderLAdresse: GeocoderLAdresse = (adresse) =>
-  geocodeStructureAdresse(adresse)
+  geocoderPrecisement(adresse)
     .then(
       (adresseBan): Geocodage =>
         adresseBan == null

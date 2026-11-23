@@ -1,4 +1,1 @@
-export {
-  MesOutilsPage,
-  type RdvServicePublicDansMesOutils,
-} from './pages/MesOutilsPage'
+export { MesOutilsPage } from './pages/MesOutilsPage'

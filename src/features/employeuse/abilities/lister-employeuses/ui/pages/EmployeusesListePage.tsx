@@ -1,12 +1,12 @@
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
+import type { DataTableUrlState } from '@/libraries/data-table'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
-import AdministrationBreadcrumbs from '@/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libs/ui/administration/AdministrationTitle'
-import { contentId } from '@/utils/skipLinks'
+import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import EmployeusesTable from '../EmployeusesTable'
 import type { EmployeuseAffichee } from '../employeuse-affichee.presenter'
-import type { EmployeusesSearchParams } from '../employeuses.data-table'
 import RechercheEmployeuses from '../RechercheEmployeuses'
 
 const baseHref = '/administration/structures-employeuses'
@@ -14,13 +14,13 @@ const baseHref = '/administration/structures-employeuses'
 const EmployeusesListePage = ({
   employeuses,
   trouvees,
-  pages,
-  searchParams,
+  parPage,
+  state,
 }: {
   employeuses: EmployeuseAffichee[]
   trouvees: number
-  pages: number
-  searchParams: EmployeusesSearchParams
+  parPage: number
+  state: DataTableUrlState
 }) => (
   <CoopPageContainer size="full">
     <SkipLinksPortal />
@@ -33,7 +33,7 @@ const EmployeusesListePage = ({
         <p className="fr-text--medium fr-mb-2v">
           Rechercher dans la liste des structures employeuses
         </p>
-        <RechercheEmployeuses searchParams={searchParams} />
+        <RechercheEmployeuses state={state} />
       </div>
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
         <span className="fr-text--semi-bold">
@@ -47,8 +47,9 @@ const EmployeusesListePage = ({
       </div>
       <EmployeusesTable
         employeuses={employeuses}
-        pages={pages}
-        searchParams={searchParams}
+        trouvees={trouvees}
+        parPage={parPage}
+        state={state}
         baseHref={baseHref}
       />
     </main>

@@ -1,7 +1,7 @@
 import type { MediateurOption } from '@/features/statistiques/ui/filtres/mediateur-option'
 import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { dateAsDay } from '@/utils/dateAsDay'
 import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
 import {
   libelleDans,
@@ -23,7 +23,7 @@ export type FilterType =
   | 'thematiqueAdministratives'
   | 'tags'
   | 'source'
-export const generateActivitesPeriodeFilterLabel = ({
+const generateActivitesPeriodeFilterLabel = ({
   au,
   du,
 }: {

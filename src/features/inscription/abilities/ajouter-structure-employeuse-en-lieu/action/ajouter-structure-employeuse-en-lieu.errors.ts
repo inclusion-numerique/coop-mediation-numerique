@@ -6,6 +6,3 @@ export const AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS = {
   ServiceAdresseIndisponible:
     'Le service d’adresse est momentanément indisponible, réessayez dans quelques instants.',
 } as const
-
-export type AjouterStructureEmployeuseEnLieuErrorKey =
-  (typeof AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS)[keyof typeof AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS]

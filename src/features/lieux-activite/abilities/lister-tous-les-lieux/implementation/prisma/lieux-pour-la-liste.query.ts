@@ -1,12 +1,12 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import {
   champsDAffichage,
   inscriptionPourLaFiche,
 } from '../../../../implementation/prisma/registre'
 import type { LigneDeLaListe } from '../../ui/ligne-de-la-liste'
 
-export const searchStructureSelect = {
+const searchStructureSelect = {
   id: true,
   nom: true,
   adresse: true,

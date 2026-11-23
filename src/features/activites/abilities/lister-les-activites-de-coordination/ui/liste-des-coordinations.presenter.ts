@@ -1,10 +1,10 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { pluriel } from '@/libraries/pluriel'
-import { formatActiviteDayDate } from '@/utils/activiteDayDateFormat'
+import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@/utils/dateAsDayAndTime'
+} from '@/libraries/date/dateAsDayAndTime'
+import { pluriel } from '@/libraries/pluriel'
 import {
   type ActiviteDeCoordination,
   type DureeEnMinutes,
@@ -24,7 +24,7 @@ import {
 } from '../../../ui/libelles-de-coordination'
 import type { ActivitesDeCoordinationListees } from '../domain'
 
-export type Rubrique = {
+type Rubrique = {
   readonly titre: string
   readonly elements: readonly string[]
 }
@@ -53,7 +53,7 @@ export type CarteDeCoordination = {
   readonly detail: DetailDeCoordination
 }
 
-export type JourDeCoordinations = {
+type JourDeCoordinations = {
   readonly cle: string
   readonly jour: string
   readonly cartes: readonly CarteDeCoordination[]
@@ -62,7 +62,7 @@ export type JourDeCoordinations = {
 export type ListeDesCoordinations = {
   readonly titre: string
   readonly jours: readonly JourDeCoordinations[]
-  readonly pages: number
+  readonly total: number
 }
 
 const titreDe = (activite: ActiviteDeCoordination): string =>
@@ -205,7 +205,7 @@ const titreDeLaListe = (total: number, filtre: boolean): string =>
     : `${total} ${pluriel(total, 'activité enregistrée', 'activités enregistrées')}`
 
 export const listeDesCoordinations = ({
-  listees: { activites, total, pages },
+  listees: { activites, total },
   filtre,
   timezone,
 }: {
@@ -222,5 +222,5 @@ export const listeDesCoordinations = ({
       cartes: activitesDuJour.map(carteDe(timezone)),
     }
   }),
-  pages,
+  total,
 })

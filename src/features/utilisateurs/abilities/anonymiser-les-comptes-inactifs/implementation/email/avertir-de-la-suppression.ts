@@ -1,10 +1,10 @@
 import { formatInTimeZone } from 'date-fns-tz'
+import { contactEmail } from '@/configuration/projet/config'
+import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { expediteur } from '@/configuration/smtp/serveur'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementation/email/inactiviteProlongeeAvertissementEmail'
 import { compileMjml } from '@/libraries/emails/mjml'
-import { PublicWebAppConfig } from '@/PublicWebAppConfig'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
-import { emailTransport } from '@/server/email/emailTransport'
-import { throwOnSendMailFailure } from '@/server/email/throwOnSendMailFailure'
 import type { AvertirDeLaSuppression } from '../../domain'
 
 export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({
@@ -23,8 +23,8 @@ export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({
 
   const resultat = await emailTransport.sendMail({
     to: courriel,
-    from: ServerWebAppConfig.Email.from,
-    replyTo: PublicWebAppConfig.contactEmail,
+    from: expediteur,
+    replyTo: contactEmail,
     subject: 'Votre compte va bientôt être supprimé ⚠️',
     text: inactiviteProlongeeAvertissementEmail.text(contenu),
     html: await compileMjml(

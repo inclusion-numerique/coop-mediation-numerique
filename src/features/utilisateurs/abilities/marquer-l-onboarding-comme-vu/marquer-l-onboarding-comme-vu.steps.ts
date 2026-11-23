@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { marquerLOnboardingCommeVu } from './implementation'
 
 const onboarding: { utilisateurId?: string } = {}

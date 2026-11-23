@@ -15,7 +15,7 @@ export type EmployeuseListee = {
  * recherche, page, tri — parce que c'est exactement l'usage : parcourir
  * l'ensemble, là où l'autocomplétion sert à choisir.
  */
-export type CriteresListeEmployeuses = {
+type CriteresListeEmployeuses = {
   readonly recherche: string
   readonly page: number
   readonly parPage: number

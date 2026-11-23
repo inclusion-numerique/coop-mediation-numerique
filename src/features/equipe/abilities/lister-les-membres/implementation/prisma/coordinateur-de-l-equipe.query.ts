@@ -1,14 +1,9 @@
-import {
-  employeuseCodeInsee,
-  personneEmployeuseSelect,
-  personneToEmployeuseActuelle,
-} from '@/features/employeuse/server'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   DEPARTEMENT_PAR_DEFAUT,
   departementDeLActeur,
 } from '@/libraries/departement'
 import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { prismaClient } from '@/prismaClient'
 import { lireLeCoordinateur } from '../../../../db/coordinateur.query'
 import type { CoordinateurId } from '../../../../domain'
 import type { CoordinateurDeLaListe } from '../../domain'
@@ -19,20 +14,20 @@ const departementDuCoordinateur = async (
   const coordinateur = await prismaClient.coordinateur.findUnique({
     where: { id: coordinateurId },
     select: {
-      user: { select: { personneMain: { select: personneEmployeuseSelect } } },
+      user: {
+        select: {
+          personneMain: {
+            select: { employeuseActuelle: { select: { codeInsee: true } } },
+          },
+        },
+      },
     },
   })
-
-  const actuelle = personneToEmployeuseActuelle(
-    coordinateur?.user.personneMain ?? null,
-  )
 
   return (
     departementDeLActeur({
       employeuse: CodeInsee.safe(
-        actuelle === null
-          ? ''
-          : (employeuseCodeInsee(actuelle.employeuse) ?? ''),
+        coordinateur?.user.personneMain?.employeuseActuelle?.codeInsee ?? '',
       ),
       lieux: [],
     }) ?? DEPARTEMENT_PAR_DEFAUT

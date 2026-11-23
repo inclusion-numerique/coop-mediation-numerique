@@ -3,10 +3,7 @@ import {
   routeBuilder,
   withSearchParams,
 } from '@arckit/nextjs/route'
-import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
 import {
   accompagnementsParDepartement,
   exportDesAccompagnementsCsv,
@@ -15,27 +12,14 @@ import {
   nomDuFichierDExport,
   PopulationDeMediateurs,
 } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
+import { withAdminRoute } from '@/features/authentification'
 
 const ExportQueryParamsValidation = z.object({
   date: Jour.schema.optional(),
 })
 
-const withAdministrateur = async (
-  _ctx: object,
-  request: NextRequest,
-): Promise<{ ctx: object } | NextResponse> => {
-  const user = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
-  )
-
-  return user?.role === 'Admin'
-    ? { ctx: {} }
-    : new NextResponse('Unauthorized', { status: 401 })
-}
-
 export const GET = routeBuilder()
-  .use(withAdministrateur)
+  .use(withAdminRoute)
   .use(withSearchParams((raw) => ExportQueryParamsValidation.parse(raw)))
   .handle(async ({ searchParams }) => {
     const jusquAu = searchParams.date ?? null
@@ -43,12 +27,10 @@ export const GET = routeBuilder()
     const conseillersNumeriques = await accompagnementsParDepartement({
       population: PopulationDeMediateurs('ConseillersNumeriques'),
       jusquAu,
-      filtreDesConseillersNumeriques: conseillerNumeriqueSql,
     })
     const autresMediateurs = await accompagnementsParDepartement({
       population: PopulationDeMediateurs('AutresMediateurs'),
       jusquAu,
-      filtreDesConseillersNumeriques: conseillerNumeriqueSql,
     })
 
     return csvResponse(

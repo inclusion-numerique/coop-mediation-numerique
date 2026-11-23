@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
-import { orderItemsByIndexedValues } from '@/utils/orderItemsByIndexedValues'
+import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
 import {
   ACTEUR,
   ACTEUR_VISIBLE,
@@ -104,7 +104,6 @@ export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
       .map(versActeur)
       .filter((acteur) => acteur !== null),
     total: Effectif(total),
-    pages: Math.ceil(total / criteres.lignes),
     page: criteres.page,
     lignes: criteres.lignes,
   }

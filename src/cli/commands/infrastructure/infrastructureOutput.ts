@@ -25,7 +25,7 @@ export const valuesOfTofuOutput = (
     Object.entries(tofuOutput).map(([name, { value }]) => [name, value]),
   ) as InfrastructureOutput
 
-export const infrastructureOutputFile = path.resolve(
+const infrastructureOutputFile = path.resolve(
   getDirname(import.meta.url),
   '../../../../infrastructure/outputs.json',
 )

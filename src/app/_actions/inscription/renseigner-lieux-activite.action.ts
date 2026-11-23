@@ -12,8 +12,12 @@ import type {
   AdresseNonValidee,
   RenseignerLieuxActiviteError,
 } from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
-import { trouverStructuresCarto } from '@/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { UserId } from '@/features/inscription/domain'
+import {
+  activitesEnCoursDeLUtilisateur,
+  findCartoStructuresByIds,
+  rattacherAuLieuDesire,
+} from '@/features/lieux-activite'
 import { withMaintenance } from '@/features/maintenance-mode'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import type { Result } from '@/libraries/result'
@@ -30,7 +34,7 @@ export const renseignerLieuxActiviteAction = actionBuilder()
       }): Promise<
         Result<void, RenseignerLieuxActiviteError | AdresseNonValidee>
       > => {
-        const lieuxActivite = depuisLaSaisie(input.lieuxActivite)
+        const lieuxActivite = depuisLaSaisie(input.lieux)
 
         if (!lieuxActivite.success) return lieuxActivite
 
@@ -39,7 +43,9 @@ export const renseignerLieuxActiviteAction = actionBuilder()
             userId: UserId(user.id),
             lieuxActivite: lieuxActivite.data,
           },
-          trouverStructuresCarto,
+          trouverStructuresCarto: findCartoStructuresByIds,
+          lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
+          rattacherAuLieuDesire,
           maintenant: new Date(),
         })
       },

@@ -1,5 +1,5 @@
-import { prismaClient } from '@/prismaClient'
-import { getServerUrl } from '@/utils/baseUrl'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { getServerUrl } from '@/configuration/projet/baseUrl'
 import type {
   BilanModele,
   OperationSynchronisation,
@@ -42,7 +42,7 @@ const webhookUrl = getServerUrl('/api/rdv-service-public/webhook', {
  */
 const destinationJoignable = (): boolean => !webhookUrl.includes('localhost')
 
-export const installWebhookForOrganisation = async ({
+const installWebhookForOrganisation = async ({
   compte,
   organisationId,
   appendLog,

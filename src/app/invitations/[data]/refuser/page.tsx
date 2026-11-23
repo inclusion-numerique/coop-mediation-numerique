@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/app/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { InvitationRefusee } from '@/features/equipe/abilities/refuser-une-invitation/ui'
 
 export const metadata: Metadata = {

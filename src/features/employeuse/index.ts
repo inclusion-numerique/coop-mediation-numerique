@@ -22,94 +22,20 @@
  * suffirait à ramener Prisma ici.
  */
 
-export type {
-  ConsulterEmployeuse,
-  EmployeuseConsultee,
-  PersonneEmployee,
-} from './abilities/consulter-employeuse/domain'
+export { employeuseConsulteeAffichage } from './abilities/consulter-employeuse/ui/employeuse-consultee.presenter'
+
+export { emploiEmployeuseAffichage } from './abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
+
+export { employeuseActuelleAffichage } from './abilities/consulter-employeuse-actuelle/ui/employeuse-actuelle.presenter'
+
+export { historiqueEmployeusesAffichage } from './abilities/consulter-historique-employeuses/ui/historique-employeuses.presenter'
+
+export { employeuseAffichee } from './abilities/lister-employeuses/ui/employeuse-affichee.presenter'
 export {
-  type EmployeuseConsulteeAffichage,
-  employeuseConsulteeAffichage,
-} from './abilities/consulter-employeuse/ui/employeuse-consultee.presenter'
-export type { ConsulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-une-date/domain'
-export {
-  type EmploiEmployeuseAffichage,
-  emploiEmployeuseAffichage,
-} from './abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
-export type { ConsulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/domain'
-export {
-  type EmployeuseActuelleAffichage,
-  employeuseActuelleAffichage,
-  employeuseSessionEmplois,
-} from './abilities/consulter-employeuse-actuelle/ui/employeuse-actuelle.presenter'
-export type { ConsulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/domain'
-export {
-  type EmployeuseHistoriqueAffichage,
-  historiqueEmployeusesAffichage,
-} from './abilities/consulter-historique-employeuses/ui/historique-employeuses.presenter'
-export type {
-  CriteresListeEmployeuses,
-  EmployeuseListee,
-} from './abilities/lister-employeuses/domain'
-export {
-  type EmployeuseAffichee,
-  employeuseAffichee,
-} from './abilities/lister-employeuses/ui/employeuse-affichee.presenter'
-export type { EmployeusesSearchParams } from './abilities/lister-employeuses/ui/employeuses.data-table'
-export type {
-  RattachementEmployeuse,
-  RattacherAUneEmployeuse,
-  RattacherAUneEmployeuseDepuisSiret,
-} from './abilities/rattacher-a-une-employeuse/domain'
-export type {
-  EmployeuseChoisie,
-  StructureSearchResult,
-} from './abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-export type { RechercherEmployeuse } from './abilities/rechercher-employeuse/domain'
-export {
-  type EmployeuseRecherchee,
-  employeuseRecherchee,
-} from './abilities/rechercher-employeuse/ui/employeuse-recherchee.presenter'
-// `employeuse.transfer` n'importe `Prisma` qu'en TYPE : il est effacé à la
-// compilation et ne ramène donc pas le client dans le bundle.
-export {
-  conseillerNumeriqueWhere,
-  type PersonneConseillerNumeriquePayload,
-  type PersonneEmployeusePayload,
-  personneConseillerNumeriqueSelect,
-  personneEmployeuseSelect,
-  personneEstConseillerNumerique,
-  personneToEmployeuseActuelle,
-  personneToEmployeuseALaDate,
-  personneToEmployeusesHistorique,
-} from './db/employeuse.transfer'
-export {
-  AdresseAGeocoder,
-  type AdresseEmployeuse,
-  type Affectation,
-  ContactReferent,
-  type Contrat,
-  type CourrielReferent,
-  contratLePlusRecent,
-  contratPourEmployeuse,
-  type DenominationEmployeuse,
-  debutEmploi,
-  type Employeuse,
-  type EmployeuseActuelle,
-  type EmployeuseHistorique,
-  EmployeuseId,
-  employeuseALaDate,
-  employeuseCodeInsee,
-  estConseillerNumerique,
-  finEmploi,
-  IdentiteEmployeuse,
-  identiteDepuisEtablissement,
-  type PeriodeEmploi,
-  type Rna,
-  referentAffichage,
-  type SourceAffectation,
-} from './domain'
-export {
-  type EmployeuseAffichage,
-  employeuseAffichage,
-} from './ui/employeuse.presenter'
+  criteresListeEmployeuses,
+  type EmployeusesSearchParams,
+  etatDeTableEmployeuses,
+} from './abilities/lister-employeuses/ui/lister-employeuses-search-params'
+
+export { EmployeuseId } from './domain'
+export { employeuseAffichage } from './ui/employeuse.presenter'

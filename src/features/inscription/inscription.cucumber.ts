@@ -1,9 +1,9 @@
 import { After, Before, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { ProfilInscription } from '@/features/inscription/domain'
 import { UserId } from '@/features/inscription/domain'
 import type { Typologie } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 
 setDefaultTimeout(60_000)
 
@@ -20,9 +20,6 @@ const trackedAdresseMainIds = new Set<number>()
 // Le lieu matérialisé depuis une employeuse ne reprend plus son id : on le
 // retrouve, pour le nettoyage comme en production, par sa dénomination.
 const trackedEmployeuseMainNoms = new Set<string>()
-// Utilisateurs autres que celui du scénario (collègues de la même employeuse) :
-// suivis à part, le nettoyage ne connaissant sinon que l'utilisateur courant.
-const trackedAutresUserIds = new Set<string>()
 
 /**
  * Toute adresse de la coop vient de l'API adresse, qui rend systématiquement un
@@ -133,11 +130,6 @@ export const seedLieuActivite = async (
   return id
 }
 
-/** Suit un lieu créé hors seed (ex. matérialisé par une ability) pour le nettoyage. */
-export const trackLieuActivite = (id: string): void => {
-  trackedLieuActiviteIds.add(id)
-}
-
 /**
  * Employeuse de test dans `main` (suivie pour nettoyage). Depuis l'échange final
  * de l'ADR-002, l'employeuse est une `main.structure_administrative` et c'est son
@@ -171,64 +163,8 @@ export const seedEmployeuseMain = async (
   return structure.id
 }
 
-/**
- * Rattache un utilisateur à une employeuse `main` par le chemin que lit la
- * production : `coop.users → main.personne` (par `coop_id`) → affectation
- * active. Sans lui, l'employeuse existe mais n'est celle de personne — et les
- * abilities qui la dérivent de l'acteur ne trouvent rien.
- *
- * Idempotent des deux côtés : un utilisateur peut être rattaché à plusieurs
- * employeuses, et deux scénarios peuvent rejouer le même rattachement.
- */
-export const rattacherAEmployeuseMain = async ({
-  userId,
-  structureAdministrativeId,
-}: {
-  userId: string
-  structureAdministrativeId: number
-}): Promise<void> => {
-  const personne = await prismaClient.personneMain.upsert({
-    where: { coopId: userId },
-    create: { coopId: userId },
-    update: {},
-    select: { id: true },
-  })
-
-  await prismaClient.personneAffectationEmploiMain.upsert({
-    where: {
-      personneId_structureAdministrativeId_source: {
-        personneId: personne.id,
-        structureAdministrativeId,
-        source: 'coop',
-      },
-    },
-    create: {
-      personneId: personne.id,
-      structureAdministrativeId,
-      source: 'coop',
-      estActive: true,
-    },
-    update: { estActive: true },
-  })
-}
-
-/**
- * Médiateur tiers rattaché à la même employeuse : de quoi vérifier qu'un lieu
- * matérialisé depuis une employeuse est partagé, et non recréé par collègue.
- */
-export const seedCollegueMediateur = async (): Promise<UserId> => {
-  const userId = v4()
-  await prismaClient.user.create({
-    data: { id: userId, email: `collegue-${userId}@test.local` },
-  })
-  await prismaClient.mediateur.create({ data: { id: v4(), userId } })
-  trackedAutresUserIds.add(userId)
-  return UserId(userId)
-}
-
 Before(async () => {
   inscriptionUserId = v4()
-  trackedAutresUserIds.clear()
   trackedLieuActiviteIds.clear()
   trackedEmployeuseMainIds.clear()
   trackedAdresseMainIds.clear()
@@ -242,7 +178,7 @@ Before(async () => {
 })
 
 After(async () => {
-  const userIds = [inscriptionUserId, ...trackedAutresUserIds]
+  const userIds = [inscriptionUserId]
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateur: { userId: { in: userIds } } },
   })

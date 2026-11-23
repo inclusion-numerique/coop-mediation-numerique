@@ -5,6 +5,3 @@ export const varDirectory = path.resolve(
   getDirname(import.meta.url),
   '../../../var',
 )
-
-export const varFile = (filename: string) =>
-  path.resolve(varDirectory, filename)

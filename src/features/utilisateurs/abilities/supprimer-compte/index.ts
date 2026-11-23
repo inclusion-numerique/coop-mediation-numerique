@@ -1,21 +1,9 @@
-export {
-  SUPPRIMER_COMPTE_ERRORS,
-  type SupprimerCompteErrorKey,
-} from './action/supprimer-compte.errors'
-export {
-  type SupprimerCompteInput,
-  SupprimerCompteValidation,
-} from './action/supprimer-compte.validation'
+export { SUPPRIMER_COMPTE_ERRORS } from './action/supprimer-compte.errors'
+export { SupprimerCompteValidation } from './action/supprimer-compte.validation'
 export { supprimerCompte } from './commands/supprimer-compte'
+export { supprimerUnInscritJamaisActif } from './commands/supprimer-un-inscrit-jamais-actif'
 export {
-  type AuteurSuppression,
-  type CompteSupprime,
-  type EffacementReport,
-  EffacementStep,
-  ErasedCount,
-  isComplete,
   RetentionPolicy,
-  type SupprimerCompteError,
   type SupprimerComptePorts,
 } from './domain'
 export { hash, retirerDesListesDeDiffusion } from './implementation'

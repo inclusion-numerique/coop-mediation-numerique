@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const ORDRES_CHRONOLOGIQUES = ['PlusRecentes', 'PlusAnciennes'] as const
+const ORDRES_CHRONOLOGIQUES = ['PlusRecentes', 'PlusAnciennes'] as const
 
 export const OrdreChronologique = defineModel(
   z.enum(ORDRES_CHRONOLOGIQUES).brand('OrdreChronologique'),

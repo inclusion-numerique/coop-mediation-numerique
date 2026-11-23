@@ -7,11 +7,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
-import type { AdresseBanData } from '@/external-apis/ban/AdresseBanValidation'
-import {
-  CommuneComboBox,
-  CommuneOptions,
-} from '@/features/adresse/combo-box/CommuneComboBox'
 import {
   ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
   ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
@@ -27,15 +22,20 @@ import {
   BeneficiaireValidation,
 } from '@/features/beneficiaire/forms/beneficiaire-validation'
 import FormSection from '@/features/beneficiaire/forms/FormSection'
+import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import {
+  CommuneComboBox,
+  CommuneOptions,
+} from '@/libraries/adresse/CommuneComboBox'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { adresseAvec } from '@/libraries/parametres-d-url'
+import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import RequiredFieldsDisclaimer from '@/libraries/ui/components/Form/RequiredFieldsDisclaimer'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { encodeSerializableState } from '@/utils/encodeSerializableState'
 import type { SaisieEnCours } from './saisie-en-cours'
 
 // Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses

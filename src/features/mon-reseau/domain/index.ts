@@ -3,8 +3,6 @@ export {
   type CoordinateurDeLActeur,
   type Mediation,
   type ProfilActeur,
-  type ProfilCoordinateur,
-  type ProfilMediateur,
 } from './acteur'
 export { ActeurId } from './acteur-id'
 export { CoordinateurId } from './coordinateur-id'
@@ -23,5 +21,5 @@ export {
   premiereValeur,
   type ValeurDeParametre,
 } from './parametres-de-recherche'
-export { ProfilAffiche, profilAffiche } from './profil-affiche'
+export { profilAffiche } from './profil-affiche'
 export { Recherche } from './recherche'

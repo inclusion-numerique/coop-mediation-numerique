@@ -1,4 +1,1 @@
-export type {
-  BeneficiaireAImporter,
-  ImporterBeneficiaires,
-} from './importer-beneficiaires'
+export type { BeneficiaireAImporter } from './importer-beneficiaires'

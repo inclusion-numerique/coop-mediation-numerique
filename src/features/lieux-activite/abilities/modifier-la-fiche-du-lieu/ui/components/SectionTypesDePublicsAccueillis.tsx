@@ -2,12 +2,12 @@
 
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
-import EditCardTanStack from '@/components/EditCardTanStack'
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
 } from '@/features/lieux-activite/ui/options'
-import { useAppForm } from '@/libs/form/use-app-form'
+import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { TypesDePublicsAccueillisSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { TypesDePublicsAccueillisAffiches } from '../fiche-affichee/types-de-publics-accueillis'

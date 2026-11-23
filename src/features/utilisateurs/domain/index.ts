@@ -1,28 +1,18 @@
-export {
-  type ActiviteCoordinateur,
-  type ActiviteMediateur,
-  derniereActiviteDe,
-  type SituationDActivite,
-} from './activite'
+export { derniereActiviteDe } from './activite'
 export { AdresseCourriel } from './adresse-courriel'
 export { AuteurId } from './auteur-id'
 export {
   type CompteASupprimer,
   type EtatCompte,
-  estSupprime,
   etatDuCompte,
 } from './compte'
 export {
   type ContactAImporter,
-  type ContactASynchroniser,
   contactASynchroniser,
   type DatesDeContrat,
   type InscritDeLaListe,
   RoleBrevo,
-  type RolesBrevo,
-  rolesBrevoDe,
   SANS_CONTRAT,
-  SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
 export { CoordinateurId } from './coordinateur-id'
@@ -31,7 +21,6 @@ export {
   CourrielHash,
 } from './courriel-hash'
 export {
-  type CycleAvantSuppression,
   type CycleDeVie,
   cycleDeVie,
   inscription,
@@ -40,13 +29,12 @@ export {
   type CompteARelancer,
   deroulerLesRelances,
   type EffacementImpossible,
-  type PortsDeRelance,
 } from './derouler-les-relances'
 export type {
   DestinataireDeRelance,
   RapportDeRelance,
 } from './destinataire-de-relance'
-export { Dispositif, dispositifDe, dispositifs } from './dispositif'
+export { Dispositif, dispositifDe } from './dispositif'
 export { CompteSupprime, UtilisateurIntrouvable } from './errors'
 export {
   type CritereStatut,
@@ -58,24 +46,19 @@ export {
 } from './filtre-statut'
 export {
   AUCUN_FILTRE,
-  EmployeuseId,
   type FiltresUtilisateurs,
   filtresUtilisateurs,
-  LieuActiviteId,
   type ParametresDeFiltres,
   parametresDesFiltres,
   RoleFiltre,
   rolesFiltres,
 } from './filtres-utilisateurs'
 export {
-  DOMAINE_COURRIEL_ANONYME,
   estCourrielAnonymise,
   IdentiteAnonyme,
   identiteAnonyme,
-  NOM_ANONYME,
-  PRENOM_ANONYME,
 } from './identite-anonyme'
-export { JAMAIS, type Jalon, jalon, plusRecent } from './jalon'
+export { JAMAIS, type Jalon, jalon } from './jalon'
 export type {
   CoordinateurDeLaLigne,
   EmployeuseDeLaLigne,
@@ -106,30 +89,17 @@ export {
   rattachements,
 } from './rattachements'
 export {
-  type ActionDeRelance,
-  actionDeRelance,
   type PalierDeRelance,
   type PhaseDeRelance,
   Relance,
-  relanceApres,
   relances,
-  type SituationDeRelance,
 } from './relance'
 export {
   estRoleProtege,
   RoleUtilisateur,
-  rolesUtilisateur,
 } from './role-utilisateur'
 export {
-  type PalierInactivite,
-  type PalierInscription,
-  type PalierNouveau,
-  paliersInactivite,
-  paliersInscription,
-  paliersNouveau,
-  type SituationDuCompte,
   type StatutCompte,
   statutDe,
 } from './statut-compte'
-export { Telephone, telephoneEnregistrable } from './telephone'
 export { UtilisateurId } from './utilisateur-id'

@@ -15,7 +15,7 @@ import type { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
  * Les affectations d'une autre source, notamment `idposte`, ne sont jamais
  * touchées : elles appartiennent à l'Entrepôt.
  */
-export type RattachementEmployeuse =
+type RattachementEmployeuse =
   | { readonly _tag: 'rattachee'; readonly employeuseId: EmployeuseId }
   /**
    * L'employeuse n'a pas pu être garantie dans `main` (géocodage ou API

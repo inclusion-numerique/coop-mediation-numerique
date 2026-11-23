@@ -4,13 +4,13 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useSelector } from '@tanstack/react-form'
 import { useEffect } from 'react'
-import { CompleteFields } from '@/components/form/CompleteFields'
 import { DisplayOnCartography } from '@/features/lieux-activite/ui/DisplayOnCartography'
 import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { CompleteFields } from '@/libraries/ui/components/Form/CompleteFields'
 import {
   type CreerLieuActiviteFormData,
   CreerLieuActiviteFormValidation,

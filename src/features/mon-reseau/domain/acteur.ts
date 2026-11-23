@@ -19,13 +19,13 @@ export type Mediation = {
   readonly coordinateurs: readonly CoordinateurDeLActeur[]
 }
 
-export type ProfilMediateur = {
+type ProfilMediateur = {
   readonly _tag: 'Mediateur'
   readonly dispositif: Dispositif
   readonly mediation: Mediation
 }
 
-export type ProfilCoordinateur = {
+type ProfilCoordinateur = {
   readonly _tag: 'Coordinateur'
   readonly dispositif: Dispositif
   readonly coordinateurId: CoordinateurId

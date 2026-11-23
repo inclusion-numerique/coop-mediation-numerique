@@ -1,6 +1,6 @@
 import { Effectif } from './effectif'
 
-export type LigneDeRepartition<V> = {
+type LigneDeRepartition<V> = {
   readonly valeur: V
   readonly nombre: Effectif
 }

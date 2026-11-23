@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libs/injection/client'
+import { keyFor } from '@/libraries/nextjs/injection/client'
 import type { StatutRdvMisAJour } from '../domain/mettre-a-jour-statut-rdv'
 import type { MettreAJourStatutRdvValidation } from './mettre-a-jour-statut-rdv.validation'
 

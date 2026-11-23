@@ -2,7 +2,7 @@ import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire
 import type { Email } from '@/features/beneficiaire/domain/email'
 import type { Nom } from '@/features/beneficiaire/domain/nom'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
-import type { Telephone } from '@/features/beneficiaire/domain/telephone'
+import type { Telephone } from '@/libraries/telephone'
 
 // Projection partagée au niveau feature (voir beneficiaire/db).
 export type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'

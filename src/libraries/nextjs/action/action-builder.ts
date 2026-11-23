@@ -36,9 +36,9 @@ type AnyPipeMiddleware = PipeMiddleware<
   string
 >
 
-export type ActionFunction<TInput, TResult, TError extends string> = [
-  TInput,
-] extends [void]
+type ActionFunction<TInput, TResult, TError extends string> = [TInput] extends [
+  void,
+]
   ? () => Promise<ServerActionResult<TResult, TError>>
   : (input: TInput) => Promise<ServerActionResult<TResult, TError>>
 

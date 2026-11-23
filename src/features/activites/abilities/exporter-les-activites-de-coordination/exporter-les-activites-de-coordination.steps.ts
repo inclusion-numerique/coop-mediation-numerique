@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   exporterLesActivitesDeCoordination,
   tagsRappeles,
@@ -15,7 +16,6 @@ import {
   TagId,
   type TagsUtilisables,
 } from '@/features/activites/domain'
-import { prismaClient } from '@/prismaClient'
 
 let exportees: readonly ActiviteDeCoordination[] = []
 let rappeles: readonly TagDeLActivite[] = []

@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   clientApiSelect,
   versClientApi,
@@ -8,8 +9,7 @@ import {
   estValideLe,
   type PorteeApi,
 } from '@/features/clients-api/domain'
-import { prismaClient } from '@/prismaClient'
-import { verifySecret } from '@/security/hashSecret'
+import { verifySecret } from '@/features/clients-api/implementation/hashSecret'
 
 export const authentifierUnClientApi = async ({
   clientApiId,

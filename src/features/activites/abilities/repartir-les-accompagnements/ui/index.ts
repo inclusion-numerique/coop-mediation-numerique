@@ -8,7 +8,4 @@ export { MaterielsUtilises } from './components/MaterielsUtilises'
 export { ThematiquesDesAccompagnements } from './components/ThematiquesDesAccompagnements'
 export { TypesDActivite } from './components/TypesDActivite'
 export { TypesDActiviteImprimes } from './components/TypesDActiviteImprimes'
-export {
-  type RepartitionPresentee,
-  repartitionPresentee,
-} from './repartition.presenter'
+export { repartitionPresentee } from './repartition.presenter'

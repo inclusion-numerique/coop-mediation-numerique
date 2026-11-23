@@ -1,4 +1,1 @@
-export {
-  type EchecDeSuppression,
-  supprimerUnTag,
-} from './supprimer-un-tag.mutation'
+export { supprimerUnTag } from './supprimer-un-tag.mutation'

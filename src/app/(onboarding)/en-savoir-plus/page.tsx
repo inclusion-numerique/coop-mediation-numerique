@@ -1,10 +1,10 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
-import LogoCoop from '@/components/LogoCoop'
-import { CloseButton } from '../_components/CloseButton'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CloseButton'
+import LogoCoop from '@/libraries/ui/components/LogoCoop'
 
 export const metadata: Metadata = {
   title: metadataTitle('En savoir plus'),

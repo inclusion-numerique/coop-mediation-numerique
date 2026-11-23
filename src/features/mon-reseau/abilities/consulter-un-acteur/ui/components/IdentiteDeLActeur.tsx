@@ -6,15 +6,17 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import BackButton from '@/components/BackButton'
-import { INVITER_DES_MEMBRES_ACTION_KEY } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.key'
-import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { inject } from '@/libraries/nextjs/injection/client'
+import BackButton from '@/libraries/ui/components/BackButton'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { inject } from '@/libs/injection/client'
-import { dateAsDay } from '@/utils/dateAsDay'
 import type { Acteur } from '../../../../domain'
 import { ProfilEtContact } from '../../../../ui/ProfilEtContact'
+import {
+  INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
+  RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
+} from '../actions-sur-l-acteur.key'
 import type { ActionsDEquipe, StatutAffiche } from '../fiche-acteur.presenter'
 import { BadgeDeStatut } from './BadgeDeStatut'
 
@@ -54,7 +56,7 @@ export const IdentiteDeLActeur = ({
   const retirer = async () => {
     if (mediateurId === null || coordinateurId === null) return
     demarrerLeRetrait(true)
-    const resultat = await inject(RETIRER_UN_MEMBRE_ACTION_KEY)({
+    const resultat = await inject(RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY)({
       mediateurId,
       coordinateurId,
     })
@@ -75,7 +77,7 @@ export const IdentiteDeLActeur = ({
 
   const inviter = async () => {
     demarrerLInvitation(true)
-    const resultat = await inject(INVITER_DES_MEMBRES_ACTION_KEY)({
+    const resultat = await inject(INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY)({
       emails: [courriel],
     })
     modaleDInvitation.close()

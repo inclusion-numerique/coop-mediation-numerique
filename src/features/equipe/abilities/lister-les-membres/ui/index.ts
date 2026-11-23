@@ -1,8 +1,6 @@
-export { default as EquipeVide } from './components/EquipeVide'
 export { ListeDeLEquipe } from './components/ListeDeLEquipe'
-export { default as MonEquipeHeader } from './components/MonEquipeHeader'
+
 export { ResumeDeLEquipe } from './components/ResumeDeLEquipe'
-export {
-  default as EquipeListePage,
-  type ParametresDeLaListe,
-} from './pages/EquipeListePage'
+export { default as EquipeListePage } from './pages/EquipeListePage'
+export type { ParametresDeLaListe } from './parametres-de-la-liste'
+export { requeteDeLaListe } from './requete-de-la-liste'

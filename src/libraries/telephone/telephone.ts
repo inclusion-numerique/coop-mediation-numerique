@@ -17,8 +17,7 @@ const parPaires = (chiffres: string): string =>
  *
  * Vit en librairie et non dans une feature : mettre en forme un numéro ne
  * dépend d'aucun domaine métier, et deux features l'affichent déjà (bénéficiaire
- * et employeuse). Le value object `Telephone`, lui, reste chez bénéficiaire —
- * c'est lui qui porte les invariants.
+ * et employeuse).
  */
 export const telephoneDisplayString = (telephone: string): string => {
   const compact = telephone.replace(/[\s()./-]/g, '')

@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   comptesRendusSemes,
   semerComptesRendus,
 } from '@/features/activites/activites.cucumber'
-import { prismaClient } from '@/prismaClient'
 import { ActiviteId } from '../../domain'
 import { Horodatage } from './domain'
 import { activitesExposees } from './implementation'

@@ -12,11 +12,11 @@ export type SessionCourante = {
       }
 }
 
-export type AucuneUsurpationEnCours = {
+type AucuneUsurpationEnCours = {
   readonly _tag: 'AucuneUsurpationEnCours'
 }
 
-export type UsurpateurNonAdministrateur = {
+type UsurpateurNonAdministrateur = {
   readonly _tag: 'UsurpateurNonAdministrateur'
 }
 

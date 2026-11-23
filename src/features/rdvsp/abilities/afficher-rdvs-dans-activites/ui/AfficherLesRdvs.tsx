@@ -2,11 +2,11 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
-import { RDVServicePublicLogo } from '@/features/pictograms/services/RDVServicePublicLogo'
-import { inject } from '@/libs/injection/client'
-import { Spinner } from '@/ui/Spinner'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/ui/rattraper-rdvs-sans-webhook.key'
+import { inject } from '@/libraries/nextjs/injection/client'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import { Spinner } from '@/libraries/ui/components/Spinner'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '../action/afficher-rdvs-dans-activites.key'
-import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from './rattraper-rdvs-sans-webhook.key'
 
 const AfficherLesRdvs = ({
   includeRdvsInActivitesList,

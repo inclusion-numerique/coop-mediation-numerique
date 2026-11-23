@@ -4,7 +4,7 @@ import type { Usager } from '../../../domain/usager'
 import type { UsagerId } from '../../../domain/usager-id'
 import type { BeneficiaireLie } from './decision-webhook-usager'
 
-export type ResultatWebhookUsager =
+type ResultatWebhookUsager =
   | {
       readonly _tag: 'traite'
       readonly action: 'misAJour' | 'anonymiseEtSupprime'

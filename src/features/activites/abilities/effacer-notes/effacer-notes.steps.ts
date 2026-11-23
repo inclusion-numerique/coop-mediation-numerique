@@ -1,12 +1,12 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { effacerNotes } from '@/features/activites/abilities/effacer-notes'
 import {
   comptesRendusSemes,
   semerComptesRendus,
 } from '@/features/activites/activites.cucumber'
 import { CoordinateurId, MediateurId } from '@/features/activites/domain'
-import { prismaClient } from '@/prismaClient'
 
 let effacees: number | undefined
 

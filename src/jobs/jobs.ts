@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { AlignerLeRegistreDesPersonnesJobValidation } from './aligner-le-registre-des-personnes/alignerLeRegistreDesPersonnesJob'
 import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comptes-inactifs/anonymiserLesComptesInactifsJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
@@ -28,7 +27,6 @@ import { SynchroniserLesRolesBrevoJobValidation } from './synchroniser-les-roles
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
-  AlignerLeRegistreDesPersonnesJobValidation,
   AnonymiserLesComptesInactifsJobValidation,
   InactiveUsersRemindersJobValidation,
   RemoveOrphanBrevoContactsJobValidation,

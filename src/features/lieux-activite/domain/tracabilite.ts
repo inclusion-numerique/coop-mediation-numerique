@@ -8,7 +8,7 @@ export const SourceCartographie = defineModel(
 
 export type SourceCartographie = Model.TypeOf<typeof SourceCartographie>
 
-export type Creation = {
+type Creation = {
   readonly date: Date
   readonly par: UserId | null
 }
@@ -71,15 +71,4 @@ export type Tracabilite = {
   readonly creation: Creation
   readonly derniereModification: DerniereModification
   readonly suppression: Suppression
-}
-
-export const estSupprime = (tracabilite: Tracabilite): boolean =>
-  tracabilite.suppression._tag === 'Supprime'
-
-export type TracabiliteRattachement = {
-  readonly creation: Creation
-  readonly derniereModification: Exclude<
-    DerniereModification,
-    { readonly _tag: 'ParSource' }
-  >
 }

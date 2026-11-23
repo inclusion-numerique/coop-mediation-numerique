@@ -6,17 +6,14 @@ import type { RdvAgentId } from '../../../domain/rdv-agent-id'
 import type { RdvId } from '../../../domain/rdv-id'
 import type { RdvConnu } from './decision-webhook'
 
-export type RaisonNonTraitee =
-  | 'payloadInexploitable'
-  | 'aucunAgent'
-  | 'compteInconnu'
+type RaisonNonTraitee = 'payloadInexploitable' | 'aucunAgent' | 'compteInconnu'
 
 /**
  * Issue d'une notification. Elle ne rend jamais d'erreur : une notification que
  * La Coop ne sait pas traiter n'est pas une défaillance du service émetteur, et
  * lui répondre en échec le ferait réessayer sans fin.
  */
-export type ResultatWebhookRdv =
+type ResultatWebhookRdv =
   | { readonly _tag: 'traite'; readonly action: 'enregistre' | 'supprime' }
   | { readonly _tag: 'ignore'; readonly raison: string }
 

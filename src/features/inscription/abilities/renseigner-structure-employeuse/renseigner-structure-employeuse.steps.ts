@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type {
   RattacherEmployeuse,
   RenseignerStructureEmployeuseError,
@@ -12,7 +13,6 @@ import {
   seedProfilChoisi,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
 
 let rattachable = true
 let rattachementsDemandes = 0
@@ -29,23 +29,16 @@ Before(() => {
  */
 const rattacherEmployeuse: RattacherEmployeuse = async () => {
   rattachementsDemandes += 1
-  return rattachable ? 'rattachee' : 'indisponible'
+  return { _tag: rattachable ? 'rattachee' : 'employeuseIndisponible' }
 }
 
 const structureEmployeuseInput: StructureEmployeuseInput = {
-  id: null,
   nom: 'Structure de test',
   siret: '35600000000048',
-  adresse: {
-    id: 'adr-1',
-    nom: '1 rue de la Paix',
-    commune: 'Paris',
-    codeInsee: '75101',
-    codePostal: '75001',
-    contexte: '75, Paris',
-    latitude: 0,
-    longitude: 0,
-  },
+  adresse: '1 rue de la Paix',
+  commune: 'Paris',
+  codeInsee: '75101',
+  codePostal: '75001',
 }
 
 Given('j’ai choisi le profil {string}', async (profil: string) => {

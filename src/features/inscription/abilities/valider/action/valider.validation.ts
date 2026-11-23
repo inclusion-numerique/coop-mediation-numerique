@@ -6,7 +6,7 @@ import { z } from 'zod'
  * l'utilisateur doit accepter au récapitulatif (flow Dataspace) ; le `refine`
  * rend l'acceptation obligatoire à la soumission.
  */
-export const validerFormShape = z.object({
+export const ValiderValidation = z.object({
   cguAcceptee: z
     .boolean()
     .default(false)
@@ -16,10 +16,4 @@ export const validerFormShape = z.object({
     }),
 })
 
-export type ValiderFormData = z.infer<typeof validerFormShape>
-
-/**
- * Contrat d'input de la server action : même garde d'acceptation des CGU. Elle
- * ne transporte aucune donnée en aval — l'utilisateur vient de l'authentification.
- */
-export const ValiderValidation = validerFormShape
+export type ValiderFormData = z.infer<typeof ValiderValidation>

@@ -1,13 +1,6 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
-import { resetFixtureUser } from '@/fixtures/resetFixtureUser'
-import { seedStructures } from '@/fixtures/structures'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-  mediateurAvecActiviteUserId,
-} from '@/fixtures/users/mediateurAvecActivite'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import { EmailExterne } from './domain/identite'
 import { UtilisateurCoopId } from './domain/utilisateur-coop-id'
 
@@ -18,8 +11,27 @@ setDefaultTimeout(60_000)
  * Les hooks de cycle de vie vivent ici une seule fois ; les fichiers .steps.ts
  * ne définissent que Given/When/Then et s'appuient sur ces helpers.
  */
-export const testUtilisateurId = UtilisateurCoopId(mediateurAvecActiviteUserId)
-export const testMediateurId = mediateurAvecActiviteMediateurId
+export const testUtilisateurId = UtilisateurCoopId(
+  'e10e5c5f-4713-4a14-bba8-3b6051b3b4a2',
+)
+export const testMediateurId = 'dac49361-bef9-4f9b-a774-387e2e4bf664'
+
+const semerLeMediateurDeTest = async (
+  utilisateurId: string,
+  mediateurId: string,
+  courriel: string,
+) => {
+  await prismaClient.user.upsert({
+    where: { id: utilisateurId },
+    create: { id: utilisateurId, email: courriel, isFixture: true },
+    update: {},
+  })
+  await prismaClient.mediateur.upsert({
+    where: { id: mediateurId },
+    create: { id: mediateurId, userId: utilisateurId },
+    update: {},
+  })
+}
 
 /**
  * Plage réservée aux identifiants de test.
@@ -333,15 +345,6 @@ export const seedParticipation = async ({
   return id
 }
 
-export const beneficiairesDuMediateurAvecUsagers = async () =>
-  await prismaClient.beneficiaire.findMany({
-    where: {
-      mediateurId: testMediateurId,
-      rdvUserId: { in: [...usagersSuivis] },
-    },
-    select: { id: true, rdvUserId: true, prenom: true, nom: true },
-  })
-
 export const rdvEnBase = async (rdvId: number) =>
   await prismaClient.rdv.findUnique({
     where: { id: rdvId },
@@ -354,8 +357,11 @@ export const rdvEnBase = async (rdvId: number) =>
   })
 
 BeforeAll({ timeout: 120_000 }, async () => {
-  await seedStructures(prismaClient)
-  await resetFixtureUser(mediateurAvecActivite, false)
+  await semerLeMediateurDeTest(
+    testUtilisateurId,
+    testMediateurId,
+    'rdvsp-cucumber@test.local',
+  )
 })
 
 Before(async () => {

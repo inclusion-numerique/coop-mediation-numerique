@@ -1,5 +1,3 @@
 export { geocoderLAdresse } from './geocoder-l-adresse'
-export { lireEmployeuseActuelle } from './lire-employeuse-actuelle'
+export { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 export { lireLAdresseDeLEmployeuse } from './lire-l-adresse-de-l-employeuse'
-export { delierStructureEmployeuseEnLieu } from './prisma/delier-structure-employeuse-en-lieu.mutation'
-export { lierStructureEmployeuseEnLieu } from './prisma/lier-structure-employeuse-en-lieu.mutation'

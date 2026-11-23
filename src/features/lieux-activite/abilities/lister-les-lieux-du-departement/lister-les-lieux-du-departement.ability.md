@@ -59,6 +59,16 @@
 * When on liste les lieux de ce département
 * Then le lieu d’ailleurs n’est pas proposé
 
+## Rule: L'annuaire se filtre par commune
+
+### Scenario: Seuls les lieux de la commune choisie sont proposés
+
+* Given trois lieux dans le même département
+* And un quatrième lieu publié dans une autre commune du département
+* When on liste les lieux de ce département dans la commune des trois premiers
+* Then le lieu publié est proposé
+* And le lieu de l’autre commune n’est pas proposé
+
 ## Rule: Le nombre de lieux d'un département est celui de son annuaire
 
 > Le réseau du département annonce un nombre de lieux : c'est le nombre de lieux

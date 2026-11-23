@@ -9,8 +9,8 @@ import type { Nom } from '@/features/beneficiaire/domain/nom'
 import type { Notes } from '@/features/beneficiaire/domain/notes'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import type { Telephone } from '@/features/beneficiaire/domain/telephone'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
+import type { Telephone } from '@/libraries/telephone'
 
 export type BeneficiaireListItem = {
   readonly id: BeneficiaireId

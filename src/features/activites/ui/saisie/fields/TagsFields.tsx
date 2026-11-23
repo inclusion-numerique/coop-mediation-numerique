@@ -7,8 +7,11 @@ import {
 } from '@/features/activites/ui/saisie/tags/TagsComboBox'
 import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import type { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import {
+  type DefaultValues,
+  withFieldGroup,
+} from '@/libraries/formulaire/use-app-form'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { type DefaultValues, withFieldGroup } from '@/libs/form/use-app-form'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'tags'> = {}
 

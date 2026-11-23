@@ -152,3 +152,142 @@
 * Then cette inscription porte les services saisis
 * And cette inscription a perdu les horaires que la coop a laissés vides
 * And cette inscription garde ce qu'aucun formulaire de la coop ne porte
+
+## Rule: Créer un lieu d’activité ne le crée que si la coop l’ignore
+
+On n’arrive au formulaire de création qu’après une recherche restée sans
+résultat — mais c’est une garde de l’écran, pas une preuve : rien n’empêche d’y
+venir directement, ni d’y ressaisir un lieu que la recherche n’avait pas su
+rendre. La corrélation reste donc le dernier rempart.
+
+### Scenario: Créer un lieu déjà connu sous une autre dénomination rattache l’existant
+
+* Given je suis un médiateur
+* And un lieu d’activité est disponible, dénommé comme une mairie
+* When je crée un lieu d’activité dénommé comme la commune, à la même adresse
+* Then ce lieu est un de mes lieux d’activité actifs
+* And aucun autre lieu d’activité n’a été créé
+
+## Rule: Un lieu retiré de la cartographie ne réapparaît pas par ré-inscription
+
+Rendre un lieu visible sur la cartographie nationale se décide ; le retirer aussi.
+Une suppression est un acte de modération. La ré-inscription ne doit jamais la
+défaire silencieusement : un lieu supprimé n'est relevé que sur corrélation forte
+(la même dénomination au même endroit — un SIRET n'y suffit pas), et il revient
+invisible de la cartographie — la visibilité se re-décide.
+
+### Scenario: Un lieu supprimé, corrélé fortement, est relevé mais reste invisible
+
+* Given je suis un médiateur
+* And un lieu d’activité identique a été retiré de la cartographie par la modération
+* When je crée un lieu d’activité identique à ce lieu retiré
+* Then le lieu créé est un de mes lieux d’activité actifs
+* And ce lieu n’est pas visible sur la cartographie nationale
+* And je n’ai qu’un seul lieu d’activité actif
+
+### Scenario: Un simple homonyme ne ressuscite pas un lieu supprimé
+
+* Given je suis un médiateur
+* And un lieu d’activité supprimé porte un nom qu’un autre lieu contient
+* When je crée un lieu d’activité dont le nom contient celui du lieu supprimé, à une autre adresse
+* Then le lieu supprimé n’a pas été relevé
+* And je n’ai qu’un seul lieu d’activité actif
+
+## Rule: Deux antennes d’une même enseigne restent deux lieux
+
+Une enseigne ouvre plusieurs sites dans une même commune : « LA POSTE » ou
+« COMMUNE DE TOULON » y ont plusieurs adresses. Ce qui les sépare est leur
+adresse. Rapprocher un lieu de son homonyme sur le seul nom les fusionnerait et
+perdrait l’adresse du lieu absorbé. En cas de doute on ne fusionne pas : un
+doublon se détecte et se répare, une fusion à tort ne laisse aucune trace.
+
+### Scenario: Un homonyme à une autre adresse reste un lieu distinct
+
+* Given je suis un médiateur
+* And un lieu d’activité est disponible
+* When je crée un lieu d’activité de même nom, à une autre adresse
+* Then un second lieu d’activité a été créé
+* And je n’ai qu’un seul lieu d’activité actif
+
+## Rule: La commune se reconnaît au-delà de son code INSEE
+
+Paris, Lyon et Marseille sont désignées tantôt par leur code de commune, tantôt
+par celui de l’arrondissement ; une commune nouvelle change de code sans
+déménager. Le périmètre de recherche s’appuie donc aussi sur le code postal et
+le libellé de commune. Deux villages partageant un code postal restent, eux,
+deux communes distinctes.
+
+### Scenario: Un lieu enregistré sous le code de la commune est reconnu depuis l’arrondissement
+
+* Given je suis un médiateur
+* And un lieu d’activité est disponible, enregistré sous le code INSEE de la commune
+* When je crée un lieu d’activité de même nom et même adresse, sous le code INSEE de l’arrondissement
+* Then ce lieu est un de mes lieux d’activité actifs
+* And je n’ai qu’un seul lieu d’activité actif
+
+### Scenario: Deux communes partageant un code postal restent distinctes
+
+* Given je suis un médiateur
+* And un lieu d’activité est disponible dans une commune voisine du même code postal
+* When je crée un lieu d’activité de même nom et même adresse, dans ma commune
+* Then un second lieu d’activité a été créé
+* And je n’ai qu’un seul lieu d’activité actif
+
+## Rule: Un libellé non diffusible ne désigne personne
+
+L’INSEE rend « [Non diffusible] » pour les établissements qui refusent la
+diffusion de leurs données — nom comme adresse. Deux établissements non
+diffusibles ne sont pas le même : les rapprocher les fusionnerait tous.
+
+### Scenario: Deux lieux non diffusibles ne sont pas rapprochés
+
+* Given je suis un médiateur
+* And un lieu d’activité non diffusible est disponible
+* When je crée un lieu d’activité non diffusible à la même adresse
+* Then un second lieu d’activité a été créé
+* And je n’ai qu’un seul lieu d’activité actif
+
+## Rule: Un lieu sans adresse n’est jamais reconnu
+
+Un lieu est un endroit : sans adresse, plus rien ne dit OÙ il se trouve, et une
+commune compte plusieurs « Association Trait d’Union ». Aucun parcours n’en crée
+plus — la création, le renseignement et la matérialisation d’une employeuse
+exigent tous une adresse reconnue.
+
+Ceux qui subsistent en base pour des raisons historiques ne sont exploitables
+nulle part dans la coop, sauf dans le formulaire de modification qui permet de
+leur donner une adresse. Ils ne sont donc jamais candidats au rapprochement :
+un lieu du même nom est créé à part.
+
+### Scenario: Un lieu sans adresse n’est jamais reconnu, même sous le même nom
+
+* Given je suis un médiateur
+* And un lieu d’activité sans adresse est disponible
+* When je crée un lieu d’activité de même nom, avec une adresse
+* Then un second lieu d’activité a été créé
+* And je n’ai qu’un seul lieu d’activité actif
+
+## Rule: Deux libellés d’une même adresse désignent le même emplacement
+
+L’adresse enregistrée n’est pas toujours celle que la Base Adresse Nationale
+rend pour le même point : abréviations (« PL DU HUIT MAI 1945 » / « Place du
+8 Mai 1945 »), complément en préfixe, numéro de voie absent d’un côté. Les
+coordonnées, elles, tombent au même endroit — et la quasi-totalité des lieux en
+portent. À dénomination correspondante et dans la même commune, deux points
+distants de moins de cinquante mètres sont le même établissement.
+
+### Scenario: Un lieu retrouvé par ses coordonnées malgré une adresse écrite autrement
+
+* Given je suis un médiateur
+* And un lieu d’activité est disponible, dont l’adresse est écrite en abrégé
+* When je crée un lieu d’activité de même nom, à la même position mais sous l’adresse complète
+* Then ce lieu est un de mes lieux d’activité actifs
+* And je n’ai qu’un seul lieu d’activité actif
+
+### Scenario: Un lieu du même nom à l’autre bout de la commune reste distinct
+
+* Given je suis un médiateur
+* And un lieu d’activité est disponible, dont l’adresse est écrite en abrégé
+* When je crée un lieu d’activité de même nom, à une autre position de la commune
+* Then un second lieu d’activité a été créé
+* And je n’ai qu’un seul lieu d’activité actif

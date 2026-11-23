@@ -1,4 +1,1 @@
-export {
-  type EchecDeModification,
-  modifierUnTag,
-} from './modifier-un-tag.mutation'
+export { modifierUnTag } from './modifier-un-tag.mutation'

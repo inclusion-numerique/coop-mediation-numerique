@@ -1,21 +1,29 @@
 import type { ReactNode } from 'react'
-import DataSearchBar from '@/libs/data-table/DataSearchBar'
-import DataTable from '@/libs/data-table/DataTable'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import { DEFAULT_PAGE_SIZE } from '@/libs/data-table/toNumberOr'
+import {
+  DataSearchBar,
+  DEFAULT_PAGE_SIZE,
+  generatePageSizeSelectOptions,
+  PaginationNavWithPageSizeSelect,
+} from '@/libraries/data-table'
 import { criteresEquipe, type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../domain'
+import { etatDeLaListe } from '../etat-de-la-liste'
 import { lignesAffichees } from '../lister-les-membres.presenter'
-import type { ParametresDeLaListe } from '../pages/EquipeListePage'
-import { EquipeDataTable } from './EquipeDataTable'
+import type { ParametresDeLaListe } from '../parametres-de-la-liste'
+import { EquipeTable } from './EquipeTable'
 import EquipeVide from './EquipeVide'
 import { FiltresEquipe } from './filtres/FiltresEquipe'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
 export const ListeDeLEquipe = ({
-  membres: { lignes, statistiques, nombreDePages, coordinateur },
+  membres: {
+    lignes,
+    statistiques,
+    nombreDeResultats,
+    lignesParPage,
+    coordinateur,
+  },
   searchParams,
   baseHref,
   exporter,
@@ -28,6 +36,7 @@ export const ListeDeLEquipe = ({
   actions: ((ligne: LigneEquipe) => ReactNode) | null
 }) => {
   const rows = lignesAffichees(lignes, coordinateur.departementCode)
+  const state = etatDeLaListe(searchParams)
 
   return (
     <>
@@ -35,7 +44,7 @@ export const ListeDeLEquipe = ({
         <DataSearchBar
           className="fr-flex-grow-1"
           baseHref={baseHref}
-          searchParams={searchParams}
+          state={state}
           placeholder="Rechercher par nom ou adresse e-mail"
         />
         <div className="fr-flex-grow-2 fr-text--right">{exporter}</div>
@@ -53,21 +62,21 @@ export const ListeDeLEquipe = ({
       rows.length === 0 ? (
         <EquipeVide />
       ) : (
-        <DataTable
-          className="fr-table--nowrap fr-width-full"
-          rows={[...rows]}
-          configuration={EquipeDataTable(actions)}
-          searchParams={searchParams}
+        <EquipeTable
+          lignes={rows}
+          state={state}
           baseHref={baseHref}
+          actions={actions}
         />
       )}
       <PaginationNavWithPageSizeSelect
         className="fr-mt-12v"
         defaultPageSize={DEFAULT_PAGE_SIZE}
         pageSizeOptions={pageSizeOptions}
-        totalPages={nombreDePages}
+        itemsCount={nombreDeResultats}
+        pageSize={lignesParPage}
         baseHref={baseHref}
-        searchParams={searchParams}
+        state={state}
       />
     </>
   )

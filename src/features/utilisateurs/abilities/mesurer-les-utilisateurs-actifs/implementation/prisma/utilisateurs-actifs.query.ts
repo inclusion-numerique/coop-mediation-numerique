@@ -1,8 +1,8 @@
-import { conseillerNumeriqueWhere } from '@/features/employeuse/server'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { enPosteWhere } from '@/features/utilisateurs/db/conseiller-numerique-en-poste'
 import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
 import { AUCUN_FILTRE, FiltreStatut } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
 import {
   actifsDeLaCategorie,
   type CategorieStatistique,
@@ -21,12 +21,12 @@ const whereDeLaCategorie: Record<CategorieStatistique, Prisma.UserWhereInput> =
     mediateurs: {
       mediateur: { isNot: null },
       coordinateur: { is: null },
-      ...conseillerNumeriqueWhere(false),
+      ...enPosteWhere(false),
     },
     conseillers: {
       mediateur: { isNot: null },
       coordinateur: { is: null },
-      ...conseillerNumeriqueWhere(true),
+      ...enPosteWhere(true),
     },
     coordinateurs: { coordinateur: { isNot: null } },
   }

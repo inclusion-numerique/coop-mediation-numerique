@@ -2,7 +2,7 @@ import { addMonths, isBefore } from 'date-fns'
 import { EcheanceDuContrat } from './echeance-du-contrat'
 import type { TypeDeContrat } from './type-de-contrat'
 
-export const PREAVIS_DE_FIN_EN_MOIS = 3
+const PREAVIS_DE_FIN_EN_MOIS = 3
 
 export type LigneDeContrat = {
   readonly type: TypeDeContrat | null

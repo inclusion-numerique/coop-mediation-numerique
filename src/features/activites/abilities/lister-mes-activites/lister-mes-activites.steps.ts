@@ -1,8 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { conseillerNumeriqueSql } from '@/features/employeuse/server'
-import { prismaClient } from '@/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   type ChronologieDesActivites,
   contenuDeLaChronologie,
@@ -164,7 +163,6 @@ const lister = async (parametres: Record<string, string>) => {
     contenu: contenuDeLaChronologie(criteres, { _tag: 'NonConnecte' }),
     rendezVous: null,
     rendezVousLies: () => Promise.resolve([]),
-    conseillersNumeriques: conseillerNumeriqueSql,
   })
 }
 

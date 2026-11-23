@@ -5,13 +5,14 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
-import SiretInputInfo from '@/components/siret/SiretInputInfo'
+import SiretInputInfo from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/SiretInputInfo'
 import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { inject } from '@/libraries/nextjs/injection/client'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { useAppForm } from '@/libs/form/use-app-form'
+import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../action/renseigner-structure-employeuse.key'
 import {
   RenseignerStructureEmployeuseValidation,
   type StructureSearchResult,
@@ -52,7 +53,11 @@ const RattacherEmployeuseForm = ({
       if (!structure) return
 
       try {
-        const result = await renseignerStructureEmployeuseAction({ structure })
+        const result = await inject(RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY)(
+          {
+            structure,
+          },
+        )
 
         // `rattachee: false` = l'employeuse n'a pas pu être garantie côté
         // Entrepôt (géocodage ou API indisponible). Rien n'a été enregistré :

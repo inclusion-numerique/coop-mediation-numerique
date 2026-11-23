@@ -1,61 +1,18 @@
 import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/auth/getSessionUser'
-import { isUserInscriptionEnCours } from '@/auth/isUserInscriptionEnCours'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { getHomepage } from '@/security/getHomepage'
-import { contentId } from '@/utils/skipLinks'
-import { Contexte } from './_components/Contexte'
-import { Faq } from './_components/Faq'
-import { Fonctionnalites } from './_components/Fonctionnalites'
-import { Hero } from './_components/Hero'
-import { Impact } from './_components/Impact'
-import { Outils } from './_components/Outils'
-import { QuiSommesNous } from './_components/QuiSommesNous'
-import { Solution } from './_components/Solution'
-import Webinaire from './_components/Webinaire'
+import { getHomepage } from '@/features/authentification/domain/getHomepage'
+import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { isUserInscriptionEnCours } from '@/features/inscription/domain/isUserInscriptionEnCours'
+import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { LandingPage } from '@/features/vitrine/abilities/presenter-la-coop/ui/pages/LandingPage'
 
-const LandingPage = async () => {
-  // Redirect to custom homepage if user is logged in
+const Page = async () => {
   const user = await getSessionUser()
   if (user && !isUserInscriptionEnCours(user)) {
     redirect(getHomepage(user))
     return null
   }
 
-  return (
-    <>
-      <SkipLinksPortal />
-      <main id={contentId} className="fr-container--fluid">
-        <section className="fr-background-alt--brown-caramel-950 fr-py-md-12w fr-py-6w">
-          <Hero />
-        </section>
-        <section className="fr-pt-md-11w fr-pb-md-15w fr-py-8w">
-          <Fonctionnalites />
-        </section>
-        <section className="fr-background-alt--blue-france fr-py-md-15w fr-py-8w">
-          <Solution />
-        </section>
-        <section className="fr-pt-md-11w fr-pb-md-15w fr-py-8w">
-          <Contexte />
-        </section>
-        <section className="fr-background-alt--brown-caramel-950 fr-pt-md-11w fr-pb-md-15w fr-py-8w">
-          <Outils />
-        </section>
-        <section className="fr-pt-md-15w fr-pt-8w">
-          <Impact />
-        </section>
-        <section className="fr-py-md-15w fr-py-8w">
-          <Faq />
-        </section>
-        <section className="fr-background-alt--blue-france fr-pt-md-11w fr-pb-md-15w fr-py-8w">
-          <QuiSommesNous />
-        </section>
-        <section>
-          <Webinaire />
-        </section>
-      </main>
-    </>
-  )
+  return <LandingPage lienRdvServicePublic={rdvWebsiteLink} />
 }
 
-export default LandingPage
+export default Page

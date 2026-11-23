@@ -20,7 +20,7 @@ export type DecompteParType = readonly {
   readonly nombre: NombreDActivites
 }[]
 
-export type DecompteDuTrimestre = {
+type DecompteDuTrimestre = {
   readonly trimestre: Trimestre
   readonly decompte: DecompteParType
 }

@@ -1,4 +1,4 @@
-import type { Telephone } from './telephone'
+import type { Telephone } from '@/libraries/telephone'
 
 export type ContactTelephone =
   | { readonly _tag: 'disponible'; readonly numero: Telephone }

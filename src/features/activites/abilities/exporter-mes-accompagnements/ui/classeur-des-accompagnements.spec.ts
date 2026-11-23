@@ -1,18 +1,13 @@
 import type { Worksheet } from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import type { WorksheetUser } from '@/libs/worksheet/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import { classeurDesAccompagnements } from './classeur-des-accompagnements'
 import { collectifExporte, individuelExporte } from './fixtures-d-export'
 
-const demandeur: WorksheetUser = {
-  id: 'b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e',
-  firstName: 'John',
-  lastName: 'Doe',
-  role: 'User',
-  isConseillerNumerique: false,
-  coordinateur: null,
-  mediateur: { id: 'c2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f' },
-  emplois: [],
+const demandeur: AuteurDExport = {
+  nom: 'Doe',
+  prenom: 'John',
+  role: 'Médiateur',
 }
 
 const filtres = [

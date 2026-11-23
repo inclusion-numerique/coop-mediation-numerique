@@ -7,7 +7,7 @@ import path from 'node:path'
 
 const logDirectory = path.resolve(import.meta.dirname, '../../var')
 
-export const logFile = path.resolve(logDirectory, 'cypress.log')
+const logFile = path.resolve(logDirectory, 'cypress.log')
 
 fs.mkdirSync(logDirectory, { recursive: true })
 

@@ -1,6 +1,9 @@
 import axios from 'axios'
-import { brevoApiThrottle } from '@/external-apis/brevo/createBrevoContact'
-import { ServerWebAppConfig } from '@/ServerWebAppConfig'
+import {
+  cleApiBrevo,
+  listeDesUtilisateurs,
+} from '@/features/utilisateurs/implementation/brevo/brevo-api'
+import { brevoApiThrottle } from '@/features/utilisateurs/implementation/brevo/brevoApiThrottle'
 import {
   type AdresseCourriel,
   type ContactAImporter,
@@ -53,7 +56,7 @@ export const versContactBrevo = (
 })
 
 const enTetes = () => ({
-  'api-key': ServerWebAppConfig.Brevo.apiKey,
+  'api-key': cleApiBrevo,
   'Content-Type': 'application/json',
 })
 
@@ -63,7 +66,7 @@ export const importerDansLaListe = brevoApiThrottle(
       'https://api.brevo.com/v3/contacts/import',
       {
         jsonBody: lot.map(versContactBrevo),
-        listIds: [ServerWebAppConfig.Brevo.usersListId],
+        listIds: [listeDesUtilisateurs],
         updateExistingContacts: true,
         emptyContactsAttributes: true,
         disableNotification: true,
@@ -87,7 +90,7 @@ export const retirerDeLaListe = brevoApiThrottle(
   async (lot: readonly AdresseCourriel[]): Promise<void> => {
     await axios
       .post(
-        `https://api.brevo.com/v3/contacts/lists/${ServerWebAppConfig.Brevo.usersListId}/contacts/remove`,
+        `https://api.brevo.com/v3/contacts/lists/${listeDesUtilisateurs}/contacts/remove`,
         { emails: lot },
         { headers: enTetes() },
       )

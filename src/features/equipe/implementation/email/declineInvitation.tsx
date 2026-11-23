@@ -1,5 +1,7 @@
 import { MjmlColumn, MjmlSection, MjmlText } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
+import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
+import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { brandColor } from '@/libraries/emails/styles'
 
@@ -9,6 +11,8 @@ export const declineInvitation = {
   mjml: ({ mediateur }: { mediateur: string }): string =>
     renderToMjml(
       <LayoutWithFooter
+        projectTitle={projectTitle}
+        urlDeBase={getServerBaseUrl()}
         title={`${mediateur} a refusé l‘invitation à rejoindre votre équipe`}
         preview={`${mediateur} a refusé l‘invitation à rejoindre votre équipe`}
       >

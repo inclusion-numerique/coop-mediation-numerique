@@ -2,7 +2,6 @@
 
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
-import LogoCoop from '@/components/LogoCoop'
 import {
   type ChoisirProfilFormData,
   choisirProfilFormShape,
@@ -13,13 +12,17 @@ import {
   type Role,
 } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
+import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import {
+  type DefaultValues,
+  useAppForm,
+} from '@/libraries/formulaire/use-app-form'
+import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { ServerActionResult } from '@/libraries/nextjs'
+import LogoCoop from '@/libraries/ui/components/LogoCoop'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { handleSubmit } from '@/libs/form/handle-submit'
-import { type DefaultValues, useAppForm } from '@/libs/form/use-app-form'
-import { useHydrated } from '@/libs/form/use-hydrated'
 
-export type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
+type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{
     role: Role
     etapeSuivante: InscriptionStep

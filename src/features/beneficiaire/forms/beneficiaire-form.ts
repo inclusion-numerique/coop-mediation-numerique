@@ -7,9 +7,9 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { statutsSociaux } from '@/features/beneficiaire/domain/statut-social'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import { optional } from '@/libraries/zod'
+import { optional } from '@/features/beneficiaire/forms/champ-optionnel'
+import { Telephone } from '@/libraries/telephone'
 
 /**
  * Normalisation de frontière : une commune incomplète (un des champs clés
@@ -53,5 +53,3 @@ export const beneficiaireFormShape = z.object({
   statutSocial: z.enum(statutsSociaux).nullish(),
   notes: optional(Notes.schema),
 })
-
-export type BeneficiaireFormOutput = z.output<typeof beneficiaireFormShape>

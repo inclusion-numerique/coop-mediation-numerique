@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import {
   classeurDesMembres,
   exporterLesMembres,
@@ -12,7 +12,8 @@ import {
   MediateurId,
 } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { auteurDeLExport } from '@/features/utilisateurs'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (
   request: NextRequest,
@@ -53,7 +54,7 @@ export const GET = async (
   const donnees = await classeurDesMembres({
     membres: membres.data,
     criteres,
-    auteur: user,
+    auteur: auteurDeLExport(user),
   }).xlsx.writeBuffer()
 
   return new Response(donnees, {

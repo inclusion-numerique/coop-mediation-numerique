@@ -1,9 +1,9 @@
 export type {
   ActivitesDeCoordinationListees,
   OptionsDeFiltre,
-  TagDisponible,
 } from './domain'
 export {
   listerLesActivitesDeCoordination,
+  mesActivitesDeCoordination,
   optionsDeFiltre,
 } from './implementation'

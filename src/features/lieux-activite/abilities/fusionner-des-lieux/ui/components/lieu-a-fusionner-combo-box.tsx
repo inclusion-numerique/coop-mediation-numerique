@@ -1,6 +1,7 @@
-import { rechercherUnLieuAFusionnerAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-a-fusionner.action'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
+import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { ComboBoxData } from '@/libs/form/fields-components/ComboBox'
+import { RECHERCHER_UN_LIEU_A_FUSIONNER_ACTION_KEY } from '../../action/rechercher-un-lieu-a-fusionner.key'
 
 export type LieuChoisi = {
   id: string
@@ -37,7 +38,7 @@ export const lieuAFusionnerComboBox = (
 
     if (input.length < rechercheMinimum) return rien
 
-    const resultat = await rechercherUnLieuAFusionnerAction({
+    const resultat = await inject(RECHERCHER_UN_LIEU_A_FUSIONNER_ACTION_KEY)({
       recherche: input,
     })
 

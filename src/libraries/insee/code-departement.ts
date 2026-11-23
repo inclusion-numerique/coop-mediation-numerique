@@ -20,3 +20,6 @@ export const codeDepartementDuCodeInsee = (
   codeInsee: CodeInsee,
 ): CodeDepartement =>
   CodeDepartement(codeInsee.slice(0, estUltramarin(codeInsee) ? 3 : 2))
+
+export const motifDuDepartementDansLeCodeInsee =
+  '^(97[0-9]|98[0-9]|[0-9]{2}|2[AB])'

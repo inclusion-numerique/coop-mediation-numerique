@@ -1,6 +1,6 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import { failure, type Result, success } from '@/libraries/result'
-import { takeAndSkipFromPage } from '@/libs/data-table/takeAndSkipFromPage'
-import { prismaClient } from '@/prismaClient'
 import {
   filtresEquipe,
   type LigneEquipeRow,
@@ -117,6 +117,6 @@ export const listerLesMembres = async ({
     lignes: toLignesEquipe(lignes),
     statistiques,
     nombreDeResultats,
-    nombreDePages: take ? Math.ceil(nombreDeResultats / take) : 1,
+    lignesParPage: take,
   })
 }

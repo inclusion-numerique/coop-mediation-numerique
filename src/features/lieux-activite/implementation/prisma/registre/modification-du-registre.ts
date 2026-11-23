@@ -1,4 +1,4 @@
-import { coopCartographieNationaleSource } from '@/libraries/cartographie-nationale'
+import { coopCartographieNationaleSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import {
   type DerniereModification,
   ModifieParSource,

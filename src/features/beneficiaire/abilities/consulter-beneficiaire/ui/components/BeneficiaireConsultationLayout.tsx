@@ -1,12 +1,12 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import type { PropsWithChildren, ReactNode } from 'react'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import BackButton from '@/components/BackButton'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
 import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 /**
  * Shell de consultation d'un bénéficiaire. Pur affichage : il agence l'en-tête

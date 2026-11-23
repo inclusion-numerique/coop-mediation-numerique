@@ -1,5 +1,5 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { prismaClient } from '@/prismaClient'
 import { jetonsCompteToDomain } from '../../../../db'
 import type { RevoquerJetons } from '../../../../implementation/api'
 

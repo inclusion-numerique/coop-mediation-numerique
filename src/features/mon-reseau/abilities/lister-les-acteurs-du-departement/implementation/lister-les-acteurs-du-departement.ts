@@ -3,13 +3,17 @@ import {
   departementDuCode,
 } from '@/libraries/departement'
 import { failure, success } from '@/libraries/result'
-import { criteresActeurs, type ParametresDesActeurs } from '../domain'
-import { communesDuDepartement } from './lieux-activite'
+import {
+  type CommunesDesLieux,
+  criteresActeurs,
+  type ParametresDesActeurs,
+} from '../domain'
 import { acteursDuDepartement } from './prisma'
 
 export const listerLesActeursDuDepartement = async (
   code: string,
   parametres: ParametresDesActeurs,
+  { communesDesLieux }: { communesDesLieux: CommunesDesLieux },
 ) => {
   const departement = departementDuCode(code)
 
@@ -17,15 +21,10 @@ export const listerLesActeursDuDepartement = async (
     return failure<DepartementInconnu>(departement.error)
 
   const criteres = criteresActeurs(parametres)
-  const [acteurs, communes] = await Promise.all([
+  const [acteurs, { communesOptions: communes }] = await Promise.all([
     acteursDuDepartement(departement.data.code, criteres),
-    communesDuDepartement(departement.data.code),
+    communesDesLieux({ departementCode: departement.data.code }),
   ])
 
   return success({ departement: departement.data, criteres, acteurs, communes })
 }
-
-export type ActeursDuDepartementConsultes = Extract<
-  Awaited<ReturnType<typeof listerLesActeursDuDepartement>>,
-  { success: true }
->['data']

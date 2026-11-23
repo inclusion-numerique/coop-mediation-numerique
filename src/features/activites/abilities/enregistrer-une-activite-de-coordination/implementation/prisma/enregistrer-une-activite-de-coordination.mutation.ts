@@ -1,8 +1,8 @@
 import { v4 } from 'uuid'
+import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { failure, type Result, success } from '@/libraries/result'
-import { prismaClient } from '@/prismaClient'
-import { addMutationLog } from '@/utils/addMutationLog'
 import { activiteDeCoordinationVersLaBase } from '../../../../db/activite-de-coordination.transfer'
 import {
   type ActiviteDeCoordination,

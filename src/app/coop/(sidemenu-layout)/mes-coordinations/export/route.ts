@@ -1,18 +1,12 @@
 import type { NextRequest } from 'next/server'
-import { getSessionTokenFromNextRequestCookies } from '@/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/auth/getSessionUserFromSessionToken'
-import {
-  classeurDesCoordinations,
-  exporterLesActivitesDeCoordination,
-  tagsRappeles,
-} from '@/features/activites/abilities/exporter-les-activites-de-coordination'
-import {
-  CoordinateurId,
-  criteresDesCoordinations,
-} from '@/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@/features/activites/implementation/fournisseurs-de-la-saisie'
+import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination'
+import { profilDeLaSession } from '@/features/authentification'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { dateAsIsoDay } from '@/utils/dateAsIsoDay'
+import { acteurDe } from '@/features/tags/domain'
+import { auteurDeLExport } from '@/features/utilisateurs'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -23,32 +17,15 @@ export const GET = async (request: NextRequest) => {
   )
   if (!user?.coordinateur) return new Response('Unauthorized', { status: 401 })
 
-  const recherche = request.nextUrl.searchParams
-  const criteres = criteresDesCoordinations({
-    du: recherche.get('du') ?? undefined,
-    au: recherche.get('au') ?? undefined,
-    types: recherche.get('types') ?? undefined,
-    tags: recherche.get('tags') ?? undefined,
+  const classeur = await classeurDeMesCoordinations({
+    recherche: request.nextUrl.searchParams,
+    coordinateurId: user.coordinateur.id,
+    auteur: auteurDeLExport(user),
+    fuseau: user.timezone,
+    tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
   })
 
-  const [activites, tags] = await Promise.all([
-    exporterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurId(user.coordinateur.id),
-      criteres,
-    }),
-    tagsRappeles({
-      criteres,
-      tagsUtilisables: tagsUtilisablesDepuis(tagsVisiblesPar(user)),
-    }),
-  ])
-
-  const donnees = await classeurDesCoordinations({
-    activites,
-    criteres,
-    tags,
-    auteur: user,
-    fuseau: user.timezone,
-  }).xlsx.writeBuffer()
+  const donnees = await classeur.xlsx.writeBuffer()
 
   return new Response(donnees, {
     status: 200,

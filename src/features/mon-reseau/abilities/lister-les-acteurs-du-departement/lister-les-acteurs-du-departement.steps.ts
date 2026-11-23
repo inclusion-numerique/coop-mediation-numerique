@@ -7,6 +7,8 @@ import {
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
 
+const communesDesLieux = async () => ({ communesOptions: [] })
+
 type Consultation = Awaited<ReturnType<typeof listerLesActeursDuDepartement>>
 
 const etat: { consultation?: Consultation } = {}
@@ -48,10 +50,14 @@ const semerDansLeCantal = async ({
 }
 
 const consulter = async (parametres: Record<string, string>) => {
-  etat.consultation = await listerLesActeursDuDepartement('15', {
-    lignes: '100',
-    ...parametres,
-  })
+  etat.consultation = await listerLesActeursDuDepartement(
+    '15',
+    {
+      lignes: '100',
+      ...parametres,
+    },
+    { communesDesLieux },
+  )
 }
 
 Given(
@@ -120,7 +126,11 @@ When(
 When(
   'on consulte l’annuaire des acteurs du département « {word} »',
   async (code: string) => {
-    etat.consultation = await listerLesActeursDuDepartement(code, {})
+    etat.consultation = await listerLesActeursDuDepartement(
+      code,
+      {},
+      { communesDesLieux },
+    )
   },
 )
 

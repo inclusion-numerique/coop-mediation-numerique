@@ -12,6 +12,6 @@ export type CompterLesActeursDuDepartement = (
   departement: CodeDepartement,
 ) => Promise<Effectif>
 
-export type CompterLesLieuxDuDepartement = (
+export type NombreDeLieuxDuDepartement = (
   departement: CodeDepartement,
-) => Promise<Effectif>
+) => Promise<number>

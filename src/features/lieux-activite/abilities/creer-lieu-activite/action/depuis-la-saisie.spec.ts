@@ -8,7 +8,7 @@ import {
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import { emptyOpeningHours } from '@/opening-hours/openingHoursHelpers'
+import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { UserId } from '../../../domain/user-id'
 import { nouveauLieu } from './depuis-la-saisie'
 

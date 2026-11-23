@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
+import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.key'
 import {
   BoutonDeRetrait,
   ModaleDeRetrait,
@@ -22,8 +22,7 @@ import {
 } from '@/features/lieux-activite/ui'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import { ClientBinder } from '@/libs/injection/client-binder'
-import { contentId } from '@/utils/skipLinks'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),
@@ -48,15 +47,17 @@ const LieuActiviteListPage = async ({
 
   return (
     <ClientBinder
-      bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
-      to={rechercherUnLieuActiviteAction}
+      bind={RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY}
+      to={retirerUnMediateurDuLieuAction}
     >
       <ClientBinder
-        bind={REGLER_MA_VISIBILITE_CARTO_ACTION_KEY}
-        to={reglerMaVisibiliteCartoAction}
+        bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
+        to={rechercherUnLieuActiviteAction}
       >
-        <SkipLinksPortal />
-        <div id={contentId}>
+        <ClientBinder
+          bind={REGLER_MA_VISIBILITE_CARTO_ACTION_KEY}
+          to={reglerMaVisibiliteCartoAction}
+        >
           <MesLieuxActivitePage
             lieux={lieux}
             carte={({ id, lieuInclusion }) => (
@@ -79,9 +80,8 @@ const LieuActiviteListPage = async ({
             )}
             visibilite={<MaVisibiliteCarto visible={mediateur.isVisible} />}
             modaleDeRetrait={<ModaleDeRetrait />}
-            entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
           />
-        </div>
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )

@@ -1,11 +1,22 @@
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/app/metadataTitle'
-import { authenticateUser } from '@/auth/authenticateUser'
+import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/server'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementation'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/step-path'
-import { hasInscriptionComplete } from '@/security/getHomepage'
+import {
+  ensurePersonneMain,
+  synchroniserPersonne,
+} from '@/features/registre-des-personnes'
+import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif'
+
+const registreDesPersonnes = {
+  garantirLaPersonne: ensurePersonneMain,
+  synchroniserLaPersonne: synchroniserPersonne,
+}
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -22,9 +33,16 @@ const InitialiserInscriptionPage = async () => {
     redirect('/coop')
   }
 
-  const { nextStep } = await initialiserInscriptionAvecInfra({
-    userId: UserId(user.id),
-  })
+  const { nextStep } = await initialiserInscriptionAvecInfra(
+    { userId: UserId(user.id) },
+    {
+      rattacherDepuisSiret:
+        rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
+      garantirLeRoleCoordinateur:
+        garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
+      synchroniserLaPersonne: synchroniserPersonne,
+    },
+  )
 
   // Redirect to next step or fallback
   if (nextStep) {

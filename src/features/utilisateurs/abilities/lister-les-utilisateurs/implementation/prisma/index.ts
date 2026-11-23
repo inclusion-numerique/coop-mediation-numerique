@@ -1,5 +1,2 @@
-export {
-  type RechercheDUtilisateursParams,
-  rechercherDesUtilisateurs,
-} from './rechercher-des-utilisateurs.query'
-export { triDesUtilisateurs } from './tri-des-utilisateurs'
+export { rechercherDesUtilisateurs } from './rechercher-des-utilisateurs.query'
+export { ordreDesUtilisateurs } from './tri-des-utilisateurs'

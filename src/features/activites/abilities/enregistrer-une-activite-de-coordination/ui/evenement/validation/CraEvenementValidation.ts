@@ -9,8 +9,6 @@ const typeEvenementValues = [
   'Autre',
 ] as const
 
-export type TypeEvenementValue = (typeof typeEvenementValues)[number]
-
 const organisateursValues = [
   'MaStructure',
   'Commune',
@@ -25,8 +23,6 @@ const organisateursValues = [
   'Autre',
 ] as const
 
-export type OrganisateursValue = (typeof organisateursValues)[number]
-
 const echelonTerritorialValues = [
   'Communal',
   'Intercommunal',
@@ -34,8 +30,6 @@ const echelonTerritorialValues = [
   'Regional',
   'National',
 ] as const
-
-export type EchelonTerritorialValue = (typeof echelonTerritorialValues)[number]
 
 export const CraEvenementValidation = z
   .object({

@@ -1,19 +1,36 @@
 import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
 import type { ActivitesFiltersLabels } from '@/features/statistiques/ui/filtres/libelles-des-filtres'
+import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import type {
   LabelAndCount,
   QuantifiedShare,
-} from '@/libs/statistiques/quantifiedShare'
+} from '@/libraries/proportions/quantifiedShare'
 import {
+  type AuteurDExport,
   addExportMetadata,
-  type WorksheetUser,
-} from '@/libs/worksheet/addExportMetadata'
-import { addTitleRow } from '@/libs/worksheet/addTitleRow'
-import { autosizeColumns } from '@/libs/worksheet/autosizeColumns'
-import { addFilters } from '@/libs/worksheet/filtres-des-activites'
-import { setWorkbookMetadata } from '@/libs/worksheet/setWorkbookMetadata'
-import { numberToPercentage } from '@/utils/formatNumber'
+} from '@/libraries/tableur/addExportMetadata'
+import { addFilters } from '@/libraries/tableur/addFilters'
+import { addTitleRow } from '@/libraries/tableur/addTitleRow'
+import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
+import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
+
+const filtresDisponibles = [
+  { label: 'Période', type: 'periode' },
+  { label: 'Source', type: 'source' },
+  { label: 'Lieux d’accompagnement', type: 'lieux' },
+  { label: 'Communes', type: 'communes' },
+  { label: 'Départements', type: 'departements' },
+  { label: 'Type d’accompagnement', type: 'types' },
+  { label: 'Rôle', type: 'conseiller_numerique' },
+  {
+    label: 'Thématiques non administratives',
+    type: 'thematiqueNonAdministratives',
+  },
+  { label: 'Thématiques administratives', type: 'thematiqueAdministratives' },
+  { label: 'Tags', type: 'tags' },
+  { label: 'Médiateurs', type: 'mediateurs', masqueSiVide: true },
+]
 
 type PartDuTotal = { total: number; proportion: number }
 
@@ -22,7 +39,7 @@ type CommuneDuClasseur = QuantifiedShare & {
   codePostal: string | null
 }
 
-export type StatistiquesDuClasseur = {
+type StatistiquesDuClasseur = {
   totalCounts: {
     activites: {
       total: number
@@ -226,8 +243,7 @@ const addStatistiquesCommuneResidenceBeneficiaires =
   }
 
 export type BuildStatistiquesWorksheetInput = {
-  user: WorksheetUser
-  mediateur: WorksheetUser
+  auteur: AuteurDExport
   filters: ActivitesFiltersLabels
   statistiques: StatistiquesDuClasseur
   fuseau: string
@@ -235,8 +251,7 @@ export type BuildStatistiquesWorksheetInput = {
 }
 
 export const buildStatistiquesWorksheet = ({
-  user,
-  mediateur,
+  auteur,
   filters,
   statistiques,
   fuseau,
@@ -249,14 +264,13 @@ export const buildStatistiquesWorksheet = ({
   const worksheet = workbook.addWorksheet('Statistiques')
 
   addExportMetadata(worksheet)({
-    user,
+    auteur,
     date: worksheetGenerationDate,
     fuseau,
   })
-  addFilters(worksheet)(filters, {
-    mediateurScope: user.id === mediateur.id ? null : mediateur,
-    excludeFilters: ['beneficiaires'],
-  })
+  addTitleRow(worksheet)('Filtres')
+  addFilters(worksheet, filtresDisponibles)(filters)
+  worksheet.addRow([])
   addStatistiquesGenerales(worksheet)(statistiques)
   addStatistiquesActivites(worksheet)(statistiques)
   addStatistiquesThematiquesMediationNumerique(worksheet)(statistiques)

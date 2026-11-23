@@ -1,4 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
+import { goToMostRecentEmailReceived } from '@e2e/support/maildev'
 import {
   CoordinateurId,
   Email,
@@ -8,13 +9,12 @@ import {
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
-} from '@/fixtures/users/conseillerNumerique'
-import { coordinateurInscritCoordinateurId } from '@/fixtures/users/coordinateurInscrit'
+} from '@/features/utilisateurs/fixtures/users/conseillerNumerique'
+import { coordinateurInscritCoordinateurId } from '@/features/utilisateurs/fixtures/users/coordinateurInscrit'
 import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
-} from '@/fixtures/users/mediateurInscription'
-import { goToMostRecentEmailReceived } from '@/libraries/e2e/goToMostRecentEmailReceived'
+} from '@/features/utilisateurs/fixtures/users/mediateurInscription'
 
 const createInvitationUrl = ({
   email,

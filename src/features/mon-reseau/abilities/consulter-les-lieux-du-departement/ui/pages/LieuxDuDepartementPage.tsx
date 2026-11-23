@@ -1,17 +1,16 @@
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import BackButton from '@/components/BackButton'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
+import type { ReactNode } from 'react'
 import {
-  hrefDuLieuEnListe,
-  LieuActiviteCard,
-} from '@/features/lieux-activite/ui'
+  DataSearchBar,
+  generatePageSizeSelectOptions,
+  PaginationNavWithPageSizeSelect,
+} from '@/libraries/data-table'
+import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import BackButton from '@/libraries/ui/components/BackButton'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import DataSearchBar from '@/libs/data-table/DataSearchBar'
-import PaginationNavWithPageSizeSelect from '@/libs/data-table/PaginationNavWithPageSizeSelect'
-import { generatePageSizeSelectOptions } from '@/libs/data-table/pageSizeSelectOptions'
-import SortSelect from '@/libs/data-table/SortSelect'
-import { contentId } from '@/utils/skipLinks'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
 import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
@@ -32,11 +31,13 @@ const LieuxDuDepartementPage = ({
   criteres,
   lieux,
   communes,
+  listeDesLieux,
 }: {
   departement: Departement
   criteres: CriteresDesLieux
   lieux: LieuxTrouves
   communes: SelectOption[]
+  listeDesLieux: ReactNode
 }) => {
   const baseHref = hrefDesLieux(departement.code)
   const parametres = parametresDeLURL(criteres)
@@ -73,7 +74,7 @@ const LieuxDuDepartementPage = ({
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
             <DataSearchBar
               baseHref={baseHref}
-              searchParams={parametres}
+              state={parametres}
               placeholder="Nom du lieu, adresse ou SIRET..."
               className="fr-flex-grow-1"
             />
@@ -113,19 +114,14 @@ const LieuxDuDepartementPage = ({
 
           <hr className="fr-separator-1px" />
 
-          {lieux.lieux.map((lieu) => (
-            <LieuActiviteCard
-              key={lieu.id}
-              lieu={lieu}
-              href={hrefDuLieuEnListe(lieu)}
-            />
-          ))}
+          {listeDesLieux}
 
           <PaginationNavWithPageSizeSelect
             className="fr-mt-12v"
-            totalPages={lieux.totalPages}
+            itemsCount={lieux.totalCount}
+            pageSize={lieux.pageSize}
             baseHref={baseHref}
-            searchParams={parametres}
+            state={parametres}
             defaultPageSize={LIGNES_PAR_DEFAUT}
             pageSizeOptions={pageSizeOptions}
           />

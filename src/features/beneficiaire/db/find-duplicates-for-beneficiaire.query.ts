@@ -1,3 +1,4 @@
+import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/db/duplicate-beneficiaire'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -6,10 +7,9 @@ import { Email } from '@/features/beneficiaire/domain/email'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { Telephone } from '@/features/beneficiaire/domain/telephone'
 import { Prisma } from '@/generated/prisma/client'
-import { prismaClient } from '@/prismaClient'
-import { isDefinedAndNotNull } from '@/utils/isDefinedAndNotNull'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
+import { Telephone } from '@/libraries/telephone'
 
 export type FindDuplicatesForBeneficiaireInput = {
   beneficiaire: {
@@ -157,5 +157,5 @@ export const findDuplicatesForBeneficiaire = async ({
     ORDER BY c.nom ASC, c.creation DESC
   `
 
-  return rows.map(toDuplicateBeneficiaire).filter(isDefinedAndNotNull)
+  return rows.map(toDuplicateBeneficiaire).filter(onlyDefinedAndNotNull)
 }

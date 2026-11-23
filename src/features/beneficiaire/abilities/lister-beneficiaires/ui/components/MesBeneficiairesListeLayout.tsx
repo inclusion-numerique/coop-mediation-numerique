@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react'
-import CoopBreadcrumbs from '@/app/coop/CoopBreadcrumbs'
-import CoopPageContainer from '@/app/coop/CoopPageContainer'
-import SkipLinksPortal from '@/components/SkipLinksPortal'
-import { contentId } from '@/utils/skipLinks'
+import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
+import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 
 const MesBeneficiairesListeLayout = ({ children }: PropsWithChildren) => (
   <CoopPageContainer size={56}>

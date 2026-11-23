@@ -1,6 +1,10 @@
 import { z } from 'zod'
-import { departementsByCode } from '@/data/collectivites-territoriales/departements'
-import { CodeDepartement } from '@/libraries/insee'
+import { departementsByCode } from '@/libraries/departement/departements'
+import {
+  CodeDepartement,
+  CodeInsee,
+  codeDepartementDuCodeInsee,
+} from '@/libraries/insee'
 import { defineModel, type Model } from '@/libraries/model'
 import { failure, type Result, success } from '@/libraries/result'
 
@@ -46,3 +50,19 @@ export const departementDuCode = (
     ? failure(DepartementInconnu(code))
     : success(departement)
 }
+
+const departementsDistincts = (
+  codes: readonly CodeDepartement[],
+): CodeDepartement[] => [...new Set(codes)]
+
+export const departementsDesCodesInsee = (
+  codesInsee: readonly string[],
+): Departement[] =>
+  departementsDistincts(
+    codesInsee
+      .map(CodeInsee.safe)
+      .filter((code) => code !== null)
+      .map(codeDepartementDuCodeInsee),
+  )
+    .map(departementDuReferentiel)
+    .filter((departement) => departement !== null)
