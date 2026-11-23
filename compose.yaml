@@ -13,6 +13,7 @@ services:
   db:
     build:
       context: ./docker/postgres
+      pull: true
     image: coop-postgis-pgvector:pg17
     pull_policy: build
     container_name: coop_pg
