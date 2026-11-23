@@ -1,8 +1,9 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { Jour } from '../../domain'
+import { fenetreDe } from '../../domain/fenetre-des-graphiques'
 import { demandeDeStatistiques } from '../../statistiques.cucumber'
-import { type AccompagnementsParPeriode, fenetreDe } from './domain/index'
+import type { AccompagnementsParPeriode } from './domain/index'
 import { compterLesAccompagnementsParPeriode } from './implementations/prisma/accompagnements-par-periode.query'
 
 let parPeriode: AccompagnementsParPeriode | undefined

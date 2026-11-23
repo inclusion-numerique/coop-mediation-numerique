@@ -1,15 +1,18 @@
-import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/domain/index'
 import {
   criteresDesStatistiques,
   Jour,
   type PerimetreDesStatistiques,
 } from '@/features/activites/domain'
+import { fenetreDe } from '@/features/activites/domain/fenetre-des-graphiques'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import type { RendezVousAuxStatuts } from '../prisma/criteres-des-statistiques.sql'
-import { statistiquesEnCours } from './statistiques-fournies'
+import type { RendezVousAuxStatuts } from './prisma/criteres-des-statistiques.sql'
+import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
 
 export const statistiquesDuPerimetre =
-  (rendezVousAuxStatuts: RendezVousAuxStatuts) =>
+  <EnCours>(
+    lancer: LancerLesStatistiques<EnCours>,
+    rendezVousAuxStatuts: RendezVousAuxStatuts,
+  ) =>
   ({
     perimetre,
     filtres,
@@ -25,7 +28,7 @@ export const statistiquesDuPerimetre =
       fin: Jour(dateAsIsoDay(fin)),
     })
 
-    return statistiquesEnCours(
+    return lancer(
       {
         perimetre,
         criteres,

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { Jour } from '../../../domain'
 import {
   fenetreDe,
   joursDeLaFenetre,
   moisDeLaFenetre,
 } from './fenetre-des-graphiques'
+import { Jour } from './jour'
 
 describe('fenêtre des graphiques', () => {
   it('sans début, couvre les 30 derniers jours jusqu’à la fin', () => {

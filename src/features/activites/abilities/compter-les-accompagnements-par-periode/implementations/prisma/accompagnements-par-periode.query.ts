@@ -2,18 +2,17 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { Effectif, Jour } from '../../../../domain'
 import {
+  type BornesDeLaSerie,
+  type FenetreDesGraphiques,
+  joursDeLaFenetre,
+  moisDeLaFenetre,
+} from '../../../../domain/fenetre-des-graphiques'
+import {
   activitesRetenues,
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
 } from '../../../../implementations/prisma/statistiques.sql'
-import {
-  type AccompagnementsParPeriode,
-  type BornesDeLaSerie,
-  type FenetreDesGraphiques,
-  joursDeLaFenetre,
-  Mois,
-  moisDeLaFenetre,
-} from '../../domain'
+import { type AccompagnementsParPeriode, Mois } from '../../domain'
 
 type Ligne = { readonly periode: string; readonly nombre: number }
 

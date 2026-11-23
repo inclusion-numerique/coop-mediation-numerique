@@ -1,5 +1,5 @@
 import { format, parseISO, startOfMonth, subDays, subMonths } from 'date-fns'
-import { Jour } from '../../../domain'
+import { Jour } from './jour'
 
 export type FenetreDesGraphiques =
   | { readonly type: 'Glissante'; readonly fin: Jour }

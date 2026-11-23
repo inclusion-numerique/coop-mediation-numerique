@@ -24,7 +24,7 @@ import { profilPresente } from '@/features/activites/abilities/decrire-les-perso
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { criteresDesStatistiques } from '@/features/activites/domain'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
 import {
   authenticateAdmin,
   authenticateUser,

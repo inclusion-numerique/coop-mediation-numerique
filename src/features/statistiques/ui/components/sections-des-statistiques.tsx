@@ -12,13 +12,6 @@ import { SectionGeneraleImprimee } from './sections/SectionGeneraleImprimee'
 
 type Wording = 'personnel' | 'generique'
 
-type Bloc = {
-  readonly donnee: unknown
-  rendu(valeur: unknown): ReactNode
-  readonly className?: string
-  readonly attente?: ReactNode
-}
-
 const Attendue = async <T,>({
   donnee,
   rendu,
@@ -41,49 +34,46 @@ const enAttente = <T,>(
     rendu(donnee)
   )
 
-const enBloc = (bloc: Bloc): ReactNode =>
-  enAttente(
-    bloc.donnee,
-    (valeur) => bloc.rendu(valeur),
-    bloc.className,
-    bloc.attente,
+const enBloc = (bloc: ReactNode, className?: string): ReactNode =>
+  bloc === null ? null : (
+    <BlocEnAttente className={className}>{bloc}</BlocEnAttente>
   )
 
-const enBlocOptionnel = (bloc: Bloc | undefined): ReactNode =>
-  bloc === undefined ? undefined : enBloc(bloc)
-
 export const sectionGenerale = (
-  { chiffresCles, graphique }: { chiffresCles: Bloc; graphique: Bloc },
+  {
+    chiffresCles,
+    graphique,
+  }: { chiffresCles: ReactNode; graphique: ReactNode },
   { wording }: { wording?: Wording } = {},
 ) => (
   <SectionGenerale
     wording={wording}
-    chiffresCles={enBloc(chiffresCles)}
-    graphique={enBloc(graphique)}
+    chiffresCles={enBloc(chiffresCles, 'fr-col-xl-4 fr-col-12')}
+    graphique={enBloc(graphique, 'fr-col')}
   />
 )
 
 export const sectionBeneficiaires = (
-  { profil, communes }: { profil: Bloc; communes?: Bloc },
+  { profil, communes }: { profil: ReactNode; communes: ReactNode },
   { wording }: { wording?: Wording } = {},
 ) => (
   <SectionBeneficiaires
     wording={wording}
     profil={enBloc(profil)}
-    communes={enBlocOptionnel(communes)}
+    communes={enBloc(communes) ?? undefined}
   />
 )
 
 export const sectionActivites = (
   blocs: {
-    types: Bloc
-    thematiques: Bloc
-    demarches: Bloc
-    tags: Bloc
-    materiels: Bloc
-    canauxEtDurees: Bloc
-    lieux?: Bloc
-    communes?: Bloc
+    types: ReactNode
+    thematiques: ReactNode
+    demarches: ReactNode
+    tags: ReactNode
+    materiels: ReactNode
+    canauxEtDurees: ReactNode
+    lieux: ReactNode
+    communes: ReactNode
   },
   {
     wording,
@@ -93,14 +83,14 @@ export const sectionActivites = (
   <SectionActivites
     wording={wording}
     canManageTags={canManageTags}
-    types={enBloc(blocs.types)}
+    types={enBloc(blocs.types, 'fr-col')}
     thematiques={enBloc(blocs.thematiques)}
     demarches={enBloc(blocs.demarches)}
     tags={enBloc(blocs.tags)}
     materiels={enBloc(blocs.materiels)}
-    canauxEtDurees={enBloc(blocs.canauxEtDurees)}
-    lieux={enBlocOptionnel(blocs.lieux)}
-    communes={enBlocOptionnel(blocs.communes)}
+    canauxEtDurees={enBloc(blocs.canauxEtDurees, 'fr-flex-grow-1')}
+    lieux={enBloc(blocs.lieux) ?? undefined}
+    communes={enBloc(blocs.communes) ?? undefined}
   />
 )
 

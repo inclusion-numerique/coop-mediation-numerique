@@ -1,6 +1,15 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { totauxDesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/totaux-des-accompagnements.binding'
+import { accompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/accompagnements-par-commune.binding'
+import { accompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/accompagnements-par-lieu.binding'
+import { accompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/accompagnements-par-periode.binding'
+import { personnesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/personnes-par-commune.binding'
+import { profilDesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/profil-des-personnes-accompagnees.binding'
+import { repartitionDesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/repartition-des-accompagnements.binding'
+import { accompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/accompagnements-par-tag.binding'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
@@ -31,13 +40,13 @@ import {
   criteresDesStatistiques,
   MediateurId,
   perimetreDuDemandeur,
-} from '../../domain'
-import { semerLesCrasDeDemonstration } from '../../fixtures/semer-les-cras-de-demonstration'
-import { dureeAccompagnementStatisticsRanges } from '../../ui/labels/libelles/duree-accompagnement.labels'
+} from '../domain'
+import { semerLesCrasDeDemonstration } from '../fixtures/semer-les-cras-de-demonstration'
+import { dureeAccompagnementStatisticsRanges } from '../ui/labels/libelles/duree-accompagnement.labels'
 import {
   materielLabels,
   materielValues,
-} from '../../ui/labels/libelles/materiel.labels'
+} from '../ui/labels/libelles/materiel.labels'
 import {
   genreLabels,
   genresAffiches,
@@ -45,23 +54,35 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '../../ui/labels/libelles/profil.labels'
+} from '../ui/labels/libelles/profil.labels'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '../../ui/labels/libelles/thematique.labels'
+} from '../ui/labels/libelles/thematique.labels'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '../../ui/labels/libelles/type-activite.labels'
+} from '../ui/labels/libelles/type-activite.labels'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '../../ui/labels/libelles/type-lieu.labels'
-import { statistiquesDuPerimetre } from './statistiques-du-perimetre'
-import { rassembler } from './statistiques-fournies'
+} from '../ui/labels/libelles/type-lieu.labels'
+import { statistiquesDuPerimetre } from './statistiques-du-perimetre.binding'
+import { statistiquesAvec } from './statistiques-en-cours.binding'
+
+const statistiquesDesActivites = statistiquesAvec({
+  totalCounts: totauxDesAccompagnements,
+  periode: accompagnementsParPeriode,
+  repartition: repartitionDesAccompagnements,
+  tags: accompagnementsParTag,
+  structures: accompagnementsParLieu,
+  communes: accompagnementsParCommune,
+  profil: profilDesPersonnesAccompagnees,
+  residences: personnesParCommune,
+  hasCrasV1: presenceDeCrasV1,
+})
 
 const demonstration = {
   employeuse: { structureCoopId: structureEmployeuse.id },
@@ -96,8 +117,11 @@ const statistiquesDuMediateur = ({
     equipe: [],
   })
   if (perimetre === null) throw new Error('Périmètre introuvable')
-  return rassembler(
-    statistiquesDuPerimetre(aucunRendezVous)({
+  return statistiquesDesActivites.rassembler(
+    statistiquesDuPerimetre(
+      statistiquesDesActivites.lancer,
+      aucunRendezVous,
+    )({
       perimetre,
       filtres: activitesFilters,
       fin: graphOptions.fin,

@@ -5,7 +5,7 @@ import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activite
 import { GenreDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/domain/index'
 import { rechercherLesLieuxDesStatistiques } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-des-statistiques.query'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/statistiques'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withInput } from '@/libraries/nextjs'
 

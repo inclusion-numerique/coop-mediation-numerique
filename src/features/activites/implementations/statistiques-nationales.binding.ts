@@ -1,14 +1,15 @@
-import { fenetreDe } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/domain/index'
 import {
   type CriteresDesStatistiques,
   Jour,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
+import { fenetreDe } from '@/features/activites/domain/fenetre-des-graphiques'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import type { RendezVousAuxStatuts } from '../prisma/criteres-des-statistiques.sql'
-import { rassembler, statistiquesEnCours } from './statistiques-fournies'
+import type { RendezVousAuxStatuts } from './prisma/criteres-des-statistiques.sql'
+import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
 
-export const statistiquesNationalesEnCours = (
+export const statistiquesNationalesEnCours = <E>(
+  lancer: LancerLesStatistiques<E>,
   criteres: CriteresDesStatistiques,
   {
     tags,
@@ -19,7 +20,7 @@ export const statistiquesNationalesEnCours = (
   },
 ) => {
   const aujourdhui = Jour(dateAsIsoDay(new Date()))
-  return statistiquesEnCours(
+  return lancer(
     {
       perimetre: PERIMETRE_NATIONAL,
       criteres,
@@ -33,8 +34,3 @@ export const statistiquesNationalesEnCours = (
     { territoires: false, tags },
   )
 }
-
-export const statistiquesNationales = (
-  criteres: CriteresDesStatistiques,
-  options: Parameters<typeof statistiquesNationalesEnCours>[1],
-) => rassembler(statistiquesNationalesEnCours(criteres, options))

@@ -45,10 +45,7 @@ const Emplacement = ({ nom }: { nom: string }) => (
   </div>
 )
 
-const emplacement = (nom: string) => ({
-  donnee: null,
-  rendu: () => <Emplacement nom={nom} />,
-})
+const emplacement = (nom: string) => <Emplacement nom={nom} />
 
 export default {
   title: 'Mes statistiques',

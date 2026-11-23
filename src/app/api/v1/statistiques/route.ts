@@ -1,7 +1,17 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
+import { totauxDesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/totaux-des-accompagnements.binding'
+import { accompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/accompagnements-par-commune.binding'
+import { accompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/accompagnements-par-lieu.binding'
+import { accompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/accompagnements-par-periode.binding'
+import { personnesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/personnes-par-commune.binding'
+import { profilDesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/profil-des-personnes-accompagnees.binding'
+import { repartitionDesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/repartition-des-accompagnements.binding'
+import { accompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/accompagnements-par-tag.binding'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import { criteresDesStatistiques } from '@/features/activites/domain'
-import { statistiquesNationales } from '@/features/activites/implementations/statistiques'
+import { statistiquesAvec } from '@/features/activites/implementations/statistiques-en-cours.binding'
+import { statistiquesNationalesEnCours } from '@/features/activites/implementations/statistiques-nationales.binding'
 import {
   withApiV1Errors,
   withClientApi,
@@ -15,6 +25,18 @@ import {
   statistiquesAttributes,
   statistiquesExposees,
 } from '@/features/statistiques/abilities/exposer-les-statistiques/implementations/api/statistiques-exposees.transfer'
+
+const statistiquesDesActivites = statistiquesAvec({
+  totalCounts: totauxDesAccompagnements,
+  periode: accompagnementsParPeriode,
+  repartition: repartitionDesAccompagnements,
+  tags: accompagnementsParTag,
+  structures: accompagnementsParLieu,
+  communes: accompagnementsParCommune,
+  profil: profilDesPersonnesAccompagnees,
+  residences: personnesParCommune,
+  hasCrasV1: presenceDeCrasV1,
+})
 
 /**
  * @openapi
@@ -366,9 +388,12 @@ export const GET = routeBuilder()
   )
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
-      const fournies = await statistiquesNationales(
-        criteresDesStatistiques(queryParams.filter),
-        { tags: false, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
+      const fournies = await statistiquesDesActivites.rassembler(
+        statistiquesNationalesEnCours(
+          statistiquesDesActivites.lancer,
+          criteresDesStatistiques(queryParams.filter),
+          { tags: false, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
+        ),
       )
 
       return NextResponse.json(
