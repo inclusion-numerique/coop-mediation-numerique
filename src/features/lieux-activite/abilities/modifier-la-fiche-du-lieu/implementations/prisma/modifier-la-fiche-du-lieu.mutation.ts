@@ -1,7 +1,7 @@
 import { failure, type Result, success } from '@/libraries/result'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
-import type { UserId } from '../../../../domain/user-id'
+import type { UserId } from '../../../../domain/utilisateur-id'
 import { appliquerModification } from '../../domain/appliquer-la-modification'
 import {
   type EchecDeModification,

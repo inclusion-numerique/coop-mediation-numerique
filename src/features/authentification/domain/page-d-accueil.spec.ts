@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   getHomepage,
   getLoginRedirectUrl,
-} from '@/features/authentification/domain/getHomepage'
+} from '@/features/authentification/domain/page-d-accueil'
 
 const utilisateur = ({
   role = 'User' as const,

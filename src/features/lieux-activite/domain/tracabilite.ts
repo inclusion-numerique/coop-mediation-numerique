@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
-import type { UserId } from './user-id'
+import type { UserId } from './utilisateur-id'
 
 export const SourceCartographie = defineModel(
   z.string().trim().min(1).brand('SourceCartographie'),

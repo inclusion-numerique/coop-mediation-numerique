@@ -20,8 +20,8 @@ import {
   JetonRafraichissement,
   type JetonsOAuth,
 } from '@/features/rdvsp/domain/jetons-oauth'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import { RdvAgentId } from '@/features/rdvsp/domain/rdv-agent-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
 import {
   compteRdvEnBase,
   emailUtilisateurDeTest,

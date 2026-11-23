@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 
 export const dynamic = 'force-dynamic'

@@ -2,7 +2,7 @@ import {
   NomAffiche,
   nomAffiche as nomAfficheDeLaPersonne,
 } from '@/libraries/nom-affiche'
-import type { Email } from './email'
+import type { Email } from './courriel'
 import type { Nom } from './nom'
 import type { Prenom } from './prenom'
 

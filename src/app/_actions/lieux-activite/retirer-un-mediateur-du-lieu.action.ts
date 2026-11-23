@@ -7,7 +7,7 @@ import { RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS } from '@/features/lieux-activite/a
 import { RetirerUnMediateurDuLieuValidation } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.validation'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

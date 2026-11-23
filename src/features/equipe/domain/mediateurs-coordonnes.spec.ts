@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   mediateurCoordonnesEtAnciensIdsFor,
   mediateurCoordonnesIdsFor,
-} from '@/features/equipe/domain/mediateursCoordonnes'
+} from '@/features/equipe/domain/mediateurs-coordonnes'
 
 const ACTUEL = 'mediateur-actuel'
 const ANCIEN = 'mediateur-ancien'

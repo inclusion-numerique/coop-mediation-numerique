@@ -3,7 +3,7 @@ import { sendRemovedFromLieuEmail } from '@/features/lieux-activite/abilities/re
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
-import type { UserId } from '../../../../domain/user-id'
+import type { UserId } from '../../../../domain/utilisateur-id'
 import {
   type EchecDeRetrait,
   PasEnActiviteSurCeLieu,

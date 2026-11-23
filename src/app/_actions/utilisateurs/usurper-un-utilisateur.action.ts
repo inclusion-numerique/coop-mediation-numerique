@@ -2,7 +2,7 @@
 
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
-import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
+import { getLoginRedirectUrl } from '@/features/authentification/domain/page-d-accueil'
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/getSessionUser'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'

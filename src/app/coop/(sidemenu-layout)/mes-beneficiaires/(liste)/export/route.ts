@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
+import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import {

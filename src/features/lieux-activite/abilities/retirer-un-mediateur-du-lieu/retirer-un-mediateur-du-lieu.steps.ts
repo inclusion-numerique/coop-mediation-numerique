@@ -4,7 +4,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu'
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
 import {
   ficheSemee,
   semerUneFicheDeLieu,

@@ -1,6 +1,6 @@
 import React from 'react'
 import CreateCraModal from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModal'
-import { getHomepage } from '@/features/authentification/domain/getHomepage'
+import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'

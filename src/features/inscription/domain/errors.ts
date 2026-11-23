@@ -1,4 +1,4 @@
-import type { UserId } from './user-id'
+import type { UserId } from './utilisateur-id'
 
 export type InscriptionIntrouvable = {
   readonly _tag: 'InscriptionIntrouvable'

@@ -5,9 +5,9 @@ import {
   type OrganisationId,
   organisationsAccessibles,
 } from '../../../domain/organisation-id'
+import type { RdvServicePublicApi } from '../../../domain/ports'
 import type { Rdv, RdvSynchronise } from '../../../domain/rdv'
 import type { RdvId } from '../../../domain/rdv-id'
-import type { RdvServicePublicApi } from '../../../domain/rdv-service-public.port'
 import {
   type RdvsLus,
   rassemblerLectures,

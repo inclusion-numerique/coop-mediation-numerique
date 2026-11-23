@@ -4,7 +4,7 @@ import { choisirLaVisibiliteApresRuptureAction } from '@/app/_actions/mediateurs
 import {
   getHomepage,
   hasInscriptionComplete,
-} from '@/features/authentification/domain/getHomepage'
+} from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import InscriptionStepsLayout from '@/features/inscription/ui/InscriptionStepsLayout'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'

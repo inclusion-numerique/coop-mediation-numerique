@@ -1,4 +1,4 @@
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 
 export type MediateurUser<
   T extends Pick<SessionUser, 'mediateur'> = SessionUser,

@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { RdvUser } from '@/generated/prisma/client'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '../../domain/beneficiaires.port'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../domain/ports'
 
 // Adaptateur (anti-corruption côté rdvsp) : traduit un usager RDV Service Public
 // en primitifs pour le port bénéficiaire. rdvsp ne connaît ni les value objects

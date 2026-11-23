@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/beneficiaires.port'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/ports'
 import { synchroniserCompte } from '../../../implementations/synchroniser-compte.binding'
 import type { LancerSynchronisation } from '../domain/declencher-synchronisation'
 

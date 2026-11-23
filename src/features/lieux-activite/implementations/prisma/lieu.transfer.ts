@@ -41,7 +41,7 @@ import {
   type Suppression,
   Supprime,
 } from '../../domain/tracabilite'
-import { UserId } from '../../domain/user-id'
+import { UserId } from '../../domain/utilisateur-id'
 import {
   estPublie,
   VisibiliteCartographie,

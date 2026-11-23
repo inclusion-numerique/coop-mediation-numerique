@@ -1,4 +1,4 @@
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 
 type UserRedirectionInfo = Pick<SessionUser, 'role'> & {
   inscriptionValidee: Date | string | null

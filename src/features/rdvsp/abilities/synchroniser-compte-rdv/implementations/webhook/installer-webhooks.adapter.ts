@@ -6,7 +6,7 @@ import type {
 } from '../../../../domain/bilan-synchronisation'
 import type { CompteRdvUtilisable } from '../../../../domain/compte-rdv'
 import type { OrganisationId } from '../../../../domain/organisation-id'
-import type { RdvServicePublicApi } from '../../../../domain/rdv-service-public.port'
+import type { RdvServicePublicApi } from '../../../../domain/ports'
 import { abonnementsDeLaCoop, estAJour } from '../../../../domain/webhook'
 
 /** Journal de la passe, tenu par l'orchestrateur qui appelle cet adaptateur. */

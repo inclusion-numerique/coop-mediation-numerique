@@ -1,11 +1,11 @@
 import { notFound, redirect } from 'next/navigation'
-import { AuthenticationError } from '@/features/authentification/domain/AuthenticationError'
+import { AuthenticationError } from '@/features/authentification/domain/errors'
 import {
   type CoordinateurUser,
   isCoordinateur,
   isMediateur,
   type MediateurUser,
-} from '@/features/authentification/domain/userTypeGuards'
+} from '@/features/authentification/domain/profils-d-utilisateur'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,

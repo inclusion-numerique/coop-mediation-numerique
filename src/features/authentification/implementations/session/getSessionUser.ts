@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers'
 import { cache } from 'react'
 import 'server-only'
-import { AuthenticationError } from '@/features/authentification/domain/AuthenticationError'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import { AuthenticationError } from '@/features/authentification/domain/errors'
+import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 import {
   secureSessionCookie,
   sessionCookie,

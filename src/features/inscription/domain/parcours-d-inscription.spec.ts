@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
+import { InscriptionStep } from './etape-d-inscription'
 import {
   getInscriptionFlow,
   getNextInscriptionStep,
   type InscriptionContexte,
-} from './inscription-flow'
-import { InscriptionFlowType } from './inscription-flow-type'
-import { InscriptionStep } from './inscription-step'
+} from './parcours-d-inscription'
 import { ProfilInscription } from './profil-inscription'
+import { InscriptionFlowType } from './type-de-parcours'
 
 const contexte = (
   override: Partial<InscriptionContexte> = {},

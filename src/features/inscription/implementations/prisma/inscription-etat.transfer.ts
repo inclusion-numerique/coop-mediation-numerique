@@ -1,15 +1,15 @@
 import type { User as PrismaUser } from '@/generated/prisma/client'
+import type { InscriptionEtat } from '../../domain/etat-de-l-inscription'
 import {
   dateDeFranchissement,
   Franchissement,
 } from '../../domain/franchissement'
-import type { InscriptionEtat } from '../../domain/inscription-etat'
 import {
   computeUserProfile,
   ProfilInscription,
 } from '../../domain/profil-inscription'
 import { Role } from '../../domain/role'
-import { UserId } from '../../domain/user-id'
+import { UserId } from '../../domain/utilisateur-id'
 
 type InscriptionRow = Pick<
   PrismaUser,

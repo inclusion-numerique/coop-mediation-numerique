@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations'

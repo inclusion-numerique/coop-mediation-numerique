@@ -12,7 +12,7 @@ import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import { NomOrganisation } from '@/features/rdvsp/domain/libelle'
 import type { Organisation } from '@/features/rdvsp/domain/organisation'
 import { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {
   compteRdvEnBase,

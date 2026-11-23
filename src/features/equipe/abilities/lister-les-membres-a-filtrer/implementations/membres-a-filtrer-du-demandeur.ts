@@ -1,5 +1,5 @@
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import { listerLesMembresAFiltrer } from './prisma/membres-a-filtrer.query'
 
 type Coordination = { mediateurId: string }

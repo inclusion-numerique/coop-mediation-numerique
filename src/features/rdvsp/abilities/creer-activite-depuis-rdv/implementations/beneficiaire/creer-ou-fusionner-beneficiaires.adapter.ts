@@ -1,4 +1,4 @@
-import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/beneficiaires.port'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/ports'
 import type { CreerOuFusionnerBeneficiaires } from '../../domain/creer-activite-depuis-rdv'
 import type { BeneficiaireFusionne } from '../../domain/rdv-pour-activite'
 

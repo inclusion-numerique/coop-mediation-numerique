@@ -4,7 +4,7 @@ import {
   type ProfilInscription,
 } from './profil-inscription'
 import type { Role } from './role'
-import type { UserId } from './user-id'
+import type { UserId } from './utilisateur-id'
 
 /**
  * Les deux étapes intermédiaires voyagent toujours ensemble et sont

@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import type { CoordinateurId } from '../../../../domain/coordinateur-id'
-import { Email } from '../../../../domain/email'
+import { Email } from '../../../../domain/courriel'
 import { MediateurId } from '../../../../domain/mediateur-id'
 import { Nom } from '../../../../domain/nom'
 import { NomAffiche, nomAffiche } from '../../../../domain/nom-affiche'

@@ -2,7 +2,7 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import {
   isUserInscriptionEnCours,
   type RoleDuCompte,
-} from '@/features/inscription/domain/isUserInscriptionEnCours'
+} from '@/features/inscription/domain/inscription-en-cours'
 
 export type EtatInscriptionUtilisateur = {
   role: RoleDuCompte

@@ -1,7 +1,7 @@
 import React from 'react'
 import CreateCraModal from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModal'
 import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
-import { getHomepage } from '@/features/authentification/domain/getHomepage'
+import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import CoopSideMenu from '@/features/navigation/ui/menus/CoopSideMenu'

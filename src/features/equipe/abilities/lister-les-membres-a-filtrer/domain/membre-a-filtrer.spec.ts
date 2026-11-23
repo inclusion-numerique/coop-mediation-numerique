@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email } from '../../../domain/email'
+import { Email } from '../../../domain/courriel'
 import { MediateurId } from '../../../domain/mediateur-id'
 import { Nom } from '../../../domain/nom'
 import { NomAffiche } from '../../../domain/nom-affiche'

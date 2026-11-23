@@ -1,5 +1,5 @@
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 
 export const testSessionUser = {
   id: 'test',

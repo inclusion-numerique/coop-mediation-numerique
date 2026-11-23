@@ -5,8 +5,8 @@ import { mettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-s
 import { contexteMiseAJourStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/contexte-mise-a-jour-statut.query'
 import { enregistrerStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/enregistrer-statut-rdv.mutation'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import { RdvId } from '@/features/rdvsp/domain/rdv-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
 import {
   StatutPresence,
   StatutPresenceModifiable,

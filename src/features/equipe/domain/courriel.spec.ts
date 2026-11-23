@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email } from './email'
+import { Email } from './courriel'
 
 describe('email d’invitation', () => {
   it('se ramène à sa forme canonique', () => {

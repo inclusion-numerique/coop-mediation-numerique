@@ -7,7 +7,7 @@ import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import { MediateurId } from '../../../../domain/mediateur-id'
 import { RattachementId } from '../../../../domain/rattachement-id'
-import { UserId } from '../../../../domain/user-id'
+import { UserId } from '../../../../domain/utilisateur-id'
 import {
   type CoordinateurDuMediateur,
   Courriel,

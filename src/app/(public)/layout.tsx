@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { getHomepage } from '@/features/authentification/domain/getHomepage'
+import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
 import { getSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
 import Header from '@/features/navigation/ui/en-tete/Header'
 import PublicFooter from '@/features/navigation/ui/pied-de-page/PublicFooter'

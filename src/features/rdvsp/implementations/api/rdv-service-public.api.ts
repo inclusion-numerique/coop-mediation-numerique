@@ -14,13 +14,13 @@ import {
 } from '../../domain/errors'
 import { type JetonsOAuth, jetonsARenouveler } from '../../domain/jetons-oauth'
 import type { OrganisationId } from '../../domain/organisation-id'
-import type { RdvAgentId } from '../../domain/rdv-agent-id'
-import type { RdvId } from '../../domain/rdv-id'
 import type {
   FiltresRdvs,
   FiltresUsagers,
   RdvServicePublicApi,
-} from '../../domain/rdv-service-public.port'
+} from '../../domain/ports'
+import type { RdvAgentId } from '../../domain/rdv-agent-id'
+import type { RdvId } from '../../domain/rdv-id'
 import { StatutPresence } from '../../domain/statut-presence'
 import type { UsagerId } from '../../domain/usager-id'
 import {

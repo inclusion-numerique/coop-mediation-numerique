@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type Result, success } from '@/libraries/result'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
-import type { UserId } from '../../../../domain/user-id'
+import type { UserId } from '../../../../domain/utilisateur-id'
 import {
   type AjouterDesLieuxActivitePorts,
   demandeDAjout,

@@ -18,7 +18,7 @@ import {
 import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
 import {
   ficheSemee,
   semerUneFicheDeLieu,

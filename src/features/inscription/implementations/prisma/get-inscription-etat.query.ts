@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { GetInscriptionEtat } from '../../domain/get-inscription-etat'
+import type { GetInscriptionEtat } from '../../domain/ports'
 import { inscriptionEtatToDomain } from './inscription-etat.transfer'
 
 /**

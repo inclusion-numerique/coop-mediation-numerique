@@ -1,10 +1,10 @@
-import { Franchissement } from './franchissement'
 import type {
   InscriptionEnCours,
   InscriptionNonDemarree,
   InscriptionValidee,
   ProgressionEtapes,
-} from './inscription-etat'
+} from './etat-de-l-inscription'
+import { Franchissement } from './franchissement'
 import type { Role } from './role'
 
 /**

@@ -1,4 +1,4 @@
-import { typologieStructureLibelle } from '@/features/employeuse/domain/typologieStructure'
+import { typologieStructureLibelle } from '@/features/employeuse/domain/typologie-de-structure'
 import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { CoordinateurId } from './coordinateur-id'
-import { Email } from './email'
+import { Email } from './courriel'
 import {
   codeInvitation,
   lienInvitation,

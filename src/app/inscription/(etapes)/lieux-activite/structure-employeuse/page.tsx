@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
+import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations'
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/employeuse-actuelle.presenter'

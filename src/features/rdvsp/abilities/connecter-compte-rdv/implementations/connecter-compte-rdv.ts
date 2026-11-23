@@ -1,5 +1,5 @@
 import { failure, success } from '@/libraries/result'
-import type { RdvServicePublicApi } from '../../../domain/rdv-service-public.port'
+import type { RdvServicePublicApi } from '../../../domain/ports'
 import {
   type CompteRdvExistant,
   type ConnecterCompteRdv,

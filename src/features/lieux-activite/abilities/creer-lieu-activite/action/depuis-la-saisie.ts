@@ -31,7 +31,7 @@ import {
   telephoneSaisi,
   urlSaisie,
 } from '../../../domain/saisie'
-import type { UserId } from '../../../domain/user-id'
+import type { UserId } from '../../../domain/utilisateur-id'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 
 const cochees = <Valeur>(

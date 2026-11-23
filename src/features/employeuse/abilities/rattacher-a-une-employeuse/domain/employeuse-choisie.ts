@@ -6,7 +6,7 @@ import { z } from 'zod'
 import {
   type TypologieStructure,
   typologiesStructure,
-} from '@/features/employeuse/domain/typologieStructure'
+} from '@/features/employeuse/domain/typologie-de-structure'
 import { Siret } from '@/libraries/insee'
 import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
 

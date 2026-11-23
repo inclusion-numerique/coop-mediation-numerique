@@ -1,4 +1,4 @@
-import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/beneficiaires.port'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/ports'
 import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementations/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiaires } from '../../domain/synchroniser-rdvs'
 

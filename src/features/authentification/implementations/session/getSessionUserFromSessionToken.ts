@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { registerLastSeen } from '@/features/authentification/implementations/prisma/registerLastSeen'
 import { serializePrismaSessionUser } from '@/features/authentification/implementations/session/serializePrismaSessionUser'
 import type { Prisma } from '@/generated/prisma/client'

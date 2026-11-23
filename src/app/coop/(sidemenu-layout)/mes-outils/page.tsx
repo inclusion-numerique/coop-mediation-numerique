@@ -3,7 +3,7 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   isConseillerNumerique,
   isCoordinateur,
-} from '@/features/authentification/domain/userTypeGuards'
+} from '@/features/authentification/domain/profils-d-utilisateur'
 import { getAuthenticatedSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
 import {
   Coordination,

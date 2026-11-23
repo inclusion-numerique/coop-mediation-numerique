@@ -32,7 +32,7 @@ import { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { LieuId } from '../../../domain/lieu-id'
 import { ModificationInconnue } from '../../../domain/tracabilite'
-import { UserId } from '../../../domain/user-id'
+import { UserId } from '../../../domain/utilisateur-id'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import { appliquerModification } from './appliquer-la-modification'
 

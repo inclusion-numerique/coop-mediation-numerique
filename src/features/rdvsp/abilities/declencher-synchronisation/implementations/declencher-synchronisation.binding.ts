@@ -1,5 +1,5 @@
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/beneficiaires.port'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
 import { echecDefinitif } from '@/features/rdvsp/implementations/synchroniser-compte.binding'
 import { consignerLEchec } from './consigner-l-echec'
 import { declencherSynchronisation } from './declencher-synchronisation'

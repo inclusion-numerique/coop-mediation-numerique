@@ -1,6 +1,9 @@
-import { InscriptionFlowType } from './inscription-flow-type'
-import { InscriptionStep, type InscriptionStepValue } from './inscription-step'
+import {
+  InscriptionStep,
+  type InscriptionStepValue,
+} from './etape-d-inscription'
 import type { ProfilInscription } from './profil-inscription'
+import { InscriptionFlowType } from './type-de-parcours'
 
 /**
  * Les quatre signaux qui pilotent la navigation. Toujours passés ensemble, donc

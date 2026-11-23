@@ -8,7 +8,7 @@ import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { servicesALaPublication } from '../../../domain/publication'
 import { ModifieParUtilisateur } from '../../../domain/tracabilite'
-import type { UserId } from '../../../domain/user-id'
+import type { UserId } from '../../../domain/utilisateur-id'
 import { estPublie } from '../../../domain/visibilite-cartographie'
 import {
   contactAvecJoignabilite,

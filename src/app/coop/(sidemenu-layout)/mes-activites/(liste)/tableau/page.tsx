@@ -10,7 +10,7 @@ import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites
 import {
   isCoordinateur,
   isMediateur,
-} from '@/features/authentification/domain/userTypeGuards'
+} from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
 import {
   getLieuxDesActivitesOptions,

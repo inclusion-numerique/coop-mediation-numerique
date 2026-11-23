@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { Franchissement } from '../../domain/franchissement'
 import type {
   InscriptionEnCours,
   InscriptionEtat,
   InscriptionNonDemarree,
   InscriptionValidee,
-} from '../../domain/inscription-etat'
+} from '../../domain/etat-de-l-inscription'
+import { Franchissement } from '../../domain/franchissement'
 import { Role } from '../../domain/role'
-import { UserId } from '../../domain/user-id'
+import { UserId } from '../../domain/utilisateur-id'
 import {
   inscriptionEtatFromDomain,
   inscriptionEtatToDomain,

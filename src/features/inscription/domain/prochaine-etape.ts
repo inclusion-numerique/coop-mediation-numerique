@@ -1,16 +1,19 @@
-import { estFranchi } from './franchissement'
+import {
+  InscriptionStep,
+  type InscriptionStepValue,
+} from './etape-d-inscription'
 import {
   conseillerNumeriqueDeLInscription,
   type InscriptionEtat,
   type ProgressionEtapes,
   profilDeLInscription,
-} from './inscription-etat'
+} from './etat-de-l-inscription'
+import { estFranchi } from './franchissement'
 import {
   getNextInscriptionStep,
   type InscriptionContexte,
-} from './inscription-flow'
-import type { InscriptionFlowType } from './inscription-flow-type'
-import { InscriptionStep, type InscriptionStepValue } from './inscription-step'
+} from './parcours-d-inscription'
+import type { InscriptionFlowType } from './type-de-parcours'
 
 export type ContexteParcours = {
   readonly flowType: InscriptionFlowType

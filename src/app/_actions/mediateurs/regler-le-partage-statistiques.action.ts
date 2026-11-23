@@ -1,7 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
+import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques'

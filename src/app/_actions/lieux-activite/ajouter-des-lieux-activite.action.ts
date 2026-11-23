@@ -13,7 +13,7 @@ import {
   trouverStructuresCarto,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { UserId } from '@/features/lieux-activite/domain/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

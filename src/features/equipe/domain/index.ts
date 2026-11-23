@@ -9,6 +9,7 @@ export { AdhesionId } from './adhesion-id'
 export { Commune } from './commune'
 export type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
 export { CoordinateurId } from './coordinateur-id'
+export { Email } from './courriel'
 export {
   type CriteresEquipe,
   criteresEquipe,
@@ -16,7 +17,6 @@ export {
   FiltreStatut,
   type ParametresDeRecherche,
 } from './criteres-equipe'
-export { Email } from './email'
 export * from './errors'
 export { type Gestionnaire, peutGererLEquipe } from './gestionnaire'
 export {

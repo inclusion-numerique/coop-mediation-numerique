@@ -1,5 +1,5 @@
 import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
-import type { SessionUser } from './sessionUser'
+import type { SessionUser } from './utilisateur-de-la-session'
 
 export type ProfilDeLaSession = {
   readonly mediateurId: string | null

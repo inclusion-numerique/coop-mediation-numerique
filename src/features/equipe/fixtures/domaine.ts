@@ -2,7 +2,7 @@ import type { AdhesionActive, AdhesionArchivee } from '../domain/adhesion'
 import { AdhesionId } from '../domain/adhesion-id'
 import type { CoordinateurDeLEquipe } from '../domain/coordinateur-de-l-equipe'
 import { CoordinateurId } from '../domain/coordinateur-id'
-import { Email } from '../domain/email'
+import { Email } from '../domain/courriel'
 import type {
   InvitationAcceptee,
   InvitationEnAttente,

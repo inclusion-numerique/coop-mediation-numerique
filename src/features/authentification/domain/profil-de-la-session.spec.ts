@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { testSessionUser } from '../fixtures/testSessionUser'
 import { profilDeLaSession } from './profil-de-la-session'
-import type { SessionUser } from './sessionUser'
+import type { SessionUser } from './utilisateur-de-la-session'
 
 const coordination = (coordinateurId: string, nom: string | null) => ({
   coordinateur: {

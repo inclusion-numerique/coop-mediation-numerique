@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react'
 import {
   getHomepage,
   hasInscriptionComplete,
-} from '@/features/authentification/domain/getHomepage'
+} from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import InscriptionStepsLayout from '@/features/inscription/ui/InscriptionStepsLayout'
 import Header from '@/features/navigation/ui/en-tete/Header'

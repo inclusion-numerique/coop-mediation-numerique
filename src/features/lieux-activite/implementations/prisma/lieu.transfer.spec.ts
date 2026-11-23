@@ -45,7 +45,7 @@ import {
   ModifieParUtilisateur,
   SourceCartographie,
 } from '../../domain/tracabilite'
-import { UserId } from '../../domain/user-id'
+import { UserId } from '../../domain/utilisateur-id'
 import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
 import { lieuCoopToDomain, lieuFromDomain } from './lieu.transfer'
 import type { LigneDuLieuCoop } from './ligne-du-lieu'

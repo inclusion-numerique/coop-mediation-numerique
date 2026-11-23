@@ -4,7 +4,7 @@ import { defineModel, type Model } from '@/libraries/model'
 import type { NomAffiche } from '@/libraries/nom-affiche'
 import type { MediateurId } from '../../../domain/mediateur-id'
 import type { RattachementId } from '../../../domain/rattachement-id'
-import type { UserId } from '../../../domain/user-id'
+import type { UserId } from '../../../domain/utilisateur-id'
 import type { ProfilDuMediateur } from './profil-du-mediateur'
 
 export const Courriel = defineModel(

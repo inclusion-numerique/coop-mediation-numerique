@@ -1,4 +1,4 @@
-import type { Email } from '../../../domain/email'
+import type { Email } from '../../../domain/courriel'
 import type { MediateurId } from '../../../domain/mediateur-id'
 import type { Nom } from '../../../domain/nom'
 import type { NomAffiche } from '../../../domain/nom-affiche'

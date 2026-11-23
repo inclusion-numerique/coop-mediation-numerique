@@ -10,25 +10,27 @@ export {
   ProfilNonChoisi,
 } from './errors'
 export {
-  estFranchi,
-  Franchissement,
-} from './franchissement'
+  InscriptionStep,
+  type InscriptionStepValue,
+} from './etape-d-inscription'
 
 export type {
   InscriptionEnCours,
   InscriptionEtat,
-} from './inscription-etat'
+} from './etat-de-l-inscription'
 export {
   isNonDemarree,
   isValidee,
-} from './inscription-etat'
-export type { InscriptionContexte } from './inscription-flow'
-export { getInscriptionFlow, getNextInscriptionStep } from './inscription-flow'
-export { InscriptionFlowType } from './inscription-flow-type'
+} from './etat-de-l-inscription'
 export {
-  InscriptionStep,
-  type InscriptionStepValue,
-} from './inscription-step'
+  estFranchi,
+  Franchissement,
+} from './franchissement'
+export type { InscriptionContexte } from './parcours-d-inscription'
+export {
+  getInscriptionFlow,
+  getNextInscriptionStep,
+} from './parcours-d-inscription'
 export { prochaineEtape } from './prochaine-etape'
 export {
   computeUserProfile,
@@ -42,4 +44,5 @@ export {
   franchirStructureEmployeuse,
   poserRole,
 } from './transitions'
-export { UserId } from './user-id'
+export { InscriptionFlowType } from './type-de-parcours'
+export { UserId } from './utilisateur-id'

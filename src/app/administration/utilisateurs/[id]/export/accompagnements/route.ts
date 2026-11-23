@@ -7,7 +7,7 @@ import {
   getSessionUserFromSessionToken,
 } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateursCoordonnes'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import {
   getLieuxDesActivitesOptions,
   getMediateurCommunesAndDepartementsOptions,

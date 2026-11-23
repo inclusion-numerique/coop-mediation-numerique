@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
+import { getLoginRedirectUrl } from '@/features/authentification/domain/page-d-accueil'
 import { getSessionUser } from '@/features/authentification/implementations/session/getSessionUser'
 
 export const dynamic = 'force-dynamic'
