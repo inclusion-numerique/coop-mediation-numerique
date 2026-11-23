@@ -2,7 +2,7 @@ import { getServerUrl } from '@/configuration/projet/baseUrl'
 import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,
-} from '@/features/rdvsp/oauth.configuration'
+} from '@/features/rdvsp/implementations/oauth/oauth.configuration'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 export const rdvServicePublicOauthCallbackUrl = getServerUrl(
@@ -18,10 +18,10 @@ export const rdvServicePublicOAuthConfig = {
   scope: 'write',
 }
 
-export const rdvOauthLinkAccountSuccessCallbackPath =
+const rdvOauthLinkAccountSuccessCallbackPath =
   '/coop/mes-outils/rdv-service-public/connexion-reussie'
 
-export const rdvOauthLinkAccountErrorCallbackPath =
+const rdvOauthLinkAccountErrorCallbackPath =
   '/coop/mes-outils/rdv-service-public/connexion-erreur'
 
 export type RdvOauthLinkAccountState = {
@@ -29,9 +29,7 @@ export type RdvOauthLinkAccountState = {
   redirectToError?: string
 }
 
-export const rdvOauthLinkAccountFlowUrl = (
-  options: RdvOauthLinkAccountState,
-) => {
+const rdvOauthLinkAccountFlowUrl = (options: RdvOauthLinkAccountState) => {
   // Configuration de l'OAuth
   const state = encodeSerializableState(options)
 
@@ -40,3 +38,9 @@ export const rdvOauthLinkAccountFlowUrl = (
     rdvServicePublicOAuthConfig.clientId
   }&redirect_uri=${rdvServicePublicOAuthConfig.redirectUri}&response_type=${rdvServicePublicOAuthConfig.responseType}&scope=${rdvServicePublicOAuthConfig.scope}&state=${state}`
 }
+
+export const lienDeConnexionARdvServicePublic = (): string =>
+  rdvOauthLinkAccountFlowUrl({
+    redirectToSuccess: rdvOauthLinkAccountSuccessCallbackPath,
+    redirectToError: rdvOauthLinkAccountErrorCallbackPath,
+  })

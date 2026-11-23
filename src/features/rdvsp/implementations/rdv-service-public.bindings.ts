@@ -4,7 +4,7 @@ import { getServerUrl } from '@/configuration/projet/baseUrl'
 import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,
-} from '@/features/rdvsp/oauth.configuration'
+} from '@/features/rdvsp/implementations/oauth/oauth.configuration'
 import { jetonsCompteToDomain } from '../db'
 import { rdvServicePublicApi, revoquerJetons } from './api'
 

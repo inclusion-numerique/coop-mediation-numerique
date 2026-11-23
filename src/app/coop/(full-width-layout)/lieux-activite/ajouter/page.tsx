@@ -8,7 +8,7 @@ import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-d
 import { AjouterDesLieuxPage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/pages/AjouterDesLieuxPage'
 import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/rechercher-des-lieux.key'
 import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

@@ -18,11 +18,12 @@ import {
   OutilPage,
   type SitesDesOutils,
 } from '@/features/outils/abilities/consulter-un-outil/ui'
+import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/ui/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/ui/deconnecter-compte-rdv.key'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/RdvServicePublicMigrationNotice'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 import { CodeInsee } from '@/libraries/insee'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
@@ -49,7 +50,10 @@ const fournisseurs: FournisseursDEmplacements = {
             bind={DECONNECTER_COMPTE_RDV_ACTION_KEY}
             to={deconnecterCompteRdvAction}
           >
-            <RdvServicePublicAccessCard user={user} />
+            <RdvServicePublicAccessCard
+              user={user}
+              lienDeConnexion={lienDeConnexionARdvServicePublic()}
+            />
           </ClientBinder>
         </ClientBinder>
       ),

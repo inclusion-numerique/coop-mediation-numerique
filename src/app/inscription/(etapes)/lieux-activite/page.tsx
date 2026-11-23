@@ -15,7 +15,7 @@ import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilit
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
 import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const dynamic = 'force-dynamic'

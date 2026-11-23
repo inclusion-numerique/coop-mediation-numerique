@@ -56,7 +56,9 @@ const donnees = (surcharge: Partial<DonneesAccueilRdv>): DonneesAccueilRdv => ({
 
 const user = { timezone: 'Europe/Paris' }
 
-const alerte = <RdvIntegrationErreurAlerte />
+const alerte = (
+  <RdvIntegrationErreurAlerte lienDeConnexion="https://rdv.anct.gouv.fr/oauth/authorize" />
+)
 
 const avecDonnees = (
   surcharge: Partial<DonneesAccueilRdv>,

@@ -1,16 +1,11 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import type { ComponentProps } from 'react'
-import {
-  rdvOauthLinkAccountErrorCallbackPath,
-  rdvOauthLinkAccountFlowUrl,
-  rdvOauthLinkAccountSuccessCallbackPath,
-} from '@/features/rdvsp/oauth'
 import GererRdvServicePublicButton from '@/features/rdvsp/ui/GererRdvServicePublicButton'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
-} from '@/features/rdvsp/urls'
+} from '@/features/rdvsp/ui/urls'
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
 import { statutDuCompteDeLaSession } from '../domain/sante-compte'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
@@ -18,8 +13,10 @@ import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 
 const RdvServicePublicAccess = ({
   user,
+  lienDeConnexion,
 }: {
   user: ComponentProps<typeof GererRdvServicePublicModal>['user']
+  lienDeConnexion: string
 }) => {
   const status = statutDuCompteDeLaSession(user.rdvAccount)
 
@@ -98,10 +95,7 @@ const RdvServicePublicAccess = ({
           <div className="fr-btns-group fr-btns-group--icon-right fr-mt-8v">
             <Button
               linkProps={{
-                href: rdvOauthLinkAccountFlowUrl({
-                  redirectToSuccess: rdvOauthLinkAccountSuccessCallbackPath,
-                  redirectToError: rdvOauthLinkAccountErrorCallbackPath,
-                }),
+                href: lienDeConnexion,
               }}
               priority="primary"
               className="fr-mb-0"

@@ -1,12 +1,11 @@
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
-import {
-  rdvOauthLinkAccountErrorCallbackPath,
-  rdvOauthLinkAccountFlowUrl,
-  rdvOauthLinkAccountSuccessCallbackPath,
-} from '@/features/rdvsp/oauth'
 
-export const RdvIntegrationErreurAlerte = () => (
+export const RdvIntegrationErreurAlerte = ({
+  lienDeConnexion,
+}: {
+  lienDeConnexion: string
+}) => (
   <Alert
     severity="warning"
     title="Connexion à RDV Service Public expirée"
@@ -19,10 +18,7 @@ export const RdvIntegrationErreurAlerte = () => (
         <Button
           size="small"
           linkProps={{
-            href: rdvOauthLinkAccountFlowUrl({
-              redirectToSuccess: rdvOauthLinkAccountSuccessCallbackPath,
-              redirectToError: rdvOauthLinkAccountErrorCallbackPath,
-            }),
+            href: lienDeConnexion,
           }}
         >
           Rétablir la synchronisation
