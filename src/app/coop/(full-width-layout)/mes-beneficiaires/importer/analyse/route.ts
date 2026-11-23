@@ -1,11 +1,21 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
 import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
 import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/getBeneficiaireImportSheet'
 import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
 
+const tailleMaximaleDuFichier = 5 * 1024 * 1024
+
 export const POST = async (request: NextRequest) => {
+  const user = await getSessionUserFromSessionToken(
+    getSessionTokenFromNextRequestCookies(request.cookies),
+  )
+  if (!user) return new Response(null, { status: 401 })
+  if (!user.mediateur) return new Response(null, { status: 403 })
+
   try {
     const formData = await request.formData()
     const file = formData.get('file')
@@ -14,6 +24,13 @@ export const POST = async (request: NextRequest) => {
       return new Response(null, {
         status: 400,
         statusText: 'Veuillez sélectionner un fichier valide',
+      })
+    }
+
+    if (file.size > tailleMaximaleDuFichier) {
+      return new Response(null, {
+        status: 413,
+        statusText: 'Le fichier dépasse 5 Mo',
       })
     }
 
