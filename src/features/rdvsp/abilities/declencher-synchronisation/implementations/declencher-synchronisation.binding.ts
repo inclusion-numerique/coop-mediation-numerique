@@ -1,29 +1,21 @@
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
-import { echecDefinitif } from '@/features/rdvsp/implementations/synchroniser-compte.binding'
+import { echecDefinitif } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
 import { consignerLEchec } from '../domain/consigner-l-echec'
-import { declencherSynchronisation } from '../domain/declencher-synchronisation'
+import {
+  declencherSynchronisation,
+  type SynchroniserUnCompte,
+} from '../domain/declencher-synchronisation'
 import { lancerSynchronisation } from './lancer-synchronisation.binding'
 import { compteACible } from './prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from './prisma/marquer-echec.mutation'
 
-/**
- * Composition de l'ability avec ses adaptateurs réels.
- *
- * Elle vit ici plutôt que dans chaque fichier d'action : quatre appelants — trois
- * server actions et le retour du parcours OAuth — déclenchent la même passe, et
- * la recopier ferait diverger le jour où l'on change une dépendance.
- *
- * À importer par ce chemin explicite : le module tire Prisma et Sentry, qu'un
- * composant client ne doit jamais embarquer.
- */
 export const declencherSynchronisationAvec = (
-  creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes,
+  synchroniserUnCompte: SynchroniserUnCompte,
 ) =>
   consignerLEchec(
     declencherSynchronisation({
       compteACible,
-      lancer: lancerSynchronisation(creerOuFusionner),
+      lancer: lancerSynchronisation(synchroniserUnCompte),
       signaler,
       echecDefinitif,
     }),

@@ -1,63 +1,24 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { bilanVide } from '@/features/rdvsp/domain/compte/bilan-synchronisation'
+import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
+import { EchecDeSynchronisation } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
+import { diagnosticErreur } from '@/features/rdvsp/domain/errors'
+import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
+import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/api/rdv-service-public.binding'
+import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import { success } from '@/libraries/result'
-import { synchroniserCompteRdv } from '../abilities/synchroniser-compte-rdv/domain/synchroniser-compte-rdv'
-import { detacherOrganisations } from '../abilities/synchroniser-compte-rdv/implementations/prisma/detacher-organisations.mutation'
+import {
+  type ReconcilierLesRdvsDuMediateur,
+  type ReconcilierOrganisations,
+  synchroniserCompteRdv,
+} from '../domain/synchroniser-compte-rdv'
+import { detacherOrganisations } from './prisma/detacher-organisations.mutation'
 import {
   cloturerJournal,
   echouerJournal,
   ouvrirJournal,
-} from '../abilities/synchroniser-compte-rdv/implementations/prisma/journal-synchronisation.mutation'
-import { installWebhooks } from '../abilities/synchroniser-compte-rdv/implementations/webhook/installer-webhooks.adapter'
-import { synchroniserOrganisations } from '../abilities/synchroniser-organisations/domain/synchroniser-organisations'
-import { appliquerPlanOrganisations } from '../abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
-import { etatOrganisations } from '../abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
-import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
-import {
-  appliquerPlanLot,
-  supprimerMotifsOrphelins,
-  supprimerRdvs,
-} from '../abilities/synchroniser-rdvs/implementations/prisma/appliquer-plan-lot.mutation'
-import {
-  etatConnuDuLot,
-  rdvsDejaImportes,
-} from '../abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
-import { rapprocherBeneficiaires } from '../abilities/synchroniser-rdvs/implementations/prisma/rapprocher-beneficiaires.adapter'
-import { bilanVide } from '../domain/compte/bilan-synchronisation'
-import { estUtilisable } from '../domain/compte/compte-rdv'
-import { diagnosticErreur } from '../domain/errors'
-import { OrganisationId } from '../domain/identifiants/organisation-id'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '../domain/ports'
-import { rdvServicePublicApiBinding } from './api/rdv-service-public.binding'
-import { compteRdvToDomain } from './prisma/compte-rdv.transfer'
-
-/**
- * Échec d'une passe, porteur de sa cause.
- *
- * L'appelant a besoin de la distinguer : un jeton révoqué appelle une
- * reconnexion du médiateur, une API momentanément injoignable n'appelle rien du
- * tout. Sans ce type, les deux arrivaient sous la même `Error` et le compte
- * était marqué en erreur dans les deux cas — donc l'alerte de reconnexion
- * s'affichait chez des médiateurs dont le compte fonctionnait.
- */
-class EchecDeSynchronisation extends Error {
-  constructor(
-    readonly motif: string,
-    diagnostic: string = motif,
-  ) {
-    super(`Impossible de synchroniser le compte RDV (${diagnostic})`)
-    this.name = 'EchecDeSynchronisation'
-  }
-}
-
-const motifsDefinitifs: readonly string[] = [
-  'JetonRevoque',
-  'AccesRefuse',
-  'AgentSupprime',
-]
-
-export const echecDefinitif = (erreur: unknown): boolean =>
-  erreur instanceof EchecDeSynchronisation &&
-  motifsDefinitifs.includes(erreur.motif)
+} from './prisma/journal-synchronisation.mutation'
+import { installWebhooks } from './webhook/installer-webhooks.adapter'
 
 const bilanRdvsVide = {
   rdvs: bilanVide,
@@ -67,123 +28,97 @@ const bilanRdvsVide = {
   organisationIdsInaccessibles: [],
 }
 
-/**
- * Composition d'une passe de synchronisation complète.
- *
- * Elle résout le compte, puis câble les trois réconciliations que
- * `synchroniser-compte-rdv` orchestre par ses ports — organisations,
- * rendez-vous, webhooks. Chacune est portée par son ability ; c'est ici, et
- * seulement ici, qu'elles se rencontrent (IS-1).
- *
- * Deux appelants : le job de synchronisation périodique, et l'ability
- * `declencher-synchronisation` quand un écran ou l'administration la demande.
- */
-export const synchroniserCompte = async ({
-  compteId,
-  mediateurId,
-  organisationIds,
-  creerOuFusionner,
-}: {
-  compteId: number
-  mediateurId?: string
-  organisationIds?: number[]
-  creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes
-}) => {
-  const row = await prismaClient.rdvAccount.findUniqueOrThrow({
-    where: { id: compteId },
-    include: { organisations: { select: { organisationId: true } } },
-  })
+export const synchroniserCompteAvec =
+  (
+    reconcilierOrganisations: ReconcilierOrganisations,
+    reconcilierLesRdvsDuMediateur: ReconcilierLesRdvsDuMediateur,
+  ) =>
+  async ({
+    compteId,
+    mediateurId,
+    organisationIds,
+  }: {
+    compteId: number
+    mediateurId?: string
+    organisationIds?: number[]
+  }): Promise<{ drift: number }> => {
+    const row = await prismaClient.rdvAccount.findUniqueOrThrow({
+      where: { id: compteId },
+      include: { organisations: { select: { organisationId: true } } },
+    })
 
-  const compte = compteRdvToDomain(row)
+    const compte = compteRdvToDomain(row)
 
-  if (!estUtilisable(compte)) {
-    return { drift: 0 }
-  }
+    if (!estUtilisable(compte)) {
+      return { drift: 0 }
+    }
 
-  const journal: string[] = []
-  const tracer = (message: string) => {
-    journal.push(message)
-  }
+    const journal: string[] = []
+    const tracer = (message: string) => {
+      journal.push(message)
+    }
 
-  const synchroniser = synchroniserCompteRdv({
-    reconcilierOrganisations: synchroniserOrganisations({
-      listerOrganisations: rdvServicePublicApiBinding.listerOrganisations,
-      etatOrganisations,
-      appliquerPlan: appliquerPlanOrganisations,
-    }),
-    // Sans médiateur, aucun rendez-vous n'est rattachable : le compte existe,
-    // mais il n'a personne à qui appartenir.
-    reconcilierRdvs: async ({
-      compte: aSynchroniser,
-      organisationIds: portee,
-    }) =>
-      mediateurId === undefined
-        ? success(bilanRdvsVide)
-        : synchroniserRdvs({
-            listerRdvs: rdvServicePublicApiBinding.listerRdvs,
-            rdvsDejaImportes,
-            etatConnuDuLot,
-            appliquerPlan: appliquerPlanLot,
-            supprimerRdvs,
-            supprimerMotifsOrphelins,
-            rapprocherBeneficiaires: rapprocherBeneficiaires({
+    const synchroniser = synchroniserCompteRdv({
+      reconcilierOrganisations,
+      reconcilierRdvs: async (portee) =>
+        mediateurId === undefined
+          ? success(bilanRdvsVide)
+          : reconcilierLesRdvsDuMediateur({
               mediateurId,
-              creerOuFusionner,
               journaliser: tracer,
-            }),
-          })({ compte: aSynchroniser, organisationIds: portee }),
-    reconcilierWebhooks: async ({
-      compte: aInstaller,
-      organisationIds: portee,
-    }) => {
-      const resultat = await installWebhooks({
+            })(portee),
+      reconcilierWebhooks: async ({
         compte: aInstaller,
-        appendLog: (log) => journal.push(...[log].flat()),
-        organisationIds: portee === undefined ? undefined : [...portee],
-        api: rdvServicePublicApiBinding,
-      })
+        organisationIds: portee,
+      }) => {
+        const resultat = await installWebhooks({
+          compte: aInstaller,
+          appendLog: (log) => journal.push(...[log].flat()),
+          organisationIds: portee === undefined ? undefined : [...portee],
+          api: rdvServicePublicApiBinding,
+        })
 
-      return {
-        bilan: resultat,
-        organisationIdsSansWebhook:
-          resultat.invalidWebhookOrganisationIds === null
-            ? undefined
-            : resultat.invalidWebhookOrganisationIds.map((id) =>
-                OrganisationId(id),
-              ),
-      }
-    },
-    detacherOrganisations,
-    ouvrirJournal,
-    cloturerJournal,
-    echouerJournal,
-    journaliser: tracer,
-  })
+        return {
+          bilan: resultat,
+          organisationIdsSansWebhook:
+            resultat.invalidWebhookOrganisationIds === null
+              ? undefined
+              : resultat.invalidWebhookOrganisationIds.map((id) =>
+                  OrganisationId(id),
+                ),
+        }
+      },
+      detacherOrganisations,
+      ouvrirJournal,
+      cloturerJournal,
+      echouerJournal,
+      journaliser: tracer,
+    })
 
-  const resultat = await synchroniser({
-    compte,
-    organisationIds: organisationIds?.map((id) => OrganisationId(id)),
-  })
+    const resultat = await synchroniser({
+      compte,
+      organisationIds: organisationIds?.map((id) => OrganisationId(id)),
+    })
 
-  if (!resultat.success) {
-    throw new EchecDeSynchronisation(
-      resultat.error._tag,
-      diagnosticErreur(resultat.error),
-    )
+    if (!resultat.success) {
+      throw new EchecDeSynchronisation(
+        resultat.error._tag,
+        diagnosticErreur(resultat.error),
+      )
+    }
+
+    const { organisationIdsSansWebhook } = resultat.data
+
+    await prismaClient.rdvAccount.update({
+      where: { id: compte.agentId },
+      data: {
+        lastSynced: new Date(),
+        error: null,
+        ...(organisationIdsSansWebhook === undefined
+          ? {}
+          : { invalidWebhookOrganisationIds: [...organisationIdsSansWebhook] }),
+      },
+    })
+
+    return { drift: resultat.data.derive }
   }
-
-  const { organisationIdsSansWebhook } = resultat.data
-
-  await prismaClient.rdvAccount.update({
-    where: { id: compte.agentId },
-    data: {
-      lastSynced: new Date(),
-      error: null,
-      ...(organisationIdsSansWebhook === undefined
-        ? {}
-        : { invalidWebhookOrganisationIds: [...organisationIdsSansWebhook] }),
-    },
-  })
-
-  return { drift: resultat.data.derive }
-}

@@ -6,11 +6,19 @@ import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/fea
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
+import { synchroniserCompteAvec } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/synchroniser-compte-rdv.binding'
+import { synchroniserLesOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations.binding'
+import { synchroniserLesRdvsAvec } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { fromResult } from '@/libraries/nextjs'
 
 const declencher = declencherSynchronisationAvec(
-  creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+  synchroniserCompteAvec(
+    synchroniserLesOrganisations,
+    synchroniserLesRdvsAvec(
+      creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+    ),
+  ),
 )
 
 /**

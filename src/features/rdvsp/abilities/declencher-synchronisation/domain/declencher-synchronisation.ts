@@ -127,6 +127,12 @@ export type CompteACible = (
   utilisateurId: UtilisateurCoopId,
 ) => Promise<CompteRdv | null>
 
+export type SynchroniserUnCompte = (input: {
+  readonly compteId: number
+  readonly mediateurId?: string
+  readonly organisationIds?: number[]
+}) => Promise<{ readonly drift: number }>
+
 export type LancerSynchronisation = (input: {
   readonly utilisateurId: UtilisateurCoopId
   readonly organisationIds?: readonly OrganisationId[]

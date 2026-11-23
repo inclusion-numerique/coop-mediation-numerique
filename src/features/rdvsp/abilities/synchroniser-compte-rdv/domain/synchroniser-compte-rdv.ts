@@ -67,8 +67,7 @@ export type SynchroniserCompteRdv = (
   portee: PorteeDemandee,
 ) => Promise<Result<ResultatSynchronisation, ErreurRdvApi>>
 
-/** Chacune des trois réconciliations, déclarée ici et câblée à l'extérieur. */
-type ReconcilierOrganisations = (compte: CompteRdvUtilisable) => Promise<
+export type ReconcilierOrganisations = (compte: CompteRdvUtilisable) => Promise<
   Result<
     {
       readonly bilan: BilanModele
@@ -93,6 +92,11 @@ type ReconcilierRdvs = (input: {
     ErreurRdvApi
   >
 >
+
+export type ReconcilierLesRdvsDuMediateur = (rattachement: {
+  readonly mediateurId: string
+  readonly journaliser: (message: string) => void
+}) => ReconcilierRdvs
 
 export type DetacherOrganisations = (input: {
   readonly compte: CompteRdvUtilisable

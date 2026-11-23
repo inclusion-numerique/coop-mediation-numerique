@@ -16,6 +16,9 @@ import {
 import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/connecter-compte-rdv.binding'
 import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
+import { synchroniserCompteAvec } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/synchroniser-compte-rdv.binding'
+import { synchroniserLesOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations.binding'
+import { synchroniserLesRdvsAvec } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import {
@@ -82,7 +85,12 @@ export const GET = async (request: NextRequest) => {
   }
 
   declencherSynchronisationAvec(
-    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+    synchroniserCompteAvec(
+      synchroniserLesOrganisations,
+      synchroniserLesRdvsAvec(
+        creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+      ),
+    ),
   )({
     demandeur: { id: utilisateurId, role: user.role },
     utilisateurId,
