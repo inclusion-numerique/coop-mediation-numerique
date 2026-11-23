@@ -3,7 +3,7 @@ import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   libellesDesFiltres,
   type OptionsDesFiltres,
-} from '@/features/utilisateurs/ui'
+} from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'

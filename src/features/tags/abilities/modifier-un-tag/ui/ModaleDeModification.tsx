@@ -16,7 +16,8 @@ import {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,
   NOM_DU_TAG_LONGUEUR_MAX,
 } from '../../../domain'
-import { APPARENCE_DE_VISIBILITE, type TagAffiche } from '../../../ui'
+import { APPARENCE_DE_VISIBILITE } from '../../../ui/ApparenceDeVisibilite'
+import { type TagAffiche } from '../../../ui/tag-affiche'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '../action/modifier-un-tag.key'
 import { ModifierUnTagValidation } from '../action/modifier-un-tag.validation'
 

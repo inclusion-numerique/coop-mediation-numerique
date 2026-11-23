@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
+import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { download } from '@/libraries/navigateur/download'
 import { createToast } from '@/libraries/ui/toast/createToast'
 

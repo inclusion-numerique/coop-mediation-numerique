@@ -25,7 +25,7 @@ import {
   filtresUtilisateurs,
   parametresDesFiltres,
 } from '@/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

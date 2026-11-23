@@ -1,5 +1,5 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
-import type { OptionsDesFiltres } from '@/features/utilisateurs/ui'
+import { type OptionsDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { departementsByCode } from '@/libraries/departement/departements'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { optionDuCoordinateur } from '../ui/coordinateur-a-choisir.presenter'

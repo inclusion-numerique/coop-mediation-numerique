@@ -2,7 +2,7 @@ import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-l
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.key'
 import CreerLieuActivitePage from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/CreerLieuActivitePage'
-import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
+import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui/creation/lien-de-prise-de-rendez-vous.key'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'

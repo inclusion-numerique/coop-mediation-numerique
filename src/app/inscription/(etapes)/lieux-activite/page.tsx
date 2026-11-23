@@ -14,7 +14,7 @@ import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/aj
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui'
+import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui/creation/lien-de-prise-de-rendez-vous.key'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

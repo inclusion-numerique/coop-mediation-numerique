@@ -5,7 +5,7 @@ import {
   type OptionsDesFiltres,
   optionsDesDispositifs,
   optionsDesStatuts,
-} from '@/features/utilisateurs/ui'
+} from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { departements } from '@/libraries/departement/departements'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'

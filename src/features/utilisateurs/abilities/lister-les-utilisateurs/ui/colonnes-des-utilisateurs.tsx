@@ -6,7 +6,7 @@ import {
   type LigneUtilisateur,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
+import { BadgeStatutCompte } from '@/features/utilisateurs/ui/BadgeStatutCompte'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,

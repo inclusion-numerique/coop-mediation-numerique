@@ -8,10 +8,8 @@ import {
   lieuxDuDepartement,
 } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import {
-  hrefDuLieuEnListe,
-  LieuActiviteCard,
-} from '@/features/lieux-activite/ui'
+import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/href-du-lieu'
+import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/LieuActiviteCard'
 import {
   consulterLesLieuxDuDepartement,
   type ParametresDesLieux,

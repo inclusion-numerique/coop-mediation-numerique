@@ -16,10 +16,8 @@ import {
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
-import {
-  hrefDuLieuEnListe,
-  LieuActiviteCard,
-} from '@/features/lieux-activite/ui'
+import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/href-du-lieu'
+import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/LieuActiviteCard'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

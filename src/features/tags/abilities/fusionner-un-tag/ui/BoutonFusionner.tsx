@@ -1,6 +1,6 @@
 'use client'
 
-import { ElementDuMenu } from '../../../ui'
+import { ElementDuMenu } from '../../../ui/ElementDuMenu'
 import { FusionDUnTag, type TagAFusionner } from './ModaleDeFusion'
 
 export const BoutonFusionner = (source: TagAFusionner) => {

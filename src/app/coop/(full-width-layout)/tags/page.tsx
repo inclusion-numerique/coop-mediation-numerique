@@ -35,7 +35,7 @@ import {
   ModaleDeSuppression,
 } from '@/features/tags/abilities/supprimer-un-tag/ui'
 import { acteurDe } from '@/features/tags/domain'
-import { MenuDActionsDuTag } from '@/features/tags/ui'
+import { MenuDActionsDuTag } from '@/features/tags/ui/MenuDActionsDuTag'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {

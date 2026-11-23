@@ -9,7 +9,7 @@ import {
   type Jalon,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
+import { BadgeStatutCompte } from '@/features/utilisateurs/ui/BadgeStatutCompte'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import {
   dateAsDayAndTime,

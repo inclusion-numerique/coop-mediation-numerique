@@ -1,4 +1,4 @@
-import type { suggestionsAffichees } from '@/features/lieux-activite/ui'
+import { type suggestionsAffichees } from '@/features/lieux-activite/ui/suggestion-de-lieu.presenter'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
 import { keyFor } from '@/libraries/nextjs/injection/client'
 

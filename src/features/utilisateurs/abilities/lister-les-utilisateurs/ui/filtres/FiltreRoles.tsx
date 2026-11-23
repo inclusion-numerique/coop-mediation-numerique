@@ -7,7 +7,7 @@ import {
   RoleFiltre,
   type RoleFiltre as RoleFiltreType,
 } from '@/features/utilisateurs/domain'
-import { optionsDesRoles } from '@/features/utilisateurs/ui'
+import { optionsDesRoles } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { resetPagination } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'

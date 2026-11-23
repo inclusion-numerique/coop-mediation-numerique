@@ -12,7 +12,7 @@ import {
 } from '@/features/equipe/abilities/consulter-une-invitation/ui'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
 import { Email, lienInvitation } from '@/features/equipe/domain'
-import { ReponseAInvitation } from '@/features/equipe/ui'
+import { default as ReponseAInvitation } from '@/features/equipe/ui/ReponseAInvitation'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 

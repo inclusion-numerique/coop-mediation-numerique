@@ -7,7 +7,7 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { TagAffiche } from '../../../ui'
+import { type TagAffiche } from '../../../ui/tag-affiche'
 import { SUPPRIMER_UN_TAG_ACTION_KEY } from '../action/supprimer-un-tag.key'
 import { texteDeSuppression } from './suppression.presenter'
 

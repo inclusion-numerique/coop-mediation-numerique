@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
-import type { LibelleDeFiltre } from '@/features/utilisateurs/ui'
+import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 
 export const EtiquettesDesFiltres = ({
   libelles,

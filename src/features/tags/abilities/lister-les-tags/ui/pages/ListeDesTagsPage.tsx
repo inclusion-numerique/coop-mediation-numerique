@@ -8,7 +8,7 @@ import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import { LigneDuTag } from '../../../../ui'
+import { LigneDuTag } from '../../../../ui/LigneDuTag'
 import type { LigneDeLaListe } from '../liste-des-tags.presenter'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])

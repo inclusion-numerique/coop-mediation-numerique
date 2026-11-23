@@ -21,7 +21,7 @@ import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/l
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
-import { LieuxRepliables } from '@/features/lieux-activite/ui'
+import { LieuxRepliables } from '@/features/lieux-activite/ui/LieuxRepliables'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui'
 import { UtilisateurId } from '@/features/mediateurs/domain'

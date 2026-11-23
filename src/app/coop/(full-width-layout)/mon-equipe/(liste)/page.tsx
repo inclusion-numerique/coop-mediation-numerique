@@ -20,7 +20,7 @@ import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retire
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
-import { ActionsDuMembre } from '@/features/equipe/ui'
+import { default as ActionsDuMembre } from '@/features/equipe/ui/ActionsDuMembre'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

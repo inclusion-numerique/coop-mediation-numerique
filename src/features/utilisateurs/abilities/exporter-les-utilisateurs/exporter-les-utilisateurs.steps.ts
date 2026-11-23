@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import type Excel from 'exceljs'
 import { v4 } from 'uuid'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui'
+import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import {

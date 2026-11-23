@@ -47,7 +47,7 @@ import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retire
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { CoordinateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
-import { ActionsDuMembre } from '@/features/equipe/ui'
+import { default as ActionsDuMembre } from '@/features/equipe/ui/ActionsDuMembre'
 import { AvertissementsEtatInscription } from '@/features/inscription/ui/AvertissementsEtatInscription'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
 import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
@@ -56,11 +56,11 @@ import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { StatistiquesEnAdministration } from '@/features/statistiques/ui/administration/StatistiquesEnAdministration'
 import {
   type PeriodeChoisie,
   periodeChoisieDans,
-  StatistiquesEnAdministration,
-} from '@/features/statistiques/ui/administration'
+} from '@/features/statistiques/ui/administration/statistiques-en-administration.presenter'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.key'
 import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui'
 import {

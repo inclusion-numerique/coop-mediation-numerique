@@ -15,7 +15,7 @@ import {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,
   NOM_DU_TAG_LONGUEUR_MAX,
 } from '../../../domain'
-import { APPARENCE_DE_VISIBILITE } from '../../../ui'
+import { APPARENCE_DE_VISIBILITE } from '../../../ui/ApparenceDeVisibilite'
 import { CREER_UN_TAG_ACTION_KEY } from '../action/creer-un-tag.key'
 import { CreerUnTagValidation } from '../action/creer-un-tag.validation'
 import {
