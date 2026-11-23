@@ -4,7 +4,7 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
-import { nouvelleSaisieCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/page-de-saisie'
+import { nouvelleSaisieCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/prisma/page-de-saisie.query'
 import CraCollectifPage from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/CraCollectifPage'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'

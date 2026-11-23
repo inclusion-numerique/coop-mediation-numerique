@@ -5,11 +5,11 @@ import type { RattacherAUneEmployeuse } from '../../domain/rattacher-a-une-emplo
 import {
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
-} from './ensureAffectationEmploiMain'
+} from './garantir-l-affectation-d-emploi.mutation'
 import {
   ensureStructureAdministrativeMain,
   type ServicesDeLEmployeuse,
-} from './ensureStructureAdministrativeMain'
+} from './garantir-la-structure-administrative.mutation'
 
 export type RegistreDesPersonnes = {
   readonly garantirLaPersonne: (

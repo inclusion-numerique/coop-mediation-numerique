@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
+import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/consigner-l-echec'
 import type {
   DeclencherSynchronisation,
   LancerSynchronisation,
 } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
-import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/consigner-l-echec'
-import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation'
+import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/marquer-echec.mutation'
 import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'

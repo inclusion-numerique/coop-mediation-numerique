@@ -1,9 +1,9 @@
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import { consulterRdvsAccueil } from '../domain/consulter-rdvs-accueil'
 import {
   synchroniserAuChargement as synchroniserAuChargementDuCompte,
   type WidgetRdvAccueil,
 } from '../domain/widget-rdv'
-import { consulterRdvsAccueil } from './consulter-rdvs-accueil'
 import { compteDuMediateur } from './prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from './prisma/donnees-accueil-rdv.query'
 

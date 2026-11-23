@@ -7,8 +7,8 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { statistiquesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.parametres'
-import { reponseDesStatistiques } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.reponse'
+import { statistiquesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.params'
+import { reponseDesStatistiques } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.response'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { FiltresDesStatistiquesValidation } from '@/features/statistiques/abilities/exposer-les-statistiques/implementations/api/filtres-des-statistiques'
 import {

@@ -1,12 +1,12 @@
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import { journaliserWebhook } from '../../../implementations/webhook/journal'
+import { recevoirWebhookUsager } from '../domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from './api/lire-notification-usager'
 import {
   anonymiserEtSupprimerUsager,
   beneficiairesLiesAUsager,
   mettreAJourUsager,
-} from './prisma/webhook-usager.prisma'
-import { recevoirWebhookUsager } from './recevoir-webhook-usager'
+} from './prisma/webhook-usager.mutation'
 
 const recevoir = recevoirWebhookUsager({
   lireNotification: lireNotificationUsager,

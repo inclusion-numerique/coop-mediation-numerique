@@ -3,7 +3,7 @@ import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activit
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { BoutonExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/BoutonExporter'
 import { requeteDeLExport } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/requete-de-l-export.presenter'
-import { mesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/mes-activites-de-coordination'
+import { mesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/mes-activites-de-coordination.query'
 import { MesCoordinationsPage } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/pages/MesCoordinationsPage'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/supprimer-la-coordination.key'
 import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'

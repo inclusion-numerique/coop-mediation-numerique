@@ -1,9 +1,9 @@
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
 import { echecDefinitif } from '@/features/rdvsp/implementations/synchroniser-compte.binding'
-import { consignerLEchec } from './consigner-l-echec'
-import { declencherSynchronisation } from './declencher-synchronisation'
-import { lancerSynchronisation } from './lancer-synchronisation.adapter'
+import { consignerLEchec } from '../domain/consigner-l-echec'
+import { declencherSynchronisation } from '../domain/declencher-synchronisation'
+import { lancerSynchronisation } from './lancer-synchronisation.binding'
 import { compteACible } from './prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from './prisma/marquer-echec.mutation'
 

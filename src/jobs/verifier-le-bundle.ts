@@ -1,4 +1,4 @@
-import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/inactiviteProlongeeAvertissementEmail'
+import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/avertissement-d-inactivite-prolongee'
 import { compileMjml } from '@/libraries/emails/mjml'
 import { output } from './output'
 

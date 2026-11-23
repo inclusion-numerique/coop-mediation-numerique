@@ -30,7 +30,7 @@ import {
   detacherDuLieuDecrit,
   type LieuDecrit,
   rattacherAuLieuDecrit,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit.mutation'
 import {
   IdentifiantCartographie,
   IdsCartographieNationale,

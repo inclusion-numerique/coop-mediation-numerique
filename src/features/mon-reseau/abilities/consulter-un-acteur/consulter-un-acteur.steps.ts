@@ -5,7 +5,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   consulterUnActeur,
   type QuiConsulte,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/consulter-un-acteur'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
 import { Effectif } from '@/features/mon-reseau/domain'
 import {
   type ActeurASemer,

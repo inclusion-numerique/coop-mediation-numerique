@@ -8,8 +8,8 @@ import {
 import {
   criteresDesStructures,
   StructuresQueryParamsValidation,
-} from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.parametres'
-import { reponseDesStructures } from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.reponse'
+} from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.params'
+import { reponseDesStructures } from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.response'
 import { lieuInventorie } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/api/lieu-inventorie.transfer'
 import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/prisma/inventaire-des-lieux.query'
 import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'

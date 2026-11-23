@@ -5,7 +5,7 @@ import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/
 import {
   nouvelleSaisieDeCoordination,
   saisieDEvenement,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/page-de-saisie'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/page-de-saisie.query'
 import CraEvenementPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/CraEvenementPage'
 import type { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/evenement/validation/CraEvenementValidation'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'

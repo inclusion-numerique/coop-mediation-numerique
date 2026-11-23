@@ -2,13 +2,13 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { RecevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
+import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/api/lire-notification-usager'
 import {
   anonymiserEtSupprimerUsager,
   beneficiairesLiesAUsager,
   mettreAJourUsager,
-} from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.prisma'
-import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/recevoir-webhook-usager'
+} from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
 import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import {
   beneficiaireEnBase,

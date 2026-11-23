@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import {
   cheminDeDuplicationDeCoordination,
   saisieDAnimation,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/page-de-saisie'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/page-de-saisie.query'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 
 const DupliquerCraAnimationPage = async ({

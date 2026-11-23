@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/consulter-le-reseau-du-departement'
-import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/lister-les-acteurs-du-departement'
+import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/prisma/reseau-du-departement.query'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
 
 /**
  * Le port SQL ne se vérifie qu'à l'exécution : un fragment mal composé passe le

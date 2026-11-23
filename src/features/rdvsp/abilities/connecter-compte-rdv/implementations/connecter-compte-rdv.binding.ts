@@ -5,8 +5,8 @@ import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOauthCallbackUrl,
 } from '../../../implementations/oauth/oauth'
+import { connecterCompteRdv } from '../domain/connecter-compte-rdv'
 import { echangerCodeAutorisation } from './api/echanger-code-autorisation'
-import { connecterCompteRdv } from './connecter-compte-rdv'
 import { compteRdvExistant } from './prisma/compte-rdv-existant.query'
 import { enregistrerCompteConnecte } from './prisma/enregistrer-compte-connecte.mutation'
 

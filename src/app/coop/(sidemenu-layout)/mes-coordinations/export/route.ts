@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/classeur-de-mes-coordinations'
+import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'

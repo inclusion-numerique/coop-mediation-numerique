@@ -12,12 +12,12 @@ import type {
   ResultatSynchronisation,
   SynchroniserCompteRdv,
 } from './domain/synchroniser-compte-rdv'
+import { synchroniserCompteRdv } from './domain/synchroniser-compte-rdv'
 import {
   cloturerJournal,
   echouerJournal,
   ouvrirJournal,
-} from './implementations/prisma/journal-synchronisation.prisma'
-import { synchroniserCompteRdv } from './implementations/synchroniser-compte-rdv'
+} from './implementations/prisma/journal-synchronisation.mutation'
 
 const AGENT_ID = ID_TEST.compte + 8
 

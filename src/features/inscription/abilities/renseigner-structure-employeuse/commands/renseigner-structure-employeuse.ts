@@ -8,7 +8,7 @@ import {
   type RenseignerStructureEmployeuseError,
 } from '../domain/renseigner-structure-employeuse'
 import { saisieEmployeuse } from '../domain/structure-employeuse-input'
-import { projeterEtapeFranchie } from '../implementations/prisma/projeter-etape-franchie'
+import { projeterEtapeFranchie } from '../implementations/prisma/projeter-etape-franchie.mutation'
 
 /**
  * Cas d'usage « renseigner la structure employeuse » : lit l'état, délègue la

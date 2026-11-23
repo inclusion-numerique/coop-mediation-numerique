@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
+import { classeurDesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/excel/classeur-equipe'
 import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/exporter-les-membres.query'
-import { classeurDesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/worksheet/classeur-equipe'
 import { estMembreActif } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   CoordinateurId,

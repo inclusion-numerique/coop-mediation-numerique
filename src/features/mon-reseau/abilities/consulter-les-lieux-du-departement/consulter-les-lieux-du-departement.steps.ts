@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Then, When } from '@cucumber/cucumber'
+import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
 import { type ParametresDesLieux } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/index'
-import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/implementations/consulter-les-lieux-du-departement'
 
 const AURILLAC = '15014'
 

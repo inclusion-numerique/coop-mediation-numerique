@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import type { Workbook } from 'exceljs'
-import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires'
+import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
 import {
   seedBeneficiaire,
   testMediateurId,

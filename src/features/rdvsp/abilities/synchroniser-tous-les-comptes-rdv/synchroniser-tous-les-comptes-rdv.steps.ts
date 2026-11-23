@@ -11,7 +11,7 @@ import {
 import { failure, success } from '@/libraries/result'
 import type { DeclencherLaSynchronisation } from './commands/synchroniser-tous-les-comptes-rdv'
 import type { BilanDeSynchronisation } from './domain/bilan'
-import { synchroniserTousLesComptesRdvAvec } from './implementations'
+import { synchroniserTousLesComptesRdvAvec } from './implementations/synchroniser-tous-les-comptes-rdv.binding'
 
 const COMPTE = ID_TEST.compte + 40
 const AUTRE_COMPTE = ID_TEST.compte + 41

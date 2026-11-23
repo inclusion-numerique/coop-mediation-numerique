@@ -1,6 +1,6 @@
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { rdvServicePublicApiBinding } from '../../../implementations/api/rdv-service-public.binding'
-import { prendreRendezVous } from './prendre-rendez-vous'
+import { prendreRendezVous } from '../domain/prendre-rendez-vous'
 import { beneficiaireADemander } from './prisma/beneficiaire-a-demander.query'
 import { compteDuMediateur } from './prisma/compte-du-mediateur.query'
 import { lierUsagerAuBeneficiaire } from './prisma/lier-usager-au-beneficiaire.mutation'

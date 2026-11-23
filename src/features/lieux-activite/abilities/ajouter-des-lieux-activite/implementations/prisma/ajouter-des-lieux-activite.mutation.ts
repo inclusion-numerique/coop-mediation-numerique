@@ -11,7 +11,7 @@ import {
   type LieuDemande,
   lieuxAMaterialiser,
 } from '../../domain'
-import { rattacherAuLieu } from './rattacher-au-lieu'
+import { rattacherAuLieu } from './rattacher-au-lieu.mutation'
 
 const enSerie = async <Element, Resultat>(
   elements: readonly Element[],

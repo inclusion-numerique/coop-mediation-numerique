@@ -7,7 +7,7 @@ import {
   validerInscription as deciderValidation,
   type ValiderInscriptionError,
 } from '../domain/valider-inscription'
-import { effetsApresValidation } from '../implementations/effets-apres-validation'
+import { effetsApresValidation } from '../implementations/prisma/effets-apres-validation.mutation'
 import { enregistrerValidation } from '../implementations/prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from '../implementations/prisma/lire-faits-inscription.query'
 

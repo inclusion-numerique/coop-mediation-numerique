@@ -4,7 +4,7 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
 import { type ParametresDesActeurs } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/domain/index'
-import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/lister-les-acteurs-du-departement'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
 import { default as ActeursDuDepartementPage } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui/pages/ActeursDuDepartementPage'
 
 export const metadata: Metadata = {

@@ -6,7 +6,7 @@ import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/
 import {
   saisieDeCoordinationAModifier,
   saisieDePartenariat,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/page-de-saisie'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/page-de-saisie.query'
 import CraPartenariatPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/partenariat/CraPartenariatPage'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'

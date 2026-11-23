@@ -1,24 +1,24 @@
-import { failure, type Result, success } from '@/libraries/result'
-import {
-  type CompteRdv,
-  estUtilisable,
-} from '../../../domain/compte/compte-rdv'
-import {
-  CompteNonLie,
-  type ErreurRdvApi,
-  RdvIntrouvable,
-} from '../../../domain/errors'
-import type { RdvId } from '../../../domain/identifiants/rdv-id'
-import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import type { StatutPresence } from '../../../domain/statut-presence'
-import { RdvNonAutorise } from './errors'
+import { RdvNonAutorise } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/errors'
 import type {
   BeneficiaireFusionne,
   MediateurRedacteurId,
   ParticipationDuRdv,
   RdvPourActivite,
   UsagerDuRdv,
-} from './rdv-pour-activite'
+} from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
+import {
+  type CompteRdv,
+  estUtilisable,
+} from '@/features/rdvsp/domain/compte/compte-rdv'
+import {
+  CompteNonLie,
+  type ErreurRdvApi,
+  RdvIntrouvable,
+} from '@/features/rdvsp/domain/errors'
+import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
+import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import type { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import { failure, type Result, success } from '@/libraries/result'
 
 export type ErreurCreationActivite = RdvNonAutorise | ErreurRdvApi
 
@@ -121,3 +121,55 @@ export const usagersPourActivite = (
       return presence === 'seen' || presence === 'unknown'
     })
     .map((participation) => participation.usager)
+
+export type DependancesCreerActiviteDepuisRdv = {
+  readonly lireRdv: LireRdvPourActivite
+  readonly compteDuRedacteur: CompteDuRedacteur
+  readonly creerOuFusionnerBeneficiaires: CreerOuFusionnerBeneficiaires
+  readonly preparerUrlCreationCra: PreparerUrlCreationCra
+}
+
+/**
+ * Aucune activité n'est créée ici — le médiateur reste maître de son CRA. Ce que
+ * l'ability produit, c'est le lien vers un formulaire déjà rempli, et l'effet de
+ * bord qui le rend possible : les bénéficiaires des participants existent
+ * désormais dans La Coop.
+ */
+export const creerActiviteDepuisRdv =
+  ({
+    lireRdv,
+    compteDuRedacteur,
+    creerOuFusionnerBeneficiaires,
+    preparerUrlCreationCra,
+  }: DependancesCreerActiviteDepuisRdv): CreerActiviteDepuisRdv =>
+  async ({ utilisateurId, mediateurId, rdvId }) => {
+    const [rdv, compte] = await Promise.all([
+      lireRdv(rdvId),
+      compteDuRedacteur(utilisateurId),
+    ])
+
+    const verifie = verifierRdv({ rdv, compte, rdvId })
+
+    if (!verifie.success) {
+      return verifie
+    }
+
+    const beneficiaires = await creerOuFusionnerBeneficiaires({
+      usagers: usagersPourActivite(verifie.data),
+      mediateurId,
+    })
+
+    return success({
+      urlCreationCra: await preparerUrlCreationCra({
+        rendezVous: {
+          id: verifie.data.id,
+          debut: verifie.data.debut,
+          dureeEnMinutes: verifie.data.dureeEnMinutes,
+          titre: verifie.data.titre,
+          collectif: verifie.data.collectif,
+        },
+        mediateurId,
+        beneficiaires,
+      }),
+    })
+  }

@@ -14,7 +14,7 @@ import {
   motifDiagnostic,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
 import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/connecter-compte-rdv.binding'
-import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/redirection'
+import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'

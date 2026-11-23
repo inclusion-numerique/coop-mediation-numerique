@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { SynchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
+import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import {
   appliquerPlanLot,
   supprimerMotifsOrphelins,
@@ -10,7 +11,6 @@ import {
   etatConnuDuLot,
   rdvsDejaImportes,
 } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
-import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs'
 import { AdresseRdv } from '@/features/rdvsp/domain/adresse-rdv'
 import {
   type CompteRdvUtilisable,

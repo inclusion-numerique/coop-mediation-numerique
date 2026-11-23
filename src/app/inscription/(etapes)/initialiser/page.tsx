@@ -4,7 +4,7 @@ import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
-import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations'
+import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/initialiser-inscription.mutation'
 import { UserId } from '@/features/inscription/domain'
 import { stepPath } from '@/features/inscription/ui/chemin-de-l-etape'
 import {

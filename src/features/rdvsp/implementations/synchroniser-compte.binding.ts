@@ -1,17 +1,17 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { success } from '@/libraries/result'
+import { synchroniserCompteRdv } from '../abilities/synchroniser-compte-rdv/domain/synchroniser-compte-rdv'
 import { detacherOrganisations } from '../abilities/synchroniser-compte-rdv/implementations/prisma/detacher-organisations.mutation'
 import {
   cloturerJournal,
   echouerJournal,
   ouvrirJournal,
-} from '../abilities/synchroniser-compte-rdv/implementations/prisma/journal-synchronisation.prisma'
-import { synchroniserCompteRdv } from '../abilities/synchroniser-compte-rdv/implementations/synchroniser-compte-rdv'
+} from '../abilities/synchroniser-compte-rdv/implementations/prisma/journal-synchronisation.mutation'
 import { installWebhooks } from '../abilities/synchroniser-compte-rdv/implementations/webhook/installer-webhooks.adapter'
+import { synchroniserOrganisations } from '../abilities/synchroniser-organisations/domain/synchroniser-organisations'
 import { appliquerPlanOrganisations } from '../abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
 import { etatOrganisations } from '../abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
-import { synchroniserOrganisations } from '../abilities/synchroniser-organisations/implementations/synchroniser-organisations'
-import { rapprocherBeneficiaires } from '../abilities/synchroniser-rdvs/implementations/beneficiaire/rapprocher-beneficiaires.adapter'
+import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import {
   appliquerPlanLot,
   supprimerMotifsOrphelins,
@@ -21,7 +21,7 @@ import {
   etatConnuDuLot,
   rdvsDejaImportes,
 } from '../abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
-import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/implementations/synchroniser-rdvs'
+import { rapprocherBeneficiaires } from '../abilities/synchroniser-rdvs/implementations/prisma/rapprocher-beneficiaires.adapter'
 import { bilanVide } from '../domain/compte/bilan-synchronisation'
 import { estUtilisable } from '../domain/compte/compte-rdv'
 import { diagnosticErreur } from '../domain/errors'

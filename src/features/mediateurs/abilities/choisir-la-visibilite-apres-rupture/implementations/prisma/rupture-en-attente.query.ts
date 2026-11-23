@@ -3,7 +3,7 @@ import {
   type RuptureEnAttente,
   ruptureEnAttente,
 } from '../../domain/rupture-en-attente'
-import { lireMediateurEtContrats } from './mediateur-et-contrats'
+import { lireMediateurEtContrats } from './mediateur-et-contrats.query'
 
 export const lireLaRuptureEnAttente = async ({
   mediateurId,

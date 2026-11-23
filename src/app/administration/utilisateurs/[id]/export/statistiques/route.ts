@@ -14,7 +14,7 @@ import {
   getSessionUserFromSessionToken,
 } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/membres-a-filtrer-du-demandeur'
+import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/classeur-des-statistiques'

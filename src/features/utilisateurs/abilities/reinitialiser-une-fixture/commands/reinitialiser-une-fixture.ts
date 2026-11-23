@@ -4,7 +4,7 @@ import { failure, type Result, success } from '@/libraries/result'
 import {
   estUneFixture,
   reinitialiser,
-} from '../implementations/fixtures/reinitialiser'
+} from '../implementations/prisma/reinitialiser'
 
 export type CompteNonFixture = { readonly _tag: 'CompteNonFixture' }
 

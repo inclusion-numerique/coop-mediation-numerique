@@ -4,7 +4,7 @@ import { type TerminerLUsurpationError, usurpateurARetrouver } from '../domain'
 import {
   rendreLaSession,
   sessionCourante,
-} from '../implementations/prisma/session-courante'
+} from '../implementations/prisma/session-courante.mutation'
 
 export const terminerLUsurpation = async (
   jeton: string,

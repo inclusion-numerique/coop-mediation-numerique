@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 import NextAuth from 'next-auth'
 import { nextAuthOptions } from '@/features/authentification/implementations/next-auth/auth'
 import { isFirewallUserAgent } from '@/features/authentification/implementations/next-auth/is-firewall-user-agent'
-import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importStructureEmployeuseFromProConnect'
+import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import {
   ensurePersonneMain,

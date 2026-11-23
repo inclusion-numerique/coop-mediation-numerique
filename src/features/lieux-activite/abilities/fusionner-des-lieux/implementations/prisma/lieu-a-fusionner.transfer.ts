@@ -4,7 +4,7 @@ import { IdentifiantCartographie } from '../../../../domain/cartographie-nationa
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { LieuAFusionner } from '../../domain'
-import type { LieuAFusionnerRow } from './lieu-a-fusionner.data'
+import type { LieuAFusionnerRow } from './lieu-a-fusionner'
 
 const adresseDuLieu = (structure: LieuAFusionnerRow) =>
   adresseSaisie(

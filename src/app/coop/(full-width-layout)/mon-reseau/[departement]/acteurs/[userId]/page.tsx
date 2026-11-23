@@ -25,8 +25,8 @@ import { LieuxRepliables } from '@/features/lieux-activite/ui/LieuxRepliables'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/CarteContrat'
 import { UtilisateurId } from '@/features/mediateurs/domain'
-import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/consulter-un-acteur'
-import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/nom-de-l-acteur'
+import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
+import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/nom-de-l-acteur.query'
 import {
   INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
   RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,

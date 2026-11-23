@@ -13,7 +13,7 @@ import type { ModificationLieu } from '../../domain/modification-lieu'
 import { laisseUnePublicationSansAdresse } from '../../domain/publication-sans-adresse'
 import { laisseUnePublicationSansService } from '../../domain/publication-sans-service'
 import { consulterLaFicheDuLieu } from './consulter-la-fiche-du-lieu.query'
-import { enregistrerLesSections } from './enregistrer-les-sections'
+import { enregistrerLesSections } from './enregistrer-les-sections.mutation'
 
 export const modifierLaFicheDuLieu = async ({
   id,

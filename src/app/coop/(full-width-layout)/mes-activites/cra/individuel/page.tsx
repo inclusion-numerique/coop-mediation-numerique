@@ -4,7 +4,7 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
-import { nouvelleSaisieIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/page-de-saisie'
+import { nouvelleSaisieIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/page-de-saisie.query'
 import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/CraIndividuelPage'
 import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'

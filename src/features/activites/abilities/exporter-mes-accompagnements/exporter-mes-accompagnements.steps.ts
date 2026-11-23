@@ -4,8 +4,8 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { CoordinateurId, criteresDesActivites, MediateurId } from '../../domain'
 import type { Demandeur, ExportDesAccompagnements } from './domain'
-import { exporterMesAccompagnements } from './implementations/exporter-mes-accompagnements'
-import { nomsDesFiltresExportes } from './implementations/noms-des-filtres-exportes'
+import { exporterMesAccompagnements } from './implementations/prisma/accompagnements-a-exporter.query'
+import { nomsDesFiltresExportes } from './implementations/prisma/noms-des-filtres-exportes.query'
 
 type Seme = { readonly userId: string; readonly mediateurId: string }
 

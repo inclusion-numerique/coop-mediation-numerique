@@ -1,20 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import {
-  type CompteRdv,
-  MessageErreurCompte,
-} from '../../../domain/compte/compte-rdv'
-import {
-  JetonAcces,
-  type JetonsOAuth,
-} from '../../../domain/compte/jetons-oauth'
-import { OrganisationId } from '../../../domain/identifiants/organisation-id'
-import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
-import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import {
+  declencherSynchronisation,
+  MESSAGE_ECHEC,
   peutDeclencherPour,
   peutRelancerUnCompteEnErreur,
   porteePour,
-} from './declencher-synchronisation'
+} from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
+import type { CompteRdvLie } from '@/features/rdvsp/domain/compte/compte-rdv'
+import {
+  type CompteRdv,
+  MessageErreurCompte,
+} from '@/features/rdvsp/domain/compte/compte-rdv'
+import {
+  JetonAcces,
+  type JetonsOAuth,
+} from '@/features/rdvsp/domain/compte/jetons-oauth'
+import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
+import { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import { failure } from '@/libraries/result'
 
 const moi = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 const autrui = UtilisateurCoopId('9c858901-8a57-4791-81fe-4c455b099bc9')
@@ -124,5 +128,67 @@ describe('compte en erreur', () => {
     ['User', false],
   ] as const)('relance autorisée pour un profil %s : %s', (role, attendu) => {
     expect(peutRelancerUnCompteEnErreur({ id: moi, role })).toBe(attendu)
+  })
+})
+
+/**
+ * Ce que l'échec d'une passe doit laisser sur le compteLie.
+ *
+ * Le drapeau `error` n'est pas une trace de diagnostic — le journal de
+ * synchronisation en tient une, quoi qu'il arrive. C'est lui qui affiche au
+ * médiateur l'alerte l'invitant à reconnecter son compteLie. Le poser sur une panne
+ * passagère envoie refaire un parcours OAuth pour rien.
+ */
+
+const UTILISATEUR = UtilisateurCoopId('11111111-1111-4111-8111-111111111111')
+
+const compteLie: CompteRdvLie = {
+  _tag: 'lie',
+  agentId: RdvAgentId(5166),
+  utilisateurId: UTILISATEUR,
+  organisationIds: [],
+  organisationIdsSansWebhook: [],
+  synchroniserDepuis: null,
+  derniereSynchro: null,
+  inclureRdvsDansActivites: false,
+  jetons: {
+    acces: JetonAcces('acces'),
+    rafraichissement: null,
+    expiration: null,
+    portee: null,
+  },
+}
+
+const declencherQuiEchoue = (echecDefinitif: (erreur: unknown) => boolean) =>
+  declencherSynchronisation({
+    compteACible: async () => compteLie,
+    lancer: async () => {
+      throw new Error('API injoignable')
+    },
+    echecDefinitif,
+  })({
+    demandeur: { id: UTILISATEUR, role: 'User' },
+    utilisateurId: UTILISATEUR,
+    seulementSansWebhook: false,
+  })
+
+describe('échec d’une synchronisation déclenchée', () => {
+  it('ne marque pas le compte quand un nouvel essai peut aboutir', async () => {
+    const resultat = await declencherQuiEchoue(() => false)
+
+    expect(resultat).toEqual(
+      failure({ _tag: 'SynchronisationEchouee', marquage: null }),
+    )
+  })
+
+  it('marque le compte quand réessayer ne servirait à rien', async () => {
+    const resultat = await declencherQuiEchoue(() => true)
+
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'SynchronisationEchouee',
+        marquage: { agentId: compteLie.agentId, message: MESSAGE_ECHEC },
+      }),
+    )
   })
 })

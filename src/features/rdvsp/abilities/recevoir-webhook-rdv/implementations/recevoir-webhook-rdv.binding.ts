@@ -1,16 +1,16 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/ports'
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import { journaliserWebhook } from '../../../implementations/webhook/journal'
+import { recevoirWebhookRdv } from '../domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from './api/lire-notification-rdv'
-import { rapprocherBeneficiairesDuRdv } from './beneficiaire/rapprocher-beneficiaires-du-rdv.adapter'
+import { rapprocherBeneficiairesDuRdv } from './prisma/rapprocher-beneficiaires-du-rdv.adapter'
 import {
   comptePourWebhook,
   enregistrerRdvDeLaNotification,
   organisationConnue,
   rdvConnuParId,
   supprimerRdvDeLaNotification,
-} from './prisma/webhook-rdv.prisma'
-import { recevoirWebhookRdv } from './recevoir-webhook-rdv'
+} from './prisma/webhook-rdv.mutation'
 
 const recevoirAvec = (
   creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes,

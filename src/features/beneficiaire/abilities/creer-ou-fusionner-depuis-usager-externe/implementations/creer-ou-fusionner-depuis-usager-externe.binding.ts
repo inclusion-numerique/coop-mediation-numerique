@@ -1,5 +1,5 @@
 import { instrument } from '@/configuration/telemetry/instrument/server'
-import { communeFieldsFromAddress } from './communeFieldsFromAddress'
+import { communeFieldsFromAddress } from './ban/champs-de-commune-depuis-l-adresse'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
 
 const communeDeLAdresse = (adresse: string) =>

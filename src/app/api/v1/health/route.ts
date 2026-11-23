@@ -5,7 +5,7 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api/implementations/api-v1/etat-de-l-api.reponse'
+import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api/implementations/api-v1/etat-de-l-api.response'
 import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
 
 /**

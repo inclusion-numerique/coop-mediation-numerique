@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { CommuneFields } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/communeFieldsFromAddress'
+import type { CommuneFields } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/champs-de-commune-depuis-l-adresse'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { Email } from '@/features/beneficiaire/domain/email'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'

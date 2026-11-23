@@ -7,6 +7,7 @@ import {
   ServiceAdresseIndisponible,
 } from '../domain'
 import { EmployeuseId } from '../domain/employeuse-id'
+import { lieuDepuisEmployeuse } from '../domain/lieu-depuis-employeuse'
 import type {
   ConsulterEmployeuseActuelle,
   DetacherDuLieuDecrit,
@@ -14,8 +15,7 @@ import type {
   GeocoderLAdresse,
   RattacherAuLieuDecrit,
 } from '../domain/ports'
-import { lieuDepuisEmployeuse } from '../implementations/lieu-depuis-employeuse'
-import { lireLAdresseDeLEmployeuse } from '../implementations/lire-l-adresse-de-l-employeuse'
+import { lireLAdresseDeLEmployeuse } from '../implementations/prisma/adresse-de-l-employeuse.query'
 
 /**
  * Le géocodeur est le seul recours au réseau de ce cas d'usage : il se passe

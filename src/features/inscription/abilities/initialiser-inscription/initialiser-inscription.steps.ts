@@ -6,7 +6,7 @@ import {
   type DispositifInscription,
   initialiserInscription,
 } from '@/features/inscription/abilities/initialiser-inscription/domain'
-import { lireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/lire-etat-pour-etape-suivante'
+import { lireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/etat-pour-etape-suivante.query'
 import {
   type InscriptionStep,
   ProfilInscription,

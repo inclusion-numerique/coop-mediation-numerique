@@ -13,7 +13,7 @@ import {
   RetentionPolicy,
   type SupprimerComptePorts,
 } from './domain'
-import { hash } from './implementations/node/hash'
+import { hash } from './implementations/crypto/hash'
 
 const demandes: {
   portefeuille: string[]

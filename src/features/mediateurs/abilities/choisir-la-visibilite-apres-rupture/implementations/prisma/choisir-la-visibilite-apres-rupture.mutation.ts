@@ -14,7 +14,7 @@ import {
   visibiliteApres,
 } from '../../domain/reponse-apres-rupture'
 import { ruptureEnAttente } from '../../domain/rupture-en-attente'
-import { lireMediateurEtContrats } from './mediateur-et-contrats'
+import { lireMediateurEtContrats } from './mediateur-et-contrats.query'
 
 export const choisirLaVisibiliteApresRupture =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>

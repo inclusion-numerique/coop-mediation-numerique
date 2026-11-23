@@ -8,8 +8,8 @@ import { lieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-l
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/href-du-lieu'
 import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/LieuActiviteCard'
+import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
 import { type ParametresDesLieux } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/index'
-import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/implementations/consulter-les-lieux-du-departement'
 import { default as LieuxDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui/pages/LieuxDuDepartementPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

@@ -10,7 +10,7 @@ import {
 import { type EchecDeModification, FicheIntrouvable } from '../../domain/errors'
 import { resoudreLesDifferences } from '../../domain/resoudre-les-differences'
 import { consulterLaFicheDuLieu } from './consulter-la-fiche-du-lieu.query'
-import { enregistrerLesSections } from './enregistrer-les-sections'
+import { enregistrerLesSections } from './enregistrer-les-sections.mutation'
 
 export const appliquerLesDifferences = async ({
   id,
