@@ -30,11 +30,11 @@ export const exportInterdit = (
   { mediateur, coordinateur }: DemandeurDeLExport,
   mediateursExportes: readonly string[] | undefined,
 ): boolean => {
-  if (mediateursExportes === undefined || !mediateur?.id) return false
+  if (mediateursExportes === undefined) return false
   const autorises = [
-    mediateur.id,
+    ...(mediateur ? [mediateur.id] : []),
     ...idsDes(coordinateur?.mediateursCoordonnes),
     ...idsDes(coordinateur?.ancienMediateursCoordonnes),
   ]
-  return !mediateursExportes.some((id) => autorises.includes(id))
+  return !mediateursExportes.every((id) => autorises.includes(id))
 }
