@@ -11,11 +11,11 @@ import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '@/features/utilisateu
 import { CarteMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/ui'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
 import { CarteSupprimerMonCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui'
+import { MonProfilPage } from '@/features/utilisateurs/ui/MonProfilPage'
 import {
   identiteDuProfil,
   sectionsDuProfil,
 } from '@/features/utilisateurs/ui/mon-profil.presenter'
-import { MonProfilPage } from '@/features/utilisateurs/ui/pages/MonProfilPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

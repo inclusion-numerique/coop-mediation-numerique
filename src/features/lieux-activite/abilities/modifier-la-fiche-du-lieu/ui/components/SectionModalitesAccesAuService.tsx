@@ -2,7 +2,7 @@
 
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
-import { fraisAChargeOptions } from '@/features/lieux-activite/ui/options'
+import { fraisAChargeOptions } from '@/features/lieux-activite/ui/options-du-lieu'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { telephoneDisplayString } from '@/libraries/telephone'

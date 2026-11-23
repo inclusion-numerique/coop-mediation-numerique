@@ -1,3 +1,3 @@
 'use client'
 
-export { ServerError as default } from '@/features/navigation/ui/erreurs/ServerError'
+export { ServerError as default } from '@/features/navigation/ui/ServerError'

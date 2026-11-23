@@ -10,7 +10,7 @@ import {
 import {
   accompagnementSuivi,
   atelierMixte,
-} from '../../../ui/fixtures-de-consultation'
+} from '../../../fixtures/consultation'
 import {
   joursDeLaListe,
   lignesDuTableau,

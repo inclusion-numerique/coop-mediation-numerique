@@ -11,8 +11,8 @@ import {
 } from '@/features/outils/abilities/lister-mes-outils'
 import { MesOutilsPage } from '@/features/outils/abilities/lister-mes-outils/ui'
 import { statutDuCompteDeLaSession } from '@/features/rdvsp/domain/compte/sante-compte'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/liens'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
-import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes outils'),

@@ -13,14 +13,14 @@ import {
 } from '@/features/beneficiaire/domain/annee-naissance'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import {
+  BeneficiaireData,
+  BeneficiaireValidation,
+} from '@/features/beneficiaire/ui/formulaire/beneficiaire.validation'
+import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
 } from '@/features/beneficiaire/ui/formulaire/beneficiaire-options'
-import {
-  BeneficiaireData,
-  BeneficiaireValidation,
-} from '@/features/beneficiaire/ui/formulaire/beneficiaire-validation'
 import FormSection from '@/features/beneficiaire/ui/formulaire/FormSection'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import {

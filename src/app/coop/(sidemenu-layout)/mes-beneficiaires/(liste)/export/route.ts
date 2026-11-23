@@ -7,7 +7,7 @@ import {
   exporterBeneficiaires,
 } from '@/features/beneficiaire/abilities/exporter-beneficiaires'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {

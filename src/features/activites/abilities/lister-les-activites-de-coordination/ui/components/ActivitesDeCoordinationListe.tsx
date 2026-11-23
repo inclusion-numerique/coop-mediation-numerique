@@ -1,5 +1,5 @@
 import { CoordinationEmptyState } from '../../../../ui/CoordinationEmptyState'
-import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
+import { PaginationDesActivites } from '../../../../ui/PaginationDesActivites'
 import type { ListeDesCoordinations } from '../liste-des-coordinations.presenter'
 import { CarteDeCoordination } from './CarteDeCoordination'
 import { DetailDeCoordinationModale } from './DetailDeCoordinationModale'

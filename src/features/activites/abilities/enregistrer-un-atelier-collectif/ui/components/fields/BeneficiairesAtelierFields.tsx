@@ -17,7 +17,7 @@ import {
   statutsSociauxAffiches as statutSocialValues,
   trancheAgeLabels,
   tranchesAgeAffichees as trancheAgeValues,
-} from '@/features/activites/ui/libelles/profil'
+} from '@/features/activites/ui/libelles/profil.labels'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,

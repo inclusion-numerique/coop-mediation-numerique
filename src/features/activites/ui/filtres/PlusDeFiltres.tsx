@@ -27,7 +27,7 @@ import {
   ThematiqueNonAdministrativesFiled,
   updateThematiqueNonAdministrativesParams,
 } from '@/features/activites/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
-import type { SourceDansLURL } from '@/features/activites/ui/libelles/source-de-l-activite'
+import type { SourceDansLURL } from '@/features/activites/ui/libelles/source-de-l-activite.labels'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres/plus-de-filtres.form-options'

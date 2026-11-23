@@ -16,18 +16,18 @@ import {
   CraIndividuelData,
   CraIndividuelValidation,
 } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import { autonomieOptionsWithExtras } from '@/features/activites/ui/libelles/autonomie'
-import { materielOptions } from '@/features/activites/ui/libelles/materiel'
+import { autonomieOptionsWithExtras } from '@/features/activites/ui/libelles/autonomie.labels'
+import { materielOptions } from '@/features/activites/ui/libelles/materiel.labels'
 import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
-} from '@/features/activites/ui/libelles/profil'
-import { structuresRedirectionOptions } from '@/features/activites/ui/libelles/structures-redirection'
+} from '@/features/activites/ui/libelles/profil.labels'
+import { structuresRedirectionOptions } from '@/features/activites/ui/libelles/structures-redirection.labels'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
-} from '@/features/activites/ui/libelles/thematique'
+} from '@/features/activites/ui/libelles/thematique.labels'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
 import type { CommuneDuCra } from '@/features/activites/ui/saisie/commune/commune-du-cra'
 import { MaterielField } from '@/features/activites/ui/saisie/fields/MaterielField'

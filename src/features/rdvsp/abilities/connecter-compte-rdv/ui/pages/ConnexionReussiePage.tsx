@@ -5,7 +5,7 @@ import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
   rdvServicePublicGettingStartedLink,
-} from '@/features/rdvsp/ui/urls'
+} from '@/features/rdvsp/ui/liens'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'

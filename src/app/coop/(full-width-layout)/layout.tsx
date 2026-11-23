@@ -1,5 +1,5 @@
 import React from 'react'
-import CreateCraModal from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModal'
+import CreateCraModal from '@/features/activites/ui/saisie/modale-de-saisie/CreateCraModal'
 import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticateUser'
 import Header from '@/features/navigation/ui/en-tete/Header'

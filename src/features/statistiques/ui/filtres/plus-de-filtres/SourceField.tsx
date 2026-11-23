@@ -1,7 +1,7 @@
 import {
   ActiviteSource,
   activiteSourceOptions,
-} from '@/features/statistiques/ui/filtres/source'
+} from '@/features/statistiques/ui/filtres/options/source-de-l-activite'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 

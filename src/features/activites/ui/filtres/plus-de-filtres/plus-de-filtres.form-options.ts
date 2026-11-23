@@ -1,5 +1,5 @@
 import { formOptions } from '@tanstack/react-form'
-import type { SourceDansLURL } from '@/features/activites/ui/libelles/source-de-l-activite'
+import type { SourceDansLURL } from '@/features/activites/ui/libelles/source-de-l-activite.labels'
 import type { StructureEmployeuse } from './StructureEmployeuseComboBox'
 
 type ValeursDePlusDeFiltres = {

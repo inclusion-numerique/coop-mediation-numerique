@@ -9,7 +9,7 @@ import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { ActivitesFiltersLabels } from '../../../../ui/filtres/libelles-des-filtres'
+import type { ActivitesFiltersLabels } from '../../../../ui/filtres/filtres.labels'
 import { cheminAvecRequete } from '../export.presenter'
 
 const ModaleDExport = createModal({

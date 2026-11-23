@@ -14,7 +14,7 @@ import { RELANCER_LES_INSCRIPTIONS_INACHEVEES_ACTION_KEY } from '@/features/util
 import { LancerLesRelancesDInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/ui'
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/action/relancer-les-inscrits-inactifs.key'
 import { LancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/ui'
-import { OutilsAdministrateurPage } from '@/features/utilisateurs/ui/pages/OutilsAdministrateurPage'
+import { OutilsAdministrateurPage } from '@/features/utilisateurs/ui/OutilsAdministrateurPage'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {

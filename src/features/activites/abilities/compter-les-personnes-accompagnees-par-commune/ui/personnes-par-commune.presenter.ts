@@ -1,5 +1,5 @@
 import { allocatePercentagesFromRecords } from '@/libraries/proportions'
-import { libelleDeLaCommune } from '../../../ui/statistiques/parts-presentees'
+import { libelleDeLaCommune } from '../../../ui/parts-presentees'
 import type { PersonnesParCommune } from '../domain'
 
 export const personnesParCommunePresentees = (

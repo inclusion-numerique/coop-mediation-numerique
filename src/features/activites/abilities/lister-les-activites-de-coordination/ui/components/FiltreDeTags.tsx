@@ -3,7 +3,7 @@
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
+import { BadgeDePortee } from '@/features/activites/ui/BadgeDePortee'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'

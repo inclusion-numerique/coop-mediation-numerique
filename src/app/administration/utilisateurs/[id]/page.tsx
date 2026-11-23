@@ -56,11 +56,11 @@ import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { StatistiquesEnAdministration } from '@/features/statistiques/ui/administration/StatistiquesEnAdministration'
+import { StatistiquesEnAdministration } from '@/features/statistiques/ui/StatistiquesEnAdministration'
 import {
   type PeriodeChoisie,
   periodeChoisieDans,
-} from '@/features/statistiques/ui/administration/statistiques-en-administration.presenter'
+} from '@/features/statistiques/ui/statistiques-en-administration.presenter'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.key'
 import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui'
 import {

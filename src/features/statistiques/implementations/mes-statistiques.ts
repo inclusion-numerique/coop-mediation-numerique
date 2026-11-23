@@ -1,9 +1,9 @@
+import type { VocabulaireDeLaBarre } from '../ui/filtres/barre/barre.labels'
 import {
   type FournisseursDesOptions,
   optionsDesStatistiques,
-} from '../ui/filtres/options-de-la-barre.presenter'
-import type { ActivitesFilters } from '../ui/filtres/parametres-de-la-barre'
-import type { VocabulaireDeLaBarre } from '../ui/filtres/vocabulaire-de-la-barre'
+} from '../ui/filtres/barre/options-de-la-barre.presenter'
+import type { ActivitesFilters } from '../ui/filtres/barre/parametres-de-la-barre'
 
 type Fournisseur<
   OptionDeBeneficiaire,

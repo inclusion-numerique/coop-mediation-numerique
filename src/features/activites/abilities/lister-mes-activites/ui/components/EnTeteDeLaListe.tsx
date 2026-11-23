@@ -5,7 +5,7 @@ import {
 } from '../../../../ui/filtres/BarreDeFiltres'
 import { FilterTags } from '../../../../ui/filtres/EtiquettesDesFiltres'
 import type { FiltresDeLaListe } from '../../../../ui/filtres/filtres-de-la-liste'
-import { optionsDesSources } from '../../../../ui/libelles/source-de-l-activite'
+import { optionsDesSources } from '../../../../ui/libelles/source-de-l-activite.labels'
 
 export const EnTeteDeLaListe = ({
   filtres,

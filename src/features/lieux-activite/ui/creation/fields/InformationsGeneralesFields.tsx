@@ -1,8 +1,8 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { libelleDeTypologie } from '@/features/lieux-activite/ui/libelles-typologie'
-import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/options-du-lieu'
+import { libelleDeTypologie } from '@/features/lieux-activite/ui/typologie.labels'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,

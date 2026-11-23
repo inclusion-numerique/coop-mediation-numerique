@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
-import { libelleDeTypologie } from '@/features/lieux-activite/ui/libelles-typologie'
+import { libelleDeTypologie } from '@/features/lieux-activite/ui/typologie.labels'
 import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
 
 export type LieuSaisi = {

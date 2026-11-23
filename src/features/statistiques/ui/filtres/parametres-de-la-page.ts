@@ -1,7 +1,7 @@
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from './parametres-de-la-barre'
+} from './barre/parametres-de-la-barre'
 
 export type ParametresDeLaPage = ActivitesFilters & {
   graphique_fin?: string

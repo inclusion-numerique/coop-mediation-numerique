@@ -11,12 +11,12 @@ import {
   type CraCollectifData,
   CraCollectifValidation,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
-import { materielOptions } from '@/features/activites/ui/libelles/materiel'
-import { niveauAtelierOptionsWithExtras } from '@/features/activites/ui/libelles/niveau-atelier'
+import { materielOptions } from '@/features/activites/ui/libelles/materiel.labels'
+import { niveauAtelierOptionsWithExtras } from '@/features/activites/ui/libelles/niveau-atelier.labels'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
-} from '@/features/activites/ui/libelles/thematique'
+} from '@/features/activites/ui/libelles/thematique.labels'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/saisie/beneficiaire/beneficiaire-du-cra'
 import { MaterielField } from '@/features/activites/ui/saisie/fields/MaterielField'
 import { RendezVousFields } from '@/features/activites/ui/saisie/fields/RendezVousFields'

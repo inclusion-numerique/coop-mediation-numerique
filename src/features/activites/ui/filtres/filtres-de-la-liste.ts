@@ -8,12 +8,12 @@ import {
 import {
   SOURCES_DANS_L_URL,
   type SourceDansLURL,
-} from '../libelles/source-de-l-activite'
-import type { StatutDeRendezVousDansLURL } from '../libelles/statut-de-rendez-vous'
+} from '../libelles/source-de-l-activite.labels'
+import type { StatutDeRendezVousDansLURL } from '../libelles/statut-de-rendez-vous.labels'
 import {
   type TypeActiviteSlug,
   typeActiviteSlugValues,
-} from '../libelles/type-activite'
+} from '../libelles/type-activite.labels'
 
 type ThematiqueDansLURL = (typeof THEMATIQUES_RECHERCHEES)[number]
 

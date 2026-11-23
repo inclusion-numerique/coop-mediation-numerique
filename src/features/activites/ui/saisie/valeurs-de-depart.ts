@@ -1,6 +1,6 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type { LieuDuCra } from './lieu/lieu-du-cra'
-import type { CraData } from './validation/CraValidation'
+import type { CraData } from './validation/cra.validation'
 
 const lieuDeDepart = (lieuxProposes: readonly LieuDuCra[]) => {
   const premier = lieuxProposes.at(0)

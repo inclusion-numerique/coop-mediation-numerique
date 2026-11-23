@@ -6,7 +6,7 @@ import {
   tagDuFormulaire,
 } from './tags/tag-du-cra'
 import { valeursDeDepartDeMediation } from './valeurs-de-depart'
-import type { CraData } from './validation/CraValidation'
+import type { CraData } from './validation/cra.validation'
 
 const idsDesTags = (
   tags: DefaultValues<CraData>['tags'] = [],

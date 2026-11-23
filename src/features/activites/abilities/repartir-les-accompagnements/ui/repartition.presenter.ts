@@ -1,11 +1,11 @@
 import { estAdministrative } from '../../../domain'
-import { dureeAccompagnementStatisticsRanges } from '../../../ui/libelles/duree-accompagnement'
-import { materielLabels } from '../../../ui/libelles/materiel'
-import { thematiqueLabels } from '../../../ui/libelles/thematique'
-import { typeActiviteLabels } from '../../../ui/libelles/type-activite'
-import { typeLieuLabels } from '../../../ui/libelles/type-lieu'
+import { dureeAccompagnementStatisticsRanges } from '../../../ui/libelles/duree-accompagnement.labels'
+import { materielLabels } from '../../../ui/libelles/materiel.labels'
+import { thematiqueLabels } from '../../../ui/libelles/thematique.labels'
+import { typeActiviteLabels } from '../../../ui/libelles/type-activite.labels'
+import { typeLieuLabels } from '../../../ui/libelles/type-lieu.labels'
 import { valeurDe } from '../../../ui/libelles/valeur-de'
-import { partsPresentees } from '../../../ui/statistiques/parts-presentees'
+import { partsPresentees } from '../../../ui/parts-presentees'
 import {
   type RepartitionDesAccompagnements,
   type TrancheDeDuree,

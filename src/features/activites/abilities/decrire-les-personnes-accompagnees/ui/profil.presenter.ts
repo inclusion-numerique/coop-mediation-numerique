@@ -6,9 +6,9 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '../../../ui/libelles/profil'
+} from '../../../ui/libelles/profil.labels'
 import { valeurDe } from '../../../ui/libelles/valeur-de'
-import { partsPresentees } from '../../../ui/statistiques/parts-presentees'
+import { partsPresentees } from '../../../ui/parts-presentees'
 import type { ProfilDesPersonnesAccompagnees } from '../domain'
 
 const dansLOrdre = <V extends string>(

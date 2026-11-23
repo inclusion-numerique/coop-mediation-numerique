@@ -15,7 +15,7 @@ import {
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'

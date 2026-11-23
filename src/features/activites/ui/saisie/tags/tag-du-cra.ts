@@ -1,7 +1,7 @@
 import type {
   EquipeDuTag,
   PorteeDuTag,
-} from '@/features/activites/ui/tags/BadgeDePortee'
+} from '@/features/activites/ui/BadgeDePortee'
 
 export type TagDuCra = {
   readonly id: string

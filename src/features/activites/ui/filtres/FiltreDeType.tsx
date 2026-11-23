@@ -7,11 +7,11 @@ import type { FiltresDeLaListe } from '@/features/activites/ui/filtres/filtres-d
 import {
   optionsDesStatutsDeRendezVous,
   statutDansLURL,
-} from '@/features/activites/ui/libelles/statut-de-rendez-vous'
+} from '@/features/activites/ui/libelles/statut-de-rendez-vous.labels'
 import {
   typeActiviteOptions,
   typeActiviteSlugOptions,
-} from '@/features/activites/ui/libelles/type-activite'
+} from '@/features/activites/ui/libelles/type-activite.labels'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'

@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { typeLieuOptionsWithExtras } from '@/features/activites/ui/libelles/type-lieu'
+import { typeLieuOptionsWithExtras } from '@/features/activites/ui/libelles/type-lieu.labels'
 import {
   CommuneComboBox,
   CommuneOptions,
@@ -8,16 +8,16 @@ import type { CommuneDuCra } from '@/features/activites/ui/saisie/commune/commun
 import {
   LieuComboBox,
   LieuOptions,
-} from '@/features/activites/ui/saisie/lieu/lieu-combo-box'
+} from '@/features/activites/ui/saisie/lieu/LieuComboBox'
 import {
   type LieuDuCra,
   lieuLePlusUtilise,
 } from '@/features/activites/ui/saisie/lieu/lieu-du-cra'
+import { CraData } from '@/features/activites/ui/saisie/validation/cra.validation'
 import {
   debutDispositifConum,
   derniereDateDuFormulaire,
-} from '@/features/activites/ui/saisie/validation/CraDateValidation'
-import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+} from '@/features/activites/ui/saisie/validation/date-du-cra.validation'
 import {
   type DefaultValues,
   withFieldGroup,

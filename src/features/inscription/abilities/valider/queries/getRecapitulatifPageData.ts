@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
+import { stepPath } from '@/features/inscription/ui/chemin-de-l-etape'
 import type { EmployeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
-import { stepPath } from '@/features/inscription/ui/step-path'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
 type ListerLesLieux<Lieu> = (input: {

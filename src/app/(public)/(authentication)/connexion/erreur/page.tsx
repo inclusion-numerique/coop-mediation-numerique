@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { projectTitle } from '@/configuration/projet/config'
-import { connexionImpossibleMessage } from '@/features/authentification/ui/authenticationErrorMessage'
-import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
+import { AuthCard } from '@/features/authentification/ui/AuthCard'
+import { connexionImpossibleMessage } from '@/features/authentification/ui/erreur-de-connexion.labels'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'

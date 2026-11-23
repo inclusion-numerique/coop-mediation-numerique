@@ -1,7 +1,7 @@
 import {
   optionsDesSources,
   SourceDansLURL,
-} from '@/features/activites/ui/libelles/source-de-l-activite'
+} from '@/features/activites/ui/libelles/source-de-l-activite.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 

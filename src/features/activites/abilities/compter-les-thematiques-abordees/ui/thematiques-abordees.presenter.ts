@@ -1,4 +1,4 @@
-import { thematiqueLabels } from '../../../ui/libelles/thematique'
+import { thematiqueLabels } from '../../../ui/libelles/thematique.labels'
 import { valeurDe } from '../../../ui/libelles/valeur-de'
 import type { ThematiqueAbordee } from '../domain'
 

@@ -12,13 +12,13 @@ import {
   statistiquesDuPerimetre,
   toutesLesStatistiques,
 } from '@/features/activites/implementations/statistiques'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import {
   blocsActivites,
   blocsBeneficiaires,
   blocsGeneraux,
   blocsImprimes,
-} from '@/features/activites/ui/statistiques/blocs-des-statistiques'
+} from '@/features/activites/ui/blocs-des-statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
@@ -28,7 +28,7 @@ import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui'
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
 import { mesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
 import {

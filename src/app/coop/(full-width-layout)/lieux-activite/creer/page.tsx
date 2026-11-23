@@ -3,7 +3,7 @@ import { authenticateMediateur } from '@/features/authentification/implementatio
 import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.key'
 import CreerLieuActivitePage from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/CreerLieuActivitePage'
 import { LIEN_DE_PRISE_DE_RENDEZ_VOUS_KEY } from '@/features/lieux-activite/ui/creation/lien-de-prise-de-rendez-vous.key'
-import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/liens'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

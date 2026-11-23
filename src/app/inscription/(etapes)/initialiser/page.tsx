@@ -6,7 +6,7 @@ import { authenticateUser } from '@/features/authentification/implementations/se
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations'
 import { UserId } from '@/features/inscription/domain'
-import { stepPath } from '@/features/inscription/ui/step-path'
+import { stepPath } from '@/features/inscription/ui/chemin-de-l-etape'
 import {
   ensurePersonneMain,
   synchroniserPersonne,

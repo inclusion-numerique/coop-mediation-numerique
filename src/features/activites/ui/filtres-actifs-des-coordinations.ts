@@ -1,6 +1,6 @@
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import type { CriteresDesCoordinations, NomDeTag, TagId } from '../domain'
-import { libelleDuType } from './libelles-de-coordination'
+import { libelleDuType } from './libelles/coordination.labels'
 
 export type FiltreActif = {
   readonly params: readonly string[]

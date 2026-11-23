@@ -4,18 +4,18 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { use } from 'react'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@/features/statistiques/ui/filtres/libelles-des-filtres'
-import { MediateurOption } from '@/features/statistiques/ui/filtres/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+} from '@/features/statistiques/ui/filtres/filtres.labels'
+import { MediateurOption } from '@/features/statistiques/ui/filtres/options/mediateur-option'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { OptionDeBeneficiaire } from '../filtres/option-de-beneficiaire'
-import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
+import type { VocabulaireDeLaBarre } from '../filtres/barre/barre.labels'
+import type { OptionDeBeneficiaire } from '../filtres/options/option-de-beneficiaire'
 import { useImpressionPrete } from './impression-prete'
 
 const ExportStatistiquesModal = createModal({

@@ -2,7 +2,7 @@ import mailSend from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/digital/mai
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { cookies } from 'next/headers'
 import { contactEmail } from '@/configuration/projet/config'
-import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
+import { AuthCard } from '@/features/authentification/ui/AuthCard'
 
 export const Verify = async () => {
   const allCookies = await cookies()

@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
+import { formatActiviteDayDate } from '@/features/activites/ui/format-du-jour-d-activite'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -21,7 +21,7 @@ import {
   objetsDe,
   organisateursDe,
   thematiquesDe,
-} from '../../../ui/libelles-de-coordination'
+} from '../../../ui/libelles/coordination.labels'
 import type { ActivitesDeCoordinationListees } from '../domain'
 
 type Rubrique = {

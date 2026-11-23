@@ -2,7 +2,7 @@ import { type ReactNode, Suspense } from 'react'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 import { CarteDActivite } from '../../../../ui/carte/CarteDActivite'
 import { CarteDeRendezVous } from '../../../../ui/carte/CarteDeRendezVous'
-import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
+import { PaginationDesActivites } from '../../../../ui/PaginationDesActivites'
 import type { JourDeLaListe } from '../mes-activites.presenter'
 import { AucuneActivite } from './AucuneActivite'
 

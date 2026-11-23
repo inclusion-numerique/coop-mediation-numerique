@@ -3,15 +3,15 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import {
+  generateActivitesFiltersLabels,
+  toLieuPrefix,
+} from '@/features/activites/ui/filtres/filtres.labels'
 import type {
   FiltresDeLaListe,
   OptionDeMediateur,
 } from '@/features/activites/ui/filtres/filtres-de-la-liste'
 import { OptionDeBeneficiaire } from '@/features/activites/ui/filtres/filtres-de-la-liste'
-import {
-  generateActivitesFiltersLabels,
-  toLieuPrefix,
-} from '@/features/activites/ui/filtres/libelles-des-filtres'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 const queryParamsToKeep = ['voir-rdvs']

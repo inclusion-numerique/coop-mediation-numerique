@@ -21,9 +21,9 @@ import {
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/ui/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/ui/deconnecter-compte-rdv.key'
+import { rdvWebsiteLink } from '@/features/rdvsp/ui/liens'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/RdvServicePublicMigrationNotice'
-import { rdvWebsiteLink } from '@/features/rdvsp/ui/urls'
 import { CodeInsee } from '@/libraries/insee'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

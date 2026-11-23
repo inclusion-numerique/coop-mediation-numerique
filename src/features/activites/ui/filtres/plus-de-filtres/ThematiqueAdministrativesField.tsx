@@ -1,5 +1,5 @@
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
-import { thematiqueAdministrativesOptions } from '@/features/activites/ui/libelles/thematique'
+import { thematiqueAdministrativesOptions } from '@/features/activites/ui/libelles/thematique.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 

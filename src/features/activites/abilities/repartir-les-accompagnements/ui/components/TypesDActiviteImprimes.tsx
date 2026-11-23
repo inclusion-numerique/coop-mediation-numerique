@@ -3,7 +3,7 @@ import {
   numberToString,
 } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
-import { typeActivitePluralLabels } from '../../../../ui/libelles/type-activite'
+import { typeActivitePluralLabels } from '../../../../ui/libelles/type-activite.labels'
 import type { RepartitionPresentee } from '../repartition.presenter'
 
 export const TypesDActiviteImprimes = ({

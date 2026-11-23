@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { CarteDActivite } from '../../../../ui/carte/CarteDActivite'
 import { CarteDeRendezVous } from '../../../../ui/carte/CarteDeRendezVous'
 import { DetailDeLActiviteModale } from '../../../../ui/detail/DetailDeLActiviteModale'
-import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
+import { PaginationDesActivites } from '../../../../ui/PaginationDesActivites'
 import type { CarteDuJour } from '../mes-activites.presenter'
 
 export const HistoriqueDesAccompagnements = ({

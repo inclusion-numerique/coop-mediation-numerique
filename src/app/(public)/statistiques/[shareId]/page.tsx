@@ -10,19 +10,19 @@ import {
   statistiquesDuPerimetre,
   toutesLesStatistiques,
 } from '@/features/activites/implementations/statistiques'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import {
   blocsActivites,
   blocsBeneficiaires,
   blocsGeneraux,
   blocsImprimes,
-} from '@/features/activites/ui/statistiques/blocs-des-statistiques'
+} from '@/features/activites/ui/blocs-des-statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromId } from '@/features/authentification/implementations/session/getSessionUserFromSessionToken'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
 import { mesStatistiques } from '@/features/statistiques/implementations/mes-statistiques'
 import { utilisateurDuPartage } from '@/features/statistiques/implementations/utilisateur-du-partage'
 import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'

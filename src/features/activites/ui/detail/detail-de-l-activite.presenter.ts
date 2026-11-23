@@ -1,4 +1,4 @@
-import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
+import { formatActiviteDayDate } from '@/features/activites/ui/format-du-jour-d-activite'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -14,21 +14,21 @@ import type {
   Commune,
   ParticipantsAnonymes,
 } from '../../domain'
-import { autonomieStars } from '../libelles/autonomie'
-import { materielLabels } from '../libelles/materiel'
-import { niveauAtelierStars } from '../libelles/niveau-atelier'
+import { autonomieStars } from '../libelles/autonomie.labels'
+import { materielLabels } from '../libelles/materiel.labels'
+import { niveauAtelierStars } from '../libelles/niveau-atelier.labels'
 import {
   sexeLabels,
   statutSocialLabels,
   trancheAgeLabels,
-} from '../libelles/profil'
+} from '../libelles/profil.labels'
 import {
   apparenceDuStatut,
   type SeveriteDeBadge,
-} from '../libelles/statut-de-rendez-vous'
-import { structuresRedirectionLabels } from '../libelles/structures-redirection'
-import { thematiqueLabels } from '../libelles/thematique'
-import { typeActiviteLabels } from '../libelles/type-activite'
+} from '../libelles/statut-de-rendez-vous.labels'
+import { structuresRedirectionLabels } from '../libelles/structures-redirection.labels'
+import { thematiqueLabels } from '../libelles/thematique.labels'
+import { typeActiviteLabels } from '../libelles/type-activite.labels'
 import { valeurDe } from '../libelles/valeur-de'
 
 export type Rubrique =

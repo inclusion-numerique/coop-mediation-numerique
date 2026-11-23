@@ -15,8 +15,8 @@ import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY } from '@/features/media
 import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui'
 import { MediateurId } from '@/features/mediateurs/domain'
 import { accesALaCoop } from '@/features/navigation/domain'
-import { AccesReserveAuxUtilisateurs } from '@/features/navigation/ui/coquille/AccesReserveAuxUtilisateurs'
-import { CoopShell } from '@/features/navigation/ui/coquille/CoopShell'
+import { AccesReserveAuxUtilisateurs } from '@/features/navigation/ui/AccesReserveAuxUtilisateurs'
+import { CoopShell } from '@/features/navigation/ui/CoopShell'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

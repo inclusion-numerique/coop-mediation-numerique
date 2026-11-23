@@ -5,7 +5,7 @@ import type {
   Genre,
   StatutSocial,
   TrancheAge,
-} from '@/features/activites/ui/libelles/profil'
+} from '@/features/activites/ui/libelles/profil.labels'
 import {
   CommuneComboBox,
   CommuneOptions,

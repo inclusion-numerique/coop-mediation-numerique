@@ -5,7 +5,7 @@ import type { z } from 'zod'
 import {
   modaliteAccompagnementOptions,
   serviceOptions,
-} from '@/features/lieux-activite/ui/options'
+} from '@/features/lieux-activite/ui/options-du-lieu'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { ServicesEtAccompagnementSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'

@@ -4,21 +4,24 @@ import { formatInTimeZone } from 'date-fns-tz'
 import { htmlToText } from '@/libraries/texte/htmlToText'
 import { booleanToYesNoLabel } from '@/libraries/ui/components/Form/utils/yesNoBooleanOptions'
 import type { Equipement, Orientation } from '../../../domain'
-import { autonomieStars, autonomieValues } from '../../../ui/libelles/autonomie'
-import { materielLabels } from '../../../ui/libelles/materiel'
+import {
+  autonomieStars,
+  autonomieValues,
+} from '../../../ui/libelles/autonomie.labels'
+import { materielLabels } from '../../../ui/libelles/materiel.labels'
 import {
   niveauAtelierStars,
   niveauAtelierValues,
-} from '../../../ui/libelles/niveau-atelier'
+} from '../../../ui/libelles/niveau-atelier.labels'
 import {
   genreLabels,
   statutSocialLabels,
   trancheAgeLabels,
-} from '../../../ui/libelles/profil'
-import { structuresRedirectionLabels } from '../../../ui/libelles/structures-redirection'
-import { thematiqueLabels } from '../../../ui/libelles/thematique'
-import { typeActiviteLabels } from '../../../ui/libelles/type-activite'
-import { typeLieuLabels } from '../../../ui/libelles/type-lieu'
+} from '../../../ui/libelles/profil.labels'
+import { structuresRedirectionLabels } from '../../../ui/libelles/structures-redirection.labels'
+import { thematiqueLabels } from '../../../ui/libelles/thematique.labels'
+import { typeActiviteLabels } from '../../../ui/libelles/type-activite.labels'
+import { typeLieuLabels } from '../../../ui/libelles/type-lieu.labels'
 import { valeurDe } from '../../../ui/libelles/valeur-de'
 import type {
   AccompagnementExporte,

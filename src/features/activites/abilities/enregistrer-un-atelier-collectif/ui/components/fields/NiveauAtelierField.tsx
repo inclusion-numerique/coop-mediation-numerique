@@ -1,6 +1,6 @@
 import { formOptions } from '@tanstack/react-form'
 import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
-import type { NiveauAtelier } from '@/features/activites/ui/libelles/niveau-atelier'
+import type { NiveauAtelier } from '@/features/activites/ui/libelles/niveau-atelier.labels'
 import {
   type DefaultValues,
   withForm,

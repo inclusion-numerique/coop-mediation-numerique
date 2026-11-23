@@ -1,7 +1,7 @@
 import type { z } from 'zod'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/validation/CraCollectifValidation'
-import { clearAdministrativeData } from '@/features/activites/ui/saisie/clearAdministrativeData'
 import { craDureeDataToMinutes } from '@/features/activites/ui/saisie/duree'
+import { clearAdministrativeData } from '@/features/activites/ui/saisie/effacer-les-donnees-administratives'
 import type { EnregistrerUnAtelierCollectifValidation } from '../action/enregistrer-un-atelier-collectif.validation'
 
 type Saisie = z.input<typeof EnregistrerUnAtelierCollectifValidation>

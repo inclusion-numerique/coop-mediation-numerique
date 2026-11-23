@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
-} from '../filtres/parametres-de-la-barre'
+} from '../filtres/barre/parametres-de-la-barre'
 
 type MediateurCoordonne = { readonly mediateurId: string }
 

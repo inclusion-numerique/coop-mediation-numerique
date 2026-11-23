@@ -4,10 +4,10 @@ import {
   authenticationViaEmailMagicLink,
   authenticationViaProconnect,
 } from '@/features/authentification/implementations/next-auth/authenticationProvider'
-import { signinErrorMessage } from '@/features/authentification/ui/authenticationErrorMessage'
-import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
+import { AuthCard } from '@/features/authentification/ui/AuthCard'
 import { EmailSigninForm } from '@/features/authentification/ui/connexion/EmailSigninForm'
 import ProConnectSigninButton from '@/features/authentification/ui/connexion/ProConnectSigninButton'
+import { signinErrorMessage } from '@/features/authentification/ui/erreur-de-connexion.labels'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
 
 const SigninPanel = ({

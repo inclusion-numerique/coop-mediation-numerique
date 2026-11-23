@@ -10,8 +10,8 @@ import {
 } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui/libelles-des-filtres.presenter'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 

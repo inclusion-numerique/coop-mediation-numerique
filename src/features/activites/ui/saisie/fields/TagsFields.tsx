@@ -6,7 +6,7 @@ import {
   TagSelectedItems,
 } from '@/features/activites/ui/saisie/tags/TagsComboBox'
 import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
-import type { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import type { CraData } from '@/features/activites/ui/saisie/validation/cra.validation'
 import {
   type DefaultValues,
   withFieldGroup,

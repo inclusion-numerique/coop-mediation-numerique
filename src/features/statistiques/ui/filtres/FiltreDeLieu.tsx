@@ -26,7 +26,7 @@ import {
   type OptionsData,
 } from '@/libraries/ui/components/Primitives/Options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import type { LieuxChoisisDeLaBarre } from './lieux-choisis'
+import type { LieuxChoisisDeLaBarre } from './options/lieux-choisis'
 import {
   type GenreDuFiltreDeLieu,
   RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY,

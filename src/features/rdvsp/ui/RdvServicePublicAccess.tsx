@@ -5,7 +5,7 @@ import GererRdvServicePublicButton from '@/features/rdvsp/ui/GererRdvServicePubl
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
-} from '@/features/rdvsp/ui/urls'
+} from '@/features/rdvsp/ui/liens'
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
 import { statutDuCompteDeLaSession } from '../domain/compte/sante-compte'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'

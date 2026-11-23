@@ -1,10 +1,10 @@
 import type { OptionsDeLaBarre } from '../../../ui/filtres/BarreDeFiltres'
-import type { FiltresDeLaListe } from '../../../ui/filtres/filtres-de-la-liste'
 import {
   type ActivitesFiltersLabels,
   generateActivitesFiltersLabels,
-} from '../../../ui/filtres/libelles-des-filtres'
-import { optionsDesSources } from '../../../ui/libelles/source-de-l-activite'
+} from '../../../ui/filtres/filtres.labels'
+import type { FiltresDeLaListe } from '../../../ui/filtres/filtres-de-la-liste'
+import { optionsDesSources } from '../../../ui/libelles/source-de-l-activite.labels'
 
 export const libellesDeLExport = (
   filtres: FiltresDeLaListe,

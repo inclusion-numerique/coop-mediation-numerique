@@ -8,23 +8,23 @@ import {
   lieuxChoisisDe,
   statistiquesNationalesEnCours,
 } from '@/features/activites/implementations/statistiques'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
 import {
   blocsActivites,
   blocsBeneficiaires,
   blocsGeneraux,
-} from '@/features/activites/ui/statistiques/blocs-des-statistiques'
+} from '@/features/activites/ui/blocs-des-statistiques'
+import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques.labels'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticateUser'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
-import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
-import { optionsDeTags } from '@/features/statistiques/ui/filtres/options-de-la-barre.presenter'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/statut-rdv'
+import { optionsDeTags } from '@/features/statistiques/ui/filtres/barre/options-de-la-barre.presenter'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+} from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
+import { FiltreDeLieu } from '@/features/statistiques/ui/filtres/FiltreDeLieu'
+import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/options/source-de-l-activite'
 import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/ui/filtres/rechercher-les-lieux-des-statistiques.key'
-import { activiteSourceOptions } from '@/features/statistiques/ui/filtres/source'
 import { StatistiquesNationales } from '@/features/statistiques/ui/pages/StatistiquesNationales'
 import {
   sectionActivites,

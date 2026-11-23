@@ -1,8 +1,8 @@
 import {
   AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
   type Thematique,
-} from '@/features/activites/ui/libelles/thematique'
-import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+} from '@/features/activites/ui/libelles/thematique.labels'
+import { CraData } from '@/features/activites/ui/saisie/validation/cra.validation'
 import {
   type DefaultValues,
   withFieldGroup,

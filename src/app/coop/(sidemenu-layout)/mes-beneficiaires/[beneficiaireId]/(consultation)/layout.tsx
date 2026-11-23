@@ -4,7 +4,7 @@ import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/suppri
 import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/saisie/BeneficiaireEnregistrerUneActivite'
-import type { BeneficiaireCraData } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
+import type { BeneficiaireCraData } from '@/features/activites/ui/saisie/validation/beneficiaire-du-cra.validation'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'

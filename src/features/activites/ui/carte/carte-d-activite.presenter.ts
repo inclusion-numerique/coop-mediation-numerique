@@ -5,8 +5,8 @@ import {
   type DetailDActivite,
   detailDeLActivite,
 } from '../detail/detail-de-l-activite.presenter'
-import { thematiqueLabels } from '../libelles/thematique'
-import { typeActiviteLabels } from '../libelles/type-activite'
+import { thematiqueLabels } from '../libelles/thematique.labels'
+import { typeActiviteLabels } from '../libelles/type-activite.labels'
 import { valeurDe } from '../libelles/valeur-de'
 
 const THEMATIQUES_AFFICHEES = 2

@@ -1,6 +1,6 @@
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
+import { BadgeDePortee } from '@/features/activites/ui/BadgeDePortee'
 import type { OptionDeTag } from '@/features/activites/ui/filtres/filtres-de-la-liste'
-import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 

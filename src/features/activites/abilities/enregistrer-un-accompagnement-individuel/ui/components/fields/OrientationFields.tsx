@@ -1,6 +1,6 @@
 import { formOptions } from '@tanstack/react-form'
 import { type CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/validation/CraIndividuelValidation'
-import type { StructureDeRedirection } from '@/features/activites/ui/libelles/structures-redirection'
+import type { StructureDeRedirection } from '@/features/activites/ui/libelles/structures-redirection.labels'
 import {
   type DefaultValues,
   withForm,

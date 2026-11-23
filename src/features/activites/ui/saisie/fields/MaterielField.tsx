@@ -1,5 +1,5 @@
-import type { Materiel } from '@/features/activites/ui/libelles/materiel'
-import { CraData } from '@/features/activites/ui/saisie/validation/CraValidation'
+import type { Materiel } from '@/features/activites/ui/libelles/materiel.labels'
+import { CraData } from '@/features/activites/ui/saisie/validation/cra.validation'
 import {
   type DefaultValues,
   withFieldGroup,

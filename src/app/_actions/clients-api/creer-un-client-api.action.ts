@@ -8,7 +8,7 @@ import { CREER_UN_CLIENT_API_ERRORS } from '@/features/clients-api/abilities/cre
 import {
   ClientApiValidation,
   definitionDepuis,
-} from '@/features/clients-api/ui/formulaire/client-api.validation'
+} from '@/features/clients-api/ui/client-api.validation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

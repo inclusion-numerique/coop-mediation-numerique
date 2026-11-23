@@ -1,5 +1,5 @@
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import type { MotDuVocabulaire } from '../vocabulaire-de-la-barre'
+import type { MotDuVocabulaire } from '../barre/barre.labels'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 
 export const updateThematiqueNonAdministrativesParams = (data: {

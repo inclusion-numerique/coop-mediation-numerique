@@ -1,9 +1,9 @@
+import { BadgeDePortee } from '@/features/activites/ui/BadgeDePortee'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
 import {
   type Tag,
   tagDuFormulaire,
 } from '@/features/activites/ui/saisie/tags/tag-du-cra'
-import { BadgeDePortee } from '@/features/activites/ui/tags/BadgeDePortee'
 import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { OptionsData } from '@/libraries/ui/components/Primitives/Options'

@@ -11,7 +11,7 @@ import {
 } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles'
 import { acteurDe } from '@/features/tags/domain'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/auteur-de-l-export'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const dynamic = 'force-dynamic'

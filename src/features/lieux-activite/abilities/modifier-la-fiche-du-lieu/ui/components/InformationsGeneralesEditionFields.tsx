@@ -8,7 +8,7 @@ import {
   adresseNonVerifiableMessage,
   SANS_SIRET_A_LA_MAIN,
 } from '@/features/lieux-activite/ui/adresse-non-verifiable'
-import { typologieStructureOptions } from '@/features/lieux-activite/ui/options'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/options-du-lieu'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,

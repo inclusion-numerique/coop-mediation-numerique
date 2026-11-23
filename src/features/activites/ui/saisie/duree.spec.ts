@@ -3,7 +3,7 @@ import {
   craDureeDataToMinutes,
   minutesToCraDureeData,
 } from '@/features/activites/ui/saisie/duree'
-import { CraDureeData } from '@/features/activites/ui/saisie/validation/CraDureeValidation'
+import { CraDureeData } from '@/features/activites/ui/saisie/validation/duree-du-cra.validation'
 
 describe('minutesToCraDuree', () => {
   describe('craDureeDataToMinutes Function', () => {

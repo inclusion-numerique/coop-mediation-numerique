@@ -4,6 +4,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/filtres/barre/barre.labels'
+import { TagScope } from '@/features/statistiques/ui/filtres/options/portee-de-tag'
+import type { ActiviteSource } from '@/features/statistiques/ui/filtres/options/source-de-l-activite'
 import {
   plusDeFiltresFormOptions,
   type ValeursDePlusDeFiltres,
@@ -30,9 +33,6 @@ import {
   ThematiqueNonAdministrativesFiled,
   updateThematiqueNonAdministrativesParams,
 } from '@/features/statistiques/ui/filtres/plus-de-filtres/ThematiqueNonAdministrativesField'
-import { TagScope } from '@/features/statistiques/ui/filtres/portee-de-tag'
-import type { ActiviteSource } from '@/features/statistiques/ui/filtres/source'
-import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/filtres/vocabulaire-de-la-barre'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { adresseAvec } from '@/libraries/parametres-d-url'

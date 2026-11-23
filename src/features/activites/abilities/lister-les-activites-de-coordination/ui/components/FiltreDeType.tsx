@@ -7,7 +7,7 @@ import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import { LIBELLES_DES_TYPES } from '../../../../ui/libelles-de-coordination'
+import { LIBELLES_DES_TYPES } from '../../../../ui/libelles/coordination.labels'
 
 export const FiltreDeType = () => {
   const router = useRouter()

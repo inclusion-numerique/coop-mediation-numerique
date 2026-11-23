@@ -1,8 +1,8 @@
 import z from 'zod'
-import { autonomieValues } from '@/features/activites/ui/libelles/autonomie'
-import { structuresRedirectionValues } from '@/features/activites/ui/libelles/structures-redirection'
-import { BeneficiaireCraValidation } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
-import { CraValidation } from '@/features/activites/ui/saisie/validation/CraValidation'
+import { autonomieValues } from '@/features/activites/ui/libelles/autonomie.labels'
+import { structuresRedirectionValues } from '@/features/activites/ui/libelles/structures-redirection.labels'
+import { BeneficiaireCraValidation } from '@/features/activites/ui/saisie/validation/beneficiaire-du-cra.validation'
+import { CraValidation } from '@/features/activites/ui/saisie/validation/cra.validation'
 import { yesOrNo } from '@/libraries/ui/components/Form/utils/yesNoBooleanOptions'
 
 export const CraIndividuelValidation = CraValidation.extend({

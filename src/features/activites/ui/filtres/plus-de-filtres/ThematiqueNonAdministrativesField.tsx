@@ -1,4 +1,4 @@
-import { thematiqueNonAdministrativesOptions } from '@/features/activites/ui/libelles/thematique'
+import { thematiqueNonAdministrativesOptions } from '@/features/activites/ui/libelles/thematique.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from './plus-de-filtres.form-options'
 

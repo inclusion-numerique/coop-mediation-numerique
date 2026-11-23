@@ -21,7 +21,7 @@ import {
   dernieresActivitesPresentees,
 } from '@/features/activites/abilities/lister-les-dernieres-activites/ui'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
+import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/saisie/modale-de-saisie/BoutonEnregistrerUneActivite'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticateUser'
 import { compterLesMembres } from '@/features/equipe/abilities/lister-les-membres'
 import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui'

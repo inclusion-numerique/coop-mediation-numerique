@@ -4,7 +4,7 @@ import type { RendezVousDeLaChronologie } from '../../domain'
 import {
   apparenceDuStatut,
   type SeveriteDeBadge,
-} from '../libelles/statut-de-rendez-vous'
+} from '../libelles/statut-de-rendez-vous.labels'
 
 export type CarteDeRendezVous = {
   readonly id: number

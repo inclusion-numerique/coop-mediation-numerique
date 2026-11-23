@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { formatActiviteDayDate } from '@/features/activites/ui/activiteDayDateFormat'
+import { formatActiviteDayDate } from '@/features/activites/ui/format-du-jour-d-activite'
 import {
   dateAsDay,
   dateAsDayWithHourInTimezone,
@@ -25,7 +25,7 @@ import {
   type DetailDActivite,
   detailDeLActivite,
 } from '../../../ui/detail/detail-de-l-activite.presenter'
-import { typeActiviteLabels } from '../../../ui/libelles/type-activite'
+import { typeActiviteLabels } from '../../../ui/libelles/type-activite.labels'
 import { valeurDe } from '../../../ui/libelles/valeur-de'
 
 export type CarteDuJour =

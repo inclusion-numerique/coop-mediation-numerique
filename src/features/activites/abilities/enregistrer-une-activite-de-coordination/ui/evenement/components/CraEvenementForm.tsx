@@ -13,13 +13,13 @@ import {
   ECHELON_TERRITORIAL_OPTIONS,
   ORGANISATEURS_OPTIONS,
   TYPE_EVENEMENT_OPTIONS,
-} from '@/features/activites/ui/libelles/evenement'
+} from '@/features/activites/ui/libelles/evenement.labels'
 import { TagsFields } from '@/features/activites/ui/saisie/fields/TagsFields'
 import type { Tag } from '@/features/activites/ui/saisie/tags/tag-du-cra'
 import {
   debutDispositifConum,
   derniereDateDuFormulaire,
-} from '@/features/activites/ui/saisie/validation/CraDateValidation'
+} from '@/features/activites/ui/saisie/validation/date-du-cra.validation'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'

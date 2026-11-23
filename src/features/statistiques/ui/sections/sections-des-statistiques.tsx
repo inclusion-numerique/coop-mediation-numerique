@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { ImpressionPrete } from '../export/impression-prete'
-import { AutoPrint } from '../pages/AutoPrint'
 import { ImpressionDesStatistiques } from '../pages/ImpressionDesStatistiques'
+import { AutoPrint } from '../pages/impression-automatique'
 import { BlocEnAttente } from './BlocEnAttente'
 import { SectionActivites } from './SectionActivites'
 import { SectionActivitesImprimee } from './SectionActivitesImprimee'

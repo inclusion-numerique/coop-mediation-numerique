@@ -8,7 +8,7 @@ import {
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
 } from '../ui/saisie/tags/tag-du-cra'
-import type { CraData } from '../ui/saisie/validation/CraValidation'
+import type { CraData } from '../ui/saisie/validation/cra.validation'
 import { dureesFrequentesDuMediateur } from './prisma/durees-frequentes'
 import { lireUneActiviteDeMediation } from './prisma/lire-une-activite-de-mediation'
 import type { RendezVousLies } from './prisma/rendez-vous-fournis'

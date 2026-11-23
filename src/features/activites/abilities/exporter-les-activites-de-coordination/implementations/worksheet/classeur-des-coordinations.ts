@@ -25,7 +25,7 @@ import {
   objetsDe,
   organisateursDe,
   thematiquesDe,
-} from '../../../../ui/libelles-de-coordination'
+} from '../../../../ui/libelles/coordination.labels'
 
 type Type = ActiviteDeCoordination['_tag']
 

@@ -1,13 +1,13 @@
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { ReactNode } from 'react'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+} from '@/features/statistiques/ui/filtres/filtres.labels'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { MediateurOption } from '../filtres/mediateur-option'
-import type { VocabulaireDeLaBarre } from '../filtres/vocabulaire-de-la-barre'
+import type { VocabulaireDeLaBarre } from '../filtres/barre/barre.labels'
+import type { MediateurOption } from '../filtres/options/mediateur-option'
 
 export const ImpressionDesStatistiques = ({
   activitesFilters,

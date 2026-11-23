@@ -3,7 +3,7 @@ import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import {
   dureeAccompagnementParDefautLabels,
   dureeAccompagnementPersonnaliseeValue,
-} from '../libelles/duree-accompagnement'
+} from '../libelles/duree-accompagnement.labels'
 
 const libelleDe = (duree: string): string =>
   duree === dureeAccompagnementPersonnaliseeValue

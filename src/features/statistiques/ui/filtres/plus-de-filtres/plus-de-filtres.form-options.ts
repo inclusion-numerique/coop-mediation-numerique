@@ -1,5 +1,5 @@
 import { formOptions } from '@tanstack/react-form'
-import type { ActiviteSource } from '../source'
+import type { ActiviteSource } from '../options/source-de-l-activite'
 import type { StructureEmployeuse } from './StructureEmployeuseComboBox'
 
 export type ValeursDePlusDeFiltres = {

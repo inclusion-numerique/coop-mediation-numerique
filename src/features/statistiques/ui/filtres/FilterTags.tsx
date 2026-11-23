@@ -3,16 +3,16 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/barre/parametres-de-la-barre'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@/features/statistiques/ui/filtres/libelles-des-filtres'
-import type { MediateurOption } from '@/features/statistiques/ui/filtres/mediateur-option'
-import type { ActivitesFilters } from '@/features/statistiques/ui/filtres/parametres-de-la-barre'
+} from '@/features/statistiques/ui/filtres/filtres.labels'
+import type { MediateurOption } from '@/features/statistiques/ui/filtres/options/mediateur-option'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { OptionDeBeneficiaire } from './option-de-beneficiaire'
-import type { VocabulaireDeLaBarre } from './vocabulaire-de-la-barre'
+import type { VocabulaireDeLaBarre } from './barre/barre.labels'
+import type { OptionDeBeneficiaire } from './options/option-de-beneficiaire'
 
 const queryParamsToKeep = ['voir-rdvs']
 
