@@ -4,6 +4,7 @@ import {
   ligneUtilisateurToDomain,
 } from '@/features/utilisateurs/db/ligne-utilisateur.transfer'
 import { utilisateursWhere } from '@/features/utilisateurs/db/utilisateurs.where'
+import { utilisateursRattaches } from '@/features/utilisateurs/db/utilisateurs-rattaches.query'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import type { Prisma } from '@/generated/prisma/client'
 import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
@@ -41,6 +42,7 @@ export const rechercherDesUtilisateurs = async ({
     mots: toQueryParts(searchParams).filter((mot) => mot !== ''),
     filtres,
     maintenant,
+    rattaches: await utilisateursRattaches(filtres),
   })
 
   const [lignes, matchesCount, totalCount] = await Promise.all([
