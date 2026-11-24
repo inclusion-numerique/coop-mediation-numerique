@@ -1,7 +1,3 @@
-// Algorithme de pagination headless porté de @arckit/daisyui (ihexa) :
-// calcule la fenêtre de pages à afficher (avec spacers configurables) et les
-// pages précédente/suivante/dernière. Agnostique du rendu.
-
 export type PaginationSpacer = { spacer: string }
 export type PaginationPageItem = { number: number; isCurrent: boolean }
 

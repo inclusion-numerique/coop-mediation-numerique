@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { paginate } from './paginate'
+import { paginate } from './fenetre-de-pages'
 
 const numbers = (pages: ReturnType<typeof paginate>['pages']) =>
   pages.filter((page) => 'number' in page)

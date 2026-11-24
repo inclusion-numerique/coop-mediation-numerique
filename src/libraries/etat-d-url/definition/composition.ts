@@ -1,6 +1,6 @@
 import { Sort, type SortDirection } from '@arckit/resultset'
 import { createLoader, createSerializer, type ParserMap } from 'nuqs/server'
-import { paginate } from '@/libraries/data-table/pagination/paginate'
+import { paginate } from './fenetre-de-pages'
 import {
   etiquettesDe,
   type FiltreQuelconque,

@@ -1,27 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import {
-  adresseAvec,
-  premiereValeur,
-  valeurLue,
-  valeursLues,
-} from './parametres-d-url'
+import { adresseAvec, valeursLues } from './parametres-d-url'
 
 const Chiffre = z.enum(['1', '2', '3'])
 
 describe('paramètres d’URL', () => {
-  it('prend la première valeur d’un paramètre répété', () => {
-    expect(premiereValeur(['a', 'b'])).toBe('a')
-    expect(premiereValeur('a')).toBe('a')
-    expect(premiereValeur(undefined)).toBeUndefined()
-  })
-
-  it('lit une valeur valide et écarte une valeur invalide', () => {
-    expect(valeurLue(Chiffre, '2')).toBe('2')
-    expect(valeurLue(Chiffre, '9')).toBeNull()
-    expect(valeurLue(Chiffre, undefined)).toBeNull()
-  })
-
   it.each([
     ['une liste séparée par des virgules', '1, 2,3', ['1', '2', '3']],
     ['un paramètre répété', ['1', '2,3'], ['1', '2', '3']],

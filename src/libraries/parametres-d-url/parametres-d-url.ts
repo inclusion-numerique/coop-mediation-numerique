@@ -1,12 +1,8 @@
 import { z } from 'zod'
 
-export type ValeurDeParametre = string | readonly string[] | undefined
+type ValeurDeParametre = string | readonly string[] | undefined
 
-export const premiereValeur = (
-  valeur: ValeurDeParametre,
-): string | undefined => (typeof valeur === 'string' ? valeur : valeur?.at(0))
-
-export const valeurLue = <S extends z.ZodType>(
+const valeurLue = <S extends z.ZodType>(
   schema: S,
   valeur: unknown,
 ): z.output<S> | null => {

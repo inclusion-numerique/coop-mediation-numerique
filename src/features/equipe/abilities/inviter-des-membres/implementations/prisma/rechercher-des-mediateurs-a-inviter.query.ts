@@ -1,6 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { DEFAULT_PAGE_SIZE } from '@/libraries/data-table/pagination/page-size-options'
 import {
   type CoordinateurId,
   Email,
@@ -13,6 +12,8 @@ import {
 } from '../../../../domain'
 import { lue } from '../../../../implementations/prisma/lue'
 import type { MediateursAInviter } from '../../domain'
+
+const NOMBRE_DE_PROPOSITIONS = 50
 
 const motsDe = (recherche: string): readonly string[] =>
   recherche.split(/\s+/).filter((mot) => mot.length > 0)
@@ -57,7 +58,7 @@ export const rechercherDesMediateursAInviter = async ({
         },
       },
       orderBy: [{ user: { lastName: 'asc' } }, { user: { firstName: 'asc' } }],
-      take: DEFAULT_PAGE_SIZE,
+      take: NOMBRE_DE_PROPOSITIONS,
     }),
     prismaClient.mediateur.count({ where }),
   ])
