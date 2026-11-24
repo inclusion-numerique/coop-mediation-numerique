@@ -67,10 +67,10 @@ const CreateCraModalContent = ({
       routeConstruite(
         craDefaultValues
           ? `${path}?v=${encodeSerializableState(craDefaultValues)}${
-              retour ? `&retour=${retour}` : ''
+              retour ? `&retour=${encodeURIComponent(retour)}` : ''
             }`
           : retour
-            ? `${path}?retour=${retour}`
+            ? `${path}?retour=${encodeURIComponent(retour)}`
             : path,
       ),
     )
