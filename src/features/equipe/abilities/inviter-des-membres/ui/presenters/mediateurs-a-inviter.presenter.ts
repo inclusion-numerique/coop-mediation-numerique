@@ -90,10 +90,11 @@ export const issueDeLInvitation = (
       priority: 'warning',
       message: `L’invitation est enregistrée, mais l’email n’a pas pu être envoyé à ${echecs.join(', ')} : vous pourrez la relancer depuis votre équipe.`,
     }
-  if (membres.length === 1)
+  const [seul, ...autres] = membres
+  if (seul !== undefined && autres.length === 0)
     return {
       priority: 'success',
-      message: `Un email d’invitation a été envoyé à ${libelleDe(membres[0])}`,
+      message: `Un email d’invitation a été envoyé à ${libelleDe(seul)}`,
     }
   return {
     priority: 'success',
