@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import type { Prisma } from '@/generated/prisma/client'
-import { alignementDe, aUneAutreSource } from './alignement'
+import { alignementDe, aUneAutreSource } from './alignement.transfer'
 
 type Transaction = Prisma.TransactionClient
 

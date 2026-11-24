@@ -4,7 +4,7 @@ import {
   aUneAutreSource,
   type CompteCoop,
   type LigneDuRegistre,
-} from './alignement'
+} from './alignement.transfer'
 
 const maintenant = new Date('2026-11-05T12:00:00.000Z')
 const supprimeLe = new Date('2026-11-01T12:00:00.000Z')
