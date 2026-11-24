@@ -1,10 +1,14 @@
+import type { Sort } from '@arckit/resultset'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   employeuseSelect,
   employeuseToDomain,
 } from '../../../../implementations/prisma/employeuse.transfer'
-import type { ListerEmployeuses } from '../../domain/lister-employeuses'
+import type {
+  ColonneDesEmployeuses,
+  ListerEmployeuses,
+} from '../../domain/lister-employeuses'
 
 /**
  * Mêmes conditions que l'autocomplétion — la règle de recherche est unique, seul
@@ -30,7 +34,7 @@ const conditionsDeRecherche = (
 })
 
 const trisDisponibles: Record<
-  string,
+  ColonneDesEmployeuses,
   (
     sens: 'asc' | 'desc',
   ) => Prisma.StructureAdministrativeMainOrderByWithRelationInput
@@ -41,47 +45,45 @@ const trisDisponibles: Record<
   modification: (sens) => ({ updatedAt: sens }),
 }
 
-const ordreDeTri = (
-  triPar: string | null,
-  sens: 'asc' | 'desc' | null,
-): Prisma.StructureAdministrativeMainOrderByWithRelationInput[] => {
-  const tri = triPar ? trisDisponibles[triPar] : undefined
-  if (!tri) return [{ denominationAntenne: 'asc' }]
-
-  return [tri(sens ?? 'asc'), { denominationAntenne: 'asc' }]
-}
+const ordreDeTri = ({
+  field,
+  direction,
+}: Sort<ColonneDesEmployeuses>): Prisma.StructureAdministrativeMainOrderByWithRelationInput[] => [
+  trisDisponibles[field](direction),
+  { denominationAntenne: 'asc' },
+]
 
 export const listerEmployeuses: ListerEmployeuses = async ({
   recherche,
+  tri,
   page,
-  parPage,
-  triPar,
-  sens,
+  pageSize,
 }) => {
   const where = conditionsDeRecherche(recherche)
 
   const [lignes, total] = await Promise.all([
     prismaClient.structureAdministrativeMain.findMany({
       where,
-      take: parPage,
-      skip: (page - 1) * parPage,
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       select: {
         ...employeuseSelect,
         _count: {
           select: { affectationsEmploi: { where: { estActive: true } } },
         },
       },
-      orderBy: ordreDeTri(triPar, sens),
+      orderBy: ordreDeTri(tri),
     }),
     prismaClient.structureAdministrativeMain.count({ where }),
   ])
 
   return {
-    employeuses: lignes.map((ligne) => ({
+    items: lignes.map((ligne) => ({
       employeuse: employeuseToDomain(ligne),
       personnesEmployees: ligne._count.affectationsEmploi,
     })),
-    total,
-    pages: Math.max(Math.ceil(total / parPage), 1),
+    totalItems: total,
+    currentPage: page,
+    pageSize,
   }
 }

@@ -2,34 +2,29 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { useRouter } from 'next/navigation'
-import { type FormEventHandler, useRef } from 'react'
-import type { DataTableUrlState } from '@/libraries/data-table'
-import { requeteDeRecherche } from '@/libraries/parametres-d-url'
+import type { FormEventHandler } from 'react'
+import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
+import { useFiltre } from '@/libraries/etat-d-url/use-filtre'
 
-const RechercheEmployeuses = ({ state }: { state: DataTableUrlState }) => {
-  const router = useRouter()
-
-  const formRef = useRef<HTMLFormElement>(null)
+const RechercheEmployeuses = () => {
+  const [{ recherche }, ecrire] = useFiltre(rechercheLibre.parametres)
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (!formRef.current) return
-    const data = new FormData(formRef.current)
-    const recherche = data.get('recherche') as string
-
-    router.push(requeteDeRecherche(state, recherche), { scroll: false })
+    const saisie = new FormData(event.currentTarget).get('recherche')
+    ecrire({ recherche: typeof saisie === 'string' ? saisie.trim() : '' })
   }
 
   return (
-    <form onSubmit={onSubmit} ref={formRef} className="fr-width-full">
+    <form onSubmit={onSubmit} className="fr-width-full">
       <div
         className={classNames('fr-search-bar fr-search-bar--lg')}
         role="search"
       >
         <input
-          defaultValue={state.recherche}
+          key={recherche}
+          defaultValue={recherche}
           className="fr-input fr-input--white"
           autoFocus
           id="recherche"

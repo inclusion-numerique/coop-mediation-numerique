@@ -1,7 +1,9 @@
-import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table'
+import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
 import { employeusesColumns } from '../columns/employeuses.columns'
+import { paginationDesEmployeuses } from '../filtres/liste-des-employeuses.filtre'
+import type { BarreDesEmployeuses } from '../presenters/barre-des-employeuses.presenter'
 import type { EmployeuseAffichee } from '../presenters/employeuse-affichee.presenter'
-import { EmployeusesPagination } from './EmployeusesPagination'
 import { EmployeusesTableHead } from './EmployeusesTableHead'
 import { EmployeuseTableRow } from './EmployeuseTableRow'
 
@@ -13,15 +15,11 @@ const AucunResultat = () => (
 
 const EmployeusesTable = ({
   employeuses,
-  trouvees,
-  parPage,
-  state,
+  barre,
   baseHref,
 }: {
   employeuses: EmployeuseAffichee[]
-  trouvees: number
-  parPage: number
-  state: DataTableUrlState
+  barre: BarreDesEmployeuses
   baseHref: string
 }) => (
   <>
@@ -29,7 +27,7 @@ const EmployeusesTable = ({
       className="fr-table--nowrap fr-width-full fr-mb-8v"
       tableClassName="fr-table--transparent"
     >
-      <EmployeusesTableHead state={state} baseHref={baseHref} />
+      <EmployeusesTableHead colonnes={barre.colonnes} />
       <tbody>
         {employeuses.map((employeuse) => (
           <EmployeuseTableRow
@@ -41,12 +39,7 @@ const EmployeusesTable = ({
         {employeuses.length === 0 && <AucunResultat />}
       </tbody>
     </DataTable>
-    <EmployeusesPagination
-      state={state}
-      baseHref={baseHref}
-      trouvees={trouvees}
-      parPage={parPage}
-    />
+    <PiedDeListe liens={barre.pages} pagination={paginationDesEmployeuses} />
   </>
 )
 

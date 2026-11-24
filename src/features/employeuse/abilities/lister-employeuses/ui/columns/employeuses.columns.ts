@@ -1,17 +1,15 @@
-type EmployeuseTri = 'nom' | 'emplois' | 'creation' | 'modification'
+import type { ColonneDesEmployeuses } from '../../domain/lister-employeuses'
 
-export type EmployeuseColumn = {
-  readonly label: string
-  readonly tri?: EmployeuseTri
-  readonly isDefault?: boolean
-}
+export type EmployeuseColumn =
+  | { readonly tri: ColonneDesEmployeuses }
+  | { readonly label: string }
 
 export const employeusesColumns: readonly EmployeuseColumn[] = [
-  { label: 'Nom', tri: 'nom', isDefault: true },
+  { tri: 'nom' },
   { label: 'SIRET' },
   { label: 'Adresse' },
   { label: 'Commune' },
-  { label: 'Emplois', tri: 'emplois' },
-  { label: 'Création', tri: 'creation' },
-  { label: 'Modification', tri: 'modification' },
+  { tri: 'emplois' },
+  { tri: 'creation' },
+  { tri: 'modification' },
 ]
