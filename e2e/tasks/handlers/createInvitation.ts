@@ -12,7 +12,7 @@ export const createInvitation = async ({
   prismaClient.invitationEquipe.create({
     data: {
       email,
-      mediateurId,
+      ...(mediateurId === undefined ? {} : { mediateurId }),
       coordinateurId,
     },
   })
