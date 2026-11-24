@@ -1,51 +1,40 @@
 import type { ReactNode } from 'react'
-import {
-  DataSearchBar,
-  generatePageSizeSelectOptions,
-  PaginationNavWithPageSizeSelect,
-} from '@/libraries/data-table'
-import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
 import { BarreDeFiltres } from '@/libraries/etat-d-url/BarreDeFiltres'
+import { ChampDeRecherche } from '@/libraries/etat-d-url/ChampDeRecherche'
+import type { LiensDePagination } from '@/libraries/etat-d-url/definition/composition'
+import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import { LIGNES_PAR_DEFAUT } from '../../../../domain'
 import { FiltreDesCommunesDuReseau } from '../../../../ui/components/FiltreDesCommunesDuReseau'
+import { paginationDuReseau } from '../../../../ui/filtres/reseau.filtre'
 import type { BarreDuReseau } from '../../../../ui/presenters/barre-du-reseau.presenter'
 import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
-import { hrefDesLieux } from '../../../../ui/presenters/liens.presenter'
 import { type CriteresDesLieux, estFiltre } from '../../domain'
-import {
-  libelleDesResultats,
-  parametresDeLURL,
-} from '../presenters/libelles-des-filtres.presenter'
+import { TriDesLieuxDuReseau } from '../components/TriDesLieuxDuReseau'
+import { libelleDesResultats } from '../presenters/libelles-des-filtres.presenter'
 
 type LieuxTrouves = {
-  readonly totalCount: number
-  readonly page: number
-  readonly pageSize: number
+  readonly totalItems: number
 }
-
-const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
 
 const LieuxDuDepartementPage = ({
   departement,
   criteres,
   lieux,
   barre,
+  pages,
   listeDesLieux,
 }: {
   departement: Departement
   criteres: CriteresDesLieux
   lieux: LieuxTrouves
   barre: BarreDuReseau
+  pages: LiensDePagination
   listeDesLieux: ReactNode
 }) => {
-  const baseHref = hrefDesLieux(departement.code)
-  const parametres = parametresDeLURL(criteres)
-
   const departementLabel = `${departement.nom} (${departement.code})`
 
   const breadcrumbLabel = 'Annuaire des lieux d’activités'
@@ -76,9 +65,7 @@ const LieuxDuDepartementPage = ({
           </div>
 
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
-            <DataSearchBar
-              baseHref={baseHref}
-              state={parametres}
+            <ChampDeRecherche
               placeholder="Nom du lieu, adresse ou SIRET..."
               className="fr-flex-grow-1"
             />
@@ -95,37 +82,19 @@ const LieuxDuDepartementPage = ({
 
           <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-my-6v">
             <h2 className="fr-text--bold fr-text--xs fr-text--uppercase fr-mb-0">
-              {libelleDesResultats(lieux.totalCount, estFiltre(criteres))}
+              {libelleDesResultats(lieux.totalItems, estFiltre(criteres))}
             </h2>
-            <SortSelect
-              options={[
-                { label: 'Alphabétique (A à Z)', value: 'nomaz' },
-                { label: 'Alphabétique (Z à A)', value: 'nomza' },
-                {
-                  label: 'Mise à jour récente',
-                  value: 'majrecent',
-                },
-                {
-                  label: 'Mise à jour ancienne',
-                  value: 'majancien',
-                },
-              ]}
-              baseHref={baseHref}
-            />
+            <TriDesLieuxDuReseau />
           </div>
 
           <hr className="fr-separator-1px" />
 
           {listeDesLieux}
 
-          <PaginationNavWithPageSizeSelect
+          <PiedDeListe
             className="fr-mt-12v"
-            itemsCount={lieux.totalCount}
-            pageSize={lieux.pageSize}
-            baseHref={baseHref}
-            state={parametres}
-            defaultPageSize={LIGNES_PAR_DEFAUT}
-            pageSizeOptions={pageSizeOptions}
+            liens={pages}
+            pagination={paginationDuReseau}
           />
         </main>
       </div>

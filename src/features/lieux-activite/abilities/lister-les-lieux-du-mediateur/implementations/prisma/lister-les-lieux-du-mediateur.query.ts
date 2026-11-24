@@ -1,11 +1,9 @@
+import type { Sort } from '@arckit/resultset'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
-import {
-  ordonnancement,
-  type TriDesLieux,
-} from '../../../../domain/tri-des-lieux'
+import type { ColonneDesLieux } from '../../../../domain/tri-des-lieux'
 import {
   lieuEnListe,
   projectionDuLieuEnListe,
@@ -17,11 +15,10 @@ export const listerLesLieuxDuMediateur = async ({
   tri,
 }: {
   mediateurId: MediateurId
-  tri: TriDesLieux
+  tri: Sort<ColonneDesLieux>
 }): Promise<LieuDuMediateurEnListe[]> => {
-  const { champ, sens } = ordonnancement(tri)
   const orderBy: Prisma.MediateurEnActiviteOrderByWithRelationInput = {
-    lieuInclusion: { [champ]: sens },
+    lieuInclusion: { [tri.field]: tri.direction },
   }
 
   const rattachements = await prismaClient.mediateurEnActivite.findMany({

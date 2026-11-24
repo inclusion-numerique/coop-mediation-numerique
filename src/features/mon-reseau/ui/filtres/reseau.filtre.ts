@@ -1,6 +1,7 @@
+import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
 import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
+import { pagination } from '@/libraries/etat-d-url/definition/pagination'
 import { CodeInsee } from '@/libraries/insee'
-import { LignesParPage, NumeroDePage, Recherche } from '../../domain'
 
 export const filtreDesCommunesDuReseau = filtreDeRecherche({
   titre: 'Communes',
@@ -9,16 +10,9 @@ export const filtreDesCommunesDuReseau = filtreDeRecherche({
   schema: CodeInsee.schema,
 })
 
-export type ParametresDuReseau = Readonly<
-  Record<string, string | readonly string[] | undefined>
->
-
-export const premiere = (
-  valeur: string | readonly string[] | undefined,
-): string | undefined => (typeof valeur === 'string' ? valeur : valeur?.at(0))
-
-export const etatDeLaListeDuReseau = (parametres: ParametresDuReseau) => ({
-  recherche: Recherche.safe(premiere(parametres.recherche) ?? ''),
-  page: NumeroDePage(premiere(parametres.page)),
-  lignes: LignesParPage(premiere(parametres.lignes)),
+export const paginationDuReseau = pagination({
+  lignes: [20, 50, 100],
+  parDefaut: 20,
 })
+
+export type ParametresDuReseau = AdresseCourante['parametres']

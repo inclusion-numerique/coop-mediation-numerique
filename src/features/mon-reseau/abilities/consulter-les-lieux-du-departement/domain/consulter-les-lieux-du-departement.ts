@@ -25,18 +25,8 @@ export const consulterLesLieuxDuDepartement = async <Lieux>(
   if (!departement.success)
     return failure<DepartementInconnu>(departement.error)
 
-  const { recherche, communes, tri, page, lignes } = criteres
   const [lieux, { communesOptions }] = await Promise.all([
-    lieuxDuDepartement({
-      departementCode: departement.data.code,
-      searchParams: {
-        recherche: recherche ?? undefined,
-        communes,
-        tri,
-        page: String(page),
-        lignes: String(lignes),
-      },
-    }),
+    lieuxDuDepartement({ departementCode: departement.data.code, criteres }),
     communesDesLieux({ departementCode: departement.data.code }),
   ])
 

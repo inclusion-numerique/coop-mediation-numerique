@@ -1,7 +1,7 @@
+import type { Search } from '@arckit/resultset'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
-import { Effectif, type Recherche } from '../../../../domain'
 import {
   ACTEUR,
   ACTEUR_VISIBLE,
@@ -23,8 +23,8 @@ import type {
 const normalisee = (expression: Prisma.Sql) =>
   Prisma.sql`NULLIF(regexp_replace(lower(unaccent(${expression})), '[\\s-]', '', 'g'), '')`
 
-const correspondA = (recherche: Recherche | null) => {
-  if (recherche === null) return Prisma.sql`TRUE`
+const correspondA = (recherche: Search) => {
+  if (recherche === '') return Prisma.sql`TRUE`
 
   const cherchee = normalisee(Prisma.sql`${recherche}`)
   return Prisma.sql`(
@@ -52,8 +52,8 @@ const desCommunes = (communes: CriteresActeurs['communes']) =>
   communes.length === 0 ? Prisma.sql`TRUE` : acteurDesCommunes(communes)
 
 const SENS_DU_TRI = {
-  nomaz: Prisma.raw('ASC'),
-  nomza: Prisma.raw('DESC'),
+  asc: Prisma.raw('ASC'),
+  desc: Prisma.raw('DESC'),
 } as const
 
 export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
@@ -67,9 +67,8 @@ export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
       AND ${aLeRole(criteres.role)}
       AND ${desCommunes(criteres.communes)}
     `
-  const triCle: keyof typeof SENS_DU_TRI = criteres.tri
-  const sens = SENS_DU_TRI[triCle]
-  const decalage = (criteres.page - 1) * criteres.lignes
+  const sens = SENS_DU_TRI[criteres.tri.direction]
+  const decalage = (criteres.page - 1) * criteres.pageSize
 
   const [identifiants, [compte]] = await Promise.all([
     prismaClient.$queryRaw<{ id: string }[]>`
@@ -83,7 +82,7 @@ export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
         )
         SELECT id FROM acteurs
         ORDER BY nom ${sens}, prenom ${sens}, id ASC
-        LIMIT ${criteres.lignes} OFFSET ${decalage}
+        LIMIT ${criteres.pageSize} OFFSET ${decalage}
       `,
     prismaClient.$queryRaw<[{ total: number }]>`
         SELECT COUNT(DISTINCT ${ACTEUR.id})::integer AS total
@@ -103,11 +102,11 @@ export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
   const total = compte?.total ?? 0
 
   return {
-    acteurs: orderItemsByIndexedValues(lignes, ids)
+    items: orderItemsByIndexedValues(lignes, ids)
       .map(versActeur)
       .filter((acteur) => acteur !== null),
-    total: Effectif(total),
-    page: criteres.page,
-    lignes: criteres.lignes,
+    totalItems: total,
+    currentPage: criteres.page,
+    pageSize: criteres.pageSize,
   }
 }

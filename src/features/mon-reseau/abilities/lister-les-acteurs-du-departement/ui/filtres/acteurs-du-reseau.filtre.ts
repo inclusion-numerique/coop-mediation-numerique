@@ -1,12 +1,15 @@
+import { Sort } from '@arckit/resultset'
+import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
 import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import { filtreDeChoixUnique } from '@/libraries/etat-d-url/definition/filtre-de-choix'
+import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
+import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
 import {
-  etatDeLaListeDuReseau,
   filtreDesCommunesDuReseau,
   type ParametresDuReseau,
-  premiere,
+  paginationDuReseau,
 } from '../../../../ui/filtres/reseau.filtre'
-import { type CriteresActeurs, FiltreRole, TriActeurs } from '../../domain'
+import { type CriteresActeurs, FiltreRole } from '../../domain'
 import { LIBELLE_DU_ROLE } from '../presenters/acteurs.presenter'
 
 export const filtreDuRoleDeLActeur = filtreDeChoixUnique({
@@ -16,18 +19,37 @@ export const filtreDuRoleDeLActeur = filtreDeChoixUnique({
 })
 
 export const filtresDesActeursDuReseau = composerLEtat(
+  rechercheLibre,
   filtreDesCommunesDuReseau,
   filtreDuRoleDeLActeur,
+)
+
+export const triDesActeursDuReseau = triParmi({
+  colonnes: ['nom'],
+  parDefaut: Sort('nom', 'asc'),
+})
+
+const listeDesActeursDuReseau = composerLEtat(
+  triDesActeursDuReseau,
+  paginationDuReseau,
 )
 
 export const criteresDesActeursDuReseau = (
   parametres: ParametresDuReseau,
 ): CriteresActeurs => {
-  const { communes, role } = filtresDesActeursDuReseau.charger(parametres)
+  const { recherche, communes, role } =
+    filtresDesActeursDuReseau.charger(parametres)
+  const { tri, pagination } = listeDesActeursDuReseau.charger(parametres)
   return {
-    ...etatDeLaListeDuReseau(parametres),
+    recherche,
     communes,
     role: role === null ? null : FiltreRole(role),
-    tri: TriActeurs(premiere(parametres.tri)),
+    tri,
+    ...pagination,
   }
 }
+
+export const pagesDesActeursDuReseau = (
+  adresse: AdresseCourante,
+  resultat: { totalItems: number; currentPage: number; pageSize: number },
+) => listeDesActeursDuReseau.pagination.liens(adresse, resultat)

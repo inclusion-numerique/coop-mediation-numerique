@@ -19,7 +19,7 @@ const nomsProposes = (): readonly string[] => {
   if (consultation === undefined || !consultation.success) {
     throw new Error('Aucun annuaire des acteurs consulté')
   }
-  return consultation.data.acteurs.acteurs.map(({ nomAffiche }) => nomAffiche)
+  return consultation.data.acteurs.items.map(({ nomAffiche }) => nomAffiche)
 }
 
 const SAINT_FLOUR = '15187'

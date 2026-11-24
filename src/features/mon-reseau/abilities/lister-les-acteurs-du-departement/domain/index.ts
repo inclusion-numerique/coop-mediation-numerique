@@ -8,5 +8,4 @@ export {
   estFiltre,
   FiltreRole,
   filtresDeRole,
-  TriActeurs,
 } from './criteres-acteurs'

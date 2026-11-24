@@ -1,6 +1,6 @@
 import { pluriel } from '@/libraries/pluriel'
 import type { Acteur } from '../../../../domain'
-import type { CriteresActeurs, filtresDeRole } from '../../domain'
+import type { filtresDeRole } from '../../domain'
 
 type Role = (typeof filtresDeRole)[number]
 
@@ -39,19 +39,3 @@ export const libelleDesResultats = (total: number, filtre: boolean): string =>
     : filtre
       ? 'Aucun acteur ne correspond à votre recherche'
       : 'Aucun acteur référencé'
-
-export const parametresDeLURL = ({
-  recherche,
-  role,
-  communes,
-  tri,
-  page,
-  lignes,
-}: CriteresActeurs) => ({
-  recherche: recherche ?? undefined,
-  role: role ?? undefined,
-  communes: communes.length === 0 ? undefined : communes.join(','),
-  tri,
-  page: String(page),
-  lignes: String(lignes),
-})

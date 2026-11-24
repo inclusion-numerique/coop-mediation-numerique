@@ -1,3 +1,4 @@
+import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
 import { estFiltre } from '../../domain'
 import { criteresDesActeursDuReseau } from './acteurs-du-reseau.filtre'
@@ -9,17 +10,18 @@ describe('critères de l’annuaire des acteurs', () => {
         recherche: ' martin ',
         role: 'coordinateur',
         communes: '15014,abc',
-        tri: 'nomza',
+        tri: 'nom',
+        ordre: 'desc',
         page: '2',
         lignes: '50',
       }),
     ).toEqual({
-      recherche: 'martin',
+      recherche: Search('martin'),
       role: 'coordinateur',
       communes: ['15014'],
-      tri: 'nomza',
-      page: 2,
-      lignes: 50,
+      tri: Sort('nom', 'desc'),
+      page: Page(2),
+      pageSize: PageSize(50),
     })
   })
 
@@ -27,19 +29,22 @@ describe('critères de l’annuaire des acteurs', () => {
     expect(
       criteresDesActeursDuReseau({ role: 'administrateur', tri: 'age' }),
     ).toEqual({
-      recherche: null,
+      recherche: Search(''),
       role: null,
       communes: [],
-      tri: 'nomaz',
-      page: 1,
-      lignes: 20,
+      tri: Sort('nom', 'asc'),
+      page: Page(1),
+      pageSize: PageSize(20),
     })
   })
 
-  it('est filtré par une recherche, un rôle ou des communes', () => {
+  it('n’est pas filtré par la page ni le tri', () => {
     expect(
-      estFiltre(criteresDesActeursDuReseau({ page: '2', tri: 'nomza' })),
+      estFiltre(criteresDesActeursDuReseau({ page: '2', ordre: 'desc' })),
     ).toBe(false)
+  })
+
+  it('est filtré par un rôle', () => {
     expect(
       estFiltre(criteresDesActeursDuReseau({ role: 'coordinateur' })),
     ).toBe(true)

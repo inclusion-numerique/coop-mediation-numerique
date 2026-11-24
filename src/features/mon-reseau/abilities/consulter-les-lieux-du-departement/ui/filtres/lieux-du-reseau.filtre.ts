@@ -1,18 +1,42 @@
+import { Sort } from '@arckit/resultset'
+import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
 import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
+import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
+import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
 import {
-  etatDeLaListeDuReseau,
   filtreDesCommunesDuReseau,
   type ParametresDuReseau,
-  premiere,
+  paginationDuReseau,
 } from '../../../../ui/filtres/reseau.filtre'
-import { type CriteresDesLieux, TriDesLieuxAffiche } from '../../domain'
+import type { ColonneDesLieuxDuReseau, CriteresDesLieux } from '../../domain'
 
-export const filtresDesLieuxDuReseau = composerLEtat(filtreDesCommunesDuReseau)
+export const filtresDesLieuxDuReseau = composerLEtat(
+  rechercheLibre,
+  filtreDesCommunesDuReseau,
+)
+
+export const triDesLieuxDuReseau = triParmi({
+  colonnes: [
+    'nom',
+    'modification',
+  ] satisfies readonly ColonneDesLieuxDuReseau[],
+  parDefaut: Sort('nom', 'asc'),
+})
+
+const listeDesLieuxDuReseau = composerLEtat(
+  triDesLieuxDuReseau,
+  paginationDuReseau,
+)
 
 export const criteresDesLieuxDuReseau = (
   parametres: ParametresDuReseau,
-): CriteresDesLieux => ({
-  ...etatDeLaListeDuReseau(parametres),
-  communes: filtresDesLieuxDuReseau.charger(parametres).communes,
-  tri: TriDesLieuxAffiche(premiere(parametres.tri)),
-})
+): CriteresDesLieux => {
+  const { recherche, communes } = filtresDesLieuxDuReseau.charger(parametres)
+  const { tri, pagination } = listeDesLieuxDuReseau.charger(parametres)
+  return { recherche, communes, tri, ...pagination }
+}
+
+export const pagesDesLieuxDuReseau = (
+  adresse: AdresseCourante,
+  resultat: { totalItems: number; currentPage: number; pageSize: number },
+) => listeDesLieuxDuReseau.pagination.liens(adresse, resultat)

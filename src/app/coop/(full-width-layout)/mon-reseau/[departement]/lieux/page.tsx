@@ -13,7 +13,9 @@ import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/
 import {
   criteresDesLieuxDuReseau,
   filtresDesLieuxDuReseau,
+  pagesDesLieuxDuReseau,
 } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui/filtres/lieux-du-reseau.filtre'
+
 import { default as LieuxDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui/pages/LieuxDuDepartementPage'
 import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/action/rechercher-des-communes-du-reseau.key'
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
@@ -58,7 +60,11 @@ const Page = async ({
             adresse: { chemin: hrefDesLieux(departement), parametres },
             communes: consultation.data.communes,
           })}
-          listeDesLieux={consultation.data.lieux.lieux.map((lieu) => (
+          pages={pagesDesLieuxDuReseau(
+            { chemin: hrefDesLieux(departement), parametres },
+            consultation.data.lieux,
+          )}
+          listeDesLieux={consultation.data.lieux.items.map((lieu) => (
             <LieuActiviteCard
               key={lieu.id}
               lieu={lieu}

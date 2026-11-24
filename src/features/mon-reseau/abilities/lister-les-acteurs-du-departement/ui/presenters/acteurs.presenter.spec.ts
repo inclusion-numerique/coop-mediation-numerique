@@ -4,12 +4,7 @@ import {
   coordinateurConseillerNumerique,
   mediateurHorsDispositif,
 } from '../../../../fixtures/domaine'
-import { criteresDesActeursDuReseau } from '../filtres/acteurs-du-reseau.filtre'
-import {
-  groupesDActeurs,
-  libelleDesResultats,
-  parametresDeLURL,
-} from './acteurs.presenter'
+import { groupesDActeurs, libelleDesResultats } from './acteurs.presenter'
 
 const coordinateurHorsDispositif = {
   ...coordinateurConseillerNumerique,
@@ -41,20 +36,5 @@ describe('présentation de l’annuaire des acteurs', () => {
     [12, true, '12 acteurs référencés'],
   ])('annonce %i résultat(s), filtré : %s', (total, filtre, attendu) => {
     expect(libelleDesResultats(total, filtre)).toBe(attendu)
-  })
-
-  it('remet les critères lus dans l’URL', () => {
-    expect(
-      parametresDeLURL(
-        criteresDesActeursDuReseau({ role: 'coordinateur', page: '2' }),
-      ),
-    ).toEqual({
-      recherche: undefined,
-      role: 'coordinateur',
-      communes: undefined,
-      tri: 'nomaz',
-      page: '2',
-      lignes: '20',
-    })
   })
 })

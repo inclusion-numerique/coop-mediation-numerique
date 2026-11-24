@@ -12,12 +12,12 @@ const etat: {
 } = {}
 
 const annuaireVide = async ({
-  searchParams,
+  criteres,
 }: {
-  searchParams: { readonly communes: readonly string[] }
+  criteres: { readonly communes: readonly string[] }
 }) => {
-  etat.communesDemandees = searchParams.communes
-  return { lieux: [], totalCount: 0, page: 1, pageSize: 100 }
+  etat.communesDemandees = criteres.communes
+  return { items: [], totalItems: 0 }
 }
 
 const aucuneCommune = async () => ({ communesOptions: [] })

@@ -1,11 +1,9 @@
+import type { Page, PageSize, Paginated, Sort } from '@arckit/resultset'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
-import { DEFAULT_PAGE } from '@/libraries/data-table/pagination/page-size-options'
-import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
-import { entierPositifLu } from '@/libraries/parametres-d-url'
 import type { LieuEnListe } from '../../../../domain/lieu-en-liste'
-import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
+import type { ColonneDesLieux } from '../../../../domain/tri-des-lieux'
 import {
   lieuEnListe,
   projectionDuLieuEnListe,
@@ -19,27 +17,25 @@ import {
 } from '../../../../implementations/prisma/registre/lieu-affiche.sql'
 import { lieuALAnnuaireDuDepartement } from './lieu-a-l-annuaire.sql'
 
-const LIEUX_DEFAULT_PAGE_SIZE = 20
-
 const EXPRESSION_DE_TRI = {
   nom: NOM_AFFICHE,
   modification: DERNIERE_ECRITURE,
 } satisfies Record<
-  ReturnType<typeof ordonnancement>['champ'],
+  ColonneDesLieux,
   ReturnType<typeof normaliseePourLaRecherche>
 >
 
-type RechercheDeLieuxDuDepartement = {
-  readonly recherche?: string
-  readonly communes?: readonly string[]
-  readonly tri?: TriDesLieux
-  readonly page?: string
-  readonly lignes?: string
+type CriteresDesLieuxDuDepartement = {
+  readonly recherche: string
+  readonly communes: readonly string[]
+  readonly tri: Sort<ColonneDesLieux>
+  readonly page: Page
+  readonly pageSize: PageSize
 }
 
 export type LieuxDuDepartementOptions = {
   departementCode: string
-  searchParams: RechercheDeLieuxDuDepartement
+  criteres: CriteresDesLieuxDuDepartement
 }
 
 const getLieuxByIds = async ({
@@ -57,14 +53,9 @@ const getLieuxByIds = async ({
 
 export const lieuxDuDepartement = async ({
   departementCode,
-  searchParams,
-}: LieuxDuDepartementOptions) => {
-  const page = entierPositifLu(searchParams.page, DEFAULT_PAGE)
-  const pageSize = entierPositifLu(searchParams.lignes, LIEUX_DEFAULT_PAGE_SIZE)
-
-  const { take, skip } = takeAndSkipFromPage({ page, pageSize })
-
-  const searchTerm = searchParams.recherche?.trim()
+  criteres: { recherche, communes, tri, page, pageSize },
+}: LieuxDuDepartementOptions): Promise<Paginated<LieuEnListe>> => {
+  const searchTerm = recherche.trim()
   const normalizedSearchTerm = searchTerm
     ? Prisma.sql`NULLIF(regexp_replace(lower(unaccent(${searchTerm})), '[\\s-]', '', 'g'), '')`
     : null
@@ -82,13 +73,12 @@ export const lieuxDuDepartement = async ({
     : Prisma.sql`TRUE`
 
   const communesCondition =
-    searchParams.communes && searchParams.communes.length > 0
-      ? Prisma.sql`s.code_insee = ANY(${[...searchParams.communes]}::TEXT[])`
+    communes.length > 0
+      ? Prisma.sql`s.code_insee = ANY(${[...communes]}::TEXT[])`
       : Prisma.sql`TRUE`
 
-  const { champ, sens } = ordonnancement(TriDesLieux(searchParams.tri))
-  const sortColumn = EXPRESSION_DE_TRI[champ]
-  const sortDirection = Prisma.raw(sens.toUpperCase())
+  const sortColumn = EXPRESSION_DE_TRI[tri.field]
+  const sortDirection = Prisma.raw(tri.direction === 'desc' ? 'DESC' : 'ASC')
 
   const structureIds = await prismaClient.$queryRaw<{ id: string }[]>`
     WITH distinct_lieux AS (
@@ -103,7 +93,7 @@ export const lieuxDuDepartement = async ({
     )
     SELECT id FROM distinct_lieux
     ORDER BY tri ${sortDirection}, id ASC
-    LIMIT ${take} OFFSET ${skip}
+    LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize}
   `
 
   const ids = structureIds.map((row) => row.id)
@@ -123,13 +113,10 @@ export const lieuxDuDepartement = async ({
 
   const orderedLieux = orderItemsByIndexedValues(lieux, ids)
 
-  const totalPages = take ? Math.ceil(totalCount / take) : 1
-
   return {
-    lieux: orderedLieux,
-    totalCount,
-    totalPages,
-    page,
+    items: orderedLieux,
+    totalItems: totalCount,
+    currentPage: page,
     pageSize,
   }
 }

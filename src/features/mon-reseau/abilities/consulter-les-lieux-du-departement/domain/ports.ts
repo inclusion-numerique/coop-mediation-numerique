@@ -8,13 +8,7 @@ type OptionDeCommune = {
 
 export type LieuxDuDepartement<Lieux> = (options: {
   departementCode: CodeDepartement
-  searchParams: {
-    readonly recherche?: string
-    readonly communes: readonly string[]
-    readonly tri: CriteresDesLieux['tri']
-    readonly page: string
-    readonly lignes: string
-  }
+  criteres: CriteresDesLieux
 }) => Promise<Lieux>
 
 export type CommunesDesLieux = (options: {

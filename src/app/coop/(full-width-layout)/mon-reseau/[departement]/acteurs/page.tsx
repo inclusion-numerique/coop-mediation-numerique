@@ -8,7 +8,9 @@ import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/l
 import {
   criteresDesActeursDuReseau,
   filtresDesActeursDuReseau,
+  pagesDesActeursDuReseau,
 } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui/filtres/acteurs-du-reseau.filtre'
+
 import { default as ActeursDuDepartementPage } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui/pages/ActeursDuDepartementPage'
 import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/action/rechercher-des-communes-du-reseau.key'
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
@@ -49,6 +51,10 @@ const Page = async ({
           adresse: { chemin: hrefDesActeurs(departement), parametres },
           communes: consultation.data.communes,
         })}
+        pages={pagesDesActeursDuReseau(
+          { chemin: hrefDesActeurs(departement), parametres },
+          consultation.data.acteurs,
+        )}
       />
     </ClientBinder>
   ) : (

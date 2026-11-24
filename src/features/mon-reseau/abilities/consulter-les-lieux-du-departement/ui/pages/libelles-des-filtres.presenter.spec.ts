@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesLieuxDuReseau } from '../filtres/lieux-du-reseau.filtre'
-import {
-  libelleDesResultats,
-  parametresDeLURL,
-} from '../presenters/libelles-des-filtres.presenter'
+import { libelleDesResultats } from '../presenters/libelles-des-filtres.presenter'
 
 describe('étiquettes des filtres de l’annuaire des lieux', () => {
   it.each([
@@ -13,19 +9,5 @@ describe('étiquettes des filtres de l’annuaire des lieux', () => {
     [3, true, '3 lieux'],
   ])('annonce %i résultat(s), filtré : %s', (total, filtre, attendu) => {
     expect(libelleDesResultats(total, filtre)).toBe(attendu)
-  })
-
-  it('remet les critères lus dans l’URL', () => {
-    expect(
-      parametresDeLURL(
-        criteresDesLieuxDuReseau({ communes: ['15014', '15187'] }),
-      ),
-    ).toEqual({
-      recherche: undefined,
-      communes: '15014,15187',
-      tri: 'nomaz',
-      page: '1',
-      lignes: '20',
-    })
   })
 })

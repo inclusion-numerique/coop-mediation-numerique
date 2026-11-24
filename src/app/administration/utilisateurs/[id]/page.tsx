@@ -1,3 +1,4 @@
+import { Sort } from '@arckit/resultset'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { annulerUneInvitationAction } from '@/app/_actions/equipe/annuler-une-invitation.action'
@@ -52,7 +53,6 @@ import { AvertissementsEtatInscription } from '@/features/inscription/ui/slots/A
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
 import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/slots/LieuxDActiviteEnAdministration.slot'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui/slots/VisibiliteCartoDuMediateur.slot'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
@@ -133,7 +133,7 @@ const sectionLieux = async (fiche: FicheUtilisateur): Promise<ReactNode> => {
       lieux={
         await listerLesLieuxDuMediateur({
           mediateurId: MediateurId(mediateur.id),
-          tri: TriDesLieux(null),
+          tri: Sort('nom', 'asc'),
         })
       }
     />

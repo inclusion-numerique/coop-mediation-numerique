@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { Page, PageSize, Sort } from '@arckit/resultset'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
@@ -105,10 +106,18 @@ Given('le lieu publié est supprimé', async () => {
   })
 })
 
+const TOUS_LES_LIEUX = {
+  recherche: '',
+  communes: [],
+  tri: Sort('nom', 'asc'),
+  page: Page(1),
+  pageSize: PageSize(1000),
+} as const
+
 const lister = async (communes?: readonly string[]) => {
-  const { lieux } = await lieuxDuDepartement({
+  const { items: lieux } = await lieuxDuDepartement({
     departementCode: '17',
-    searchParams: { lignes: '1000', communes },
+    criteres: { ...TOUS_LES_LIEUX, communes: communes ?? [] },
   })
 
   const semes = lieux.filter(({ id }) => semis.ids.includes(id))
@@ -135,11 +144,11 @@ When('on compte les lieux de ce département', async () => {
 })
 
 Then('le nombre de lieux est celui de l’annuaire du département', async () => {
-  const { totalCount } = await lieuxDuDepartement({
+  const { totalItems } = await lieuxDuDepartement({
     departementCode: '17',
-    searchParams: {},
+    criteres: TOUS_LES_LIEUX,
   })
-  assert.strictEqual(semis.nombre, totalCount)
+  assert.strictEqual(semis.nombre, totalItems)
 })
 
 const proposes = () => semis.trouves ?? []

@@ -14,8 +14,8 @@ describe('acteurs listés contre la base', () => {
 
     expect(
       consultation.success &&
-        consultation.data.acteurs.acteurs.length <=
-          consultation.data.acteurs.total,
+        consultation.data.acteurs.items.length <=
+          consultation.data.acteurs.totalItems,
     ).toBe(true)
   })
 })

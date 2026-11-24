@@ -1,3 +1,4 @@
+import { Sort } from '@arckit/resultset'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membres.action'
@@ -21,7 +22,6 @@ import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abil
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { LieuxRepliables } from '@/features/lieux-activite/ui/slots/LieuxRepliables.slot'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
@@ -104,7 +104,7 @@ const Page = async ({ params }: Parametres) => {
       ? null
       : listerLesLieuxDuMediateur({
           mediateurId: MediateurIdDesLieux(mediation.mediateurId),
-          tri: TriDesLieux(undefined),
+          tri: Sort('nom', 'asc'),
         }),
     contratVisible(acteur, regard)
       ? consulterLeContrat({

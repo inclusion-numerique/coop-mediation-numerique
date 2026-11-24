@@ -13,8 +13,8 @@ import { default as BoutonDeRetrait } from '@/features/lieux-activite/abilities/
 import { default as ModaleDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/slots/ModaleDeRetrait.slot'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
 import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/components/LieuActiviteCard'
+import { triDesLieuxLu } from '@/features/lieux-activite/ui/filtres/tri-des-lieux.filtre'
 import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui/slots/MaVisibiliteCarto.slot'
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
 const LieuActiviteListPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ tri?: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
-  const { tri } = await searchParams
+  const { tri } = triDesLieuxLu.charger(await searchParams)
   const user = await authenticateUser()
 
   if (user.mediateur == null) return redirect('/')
@@ -38,7 +38,7 @@ const LieuActiviteListPage = async ({
 
   const lieux = await listerLesLieuxDuMediateur({
     mediateurId: MediateurId(user.mediateur.id),
-    tri: TriDesLieux(tri),
+    tri,
   })
 
   return (
