@@ -1,9 +1,9 @@
-.root {
+.selecteur-de-periode {
   font-size: 14px;
   font-weight: 500;
 }
 
-.dropdown {
+.selecteur-de-periode__liste-deroulante {
   appearance: none;
   border: none;
   background: transparent;
@@ -22,19 +22,19 @@
   }
 }
 
-.weekday {
+.selecteur-de-periode__jour-de-la-semaine {
   width: 2rem;
   height: 2rem;
   font-size: 0.875rem;
   color: var(--text-active-blue-france);
 }
 
-.day {
+.selecteur-de-periode__jour {
   width: 2rem;
   height: 2rem;
 }
 
-.dayButton {
+.selecteur-de-periode__bouton-du-jour {
   width: 100%;
   height: 100%;
   border: none;
@@ -51,12 +51,12 @@
   }
 }
 
-.today .dayButton {
+.selecteur-de-periode__jour--aujourd-hui .selecteur-de-periode__bouton-du-jour {
   background-color: var(--background-action-low-blue-france);
   font-weight: 700;
 }
 
-.selected .dayButton {
+.selecteur-de-periode__jour--selectionne .selecteur-de-periode__bouton-du-jour {
   background-color: var(--background-action-high-blue-france);
   color: var(--grey-1000-75);
 
@@ -65,8 +65,8 @@
   }
 }
 
-.rangeStart .dayButton,
-.rangeEnd .dayButton {
+.selecteur-de-periode__jour--debut .selecteur-de-periode__bouton-du-jour,
+.selecteur-de-periode__jour--fin .selecteur-de-periode__bouton-du-jour {
   background-color: var(--background-action-high-blue-france);
   color: var(--grey-1000-75);
 
@@ -75,11 +75,11 @@
   }
 }
 
-.rangeMiddle {
+.selecteur-de-periode__jour--milieu {
   background-color: var(--background-action-low-blue-france);
 }
 
-.rangeMiddle .dayButton {
+.selecteur-de-periode__jour--milieu .selecteur-de-periode__bouton-du-jour {
   background: transparent;
   color: var(--text-default-grey);
 
@@ -88,11 +88,11 @@
   }
 }
 
-.outside {
+.selecteur-de-periode__jour--hors-du-mois {
   visibility: hidden;
 }
 
-.disabled .dayButton {
+.selecteur-de-periode__jour--desactive .selecteur-de-periode__bouton-du-jour {
   opacity: 0.4;
   cursor: not-allowed;
 

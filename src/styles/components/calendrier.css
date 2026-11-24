@@ -1,4 +1,4 @@
-.calendar {
+.calendrier {
   text-align: center;
   font-size: 14px;
   font-style: normal;
@@ -6,7 +6,7 @@
   line-height: 24px;
   width: 224px;
 
-  :global(.react-calendar__tile--active) {
+  .react-calendar__tile--active {
     background-color: var(--background-action-high-blue-france) !important;
     color: var(--grey-1000-75) !important;
 
@@ -23,7 +23,7 @@
     }
   }
 
-  :global(.react-calendar__month-view__weekdays__weekday) {
+  .react-calendar__month-view__weekdays__weekday {
     font-weight: 700;
     color: var(--text-active-blue-france);
 
@@ -32,13 +32,13 @@
     }
   }
 
-  :global(.react-calendar__tile) {
+  .react-calendar__tile {
     padding: 4px;
     height: 32px;
   }
 }
 
-.today {
+.calendrier__aujourd-hui {
   background-color: var(--background-action-low-blue-france) !important;
 
   &:active {

@@ -3,7 +3,6 @@
 import { format, startOfMonth } from 'date-fns'
 import { fr } from 'date-fns/locale/fr'
 import { type DateRange, DayPicker, useDayPicker } from 'react-day-picker'
-import styles from './DateRangePicker.module.css'
 
 export type { DateRange }
 
@@ -128,26 +127,27 @@ export const DateRangePicker = ({
       ),
     }}
     classNames={{
-      root: styles.root,
+      root: 'selecteur-de-periode',
       months: 'fr-flex fr-flex-gap-6v',
       month: 'fr-flex fr-direction-column fr-flex-gap-1v',
       month_caption: 'fr-flex fr-justify-content-center',
       caption_label: 'fr-display-none',
       dropdowns: 'fr-flex fr-flex-gap-1v fr-align-items-center',
-      dropdown: styles.dropdown,
+      dropdown: 'selecteur-de-periode__liste-deroulante',
       weekdays: 'fr-flex',
-      weekday: `fr-flex fr-align-items-center fr-justify-content-center fr-text--bold fr-text--uppercase ${styles.weekday}`,
+      weekday:
+        'fr-flex fr-align-items-center fr-justify-content-center fr-text--bold fr-text--uppercase selecteur-de-periode__jour-de-la-semaine',
       weeks: 'fr-flex fr-direction-column',
       week: 'fr-flex',
-      day: `fr-flex fr-align-items-center fr-justify-content-center ${styles.day}`,
-      day_button: styles.dayButton,
-      selected: styles.selected,
-      range_start: styles.rangeStart,
-      range_end: styles.rangeEnd,
-      range_middle: styles.rangeMiddle,
-      today: styles.today,
-      outside: styles.outside,
-      disabled: styles.disabled,
+      day: 'fr-flex fr-align-items-center fr-justify-content-center selecteur-de-periode__jour',
+      day_button: 'selecteur-de-periode__bouton-du-jour',
+      selected: 'selecteur-de-periode__jour--selectionne',
+      range_start: 'selecteur-de-periode__jour--debut',
+      range_end: 'selecteur-de-periode__jour--fin',
+      range_middle: 'selecteur-de-periode__jour--milieu',
+      today: 'selecteur-de-periode__jour--aujourd-hui',
+      outside: 'selecteur-de-periode__jour--hors-du-mois',
+      disabled: 'selecteur-de-periode__jour--desactive',
     }}
   />
 )

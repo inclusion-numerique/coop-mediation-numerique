@@ -3,13 +3,12 @@ import type { CalendarProps as ReactCalendarProps } from 'react-calendar'
 import ReactCalendar from 'react-calendar'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { dateFormatter } from '@/libraries/date/formatDate'
-import styles from './Calendar.module.css'
 
 const today = dateAsIsoDay(new Date())
 
 const tileClassName: ReactCalendarProps['tileClassName'] = ({ date }) => {
   if (dateAsIsoDay(date) === today) {
-    return styles.today
+    return 'calendrier__aujourd-hui'
   }
   return ''
 }
@@ -28,7 +27,7 @@ export const Calendar = ({
   ...calendarProps
 }: ReactCalendarProps) => (
   <ReactCalendar
-    className={classNames(styles.calendar, className)}
+    className={classNames('calendrier', className)}
     tileClassName={tileClassNameProperty ?? tileClassName}
     formatShortWeekday={formatShortWeekday}
     {...calendarProps}
