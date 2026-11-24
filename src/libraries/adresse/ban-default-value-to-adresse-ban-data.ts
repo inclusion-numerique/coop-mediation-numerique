@@ -1,5 +1,5 @@
 import type { DefaultValues } from 'react-hook-form'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 
 // Used to be typesafe in UI form display of default values
 export const banDefaultValueToAdresseBanData = ({

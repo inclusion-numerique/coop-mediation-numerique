@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addresseFromParts } from './addresseFromParts'
+import { addresseFromParts } from './addresse-from-parts'
 
 describe('addresseFromParts', () => {
   it('assemble voie, code postal et commune', () => {

@@ -1,5 +1,5 @@
 import { DefaultValues } from 'react-hook-form'
-import { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 
 // Failsafe function to display a label for an AdresseBanData
 export const getAdresseBanLabel = ({
