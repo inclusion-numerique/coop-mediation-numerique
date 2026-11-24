@@ -21,7 +21,7 @@ import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
-} from '@/features/beneficiaire/ui/forms/formulaire/beneficiaire-options'
+} from '@/features/beneficiaire/ui/labels/options-du-beneficiaire.labels'
 import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import {

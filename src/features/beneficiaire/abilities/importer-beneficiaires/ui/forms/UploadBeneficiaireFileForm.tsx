@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
-import { useEnregistrementDeLAnalyse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/analyse-de-l-import'
+import { useEnregistrementDeLAnalyse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/use-analyse-de-l-import'
 import {
   hrefDeLAnalyseDeLImport,
   hrefDeLErreurDeLImport,

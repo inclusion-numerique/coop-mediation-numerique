@@ -1,6 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { findDuplicatesForBeneficiaire as findDuplicateForBeneficiaire } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { Email } from '@/features/beneficiaire/domain/email'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
@@ -8,6 +7,7 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { beneficiaire } from '@/features/beneficiaire/fixtures/beneficiaire'
 import { Telephone } from '@/libraries/telephone'
+import { findDuplicatesForBeneficiaire as findDuplicateForBeneficiaire } from './find-duplicates-for-beneficiaire.query'
 
 const withBrandedFields = (fixture: {
   id: string
