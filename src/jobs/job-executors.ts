@@ -1,14 +1,14 @@
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
-import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/executeAnonymiserLesComptesInactifs'
-import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
+import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/anonymiser-les-comptes-inactifs.execution'
+import { executeInactiveUsersReminders } from './inactive-users-reminders/inactive-users-reminders.execution'
 import type { Job, JobName, JobPayload } from './jobs'
-import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
-import { executeRetirerLesRolesVacants } from './retirer-les-roles-vacants/executeRetirerLesRolesVacants'
-import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
-import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/executeSynchroniserLesRolesBrevo'
+import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/remove-orphan-brevo-contacts.execution'
+import { executeRetirerLesRolesVacants } from './retirer-les-roles-vacants/retirer-les-roles-vacants.execution'
+import { executeSyncRdvspData } from './sync-rdvsp-data/sync-rdvsp-data.execution'
+import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/synchroniser-les-roles-brevo.execution'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },

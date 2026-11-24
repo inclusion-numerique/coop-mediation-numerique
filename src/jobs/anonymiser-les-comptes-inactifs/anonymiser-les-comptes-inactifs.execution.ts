@@ -11,7 +11,7 @@ import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-com
 import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { supprimerCompteAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { type UtilisateurId } from '@/features/utilisateurs/domain'
-import type { JobExecutor } from '@/jobs/jobExecutors'
+import type { JobExecutor } from '@/jobs/job-executors'
 import { output } from '@/jobs/output'
 
 const supprimerComptePorts: EffacementsDesAutresFeatures = {

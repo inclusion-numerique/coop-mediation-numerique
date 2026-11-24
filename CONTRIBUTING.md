@@ -146,7 +146,7 @@ En production, la base de la Coop est le schéma `coop` de l'Entrepôt de donné
 
 <h2 id="taches">⏱️ Tâches</h2>
 
-Les tâches de fond vivent dans `src/jobs/`. Chacune a un nom, une charge utile validée par Zod et un exécuteur, et chaque exécution est tracée dans la table `job_executions`.
+Les tâches de fond vivent dans `src/jobs/`. Chacune a un nom, une charge utile validée par Zod et un exécuteur, rangés dans `src/jobs/<tâche>/` : `<tâche>.job.ts` (nom et charge utile) et `<tâche>.execution.ts` (exécuteur). Chaque exécution est tracée dans la table `job_executions`.
 
 ```bash
 pnpm jobs:run <tâche> '<charge utile JSON>'

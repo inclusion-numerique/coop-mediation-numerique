@@ -3,7 +3,7 @@ import {
   register,
 } from '@/configuration/telemetry/error-reporter/server'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { executeJob } from './jobExecutors'
+import { executeJob } from './job-executors'
 import { JobValidation } from './jobs'
 import { output } from './output'
 
