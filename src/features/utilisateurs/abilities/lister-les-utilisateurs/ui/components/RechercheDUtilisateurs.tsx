@@ -2,7 +2,7 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
-import { useFiltre } from '@/libraries/etat-d-url/use-filtre'
+import { useFiltre } from '@/libraries/etat-d-url/filtres/use-filtre'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 

@@ -1,4 +1,4 @@
-import { EnTeteTriable } from '@/libraries/etat-d-url/EnTeteTriable'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste/EnTeteTriable'
 import { colonnesDesUtilisateurs } from '../columns/utilisateurs.columns'
 import type { LiensDeLaListe } from '../presenters/liste-des-utilisateurs.presenter'
 
