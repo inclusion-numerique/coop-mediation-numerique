@@ -46,7 +46,11 @@ const toOrderBy = (
   sort?: Sort<BeneficiaireSortField>,
 ): Prisma.BeneficiaireOrderByWithRelationInput[] =>
   sort
-    ? [orderByFor[sort.field](sort.direction)]
+    ? [
+        orderByFor[sort.field](sort.direction),
+        { nom: 'asc' },
+        { prenom: 'asc' },
+      ]
     : [{ nom: 'asc' }, { prenom: 'asc' }]
 
 const beneficiaireSelect = {

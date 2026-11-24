@@ -6,6 +6,7 @@ import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lis
 import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/presenters/lister-beneficiaires.presenter'
 import { beneficiaireListItem } from '@/features/beneficiaire/fixtures/beneficiaire-list-item'
 import { provide } from '@/libraries/nextjs/injection/client'
+import { liensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
 import { MesBeneficiairesListePage } from './MesBeneficiairesListePage'
 
 const paginated = (
@@ -69,7 +70,7 @@ export const AvecBeneficiaires: Story = {
   name: 'Avec bénéficiaires',
   args: {
     view: presentMesBeneficiaires(paginated(items, 42)),
-    searchParams: {},
+    liens: liensDeLaListe({}, paginated(items, 42)),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -82,7 +83,7 @@ export const AucunResultat: Story = {
   name: 'Aucun résultat',
   args: {
     view: presentMesBeneficiaires(paginated([], 0), 'zzz'),
-    searchParams: { recherche: 'zzz' },
+    liens: liensDeLaListe({ recherche: 'zzz' }, paginated([], 0)),
   },
 }
 
@@ -90,6 +91,6 @@ export const Vide: Story = {
   name: 'Vide',
   args: {
     view: presentMesBeneficiaires(paginated([], 0)),
-    searchParams: {},
+    liens: liensDeLaListe({}, paginated([], 0)),
   },
 }

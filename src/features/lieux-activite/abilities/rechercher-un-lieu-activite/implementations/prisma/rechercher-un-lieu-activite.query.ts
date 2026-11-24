@@ -1,7 +1,7 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
+import { motsDe } from '@/libraries/texte/mots'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { NombreDActivites } from '../../../../domain/nombres'
@@ -21,7 +21,7 @@ export const rechercherUnLieuActivite = async ({
     suppression: null,
     fin: null,
     lieuInclusion: lieuExploitable,
-    AND: toQueryParts({ recherche }).map((part) => ({
+    AND: motsDe(recherche ?? '').map((part) => ({
       OR: [{ lieuInclusion: { nom: { contains: part, mode: 'insensitive' } } }],
     })),
   } satisfies Prisma.MediateurEnActiviteWhereInput

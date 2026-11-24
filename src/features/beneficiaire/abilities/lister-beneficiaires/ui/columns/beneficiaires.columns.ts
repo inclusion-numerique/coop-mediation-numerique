@@ -12,12 +12,11 @@ export type BeneficiaireColumn = {
     'nom' | 'prenom' | 'anneeNaissance' | 'accompagnementsCount'
   >
   readonly label: string
-  readonly isDefault?: boolean
   readonly alignRight?: boolean
 }
 
 export const beneficiairesColumns: readonly BeneficiaireColumn[] = [
-  { tri: 'nom', field: 'nom', label: 'Nom', isDefault: true },
+  { tri: 'nom', field: 'nom', label: 'Nom' },
   { tri: 'prenom', field: 'prenom', label: 'Prénom' },
   {
     tri: 'anneeNaissance',

@@ -1,29 +1,23 @@
 'use client'
 
-import {
-  DataTable,
-  type DataTableSelection,
-  type DataTableUrlState,
-} from '@/libraries/data-table'
+import { DataTable, type DataTableSelection } from '@/libraries/data-table'
+import type { LiensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
 import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 import { BeneficiairesTableHead } from './BeneficiairesTableHead'
 import { BeneficiaireTableRow } from './BeneficiaireTableRow'
 
 export const BeneficiairesTable = ({
   rows,
-  state,
-  baseHref,
+  colonnes,
   selection,
 }: {
   rows: readonly BeneficiaireRow[]
-  state: DataTableUrlState
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
   selection: DataTableSelection
 }) => (
   <DataTable className="fr-mb-8v">
     <BeneficiairesTableHead
-      state={state}
-      baseHref={baseHref}
+      colonnes={colonnes}
       allSelected={selection.allSelected}
       someSelected={selection.someSelected}
       onToggleAll={selection.toggleAll}
