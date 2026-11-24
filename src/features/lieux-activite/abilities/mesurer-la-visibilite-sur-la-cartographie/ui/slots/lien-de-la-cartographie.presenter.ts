@@ -5,7 +5,9 @@ import type { CodeDepartement } from '@/libraries/insee'
 const CARTOGRAPHIE_NATIONALE =
   'https://cartographie.societenumerique.gouv.fr/cartographie'
 
-export const lienDeLaCartographie = (departement: CodeDepartement): string => {
+export const lienDeLaCartographie = (
+  departement: CodeDepartement,
+): `https://${string}` => {
   const departementRegion = departementsRegionByCode.get(departement)
 
   return departementRegion

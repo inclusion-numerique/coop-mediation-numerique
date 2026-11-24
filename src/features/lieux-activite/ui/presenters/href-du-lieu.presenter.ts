@@ -19,10 +19,10 @@ export const hrefDuLieu = ({
 }: {
   id: string
   codeInsee: string | null
-}): string => `/coop/mon-reseau/${departementDuLieu(codeInsee)}/lieux/${id}`
+}) => `/coop/mon-reseau/${departementDuLieu(codeInsee)}/lieux/${id}` as const
 
 export const hrefDuLieuEnListe = ({
   id,
   adresse,
-}: Pick<LieuEnListe, 'id' | 'adresse'>): string =>
+}: Pick<LieuEnListe, 'id' | 'adresse'>) =>
   hrefDuLieu({ id, codeInsee: adresse?.code_insee ?? null })

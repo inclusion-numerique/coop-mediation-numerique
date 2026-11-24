@@ -1,3 +1,4 @@
+import type { Route } from 'next'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { isBrowser } from '@/libraries/navigateur/isBrowser'
@@ -19,5 +20,7 @@ export const getServerBaseUrl = (options?: GetServerUrlOptions) => {
   return `http://localhost:${environnementServeur.PORT}`
 }
 
-export const getServerUrl = (path: string, options?: GetServerUrlOptions) =>
-  `${getServerBaseUrl(options)}${cheminInterne(path)}`
+export const getServerUrl = (
+  path: string,
+  options?: GetServerUrlOptions,
+): Route => `${getServerBaseUrl(options)}${cheminInterne(path)}` as Route

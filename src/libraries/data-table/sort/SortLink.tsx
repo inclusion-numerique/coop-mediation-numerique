@@ -1,5 +1,6 @@
 import type { SortDirection } from '@arckit/resultset'
 import classNames from 'classnames'
+import type { Route } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -14,7 +15,7 @@ export const SortLink = ({
   label,
   children,
 }: {
-  href: string
+  href: Route
   ordre: SortDirection
   isActive: boolean
   label?: string

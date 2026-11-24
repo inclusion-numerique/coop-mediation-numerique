@@ -2,13 +2,13 @@ import Breadcrumbs, {
   type BreadcrumbParents,
 } from '@/libraries/ui/components/Breadcrumbs'
 
-const AdministrationBreadcrumbs = ({
+const AdministrationBreadcrumbs = <T extends string>({
   currentPage,
   parents = [],
   className,
 }: {
   currentPage: string
-  parents?: BreadcrumbParents
+  parents?: BreadcrumbParents<T>
   className?: string
 }) => (
   <Breadcrumbs

@@ -108,7 +108,7 @@ export const Outils = ({
             </p>
           </div>
           <span className="fr-mt-auto">
-            <Link
+            <a
               className="fr-link"
               href={lienRdvServicePublic}
               target="_blank"
@@ -116,7 +116,7 @@ export const Outils = ({
               title="Accéder à RDV Service Public - nouvel onglet"
             >
               Découvrir
-            </Link>
+            </a>
           </span>
         </div>
       </div>

@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 import { OpeningHoursFields } from './OpeningHoursFields'
@@ -33,7 +32,7 @@ export const InformationsPratiquesFields = withForm({
               <>
                 Retrouvez les informations d’accessibilité sur ce lieu via la
                 plateforme{' '}
-                <Link
+                <a
                   href="https://acceslibre.beta.gouv.fr"
                   target="_blank"
                   rel="noreferrer"
@@ -41,7 +40,7 @@ export const InformationsPratiquesFields = withForm({
                   title="Site d’accès libre (nouvel onglet)"
                 >
                   accès libre
-                </Link>{' '}
+                </a>{' '}
                 et copiez le lien ici.
               </>
             }
@@ -61,7 +60,7 @@ export const InformationsPratiquesFields = withForm({
               <>
                 Si ce lieu dispose d’un outil de prise de rendez-vous en ligne
                 (ex :{' '}
-                <Link
+                <a
                   href={lienDePriseDeRendezVous}
                   target="_blank"
                   rel="noreferrer"
@@ -69,7 +68,7 @@ export const InformationsPratiquesFields = withForm({
                   title="Site de RDV Service Public (nouvel onglet)"
                 >
                   RDV Service Public
-                </Link>
+                </a>
                 ), ajoutez le lien ici.
               </>
             }

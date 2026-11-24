@@ -17,6 +17,7 @@ import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { AJOUTER_DES_LIEUX_ACTIVITE_ACTION_KEY } from '../../action/ajouter-des-lieux-activite.key'
 import { CREER_UN_LIEU_KEY } from '../../action/creer-un-lieu.key'
@@ -119,7 +120,7 @@ export const AjouterDesLieuxActivitePage = ({
 
         if (suite == null) return
 
-        router.push(suite)
+        router.push(routeConstruite(suite))
         router.refresh()
       } catch {
         erreurEnregistrement()

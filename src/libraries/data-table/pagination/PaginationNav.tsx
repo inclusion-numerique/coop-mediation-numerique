@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createDataTableHref } from '../href/create-data-table-href'
 import { paginate } from './paginate'
@@ -32,7 +33,9 @@ export const PaginationNav = ({
   const isLastPage = currentPage >= lastPage
 
   const pageHref = (page: number) =>
-    createDataTableHref(baseHref, { ...state, page: page.toString(10) })
+    routeConstruite(
+      createDataTableHref(baseHref, { ...state, page: page.toString(10) }),
+    )
 
   return (
     <nav

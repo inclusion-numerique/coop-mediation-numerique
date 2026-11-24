@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
 
 export const AccessInfoLink = ({
@@ -22,7 +23,7 @@ export const AccessInfoLink = ({
     <p className="fr-text fr-mb-4v">{how}</p>
 
     {info?.link.startsWith('http') ? (
-      <Link
+      <a
         className="fr-link"
         target="_blank"
         rel="noreferrer"
@@ -30,9 +31,9 @@ export const AccessInfoLink = ({
         href={info.link}
       >
         {info.label}
-      </Link>
+      </a>
     ) : info ? (
-      <Link className="fr-link" href={info.link}>
+      <Link className="fr-link" href={routeConstruite(info.link)}>
         {info.label} <span className="ri-arrow-right-line" aria-hidden />
       </Link>
     ) : null}

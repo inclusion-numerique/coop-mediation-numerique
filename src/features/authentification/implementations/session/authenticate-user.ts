@@ -1,3 +1,4 @@
+import type { Route } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { AuthenticationError } from '@/features/authentification/domain/errors'
 import {
@@ -18,7 +19,7 @@ import {
  * This should be called in Layout and Page components and be the first
  * call in those components for better readability of authentication logic.
  */
-export const authenticateUser = async (redirectTo = '/connexion') => {
+export const authenticateUser = async (redirectTo: Route = '/connexion') => {
   try {
     return await getAuthenticatedSessionUser()
   } catch (error) {
@@ -31,7 +32,7 @@ export const authenticateUser = async (redirectTo = '/connexion') => {
 }
 
 export const authenticateMediateur = async (
-  redirectTo = '/connexion',
+  redirectTo: Route = '/connexion',
 ): Promise<MediateurUser> => {
   const user = await authenticateUser(redirectTo)
   if (isMediateur(user)) return user
@@ -39,7 +40,7 @@ export const authenticateMediateur = async (
 }
 
 export const authenticateCoordinateur = async (
-  redirectTo = '/connexion',
+  redirectTo: Route = '/connexion',
 ): Promise<CoordinateurUser> => {
   const user = await authenticateUser(redirectTo)
   if (isCoordinateur(user)) return user
@@ -47,7 +48,7 @@ export const authenticateCoordinateur = async (
 }
 
 export const authenticateMediateurOrCoordinateur = async (
-  redirectTo = '/connexion',
+  redirectTo: Route = '/connexion',
 ): Promise<MediateurUser | CoordinateurUser> => {
   const user = await authenticateUser(redirectTo)
   if (isMediateur(user) || isCoordinateur(user)) return user

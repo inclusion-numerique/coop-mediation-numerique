@@ -77,9 +77,10 @@ export const BeneficiairesAtelierFields = withForm({
     ) ?? { total: 0 }
 
     const onCreer = () => {
-      const creationUrl = `/coop/mes-beneficiaires/nouveau?retour=${encodeURIComponent(
-        creerBeneficiaireRetourUrl,
-      )}&cra=${encodeSerializableState(form.state.values)}`
+      const creationUrl =
+        `/coop/mes-beneficiaires/nouveau?retour=${encodeURIComponent(
+          creerBeneficiaireRetourUrl,
+        )}&cra=${encodeSerializableState(form.state.values)}` as const
       router.push(creationUrl)
     }
 

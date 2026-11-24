@@ -4,6 +4,7 @@ import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '../../action/accepter-une-invitation.key'
@@ -56,7 +57,7 @@ const ReponseAInvitation = ({
       return
     }
 
-    router.push(`${lien}/refuser`)
+    router.push(routeConstruite(`${lien}/refuser`))
   }
 
   return (

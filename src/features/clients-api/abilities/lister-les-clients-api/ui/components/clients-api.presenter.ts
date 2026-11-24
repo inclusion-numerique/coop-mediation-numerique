@@ -7,7 +7,7 @@ import { hrefDuClientApi } from '../../../../ui/presenters/liens.presenter'
 
 export type LigneDeClientApi = {
   readonly id: string
-  readonly href: string
+  readonly href: ReturnType<typeof hrefDuClientApi>
   readonly nom: string
   readonly permissions: string
   readonly debut: string

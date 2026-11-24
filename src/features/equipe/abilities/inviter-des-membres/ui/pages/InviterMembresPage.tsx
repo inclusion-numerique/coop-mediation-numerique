@@ -43,7 +43,7 @@ export const InviterMembresPage = () => (
         parents={[
           {
             label: 'Mon équipe',
-            linkProps: { href: '/coop/mon-equipe/' },
+            linkProps: { href: '/coop/mon-equipe' },
           },
         ]}
         currentPage="Inviter des membres"

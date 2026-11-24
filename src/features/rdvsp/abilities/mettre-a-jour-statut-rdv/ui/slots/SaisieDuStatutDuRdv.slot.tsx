@@ -4,6 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
@@ -55,7 +56,7 @@ const SaisieDuStatutDuRdv = ({
     }
 
     SaisieDuStatutDuRdvDynamicModal.close()
-    router.push(result.data.urlCreationCra)
+    router.push(routeConstruite(result.data.urlCreationCra))
   }
 
   const handleUpdateStatus = async (

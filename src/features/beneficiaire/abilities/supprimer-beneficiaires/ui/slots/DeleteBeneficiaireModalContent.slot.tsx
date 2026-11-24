@@ -1,6 +1,7 @@
 'use client'
 
 import classNames from 'classnames'
+import type { Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
@@ -15,7 +16,7 @@ const DeleteBeneficiaireModalContent = ({
 }: {
   displayName: string
   beneficiaireId: string
-  nextPath?: string
+  nextPath?: Route
 }) => {
   const router = useRouter()
   const [pending, setPending] = useState(false)

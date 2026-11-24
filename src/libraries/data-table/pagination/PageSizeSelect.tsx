@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import type { FormEventHandler } from 'react'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createDataTableHref } from '../href/create-data-table-href'
@@ -28,11 +29,13 @@ export const PageSizeSelect = ({
     if (!element) return
 
     router.push(
-      createDataTableHref(baseHref, {
-        ...state,
-        lignes: element.value,
-        page: '1',
-      }),
+      routeConstruite(
+        createDataTableHref(baseHref, {
+          ...state,
+          lignes: element.value,
+          page: '1',
+        }),
+      ),
     )
   }
 

@@ -45,6 +45,7 @@ import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/labels/bar
 import { TagScope } from '@/features/statistiques/ui/labels/portee-de-tag.labels'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 
 const MoreFiltersModal = createModal({
@@ -85,9 +86,12 @@ export const MoreCoordinateurFilters = ({
   const dismissModal = (
     parametres: Readonly<Record<string, string | null>>,
   ) => {
-    router.replace(adresseAvec(`?${searchParams}`, parametres) || '?', {
-      scroll: false,
-    })
+    router.replace(
+      routeConstruite(adresseAvec(`?${searchParams}`, parametres)) || '?',
+      {
+        scroll: false,
+      },
+    )
     MoreFiltersModal.close()
     form.reset()
   }

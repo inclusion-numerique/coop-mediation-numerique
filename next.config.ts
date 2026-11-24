@@ -8,6 +8,7 @@ verifierEnvironnementServeurWeb()
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  typedRoutes: true,
   poweredByHeader: false,
   serverExternalPackages: ['html-minifier-terser', 'mjml', 'mjml-core'],
   typescript: {

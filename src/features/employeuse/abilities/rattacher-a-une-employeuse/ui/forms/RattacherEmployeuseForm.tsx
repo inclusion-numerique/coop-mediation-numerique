@@ -3,6 +3,7 @@
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
+import type { Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import SiretInputInfo from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/components/SiretInputInfo'
@@ -34,7 +35,7 @@ import {
 const RattacherEmployeuseForm = ({
   nextStepPath,
 }: {
-  nextStepPath: string | null
+  nextStepPath: Route | null
 }) => {
   const router = useRouter()
   const [apiUnavailable, setApiUnavailable] = useState(false)

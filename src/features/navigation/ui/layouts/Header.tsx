@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import type { Route } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { projectTitle } from '@/configuration/projet/config'
@@ -20,7 +21,7 @@ const Header = ({
   variant,
 }: {
   user?: UtilisateurDeLaNavigation | null
-  accueil: string
+  accueil: Route
   terminerUsurpation?: ReactNode
   backLink?: boolean
   fullWidth?: boolean

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
 
 export const Hero = ({
@@ -15,7 +14,7 @@ export const Hero = ({
       <Pictogram width={illustrationWidth ?? 36} height={36} aria-hidden />
       <h1 className="fr-h4 fr-text-title--blue-france fr-mb-0">{title}</h1>
       <p className="fr-mb-3v">{description}</p>
-      <Link
+      <a
         className="fr-link"
         target="_blank"
         rel="noreferrer"
@@ -23,7 +22,7 @@ export const Hero = ({
         href={website}
       >
         {websiteLinkLabel ?? 'Voir le site'}
-      </Link>
+      </a>
     </div>
     <div className="fr-col-auto fr-ml-auto fr-mr-lg-0">
       <img style={{ width: 180, height: 180 }} src={illustration} alt="" />

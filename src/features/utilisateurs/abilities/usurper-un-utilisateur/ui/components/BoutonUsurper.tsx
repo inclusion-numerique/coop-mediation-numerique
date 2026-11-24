@@ -4,6 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '../../action/usurper-un-utilisateur.key'
@@ -37,7 +38,7 @@ export const BoutonUsurper = ({
         priority: 'success',
         message: `Vous êtes maintenant connecté en tant que ${resultat.data.nom}`,
       })
-      router.replace(resultat.data.redirection)
+      router.replace(routeConstruite(resultat.data.redirection))
       router.refresh()
     })
 

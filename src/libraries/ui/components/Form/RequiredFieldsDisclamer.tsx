@@ -1,13 +1,14 @@
 import classNames from 'classnames'
+import type { Route } from 'next'
 import Link from 'next/link'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 
-const RequiredFieldsDisclamer = ({
+const RequiredFieldsDisclamer = <T extends string>({
   className,
   helpLink,
 }: {
   className?: string
-  helpLink?: { href: string; text: string }
+  helpLink?: { href: Route<T>; text: string }
 }) => (
   <p className={classNames('fr-text--sm fr-hint-text', className)}>
     Les champs avec <RedAsterisk /> sont obligatoires.{' '}

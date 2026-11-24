@@ -1,4 +1,5 @@
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createDataTableHref } from '../href/create-data-table-href'
 
@@ -20,9 +21,13 @@ export const createSearchCallback =
     const { page: _page, recherche: _recherche, ...rest } = state
 
     router.push(
-      createDataTableHref(
-        baseHref,
-        searchQuery.trim() ? { ...rest, recherche: searchQuery.trim() } : rest,
+      routeConstruite(
+        createDataTableHref(
+          baseHref,
+          searchQuery.trim()
+            ? { ...rest, recherche: searchQuery.trim() }
+            : rest,
+        ),
       ),
     )
   }

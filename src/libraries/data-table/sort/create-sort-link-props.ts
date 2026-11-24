@@ -1,9 +1,11 @@
 import type { SortDirection } from '@arckit/resultset'
+import type { Route } from 'next'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createDataTableHref } from '../href/create-data-table-href'
 
 export type SortLinkProps = {
-  readonly href: string
+  readonly href: Route
   readonly ordre: SortDirection
   readonly isActive: boolean
 }
@@ -42,6 +44,8 @@ export const createSortLinkProps = ({
   return {
     isActive,
     ordre,
-    href: createDataTableHref(baseHref, { ...state, tri, ordre }),
+    href: routeConstruite(
+      createDataTableHref(baseHref, { ...state, tri, ordre }),
+    ),
   }
 }

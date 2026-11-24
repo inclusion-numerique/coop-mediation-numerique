@@ -1,3 +1,4 @@
+import type { Route } from 'next'
 import type { CodeDepartement } from '@/libraries/insee'
 import { type LigneEquipe, profilDe } from '../../../../domain'
 import { libelleDuRole } from '../../../../ui/presenters/role-membre.presenter'
@@ -16,7 +17,7 @@ export type LigneAffichee = {
   readonly libelleStatut: string
   readonly severite: SeveriteDuStatut
   readonly activite: 'actif' | 'inactif' | null
-  readonly lienProfil: string | null
+  readonly lienProfil: Route<`/coop/mon-reseau/${string}/acteurs/${string}`> | null
 }
 
 const severites = new Map<string, SeveriteDuStatut>([
@@ -45,7 +46,10 @@ const activite = ({ statut }: LigneEquipe): LigneAffichee['activite'] => {
 
 const lienProfil =
   (departementCode: CodeDepartement) =>
-  ({ statut, personne }: LigneEquipe): string | null =>
+  ({
+    statut,
+    personne,
+  }: LigneEquipe): Route<`/coop/mon-reseau/${string}/acteurs/${string}`> | null =>
     statut.type === 'Invitation' || personne.type === 'SansCompte'
       ? null
       : `/coop/mon-reseau/${departementCode}/acteurs/${personne.profil.utilisateurId}`

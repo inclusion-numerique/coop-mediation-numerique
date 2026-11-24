@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEventHandler } from 'react'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 
 type SortSelectOption = {
   label: string
@@ -21,7 +22,7 @@ const SortSelect = ({
   const onSelect: ChangeEventHandler<HTMLSelectElement> = (event) => {
     const sortParams = new URLSearchParams(searchParams)
     sortParams.set('tri', event.target.value)
-    router.push(`${baseHref}?${sortParams.toString()}`)
+    router.push(routeConstruite(`${baseHref}?${sortParams.toString()}`))
   }
 
   return (

@@ -20,15 +20,7 @@ const AdministrationRdvspPage = async ({
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />
-    <AdministrationBreadcrumbs
-      parents={[
-        {
-          label: 'Fonctionnalités',
-          linkProps: { href: `/administration/fonctionnalites` },
-        },
-      ]}
-      currentPage="RDVSP"
-    />
+    <AdministrationBreadcrumbs currentPage="RDVSP" />
     <main id={contentId}>
       <AdministrationTitle icon="ri-calendar-check-line">
         Rendez-Vous Service Public

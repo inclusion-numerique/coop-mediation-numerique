@@ -2,17 +2,17 @@ import Breadcrumbs, {
   type BreadcrumbParents,
 } from '@/libraries/ui/components/Breadcrumbs'
 
-type CoopBreadcrumbsProps = {
+type CoopBreadcrumbsProps<T extends string> = {
   currentPage: string
-  parents?: BreadcrumbParents
+  parents?: BreadcrumbParents<T>
   className?: string
 }
 
-const CoopBreadcrumbs = ({
+const CoopBreadcrumbs = <T extends string>({
   currentPage,
   parents = [],
   className,
-}: CoopBreadcrumbsProps) => (
+}: CoopBreadcrumbsProps<T>) => (
   <Breadcrumbs
     currentPage={currentPage}
     parents={parents}

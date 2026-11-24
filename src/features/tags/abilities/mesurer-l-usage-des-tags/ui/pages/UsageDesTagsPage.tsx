@@ -16,15 +16,7 @@ export const UsageDesTagsPage = ({
 }: UsageDesTags) => (
   <CoopPageContainer>
     <SkipLinksPortal />
-    <AdministrationBreadcrumbs
-      parents={[
-        {
-          label: 'Fonctionnalités',
-          linkProps: { href: `/administration/fonctionnalites` },
-        },
-      ]}
-      currentPage="Tags"
-    />
+    <AdministrationBreadcrumbs currentPage="Tags" />
     <main id={contentId}>
       <AdministrationTitle icon="ri-price-tag-3-line">Tags</AdministrationTitle>
       <div className="fr-my-16v">

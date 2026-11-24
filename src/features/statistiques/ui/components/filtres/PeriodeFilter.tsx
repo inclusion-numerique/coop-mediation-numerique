@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import {
   type DateRange,
@@ -49,10 +50,12 @@ export const PeriodeFilter = ({
       setIsOpen(false)
     }
     router.replace(
-      adresseAvec(`?${searchParams}`, {
-        du: complete && range.from ? dateAsIsoDay(range.from) : null,
-        au: complete && range.to ? dateAsIsoDay(range.to) : null,
-      }) || '?',
+      routeConstruite(
+        adresseAvec(`?${searchParams}`, {
+          du: complete && range.from ? dateAsIsoDay(range.from) : null,
+          au: complete && range.to ? dateAsIsoDay(range.to) : null,
+        }),
+      ) || '?',
       { scroll: false },
     )
   }
@@ -61,7 +64,9 @@ export const PeriodeFilter = ({
     setRange(undefined)
     setIsOpen(false)
     router.replace(
-      adresseAvec(`?${searchParams}`, { du: null, au: null }) || '?',
+      routeConstruite(
+        adresseAvec(`?${searchParams}`, { du: null, au: null }),
+      ) || '?',
       {
         scroll: false,
       },

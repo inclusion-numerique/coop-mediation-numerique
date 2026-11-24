@@ -29,6 +29,7 @@ import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
@@ -132,20 +133,25 @@ const BeneficiaireForm = ({
         // saisie du formulaire + l'identifiant retourné : `data.communeResidence`
         // est déjà l'aperçu BAN attendu, inutile d'adapter le retour domaine.
         router.push(
-          adresseAvec(
-            cheminInterne(retour, `/coop/mes-beneficiaires/${beneficiaire.id}`),
-            {
-              v: cra
-                ? encodeSerializableState(
-                    craAvecBeneficiaire(cra, {
-                      id: beneficiaire.id,
-                      prenom: data.prenom,
-                      nom: data.nom,
-                      communeResidence: data.communeResidence ?? null,
-                    }),
-                  )
-                : null,
-            },
+          routeConstruite(
+            adresseAvec(
+              cheminInterne(
+                retour,
+                `/coop/mes-beneficiaires/${beneficiaire.id}`,
+              ),
+              {
+                v: cra
+                  ? encodeSerializableState(
+                      craAvecBeneficiaire(cra, {
+                        id: beneficiaire.id,
+                        prenom: data.prenom,
+                        nom: data.nom,
+                        communeResidence: data.communeResidence ?? null,
+                      }),
+                    )
+                  : null,
+              },
+            ),
           ),
         )
         router.refresh()

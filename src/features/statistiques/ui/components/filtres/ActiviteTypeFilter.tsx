@@ -6,6 +6,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
@@ -44,9 +45,12 @@ export const ActiviteTypeFilter = ({
     parametres: Readonly<Record<string, string | null>>,
   ) => {
     close && setIsOpen(false)
-    router.replace(adresseAvec(`?${searchParams}`, parametres) || '?', {
-      scroll: false,
-    })
+    router.replace(
+      routeConstruite(adresseAvec(`?${searchParams}`, parametres)) || '?',
+      {
+        scroll: false,
+      },
+    )
   }
 
   const enParametre = (valeurs: readonly string[]): string | null =>

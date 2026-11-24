@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
 import type { EmployeuseAffichee } from '../presenters/employeuse-affichee.presenter'
 
@@ -30,7 +31,7 @@ export const EmployeuseTableRow = ({
       {dateAsDayAndTime(employeuse.modification)}
     </td>
     <td className="fr-p-0">
-      <Link href={`${baseHref}/${employeuse.id}`}>
+      <Link href={routeConstruite(`${baseHref}/${employeuse.id}`)}>
         <span className="fr-sr-only">Voir la structure {employeuse.nom}</span>
       </Link>
     </td>

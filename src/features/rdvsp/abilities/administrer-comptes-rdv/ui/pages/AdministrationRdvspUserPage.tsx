@@ -66,10 +66,6 @@ export const AdministrationRdvspUserPage = async ({
       <AdministrationBreadcrumbs
         parents={[
           {
-            label: 'Fonctionnalités',
-            linkProps: { href: `/administration/fonctionnalites` },
-          },
-          {
             label: 'RDVSP',
             linkProps: { href: `/administration/fonctionnalites/rdvsp` },
           },

@@ -38,8 +38,8 @@ export const hrefDeLActeur = (
   departement: string,
   acteurId: string,
   ancre?: string,
-): string =>
-  `/coop/mon-reseau/${departement}/acteurs/${acteurId}${ancre === undefined ? '' : `#${ancre}`}`
+) =>
+  `/coop/mon-reseau/${departement}/acteurs/${acteurId}${ancre === undefined ? '' : (`#${ancre}` as const)}` as const
 
 export const libelleDesLieux = (nombre: number): string =>
   `${nombre} ${pluriel(nombre, 'lieu', 'lieux')} d’activité`

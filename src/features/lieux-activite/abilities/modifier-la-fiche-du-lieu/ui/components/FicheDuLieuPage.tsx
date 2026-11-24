@@ -1,6 +1,7 @@
 'use client'
 
 import Alert from '@codegouvfr/react-dsfr/Alert'
+import type { Route } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { DisplayOnCartography } from '@/features/lieux-activite/ui/components/DisplayOnCartography'
@@ -29,7 +30,7 @@ export const FicheDuLieuPage = ({
   enregistrer: EnregistrerUneSection
   entete?: ReactNode
   mediateurs?: ReactNode
-  creerUnLieuHref?: string
+  creerUnLieuHref?: Route
 }) => (
   <div
     className="fr-pr-0 fr-ml-0 fr-mb-30v fr-width-full"

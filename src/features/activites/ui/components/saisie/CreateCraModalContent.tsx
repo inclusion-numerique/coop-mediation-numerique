@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect } from 'react'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { CalendarIcon } from '@/libraries/pictograms/digital/CalendarIcon'
 import { EcosystemIcon } from '@/libraries/pictograms/digital/EcosystemIcon'
@@ -63,13 +64,15 @@ const CreateCraModalContent = ({
   const { push, prefetch } = useRouter()
   const navigateTo = (path: string) => {
     push(
-      craDefaultValues
-        ? `${path}?v=${encodeSerializableState(craDefaultValues)}${
-            retour ? `&retour=${retour}` : ''
-          }`
-        : retour
-          ? `${path}?retour=${retour}`
-          : path,
+      routeConstruite(
+        craDefaultValues
+          ? `${path}?v=${encodeSerializableState(craDefaultValues)}${
+              retour ? `&retour=${retour}` : ''
+            }`
+          : retour
+            ? `${path}?retour=${retour}`
+            : path,
+      ),
     )
     onClose()
   }

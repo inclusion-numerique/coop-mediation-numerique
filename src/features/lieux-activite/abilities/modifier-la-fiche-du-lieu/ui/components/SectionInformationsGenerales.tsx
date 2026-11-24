@@ -2,6 +2,7 @@
 
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import { useStore } from '@tanstack/react-form'
+import type { Route } from 'next'
 import Link from 'next/link'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
@@ -33,7 +34,7 @@ export const SectionInformationsGenerales = ({
   informationsGenerales: InformationsGeneralesAffichees
   enregistrer: EnregistrerUneSection
   partage: PartageAffiche | null
-  creerUnLieuHref?: string
+  creerUnLieuHref?: Route
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)
 

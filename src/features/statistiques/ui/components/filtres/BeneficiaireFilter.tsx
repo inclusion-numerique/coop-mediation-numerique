@@ -10,6 +10,7 @@ import {
   matchingOption,
 } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import CustomSelect from '@/libraries/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
@@ -72,13 +73,15 @@ export const BeneficiaireFilter = ({
   const closePopover = (close: boolean, choisis: SelectOption[]) => {
     close && setIsOpen(false)
     router.replace(
-      adresseAvec(`?${searchParams}`, {
-        beneficiaires:
-          choisis.length > 0
-            ? choisis.map(({ value }) => value).join(',')
-            : null,
-        page: null,
-      }) || '?',
+      routeConstruite(
+        adresseAvec(`?${searchParams}`, {
+          beneficiaires:
+            choisis.length > 0
+              ? choisis.map(({ value }) => value).join(',')
+              : null,
+          page: null,
+        }),
+      ) || '?',
       { scroll: false },
     )
   }

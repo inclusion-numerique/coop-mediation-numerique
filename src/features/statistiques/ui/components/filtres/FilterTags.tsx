@@ -9,6 +9,7 @@ import {
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
 import type { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'
@@ -57,9 +58,11 @@ export const FilterTags = ({
   const handleRemoveFilter = (key: string, value: string | string[]) => {
     if (Array.isArray(value)) {
       return router.replace(
-        adresseAvec(
-          `?${searchParams}`,
-          Object.fromEntries(value.map((cle) => [cle, null])),
+        routeConstruite(
+          adresseAvec(
+            `?${searchParams}`,
+            Object.fromEntries(value.map((cle) => [cle, null])),
+          ),
         ) || '?',
         { scroll: false },
       )
@@ -70,10 +73,12 @@ export const FilterTags = ({
     )
 
     return router.replace(
-      adresseAvec(`?${searchParams}`, {
-        [key]: restantes.length > 0 ? restantes.join(',') : null,
-        ...(key === 'rdvs' && value === 'tous' ? { rdvs: null } : {}),
-      }) || '?',
+      routeConstruite(
+        adresseAvec(`?${searchParams}`, {
+          [key]: restantes.length > 0 ? restantes.join(',') : null,
+          ...(key === 'rdvs' && value === 'tous' ? { rdvs: null } : {}),
+        }),
+      ) || '?',
       { scroll: false },
     )
   }

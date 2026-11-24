@@ -3,6 +3,7 @@
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { ComponentProps, FormEvent } from 'react'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 
 type ChampDeVue = ComponentProps<'input'> & Record<'data-vue', string>
 
@@ -20,8 +21,8 @@ export const ChoixDeLaVue = ({
     if (!(target instanceof HTMLInputElement) || !target.checked) return
     router.push(
       target.dataset.vue === 'tableau'
-        ? `${href}/tableau?${searchParams.toString()}`
-        : `${href}?${searchParams.toString()}`,
+        ? routeConstruite(`${href}/tableau?${searchParams.toString()}`)
+        : routeConstruite(`${href}?${searchParams.toString()}`),
     )
   }
 

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
 
 export const Features = ({
@@ -26,14 +25,14 @@ export const Features = ({
                 {feature.link && (
                   <>
                     {' '}
-                    <Link
+                    <a
                       className="fr-link fr-text--sm"
                       target="_blank"
                       rel="noreferrer"
                       href={feature.link}
                     >
                       En savoir plus
-                    </Link>
+                    </a>
                   </>
                 )}
               </p>

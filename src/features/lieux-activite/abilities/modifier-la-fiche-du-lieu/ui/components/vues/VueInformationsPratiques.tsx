@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { HorairesDOuverture } from './HorairesDOuverture'
 
 export const VueInformationsPratiques = ({
@@ -22,14 +21,14 @@ export const VueInformationsPratiques = ({
         {sitesWeb.length > 0 ? (
           sitesWeb.map((site) => (
             <div key={site}>
-              <Link
+              <a
                 className="fr-link"
                 href={site}
                 target="_blank"
                 rel="noreferrer"
               >
                 {site}
-              </Link>
+              </a>
             </div>
           ))
         ) : (
@@ -41,14 +40,14 @@ export const VueInformationsPratiques = ({
       <span className="fr-text-mention--grey">Accessibilité</span>
       <div data-testid="informations-pratiques-accessibilite">
         {ficheAccesLibre ? (
-          <Link
+          <a
             className="fr-link"
             href={ficheAccesLibre}
             target="_blank"
             rel="noreferrer"
           >
             Retrouvez les informations d’accessibilité via ce lien
-          </Link>
+          </a>
         ) : (
           <span className="fr-text--medium">Non renseignée</span>
         )}
@@ -60,14 +59,14 @@ export const VueInformationsPratiques = ({
       </span>
       <div data-testid="informations-pratiques-prise-rdv">
         {priseRdv ? (
-          <Link
+          <a
             className="fr-link"
             href={priseRdv}
             target="_blank"
             rel="noreferrer"
           >
             Prenez rendez-vous en ligne via ce lien
-          </Link>
+          </a>
         ) : (
           <span className="fr-text--medium">Non renseignée</span>
         )}

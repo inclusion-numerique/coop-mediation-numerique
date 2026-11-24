@@ -62,7 +62,7 @@ const CreerLieuActivitePage = ({
               parents={[
                 {
                   label: `Mes lieux d'activités`,
-                  linkProps: { href: '/coop/lieux-activite/' },
+                  linkProps: { href: '/coop/lieux-activite' },
                 },
               ]}
               currentPage="Créer un lieu d'activité"

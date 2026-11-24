@@ -1,3 +1,4 @@
+import type { Route } from 'next'
 import type { PropsWithChildren, ReactNode } from 'react'
 import PublicFooter from '../components/pied-de-page/PublicFooter'
 import Header from './Header'
@@ -33,7 +34,7 @@ type Cadre =
   | {
       readonly cadre: 'etape'
       readonly user: UtilisateurDeLaNavigation
-      readonly accueil: string
+      readonly accueil: Route
       readonly terminerUsurpation: ReactNode
     }
   | { readonly cadre: 'application'; readonly banniere: ReactNode }

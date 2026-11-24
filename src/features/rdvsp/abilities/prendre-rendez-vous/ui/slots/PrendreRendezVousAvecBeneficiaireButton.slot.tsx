@@ -8,6 +8,7 @@ import {
   statutDuCompteDeLaSession,
 } from '@/features/rdvsp/domain/compte/sante-compte'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '../../action/prendre-rendez-vous.key'
@@ -49,7 +50,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
       return
     }
 
-    router.push(result.data.url)
+    router.push(routeConstruite(result.data.url))
   }
 
   return (

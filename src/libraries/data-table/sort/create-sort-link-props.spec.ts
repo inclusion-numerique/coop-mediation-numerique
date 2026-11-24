@@ -5,7 +5,7 @@ describe('createSortLinkProps', () => {
   it('marks the column matching the current tri as active and toggles its direction', () => {
     expect(
       createSortLinkProps({
-        baseHref: '/base',
+        baseHref: '/',
         state: { tri: 'nom', ordre: 'asc' },
         tri: 'nom',
       }),
@@ -15,7 +15,7 @@ describe('createSortLinkProps', () => {
   it('proposes asc for a non-active column', () => {
     expect(
       createSortLinkProps({
-        baseHref: '/base',
+        baseHref: '/',
         state: { tri: 'nom', ordre: 'asc' },
         tri: 'prenom',
       }),
@@ -25,7 +25,7 @@ describe('createSortLinkProps', () => {
   it('treats the default column as active and proposes the opposite of its default direction when the URL carries no tri', () => {
     expect(
       createSortLinkProps({
-        baseHref: '/base',
+        baseHref: '/',
         state: {},
         tri: 'nom',
         isDefault: true,
@@ -37,10 +37,10 @@ describe('createSortLinkProps', () => {
   it('builds an href carrying the proposed direction', () => {
     expect(
       createSortLinkProps({
-        baseHref: '/base',
+        baseHref: '/',
         state: { page: '2' },
         tri: 'prenom',
       }).href,
-    ).toBe('/base?page=2&tri=prenom&ordre=asc')
+    ).toBe('/?page=2&tri=prenom&ordre=asc')
   })
 })

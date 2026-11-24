@@ -2,8 +2,8 @@ export const getStructureCartographieLink = ({
   structureCartographieNationaleId,
 }: {
   structureCartographieNationaleId: string
-}): string => {
-  return `https://cartographie.societenumerique.gouv.fr/cartographie/${structureCartographieNationaleId}/details`
+}) => {
+  return `https://cartographie.societenumerique.gouv.fr/cartographie/${structureCartographieNationaleId}/details` as const
 }
 
 export const getCartographieDepartementLink = ({
@@ -12,6 +12,6 @@ export const getCartographieDepartementLink = ({
 }: {
   region: string
   departement: string
-}): string => {
-  return `https://cartographie.societenumerique.gouv.fr/cartographie/regions/${region}/${departement}`
+}) => {
+  return `https://cartographie.societenumerique.gouv.fr/cartographie/regions/${region}/${departement}` as const
 }

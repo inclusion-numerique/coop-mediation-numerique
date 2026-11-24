@@ -20,7 +20,7 @@ export const AjouterDesLieuxPage = ({
           parents={[
             {
               label: `Mes lieux d'activités`,
-              linkProps: { href: '/coop/lieux-activite/' },
+              linkProps: { href: '/coop/lieux-activite' },
             },
           ]}
           currentPage={"Ajouter un lieu d'activité"}

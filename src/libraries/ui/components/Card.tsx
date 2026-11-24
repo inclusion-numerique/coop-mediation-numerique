@@ -1,9 +1,10 @@
 import classNames from 'classnames'
+import type { Route } from 'next'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 import styles from './Card.module.css'
 
-const Card = ({
+const Card = <T extends string>({
   id,
   className,
   'data-testid': dataTestid,
@@ -27,7 +28,7 @@ const Card = ({
   'data-testid'?: string
   title?: ReactNode
   titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
-  href?: string
+  href?: Route<T>
   isExternal?: boolean
   enlargeLink?: boolean
   noBorder?: boolean

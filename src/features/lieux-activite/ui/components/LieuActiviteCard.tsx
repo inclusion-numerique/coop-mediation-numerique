@@ -2,13 +2,14 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
+import type { Route } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { LieuEnListe } from '../../domain/lieu-en-liste'
 import CartographyIndicator from './CartographyIndicator'
 import { carteDuLieu } from './lieu-activite-card.presenter'
 
-const LieuActiviteCard = ({
+const LieuActiviteCard = <T extends string>({
   lieu,
   href,
   className,
@@ -16,7 +17,7 @@ const LieuActiviteCard = ({
   showActionButtons = false,
 }: {
   lieu: LieuEnListe
-  href: string
+  href: Route<T>
   className?: string
   retrait?: ReactNode
   showActionButtons?: boolean

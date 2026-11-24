@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { usePathname, useRouter } from 'next/navigation'
 import { type FormEventHandler, useRef } from 'react'
 import type { DataTableUrlState } from '@/libraries/data-table'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 
 const RechercheEmployeuses = ({ state }: { state: DataTableUrlState }) => {
   const pathname = usePathname()
@@ -27,7 +28,7 @@ const RechercheEmployeuses = ({ state }: { state: DataTableUrlState }) => {
     )
 
     const newUrl = `${pathname}?${new URLSearchParams(newSearchParams).toString()}`
-    router.push(newUrl, { scroll: false })
+    router.push(routeConstruite(newUrl), { scroll: false })
   }
 
   return (
