@@ -50,6 +50,12 @@ describe('composition de filtres', () => {
     ).toStrictEqual(['individuel', 'collectif'])
   })
 
+  it('ignore les espaces et les éléments vides d’une liste', () => {
+    expect(
+      filtres.charger({ types: ' individuel, ,collectif ' }).types,
+    ).toStrictEqual(['individuel', 'collectif'])
+  })
+
   it('écarte une valeur hors de la liste d’un choix multiple', () => {
     expect(filtres.charger('?types=individuel,inconnu').types).toStrictEqual([
       'individuel',
@@ -118,16 +124,19 @@ describe('composition de filtres', () => {
     ).toStrictEqual([
       {
         titre: 'types',
+        prefixe: '',
         libelle: 'Individuel',
         href: '/activites?types=collectif&lieux=a&lignes=20',
       },
       {
         titre: 'types',
+        prefixe: '',
         libelle: 'Collectif',
         href: '/activites?types=individuel&lieux=a&lignes=20',
       },
       {
         titre: 'lieux',
+        prefixe: '',
         libelle: 'Médiathèque',
         href: '/activites?types=individuel,collectif&lignes=20',
       },

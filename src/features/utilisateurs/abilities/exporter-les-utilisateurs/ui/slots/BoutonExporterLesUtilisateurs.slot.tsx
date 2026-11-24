@@ -3,7 +3,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { download } from '@/libraries/navigateur/download'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { lienDExport } from '../search-params/requete-de-l-export.search-params'
@@ -20,7 +19,7 @@ export const BoutonExporterLesUtilisateurs = ({
   recherche,
 }: {
   parametres: Readonly<Record<string, string>>
-  libelles: readonly LibelleDeFiltre[]
+  libelles: readonly string[]
   nombre: number
   recherche: string | null
 }) => {
@@ -80,8 +79,8 @@ export const BoutonExporterLesUtilisateurs = ({
                   <Tag small>{`Recherche : ${recherche}`}</Tag>
                 </li>
               )}
-              {libelles.map(({ type, cle, libelle }) => (
-                <li className="fr-line-height-1" key={`${type}-${cle}`}>
+              {libelles.map((libelle) => (
+                <li className="fr-line-height-1" key={libelle}>
                   <Tag small>{libelle}</Tag>
                 </li>
               ))}

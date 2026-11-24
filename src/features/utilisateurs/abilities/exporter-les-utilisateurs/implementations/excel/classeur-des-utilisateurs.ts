@@ -15,13 +15,13 @@ type Colonne = {
 }
 
 const filtresDisponibles = [
-  { label: 'Rôles', type: 'roles' },
-  { label: 'Dispositif', type: 'conseiller_numerique' },
-  { label: 'Statut', type: 'statut' },
-  { label: 'Employeuses', type: 'employeuses' },
-  { label: 'Lieux', type: 'lieux' },
-  { label: 'Communes', type: 'communes' },
-  { label: 'Départements', type: 'departements' },
+  { label: 'Rôles', type: 'Rôles' },
+  { label: 'Dispositif', type: 'Dispositif' },
+  { label: 'Statut', type: 'Statut' },
+  { label: 'Employeuses', type: 'Employeuses' },
+  { label: 'Lieux', type: 'Lieux d’activité' },
+  { label: 'Communes', type: 'Communes' },
+  { label: 'Départements', type: 'Départements' },
 ]
 
 export const classeurDesUtilisateurs = ({

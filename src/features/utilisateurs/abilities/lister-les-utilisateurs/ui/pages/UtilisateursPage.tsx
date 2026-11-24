@@ -1,9 +1,4 @@
 import type { ReactNode } from 'react'
-import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
-import {
-  libellesDesFiltres,
-  type OptionsDesFiltres,
-} from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
@@ -11,8 +6,6 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { UtilisateursTrouves } from '../../domain'
-import { EtiquettesDesFiltres } from '../components/filtres/EtiquettesDesFiltres'
-import { Filtres } from '../components/filtres/Filtres'
 import { RechercheDUtilisateurs } from '../components/RechercheDUtilisateurs'
 import { UtilisateursPagination } from '../components/UtilisateursPagination'
 import { UtilisateursTable } from '../components/UtilisateursTable'
@@ -25,14 +18,12 @@ const BASE_HREF = '/administration/utilisateurs'
 
 export const UtilisateursPage = ({
   trouves,
-  filtres,
-  options,
+  barreDeFiltres,
   searchParams,
   actions,
 }: {
   trouves: UtilisateursTrouves
-  filtres: FiltresUtilisateurs
-  options: OptionsDesFiltres
+  barreDeFiltres: (actions: ReactNode) => ReactNode
   searchParams: ParametresDeLaListe
   actions: ReactNode
 }) => (
@@ -49,8 +40,7 @@ export const UtilisateursPage = ({
         </p>
         <RechercheDUtilisateurs searchParams={searchParams} />
       </div>
-      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
-        <Filtres filtres={filtres} options={options} />
+      {barreDeFiltres(
         <span className="fr-text--semi-bold">
           {trouves.matchesCount}{' '}
           {pluriel(
@@ -58,9 +48,8 @@ export const UtilisateursPage = ({
             'utilisateur trouvé',
             'utilisateurs trouvés',
           )}
-        </span>
-      </div>
-      <EtiquettesDesFiltres libelles={libellesDesFiltres(filtres, options)} />
+        </span>,
+      )}
       <UtilisateursTable
         utilisateurs={trouves.utilisateurs}
         state={etatDeLaTable(searchParams)}

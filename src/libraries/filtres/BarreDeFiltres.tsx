@@ -26,7 +26,7 @@ export const BarreDeFiltres = ({
       <>
         <div className="fr-flex fr-justify-content-space-between fr-mb-2v">
           <ul className="fr-tags-group">
-            {etiquettes.map(({ libelle, href }) => (
+            {etiquettes.map(({ prefixe, libelle, href }) => (
               <li className="fr-line-height-1" key={href}>
                 <Tag
                   className="fr-pr-3v"
@@ -37,7 +37,8 @@ export const BarreDeFiltres = ({
                     className="fr-icon-close-line fr-icon--xs"
                     aria-hidden
                   />
-                  &nbsp;{libelle}
+                  &nbsp;{prefixe}
+                  {libelle}
                 </Tag>
               </li>
             ))}

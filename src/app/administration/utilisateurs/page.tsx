@@ -15,14 +15,15 @@ import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abiliti
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
 import { ordreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/tri-des-utilisateurs'
+import { BarreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/components/BarreDesUtilisateurs'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
 import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import {
-  filtresUtilisateurs,
-  parametresDesFiltres,
-} from '@/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
+  filtresDesUtilisateurs,
+  filtresUtilisateursDesFiltres,
+} from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
+import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata = {
@@ -34,7 +35,8 @@ export const revalidate = 0
 const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   await authenticateAdmin()
   const searchParams = await props.searchParams
-  const filtres = filtresUtilisateurs(searchParams)
+  const valeurs = filtresDesUtilisateurs.charger(searchParams)
+  const filtres = filtresUtilisateursDesFiltres(valeurs)
 
   const [trouves, options] = await Promise.all([
     rechercherDesUtilisateurs({
@@ -50,6 +52,15 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
       nomDeLEmployeuse,
     }),
   ])
+
+  const barre = barreDesUtilisateurs({
+    adresse: {
+      chemin: '/administration/utilisateurs',
+      parametres: searchParams,
+    },
+    valeurs,
+    options,
+  })
 
   return (
     <ClientBinder
@@ -70,13 +81,14 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
           >
             <UtilisateursPage
               trouves={trouves}
-              filtres={filtres}
-              options={options}
+              barreDeFiltres={(actions) => (
+                <BarreDesUtilisateurs barre={barre} actions={actions} />
+              )}
               searchParams={searchParams}
               actions={
                 <BoutonExporterLesUtilisateurs
-                  parametres={parametresDesFiltres(filtres)}
-                  libelles={libellesDesFiltres(filtres, options)}
+                  parametres={barre.export.parametres}
+                  libelles={barre.export.libelles}
                   nombre={trouves.matchesCount}
                   recherche={searchParams.recherche ?? null}
                 />

@@ -86,18 +86,21 @@ export const filtreDeLaSource = filtreDeChoixUnique({
 
 export const filtreDesLieux = filtreDeRecherche({
   titre: 'Lieux d’accompagnement',
+  prefixe: 'Lieu d’activité : ',
   cle: 'lieux',
   schema: LieuActiviteId.schema,
 })
 
 export const filtreDesCommunes = filtreDeRecherche({
   titre: 'Communes',
+  prefixe: 'Commune : ',
   cle: 'communes',
   schema: CodeInsee.schema,
 })
 
 export const filtreDesDepartements = filtreDeRecherche({
   titre: 'Départements',
+  prefixe: 'Département : ',
   cle: 'departements',
   schema: CodeDepartement.schema,
 })
@@ -110,12 +113,14 @@ export const filtreDesTags = filtreDeRecherche({
 
 export const filtreDesEmployeuses = filtreDeRecherche({
   titre: 'Structures employeuses',
+  prefixe: 'Structure employeuse : ',
   cle: 'structuresEmployeuses',
   schema: z.coerce.number().pipe(EmployeuseId.schema),
 })
 
 export const filtreDesMediateurs = filtreDeRecherche({
   titre: 'Médiateurs',
+  prefixe: 'Médiateur : ',
   cle: 'mediateurs',
   schema: MediateurId.schema,
 })
@@ -152,6 +157,7 @@ export const filtreDeLaDemarche = filtreDeChoixUnique({
 
 export const filtreDesBeneficiaires = filtreDeRecherche({
   titre: 'Bénéficiaires',
+  prefixe: 'Bénéficiaire : ',
   cle: 'beneficiaires',
   schema: BeneficiaireId.schema,
 })

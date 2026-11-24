@@ -42,10 +42,10 @@ export {
 } from './liste/filtre-statut'
 export {
   AUCUN_FILTRE,
+  EmployeuseId as EmployeuseIdDuFiltre,
+  EtendueDesRattachements,
   type FiltresUtilisateurs,
-  filtresUtilisateurs,
-  type ParametresDeFiltres,
-  parametresDesFiltres,
+  LieuActiviteId as LieuActiviteIdDuFiltre,
   RoleFiltre,
   rolesFiltres,
 } from './liste/filtres-utilisateurs'

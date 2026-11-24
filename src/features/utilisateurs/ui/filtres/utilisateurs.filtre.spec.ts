@@ -1,18 +1,22 @@
 import { describe, expect, it } from 'vitest'
+import { AUCUN_FILTRE } from '@/features/utilisateurs/domain'
 import {
-  AUCUN_FILTRE,
-  filtresUtilisateurs,
-  parametresDesFiltres,
-} from './filtres-utilisateurs'
+  filtresDesUtilisateurs,
+  filtresUtilisateursDesFiltres,
+} from './utilisateurs.filtre'
+
+const lire = (
+  parametres: Readonly<Record<string, string | readonly string[]>>,
+) => filtresUtilisateursDesFiltres(filtresDesUtilisateurs.charger(parametres))
 
 describe('filtres de la liste des utilisateurs', () => {
   it('ne filtre rien sans paramètre', () => {
-    expect(filtresUtilisateurs({})).toEqual(AUCUN_FILTRE)
+    expect(lire({})).toEqual(AUCUN_FILTRE)
   })
 
   it('lit les listes séparées par des virgules', () => {
     expect(
-      filtresUtilisateurs({
+      lire({
         roles: 'mediateur, coordinateur',
         departements: '75,2A',
         communes: ['75056'],
@@ -31,7 +35,7 @@ describe('filtres de la liste des utilisateurs', () => {
 
   it('écarte les valeurs invalides sans perdre les autres', () => {
     expect(
-      filtresUtilisateurs({
+      lire({
         roles: 'mediateur,pirate',
         employeuses: 'abc,7',
         lieux: 'pas-un-uuid',
@@ -45,24 +49,20 @@ describe('filtres de la liste des utilisateurs', () => {
     ['0', 'HorsDispositif'],
     ['2', null],
   ])('conseiller_numerique=%s donne le dispositif %s', (valeur, dispositif) => {
-    expect(
-      filtresUtilisateurs({ conseiller_numerique: valeur }).dispositif,
-    ).toBe(dispositif)
+    expect(lire({ conseiller_numerique: valeur }).dispositif).toBe(dispositif)
   })
 
   it('ne retient que les rattachements actuels par défaut', () => {
-    expect(filtresUtilisateurs({}).rattachements).toBe('Actuels')
+    expect(lire({}).rattachements).toBe('Actuels')
   })
 
   it('historique=1 inclut les anciens rattachements', () => {
-    expect(filtresUtilisateurs({ historique: '1' }).rattachements).toBe(
-      'ActuelsEtAnciens',
-    )
+    expect(lire({ historique: '1' }).rattachements).toBe('ActuelsEtAnciens')
   })
 
   it('lit les coordinateurs et écarte les identifiants invalides', () => {
     expect(
-      filtresUtilisateurs({
+      lire({
         coordinateurs: '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f,pas-un-uuid',
       }).coordinateurs,
     ).toEqual(['0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'])
@@ -79,8 +79,10 @@ describe('filtres de la liste des utilisateurs', () => {
       historique: '1',
     }
 
-    expect(parametresDesFiltres(filtresUtilisateurs(parametres))).toEqual(
-      parametres,
-    )
+    expect(
+      filtresDesUtilisateurs.parametresDe(
+        filtresDesUtilisateurs.charger(parametres),
+      ),
+    ).toEqual(parametres)
   })
 })

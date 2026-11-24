@@ -51,6 +51,7 @@ export type AdresseCourante = {
 
 export type EtiquetteAffichee = {
   readonly titre: string
+  readonly prefixe: string
   readonly libelle: string
   readonly href: string
 }
@@ -69,15 +70,20 @@ const enParametresBruts = (
       ? depuisLaRequete(lus)
       : lus
 
+const elements = (valeur: string | readonly string[]): readonly string[] =>
+  [valeur]
+    .flat()
+    .flatMap((liste) => liste.split(','))
+    .map((element) => element.trim())
+    .filter((element) => element !== '')
+
 const enListes = (
   parametres: ParametresBruts,
 ): Record<string, string | undefined> =>
   Object.fromEntries(
     Object.entries(parametres).map(([cle, valeur]) => [
       cle,
-      typeof valeur === 'string' || valeur === undefined
-        ? valeur
-        : valeur.join(','),
+      valeur === undefined ? undefined : elements(valeur).join(','),
     ]),
   )
 
@@ -146,6 +152,7 @@ export const composerLesFiltres = <
       liste.flatMap((filtre) =>
         etiquettesDe(filtre, valeurs, libelles).map(({ libelle, sans }) => ({
           titre: filtre.titre,
+          prefixe: filtre.prefixe ?? '',
           libelle,
           href: adresse(courante, { ...valeurs, ...sans } as never),
         })),

@@ -1,6 +1,7 @@
 import { NuqsTestingAdapter, type UrlUpdateEvent } from 'nuqs/adapters/testing'
 import { type ReactNode, useState } from 'react'
 import { z } from 'zod'
+import { CaseACocher } from './CaseACocher'
 import { ChoixEnLigne } from './ChoixEnLigne'
 import { ChoixEnPopover } from './ChoixEnPopover'
 import {
@@ -84,7 +85,40 @@ const TypeAvecStatutsAJouter = () => {
   )
 }
 
+const filtreDeLHistorique = filtreDeChoixUnique({
+  titre: 'Historique',
+  cle: 'historique',
+  choix: { avec: 'Avec les anciens' },
+  dansLURL: { avec: '1' },
+})
+
 describe('Filtres', () => {
+  it('écrit la case cochée dans l’URL et revient à la première page', () => {
+    const ecrites = monter(
+      '?page=2',
+      <CaseACocher
+        filtre={filtreDeLHistorique}
+        valeur="avec"
+        libelle="Avec les anciens"
+      />,
+    )
+    cy.contains('label', 'Avec les anciens').click()
+    derniereAdresse(ecrites).should('equal', '?historique=1')
+  })
+
+  it('efface la case décochée de l’URL', () => {
+    const ecrites = monter(
+      '?historique=1',
+      <CaseACocher
+        filtre={filtreDeLHistorique}
+        valeur="avec"
+        libelle="Avec les anciens"
+      />,
+    )
+    cy.contains('label', 'Avec les anciens').click()
+    derniereAdresse(ecrites).should('equal', '')
+  })
+
   it('survit à l’ajout d’un filtre au popover', () => {
     monter('?types=individuel', <TypeAvecStatutsAJouter />)
     cy.contains('button', 'Ajouter les statuts').click()

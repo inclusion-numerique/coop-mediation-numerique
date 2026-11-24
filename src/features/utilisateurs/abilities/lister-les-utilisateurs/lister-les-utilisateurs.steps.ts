@@ -5,9 +5,9 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   AUCUN_FILTRE,
   type FiltresUtilisateurs,
-  filtresUtilisateurs,
   type LigneUtilisateur,
 } from '@/features/utilisateurs/domain'
+import { filtresUtilisateursDepuisLURL } from '@/features/utilisateurs/fixtures/filtres-depuis-l-url'
 import { libelleDuStatut } from '@/features/utilisateurs/ui/presenters/statut-compte.presenter'
 import {
   semerUnCompteDeListe,
@@ -296,7 +296,7 @@ Given('{string} exerce à {string}', async (prenom: string, nom: string) => {
 When(
   "l'administration filtre la liste sur le statut {string}",
   async (statut: string) => {
-    await rechercher('', filtresUtilisateurs({ statut }))
+    await rechercher('', filtresUtilisateursDepuisLURL({ statut }))
   },
 )
 
@@ -305,7 +305,7 @@ When(
   async (nom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({
+      filtresUtilisateursDepuisLURL({
         employeuses: String(scenario.employeuses[nom] ?? ''),
       }),
     )
@@ -317,7 +317,7 @@ When(
   async (nom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({
+      filtresUtilisateursDepuisLURL({
         employeuses: String(scenario.employeuses[nom] ?? ''),
         historique: '1',
       }),
@@ -330,7 +330,10 @@ When(
   async (nom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({ lieux: scenario.lieux[nom], historique: '1' }),
+      filtresUtilisateursDepuisLURL({
+        lieux: scenario.lieux[nom],
+        historique: '1',
+      }),
     )
   },
 )
@@ -340,7 +343,9 @@ When(
   async (prenom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({ coordinateurs: await coordinateurDe(prenom) }),
+      filtresUtilisateursDepuisLURL({
+        coordinateurs: await coordinateurDe(prenom),
+      }),
     )
   },
 )
@@ -350,7 +355,7 @@ When(
   async (prenom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({
+      filtresUtilisateursDepuisLURL({
         coordinateurs: await coordinateurDe(prenom),
         historique: '1',
       }),
@@ -385,21 +390,30 @@ Then(
 When(
   "l'administration filtre la liste sur le département {string}",
   async (departement: string) => {
-    await rechercher('', filtresUtilisateurs({ departements: departement }))
+    await rechercher(
+      '',
+      filtresUtilisateursDepuisLURL({ departements: departement }),
+    )
   },
 )
 
 When(
   "l'administration filtre la liste sur le lieu {string}",
   async (nom: string) => {
-    await rechercher('', filtresUtilisateurs({ lieux: scenario.lieux[nom] }))
+    await rechercher(
+      '',
+      filtresUtilisateursDepuisLURL({ lieux: scenario.lieux[nom] }),
+    )
   },
 )
 
 When(
   "l'administration filtre la liste sur les conseillers numériques",
   async () => {
-    await rechercher('', filtresUtilisateurs({ conseiller_numerique: '1' }))
+    await rechercher(
+      '',
+      filtresUtilisateursDepuisLURL({ conseiller_numerique: '1' }),
+    )
   },
 )
 

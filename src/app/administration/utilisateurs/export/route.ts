@@ -9,9 +9,12 @@ import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporte
 import { colonnesDeLExport } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/presenters/colonnes-de-l-export.presenter'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
-import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
+import {
+  filtresDesUtilisateurs,
+  filtresUtilisateursDesFiltres,
+} from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
+import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
@@ -26,7 +29,8 @@ export const GET = async (request: NextRequest) => {
   if (auteur?.role !== 'Admin') return new Response(null, { status: 403 })
 
   const parametres = Object.fromEntries(request.nextUrl.searchParams.entries())
-  const filtres = filtresUtilisateurs(parametres)
+  const valeurs = filtresDesUtilisateurs.charger(request.nextUrl.searchParams)
+  const filtres = filtresUtilisateursDesFiltres(valeurs)
   const maintenant = new Date()
 
   const [utilisateurs, options] = await Promise.all([
@@ -46,7 +50,14 @@ export const GET = async (request: NextRequest) => {
   const classeur = classeurDesUtilisateurs({
     utilisateurs,
     auteur: auteurDeLExport(auteur),
-    filtres: libellesDesFiltres(filtres, options),
+    filtres: barreDesUtilisateurs({
+      adresse: { chemin: '', parametres: {} },
+      valeurs,
+      options,
+    }).etiquettes.map(({ titre, libelle }) => ({
+      type: titre,
+      valeur: libelle,
+    })),
     genereLe: maintenant,
     colonnes: colonnesDeLExport,
   })

@@ -1,19 +1,32 @@
 import { appUrl } from '@e2e/support/helpers'
-import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
+import { administrateur } from '@/features/utilisateurs/fixtures/personas/administrateur'
 
-describe('ETQ Visiteur, je ne vois aucune donnée de l’administration', () => {
-  before(() => {
-    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
+describe('ETQ administrateur, je filtre la liste des utilisateurs', () => {
+  beforeEach(() => {
+    cy.execute('preparerLesPersonas', { ids: [administrateur.id] })
   })
 
-  it('La liste des utilisateurs ne contient pas l’e-mail recherché', () => {
-    cy.request({
-      url: appUrl(
-        `/administration/utilisateurs?recherche=${mediateurSansActivites.email}`,
-      ),
-      failOnStatusCode: false,
-    })
-      .its('body')
-      .should('not.include', mediateurSansActivites.email)
+  it('Un rôle validé filtre la liste, et son étiquette le retire', () => {
+    cy.signin(administrateur)
+    cy.visit(appUrl('/administration/utilisateurs'))
+    cy.dsfrShouldBeStarted()
+
+    cy.contains('button', 'Rôle').click()
+    cy.contains('label', 'Coordinateur').click()
+    cy.contains('button:visible', 'Valider').click()
+
+    cy.location('search').should('equal', '?roles=coordinateur')
+    cy.get('.fr-tags-group').contains('a', 'Coordinateur').click()
+    cy.location('search').should('equal', '')
+  })
+
+  it('La case des anciens rattachements s’écrit dans l’URL', () => {
+    cy.signin(administrateur)
+    cy.visit(appUrl('/administration/utilisateurs'))
+    cy.dsfrShouldBeStarted()
+
+    cy.contains('label', 'Inclure les anciennes employeuses').click()
+
+    cy.location('search').should('equal', '?historique=1')
   })
 })
