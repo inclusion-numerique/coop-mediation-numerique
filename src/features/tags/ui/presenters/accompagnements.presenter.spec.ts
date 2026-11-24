@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { infobulleDesAccompagnements } from '../presenters/accompagnements.presenter'
+import { infobulleDesAccompagnements } from './accompagnements.presenter'
 
 describe('infobulleDesAccompagnements', () => {
   it.each([
