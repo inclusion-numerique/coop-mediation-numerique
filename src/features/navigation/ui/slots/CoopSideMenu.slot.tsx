@@ -71,7 +71,7 @@ const CoopSideMenu = ({
   const pathname = usePathname()
 
   const firstDayOfThisYear = `${new Date().getFullYear()}-01-01`
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date().toISOString().slice(0, 10)
 
   const items: (SideMenuProps.Item & { mediateurOnly?: true })[] = [
     {

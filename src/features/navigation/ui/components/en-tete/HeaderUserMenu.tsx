@@ -77,6 +77,8 @@ export const HeaderUserMenu = ({
   const mediateurCoordinations = user.mediateur?.coordinations.filter(
     onlyTeamsWith(user),
   )
+  const [coordinationUnique, ...autresCoordinations] =
+    mediateurCoordinations ?? []
 
   const menuContent = (
     <ul className="fr-menu__list">
@@ -145,11 +147,12 @@ export const HeaderUserMenu = ({
       )}
       {!restricted &&
         !user.coordinateur &&
-        mediateurCoordinations?.length === 1 && (
+        coordinationUnique !== undefined &&
+        autresCoordinations.length === 0 && (
           <li>
             <Link
               className="fr-nav__link fr-display-block fr-border--bottom-0"
-              href={hrefDeLEquipe(mediateurCoordinations[0].coordinateur.id)}
+              href={hrefDeLEquipe(coordinationUnique.coordinateur.id)}
               style={{ boxShadow: 'none' }}
             >
               <span
