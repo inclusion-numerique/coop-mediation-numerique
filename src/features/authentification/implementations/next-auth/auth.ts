@@ -81,9 +81,10 @@ export const nextAuthOptions = ({
           phone?: string | null
           siret?: string | null
         }
-        const emailParts = user.email.split('@')[0].split('.')
-        const fallbackFirstName = emailParts[0] || 'User'
-        const fallbackLastName = emailParts[1] || '-'
+        const [partieLocale = ''] = user.email.split('@')
+        const [prenomDeLAdresse, nomDeLAdresse] = partieLocale.split('.')
+        const fallbackFirstName = prenomDeLAdresse || 'User'
+        const fallbackLastName = nomDeLAdresse || '-'
         const fallbackSiret = previewBranchAuthFallbacks.anctSiret
 
         // Update user with fallback data if not set
