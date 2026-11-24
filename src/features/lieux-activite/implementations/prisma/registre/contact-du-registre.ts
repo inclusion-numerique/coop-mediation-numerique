@@ -25,7 +25,7 @@ const texteDe = (
 
 const courrielsDe = (contact: Record<string, unknown>): readonly Courriel[] => {
   const { courriels } = contact
-  const email = estObjet(courriels) ? courriels.email : null
+  const email = estObjet(courriels) ? courriels['email'] : null
 
   return courrielsValides(
     (typeof email === 'string' ? email : '').split(SEPARATEUR_LISTE),
