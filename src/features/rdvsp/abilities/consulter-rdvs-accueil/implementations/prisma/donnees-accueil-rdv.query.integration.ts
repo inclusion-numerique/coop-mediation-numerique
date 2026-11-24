@@ -5,7 +5,6 @@ import {
   estUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
-import { mediateurSansActivitesUserId } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
 /**
@@ -17,6 +16,7 @@ import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
  * combinaison qui distingue un filtre correct d'un filtre sur la seule date.
  */
 
+const UTILISATEUR = 'ffc0f896-5192-41d7-863f-7a17d21c67de'
 const COMPTE = 9_960_000
 const ORGANISATION = 9_961_000
 const RDV = 9_962_000
@@ -76,7 +76,7 @@ const lire = async () => {
 const nettoyer = async () => {
   await prismaClient.rdv.deleteMany({ where: { rdvAccountId: COMPTE } })
   await prismaClient.rdvAccount.deleteMany({
-    where: { OR: [{ id: COMPTE }, { userId: mediateurSansActivitesUserId }] },
+    where: { OR: [{ id: COMPTE }, { userId: UTILISATEUR }] },
   })
   await prismaClient.rdvOrganisation.deleteMany({
     where: { id: ORGANISATION },
@@ -87,14 +87,11 @@ describe('lireDonneesAccueilRdv', () => {
   beforeAll(async () => {
     await nettoyer()
 
-    // Les suites d'intégration partagent une base, et l'une d'elles la vide :
-    // l'ordre des fichiers décide alors de qui trouve encore ses fixtures. Ce
-    // compte a besoin d'un utilisateur — il le sème plutôt que de l'espérer.
     await prismaClient.user.upsert({
-      where: { id: mediateurSansActivitesUserId },
+      where: { id: UTILISATEUR },
       create: {
-        id: mediateurSansActivitesUserId,
-        email: 'mediation@numerique.fr',
+        id: UTILISATEUR,
+        email: 'accueil-rdv@integration.test',
       },
       update: {},
     })
@@ -105,7 +102,7 @@ describe('lireDonneesAccueilRdv', () => {
     await prismaClient.rdvAccount.create({
       data: {
         id: COMPTE,
-        userId: mediateurSansActivitesUserId,
+        userId: UTILISATEUR,
         accessToken: 'jeton-acces',
         refreshToken: 'jeton-rafraichissement',
         expiresAt: jours(30),

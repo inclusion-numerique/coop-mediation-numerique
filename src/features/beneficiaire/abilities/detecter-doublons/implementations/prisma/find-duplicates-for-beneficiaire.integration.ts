@@ -7,10 +7,6 @@ import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/beneficiaire'
-import {
-  mediateurSansActivitesMediateurId,
-  mediateurSansActivitesUserId,
-} from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 import { Telephone } from '@/libraries/telephone'
 
 const withBrandedFields = (fixture: {
@@ -29,7 +25,8 @@ const withBrandedFields = (fixture: {
   email: fixture.email ? Email(fixture.email) : null,
 })
 
-const testMediateurId = mediateurSansActivitesMediateurId
+const UTILISATEUR = '4f59e05a-ce35-4c17-81fb-1716152596aa'
+const testMediateurId = '31825eb3-b6cb-4c1d-a272-5a5768304a96'
 
 // Test beneficiaires with similar names for fuzzy matching tests
 const beneficiaireMueller = givenBeneficiaire({
@@ -109,10 +106,6 @@ const legacyInvalidTelephone = 'NUMERO-LEGACY-INVALIDE'
 
 describe('findDuplicateForBeneficiaire', () => {
   beforeAll(async () => {
-    // Ensure mediateur exists (make test self-contained)
-    // Self-contained + order-independent : on garantit le médiateur AUSSI à l'update (un autre test
-    // partageant ce user fixture peut l'avoir recréé sans ce médiateur), sinon la FK
-    // `beneficiaires_mediateur_id_fkey` casse.
     const ensureMediateur = {
       connectOrCreate: {
         where: { id: testMediateurId },
@@ -120,10 +113,10 @@ describe('findDuplicateForBeneficiaire', () => {
       },
     }
     await prismaClient.user.upsert({
-      where: { id: mediateurSansActivitesUserId },
+      where: { id: UTILISATEUR },
       update: { mediateur: ensureMediateur },
       create: {
-        id: mediateurSansActivitesUserId,
+        id: UTILISATEUR,
         role: 'User',
         isFixture: true,
         email: `test-doublons-${Date.now()}@test.com`,
