@@ -40,11 +40,9 @@ When(
   'elle partage ses statistiques depuis son profil de {string}',
   (profil: string) => {
     assert.ok(partage.personne, "Aucune personne n'a été décrite")
-    assert.ok(profil in proprietaires, `Profil inconnu : ${profil}`)
-    partage.partagee = utilisateurDuPartage(
-      proprietaires[profil],
-      partage.personne,
-    )
+    const proprietaire = proprietaires[profil]
+    assert.ok(proprietaire, `Profil inconnu : ${profil}`)
+    partage.partagee = utilisateurDuPartage(proprietaire, partage.personne)
   },
 )
 
