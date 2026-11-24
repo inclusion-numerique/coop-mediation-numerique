@@ -15,7 +15,7 @@ export const MediateursDuLieu = ({
 }: {
   mediateurs: readonly MediateurDuLieu[]
   departement: string
-  retraits?: Readonly<Record<string, ReactNode>>
+  retraits?: Readonly<Record<string, ReactNode>> | undefined
 }) => {
   const [tousAffiches, afficherTous] = useState(false)
 

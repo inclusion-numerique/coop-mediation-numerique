@@ -27,8 +27,8 @@ const CreerLieuShape = {
 
 const auMoinsUnServiceSiVisible: [
   (data: {
-    visiblePourCartographieNationale?: boolean
-    services?: unknown[] | null
+    visiblePourCartographieNationale?: boolean | undefined
+    services?: unknown[] | null | undefined
   }) => boolean,
   { message: string; path: (string | number)[] },
 ] = [

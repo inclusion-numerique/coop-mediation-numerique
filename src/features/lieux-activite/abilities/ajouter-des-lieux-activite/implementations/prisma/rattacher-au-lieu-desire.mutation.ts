@@ -29,7 +29,7 @@ type LieuDesire =
 const depuisLeLieuDesire = (lieu: LieuDesire): LieuDemande => {
   const identite = {
     nom: Nom(lieu.nom),
-    siret: lieu.siret,
+    ...(lieu.siret === undefined ? {} : { siret: lieu.siret }),
     structureCartographieNationaleId:
       lieu.structureCartographieNationaleId == null
         ? null

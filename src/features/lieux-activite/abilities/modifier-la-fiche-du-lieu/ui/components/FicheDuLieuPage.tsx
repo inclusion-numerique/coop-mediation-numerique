@@ -30,7 +30,7 @@ export const FicheDuLieuPage = ({
   enregistrer: EnregistrerUneSection
   entete?: ReactNode
   mediateurs?: ReactNode
-  creerUnLieuHref?: Route
+  creerUnLieuHref?: Route | undefined
 }) => (
   <div
     className="fr-pr-0 fr-ml-0 fr-mb-30v fr-width-full"

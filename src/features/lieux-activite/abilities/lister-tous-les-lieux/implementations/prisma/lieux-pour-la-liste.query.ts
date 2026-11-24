@@ -53,8 +53,8 @@ const identifiantsDeLaPage = async ({
   (
     await prismaClient.lieuInclusion.findMany({
       where,
-      take,
-      skip,
+      ...(take === undefined ? {} : { take }),
+      ...(skip === undefined ? {} : { skip }),
       select: { id: true },
       orderBy: [...(orderBy ?? []), { nom: 'asc' }, { id: 'asc' }],
     })

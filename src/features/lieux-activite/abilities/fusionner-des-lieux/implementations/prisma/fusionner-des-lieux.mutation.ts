@@ -172,5 +172,5 @@ export const fusionnerDesLieux = async (
 
       return success(undefined)
     },
-    { timeout: options?.timeout },
+    options?.timeout === undefined ? {} : { timeout: options.timeout },
   )

@@ -32,12 +32,18 @@ const itinerant = (itinerance: Fiche['itinerance']): boolean | null =>
 
 const adresseBanDepuis = (fiche: Fiche): AdresseBanData => {
   const adresse = banDefaultValueToAdresseBanData({
-    codeInsee: fiche.adresse?.code_insee,
+    ...(fiche.adresse?.code_insee === undefined
+      ? {}
+      : { codeInsee: fiche.adresse.code_insee }),
     codePostal: fiche.adresse?.code_postal ?? '',
     commune: fiche.adresse?.commune ?? '',
     nom: fiche.adresse?.voie ?? '',
-    latitude: fiche.localisation?.latitude,
-    longitude: fiche.localisation?.longitude,
+    ...(fiche.localisation?.latitude === undefined
+      ? {}
+      : { latitude: fiche.localisation.latitude }),
+    ...(fiche.localisation?.longitude === undefined
+      ? {}
+      : { longitude: fiche.localisation.longitude }),
   })
 
   return { ...adresse, label: getAdresseBanLabel(adresse) }

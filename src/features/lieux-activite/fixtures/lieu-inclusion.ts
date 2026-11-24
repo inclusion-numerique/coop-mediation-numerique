@@ -22,5 +22,5 @@ export const lieuInclusion = <
   return {
     id: givenId,
     ...rest,
-  } satisfies Prisma.LieuInclusionCreateInput
+  }
 }

@@ -18,7 +18,7 @@ const LieuActiviteCard = <T extends string>({
 }: {
   lieu: LieuEnListe
   href: Route<T>
-  className?: string
+  className?: string | undefined
   retrait?: ReactNode
   showActionButtons?: boolean
 }) => {

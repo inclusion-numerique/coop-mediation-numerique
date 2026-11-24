@@ -82,7 +82,7 @@ export const inventaireDesLieux = async ({
   const lieux = await prismaClient.lieuInclusion.findMany({
     orderBy: [{ creation: 'desc' }, { id: 'desc' }],
     take,
-    skip,
+    ...(skip === undefined ? {} : { skip }),
     where,
     include: {
       inscriptionRegistre: inscriptionPourLaFiche,
@@ -92,9 +92,13 @@ export const inventaireDesLieux = async ({
         },
       },
     },
-    cursor: curseur
-      ? { creation_id: { creation: curseur.creation, id: curseur.id } }
-      : undefined,
+    ...(curseur
+      ? {
+          cursor: {
+            creation_id: { creation: curseur.creation, id: curseur.id },
+          },
+        }
+      : {}),
   })
 
   const totalCount = await prismaClient.lieuInclusion.count({ where })

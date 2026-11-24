@@ -31,7 +31,7 @@ const CreerLieuActiviteForm = ({
   onVisiblePourCartographieNationaleChange,
   lienDePriseDeRendezVous,
 }: {
-  nom?: string
+  nom?: string | undefined
   annulerHref?: string
   onAnnuler?: () => void
   onCreer: (data: CreerLieuActiviteFormData) => Promise<void>

@@ -66,7 +66,7 @@ Given('un lieu où exerce un médiateur', async () => {
 
 Given('l’activité du médiateur dans le lieu a pris fin', async () => {
   await prismaClient.mediateurEnActivite.update({
-    where: { id: etat.rattachementId },
+    where: { id: etat.rattachementId ?? '' },
     data: { fin: new Date('2026-03-01') },
   })
 })
@@ -91,7 +91,7 @@ Given(
     await prismaClient.activite.create({
       data: {
         mediateurId: etat.mediateurId ?? '',
-        structureId: etat.lieuId,
+        ...(etat.lieuId === undefined ? {} : { structureId: etat.lieuId }),
         type: 'Individuel',
         typeLieu: 'LieuActivite',
         date: new Date(date),
@@ -204,8 +204,8 @@ After(async () => {
     })
     await prismaClient.lieuInclusion.deleteMany({ where: { id: etat.lieuId } })
   }
-  etat.lieuId = undefined
-  etat.mediateurId = undefined
-  etat.rattachementId = undefined
-  etat.trouves = undefined
+  delete etat.lieuId
+  delete etat.mediateurId
+  delete etat.rattachementId
+  delete etat.trouves
 })

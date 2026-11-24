@@ -129,7 +129,7 @@ Then('la recherche propose ce lieu à trouver une seule fois', () => {
 
 After(async () => {
   const id = scenario.lieuATrouver
-  scenario.lieuATrouver = undefined
+  delete scenario.lieuATrouver
   scenario.cartographie = []
   scenario.suggestions = []
   if (id == null) return

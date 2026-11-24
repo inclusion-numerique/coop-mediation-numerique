@@ -190,7 +190,9 @@ Then('ce médiateur exerce dans ce lieu référencé', async () => {
   const rattachement = await prismaClient.mediateurEnActivite.findFirst({
     where: {
       mediateurId: lieuxSemes().mediateurId,
-      structureId: dernier.lieuReference,
+      ...(dernier.lieuReference === undefined
+        ? {}
+        : { structureId: dernier.lieuReference }),
       fin: null,
     },
   })
@@ -244,8 +246,8 @@ After(async () => {
   const ids = [...lieuxDeTest]
   const { adresses, inscriptions } = semisEntrepot
   lieuxDeTest.length = 0
-  dernier.ajout = undefined
-  dernier.lieuReference = undefined
+  delete dernier.ajout
+  delete dernier.lieuReference
   semisEntrepot.adresses = []
   semisEntrepot.inscriptions = []
 
@@ -327,7 +329,9 @@ Given(
     const inscription = await prismaClient.lieuInclusionRegistreMain.create({
       data: {
         nom: 'Médiathèque du Centre',
-        structureCoopId: dernier.lieuReference,
+        ...(dernier.lieuReference === undefined
+          ? {}
+          : { structureCoopId: dernier.lieuReference }),
         structureCartographieNationaleId: IDENTIFIANT_CARTO_DEJA_RELIE,
         source: 'dora',
         editedBy: 'carto',
@@ -643,8 +647,8 @@ After(async () => {
   )
   etat.nom = ''
   etat.utilisateurs = []
-  etat.lieuConnuId = undefined
-  etat.commune = undefined
+  delete etat.lieuConnuId
+  delete etat.commune
   if (noms.length === 0 && utilisateurs.length === 0) return
 
   const lieux = await prismaClient.lieuInclusion.findMany({

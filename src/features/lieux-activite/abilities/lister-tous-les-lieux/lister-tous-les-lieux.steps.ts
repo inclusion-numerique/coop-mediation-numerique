@@ -55,7 +55,7 @@ Given('trois lieux à administrer, dont deux à la même adresse', async () => {
 
 Given('le premier de ces lieux est supprimé', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.ids[0] },
+    where: { id: semis.ids[0] ?? '' },
     data: { suppression: new Date() },
   })
 })
@@ -64,7 +64,7 @@ Given(
   "le premier de ces lieux n'a pas d'adresse reconnue par la BAN",
   async () => {
     await prismaClient.lieuInclusion.update({
-      where: { id: semis.ids[0] },
+      where: { id: semis.ids[0] ?? '' },
       data: { banId: null },
     })
   },
@@ -121,7 +121,7 @@ Then('le total annoncé dépasse le nombre de lieux trouvés', () => {
 After(async () => {
   const ids = semis.ids
   semis.ids = []
-  semis.trouves = undefined
+  delete semis.trouves
   if (ids.length === 0) return
 
   await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })

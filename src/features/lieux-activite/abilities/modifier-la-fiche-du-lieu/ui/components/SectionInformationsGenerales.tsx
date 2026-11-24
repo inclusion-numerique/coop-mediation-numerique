@@ -34,7 +34,7 @@ export const SectionInformationsGenerales = ({
   informationsGenerales: InformationsGeneralesAffichees
   enregistrer: EnregistrerUneSection
   partage: PartageAffiche | null
-  creerUnLieuHref?: Route
+  creerUnLieuHref?: Route | undefined
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)
 

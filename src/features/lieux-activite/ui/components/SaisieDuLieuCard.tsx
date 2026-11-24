@@ -9,7 +9,7 @@ export type LieuSaisi = {
   readonly adresse?: string | null
   readonly commune?: string | null
   readonly codePostal?: string | null
-  readonly siret?: string | null
+  readonly siret?: string | null | undefined
   readonly typologies?: readonly string[] | null
 }
 

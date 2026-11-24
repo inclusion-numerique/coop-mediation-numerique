@@ -83,7 +83,7 @@ export const semerLieuxDActivite = async (): Promise<LieuxSemes> => {
 
 After(async () => {
   const semé = semisDeLieux.lieux
-  semisDeLieux.lieux = undefined
+  delete semisDeLieux.lieux
   if (!semé) return
 
   await prismaClient.mediateurEnActivite.deleteMany({
@@ -179,7 +179,7 @@ Given("ce lieu n'a pas d'adresse reconnue par la BAN", async () => {
 
 After(async () => {
   const semé = semis.fiche
-  semis.fiche = undefined
+  delete semis.fiche
   if (!semé) return
 
   await prismaClient.mediateurEnActivite.deleteMany({
@@ -244,7 +244,7 @@ export const semerDesLieuxASiret = async (): Promise<LieuxASiretSemes> => {
 
 After(async () => {
   const semé = semisSiret.lieuxASiret
-  semisSiret.lieuxASiret = undefined
+  delete semisSiret.lieuxASiret
   if (!semé) return
 
   await effacerDuRegistre([semé.premierId, semé.secondId])
@@ -298,8 +298,8 @@ Given('je suis un médiateur', async () => {
 After(async () => {
   const utilisateurId = scenario.utilisateurId
   const lieux = [...scenario.lieux]
-  scenario.utilisateurId = undefined
-  scenario.mediateurId = undefined
+  delete scenario.utilisateurId
+  delete scenario.mediateurId
   scenario.lieux = new Set()
   if (utilisateurId === undefined) return
 

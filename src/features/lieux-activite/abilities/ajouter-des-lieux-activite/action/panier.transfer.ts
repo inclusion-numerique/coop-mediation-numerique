@@ -19,7 +19,7 @@ const identite = ({
   structureCartographieNationaleId,
 }: LieuSoumis) => ({
   nom: Nom(nom),
-  siret,
+  ...(siret === undefined ? {} : { siret }),
   structureCartographieNationaleId:
     structureCartographieNationaleId == null
       ? null

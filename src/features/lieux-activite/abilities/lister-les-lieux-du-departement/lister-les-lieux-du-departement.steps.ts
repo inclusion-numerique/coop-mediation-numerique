@@ -94,14 +94,14 @@ Given(
 
 Given("le lieu fréquenté n'a pas d'adresse reconnue par la BAN", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.frequente },
+    where: { id: semis.frequente ?? '' },
     data: { banId: null },
   })
 })
 
 Given('le lieu publié est supprimé', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.publie },
+    where: { id: semis.publie ?? '' },
     data: { suppression: new Date() },
   })
 })
@@ -199,6 +199,6 @@ After(async () => {
     })
   }
   semis.ids = []
-  semis.trouves = undefined
-  semis.nombre = undefined
+  delete semis.trouves
+  delete semis.nombre
 })

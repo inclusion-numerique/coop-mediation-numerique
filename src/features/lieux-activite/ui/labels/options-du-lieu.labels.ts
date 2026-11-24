@@ -19,11 +19,15 @@ const optionsDe = <Valeur extends string>(
   nomenclature: Record<string, Valeur>,
   hints: Partial<Record<Valeur, string>> = {},
 ): SelectOption<Valeur>[] =>
-  Object.values(nomenclature).map((valeur) => ({
-    label: valeur,
-    value: valeur,
-    hint: hints[valeur],
-  }))
+  Object.values(nomenclature).map((valeur) => {
+    const hint = hints[valeur]
+
+    return {
+      label: valeur,
+      value: valeur,
+      ...(hint === undefined ? {} : { hint }),
+    }
+  })
 
 export const serviceOptions = optionsDe(Service)
 

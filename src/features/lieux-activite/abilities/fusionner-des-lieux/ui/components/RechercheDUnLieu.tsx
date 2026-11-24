@@ -19,7 +19,7 @@ const RechercheDUnLieu = ({
   onSelect,
 }: {
   excludeStructureIds?: string[]
-  defaultStructure?: LieuChoisi
+  defaultStructure?: LieuChoisi | undefined
   onSelect: (lieu: LieuChoisi) => void
 }) => {
   const valeursInitiales: { lieu: LieuChoisi | null } = {

@@ -71,8 +71,7 @@ const creer = async (
     dernier.lieuxCreesIds = [...dernier.lieuxCreesIds, dernier.creation.data.id]
 }
 
-const lieuCree = (rang: number): string | undefined =>
-  dernier.lieuxCreesIds[rang - 1]
+const lieuCree = (rang: number): string => dernier.lieuxCreesIds[rang - 1] ?? ''
 
 When('ce médiateur crée un lieu « Tiers-lieu du Port »', async () => {
   await creer(ficheSemee().mediateurRattacheId)
@@ -84,7 +83,7 @@ When('ce médiateur ressaisit le même lieu', async () => {
 
 When('le lieu créé perd son adresse reconnue par la BAN', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: lieuCree(1) ?? '' },
+    where: { id: lieuCree(1) },
     data: { banId: null },
   })
 })
@@ -258,7 +257,11 @@ When('ce médiateur crée un lieu déjà connu du registre', async () => {
 Then("le registre ne porte qu'une inscription pour cet endroit", async () => {
   assert.strictEqual(
     await prismaClient.lieuInclusionRegistreMain.count({
-      where: { adresseId: inscriptionDora.adresseId },
+      where: {
+        ...(inscriptionDora.adresseId === undefined
+          ? {}
+          : { adresseId: inscriptionDora.adresseId }),
+      },
     }),
     1,
   )
@@ -407,12 +410,12 @@ After(async () => {
   const ids = dernier.lieuxCreesIds
   const { adresses, inscriptions } = semisEntrepot
   dernier.lieuxCreesIds = []
-  dernier.creation = undefined
+  delete dernier.creation
   semisEntrepot.adresses = []
   semisEntrepot.inscriptions = []
-  adresseARepetitionVide.id = undefined
-  inscriptionDora.id = undefined
-  inscriptionDora.adresseId = undefined
+  delete adresseARepetitionVide.id
+  delete inscriptionDora.id
+  delete inscriptionDora.adresseId
 
   if (ids.length > 0) {
     await prismaClient.mediateurEnActivite.deleteMany({

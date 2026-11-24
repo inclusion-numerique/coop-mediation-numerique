@@ -56,14 +56,14 @@ const semerUnLieu = async (visiblePourCartographieNationale: boolean) => {
 
 Given("ce lieu n'annonce aucun service", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { services: [] },
   })
 })
 
 Given("l'adresse de ce lieu n'est pas reconnue par la BAN", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { banId: null },
   })
 })
@@ -79,34 +79,38 @@ Given('un lieu partagé où exerce un médiateur visible', async () => {
 Given("un lieu partagé où aucun médiateur n'a jamais exercé", async () => {
   await semerUnLieu(true)
   await prismaClient.mediateurEnActivite.deleteMany({
-    where: { structureId: semis.lieuId },
+    where: {
+      ...(semis.lieuId === undefined ? {} : { structureId: semis.lieuId }),
+    },
   })
 })
 
 Given("ce lieu n'est pas partagé sur la cartographie", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { visiblePourCartographieNationale: false },
   })
 })
 
 Given("ce médiateur s'est retiré du lieu", async () => {
   await prismaClient.mediateurEnActivite.updateMany({
-    where: { structureId: semis.lieuId },
+    where: {
+      ...(semis.lieuId === undefined ? {} : { structureId: semis.lieuId }),
+    },
     data: { fin: new Date() },
   })
 })
 
 Given('ce médiateur a supprimé son compte', async () => {
   await prismaClient.user.update({
-    where: { id: semis.userId },
+    where: { id: semis.userId ?? '' },
     data: { deleted: new Date() },
   })
 })
 
 Given('ce lieu déclare deux sites web', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: {
       siteWeb: ['https://un.example.fr', 'https://deux.example.fr'],
       telephone: '+33180059880',
@@ -116,14 +120,14 @@ Given('ce lieu déclare deux sites web', async () => {
 
 Given('ce médiateur a choisi de ne pas être visible', async () => {
   await prismaClient.mediateur.update({
-    where: { id: semis.mediateurId },
+    where: { id: semis.mediateurId ?? '' },
     data: { isVisible: false },
   })
 })
 
 Given('ce lieu relève de France Services', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { dispositifProgrammesNationaux: ['FranceServices'] },
   })
 })
@@ -170,10 +174,10 @@ Then('il annonce ses deux sites web', () => {
 
 After(async () => {
   const { lieuId, mediateurId, userId } = semis
-  semis.lieuId = undefined
-  semis.mediateurId = undefined
-  semis.userId = undefined
-  semis.moisson = undefined
+  delete semis.lieuId
+  delete semis.mediateurId
+  delete semis.userId
+  delete semis.moisson
   if (!lieuId) return
 
   await prismaClient.mediateurEnActivite.deleteMany({

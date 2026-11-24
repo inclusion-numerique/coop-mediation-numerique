@@ -126,8 +126,8 @@ export const adresseReconnue: [
 
 export const commentaireAdosseAUnCreneau: [
   (data: {
-    openingHours?: Schedule
-    horairesComment?: string | null
+    openingHours?: Schedule | undefined
+    horairesComment?: string | null | undefined
   }) => boolean,
   { message: string; path: (string | number)[] },
 ] = [

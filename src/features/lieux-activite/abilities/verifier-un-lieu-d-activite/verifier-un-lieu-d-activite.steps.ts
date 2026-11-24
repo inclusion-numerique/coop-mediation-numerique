@@ -112,8 +112,8 @@ Then('le lieu est refusé', () => {
 
 After(async () => {
   const semis = contexte.semis
-  contexte.semis = undefined
-  contexte.accepte = undefined
+  delete contexte.semis
+  delete contexte.accepte
   if (!semis) return
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateurId: semis.mediateurId },
