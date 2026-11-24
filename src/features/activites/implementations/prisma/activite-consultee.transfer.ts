@@ -97,8 +97,8 @@ const suiviAffiche = (beneficiaire: {
   readonly accompagnementsCount: number
 }): BeneficiaireSuiviAffiche => ({
   id: BeneficiaireId(beneficiaire.id),
-  prenom: Prenom(beneficiaire.prenom ?? ''),
-  nom: NomDeFamille(beneficiaire.nom ?? ''),
+  prenom: Prenom.safe(beneficiaire.prenom ?? ''),
+  nom: NomDeFamille.safe(beneficiaire.nom ?? ''),
   residence: residenceDu(beneficiaire),
   nombreDActivites: Effectif(beneficiaire.accompagnementsCount),
 })

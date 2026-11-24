@@ -9,7 +9,7 @@ export const suiviDuFormulaire = ({
   residence,
 }: BeneficiaireSuiviAffiche): BeneficiaireDuCra => ({
   id,
-  prenom,
-  nom,
+  prenom: prenom ?? '',
+  nom: nom ?? '',
   communeResidence: residence === null ? null : communeDuFormulaire(residence),
 })

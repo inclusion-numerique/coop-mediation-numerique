@@ -212,8 +212,13 @@ const demarcheDe = (
   ].filter(nonVide)
 }
 
-const nomDe = ({ prenom, nom }: { prenom: string; nom: string }) =>
-  [prenom, nom].filter(Boolean).join(' ')
+const nomDe = ({
+  prenom,
+  nom,
+}: {
+  prenom: string | null
+  nom: string | null
+}) => [prenom, nom].filter(Boolean).join(' ')
 
 const beneficiaireDe = (
   activite: AccompagnementIndividuel,

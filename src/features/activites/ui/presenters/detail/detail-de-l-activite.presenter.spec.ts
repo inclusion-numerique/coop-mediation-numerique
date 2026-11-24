@@ -52,6 +52,30 @@ describe('détail d’une activité', () => {
     })
   })
 
+  it('présente un bénéficiaire suivi sans prénom par son seul nom', () => {
+    const activite = accompagnementSuivi()
+    expect(
+      detailDeLActivite(
+        {
+          ...activite,
+          affichage: {
+            ...activite.affichage,
+            suivis: activite.affichage.suivis.map((suivi) => ({
+              ...suivi,
+              prenom: null,
+            })),
+          },
+        },
+        'Europe/Paris',
+      ).beneficiaire,
+    ).toEqual({
+      _tag: 'Suivi',
+      id: 'b0000000-0000-4000-8000-000000000001',
+      nom: 'Martin',
+      activites: '1 activité',
+    })
+  })
+
   it('décrit les participants d’un atelier mixte', () => {
     const { titre, participants, lieu, modifieeLe } = detailDeLActivite(
       atelierMixte(),

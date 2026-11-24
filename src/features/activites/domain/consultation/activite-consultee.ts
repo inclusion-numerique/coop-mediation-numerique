@@ -14,8 +14,8 @@ import type { NomDeTag } from '../tags/nom-de-tag'
 
 export type BeneficiaireSuiviAffiche = {
   readonly id: BeneficiaireId
-  readonly prenom: Prenom
-  readonly nom: NomDeFamille
+  readonly prenom: Prenom | null
+  readonly nom: NomDeFamille | null
   readonly residence: Commune | null
   readonly nombreDActivites: Effectif
 }

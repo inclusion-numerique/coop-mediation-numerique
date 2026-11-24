@@ -226,17 +226,22 @@ describe('activité consultée lue en base', () => {
     ).toBeNull()
   })
 
+  it('lit un suivi sans prénom, pour l’afficher par son seul nom', () => {
+    expect(
+      activiteConsulteeDe(
+        {
+          ...ligne,
+          accompagnements: [
+            { ...suivi, beneficiaire: { ...suivi.beneficiaire, prenom: null } },
+          ],
+        },
+        [],
+      ).affichage.suivis.at(0)?.prenom,
+    ).toBeNull()
+  })
+
   it.each<[string, ActiviteConsulteeRow]>([
     ['une activité illisible', { ...ligne, id: 'pas-un-identifiant' }],
-    [
-      'un suivi sans prénom',
-      {
-        ...ligne,
-        accompagnements: [
-          { ...suivi, beneficiaire: { ...suivi.beneficiaire, prenom: null } },
-        ],
-      },
-    ],
   ])('rejette %s', (_, illisible) => {
     expect(() => activiteConsulteeDe(illisible, [])).toThrow()
   })
