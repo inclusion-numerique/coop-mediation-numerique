@@ -2,8 +2,8 @@
 
 import { type ReactNode, useState } from 'react'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import type { FiltreQuelconque } from '../definition/filtre'
 import { ChampsDeFiltres, useRegistreDeFiltres } from './conteneur-de-filtres'
-import type { FiltreQuelconque } from './definition/filtre'
 import { FilterFooter } from './FilterFooter'
 import TriggerButton from './TriggerButton'
 import { useEtiquettesActives } from './use-etiquettes-actives'

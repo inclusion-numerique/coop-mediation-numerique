@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import type { LiensDePagination } from './definition/composition'
+import type { LiensDePagination } from '../definition/composition'
 
 const VersUnePage = ({
   href,

@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import type { LienDeTri } from './definition/composition'
+import type { LienDeTri } from '../definition/composition'
 
 export const EnTeteTriable = ({
   libelle,

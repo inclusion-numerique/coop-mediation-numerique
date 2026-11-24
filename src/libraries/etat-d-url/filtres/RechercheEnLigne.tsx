@@ -7,6 +7,7 @@ import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
+import type { FiltreQuelconque } from '../definition/filtre'
 import {
   comboBoxDeRecherche,
   messageDeLaRecherche,
@@ -14,7 +15,6 @@ import {
   type Rechercher,
 } from './combo-box-de-recherche'
 import { useChampDeFiltre } from './conteneur-de-filtres'
-import type { FiltreQuelconque } from './definition/filtre'
 import { FilterSelection } from './FilterSelection'
 import { useFiltre } from './use-filtre'
 

@@ -2,7 +2,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import type { EtiquetteAffichee } from './definition/composition'
+import type { EtiquetteAffichee } from '../definition/composition'
 
 export const BarreDeFiltres = ({
   etiquettes,

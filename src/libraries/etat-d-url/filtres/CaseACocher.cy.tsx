@@ -1,6 +1,6 @@
 import { derniereAdresse, monterAvecLUrl } from '@e2e/support/monter-avec-l-url'
+import { filtreDeChoixUnique } from '../definition/filtre-de-choix'
 import { CaseACocher } from './CaseACocher'
-import { filtreDeChoixUnique } from './definition/filtre-de-choix'
 
 const filtreDeLHistorique = filtreDeChoixUnique({
   titre: 'Historique',

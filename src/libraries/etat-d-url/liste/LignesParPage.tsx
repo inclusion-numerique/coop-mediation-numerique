@@ -2,7 +2,7 @@
 
 import classNames from 'classnames'
 import { parseAsInteger } from 'nuqs'
-import { useFiltre } from './use-filtre'
+import { useFiltre } from '../filtres/use-filtre'
 
 const PARAMETRES_DES_LIGNES = { lignes: parseAsInteger }
 

@@ -5,9 +5,9 @@ import {
   type DateRange,
   DateRangePicker,
 } from '@/libraries/ui/components/Primitives/calendar/DateRangePicker'
+import { filtreDePeriode } from '../definition/filtre-de-periode'
+import { jourLocal, jourUtc } from '../definition/jour'
 import { useChampDeFiltre } from './conteneur-de-filtres'
-import { filtreDePeriode } from './definition/filtre-de-periode'
-import { jourLocal, jourUtc } from './definition/jour'
 import { useFiltre } from './use-filtre'
 
 const plageLue = ({

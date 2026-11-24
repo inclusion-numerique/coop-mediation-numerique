@@ -1,7 +1,7 @@
 import { Sort } from '@arckit/resultset'
 import { derniereAdresse, monterAvecLUrl } from '@e2e/support/monter-avec-l-url'
+import { triParmi } from '../definition/tri-parmi'
 import { ChoixDuTri } from './ChoixDuTri'
-import { triParmi } from './definition/tri-parmi'
 
 const triDesTags = triParmi({
   colonnes: ['nom', 'utilisation'],
