@@ -3,7 +3,8 @@ import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exp
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/get-initial-beneficiaires-options-for-search'
+import { beneficiairesInitiauxAvec } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/beneficiaires-initiaux.binding'
+import { optionsDesBeneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/options-des-beneficiaires-initiaux.presenter'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import { getMediateurCommunesAndDepartementsOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
 import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
@@ -39,7 +40,7 @@ export const GET = async (request: NextRequest) => {
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
       tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
       beneficiaires: (ids) =>
-        getInitialBeneficiairesOptionsForSearch({
+        beneficiairesInitiauxAvec(optionsDesBeneficiairesInitiaux)({
           mediateurId: user.mediateur?.id,
           includeBeneficiaireIds: [...ids],
         }),

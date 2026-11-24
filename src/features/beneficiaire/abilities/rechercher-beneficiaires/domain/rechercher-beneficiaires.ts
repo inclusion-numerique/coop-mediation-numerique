@@ -21,7 +21,7 @@ export type BeneficiaireSearchItem = {
  * `beneficiaires` renvoyés), pour que l'appelant puisse signaler les
  * bénéficiaires non affichés (`totalCount - beneficiaires.length`).
  */
-type BeneficiairesRecherches = {
+export type BeneficiairesRecherches = {
   readonly beneficiaires: readonly BeneficiaireSearchItem[]
   readonly totalCount: number
 }

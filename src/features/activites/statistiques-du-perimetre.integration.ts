@@ -1,14 +1,22 @@
 import { cloneDeep } from 'lodash-es'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { totauxDesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/totaux-des-accompagnements.binding'
-import { accompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/accompagnements-par-commune.binding'
-import { accompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/accompagnements-par-lieu.binding'
-import { accompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/accompagnements-par-periode.binding'
-import { personnesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/personnes-par-commune.binding'
-import { profilDesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/profil-des-personnes-accompagnees.binding'
-import { repartitionDesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/repartition-des-accompagnements.binding'
-import { accompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/accompagnements-par-tag.binding'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
+import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
+import { parCommunePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui/presenters/par-commune.presenter'
+import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
+import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
+import { compterLesAccompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/prisma/accompagnements-par-periode.query'
+import { parPeriodePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/presenters/par-periode.presenter'
+import { compterLesPersonnesAccompagneesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/prisma/personnes-par-commune.query'
+import { personnesParCommunePresentees } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/ui/presenters/personnes-par-commune.presenter'
+import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
+import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
+import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
+import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
+import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
+import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
@@ -40,13 +48,19 @@ import {
   criteresDesStatistiques,
   MediateurId,
   perimetreDuDemandeur,
-} from '../domain'
-import { semerLesCrasDeDemonstration } from '../fixtures/semer-les-cras-de-demonstration'
-import { dureeAccompagnementStatisticsRanges } from '../ui/labels/libelles/duree-accompagnement.labels'
+} from './domain'
+import { semerLesCrasDeDemonstration } from './fixtures/semer-les-cras-de-demonstration'
+import { statistiquesDuPerimetre } from './implementations/statistiques-du-perimetre.binding'
+import {
+  source,
+  sourceOptionnelle,
+  statistiquesAvec,
+} from './implementations/statistiques-en-cours.binding'
+import { dureeAccompagnementStatisticsRanges } from './ui/labels/libelles/duree-accompagnement.labels'
 import {
   materielLabels,
   materielValues,
-} from '../ui/labels/libelles/materiel.labels'
+} from './ui/labels/libelles/materiel.labels'
 import {
   genreLabels,
   genresAffiches,
@@ -54,33 +68,40 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '../ui/labels/libelles/profil.labels'
+} from './ui/labels/libelles/profil.labels'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '../ui/labels/libelles/thematique.labels'
+} from './ui/labels/libelles/thematique.labels'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '../ui/labels/libelles/type-activite.labels'
+} from './ui/labels/libelles/type-activite.labels'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '../ui/labels/libelles/type-lieu.labels'
-import { statistiquesDuPerimetre } from './statistiques-du-perimetre.binding'
-import { statistiquesAvec } from './statistiques-en-cours.binding'
+} from './ui/labels/libelles/type-lieu.labels'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: totauxDesAccompagnements,
-  periode: accompagnementsParPeriode,
-  repartition: repartitionDesAccompagnements,
-  tags: accompagnementsParTag,
-  structures: accompagnementsParLieu,
-  communes: accompagnementsParCommune,
-  profil: profilDesPersonnesAccompagnees,
-  residences: personnesParCommune,
+  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
+  repartition: source(repartirLesAccompagnements, repartitionPresentee),
+  tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
+  structures: sourceOptionnelle(
+    compterLesAccompagnementsParLieu,
+    parLieuPresentes,
+  ),
+  communes: sourceOptionnelle(
+    compterLesAccompagnementsParCommune,
+    parCommunePresentes,
+  ),
+  profil: source(decrireLesPersonnesAccompagnees, profilPresente),
+  residences: sourceOptionnelle(
+    compterLesPersonnesAccompagneesParCommune,
+    personnesParCommunePresentees,
+  ),
   hasCrasV1: presenceDeCrasV1,
 })
 

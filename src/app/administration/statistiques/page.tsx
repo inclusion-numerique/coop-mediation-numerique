@@ -1,29 +1,42 @@
 import { rechercherLesLieuxNationauxAction } from '@/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { totauxDesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/totaux-des-accompagnements.binding'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { BlocDesChiffresCles } from '@/features/activites/abilities/compter-les-accompagnements/ui/slots/BlocDesChiffresCles.slot'
-import { accompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/accompagnements-par-commune.binding'
-import { accompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/accompagnements-par-lieu.binding'
-import { accompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/accompagnements-par-periode.binding'
+import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
+import { parCommunePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui/presenters/par-commune.presenter'
+import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
+import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
+import { compterLesAccompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/prisma/accompagnements-par-periode.query'
+import { parPeriodePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/presenters/par-periode.presenter'
 import { BlocDuGraphique } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/slots/BlocDuGraphique.slot'
-import { personnesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/personnes-par-commune.binding'
-import { profilDesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/profil-des-personnes-accompagnees.binding'
+import { compterLesPersonnesAccompagneesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/prisma/personnes-par-commune.query'
+import { personnesParCommunePresentees } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/ui/presenters/personnes-par-commune.presenter'
+import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
+import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
 import { BlocDuProfil } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/slots/BlocDuProfil.slot'
-import { lieuxChoisisDe } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/lieux-choisis.binding'
-import { repartitionDesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/repartition-des-accompagnements.binding'
+import { lieuxChoisisAvec } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/lieux-choisis.binding'
+import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
+import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
+import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { BlocDesCanauxEtDurees } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesCanauxEtDurees.slot'
 import { BlocDesDemarches } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesDemarches.slot'
 import { BlocDesMateriels } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesMateriels.slot'
 import { BlocDesThematiques } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesThematiques.slot'
 import { BlocDesTypesDActivite } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesTypesDActivite.slot'
-import { accompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/accompagnements-par-tag.binding'
+import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
+import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { BlocDesTags } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/slots/BlocDesTags.slot'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import {
   criteresDesStatistiques,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
-import { statistiquesAvec } from '@/features/activites/implementations/statistiques-en-cours.binding'
+import {
+  source,
+  sourceOptionnelle,
+  statistiquesAvec,
+} from '@/features/activites/implementations/statistiques-en-cours.binding'
 import { statistiquesNationalesEnCours } from '@/features/activites/implementations/statistiques-nationales.binding'
 import { vocabulaireDesActivites } from '@/features/activites/ui/labels/libelles/vocabulaire-des-statistiques.labels'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
@@ -45,14 +58,23 @@ import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-v
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: totauxDesAccompagnements,
-  periode: accompagnementsParPeriode,
-  repartition: repartitionDesAccompagnements,
-  tags: accompagnementsParTag,
-  structures: accompagnementsParLieu,
-  communes: accompagnementsParCommune,
-  profil: profilDesPersonnesAccompagnees,
-  residences: personnesParCommune,
+  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
+  repartition: source(repartirLesAccompagnements, repartitionPresentee),
+  tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
+  structures: sourceOptionnelle(
+    compterLesAccompagnementsParLieu,
+    parLieuPresentes,
+  ),
+  communes: sourceOptionnelle(
+    compterLesAccompagnementsParCommune,
+    parCommunePresentes,
+  ),
+  profil: source(decrireLesPersonnesAccompagnees, profilPresente),
+  residences: sourceOptionnelle(
+    compterLesPersonnesAccompagneesParCommune,
+    personnesParCommunePresentees,
+  ),
   hasCrasV1: presenceDeCrasV1,
 })
 
@@ -80,7 +102,10 @@ const Page = async (props: {
   )
   const [tagsCollectifs, lieuxChoisis] = await Promise.all([
     lireLesTagsCollectifs(),
-    lieuxChoisisDe(activitesFilters, PERIMETRE_NATIONAL),
+    lieuxChoisisAvec(optionsDesLieuxChoisis)(
+      activitesFilters,
+      PERIMETRE_NATIONAL,
+    ),
   ])
   const tagsOptions = optionsDeTags(tagsCollectifs)
 
