@@ -13,7 +13,9 @@ export type EditLinkOptions = {
 export const linkCommandHandler =
   (editor: Editor, setEditLink: (options: EditLinkOptions) => void) => () => {
     const command = editor.chain().focus()
-    const currentUrl = editor.getAttributes('link').href as string | undefined
+    const currentUrl = editor.getAttributes('link')['href'] as
+      | string
+      | undefined
 
     const removeLink = () => command.unsetLink()
     const setLinkUrl = (url: string) =>

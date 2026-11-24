@@ -10,7 +10,9 @@ export const useDsfrModalIsBound = (
   onBound?: (element: HTMLElement) => void,
 ) => {
   const [bound, setBound] = useState(
-    isBrowser ? !!document.getElementById(dialogId)?.dataset.frJsModal : false,
+    isBrowser
+      ? !!document.getElementById(dialogId)?.dataset['frJsModal']
+      : false,
   )
 
   const observerRef = useRef<MutationObserver>(null)
@@ -24,7 +26,7 @@ export const useDsfrModalIsBound = (
       // No-op if element is not in the dom
       if (element) {
         // Bind if state is already ok
-        if (element.dataset.frJsModal === 'true') {
+        if (element.dataset['frJsModal'] === 'true') {
           setBound(true)
           onBound?.(element)
         } else {
@@ -41,7 +43,7 @@ export const useDsfrModalIsBound = (
             // XXX There is a regression in dsfr, it worked without setTimeout but now, even with the bound dsfr-js attribute
             // The open() function does not work immediately and we have to wait a bit
             setTimeout(() => {
-              setBound(dialog.dataset.frJsModal === 'true')
+              setBound(dialog.dataset['frJsModal'] === 'true')
             }, 200)
           })
           observer.observe(element, {
