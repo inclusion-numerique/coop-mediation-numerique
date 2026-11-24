@@ -43,6 +43,7 @@ import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateu
 import {
   effacerDuRegistre,
   lieuxSemes,
+  nomUnique,
   suivreLeLieu,
   utilisateurCourant,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
@@ -504,7 +505,7 @@ const lieuxNommes = () =>
   })
 
 Given('je me suis déjà rattaché au lieu décrit', async () => {
-  etat.nom = etat.nom || `Lieu décrit ${v4()}`
+  etat.nom = etat.nom || nomUnique('Lieu décrit')
   await rattacher(utilisateurCourant())
 })
 
@@ -534,7 +535,7 @@ Given(
 )
 
 When('je me rattache au lieu décrit', async () => {
-  etat.nom = etat.nom || `Lieu décrit ${v4()}`
+  etat.nom = etat.nom || nomUnique('Lieu décrit')
   await rattacher(utilisateurCourant())
 })
 

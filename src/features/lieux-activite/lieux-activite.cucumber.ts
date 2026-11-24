@@ -388,7 +388,7 @@ const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
 const typologiesLues = (nom: string): string =>
   [nom, `${nom} SAS`].map((lu) => typologiesDepuisNom(lu).join()).join(';')
 
-const nomUnique = (prefixe: string): string => {
+export const nomUnique = (prefixe: string): string => {
   const nom = `${prefixe} ${v4()}`
   return typologiesLues(nom) === typologiesLues(prefixe)
     ? nom
