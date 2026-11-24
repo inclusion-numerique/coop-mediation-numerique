@@ -41,6 +41,19 @@ const choixDuTri = (
   />
 )
 
+const choixDuTriCroissant = (
+  <ChoixDuTri
+    tri={triParmi({
+      colonnes: ['nom', 'date'],
+      parDefaut: Sort('date', 'asc'),
+    })}
+    options={[
+      { libelle: 'Par date', tri: Sort('date', 'asc') },
+      { libelle: 'Nom de A à Z', tri: Sort('nom', 'asc') },
+    ]}
+  />
+)
+
 const pagination = { lignes: [20, 50, 100], parDefaut: 20 }
 
 describe('État d’une liste', () => {
@@ -48,6 +61,12 @@ describe('État d’une liste', () => {
     const ecrites = monter('?page=3', choixDuTri)
     cy.get('select').select('Nom de A à Z')
     derniereAdresse(ecrites).should('equal', '?tri=nom&ordre=asc')
+  })
+
+  it('n’écrit pas le sens quand il vaut le sens par défaut', () => {
+    const ecrites = monter('', choixDuTriCroissant)
+    cy.get('select').select('Nom de A à Z')
+    derniereAdresse(ecrites).should('equal', '?tri=nom')
   })
 
   it('efface le tri par défaut de l’URL', () => {

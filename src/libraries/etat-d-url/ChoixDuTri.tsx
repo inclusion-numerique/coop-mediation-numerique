@@ -6,10 +6,10 @@ import { useFiltre } from './use-filtre'
 
 const PARAMETRES_DU_TRI = { tri: parseAsString, ordre: parseAsString }
 
-const ecritureDuTri = <C extends string>(tri: Sort<C>, parDefaut: Sort<C>) =>
-  tri.field === parDefaut.field && tri.direction === parDefaut.direction
-    ? { tri: null, ordre: null }
-    : { tri: tri.field, ordre: tri.direction }
+const ecritureDuTri = <C extends string>(tri: Sort<C>, parDefaut: Sort<C>) => ({
+  tri: tri.field === parDefaut.field ? null : tri.field,
+  ordre: tri.direction === parDefaut.direction ? null : tri.direction,
+})
 
 export const ChoixDuTri = <C extends string>({
   tri: { parDefaut },
