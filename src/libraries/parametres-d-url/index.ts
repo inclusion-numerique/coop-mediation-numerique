@@ -7,7 +7,6 @@ export {
   periodeLue,
   premiereValeur,
   requeteAvec,
-  requeteConservant,
   requeteDeRecherche,
   type ValeurDeParametre,
   valeurLue,

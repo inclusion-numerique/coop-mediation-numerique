@@ -1,4 +1,5 @@
 import { rechercherLesLieuxNationauxAction } from '@/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
+import { rechercherLesTagsCollectifsAction } from '@/app/_actions/statistiques/rechercher-les-tags-collectifs.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
@@ -15,8 +16,9 @@ import { personnesParCommunePresentees } from '@/features/activites/abilities/co
 import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
 import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
 import { BlocDuProfil } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/slots/BlocDuProfil.slot'
-import { lieuxChoisisAvec } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/lieux-choisis.binding'
-import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
+import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-choisis.query'
+import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
+import { lieuxDuFiltrePresentes } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/lieux-du-filtre.presenter'
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { BlocDesCanauxEtDurees } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesCanauxEtDurees.slot'
@@ -28,32 +30,27 @@ import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { BlocDesTags } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/slots/BlocDesTags.slot'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
-import {
-  criteresDesStatistiques,
-  PERIMETRE_NATIONAL,
-} from '@/features/activites/domain'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
+import { PERIMETRE_NATIONAL } from '@/features/activites/domain'
 import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
 } from '@/features/activites/implementations/statistiques-en-cours.binding'
 import { statistiquesNationalesEnCours } from '@/features/activites/implementations/statistiques-nationales.binding'
-import { vocabulaireDesActivites } from '@/features/activites/ui/labels/libelles/vocabulaire-des-statistiques.labels'
+import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
+import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
+import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
+import { barreDesStatistiques } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/labels/statut-rdv.labels'
 import { StatistiquesNationales } from '@/features/statistiques/abilities/consulter-les-statistiques-nationales/ui/pages/StatistiquesNationales'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
-import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/components/sections-des-statistiques'
-import { activiteSourceOptions } from '@/features/statistiques/ui/labels/source-de-l-activite.labels'
-import { optionsDeTags } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
-import { validateActivitesFilters } from '@/features/statistiques/ui/search-params/parametres-de-la-barre.search-params'
-import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
 import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/lire-les-tags-visibles.query'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
@@ -86,89 +83,107 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Page = async (props: {
-  searchParams: Promise<
-    ActivitesFilters & {
-      graphique_fin?: string
-    }
-  >
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
   await authenticateAdmin()
-  const searchParams = await props.searchParams
-  const activitesFilters = validateActivitesFilters(searchParams)
+  const parametres = await props.searchParams
+  const valeurs = filtresDesStatistiques.charger(parametres)
   const statistiques = statistiquesNationalesEnCours(
     statistiquesDesActivites.lancer,
-    criteresDesStatistiques(activitesFilters),
+    criteresDesStatistiquesDesFiltres(valeurs),
     { tags: true, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
   )
-  const [tagsCollectifs, lieuxChoisis] = await Promise.all([
+  const [tagsCollectifs, lieux, tagsDesFiltres] = await Promise.all([
     lireLesTagsCollectifs(),
-    lieuxChoisisAvec(optionsDesLieuxChoisis)(
-      activitesFilters,
-      PERIMETRE_NATIONAL,
-    ),
+    lieuxDuFiltre(PERIMETRE_NATIONAL, {
+      lieux: valeurs.lieux,
+      communes: valeurs.communes,
+      departements: valeurs.departements,
+    }),
+    tagsChoisis(valeurs.tags),
   ])
-  const tagsOptions = optionsDeTags(tagsCollectifs)
+  const barre = barreDesStatistiques({
+    adresse: { chemin: '/administration/statistiques', parametres },
+    valeurs,
+    lieux: lieuxDuFiltrePresentes(lieux),
+    employeuses: { suggestions: [], choisies: [] },
+    tags: {
+      suggestions: tagsCollectifs
+        .slice(0, 10)
+        .map(({ id, nom }) => ({ value: id, label: nom })),
+      choisies: tagsDesFiltres.map(({ id, nom }) => ({
+        value: id,
+        label: nom,
+      })),
+    },
+    mediateurs: { suggestions: [], choisies: [] },
+  })
 
   return (
     <ClientBinder
-      bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
+      bind={RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY}
       to={rechercherLesLieuxNationauxAction}
     >
-      <StatistiquesNationales
-        activitesFilters={activitesFilters}
-        vocabulaire={{
-          ...vocabulaireDesActivites,
-          statutsDeRendezVous: rdvStatusOptions,
-        }}
-        filtreDeLieu={<FiltreDeLieu choisis={lieuxChoisis} />}
-        {...lieuxChoisis}
-        tagsOptions={tagsOptions}
-        activiteSourceOptions={activiteSourceOptions}
-        generale={sectionGenerale(
-          {
-            chiffresCles: (
-              <BlocDesChiffresCles totaux={statistiques.totalCounts} />
-            ),
-            graphique: <BlocDuGraphique periode={statistiques.periode} />,
-          },
-          {
-            wording: 'generique',
-          },
-        )}
-        activites={sectionActivites(
-          {
-            types: (
-              <BlocDesTypesDActivite
-                repartition={statistiques.repartition}
-                totaux={statistiques.totalCounts}
-              />
-            ),
-            thematiques: (
-              <BlocDesThematiques repartition={statistiques.repartition} />
-            ),
-            demarches: (
-              <BlocDesDemarches repartition={statistiques.repartition} />
-            ),
-            tags: <BlocDesTags tags={statistiques.tags} />,
-            materiels: (
-              <BlocDesMateriels repartition={statistiques.repartition} />
-            ),
-            canauxEtDurees: (
-              <BlocDesCanauxEtDurees repartition={statistiques.repartition} />
-            ),
-            lieux: null,
-            communes: null,
-          },
-          { wording: 'generique' },
-        )}
-        beneficiaires={sectionBeneficiaires(
-          {
-            profil: <BlocDuProfil profil={statistiques.profil} />,
-            communes: null,
-          },
-          { wording: 'generique' },
-        )}
-      />
+      <ClientBinder
+        bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+        to={rechercherLesTagsCollectifsAction}
+      >
+        <StatistiquesNationales
+          barreDeFiltres={
+            <BarreDesStatistiques
+              barre={barre}
+              periode={{ debut: new Date('2020-01-01') }}
+              coordinateur={false}
+              importsV1
+              actions={null}
+            />
+          }
+          generale={sectionGenerale(
+            {
+              chiffresCles: (
+                <BlocDesChiffresCles totaux={statistiques.totalCounts} />
+              ),
+              graphique: <BlocDuGraphique periode={statistiques.periode} />,
+            },
+            {
+              wording: 'generique',
+            },
+          )}
+          activites={sectionActivites(
+            {
+              types: (
+                <BlocDesTypesDActivite
+                  repartition={statistiques.repartition}
+                  totaux={statistiques.totalCounts}
+                />
+              ),
+              thematiques: (
+                <BlocDesThematiques repartition={statistiques.repartition} />
+              ),
+              demarches: (
+                <BlocDesDemarches repartition={statistiques.repartition} />
+              ),
+              tags: <BlocDesTags tags={statistiques.tags} />,
+              materiels: (
+                <BlocDesMateriels repartition={statistiques.repartition} />
+              ),
+              canauxEtDurees: (
+                <BlocDesCanauxEtDurees repartition={statistiques.repartition} />
+              ),
+              lieux: null,
+              communes: null,
+            },
+            { wording: 'generique' },
+          )}
+          beneficiaires={sectionBeneficiaires(
+            {
+              profil: <BlocDuProfil profil={statistiques.profil} />,
+              communes: null,
+            },
+            { wording: 'generique' },
+          )}
+        />
+      </ClientBinder>
     </ClientBinder>
   )
 }

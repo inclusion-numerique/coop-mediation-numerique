@@ -12,7 +12,7 @@ export type MediateurOption = {
   isDisabled?: boolean
 }
 
-export type LieuxChoisisDeLaBarre = {
+type LieuxChoisisDeLaBarre = {
   readonly lieuxActiviteOptions: SelectOption[]
   readonly communesOptions: SelectOption[]
   readonly departementsOptions: SelectOption[]
@@ -58,7 +58,7 @@ const SCOPE: Readonly<Record<PorteeDuTag, TagScope>> = {
   National: TagScope.National,
 }
 
-export const optionsDeTags = (
+const optionsDeTags = (
   tags: readonly {
     readonly id: string
     readonly nom: string

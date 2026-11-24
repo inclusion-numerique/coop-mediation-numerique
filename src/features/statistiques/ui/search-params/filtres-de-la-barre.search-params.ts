@@ -9,8 +9,6 @@ type Parametres = Readonly<Record<string, string | null>>
 
 type RequeteLisible = { get(cle: string): string | null }
 
-export const CLES_CONSERVEES = ['voir-rdvs'] as const
-
 export const typesEnParametres = (
   types: readonly string[],
   rdvs: readonly string[],

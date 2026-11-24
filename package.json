@@ -124,7 +124,6 @@
     "react-dom": "^19.3.0",
     "react-hook-form": "^7.88.0",
     "react-hot-toast": "^2.6.1",
-    "react-select": "^5.10.2",
     "recharts": "^3.10.1",
     "sanitize-html": "^2.18.1",
     "server-only": "^0.0.1",
