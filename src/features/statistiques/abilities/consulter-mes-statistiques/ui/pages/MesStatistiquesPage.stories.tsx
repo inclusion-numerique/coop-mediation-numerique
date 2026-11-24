@@ -5,7 +5,7 @@ import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@/features/statistiques/ui/components/sections-des-statistiques'
+} from '@/features/statistiques/ui/slots/SectionsDesStatistiques.slot'
 import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { MesStatistiquesPage } from './MesStatistiquesPage'

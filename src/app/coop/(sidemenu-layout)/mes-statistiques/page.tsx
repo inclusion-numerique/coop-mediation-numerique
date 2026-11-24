@@ -79,7 +79,7 @@ import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@/features/statistiques/ui/components/sections-des-statistiques'
+} from '@/features/statistiques/ui/slots/SectionsDesStatistiques.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const statistiquesDesActivites = statistiquesAvec({

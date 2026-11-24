@@ -7,7 +7,7 @@ import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
 } from '../../../../ui/components/ExportStatistiques'
-import { ImpressionPreteProvider } from '../../../../ui/components/impression-prete'
+import { ImpressionPreteProvider } from '../../../../ui/components/ImpressionPrete'
 import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
 
 export const StatistiquesPartageesPage = ({

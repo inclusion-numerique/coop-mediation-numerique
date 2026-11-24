@@ -45,12 +45,12 @@ import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statisti
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
+import { StatistiquesNationalesPage } from '@/features/statistiques/ui/pages/StatistiquesNationalesPage'
 import {
   sectionActivites,
   sectionBeneficiaires,
   sectionGenerale,
-} from '@/features/statistiques/ui/components/sections-des-statistiques'
-import { StatistiquesNationalesPage } from '@/features/statistiques/ui/pages/StatistiquesNationalesPage'
+} from '@/features/statistiques/ui/slots/SectionsDesStatistiques.slot'
 import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/lire-les-tags-visibles.query'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
