@@ -8,11 +8,10 @@ import {
   inscriptionPourLaFiche,
 } from '../../../../implementations/prisma/registre'
 
-const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => {
+const champsDuStandard = (ligne: LigneDuLieu) => {
   const { fiche, tracabilite } = lieuToDomain(ligne)
 
   return {
-    ...ligne,
     modification: derniereEcriture(
       ligne.inscriptionRegistre,
       ligne.modification,
@@ -49,6 +48,15 @@ const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => {
     modalitesAccompagnement: fiche.modalitesAccompagnement,
   }
 }
+
+type ChampsDuStandard = ReturnType<typeof champsDuStandard>
+
+const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(
+  ligne: Ligne,
+): Omit<Ligne, keyof ChampsDuStandard> & ChampsDuStandard => ({
+  ...ligne,
+  ...champsDuStandard(ligne),
+})
 
 export const inventaireDesLieux = async ({
   ids,
@@ -98,7 +106,3 @@ export const inventaireDesLieux = async ({
     totalCount,
   }
 }
-
-export type LieuInventorie = Awaited<
-  ReturnType<typeof inventaireDesLieux>
->['lieux'][number]

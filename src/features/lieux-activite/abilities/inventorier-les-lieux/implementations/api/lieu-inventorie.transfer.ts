@@ -1,5 +1,3 @@
-import type { LieuInventorie } from '../prisma/inventaire-des-lieux.query'
-
 export type StructureAttributes = {
   id_pg: number | null
   structure_cartographie_nationale_id: string | null
@@ -40,7 +38,46 @@ export type StructureAttributes = {
   emplois: number
 }
 
-export const lieuInventorie = (lieu: LieuInventorie): StructureAttributes => ({
+type LieuAExposer = {
+  readonly v1StructureIdPg: number | null
+  readonly structureCartographieNationaleId: string | null
+  readonly creation: Date
+  readonly modification: Date
+  readonly suppression: Date | null
+  readonly nom: string
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee: string | null
+  readonly complementAdresse: string | null
+  readonly latitude: number | null
+  readonly longitude: number | null
+  readonly siret: string | null
+  readonly rna: string | null
+  readonly visiblePourCartographieNationale: boolean
+  readonly typologies: readonly string[]
+  readonly presentationResume: string | null
+  readonly presentationDetail: string | null
+  readonly siteWeb: string | null
+  readonly telephone: string | null
+  readonly courriels: string[]
+  readonly ficheAccesLibre: string | null
+  readonly horaires: string | null
+  readonly priseRdv: string | null
+  readonly services: readonly string[]
+  readonly publicsSpecifiquementAdresses: readonly string[]
+  readonly priseEnChargeSpecifique: readonly string[]
+  readonly fraisACharge: readonly string[]
+  readonly dispositifProgrammesNationaux: readonly string[]
+  readonly formationsLabels: readonly string[]
+  readonly autresFormationsLabels: string[]
+  readonly itinerance: readonly string[]
+  readonly modalitesAcces: readonly string[]
+  readonly modalitesAccompagnement: readonly string[]
+  readonly _count: { readonly mediateursEnActivite: number }
+}
+
+export const lieuInventorie = (lieu: LieuAExposer): StructureAttributes => ({
   id_pg: lieu.v1StructureIdPg,
   structure_cartographie_nationale_id: lieu.structureCartographieNationaleId,
   creation: lieu.creation.toISOString(),
