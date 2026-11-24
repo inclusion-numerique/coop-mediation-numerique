@@ -51,9 +51,10 @@ describe('barre de filtres du réseau', () => {
     ).toHaveLength(10)
   })
 
-  it('retire tous les filtres', () => {
-    expect(barre({ role: 'coordinateur', tri: 'nomza' }).sansFiltres).toBe(
-      '/coop/mon-reseau/15/acteurs?tri=nomza',
-    )
+  it('retire les filtres et la recherche, mais garde le tri', () => {
+    expect(
+      barre({ role: 'coordinateur', recherche: 'martin', ordre: 'desc' })
+        .sansFiltres,
+    ).toBe('/coop/mon-reseau/15/acteurs?ordre=desc')
   })
 })

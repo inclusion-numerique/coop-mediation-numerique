@@ -117,7 +117,7 @@ When(
 When(
   'on cherche « {word} » de Z à A dans l’annuaire des acteurs du Cantal',
   async (recherche: string) => {
-    await consulter({ recherche, tri: 'nomza' })
+    await consulter({ recherche, ordre: 'desc' })
   },
 )
 
