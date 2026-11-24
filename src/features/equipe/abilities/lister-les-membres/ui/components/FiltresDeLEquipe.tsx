@@ -4,8 +4,8 @@ import {
   filtreDuRoleDuMembre,
   filtreDuStatutDuMembre,
 } from '@/features/equipe/ui/filtres/equipe.filtre'
-import { BoutonDeChoix } from '@/libraries/etat-d-url/BoutonDeChoix'
-import { ChoixEnPopover } from '@/libraries/etat-d-url/ChoixEnPopover'
+import { BoutonDeChoix } from '@/libraries/etat-d-url/filtres/BoutonDeChoix'
+import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres/ChoixEnPopover'
 
 export const FiltresDeLEquipe = ({
   actifs,
