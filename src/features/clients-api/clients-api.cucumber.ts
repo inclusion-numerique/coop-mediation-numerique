@@ -129,7 +129,7 @@ const appelerLAdresse = async (
     createTestApiV1Request({
       url,
       method: 'GET',
-      client: client === null ? undefined : clientSeme(client),
+      ...(client === null ? {} : { client: clientSeme(client) }),
     }),
   )
   derniereReponse.reponse = {
@@ -244,7 +244,7 @@ Then('la page lue annonce une page suivante', () => {
 
 After(async () => {
   semes.clear()
-  derniereReponse.reponse = undefined
+  delete derniereReponse.reponse
   await prismaClient.apiClient.deleteMany({
     where: { name: { endsWith: ` ${execution}` } },
   })

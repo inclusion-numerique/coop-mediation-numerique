@@ -21,6 +21,10 @@ export const criteresDesLieuxActivite = (
   queryParams: LieuxActiviteQueryParams,
 ) => ({
   ids: queryParams.ids,
-  dispositifProgrammeNational:
-    queryParams.filter.dispositif_programmes_nationaux,
+  ...(queryParams.filter.dispositif_programmes_nationaux === undefined
+    ? {}
+    : {
+        dispositifProgrammeNational:
+          queryParams.filter.dispositif_programmes_nationaux,
+      }),
 })

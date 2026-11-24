@@ -35,11 +35,16 @@ export const criteresDesStructures = (
   queryParams: StructuresQueryParams,
   pagination: PaginationParCurseur,
   curseur: string[] | undefined,
-) => ({
-  ids: queryParams.ids,
-  creeDepuis: dateDepuis(queryParams.filter.creation.depuis),
-  modifieDepuis: dateDepuis(queryParams.filter.modification.depuis),
-  take: pagination.take,
-  skip: pagination.skip,
-  curseur: curseurDeStructure(curseur),
-})
+) => {
+  const creeDepuis = dateDepuis(queryParams.filter.creation.depuis)
+  const modifieDepuis = dateDepuis(queryParams.filter.modification.depuis)
+  const curseurLu = curseurDeStructure(curseur)
+  return {
+    ids: queryParams.ids,
+    ...(creeDepuis === undefined ? {} : { creeDepuis }),
+    ...(modifieDepuis === undefined ? {} : { modifieDepuis }),
+    take: pagination.take,
+    ...(pagination.skip === undefined ? {} : { skip: pagination.skip }),
+    ...(curseurLu === undefined ? {} : { curseur: curseurLu }),
+  }
+}
