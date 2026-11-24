@@ -9,7 +9,7 @@ import {
   selonLeProfil,
 } from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
 import { visiteurDe } from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur'
-import { Accueil } from '@/features/accueil/abilities/consulter-l-accueil/ui/pages/Accueil'
+import { AccueilPage } from '@/features/accueil/abilities/consulter-l-accueil/ui/pages/AccueilPage'
 import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
 import { ActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/slots/ActivitesDeCoordination.slot'
@@ -90,7 +90,7 @@ const Page = async () => {
         bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
         to={supprimerUneActiviteDeMediationAction}
       >
-        <Accueil
+        <AccueilPage
           accueil={accueil}
           equipe={equipe}
           activites={activites}

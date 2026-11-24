@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react'
-import { CadreRdvServicePublic } from '@/features/rdvsp/ui/layouts/CadreRdvServicePublic'
+import { RdvServicePublicLayout } from '@/features/rdvsp/ui/layouts/RdvServicePublicLayout'
 
-const RdvServicePublicLayout = ({ children }: PropsWithChildren) => (
-  <CadreRdvServicePublic>{children}</CadreRdvServicePublic>
+const Layout = ({ children }: PropsWithChildren) => (
+  <RdvServicePublicLayout>{children}</RdvServicePublicLayout>
 )
 
-export default RdvServicePublicLayout
+export default Layout

@@ -1,16 +1,16 @@
 import { PropsWithChildren } from 'react'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import Header from '@/features/navigation/ui/layouts/Header'
-import { MiseEnPageAdministration } from '@/features/navigation/ui/layouts/MiseEnPageAdministration'
+import { AdministrationLayout } from '@/features/navigation/ui/layouts/AdministrationLayout'
 import AdministrationSideMenu from '@/features/navigation/ui/slots/AdministrationSideMenu.slot'
+import Header from '@/features/navigation/ui/slots/Header.slot'
 import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
-const AdministrationLayout = async ({ children }: PropsWithChildren) => {
+const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateAdmin()
   return (
-    <MiseEnPageAdministration
+    <AdministrationLayout
       entete={
         <Header
           user={user}
@@ -23,8 +23,8 @@ const AdministrationLayout = async ({ children }: PropsWithChildren) => {
       piedDePage={<MinimalFooter />}
     >
       {children}
-    </MiseEnPageAdministration>
+    </AdministrationLayout>
   )
 }
 
-export default AdministrationLayout
+export default Layout

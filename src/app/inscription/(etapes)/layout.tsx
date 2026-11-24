@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react'
-import { CadreDesEtapes } from '@/features/inscription/ui/layouts/CadreDesEtapes'
+import { EtapesDeLInscriptionLayout } from '@/features/inscription/ui/layouts/EtapesDeLInscriptionLayout'
 
 const InscriptionStepsLayout = ({ children }: PropsWithChildren) => (
-  <CadreDesEtapes>{children}</CadreDesEtapes>
+  <EtapesDeLInscriptionLayout>{children}</EtapesDeLInscriptionLayout>
 )
 
 export default InscriptionStepsLayout

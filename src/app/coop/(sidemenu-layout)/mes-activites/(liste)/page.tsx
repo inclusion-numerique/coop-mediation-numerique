@@ -14,7 +14,7 @@ import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-d
 import { chronologieAvec } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/chronologie.query'
 import { BarreDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/components/BarreDeMesActivites'
 import { filtresDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/filtres/filtres-de-mes-activites.filtre'
-import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/pages/PageDeMaListeDActivites'
+import { MaListeDActivitesPage } from '@/features/activites/abilities/lister-mes-activites/ui/pages/MaListeDActivitesPage'
 import { barreDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/barre-de-mes-activites.presenter'
 import { CHEMIN_DE_MES_ACTIVITES } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/liens-vers-mes-rendez-vous.presenter'
 import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/page-de-mes-activites.presenter'
@@ -136,7 +136,7 @@ const MesActivitesRoute = async ({
                     bind={METTRE_A_JOUR_STATUT_RDV_ACTION_KEY}
                     to={mettreAJourStatutRdvAction}
                   >
-                    <PageDeMaListeDActivites
+                    <MaListeDActivitesPage
                       liste={liste}
                       barreDeFiltres={
                         <BarreDeMesActivites

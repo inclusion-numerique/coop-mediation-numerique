@@ -5,7 +5,7 @@ import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-in
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user'
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
-import { default as InvitationEnAttente } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttente'
+import { default as InvitationEnAttentePage } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttentePage'
 import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/slots/InvitationPlusValide.slot'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/accepter-une-invitation.key'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/refuser-une-invitation.key'
@@ -42,7 +42,7 @@ const InvitationPage = async (props: {
         bind={REFUSER_UNE_INVITATION_ACTION_KEY}
         to={refuserUneInvitationAction}
       >
-        <InvitationEnAttente
+        <InvitationEnAttentePage
           coordinateur={vue.coordinateur}
           tailleEquipe={vue.tailleEquipe}
           reponse={

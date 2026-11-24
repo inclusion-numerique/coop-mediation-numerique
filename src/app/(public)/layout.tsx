@@ -2,14 +2,14 @@ import { PropsWithChildren } from 'react'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user'
 import PublicFooter from '@/features/navigation/ui/components/pied-de-page/PublicFooter'
-import Header from '@/features/navigation/ui/layouts/Header'
-import { MiseEnPagePublique } from '@/features/navigation/ui/layouts/MiseEnPagePublique'
+import { PubliqueLayout } from '@/features/navigation/ui/layouts/PubliqueLayout'
+import Header from '@/features/navigation/ui/slots/Header.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
 const PublicLayout = async ({ children }: PropsWithChildren) => {
   const user = await getSessionUser()
   return (
-    <MiseEnPagePublique
+    <PubliqueLayout
       entete={
         <Header
           user={user}
@@ -21,7 +21,7 @@ const PublicLayout = async ({ children }: PropsWithChildren) => {
       piedDePage={<PublicFooter />}
     >
       {children}
-    </MiseEnPagePublique>
+    </PubliqueLayout>
   )
 }
 

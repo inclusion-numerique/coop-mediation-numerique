@@ -12,7 +12,7 @@ import {
 import { useOnClickOutside } from 'usehooks-ts'
 import { hrefDeLEquipe } from '@/features/navigation/ui/presenters/liens.presenter'
 import { nomAffiche } from '@/libraries/nom-affiche'
-import type { UtilisateurDeLaNavigation } from '../../layouts/CoopShell'
+import type { UtilisateurDeLaNavigation } from '../../layouts/CoopShellLayout'
 
 const isLimitedToInscription = (
   user: Pick<UtilisateurDeLaNavigation, 'role' | 'inscriptionValidee'>,

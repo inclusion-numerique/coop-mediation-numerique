@@ -8,7 +8,7 @@ import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-d
 import { chronologieAvec } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/chronologie.query'
 import { BarreDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/components/BarreDeMesActivites'
 import { filtresDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/filtres/filtres-de-mes-activites.filtre'
-import { PageDuTableauDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/pages/PageDuTableauDeMesActivites'
+import { TableauDeMesActivitesPage } from '@/features/activites/abilities/lister-mes-activites/ui/pages/TableauDeMesActivitesPage'
 import { barreDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/barre-de-mes-activites.presenter'
 import { monTableauDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/page-de-mes-activites.presenter'
 import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
@@ -107,7 +107,7 @@ const MesActivitesTableauRoute = async ({
             bind={RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY}
             to={rechercherEmployeusesDesActivitesAction}
           >
-            <PageDuTableauDeMesActivites
+            <TableauDeMesActivitesPage
               tableau={tableau}
               barreDeFiltres={
                 tableau && (

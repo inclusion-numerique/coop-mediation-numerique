@@ -73,7 +73,7 @@ import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs
 import { PartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/ui/slots/PartageStatistiques.slot'
 import { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { MesStatistiques } from '@/features/statistiques/abilities/consulter-mes-statistiques/ui/pages/MesStatistiques'
+import { MesStatistiquesPage } from '@/features/statistiques/abilities/consulter-mes-statistiques/ui/pages/MesStatistiquesPage'
 import {
   impressionDesStatistiques,
   sectionActivites,
@@ -106,7 +106,7 @@ const statistiquesDesActivites = statistiquesAvec({
 export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),
 }
-const MesStatistiquesPage = async (props: {
+const Page = async (props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
   const parametres = await props.searchParams
@@ -173,7 +173,7 @@ const MesStatistiquesPage = async (props: {
               bind={REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY}
               to={reglerLePartageStatistiquesAction}
             >
-              <MesStatistiques
+              <MesStatistiquesPage
                 barreDeFiltres={(actions) => (
                   <BarreDesStatistiques
                     barre={barre}
@@ -339,4 +339,4 @@ const MesStatistiquesPage = async (props: {
   )
 }
 
-export default MesStatistiquesPage
+export default Page

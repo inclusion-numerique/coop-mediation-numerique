@@ -2,8 +2,8 @@ import React from 'react'
 import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import Header from '@/features/navigation/ui/layouts/Header'
-import { MiseEnPageCoopPleineLargeur } from '@/features/navigation/ui/layouts/MiseEnPageCoopPleineLargeur'
+import { CoopPleineLargeurLayout } from '@/features/navigation/ui/layouts/CoopPleineLargeurLayout'
+import Header from '@/features/navigation/ui/slots/Header.slot'
 import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
@@ -14,7 +14,7 @@ const CoopFullWidthLayout = async ({
 }) => {
   const user = await authenticateUser()
   return (
-    <MiseEnPageCoopPleineLargeur
+    <CoopPleineLargeurLayout
       entete={
         <Header
           user={user}
@@ -33,7 +33,7 @@ const CoopFullWidthLayout = async ({
       piedDePage={<MinimalFooter />}
     >
       {children}
-    </MiseEnPageCoopPleineLargeur>
+    </CoopPleineLargeurLayout>
   )
 }
 

@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import { OnboardingMesStatistiquesCoordinateur } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingMesStatistiquesCoordinateur'
+import { OnboardingMesStatistiquesCoordinateurPage } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingMesStatistiquesCoordinateurPage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -17,7 +17,7 @@ const Page = async () => {
   if (!user.coordinateur) {
     redirect('/coop')
   }
-  return <OnboardingMesStatistiquesCoordinateur />
+  return <OnboardingMesStatistiquesCoordinateurPage />
 }
 
 export default Page

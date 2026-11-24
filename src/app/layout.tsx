@@ -13,7 +13,7 @@ import {
 import { projectTitle } from '@/configuration/projet/config'
 import { estMain } from '@/configuration/projet/deploiement'
 import { Matomo } from '@/configuration/telemetry/event-tracker/Matomo'
-import { EnvInformation } from '@/features/navigation/ui/layouts/EnvInformation'
+import { EnvInformation } from '@/features/navigation/ui/slots/EnvInformation.slot'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import Toaster from '@/libraries/ui/toast/Toaster'

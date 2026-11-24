@@ -45,7 +45,7 @@ import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statisti
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { StatistiquesNationales } from '@/features/statistiques/abilities/consulter-les-statistiques-nationales/ui/pages/StatistiquesNationales'
+import { StatistiquesNationalesPage } from '@/features/statistiques/abilities/consulter-les-statistiques-nationales/ui/pages/StatistiquesNationalesPage'
 import {
   sectionActivites,
   sectionBeneficiaires,
@@ -111,7 +111,7 @@ const Page = async (props: {
         bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
         to={rechercherLesTagsCollectifsAction}
       >
-        <StatistiquesNationales
+        <StatistiquesNationalesPage
           barreDeFiltres={
             <BarreDesStatistiques
               barre={barre}

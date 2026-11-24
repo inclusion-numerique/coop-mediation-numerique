@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react'
-import { CadreDAjoutDeLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/layouts/CadreDAjoutDeLieux'
+import { AjoutDeLieuxLayout } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/layouts/AjoutDeLieuxLayout'
 
 const LieuActiviteFullWidthLayout = ({ children }: PropsWithChildren) => (
-  <CadreDAjoutDeLieux>{children}</CadreDAjoutDeLieux>
+  <AjoutDeLieuxLayout>{children}</AjoutDeLieuxLayout>
 )
 
 export default LieuActiviteFullWidthLayout

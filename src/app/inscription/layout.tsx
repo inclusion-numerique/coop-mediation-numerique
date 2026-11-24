@@ -5,13 +5,13 @@ import {
   pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
-import { InscriptionReserveeAuxUtilisateurs } from '@/features/inscription/ui/pages/InscriptionReserveeAuxUtilisateurs'
-import Header from '@/features/navigation/ui/layouts/Header'
-import { MiseEnPageInscription } from '@/features/navigation/ui/layouts/MiseEnPageInscription'
+import { InscriptionReserveeAuxUtilisateursPage } from '@/features/inscription/ui/pages/InscriptionReserveeAuxUtilisateursPage'
+import { InscriptionLayout } from '@/features/navigation/ui/layouts/InscriptionLayout'
+import Header from '@/features/navigation/ui/slots/Header.slot'
 import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
-const InscriptionLayout = async ({ children }: PropsWithChildren) => {
+const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
 
   if (aTermineSonInscription(user)) {
@@ -19,7 +19,7 @@ const InscriptionLayout = async ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <MiseEnPageInscription
+    <InscriptionLayout
       entete={
         <Header
           user={user}
@@ -31,12 +31,12 @@ const InscriptionLayout = async ({ children }: PropsWithChildren) => {
       piedDePage={<MinimalFooter />}
     >
       {user.role === 'Admin' ? (
-        <InscriptionReserveeAuxUtilisateurs />
+        <InscriptionReserveeAuxUtilisateursPage />
       ) : (
         children
       )}
-    </MiseEnPageInscription>
+    </InscriptionLayout>
   )
 }
 
-export default InscriptionLayout
+export default Layout

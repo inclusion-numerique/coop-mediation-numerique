@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react'
-import { CadreDeConnexion } from '@/features/authentification/ui/layouts/CadreDeConnexion'
+import { ConnexionLayout } from '@/features/authentification/ui/layouts/ConnexionLayout'
 
-const ConnexionLayout = ({ children }: PropsWithChildren) => (
-  <CadreDeConnexion>{children}</CadreDeConnexion>
+const Layout = ({ children }: PropsWithChildren) => (
+  <ConnexionLayout>{children}</ConnexionLayout>
 )
 
-export default ConnexionLayout
+export default Layout

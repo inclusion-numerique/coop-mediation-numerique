@@ -64,7 +64,7 @@ import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/bar
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { StatistiquesPartagees } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartagees'
+import { StatistiquesPartageesPage } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartageesPage'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import {
   impressionDesStatistiques,
@@ -157,7 +157,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
           bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
           to={rechercherLesTagsDuPartageAction.bind(null, shareId)}
         >
-          <StatistiquesPartagees
+          <StatistiquesPartageesPage
             barreDeFiltres={(actions) => (
               <BarreDesStatistiques
                 barre={barre}

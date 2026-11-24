@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
-import { CloseButton } from './CloseButton'
+import { CloseButton } from '../components/CloseButton'
 
 export const BienvenuePage = ({ pageSuivante }: { pageSuivante: string }) => (
   <div className="fr-layout fr-background-alt--blue-france">

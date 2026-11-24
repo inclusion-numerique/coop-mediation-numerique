@@ -6,7 +6,7 @@ import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import { usePathname } from 'next/navigation'
 import { contactEmail } from '@/configuration/projet/config'
 import { hrefDesStatistiquesDeLaPeriode } from '@/features/navigation/ui/presenters/liens.presenter'
-import type { UtilisateurDeLaNavigation } from '../layouts/CoopShell'
+import type { UtilisateurDeLaNavigation } from '../layouts/CoopShellLayout'
 
 const onlyFor =
   (user: UtilisateurDeLaNavigation) =>

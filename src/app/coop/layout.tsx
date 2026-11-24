@@ -15,7 +15,7 @@ import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-
 import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui/slots/ChoixDeVisibiliteApresRupture.slot'
 import { MediateurId } from '@/features/mediateurs/domain'
 import { accesALaCoop } from '@/features/navigation/domain'
-import { CoopShell } from '@/features/navigation/ui/layouts/CoopShell'
+import { CoopShellLayout } from '@/features/navigation/ui/layouts/CoopShellLayout'
 import { AccesReserveAuxUtilisateurs } from '@/features/navigation/ui/slots/AccesReserveAuxUtilisateurs.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
@@ -29,7 +29,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (acces._tag === 'ReserveAuxUtilisateurs') {
     return (
-      <CoopShell
+      <CoopShellLayout
         cadre="etape"
         user={user}
         accueil={pageDAccueil(user)}
@@ -38,7 +38,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
         <InscriptionStepsLayout>
           <AccesReserveAuxUtilisateurs role={acces.role} />
         </InscriptionStepsLayout>
-      </CoopShell>
+      </CoopShellLayout>
     )
   }
 
@@ -55,7 +55,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (ruptureEnAttente != null) {
     return (
-      <CoopShell
+      <CoopShellLayout
         cadre="etape"
         user={user}
         accueil={pageDAccueil(user)}
@@ -69,14 +69,14 @@ const Layout = async ({ children }: PropsWithChildren) => {
             <ChoixDeVisibiliteApresRupture />
           </ClientBinder>
         </InscriptionStepsLayout>
-      </CoopShell>
+      </CoopShellLayout>
     )
   }
 
   const maintenance = await consulterLaMaintenance()
 
   return (
-    <CoopShell
+    <CoopShellLayout
       cadre="application"
       banniere={
         maintenance._tag === 'Active' ? (
@@ -85,7 +85,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
       }
     >
       {children}
-    </CoopShell>
+    </CoopShellLayout>
   )
 }
 
