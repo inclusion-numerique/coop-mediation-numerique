@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
-export const AutoPrint = () => {
+export const ImpressionAutomatique = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 

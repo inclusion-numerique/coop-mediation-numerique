@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
+import { ImpressionAutomatique } from './ImpressionAutomatique'
 import { ImpressionDesStatistiques } from './ImpressionDesStatistiques'
-import { AutoPrint } from './impression-automatique'
 import { ImpressionPrete } from './impression-prete'
 import { BlocEnAttente } from './sections/BlocEnAttente'
 import { SectionActivites } from './sections/SectionActivites'
@@ -126,7 +126,7 @@ export const impressionDesStatistiques = <Statistiques,>({
             activites={<SectionActivitesImprimee {...activites} />}
             beneficiaires={<SectionBeneficiairesImprimee {...beneficiaires} />}
           />
-          <AutoPrint />
+          <ImpressionAutomatique />
           <ImpressionPrete />
         </>
       )
