@@ -82,6 +82,7 @@
         "noGlobalEval": "error"
       },
       "style": {
+        "noEnum": "error",
         "noDefaultExport": "off",
         "noNegationElse": "off",
         "noParameterAssign": "error",
