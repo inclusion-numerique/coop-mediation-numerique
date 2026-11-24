@@ -1,6 +1,6 @@
 import { headerFooterDisplayItem } from '@codegouvfr/react-dsfr/Display'
 import { FooterBottomItem } from '@codegouvfr/react-dsfr/Footer'
-import { publicFooterProps } from '@/features/navigation/ui/components/pied-de-page/PublicFooter'
+import { publicFooterProps } from '@/features/navigation/ui/components/PublicFooter'
 
 const MinimalFooter = () => {
   return (

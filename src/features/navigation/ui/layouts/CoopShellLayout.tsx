@@ -1,6 +1,6 @@
 import type { Route } from 'next'
 import type { PropsWithChildren, ReactNode } from 'react'
-import PublicFooter from '../components/pied-de-page/PublicFooter'
+import PublicFooter from '../components/PublicFooter'
 import Header from '../slots/Header.slot'
 
 type CoordinationDuMediateur = {

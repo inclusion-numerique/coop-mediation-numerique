@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import PublicFooter from '@/features/navigation/ui/components/pied-de-page/PublicFooter'
+import PublicFooter from '@/features/navigation/ui/components/PublicFooter'
 
 export default {
   title: 'PublicFooter',
