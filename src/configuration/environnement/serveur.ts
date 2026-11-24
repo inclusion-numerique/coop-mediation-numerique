@@ -41,6 +41,8 @@ const schemaServeurWeb = schemaServeur.extend({
   NEXTAUTH_SECRET: texte,
 })
 
+export type VariablesDuServeur = keyof z.input<typeof schemaServeurWeb>
+
 export const environnementServeur = schemaServeur.parse(process.env)
 
 export const verifierEnvironnementServeurWeb = () =>

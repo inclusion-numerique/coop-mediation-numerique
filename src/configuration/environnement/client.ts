@@ -20,6 +20,8 @@ const schemaClient = z.object({
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: z.string().default('local'),
 })
 
+export type VariablesDuClient = keyof z.input<typeof schemaClient>
+
 export const environnementClient = schemaClient.parse({
   NODE_ENV: process.env.NODE_ENV,
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
