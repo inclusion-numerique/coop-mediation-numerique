@@ -13,7 +13,7 @@ export const lignesDeLaListe = (
   acteur: Acteur,
   liste: ListeDesTags,
 ): readonly LigneDeLaListe[] =>
-  liste.tags.map(({ tag, accompagnements }) => ({
+  liste.items.map(({ tag, accompagnements }) => ({
     tag: tagAffiche(acteur)(tag),
     accompagnements,
     gerable: peutGerer(acteur)(tag.portee),

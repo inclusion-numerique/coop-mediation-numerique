@@ -1,3 +1,4 @@
+import type { Paginated } from '@arckit/resultset'
 import type { Effectif, Tag } from '../../../domain'
 
 type TagListe = {
@@ -5,7 +6,4 @@ type TagListe = {
   readonly accompagnements: Effectif
 }
 
-export type ListeDesTags = {
-  readonly tags: readonly TagListe[]
-  readonly total: Effectif
-}
+export type ListeDesTags = Paginated<TagListe>

@@ -1,3 +1,4 @@
+import { Page, PageSize } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
 import {
   type Acteur,
@@ -21,8 +22,10 @@ describe('lignesDeLaListe', () => {
   it('rend gérable le tag personnel du médiateur, pas un tag national', () => {
     expect(
       lignesDeLaListe(acteur, {
-        total: Effectif(2),
-        tags: [
+        totalItems: 2,
+        currentPage: Page(1),
+        pageSize: PageSize(50),
+        items: [
           {
             tag: {
               id: TagId('00000000-0000-4000-8000-000000000002'),

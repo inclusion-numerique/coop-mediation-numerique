@@ -63,7 +63,3 @@ const AU_MOINS_AUSSI_LARGE: Record<TypeDePortee, Prisma.Sql> = {
 
 export const porteeAuMoinsAussiLargeQue = (portee: TypeDePortee): Prisma.Sql =>
   AU_MOINS_AUSSI_LARGE[portee]
-
-export const ORDRE_ALPHABETIQUE = Prisma.sql`t.nom ASC`
-
-export const ORDRE_DE_VISIBILITE = Prisma.sql`t.departement ASC, t.mediateur_id ASC, t.coordinateur_id ASC, t.nom ASC`

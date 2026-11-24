@@ -14,12 +14,9 @@ import { RECHERCHER_DES_DESTINATIONS_ACTION_KEY } from '@/features/tags/abilitie
 import { ModaleDeFusion } from '@/features/tags/abilities/fusionner-un-tag/ui/components/ModaleDeFusion'
 import { BoutonFusionner } from '@/features/tags/abilities/fusionner-un-tag/ui/slots/BoutonFusionner.slot'
 import { listerLesTags } from '@/features/tags/abilities/lister-les-tags/implementations/prisma/lister-les-tags.query'
-import {
-  ListeDesTagsPage,
-  type ParametresDeLaListe,
-} from '@/features/tags/abilities/lister-les-tags/ui/pages/ListeDesTagsPage'
+import { listeDesTags } from '@/features/tags/abilities/lister-les-tags/ui/filtres/liste-des-tags.filtre'
+import { ListeDesTagsPage } from '@/features/tags/abilities/lister-les-tags/ui/pages/ListeDesTagsPage'
 import { lignesDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/presenters/liste-des-tags.presenter'
-import { requeteDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/search-params/requete-de-la-liste.search-params'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.key'
 import { ModaleDeModification } from '@/features/tags/abilities/modifier-un-tag/ui/components/ModaleDeModification'
 import { BoutonModifier } from '@/features/tags/abilities/modifier-un-tag/ui/slots/BoutonModifier.slot'
@@ -30,12 +27,16 @@ import { acteurDe } from '@/features/tags/domain'
 import { MenuDActionsDuTag } from '@/features/tags/ui/slots/MenuDActionsDuTag.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
-const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
-  const searchParams = await props.searchParams
+const CHEMIN_DES_TAGS = '/coop/tags'
+
+const Page = async (props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) => {
+  const parametres = await props.searchParams
   const user = await authenticateUser()
   const acteur = acteurDe(profilDeLaSession(user))
-  const requete = requeteDeLaListe(searchParams)
-  const liste = await listerLesTags({ acteur, ...requete })
+  const { tri, pagination } = listeDesTags.charger(parametres)
+  const liste = await listerLesTags({ acteur, tri, ...pagination })
 
   return (
     <ClientBinder bind={CREER_UN_TAG_ACTION_KEY} to={creerUnTagAction}>
@@ -54,11 +55,12 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
             >
               <ListeDesTagsPage
                 lignes={lignesDeLaListe(acteur, liste)}
-                total={liste.total}
-                lignesParPage={requete.lignesParPage}
+                total={liste.totalItems}
+                pages={listeDesTags.pagination.liens(
+                  { chemin: CHEMIN_DES_TAGS, parametres },
+                  liste,
+                )}
                 estCoordinateur={user.coordinateur != null}
-                baseHref="/coop/tags"
-                searchParams={searchParams}
                 creer={<BoutonCreerUnTag />}
                 modales={
                   <>
