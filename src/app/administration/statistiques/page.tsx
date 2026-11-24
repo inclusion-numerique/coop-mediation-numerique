@@ -42,7 +42,7 @@ import { statistiquesNationalesEnCours } from '@/features/activites/implementati
 import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
-import { barreDesStatistiques } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
+import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesNationales } from '@/features/statistiques/abilities/consulter-les-statistiques-nationales/ui/pages/StatistiquesNationales'
@@ -93,31 +93,14 @@ const Page = async (props: {
     criteresDesStatistiquesDesFiltres(valeurs),
     { tags: true, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
   )
-  const [tagsCollectifs, lieux, tagsDesFiltres] = await Promise.all([
-    lireLesTagsCollectifs(),
-    lieuxDuFiltre(PERIMETRE_NATIONAL, {
-      lieux: valeurs.lieux,
-      communes: valeurs.communes,
-      departements: valeurs.departements,
-    }),
-    tagsChoisis(valeurs.tags),
-  ])
-  const barre = barreDesStatistiques({
-    adresse: { chemin: '/administration/statistiques', parametres },
-    valeurs,
-    lieux: lieuxDuFiltrePresentes(lieux),
-    employeuses: { suggestions: [], choisies: [] },
-    tags: {
-      suggestions: tagsCollectifs
-        .slice(0, 10)
-        .map(({ id, nom }) => ({ value: id, label: nom })),
-      choisies: tagsDesFiltres.map(({ id, nom }) => ({
-        value: id,
-        label: nom,
-      })),
-    },
-    mediateurs: { suggestions: [], choisies: [] },
-  })
+  const barre = await barreDesStatistiquesAvec({
+    lieux: (choisis) =>
+      lieuxDuFiltre(PERIMETRE_NATIONAL, choisis).then(lieuxDuFiltrePresentes),
+    tagsSuggeres: lireLesTagsCollectifs,
+    tagsChoisis,
+    employeuses: async () => [],
+    mediateurs: async () => [],
+  })({ chemin: '/administration/statistiques', parametres }, valeurs)
 
   return (
     <ClientBinder

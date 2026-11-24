@@ -28,7 +28,7 @@ import { BlocDuProfil } from '@/features/activites/abilities/decrire-les-personn
 import { ProfilImprime } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/slots/ProfilImprime.slot'
 import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-choisis.query'
 import { tagsLesPlusUtilisesDuPerimetre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-du-perimetre.query'
-import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
+import { employeusesEnOptions } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
 import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
 import { lieuxDuFiltrePresentes } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/lieux-du-filtre.presenter'
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
@@ -60,7 +60,7 @@ import {
 import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
-import { barreDesStatistiques } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
+import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
@@ -129,52 +129,20 @@ const Page = async ({ params, searchParams }: PageProps) => {
   })
   const toutes = statistiquesDesActivites.toutes(statistiques)
 
-  const [
-    { hasCrasV1 },
-    activitesDuPerimetre,
-    lieux,
-    tagsSuggeres,
-    tagsDesFiltres,
-  ] = await Promise.all([
+  const [{ hasCrasV1 }, activitesDuPerimetre] = await Promise.all([
     statistiques.hasCrasV1,
     decrireLesActivitesDuPerimetre(perimetre),
-    lieuxDuFiltre(perimetre, {
-      lieux: valeurs.lieux,
-      communes: valeurs.communes,
-      departements: valeurs.departements,
-    }),
-    tagsLesPlusUtilisesDuPerimetre(perimetre),
-    tagsChoisis(valeurs.tags),
   ])
 
-  const employeuses = optionsDEmployeuses(activitesDuPerimetre.employeuses).map(
-    ({ id, nom, commune }) => ({
-      value: id,
-      label: commune === null ? nom : `${nom} · ${commune}`,
-    }),
-  )
-  const choisies = new Set(valeurs.structuresEmployeuses.map(String))
-
-  const barre = barreDesStatistiques({
-    adresse: { chemin: `/statistiques/${shareId}`, parametres },
-    valeurs: lues,
-    lieux: lieuxDuFiltrePresentes(lieux),
-    employeuses: {
-      suggestions: employeuses.slice(0, 10),
-      choisies: employeuses.filter(({ value }) => choisies.has(value)),
-    },
-    tags: {
-      suggestions: tagsSuggeres.map(({ id, nom }) => ({
-        value: id,
-        label: nom,
-      })),
-      choisies: tagsDesFiltres.map(({ id, nom }) => ({
-        value: id,
-        label: nom,
-      })),
-    },
-    mediateurs: { suggestions: [], choisies: [] },
-  })
+  const barre = await barreDesStatistiquesAvec({
+    lieux: (choisis) =>
+      lieuxDuFiltre(perimetre, choisis).then(lieuxDuFiltrePresentes),
+    tagsSuggeres: () => tagsLesPlusUtilisesDuPerimetre(perimetre),
+    tagsChoisis,
+    employeuses: async () =>
+      employeusesEnOptions(activitesDuPerimetre.employeuses),
+    mediateurs: async () => [],
+  })({ chemin: `/statistiques/${shareId}`, parametres }, lues)
 
   return (
     <ClientBinder

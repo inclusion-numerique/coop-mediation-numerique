@@ -31,7 +31,7 @@ import { BlocDuProfil } from '@/features/activites/abilities/decrire-les-personn
 import { ProfilImprime } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/slots/ProfilImprime.slot'
 import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-choisis.query'
 import { tagsLesPlusUtilisesDuPerimetre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-du-perimetre.query'
-import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
+import { employeusesEnOptions } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
 import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
 import { lieuxDuFiltrePresentes } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/lieux-du-filtre.presenter'
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
@@ -64,7 +64,7 @@ import {
 import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
-import { barreDesStatistiques } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
+import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
@@ -127,69 +127,28 @@ const MesStatistiquesPage = async (props: {
   })
   const toutes = statistiquesDesActivites.toutes(statistiques)
 
-  const [
-    { hasCrasV1 },
-    liensDePartage,
-    activitesDuPerimetre,
-    lieux,
-    tagsSuggeres,
-    tagsDesFiltres,
-    membres,
-  ] = await Promise.all([
-    statistiques.hasCrasV1,
-    consulterMesLiensDePartage({
-      mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
-      coordinateurId: user.coordinateur?.id
-        ? CoordinateurId(user.coordinateur.id)
-        : null,
-    }),
-    decrireLesActivitesDuPerimetre(perimetre),
-    lieuxDuFiltre(perimetre, {
-      lieux: valeurs.lieux,
-      communes: valeurs.communes,
-      departements: valeurs.departements,
-    }),
-    tagsLesPlusUtilisesDuPerimetre(perimetre),
-    tagsChoisis(valeurs.tags),
-    membresAFiltrerDuDemandeur(user),
-  ])
+  const [{ hasCrasV1 }, liensDePartage, activitesDuPerimetre] =
+    await Promise.all([
+      statistiques.hasCrasV1,
+      consulterMesLiensDePartage({
+        mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
+        coordinateurId: user.coordinateur?.id
+          ? CoordinateurId(user.coordinateur.id)
+          : null,
+      }),
+      decrireLesActivitesDuPerimetre(perimetre),
+    ])
 
-  const employeuses = optionsDEmployeuses(activitesDuPerimetre.employeuses).map(
-    ({ id, nom, commune }) => ({
-      value: id,
-      label: commune === null ? nom : `${nom} · ${commune}`,
-    }),
-  )
-  const mediateurs = membres.map(optionDeMembre)
-  const choisies = (
-    options: readonly { value: string; label: string }[],
-    valeursChoisies: readonly unknown[],
-  ) =>
-    options.filter(({ value }) => valeursChoisies.map(String).includes(value))
-
-  const barre = barreDesStatistiques({
-    adresse: { chemin: '/coop/mes-statistiques', parametres },
-    valeurs,
-    lieux: lieuxDuFiltrePresentes(lieux),
-    employeuses: {
-      suggestions: employeuses.slice(0, 10),
-      choisies: choisies(employeuses, valeurs.structuresEmployeuses),
-    },
-    tags: {
-      suggestions: tagsSuggeres.map(({ id, nom }) => ({
-        value: id,
-        label: nom,
-      })),
-      choisies: tagsDesFiltres.map(({ id, nom }) => ({
-        value: id,
-        label: nom,
-      })),
-    },
-    mediateurs: {
-      suggestions: mediateurs.slice(0, 10),
-      choisies: choisies(mediateurs, valeurs.mediateurs),
-    },
-  })
+  const barre = await barreDesStatistiquesAvec({
+    lieux: (choisis) =>
+      lieuxDuFiltre(perimetre, choisis).then(lieuxDuFiltrePresentes),
+    tagsSuggeres: () => tagsLesPlusUtilisesDuPerimetre(perimetre),
+    tagsChoisis,
+    employeuses: async () =>
+      employeusesEnOptions(activitesDuPerimetre.employeuses),
+    mediateurs: async () =>
+      (await membresAFiltrerDuDemandeur(user)).map(optionDeMembre),
+  })({ chemin: '/coop/mes-statistiques', parametres }, valeurs)
 
   const jour = (date: Date | null) => date?.toISOString().slice(0, 10)
 

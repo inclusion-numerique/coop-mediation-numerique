@@ -26,7 +26,7 @@ type Lieux = {
 const libelles = (options: readonly SelectOption[]) =>
   new Map(options.map(({ value, label }) => [value, label]))
 
-export const barreDesStatistiques = ({
+const barreDesStatistiques = ({
   adresse,
   valeurs,
   lieux,
