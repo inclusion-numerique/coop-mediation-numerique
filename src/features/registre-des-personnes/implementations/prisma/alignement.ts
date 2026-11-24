@@ -76,8 +76,8 @@ const contactCoopVoulu = (compte: CompteCoop): ContactCoop => ({
 
 const memeContactCoop = (actuel: unknown, voulu: ContactCoop): boolean =>
   estUnObjet(actuel) &&
-  actuel.email === voulu.email &&
-  actuel.telephone === voulu.telephone &&
+  actuel['email'] === voulu.email &&
+  actuel['telephone'] === voulu.telephone &&
   Object.keys(actuel).length === Object.keys(voulu).length
 
 const alignementDuContact = (
@@ -87,7 +87,7 @@ const alignementDuContact = (
   const contact = contactDe(ligne)
   const voulu = contactCoopVoulu(compte)
 
-  return memeContactCoop(contact.coop, voulu)
+  return memeContactCoop(contact['coop'], voulu)
     ? {}
     : { contact: { ...contact, coop: voulu } }
 }
