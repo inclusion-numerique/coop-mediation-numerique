@@ -168,7 +168,7 @@ const fetchAllBackups = async (
 
 const selectBackup = (
   backups: ScalewayDatabaseBackup[],
-  { date, type }: { date?: string; type?: string },
+  { date, type }: { date?: string | undefined; type?: string | undefined },
 ): ScalewayDatabaseBackup => {
   const typeFiltered = type
     ? backups.filter((backup) => backup.name.includes(`_${type}_`))
@@ -313,9 +313,9 @@ const provisionBackupFile = async ({
   databaseName: string
   secretKey: string
   targetFile: string
-  date?: string
-  type?: string
-  useLocal?: boolean
+  date?: string | undefined
+  type?: string | undefined
+  useLocal?: boolean | undefined
 }): Promise<void> => {
   if (useLocal) {
     output(`Using local backup file: ${targetFile}`)
@@ -376,7 +376,7 @@ const assertRestoreTargetIsNotProduction = ({
 }: {
   databaseUrl: string
   productionDatabaseName: string
-  confirmProduction?: string
+  confirmProduction?: string | undefined
 }): void => {
   if (!targetLooksLikeProduction(databaseUrl, productionDatabaseName)) return
 

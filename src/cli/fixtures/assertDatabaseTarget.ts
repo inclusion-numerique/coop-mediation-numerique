@@ -49,8 +49,8 @@ export const assertDatabaseIsNotProduction = ({
   action,
 }: {
   databaseUrl: string
-  productionDatabaseName?: string
-  confirmProduction?: string
+  productionDatabaseName?: string | undefined
+  confirmProduction?: string | undefined
   action: string
 }): void => {
   if (!databaseUrlLooksLikeProduction(databaseUrl, productionDatabaseName)) {
