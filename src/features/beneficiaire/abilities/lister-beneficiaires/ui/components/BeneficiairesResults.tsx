@@ -1,7 +1,7 @@
 'use client'
 
 import { useDataTableSelection } from '@/libraries/data-table'
-import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste/PiedDeListe'
 import {
   type LiensDeLaListe,
   paginationDesBeneficiaires,
