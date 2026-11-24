@@ -2,6 +2,7 @@ import '@codegouvfr/react-dsfr/assets/dsfr_plus_icons.scss'
 import '@codegouvfr/react-dsfr/dsfr/utility/colors/colors.min.css'
 import '@/styles/app.css'
 import type { Metadata } from 'next'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import type { PropsWithChildren } from 'react'
 import { terminerLUsurpationAction } from '@/app/_actions/utilisateurs/terminer-l-usurpation.action'
 import { Display, DsfrProvider } from '@/configuration/dsfr'
@@ -45,7 +46,7 @@ const RootLayout = ({ children }: PropsWithChildren) => (
           bind={TERMINER_L_USURPATION_ACTION_KEY}
           to={terminerLUsurpationAction}
         >
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
         </ClientBinder>
         <Toaster />
         <Display />

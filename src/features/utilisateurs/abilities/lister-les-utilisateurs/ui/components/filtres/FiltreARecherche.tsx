@@ -18,7 +18,7 @@ import {
   messageDeLaRecherche,
   OptionsDeRecherche,
   type Rechercher,
-} from '../combo-box-de-recherche'
+} from '../../../../../../../libraries/filtres/combo-box-de-recherche'
 
 const aucune = (): SelectOption | null => null
 

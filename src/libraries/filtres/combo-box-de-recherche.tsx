@@ -20,17 +20,25 @@ const chargerLesSuggestions =
     rechercher: Rechercher,
     dejaChoisies: () => readonly SelectOption[],
     longueurMinimale: number,
+    suggestions: readonly SelectOption[],
   ) =>
   async (
     recherche: string,
   ): Promise<{ items: SelectOption[] } & SuiviDeLaRecherche> => {
+    const choisies = new Set(dejaChoisies().map(cleDe))
+    const proposees = suggestions.filter(
+      (option) => !choisies.has(cleDe(option)),
+    )
+
+    if (recherche.trim() === '' && proposees.length > 0)
+      return { items: proposees }
+
     if (recherche.trim().length < longueurMinimale)
       return sansSuggestion('TropCourte')
 
     const resultat = await rechercher({ recherche })
     if (!resultat.success) return sansSuggestion('Indisponible')
 
-    const choisies = new Set(dejaChoisies().map(cleDe))
     const items = resultat.data.filter((option) => !choisies.has(cleDe(option)))
 
     return items.length === 0 ? sansSuggestion('SansResultat') : { items }
@@ -40,6 +48,7 @@ export const comboBoxDeRecherche = (
   rechercher: Rechercher,
   dejaChoisies: () => readonly SelectOption[],
   longueurMinimale: number,
+  suggestions: readonly SelectOption[] = [],
 ): ComboBoxData<SelectOption, SuiviDeLaRecherche> => ({
   itemToString: (option) => option?.label ?? '',
   itemToKey: cleDe,
@@ -47,6 +56,7 @@ export const comboBoxDeRecherche = (
     rechercher,
     dejaChoisies,
     longueurMinimale,
+    suggestions,
   ),
 })
 
