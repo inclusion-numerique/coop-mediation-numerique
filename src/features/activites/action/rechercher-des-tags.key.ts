@@ -8,17 +8,15 @@ export const RECHERCHER_DES_TAGS_DU_CRA_KEY = keyFor<
   }) => Promise<ServerActionResult<readonly TagDuCra[], string>>
 >('activites.rechercher-des-tags')
 
-export type PorteeDuTag = 'Personnel' | 'Equipe' | 'Departemental' | 'National'
-
-export type EquipeDuTag = {
-  readonly numero: number
-  readonly coordonneePar: string
+export type BadgeDuTag = {
+  readonly libelle: string
+  readonly classe: string
+  readonly infobulle: string | null
 }
 
 export type TagDuCra = {
   readonly id: string
   readonly nom: string
   readonly description: string | null
-  readonly portee: PorteeDuTag
-  readonly equipe: EquipeDuTag | null
+  readonly badge: BadgeDuTag
 }

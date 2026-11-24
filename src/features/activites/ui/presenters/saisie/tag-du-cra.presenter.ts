@@ -1,23 +1,20 @@
 import type {
-  EquipeDuTag,
-  PorteeDuTag,
-} from '@/features/activites/action/rechercher-des-tags.key'
-import type { TagDuCra } from '../../../action/rechercher-des-tags.key'
+  BadgeDuTag,
+  TagDuCra,
+} from '../../../action/rechercher-des-tags.key'
 
 export type Tag = {
   id: string
   nom: string
   description?: string
-  portee: PorteeDuTag
-  equipe: EquipeDuTag | null
+  badge: BadgeDuTag
 }
 
 export const tagDuFormulaire = (tag: TagDuCra): Tag => ({
   id: tag.id,
   nom: tag.nom,
   description: tag.description ?? undefined,
-  portee: tag.portee,
-  equipe: tag.equipe,
+  badge: tag.badge,
 })
 
 export type VisibiliteDuTagDuCra =

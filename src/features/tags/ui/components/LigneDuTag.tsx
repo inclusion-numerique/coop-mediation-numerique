@@ -2,9 +2,9 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
 import { numberToString } from '@/libraries/nombre/formatNumber'
+import { BadgeAvecInfobulle } from '@/libraries/ui/components/BadgeAvecInfobulle'
 import { infobulleDesAccompagnements } from '../presenters/accompagnements.presenter'
 import type { TagAffiche } from '../presenters/tag-affiche.presenter'
-import { BadgeDePortee } from './BadgeDePortee'
 
 export const LigneDuTag = ({
   tag,
@@ -55,7 +55,7 @@ export const LigneDuTag = ({
           {numberToString(utilisations)}
         </span>
       )}
-      <BadgeDePortee portee={tag.portee} equipe={tag.equipe} small={small} />
+      <BadgeAvecInfobulle {...tag.badge} small={small} />
       {actions}
     </div>
   </div>

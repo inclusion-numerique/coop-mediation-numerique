@@ -1,3 +1,4 @@
+import { badgeDePortee } from '../../../../ui/presenters/badge-de-portee.presenter'
 import type { TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import type { TagLePlusUtilise } from '../../domain/index'
 
@@ -17,6 +18,7 @@ export const tagsDeLaListe = (
       description: tag.description,
       portee: tag.portee,
       equipe: null,
+      badge: badgeDePortee(tag.portee, null),
     },
     utilisations: tag.utilisations,
     accompagnements: tag.accompagnements,

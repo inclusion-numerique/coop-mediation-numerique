@@ -205,5 +205,4 @@ export {
   repartitionComplete,
 } from './statistiques/repartition'
 export { NomDeTag } from './tags/nom-de-tag'
-export { PorteeDeTag } from './tags/portee-de-tag'
 export { type TagsUtilisables, tagsDeLaSaisie } from './tags/tags-utilisables'

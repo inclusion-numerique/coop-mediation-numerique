@@ -3,7 +3,6 @@ import type {
   Effectif,
   NomDeTag,
   Periode,
-  PorteeDeTag,
   TagId,
 } from '../../../domain'
 
@@ -16,7 +15,6 @@ export type ActivitesDeCoordinationListees = {
 type TagDisponible = {
   readonly id: TagId
   readonly nom: NomDeTag
-  readonly portee: PorteeDeTag
 }
 
 export type OptionsDeFiltre = {

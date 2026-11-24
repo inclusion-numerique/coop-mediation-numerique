@@ -29,6 +29,11 @@ describe('tagsDeLaListe', () => {
           description: null,
           portee: 'Equipe',
           equipe: null,
+          badge: {
+            libelle: 'Tag d’équipe',
+            classe: 'fr-badge--brown-caramel',
+            infobulle: null,
+          },
         },
         utilisations: 4,
         accompagnements: 9,

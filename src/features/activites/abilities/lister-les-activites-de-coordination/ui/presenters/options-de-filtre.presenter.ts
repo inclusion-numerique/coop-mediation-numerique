@@ -1,10 +1,8 @@
-import type { PorteeDuTag } from '@/features/activites/action/rechercher-des-tags.key'
 import type { OptionsDeFiltre } from '../../domain'
 
 type OptionDeTag = {
   readonly value: string
   readonly label: string
-  readonly portee: PorteeDuTag
 }
 
 export type OptionsDeFiltrePresentees = {
@@ -17,11 +15,7 @@ export const optionsDeFiltrePresentees = (
   { tags, periodeCouverte }: OptionsDeFiltre,
   maintenant: Date,
 ): OptionsDeFiltrePresentees => ({
-  tags: tags.map(({ id, nom, portee }) => ({
-    value: id,
-    label: nom,
-    portee,
-  })),
+  tags: tags.map(({ id, nom }) => ({ value: id, label: nom })),
   debut: periodeCouverte?.du ?? maintenant,
   fin: periodeCouverte?.au ?? maintenant,
 })

@@ -1,6 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type CoordinateurId, NomDeTag, TagId } from '../../../../domain'
-import { porteeDe } from '../../../../implementations/prisma/portee-de-tag'
 import type { OptionsDeFiltre } from '../../domain'
 
 const TAGS_LES_PLUS_UTILISES = 10
@@ -21,10 +20,6 @@ export const optionsDeFiltre = async ({
       select: {
         id: true,
         nom: true,
-        mediateurId: true,
-        coordinateurId: true,
-        departement: true,
-        equipe: true,
       },
       orderBy: [
         { activitesCoordinationTags: { _count: 'desc' } },
@@ -42,9 +37,7 @@ export const optionsDeFiltre = async ({
   return {
     tags: tags.flatMap((tag) => {
       const nom = NomDeTag.safe(tag.nom)
-      return nom === null
-        ? []
-        : [{ id: TagId(tag.id), nom, portee: porteeDe(tag) }]
+      return nom === null ? [] : [{ id: TagId(tag.id), nom }]
     }),
     periodeCouverte:
       bornes._min.date === null || bornes._max.date === null

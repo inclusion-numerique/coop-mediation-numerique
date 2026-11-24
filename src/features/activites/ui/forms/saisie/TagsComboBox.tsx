@@ -1,11 +1,11 @@
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
-import { BadgeDePortee } from '@/features/activites/ui/components/BadgeDePortee'
 import {
   type Tag,
   tagDuFormulaire,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { BadgeAvecInfobulle } from '@/libraries/ui/components/BadgeAvecInfobulle'
 import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
 
@@ -36,7 +36,7 @@ const renderItem = ({ item }: { item: Tag }) => (
         </span>
       )}
     </div>
-    <BadgeDePortee small portee={item.portee} equipe={item.equipe} />
+    <BadgeAvecInfobulle small {...item.badge} />
   </div>
 )
 

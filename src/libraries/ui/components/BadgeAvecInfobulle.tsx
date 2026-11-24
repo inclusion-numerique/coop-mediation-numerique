@@ -5,23 +5,16 @@ import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
-import type { TypeDePortee } from '../../domain'
-import type { EquipeAffichee } from '../presenters/equipe-affichee.presenter'
 
-const APPARENCE: Record<TypeDePortee, { libelle: string; classe: string }> = {
-  Personnel: { libelle: 'Tag personnel', classe: 'fr-text-mention--grey' },
-  Equipe: { libelle: 'Tag d’équipe', classe: 'fr-badge--brown-caramel' },
-  Departemental: { libelle: 'Tag départemental', classe: 'fr-badge--info' },
-  National: { libelle: 'Tag national', classe: 'fr-badge--green-menthe' },
-}
-
-export const BadgeDePortee = ({
-  portee,
-  equipe = null,
+export const BadgeAvecInfobulle = ({
+  libelle,
+  classe,
+  infobulle,
   small,
 }: {
-  portee: TypeDePortee
-  equipe?: EquipeAffichee | null
+  libelle: string
+  classe: string
+  infobulle: string | null
   small?: boolean
 }) => {
   const [estMonte, setEstMonte] = useState(false)
@@ -33,13 +26,12 @@ export const BadgeDePortee = ({
     <Badge
       as="span"
       small={small}
-      className={classNames('fr-text--nowrap', APPARENCE[portee].classe)}
+      className={classNames('fr-text--nowrap', classe)}
       noIcon
     >
-      {APPARENCE[portee].libelle}
-      {equipe != null && (
+      {libelle}
+      {infobulle !== null && (
         <>
-          {` ${equipe.numero}`}
           <TooltipIcon
             tooltipId={infobulleId}
             className="fr-position-relative fr-index-10"
@@ -52,7 +44,7 @@ export const BadgeDePortee = ({
                 role="tooltip"
                 aria-hidden
               >
-                Équipe {equipe.numero} - Coordonnée par {equipe.coordonneePar}
+                {infobulle}
               </span>,
               document.body,
             )}

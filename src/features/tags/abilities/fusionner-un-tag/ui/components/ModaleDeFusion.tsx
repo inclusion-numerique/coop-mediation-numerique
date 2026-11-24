@@ -10,14 +10,15 @@ import type { ComboBoxData } from '@/libraries/formulaire/fields-components/Comb
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { pluriel } from '@/libraries/pluriel'
+import { BadgeAvecInfobulle } from '@/libraries/ui/components/BadgeAvecInfobulle'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { useModalVisibility } from '@/libraries/ui/hooks/useModalVisibility'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 import type { TypeDePortee } from '../../../../domain'
-import { BadgeDePortee } from '../../../../ui/components/BadgeDePortee'
 import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
+import { badgeDePortee } from '../../../../ui/presenters/badge-de-portee.presenter'
 import { type TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { FUSIONNER_UN_TAG_ACTION_KEY } from '../../action/fusionner-un-tag.key'
 import type { DestinationAffichee } from '../../action/rechercher-des-destinations.key'
@@ -258,7 +259,11 @@ const Fusion = ({ source }: { source: TagAFusionner }) => {
                 </div>
                 <div className="fr-flex fr-flex-gap-2v">
                   {destinationsPossibles.portees.map((portee) => (
-                    <BadgeDePortee key={portee} portee={portee} small />
+                    <BadgeAvecInfobulle
+                      key={portee}
+                      {...badgeDePortee(portee, null)}
+                      small
+                    />
                   ))}
                 </div>
               </div>
