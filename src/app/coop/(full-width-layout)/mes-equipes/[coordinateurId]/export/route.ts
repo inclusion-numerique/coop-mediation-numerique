@@ -5,12 +5,9 @@ import { classeurDesMembresAvec } from '@/features/equipe/abilities/exporter-les
 import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/exporter-les-membres.query'
 import { membreExporte } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/membre-exporte.presenter'
 import { estMembreActif } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
-import {
-  CoordinateurId,
-  criteresEquipe,
-  MediateurId,
-} from '@/features/equipe/domain'
+import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
+import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
@@ -27,7 +24,7 @@ export const GET = async (
   if (!user) return new Response('Unauthorized', { status: 401 })
 
   const recherche = new URL(request.url).searchParams
-  const criteres = criteresEquipe({
+  const criteres = criteresDeLEquipe({
     recherche: recherche.get('recherche') ?? undefined,
     statut: recherche.get('statut') ?? undefined,
     role: recherche.get('role') ?? undefined,

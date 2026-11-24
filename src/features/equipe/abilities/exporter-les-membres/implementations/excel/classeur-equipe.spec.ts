@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
-import { criteresEquipe } from '../../../../domain'
 import { classeurEquipe, type MembreExporte } from './classeur-equipe'
 
 const auteur: AuteurDExport = {
@@ -24,7 +24,7 @@ const membre = (surcharges: Partial<MembreExporte> = {}): MembreExporte => ({
 const premiereLigne = (membres: MembreExporte[]): unknown[] => {
   const tableau = classeurEquipe({
     membres,
-    criteres: criteresEquipe({}),
+    criteres: criteresDeLEquipe({}),
     auteur,
     genereLe: new Date('2026-08-06T12:00:00Z'),
   })

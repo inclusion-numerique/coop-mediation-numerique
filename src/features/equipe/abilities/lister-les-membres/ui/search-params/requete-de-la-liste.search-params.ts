@@ -1,4 +1,5 @@
-import { type CriteresEquipe, criteresEquipe } from '@/features/equipe/domain'
+import type { CriteresEquipe } from '@/features/equipe/domain'
+import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
@@ -15,7 +16,7 @@ export type RequeteDeLaListe = {
 export const requeteDeLaListe = (
   parametres: ParametresDeLaListe,
 ): RequeteDeLaListe => ({
-  criteres: criteresEquipe(parametres),
+  criteres: criteresDeLEquipe(parametres),
   page: entierPositifLu(parametres.page, DEFAULT_PAGE),
   lignesParPage: entierPositifLu(parametres.lignes, DEFAULT_PAGE_SIZE),
 })

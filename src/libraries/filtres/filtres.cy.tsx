@@ -1,6 +1,7 @@
 import { NuqsTestingAdapter, type UrlUpdateEvent } from 'nuqs/adapters/testing'
 import { type ReactNode, useState } from 'react'
 import { z } from 'zod'
+import { BoutonDeChoix } from './BoutonDeChoix'
 import { CaseACocher } from './CaseACocher'
 import { ChoixEnLigne } from './ChoixEnLigne'
 import { ChoixEnPopover } from './ChoixEnPopover'
@@ -93,6 +94,28 @@ const filtreDeLHistorique = filtreDeChoixUnique({
 })
 
 describe('Filtres', () => {
+  it('ajoute la valeur du bouton aux choix de l’URL', () => {
+    const ecrites = monter(
+      '?types=individuel&page=2',
+      <BoutonDeChoix filtre={filtreDuType} valeur="collectif">
+        Collectif
+      </BoutonDeChoix>,
+    )
+    cy.contains('button', 'Collectif').click()
+    derniereAdresse(ecrites).should('equal', '?types=individuel,collectif')
+  })
+
+  it('retire la valeur d’un bouton déjà choisi', () => {
+    const ecrites = monter(
+      '?types=individuel,collectif',
+      <BoutonDeChoix filtre={filtreDuType} valeur="collectif">
+        Collectif
+      </BoutonDeChoix>,
+    )
+    cy.contains('button', 'Collectif').click()
+    derniereAdresse(ecrites).should('equal', '?types=individuel')
+  })
+
   it('écrit la case cochée dans l’URL et revient à la première page', () => {
     const ecrites = monter(
       '?page=2',

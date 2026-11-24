@@ -3,12 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { subDays } from 'date-fns'
 import { type MembresDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/domain/index'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
-import {
-  CoordinateurId,
-  criteresEquipe,
-  type Lecteur,
-  type ParametresDeRecherche,
-} from '@/features/equipe/domain'
+import { CoordinateurId, type Lecteur } from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   type MediateurSeme,
@@ -17,6 +12,7 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -51,12 +47,12 @@ const rattacher = async (
 
 const consulter = async (
   lecteur: Lecteur,
-  parametres: ParametresDeRecherche = {},
+  parametres: Parameters<typeof criteresDeLEquipe>[0] = {},
 ) => {
   contexte.issue = await listerLesMembres({
     coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     lecteur,
-    criteres: criteresEquipe(parametres),
+    criteres: criteresDeLEquipe(parametres),
     page: 1,
     lignesParPage: 50,
   })
