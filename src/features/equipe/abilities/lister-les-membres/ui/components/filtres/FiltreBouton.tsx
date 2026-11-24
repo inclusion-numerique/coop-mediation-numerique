@@ -4,20 +4,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { resetPagination } from '@/libraries/filtres/helpers'
-import { FiltreStatut } from '../../../../../domain/criteres-equipe'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import type { FilterParam } from '../../search-params/parametres-de-la-liste.search-params'
-
-const parseStatutParam = (param: string | null): FilterParam[] =>
-  (param ?? '').split(',').flatMap((valeur) => {
-    const statut = FiltreStatut.schema.safeParse(valeur)
-    return statut.success ? [statut.data] : []
-  })
-
-const updateStatut = (params: URLSearchParams, statuts: FilterParam[]) => {
-  if (statuts.length > 0) params.set('statut', statuts.join(','))
-  if (statuts.length === 0) params.delete('statut')
-}
+import {
+  statutBascule,
+  statutsChoisis,
+} from '../../search-params/parametres-de-la-liste.search-params'
 
 export const FiltreBouton = ({
   filterParam,
@@ -30,20 +22,14 @@ export const FiltreBouton = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentStatuts = parseStatutParam(searchParams.get('statut'))
+  const currentStatuts = statutsChoisis(searchParams)
   const isActive = currentStatuts.includes(filterParam)
 
   const handleClick = () => {
-    const params = new URLSearchParams(searchParams.toString())
-
-    const newStatuts = isActive
-      ? currentStatuts.filter((s) => s !== filterParam)
-      : [...currentStatuts, filterParam]
-
-    updateStatut(params, newStatuts)
-    resetPagination(params)
-
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(searchParams, statutBascule(searchParams, filterParam)),
+      { scroll: false },
+    )
   }
 
   return (

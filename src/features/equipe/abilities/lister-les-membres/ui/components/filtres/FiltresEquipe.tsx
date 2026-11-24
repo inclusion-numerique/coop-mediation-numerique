@@ -2,7 +2,9 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import type { RoleFiltre } from '../../search-params/parametres-de-la-liste.search-params'
+import { sansLesFiltres } from '../../search-params/parametres-de-la-liste.search-params'
 import { Actifs } from './Actifs'
 import { Archives } from './Archives'
 import { Inactifs } from './Inactifs'
@@ -30,11 +32,9 @@ export const FiltresEquipe = ({
   const hasFilters = hasStatutFilter || hasRoleFilter
 
   const handleClearFilters = () => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete('statut')
-    params.delete('role')
-    params.delete('page')
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, sansLesFiltres()), {
+      scroll: false,
+    })
   }
 
   return (

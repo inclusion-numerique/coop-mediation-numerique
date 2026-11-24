@@ -2,10 +2,11 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { resetPagination } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import type { RoleFiltre } from '../../search-params/parametres-de-la-liste.search-params'
+import { roleEnParametres } from '../../search-params/parametres-de-la-liste.search-params'
 
 const roleOptions: { label: string; value: RoleFiltre | '' }[] = [
   { label: 'Tous les rôles', value: '' },
@@ -27,12 +28,10 @@ export const RoleFilter = ({ defaultValue }: { defaultValue?: RoleFiltre }) => {
   const hasFilter = role !== ''
 
   const closePopover = (close: boolean = false) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (role) params.set('role', role)
-    if (!role) params.delete('role')
-    resetPagination(params)
     close && setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, roleEnParametres(role)), {
+      scroll: false,
+    })
   }
 
   const handleSubmit = (close: boolean = false) => {

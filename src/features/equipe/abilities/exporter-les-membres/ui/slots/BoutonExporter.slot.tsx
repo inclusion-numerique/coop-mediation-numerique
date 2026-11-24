@@ -1,21 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { hrefDeLExportDeLEquipe } from '@/features/equipe/ui/presenters/liens.presenter'
-
-const parametresExportes = ['recherche', 'statut', 'role', 'tri', 'ordre']
-
-const lienDExport = (
-  coordinateurId: string,
-  parametres: Readonly<Record<string, string | undefined>>,
-): string => {
-  const recherche = new URLSearchParams(
-    parametresExportes.flatMap((cle) => {
-      const valeur = parametres[cle]
-      return valeur ? [[cle, valeur]] : []
-    }),
-  ).toString()
-  const chemin = hrefDeLExportDeLEquipe(coordinateurId)
-  return recherche ? `${chemin}?${recherche}` : chemin
-}
+import { lienDExport } from '../search-params/requete-de-l-export.search-params'
 
 const BoutonExporter = ({
   coordinateurId,
