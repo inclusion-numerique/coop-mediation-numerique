@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'node:fs'
-import { varDirectory } from './varDirectory'
+import { varDirectory } from './var-directory'
 
 /**
  * Creates project var directory if it doesn't exist
