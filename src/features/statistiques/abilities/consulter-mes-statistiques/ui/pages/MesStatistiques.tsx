@@ -1,9 +1,6 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import Filters from '@/features/statistiques/ui/components/filtres/Filters'
-import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
-import type { OptionsDeLaBarre } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
@@ -19,18 +16,8 @@ import { statistiquesPageTitle } from '../../../../ui/presenters/titre-des-stati
 import { StatistiquesImpact } from '../components/StatistiquesImpact'
 
 export const MesStatistiques = ({
-  activitesFilters,
-  communesOptions,
-  departementsOptions,
-  tagsOptions,
-  initialMediateursOptions,
-  initialBeneficiairesOptions,
-  lieuxActiviteOptions,
-  structuresEmployeusesOptions,
-  activiteDates,
-  activiteSourceOptions,
-  vocabulaire,
-  filtreDeLieu,
+  barreDeFiltres,
+  filtres,
   user,
   hasCrasV1,
   accompagnementsCount,
@@ -39,7 +26,9 @@ export const MesStatistiques = ({
   generale,
   activites,
   beneficiaires,
-}: OptionsDeLaBarre & {
+}: {
+  barreDeFiltres: (actions: ReactNode) => ReactNode
+  filtres: { readonly libelles: readonly string[]; readonly requete: string }
   user: {
     readonly coordinateur: { readonly id: string } | null
     readonly mediateur: { readonly id: string } | null
@@ -56,7 +45,7 @@ export const MesStatistiques = ({
   beneficiaires: ReactNode
 }) => {
   return (
-    <ImpressionPreteProvider key={JSON.stringify(activitesFilters)}>
+    <ImpressionPreteProvider key={filtres.requete}>
       <CoopPageContainer size={56}>
         <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
         <SkipLinksPortal />
@@ -65,51 +54,18 @@ export const MesStatistiques = ({
           <h1 className="fr-text-title--blue-france fr-mb-5v">
             {statistiquesPageTitle(user)}
           </h1>
-          <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
-            <Filters
-              defaultFilters={activitesFilters}
-              vocabulaire={vocabulaire}
-              filtreDeLieu={filtreDeLieu}
-              structuresEmployeusesOptions={structuresEmployeusesOptions}
-              tagsOptions={tagsOptions}
-              initialMediateursOptions={initialMediateursOptions}
-              initialBeneficiairesOptions={initialBeneficiairesOptions}
-              beneficiairesFilter={false}
-              minDate={activiteDates.first}
-              isCoordinateur={user.coordinateur?.id != null}
-              isMediateur={user.mediateur?.id != null}
-              hasCrasV1={hasCrasV1}
-            />
+          {barreDeFiltres(
             <div className="fr-flex fr-flex-gap-2v">
               {partage}
               <BlocEnAttente attente={<ExportStatistiquesEnAttente />}>
                 <ExportStatistiques
-                  filters={activitesFilters}
-                  communesOptions={communesOptions}
-                  departementsOptions={departementsOptions}
-                  lieuxActiviteOptions={lieuxActiviteOptions}
-                  mediateursOptions={initialMediateursOptions}
-                  beneficiairesOptions={[]}
-                  tagsOptions={tagsOptions}
+                  libelles={filtres.libelles}
+                  requete={filtres.requete}
                   accompagnementsCount={accompagnementsCount}
-                  activiteSourceOptions={activiteSourceOptions}
-                  vocabulaire={vocabulaire}
                 />
               </BlocEnAttente>
-            </div>
-          </div>
-          <FilterTags
-            filters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
-            structuresEmployeusesOptions={structuresEmployeusesOptions}
-            mediateursOptions={initialMediateursOptions}
-            beneficiairesOptions={[]}
-            tagsOptions={tagsOptions}
-            activiteSourceOptions={activiteSourceOptions}
-            vocabulaire={vocabulaire}
-          />
+            </div>,
+          )}
           {hasCrasV1 && (
             <Notice
               className="fr-notice--flex fr-align-items-center fr-mt-6v"

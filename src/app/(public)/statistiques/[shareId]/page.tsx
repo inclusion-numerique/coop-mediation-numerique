@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { rechercherLesEmployeusesDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
 import { rechercherLesLieuxDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
+import { rechercherLesTagsDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-tags-du-partage.action'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { BlocDesChiffresCles } from '@/features/activites/abilities/compter-les-accompagnements/ui/slots/BlocDesChiffresCles.slot'
@@ -25,8 +26,11 @@ import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/
 import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
 import { BlocDuProfil } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/slots/BlocDuProfil.slot'
 import { ProfilImprime } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/slots/ProfilImprime.slot'
-import { lieuxChoisisAvec } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/lieux-choisis.binding'
-import { optionsDesLieuxChoisis } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
+import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-choisis.query'
+import { tagsLesPlusUtilisesDuPerimetre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-du-perimetre.query'
+import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
+import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
+import { lieuxDuFiltrePresentes } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/lieux-du-filtre.presenter'
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { BlocDesCanauxEtDurees } from '@/features/activites/abilities/repartir-les-accompagnements/ui/slots/BlocDesCanauxEtDurees.slot'
@@ -42,24 +46,25 @@ import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { BlocDesTags } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/slots/BlocDesTags.slot'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
+import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
-import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
+import { statistiquesDuPerimetreSelonLesCriteres } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
 import {
   nombreDAccompagnements,
   source,
   sourceOptionnelle,
   statistiquesAvec,
 } from '@/features/activites/implementations/statistiques-en-cours.binding'
-import { vocabulaireDesActivites } from '@/features/activites/ui/labels/libelles/vocabulaire-des-statistiques.labels'
-import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
+import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
+import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
+import { barreDesStatistiques } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/labels/statut-rdv.labels'
 import { StatistiquesPartagees } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartagees'
-import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/action/rechercher-employeuses-des-statistiques.key'
-import { RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY } from '@/features/statistiques/action/rechercher-les-lieux-des-statistiques.key'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import {
   impressionDesStatistiques,
@@ -67,13 +72,6 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/components/sections-des-statistiques'
-import { mesStatistiques } from '@/features/statistiques/ui/presenters/mes-statistiques.presenter'
-import {
-  type ParametresDeLaPage,
-  parametresDesStatistiquesPartagees,
-} from '@/features/statistiques/ui/search-params/parametres-de-la-page.search-params'
-import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
-import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 const statistiquesDesActivites = statistiquesAvec({
@@ -97,29 +95,11 @@ const statistiquesDesActivites = statistiquesAvec({
   hasCrasV1: presenceDeCrasV1,
 })
 
-const sourcesDeMesStatistiques = {
-  perimetreDe: perimetreDeLUtilisateur,
-  lancer: statistiquesDuPerimetre(
-    statistiquesDesActivites.lancer,
-    rendezVousAuxStatutsSql,
-  ),
-  rassembler: statistiquesDesActivites.rassembler,
-  lieuxChoisis: lieuxChoisisAvec(optionsDesLieuxChoisis),
-  tagsVisibles: tagsVisiblesDuProfil,
-  beneficiaires: async () => [],
-  membres: membresAFiltrerDuDemandeur,
-  activitesDuPerimetre: decrireLesActivitesDuPerimetre,
-  vocabulaire: {
-    ...vocabulaireDesActivites,
-    statutsDeRendezVous: rdvStatusOptions,
-  },
-}
-
 type PageProps = {
   params: Promise<{
     shareId: string
   }>
-  searchParams: Promise<ParametresDeLaPage>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 const Page = async ({ params, searchParams }: PageProps) => {
@@ -134,147 +114,227 @@ const Page = async ({ params, searchParams }: PageProps) => {
     await getSessionUserFromId(partage.data.utilisateurId),
   )
 
-  const { statistiques, ...mesStatistiquesProps } = await mesStatistiques(
-    {
-      user,
-      profil: profilDeLaSession(user),
-      ...parametresDesStatistiquesPartagees(parametres),
-    },
-    sourcesDeMesStatistiques,
-  )
+  const perimetre = perimetreDeLUtilisateur(user)
+  if (perimetre === null) return notFound()
+
+  const lues = filtresDesStatistiques.charger(parametres)
+  const valeurs = { ...lues, au: lues.au ?? new Date() }
+  const statistiques = statistiquesDuPerimetreSelonLesCriteres(
+    statistiquesDesActivites.lancer,
+    rendezVousAuxStatutsSql,
+  )({
+    perimetre,
+    criteres: criteresDesStatistiquesDesFiltres(valeurs),
+    fin: valeurs.au,
+  })
   const toutes = statistiquesDesActivites.toutes(statistiques)
-  const { hasCrasV1 } = await statistiques.hasCrasV1
+
+  const [
+    { hasCrasV1 },
+    activitesDuPerimetre,
+    lieux,
+    tagsSuggeres,
+    tagsDesFiltres,
+  ] = await Promise.all([
+    statistiques.hasCrasV1,
+    decrireLesActivitesDuPerimetre(perimetre),
+    lieuxDuFiltre(perimetre, {
+      lieux: valeurs.lieux,
+      communes: valeurs.communes,
+      departements: valeurs.departements,
+    }),
+    tagsLesPlusUtilisesDuPerimetre(perimetre),
+    tagsChoisis(valeurs.tags),
+  ])
+
+  const employeuses = optionsDEmployeuses(activitesDuPerimetre.employeuses).map(
+    ({ id, nom, commune }) => ({
+      value: id,
+      label: commune === null ? nom : `${nom} · ${commune}`,
+    }),
+  )
+  const choisies = new Set(valeurs.structuresEmployeuses.map(String))
+
+  const barre = barreDesStatistiques({
+    adresse: { chemin: `/statistiques/${shareId}`, parametres },
+    valeurs: lues,
+    lieux: lieuxDuFiltrePresentes(lieux),
+    employeuses: {
+      suggestions: employeuses.slice(0, 10),
+      choisies: employeuses.filter(({ value }) => choisies.has(value)),
+    },
+    tags: {
+      suggestions: tagsSuggeres.map(({ id, nom }) => ({
+        value: id,
+        label: nom,
+      })),
+      choisies: tagsDesFiltres.map(({ id, nom }) => ({
+        value: id,
+        label: nom,
+      })),
+    },
+    mediateurs: { suggestions: [], choisies: [] },
+  })
 
   return (
     <ClientBinder
-      bind={RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY}
+      bind={RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY}
       to={rechercherLesEmployeusesDuPartageAction.bind(null, shareId)}
     >
       <ClientBinder
-        bind={RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY}
+        bind={RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY}
         to={rechercherLesLieuxDuPartageAction.bind(null, shareId)}
       >
-        <StatistiquesPartagees
-          {...mesStatistiquesProps}
-          username={user.name ?? ''}
-          shareId={shareId}
-          hasCrasV1={hasCrasV1}
-          accompagnementsCount={nombreDAccompagnements(toutes)}
-          filtreDeLieu={<FiltreDeLieu choisis={mesStatistiquesProps} />}
-          impression={impressionDesStatistiques({
-            ...mesStatistiquesProps,
-            imprimees: (fournies) => ({
-              generale: {
+        <ClientBinder
+          bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
+          to={rechercherLesTagsDuPartageAction.bind(null, shareId)}
+        >
+          <StatistiquesPartagees
+            barreDeFiltres={(actions) => (
+              <BarreDesStatistiques
+                barre={barre}
+                periode={{
+                  debut: activitesDuPerimetre.premiere
+                    ? new Date(activitesDuPerimetre.premiere)
+                    : undefined,
+                  fin: activitesDuPerimetre.derniere
+                    ? new Date(activitesDuPerimetre.derniere)
+                    : undefined,
+                }}
+                coordinateur={false}
+                importsV1={hasCrasV1}
+                actions={actions}
+              />
+            )}
+            filtres={barre.filtres}
+            username={user.name ?? ''}
+            shareId={shareId}
+            hasCrasV1={hasCrasV1}
+            accompagnementsCount={nombreDAccompagnements(toutes)}
+            impression={impressionDesStatistiques({
+              libelles: barre.filtres.libelles,
+              imprimees: (fournies) => ({
+                generale: {
+                  chiffresCles: (
+                    <ChiffresClesImprimes totalCounts={fournies.totalCounts} />
+                  ),
+                  graphiques: (
+                    <GraphiquesImprimes
+                      accompagnementsParJour={fournies.accompagnementsParJour}
+                      accompagnementsParMois={fournies.accompagnementsParMois}
+                    />
+                  ),
+                },
+                beneficiaires: {
+                  profil: (
+                    <ProfilImprime beneficiaires={fournies.beneficiaires} />
+                  ),
+                  communes: (
+                    <CommunesDeResidenceImprimees
+                      communes={fournies.beneficiaires.communes}
+                      total={fournies.beneficiaires.total}
+                    />
+                  ),
+                },
+                activites: {
+                  types: (
+                    <TypesDActiviteImprimes
+                      typeActivites={fournies.activites.typeActivites}
+                      participations={
+                        fournies.totalCounts.accompagnements.collectifs.total
+                      }
+                    />
+                  ),
+                  thematiques: (
+                    <BlocDesThematiques
+                      repartition={fournies.activites}
+                      pourImpression
+                    />
+                  ),
+                  demarches: (
+                    <BlocDesDemarches
+                      repartition={fournies.activites}
+                      pourImpression
+                    />
+                  ),
+                  tags: (
+                    <BlocDesTags
+                      tags={fournies.activites.tags}
+                      pourImpression
+                    />
+                  ),
+                  materiels: (
+                    <MaterielsImprimes
+                      materiels={fournies.activites.materiels}
+                    />
+                  ),
+                  canaux: (
+                    <CanauxImprimes typeLieu={fournies.activites.typeLieu} />
+                  ),
+                  durees: (
+                    <DureesImprimees durees={fournies.activites.durees} />
+                  ),
+                  lieux: <LieuxImprimes structures={fournies.structures} />,
+                },
+              }),
+              statistiques: toutes,
+            })}
+            generale={sectionGenerale(
+              {
                 chiffresCles: (
-                  <ChiffresClesImprimes totalCounts={fournies.totalCounts} />
+                  <BlocDesChiffresCles totaux={statistiques.totalCounts} />
                 ),
-                graphiques: (
-                  <GraphiquesImprimes
-                    accompagnementsParJour={fournies.accompagnementsParJour}
-                    accompagnementsParMois={fournies.accompagnementsParMois}
-                  />
-                ),
+                graphique: <BlocDuGraphique periode={statistiques.periode} />,
               },
-              beneficiaires: {
-                profil: (
-                  <ProfilImprime beneficiaires={fournies.beneficiaires} />
-                ),
-                communes: (
-                  <CommunesDeResidenceImprimees
-                    communes={fournies.beneficiaires.communes}
-                    total={fournies.beneficiaires.total}
-                  />
-                ),
+              {
+                wording: 'generique',
               },
-              activites: {
+            )}
+            activites={sectionActivites(
+              {
                 types: (
-                  <TypesDActiviteImprimes
-                    typeActivites={fournies.activites.typeActivites}
-                    participations={
-                      fournies.totalCounts.accompagnements.collectifs.total
-                    }
+                  <BlocDesTypesDActivite
+                    repartition={statistiques.repartition}
+                    totaux={statistiques.totalCounts}
                   />
                 ),
                 thematiques: (
-                  <BlocDesThematiques
-                    repartition={fournies.activites}
-                    pourImpression
-                  />
+                  <BlocDesThematiques repartition={statistiques.repartition} />
                 ),
                 demarches: (
-                  <BlocDesDemarches
-                    repartition={fournies.activites}
-                    pourImpression
+                  <BlocDesDemarches repartition={statistiques.repartition} />
+                ),
+                tags: <BlocDesTags tags={statistiques.tags} />,
+                materiels: (
+                  <BlocDesMateriels repartition={statistiques.repartition} />
+                ),
+                canauxEtDurees: (
+                  <BlocDesCanauxEtDurees
+                    repartition={statistiques.repartition}
                   />
                 ),
-                tags: (
-                  <BlocDesTags tags={fournies.activites.tags} pourImpression />
-                ),
-                materiels: (
-                  <MaterielsImprimes materiels={fournies.activites.materiels} />
-                ),
-                canaux: (
-                  <CanauxImprimes typeLieu={fournies.activites.typeLieu} />
-                ),
-                durees: <DureesImprimees durees={fournies.activites.durees} />,
-                lieux: <LieuxImprimes structures={fournies.structures} />,
+                lieux: <BlocDesLieux structures={statistiques.structures} />,
+                communes: <BlocDesCommunes communes={statistiques.communes} />,
               },
-            }),
-            statistiques: toutes,
-          })}
-          generale={sectionGenerale(
-            {
-              chiffresCles: (
-                <BlocDesChiffresCles totaux={statistiques.totalCounts} />
-              ),
-              graphique: <BlocDuGraphique periode={statistiques.periode} />,
-            },
-            {
-              wording: 'generique',
-            },
-          )}
-          activites={sectionActivites(
-            {
-              types: (
-                <BlocDesTypesDActivite
-                  repartition={statistiques.repartition}
-                  totaux={statistiques.totalCounts}
-                />
-              ),
-              thematiques: (
-                <BlocDesThematiques repartition={statistiques.repartition} />
-              ),
-              demarches: (
-                <BlocDesDemarches repartition={statistiques.repartition} />
-              ),
-              tags: <BlocDesTags tags={statistiques.tags} />,
-              materiels: (
-                <BlocDesMateriels repartition={statistiques.repartition} />
-              ),
-              canauxEtDurees: (
-                <BlocDesCanauxEtDurees repartition={statistiques.repartition} />
-              ),
-              lieux: <BlocDesLieux structures={statistiques.structures} />,
-              communes: <BlocDesCommunes communes={statistiques.communes} />,
-            },
-            {
-              wording: 'generique',
-            },
-          )}
-          beneficiaires={sectionBeneficiaires(
-            {
-              profil: <BlocDuProfil profil={statistiques.profil} />,
-              communes: (
-                <BlocDesCommunesDeResidence
-                  residences={statistiques.residences}
-                />
-              ),
-            },
-            {
-              wording: 'generique',
-            },
-          )}
-        />
+              {
+                wording: 'generique',
+              },
+            )}
+            beneficiaires={sectionBeneficiaires(
+              {
+                profil: <BlocDuProfil profil={statistiques.profil} />,
+                communes: (
+                  <BlocDesCommunesDeResidence
+                    residences={statistiques.residences}
+                  />
+                ),
+              },
+              {
+                wording: 'generique',
+              },
+            )}
+          />
+        </ClientBinder>
       </ClientBinder>
     </ClientBinder>
   )

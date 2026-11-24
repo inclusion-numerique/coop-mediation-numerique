@@ -64,7 +64,7 @@ const finDesGraphiques = (
   graphOptions.fin ??
   (activitesFilters.au ? new Date(activitesFilters.au) : new Date())
 
-export const mesStatistiques = async <
+const mesStatistiques = async <
   Utilisateur extends { readonly mediateur: { readonly id: string } | null },
   Profil,
   Perimetre,

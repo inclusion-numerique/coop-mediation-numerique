@@ -4,23 +4,13 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { use } from 'react'
-import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
-import {
-  generateActivitesFiltersLabels,
-  toLieuPrefix,
-} from '@/features/statistiques/ui/labels/filtres.labels'
 import {
   hrefDeLExportDesAccompagnements,
   hrefDeLExportDesStatistiques,
 } from '@/features/statistiques/ui/presenters/liens.presenter'
-import { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
-import { adresseDesFiltres } from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'
-import type { OptionDeBeneficiaire } from '../../presenters/options-de-la-barre.presenter'
 import { useImpressionPrete } from '../impression-prete'
 
 const ExportStatistiquesModal = createModal({
@@ -29,32 +19,18 @@ const ExportStatistiquesModal = createModal({
 })
 
 export const ExportStatistiques = ({
-  filters,
-  lieuxActiviteOptions,
-  mediateursOptions,
-  beneficiairesOptions,
-  departementsOptions,
-  communesOptions,
-  tagsOptions,
+  libelles,
+  requete,
   accompagnementsCount,
-  activiteSourceOptions,
-  vocabulaire,
   exportListAccompagnements = true,
   exportStatistiques = true,
   publicExportId,
   title = 'Exports des accompagnements',
   emptyFilterMessage = 'Vous n’avez pas appliqué de filtre, tous les accompagnements seront exportés.',
 }: {
-  filters: ActivitesFilters
-  mediateursOptions: MediateurOption[]
-  beneficiairesOptions: OptionDeBeneficiaire[]
-  lieuxActiviteOptions: SelectOption[]
-  departementsOptions: SelectOption[]
-  communesOptions: SelectOption[]
-  tagsOptions: { id: string; nom: string }[]
+  libelles: readonly string[]
+  requete: string
   accompagnementsCount: Promise<number>
-  activiteSourceOptions: SelectOption[]
-  vocabulaire: VocabulaireDeLaBarre
   exportListAccompagnements?: boolean
   exportStatistiques?: boolean
   publicExportId?: string
@@ -64,7 +40,7 @@ export const ExportStatistiques = ({
   const nombreDAccompagnements = use(accompagnementsCount)
   const impressionPrete = useImpressionPrete()
   const exportXlsx = (exportPath: string, message: string) => {
-    download(adresseDesFiltres(exportPath, filters))
+    download(requete === '' ? exportPath : `${exportPath}?${requete}`)
     ExportStatistiquesModal.close()
     createToast({
       priority: 'success',
@@ -93,18 +69,6 @@ export const ExportStatistiques = ({
     })
   }
 
-  const filterLabelsToDisplay = generateActivitesFiltersLabels(filters, {
-    vocabulaire,
-    communesOptions,
-    departementsOptions,
-    lieuxActiviteOptions,
-    beneficiairesOptions,
-    mediateursOptions,
-    structuresEmployeusesOptions: [],
-    tagsOptions,
-    activiteSourceOptions,
-  }).map(toLieuPrefix)
-
   return (
     <>
       <Button
@@ -118,18 +82,15 @@ export const ExportStatistiques = ({
         Exporter
       </Button>
       <ExportStatistiquesModal.Component title={title}>
-        {filterLabelsToDisplay.length > 0 ? (
+        {libelles.length > 0 ? (
           <div className="fr-my-6v">
             <p className="fr-mb-2v">
               Vous avez appliqué les filtres suivants&nbsp;:
             </p>
             <ul className="fr-tags-group">
-              {filterLabelsToDisplay.map((filter) => (
-                <li
-                  className="fr-line-height-1"
-                  key={`${filter.type}-${filter.key}`}
-                >
-                  <Tag small>{filter.label}</Tag>
+              {libelles.map((libelle) => (
+                <li className="fr-line-height-1" key={libelle}>
+                  <Tag small>{libelle}</Tag>
                 </li>
               ))}
             </ul>

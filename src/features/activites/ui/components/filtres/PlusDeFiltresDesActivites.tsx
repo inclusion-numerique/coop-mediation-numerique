@@ -12,6 +12,7 @@ import {
   filtreDesTags,
   filtreDesThematiquesAdministratives,
   filtreDesThematiquesDeMediation,
+  filtreDuDispositif,
 } from '../../filtres/activites.filtre'
 import { RechercheDesTags } from './RechercheDesTags'
 
@@ -42,16 +43,19 @@ type OptionsDeRecherche = {
 
 export const PlusDeFiltresDesActivites = ({
   importsV1,
+  avecDispositif = false,
   employeuses,
   tags,
 }: {
   importsV1: boolean
+  avecDispositif?: boolean
   employeuses: OptionsDeRecherche
   tags: OptionsDeRecherche
 }) => (
   <FiltresEnModale
     titre="Plus de filtres"
     filtres={[
+      filtreDuDispositif,
       filtreDeLaSource,
       filtreDesEmployeuses,
       filtreDesThematiquesDeMediation,
@@ -59,6 +63,12 @@ export const PlusDeFiltresDesActivites = ({
       filtreDesTags,
     ]}
   >
+    {avecDispositif && (
+      <>
+        <ChoixEnLigne filtre={filtreDuDispositif} legende="Filtrer par rôle" />
+        <hr className="fr-separator-8v" />
+      </>
+    )}
     {importsV1 && (
       <>
         <ChoixEnLigne

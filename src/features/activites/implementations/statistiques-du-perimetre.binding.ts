@@ -9,7 +9,7 @@ import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import type { RendezVousAuxStatuts } from './prisma/criteres-des-statistiques.sql'
 import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
 
-const statistiquesDuPerimetreSelonLesCriteres =
+export const statistiquesDuPerimetreSelonLesCriteres =
   <EnCours>(
     lancer: LancerLesStatistiques<EnCours>,
     rendezVousAuxStatuts: RendezVousAuxStatuts,

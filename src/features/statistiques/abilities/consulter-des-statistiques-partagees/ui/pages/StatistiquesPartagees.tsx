@@ -1,9 +1,6 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import Filters from '@/features/statistiques/ui/components/filtres/Filters'
-import { FilterTags } from '@/features/statistiques/ui/components/filtres/FilterTags'
-import type { OptionsDeLaBarre } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import {
@@ -16,25 +13,17 @@ import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
 export const StatistiquesPartagees = ({
   shareId,
   username,
-  activitesFilters,
-  communesOptions,
-  departementsOptions,
-  tagsOptions,
-  initialMediateursOptions,
-  initialBeneficiairesOptions,
-  lieuxActiviteOptions,
-  structuresEmployeusesOptions,
-  activiteSourceOptions,
-  vocabulaire,
-  filtreDeLieu,
-  activiteDates,
+  barreDeFiltres,
+  filtres,
   hasCrasV1,
   accompagnementsCount,
   impression,
   generale,
   activites,
   beneficiaires,
-}: OptionsDeLaBarre & {
+}: {
+  barreDeFiltres: (actions: ReactNode) => ReactNode
+  filtres: { readonly libelles: readonly string[]; readonly requete: string }
   shareId: string
   username: string
   hasCrasV1: boolean
@@ -45,7 +34,7 @@ export const StatistiquesPartagees = ({
   beneficiaires: ReactNode
 }) => {
   return (
-    <ImpressionPreteProvider key={JSON.stringify(activitesFilters)}>
+    <ImpressionPreteProvider key={filtres.requete}>
       <SkipLinksPortal />
       {impression}
       <main
@@ -74,21 +63,7 @@ export const StatistiquesPartagees = ({
             </span>
           }
         />
-        <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
-          <Filters
-            defaultFilters={activitesFilters}
-            vocabulaire={vocabulaire}
-            filtreDeLieu={filtreDeLieu}
-            structuresEmployeusesOptions={structuresEmployeusesOptions}
-            tagsOptions={tagsOptions}
-            initialMediateursOptions={initialMediateursOptions}
-            initialBeneficiairesOptions={initialBeneficiairesOptions}
-            beneficiairesFilter={false}
-            minDate={activiteDates.first}
-            isCoordinateur={false}
-            isMediateur={true}
-            hasCrasV1={hasCrasV1}
-          />
+        {barreDeFiltres(
           <div className="fr-flex fr-flex-gap-2v">
             <BlocEnAttente
               attente={
@@ -96,36 +71,17 @@ export const StatistiquesPartagees = ({
               }
             >
               <ExportStatistiques
-                filters={activitesFilters}
-                communesOptions={communesOptions}
-                departementsOptions={departementsOptions}
-                lieuxActiviteOptions={lieuxActiviteOptions}
-                mediateursOptions={initialMediateursOptions}
-                beneficiairesOptions={[]}
-                tagsOptions={tagsOptions}
+                libelles={filtres.libelles}
+                requete={filtres.requete}
                 accompagnementsCount={accompagnementsCount}
-                activiteSourceOptions={activiteSourceOptions}
-                vocabulaire={vocabulaire}
                 exportListAccompagnements={false}
                 publicExportId={shareId}
                 title="Export des statistiques"
                 emptyFilterMessage="Vous n’avez pas appliqué de filtre, l’intégralité des statistiques sera exportée."
               />
             </BlocEnAttente>
-          </div>
-        </div>
-        <FilterTags
-          filters={activitesFilters}
-          communesOptions={communesOptions}
-          departementsOptions={departementsOptions}
-          lieuxActiviteOptions={lieuxActiviteOptions}
-          structuresEmployeusesOptions={structuresEmployeusesOptions}
-          mediateursOptions={initialMediateursOptions}
-          beneficiairesOptions={[]}
-          tagsOptions={tagsOptions}
-          activiteSourceOptions={activiteSourceOptions}
-          vocabulaire={vocabulaire}
-        />
+          </div>,
+        )}
         {hasCrasV1 && (
           <Notice
             className="fr-notice--flex fr-align-items-center fr-mt-6v"

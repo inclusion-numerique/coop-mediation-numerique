@@ -1,7 +1,3 @@
-import type { ComponentProps, ReactNode } from 'react'
-import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
-import type Filters from '@/features/statistiques/ui/components/filtres/Filters'
-import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/labels/barre.labels'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { TagScope } from '../labels/portee-de-tag.labels'
 import { activiteSourceOptions } from '../labels/source-de-l-activite.labels'
@@ -119,25 +115,4 @@ export const optionsDesStatistiques = async <OptionDeBeneficiaire>(
     },
     activiteSourceOptions,
   }
-}
-
-export type OptionsDeLaBarre = {
-  activitesFilters: ActivitesFilters
-  communesOptions: SelectOption[]
-  departementsOptions: SelectOption[]
-  lieuxActiviteOptions: SelectOption[]
-  structuresEmployeusesOptions: ComponentProps<
-    typeof Filters
-  >['structuresEmployeusesOptions']
-  tagsOptions: ComponentProps<typeof Filters>['tagsOptions']
-  initialMediateursOptions: ComponentProps<
-    typeof Filters
-  >['initialMediateursOptions']
-  initialBeneficiairesOptions: ComponentProps<
-    typeof Filters
-  >['initialBeneficiairesOptions']
-  activiteSourceOptions: SelectOption[]
-  activiteDates: { first: Date | undefined }
-  vocabulaire: VocabulaireDeLaBarre
-  filtreDeLieu: ReactNode
 }

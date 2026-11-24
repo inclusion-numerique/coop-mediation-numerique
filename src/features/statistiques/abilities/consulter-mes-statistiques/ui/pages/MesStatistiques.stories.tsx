@@ -10,35 +10,6 @@ import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { MesStatistiques } from './MesStatistiques'
 
-const optionsDeLaBarre = {
-  activitesFilters: {},
-  communesOptions: [],
-  departementsOptions: [],
-  initialBeneficiairesOptions: [],
-  initialMediateursOptions: [],
-  lieuxActiviteOptions: [],
-  structuresEmployeusesOptions: [],
-  tagsOptions: [],
-  activiteSourceOptions: [],
-  activiteDates: { first: new Date('2024-03-02') },
-  vocabulaire: {
-    typesDActivite: [
-      { value: 'individuel', label: 'Accompagnement individuel' },
-      { value: 'collectif', label: 'Atelier collectif' },
-    ],
-    statutsDeRendezVous: [
-      { value: 'seen', label: 'Honoré' },
-      { value: 'noshow', label: 'Absence' },
-    ],
-    thematiquesDeMediation: [{ value: 'Email', label: 'E-mail' }],
-    thematiquesAdministratives: [{ value: 'Emploi', label: 'Emploi' }],
-    toutesLesThematiques: [
-      { value: 'Email', label: 'E-mail' },
-      { value: 'Emploi', label: 'Emploi' },
-    ],
-  },
-}
-
 const Emplacement = ({ nom }: { nom: string }) => (
   <div className="fr-p-4v fr-background-alt--grey fr-border-radius--8">
     {nom}
@@ -65,14 +36,14 @@ type Story = StoryObj<typeof MesStatistiques>
 export const Statistiques: Story = {
   name: 'Statistiques',
   args: {
-    ...optionsDeLaBarre,
+    barreDeFiltres: (actions) => actions,
+    filtres: { libelles: [], requete: '' },
     user: { coordinateur: null, mediateur: null, emplois: [] },
     hasCrasV1: false,
     accompagnementsCount: Promise.resolve(420),
     partage: null,
-    filtreDeLieu: null,
     impression: impressionDesStatistiques({
-      ...optionsDeLaBarre,
+      libelles: [],
       statistiques: null,
       imprimees: () => ({
         generale: {
