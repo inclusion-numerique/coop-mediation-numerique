@@ -73,7 +73,7 @@ export const etablissementsDepuisUniteLegale = ({
   matching_etablissements,
 }: UniteLegale): EtablissementDepuisUniteLegale[] => {
   const typologie = getTypologieFromApiEntreprise({
-    complements,
+    ...(complements === undefined ? {} : { complements }),
     nature_juridique,
   })
 

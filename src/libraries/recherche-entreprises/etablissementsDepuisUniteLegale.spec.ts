@@ -4,7 +4,11 @@ import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entrepris
 
 // Réponse de l'API Recherche d'entreprises réduite à ce que l'adaptateur lit.
 const uniteLegale = (
-  etablissement: Partial<UniteLegale['matching_etablissements'][number]>,
+  etablissement: {
+    readonly [K in keyof UniteLegale['matching_etablissements'][number]]?:
+      | UniteLegale['matching_etablissements'][number][K]
+      | undefined
+  },
 ): UniteLegale =>
   ({
     nom_raison_sociale: 'FONDATION NATIONALE DES SCIENCES POLITIQUES',
