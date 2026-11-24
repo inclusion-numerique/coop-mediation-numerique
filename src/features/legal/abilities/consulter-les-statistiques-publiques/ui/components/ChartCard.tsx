@@ -95,7 +95,7 @@ export const ChartCard = ({
           percent={percentage}
           label={label}
           description={description}
-          legendColor={chartColors[index].fill}
+          legendColor={chartColors[index]?.fill}
         />
       ))}
     </div>

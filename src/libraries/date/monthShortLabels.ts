@@ -1,4 +1,4 @@
-export const monthShortLabels = [
+const monthShortLabels = [
   'Jan.',
   'Fév.',
   'Mars',
@@ -12,3 +12,6 @@ export const monthShortLabels = [
   'Nov.',
   'Déc.',
 ] as const
+
+export const libelleCourtDuMois = (numero: number): string =>
+  monthShortLabels[numero - 1] ?? String(numero)

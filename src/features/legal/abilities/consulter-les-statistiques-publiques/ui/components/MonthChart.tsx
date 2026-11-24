@@ -159,7 +159,7 @@ export const MonthChart = ({
                   key={dataKey.toString()}
                   stackId="stack-0"
                   dataKey={dataKey.toString()}
-                  fill={chartColors[index].fill}
+                  fill={chartColors[index]?.fill}
                 />
               ))}
             </AreaChart>
@@ -184,7 +184,7 @@ export const MonthChart = ({
                   stackId="stack-0"
                   barSize={35}
                   dataKey={dataKey.toString()}
-                  fill={chartColors[index].fill}
+                  fill={chartColors[index]?.fill}
                 />
               ))}
             </BarChart>

@@ -1,6 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { monthShortLabels } from '@/libraries/date/monthShortLabels'
+import { cumulsSuccessifs } from '@/libraries/collections/cumuls-successifs'
+import { libelleCourtDuMois } from '@/libraries/date/monthShortLabels'
 
 type BeneficiaireType = 'suivi' | 'anonyme'
 
@@ -49,7 +50,7 @@ const getBeneficiairesPerMonth = async () =>
     result.map(({ bybeneficiairessuivis, bybeneficiairesanonymes, month }) => ({
       byBeneficiairesSuivis: bybeneficiairessuivis,
       byBeneficiairesAnonymes: bybeneficiairesanonymes,
-      mois: monthShortLabels[month - 1],
+      mois: libelleCourtDuMois(month),
     })),
   )
 
@@ -79,45 +80,38 @@ const toInitialRunningTotalPerMonth = (
     byBeneficiairesAnonymes + (type === 'anonyme' ? count : 0),
 })
 
-const initialRunningTotalPerMonth = async () => [
-  {
+const initialRunningTotalPerMonth =
+  async (): Promise<BeneficiairePerMonth> => ({
     mois: 'Avant période',
     ...(await getInitialCountBeforePeriod()).reduce(
       toInitialRunningTotalPerMonth,
       { byBeneficiairesSuivis: 0, byBeneficiairesAnonymes: 0 },
     ),
-  },
-]
+  })
 
 const toRunningTotalPerMonth = (
-  beneficiairesPerMonth: BeneficiairePerMonth[],
+  cumul: BeneficiairePerMonth,
   {
     mois,
     byBeneficiairesSuivis,
     byBeneficiairesAnonymes,
   }: BeneficiairePerMonth,
-  index: number,
-) => [
-  ...beneficiairesPerMonth,
-  {
-    mois,
-    byBeneficiairesSuivis:
-      beneficiairesPerMonth[index].byBeneficiairesSuivis +
-      byBeneficiairesSuivis,
-    byBeneficiairesAnonymes:
-      beneficiairesPerMonth[index].byBeneficiairesAnonymes +
-      byBeneficiairesAnonymes,
-  },
-]
+): BeneficiairePerMonth => ({
+  mois,
+  byBeneficiairesSuivis: cumul.byBeneficiairesSuivis + byBeneficiairesSuivis,
+  byBeneficiairesAnonymes:
+    cumul.byBeneficiairesAnonymes + byBeneficiairesAnonymes,
+})
 
 export const donneesDesBeneficiaires = async () => {
   const perMonth = await getBeneficiairesPerMonth()
 
   return {
     perMonth,
-    runningTotalPerMonth: perMonth.reduce(
-      toRunningTotalPerMonth,
+    runningTotalPerMonth: cumulsSuccessifs(
       await initialRunningTotalPerMonth(),
+      perMonth,
+      toRunningTotalPerMonth,
     ),
   }
 }

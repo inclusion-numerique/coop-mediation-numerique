@@ -1,6 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
-import { monthShortLabels } from '@/libraries/date/monthShortLabels'
+import { cumulsSuccessifs } from '@/libraries/collections/cumuls-successifs'
+import { libelleCourtDuMois } from '@/libraries/date/monthShortLabels'
 
 type AccompagnementPerMonth = {
   byMediateurs: number
@@ -120,26 +121,23 @@ export const lireLesAccompagnements = async () => {
     ({ month, bymediateurs, byconseillers }) => ({
       byMediateurs: bymediateurs,
       byConseillers: byconseillers,
-      mois: monthShortLabels[month - 1],
+      mois: libelleCourtDuMois(month),
     }),
   )
 
-  const runningTotalPerMonth: AccompagnementPerMonth[] = [
+  const runningTotalPerMonth: AccompagnementPerMonth[] = cumulsSuccessifs(
     {
       mois: 'Avant période',
       byMediateurs: data.initial_mediateurs,
       byConseillers: data.initial_conseillers,
     },
-  ]
-
-  for (const month of perMonth) {
-    const previous = runningTotalPerMonth[runningTotalPerMonth.length - 1]
-    runningTotalPerMonth.push({
+    perMonth,
+    (previous, month) => ({
       mois: month.mois,
       byMediateurs: previous.byMediateurs + month.byMediateurs,
       byConseillers: previous.byConseillers + month.byConseillers,
-    })
-  }
+    }),
+  )
 
   return {
     total: data.total_count,

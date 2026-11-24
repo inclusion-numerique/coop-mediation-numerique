@@ -46,14 +46,19 @@ const hausse = (
   valeurDeLaSerie(lire(releve('avant')), cle)
 
 const cumulAttendu = <Mois extends { readonly mois: string }>(
-  depart: Mois,
+  depart: Mois | undefined,
   parMois: readonly Mois[],
   ajouter: (cumul: Mois, mois: Mois) => Mois,
 ): readonly Mois[] =>
-  parMois.reduce<readonly Mois[]>(
-    (cumuls, mois) => [...cumuls, ajouter(cumuls[cumuls.length - 1], mois)],
-    [depart],
-  )
+  depart === undefined
+    ? []
+    : parMois.reduce<{ dernier: Mois; cumuls: readonly Mois[] }>(
+        ({ dernier, cumuls }, mois) => {
+          const suivant = ajouter(dernier, mois)
+          return { dernier: suivant, cumuls: [...cumuls, suivant] }
+        },
+        { dernier: depart, cumuls: [depart] },
+      ).cumuls
 
 const etats: Readonly<Record<string, EtatDeLActivite>> = {
   saisie: 'saisie',
@@ -77,11 +82,10 @@ Given('les statistiques publiques relevées', async () => {
 Given(
   /^une activité (saisie|supprimée|importée de la v1) qui accompagne (.+)$/,
   async (etat: string, accompagnes: string) => {
-    assert.ok(accompagnes in accompagnements, `Inconnu : ${accompagnes}`)
-    await semerUneActivite({
-      etat: etats[etat],
-      accompagnes: accompagnements[accompagnes],
-    })
+    const etatSeme = etats[etat]
+    const accompagnesSemes = accompagnements[accompagnes]
+    assert.ok(etatSeme && accompagnesSemes, `Inconnu : ${etat}, ${accompagnes}`)
+    await semerUneActivite({ etat: etatSeme, accompagnes: accompagnesSemes })
   },
 )
 

@@ -16,7 +16,7 @@ export const LegendTile = ({
   percent: number
   label: string
   description?: string
-  legendColor: string
+  legendColor: string | undefined
   className?: string
 }) => (
   <div
