@@ -17,13 +17,14 @@ import { repartitionPresentee } from '@/features/activites/abilities/repartir-le
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
-import { criteresDesStatistiques } from '@/features/activites/domain'
 import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
 } from '@/features/activites/implementations/statistiques-en-cours.binding'
 import { statistiquesNationalesEnCours } from '@/features/activites/implementations/statistiques-nationales.binding'
+import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
+import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import {
   withApiV1Errors,
   withClientApi,
@@ -412,7 +413,9 @@ export const GET = routeBuilder()
       const fournies = await statistiquesDesActivites.rassembler(
         statistiquesNationalesEnCours(
           statistiquesDesActivites.lancer,
-          criteresDesStatistiques(queryParams.filter),
+          criteresDesStatistiquesDesFiltres(
+            filtresDeToutesLesActivites.charger(queryParams.filter),
+          ),
           { tags: false, rendezVousAuxStatuts: rendezVousAuxStatutsSql },
         ),
       )

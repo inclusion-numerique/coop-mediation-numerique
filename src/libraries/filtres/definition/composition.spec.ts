@@ -44,6 +44,12 @@ describe('composition de filtres', () => {
     })
   })
 
+  it('lit toutes les valeurs d’un paramètre répété', () => {
+    expect(
+      filtres.charger({ types: ['individuel', 'collectif'] }).types,
+    ).toStrictEqual(['individuel', 'collectif'])
+  })
+
   it('écarte une valeur hors de la liste d’un choix multiple', () => {
     expect(filtres.charger('?types=individuel,inconnu').types).toStrictEqual([
       'individuel',

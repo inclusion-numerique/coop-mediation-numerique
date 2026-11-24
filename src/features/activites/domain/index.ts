@@ -40,6 +40,8 @@ export {
   type ParametresDesCoordinations,
   type Periode,
 } from './consultation/criteres-des-coordinations'
+export { FiltreDOrigine } from './consultation/filtre-d-origine'
+export { FiltreDeDemarche } from './consultation/filtre-de-demarche'
 export { FiltreDeDispositif } from './consultation/filtre-de-dispositif'
 export {
   OrdreChronologique,

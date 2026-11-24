@@ -1,14 +1,21 @@
 import { z } from 'zod'
-import {
-  type ActivitesFilters,
-  ActivitesFilterValidations,
-} from '@/features/statistiques/domain/filtres-des-activites'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { valeursLues } from '@/libraries/parametres-d-url'
 import {
   STATUTS_DE_RENDEZ_VOUS,
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_NON_ADMINISTRATIVES,
   TYPES_D_ACTIVITE,
 } from './valeurs-des-filtres'
+
+const JOUR = /^\d{4}-\d{2}-\d{2}$/
+
+const UN_OU_ZERO = ['0', '1'] as const
+
+const liste = <S extends z.ZodType<string, string>>(element: S) =>
+  z
+    .union([z.string(), z.array(z.string())])
+    .transform((valeur) => [...valeursLues(element, valeur)])
 
 const listeDe = <Element extends z.ZodType<string, string>>(element: Element) =>
   z
@@ -21,7 +28,19 @@ const listeDe = <Element extends z.ZodType<string, string>>(element: Element) =>
 
 export const FiltresDesStatistiquesValidation = z
   .object({
-    ...ActivitesFilterValidations,
+    du: z.string().regex(JOUR).optional(),
+    au: z.string().regex(JOUR).optional(),
+    mediateurs: liste(z.guid()).optional(),
+    beneficiaires: liste(z.guid()).optional(),
+    communes: liste(CodeInsee.schema).optional(),
+    departements: liste(CodeDepartement.schema).optional(),
+    lieux: liste(z.guid()).optional(),
+    conseiller_numerique: z.enum(UN_OU_ZERO).optional(),
+    demarches_administratives: z.enum(UN_OU_ZERO).optional(),
+    tags: liste(z.guid()).optional(),
+    structuresEmployeuses: liste(z.string().regex(/^\d+$/)).optional(),
+    rdv: z.enum(UN_OU_ZERO).optional(),
+    source: z.enum(['', 'v1', 'v2']).optional(),
     types: listeDe(z.enum(TYPES_D_ACTIVITE)),
     rdvs: listeDe(z.enum(STATUTS_DE_RENDEZ_VOUS)),
     thematiqueNonAdministratives: listeDe(
@@ -29,4 +48,4 @@ export const FiltresDesStatistiquesValidation = z
     ),
     thematiqueAdministratives: listeDe(z.enum(THEMATIQUES_ADMINISTRATIVES)),
   })
-  .default({}) satisfies z.ZodType<ActivitesFilters>
+  .default({})

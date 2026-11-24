@@ -6,10 +6,13 @@ import {
 import { filtreDeRecherche } from '@/libraries/filtres/definition/filtre-de-recherche'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import {
+  BeneficiaireId,
   type CriteresDesActivites,
   type CriteresDesStatistiques,
   EmployeuseId,
+  FiltreDeDemarche,
   FiltreDeDispositif,
+  FiltreDOrigine,
   Jour,
   LieuActiviteId,
   MediateurId,
@@ -127,6 +130,32 @@ export const filtreDuDispositif = filtreDeChoixUnique({
   dansLURL: { ConseillersNumeriques: '1', HorsDispositif: '0' },
 })
 
+export const filtreDeLOrigine = filtreDeChoixUnique({
+  titre: 'Origine',
+  cle: 'rdv',
+  choix: {
+    RendezVous: 'Issue d’un rendez-vous',
+    HorsRendezVous: 'Hors rendez-vous',
+  },
+  dansLURL: { RendezVous: '1', HorsRendezVous: '0' },
+})
+
+export const filtreDeLaDemarche = filtreDeChoixUnique({
+  titre: 'Démarches administratives',
+  cle: 'demarches_administratives',
+  choix: {
+    Avec: 'Avec démarche administrative',
+    Sans: 'Sans démarche administrative',
+  },
+  dansLURL: { Avec: '1', Sans: '0' },
+})
+
+export const filtreDesBeneficiaires = filtreDeRecherche({
+  titre: 'Bénéficiaires',
+  cle: 'beneficiaires',
+  schema: BeneficiaireId.schema,
+})
+
 type ValeursDesFiltres = {
   readonly du: Date | null
   readonly au: Date | null
@@ -145,6 +174,9 @@ type ValeursDesFiltres = {
     | 'ConseillersNumeriques'
     | 'HorsDispositif'
     | null
+  readonly rdv?: 'RendezVous' | 'HorsRendezVous' | null
+  readonly demarches_administratives?: 'Avec' | 'Sans' | null
+  readonly beneficiaires?: readonly BeneficiaireId[]
 }
 
 export const criteresDesFiltres = (
@@ -159,7 +191,7 @@ export const criteresDesFiltres = (
     StatutDeRendezVous(statut),
   ),
   mediateurs: valeurs.mediateurs ?? [],
-  beneficiaires: [],
+  beneficiaires: valeurs.beneficiaires ?? [],
   communes: valeurs.communes ?? [],
   departements: valeurs.departements ?? [],
   lieux: valeurs.lieux ?? [],
@@ -167,7 +199,11 @@ export const criteresDesFiltres = (
     ...(valeurs.thematiqueNonAdministratives ?? []),
     ...(valeurs.thematiqueAdministratives ?? []),
   ].map((thematique) => ThematiqueRecherchee(thematique)),
-  demarche: null,
+  demarche:
+    valeurs.demarches_administratives === undefined ||
+    valeurs.demarches_administratives === null
+      ? null
+      : FiltreDeDemarche(valeurs.demarches_administratives),
   tags: valeurs.tags ?? [],
   employeuses: valeurs.structuresEmployeuses ?? [],
   dispositif:
@@ -175,7 +211,10 @@ export const criteresDesFiltres = (
     valeurs.conseiller_numerique === null
       ? null
       : FiltreDeDispositif(valeurs.conseiller_numerique),
-  origine: null,
+  origine:
+    valeurs.rdv === undefined || valeurs.rdv === null
+      ? null
+      : FiltreDOrigine(valeurs.rdv),
   source:
     valeurs.source === undefined || valeurs.source === null
       ? null

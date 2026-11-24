@@ -55,6 +55,32 @@ export type EtiquetteAffichee = {
   readonly href: string
 }
 
+const depuisLaRequete = (requete: URLSearchParams): ParametresBruts =>
+  Object.fromEntries(
+    [...new Set(requete.keys())].map((cle) => [cle, requete.getAll(cle)]),
+  )
+
+const enParametresBruts = (
+  lus: ParametresBruts | URLSearchParams | string,
+): ParametresBruts =>
+  typeof lus === 'string'
+    ? depuisLaRequete(new URLSearchParams(lus))
+    : lus instanceof URLSearchParams
+      ? depuisLaRequete(lus)
+      : lus
+
+const enListes = (
+  parametres: ParametresBruts,
+): Record<string, string | undefined> =>
+  Object.fromEntries(
+    Object.entries(parametres).map(([cle, valeur]) => [
+      cle,
+      typeof valeur === 'string' || valeur === undefined
+        ? valeur
+        : valeur.join(','),
+    ]),
+  )
+
 const requeteSans = (
   parametres: ParametresBruts,
   cles: readonly string[],
@@ -103,7 +129,7 @@ export const composerLesFiltres = <
     parametres,
     charger: (
       lus: ParametresBruts | URLSearchParams | string,
-    ): ValeursComposees<Fs> => lire(lus as Record<string, string>),
+    ): ValeursComposees<Fs> => lire(enListes(enParametresBruts(lus))),
     adresse,
     sansFiltres: (courante: AdresseCourante): string => base(courante, true),
     requete: (valeurs: Partial<ValeursComposees<Fs>>): string =>
