@@ -4,7 +4,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 import { createServer } from 'node:https'
 import identite from './identite.json' with { type: 'json' }
 
-const port = Number(process.env.PROCONNECT_SIMULE_PORT ?? 8443)
+const port = Number(process.env['PROCONNECT_SIMULE_PORT'] ?? 8443)
 const issuer = `https://localhost:${port}`
 
 const base64url = (contenu: string | Buffer): string =>
@@ -98,8 +98,8 @@ const repondre = (requete: IncomingMessage, reponse: ServerResponse) => {
 
 createServer(
   {
-    cert: readFileSync(process.env.PROCONNECT_SIMULE_CERTIFICAT ?? ''),
-    key: readFileSync(process.env.PROCONNECT_SIMULE_CLE ?? ''),
+    cert: readFileSync(process.env['PROCONNECT_SIMULE_CERTIFICAT'] ?? ''),
+    key: readFileSync(process.env['PROCONNECT_SIMULE_CLE'] ?? ''),
   },
   repondre,
 ).listen(port, () => console.log(`ProConnect simulé sur ${issuer}`))

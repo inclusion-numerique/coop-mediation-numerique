@@ -48,7 +48,7 @@ export default defineConfig({
         if (browser.family === 'chromium') {
           launchOptions.args.push('--force-prefers-reduced-motion')
         }
-        launchOptions.env.ELECTRON_EXTRA_LAUNCH_ARGS =
+        launchOptions.env['ELECTRON_EXTRA_LAUNCH_ARGS'] =
           '--force-prefers-reduced-motion'
 
         return launchOptions
@@ -57,7 +57,7 @@ export default defineConfig({
       return { ...config, specPattern: cheminsLitteraux(config.specPattern) }
     },
     baseUrl:
-      process.env.CYPRESS_BASE_URL ??
+      process.env['CYPRESS_BASE_URL'] ??
       `http://localhost:${process.env.PORT ?? 3000}`,
     chromeWebSecurity: false,
   },
