@@ -6,7 +6,7 @@ import {
   searchAdresses,
   siIndisponible,
   urlDeRecherche,
-} from '@/libraries/ban/apiAdresse'
+} from '@/libraries/ban/api-adresse'
 import {
   reponseAdresseTrouvee,
   reponseSansAdresse,
