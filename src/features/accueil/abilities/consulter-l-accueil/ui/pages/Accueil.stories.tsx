@@ -23,5 +23,5 @@ type Story = StoryObj<typeof Accueil>
 
 export const Mediateur: Story = {
   name: 'Accueil',
-  args: accueil === null ? undefined : { accueil },
+  ...(accueil === null ? {} : { args: { accueil } }),
 }
