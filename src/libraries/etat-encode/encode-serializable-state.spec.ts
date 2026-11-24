@@ -3,7 +3,7 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from './encodeSerializableState'
+} from './encode-serializable-state'
 
 interface TestFormState {
   date: string
