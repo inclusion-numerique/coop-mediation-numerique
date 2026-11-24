@@ -1,5 +1,5 @@
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
-import { SiretApiResponse } from '@/features/employeuse/implementations/api-entreprise/siret-api-response'
+import { SiretApiResponse } from '@/features/employeuse/implementations/api-entreprise/siret.payload'
 import type {
   MatchingEtablissement,
   UniteLegale,

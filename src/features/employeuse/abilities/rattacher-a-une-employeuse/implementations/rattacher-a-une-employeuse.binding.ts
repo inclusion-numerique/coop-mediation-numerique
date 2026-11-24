@@ -1,7 +1,7 @@
 import { geocoder } from '@/configuration/ban'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { rattacherUneSaisie } from '../domain/rattacher-une-saisie'
-import { etablissementDepuisSiret } from './api/etablissement-depuis-siret'
+import { etablissementDepuisSiret } from './api/etablissement-depuis-siret.query'
 import {
   type RegistreDesPersonnes,
   rattacherAUneEmployeuse,

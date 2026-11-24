@@ -1,4 +1,4 @@
-import { fetchSiretApiData } from '@/features/employeuse/implementations/api-entreprise/fetch-siret-data'
+import { fetchSiretApiData } from '@/features/employeuse/implementations/api-entreprise/fetch-siret-data.query'
 import type { EtablissementSirene } from '../../../../domain/identite-employeuse'
 
 /**
