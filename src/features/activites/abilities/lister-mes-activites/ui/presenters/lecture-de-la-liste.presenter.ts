@@ -1,10 +1,10 @@
+import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
 import type { AdresseCourante } from '@/libraries/filtres/definition/composition'
 import {
   type CriteresDesActivites,
   contenuDeLaChronologie,
   estFiltreDesActivites,
   ordreChronologiqueLu,
-  paginationLue,
 } from '../../../../domain'
 import { filtresDesRendezVousDeLaListe } from '../filtres/rendez-vous-de-la-liste.filtre'
 

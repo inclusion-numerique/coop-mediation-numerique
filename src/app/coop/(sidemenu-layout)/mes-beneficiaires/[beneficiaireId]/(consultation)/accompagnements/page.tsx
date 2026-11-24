@@ -10,8 +10,8 @@ import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activ
 import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
-  paginationLue,
 } from '@/features/activites/domain'
+import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'

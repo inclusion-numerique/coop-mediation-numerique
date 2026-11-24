@@ -1,6 +1,6 @@
-import { type Periode } from '@/libraries/parametres-d-url'
 import { TypeDActiviteDeCoordination } from '../coordination/type-d-activite-de-coordination'
 import { TagId } from '../identifiants/tag-id'
+import type { Periode } from './periode'
 
 export type { Periode }
 

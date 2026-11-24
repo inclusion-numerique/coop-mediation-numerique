@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { paginationLue } from './pagination'
+import { paginationLue } from './pagination.search-params'
 
 describe('pagination lue dans l’URL', () => {
   it('commence à la première page de 50 lignes', () => {

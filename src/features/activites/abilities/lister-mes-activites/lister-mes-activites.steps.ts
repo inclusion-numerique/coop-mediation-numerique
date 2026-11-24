@@ -3,12 +3,12 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
 import {
   type ChronologieDesActivites,
   contenuDeLaChronologie,
   MediateurId,
   ordreChronologiqueLu,
-  paginationLue,
 } from '../../domain'
 import { listerMesActivites } from './implementations/prisma/chronologie.query'
 

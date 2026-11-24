@@ -1,5 +1,6 @@
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
+import { contientSansAccent } from '@/libraries/texte/sans-accent'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 
@@ -60,19 +61,11 @@ export const comboBoxDeRecherche = (
   ),
 })
 
-const sansAccent = (texte: string): string =>
-  texte
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-
 export const rechercherParmi =
   (options: readonly SelectOption[]): Rechercher =>
   async ({ recherche }) => ({
     success: true,
-    data: options.filter(({ label }) =>
-      sansAccent(label).includes(sansAccent(recherche)),
-    ),
+    data: options.filter(({ label }) => contientSansAccent(label, recherche)),
   })
 
 export const messageDeLaRecherche = (

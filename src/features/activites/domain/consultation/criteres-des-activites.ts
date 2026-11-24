@@ -1,5 +1,4 @@
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { type Periode } from '@/libraries/parametres-d-url'
 import { BeneficiaireId } from '../identifiants/beneficiaire-id'
 import { EmployeuseId } from '../identifiants/employeuse-id'
 import { LieuActiviteId } from '../identifiants/lieu-activite-id'
@@ -11,6 +10,7 @@ import { StatutDeRendezVous } from '../rendez-vous/statut-de-rendez-vous'
 import { FiltreDOrigine } from './filtre-d-origine'
 import { FiltreDeDemarche } from './filtre-de-demarche'
 import { FiltreDeDispositif } from './filtre-de-dispositif'
+import type { Periode } from './periode'
 import { ThematiqueRecherchee } from './thematique-recherchee'
 
 export type CriteresDesActivites = {

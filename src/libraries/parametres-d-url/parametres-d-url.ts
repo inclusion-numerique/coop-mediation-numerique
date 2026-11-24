@@ -2,11 +2,6 @@ import { z } from 'zod'
 
 export type ValeurDeParametre = string | readonly string[] | undefined
 
-export type Periode = {
-  readonly du: Date
-  readonly au: Date
-}
-
 export const premiereValeur = (
   valeur: ValeurDeParametre,
 ): string | undefined => (typeof valeur === 'string' ? valeur : valeur?.at(0))

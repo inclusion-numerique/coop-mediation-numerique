@@ -1,9 +1,9 @@
+import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
 import {
   CoordinateurId,
   type CriteresDesCoordinations,
   estFiltre,
   type Pagination,
-  paginationLue,
 } from '../../../../domain'
 import type {
   ActivitesDeCoordinationListees,

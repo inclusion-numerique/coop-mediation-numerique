@@ -45,11 +45,11 @@ export {
   ordreChronologiqueLu,
 } from './consultation/ordre-chronologique'
 export {
+  LIGNES_PAR_DEFAUT,
   LIGNES_PAR_PAGE,
   LignesParPage,
   NumeroDePage,
   type Pagination,
-  paginationLue,
 } from './consultation/pagination'
 export {
   estAdministrative,

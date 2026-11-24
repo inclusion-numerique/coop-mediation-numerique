@@ -2,6 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { Prisma } from '@/generated/prisma/client'
 import { type Departement, departementDuCode } from '@/libraries/departement'
 import { departements as REFERENTIEL_DES_DEPARTEMENTS } from '@/libraries/departement/departements'
+import { contientSansAccent } from '@/libraries/texte/sans-accent'
 import {
   communeComptee,
   LieuActiviteId,
@@ -24,12 +25,6 @@ const contient = (colonne: Prisma.Sql, recherche: string): Prisma.Sql =>
   recherche === ''
     ? Prisma.sql`TRUE`
     : Prisma.sql`unaccent(${colonne}) ILIKE unaccent(${`%${sansJoker(recherche)}%`})`
-
-const sansAccent = (texte: string): string =>
-  texte
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
 
 const codeDeLaCommune = Prisma.sql`COALESCE(str.code_insee, act.lieu_code_insee)`
 
@@ -92,7 +87,7 @@ const correspond =
   ({ departement }: { readonly departement: Departement }): boolean =>
     recherche === '' ||
     departement.code.startsWith(recherche.toUpperCase()) ||
-    sansAccent(departement.nom).includes(sansAccent(recherche))
+    contientSansAccent(departement.nom, recherche)
 
 const departementsDuReferentiel = (
   recherche: string,
