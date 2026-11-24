@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { changeObjectKeysCaseRecursive } from '@/libraries/collections/changeObjectKeysCaseRecursive'
+import { changeObjectKeysCaseRecursive } from '@/libraries/collections/change-object-keys-case-recursive'
 
 describe('changeObjectKeysCaseRecursive', () => {
   it('should change object keys case to snake case recursively', () => {

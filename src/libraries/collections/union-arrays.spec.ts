@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { unionArrays } from './unionArrays'
+import { unionArrays } from './union-arrays'
 
 describe('unionArrays', () => {
   it('returns union of two arrays without duplicates', () => {

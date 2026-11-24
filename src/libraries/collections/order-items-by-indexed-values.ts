@@ -1,4 +1,4 @@
-import { onlyDefinedAndNotNull } from './onlyDefinedAndNotNull'
+import { onlyDefinedAndNotNull } from './only-defined-and-not-null'
 
 const orderItemsByIndexMap = <T extends { id: V }, V extends string | number>(
   items: T[],
