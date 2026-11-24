@@ -15,5 +15,6 @@
     "../src/app/**/page.test.ts",
     "../src/app/**/route.test.ts",
     "../src/**/*.cy.tsx"
-  ]
+  ],
+  "exclude": ["../node_modules"]
 }
