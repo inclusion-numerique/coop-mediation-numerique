@@ -62,7 +62,11 @@ const Statut = ({
   severite,
 }: Pick<LigneAffichee, 'activite' | 'libelleStatut' | 'severite'>) =>
   activite === null ? (
-    <Badge small noIcon severity={severite === 'neutre' ? undefined : severite}>
+    <Badge
+      small
+      noIcon
+      {...(severite === 'neutre' ? {} : { severity: severite })}
+    >
       {libelleStatut}
     </Badge>
   ) : (

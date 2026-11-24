@@ -20,10 +20,10 @@ export const enregistrerLesMediateursCoordonnes =
             id,
             coordinateurId,
             mediateurId,
-            suppression,
+            ...(suppression === undefined ? {} : { suppression }),
           },
           update: {
-            suppression,
+            ...(suppression === undefined ? {} : { suppression }),
           },
         }),
     )

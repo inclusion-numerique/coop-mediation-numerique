@@ -23,8 +23,8 @@ const semerUnMediateur = async (
     data: {
       id: userId,
       email: `membres-a-filtrer-${userId}@example.com`,
-      firstName,
-      lastName,
+      ...(firstName === undefined ? {} : { firstName }),
+      ...(lastName === undefined ? {} : { lastName }),
     },
   })
   const { id: mediateurId } = await prismaClient.mediateur.create({
@@ -39,7 +39,11 @@ const semerUnMediateur = async (
         })
       ).id
     : undefined
-  const seme = { userId, mediateurId, coordinateurId }
+  const seme: Seme = {
+    userId,
+    mediateurId,
+    ...(coordinateurId === undefined ? {} : { coordinateurId }),
+  }
   semes = { ...semes, [nom]: seme }
   return seme
 }

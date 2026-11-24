@@ -168,9 +168,9 @@ export const semerUnMediateurDEquipe = async ({
   profilSupprime?: boolean
 } = {}): Promise<MediateurSeme> => {
   const personne = await semerUnePersonne({
-    email,
+    ...(email === undefined ? {} : { email }),
     inscriptionValidee,
-    profilSupprime,
+    ...(profilSupprime === undefined ? {} : { profilSupprime }),
   })
   const mediateur = await prismaClient.mediateur.create({
     data: {
