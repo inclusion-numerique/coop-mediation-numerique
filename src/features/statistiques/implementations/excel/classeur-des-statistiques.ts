@@ -1,6 +1,5 @@
 import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
-import type { ActivitesFiltersLabels } from '@/features/statistiques/ui/labels/filtres.labels'
 import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import type {
   LabelAndCount,
@@ -244,7 +243,7 @@ const addStatistiquesCommuneResidenceBeneficiaires =
 
 export type BuildStatistiquesWorksheetInput = {
   auteur: AuteurDExport
-  filters: ActivitesFiltersLabels
+  filters: Parameters<ReturnType<typeof addFilters>>[0]
   statistiques: StatistiquesDuClasseur
   fuseau: string
   worksheetGenerationDate?: Date

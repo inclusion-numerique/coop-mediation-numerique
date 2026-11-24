@@ -13,7 +13,7 @@ import {
   UtilisateurId,
 } from '../../../../domain'
 import { TypeContrat } from '../../domain'
-import { membreExporte } from './membre-exporte'
+import { membreExporte } from './membre-exporte.presenter'
 
 const depuis = new Date('2026-01-01T09:00:00Z')
 

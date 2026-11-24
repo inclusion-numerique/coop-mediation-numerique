@@ -6,6 +6,7 @@ import { communesDesEmployeuses } from '@/features/employeuse/abilities/recherch
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
 import { classeurDesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/excel/classeur-des-utilisateurs'
 import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/prisma/utilisateurs-a-exporter.query'
+import { colonnesDeLExport } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/presenters/colonnes-de-l-export.presenter'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
@@ -45,6 +46,7 @@ export const GET = async (request: NextRequest) => {
     auteur: auteurDeLExport(auteur),
     filtres: libellesDesFiltres(filtres, options),
     genereLe: maintenant,
+    colonnes: colonnesDeLExport,
   })
 
   return new Response(await classeur.xlsx.writeBuffer(), {

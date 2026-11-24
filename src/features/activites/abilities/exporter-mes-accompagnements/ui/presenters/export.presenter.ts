@@ -1,10 +1,16 @@
+import type { CriteresDesActivites } from '../../../../domain'
 import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
 import {
   type ActivitesFiltersLabels,
   generateActivitesFiltersLabels,
 } from '../../../../ui/labels/filtres/filtres.labels'
 import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-activite.labels'
-import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
+import {
+  type FiltresDeLaListe,
+  filtresDeLaListe,
+} from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
+import type { ExportDesAccompagnements } from '../../domain'
+import { contenuDuClasseur } from './lignes-du-classeur.presenter'
 
 export const libellesDeLExport = (
   filtres: FiltresDeLaListe,
@@ -49,7 +55,7 @@ type NomsDesFiltres = {
   readonly tags: readonly { readonly id: string; readonly nom: string }[]
 }
 
-export const libellesDuClasseur = (
+const libellesDuClasseur = (
   filtres: FiltresDeLaListe,
   noms: NomsDesFiltres,
   avecImportsV1: boolean,
@@ -81,3 +87,22 @@ export const requeteDeLExport = (filtres: FiltresDeLaListe): string =>
 
 export const cheminAvecRequete = (chemin: string, requete: string): string =>
   requete === '' ? chemin : `${chemin}?${requete}`
+
+export const classeurPresente = ({
+  criteres,
+  noms,
+  exportDes,
+  fuseau,
+}: {
+  readonly criteres: CriteresDesActivites
+  readonly noms: NomsDesFiltres
+  readonly exportDes: ExportDesAccompagnements
+  readonly fuseau: string
+}) => ({
+  filtres: libellesDuClasseur(
+    filtresDeLaListe(criteres),
+    noms,
+    exportDes.colonnes.source,
+  ),
+  ...contenuDuClasseur(exportDes, fuseau),
+})

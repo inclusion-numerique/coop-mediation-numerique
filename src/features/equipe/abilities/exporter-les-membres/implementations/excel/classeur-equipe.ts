@@ -9,7 +9,23 @@ import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
 import type { ContratMembre, MembreAExporter } from '../../domain'
-import { type MembreExporte, membreExporte } from './membre-exporte'
+
+export type MembreExporte = {
+  readonly prenom: string | null
+  readonly nom: string | null
+  readonly role: string
+  readonly contrat: ContratMembre | null
+  readonly email: string
+  readonly telephone: string | null
+  readonly structureEmployeuse: {
+    readonly nom: string | null
+    readonly adresse: string | null
+    readonly commune: string | null
+    readonly codePostal: string | null
+    readonly codeInsee: string | null
+  } | null
+  readonly statut: string
+}
 
 const libellesDeStatut = new Map<string, string>([
   ['actifs', 'Actifs'],
@@ -125,13 +141,20 @@ export const classeurEquipe = ({
   return classeur
 }
 
-export const classeurDesMembres = ({
-  membres,
-  ...reste
-}: Omit<Parameters<typeof classeurEquipe>[0], 'membres'> & {
-  membres: readonly MembreAExporter<LigneEquipe>[]
-}) =>
-  classeurEquipe({
-    ...reste,
-    membres: membres.map(({ ligne, contrat }) => membreExporte(ligne, contrat)),
-  })
+export const classeurDesMembresAvec =
+  (
+    presenter: (
+      ligne: LigneEquipe,
+      contrat: ContratMembre | null,
+    ) => MembreExporte,
+  ) =>
+  ({
+    membres,
+    ...reste
+  }: Omit<Parameters<typeof classeurEquipe>[0], 'membres'> & {
+    membres: readonly MembreAExporter<LigneEquipe>[]
+  }) =>
+    classeurEquipe({
+      ...reste,
+      membres: membres.map(({ ligne, contrat }) => presenter(ligne, contrat)),
+    })

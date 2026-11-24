@@ -8,6 +8,7 @@ import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libell
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { classeurDesUtilisateurs } from './implementations/excel/classeur-des-utilisateurs'
 import { utilisateursAExporter } from './implementations/prisma/utilisateurs-a-exporter.query'
+import { colonnesDeLExport } from './ui/presenters/colonnes-de-l-export.presenter'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
@@ -78,6 +79,7 @@ When(
         departements: [],
       }),
       genereLe: maintenant,
+      colonnes: colonnesDeLExport,
     })
   },
 )

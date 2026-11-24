@@ -27,6 +27,7 @@ import type {
   AccompagnementExporte,
   ActiviteExportee,
   ColonnesDeLExport,
+  ExportDesAccompagnements,
   Identite,
 } from '../../domain'
 
@@ -200,3 +201,12 @@ export const nombreDAccompagnementsExportes = (
     (total, { accompagnements }) => total + accompagnements.length,
     0,
   )
+
+export const contenuDuClasseur = (
+  { activites, colonnes }: ExportDesAccompagnements,
+  fuseau: string,
+) => ({
+  entetes: entetesDuClasseur(colonnes),
+  lignes: lignesDuClasseur(activites, colonnes, fuseau),
+  total: nombreDAccompagnementsExportes(activites),
+})

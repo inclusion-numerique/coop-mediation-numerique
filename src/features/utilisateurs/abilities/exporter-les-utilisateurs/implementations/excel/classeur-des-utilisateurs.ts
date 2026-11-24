@@ -1,6 +1,5 @@
 import Excel from 'exceljs'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
-import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import {
   type AuteurDExport,
   addExportMetadata,
@@ -9,7 +8,11 @@ import { addFilters } from '@/libraries/tableur/addFilters'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
-import { colonnesDeLExport } from './colonnes-de-l-export'
+
+type Colonne = {
+  readonly entete: string
+  readonly valeur: (ligne: LigneUtilisateur) => string | number | null
+}
 
 const filtresDisponibles = [
   { label: 'Rôles', type: 'roles' },
@@ -26,11 +29,16 @@ export const classeurDesUtilisateurs = ({
   auteur,
   filtres,
   genereLe,
+  colonnes,
 }: {
   readonly utilisateurs: readonly LigneUtilisateur[]
   readonly auteur: AuteurDExport
-  readonly filtres: readonly LibelleDeFiltre[]
+  readonly filtres: readonly {
+    readonly type: string
+    readonly valeur: string
+  }[]
   readonly genereLe: Date
+  readonly colonnes: readonly Colonne[]
 }): Excel.Workbook => {
   const classeur = new Excel.Workbook()
   setWorkbookMetadata(classeur)
@@ -55,12 +63,12 @@ export const classeurDesUtilisateurs = ({
     ref: `A${separateur.number + 1}`,
     headerRow: true,
     totalsRow: false,
-    columns: colonnesDeLExport.map(({ entete }) => ({
+    columns: colonnes.map(({ entete }) => ({
       name: entete,
       filterButton: true,
     })),
     rows: utilisateurs.map((utilisateur) =>
-      colonnesDeLExport.map(({ valeur }) => valeur(utilisateur)),
+      colonnes.map(({ valeur }) => valeur(utilisateur)),
     ),
   })
 

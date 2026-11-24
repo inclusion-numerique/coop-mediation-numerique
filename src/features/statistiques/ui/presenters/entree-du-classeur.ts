@@ -1,26 +1,28 @@
 import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
-import type { BuildStatistiquesWorksheetInput } from '../../implementations/excel/classeur-des-statistiques'
+import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import { generateActivitesFiltersLabels } from '../labels/filtres.labels'
 
 type OptionsDesLibelles = Parameters<typeof generateActivitesFiltersLabels>[1]
 
-type StatistiquesDeLaPage = BuildStatistiquesWorksheetInput['statistiques'] &
-  Omit<OptionsDesLibelles, 'beneficiairesOptions' | 'mediateursOptions'> & {
-    readonly initialBeneficiairesOptions: OptionsDesLibelles['beneficiairesOptions']
-    readonly initialMediateursOptions: OptionsDesLibelles['mediateursOptions']
-  }
+type OptionsDeLaPage = Omit<
+  OptionsDesLibelles,
+  'beneficiairesOptions' | 'mediateursOptions'
+> & {
+  readonly initialBeneficiairesOptions: OptionsDesLibelles['beneficiairesOptions']
+  readonly initialMediateursOptions: OptionsDesLibelles['mediateursOptions']
+}
 
-export const entreeDuClasseur = ({
+export const entreeDuClasseur = <Statistiques extends OptionsDeLaPage>({
   statistiques,
   filters,
   auteur,
   fuseau,
 }: {
-  statistiques: StatistiquesDeLaPage
+  statistiques: Statistiques
   filters: ActivitesFilters
-  auteur: BuildStatistiquesWorksheetInput['auteur']
+  auteur: AuteurDExport
   fuseau: string
-}): BuildStatistiquesWorksheetInput => ({
+}) => ({
   statistiques,
   auteur,
   filters: generateActivitesFiltersLabels(filters, {

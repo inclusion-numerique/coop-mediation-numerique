@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
+import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
 import { parametresDeLaRecherche } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/parametres-de-la-recherche.search-params'
 import { criteresDesCoordinations } from '@/features/activites/domain'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
@@ -27,6 +28,7 @@ export const GET = async (request: NextRequest) => {
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
     tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+    presenter: lignesDesCoordinations,
   })
 
   const donnees = await classeur.xlsx.writeBuffer()

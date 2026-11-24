@@ -1,10 +1,6 @@
 import type { Worksheet } from 'exceljs'
 import { describe, expect, it } from 'vitest'
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
-import {
-  collectifExporte,
-  individuelExporte,
-} from '../../../../fixtures/fixtures-d-export'
 import { classeurDesAccompagnements } from './classeur-des-accompagnements'
 
 const demandeur: AuteurDExport = {
@@ -18,15 +14,23 @@ const filtres = [
   { label: 'Accompagnement individuel', type: 'types' },
 ]
 
+const entetes = ['Date', 'Enregistré le', 'Type']
+
+const ligne = (jour: string) => [
+  new Date(`${jour}T00:00:00.000Z`),
+  `${jour} à 10:00`,
+  'Individuel',
+]
+
 const feuilleDe = (
-  activites: Parameters<
-    typeof classeurDesAccompagnements
-  >[0]['exportDes']['activites'],
+  lignes: readonly (readonly (string | Date)[])[],
 ): Worksheet => {
   const feuille = classeurDesAccompagnements({
     demandeur,
     filtres,
-    exportDes: { activites, colonnes: { personnel: true, source: false } },
+    entetes,
+    lignes,
+    total: lignes.length,
     fuseau: 'Europe/Paris',
     date: new Date('2026-03-10T09:00:00.000Z'),
   }).getWorksheet('Activités')
@@ -44,7 +48,7 @@ const ligneDEntete = (feuille: Worksheet) => {
 
 describe('classeur des accompagnements', () => {
   it('ouvre sur les informations de l’export puis les filtres', () => {
-    const feuille = feuilleDe([individuelExporte])
+    const feuille = feuilleDe([ligne('2026-03-09')])
     expect(feuille.getCell('A1').value).toBe('Informations export')
     expect(feuille.getCell('A1').font?.bold).toBe(true)
     expect([feuille.getCell('A2').value, feuille.getCell('B2').value]).toEqual([
@@ -77,8 +81,12 @@ describe('classeur des accompagnements', () => {
     expect(feuille.rowCount).toBe(entete.number)
   })
 
-  it('écrit une ligne par accompagnement, date au format jour', () => {
-    const feuille = feuilleDe([individuelExporte, collectifExporte])
+  it('écrit une ligne par ligne reçue, date au format jour', () => {
+    const feuille = feuilleDe([
+      ligne('2026-03-09'),
+      ligne('2026-03-09'),
+      ligne('2026-03-10'),
+    ])
     const entete = ligneDEntete(feuille)
     const premiere = feuille.getRow(entete.number + 1)
     expect(feuille.rowCount).toBe(entete.number + 3)

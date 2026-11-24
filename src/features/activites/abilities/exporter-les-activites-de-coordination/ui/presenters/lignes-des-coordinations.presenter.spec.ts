@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
@@ -17,13 +16,7 @@ import {
   TypeDAnimation,
   TypeDeStructurePartenaire,
 } from '../../../../domain'
-import { classeurDesCoordinations } from './classeur-des-coordinations'
-
-const auteur: AuteurDExport = {
-  nom: 'Osmont',
-  prenom: 'Ulysse',
-  role: 'Rôle non défini',
-}
+import { lignesDesCoordinations } from './lignes-des-coordinations.presenter'
 
 const TAG = {
   id: TagId('6f1c2a4e-8b3d-4c5e-9f7a-1b2c3d4e5f60'),
@@ -72,24 +65,16 @@ const lignesDuTableau = (
   activites: readonly ActiviteDeCoordination[],
   parametres = {},
 ) => {
-  const feuille = classeurDesCoordinations({
+  const { lignes, filtres } = lignesDesCoordinations({
     activites,
     criteres: criteresDesCoordinations(parametres),
     tags: [TAG],
-    auteur,
     fuseau: 'Europe/Paris',
-  }).getWorksheet('Activités de coordination')
-  if (feuille === undefined) throw new Error('Feuille introuvable')
-  const valeurs = Array.from(feuille.getSheetValues(), (ligne) =>
-    Array.isArray(ligne)
-      ? Array.from(ligne.slice(1), (cellule) => cellule ?? '')
-      : [],
-  )
-  const entete = valeurs.findIndex((ligne) => ligne[0] === 'Date de l’activité')
-  return { valeurs, lignes: valeurs.slice(entete + 1) }
+  })
+  return { valeurs: filtres, lignes }
 }
 
-describe('classeur des activités de coordination', () => {
+describe('lignes des activités de coordination', () => {
   it('écrit « / » dans les colonnes sans objet pour le type', () => {
     const [ligne] = lignesDuTableau([partenariat]).lignes
 

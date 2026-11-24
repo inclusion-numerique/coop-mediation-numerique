@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/excel/classeur-de-mes-accompagnements'
+import { classeurPresente } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import {
@@ -47,6 +48,7 @@ export const GET = async (
     },
     auteur: auteurDeLExport(administrateur),
     fuseau: user.timezone,
+    presenter: classeurPresente,
     fournisseurs: {
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,

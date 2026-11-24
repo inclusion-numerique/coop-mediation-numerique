@@ -7,12 +7,8 @@ import { addFilters } from '@/libraries/tableur/addFilters'
 import { addTitleRow } from '@/libraries/tableur/addTitleRow'
 import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
-import type { ExportDesAccompagnements } from '../../domain'
-import {
-  entetesDuClasseur,
-  lignesDuClasseur,
-  nombreDAccompagnementsExportes,
-} from './lignes-du-classeur.presenter'
+
+type Cellule = string | number | boolean | Date
 
 export type LibelleDeFiltre = { readonly type: string; readonly label: string }
 
@@ -39,13 +35,17 @@ const filtresDisponibles = [
 export const classeurDesAccompagnements = ({
   demandeur,
   filtres,
-  exportDes: { activites, colonnes },
+  entetes,
+  lignes,
+  total,
   fuseau,
   date = new Date(),
 }: {
   readonly demandeur: AuteurDExport
   readonly filtres: readonly LibelleDeFiltre[]
-  readonly exportDes: ExportDesAccompagnements
+  readonly entetes: readonly string[]
+  readonly lignes: readonly (readonly Cellule[])[]
+  readonly total: number
   readonly fuseau: string
   readonly date?: Date
 }): Excel.Workbook => {
@@ -57,7 +57,7 @@ export const classeurDesAccompagnements = ({
     auteur: demandeur,
     date,
     fuseau,
-    total: nombreDAccompagnementsExportes(activites),
+    total,
   })
   addTitleRow(feuille)('Filtres')
   addFilters(feuille, filtresDisponibles)(filtres)
@@ -70,13 +70,11 @@ export const classeurDesAccompagnements = ({
     ref: `A${premiereLigneDuTableau}`,
     headerRow: true,
     totalsRow: false,
-    columns: entetesDuClasseur(colonnes).map((name) => ({
+    columns: entetes.map((name) => ({
       name,
       filterButton: true,
     })),
-    rows: lignesDuClasseur(activites, colonnes, fuseau).map((ligne) => [
-      ...ligne,
-    ]),
+    rows: lignes.map((ligne) => [...ligne]),
   })
 
   feuille

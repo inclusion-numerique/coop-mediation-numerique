@@ -286,92 +286,74 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
     filters: [
       {
         label: '29.01.2025 - 11.02.2025',
-        key: ['du', 'au'],
         type: 'periode',
       },
       {
         label: 'Lieu d’activité : Exemple de Mediateque',
-        key: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
         type: 'lieux',
       },
       {
-        key: '69382',
         label: 'Commune : Lyon 2eme · 69002',
         type: 'communes',
       },
       {
-        key: '69',
         label: 'Département : 69 · Rhône',
         type: 'departements',
       },
       {
-        key: '42',
         label: 'Département : 42 · Loire',
         type: 'departements',
       },
       {
         label: 'Accompagnement individuel',
-        key: 'individuel',
         type: 'types',
       },
       {
         label: 'Atelier collectif',
-        key: 'collectif',
         type: 'types',
       },
       {
         label: 'Médiateur',
-        key: '0',
         type: 'conseiller_numerique',
       },
       {
         label: 'Coordinateur Inscrit avec tout (Mes statistiques)',
-        key: '379a0d7e-54ac-4db6-95c4-3752cdd05d32',
         type: 'mediateurs',
       },
       {
         label: 'Médiateur Avec activités',
-        key: '303381cc-3da7-433d-a553-1a5f76465989',
         type: 'mediateurs',
       },
       {
         label: 'Marcel Sans accompagnements',
-        key: 'afcbdd63-7dd9-4342-9fa6-084e7a785406',
         type: 'beneficiaires',
       },
       {
         label: 'Georges Maximal',
-        key: '7d6091bc-dc91-4d1b-b357-f101e9eb6217',
         type: 'beneficiaires',
       },
       {
         label: 'Maintenance de matériel',
-        key: 'MaintenanceDeMateriel',
         type: 'thematiqueNonAdministratives',
       },
       {
         label: 'Diagnostic numérique',
-        key: 'DiagnosticNumerique',
         type: 'thematiqueNonAdministratives',
       },
       {
         label: 'Papiers - Élections - Citoyenneté',
-        key: 'PapiersElectionsCitoyennete',
         type: 'thematiqueAdministratives',
       },
       {
         label: 'Social - Santé',
-        key: 'SocialSante',
         type: 'thematiqueAdministratives',
       },
       {
         label: 'Linux',
-        key: '303381cc-3da7-433d-a553-1a5f76465989',
         type: 'tags',
       },
       {
         label: 'Windows',
-        key: '303381cc-3da7-433d-a553-1a5f76465989',
         type: 'tags',
       },
     ],
@@ -382,23 +364,19 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
     filters: [
       {
-        key: '69382',
         label: 'Commune : Lyon 2eme · 69002',
         type: 'communes',
       },
       {
         label: 'Accompagnement individuel',
-        key: 'individuel',
         type: 'types',
       },
       {
         label: 'Marie Doe',
-        key: '303381cc-3da7-433d-a553-1a5f76465989',
         type: 'mediateurs',
       },
       {
         label: 'Médiateur',
-        key: '0',
         type: 'conseiller_numerique',
       },
     ],

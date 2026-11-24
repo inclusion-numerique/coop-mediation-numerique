@@ -292,7 +292,3 @@ export const toLieuPrefix = ({
   type,
   key,
 })
-
-export type ActivitesFiltersLabels = ReturnType<
-  typeof generateActivitesFiltersLabels
->
