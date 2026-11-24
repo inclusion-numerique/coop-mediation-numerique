@@ -21,12 +21,11 @@ export const autosizeColumns = (
   options?: AutosizeColumnsOptions,
 ) => {
   for (const column of worksheet.columns) {
-    if (
-      options?.fixedColumns &&
-      column.number &&
-      options.fixedColumns[column.number]
-    ) {
-      column.width = options.fixedColumns[column.number]
+    const fixedWidth = column.number
+      ? options?.fixedColumns?.[column.number]
+      : undefined
+    if (fixedWidth) {
+      column.width = fixedWidth
       continue
     }
 
