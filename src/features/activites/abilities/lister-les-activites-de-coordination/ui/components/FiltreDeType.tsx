@@ -6,29 +6,37 @@ import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import { LIBELLES_DES_TYPES } from '../../../../ui/labels/libelles/coordination.labels'
+import {
+  listeChoisie,
+  listeEnParametres,
+} from '../search-params/filtres-des-coordinations.search-params'
 
 export const FiltreDeType = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const types = searchParams.get('types')?.split(',').filter(Boolean) ?? []
+  const types = listeChoisie(searchParams, 'types')
 
   const setFilters = () => {
-    form.state.values.types.length > 0
-      ? params.set('types', form.state.values.types.join(','))
-      : params.delete('types')
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(
+        searchParams,
+        listeEnParametres('types', form.state.values.types),
+      ),
+      { scroll: false },
+    )
   }
 
   const clearFilters = () => {
     form.reset()
-    params.delete('types')
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, listeEnParametres('types', [])), {
+      scroll: false,
+    })
     setIsOpen(false)
   }
 

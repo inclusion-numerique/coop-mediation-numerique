@@ -2,47 +2,10 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import {
-  ReadonlyURLSearchParams,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { requeteAvec, requeteConservant } from '@/libraries/parametres-d-url'
 import type { FiltreActif } from '../../../../ui/presenters/filtres-actifs-des-coordinations.presenter'
-
-const removeValue = (valueToRemove: string) => (value: string) =>
-  value !== valueToRemove
-
-const removeValueFromParam = (key: string) => (updatedValues: string[]) => ({
-  key,
-  value: updatedValues.length > 0 ? updatedValues.join(',') : undefined,
-})
-
-const toParamUpdate =
-  (searchParams: ReadonlyURLSearchParams) =>
-  (value?: string) =>
-  (key: string) =>
-    value == null
-      ? { key, value: undefined }
-      : removeValueFromParam(key)(
-          searchParams.get(key)?.split(',').filter(removeValue(value)) ?? [],
-        )
-
-const applyParamUpdate = (
-  acc: URLSearchParams,
-  { key, value }: { key: string; value?: string },
-): URLSearchParams => {
-  const next = new URLSearchParams(acc.toString())
-  value != null ? next.set(key, value) : next.delete(key)
-  return next
-}
-
-const toPreservedParams =
-  (searchParams: ReadonlyURLSearchParams) => (keys: string[]) =>
-    new URLSearchParams(
-      keys
-        .filter((key) => searchParams.has(key))
-        .map((key) => [key, searchParams.get(key) ?? '']),
-    )
+import { sansLaValeurDesFiltres } from '../search-params/filtres-des-coordinations.search-params'
 
 export const FiltresActifs = ({
   ignoreParams = [],
@@ -57,17 +20,19 @@ export const FiltresActifs = ({
   const handleRemoveFilter = (
     filterParams: readonly string[],
     value?: string,
-  ) => {
-    const params = filterParams
-      .map(toParamUpdate(searchParams)(value))
-      .reduce(applyParamUpdate, new URLSearchParams(searchParams.toString()))
-    router.replace(`?${params.toString()}`, { scroll: false })
-  }
+  ) =>
+    router.replace(
+      requeteAvec(
+        searchParams,
+        sansLaValeurDesFiltres(searchParams, filterParams, value),
+      ),
+      { scroll: false },
+    )
 
-  const handleClearFilters = () => {
-    const params = toPreservedParams(searchParams)(ignoreParams)
-    router.replace(`?${params.toString()}`, { scroll: false })
-  }
+  const handleClearFilters = () =>
+    router.replace(requeteConservant(searchParams, ignoreParams), {
+      scroll: false,
+    })
 
   return filters.length > 0 ? (
     <>

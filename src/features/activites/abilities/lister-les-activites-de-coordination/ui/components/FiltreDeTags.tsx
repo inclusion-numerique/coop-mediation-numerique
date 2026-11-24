@@ -8,8 +8,13 @@ import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import type { OptionDeTag } from '../presenters/options-de-filtre.presenter'
+import {
+  listeChoisie,
+  listeEnParametres,
+} from '../search-params/filtres-des-coordinations.search-params'
 
 export const FiltreDeTags = ({
   tagOptions,
@@ -18,25 +23,24 @@ export const FiltreDeTags = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const tags = searchParams.get('tags')?.split(',').filter(Boolean) ?? []
+  const tags = listeChoisie(searchParams, 'tags')
 
   const setFilters = () => {
     const choisis = [form.state.values.tags ?? []].flat()
-    choisis.length > 0
-      ? params.set('tags', choisis.join(','))
-      : params.delete('tags')
-
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(searchParams, listeEnParametres('tags', choisis)),
+      { scroll: false },
+    )
   }
 
   const clearFilters = () => {
     form.reset()
-    params.delete('tags')
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, listeEnParametres('tags', [])), {
+      scroll: false,
+    })
     setIsOpen(false)
   }
 

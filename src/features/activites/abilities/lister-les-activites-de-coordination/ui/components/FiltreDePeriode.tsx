@@ -4,12 +4,13 @@ import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import z from 'zod'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
+import { periodeEnParametres } from '../search-params/filtres-des-coordinations.search-params'
 
 const DateRangeValidation = z
   .object({
@@ -35,7 +36,6 @@ export const FiltreDePeriode = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -45,16 +45,16 @@ export const FiltreDePeriode = ({
   const setFilters = () => {
     const { du, au } = form.state.values
     if (du == null || au == null) return
-    params.set('du', dateAsIsoDay(du))
-    params.set('au', dateAsIsoDay(au))
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, periodeEnParametres(du, au)), {
+      scroll: false,
+    })
   }
 
   const clearFilters = () => {
     form.reset()
-    params.delete('du')
-    params.delete('au')
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, periodeEnParametres()), {
+      scroll: false,
+    })
     setIsOpen(false)
   }
 
