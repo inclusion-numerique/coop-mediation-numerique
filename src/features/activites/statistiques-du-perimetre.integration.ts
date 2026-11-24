@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash-es'
-import { beforeAll, describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
@@ -18,29 +18,8 @@ import { repartitionPresentee } from '@/features/activites/abilities/repartir-le
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
-import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
-import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
-import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
-import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
-import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
-import {
-  mediateque,
-  semerLesLieuxDeDemonstration,
-  structureEmployeuse,
-} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
-import { conseillerNumerique } from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/mediateur-avec-activite'
-import {
-  mediateurSansActivites,
-  mediateurSansActivitesMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
-import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 import { Prisma } from '@/generated/prisma/client'
+import { mergeUuids } from '@/libraries/fixtures/mergeUuids'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
@@ -49,7 +28,8 @@ import {
   MediateurId,
   perimetreDuDemandeur,
 } from './domain'
-import { semerLesCrasDeDemonstration } from './fixtures/semer-les-cras-de-demonstration'
+import { crasDeDemonstration } from './fixtures/cras-de-demonstration'
+import { upsertCraFixtures } from './fixtures/enregistrer-les-cras'
 import { statistiquesDuPerimetre } from './implementations/statistiques-du-perimetre.binding'
 import {
   source,
@@ -105,20 +85,173 @@ const statistiquesDesActivites = statistiquesAvec({
   hasCrasV1: presenceDeCrasV1,
 })
 
-const demonstration = {
-  employeuse: { structureCoopId: structureEmployeuse.id },
-  semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
-    mediateursDesPersonas,
+const SEL = '1d9df140-9e43-4fa3-b7a4-6656e475ba8d'
+const avecActivites = {
+  utilisateur: '3c0b65b4-b1f1-47c4-8bde-2a069b6cabc5',
+  mediateur: '6ba43d63-f0cc-422d-85b4-6cf7a4741cbd',
+}
+const sansActivites = {
+  utilisateur: '7a97b1d7-75a3-42df-96c3-88ff1587ce6a',
+  mediateur: '4b32d51f-f67d-4a89-8600-6c3366cf0e65',
+}
+const mediateque = {
+  id: '683dae62-98e4-46cd-99f0-60e0d50d14d6',
+  nom: 'Exemple de Mediateque',
+  adresse: '2 rue des livres',
+  codePostal: '69002',
+  codeInsee: '69382',
+  commune: 'Lyon 2eme',
+  banId: '69382_0001_00002',
+}
+const beneficiaires = {
+  minimale: '87a92992-ee1a-491b-ba68-b3b882bb569f',
+  maximale: 'da657595-c2f8-4cdf-b8e1-423f3c92ae9f',
+  sansAccompagnements: '9f260a29-f72e-4a6d-a752-ffdac3c339f4',
+  anonyme: '174ad196-cae1-48a3-9390-e1e7bebf2d02',
+}
+
+const beneficiairesDuMediateur = [
+  {
+    id: beneficiaires.minimale,
+    prenom: 'Jeanne',
+    nom: 'Minimale',
+    creation: new Date('2024-01-01'),
+    modification: new Date('2024-05-05'),
+  },
+  {
+    id: beneficiaires.maximale,
+    prenom: 'Jean',
+    nom: 'Maximal',
+    telephone: '0123456789',
+    pasDeTelephone: false,
+    email: 'jean.maximal@coop-numerique.incubateur.anct.gouv.fr',
+    anneeNaissance: 1980,
+    adresse: '1 rue de la Paix',
+    commune: 'Paris',
+    communeCodePostal: '75001',
+    communeCodeInsee: '75101',
+    genre: 'Masculin',
+    trancheAge: 'QuaranteCinquanteNeuf',
+    statutSocial: 'EnEmploi',
+    notes: 'Notes de Jean Maximal',
+    creation: new Date('2024-01-01'),
+    modification: new Date('2024-05-05'),
+  },
+  {
+    id: beneficiaires.sansAccompagnements,
+    prenom: 'Félix',
+    nom: 'Sans accompagnements',
+    commune: 'Crolles',
+    communeCodePostal: '38920',
+    communeCodeInsee: '38140',
+    genre: 'Masculin',
+    trancheAge: 'VingtCinqTrenteNeuf',
+    statutSocial: 'EnEmploi',
+    creation: new Date('2024-03-03'),
+    modification: new Date('2024-06-06'),
+  },
+  {
+    id: beneficiaires.anonyme,
+    anonyme: true,
+    trancheAge: 'DixHuitVingtQuatre',
+    creation: new Date('2024-08-08'),
+    modification: new Date('2024-08-12'),
+  },
+] satisfies Omit<Prisma.BeneficiaireUncheckedCreateInput, 'mediateurId'>[]
+
+const cras = crasDeDemonstration({
+  mediateurs: {
+    mediateurAvecActivite: avecActivites.mediateur,
+    conseillerNumerique: sansActivites.mediateur,
+    coordinateurInscritAvecTout: sansActivites.mediateur,
+  },
+  beneficiaires: {
+    minimaleMediateurAvecActivite: beneficiaires.minimale,
+    maximaleMediateurAvecActivite: beneficiaires.maximale,
+    anonymeMediateurAvecActivite: beneficiaires.anonyme,
+    minimaleConseillerNumerique: beneficiaires.minimale,
+    maximaleConseillerNumerique: beneficiaires.maximale,
+    anonymeConseillerNumerique: beneficiaires.anonyme,
+    minimaleCoordinateur: beneficiaires.minimale,
+    maximaleCoordinateur: beneficiaires.maximale,
+  },
+  lieux: { mediateque },
+})
+
+const salee = (id: string) => mergeUuids(id, SEL)
+
+const duMediateurAvecActivites = ({
+  activite,
+}: {
+  activite: { mediateurId?: string | null }
+}) => activite.mediateurId === avecActivites.mediateur
+
+const anonymesDesCollectifs = new Set(
+  cras.crasCollectifs.flatMap(({ beneficiairesAnonymes }) =>
+    beneficiairesAnonymes.map(({ id }) => id),
   ),
-  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
-    mediateursDesPersonas,
-  ),
-  semerLesCras: semerLesCrasDeDemonstration({
-    mediateurs: mediateursDesPersonas,
-    beneficiaires: referencesDesBeneficiaires,
-    lieux: { mediateque },
-  }),
-  semerLesCoordinations: semerLesCoordinationsDeDemonstration,
+)
+
+const reidentifie = <
+  C extends {
+    activite: { id: string }
+    accompagnements: {
+      id?: string
+      activiteId: string
+      beneficiaireId: string
+    }[]
+  },
+>(
+  cra: C,
+): C => ({
+  ...cra,
+  activite: { ...cra.activite, id: salee(cra.activite.id) },
+  accompagnements: cra.accompagnements.map((accompagnement) => ({
+    ...accompagnement,
+    id: salee(accompagnement.id ?? accompagnement.activiteId),
+    activiteId: salee(accompagnement.activiteId),
+    beneficiaireId: anonymesDesCollectifs.has(accompagnement.beneficiaireId)
+      ? salee(accompagnement.beneficiaireId)
+      : accompagnement.beneficiaireId,
+  })),
+})
+
+const crasDuTest = {
+  crasIndividuels: cras.crasIndividuels
+    .filter(duMediateurAvecActivites)
+    .map(reidentifie),
+  crasDemarchesAdministratives: cras.crasDemarchesAdministratives
+    .filter(duMediateurAvecActivites)
+    .map(reidentifie),
+  crasCollectifs: cras.crasCollectifs
+    .filter(duMediateurAvecActivites)
+    .map((cra) => ({
+      ...reidentifie(cra),
+      beneficiairesAnonymes: cra.beneficiairesAnonymes.map((anonyme) => ({
+        ...anonyme,
+        id: salee(anonyme.id ?? ''),
+      })),
+    })),
+}
+
+const effacerLeJeuDuTest = async () => {
+  const mediateurs = [avecActivites.mediateur, sansActivites.mediateur]
+  await prismaClient.accompagnement.deleteMany({
+    where: { activite: { mediateurId: { in: mediateurs } } },
+  })
+  await prismaClient.activite.deleteMany({
+    where: { mediateurId: { in: mediateurs } },
+  })
+  await prismaClient.beneficiaire.deleteMany({
+    where: { mediateurId: { in: mediateurs } },
+  })
+  await prismaClient.mediateur.deleteMany({ where: { id: { in: mediateurs } } })
+  await prismaClient.user.deleteMany({
+    where: {
+      id: { in: [avecActivites.utilisateur, sansActivites.utilisateur] },
+    },
+  })
+  await prismaClient.lieuInclusion.deleteMany({ where: { id: mediateque.id } })
 }
 
 type ActivitesFilters = Parameters<typeof criteresDesStatistiques>[0]
@@ -316,25 +449,37 @@ const expectEnum = <T extends string>(
 
 describe('statistiques du périmètre d’un médiateur', () => {
   beforeAll(async () => {
-    await semerLesLieuxDeDemonstration(prismaClient)
-    await semerLesEmployeusesDeDemonstration(prismaClient, {
-      structureEmployeuse,
-      mediateque,
+    await effacerLeJeuDuTest()
+    await prismaClient.lieuInclusion.create({ data: mediateque })
+    await prismaClient.user.createMany({
+      data: [avecActivites, sansActivites].map(({ utilisateur }) => ({
+        id: utilisateur,
+        email: `statistiques-${utilisateur}@integration.test`,
+      })),
     })
-    await resetFixtureUser(mediateurAvecActivite, demonstration, false)
-    await resetFixtureUser(mediateurSansActivites, demonstration, false)
-    await resetFixtureUser(conseillerNumerique, demonstration, false)
-    await seedPersonnesMain(prismaClient, demonstration.employeuse, [
-      mediateurAvecActivite,
-      mediateurSansActivites,
-      conseillerNumerique,
-    ])
-  }, 100_000)
+    await prismaClient.mediateur.createMany({
+      data: [avecActivites, sansActivites].map(
+        ({ utilisateur, mediateur }) => ({
+          id: mediateur,
+          userId: utilisateur,
+        }),
+      ),
+    })
+    await prismaClient.beneficiaire.createMany({
+      data: beneficiairesDuMediateur.map((beneficiaire) => ({
+        ...beneficiaire,
+        mediateurId: avecActivites.mediateur,
+      })),
+    })
+    await upsertCraFixtures({ transaction: prismaClient, ...crasDuTest })
+  })
+
+  afterAll(effacerLeJeuDuTest)
 
   describe('mediateur sans activites', () => {
     test('should give empty data without filters', async () => {
       const data = await statistiquesDuMediateur({
-        mediateurId: mediateurSansActivitesMediateurId,
+        mediateurId: sansActivites.mediateur,
         activitesFilters: {},
       })
       expect(data).toEqual(emptyData)
@@ -588,7 +733,7 @@ describe('statistiques du périmètre d’un médiateur', () => {
 
     test.each(cases)('$title', async ({ activitesFilters, expected }) => {
       const data = await statistiquesDuMediateur({
-        mediateurId: mediateurAvecActiviteMediateurId,
+        mediateurId: avecActivites.mediateur,
         activitesFilters,
       })
 
