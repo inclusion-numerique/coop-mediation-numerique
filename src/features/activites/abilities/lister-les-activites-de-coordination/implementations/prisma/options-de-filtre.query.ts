@@ -3,6 +3,8 @@ import { type CoordinateurId, NomDeTag, TagId } from '../../../../domain'
 import { porteeDe } from '../../../../implementations/prisma/portee-de-tag'
 import type { OptionsDeFiltre } from '../../domain'
 
+const TAGS_LES_PLUS_UTILISES = 10
+
 export const optionsDeFiltre = async ({
   coordinateurId,
 }: {
@@ -24,7 +26,11 @@ export const optionsDeFiltre = async ({
         departement: true,
         equipe: true,
       },
-      orderBy: { nom: 'asc' },
+      orderBy: [
+        { activitesCoordinationTags: { _count: 'desc' } },
+        { nom: 'asc' },
+      ],
+      take: TAGS_LES_PLUS_UTILISES,
     }),
     prismaClient.activiteCoordination.aggregate({
       _min: { date: true },

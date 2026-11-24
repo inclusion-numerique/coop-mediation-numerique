@@ -28,7 +28,7 @@ const libelleDans =
   (valeur: string): string =>
     options.find((option) => option.value === valeur)?.label ?? valeur
 
-export const LIBELLES_DES_TYPES = [
+const LIBELLES_DES_TYPES = [
   { value: 'Evenement', label: 'Évènement', complet: 'l’évènement' },
   { value: 'Partenariat', label: 'Partenariat', complet: 'le partenariat' },
   { value: 'Animation', label: 'Animation', complet: 'l’animation' },

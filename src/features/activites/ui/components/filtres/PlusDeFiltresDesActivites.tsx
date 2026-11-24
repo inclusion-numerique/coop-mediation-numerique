@@ -5,7 +5,6 @@ import { FiltresEnModale } from '@/libraries/filtres/FiltresEnModale'
 import { RechercheEnLigne } from '@/libraries/filtres/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '../../../action/rechercher-des-tags.key'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '../../../action/rechercher-employeuses.key'
 import {
   filtreDeLaSource,
@@ -14,6 +13,7 @@ import {
   filtreDesThematiquesAdministratives,
   filtreDesThematiquesDeMediation,
 } from '../../filtres/activites.filtre'
+import { RechercheDesTags } from './RechercheDesTags'
 
 const rechercherDesEmployeuses = async ({
   recherche,
@@ -31,16 +31,6 @@ const rechercherDesEmployeuses = async ({
           value: id,
           label: commune === null ? nom : `${nom} · ${commune}`,
         })),
-      }
-    : resultat
-}
-
-const rechercherDesTags = async ({ recherche }: { recherche: string }) => {
-  const resultat = await inject(RECHERCHER_DES_TAGS_DU_CRA_KEY)({ recherche })
-  return resultat.success
-    ? {
-        success: true as const,
-        data: resultat.data.map(({ id, nom }) => ({ value: id, label: nom })),
       }
     : resultat
 }
@@ -105,14 +95,6 @@ export const PlusDeFiltresDesActivites = ({
       legende="Filtrer par thématique de démarches administratives"
     />
     <hr className="fr-separator-8v" />
-    <RechercheEnLigne
-      filtre={filtreDesTags}
-      libelle="Filtrer par tags"
-      placeholder="Rechercher un tag"
-      selection={{ singular: 'tag', plural: 'tags' }}
-      rechercher={rechercherDesTags}
-      choisies={tags.choisies}
-      suggestions={tags.suggestions}
-    />
+    <RechercheDesTags suggestions={tags.suggestions} choisies={tags.choisies} />
   </FiltresEnModale>
 )

@@ -1,13 +1,10 @@
 import {
   CoordinateurId,
   type CriteresDesCoordinations,
-  criteresDesCoordinations,
   estFiltre,
   type Pagination,
-  type ParametresDesCoordinations,
   paginationLue,
 } from '../../../../domain'
-import { filtresActifsDesCoordinations } from '../../../../ui/presenters/filtres-actifs-des-coordinations.presenter'
 import type {
   ActivitesDeCoordinationListees,
   OptionsDeFiltre,
@@ -31,23 +28,21 @@ export type LecturesDeMesCoordinations = {
 export const mesActivitesDeCoordination = async ({
   coordinateurId,
   parametres,
+  criteres,
   timezone,
   aussiMediateur,
   lectures,
   aujourdhui = new Date(),
 }: {
   readonly coordinateurId: string
-  readonly parametres: ParametresDesCoordinations & {
-    readonly page?: string
-    readonly lignes?: string
-  }
+  readonly parametres: Readonly<Partial<Record<string, string>>>
+  readonly criteres: CriteresDesCoordinations
   readonly timezone: string
   readonly aussiMediateur: boolean
   readonly lectures: LecturesDeMesCoordinations
   readonly aujourdhui?: Date
 }) => {
   const coordinateur = CoordinateurId(coordinateurId)
-  const criteres = criteresDesCoordinations(parametres)
   const pagination = paginationLue(parametres)
 
   const [listees, options] = await Promise.all([
@@ -64,7 +59,6 @@ export const mesActivitesDeCoordination = async ({
     page: {
       sousTitre: sousTitreDeMesCoordinations(aussiMediateur),
       options: optionsDeFiltrePresentees(options, aujourdhui),
-      filtresActifs: filtresActifsDesCoordinations(criteres, options.tags),
       liste: listeDesCoordinations({
         listees,
         filtre: estFiltre(criteres),

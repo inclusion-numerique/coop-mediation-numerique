@@ -1,7 +1,7 @@
 import type { PorteeDuTag } from '@/features/activites/action/rechercher-des-tags.key'
 import type { OptionsDeFiltre } from '../../domain'
 
-export type OptionDeTag = {
+type OptionDeTag = {
   readonly value: string
   readonly label: string
   readonly portee: PorteeDuTag

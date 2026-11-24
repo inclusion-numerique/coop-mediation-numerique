@@ -7,7 +7,6 @@ import Image from 'next/image'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { FiltreActif } from '../../../../ui/presenters/filtres-actifs-des-coordinations.presenter'
 
 const ExportActiviteModal = createModal({
   id: 'export-activites',
@@ -15,11 +14,11 @@ const ExportActiviteModal = createModal({
 })
 
 export const BoutonExporter = ({
-  filters,
+  libelles,
   requete,
   activitesCount,
 }: {
-  filters: readonly FiltreActif[]
+  libelles: readonly string[]
   requete: string
   activitesCount: number
 }) => {
@@ -46,18 +45,15 @@ export const BoutonExporter = ({
         Exporter
       </Button>
       <ExportActiviteModal.Component title="Exports de mes activités de coordination">
-        {filters.length > 0 ? (
+        {libelles.length > 0 ? (
           <div className="fr-my-6v">
             <p className="fr-mb-2v">
               Vous avez appliqué les filtres suivants&nbsp;:
             </p>
             <ul className="fr-tags-group">
-              {filters.map((filter) => (
-                <li
-                  className="fr-line-height-1"
-                  key={`${filter.params.join('-')}-${filter.label}`}
-                >
-                  <Tag small>{filter.label}</Tag>
+              {libelles.map((libelle) => (
+                <li className="fr-line-height-1" key={libelle}>
+                  <Tag small>{libelle}</Tag>
                 </li>
               ))}
             </ul>
