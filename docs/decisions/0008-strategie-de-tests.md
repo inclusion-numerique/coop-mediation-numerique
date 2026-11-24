@@ -1,6 +1,6 @@
 ---
 status: "accepted"
-date: 2026-11-17
+date: 2026-11-24
 decision-makers:
   - Marc Gavanier
 ---
@@ -48,6 +48,12 @@ Chaque ability a sa spécification en Gherkin, ses étapes, et partage avec les
 autres abilities de sa feature des hooks communs. Ces scénarios jouent contre
 une vraie base PostgreSQL : ils sont à la fois le test d'acceptation et le test
 d'intégration de l'ability.
+
+Une ability de pure consultation n'a pas de spécification : elle affiche ce
+qu'on lui passe et ne décide rien, si bien qu'un scénario ne ferait que
+recopier la page. Dès qu'elle filtre, restreint par des droits, agrège,
+calcule ou choisit ce qu'elle affiche, elle est spécifiée. Une feature sans
+ability qui porte une règle de domaine la spécifie à sa racine.
 
 ### Des tests unitaires seulement pour la logique pure
 
@@ -144,3 +150,5 @@ normatives sur les tests sont dans la section 7 des
 
 - 2026-11-17, Marc Gavanier : rédaction de l'ADR a posteriori, d'après
   l'historique git.
+- 2026-11-24, Marc Gavanier : révision, exemption des abilities de pure
+  consultation et spécification d'une feature sans ability.

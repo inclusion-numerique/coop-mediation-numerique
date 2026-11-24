@@ -46,6 +46,8 @@ features/<feature>/
 └── <sujet>.cucumber.ts          # hooks et steps Cucumber partagés par les abilities, seulement à la racine
 ```
 
+Une feature sans ability qui porte une règle de domaine a aussi, à sa racine, `<feature>.feature.md` et `<feature>.steps.ts` (TS-1).
+
 Rien d'autre à la racine d'une feature : ni `index.ts`, ni `server.ts`, ni fichier posé à plat.
 
 ### Structure et nommage (ST)
@@ -173,7 +175,7 @@ Pas d'`index.ts` à la racine d'une ability ; pas de `commands/`, `queries/` ni 
 
 | ID   | Règle                                                                                                                                                                                                                                                            | Sévérité | Détection                                                                         |
 |------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------------------------------------------------------------------------------|
-| TS-1 | **BDD sur CHAQUE ability** : `<ability>.ability.md` (Gherkin) + `<ability>.steps.ts`. C'est l'acceptation **et** le test d'intégration (DB réelle via Cucumber).                                                                                                 | BLOCKER  | ability sans `.ability.md`                                                        |
+| TS-1 | **BDD sur CHAQUE ability** : `<ability>.ability.md` (Gherkin) + `<ability>.steps.ts`. C'est l'acceptation **et** le test d'intégration (DB réelle via Cucumber). **Exemption** : une ability de **pure consultation** n'a pas de spécification, parce qu'elle n'a aucune règle à décider : elle affiche ce qu'on lui passe, sans filtrage, droit, agrégation, calcul ni choix d'affichage conditionnel. Dès qu'elle décide quelque chose, même par un presenter ou une règle de domaine de sa feature, elle est spécifiée. Une feature **sans ability** qui porte une règle de domaine la spécifie à sa racine, dans `<feature>.feature.md` + `<feature>.steps.ts`. | BLOCKER  | ability sans `.ability.md` qui décide quelque chose                               |
 | TS-2 | **Unit `.spec.ts` UNIQUEMENT là où il y a une logique pure isolable** (value object, règle métier, presenter). Query/projection sans logique → BDD seul (ne pas ajouter de spec vide).                                                                           | WARN     | spec ne testant qu'un objet littéral                                              |
 | TS-3 | Fixtures via **smart constructors**, jamais `as Type`.                                                                                                                                                                                                           | BLOCKER  | `as` dans une fixture                                                             |
 | TS-4 | Round-trip sur le transfer layer (cf. DM-10).                                                                                                                                                                                                                    | BLOCKER  | —                                                                                 |
