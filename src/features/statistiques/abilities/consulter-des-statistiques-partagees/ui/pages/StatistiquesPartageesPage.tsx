@@ -6,7 +6,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import {
   ExportStatistiques,
   ExportStatistiquesEnAttente,
-} from '../../../../ui/components/export/ExportStatistiques'
+} from '../../../../ui/components/ExportStatistiques'
 import { ImpressionPreteProvider } from '../../../../ui/components/impression-prete'
 import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
 

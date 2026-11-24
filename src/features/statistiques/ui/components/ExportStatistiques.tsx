@@ -11,7 +11,7 @@ import {
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { useImpressionPrete } from '../impression-prete'
+import { useImpressionPrete } from './impression-prete'
 
 const ExportStatistiquesModal = createModal({
   id: 'export-statistiques',
