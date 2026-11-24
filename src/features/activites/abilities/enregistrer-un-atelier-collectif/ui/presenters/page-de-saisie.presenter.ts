@@ -1,28 +1,30 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import {
-  activiteDeMediationLue,
-  type FournisseursDeLaSaisieDeMediation,
-  pageDeSaisieDeMediation,
-} from '../../../../implementations/prisma/page-de-saisie-de-mediation.query'
-import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
-import {
   cheminDeLaCopie,
   etatDeLUrl,
 } from '../../../../ui/presenters/saisie/chemin-de-la-copie.presenter'
-import type { CraCollectifData } from '../../ui/forms/cra-collectif.validation'
-import { craCollectifDefaultValues } from '../../ui/forms/valeurs-par-defaut-du-cra-collectif'
-import { copieDeLAtelier } from '../../ui/presenters/copie-de-l-atelier.presenter'
-import { formulaireDeLAtelierCollectif } from '../../ui/presenters/formulaire-de-l-atelier-collectif.presenter'
+import {
+  type FournisseursDeLaSaisieDeMediation,
+  type LireUneActiviteDeMediation,
+  pageDeSaisieDeMediation,
+} from '../../../../ui/presenters/saisie/page-de-saisie-de-mediation.presenter'
+import type { CraCollectifData } from '../forms/cra-collectif.validation'
+import { craCollectifDefaultValues } from '../forms/valeurs-par-defaut-du-cra-collectif'
+import { copieDeLAtelier } from './copie-de-l-atelier.presenter'
+import { formulaireDeLAtelierCollectif } from './formulaire-de-l-atelier-collectif.presenter'
 
 type ActiviteDemandee = {
   readonly id: string
   readonly mediateurId: string
-  readonly rendezVousLies: RendezVousLies
+  readonly activiteLue: LireUneActiviteDeMediation
 }
 
-const atelierAReprendre = async (demande: ActiviteDemandee) => {
-  const lue = await activiteDeMediationLue(demande)
+const atelierAReprendre = async ({
+  activiteLue,
+  ...demande
+}: ActiviteDemandee) => {
+  const lue = await activiteLue(demande)
   return lue?.activite._tag === 'Collectif'
     ? formulaireDeLAtelierCollectif(lue.activite, lue.affichage)
     : null

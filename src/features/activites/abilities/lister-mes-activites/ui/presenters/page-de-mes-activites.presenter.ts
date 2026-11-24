@@ -1,5 +1,12 @@
-import { type MediateurId, parametresDesActivitesDe } from '../../../../domain'
-import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
+import {
+  type ChronologieDesActivites,
+  type ContenuDeLaChronologie,
+  type CriteresDesActivites,
+  type MediateurId,
+  type OrdreChronologique,
+  type Pagination,
+  parametresDesActivitesDe,
+} from '../../../../domain'
 import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
 import {
   basculeDesRendezVous,
@@ -8,19 +15,27 @@ import {
   contenuDeLaListe,
   lectureDeLaListe,
   type ParametresDeLaListe,
-} from '../../ui/presenters/lecture-de-la-liste.presenter'
+} from './lecture-de-la-liste.presenter'
 import {
   decompteDeLaListe,
   joursDeLaListe,
   lignesDuTableau,
   titreDuDecompte,
-} from '../../ui/presenters/mes-activites.presenter'
+} from './mes-activites.presenter'
 import {
   parametresDeNavigation,
   rendezVousFiltrablesDansLaListe,
   rendezVousFiltrablesDansLeTableau,
-} from '../../ui/presenters/navigation.presenter'
-import { listerMesActivites, type RendezVousALister } from './chronologie.query'
+} from './navigation.presenter'
+
+type LireLaChronologie = (demande: {
+  readonly mediateurId: MediateurId
+  readonly criteres: CriteresDesActivites
+  readonly pagination: Pagination
+  readonly ordre: OrdreChronologique
+  readonly contenu: ContenuDeLaChronologie
+  readonly comptesRendezVous: readonly number[] | null
+}) => Promise<ChronologieDesActivites>
 
 type CompteRendezVous = CompteRendezVousDuMediateur & { readonly id: number }
 
@@ -29,7 +44,7 @@ type DemandeDeMesActivites = {
   readonly parametres: ParametresDeLaListe
   readonly compteRdv: CompteRendezVous | null
   readonly timezone: string
-  readonly rendezVousLies: RendezVousLies
+  readonly chronologie: LireLaChronologie
 }
 
 export const maListeDActivites = ({
@@ -37,24 +52,19 @@ export const maListeDActivites = ({
   parametres,
   compteRdv,
   timezone,
-  rendezVous,
-  rendezVousLies,
-}: DemandeDeMesActivites & {
-  readonly rendezVous: Omit<RendezVousALister, 'comptes'>
-}) => {
+  chronologie: lireLaChronologie,
+}: DemandeDeMesActivites) => {
   const { criteres, filtree, voirLesRdvs, pagination, ordre } =
     lectureDeLaListe(parametres)
   const compte = compteConnecte(compteRdv)
 
-  const chronologie = listerMesActivites({
+  const chronologie = lireLaChronologie({
     mediateurId,
     criteres,
     pagination,
     ordre,
     contenu: contenuDeLaListe({ criteres, compte, voirLesRdvs }),
-    rendezVous:
-      compteRdv === null ? null : { comptes: [compteRdv.id], ...rendezVous },
-    rendezVousLies,
+    comptesRendezVous: compteRdv === null ? null : [compteRdv.id],
   })
 
   return {
@@ -87,19 +97,18 @@ export const monTableauDActivites = ({
   parametres,
   compteRdv,
   timezone,
-  rendezVousLies,
+  chronologie: lireLaChronologie,
 }: DemandeDeMesActivites) => {
   const { criteres, filtree, voirLesRdvs, pagination, ordre } =
     lectureDeLaListe(parametres)
 
-  const chronologie = listerMesActivites({
+  const chronologie = lireLaChronologie({
     mediateurId,
     criteres,
     pagination,
     ordre,
     contenu: 'ActivitesSeules',
-    rendezVous: null,
-    rendezVousLies,
+    comptesRendezVous: null,
   })
 
   return {

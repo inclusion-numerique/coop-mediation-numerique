@@ -1,31 +1,31 @@
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { MediateurId } from '../../domain'
-import { optionsDeDuree } from '../../ui/presenters/saisie/options-de-duree'
-import {
-  cheminDeSaisieDepuisUnRendezVous,
-  type ParticipantDuRendezVous,
-  type RendezVousASaisir,
-} from '../../ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous.presenter'
 import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
 
-export const urlDeSaisieDepuisUnRendezVous = async ({
-  rendezVous,
-  mediateurId,
-  beneficiaires,
-}: {
-  readonly rendezVous: RendezVousASaisir
-  readonly mediateurId: string
-  readonly beneficiaires: readonly ParticipantDuRendezVous[]
-}): Promise<string> =>
-  getServerUrl(
-    cheminDeSaisieDepuisUnRendezVous({
-      rendezVous,
-      participants: beneficiaires,
-      dureesProposees: optionsDeDuree({
+export const urlDeSaisieDepuisUnRendezVousAvec =
+  <RendezVous, Participant>(
+    cheminDeSaisie: (saisie: {
+      readonly rendezVous: RendezVous
+      readonly participants: readonly Participant[]
+      readonly dureesFrequentes: readonly number[]
+    }) => string,
+  ) =>
+  async ({
+    rendezVous,
+    mediateurId,
+    beneficiaires,
+  }: {
+    readonly rendezVous: RendezVous
+    readonly mediateurId: string
+    readonly beneficiaires: readonly Participant[]
+  }): Promise<string> =>
+    getServerUrl(
+      cheminDeSaisie({
+        rendezVous,
+        participants: beneficiaires,
         dureesFrequentes: await dureesFrequentesDuMediateur(
           MediateurId(mediateurId),
         ),
       }),
-    }),
-    { absolutePath: true },
-  )
+      { absolutePath: true },
+    )

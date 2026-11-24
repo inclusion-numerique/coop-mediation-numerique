@@ -5,12 +5,14 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
-import { saisieIndividuelleAModifier } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/page-de-saisie.query'
 import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/pages/CraIndividuelPage'
+import { saisieIndividuelleAModifier } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/page-de-saisie.presenter'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-lieux.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { activiteDeMediationLue } from '@/features/activites/implementations/prisma/activite-de-mediation-lue.query'
+import { dureesFrequentesDuMediateur } from '@/features/activites/implementations/prisma/durees-frequentes.query'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/beneficiaires-les-plus-suivis'
@@ -49,10 +51,11 @@ const UpdateCraIndividuelPage = async ({
   const saisie = await saisieIndividuelleAModifier({
     id,
     mediateurId: user.mediateur.id,
-    rendezVousLies,
+    activiteLue: activiteDeMediationLue(rendezVousLies),
     fournisseurs: {
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
+      dureesFrequentes: dureesFrequentesDuMediateur,
       tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
       visibilitesProposees: visibilitesProposees(acteur),
     },

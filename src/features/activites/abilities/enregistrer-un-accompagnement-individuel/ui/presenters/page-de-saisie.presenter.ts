@@ -1,28 +1,30 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import {
-  activiteDeMediationLue,
-  type FournisseursDeLaSaisieDeMediation,
-  pageDeSaisieDeMediation,
-} from '../../../../implementations/prisma/page-de-saisie-de-mediation.query'
-import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
-import {
   cheminDeLaCopie,
   etatDeLUrl,
 } from '../../../../ui/presenters/saisie/chemin-de-la-copie.presenter'
-import type { CraIndividuelData } from '../../ui/forms/cra-individuel.validation'
-import { craIndividuelDefaultValues } from '../../ui/forms/valeurs-par-defaut-du-cra-individuel'
-import { copieDeLAccompagnement } from '../../ui/presenters/copie-de-l-accompagnement.presenter'
-import { formulaireDeLAccompagnementIndividuel } from '../../ui/presenters/formulaire-de-l-accompagnement-individuel.presenter'
+import {
+  type FournisseursDeLaSaisieDeMediation,
+  type LireUneActiviteDeMediation,
+  pageDeSaisieDeMediation,
+} from '../../../../ui/presenters/saisie/page-de-saisie-de-mediation.presenter'
+import type { CraIndividuelData } from '../forms/cra-individuel.validation'
+import { craIndividuelDefaultValues } from '../forms/valeurs-par-defaut-du-cra-individuel'
+import { copieDeLAccompagnement } from './copie-de-l-accompagnement.presenter'
+import { formulaireDeLAccompagnementIndividuel } from './formulaire-de-l-accompagnement-individuel.presenter'
 
 type ActiviteDemandee = {
   readonly id: string
   readonly mediateurId: string
-  readonly rendezVousLies: RendezVousLies
+  readonly activiteLue: LireUneActiviteDeMediation
 }
 
-const accompagnementAReprendre = async (demande: ActiviteDemandee) => {
-  const lue = await activiteDeMediationLue(demande)
+const accompagnementAReprendre = async ({
+  activiteLue,
+  ...demande
+}: ActiviteDemandee) => {
+  const lue = await activiteLue(demande)
   return lue?.activite._tag === 'Individuel'
     ? formulaireDeLAccompagnementIndividuel(lue.activite, lue.affichage)
     : null

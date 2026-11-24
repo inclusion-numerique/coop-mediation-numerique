@@ -8,8 +8,9 @@ import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-r
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ExportDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/slots/ExportDeMesAccompagnements.slot'
 import { optionsDeLaBarre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/options-de-la-barre.query'
-import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/mes-activites.query'
+import { chronologieAvec } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/chronologie.query'
 import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/pages/PageDeMaListeDActivites'
+import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/page-de-mes-activites.presenter'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
 import { MediateurId } from '@/features/activites/domain'
@@ -55,11 +56,10 @@ const MesActivitesRoute = async ({
     parametres,
     compteRdv: user.rdvAccount,
     timezone: user.timezone,
-    rendezVous: {
-      selection: rendezVousAListerSql,
-      parIds: rendezVousParIds,
-    },
-    rendezVousLies,
+    chronologie: chronologieAvec({
+      rendezVous: { selection: rendezVousAListerSql, parIds: rendezVousParIds },
+      rendezVousLies,
+    }),
   })
 
   const options = await optionsDeLaBarre({

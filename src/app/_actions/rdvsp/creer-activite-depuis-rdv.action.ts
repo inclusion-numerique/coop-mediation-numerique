@@ -1,7 +1,8 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { urlDeSaisieDepuisUnRendezVous } from '@/features/activites/implementations/prisma/url-de-saisie-depuis-un-rendez-vous.query'
+import { urlDeSaisieDepuisUnRendezVousAvec } from '@/features/activites/implementations/prisma/url-de-saisie-depuis-un-rendez-vous.query'
+import { cheminDeSaisieSelonLesDureesFrequentes } from '@/features/activites/ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous.presenter'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/creer-ou-fusionner-depuis-usager-externe.binding'
@@ -14,7 +15,7 @@ import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisat
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 const creerActiviteDepuisRdv = creerActiviteDepuisRdvAvec(
-  urlDeSaisieDepuisUnRendezVous,
+  urlDeSaisieDepuisUnRendezVousAvec(cheminDeSaisieSelonLesDureesFrequentes),
   creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
 )
 

@@ -1,17 +1,14 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
-import { type ActiviteConsultee, ActiviteId, MediateurId } from '../../domain'
-import type { CraData } from '../../ui/forms/cra.validation'
-import type { BeneficiaireTrouveParLeCra } from '../../ui/presenters/saisie/beneficiaire-du-cra'
-import { donneesDeLaSaisieDeMediation } from '../../ui/presenters/saisie/donnees-de-la-saisie-de-mediation'
-import type { LieuDuCra } from '../../ui/presenters/saisie/lieu-du-cra'
+import { type ActiviteConsultee, MediateurId } from '../../../domain'
+import type { CraData } from '../../forms/cra.validation'
+import type { BeneficiaireTrouveParLeCra } from './beneficiaire-du-cra'
+import { donneesDeLaSaisieDeMediation } from './donnees-de-la-saisie-de-mediation'
+import type { LieuDuCra } from './lieu-du-cra'
 import {
   type RechercherDesTagsInitiaux,
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
-} from '../../ui/presenters/saisie/tag-du-cra'
-import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
-import { lireUneActiviteDeMediation } from './lire-une-activite-de-mediation.query'
-import type { RendezVousLies } from './rendez-vous-fournis'
+} from './tag-du-cra'
 
 export type FournisseursDeLaSaisieDeMediation = {
   readonly lieuxDuMediateur: (
@@ -20,9 +17,17 @@ export type FournisseursDeLaSaisieDeMediation = {
   readonly beneficiairesLesPlusSuivis: (
     mediateurId: string,
   ) => Promise<readonly BeneficiaireTrouveParLeCra[]>
+  readonly dureesFrequentes: (
+    mediateurId: MediateurId,
+  ) => Promise<readonly number[]>
   readonly tagsInitiaux: RechercherDesTagsInitiaux
   readonly visibilitesProposees: readonly VisibiliteDuTagDuCra[]
 }
+
+export type LireUneActiviteDeMediation = (demande: {
+  readonly id: string
+  readonly mediateurId: string
+}) => Promise<ActiviteConsultee | null>
 
 export const pageDeSaisieDeMediation =
   <T extends CraData>(
@@ -40,7 +45,7 @@ export const pageDeSaisieDeMediation =
     const [lieuxProposes, dureesFrequentes, beneficiairesProposes] =
       await Promise.all([
         fournisseurs.lieuxDuMediateur(mediateurId),
-        dureesFrequentesDuMediateur(MediateurId(mediateurId)),
+        fournisseurs.dureesFrequentes(MediateurId(mediateurId)),
         fournisseurs.beneficiairesLesPlusSuivis(mediateurId),
       ])
 
@@ -61,22 +66,3 @@ export const pageDeSaisieDeMediation =
       }),
     }
   }
-
-export const activiteDeMediationLue = async ({
-  id,
-  mediateurId,
-  rendezVousLies,
-}: {
-  readonly id: string
-  readonly mediateurId: string
-  readonly rendezVousLies: RendezVousLies
-}): Promise<ActiviteConsultee | null> => {
-  const activiteId = ActiviteId.safe(id)
-  return activiteId === null
-    ? null
-    : lireUneActiviteDeMediation({
-        id: activiteId,
-        mediateurId: MediateurId(mediateurId),
-        rendezVousLies,
-      })
-}

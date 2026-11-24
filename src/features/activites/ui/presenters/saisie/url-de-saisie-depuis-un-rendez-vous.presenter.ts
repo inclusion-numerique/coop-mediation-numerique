@@ -1,6 +1,7 @@
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { minutesToCraDureeData, minutesToCustomCraDureeData } from './duree'
+import { optionsDeDuree } from './options-de-duree'
 
 export type RendezVousASaisir = {
   readonly id: number
@@ -57,3 +58,18 @@ export const cheminDeSaisieDepuisUnRendezVous = ({
           premier === undefined ? undefined : participantDuFormulaire(premier),
       })}`
 }
+
+export const cheminDeSaisieSelonLesDureesFrequentes = ({
+  rendezVous,
+  participants,
+  dureesFrequentes,
+}: {
+  readonly rendezVous: RendezVousASaisir
+  readonly participants: readonly ParticipantDuRendezVous[]
+  readonly dureesFrequentes: readonly number[]
+}): string =>
+  cheminDeSaisieDepuisUnRendezVous({
+    rendezVous,
+    participants,
+    dureesProposees: optionsDeDuree({ dureesFrequentes }),
+  })

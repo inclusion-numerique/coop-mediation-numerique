@@ -197,3 +197,31 @@ export const listerMesActivites = async ({
     ),
   }
 }
+
+export const chronologieAvec =
+  ({
+    rendezVous,
+    rendezVousLies,
+  }: {
+    readonly rendezVous: Omit<RendezVousALister, 'comptes'>
+    readonly rendezVousLies: RendezVousLies
+  }) =>
+  ({
+    comptesRendezVous,
+    ...demande
+  }: {
+    readonly mediateurId: MediateurId
+    readonly criteres: CriteresDesActivites
+    readonly pagination: Pagination
+    readonly ordre: OrdreChronologique
+    readonly contenu: ContenuDeLaChronologie
+    readonly comptesRendezVous: readonly number[] | null
+  }): Promise<ChronologieDesActivites> =>
+    listerMesActivites({
+      ...demande,
+      rendezVous:
+        comptesRendezVous === null
+          ? null
+          : { comptes: comptesRendezVous, ...rendezVous },
+      rendezVousLies,
+    })

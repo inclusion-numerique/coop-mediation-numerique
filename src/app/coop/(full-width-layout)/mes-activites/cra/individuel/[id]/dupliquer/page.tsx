@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
-import { cheminDeDuplicationIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/page-de-saisie.query'
+import { cheminDeDuplicationIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/page-de-saisie.presenter'
+import { activiteDeMediationLue } from '@/features/activites/implementations/prisma/activite-de-mediation-lue.query'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
@@ -28,7 +29,7 @@ const DupliquerPage = async ({
   const chemin = await cheminDeDuplicationIndividuelle({
     id,
     mediateurId: user.mediateur.id,
-    rendezVousLies,
+    activiteLue: activiteDeMediationLue(rendezVousLies),
     retour,
   })
 

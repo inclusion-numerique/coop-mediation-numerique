@@ -15,20 +15,19 @@ import {
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
 } from '../../../../ui/presenters/saisie/tag-du-cra'
-import type { CraAnimationData } from '../../ui/forms/cra-animation.validation'
-import type { CraEvenementData } from '../../ui/forms/cra-evenement.validation'
-import type { CraPartenariatData } from '../../ui/forms/cra-partenariat.validation'
+import type { CraAnimationData } from '../forms/cra-animation.validation'
+import type { CraEvenementData } from '../forms/cra-evenement.validation'
+import type { CraPartenariatData } from '../forms/cra-partenariat.validation'
 import {
   copieDeLaCoordination,
   departDuPartenariat,
-} from '../../ui/presenters/copie-de-la-coordination.presenter'
-import { getCraCoordinationPageData } from '../../ui/presenters/donnees-de-la-page'
+} from './copie-de-la-coordination.presenter'
+import { getCraCoordinationPageData } from './donnees-de-la-page'
 import {
   formulaireDeLAnimation,
   formulaireDeLEvenement,
   formulaireDuPartenariat,
-} from '../../ui/presenters/formulaire-de-la-coordination.presenter'
-import { lireUneActiviteDeCoordination } from './lire-une-activite-de-coordination.query'
+} from './formulaire-de-la-coordination.presenter'
 
 type ValeursDeLaCoordination = DefaultValues<
   CraAnimationData | CraEvenementData | CraPartenariatData
@@ -68,9 +67,15 @@ export type FournisseursDeLaSaisieDeCoordination = {
   readonly visibilitesProposees: readonly VisibiliteDuTagDuCra[]
 }
 
+type LireUneActiviteDeCoordination = (demande: {
+  readonly id: ActiviteDeCoordinationId
+  readonly coordinateurId: CoordinateurId
+}) => Promise<ActiviteDeCoordination | null>
+
 type CoordinationDemandee = {
   readonly id: string
   readonly coordinateurId: string
+  readonly activiteLue: LireUneActiviteDeCoordination
 }
 
 const pageDeSaisie = async (
@@ -91,13 +96,13 @@ const pageDeSaisie = async (
 
 const coordinationAReprendre = async (
   saisie: FormulaireDeCoordination,
-  { id, coordinateurId }: CoordinationDemandee,
+  { id, coordinateurId, activiteLue }: CoordinationDemandee,
 ) => {
   const activiteId = ActiviteDeCoordinationId.safe(id)
   const activite =
     activiteId === null
       ? null
-      : await lireUneActiviteDeCoordination({
+      : await activiteLue({
           id: activiteId,
           coordinateurId: CoordinateurId(coordinateurId),
         })

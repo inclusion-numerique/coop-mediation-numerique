@@ -1,23 +1,39 @@
 import {
   CoordinateurId,
+  type CriteresDesCoordinations,
   criteresDesCoordinations,
   estFiltre,
+  type Pagination,
   type ParametresDesCoordinations,
   paginationLue,
 } from '../../../../domain'
 import { filtresActifsDesCoordinations } from '../../../../ui/presenters/filtres-actifs-des-coordinations'
-import { listeDesCoordinations } from '../../ui/presenters/liste-des-coordinations.presenter'
-import { optionsDeFiltrePresentees } from '../../ui/presenters/options-de-filtre.presenter'
-import { parametresDeLaPagination } from '../../ui/presenters/pagination.presenter'
-import { sousTitreDeMesCoordinations } from '../../ui/presenters/sous-titre.presenter'
-import { listerLesActivitesDeCoordination } from './activites-de-coordination.query'
-import { optionsDeFiltre } from './options-de-filtre.query'
+import type {
+  ActivitesDeCoordinationListees,
+  OptionsDeFiltre,
+} from '../../domain'
+import { listeDesCoordinations } from './liste-des-coordinations.presenter'
+import { optionsDeFiltrePresentees } from './options-de-filtre.presenter'
+import { parametresDeLaPagination } from './pagination.presenter'
+import { sousTitreDeMesCoordinations } from './sous-titre.presenter'
+
+export type LecturesDeMesCoordinations = {
+  readonly activites: (demande: {
+    readonly coordinateurId: CoordinateurId
+    readonly criteres: CriteresDesCoordinations
+    readonly pagination: Pagination
+  }) => Promise<ActivitesDeCoordinationListees>
+  readonly options: (demande: {
+    readonly coordinateurId: CoordinateurId
+  }) => Promise<OptionsDeFiltre>
+}
 
 export const mesActivitesDeCoordination = async ({
   coordinateurId,
   parametres,
   timezone,
   aussiMediateur,
+  lectures,
   aujourdhui = new Date(),
 }: {
   readonly coordinateurId: string
@@ -27,6 +43,7 @@ export const mesActivitesDeCoordination = async ({
   }
   readonly timezone: string
   readonly aussiMediateur: boolean
+  readonly lectures: LecturesDeMesCoordinations
   readonly aujourdhui?: Date
 }) => {
   const coordinateur = CoordinateurId(coordinateurId)
@@ -34,12 +51,12 @@ export const mesActivitesDeCoordination = async ({
   const pagination = paginationLue(parametres)
 
   const [listees, options] = await Promise.all([
-    listerLesActivitesDeCoordination({
+    lectures.activites({
       coordinateurId: coordinateur,
       criteres,
       pagination,
     }),
-    optionsDeFiltre({ coordinateurId: coordinateur }),
+    lectures.options({ coordinateurId: coordinateur }),
   ])
 
   return {

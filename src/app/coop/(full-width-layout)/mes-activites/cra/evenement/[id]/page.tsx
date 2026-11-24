@@ -3,11 +3,12 @@ import { enregistrerUneActiviteDeCoordinationAction } from '@/app/_actions/activ
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
+import { lireUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/lire-une-activite-de-coordination.query'
+import CraEvenementPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/pages/CraEvenementPage'
 import {
   saisieDEvenement,
   saisieDeCoordinationAModifier,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/page-de-saisie.query'
-import CraEvenementPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/pages/CraEvenementPage'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/page-de-saisie.presenter'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
@@ -35,6 +36,7 @@ const UpdateCraEvenementPage = async ({
   const saisie = await saisieDeCoordinationAModifier(saisieDEvenement)({
     id,
     coordinateurId: user.coordinateur.id,
+    activiteLue: lireUneActiviteDeCoordination,
     fournisseurs: {
       tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
       visibilitesProposees: visibilitesProposees(acteur),
