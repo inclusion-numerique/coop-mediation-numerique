@@ -6,7 +6,6 @@ import {
   type JetonsOAuth,
   jetonsARenouveler,
 } from '../../domain/compte/jetons-oauth'
-import type { DemandeRdv } from '../../domain/demande-rdv'
 import {
   AccesRefuse,
   AgentSupprime,
@@ -25,7 +24,8 @@ import type {
   FiltresUsagers,
   RdvServicePublicApi,
 } from '../../domain/ports'
-import { StatutPresence } from '../../domain/statut-presence'
+import type { DemandeRdv } from '../../domain/rdv/demande-rdv'
+import { StatutPresence } from '../../domain/rdv/statut-presence'
 import {
   demandeRdvPayload,
   jetonsPayload,

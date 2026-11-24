@@ -2,18 +2,18 @@ import type { Result } from '@/libraries/result'
 import type { Agent } from './agent'
 import type { CompteRdvUtilisable } from './compte/compte-rdv'
 import type { JetonsOAuth } from './compte/jetons-oauth'
-import type { DemandeRdv, DemandeRdvCreee } from './demande-rdv'
 import type { ErreurRdvApi } from './errors'
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { RdvId } from './identifiants/rdv-id'
 import type { UsagerId } from './identifiants/usager-id'
 import type { Organisation } from './organisation'
-import type { RdvSynchronise } from './rdv'
+import type { DemandeRdv, DemandeRdvCreee } from './rdv/demande-rdv'
+import type { RdvSynchronise } from './rdv/rdv'
 import type {
   StatutPresence,
   StatutPresenceModifiable,
-} from './statut-presence'
+} from './rdv/statut-presence'
 import type { Usager } from './usager'
 import type {
   AbonnementWebhook,

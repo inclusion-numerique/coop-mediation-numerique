@@ -4,7 +4,6 @@ import {
   JetonAcces,
   type JetonsOAuth,
 } from '../../../domain/compte/jetons-oauth'
-import { UrlRetour } from '../../../domain/demande-rdv'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
@@ -14,6 +13,7 @@ import {
   PrenomExterne,
   TelephoneExterne,
 } from '../../../domain/identite'
+import { UrlRetour } from '../../../domain/rdv/demande-rdv'
 import {
   type BeneficiaireCible,
   BeneficiaireCibleId,

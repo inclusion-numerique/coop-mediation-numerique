@@ -1,7 +1,7 @@
-import type { Lieu } from '../../../domain/lieu'
-import type { Motif } from '../../../domain/motif'
-import type { Participation } from '../../../domain/participation'
-import type { Rdv } from '../../../domain/rdv'
+import type { Lieu } from '../../../domain/rdv/lieu'
+import type { Motif } from '../../../domain/rdv/motif'
+import type { Participation } from '../../../domain/rdv/participation'
+import type { Rdv } from '../../../domain/rdv/rdv'
 import type { Usager } from '../../../domain/usager'
 
 export const motifModifie = (connu: Motif, recu: Motif): boolean =>

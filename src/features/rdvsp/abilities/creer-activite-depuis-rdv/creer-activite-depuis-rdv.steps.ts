@@ -35,7 +35,7 @@ const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
-import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import {
   ID_TEST,
   seedCompteRdv,

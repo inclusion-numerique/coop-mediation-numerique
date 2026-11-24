@@ -11,12 +11,10 @@ import {
   etatConnuDuLot,
   rdvsDejaImportes,
 } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
-import { AdresseRdv } from '@/features/rdvsp/domain/adresse-rdv'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
-import { DureeEnMinutes } from '@/features/rdvsp/domain/duree-en-minutes'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { ParticipationId } from '@/features/rdvsp/domain/identifiants/participation-id'
@@ -26,8 +24,10 @@ import { RdvUuid } from '@/features/rdvsp/domain/identifiants/rdv-uuid'
 import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import { NomExterne, PrenomExterne } from '@/features/rdvsp/domain/identite'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
-import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv'
-import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import { AdresseRdv } from '@/features/rdvsp/domain/rdv/adresse-rdv'
+import { DureeEnMinutes } from '@/features/rdvsp/domain/rdv/duree-en-minutes'
+import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv/rdv'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { UrlAgent } from '@/features/rdvsp/domain/url-agent'
 import type { Usager } from '@/features/rdvsp/domain/usager'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'

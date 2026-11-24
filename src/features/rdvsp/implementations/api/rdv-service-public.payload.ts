@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { statutsPresence } from '../../domain/statut-presence'
+import { statutsPresence } from '../../domain/rdv/statut-presence'
 
 /**
  * Forme filaire des réponses de RDV Service Public.

@@ -7,7 +7,7 @@ import {
   seedParticipation,
   seedRdv,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { StatutRdv } from '../../domain/statut-rdv'
+import { StatutRdv } from '../../domain/rdv/statut-rdv'
 import {
   rendezVousAListerSql,
   rendezVousAuxStatutsSql,

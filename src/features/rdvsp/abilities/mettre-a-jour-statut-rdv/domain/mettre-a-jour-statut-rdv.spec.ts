@@ -8,7 +8,7 @@ import {
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { StatutPresence } from '../../../domain/statut-presence'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { statutRdvMisAJour, verifierAcces } from './mettre-a-jour-statut-rdv'
 
 const agentId = RdvAgentId(4242)

@@ -3,7 +3,7 @@ import { defineModel, type Model } from '@/libraries/model'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { UsagerId } from '../../../domain/identifiants/usager-id'
-import type { StatutPresence } from '../../../domain/statut-presence'
+import type { StatutPresence } from '../../../domain/rdv/statut-presence'
 
 export const MediateurRedacteurId = defineModel(
   z.guid().brand('MediateurRedacteurId'),

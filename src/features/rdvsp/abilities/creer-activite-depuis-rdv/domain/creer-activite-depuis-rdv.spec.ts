@@ -8,7 +8,7 @@ import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { StatutPresence } from '../../../domain/statut-presence'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { usagersPourActivite, verifierRdv } from './creer-activite-depuis-rdv'
 import type { ParticipationDuRdv, RdvPourActivite } from './rdv-pour-activite'
 

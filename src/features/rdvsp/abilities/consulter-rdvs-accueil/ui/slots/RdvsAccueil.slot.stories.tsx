@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
-import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { provide } from '@/libraries/nextjs/injection/client'
 import { success } from '@/libraries/result'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '../../action/rafraichir-accueil-rdv.key'

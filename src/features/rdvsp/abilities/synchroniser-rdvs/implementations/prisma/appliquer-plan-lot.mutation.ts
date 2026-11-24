@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { Rdv } from '../../../../domain/rdv'
+import type { Rdv } from '../../../../domain/rdv/rdv'
 import {
   lieuFromDomain,
   motifFromDomain,

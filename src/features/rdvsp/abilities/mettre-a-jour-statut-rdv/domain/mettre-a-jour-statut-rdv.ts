@@ -16,7 +16,7 @@ import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import type {
   StatutPresence,
   StatutPresenceModifiable,
-} from '@/features/rdvsp/domain/statut-presence'
+} from '@/features/rdvsp/domain/rdv/statut-presence'
 import { failure, type Result, success } from '@/libraries/result'
 
 export type ErreurMiseAJourStatut = RdvNonAutorise | ErreurRdvApi

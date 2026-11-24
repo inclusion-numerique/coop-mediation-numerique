@@ -17,7 +17,7 @@ import {
 } from '@/features/rdvsp/domain/errors'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import type { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import type { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { failure, type Result, success } from '@/libraries/result'
 
 export type ErreurCreationActivite = RdvNonAutorise | ErreurRdvApi

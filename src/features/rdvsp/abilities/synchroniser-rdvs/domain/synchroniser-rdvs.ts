@@ -25,7 +25,7 @@ import {
 } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
-import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv'
+import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv/rdv'
 import { type Result, success } from '@/libraries/result'
 
 type BilanSynchronisationRdvs = {

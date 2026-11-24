@@ -1,7 +1,7 @@
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { StatutPresenceModifiable } from '../../../domain/statut-presence'
+import { StatutPresenceModifiable } from '../../../domain/rdv/statut-presence'
 import { mettreAJourStatutRdvBinding } from './mettre-a-jour-statut-rdv.binding'
 
 export const rendezVousHonorePar =

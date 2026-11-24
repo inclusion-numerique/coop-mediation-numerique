@@ -3,7 +3,7 @@ import { decisionPourWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webh
 import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import type { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
-import type { Rdv } from '@/features/rdvsp/domain/rdv'
+import type { Rdv } from '@/features/rdvsp/domain/rdv/rdv'
 import type { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import type { Result } from '@/libraries/result'
 

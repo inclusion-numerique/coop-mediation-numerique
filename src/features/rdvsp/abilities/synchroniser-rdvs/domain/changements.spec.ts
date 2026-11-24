@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { AdresseRdv } from '../../../domain/adresse-rdv'
-import { DureeEnMinutes } from '../../../domain/duree-en-minutes'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { EmailExterne, NomExterne } from '../../../domain/identite'
 import { NomAtelier, NomMotif } from '../../../domain/libelle'
-import { NomLieu } from '../../../domain/lieu'
-import { StatutPresence } from '../../../domain/statut-presence'
+import { AdresseRdv } from '../../../domain/rdv/adresse-rdv'
+import { DureeEnMinutes } from '../../../domain/rdv/duree-en-minutes'
+import { NomLieu } from '../../../domain/rdv/lieu'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import {
   lieuModifie,
   motifModifie,

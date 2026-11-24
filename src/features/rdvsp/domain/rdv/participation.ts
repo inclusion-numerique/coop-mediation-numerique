@@ -1,7 +1,7 @@
-import type { ParticipationId } from './identifiants/participation-id'
-import type { UsagerId } from './identifiants/usager-id'
+import type { ParticipationId } from '../identifiants/participation-id'
+import type { UsagerId } from '../identifiants/usager-id'
+import type { Usager } from '../usager'
 import type { StatutPresence } from './statut-presence'
-import type { Usager } from './usager'
 
 /**
  * Présence d'un usager à un rendez-vous. Son statut est indépendant de celui du

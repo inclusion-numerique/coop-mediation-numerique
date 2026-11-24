@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { AdresseRdv } from '../../domain/adresse-rdv'
 import { MotifId } from '../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
 import { UsagerId } from '../../domain/identifiants/usager-id'
@@ -10,8 +9,9 @@ import {
   TelephoneExterne,
 } from '../../domain/identite'
 import { NomMotif } from '../../domain/libelle'
-import { type Lieu, LieuId, NomLieu } from '../../domain/lieu'
-import { CategorieMotifId, type Motif } from '../../domain/motif'
+import { AdresseRdv } from '../../domain/rdv/adresse-rdv'
+import { type Lieu, LieuId, NomLieu } from '../../domain/rdv/lieu'
+import { CategorieMotifId, type Motif } from '../../domain/rdv/motif'
 import type { Usager } from '../../domain/usager'
 import {
   lieuFromDomain,

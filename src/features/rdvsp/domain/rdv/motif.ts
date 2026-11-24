@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
-import type { MotifId } from './identifiants/motif-id'
-import type { OrganisationId } from './identifiants/organisation-id'
-import type { NomMotif } from './libelle'
+import type { MotifId } from '../identifiants/motif-id'
+import type { OrganisationId } from '../identifiants/organisation-id'
+import type { NomMotif } from '../libelle'
 
 export const CategorieMotifId = defineModel(
   z.number().int().positive().brand('CategorieMotifId'),

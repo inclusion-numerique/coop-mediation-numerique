@@ -9,16 +9,16 @@ import type {
   CompteRdvUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
-import type {
-  DemandeRdv,
-  DemandeRdvCreee,
-  UsagerDeLaDemande,
-} from '@/features/rdvsp/domain/demande-rdv'
-import { UrlRetour } from '@/features/rdvsp/domain/demande-rdv'
 import { CompteNonLie, type ErreurRdvApi } from '@/features/rdvsp/domain/errors'
 import type { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
+import type {
+  DemandeRdv,
+  DemandeRdvCreee,
+  UsagerDeLaDemande,
+} from '@/features/rdvsp/domain/rdv/demande-rdv'
+import { UrlRetour } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import { failure, type Result, success } from '@/libraries/result'
 
 export type ErreurPriseRendezVous = BeneficiaireIntrouvable | ErreurRdvApi

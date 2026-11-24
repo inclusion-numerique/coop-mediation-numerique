@@ -1,6 +1,6 @@
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
-import type { StatutPresence } from '../../../domain/statut-presence'
+import type { StatutPresence } from '../../../domain/rdv/statut-presence'
 
 /**
  * Rendez-vous tel que l'accueil l'affiche : de quoi écrire une phrase, pas

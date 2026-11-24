@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
-import type { Lieu } from '../../../../domain/lieu'
-import type { Motif } from '../../../../domain/motif'
+import type { Lieu } from '../../../../domain/rdv/lieu'
+import type { Motif } from '../../../../domain/rdv/motif'
 import type { Usager } from '../../../../domain/usager'
 import { rdvToDomain } from '../../../../implementations/prisma/rdv.transfer'
 import type {

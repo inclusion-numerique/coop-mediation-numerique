@@ -1,4 +1,4 @@
-import type { Rdv } from '../../../domain/rdv'
+import type { Rdv } from '../../../domain/rdv/rdv'
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 
 /**

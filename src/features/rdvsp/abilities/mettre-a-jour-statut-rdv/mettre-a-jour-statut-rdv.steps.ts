@@ -10,7 +10,7 @@ import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import {
   StatutPresence,
   StatutPresenceModifiable,
-} from '@/features/rdvsp/domain/statut-presence'
+} from '@/features/rdvsp/domain/rdv/statut-presence'
 import {
   ID_TEST,
   rdvEnBase,

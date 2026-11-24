@@ -1,4 +1,3 @@
-import { AdresseRdv } from '../../domain/adresse-rdv'
 import type { Agent } from '../../domain/agent'
 import {
   JetonAcces,
@@ -6,12 +5,6 @@ import {
   type JetonsOAuth,
   PorteeOAuth,
 } from '../../domain/compte/jetons-oauth'
-import {
-  type DemandeRdvCreee,
-  DemandeRdvId,
-  UrlPriseRdv,
-} from '../../domain/demande-rdv'
-import { DureeEnMinutes } from '../../domain/duree-en-minutes'
 import { MotifId } from '../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
 import { ParticipationId } from '../../domain/identifiants/participation-id'
@@ -26,13 +19,20 @@ import {
   TelephoneExterne,
 } from '../../domain/identite'
 import { NomAtelier, NomMotif, NomOrganisation } from '../../domain/libelle'
-import { type Lieu, LieuId, NomLieu } from '../../domain/lieu'
-import { CategorieMotifId, type Motif } from '../../domain/motif'
-import { NombreParticipantsMax } from '../../domain/nombre-participants-max'
 import type { Organisation } from '../../domain/organisation'
-import type { Participation } from '../../domain/participation'
-import type { Rdv } from '../../domain/rdv'
-import { StatutPresence } from '../../domain/statut-presence'
+import { AdresseRdv } from '../../domain/rdv/adresse-rdv'
+import {
+  type DemandeRdvCreee,
+  DemandeRdvId,
+  UrlPriseRdv,
+} from '../../domain/rdv/demande-rdv'
+import { DureeEnMinutes } from '../../domain/rdv/duree-en-minutes'
+import { type Lieu, LieuId, NomLieu } from '../../domain/rdv/lieu'
+import { CategorieMotifId, type Motif } from '../../domain/rdv/motif'
+import { NombreParticipantsMax } from '../../domain/rdv/nombre-participants-max'
+import type { Participation } from '../../domain/rdv/participation'
+import type { Rdv } from '../../domain/rdv/rdv'
+import { StatutPresence } from '../../domain/rdv/statut-presence'
 import { UrlAgent } from '../../domain/url-agent'
 import type { Usager } from '../../domain/usager'
 import {

@@ -3,12 +3,12 @@ import { Prisma } from '@/generated/prisma/client'
 import {
   StatutPresence,
   type statutsPresence,
-} from '../../../../domain/statut-presence'
+} from '../../../../domain/rdv/statut-presence'
 import {
   type StatutRdv,
   statutRdv,
   type statutsRdv,
-} from '../../../../domain/statut-rdv'
+} from '../../../../domain/rdv/statut-rdv'
 
 type Periode = { readonly du: Date; readonly au: Date }
 

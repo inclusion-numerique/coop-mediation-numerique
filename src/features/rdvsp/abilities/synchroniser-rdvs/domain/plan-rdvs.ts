@@ -1,9 +1,9 @@
 import type { MotifId } from '../../../domain/identifiants/motif-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { UsagerId } from '../../../domain/identifiants/usager-id'
-import type { Lieu, LieuId } from '../../../domain/lieu'
-import type { Motif } from '../../../domain/motif'
-import type { Rdv } from '../../../domain/rdv'
+import type { Lieu, LieuId } from '../../../domain/rdv/lieu'
+import type { Motif } from '../../../domain/rdv/motif'
+import type { Rdv } from '../../../domain/rdv/rdv'
 import type { Usager } from '../../../domain/usager'
 import {
   lieuModifie,

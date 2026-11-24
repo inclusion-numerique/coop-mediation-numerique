@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
-import { NomLieu } from '../../../domain/lieu'
-import { StatutPresence } from '../../../domain/statut-presence'
+import { NomLieu } from '../../../domain/rdv/lieu'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import {
   lieuFixture,
   motifFixture,
