@@ -15,7 +15,7 @@ export const AnneeNaissance = defineModel(
 
 export type AnneeNaissance = Model.TypeOf<typeof AnneeNaissance>
 
-const anneeNaissanceInvalide =
+export const anneeNaissanceInvalide =
   'Veuillez renseigner une année de naissance valide'
 
 /**

@@ -34,7 +34,7 @@ When('je recherche {string} en excluant le premier', async (query: string) => {
   searchResult = await rechercherBeneficiaires({
     mediateurId: testMediateurId,
     query,
-    excludeIds: [BeneficiaireId(seededIds[0])],
+    excludeIds: [BeneficiaireId(seededIds[0] ?? '')],
   })
 })
 

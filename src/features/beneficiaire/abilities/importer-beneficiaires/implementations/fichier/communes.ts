@@ -21,19 +21,12 @@ const createCommuneReadline = () => {
 }
 
 const parseCommuneCsvLine = (line: string): Commune => {
-  // Split the line into 3 parts: Code Insee, Commune, and the rest as Code Postal
-  const parts = line.split(',', 2) // Split into 3 parts: two commas
-
-  const codeInsee = parts[0]
-  const nom = parts[1]
-
-  // Extract the third part by adding lengths of the first two parts
-  const thirdPartLength = parts[0].length + parts[1].length + 2 // Add 2 for the commas
-
-  // The third part is the postalCode, which might contain commas and quotes
-  const codePostal = line.slice(thirdPartLength) // Slice the third part and trim whitespace
-
-  return { codeInsee, nom, codePostal }
+  const [codeInsee = '', nom = ''] = line.split(',', 2)
+  return {
+    codeInsee,
+    nom,
+    codePostal: line.slice(codeInsee.length + nom.length + 2),
+  }
 }
 
 // CodeInsee, Commune, CodePostal

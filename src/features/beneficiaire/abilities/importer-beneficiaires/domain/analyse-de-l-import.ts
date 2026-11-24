@@ -1,5 +1,8 @@
 import { z } from 'zod'
-import { anneeNaissanceValidation } from '@/features/beneficiaire/domain/annee-naissance'
+import {
+  anneeNaissanceInvalide,
+  anneeNaissanceValidation,
+} from '@/features/beneficiaire/domain/annee-naissance'
 import type { Genre } from '@/features/beneficiaire/domain/genre'
 import { genres as genreValues } from '@/features/beneficiaire/domain/genre'
 import { type FeuilleImport, valeurCellule } from './feuille-import'
@@ -93,7 +96,7 @@ const parseAnneeNaissance = (anneeNaissanceRaw: number | null | undefined) => {
 
   const parsed = anneeNaissanceValidation.safeParse(anneeNaissanceRaw)
   if (!parsed.success) {
-    return { error: parsed.error.issues[0].message }
+    return { error: parsed.error.issues[0]?.message ?? anneeNaissanceInvalide }
   }
 
   return { value: anneeNaissanceRaw }

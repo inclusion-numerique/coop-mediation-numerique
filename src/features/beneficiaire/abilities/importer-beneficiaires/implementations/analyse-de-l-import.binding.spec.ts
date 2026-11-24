@@ -212,8 +212,8 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
 
     expect(result.status).toBe('error')
     expect(result.rows).toHaveLength(1)
-    expect(result.rows[0].values.anneeNaissance).toBe(25_569)
-    expect(result.rows[0].errors).toEqual({
+    expect(result.rows[0]?.values.anneeNaissance).toBe(25_569)
+    expect(result.rows[0]?.errors).toEqual({
       anneeNaissance: 'Veuillez renseigner une année de naissance valide',
     })
   })
@@ -226,7 +226,7 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
     const result = await analyseImportBeneficiairesExcel(feuille)
 
     expect(result.status).toBe('ok')
-    expect(result.rows[0].parsed.commune).toEqual({
+    expect(result.rows[0]?.parsed.commune).toEqual({
       codeInsee: '77251',
       nom: 'Lieusaint',
       codePostal: '77127',
@@ -250,7 +250,7 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
 
     const result = await analyseImportBeneficiairesExcel(feuille)
 
-    expect(result.rows[0].errors).toEqual({
+    expect(result.rows[0]?.errors).toEqual({
       communeNom: 'Le nom de la commune ne correspond pas',
     })
   })
@@ -384,8 +384,8 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
 
     const result = await analyseImportBeneficiairesExcel(feuille)
 
-    expect(result.rows[0].parsed.commune).toBeNull()
-    expect(result.rows[0].errors).toEqual({
+    expect(result.rows[0]?.parsed.commune).toBeNull()
+    expect(result.rows[0]?.errors).toEqual({
       communeCodeInsee: 'Code commune non trouvé',
     })
   })

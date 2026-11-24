@@ -139,7 +139,7 @@ Then('un bénéficiaire est créé et lié à cet usager', async () => {
   assert.strictEqual(result.merges.length, 1)
   assert.strictEqual(result.skipped.length, 0)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: result.merges[0].id },
+    where: { id: result.merges[0]?.id ?? '' },
   })
   assert.strictEqual(beneficiaire.rdvUserId, 990_201)
 })
@@ -149,7 +149,7 @@ Then(
   async () => {
     assert.ok(result)
     assert.strictEqual(result.merges.length, 1)
-    assert.strictEqual(result.merges[0].id, existingBeneficiaireId)
+    assert.strictEqual(result.merges[0]?.id, existingBeneficiaireId)
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: existingBeneficiaireId },
     })
@@ -161,14 +161,14 @@ Then('l’usager est fusionné sans erreur dans le bénéficiaire existant', () 
   assert.ok(result)
   assert.strictEqual(result.skipped.length, 0)
   assert.strictEqual(result.merges.length, 1)
-  assert.strictEqual(result.merges[0].id, existingBeneficiaireId)
+  assert.strictEqual(result.merges[0]?.id, existingBeneficiaireId)
 })
 
 Then('l’usager valide est fusionné et l’usager en échec est écarté', () => {
   assert.ok(result)
   assert.strictEqual(result.merges.length, 1)
   assert.strictEqual(result.skipped.length, 1)
-  assert.strictEqual(result.skipped[0].rdvUserId, 990_299)
+  assert.strictEqual(result.skipped[0]?.rdvUserId, 990_299)
 })
 
 Given(
@@ -213,7 +213,7 @@ Then('le bénéficiaire est créé avec un nom tronqué à la limite', async () 
   assert.strictEqual(result.skipped.length, 0)
   assert.strictEqual(result.merges.length, 1)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: result.merges[0].id },
+    where: { id: result.merges[0]?.id ?? '' },
   })
   assert.strictEqual(beneficiaire.nom?.length, NOM_MAX_LENGTH)
   assert.ok(beneficiaire.nom?.startsWith('Tronquenom'))
@@ -223,7 +223,7 @@ Then('aucun bénéficiaire n’est créé et l’usager est écarté', async () 
   assert.ok(result)
   assert.strictEqual(result.merges.length, 0)
   assert.strictEqual(result.skipped.length, 1)
-  assert.strictEqual(result.skipped[0].rdvUserId, 990_206)
+  assert.strictEqual(result.skipped[0]?.rdvUserId, 990_206)
   const cree = await prismaClient.beneficiaire.findFirst({
     where: { rdvUserId: 990_206 },
   })
@@ -235,7 +235,7 @@ Then('le bénéficiaire est créé sans année de naissance', async () => {
   assert.strictEqual(result.skipped.length, 0)
   assert.strictEqual(result.merges.length, 1)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: result.merges[0].id },
+    where: { id: result.merges[0]?.id ?? '' },
   })
   assert.strictEqual(beneficiaire.anneeNaissance, null)
   assert.strictEqual(beneficiaire.trancheAge, null)

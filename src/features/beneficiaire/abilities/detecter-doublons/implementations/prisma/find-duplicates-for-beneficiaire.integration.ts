@@ -194,7 +194,7 @@ describe('findDuplicateForBeneficiaire', () => {
       // "Jean-Pierre" and "Jean Pierre" normalize to same value (jeanpierre)
       // So they should match with exact matching
       expect(duplicates).toHaveLength(1)
-      expect(duplicates[0].id).toBe(beneficiaireJeanPierreNoHyphen.id)
+      expect(duplicates[0]?.id).toBe(beneficiaireJeanPierreNoHyphen.id)
     })
 
     it('should NOT find Mueller/Müller as duplicates (different after unaccent)', async () => {
@@ -217,7 +217,7 @@ describe('findDuplicateForBeneficiaire', () => {
       })
 
       expect(duplicates).toHaveLength(1)
-      expect(duplicates[0].id).toBe(beneficiaireSameEmail2.id)
+      expect(duplicates[0]?.id).toBe(beneficiaireSameEmail2.id)
     })
   })
 
@@ -232,7 +232,7 @@ describe('findDuplicateForBeneficiaire', () => {
       // With fuzzy matching, "Mueller" and "Muller" (from "Müller") should be similar enough
       // Combined with same prenom "Hans", they should have 2 matching fields
       expect(duplicates).toHaveLength(1)
-      expect(duplicates[0].id).toBe(beneficiaireMuller.id)
+      expect(duplicates[0]?.id).toBe(beneficiaireMuller.id)
     })
 
     it('should still find exact matches', async () => {
@@ -243,7 +243,7 @@ describe('findDuplicateForBeneficiaire', () => {
       })
 
       expect(duplicates).toHaveLength(1)
-      expect(duplicates[0].id).toBe(beneficiaireJeanPierreNoHyphen.id)
+      expect(duplicates[0]?.id).toBe(beneficiaireJeanPierreNoHyphen.id)
     })
 
     it('should still find duplicates with same email and phone', async () => {
@@ -254,7 +254,7 @@ describe('findDuplicateForBeneficiaire', () => {
       })
 
       expect(duplicates).toHaveLength(1)
-      expect(duplicates[0].id).toBe(beneficiaireSameEmail2.id)
+      expect(duplicates[0]?.id).toBe(beneficiaireSameEmail2.id)
     })
   })
 
@@ -281,7 +281,7 @@ describe('findDuplicateForBeneficiaire', () => {
 
       // Should find duplicate despite conflicting nom and prenom
       expect(duplicates).toHaveLength(1)
-      expect(duplicates[0].id).toBe(beneficiaireSameEmail2.id)
+      expect(duplicates[0]?.id).toBe(beneficiaireSameEmail2.id)
     })
   })
 

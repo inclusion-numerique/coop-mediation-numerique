@@ -113,10 +113,10 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       usagers: [usager],
       mediateurId,
     })
-    trackBeneficiaire(merges[0].id)
+    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: merges[0].id },
+      where: { id: merges[0]?.id ?? '' },
     })
 
     expect(beneficiaire.commune).toBe('Évreux')
@@ -131,10 +131,10 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       usagers: [usager],
       mediateurId,
     })
-    trackBeneficiaire(merges[0].id)
+    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: merges[0].id },
+      where: { id: merges[0]?.id ?? '' },
     })
 
     expect(beneficiaire.commune).toBeNull()
@@ -201,10 +201,10 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0].id)
+    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: merges[0].id },
+      where: { id: merges[0]?.id ?? '' },
     })
     expect(beneficiaire.telephone).toBe('+33611223344')
   })
@@ -226,10 +226,10 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0].id)
+    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: merges[0].id },
+      where: { id: merges[0]?.id ?? '' },
     })
     expect(beneficiaire.telephone).toBeNull()
     expect(beneficiaire.email).toBe('maj@example.com')
@@ -252,10 +252,10 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0].id)
+    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: merges[0].id },
+      where: { id: merges[0]?.id ?? '' },
     })
     expect(beneficiaire.anneeNaissance).toBeNull()
     expect(beneficiaire.trancheAge).toBeNull()
@@ -278,10 +278,10 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0].id)
+    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: merges[0].id },
+      where: { id: merges[0]?.id ?? '' },
     })
     expect(beneficiaire.anneeNaissance).toBe(1990)
   })
