@@ -1,30 +1,26 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/rattraper-rdvs-sans-webhook.key'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { requeteAvec } from '@/libraries/parametres-d-url'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '../../action/afficher-rdvs-dans-activites.key'
-import { sansLesFiltresDesRdvs } from '../search-params/parametres-des-rdvs.search-params'
 
 const AfficherLesRdvs = ({
-  includeRdvsInActivitesList,
+  affiches,
   syncDataOnLoad,
+  sansLesFiltresDesRendezVous,
 }: {
-  includeRdvsInActivitesList: boolean
+  affiches: boolean
   syncDataOnLoad: boolean
+  sansLesFiltresDesRendezVous: string
 }) => {
-  const queryParams = useSearchParams()
   const router = useRouter()
 
-  const [value, setValue] = useState(
-    includeRdvsInActivitesList ||
-      !!queryParams.get('rdvs') ||
-      !!queryParams.get('voir-rdvs'),
-  )
+  const [value, setValue] = useState(affiches)
 
   const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
@@ -59,7 +55,7 @@ const AfficherLesRdvs = ({
 
     // Les filtres portés par l'URL cèdent la main au réglage : les garder ferait
     // dépendre l'affichage de deux sources qui peuvent se contredire.
-    router.replace(requeteAvec(queryParams, sansLesFiltresDesRdvs()), {
+    router.replace(routeConstruite(sansLesFiltresDesRendezVous), {
       scroll: false,
     })
 

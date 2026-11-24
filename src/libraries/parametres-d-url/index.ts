@@ -3,7 +3,6 @@ export {
   entierPositifLu,
   type Periode,
   premiereValeur,
-  requeteAvec,
   requeteDeRecherche,
   type ValeurDeParametre,
   valeurLue,

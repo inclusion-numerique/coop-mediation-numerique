@@ -1,16 +1,15 @@
 import Link from 'next/link'
-import { rdvStatusValues } from '@/features/rdvsp/ui/labels/statut-rdv.labels'
-import { hrefDesRdvsDansLesActivites } from '@/features/rdvsp/ui/presenters/liens.presenter'
+import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 
-/**
- * Le lien reprend les valeurs de `rdvStatus`, et non `statutsRdv` du domaine :
- * le filtre de la liste d'activités attend encore `past` là où le domaine dit
- * `passe`. Le vocabulaire de l'URL appartient aux activités, il migrera avec elles.
- */
-
-const RdvsAccueilHeader = ({ isLoading }: { isLoading: boolean }) => (
+const RdvsAccueilHeader = ({
+  isLoading,
+  href,
+}: {
+  isLoading: boolean
+  href: string
+}) => (
   <div className="fr-flex fr-flex-wrap fr-align-items-center fr-justify-content-space-between fr-mb-3w">
     <div
       className="fr-background-blue-france-alt-light--action-low-dark fr-p-1-5v fr-border-radius--8 fr-flex fr-mr-1w"
@@ -38,7 +37,7 @@ const RdvsAccueilHeader = ({ isLoading }: { isLoading: boolean }) => (
     )}
     <Link
       className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-      href={hrefDesRdvsDansLesActivites(rdvStatusValues)}
+      href={routeConstruite(href)}
     >
       Voir tous mes rendez-vous
     </Link>

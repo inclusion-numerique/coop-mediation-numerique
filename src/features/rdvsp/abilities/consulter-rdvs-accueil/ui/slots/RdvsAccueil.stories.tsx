@@ -60,6 +60,12 @@ const alerte = (
   <RdvIntegrationErreurAlerte lienDeConnexion="https://rdv.anct.gouv.fr/oauth/authorize" />
 )
 
+const liens = {
+  tous: '/coop/mes-activites?rdvs=unknown,past,seen,revoked,excused,noshow&voir-rdvs=1',
+  aVenir: '/coop/mes-activites?rdvs=unknown&voir-rdvs=1',
+  passes: '/coop/mes-activites?rdvs=past,seen',
+}
+
 const avecDonnees = (
   surcharge: Partial<DonneesAccueilRdv>,
 ): WidgetRdvAccueil => ({ _tag: 'donnees', donnees: donnees(surcharge) })
@@ -69,6 +75,7 @@ export const AvecRendezVous: Story = {
     user,
     synchroniserAuChargement: false,
     alerte,
+    liens,
     widget: avecDonnees({
       aVenir: 3,
       prochain: rdv(dans(2)),
@@ -84,6 +91,7 @@ export const AucunRendezVous: Story = {
     user,
     synchroniserAuChargement: false,
     alerte,
+    liens,
     widget: avecDonnees({}),
   },
 }
@@ -93,6 +101,7 @@ export const AtelierCollectif: Story = {
     user,
     synchroniserAuChargement: false,
     alerte,
+    liens,
     widget: avecDonnees({
       aVenir: 1,
       prochain: rdv(dans(1), {
@@ -109,6 +118,7 @@ export const ParticipantInconnu: Story = {
     user,
     synchroniserAuChargement: false,
     alerte,
+    liens,
     widget: avecDonnees({
       aVenir: 1,
       prochain: rdv(dans(1), { premierParticipant: null }),
@@ -125,6 +135,7 @@ export const Alerte: Story = {
     user,
     synchroniserAuChargement: false,
     alerte,
+    liens,
     widget: { _tag: 'alerte' },
   },
 }
@@ -134,6 +145,7 @@ export const Masque: Story = {
     user,
     synchroniserAuChargement: false,
     alerte,
+    liens,
     widget: { _tag: 'masque' },
   },
 }

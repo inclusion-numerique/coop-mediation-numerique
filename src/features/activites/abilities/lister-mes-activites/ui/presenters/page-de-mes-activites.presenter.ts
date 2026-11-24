@@ -14,6 +14,7 @@ import {
   lectureDeLaListe,
   type ParametresDeLaListe,
 } from './lecture-de-la-liste.presenter'
+import { CHEMIN_DE_MES_ACTIVITES } from './liens-vers-mes-rendez-vous.presenter'
 import {
   decompteDeLaListe,
   joursDeLaListe,
@@ -91,7 +92,10 @@ export const maListeDActivites = ({
       ...parametresDesFiltres,
       ...parametresDeNavigation(parametres),
     },
-    bascule: basculeDesRendezVous(compte),
+    bascule: basculeDesRendezVous(compte, {
+      chemin: CHEMIN_DE_MES_ACTIVITES,
+      parametres,
+    }),
   }
 }
 

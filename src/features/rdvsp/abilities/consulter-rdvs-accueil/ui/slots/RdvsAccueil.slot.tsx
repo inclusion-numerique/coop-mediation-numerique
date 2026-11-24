@@ -80,14 +80,22 @@ const Compteur = ({
   )
 }
 
+type LiensVersLesRendezVous = {
+  readonly tous: string
+  readonly aVenir: string
+  readonly passes: string
+}
+
 const Compteurs = ({
   donnees,
   timezone,
   synchronisationEnCours,
+  liens,
 }: {
   donnees: DonneesAccueilRdv
   timezone: string
   synchronisationEnCours: boolean
+  liens: LiensVersLesRendezVous
 }) => {
   const phrase = (
     prefixe: string,
@@ -97,12 +105,12 @@ const Compteurs = ({
 
   return (
     <>
-      <RdvsAccueilHeader isLoading={synchronisationEnCours} />
+      <RdvsAccueilHeader isLoading={synchronisationEnCours} href={liens.tous} />
       <div className="fr-grid-row fr-grid-row--gutters">
         <Compteur
           nombre={donnees.aVenir}
           badgeStatus="unknown"
-          href="/coop/mes-activites?rdvs=unknown&voir-rdvs=1"
+          href={liens.aVenir}
           phrase={phrase(
             'Prochain',
             donnees.prochain,
@@ -112,7 +120,7 @@ const Compteurs = ({
         <Compteur
           nombre={rdvsPassesTotal(donnees)}
           badgeStatus="past"
-          href="/coop/mes-activites?rdvs=past%2Cseen&voir-rdvs=0"
+          href={liens.passes}
           phrase={phrase(
             'Dernier',
             donnees.dernier,
@@ -140,11 +148,13 @@ const RdvsAccueil = ({
   user: { timezone },
   synchroniserAuChargement,
   alerte,
+  liens,
 }: {
   widget: WidgetRdvAccueil
   user: { readonly timezone: string }
   synchroniserAuChargement: boolean
   alerte: ReactNode
+  liens: LiensVersLesRendezVous
 }) => {
   const [widget, setWidget] = useState<WidgetRdvAccueil>(widgetInitial)
   const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
@@ -180,6 +190,7 @@ const RdvsAccueil = ({
           donnees={widget.donnees}
           timezone={timezone}
           synchronisationEnCours={synchronisationEnCours}
+          liens={liens}
         />
       )}
     </section>

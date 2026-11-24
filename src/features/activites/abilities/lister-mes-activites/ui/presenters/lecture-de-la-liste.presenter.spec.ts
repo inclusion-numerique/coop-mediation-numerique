@@ -98,17 +98,52 @@ describe('contenu de la liste', () => {
 
 describe('bascule des rendez-vous', () => {
   it("n'existe pas sans compte connecté", () => {
-    expect(basculeDesRendezVous(null)).toBeNull()
+    expect(
+      basculeDesRendezVous(null, {
+        chemin: '/coop/mes-activites',
+        parametres: {},
+      }),
+    ).toBeNull()
   })
 
   it('synchronise au chargement quand un webhook a échoué', () => {
     expect(
-      basculeDesRendezVous({
-        ...compte,
-        includeRdvsInActivitesList: true,
-        invalidWebhookOrganisationIds: [12],
-      }),
-    ).toStrictEqual({ includeRdvsInActivitesList: true, syncDataOnLoad: true })
+      basculeDesRendezVous(
+        {
+          ...compte,
+          includeRdvsInActivitesList: true,
+          invalidWebhookOrganisationIds: [12],
+        },
+        { chemin: '/coop/mes-activites', parametres: {} },
+      )?.syncDataOnLoad,
+    ).toBe(true)
+  })
+
+  it('coche la bascule quand l’URL demande des rendez-vous', () => {
+    expect(
+      basculeDesRendezVous(compte, {
+        chemin: '/coop/mes-activites',
+        parametres: { rdvs: 'past' },
+      })?.affiches,
+    ).toBe(true)
+  })
+
+  it('décoche la bascule sans réglage ni demande', () => {
+    expect(
+      basculeDesRendezVous(compte, {
+        chemin: '/coop/mes-activites',
+        parametres: { types: 'collectif' },
+      })?.affiches,
+    ).toBe(false)
+  })
+
+  it('retire les filtres de rendez-vous en gardant les autres', () => {
+    expect(
+      basculeDesRendezVous(compte, {
+        chemin: '/coop/mes-activites',
+        parametres: { rdvs: 'past', 'voir-rdvs': '1', types: 'collectif' },
+      })?.sansLesFiltresDesRendezVous,
+    ).toBe('/coop/mes-activites?types=collectif')
   })
 })
 

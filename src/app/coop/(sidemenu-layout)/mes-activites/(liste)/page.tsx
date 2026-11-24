@@ -16,6 +16,7 @@ import { BarreDeMesActivites } from '@/features/activites/abilities/lister-mes-a
 import { filtresDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/filtres/filtres-de-mes-activites.filtre'
 import { PageDeMaListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/pages/PageDeMaListeDActivites'
 import { barreDeMesActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/barre-de-mes-activites.presenter'
+import { CHEMIN_DE_MES_ACTIVITES } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/liens-vers-mes-rendez-vous.presenter'
 import { maListeDActivites } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/page-de-mes-activites.presenter'
 import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
 import { lieuxDuFiltrePresentes } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/lieux-du-filtre.presenter'
@@ -95,7 +96,7 @@ const MesActivitesRoute = async ({
   ])
 
   const barre = barreDeMesActivites({
-    adresse: { chemin: '/coop/mes-activites', parametres },
+    adresse: { chemin: CHEMIN_DE_MES_ACTIVITES, parametres },
     valeurs,
     options,
     lieux: lieuxDuFiltrePresentes(lieux),

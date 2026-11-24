@@ -1,3 +1,4 @@
+import type { AdresseCourante } from '@/libraries/filtres/definition/composition'
 import {
   type CriteresDesActivites,
   contenuDeLaChronologie,
@@ -5,6 +6,7 @@ import {
   ordreChronologiqueLu,
   paginationLue,
 } from '../../../../domain'
+import { filtresDesRendezVousDeLaListe } from '../filtres/rendez-vous-de-la-liste.filtre'
 
 export type ParametresDeLaListe = Readonly<
   Record<string, string | string[] | undefined>
@@ -23,7 +25,8 @@ export const lectureDeLaListe = (
   return {
     criteres,
     filtree: estFiltreDesActivites(criteres),
-    voirLesRdvs: parametres['voir-rdvs'] === '1',
+    voirLesRdvs:
+      filtresDesRendezVousDeLaListe.charger(parametres)['voir-rdvs'] !== null,
     pagination: paginationLue(parametres),
     ordre: ordreChronologiqueLu(parametres.ordre),
   }
@@ -52,14 +55,27 @@ export const contenuDeLaListe = ({
         },
   )
 
+const rendezVousDemandes = (
+  parametres: AdresseCourante['parametres'],
+): boolean => {
+  const { rdvs, 'voir-rdvs': voir } =
+    filtresDesRendezVousDeLaListe.charger(parametres)
+  return rdvs.length > 0 || voir !== null
+}
+
 export const basculeDesRendezVous = (
   compte: CompteRendezVousDuMediateur | null,
+  adresse: AdresseCourante,
 ) =>
   compte === null
     ? null
     : {
-        includeRdvsInActivitesList: compte.includeRdvsInActivitesList,
+        affiches:
+          compte.includeRdvsInActivitesList ||
+          rendezVousDemandes(adresse.parametres),
         syncDataOnLoad: compte.invalidWebhookOrganisationIds.length > 0,
+        sansLesFiltresDesRendezVous:
+          filtresDesRendezVousDeLaListe.sansFiltres(adresse),
       }
 
 export const sousTitreDeMesActivites = (

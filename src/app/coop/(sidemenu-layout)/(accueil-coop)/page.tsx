@@ -16,6 +16,7 @@ import { ActivitesDeCoordination } from '@/features/activites/abilities/compter-
 import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/implementations/prisma/dernieres-activites.query'
 import { dernieresActivitesPresentees } from '@/features/activites/abilities/lister-les-dernieres-activites/ui/presenters/dernieres-activites.presenter'
 import { DernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/ui/slots/DernieresActivites.slot'
+import { liensVersMesRendezVous } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/liens-vers-mes-rendez-vous.presenter'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
 import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/slots/BoutonEnregistrerUneActivite.slot'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
@@ -99,6 +100,7 @@ const Page = async () => {
               widget={rdv.widget}
               user={{ timezone: user.timezone }}
               synchroniserAuChargement={rdv.synchroniserAuChargement}
+              liens={liensVersMesRendezVous()}
               alerte={
                 <RdvIntegrationErreurAlerte
                   lienDeConnexion={lienDeConnexionARdvServicePublic()}
