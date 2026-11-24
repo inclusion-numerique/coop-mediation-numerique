@@ -18,7 +18,8 @@ import {
   echouerJournal,
   ouvrirJournal,
 } from './prisma/journal-synchronisation.mutation'
-import { installWebhooks } from './webhook/installer-webhooks.adapter'
+import { noterLesWebhooksInvalides } from './prisma/webhooks-invalides.mutation'
+import { installWebhooks } from './webhook/installer-webhooks'
 
 const bilanRdvsVide = {
   rdvs: bilanVide,
@@ -76,6 +77,7 @@ export const synchroniserCompteAvec =
           appendLog: (log) => journal.push(...[log].flat()),
           organisationIds: portee === undefined ? undefined : [...portee],
           api: rdvServicePublicApiBinding,
+          noterLesWebhooksInvalides,
         })
 
         return {

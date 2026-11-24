@@ -1,4 +1,3 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import type {
   BilanModele,
@@ -137,12 +136,17 @@ export const installWebhooks = async ({
   appendLog,
   organisationIds,
   api,
+  noterLesWebhooksInvalides,
 }: {
   compte: CompteRdvUtilisable
   appendLog: AppendLog
   /** Restreint la pose à ces organisations ; une liste vide ne pose rien. */
   organisationIds?: number[]
   api: ApiWebhooks
+  noterLesWebhooksInvalides: (invalides: {
+    agentId: number
+    organisationIds: number[]
+  }) => Promise<void>
 }): Promise<
   BilanModele & {
     count: number
@@ -188,9 +192,9 @@ export const installWebhooks = async ({
     .filter((pose) => pose.invalidInstallation)
     .map((pose) => pose.organisationId)
 
-  await prismaClient.rdvAccount.update({
-    where: { id: compte.agentId },
-    data: { invalidWebhookOrganisationIds },
+  await noterLesWebhooksInvalides({
+    agentId: compte.agentId,
+    organisationIds: invalidWebhookOrganisationIds,
   })
 
   return {
