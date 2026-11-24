@@ -11,8 +11,8 @@ import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/acc
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/refuser-une-invitation.key'
 import { Email, lienInvitation } from '@/features/equipe/domain'
 import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
+import type { EncodedState } from '@/libraries/etat-encode/encodeSerializableState'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),

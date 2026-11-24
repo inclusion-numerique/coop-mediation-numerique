@@ -3,13 +3,13 @@
  * See why: https://jsonapi.org/profiles/ethanresnick/cursor-pagination/
  */
 import { ZodError, z } from 'zod'
-import { apiV1Url } from '@/libraries/json-api/apiV1Url'
-import type { JsonApiListMeta } from '@/libraries/json-api/JsonApiTypes'
 import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+} from '@/libraries/etat-encode/encodeSerializableState'
+import { apiV1Url } from '@/libraries/json-api/apiV1Url'
+import type { JsonApiListMeta } from '@/libraries/json-api/JsonApiTypes'
 
 export const defaultJsonApiCursorPaginationSize = 500
 const maxJsonApiCursorPaginationSize = 500

@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
-import { valeursLues } from '@/libraries/parametres-d-url'
 import {
   STATUTS_DE_RENDEZ_VOUS,
   THEMATIQUES_ADMINISTRATIVES,
@@ -11,6 +10,20 @@ import {
 const JOUR = /^\d{4}-\d{2}-\d{2}$/
 
 const UN_OU_ZERO = ['0', '1'] as const
+
+const valeursLues = <S extends z.ZodType>(
+  schema: S,
+  valeur: string | readonly string[],
+): readonly z.output<S>[] =>
+  [valeur]
+    .flat()
+    .flatMap((liste) => liste.split(','))
+    .map((element) => element.trim())
+    .filter((element) => element !== '')
+    .flatMap((element) => {
+      const lue = schema.safeParse(element)
+      return lue.success ? [lue.data] : []
+    })
 
 const liste = <S extends z.ZodType<string, string>>(element: S) =>
   z

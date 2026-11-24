@@ -1,5 +1,6 @@
 import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
 import type { FiltreDeDates } from '@/features/clients-api/implementations/api-v1'
+import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 import { apiV1Url } from '@/libraries/json-api/apiV1Url'
 import {
   createCompositeCursor,
@@ -14,7 +15,6 @@ import {
   type PaginationParCurseur,
   pageParCurseur,
 } from '@/libraries/json-api/pageParCurseur'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 type ActiviteRelationships = 'mediateur'
 

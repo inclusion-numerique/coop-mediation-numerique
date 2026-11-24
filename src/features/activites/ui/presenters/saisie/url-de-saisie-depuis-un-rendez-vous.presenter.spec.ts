@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 import {
   minutesToCraDureeData,
   minutesToCustomCraDureeData,

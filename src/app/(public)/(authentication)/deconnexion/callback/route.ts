@@ -11,7 +11,7 @@ import {
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+} from '@/libraries/etat-encode/encodeSerializableState'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

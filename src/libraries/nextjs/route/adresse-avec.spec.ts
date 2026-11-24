@@ -1,21 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { z } from 'zod'
-import { adresseAvec, valeursLues } from './parametres-d-url'
+import { adresseAvec } from './adresse-avec'
 
-const Chiffre = z.enum(['1', '2', '3'])
-
-describe('paramètres d’URL', () => {
-  it.each([
-    ['une liste séparée par des virgules', '1, 2,3', ['1', '2', '3']],
-    ['un paramètre répété', ['1', '2,3'], ['1', '2', '3']],
-    ['des éléments vides', ',1,,', ['1']],
-    ['des éléments invalides', "1,9,2') OR 1=1 --", ['1']],
-    ['une chaîne vide', '', []],
-    ['un paramètre absent', undefined, []],
-  ])('lit %s', (_, valeur, attendu) => {
-    expect(valeursLues(Chiffre, valeur)).toEqual(attendu)
-  })
-
+describe('adresse avec des paramètres', () => {
   it('ajoute des paramètres à une adresse sans requête', () => {
     expect(
       adresseAvec('/coop/mes-activites/cra/collectif', {

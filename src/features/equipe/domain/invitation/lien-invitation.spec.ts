@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 import { CoordinateurId } from '../identifiants/coordinateur-id'
 import { Email } from '../identite/courriel'
 import {

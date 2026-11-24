@@ -2,7 +2,7 @@ import {
   decodeSerializableState,
   type EncodedState,
   encodeSerializableState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+} from '@/libraries/etat-encode/encodeSerializableState'
 
 export type TypeDeSaisie =
   | 'individuel'

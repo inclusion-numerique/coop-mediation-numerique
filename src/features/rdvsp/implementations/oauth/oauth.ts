@@ -3,7 +3,7 @@ import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,
 } from '@/features/rdvsp/implementations/oauth/client'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 
 export const rdvServicePublicOauthCallbackUrl = getServerUrl(
   '/api/rdv-service-public/auth/callback',

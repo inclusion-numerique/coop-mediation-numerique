@@ -22,9 +22,9 @@ import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par'
 import { acteurDe } from '@/features/tags/domain'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
+import type { EncodedState } from '@/libraries/etat-encode/encodeSerializableState'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
 
 const CreateCraIndividuelPage = async ({
   searchParams,
