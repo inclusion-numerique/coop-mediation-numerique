@@ -22,8 +22,19 @@ export const useFiltre = <P extends ParserMap>(parametres: P) => {
     { shallow: false, scroll: false },
   )
 
+  const completes = Object.fromEntries(
+    Object.entries(parametres).map(([cle, parseur]) => [
+      cle,
+      cle in lues
+        ? lues[cle]
+        : 'defaultValue' in parseur
+          ? parseur.defaultValue
+          : null,
+    ]),
+  )
+
   return [
-    lues as inferParserType<P>,
+    completes as inferParserType<P>,
     (valeurs: Partial<inferParserType<P>>) =>
       ecrire({ ...valeurs, ...SANS_PAGE } as Parameters<typeof ecrire>[0]),
   ] as const

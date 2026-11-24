@@ -121,7 +121,7 @@ describe('ETQ médiateur, je filtre mes activités', () => {
 
     cy.contains('button', 'Type').click()
     cy.contains('label', 'Atelier collectif').click()
-    cy.contains('button', 'Valider').click()
+    cy.contains('button:visible', 'Valider').click()
 
     cy.location('search').should('equal', '?types=collectif')
     cy.contains('button', 'Type · 1').should('be.visible')

@@ -1,5 +1,5 @@
 import { NuqsTestingAdapter, type UrlUpdateEvent } from 'nuqs/adapters/testing'
-import type { ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { z } from 'zod'
 import { ChoixEnLigne } from './ChoixEnLigne'
 import { ChoixEnPopover } from './ChoixEnPopover'
@@ -52,7 +52,38 @@ const choixDuType = (
   />
 )
 
+const filtreDuStatut = filtreDeChoix({
+  cle: 'rdvs',
+  choix: { seen: 'Honoré', noshow: 'Absence' },
+})
+
+const TypeAvecStatutsAJouter = () => {
+  const [avecStatuts, setAvecStatuts] = useState(false)
+  return (
+    <>
+      <button type="button" onClick={() => setAvecStatuts(true)}>
+        Ajouter les statuts
+      </button>
+      <ChoixEnPopover
+        titre="Type"
+        sections={[
+          { filtre: filtreDuType, legende: 'Type' },
+          ...(avecStatuts
+            ? [{ filtre: filtreDuStatut, legende: 'Statut' }]
+            : []),
+        ]}
+      />
+    </>
+  )
+}
+
 describe('Filtres', () => {
+  it('survit à l’ajout d’un filtre au popover', () => {
+    monter('?types=individuel', <TypeAvecStatutsAJouter />)
+    cy.contains('button', 'Ajouter les statuts').click()
+    cy.contains('button', 'Type · 1').should('be.visible')
+  })
+
   it('compte les choix lus dans l’URL', () => {
     monter('?types=individuel,collectif', choixDuType)
     cy.contains('button', 'Type · 2').should('exist')
