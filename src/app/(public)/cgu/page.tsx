@@ -1,4 +1,4 @@
-import { CguPage } from '@/features/legal/abilities/consulter-les-informations-legales/ui/pages/CguPage'
+import { CguPage } from '@/features/legal/ui/pages/CguPage'
 
 const Page = () => <CguPage />
 

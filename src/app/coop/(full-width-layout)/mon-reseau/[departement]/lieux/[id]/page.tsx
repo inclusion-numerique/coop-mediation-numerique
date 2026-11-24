@@ -19,7 +19,7 @@ import { MediateurId } from '@/features/lieux-activite/domain/identifiants/media
 import {
   EnteteDuLieuDuReseau,
   LieuDuReseauPage,
-} from '@/features/mon-reseau/abilities/consulter-un-lieu-du-reseau/ui/pages/LieuDuReseauPage'
+} from '@/features/mon-reseau/ui/pages/LieuDuReseauPage'
 import { departementDuCode } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

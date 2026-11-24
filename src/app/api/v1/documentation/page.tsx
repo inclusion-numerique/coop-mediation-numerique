@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { DocumentationDeLApiPage } from '@/features/clients-api/abilities/consulter-la-documentation-de-l-api/ui/pages/DocumentationDeLApiPage'
+import { DocumentationDeLApiPage } from '@/features/clients-api/ui/pages/DocumentationDeLApiPage'
 
 export const metadata: Metadata = {
   title: 'La coop - API',

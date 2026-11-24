@@ -3,7 +3,7 @@ import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import { filDArianeDesLieux } from '../../../../ui/presenters/fil-d-ariane.presenter'
+import { filDArianeDesLieux } from '../presenters/fil-d-ariane.presenter'
 
 export const LieuDuReseauPage = ({ children }: PropsWithChildren) => (
   <>

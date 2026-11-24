@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { ConfidentialitePage } from '@/features/legal/abilities/consulter-les-informations-legales/ui/pages/ConfidentialitePage'
+import { ConfidentialitePage } from '@/features/legal/ui/pages/ConfidentialitePage'
 
 export const metadata: Metadata = {
   title: metadataTitle('Politique de confidentialité'),
