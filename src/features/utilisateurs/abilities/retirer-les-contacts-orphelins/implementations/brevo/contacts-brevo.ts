@@ -53,7 +53,7 @@ const versContacts = ({
   const courriel = email === undefined ? null : AdresseCourriel.safe(email)
   return courriel === null
     ? []
-    : [{ courriel, compte: compteDuContact(attributes.EXT_ID) }]
+    : [{ courriel, compte: compteDuContact(attributes['EXT_ID']) }]
 }
 
 const lireAPartirDe = async (

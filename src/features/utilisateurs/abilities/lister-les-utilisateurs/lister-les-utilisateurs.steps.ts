@@ -98,6 +98,8 @@ Given('les comptes suivants dans la liste :', async (table: DataTable) => {
         visite = '',
         activite = '',
         beneficiaire = '',
+        equipe,
+        coordonne,
       } = ligne
       const { med, coord, role } = roleDe(celluleRole)
       const id = await semerUnCompteDeListe({
@@ -116,8 +118,8 @@ Given('les comptes suivants dans la liste :', async (table: DataTable) => {
           : null,
         coordinateur: coord
           ? {
-              aUneEquipe: ligne.equipe === 'oui',
-              aCoordonne: ligne.coordonne === 'oui',
+              aUneEquipe: equipe === 'oui',
+              aCoordonne: coordonne === 'oui',
             }
           : null,
       })
