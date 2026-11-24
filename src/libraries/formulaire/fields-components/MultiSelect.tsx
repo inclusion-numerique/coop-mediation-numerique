@@ -31,7 +31,7 @@ const MultiSelect = <T extends Option<string>[]>({
   return (
     <DsfrSelect
       state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
       label={<Label hasErrors={hasErrors}>{label}</Label>}
       options={
         options.map((option) => ({

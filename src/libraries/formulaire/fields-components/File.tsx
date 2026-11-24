@@ -26,7 +26,7 @@ export const File = ({
   return (
     <DsfrUpload
       state={hasErrors ? 'error' : 'default'}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
       disabled={isPending || disabled}
       {...props}
       nativeInputProps={{

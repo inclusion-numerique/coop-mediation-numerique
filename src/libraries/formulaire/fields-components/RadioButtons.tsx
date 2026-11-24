@@ -80,7 +80,7 @@ export const RadioButtons = ({
   return (
     <DsfrRadioButtons
       state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
       className={classNames(isTiled ? 'fr-radio-buttons' : '', className)}
       legend={<span className="fr-label fr-text--medium">{legend}</span>}
       classes={{

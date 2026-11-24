@@ -101,7 +101,7 @@ export const Checkbox = <T,>({
   return (
     <DsfrCheckbox
       state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
       className={classNames(isTiled ? 'fr-checkbox-buttons' : '', className)}
       legend={
         legend && <span className="fr-label fr-text--medium">{legend}</span>
