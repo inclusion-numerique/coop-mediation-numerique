@@ -163,10 +163,10 @@ const structurePartenaireDe =
     ) {
       throw new ActiviteDeCoordinationIllisible(id, 'structure partenaire')
     }
-    const type = structure.type
-    const typeAutre = structure.typeAutre ?? null
+    const type = structure['type']
+    const typeAutre = structure['typeAutre'] ?? null
     return {
-      nom: NomDeStructure(String(structure.nom ?? '')),
+      nom: NomDeStructure(String(structure['nom'] ?? '')),
       type: choixDe(TypeDeStructurePartenaire)(
         id,
         typeof type === 'string' ? type : null,

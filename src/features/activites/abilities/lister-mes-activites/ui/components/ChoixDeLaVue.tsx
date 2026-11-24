@@ -20,7 +20,7 @@ export const ChoixDeLaVue = ({
   const onChange = ({ target }: FormEvent) => {
     if (!(target instanceof HTMLInputElement) || !target.checked) return
     router.push(
-      target.dataset.vue === 'tableau'
+      target.dataset['vue'] === 'tableau'
         ? routeConstruite(`${href}/tableau?${searchParams.toString()}`)
         : routeConstruite(`${href}?${searchParams.toString()}`),
     )

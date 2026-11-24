@@ -91,8 +91,11 @@ describe('lignes du classeur des accompagnements', () => {
     const nommees = lignes.map((ligne) =>
       ligneNommee({ personnel: true, source: true }, ligne),
     )
-    expect(nommees.map((ligne) => ligne.Participants)).toEqual(['1/2', '2/2'])
-    expect(nommees.map((ligne) => ligne.Bénéficiaire)).toEqual([
+    expect(nommees.map((ligne) => ligne['Participants'])).toEqual([
+      '1/2',
+      '2/2',
+    ])
+    expect(nommees.map((ligne) => ligne['Bénéficiaire'])).toEqual([
       'Marie Curie',
       'Bénéficiaire anonyme',
     ])
