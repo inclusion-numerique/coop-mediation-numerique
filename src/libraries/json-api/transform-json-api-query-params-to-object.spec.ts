@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { transformJsonApiQueryParamsToObject } from '@/libraries/json-api/transformJsonApiQueryParamsToObject'
+import { transformJsonApiQueryParamsToObject } from '@/libraries/json-api/transform-json-api-query-params-to-object'
 
 describe('transformJsonApiQueryParamsToObject', () => {
   it('should handle simple query parameters without brackets', () => {

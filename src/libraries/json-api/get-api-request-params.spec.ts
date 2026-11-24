@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { JsonApiCursorPaginationQueryParamsValidation } from '@/libraries/json-api/CursorPagination'
-import { createTestApiV1Request } from '@/libraries/json-api/createTestApiV1Request'
-import { getApiRequestParams } from '@/libraries/json-api/getApiRequestParams'
+import { createTestApiV1Request } from '@/libraries/json-api/create-test-api-v1-request'
+import { JsonApiCursorPaginationQueryParamsValidation } from '@/libraries/json-api/cursor-pagination'
+import { getApiRequestParams } from '@/libraries/json-api/get-api-request-params'
 
 describe('getApiRequestParams', () => {
   it('should parse query params', () => {

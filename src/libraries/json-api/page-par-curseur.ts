@@ -3,11 +3,11 @@ import {
   cursorListMeta,
   parseCompositeCursor,
   type prismaCursorPagination,
-} from '@/libraries/json-api/CursorPagination'
+} from '@/libraries/json-api/cursor-pagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
+} from '@/libraries/json-api/json-api-types'
 
 export type PaginationParCurseur = ReturnType<typeof prismaCursorPagination>
 

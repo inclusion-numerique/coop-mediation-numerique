@@ -7,9 +7,9 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '@/libraries/etat-encode/encodeSerializableState'
-import { apiV1Url } from '@/libraries/json-api/apiV1Url'
-import type { JsonApiListMeta } from '@/libraries/json-api/JsonApiTypes'
+} from '@/libraries/etat-encode/encode-serializable-state'
+import { apiV1Url } from '@/libraries/json-api/api-v1-url'
+import type { JsonApiListMeta } from '@/libraries/json-api/json-api-types'
 
 export const defaultJsonApiCursorPaginationSize = 500
 const maxJsonApiCursorPaginationSize = 500

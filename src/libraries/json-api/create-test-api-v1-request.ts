@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
-} from '@/libraries/json-api/apiV1Headers'
+} from '@/libraries/json-api/api-v1-headers'
 
 export const createTestApiV1Request = ({
   client,

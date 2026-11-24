@@ -3,7 +3,7 @@ import {
   type CurseurDePage,
   curseurDeLaPage,
   pageParCurseur,
-} from '@/libraries/json-api/pageParCurseur'
+} from '@/libraries/json-api/page-par-curseur'
 
 const lien = (curseur?: CurseurDePage): string =>
   curseur ? `/liste?${curseur.direction}=${curseur.value}` : '/liste'

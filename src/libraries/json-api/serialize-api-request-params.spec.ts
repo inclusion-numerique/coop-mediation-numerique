@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { serializeApiRequestParams } from '@/libraries/json-api/serializeApiRequestParams'
+import { serializeApiRequestParams } from '@/libraries/json-api/serialize-api-request-params'
 
 describe('serializeJsonApiParams', () => {
   it('should serialize a flat object', () => {
