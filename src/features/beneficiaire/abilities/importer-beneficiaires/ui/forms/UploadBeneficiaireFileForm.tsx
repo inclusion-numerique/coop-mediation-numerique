@@ -59,7 +59,7 @@ const UploadBeneficiaireFileForm = () => {
 
         if (!response.ok) {
           router.push(
-            `/coop/mes-beneficiaires/importer/erreur?message=${response.statusText}`,
+            `/coop/mes-beneficiaires/importer/erreur?message=${encodeURIComponent(response.statusText)}`,
           )
           return
         }

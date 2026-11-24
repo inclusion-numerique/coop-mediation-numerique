@@ -54,7 +54,7 @@ export const DetailDeCoordinationModale = () => {
 
   if (detail == null) return null
 
-  const retour = `?retour=${cheminCourant}${recherche ? `?${recherche}` : ''}`
+  const retour = `?retour=${encodeURIComponent(`${cheminCourant}${recherche ? `?${recherche}` : ''}`)}`
   const lienDuCra = `/coop/mes-activites/cra/${detail.segmentDeType}/${detail.id}`
 
   const supprimer = async () => {
