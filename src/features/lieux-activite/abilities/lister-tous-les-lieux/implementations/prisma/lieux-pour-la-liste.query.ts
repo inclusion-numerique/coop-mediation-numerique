@@ -4,7 +4,7 @@ import {
   champsDAffichage,
   inscriptionPourLaFiche,
 } from '../../../../implementations/prisma/registre'
-import type { LigneDeLaListe } from '../../ui/presenters/ligne-de-la-liste'
+import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
 
 const searchStructureSelect = {
   id: true,

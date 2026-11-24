@@ -8,8 +8,9 @@ import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/con
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/presenters/employeuse-actuelle.presenter'
 import StructureAdministrativeCard from '@/features/employeuse/ui/components/StructureAdministrativeCard'
 import { VALIDER_ACTION_KEY } from '@/features/inscription/abilities/valider/action/valider.key'
-import { getRecapitulatifPageData } from '@/features/inscription/abilities/valider/implementations/prisma/recapitulatif.query'
+import { lireLeRecapitulatif } from '@/features/inscription/abilities/valider/implementations/prisma/recapitulatif.query'
 import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
+import { recapitulatifPresente } from '@/features/inscription/abilities/valider/ui/presenters/recapitulatif.presenter'
 import { employeuseAffichee } from '@/features/inscription/ui/presenters/employeuse-affichee.presenter'
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
@@ -36,13 +37,18 @@ const RecapitulatifPageRoute = async () => {
     userId: user.id,
   })
 
-  const data = await getRecapitulatifPageData({
+  const data = recapitulatifPresente({
     user,
     employeuse:
       employeuseActuelle &&
       employeuseAffichee(employeuseActuelleAffichage(employeuseActuelle)),
-    listerLesLieux: ({ mediateurId }) =>
-      listerLesLieuxPourLInscription({ mediateurId: MediateurId(mediateurId) }),
+    lu: await lireLeRecapitulatif({
+      user,
+      listerLesLieux: ({ mediateurId }) =>
+        listerLesLieuxPourLInscription({
+          mediateurId: MediateurId(mediateurId),
+        }),
+    }),
   })
 
   return (

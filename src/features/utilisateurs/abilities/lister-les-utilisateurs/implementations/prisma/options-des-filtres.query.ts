@@ -1,8 +1,6 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
-import { type OptionsDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { departementsByCode } from '@/libraries/departement/departements'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { optionDuCoordinateur } from '../../ui/presenters/coordinateur-a-choisir.presenter'
 import { coordinateursChoisis } from '.'
 
 export type SourcesDesOptions = {
@@ -11,6 +9,9 @@ export type SourcesDesOptions = {
   ) => Promise<readonly SelectOption[]>
   readonly lieux: (ids: readonly string[]) => Promise<readonly SelectOption[]>
   readonly nomDeLEmployeuse: (id: number) => Promise<string | null>
+  readonly optionDuCoordinateur: (
+    coordinateur: Awaited<ReturnType<typeof coordinateursChoisis>>[number],
+  ) => SelectOption
 }
 
 const employeusesChoisies = async (
@@ -39,7 +40,13 @@ const departementsChoisis = (
 export const optionsDesFiltres = async (
   filtres: FiltresUtilisateurs,
   sources: SourcesDesOptions,
-): Promise<OptionsDesFiltres> => {
+): Promise<{
+  readonly employeuses: readonly SelectOption[]
+  readonly coordinateurs: readonly SelectOption[]
+  readonly lieux: readonly SelectOption[]
+  readonly communes: readonly SelectOption[]
+  readonly departements: readonly SelectOption[]
+}> => {
   const [communes, lieux, employeuses, coordinateurs] = await Promise.all([
     sources.communes(filtres.communes),
     sources.lieux(filtres.lieux),
@@ -49,7 +56,7 @@ export const optionsDesFiltres = async (
 
   return {
     employeuses,
-    coordinateurs: coordinateurs.map(optionDuCoordinateur),
+    coordinateurs: coordinateurs.map(sources.optionDuCoordinateur),
     lieux,
     communes,
     departements: departementsChoisis(filtres.departements),

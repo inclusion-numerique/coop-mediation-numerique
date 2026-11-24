@@ -1,5 +1,5 @@
 import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
-import type { LigneDeLaListe } from '../presenters/ligne-de-la-liste'
+import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
 import { LieuTableRow } from './LieuTableRow'
 import { LieuxTableHead } from './LieuxTableHead'
 

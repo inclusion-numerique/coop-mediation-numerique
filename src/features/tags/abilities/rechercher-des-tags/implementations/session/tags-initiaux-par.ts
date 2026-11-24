@@ -1,11 +1,12 @@
 import { type Acteur, TagId } from '../../../../domain'
-import type { TagAffiche } from '../../../../ui/presenters/tag-affiche'
-import { tagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { rechercherDesTags } from '../prisma'
 
-export const tagsInitiauxPar =
+type TagTrouve = Awaited<ReturnType<typeof rechercherDesTags>>[number]
+
+export const tagsInitiauxAvec =
+  <Affiche>(presenter: (acteur: Acteur) => (tag: TagTrouve) => Affiche) =>
   (acteur: Acteur) =>
-  async (exclus: readonly string[]): Promise<readonly TagAffiche[]> => {
+  async (exclus: readonly string[]): Promise<readonly Affiche[]> => {
     const tags = await rechercherDesTags({
       acteur,
       recherche: '',
@@ -15,5 +16,5 @@ export const tagsInitiauxPar =
       }),
       limite: 10,
     })
-    return tags.map(tagAffiche(acteur))
+    return tags.map(presenter(acteur))
   }

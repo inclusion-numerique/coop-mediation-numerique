@@ -12,8 +12,8 @@ import InscriptionCard from '@/features/inscription/ui/components/InscriptionCar
 import { pluriel } from '@/libraries/pluriel'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
-import type { RecapitulatifPageData } from '../../implementations/prisma/recapitulatif.query'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
+import type { RecapitulatifPageData } from '../presenters/recapitulatif.presenter'
 
 const RecapitulatifPage = ({
   data: {

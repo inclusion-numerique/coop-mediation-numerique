@@ -17,9 +17,10 @@ import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/re
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import { lieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-du-mediateur.query'
-import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag/implementations/session/visibilites-proposees-a'
-import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par'
+import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
+import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par'
 import { acteurDe } from '@/features/tags/domain'
+import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
@@ -52,8 +53,8 @@ const CreateCraCollectifPage = async ({
     fournisseurs: {
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
-      tagsInitiaux: tagsInitiauxPar(acteur),
-      visibilitesProposees: visibilitesProposeesA(acteur),
+      tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
+      visibilitesProposees: visibilitesProposees(acteur),
     },
   })
 

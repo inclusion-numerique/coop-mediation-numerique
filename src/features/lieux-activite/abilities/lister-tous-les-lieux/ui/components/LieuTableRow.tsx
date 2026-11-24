@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { getStructureCartographieLink } from '@/features/lieux-activite/domain/cartographie-nationale/liens'
 import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
 import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
-import type { LigneDeLaListe } from '../presenters/ligne-de-la-liste'
+import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
 
 const estUnLieuDActivite = ({ _count }: LigneDeLaListe) =>
   _count.mediateursEnActivite > 0 || _count.activites > 0

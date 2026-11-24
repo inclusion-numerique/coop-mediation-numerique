@@ -8,6 +8,7 @@ import { classeurDesUtilisateurs } from '@/features/utilisateurs/abilities/expor
 import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/prisma/utilisateurs-a-exporter.query'
 import { colonnesDeLExport } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/presenters/colonnes-de-l-export.presenter'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
+import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
@@ -35,6 +36,7 @@ export const GET = async (request: NextRequest) => {
       maintenant,
     }),
     optionsDesFiltres(filtres, {
+      optionDuCoordinateur,
       communes: communesDesEmployeuses,
       lieux: lieuxChoisis,
       nomDeLEmployeuse,

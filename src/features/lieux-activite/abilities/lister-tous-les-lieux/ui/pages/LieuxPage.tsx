@@ -4,10 +4,10 @@ import { pluriel } from '@/libraries/pluriel'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
 import { LieuxPagination } from '../components/LieuxPagination'
 import { LieuxTable } from '../components/LieuxTable'
 import { RechercheDeLieux } from '../components/RechercheDeLieux'
-import type { PageDeLieux } from '../presenters/ligne-de-la-liste'
 import {
   type ListeDesLieuxSearchParams,
   toDataTableUrlState,
