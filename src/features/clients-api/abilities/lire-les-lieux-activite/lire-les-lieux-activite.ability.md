@@ -9,10 +9,10 @@
 
 ## Rule: Seul un client qui détient la permission « LieuxActivite » lit les lieux
 
-### Scenario: Un appel sans client API est refusé
+### Scenario: Un appel sans client API doit s'authentifier
 
 * When un appel sans client API lit les lieux d'activité
-* Then l'API refuse l'accès
+* Then l'API demande de s'authentifier
 
 ### Scenario: Un client sans la permission est refusé
 

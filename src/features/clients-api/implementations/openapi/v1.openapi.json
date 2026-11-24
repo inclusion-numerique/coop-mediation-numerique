@@ -1705,6 +1705,42 @@
           }
         }
       }
+    },
+    "responses": {
+      "NonAuthentifie": {
+        "description": "Identifiants absents ou invalides, ou client hors de sa période de validité. L'en-tête WWW-Authenticate indique le schéma attendu (Bearer).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Unauthorized"
+                }
+              },
+              "required": ["error"]
+            }
+          }
+        }
+      },
+      "NonAutorise": {
+        "description": "Client authentifié qui ne détient pas la permission de cette route.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Forbidden"
+                }
+              },
+              "required": ["error"]
+            }
+          }
+        }
+      }
     }
   },
   "security": [
@@ -1833,6 +1869,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
+          },
+          "403": {
+            "$ref": "#/components/responses/NonAutorise"
           }
         }
       }
@@ -1930,6 +1972,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
+          },
+          "403": {
+            "$ref": "#/components/responses/NonAutorise"
           }
         }
       }
@@ -2085,6 +2133,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
+          },
+          "403": {
+            "$ref": "#/components/responses/NonAutorise"
           }
         }
       }
@@ -2141,6 +2195,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
+          },
+          "403": {
+            "$ref": "#/components/responses/NonAutorise"
           }
         }
       }
@@ -2166,6 +2226,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
           }
         }
       }
@@ -2242,6 +2305,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
+          },
+          "403": {
+            "$ref": "#/components/responses/NonAutorise"
           }
         }
       }
@@ -2330,6 +2399,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/NonAuthentifie"
+          },
+          "403": {
+            "$ref": "#/components/responses/NonAutorise"
           }
         }
       }

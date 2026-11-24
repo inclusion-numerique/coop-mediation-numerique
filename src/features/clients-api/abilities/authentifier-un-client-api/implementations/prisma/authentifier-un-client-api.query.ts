@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   ClientApiId,
-  couvre,
-  estValideLe,
+  type IssueDAuthentification,
+  issueDAuthentification,
   type PorteeApi,
 } from '@/features/clients-api/domain'
 import {
@@ -21,7 +21,7 @@ export const authentifierUnClientApi = async ({
   readonly secret: string
   readonly portees: readonly PorteeApi[]
   readonly maintenant?: Date
-}): Promise<boolean> => {
+}): Promise<IssueDAuthentification> => {
   const id = ClientApiId.safe(clientApiId)
   const ligne =
     id === null
@@ -31,8 +31,8 @@ export const authentifierUnClientApi = async ({
           select: { ...clientApiSelect, secretHash: true },
         })
 
-  if (ligne === null || !verifySecret(secret, ligne.secretHash)) return false
+  if (ligne === null || !verifySecret(secret, ligne.secretHash))
+    return 'NonAuthentifie'
 
-  const client = versClientApi(ligne)
-  return estValideLe(client.validite, maintenant) && couvre(client, portees)
+  return issueDAuthentification(versClientApi(ligne), portees, maintenant)
 }

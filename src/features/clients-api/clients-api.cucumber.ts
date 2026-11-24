@@ -175,6 +175,10 @@ export const suivreLaPageSuivante = async (
   await appelerLAdresse(route, `${pathname}${search}`, client)
 }
 
+Then("l'API demande de s'authentifier", () => {
+  assert.strictEqual(reponse().statut, 401)
+})
+
 Then("l'API refuse l'accès", () => {
   assert.strictEqual(reponse().statut, 403)
 })

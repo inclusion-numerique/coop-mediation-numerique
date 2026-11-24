@@ -5,10 +5,10 @@
 
 ## Rule: L'état de l'API se lit avec un client API valide
 
-### Scenario: Un appel sans client API est refusé
+### Scenario: Un appel sans client API doit s'authentifier
 
 * When un appel sans client API vérifie l'état de l'API
-* Then l'API refuse l'accès
+* Then l'API demande de s'authentifier
 
 ### Scenario: Un client qui ne lit que les statistiques lit aussi l'état de l'API
 

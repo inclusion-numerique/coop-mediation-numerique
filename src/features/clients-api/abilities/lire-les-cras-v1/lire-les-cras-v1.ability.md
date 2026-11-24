@@ -8,10 +8,10 @@
 
 ## Rule: Seul un client qui détient la permission « Activites » lit les CRA v1
 
-### Scenario: Un appel sans client API est refusé
+### Scenario: Un appel sans client API doit s'authentifier
 
 * When un appel sans client API lit les CRA v1
-* Then l'API refuse l'accès
+* Then l'API demande de s'authentifier
 
 ### Scenario: Un client sans la permission est refusé
 

@@ -1,6 +1,9 @@
 import { NextRequest } from 'next/server'
 import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
-import type { PorteeApi } from '@/features/clients-api/domain'
+import type {
+  IssueDAuthentification,
+  PorteeApi,
+} from '@/features/clients-api/domain'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
@@ -9,28 +12,28 @@ import {
 export const isAuthenticatedApiClientRequest = async (
   request: NextRequest,
   scopes: PorteeApi[],
-) => {
+): Promise<IssueDAuthentification> => {
   // Get api key from header
   const authorizationString = request.headers.get(apiV1AuthorizationHeader)
 
   if (!authorizationString) {
-    return false
+    return 'NonAuthentifie'
   }
 
   const [scheme, value] = authorizationString.split(' ')
 
   if (scheme !== apiV1AuthorizationScheme) {
-    return false
+    return 'NonAuthentifie'
   }
 
   if (!value) {
-    return false
+    return 'NonAuthentifie'
   }
 
   const [clientId, clientSecret] = value.split(':')
 
   if (!clientId || !clientSecret) {
-    return false
+    return 'NonAuthentifie'
   }
 
   return authentifierUnClientApi({

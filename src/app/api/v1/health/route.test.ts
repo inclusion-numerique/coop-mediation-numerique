@@ -1,8 +1,8 @@
 describe('API v1 /health', () => {
-  it('refuse un appel sans client API valide', () => {
+  it('demande de s’authentifier à un appel sans client API valide', () => {
     cy.request({ url: '/api/v1/health', failOnStatusCode: false }).then(
       (response) => {
-        expect(response.status).to.eq(403)
+        expect(response.status).to.eq(401)
       },
     )
   })

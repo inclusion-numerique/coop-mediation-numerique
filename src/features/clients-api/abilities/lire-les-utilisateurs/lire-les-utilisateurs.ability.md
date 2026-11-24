@@ -8,10 +8,10 @@
 
 ## Rule: Seul un client qui détient la permission « Utilisateurs » lit les utilisateurs
 
-### Scenario: Un appel sans client API est refusé
+### Scenario: Un appel sans client API doit s'authentifier
 
 * When un appel sans client API lit les utilisateurs
-* Then l'API refuse l'accès
+* Then l'API demande de s'authentifier
 
 ### Scenario: Un client sans la permission est refusé
 
