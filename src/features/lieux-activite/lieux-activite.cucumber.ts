@@ -275,6 +275,10 @@ export const suivreLeLieu = (id: string): void => {
   scenario.lieux.add(id)
 }
 
+const suivreLesLieux = (ids: readonly string[]): void => {
+  scenario.lieux = new Set([...scenario.lieux, ...ids])
+}
+
 Given('je suis un médiateur', async () => {
   const utilisateurId = v4()
   await prismaClient.user.create({
@@ -981,8 +985,7 @@ Then(
       1,
       'Le nouveau lieu a été rattaché plus d’une fois',
     )
-    const [rattache] = rattaches
-    suivreLeLieu(rattache.lieuInclusion.id)
+    suivreLesLieux(rattaches.map(({ lieuInclusion }) => lieuInclusion.id))
   },
 )
 

@@ -6,9 +6,13 @@ export const destination = (
   rejoints: readonly string[],
   retourHref: string,
 ): string => {
-  const premier = lieux.at(0)
+  const [lieu, ...autresLieux] = lieux
+  const [rejoint, ...autresRejoints] = rejoints
 
-  return lieux.length === 1 && rejoints.length === 1 && premier != null
-    ? hrefDuLieu({ id: rejoints[0], codeInsee: premier.codeInsee ?? null })
+  return lieu !== undefined &&
+    rejoint !== undefined &&
+    autresLieux.length === 0 &&
+    autresRejoints.length === 0
+    ? hrefDuLieu({ id: rejoint, codeInsee: lieu.codeInsee ?? null })
     : retourHref
 }
