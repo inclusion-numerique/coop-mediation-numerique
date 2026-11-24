@@ -186,18 +186,20 @@ const carteDe =
     detail: detailDe(timezone)(activite),
   })
 
+type ActivitesDuJour = readonly [
+  ActiviteDeCoordination,
+  ...ActiviteDeCoordination[],
+]
+
 const parJour = (
   activites: readonly ActiviteDeCoordination[],
-): readonly (readonly ActiviteDeCoordination[])[] =>
-  activites.reduce<readonly (readonly ActiviteDeCoordination[])[]>(
-    (jours, activite) => {
-      const dernier = jours.at(-1)
-      return dernier !== undefined && dernier[0].date === activite.date
-        ? [...jours.slice(0, -1), [...dernier, activite]]
-        : [...jours, [activite]]
-    },
-    [],
-  )
+): readonly ActivitesDuJour[] =>
+  activites.reduce<readonly ActivitesDuJour[]>((jours, activite) => {
+    const dernier = jours.at(-1)
+    return dernier !== undefined && dernier[0].date === activite.date
+      ? [...jours.slice(0, -1), [...dernier, activite]]
+      : [...jours, [activite]]
+  }, [])
 
 const titreDeLaListe = (total: number, filtre: boolean): string =>
   filtre

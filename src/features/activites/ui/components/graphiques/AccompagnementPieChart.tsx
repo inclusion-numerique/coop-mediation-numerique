@@ -20,25 +20,26 @@ const CustomTooltip = ({
   payload,
 }: TooltipProps<number, string> & {
   payload?: { payload: PieData }[]
-}) =>
-  active &&
-  payload &&
-  payload.length > 0 && (
-    <div
-      className="fr-p-2v fr-border-radius--8 fr-tile--shadow fr-whitespace-nowrap fr-text--sm"
-      style={{ backgroundColor: 'rgba(30, 27, 57, 0.95)', color: 'white' }}
-    >
-      <div className="fr-text--bold">{payload[0].payload.label}</div>
-      <div>
-        <span className="fr-text--xs">Accompagnements&nbsp;:</span>{' '}
-        <span className="fr-text--bold">
-          {numberToString(payload[0].payload.count)}
-        </span>
-        &emsp;
-        {numberToPercentage(payload[0].payload.proportion)}
+}) => {
+  const point = payload?.[0]?.payload
+  return (
+    active &&
+    point !== undefined && (
+      <div
+        className="fr-p-2v fr-border-radius--8 fr-tile--shadow fr-whitespace-nowrap fr-text--sm"
+        style={{ backgroundColor: 'rgba(30, 27, 57, 0.95)', color: 'white' }}
+      >
+        <div className="fr-text--bold">{point.label}</div>
+        <div>
+          <span className="fr-text--xs">Accompagnements&nbsp;:</span>{' '}
+          <span className="fr-text--bold">{numberToString(point.count)}</span>
+          &emsp;
+          {numberToPercentage(point.proportion)}
+        </div>
       </div>
-    </div>
+    )
   )
+}
 
 export const AccompagnementPieChart = ({
   data,

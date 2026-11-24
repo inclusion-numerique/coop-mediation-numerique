@@ -22,7 +22,10 @@ export const dateDActiviteDuJour = (instant: Date): DateDActivite =>
 export const derniereDateDActivite = (
   aujourdhui: DateDActivite,
 ): DateDActivite => {
-  const [annee, mois, jour] = aujourdhui.split('-').map(Number)
+  const instant = new Date(`${aujourdhui}T00:00:00.000Z`)
+  const annee = instant.getUTCFullYear()
+  const mois = instant.getUTCMonth() + 1
+  const jour = instant.getUTCDate()
   const dernierJourDuMois = new Date(
     Date.UTC(annee + ANNEES_D_ANTICIPATION, mois, 0),
   ).getUTCDate()

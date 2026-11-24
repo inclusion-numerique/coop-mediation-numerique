@@ -30,7 +30,7 @@ const CustomTooltip = ({
       <div>
         <span className="fr-text--xs">Accompagnements&nbsp;:</span>{' '}
         <span className="fr-text--bold">
-          {payload[0].value?.toLocaleString('fr-FR')}
+          {payload[0]?.value?.toLocaleString('fr-FR')}
         </span>
       </div>
     </div>

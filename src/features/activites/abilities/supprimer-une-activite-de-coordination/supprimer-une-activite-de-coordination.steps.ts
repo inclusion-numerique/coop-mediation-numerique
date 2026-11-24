@@ -12,8 +12,8 @@ import {
 import type { Result } from '@/libraries/result'
 
 type Semis = {
-  readonly userIds: readonly string[]
-  readonly coordinateurIds: readonly string[]
+  readonly userIds: readonly [string, string]
+  readonly coordinateurIds: readonly [string, string]
   readonly tagId: string
   readonly activiteId: string
 }

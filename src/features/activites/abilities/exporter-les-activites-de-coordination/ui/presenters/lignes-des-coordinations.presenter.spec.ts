@@ -78,7 +78,7 @@ describe('lignes des activités de coordination', () => {
   it('écrit « / » dans les colonnes sans objet pour le type', () => {
     const [ligne] = lignesDuTableau([partenariat]).lignes
 
-    expect(ligne.slice(1, 15)).toEqual([
+    expect(ligne?.slice(1, 15)).toEqual([
       'Partenariat',
       '/',
       '/',
@@ -94,19 +94,19 @@ describe('lignes des activités de coordination', () => {
       '/',
       '/',
     ])
-    expect(ligne[15]).toBe('Été')
+    expect(ligne?.[15]).toBe('Été')
   })
 
   it('date l’enregistrement dans le fuseau de l’auteur', () => {
     const [ligne] = lignesDuTableau([partenariat]).lignes
 
-    expect(ligne[17]).toBe('01/06/2026 à 12:00')
+    expect(ligne?.[17]).toBe('01/06/2026 à 12:00')
   })
 
   it('reprend les intervenants d’une animation', () => {
     const [ligne] = lignesDuTableau([animation]).lignes
 
-    expect(ligne.slice(2, 8)).toEqual([60, '/', 4, 0, 0, '/'])
+    expect(ligne?.slice(2, 8)).toEqual([60, '/', 4, 0, 0, '/'])
   })
 
   it('résume les filtres appliqués', () => {

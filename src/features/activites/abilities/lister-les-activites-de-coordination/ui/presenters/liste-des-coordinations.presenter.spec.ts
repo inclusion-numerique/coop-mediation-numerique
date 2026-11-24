@@ -97,7 +97,7 @@ describe('liste des activités de coordination', () => {
   })
 
   it('présente une carte avec son nom, ses comptes et son objet', () => {
-    const [carte] = liste.jours[0].cartes
+    const carte = liste.jours[0]?.cartes[0]
 
     expect(carte).toMatchObject({
       titre: 'Évènement · Forum',
@@ -105,20 +105,20 @@ describe('liste des activités de coordination', () => {
       objets: ['NEC local'],
       enregistreeLe: '02.06.2026 à 10:00',
     })
-    expect(carte.detail.rubriques).toEqual([
+    expect(carte?.detail.rubriques).toEqual([
       { titre: 'Organisé par', elements: ['La médiathèque'] },
     ])
-    expect(carte.detail.modifieeLe).toBeNull()
+    expect(carte?.detail.modifieeLe).toBeNull()
   })
 
   it('détaille les partenaires et la modification', () => {
-    const { detail, objets, infos } = liste.jours[0].cartes[1]
+    const carte = liste.jours[0]?.cartes[1]
 
-    expect(objets).toEqual(['Mutualisation'])
-    expect(infos).toEqual(['2 partenaires'])
-    expect(detail.duree).toBeNull()
-    expect(detail.modifieeLe).toBe('03.06.2026 à 10h00')
-    expect(detail.rubriques).toEqual([
+    expect(carte?.objets).toEqual(['Mutualisation'])
+    expect(carte?.infos).toEqual(['2 partenaires'])
+    expect(carte?.detail.duree).toBeNull()
+    expect(carte?.detail.modifieeLe).toBe('03.06.2026 à 10h00')
+    expect(carte?.detail.rubriques).toEqual([
       {
         titre: 'Partenaires',
         elements: ['Mairie · Commune', 'Collectif · Collectif citoyen'],
@@ -139,7 +139,7 @@ describe('liste des activités de coordination', () => {
       timezone: 'Europe/Paris',
     })
 
-    expect(avecEchelon.jours[0].cartes[0].detail.rubriques).toContainEqual({
+    expect(avecEchelon.jours[0]?.cartes[0]?.detail.rubriques).toContainEqual({
       titre: 'Échelon territorial du partenariat',
       elements: ['Départemental'],
     })
