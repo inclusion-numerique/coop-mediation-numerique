@@ -1,5 +1,5 @@
 import { DataTable } from '@/libraries/data-table'
-import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste/PiedDeListe'
 import { employeusesColumns } from '../columns/employeuses.columns'
 import { paginationDesEmployeuses } from '../filtres/liste-des-employeuses.filtre'
 import type { BarreDesEmployeuses } from '../presenters/barre-des-employeuses.presenter'

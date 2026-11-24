@@ -1,4 +1,4 @@
-import { EnTeteTriable } from '@/libraries/etat-d-url/EnTeteTriable'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste/EnTeteTriable'
 import { employeusesColumns } from '../columns/employeuses.columns'
 import type { BarreDesEmployeuses } from '../presenters/barre-des-employeuses.presenter'
 
