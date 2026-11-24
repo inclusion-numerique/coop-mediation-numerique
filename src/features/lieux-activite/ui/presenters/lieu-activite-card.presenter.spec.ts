@@ -6,7 +6,7 @@ import { VisibiliteCartographie } from '../../domain/cartographie-nationale/visi
 import { LieuId } from '../../domain/identifiants/lieu-id'
 import type { LieuEnListe } from '../../domain/lieu-en-liste'
 import { NombreDeMediateurs } from '../../domain/nombres'
-import { SourceCartographie } from '../../domain/tracabilite'
+import { SourceCartographie } from '../../domain/registre/tracabilite'
 import { carteDuLieu } from './lieu-activite-card.presenter'
 
 const maintenant = new Date('2026-11-09T12:00:00Z')

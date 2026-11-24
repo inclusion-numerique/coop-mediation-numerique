@@ -16,7 +16,7 @@ import {
 import { describe, expect, it } from 'vitest'
 import { IdsCartographieNationale } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import type { Fiche } from '../../../domain/fiche'
-import { SourceCartographie } from '../../../domain/tracabilite'
+import { SourceCartographie } from '../../../domain/registre/tracabilite'
 import { lieuDepuisCarto } from './lieu-carto'
 
 const maintenant = new Date('2026-09-07T10:00:00Z')

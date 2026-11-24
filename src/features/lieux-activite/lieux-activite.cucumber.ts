@@ -10,9 +10,9 @@ import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
 } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
-import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import type { Typologie } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)

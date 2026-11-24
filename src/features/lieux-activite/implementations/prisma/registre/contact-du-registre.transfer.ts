@@ -9,7 +9,7 @@ import {
   nonVide,
   SEPARATEUR_LISTE,
   sitesWebSaisis,
-} from '../../../domain/saisie'
+} from '../../../domain/saisie/saisie'
 
 const estObjet = (valeur: unknown): valeur is Record<string, unknown> =>
   valeur != null && typeof valeur === 'object' && !Array.isArray(valeur)

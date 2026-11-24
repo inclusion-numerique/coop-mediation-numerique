@@ -12,7 +12,7 @@ import {
   CreerLieuActiviteValidation,
 } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
-import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import { nouveauLieu } from './saisie-du-lieu.transfer'
 

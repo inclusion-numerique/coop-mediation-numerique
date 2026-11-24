@@ -32,11 +32,6 @@ import { UtilisateurId } from '../../domain/identifiants/utilisateur-id'
 import { NomUsage } from '../../domain/identite-sirene'
 import type { Lieu } from '../../domain/lieu'
 import {
-  complementAdresseSaisi,
-  horairesDeLaSource,
-  labelsLibres,
-} from '../../domain/saisie'
-import {
   Actif,
   type DerniereModification,
   ModificationInconnue,
@@ -45,7 +40,12 @@ import {
   SourceCartographie,
   type Suppression,
   Supprime,
-} from '../../domain/tracabilite'
+} from '../../domain/registre/tracabilite'
+import {
+  complementAdresseSaisi,
+  horairesDeLaSource,
+  labelsLibres,
+} from '../../domain/saisie/saisie'
 import type { LigneDuLieu, LigneDuLieuCoop } from './ligne-du-lieu.select'
 import { ficheDuRegistre } from './registre/fiche-du-registre.select'
 import { derniereModificationExterne } from './registre/modification-du-registre.transfer'

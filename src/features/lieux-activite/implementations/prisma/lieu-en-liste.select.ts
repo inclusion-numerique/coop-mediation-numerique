@@ -10,7 +10,7 @@ import type {
   ModificationEnListe,
 } from '../../domain/lieu-en-liste'
 import { NombreDeMediateurs } from '../../domain/nombres'
-import { SourceCartographie } from '../../domain/tracabilite'
+import { SourceCartographie } from '../../domain/registre/tracabilite'
 import { adresseDesColonnes } from './adresse-des-colonnes.select'
 import { adresseDeLInscription, inscriptionPourLaFiche } from './registre'
 import { derniereModificationExterne } from './registre/modification-du-registre.transfer'

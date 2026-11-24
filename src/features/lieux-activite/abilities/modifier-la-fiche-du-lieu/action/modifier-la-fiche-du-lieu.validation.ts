@@ -23,7 +23,7 @@ import {
   SiretSaisi,
   SiteWebSaisi,
   texteFacultatif,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
 import { HorairesValidation } from '../../../action/horaires.validation'
 

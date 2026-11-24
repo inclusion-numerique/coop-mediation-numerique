@@ -3,7 +3,7 @@ import {
   type DerniereModification,
   ModifieParSource,
   SourceCartographie,
-} from '../../../domain/tracabilite'
+} from '../../../domain/registre/tracabilite'
 import type { InscriptionPourLaFiche } from './fiche-du-registre.select'
 
 export const derniereModificationExterne = (

@@ -1,6 +1,6 @@
 import { estPublie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Lieu } from '../../../domain/lieu'
-import { publicationSansService } from '../../../domain/publication'
+import { publicationSansService } from '../../../domain/registre/publication'
 import type { ModificationLieu } from './modification-lieu'
 
 export const laisseUnePublicationSansService = (

@@ -8,7 +8,7 @@ import {
   ModificationInconnue,
   ModifieParSource,
   type SourceCartographie,
-} from '../../../domain/tracabilite'
+} from '../../../domain/registre/tracabilite'
 
 export type LieuCarto = {
   readonly idsCartographieNationale: IdsCartographieNationale

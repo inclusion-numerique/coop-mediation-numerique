@@ -3,7 +3,7 @@ import z from 'zod'
 import {
   AdresseMailSaisie,
   NumeroTelephoneSaisi,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 
 export const ModalitesAccesAuServiceShape = {
   modalitesAcces: z

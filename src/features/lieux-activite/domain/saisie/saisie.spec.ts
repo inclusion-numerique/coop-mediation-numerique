@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import {
   horairesVides,
   safeToTimetableOpeningHours,
-} from '@/features/lieux-activite/domain/horaires-d-ouverture'
+} from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import {
   adresseSaisie,
   courrielsSaisis,

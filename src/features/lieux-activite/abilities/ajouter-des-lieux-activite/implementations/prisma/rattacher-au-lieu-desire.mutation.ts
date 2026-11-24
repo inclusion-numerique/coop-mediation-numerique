@@ -3,7 +3,10 @@ import type { Prisma } from '@/generated/prisma/client'
 import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { BanId } from '../../../../domain/identifiants/ban-id'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
-import { adresseSaisie, localisationSaisie } from '../../../../domain/saisie'
+import {
+  adresseSaisie,
+  localisationSaisie,
+} from '../../../../domain/saisie/saisie'
 import type { LieuCarto, LieuDemande } from '../../domain'
 import { rattacherAuLieu } from './rattacher-au-lieu.mutation'
 

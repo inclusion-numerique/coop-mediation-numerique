@@ -1,7 +1,7 @@
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
-import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import {
   DescriptionSaisie,
   InformationsGeneralesSaisie,

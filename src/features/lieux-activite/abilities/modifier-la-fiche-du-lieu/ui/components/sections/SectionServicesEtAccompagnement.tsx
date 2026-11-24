@@ -8,12 +8,12 @@ import {
 } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { ServicesEtAccompagnementSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
-import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { ServicesEtAccompagnementAffiches } from '../presenters/services-et-accompagnement.presenter'
-import { EtatVide } from './EtatVide'
-import { VueServicesEtAccompagnement } from './vues/VueServicesEtAccompagnement'
+import { ServicesEtAccompagnementSaisie } from '../../../action/modifier-la-fiche-du-lieu.validation'
+import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
+import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
+import type { ServicesEtAccompagnementAffiches } from '../../presenters/services-et-accompagnement.presenter'
+import { EtatVide } from '../EtatVide'
+import { VueServicesEtAccompagnement } from '../vues/VueServicesEtAccompagnement'
 
 export const SectionServicesEtAccompagnement = ({
   id,

@@ -3,17 +3,17 @@
 import { useStore } from '@tanstack/react-form'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { InformationsPratiquesSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
+import { InformationsPratiquesSaisie } from '../../../action/modifier-la-fiche-du-lieu.validation'
 import {
   type InformationsPratiquesFormData,
   informationsPratiquesFormOptions,
-} from '../forms/informations-pratiques.form-data'
-import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
-import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { InformationsPratiquesAffichees } from '../presenters/informations-pratiques.presenter'
-import { ChampsHoraires } from './ChampsHoraires'
-import { EtatVide } from './EtatVide'
-import { VueInformationsPratiques } from './vues/VueInformationsPratiques'
+} from '../../forms/informations-pratiques.form-data'
+import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
+import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
+import type { InformationsPratiquesAffichees } from '../../presenters/informations-pratiques.presenter'
+import { ChampsHoraires } from '../ChampsHoraires'
+import { EtatVide } from '../EtatVide'
+import { VueInformationsPratiques } from '../vues/VueInformationsPratiques'
 
 export const SectionInformationsPratiques = ({
   id,

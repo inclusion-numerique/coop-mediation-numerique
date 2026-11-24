@@ -16,7 +16,7 @@ import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modif
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
-import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
+import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/registre/publication'
 import {
   ficheSemee,
   semerUneFicheDeLieu,

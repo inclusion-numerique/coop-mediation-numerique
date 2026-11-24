@@ -10,7 +10,7 @@ import {
   daysTexts,
   type Period,
   periodsTexts,
-} from '@/features/lieux-activite/domain/horaires-d-ouverture'
+} from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 

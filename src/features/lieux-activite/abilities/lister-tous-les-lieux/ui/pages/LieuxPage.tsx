@@ -1,4 +1,4 @@
-import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste/PiedDeListe'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'

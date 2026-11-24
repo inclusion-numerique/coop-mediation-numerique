@@ -12,12 +12,12 @@ import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-secti
 import type { FicheAffichee } from '../presenters/fiche-du-lieu.presenter'
 import { BandeauRepriseExterne } from './BandeauRepriseExterne'
 import { BasculeVisibiliteCartographie } from './BasculeVisibiliteCartographie'
-import { SectionDescription } from './SectionDescription'
-import { SectionInformationsGenerales } from './SectionInformationsGenerales'
-import { SectionInformationsPratiques } from './SectionInformationsPratiques'
-import { SectionModalitesAccesAuService } from './SectionModalitesAccesAuService'
-import { SectionServicesEtAccompagnement } from './SectionServicesEtAccompagnement'
-import { SectionTypesDePublicsAccueillis } from './SectionTypesDePublicsAccueillis'
+import { SectionDescription } from './sections/SectionDescription'
+import { SectionInformationsGenerales } from './sections/SectionInformationsGenerales'
+import { SectionInformationsPratiques } from './sections/SectionInformationsPratiques'
+import { SectionModalitesAccesAuService } from './sections/SectionModalitesAccesAuService'
+import { SectionServicesEtAccompagnement } from './sections/SectionServicesEtAccompagnement'
+import { SectionTypesDePublicsAccueillis } from './sections/SectionTypesDePublicsAccueillis'
 
 export const FicheDuLieuPage = ({
   fiche,

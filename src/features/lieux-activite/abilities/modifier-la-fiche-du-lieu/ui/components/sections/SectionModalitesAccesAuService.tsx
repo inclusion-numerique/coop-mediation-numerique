@@ -9,12 +9,12 @@ import { telephoneDisplayString } from '@/libraries/telephone'
 import {
   ModalitesAccesAuServiceFormValidation,
   ModalitesAccesAuServiceSaisie,
-} from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
-import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { ModalitesAccesAuServiceAffichees } from '../presenters/modalites-acces-au-service.presenter'
-import { EtatVide } from './EtatVide'
-import { VueModalitesAccesAuService } from './vues/VueModalitesAccesAuService'
+} from '../../../action/modifier-la-fiche-du-lieu.validation'
+import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
+import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
+import type { ModalitesAccesAuServiceAffichees } from '../../presenters/modalites-acces-au-service.presenter'
+import { EtatVide } from '../EtatVide'
+import { VueModalitesAccesAuService } from '../vues/VueModalitesAccesAuService'
 
 export const SectionModalitesAccesAuService = ({
   id,

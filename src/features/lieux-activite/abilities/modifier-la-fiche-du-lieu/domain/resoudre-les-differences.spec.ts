@@ -27,7 +27,7 @@ import type { Fiche } from '../../../domain/fiche'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
-import { ModificationInconnue } from '../../../domain/tracabilite'
+import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import { differences } from './differences'
 import { resoudreLesDifferences } from './resoudre-les-differences'
 

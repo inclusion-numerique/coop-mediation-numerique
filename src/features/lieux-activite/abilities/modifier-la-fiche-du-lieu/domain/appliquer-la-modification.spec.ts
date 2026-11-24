@@ -33,7 +33,7 @@ import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
-import { ModificationInconnue } from '../../../domain/tracabilite'
+import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import { appliquerModification } from './appliquer-la-modification'
 
 const maintenant = new Date('2026-09-02T11:00:00Z')

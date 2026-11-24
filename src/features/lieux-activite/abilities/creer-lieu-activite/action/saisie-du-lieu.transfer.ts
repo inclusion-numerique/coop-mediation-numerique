@@ -32,7 +32,7 @@ import {
   sitesWebSaisis,
   telephoneSaisi,
   urlSaisie,
-} from '../../../domain/saisie'
+} from '../../../domain/saisie/saisie'
 
 const cochees = <Valeur>(
   valeurs: readonly Valeur[] | null | undefined,

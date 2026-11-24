@@ -3,7 +3,7 @@ import { FormationLabelPropose } from '@/features/lieux-activite/domain/nomencla
 import {
   PresentationDetailSaisi,
   PresentationResumeSaisie,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 
 export const DescriptionShape = {
   presentationResume: PresentationResumeSaisie,

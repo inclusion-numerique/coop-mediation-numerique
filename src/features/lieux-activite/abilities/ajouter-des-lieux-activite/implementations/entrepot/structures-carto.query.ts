@@ -26,6 +26,7 @@ import { IdsCartographieNationale } from '@/features/lieux-activite/domain/carto
 import { coopCartographieNationaleSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { reconnues } from '@/features/lieux-activite/domain/nomenclatures'
+import { SourceCartographie } from '@/features/lieux-activite/domain/registre/tracabilite'
 import {
   courrielsValides,
   ficheAccesLibreSaisie,
@@ -33,8 +34,7 @@ import {
   presentationSaisie,
   sitesWebSaisis,
   telephoneValide,
-} from '@/features/lieux-activite/domain/saisie'
-import { SourceCartographie } from '@/features/lieux-activite/domain/tracabilite'
+} from '@/features/lieux-activite/domain/saisie/saisie'
 import type { LieuCarto } from '../../domain'
 
 const lieuSelect = {

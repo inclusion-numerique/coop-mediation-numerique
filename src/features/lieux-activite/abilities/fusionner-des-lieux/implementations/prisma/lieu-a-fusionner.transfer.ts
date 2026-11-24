@@ -6,7 +6,7 @@ import {
 import {
   adresseSaisie,
   complementAdresseSaisi,
-} from '@/features/lieux-activite/domain/saisie'
+} from '@/features/lieux-activite/domain/saisie/saisie'
 import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'

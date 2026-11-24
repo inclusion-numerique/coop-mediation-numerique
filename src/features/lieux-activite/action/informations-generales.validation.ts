@@ -3,7 +3,7 @@ import z from 'zod'
 import {
   ComplementAdresseSaisi,
   NomDuLieuSaisi,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
 
 export const IdentiteLieuShape = {

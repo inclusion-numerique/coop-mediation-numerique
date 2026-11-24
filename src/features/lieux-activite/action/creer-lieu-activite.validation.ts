@@ -2,11 +2,11 @@ import z from 'zod'
 import {
   PUBLICATION_SANS_SERVICE,
   publicationSansService,
-} from '@/features/lieux-activite/domain/publication'
+} from '@/features/lieux-activite/domain/registre/publication'
 import {
   adresseReconnue,
   commentaireAdosseAUnCreneau,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 import { DescriptionShape } from './description.validation'
 import { IdentiteLieuShape } from './informations-generales.validation'
 import { InformationsPratiquesShape } from './informations-pratiques.validation'

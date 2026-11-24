@@ -1,6 +1,6 @@
 import type { Prisma } from '@/generated/prisma/client'
 import type { Lieu } from '../../../domain/lieu'
-import { signatureCoop } from '../../../domain/signature-coop'
+import { signatureCoop } from '../../../domain/registre/signature-coop'
 import { lieuCoopToDomain } from '../lieu.transfer'
 import type { LigneDuLieuCoop } from '../ligne-du-lieu.select'
 import { adresseDuRegistre } from './adresse-du-registre.query'

@@ -14,6 +14,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@/generated/prisma/client'
 import type { Fiche } from '../../../domain/fiche'
+import { voieDuRegistre } from '../../../domain/registre/voie-du-registre'
 import {
   complementAdresseSaisi,
   ficheAccesLibreSaisie,
@@ -21,8 +22,7 @@ import {
   labelsLibres,
   presentationSaisie,
   urlSaisie,
-} from '../../../domain/saisie'
-import { voieDuRegistre } from '../../../domain/voie-du-registre'
+} from '../../../domain/saisie/saisie'
 import * as vocabulaire from '../vocabulaire.transfer'
 import { contactDuRegistre } from './contact-du-registre.transfer'
 

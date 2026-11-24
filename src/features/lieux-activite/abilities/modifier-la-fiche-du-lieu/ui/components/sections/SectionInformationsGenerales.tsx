@@ -9,19 +9,19 @@ import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import {
   CONFIRMATION_DU_PARTAGE_MANQUANTE,
   confirmationDuPartageManquante,
-} from '../forms/confirmation-du-partage.validation'
-import { InformationsGeneralesEditionFields } from '../forms/InformationsGeneralesEditionFields'
+} from '../../forms/confirmation-du-partage.validation'
+import { InformationsGeneralesEditionFields } from '../../forms/InformationsGeneralesEditionFields'
 import {
   type InformationsGeneralesFormData,
   InformationsGeneralesFormValidation,
   informationsGeneralesFormOptions,
-} from '../forms/informations-generales.form-data'
-import { informationsGeneralesSoumises } from '../forms/informations-generales-soumises.form-data'
-import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
-import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { PartageAffiche } from '../presenters/fiche-du-lieu.presenter'
-import type { InformationsGeneralesAffichees } from '../presenters/informations-generales.presenter'
-import { VueInformationsGenerales } from './vues/VueInformationsGenerales'
+} from '../../forms/informations-generales.form-data'
+import { informationsGeneralesSoumises } from '../../forms/informations-generales-soumises.form-data'
+import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
+import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
+import type { PartageAffiche } from '../../presenters/fiche-du-lieu.presenter'
+import type { InformationsGeneralesAffichees } from '../../presenters/informations-generales.presenter'
+import { VueInformationsGenerales } from '../vues/VueInformationsGenerales'
 
 export const SectionInformationsGenerales = ({
   id,

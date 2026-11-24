@@ -46,7 +46,7 @@ import {
   ModifieParSource,
   ModifieParUtilisateur,
   SourceCartographie,
-} from '../../domain/tracabilite'
+} from '../../domain/registre/tracabilite'
 import { lieuCoopToDomain, lieuFromDomain } from './lieu.transfer'
 import type { LigneDuLieuCoop } from './ligne-du-lieu.select'
 

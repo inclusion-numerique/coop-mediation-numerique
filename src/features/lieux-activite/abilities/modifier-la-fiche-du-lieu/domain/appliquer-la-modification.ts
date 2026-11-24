@@ -8,8 +8,8 @@ import type { Fiche } from '../../../domain/fiche'
 import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
-import { servicesALaPublication } from '../../../domain/publication'
-import { ModifieParUtilisateur } from '../../../domain/tracabilite'
+import { servicesALaPublication } from '../../../domain/registre/publication'
+import { ModifieParUtilisateur } from '../../../domain/registre/tracabilite'
 import {
   contactAvecJoignabilite,
   contactAvecSitesWeb,

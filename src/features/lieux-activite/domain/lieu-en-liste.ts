@@ -5,7 +5,7 @@ import type { VisibiliteCartographie } from './cartographie-nationale/visibilite
 import type { LieuId } from './identifiants/lieu-id'
 import type { NomUsage } from './identite-sirene'
 import type { NombreDeMediateurs } from './nombres'
-import type { SourceCartographie } from './tracabilite'
+import type { SourceCartographie } from './registre/tracabilite'
 
 export type ModificationEnListe =
   | {

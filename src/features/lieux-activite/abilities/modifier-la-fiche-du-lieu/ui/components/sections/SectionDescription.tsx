@@ -2,15 +2,15 @@
 
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
-import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/regles-de-saisie'
+import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { DescriptionSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
-import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { DescriptionAffichee } from '../presenters/description.presenter'
-import { EtatVide } from './EtatVide'
-import { VueDescription } from './vues/VueDescription'
+import { DescriptionSaisie } from '../../../action/modifier-la-fiche-du-lieu.validation'
+import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
+import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
+import type { DescriptionAffichee } from '../../presenters/description.presenter'
+import { EtatVide } from '../EtatVide'
+import { VueDescription } from '../vues/VueDescription'
 
 export const SectionDescription = ({
   id,

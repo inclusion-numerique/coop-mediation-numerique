@@ -19,7 +19,7 @@ import {
   fromTimetableOpeningHours,
   type Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { appendComment } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { appendComment } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 
 export const SEPARATEUR_LISTE = '|'
 

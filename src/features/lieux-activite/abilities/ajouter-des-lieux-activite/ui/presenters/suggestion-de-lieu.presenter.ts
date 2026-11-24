@@ -1,4 +1,4 @@
-import { SourceExterne } from '../../../../domain/source-externe'
+import { SourceExterne } from '../../../../domain/registre/source-externe'
 import type {
   ProvenanceDeSuggestion,
   SuggestionDeLieu,

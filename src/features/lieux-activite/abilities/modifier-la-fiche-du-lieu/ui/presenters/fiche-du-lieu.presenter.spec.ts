@@ -30,7 +30,7 @@ import {
   ModificationInconnue,
   ModifieParSource,
   SourceCartographie,
-} from '../../../../domain/tracabilite'
+} from '../../../../domain/registre/tracabilite'
 import {
   type FicheDuLieu,
   NombreDActivites,

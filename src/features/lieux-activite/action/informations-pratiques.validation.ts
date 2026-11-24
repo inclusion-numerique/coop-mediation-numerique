@@ -4,7 +4,7 @@ import {
   PriseRdvSaisie,
   SiteWebSaisi,
   texteFacultatif,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 
 export const InformationsPratiquesShape = {
   siteWeb: SiteWebSaisi,

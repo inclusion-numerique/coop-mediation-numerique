@@ -20,7 +20,7 @@ import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/v
 import type { Fiche } from '../../../domain/fiche'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { Lieu } from '../../../domain/lieu'
-import { ModificationInconnue } from '../../../domain/tracabilite'
+import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import { lieuVersRegistre } from './lieu.transfer'
 
 const modification = new Date('2026-09-08T10:00:00Z')

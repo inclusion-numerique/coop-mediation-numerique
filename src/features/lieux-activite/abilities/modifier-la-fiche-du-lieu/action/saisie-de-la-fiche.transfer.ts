@@ -26,7 +26,7 @@ import {
   sitesWebSaisis,
   telephoneSaisi,
   urlSaisie,
-} from '../../../domain/saisie'
+} from '../../../domain/saisie/saisie'
 import type { ModificationLieu } from '../domain/modification-lieu'
 import type { SaisieDeSection } from './modifier-la-fiche-du-lieu.validation'
 
