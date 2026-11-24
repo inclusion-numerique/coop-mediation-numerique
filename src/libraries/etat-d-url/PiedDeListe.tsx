@@ -10,7 +10,7 @@ export const PiedDeListe = ({
 }: {
   liens: LiensDePagination
   pagination: { readonly lignes: readonly number[]; readonly parDefaut: number }
-  className?: string
+  className?: string | undefined
 }) => (
   <div
     className={classNames(

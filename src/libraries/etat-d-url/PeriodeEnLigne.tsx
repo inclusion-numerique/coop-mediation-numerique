@@ -25,8 +25,8 @@ export const PeriodeEnLigne = ({
   debut,
   fin,
 }: {
-  debut?: Date
-  fin?: Date
+  debut?: Date | undefined
+  fin?: Date | undefined
 }) => {
   const [lues, ecrire] = useFiltre(filtreDePeriode.parametres)
   const [plage, setPlage] = useState(plageLue(lues))

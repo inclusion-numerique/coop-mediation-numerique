@@ -37,7 +37,7 @@ export const filtreDeRecherche = <const C extends string, S extends z.ZodType>({
   schema,
 }: {
   titre: string
-  prefixe?: string
+  prefixe?: string | undefined
   cle: C
   schema: S
 }): FiltreDeRecherche<C, z.output<S>> => ({

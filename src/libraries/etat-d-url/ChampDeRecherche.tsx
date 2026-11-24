@@ -10,8 +10,8 @@ export const ChampDeRecherche = ({
   placeholder,
   className,
 }: {
-  placeholder?: string
-  className?: string
+  placeholder?: string | undefined
+  className?: string | undefined
 }) => {
   const [{ recherche }, ecrire] = useFiltre(rechercheLibre.parametres)
   const champ = useRef<HTMLDivElement>(null)
@@ -27,7 +27,7 @@ export const ChampDeRecherche = ({
       onButtonClick={(texte) => ecrire({ recherche: texte.trim() })}
       allowEmptySearch
       ref={champ}
-      label={placeholder}
+      {...(placeholder === undefined ? {} : { label: placeholder })}
       big
     />
   )

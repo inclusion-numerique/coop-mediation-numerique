@@ -10,7 +10,7 @@ export const EnTeteTriable = ({
 }: {
   libelle: string
   lien: LienDeTri
-  className?: string
+  className?: string | undefined
 }) => {
   const montant = actif && ordre === 'asc'
 

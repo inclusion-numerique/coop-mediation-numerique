@@ -8,8 +8,8 @@ export const PeriodeEnPopover = ({
   debut,
   fin,
 }: {
-  debut?: Date
-  fin?: Date
+  debut?: Date | undefined
+  fin?: Date | undefined
 }) => (
   <FiltresEnPopover
     titre="Période"
