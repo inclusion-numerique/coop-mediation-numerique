@@ -1,12 +1,13 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { EffetsApresValidation } from '../../domain/ports'
 
-const isMediateur = (
+const estMediateur = (
   user: { email: string; mediateur: { id: string } | null } | null,
 ): user is { email: string; mediateur: { id: string } } =>
   user?.mediateur?.id != null
 
-export const effetsApresValidation: EffetsApresValidation = async (userId) => {
+export const accepterLesInvitationsEnAttente = async (
+  userId: string,
+): Promise<void> => {
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
     select: {
@@ -15,7 +16,7 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
     },
   })
 
-  if (!isMediateur(user)) return
+  if (!estMediateur(user)) return
 
   await prismaClient.invitationEquipe.updateMany({
     where: { email: user.email, acceptee: null, refusee: null },

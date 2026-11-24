@@ -1,14 +1,19 @@
 import { addMutationLog } from '@/configuration/prisma/addMutationLog'
 import type { UtilisateurId } from '@/features/inscription/domain'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
-import type { InscrireALaListeDeDiffusion } from '../domain/ports'
+import type {
+  EffetsApresValidation,
+  InscrireALaListeDeDiffusion,
+} from '../domain/ports'
 import { valider } from '../domain/valider'
-import { effetsApresValidation } from './prisma/effets-apres-validation.mutation'
 import { enregistrerValidation } from './prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from './prisma/lire-faits-inscription.query'
 
 export const validerAvec =
-  (inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion) =>
+  (
+    inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion,
+    effetsApresValidation: EffetsApresValidation,
+  ) =>
   async (userId: UtilisateurId, maintenant: Date) => {
     const chronometre = createStopwatch()
 

@@ -18,16 +18,6 @@
 * Then mon inscription est validée
 * And mes CGU sont acceptées
 
-## Rule: Valider accepte les invitations reçues avant l’inscription
-
-### Scenario: L’invitation acceptée à la validation est rattachée au compte médiateur
-
-* Given mon profil d’inscription est "Mediateur"
-* And un compte médiateur existe pour mon inscription
-* And une équipe m’a invité avant mon inscription
-* When je valide mon inscription
-* Then l’invitation de l’équipe est acceptée et rattachée à mon compte médiateur
-
 ## Rule: Une inscription sans compte de rôle ne se valide pas
 
 ### Scenario: Un profil posé sans compte de rôle ne peut pas valider

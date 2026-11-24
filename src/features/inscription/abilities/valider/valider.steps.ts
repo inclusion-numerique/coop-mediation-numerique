@@ -6,14 +6,12 @@ import { type ValiderInscriptionError } from '@/features/inscription/abilities/v
 import { validerAvec } from '@/features/inscription/abilities/valider/implementations/valider.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
-  seedInvitationEnAttente,
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
 
 let resultat: Result<void, ValiderInscriptionError>
-let equipeId: string
 
 Given('mon profil d’inscription est {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
@@ -45,15 +43,11 @@ Given('mon inscription est déjà validée', async () => {
   })
 })
 
-Given('une équipe m’a invité avant mon inscription', async () => {
-  equipeId = await seedInvitationEnAttente()
-})
-
 When('je valide mon inscription', async () => {
-  resultat = await validerAvec(async () => undefined)(
-    utilisateurDeLInscriptionEnCours(),
-    new Date(),
-  )
+  resultat = await validerAvec(
+    async () => undefined,
+    async () => undefined,
+  )(utilisateurDeLInscriptionEnCours(), new Date())
 })
 
 Then('mon inscription est validée', async () => {
@@ -90,26 +84,3 @@ Then('la validation est refusée car l’inscription est déjà validée', () =>
   assert.ok(!resultat.success, 'La validation aurait dû être refusée')
   assert.strictEqual(resultat.error._tag, 'InscriptionDejaValidee')
 })
-
-Then(
-  'l’invitation de l’équipe est acceptée et rattachée à mon compte médiateur',
-  async () => {
-    const [invitation, mediateur] = await Promise.all([
-      prismaClient.invitationEquipe.findFirstOrThrow({
-        where: { coordinateurId: equipeId },
-        select: { acceptee: true, mediateurId: true },
-      }),
-      prismaClient.mediateur.findUniqueOrThrow({
-        where: { userId: utilisateurDeLInscriptionEnCours() },
-        select: { id: true },
-      }),
-    ])
-    assert.deepStrictEqual(
-      {
-        acceptee: invitation.acceptee !== null,
-        mediateurId: invitation.mediateurId,
-      },
-      { acceptee: true, mediateurId: mediateur.id },
-    )
-  },
-)
