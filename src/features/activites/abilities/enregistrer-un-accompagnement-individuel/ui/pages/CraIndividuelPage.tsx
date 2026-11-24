@@ -1,10 +1,8 @@
 import CraIndividuelForm from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/CraIndividuelForm'
 import { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
+import type { BeneficiaireTrouveParLeCra } from '@/features/activites/action/rechercher-des-beneficiaires.key'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie/ModaleDeCreationDeTag'
-import {
-  type BeneficiaireTrouveParLeCra,
-  beneficiaireDuCra,
-} from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
+import { beneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
 import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
 import type {
   Tag,

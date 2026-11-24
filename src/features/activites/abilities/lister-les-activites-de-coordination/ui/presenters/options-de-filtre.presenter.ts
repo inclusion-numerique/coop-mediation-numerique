@@ -1,4 +1,4 @@
-import type { PorteeDuTag } from '@/features/activites/ui/components/BadgeDePortee'
+import type { PorteeDuTag } from '@/features/activites/action/rechercher-des-tags.key'
 import type { OptionsDeFiltre } from '../../domain'
 
 export type OptionDeTag = {

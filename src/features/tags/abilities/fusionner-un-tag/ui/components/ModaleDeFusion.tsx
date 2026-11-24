@@ -20,8 +20,8 @@ import { BadgeDePortee } from '../../../../ui/components/BadgeDePortee'
 import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
 import { type TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { FUSIONNER_UN_TAG_ACTION_KEY } from '../../action/fusionner-un-tag.key'
+import type { DestinationAffichee } from '../../action/rechercher-des-destinations.key'
 import { RECHERCHER_DES_DESTINATIONS_ACTION_KEY } from '../../action/rechercher-des-destinations.key'
-import type { DestinationAffichee } from '../presenters/destinations.presenter'
 
 export type TagAFusionner = {
   readonly tag: TagAffiche

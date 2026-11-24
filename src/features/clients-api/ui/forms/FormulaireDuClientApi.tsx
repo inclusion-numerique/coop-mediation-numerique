@@ -13,7 +13,7 @@ import { createToast } from '@/libraries/ui/toast/createToast'
 import {
   ClientApiValidation,
   type ValeursDuClientApi,
-} from './client-api.validation'
+} from '../../action/client-api.validation'
 
 const LISTE_DES_CLIENTS_API = '/administration/clients-api'
 

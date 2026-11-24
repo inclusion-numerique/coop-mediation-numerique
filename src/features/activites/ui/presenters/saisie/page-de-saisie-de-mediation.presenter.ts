@@ -1,7 +1,7 @@
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import type { BeneficiaireTrouveParLeCra } from '../../../action/rechercher-des-beneficiaires.key'
 import { type ActiviteConsultee, MediateurId } from '../../../domain'
 import type { CraData } from '../../forms/cra.validation'
-import type { BeneficiaireTrouveParLeCra } from './beneficiaire-du-cra.presenter'
 import { donneesDeLaSaisieDeMediation } from './donnees-de-la-saisie-de-mediation.presenter'
 import type { LieuDuCra } from './lieu-du-cra.presenter'
 import {

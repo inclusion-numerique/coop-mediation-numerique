@@ -1,10 +1,8 @@
 import CraCollectifForm from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/CraCollectifForm'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
+import type { BeneficiaireTrouveParLeCra } from '@/features/activites/action/rechercher-des-beneficiaires.key'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie/ModaleDeCreationDeTag'
-import {
-  type BeneficiaireTrouveParLeCra,
-  beneficiaireDuCra,
-} from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
+import { beneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
 import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
 import type {
   Tag,

@@ -1,15 +1,8 @@
 import type {
   EquipeDuTag,
   PorteeDuTag,
-} from '@/features/activites/ui/components/BadgeDePortee'
-
-export type TagDuCra = {
-  readonly id: string
-  readonly nom: string
-  readonly description: string | null
-  readonly portee: PorteeDuTag
-  readonly equipe: EquipeDuTag | null
-}
+} from '@/features/activites/action/rechercher-des-tags.key'
+import type { TagDuCra } from '../../../action/rechercher-des-tags.key'
 
 export type Tag = {
   id: string

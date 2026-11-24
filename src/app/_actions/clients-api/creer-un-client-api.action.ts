@@ -8,7 +8,7 @@ import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-clie
 import {
   ClientApiValidation,
   definitionDepuis,
-} from '@/features/clients-api/ui/forms/client-api.validation'
+} from '@/features/clients-api/action/client-api.validation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

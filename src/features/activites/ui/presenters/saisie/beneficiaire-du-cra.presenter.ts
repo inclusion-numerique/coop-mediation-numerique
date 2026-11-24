@@ -1,12 +1,6 @@
+import type { BeneficiaireTrouveParLeCra } from '../../../action/rechercher-des-beneficiaires.key'
 import { type CommuneDuCra } from '../../forms/commune-du-cra.validation'
-import { type CommuneConnue, communeDuCra } from './commune-du-cra.presenter'
-
-export type BeneficiaireTrouveParLeCra = {
-  readonly id: string
-  readonly prenom: string
-  readonly nom: string
-  readonly communeResidence: CommuneConnue | null
-}
+import { communeDuCra } from './commune-du-cra.presenter'
 
 export type BeneficiaireDuCra = {
   readonly id: string

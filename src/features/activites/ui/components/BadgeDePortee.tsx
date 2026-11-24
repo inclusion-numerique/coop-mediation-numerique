@@ -5,13 +5,10 @@ import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
-
-export type PorteeDuTag = 'Personnel' | 'Equipe' | 'Departemental' | 'National'
-
-export type EquipeDuTag = {
-  readonly numero: number
-  readonly coordonneePar: string
-}
+import type {
+  EquipeDuTag,
+  PorteeDuTag,
+} from '../../action/rechercher-des-tags.key'
 
 const APPARENCE: Record<PorteeDuTag, { libelle: string; classe: string }> = {
   Personnel: { libelle: 'Tag personnel', classe: 'fr-text-mention--grey' },

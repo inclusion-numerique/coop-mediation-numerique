@@ -99,12 +99,6 @@ export const filtresDeLaListe = (
   }
 }
 
-export type OptionDEmployeuse = {
-  readonly id: string
-  readonly nom: string
-  readonly commune: string | null
-}
-
 export type OptionDeTag = {
   readonly id: string
   readonly nom: string

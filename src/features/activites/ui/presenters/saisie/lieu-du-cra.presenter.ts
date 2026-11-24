@@ -1,18 +1,8 @@
+import type { LieuTrouveParLeCra } from '../../../action/rechercher-des-lieux.key'
 export type LieuDuCra = {
   readonly id: string
   readonly nom: string
   readonly adresse: string
-  readonly lePlusUtilise: boolean
-}
-
-export type LieuTrouveParLeCra = {
-  readonly id: string
-  readonly nom: string
-  readonly adresse: {
-    readonly voie: string
-    readonly code_postal: string
-    readonly commune: string
-  } | null
   readonly lePlusUtilise: boolean
 }
 

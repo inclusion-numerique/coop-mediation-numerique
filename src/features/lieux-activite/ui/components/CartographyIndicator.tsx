@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import { getStructureCartographieLink } from '@/features/lieux-activite/domain/cartographie-nationale/liens'
+import { getStructureCartographieLink } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
 import type { CartographyStatus } from '../presenters/statut-cartographie.presenter'

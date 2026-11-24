@@ -1,5 +1,5 @@
+import type { OptionDEmployeuse } from '../../../../action/rechercher-employeuses.key'
 import type { EmployeuseDesActivites } from '../../../../domain'
-import type { OptionDEmployeuse } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 
 export const optionsDEmployeuses = (
   employeuses: readonly EmployeuseDesActivites[],

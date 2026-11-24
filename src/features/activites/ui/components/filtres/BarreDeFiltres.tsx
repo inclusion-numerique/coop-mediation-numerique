@@ -1,9 +1,9 @@
 'use client'
 
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { OptionDEmployeuse } from '../../../action/rechercher-employeuses.key'
 import type {
   FiltresDeLaListe,
-  OptionDEmployeuse,
   OptionDeTag,
   PeriodeCouverte,
 } from '../../search-params/filtres-de-la-liste.search-params'

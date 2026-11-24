@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { optional } from '@/features/beneficiaire/action/champ-optionnel.validation'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { Email } from '@/features/beneficiaire/domain/email'
@@ -8,14 +9,8 @@ import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { statutsSociaux } from '@/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import { optional } from '@/features/beneficiaire/ui/forms/champ-optionnel.validation'
 import { Telephone } from '@/libraries/telephone'
 
-/**
- * Normalisation de frontière : une commune incomplète (un des champs clés
- * manquant ou vide) signifie « pas de commune ». Le formulaire nettoie sa
- * propre entrée vers `CommuneResidence | null`.
- */
 const CommuneResidenceForm = z
   .object({
     commune: z.string(),
@@ -34,12 +29,6 @@ const CommuneResidenceForm = z
       : null,
   )
 
-/**
- * Forme « à plat » du formulaire bénéficiaire : champs tels que saisis, validés
- * par les value objects du domaine. Couche formulaire (pas domaine), partagée
- * entre les abilities créer et modifier — chacune applique ensuite son propre
- * `.transform` vers son type métier.
- */
 export const beneficiaireFormShape = z.object({
   prenom: Prenom.schema,
   nom: Nom.schema,
