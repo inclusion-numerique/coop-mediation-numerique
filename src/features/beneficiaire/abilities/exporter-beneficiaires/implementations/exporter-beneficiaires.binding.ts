@@ -4,7 +4,7 @@ import type {
   ExporterBeneficiaires,
   ListerLesBeneficiairesAExporter,
 } from '../domain/exporter-beneficiaires'
-import { classeurDesBeneficiaires } from './excel/classeur-des-beneficiaires'
+import { classeurDesBeneficiaires } from './excel/classeur-des-beneficiaires.classeur'
 
 // L'export liste tous les bénéficiaires correspondants (pas de pagination).
 const EXPORT_PAGE_SIZE = PageSize(10_000)

@@ -8,7 +8,7 @@ import {
   importBeneficiaireWorksheetName,
 } from '../domain/analyse-de-l-import'
 import { analyseImportBeneficiairesExcel } from './analyse-de-l-import.binding'
-import { getBeneficiaireImportSheet } from './excel/feuille-d-import'
+import { getBeneficiaireImportSheet } from './excel/feuille-d-import.classeur'
 
 const enTetes: ReadonlyArray<ReadonlyArray<CellValue>> = [
   ['Instructions'],

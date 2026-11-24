@@ -2,7 +2,7 @@ import type { Worksheet } from 'exceljs'
 import Excel from 'exceljs'
 import { describe, expect, it } from 'vitest'
 import { importBeneficiaireWorksheetName } from '../../domain/analyse-de-l-import'
-import { getBeneficiaireImportSheet } from './feuille-d-import'
+import { getBeneficiaireImportSheet } from './feuille-d-import.classeur'
 
 const classeur = async (
   ...feuilles: ReadonlyArray<readonly [string, (feuille: Worksheet) => void]>

@@ -16,7 +16,7 @@ import {
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireExportRow } from '../../domain/exporter-beneficiaires'
-import { classeurDesBeneficiaires } from './classeur-des-beneficiaires'
+import { classeurDesBeneficiaires } from './classeur-des-beneficiaires.classeur'
 
 const user: AuteurDExport = {
   nom: 'Médiatrice',
