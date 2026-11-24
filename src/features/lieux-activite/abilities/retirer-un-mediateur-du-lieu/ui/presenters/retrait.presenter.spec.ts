@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dateDuDernierPassage } from '../presenters/retrait.presenter'
+import { dateDuDernierPassage } from './retrait.presenter'
 
 describe('présentation du retrait d’un médiateur', () => {
   it('reprend la date de la dernière activité du médiateur sur le lieu', () => {

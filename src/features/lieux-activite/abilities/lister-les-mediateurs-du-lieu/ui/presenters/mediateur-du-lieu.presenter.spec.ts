@@ -6,7 +6,7 @@ import {
   iconeDuProfil,
   libelleDesLieux,
   libelleDuProfil,
-} from '../presenters/mediateur-du-lieu.presenter'
+} from './mediateur-du-lieu.presenter'
 
 describe('présentation d’un médiateur du lieu', () => {
   it('nomme un coordinateur hors dispositif', () => {

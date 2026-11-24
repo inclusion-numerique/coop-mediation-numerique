@@ -5,7 +5,7 @@ import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
 import { NombreDeMediateurs } from '../../../../domain/nombres'
 import type { LieuDuMediateurEnListe } from '../../domain'
-import { lieuEnAdministration } from '../presenters/lieu-en-administration.presenter'
+import { lieuEnAdministration } from './lieu-en-administration.presenter'
 
 const rattachement = (
   adresse: LieuDuMediateurEnListe['lieuInclusion']['adresse'],
