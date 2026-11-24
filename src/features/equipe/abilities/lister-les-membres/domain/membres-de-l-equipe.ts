@@ -1,3 +1,4 @@
+import type { Paginated } from '@arckit/resultset'
 import type { CodeDepartement } from '@/libraries/insee'
 import type { CoordinateurDeLEquipe, LigneEquipe } from '../../../domain'
 
@@ -14,10 +15,7 @@ export type CoordinateurDeLaListe = CoordinateurDeLEquipe & {
   readonly departementCode: CodeDepartement
 }
 
-export type MembresDeLEquipe = {
+export type MembresDeLEquipe = Paginated<LigneEquipe> & {
   readonly coordinateur: CoordinateurDeLaListe
-  readonly lignes: readonly LigneEquipe[]
   readonly statistiques: StatistiquesEquipe
-  readonly nombreDeResultats: number
-  readonly lignesParPage: number
 }

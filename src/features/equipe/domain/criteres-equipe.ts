@@ -1,3 +1,4 @@
+import type { Search, Sort } from '@arckit/resultset'
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
@@ -13,25 +14,11 @@ export const FiltreRole = defineModel(
 )
 export type FiltreRole = Model.TypeOf<typeof FiltreRole>
 
-export const TriEquipe = defineModel(
-  z.enum(['membre', 'structureEmployeuse', 'statut']).brand('TriEquipe'),
-)
-export type TriEquipe = Model.TypeOf<typeof TriEquipe>
-
-export const OrdreDeTri = defineModel(
-  z.enum(['asc', 'desc']).brand('OrdreDeTri'),
-)
-export type OrdreDeTri = Model.TypeOf<typeof OrdreDeTri>
-
-export const Recherche = defineModel(
-  z.string().trim().min(1).max(100).brand('Recherche'),
-)
-export type Recherche = Model.TypeOf<typeof Recherche>
+export type ColonneDeLEquipe = 'membre' | 'structureEmployeuse' | 'statut'
 
 export type CriteresEquipe = {
-  readonly recherche: Recherche | null
+  readonly recherche: Search
   readonly statuts: readonly FiltreStatut[]
   readonly role: FiltreRole | null
-  readonly tri: TriEquipe
-  readonly ordre: OrdreDeTri
+  readonly tri: Sort<ColonneDeLEquipe>
 }

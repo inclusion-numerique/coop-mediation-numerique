@@ -1,4 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
 import { lienDExport } from '../search-params/requete-de-l-export.search-params'
 
 const BoutonExporter = ({
@@ -6,7 +7,7 @@ const BoutonExporter = ({
   parametres,
 }: {
   coordinateurId: string
-  parametres: Readonly<Record<string, string | undefined>>
+  parametres: AdresseCourante['parametres']
 }) => (
   <Button
     title="Exporter la liste des membres de mon équipe"

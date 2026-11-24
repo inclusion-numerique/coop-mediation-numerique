@@ -1,14 +1,14 @@
+import { Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
 import { criteresDeLEquipe } from './equipe.filtre'
 
 describe('critères de recherche dans une équipe', () => {
   it('trie par statut croissant par défaut', () => {
     expect(criteresDeLEquipe({})).toEqual({
-      recherche: null,
+      recherche: Search(''),
       statuts: [],
       role: null,
-      tri: 'statut',
-      ordre: 'asc',
+      tri: Sort('statut', 'asc'),
     })
   })
 
@@ -20,7 +20,7 @@ describe('critères de recherche dans une équipe', () => {
   })
 
   it('ignore une recherche vide', () => {
-    expect(criteresDeLEquipe({ recherche: '   ' }).recherche).toBeNull()
+    expect(criteresDeLEquipe({ recherche: '   ' }).recherche).toBe('')
   })
 
   it('garde une recherche telle quelle, sans l’interpréter', () => {
@@ -29,9 +29,9 @@ describe('critères de recherche dans une équipe', () => {
     )
   })
 
-  it('retombe sur les valeurs par défaut pour un tri inconnu', () => {
+  it('retombe sur le tri par défaut pour une colonne et un sens inconnus', () => {
     expect(
-      criteresDeLEquipe({ tri: 'mot_de_passe', ordre: 'n’importe' }),
-    ).toEqual(expect.objectContaining({ tri: 'statut', ordre: 'asc' }))
+      criteresDeLEquipe({ tri: 'mot_de_passe', ordre: 'n’importe' }).tri,
+    ).toEqual(Sort('statut', 'asc'))
   })
 })

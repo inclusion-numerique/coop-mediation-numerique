@@ -23,14 +23,7 @@ export const GET = async (
   )
   if (!user) return new Response('Unauthorized', { status: 401 })
 
-  const recherche = new URL(request.url).searchParams
-  const criteres = criteresDeLEquipe({
-    recherche: recherche.get('recherche') ?? undefined,
-    statut: recherche.get('statut') ?? undefined,
-    role: recherche.get('role') ?? undefined,
-    tri: recherche.get('tri') ?? undefined,
-    ordre: recherche.get('ordre') ?? undefined,
-  })
+  const criteres = criteresDeLEquipe(new URL(request.url).searchParams)
 
   const membres = await exporterLesMembres({
     coordinateurId,

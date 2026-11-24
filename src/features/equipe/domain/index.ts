@@ -8,12 +8,10 @@ export {
 export { Commune } from './commune'
 export type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
 export {
+  type ColonneDeLEquipe,
   type CriteresEquipe,
   FiltreRole,
   FiltreStatut,
-  OrdreDeTri,
-  Recherche as RechercheDansLEquipe,
-  TriEquipe,
 } from './criteres-equipe'
 export * from './errors'
 export { type Gestionnaire, peutGererLEquipe } from './gestionnaire'

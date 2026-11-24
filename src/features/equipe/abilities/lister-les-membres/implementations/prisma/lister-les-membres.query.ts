@@ -1,5 +1,5 @@
+import type { Page, PageSize } from '@arckit/resultset'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ConsultationNonAutorisee,
@@ -74,14 +74,14 @@ export const listerLesMembres = async ({
   lecteur,
   criteres,
   page,
-  lignesParPage,
+  pageSize,
   maintenant = new Date(),
 }: {
   coordinateurId: CoordinateurId
   lecteur: Lecteur
   criteres: CriteresEquipe
-  page: number
-  lignesParPage: number
+  page: Page
+  pageSize: PageSize
   maintenant?: Date
 }): Promise<
   Result<MembresDeLEquipe, ConsultationNonAutorisee | CoordinateurIntrouvable>
@@ -94,7 +94,6 @@ export const listerLesMembres = async ({
 
   const cte = lignesEquipeCte({ coordinateurId, maintenant })
   const filtres = filtresEquipe(criteres)
-  const { take, skip } = takeAndSkipFromPage({ page, pageSize: lignesParPage })
 
   const [lignes, [comptage], statistiques] = await Promise.all([
     prismaClient.$queryRaw<LigneEquipeRow[]>`
@@ -102,7 +101,7 @@ export const listerLesMembres = async ({
       SELECT * FROM lignes
       ${filtres}
       ${triEquipe(criteres)}
-      LIMIT ${take} OFFSET ${skip}`,
+      LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize}`,
     prismaClient.$queryRaw<{ count: number }[]>`
       ${cte}
       SELECT COUNT(*)::int AS count FROM lignes
@@ -110,13 +109,12 @@ export const listerLesMembres = async ({
     compterLesMembres({ coordinateurId, maintenant }),
   ])
 
-  const nombreDeResultats = comptage?.count ?? 0
-
   return success({
     coordinateur,
-    lignes: toLignesEquipe(lignes),
+    items: [...toLignesEquipe(lignes)],
     statistiques,
-    nombreDeResultats,
-    lignesParPage: take,
+    totalItems: comptage?.count ?? 0,
+    currentPage: page,
+    pageSize,
   })
 }

@@ -6,7 +6,7 @@ import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../domain'
 import { ListeDeLEquipe } from '../components/ListeDeLEquipe'
-import type { ParametresDeLaListe } from '../search-params/parametres-de-la-liste.search-params'
+import type { ParametresDeLaListe } from '../filtres/liste-de-l-equipe.filtre'
 
 const EquipeListePage = ({
   membres,

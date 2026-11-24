@@ -1,6 +1,8 @@
+import type { SortDirection } from '@arckit/resultset'
 import { subDays } from 'date-fns'
 import { Prisma } from '@/generated/prisma/client'
 import {
+  type ColonneDeLEquipe,
   type CoordinateurId,
   type CriteresEquipe,
   SEUIL_INACTIVITE_EN_JOURS,
@@ -157,7 +159,7 @@ export const filtresEquipe = ({
   role,
 }: CriteresEquipe): Prisma.Sql => {
   const parRecherche =
-    recherche === null
+    recherche === ''
       ? Prisma.empty
       : Prisma.sql`AND (email ILIKE ${motifDeRecherche(recherche)} OR first_name ILIKE ${motifDeRecherche(recherche)} OR last_name ILIKE ${motifDeRecherche(recherche)})`
 
@@ -176,15 +178,17 @@ const rangDuStatut = `CASE statut WHEN 'Invitation' THEN 1 WHEN 'Actif' THEN 2 W
 const nomDuMembre = `LOWER(COALESCE(name, ''))`
 const nomDeLEmployeuse = `LOWER(COALESCE(structure_employeuse, ''))`
 
-const ordreDeTri = new Map<string, string>([
-  ['membre', `${nomDuMembre} %s, ${rangDuStatut} ASC`],
-  ['structureEmployeuse', `${nomDeLEmployeuse} %s, ${nomDuMembre} ASC`],
-  ['statut', `${rangDuStatut} %s, ${nomDuMembre} ASC`],
-])
+const ordreDeTri: Record<ColonneDeLEquipe, string> = {
+  membre: `${nomDuMembre} %s, ${rangDuStatut} ASC`,
+  structureEmployeuse: `${nomDeLEmployeuse} %s, ${nomDuMembre} ASC`,
+  statut: `${rangDuStatut} %s, ${nomDuMembre} ASC`,
+}
 
-export const triEquipe = ({ tri, ordre }: CriteresEquipe): Prisma.Sql =>
+const SENS: Record<SortDirection, string> = { asc: 'ASC', desc: 'DESC' }
+
+export const triEquipe = ({ tri }: CriteresEquipe): Prisma.Sql =>
   Prisma.raw(
-    `ORDER BY ${(ordreDeTri.get(tri) ?? `${rangDuStatut} %s, ${nomDuMembre} ASC`).replace('%s', ordre === 'desc' ? 'DESC' : 'ASC')}`,
+    `ORDER BY ${ordreDeTri[tri.field].replace('%s', SENS[tri.direction])}`,
   )
 
 export const statistiquesEquipeSql = Prisma.sql`

@@ -114,7 +114,7 @@ export const classeurEquipe = ({
 
   addTitleRow(feuille)('Filtres')
   feuille.addRows([
-    ['Recherche', criteres.recherche ?? '-'],
+    ['Recherche', criteres.recherche === '' ? '-' : criteres.recherche],
     ['Filtres', filtresAppliques(criteres)],
     [],
   ])

@@ -9,9 +9,11 @@ import { authenticateCoordinateur } from '@/features/authentification/implementa
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/slots/BoutonInviterUnePersonne.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import {
+  type ParametresDeLaListe,
+  requeteDeLaListe,
+} from '@/features/equipe/abilities/lister-les-membres/ui/filtres/liste-de-l-equipe.filtre'
 import { default as EquipeListePage } from '@/features/equipe/abilities/lister-les-membres/ui/pages/EquipeListePage'
-import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/search-params/parametres-de-la-liste.search-params'
-import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/search-params/requete-de-la-liste.search-params'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { default as BoutonRetirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre/ui/slots/BoutonRetirerUnMembre.slot'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'

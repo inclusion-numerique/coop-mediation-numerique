@@ -1,31 +1,22 @@
 import type { ReactNode } from 'react'
-import {
-  DataSearchBar,
-  DEFAULT_PAGE_SIZE,
-  generatePageSizeSelectOptions,
-  PaginationNavWithPageSizeSelect,
-} from '@/libraries/data-table'
 import { BarreDeFiltres } from '@/libraries/etat-d-url/BarreDeFiltres'
+import { ChampDeRecherche } from '@/libraries/etat-d-url/ChampDeRecherche'
+import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
 import type { LigneEquipe } from '../../../../domain'
 import { filtresDeLEquipe } from '../../../../ui/filtres/equipe.filtre'
 import type { MembresDeLEquipe } from '../../domain'
+import {
+  liensDeLaListe,
+  type ParametresDeLaListe,
+  paginationDeLEquipe,
+} from '../filtres/liste-de-l-equipe.filtre'
 import { lignesAffichees } from '../presenters/lister-les-membres.presenter'
-import { etatDeLaListe } from '../search-params/etat-de-la-liste.search-params'
-import type { ParametresDeLaListe } from '../search-params/parametres-de-la-liste.search-params'
 import { EquipeTable } from './EquipeTable'
 import EquipeVide from './EquipeVide'
 import { FiltresDeLEquipe } from './filtres/FiltresDeLEquipe'
 
-const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
-
 export const ListeDeLEquipe = ({
-  membres: {
-    lignes,
-    statistiques,
-    nombreDeResultats,
-    lignesParPage,
-    coordinateur,
-  },
+  membres,
   searchParams,
   baseHref,
   exporter,
@@ -37,17 +28,16 @@ export const ListeDeLEquipe = ({
   exporter: ReactNode
   actions: ((ligne: LigneEquipe) => ReactNode) | null
 }) => {
-  const rows = lignesAffichees(lignes, coordinateur.departementCode)
-  const state = etatDeLaListe(searchParams)
+  const { items, statistiques, coordinateur } = membres
+  const rows = lignesAffichees(items, coordinateur.departementCode)
   const adresse = { chemin: baseHref, parametres: searchParams }
+  const liens = liensDeLaListe(adresse, membres)
 
   return (
     <>
       <div className="fr-my-4v fr-flex fr-flex-gap-4v fr-justify-content-space-between fr-align-items-center">
-        <DataSearchBar
+        <ChampDeRecherche
           className="fr-flex-grow-1"
-          baseHref={baseHref}
-          state={state}
           placeholder="Rechercher par nom ou adresse e-mail"
         />
         <div className="fr-flex-grow-2 fr-text--right">{exporter}</div>
@@ -74,19 +64,14 @@ export const ListeDeLEquipe = ({
       ) : (
         <EquipeTable
           lignes={rows}
-          state={state}
-          baseHref={baseHref}
+          colonnes={liens.colonnes}
           actions={actions}
         />
       )}
-      <PaginationNavWithPageSizeSelect
+      <PiedDeListe
         className="fr-mt-12v"
-        defaultPageSize={DEFAULT_PAGE_SIZE}
-        pageSizeOptions={pageSizeOptions}
-        itemsCount={nombreDeResultats}
-        pageSize={lignesParPage}
-        baseHref={baseHref}
-        state={state}
+        liens={liens.pages}
+        pagination={paginationDeLEquipe}
       />
     </>
   )

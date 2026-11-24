@@ -17,7 +17,7 @@ const enDate = (jourChoisi: string | undefined): Date | null =>
   jourChoisi === undefined ? null : new Date(jourChoisi)
 
 export const periodeChoisieDans = (
-  parametres: Readonly<Record<string, string | string[] | undefined>>,
+  parametres: Readonly<Record<string, string | readonly string[] | undefined>>,
 ): PeriodeChoisie => {
   const { du, au } = filtresDeLaPeriode.charger(parametres)
   return Object.fromEntries(
