@@ -1,23 +1,42 @@
-import { Courriel, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { adresseSaisie } from '@/features/lieux-activite/domain/saisie'
+import {
+  Adresse,
+  Courriel,
+  Nom,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  adresseSaisie,
+  complementAdresseSaisi,
+} from '@/features/lieux-activite/domain/saisie'
 import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { LieuAFusionner } from '../../domain'
 import type { LieuAFusionnerRow } from './lieu-a-fusionner'
 
+const adresseSansCodeInsee = (structure: LieuAFusionnerRow) => {
+  const complement = complementAdresseSaisi(structure.complementAdresse)
+  return Adresse.safe({
+    voie: structure.adresse,
+    commune: structure.commune,
+    code_postal: structure.codePostal,
+    ...(complement == null ? {} : { complement_adresse: complement }),
+  })
+}
+
 const adresseDuLieu = (structure: LieuAFusionnerRow) =>
-  adresseSaisie(
-    {
-      nom: structure.adresse,
-      commune: structure.commune,
-      codePostal: structure.codePostal,
-      codeInsee: structure.codeInsee ?? '',
-      latitude: 0,
-      longitude: 0,
-    },
-    structure.complementAdresse,
-  )
+  structure.codeInsee === null
+    ? adresseSansCodeInsee(structure)
+    : adresseSaisie(
+        {
+          nom: structure.adresse,
+          commune: structure.commune,
+          codePostal: structure.codePostal,
+          codeInsee: structure.codeInsee,
+          latitude: 0,
+          longitude: 0,
+        },
+        structure.complementAdresse,
+      )
 
 export const lieuAFusionnerToDomain = (
   structure: LieuAFusionnerRow,

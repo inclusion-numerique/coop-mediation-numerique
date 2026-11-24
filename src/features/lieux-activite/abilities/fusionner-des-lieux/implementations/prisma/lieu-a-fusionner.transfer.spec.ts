@@ -107,6 +107,19 @@ describe('lieu à fusionner lu en base', () => {
     expect(lieuAFusionnerToDomain(ligne, sansRelation)).toEqual(minimal)
   })
 
+  it('garde l’adresse d’un lieu sans code INSEE', () => {
+    expect(
+      lieuAFusionnerToDomain({ ...ligne, codeInsee: null }, sansRelation)
+        .adresse,
+    ).toEqual(
+      Adresse({
+        voie: '12 rue de la Paix',
+        commune: 'Reims',
+        code_postal: '51100',
+      }),
+    )
+  })
+
   it('lit un lieu inscrit au registre, avec ses champs partageables', () => {
     expect(
       lieuAFusionnerToDomain(
