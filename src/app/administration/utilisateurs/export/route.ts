@@ -15,8 +15,8 @@ import {
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
-import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { motsDe } from '@/libraries/texte/mots'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -28,14 +28,13 @@ export const GET = async (request: NextRequest) => {
 
   if (auteur?.role !== 'Admin') return new Response(null, { status: 403 })
 
-  const parametres = Object.fromEntries(request.nextUrl.searchParams.entries())
   const valeurs = filtresDesUtilisateurs.charger(request.nextUrl.searchParams)
   const filtres = filtresUtilisateursDesFiltres(valeurs)
   const maintenant = new Date()
 
   const [utilisateurs, options] = await Promise.all([
     utilisateursAExporter({
-      mots: toQueryParts(parametres).filter((mot) => mot !== ''),
+      mots: motsDe(valeurs.recherche),
       filtres,
       maintenant,
     }),

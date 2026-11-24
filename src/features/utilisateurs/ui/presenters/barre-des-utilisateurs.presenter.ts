@@ -48,7 +48,8 @@ export const barreDesUtilisateurs = ({
       libelles: etiquettes.map(
         ({ prefixe, libelle }) => `${prefixe}${libelle}`,
       ),
-      parametres: filtresDesUtilisateurs.parametresDe(valeurs),
+      requete: filtresDesUtilisateurs.requete(valeurs),
+      recherche: valeurs.recherche === '' ? null : valeurs.recherche,
     },
     choisies: {
       employeuses: parmi(options.employeuses, valeurs.employeuses),

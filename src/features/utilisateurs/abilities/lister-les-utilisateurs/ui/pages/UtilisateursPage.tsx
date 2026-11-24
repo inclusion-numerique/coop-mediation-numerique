@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
@@ -7,24 +8,19 @@ import AdministrationTitle from '@/libraries/ui/components/administration/Admini
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { UtilisateursTrouves } from '../../domain'
 import { RechercheDUtilisateurs } from '../components/RechercheDUtilisateurs'
-import { UtilisateursPagination } from '../components/UtilisateursPagination'
 import { UtilisateursTable } from '../components/UtilisateursTable'
-import {
-  etatDeLaTable,
-  type ParametresDeLaListe,
-} from '../search-params/lister-les-utilisateurs.search-params'
-
-const BASE_HREF = '/administration/utilisateurs'
+import { paginationDesUtilisateurs } from '../filtres/liste-des-utilisateurs.filtre'
+import type { LiensDeLaListe } from '../presenters/liste-des-utilisateurs.presenter'
 
 export const UtilisateursPage = ({
   trouves,
   barreDeFiltres,
-  searchParams,
+  liens,
   actions,
 }: {
   trouves: UtilisateursTrouves
   barreDeFiltres: (actions: ReactNode) => ReactNode
-  searchParams: ParametresDeLaListe
+  liens: LiensDeLaListe
   actions: ReactNode
 }) => (
   <CoopPageContainer size="full">
@@ -38,29 +34,23 @@ export const UtilisateursPage = ({
         <p className="fr-text--medium fr-mb-2v">
           Rechercher dans la liste des utilisateurs inscrits
         </p>
-        <RechercheDUtilisateurs searchParams={searchParams} />
+        <RechercheDUtilisateurs />
       </div>
       {barreDeFiltres(
         <span className="fr-text--semi-bold">
-          {trouves.matchesCount}{' '}
+          {trouves.totalItems}{' '}
           {pluriel(
-            trouves.matchesCount,
+            trouves.totalItems,
             'utilisateur trouvé',
             'utilisateurs trouvés',
           )}
         </span>,
       )}
       <UtilisateursTable
-        utilisateurs={trouves.utilisateurs}
-        state={etatDeLaTable(searchParams)}
-        baseHref={BASE_HREF}
+        utilisateurs={trouves.items}
+        colonnes={liens.colonnes}
       />
-      <UtilisateursPagination
-        state={etatDeLaTable(searchParams)}
-        baseHref={BASE_HREF}
-        nombreDUtilisateurs={trouves.matchesCount}
-        lignesParPage={trouves.lignesParPage}
-      />
+      <PiedDeListe liens={liens.pages} pagination={paginationDesUtilisateurs} />
     </main>
   </CoopPageContainer>
 )

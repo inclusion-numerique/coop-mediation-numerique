@@ -14,17 +14,18 @@ import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/a
 import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-lieux.key'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
-import { ordreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/tri-des-utilisateurs'
 import { BarreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/components/BarreDesUtilisateurs'
+import { listeDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/filtres/liste-des-utilisateurs.filtre'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
-import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
+import { liensDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/liste-des-utilisateurs.presenter'
 import {
   filtresDesUtilisateurs,
   filtresUtilisateursDesFiltres,
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { motsDe } from '@/libraries/texte/mots'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),
@@ -32,17 +33,21 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
+const Page = async (props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) => {
   await authenticateAdmin()
   const searchParams = await props.searchParams
   const valeurs = filtresDesUtilisateurs.charger(searchParams)
   const filtres = filtresUtilisateursDesFiltres(valeurs)
+  const { tri, pagination } = listeDesUtilisateurs.charger(searchParams)
 
   const [trouves, options] = await Promise.all([
     rechercherDesUtilisateurs({
-      searchParams,
+      mots: motsDe(valeurs.recherche),
       filtres,
-      orderBy: ordreDesUtilisateurs(searchParams),
+      tri,
+      ...pagination,
       maintenant: new Date(),
     }),
     optionsDesFiltres(filtres, {
@@ -84,13 +89,13 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
               barreDeFiltres={(actions) => (
                 <BarreDesUtilisateurs barre={barre} actions={actions} />
               )}
-              searchParams={searchParams}
+              liens={liensDeLaListe(searchParams, trouves)}
               actions={
                 <BoutonExporterLesUtilisateurs
-                  parametres={barre.export.parametres}
+                  requete={barre.export.requete}
                   libelles={barre.export.libelles}
-                  nombre={trouves.matchesCount}
-                  recherche={searchParams.recherche ?? null}
+                  nombre={trouves.totalItems}
+                  recherche={barre.export.recherche}
                 />
               }
             />

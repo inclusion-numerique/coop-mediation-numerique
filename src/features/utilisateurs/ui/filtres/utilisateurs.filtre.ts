@@ -16,6 +16,7 @@ import {
   filtreDeChoixUnique,
 } from '@/libraries/etat-d-url/definition/filtre-de-choix'
 import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
+import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { libelleDuStatut } from '../presenters/statut-compte.presenter'
 
@@ -93,6 +94,7 @@ export const filtreDesDepartements = filtreDeRecherche({
 })
 
 export const filtresDesUtilisateurs = composerLEtat(
+  rechercheLibre,
   filtreDesRoles,
   filtreDuDispositif,
   filtreDuStatut,

@@ -1,6 +1,7 @@
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
-import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table'
 import { colonnesDesUtilisateurs } from '../columns/utilisateurs.columns'
+import type { LiensDeLaListe } from '../presenters/liste-des-utilisateurs.presenter'
 import { UtilisateursTableHead } from './UtilisateursTableHead'
 import { UtilisateurTableRow } from './UtilisateurTableRow'
 
@@ -12,18 +13,16 @@ const AucunResultat = () => (
 
 export const UtilisateursTable = ({
   utilisateurs,
-  state,
-  baseHref,
+  colonnes,
 }: {
   utilisateurs: readonly LigneUtilisateur[]
-  state: DataTableUrlState
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
 }) => (
   <DataTable
     className="fr-table--nowrap fr-width-full fr-mb-8v"
     tableClassName="fr-table--transparent"
   >
-    <UtilisateursTableHead state={state} baseHref={baseHref} />
+    <UtilisateursTableHead colonnes={colonnes} />
     <tbody>
       {utilisateurs.map((utilisateur) => (
         <UtilisateurTableRow key={utilisateur.id} utilisateur={utilisateur} />

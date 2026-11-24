@@ -13,18 +13,18 @@ const ExportModal = createModal({
 })
 
 export const BoutonExporterLesUtilisateurs = ({
-  parametres,
+  requete,
   libelles,
   nombre,
   recherche,
 }: {
-  parametres: Readonly<Record<string, string>>
+  requete: string
   libelles: readonly string[]
   nombre: number
   recherche: string | null
 }) => {
   const exporter = () => {
-    download(lienDExport(parametres, recherche))
+    download(lienDExport(requete))
     ExportModal.close()
     createToast({
       priority: 'success',

@@ -1,30 +1,17 @@
-import {
-  type DataTableUrlState,
-  SortableColumnHeader,
-} from '@/libraries/data-table'
-import { TRI_PAR_DEFAUT } from '../../domain'
+import { EnTeteTriable } from '@/libraries/etat-d-url/EnTeteTriable'
 import { colonnesDesUtilisateurs } from '../columns/utilisateurs.columns'
+import type { LiensDeLaListe } from '../presenters/liste-des-utilisateurs.presenter'
 
 export const UtilisateursTableHead = ({
-  state,
-  baseHref,
+  colonnes,
 }: {
-  state: DataTableUrlState
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
 }) => (
   <thead>
     <tr>
       {colonnesDesUtilisateurs.map(({ cle, libelle, tri }) =>
         tri ? (
-          <SortableColumnHeader
-            key={cle}
-            label={libelle}
-            tri={tri}
-            state={state}
-            baseHref={baseHref}
-            isDefault={tri === TRI_PAR_DEFAUT.colonne}
-            defaultDirection={TRI_PAR_DEFAUT.ordre}
-          />
+          <EnTeteTriable key={cle} libelle={libelle} lien={colonnes[tri]} />
         ) : (
           <th key={cle} scope="col">
             {libelle}
