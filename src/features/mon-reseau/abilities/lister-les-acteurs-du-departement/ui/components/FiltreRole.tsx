@@ -2,8 +2,10 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import { roleEnParametres } from '@/features/mon-reseau/ui/search-params/filtres-du-reseau.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import { filtresDeRole } from '../../domain'
 import { LIBELLE_DU_ROLE } from '../presenters/acteurs.presenter'
@@ -23,14 +25,10 @@ export const FiltreRole = ({ role: roleRetenu }: { role: string | null }) => {
   const [role, choisir] = useState(roleRetenu ?? '')
 
   const appliquer = (valeur: string, fermer: boolean) => {
-    const autres = [...searchParams.entries()].filter(
-      ([nom]) => nom !== 'role' && nom !== 'page',
-    )
-    const params = new URLSearchParams(
-      valeur === '' ? autres : [...autres, ['role', valeur]],
-    )
     if (fermer) ouvrir(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, roleEnParametres(valeur)), {
+      scroll: false,
+    })
   }
 
   const effacer = () => {

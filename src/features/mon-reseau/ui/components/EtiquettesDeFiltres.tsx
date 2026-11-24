@@ -3,10 +3,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
-import {
-  type EtiquetteDeFiltre,
-  sansLaValeur,
-} from '../search-params/filtres-du-reseau.search-params'
+import { sansLEtiquette } from '@/features/mon-reseau/ui/search-params/filtres-du-reseau.search-params'
+import { requeteAvec } from '@/libraries/parametres-d-url'
+import { type EtiquetteDeFiltre } from '../search-params/filtres-du-reseau.search-params'
 
 export const EtiquettesDeFiltres = ({
   etiquettes,
@@ -16,16 +15,11 @@ export const EtiquettesDeFiltres = ({
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const retirer = ({ parametre, valeur }: EtiquetteDeFiltre) => {
-    const restantes = sansLaValeur(searchParams.get(parametre), valeur)
-    const autres = [...searchParams.entries()].filter(
-      ([nom]) => nom !== parametre && nom !== 'page',
+  const retirer = (etiquette: EtiquetteDeFiltre) =>
+    router.replace(
+      requeteAvec(searchParams, sansLEtiquette(searchParams, etiquette)),
+      { scroll: false },
     )
-    const params = new URLSearchParams(
-      restantes === '' ? autres : [...autres, [parametre, restantes]],
-    )
-    router.replace(`?${params}`, { scroll: false })
-  }
 
   const effacer = () => router.replace('?', { scroll: false })
 

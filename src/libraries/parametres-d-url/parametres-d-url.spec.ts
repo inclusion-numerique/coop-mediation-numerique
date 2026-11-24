@@ -9,6 +9,7 @@ import {
   premiereValeur,
   requeteAvec,
   requeteConservant,
+  requeteDeRecherche,
   valeurLue,
   valeursLues,
 } from './parametres-d-url'
@@ -126,5 +127,17 @@ describe("écriture de l'état d'URL", () => {
 
   it('garde une requête vide quand aucun paramètre choisi n’est présent', () => {
     expect(requeteConservant('b=2', ['a'])).toBe('?')
+  })
+})
+
+describe('requête de recherche', () => {
+  it("pose la recherche sur l'état, sans les valeurs vides", () => {
+    expect(
+      requeteDeRecherche({ tri: 'nom', page: '', lignes: undefined }, 'jean'),
+    ).toBe('?tri=nom&recherche=jean')
+  })
+
+  it('retire une recherche vide', () => {
+    expect(requeteDeRecherche({ recherche: 'jean' }, '')).toBe('?')
   })
 })

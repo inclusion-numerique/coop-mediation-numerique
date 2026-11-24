@@ -4,9 +4,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/rattraper-rdvs-sans-webhook.key'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '../../action/afficher-rdvs-dans-activites.key'
+import { sansLesFiltresDesRdvs } from '../search-params/parametres-des-rdvs.search-params'
 
 const AfficherLesRdvs = ({
   includeRdvsInActivitesList,
@@ -57,12 +59,9 @@ const AfficherLesRdvs = ({
 
     // Les filtres portés par l'URL cèdent la main au réglage : les garder ferait
     // dépendre l'affichage de deux sources qui peuvent se contredire.
-    const params = new URLSearchParams(queryParams.toString())
-
-    params.delete('rdvs')
-    params.delete('voir-rdvs')
-
-    router.replace(`?${params.toString()}`, { scroll: false })
+    router.replace(requeteAvec(queryParams, sansLesFiltresDesRdvs()), {
+      scroll: false,
+    })
 
     // `replace` ne refait un rendu serveur que si l'URL change. Sur une page
     // ouverte sans paramètre — le cas courant — elle ne bouge pas, et la liste

@@ -8,6 +8,7 @@ export {
   premiereValeur,
   requeteAvec,
   requeteConservant,
+  requeteDeRecherche,
   type ValeurDeParametre,
   valeurLue,
   valeursLues,

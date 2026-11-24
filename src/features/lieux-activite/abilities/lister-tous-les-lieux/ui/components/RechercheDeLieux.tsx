@@ -1,10 +1,10 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
+import { requeteDeRecherche } from '@/libraries/parametres-d-url'
 import type { ListeDesLieuxSearchParams } from '../search-params/lister-tous-les-lieux.search-params'
 
 const CHAMP = 'recherche'
@@ -14,25 +14,14 @@ export const RechercheDeLieux = ({
 }: {
   searchParams?: ListeDesLieuxSearchParams
 }) => {
-  const pathname = usePathname()
   const router = useRouter()
 
   const form = useAppForm({
     defaultValues: { recherche: searchParams.recherche ?? '' },
     onSubmit: ({ value }) => {
-      const parametres = Object.entries({
-        ...searchParams,
-        recherche: value.recherche,
-      }).filter((entree): entree is [string, string] => Boolean(entree[1]))
-
-      router.push(
-        routeConstruite(
-          `${pathname}?${new URLSearchParams(parametres).toString()}`,
-        ),
-        {
-          scroll: false,
-        },
-      )
+      router.push(requeteDeRecherche(searchParams, value.recherche), {
+        scroll: false,
+      })
     },
   })
 

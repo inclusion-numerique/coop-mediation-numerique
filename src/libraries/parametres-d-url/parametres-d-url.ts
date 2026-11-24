@@ -101,3 +101,17 @@ export const requeteConservant = (
       cles.includes(cle),
     ),
   ).toString()}`
+
+export const requeteDeRecherche = (
+  etat: Readonly<Record<string, unknown>>,
+  recherche: string,
+): `?${string}` =>
+  requeteAvec(
+    '',
+    Object.fromEntries(
+      Object.entries({ ...etat, recherche }).map(([cle, valeur]) => [
+        cle,
+        typeof valeur === 'string' && valeur !== '' ? valeur : null,
+      ]),
+    ),
+  )

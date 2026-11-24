@@ -132,11 +132,6 @@ export const ensureStructureAdministrativeMain =
         select: { id: true },
       })
     } catch (error) {
-      // Ne jamais casser l'écriture : on trace et on laisse le job de complétion rattraper.
-      console.error(
-        `ensureStructureAdministrativeMain: échec pour coopId ${coopId} (siret ${siret})`,
-        error,
-      )
       signaler(error)
       return null
     }

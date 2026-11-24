@@ -4,7 +4,6 @@ import type { DataTableUrlState } from '@/libraries/data-table'
 import {
   listeEnParametre,
   listeSansLaValeur,
-  requeteAvec,
 } from '@/libraries/parametres-d-url'
 
 export type ParametresDeLaListe = {
@@ -23,20 +22,6 @@ export const etatDeLaTable = (
 ): DataTableUrlState => ({ ...parametres, ordre: ordreLu(parametres.ordre) })
 
 type Parametres = Readonly<Record<string, string | null>>
-
-export const rechercheEnRequete = (
-  etat: ParametresDeLaListe,
-  recherche: string,
-): `?${string}` =>
-  requeteAvec(
-    '',
-    Object.fromEntries(
-      Object.entries({ ...etat, recherche }).map(([cle, valeur]) => [
-        cle,
-        typeof valeur === 'string' && valeur !== '' ? valeur : null,
-      ]),
-    ),
-  )
 
 export const choixEnParametres = (
   parametre: string,

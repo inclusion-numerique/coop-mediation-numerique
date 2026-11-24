@@ -3,11 +3,13 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRef, useState } from 'react'
+import { communesEnParametres } from '@/features/mon-reseau/ui/search-params/filtres-du-reseau.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { FilterSelection } from '@/libraries/filtres/FilterSelection'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
@@ -41,19 +43,14 @@ export const FiltreCommune = ({
   )
 
   const appliquer = (choisies: readonly SelectOption[], fermer: boolean) => {
-    const autres = [...searchParams.entries()].filter(
-      ([nom]) => nom !== 'communes' && nom !== 'page',
-    )
-    const params = new URLSearchParams(
-      choisies.length === 0
-        ? autres
-        : [
-            ...autres,
-            ['communes', choisies.map(({ value }) => value).join(',')],
-          ],
-    )
     if (fermer) ouvrir(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(
+        searchParams,
+        communesEnParametres(choisies.map(({ value }) => value)),
+      ),
+      { scroll: false },
+    )
   }
 
   const ajouter = (option: SelectOption) => {

@@ -4,7 +4,6 @@ import {
   etatDeLaTable,
   historiqueEnParametres,
   listeEnParametres,
-  rechercheEnRequete,
   sansLaValeur,
 } from './lister-les-utilisateurs.search-params'
 
@@ -30,16 +29,6 @@ describe('etatDeLaTable', () => {
 })
 
 describe('écriture des filtres des utilisateurs', () => {
-  it('pose la recherche sur l’état de la table', () => {
-    expect(rechercheEnRequete({ tri: 'nom', page: '' }, 'jean')).toBe(
-      '?tri=nom&recherche=jean',
-    )
-  })
-
-  it('retire une recherche vide', () => {
-    expect(rechercheEnRequete({ recherche: 'jean' }, '')).toBe('?')
-  })
-
   it('écrit un choix unique et revient à la première page', () => {
     expect(choixEnParametres('statut', 'actif')).toStrictEqual({
       statut: 'actif',

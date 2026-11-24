@@ -2,9 +2,9 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
-import { rechercheEnRequete } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { requeteDeRecherche } from '@/libraries/parametres-d-url'
 import type { ParametresDeLaListe } from '../search-params/lister-les-utilisateurs.search-params'
 
 const CHAMP = 'recherche'
@@ -19,7 +19,7 @@ export const RechercheDUtilisateurs = ({
   const form = useAppForm({
     defaultValues: { recherche: searchParams.recherche ?? '' },
     onSubmit: ({ value }) => {
-      router.push(rechercheEnRequete(searchParams, value.recherche), {
+      router.push(requeteDeRecherche(searchParams, value.recherche), {
         scroll: false,
       })
     },

@@ -2,13 +2,12 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { type FormEventHandler, useRef } from 'react'
 import type { DataTableUrlState } from '@/libraries/data-table'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
+import { requeteDeRecherche } from '@/libraries/parametres-d-url'
 
 const RechercheEmployeuses = ({ state }: { state: DataTableUrlState }) => {
-  const pathname = usePathname()
   const router = useRouter()
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -20,15 +19,7 @@ const RechercheEmployeuses = ({ state }: { state: DataTableUrlState }) => {
     const data = new FormData(formRef.current)
     const recherche = data.get('recherche') as string
 
-    const newSearchParams = Object.fromEntries(
-      Object.entries({
-        ...state,
-        recherche,
-      }).filter((entry): entry is [string, string] => !!entry[1]),
-    )
-
-    const newUrl = `${pathname}?${new URLSearchParams(newSearchParams).toString()}`
-    router.push(routeConstruite(newUrl), { scroll: false })
+    router.push(requeteDeRecherche(state, recherche), { scroll: false })
   }
 
   return (
