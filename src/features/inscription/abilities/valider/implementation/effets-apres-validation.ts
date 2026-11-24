@@ -19,7 +19,7 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
 
   await prismaClient.invitationEquipe.updateMany({
     where: { email: user.email, acceptee: null, refusee: null },
-    data: { acceptee: new Date() },
+    data: { acceptee: new Date(), mediateurId: user.mediateur.id },
   })
 
   const invitations = await prismaClient.invitationEquipe.findMany({

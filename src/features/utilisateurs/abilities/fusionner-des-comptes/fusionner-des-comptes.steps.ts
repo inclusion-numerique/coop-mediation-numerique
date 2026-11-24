@@ -12,6 +12,7 @@ const fusion: {
   cible?: CompteSeme
   resultat?: Awaited<ReturnType<typeof fusionnerDesComptes>>
   contratId?: number
+  equipeId?: string
 } = {}
 
 const source = (): CompteSeme => {
@@ -22,6 +23,11 @@ const source = (): CompteSeme => {
 const cible = (): CompteSeme => {
   assert.ok(fusion.cible, 'Aucune cible semée')
   return fusion.cible
+}
+
+const equipe = (): string => {
+  assert.ok(fusion.equipeId, 'Aucune équipe semée')
+  return fusion.equipeId
 }
 
 const mediateurDeLaCible = async (): Promise<string> =>
@@ -35,6 +41,41 @@ const mediateurDeLaCible = async (): Promise<string> =>
 Given('un compte source et un compte cible à fusionner', async () => {
   fusion.source = await semerCompte()
   fusion.cible = await semerCompte()
+})
+
+Given(
+  'la source et la cible ont accepté une invitation de la même équipe',
+  async () => {
+    const { coordinateurId } = await semerCompte({ avecCoordinateur: true })
+    assert.ok(coordinateurId, 'Aucun coordinateur semé')
+    fusion.equipeId = coordinateurId
+    await prismaClient.invitationEquipe.createMany({
+      data: [source(), cible()].map(({ courriel, mediateurId }) => ({
+        email: courriel,
+        coordinateurId,
+        mediateurId,
+        acceptee: new Date('2026-11-23'),
+      })),
+    })
+    await prismaClient.mediateurCoordonne.createMany({
+      data: [source(), cible()].map(({ mediateurId }) => ({
+        mediateurId,
+        coordinateurId,
+      })),
+    })
+  },
+)
+
+Given("l'invitation de la cible n'est rattachée qu'à son adresse", async () => {
+  await prismaClient.invitationEquipe.update({
+    where: {
+      email_coordinateurId: {
+        email: cible().courriel,
+        coordinateurId: equipe(),
+      },
+    },
+    data: { mediateurId: null },
+  })
 })
 
 Given('la source est reliée à RDV Service Public', async () => {
@@ -138,6 +179,19 @@ Then("l'activité de la source appartient à la cible", async () => {
   })
   assert.strictEqual(activite.mediateurId, await mediateurDeLaCible())
 })
+
+Then(
+  "la cible n'a plus qu'une invitation de l'équipe, rattachée à son compte",
+  async () => {
+    assert.deepStrictEqual(
+      await prismaClient.invitationEquipe.findMany({
+        where: { coordinateurId: equipe() },
+        select: { email: true, mediateurId: true },
+      }),
+      [{ email: cible().courriel, mediateurId: await mediateurDeLaCible() }],
+    )
+  },
+)
 
 Then('la liaison ProConnect de la source appartient à la cible', async () => {
   const liaison = await prismaClient.account.findUniqueOrThrow({

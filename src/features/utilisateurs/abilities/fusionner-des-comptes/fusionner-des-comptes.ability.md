@@ -15,6 +15,20 @@
 * And le bénéficiaire de la source appartient à la cible
 * And l'activité de la source appartient à la cible
 
+## Rule: La cible garde une seule invitation par équipe
+
+> Une invitation se reconnaît à son adresse : celle acceptée à l'inscription
+> n'est rattachée au compte que par elle.
+
+### Scenario: Deux comptes membres de la même équipe se fusionnent
+
+* Given un compte source et un compte cible à fusionner
+* And la source et la cible ont accepté une invitation de la même équipe
+* And l'invitation de la cible n'est rattachée qu'à son adresse
+* When l'administration fusionne la source dans la cible
+* Then la fusion des comptes aboutit
+* And la cible n'a plus qu'une invitation de l'équipe, rattachée à son compte
+
 ## Rule: La personne se reconnecte sur le compte qu'on garde
 
 > Supprimer la liaison ProConnect de la source ferait recréer un troisième

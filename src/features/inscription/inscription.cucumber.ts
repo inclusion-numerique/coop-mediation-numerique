@@ -20,6 +20,7 @@ const trackedAdresseMainIds = new Set<number>()
 // Le lieu matérialisé depuis une employeuse ne reprend plus son id : on le
 // retrouve, pour le nettoyage comme en production, par sa dénomination.
 const trackedEmployeuseMainNoms = new Set<string>()
+const trackedEquipeUserIds = new Set<string>()
 
 /**
  * Toute adresse de la coop vient de l'API adresse, qui rend systématiquement un
@@ -35,6 +36,27 @@ const adresseDeTest = {
 }
 
 export const currentInscriptionUserId = (): UserId => UserId(inscriptionUserId)
+
+export const seedInvitationEnAttente = async (): Promise<string> => {
+  const userId = v4()
+  trackedEquipeUserIds.add(userId)
+  const { email } = await prismaClient.user.findUniqueOrThrow({
+    where: { id: inscriptionUserId },
+    select: { email: true },
+  })
+  const { id } = await prismaClient.coordinateur.create({
+    data: {
+      user: {
+        create: { id: userId, email: `equipe-${userId}@test.local` },
+      },
+    },
+    select: { id: true },
+  })
+  await prismaClient.invitationEquipe.create({
+    data: { email, coordinateurId: id },
+  })
+  return id
+}
 
 /**
  * Amène l'utilisateur courant à l'état `EnCours` sans passer par l'ability
@@ -169,6 +191,7 @@ Before(async () => {
   trackedEmployeuseMainIds.clear()
   trackedAdresseMainIds.clear()
   trackedEmployeuseMainNoms.clear()
+  trackedEquipeUserIds.clear()
   await prismaClient.user.create({
     data: {
       id: inscriptionUserId,
@@ -178,7 +201,10 @@ Before(async () => {
 })
 
 After(async () => {
-  const userIds = [inscriptionUserId]
+  const userIds = [inscriptionUserId, ...trackedEquipeUserIds]
+  const equipes = { coordinateur: { userId: { in: userIds } } }
+  await prismaClient.invitationEquipe.deleteMany({ where: equipes })
+  await prismaClient.mediateurCoordonne.deleteMany({ where: equipes })
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateur: { userId: { in: userIds } } },
   })
