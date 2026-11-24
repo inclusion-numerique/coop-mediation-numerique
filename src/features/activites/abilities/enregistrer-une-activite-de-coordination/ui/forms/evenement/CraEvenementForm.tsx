@@ -56,7 +56,7 @@ const CraEvenementForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-coordinations/cra/evenement?v=${encodeSerializableState(
+          `/coop/mes-activites/cra/evenement?v=${encodeSerializableState(
             formApi.state.values,
           )}`,
         )

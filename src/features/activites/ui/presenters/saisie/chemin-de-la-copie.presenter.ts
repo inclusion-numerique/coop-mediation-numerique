@@ -17,7 +17,7 @@ export const cheminDeLaCopie = <T>(
   retour?: string,
 ): string =>
   `/coop/mes-activites/cra/${type}?${
-    retour ? `retour=${retour}&` : ''
+    retour ? `retour=${encodeURIComponent(retour)}&` : ''
   }v=${encodeSerializableState(valeurs)}`
 
 export const etatDeLUrl = <T extends object>(

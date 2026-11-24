@@ -56,7 +56,7 @@ const CraPartenariatForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-coordinations/cra/partenariat?v=${encodeSerializableState(
+          `/coop/mes-activites/cra/partenariat?v=${encodeSerializableState(
             formApi.state.values,
           )}`,
         )

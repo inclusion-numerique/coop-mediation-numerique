@@ -55,7 +55,7 @@ const CraAnimationForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-coordinations/cra/animation?v=${encodeSerializableState(
+          `/coop/mes-activites/cra/animation?v=${encodeSerializableState(
             formApi.state.values,
           )}`,
         )
