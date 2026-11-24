@@ -9,7 +9,7 @@ import {
   nomAffiche,
   Prenom,
 } from '../../domain'
-import { lue } from './lue'
+import { lue } from './lue.transfer'
 
 export const lireLeCoordinateur = async (
   coordinateurId: CoordinateurId,

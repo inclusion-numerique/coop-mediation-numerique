@@ -9,7 +9,7 @@ import {
   Prenom,
   UtilisateurId,
 } from '../../../../domain'
-import { lue } from '../../../../implementations/prisma/lue'
+import { lue } from '../../../../implementations/prisma/lue.transfer'
 import type { EquipeAComplementer, MediateurAAjouter } from '../../domain'
 
 const LIMITE = 20

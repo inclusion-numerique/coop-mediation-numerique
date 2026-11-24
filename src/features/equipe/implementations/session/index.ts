@@ -1,1 +1,1 @@
-export { gestionnaireDe } from './gestionnaire'
+export { gestionnaireDe } from './gestionnaire.query'

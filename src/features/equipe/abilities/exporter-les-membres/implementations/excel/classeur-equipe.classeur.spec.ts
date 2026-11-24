@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
-import { classeurEquipe, type MembreExporte } from './classeur-equipe'
+import { classeurEquipe, type MembreExporte } from './classeur-equipe.classeur'
 
 const auteur: AuteurDExport = {
   nom: 'Osmont',

@@ -19,7 +19,7 @@ import {
   Voie,
 } from '../../domain'
 import type { LigneEquipeRow } from './ligne-equipe.sql'
-import { lue } from './lue'
+import { lue } from './lue.transfer'
 
 const statuts: Readonly<
   Record<TypeDeStatut, (row: LigneEquipeRow) => StatutMembre>

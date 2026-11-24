@@ -10,7 +10,7 @@ import {
   Prenom,
   roleMembre,
 } from '../../../../domain'
-import { lue } from '../../../../implementations/prisma/lue'
+import { lue } from '../../../../implementations/prisma/lue.transfer'
 import type { MediateursAInviter } from '../../domain'
 
 const NOMBRE_DE_PROPOSITIONS = 50
