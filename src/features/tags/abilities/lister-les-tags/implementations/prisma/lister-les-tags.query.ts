@@ -45,7 +45,7 @@ export const listerLesTags = async ({
       LIMIT ${pageSize}
       OFFSET ${(page - 1) * pageSize}
     `,
-    prismaClient.$queryRaw<{ total: bigint }[]>`
+    prismaClient.$queryRaw<[{ total: bigint }]>`
       SELECT COUNT(*) AS total FROM ${TAGS} WHERE ${visibles}
     `,
   ])

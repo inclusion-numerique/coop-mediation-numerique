@@ -11,14 +11,14 @@ export const equipeAffichee =
   (portee: Portee): EquipeAffichee | null => {
     if (portee._tag !== 'Equipe' || acteur.equipes.length <= 1) return null
 
-    const index = acteur.equipes.findIndex(
-      ({ coordinateurId }) => coordinateurId === portee.coordinateurId,
-    )
+    const trouvee = acteur.equipes
+      .map((equipe, index) => ({ equipe, numero: index + 1 }))
+      .find(({ equipe }) => equipe.coordinateurId === portee.coordinateurId)
 
-    return index < 0
+    return trouvee === undefined
       ? null
       : {
-          numero: index + 1,
-          coordonneePar: nomDeLEquipe(acteur, acteur.equipes[index]),
+          numero: trouvee.numero,
+          coordonneePar: nomDeLEquipe(acteur, trouvee.equipe),
         }
   }
