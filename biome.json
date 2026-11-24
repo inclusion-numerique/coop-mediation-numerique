@@ -38,7 +38,7 @@
         "noVoid": "error",
         "useDateNow": "error",
         "useFlatMap": "error",
-        "useLiteralKeys": "error",
+        "useLiteralKeys": "off",
         "useRegexLiterals": "error",
         "noAdjacentSpacesInRegex": "error",
         "noArguments": "error",
