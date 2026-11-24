@@ -84,9 +84,9 @@ const BeneficiaireForm = ({
   defaultValues: DefaultValues<BeneficiaireData> & { mediateurId: string }
   save: EnregistrerBeneficiaire
   // If present, used to merge with state on retour redirection
-  cra?: SaisieEnCours
-  retour?: string
-  edit?: boolean
+  cra?: SaisieEnCours | undefined
+  retour?: string | undefined
+  edit?: boolean | undefined
 }) => {
   const router = useRouter()
 
@@ -192,7 +192,11 @@ const BeneficiaireForm = ({
   // Dérive la tranche d'âge depuis l'année de naissance. L'adaptateur Input
   // émet une chaîne vide au vidage d'un champ numérique : on la ramène à `null`
   // pour rester compatible avec la validation optionnelle (number | null).
-  const deriveTrancheAge = ({ value }: { value?: number | string | null }) => {
+  const deriveTrancheAge = ({
+    value,
+  }: {
+    value?: number | string | null | undefined
+  }) => {
     if (value === '') {
       form.setFieldValue('anneeNaissance', null)
       return

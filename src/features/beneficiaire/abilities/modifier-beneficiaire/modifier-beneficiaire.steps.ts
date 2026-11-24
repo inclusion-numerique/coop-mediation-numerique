@@ -18,7 +18,10 @@ let result: ModificationResult | undefined
 
 Given('un bénéficiaire {string} de ce médiateur', async (fullName: string) => {
   const [prenom, nom] = fullName.split(' ')
-  targetId = await seedBeneficiaire({ prenom, nom })
+  targetId = await seedBeneficiaire({
+    ...(prenom === undefined ? {} : { prenom }),
+    ...(nom === undefined ? {} : { nom }),
+  })
   creationBefore = (
     await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: targetId },

@@ -151,7 +151,7 @@ Then(
     assert.strictEqual(result.merges.length, 1)
     assert.strictEqual(result.merges[0]?.id, existingBeneficiaireId)
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: existingBeneficiaireId },
+      where: { id: existingBeneficiaireId ?? '' },
     })
     assert.strictEqual(beneficiaire.rdvUserId, 990_202)
   },

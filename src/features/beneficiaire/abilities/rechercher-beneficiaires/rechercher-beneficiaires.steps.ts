@@ -16,9 +16,12 @@ Given(
   'les bénéficiaires de recherche suivants',
   async (dataTable: DataTable) => {
     seededIds = await Promise.all(
-      dataTable
-        .hashes()
-        .map(({ prenom, nom }) => seedBeneficiaire({ prenom, nom })),
+      dataTable.hashes().map(({ prenom, nom }) =>
+        seedBeneficiaire({
+          ...(prenom === undefined ? {} : { prenom }),
+          ...(nom === undefined ? {} : { nom }),
+        }),
+      ),
     )
   },
 )

@@ -12,7 +12,11 @@ import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
 
 // Option de select pour un bénéficiaire (valeur `null` = ligne non
 // sélectionnable, p.ex. message « préciser la recherche »).
-export type BeneficiaireOption = SelectOption<BeneficiaireData | null>
+type BeneficiaireProposeData = Omit<BeneficiaireData, 'id'> & {
+  id: string | null
+}
+
+export type BeneficiaireOption = SelectOption<BeneficiaireProposeData | null>
 
 // `CommuneResidence` (value object) → aperçu `AdresseBanData` : on ne dispose
 // que des champs d'affichage, le reste est rempli avec des valeurs neutres.
@@ -32,7 +36,7 @@ export const toPreviewBanData = (
 
 export const toBeneficiaireData = (
   item: BeneficiaireTrouve,
-): BeneficiaireData => ({
+): BeneficiaireProposeData => ({
   id: item.id,
   prenom: item.prenom,
   nom: item.nom,

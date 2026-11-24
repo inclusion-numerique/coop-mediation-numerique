@@ -41,7 +41,7 @@ const AnalysisTableCell = ({
   error,
   children,
   id,
-}: PropsWithChildren<{ error?: string | null; id: string }>) => (
+}: PropsWithChildren<{ error?: string | null | undefined; id: string }>) => (
   <td
     className={classNames(!!error && 'fr-beneficiaire-import-cell-error')}
     aria-describedby={error ? `tooltip-cell-error-${id}` : undefined}

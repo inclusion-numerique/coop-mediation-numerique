@@ -11,7 +11,7 @@ export const beneficiairesInitiauxAvec =
     mediateurId,
     includeBeneficiaireIds,
   }: {
-    mediateurId?: string
+    mediateurId?: string | undefined
     includeBeneficiaireIds?: string[]
   }): Promise<Options> =>
     presenter(
@@ -19,6 +19,11 @@ export const beneficiairesInitiauxAvec =
         ? AUCUN
         : await beneficiairesProposes({
             mediateurId: MediateurId(mediateurId),
-            includeBeneficiaireIds: includeBeneficiaireIds?.map(BeneficiaireId),
+            ...(includeBeneficiaireIds === undefined
+              ? {}
+              : {
+                  includeBeneficiaireIds:
+                    includeBeneficiaireIds.map(BeneficiaireId),
+                }),
           }),
     )

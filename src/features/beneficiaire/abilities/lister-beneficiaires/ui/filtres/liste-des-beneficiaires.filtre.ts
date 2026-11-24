@@ -33,7 +33,7 @@ export const requeteDesBeneficiaires = (
     pagination: lue,
   } = listeDesBeneficiaires.charger(parametres)
   return {
-    search: recherche === '' ? undefined : recherche,
+    ...(recherche === '' ? {} : { search: recherche }),
     sort: tri,
     ...lue,
   }

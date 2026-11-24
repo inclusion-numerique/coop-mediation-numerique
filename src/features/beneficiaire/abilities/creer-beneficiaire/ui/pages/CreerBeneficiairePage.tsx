@@ -23,8 +23,8 @@ export const CreerBeneficiairePage = ({
 }: {
   mediateurId: string
   save: EnregistrerBeneficiaire
-  retour?: string
-  cra?: SaisieEnCours
+  retour?: string | undefined
+  cra?: SaisieEnCours | undefined
 }) => (
   <div className="fr-container fr-container--medium">
     <SkipLinksPortal />

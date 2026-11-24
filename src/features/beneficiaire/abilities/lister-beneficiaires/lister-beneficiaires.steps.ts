@@ -27,9 +27,12 @@ Given(
   'les bénéficiaires suivants pour ce médiateur',
   async (dataTable: DataTable) => {
     await Promise.all(
-      dataTable
-        .hashes()
-        .map(({ prenom, nom }) => seedBeneficiaire({ prenom, nom })),
+      dataTable.hashes().map(({ prenom, nom }) =>
+        seedBeneficiaire({
+          ...(prenom === undefined ? {} : { prenom }),
+          ...(nom === undefined ? {} : { nom }),
+        }),
+      ),
     )
   },
 )

@@ -31,7 +31,7 @@ export const exporterBeneficiairesAvec =
   async ({ mediateurId, filters, auteur }) => {
     const { items, totalItems } = await listerBeneficiaires({
       mediateurId,
-      search: filters.recherche ? Search(filters.recherche) : undefined,
+      ...(filters.recherche ? { search: Search(filters.recherche) } : {}),
       pageSize: EXPORT_PAGE_SIZE,
     })
 

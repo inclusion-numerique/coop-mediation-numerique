@@ -14,9 +14,7 @@ export const beneficiaire = <
 
   const givenId = id ?? v4()
 
-  return {
-    id: givenId,
-    ...rest, // Spread the rest of the input
+  const defauts = {
     anonyme: data.anonyme ?? false,
     attributionsAleatoires: data.attributionsAleatoires ?? false,
     telephone: data.telephone ?? null,
@@ -31,11 +29,17 @@ export const beneficiaire = <
     trancheAge: data.trancheAge ?? null,
     statutSocial: data.statutSocial ?? null,
     notes: data.notes ?? null,
-    creation: data.creation ?? undefined,
-    modification: data.modification ?? undefined,
+    ...(data.creation === undefined ? {} : { creation: data.creation }),
+    ...(data.modification === undefined
+      ? {}
+      : { modification: data.modification }),
     suppression: data.suppression ?? null,
-    accompagnements: data.accompagnements ?? undefined, // This can be omitted
-  } satisfies Prisma.BeneficiaireUncheckedCreateInput
+    ...(data.accompagnements === undefined
+      ? {}
+      : { accompagnements: data.accompagnements }),
+  } satisfies Partial<Prisma.BeneficiaireUncheckedCreateInput>
+
+  return { id: givenId, ...rest, ...defauts }
 }
 
 export const beneficiaireAnonyme = <
@@ -51,9 +55,7 @@ export const beneficiaireAnonyme = <
 
   const givenId = id ?? v4()
 
-  return {
-    id: givenId,
-    ...rest,
+  const defauts = {
     anonyme: true,
     attributionsAleatoires: data.attributionsAleatoires ?? false,
     telephone: data.telephone ?? null,
@@ -68,9 +70,15 @@ export const beneficiaireAnonyme = <
     trancheAge: data.trancheAge ?? null,
     statutSocial: data.statutSocial ?? null,
     notes: data.notes ?? null,
-    creation: data.creation ?? undefined,
-    modification: data.modification ?? undefined,
+    ...(data.creation === undefined ? {} : { creation: data.creation }),
+    ...(data.modification === undefined
+      ? {}
+      : { modification: data.modification }),
     suppression: data.suppression ?? null,
-    accompagnements: data.accompagnements ?? undefined, // This can be omitted
-  } satisfies Prisma.BeneficiaireUncheckedCreateInput
+    ...(data.accompagnements === undefined
+      ? {}
+      : { accompagnements: data.accompagnements }),
+  } satisfies Partial<Prisma.BeneficiaireUncheckedCreateInput>
+
+  return { id: givenId, ...rest, ...defauts }
 }

@@ -17,7 +17,7 @@ export const ModifierBeneficiairePage = ({
 }: {
   view: VueDeModificationDuBeneficiaire
   save: EnregistrerBeneficiaire
-  retour?: string
+  retour?: string | undefined
 }) => (
   <div className="fr-container fr-container--medium">
     <SkipLinksPortal />
