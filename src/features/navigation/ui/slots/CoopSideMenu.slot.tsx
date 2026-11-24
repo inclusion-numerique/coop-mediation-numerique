@@ -22,7 +22,7 @@ const mesActivitesItemTitle = (
 
 const activiteLink = (pathname?: string) => (href: string) => ({
   linkProps: { href },
-  isActive: pathname?.startsWith(href),
+  ...(pathname === undefined ? {} : { isActive: pathname.startsWith(href) }),
 })
 
 const coordinationItem = (
