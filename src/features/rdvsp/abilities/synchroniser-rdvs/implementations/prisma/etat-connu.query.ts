@@ -18,9 +18,9 @@ export const rdvsDejaImportes: RdvsDejaImportes = async ({
     await prismaClient.rdv.findMany({
       where: {
         rdvAccountId: compte.agentId,
-        organisationId: organisationIds
-          ? { in: [...organisationIds] }
-          : undefined,
+        ...(organisationIds
+          ? { organisationId: { in: [...organisationIds] } }
+          : {}),
       },
       select: { id: true },
     })
@@ -39,9 +39,9 @@ export const etatConnuDuLot: EtatConnuDuLot = async ({
   const rows = await prismaClient.rdv.findMany({
     where: {
       id: { in: [...rdvIds] },
-      organisationId: organisationIds
-        ? { in: [...organisationIds] }
-        : undefined,
+      ...(organisationIds
+        ? { organisationId: { in: [...organisationIds] } }
+        : {}),
     },
     include: {
       motif: true,

@@ -124,7 +124,9 @@ const lireRdvs = async (
 ): Promise<Result<RdvsLus, ErreurRdvApi>> => {
   const filtres = {
     agentId: compte.agentId,
-    debutApres: compte.synchroniserDepuis ?? undefined,
+    ...(compte.synchroniserDepuis == null
+      ? {}
+      : { debutApres: compte.synchroniserDepuis }),
   }
 
   if (organisationIds === undefined) {
@@ -205,7 +207,10 @@ export const synchroniserRdvs =
       portee.organisationIds,
       organisationIdsInaccessibles,
     )
-    const dejaImportes = await rdvsDejaImportes({ compte, organisationIds })
+    const dejaImportes = await rdvsDejaImportes({
+      compte,
+      ...(organisationIds === undefined ? {} : { organisationIds }),
+    })
     const recus = lus.data.rdvs
 
     const rdvsRecus = recus.map(({ rdv }) => rdv)
@@ -220,7 +225,7 @@ export const synchroniserRdvs =
 
         const connu = await etatConnuDuLot({
           rdvIds: rdvsDuLot.map((rdv) => rdv.id),
-          organisationIds,
+          ...(organisationIds === undefined ? {} : { organisationIds }),
         })
 
         const plan = planifierLot({

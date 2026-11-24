@@ -61,7 +61,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
       {...buttonLoadingClassname(enCours)}
       onClick={onClick}
       type="button"
-      className={className}
+      {...(className === undefined ? {} : { className })}
     >
       Planifier un rendez-vous
     </Button>

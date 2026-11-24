@@ -15,8 +15,9 @@ export const lancerSynchronisation =
 
     const { drift } = await synchroniserUnCompte({
       ...compte,
-      organisationIds:
-        organisationIds === undefined ? undefined : [...organisationIds],
+      ...(organisationIds === undefined
+        ? {}
+        : { organisationIds: [...organisationIds] }),
     })
 
     return { derive: drift }

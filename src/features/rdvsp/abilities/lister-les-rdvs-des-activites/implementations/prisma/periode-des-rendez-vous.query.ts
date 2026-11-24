@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 
 export type PeriodeDesRendezVous = {
-  readonly first: Date | undefined
-  readonly last: Date | undefined
+  readonly first?: Date
+  readonly last?: Date
 }
 
 export const periodeDesRendezVous = async ({
@@ -10,7 +10,7 @@ export const periodeDesRendezVous = async ({
 }: {
   readonly comptes: readonly number[]
 }): Promise<PeriodeDesRendezVous> => {
-  if (comptes.length === 0) return { first: undefined, last: undefined }
+  if (comptes.length === 0) return {}
 
   const bornes = await prismaClient.rdv.aggregate({
     _min: { startsAt: true },
@@ -19,7 +19,7 @@ export const periodeDesRendezVous = async ({
   })
 
   return {
-    first: bornes._min.startsAt ?? undefined,
-    last: bornes._max.startsAt ?? undefined,
+    ...(bornes._min.startsAt === null ? {} : { first: bornes._min.startsAt }),
+    ...(bornes._max.startsAt === null ? {} : { last: bornes._max.startsAt }),
   }
 }

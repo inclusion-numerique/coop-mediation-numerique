@@ -70,7 +70,7 @@ export const synchroniserCompteAvec =
         const resultat = await installWebhooks({
           compte: aInstaller,
           appendLog: (log) => journal.push(...[log].flat()),
-          organisationIds: portee === undefined ? undefined : [...portee],
+          ...(portee === undefined ? {} : { organisationIds: [...portee] }),
           api: rdvServicePublicApiBinding,
           noterLesWebhooksInvalides,
         })
@@ -94,7 +94,9 @@ export const synchroniserCompteAvec =
 
     const resultat = await synchroniser({
       compte,
-      organisationIds: organisationIds?.map((id) => OrganisationId(id)),
+      ...(organisationIds === undefined
+        ? {}
+        : { organisationIds: organisationIds.map((id) => OrganisationId(id)) }),
     })
 
     if (!resultat.success) {

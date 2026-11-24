@@ -444,7 +444,7 @@ export const rdvServicePublicApi = ({
         {
           chemin: '/users',
           methode: 'GET',
-          params: filtres.ids ? { ids: [...filtres.ids] } : undefined,
+          ...(filtres.ids ? { params: { ids: [...filtres.ids] } } : {}),
         },
         usagersPagePayload,
         (page) => page.users,

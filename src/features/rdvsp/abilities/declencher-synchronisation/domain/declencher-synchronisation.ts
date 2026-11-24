@@ -210,8 +210,9 @@ export const declencherSynchronisation =
     try {
       const { derive } = await lancer({
         utilisateurId,
-        organisationIds:
-          portee._tag === 'organisations' ? portee.organisationIds : undefined,
+        ...(portee._tag === 'organisations'
+          ? { organisationIds: portee.organisationIds }
+          : {}),
       })
 
       return success({ derive, synchroniseeLe: maintenant() })

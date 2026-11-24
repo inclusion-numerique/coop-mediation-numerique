@@ -29,7 +29,7 @@ let echoue = false
 let resultat: Awaited<ReturnType<DeclencherSynchronisation>> | undefined
 
 const lancer: LancerSynchronisation = async ({ organisationIds }) => {
-  portee = { organisationIds }
+  portee = organisationIds === undefined ? {} : { organisationIds }
 
   if (echoue) {
     throw new Error('RDV Service Public a renvoyé une 500')

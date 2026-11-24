@@ -196,7 +196,9 @@ export const synchroniserCompteRdv =
     const { compte } = portee
     const { journalId } = await ouvrirJournal({
       compte,
-      organisationIds: passe.organisationIds,
+      ...(passe.organisationIds === undefined
+        ? {}
+        : { organisationIds: passe.organisationIds }),
     })
     const lignes: string[] = []
     const tracer = (message: string) => {
@@ -232,7 +234,9 @@ export const synchroniserCompteRdv =
 
       const rdvs = await reconcilierRdvs({
         compte,
-        organisationIds: passe.organisationIds,
+        ...(passe.organisationIds === undefined
+          ? {}
+          : { organisationIds: passe.organisationIds }),
       })
 
       if (!rdvs.success) {
@@ -260,15 +264,19 @@ export const synchroniserCompteRdv =
 
       tracer('installation des webhooks')
 
+      const organisationIdsAccessibles = organisationsAccessibles(
+        passe.organisationIds,
+        organisationIdsInaccessibles,
+      )
+
       const webhooks = await reconcilierWebhooks({
         compte: compteVuParLaPasse(
           compte,
           organisations.data.organisationIdsRecues,
         ),
-        organisationIds: organisationsAccessibles(
-          passe.organisationIds,
-          organisationIdsInaccessibles,
-        ),
+        ...(organisationIdsAccessibles === undefined
+          ? {}
+          : { organisationIds: organisationIdsAccessibles }),
       })
 
       tracer('webhooks installés')

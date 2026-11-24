@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 
 export const compteDeLUtilisateur = async (
   utilisateurId: string,
-): Promise<{ compteId: number; mediateurId: string | undefined } | null> => {
+): Promise<{ compteId: number; mediateurId?: string } | null> => {
   const { mediateur, rdvAccount } = await prismaClient.user.findUniqueOrThrow({
     where: { id: utilisateurId },
     select: {
@@ -13,5 +13,8 @@ export const compteDeLUtilisateur = async (
 
   return rdvAccount === null
     ? null
-    : { compteId: rdvAccount.id, mediateurId: mediateur?.id }
+    : {
+        compteId: rdvAccount.id,
+        ...(mediateur === null ? {} : { mediateurId: mediateur.id }),
+      }
 }
