@@ -1,4 +1,4 @@
-import type { UniteLegale } from '@/libraries/recherche-entreprises/apiEntrepriseApiModels'
+import type { UniteLegale } from '@/libraries/recherche-entreprises/api-entreprise-api-models'
 
 export type TypologieAnnuaire =
   | 'ACIPHC'

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { UniteLegale } from '@/libraries/recherche-entreprises/apiEntrepriseApiModels'
-import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises/etablissementsDepuisUniteLegale'
+import type { UniteLegale } from '@/libraries/recherche-entreprises/api-entreprise-api-models'
+import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises/etablissements-depuis-unite-legale'
 
 // Réponse de l'API Recherche d'entreprises réduite à ce que l'adaptateur lit.
 const uniteLegale = (

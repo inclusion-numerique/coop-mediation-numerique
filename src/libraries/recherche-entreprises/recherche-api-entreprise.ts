@@ -1,5 +1,5 @@
 import pRetry, { AbortError } from 'p-retry'
-import type { UniteLegale } from '@/libraries/recherche-entreprises/apiEntrepriseApiModels'
+import type { UniteLegale } from '@/libraries/recherche-entreprises/api-entreprise-api-models'
 
 const rechercheApiEntrepriseEndpoint =
   'https://recherche-entreprises.api.gouv.fr/search'
