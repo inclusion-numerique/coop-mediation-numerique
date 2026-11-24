@@ -81,7 +81,7 @@ const StepperStacked = lazy(() =>
 )
 
 const Submit = lazy(() =>
-  import('./form-components/submit.form').then((module) => ({
+  import('./form-components/Submit').then((module) => ({
     default: module.Submit,
   })),
 )

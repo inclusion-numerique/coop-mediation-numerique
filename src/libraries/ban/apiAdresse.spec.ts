@@ -10,7 +10,7 @@ import {
 import {
   reponseAdresseTrouvee,
   reponseSansAdresse,
-} from '@/libraries/ban/apiAdresse.reponses'
+} from '@/libraries/ban/reponses-de-l-api-adresse'
 
 const reponse = (corps: unknown, status = 200) =>
   new Response(JSON.stringify(corps), { status })

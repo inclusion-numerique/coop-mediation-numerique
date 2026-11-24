@@ -8,10 +8,7 @@ import { environnementServeur } from '@/configuration/environnement/serveur'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect'
 import { telephoneEnregistrable } from '@/libraries/telephone'
-import {
-  proConnectClientId,
-  proConnectHostname,
-} from './proconnect.configuration'
+import { proConnectClientId, proConnectHostname } from './client'
 import { stateConcordant } from './state-concordant'
 
 const issuer = `https://${proConnectHostname}`

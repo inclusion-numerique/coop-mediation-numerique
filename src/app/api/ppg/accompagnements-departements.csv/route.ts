@@ -12,7 +12,7 @@ import {
 import {
   exportDesAccompagnementsCsv,
   nomDuFichierDExport,
-} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/csv/export-des-accompagnements.csv'
+} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/csv/export-des-accompagnements'
 import { accompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/prisma/accompagnements-par-departement.query'
 import { withAdminRoute } from '@/features/authentification/middlewares/with-admin-route'
 

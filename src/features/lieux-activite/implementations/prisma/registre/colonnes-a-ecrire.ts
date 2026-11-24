@@ -1,4 +1,4 @@
-import type { ColonnesDuRegistre } from './lieu.registre.transfer'
+import type { ColonnesDuRegistre } from './lieu.transfer'
 
 export type ColonnesAEcrire = (
   toutes: ColonnesDuRegistre,

@@ -140,7 +140,7 @@ const reponse = (results: UniteLegale[]): RechercheApiResponse => ({
  * l'API pour une recherche qui n'aboutit pas, et ça garde la doublure honnête
  * sur le cas « structure introuvable » que les parcours doivent savoir tenir.
  */
-export const rechercheApiEntrepriseE2e = ({
+export const rechercheApiEntrepriseSimulee = ({
   q,
 }: RechercheApiEntrepriseQueryParams): RechercheApiResponse => {
   const trouvee = uniteLegaleParSiret[q.trim()]

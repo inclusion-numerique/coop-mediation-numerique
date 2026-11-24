@@ -1,5 +1,5 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/oauth.configuration'
+import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/client'
 import { rdvServicePublicApiBinding } from '../../../implementations/api/rdv-service-public.binding'
 import {
   rdvServicePublicOAuthConfig,

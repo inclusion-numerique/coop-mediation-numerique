@@ -1,8 +1,5 @@
 import axios from 'axios'
-import {
-  proConnectClientId,
-  proConnectHostname,
-} from './proconnect.configuration'
+import { proConnectClientId, proConnectHostname } from './client'
 
 const issuer = `https://${proConnectHostname}`
 

@@ -1,1 +1,1 @@
-export { compterLesActeursDuDepartement } from './acteurs-du-departement.count'
+export { compterLesActeursDuDepartement } from './acteurs-du-departement.query'

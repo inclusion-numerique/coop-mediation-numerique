@@ -19,6 +19,6 @@ export {
   inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
 } from './identifiants-carto.query'
-export { type ColonnesDuRegistre } from './lieu.registre.transfer'
+export { type ColonnesDuRegistre } from './lieu.transfer'
 
 export { retirerDuRegistre } from './retirer-du-registre.mutation'

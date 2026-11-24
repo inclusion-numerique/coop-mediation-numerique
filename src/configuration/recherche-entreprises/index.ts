@@ -5,12 +5,12 @@ import {
   type RechercheApiResponse,
   rechercheApiEntreprise as rechercherSurLApi,
 } from '@/libraries/recherche-entreprises/rechercheApiEntreprise'
-import { rechercheApiEntrepriseE2e } from './rechercheApiEntreprise.e2e'
+import { rechercheApiEntrepriseSimulee } from './rechercheApiEntreprise.simulee'
 
 export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,
   retryOptions?: RechercheApiEntrepriseRetryOptions,
 ): Promise<RechercheApiResponse> =>
   environnementServeur.IS_E2E
-    ? rechercheApiEntrepriseE2e(queryParams)
+    ? rechercheApiEntrepriseSimulee(queryParams)
     : rechercherSurLApi(queryParams, retryOptions)

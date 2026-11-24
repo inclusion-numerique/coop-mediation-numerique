@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import { rechercheApiEntrepriseE2e } from './rechercheApiEntreprise.e2e'
+import { rechercheApiEntrepriseSimulee } from './rechercheApiEntreprise.simulee'
 
 describe('doublure e2e de la recherche d’entreprises', () => {
   it('résout le SIRET que portent les utilisateurs d’inscription', () => {
-    const { results, total_results } = rechercheApiEntrepriseE2e({
+    const { results, total_results } = rechercheApiEntrepriseSimulee({
       q: previewBranchAuthFallbacks.anctSiret,
       page: 1,
       per_page: 1,
@@ -17,7 +17,7 @@ describe('doublure e2e de la recherche d’entreprises', () => {
   })
 
   it('expose l’établissement correspondant au SIRET demandé', () => {
-    const { results } = rechercheApiEntrepriseE2e({
+    const { results } = rechercheApiEntrepriseSimulee({
       q: previewBranchAuthFallbacks.anctSiret,
       page: 1,
       per_page: 1,
@@ -37,15 +37,18 @@ describe('doublure e2e de la recherche d’entreprises', () => {
   // l'inscription : son SIRET doit se résoudre comme celui de l'ANCT.
   it('résout aussi le SIRET de la structure employeuse de fixture', () => {
     expect(
-      rechercheApiEntrepriseE2e({ q: '13002526500013', page: 1, per_page: 1 })
-        .total_results,
+      rechercheApiEntrepriseSimulee({
+        q: '13002526500013',
+        page: 1,
+        per_page: 1,
+      }).total_results,
     ).toBe(1)
   })
 
   // « Introuvable » est un cas que les parcours doivent tenir : la doublure le
   // rend comme l'API, par zéro résultat et non par une erreur.
   it('rend zéro résultat pour un SIRET inconnu, sans lever', () => {
-    const { results, total_results } = rechercheApiEntrepriseE2e({
+    const { results, total_results } = rechercheApiEntrepriseSimulee({
       q: '00000000000000',
       page: 1,
       per_page: 1,

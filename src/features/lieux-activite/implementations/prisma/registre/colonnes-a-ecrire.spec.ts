@@ -26,7 +26,7 @@ import {
   identiteDuLieu,
   toutesLesColonnes,
 } from './colonnes-a-ecrire'
-import { lieuVersRegistre } from './lieu.registre.transfer'
+import { lieuVersRegistre } from './lieu.transfer'
 
 const fiche: Fiche = {
   nom: Nom('Espace numérique'),
