@@ -7,7 +7,7 @@ import {
   prismaClient,
 } from '@/configuration/prisma/prismaClient'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
-import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect'
+import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect-provider-id.client'
 
 /**
  * Ensuring that needed methods are defined when creating adapter

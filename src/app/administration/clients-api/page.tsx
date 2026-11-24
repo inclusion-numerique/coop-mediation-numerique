@@ -1,5 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api/implementations/prisma/clients-api.query'
 import { ClientsApiPage } from '@/features/clients-api/abilities/lister-les-clients-api/ui/pages/ClientsApiPage'
 

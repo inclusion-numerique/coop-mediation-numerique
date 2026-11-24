@@ -4,7 +4,7 @@ import {
   cheminDeDuplicationDeCoordination,
   saisieDePartenariat,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/page-de-saisie.presenter'
-import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 
 const DupliquerCraPartenariatPage = async ({
   searchParams,

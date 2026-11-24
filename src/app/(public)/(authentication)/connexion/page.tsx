@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ConnexionPage } from '@/features/authentification/abilities/se-connecter/ui/pages/ConnexionPage'
-import { moyenDeConnexion } from '@/features/authentification/implementations/next-auth/authentication-provider'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user'
+import { moyenDeConnexion } from '@/features/authentification/implementations/next-auth/authentication-provider.client'
+import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

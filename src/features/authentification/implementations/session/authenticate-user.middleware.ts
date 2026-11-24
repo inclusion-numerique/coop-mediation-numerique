@@ -10,7 +10,7 @@ import {
 import {
   getAuthenticatedSessionUser,
   getSessionUser,
-} from '@/features/authentification/implementations/session/session-user'
+} from '@/features/authentification/implementations/session/session-user.query'
 
 /**
  * This gets the session user from request cache and redirects to login

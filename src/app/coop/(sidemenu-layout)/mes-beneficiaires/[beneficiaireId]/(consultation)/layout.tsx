@@ -5,7 +5,7 @@ import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vou
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import type { BeneficiaireCraData } from '@/features/activites/ui/forms/beneficiaire-du-cra.validation'
 import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/slots/BeneficiaireEnregistrerUneActivite.slot'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
 import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'

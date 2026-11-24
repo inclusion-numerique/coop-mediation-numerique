@@ -3,7 +3,7 @@ import type {
   PrismaSessionUsupper,
   UtilisateurDeLaSessionRow,
 } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { splitMediateursCoordonnes } from './coordination-de-la-session'
+import { splitMediateursCoordonnes } from './coordination-de-la-session.transfer'
 
 const emploisDeLaSession = (
   personneMain: UtilisateurDeLaSessionRow['personneMain'],

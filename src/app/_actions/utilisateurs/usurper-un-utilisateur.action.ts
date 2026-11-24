@@ -3,7 +3,7 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
 import { adresseDeRetourApresConnexion } from '@/features/authentification/domain/page-d-accueil'
-import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-user'
+import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-user.query'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { USURPER_UN_UTILISATEUR_ERRORS } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.errors'

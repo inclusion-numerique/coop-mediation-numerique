@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stateConcordant } from './state-concordant'
+import { stateConcordant } from './state-concordant.middleware'
 
 describe('state du retour de ProConnect', () => {
   it('concorde quand il est celui du navigateur', () => {

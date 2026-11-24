@@ -1,11 +1,11 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/se-deconnecter'
+import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/se-deconnecter.query'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout'
-import { generateProconnectSignoutUrl } from '@/features/authentification/implementations/proconnect/proconnect-signout'
-import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
+import { generateProconnectSignoutUrl } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import {
   type EncodedState,

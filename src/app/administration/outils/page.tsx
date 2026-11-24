@@ -3,7 +3,7 @@ import { relancerLesInscriptionsInacheveesAction } from '@/app/_actions/utilisat
 import { relancerLesInscritsInactifsAction } from '@/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { ExportDesAccompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/ui/slots/ExportDesAccompagnementsParDepartement.slot'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterLHistoriqueDesMaintenances } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/historique-des-maintenances.query'
 import { REGLER_LA_MAINTENANCE_ACTION_KEY } from '@/features/maintenance-mode/abilities/regler-la-maintenance/action/regler-la-maintenance.key'
 import { ReglageDeLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/ui/slots/ReglageDeLaMaintenance.slot'

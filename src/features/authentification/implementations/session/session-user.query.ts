@@ -7,7 +7,7 @@ import { utilisateurDuJetonDeSession } from '@/features/authentification/impleme
 import {
   secureSessionCookie,
   sessionCookie,
-} from '@/features/authentification/implementations/session/session-token-from-cookies'
+} from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 
 const getSessionToken = async (): Promise<string | null> => {
   const allCookies = await cookies()

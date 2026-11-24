@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import StructureAdministrativeCard from '@/features/employeuse/ui/components/StructureAdministrativeCard'
 import VerifierInformationsPage from '@/features/inscription/abilities/verifier-informations/ui/pages/VerifierInformationsPage'
 import { donneesDeVerifierInformations } from '@/features/inscription/abilities/verifier-informations/ui/presenters/verifier-informations.presenter'

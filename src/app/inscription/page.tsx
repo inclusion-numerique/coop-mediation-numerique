@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

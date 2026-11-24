@@ -1,5 +1,5 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import { listeDesEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/ui/filtres/liste-des-employeuses.filtre'
 import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'

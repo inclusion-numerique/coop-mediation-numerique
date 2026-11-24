@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 
 export const withAdminRoute = async (
   _ctx: object,

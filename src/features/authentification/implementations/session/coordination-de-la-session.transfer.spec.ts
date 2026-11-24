@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitMediateursCoordonnes } from './coordination-de-la-session'
+import { splitMediateursCoordonnes } from './coordination-de-la-session.transfer'
 
 const ACTUEL = 'mediateur-actuel'
 const ANCIEN = 'mediateur-ancien'

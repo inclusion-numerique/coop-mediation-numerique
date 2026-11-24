@@ -5,7 +5,7 @@ import { relancerUneInvitationAction } from '@/app/_actions/equipe/relancer-une-
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/slots/BoutonInviterUnePersonne.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'

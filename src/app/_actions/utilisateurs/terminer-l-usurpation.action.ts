@@ -1,7 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-user'
+import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-user.query'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { terminerLUsurpation } from '@/features/utilisateurs/abilities/terminer-l-usurpation/implementations/terminer-l-usurpation.binding'
 import { fromResult } from '@/libraries/nextjs'

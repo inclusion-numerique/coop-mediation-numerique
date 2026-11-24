@@ -2,12 +2,12 @@ import type { NextRequest } from 'next/server'
 import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/baseUrl'
 import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma/index'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout'
+import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
 import {
   jetonDeSessionDesCookies,
   secureSessionCookie,
   sessionCookie,
-} from '@/features/authentification/implementations/session/session-token-from-cookies'
+} from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import {
   decodeSerializableState,
   type EncodedState,

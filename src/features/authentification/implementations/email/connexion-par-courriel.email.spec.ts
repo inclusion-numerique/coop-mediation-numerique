@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel'
+import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel.email'
 import { createMjmlTemplateOutput } from '@/libraries/emails/outputTemplateHtml'
 
 describe('Template: connexionParCourriel', () => {

@@ -5,7 +5,7 @@ import {
   aTermineSonInscription,
   pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import InscriptionStepsLayout from '@/features/inscription/ui/slots/InscriptionStepsLayout.slot'
 import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/ui/slots/BanniereDeMaintenance.slot'
 import { messageAffiche } from '@/features/maintenance-mode/domain'

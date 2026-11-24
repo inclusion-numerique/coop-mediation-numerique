@@ -2,7 +2,7 @@ import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { contactEmail, projectTitle } from '@/configuration/projet/config'
-import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel'
+import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel.email'
 import { compileMjml } from '@/libraries/emails/mjml'
 
 const debugMagicLink = environnementServeur.NODE_ENV === 'development'
