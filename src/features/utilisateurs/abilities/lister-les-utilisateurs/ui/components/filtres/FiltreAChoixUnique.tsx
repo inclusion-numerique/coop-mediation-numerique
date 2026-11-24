@@ -3,8 +3,9 @@
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { resetPagination } from '@/libraries/filtres/helpers'
+import { choixEnParametres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 
@@ -29,12 +30,11 @@ export const FiltreAChoixUnique = ({
   useEffect(() => setValeur(valeurInitiale), [valeurInitiale])
 
   const appliquer = (fermer = false) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (valeur === null) params.delete(parametre)
-    else params.set(parametre, valeur)
-    resetPagination(params)
     if (fermer) setOuvert(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(searchParams, choixEnParametres(parametre, valeur)),
+      { scroll: false },
+    )
   }
 
   const choix = [{ value: '', label: libelleDeTous }, ...options]

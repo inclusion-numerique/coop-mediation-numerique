@@ -3,14 +3,15 @@
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { listeEnParametres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import {
   RoleFiltre,
   type RoleFiltre as RoleFiltreType,
 } from '@/features/utilisateurs/domain'
 import { optionsDesRoles } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
-import { resetPagination } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 
 export const FiltreRoles = ({
@@ -26,12 +27,11 @@ export const FiltreRoles = ({
   useEffect(() => setRoles(rolesInitiaux), [rolesInitiaux])
 
   const appliquer = (choisis: readonly RoleFiltreType[], fermer = false) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (choisis.length === 0) params.delete('roles')
-    else params.set('roles', choisis.join(','))
-    resetPagination(params)
     if (fermer) setOuvert(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(searchParams, listeEnParametres('roles', choisis)),
+      { scroll: false },
+    )
   }
 
   const basculer = (valeur: string, coche: boolean) => {

@@ -3,7 +3,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { sansLaValeur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 
 export const EtiquettesDesFiltres = ({
   libelles,
@@ -14,13 +16,10 @@ export const EtiquettesDesFiltres = ({
   const searchParams = useSearchParams()
 
   const retirer = ({ type, cle }: LibelleDeFiltre) => {
-    const params = new URLSearchParams(searchParams.toString())
-    const restantes = (params.get(type)?.split(',') ?? []).filter(
-      (valeur) => valeur !== cle,
+    router.replace(
+      requeteAvec(searchParams, sansLaValeur(searchParams, type, cle)),
+      { scroll: false },
     )
-    if (restantes.length > 0) params.set(type, restantes.join(','))
-    else params.delete(type)
-    router.replace(`?${params}`, { scroll: false })
   }
 
   if (libelles.length === 0) return null

@@ -6,13 +6,12 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import { type LibelleDeFiltre } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { download } from '@/libraries/navigateur/download'
 import { createToast } from '@/libraries/ui/toast/createToast'
+import { lienDExport } from '../search-params/requete-de-l-export.search-params'
 
 const ExportModal = createModal({
   id: 'export-utilisateurs',
   isOpenedByDefault: false,
 })
-
-const CHEMIN = '/administration/utilisateurs/export'
 
 export const BoutonExporterLesUtilisateurs = ({
   parametres,
@@ -26,12 +25,7 @@ export const BoutonExporterLesUtilisateurs = ({
   recherche: string | null
 }) => {
   const exporter = () => {
-    const query = new URLSearchParams({
-      ...parametres,
-      ...(recherche === null ? {} : { recherche }),
-    })
-
-    download(query.size > 0 ? `${CHEMIN}?${query}` : CHEMIN)
+    download(lienDExport(parametres, recherche))
     ExportModal.close()
     createToast({
       priority: 'success',

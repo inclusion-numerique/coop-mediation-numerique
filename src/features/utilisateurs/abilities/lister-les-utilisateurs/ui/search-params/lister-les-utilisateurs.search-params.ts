@@ -1,6 +1,11 @@
 import type { SortDirection } from '@arckit/resultset'
 import type { ParametresDeFiltres } from '@/features/utilisateurs/domain'
 import type { DataTableUrlState } from '@/libraries/data-table'
+import {
+  listeEnParametre,
+  listeSansLaValeur,
+  requeteAvec,
+} from '@/libraries/parametres-d-url'
 
 export type ParametresDeLaListe = {
   readonly recherche?: string
@@ -16,3 +21,42 @@ const ordreLu = (ordre?: string): SortDirection | undefined =>
 export const etatDeLaTable = (
   parametres: ParametresDeLaListe,
 ): DataTableUrlState => ({ ...parametres, ordre: ordreLu(parametres.ordre) })
+
+type Parametres = Readonly<Record<string, string | null>>
+
+export const rechercheEnRequete = (
+  etat: ParametresDeLaListe,
+  recherche: string,
+): `?${string}` =>
+  requeteAvec(
+    '',
+    Object.fromEntries(
+      Object.entries({ ...etat, recherche }).map(([cle, valeur]) => [
+        cle,
+        typeof valeur === 'string' && valeur !== '' ? valeur : null,
+      ]),
+    ),
+  )
+
+export const choixEnParametres = (
+  parametre: string,
+  valeur: string | null,
+): Parametres => ({ [parametre]: valeur, page: null })
+
+export const listeEnParametres = (
+  parametre: string,
+  valeurs: readonly string[],
+): Parametres => ({ [parametre]: listeEnParametre(valeurs), page: null })
+
+export const historiqueEnParametres = (cochee: boolean): Parametres => ({
+  historique: cochee ? '1' : null,
+  page: null,
+})
+
+export const sansLaValeur = (
+  requete: { get(cle: string): string | null },
+  parametre: string,
+  valeur: string,
+): Parametres => ({
+  [parametre]: listeSansLaValeur(requete.get(parametre), valeur),
+})

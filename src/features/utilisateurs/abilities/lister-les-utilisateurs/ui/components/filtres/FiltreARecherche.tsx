@@ -2,16 +2,14 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { listeEnParametres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { FilterSelection } from '@/libraries/filtres/FilterSelection'
-import {
-  matchingOption,
-  resetPagination,
-  update,
-} from '@/libraries/filtres/helpers'
+import { matchingOption } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
@@ -58,12 +56,18 @@ export const FiltreARecherche = ({
     selectionnees: readonly SelectOption[],
     fermer = false,
   ) => {
-    const params = new URLSearchParams(searchParams.toString())
-    update(params)(parametre, [...selectionnees])
-    resetPagination(params)
     if (fermer) setOuvert(false)
     form.setFieldValue('choix', null)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(
+        searchParams,
+        listeEnParametres(
+          parametre,
+          selectionnees.map(({ value }) => value),
+        ),
+      ),
+      { scroll: false },
+    )
   }
 
   const choisir = (option: SelectOption) => {
