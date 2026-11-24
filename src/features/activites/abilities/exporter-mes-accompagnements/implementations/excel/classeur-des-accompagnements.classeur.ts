@@ -2,11 +2,11 @@ import Excel from 'exceljs'
 import {
   type AuteurDExport,
   addExportMetadata,
-} from '@/libraries/tableur/addExportMetadata'
-import { addFilters } from '@/libraries/tableur/addFilters'
-import { addTitleRow } from '@/libraries/tableur/addTitleRow'
-import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
-import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
+} from '@/libraries/tableur/add-export-metadata'
+import { addFilters } from '@/libraries/tableur/add-filters'
+import { addTitleRow } from '@/libraries/tableur/add-title-row'
+import { autosizeColumns } from '@/libraries/tableur/autosize-columns'
+import { setWorkbookMetadata } from '@/libraries/tableur/set-workbook-metadata'
 
 type Cellule = string | number | boolean | Date
 

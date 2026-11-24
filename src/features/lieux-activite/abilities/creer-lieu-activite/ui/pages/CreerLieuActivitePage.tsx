@@ -7,10 +7,10 @@ import {
   donneesDeCreation,
 } from '@/features/lieux-activite/ui/forms/creer-lieu-activite.form-data'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import { inject } from '@/libraries/nextjs/injection/client'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { hrefDuLieu } from '../../../../ui/presenters/href-du-lieu.presenter'
 import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '../../action/creer-lieu-activite.key'
 

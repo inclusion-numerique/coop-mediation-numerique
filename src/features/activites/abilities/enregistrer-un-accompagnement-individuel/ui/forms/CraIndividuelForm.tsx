@@ -41,12 +41,12 @@ import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replaceRouteWithoutRerender'
+import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replace-route-without-rerender'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { adresseAvec } from '@/libraries/nextjs/route/adresse-avec'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { yesNoBooleanOptions } from '@/libraries/ui/components/Form/utils/yesNoBooleanOptions'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
+import { yesNoBooleanOptions } from '@/libraries/ui/components/form/utils/yes-no-boolean-options'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 
 const CraIndividuelForm = ({
   defaultValues,

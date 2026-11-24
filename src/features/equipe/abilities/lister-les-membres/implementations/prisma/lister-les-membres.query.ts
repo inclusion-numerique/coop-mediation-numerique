@@ -1,5 +1,5 @@
 import type { Page, PageSize } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ConsultationNonAutorisee,

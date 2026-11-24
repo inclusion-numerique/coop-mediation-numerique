@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/inscription/renseigner-structure-employeuse.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { aUneStructureEmployeuse } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'

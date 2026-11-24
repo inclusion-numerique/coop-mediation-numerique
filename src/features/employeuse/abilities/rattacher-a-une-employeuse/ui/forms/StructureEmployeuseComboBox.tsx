@@ -1,8 +1,8 @@
 import { typologieStructureLibelle } from '@/features/employeuse/domain/typologie-de-structure'
-import { addresseFromParts } from '@/libraries/adresse/addresseFromParts'
+import { addresseFromParts } from '@/libraries/adresse/addresse-from-parts'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-structure-employeuse.key'
 import type { StructureTrouvee } from '../../domain/employeuse-choisie'
 

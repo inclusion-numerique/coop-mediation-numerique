@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Meta, StoryObj } from '@storybook/react'
 import { useEffect } from 'react'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import Toaster from '@/libraries/ui/toast/Toaster'
 
 const meta: Meta<typeof Toaster> = {

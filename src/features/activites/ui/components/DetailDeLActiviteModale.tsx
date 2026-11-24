@@ -13,9 +13,9 @@ import {
 } from '@/features/activites/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
+import { createDynamicModal } from '@/libraries/ui/components/modal/create-dynamic-modal'
 import Stars from '@/libraries/ui/components/Stars'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '../../action/supprimer-une-activite-de-mediation.key'
 import type {
   DetailDActivite,

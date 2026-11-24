@@ -7,8 +7,8 @@ import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/only-defined-and-not-null'
+import { numberToString } from '@/libraries/nombre/format-number'
 
 const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
   active,

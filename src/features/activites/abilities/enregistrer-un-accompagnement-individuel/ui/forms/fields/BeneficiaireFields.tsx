@@ -12,7 +12,7 @@ import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisi
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { Options } from '@/libraries/ui/components/primitives/Options'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

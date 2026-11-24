@@ -1,5 +1,5 @@
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
+import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
+import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
 import {
   dureeDepuisLesMinutes,
   dureePersonnaliseeDepuisLesMinutes,

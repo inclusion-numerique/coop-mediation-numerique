@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Lieu } from '../../../../domain/lieu'
 import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
 import { ecrireAuRegistre } from '../../../../implementations/prisma/registre'

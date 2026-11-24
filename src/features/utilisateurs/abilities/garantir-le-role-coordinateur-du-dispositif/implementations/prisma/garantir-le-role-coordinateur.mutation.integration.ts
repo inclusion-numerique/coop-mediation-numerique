@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
 import { garantirLeRoleCoordinateurDuDispositif } from './garantir-le-role-coordinateur.mutation'
 

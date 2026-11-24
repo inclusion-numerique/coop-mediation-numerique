@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import type { VisibiliteSurLaCartographie } from './domain'
 import { visibiliteSurLaCartographie } from './implementations/prisma/visibilite-sur-la-cartographie.query'

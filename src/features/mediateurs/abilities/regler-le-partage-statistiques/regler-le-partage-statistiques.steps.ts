@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/implementations/prisma/regler-le-partage-statistiques.mutation'
 import { AuteurId, PerimetrePartage } from '@/features/mediateurs/domain'
 import {

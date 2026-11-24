@@ -1,4 +1,4 @@
-import { dureeAsString } from '@/libraries/date/dureeAsString'
+import { dureeAsString } from '@/libraries/date/duree-as-string'
 import { pluriel } from '@/libraries/pluriel'
 import { valeurDe } from '../../../../libraries/collections/valeur-de'
 import type { ActiviteConsultee, ActiviteDeMediation } from '../../domain'

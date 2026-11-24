@@ -4,8 +4,8 @@ import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { Fragment, memo } from 'react'
-import { addActiveStateToItems } from '@/libraries/ui/components/navigationSideMenuUtils'
-import { useNavigationSideMenu } from '@/libraries/ui/hooks/useNavigationSideMenu'
+import { addActiveStateToItems } from '@/libraries/ui/components/navigation-side-menu-utils'
+import { useNavigationSideMenu } from '@/libraries/ui/hooks/use-navigation-side-menu'
 
 /**
  * This component is a replacement for DSFR side menu, with sections always open and with a compact design.

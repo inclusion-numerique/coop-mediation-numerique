@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { type CoordinateurId, NomDeTag, TagId } from '../../../../domain'
 import type { OptionsDeFiltre } from '../../domain'
 

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { ReactNode } from 'react'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
 import { PixOrgaLogo } from '@/libraries/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'

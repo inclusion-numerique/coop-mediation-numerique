@@ -2,7 +2,7 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { CSSProperties, useMemo, useState } from 'react'
-import { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
+import { QuantifiedShare } from '@/libraries/proportions/quantified-share'
 import { ProgressItemList } from './ProgressItemList'
 
 const orderQuantifiedShares = (

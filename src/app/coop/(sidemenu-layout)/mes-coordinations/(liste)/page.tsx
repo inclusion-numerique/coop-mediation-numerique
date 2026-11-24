@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/supprimer-une-activite-de-coordination.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { BoutonExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/slots/BoutonExporter.slot'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/action/supprimer-la-coordination.key'
 import { listerLesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'

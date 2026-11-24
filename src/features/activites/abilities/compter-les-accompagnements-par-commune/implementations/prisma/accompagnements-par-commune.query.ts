@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { communeComptee, Effectif } from '../../../../domain'
 import {
   activitesRetenues,

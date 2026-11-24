@@ -3,7 +3,7 @@ import { useFieldContext } from '@/libraries/formulaire/form-context'
 import {
   Input as DsfrInput,
   InputProps as DsfrInputProps,
-} from '@/libraries/ui/components/Primitives/Form/Input'
+} from '@/libraries/ui/components/primitives/form/Input'
 
 export type InputProps = Omit<DsfrInputProps, 'name'> & {
   isPending: boolean

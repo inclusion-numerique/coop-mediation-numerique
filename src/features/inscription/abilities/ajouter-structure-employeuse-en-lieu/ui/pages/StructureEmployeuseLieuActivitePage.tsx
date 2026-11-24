@@ -6,8 +6,8 @@ import { type ReactNode, useState } from 'react'
 import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY } from '../../action/ajouter-structure-employeuse-en-lieu.key'
 
 const erreurEnregistrement = () =>

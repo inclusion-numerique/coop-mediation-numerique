@@ -1,5 +1,5 @@
 import { lienDuDepartementDansLaCartographie } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
-import { departementsRegionByCode } from '@/libraries/departement/departementsRegion'
+import { departementsRegionByCode } from '@/libraries/departement/departements-region'
 import type { CodeDepartement } from '@/libraries/insee'
 
 const CARTOGRAPHIE_NATIONALE =

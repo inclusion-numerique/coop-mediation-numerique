@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { CommuneFields } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/champs-de-commune-depuis-l-adresse.transfer'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { Email } from '@/features/beneficiaire/domain/email'
@@ -13,7 +13,7 @@ import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/implementations/prisma/doublon-de-beneficiaire.select'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/implementations/prisma/find-duplicates-for-beneficiaire.query'
 import type { Prisma } from '@/generated/prisma/client'
-import { siIndisponible } from '@/libraries/ban/apiAdresse'
+import { siIndisponible } from '@/libraries/ban/api-adresse'
 import { Telephone } from '@/libraries/telephone'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,

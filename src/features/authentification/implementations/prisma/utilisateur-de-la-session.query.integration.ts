@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { serializePrismaSessionUser } from '../session/serialize-prisma-session-user.transfer'
 import { utilisateurDeLaSessionSelect } from './utilisateur-de-la-session.query'
 

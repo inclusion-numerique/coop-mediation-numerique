@@ -1,7 +1,7 @@
 import { reglerLaMaintenanceAction } from '@/app/_actions/maintenance-mode/regler-la-maintenance.action'
 import { relancerLesInscriptionsInacheveesAction } from '@/app/_actions/utilisateurs/relancer-les-inscriptions-inachevees.action'
 import { relancerLesInscritsInactifsAction } from '@/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { ExportDesAccompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/ui/slots/ExportDesAccompagnementsParDepartement.slot'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterLHistoriqueDesMaintenances } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/historique-des-maintenances.query'

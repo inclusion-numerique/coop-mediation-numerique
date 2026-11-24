@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 import { Accompagnements } from '../components/page-sections/Accompagnements'
 import { Beneficiaires } from '../components/page-sections/Beneficiaires'

@@ -1,10 +1,10 @@
-import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
-import { apiV1Url } from '@/libraries/json-api/apiV1Url'
+import { getServerBaseUrl } from '@/configuration/projet/base-url'
+import { apiV1Url } from '@/libraries/json-api/api-v1-url'
 import type {
   JsonApiItemResponse,
   JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
-import { serializeApiRequestParams } from '@/libraries/json-api/serializeApiRequestParams'
+} from '@/libraries/json-api/json-api-types'
+import { serializeApiRequestParams } from '@/libraries/json-api/serialize-api-request-params'
 
 type StatistiqueResource<TAttributes extends object> = JsonApiResource<
   'statistiques',

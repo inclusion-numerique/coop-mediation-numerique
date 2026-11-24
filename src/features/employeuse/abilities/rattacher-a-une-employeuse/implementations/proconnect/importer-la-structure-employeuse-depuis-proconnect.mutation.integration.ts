@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
 import { importerLaStructureEmployeuseDepuisProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect.mutation'
 

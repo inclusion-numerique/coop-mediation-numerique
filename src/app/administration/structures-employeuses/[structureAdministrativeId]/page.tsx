@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
 import EmployeusePage from '@/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'

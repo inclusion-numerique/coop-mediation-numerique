@@ -18,7 +18,7 @@ import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visible
 import { acteurDe } from '@/features/tags/domain'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

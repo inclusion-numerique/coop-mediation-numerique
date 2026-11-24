@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import { listeDesEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/ui/filtres/liste-des-employeuses.filtre'

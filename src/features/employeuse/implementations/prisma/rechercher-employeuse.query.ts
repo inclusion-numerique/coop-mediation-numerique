@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Prisma } from '@/generated/prisma/client'
 import type { RechercherEmployeuse } from '../../domain/rechercher-employeuse'
 import { employeuseSelect, employeuseToDomain } from './employeuse.transfer'

@@ -1,6 +1,6 @@
 import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
-import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
+import { previewBranchAuthFallbacks } from '@/configuration/projet/preview-branch-auth-fallbacks'
 import { expediteur, serveurSmtp } from '@/configuration/smtp/serveur'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'

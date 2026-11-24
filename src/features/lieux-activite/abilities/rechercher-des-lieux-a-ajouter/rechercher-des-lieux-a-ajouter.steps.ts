@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import {
   RechercheDeLieu,
   rechercherDesLieuxAAjouter,

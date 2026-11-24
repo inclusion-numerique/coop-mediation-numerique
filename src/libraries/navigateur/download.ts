@@ -1,4 +1,4 @@
-import { isBrowser } from '@/libraries/navigateur/isBrowser'
+import { isBrowser } from '@/libraries/navigateur/is-browser'
 
 export const download = (url: string, filename?: string) => {
   if (!isBrowser) {

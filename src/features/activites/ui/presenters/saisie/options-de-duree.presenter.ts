@@ -1,5 +1,5 @@
-import { dureeAsString } from '@/libraries/date/dureeAsString'
-import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
+import { dureeAsString } from '@/libraries/date/duree-as-string'
+import { labelsToOptions } from '@/libraries/ui/components/form/utils/options'
 import {
   dureeAccompagnementParDefautLabels,
   dureeAccompagnementPersonnaliseeValue,

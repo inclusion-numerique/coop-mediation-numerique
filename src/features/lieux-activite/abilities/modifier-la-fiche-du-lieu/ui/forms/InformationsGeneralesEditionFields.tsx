@@ -16,12 +16,12 @@ import {
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
-} from '@/libraries/ban/apiAdresse'
+} from '@/libraries/ban/api-adresse'
 import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
-import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import { optionsWithEmptyValue } from '@/libraries/ui/components/form/utils/options'
+import { Options } from '@/libraries/ui/components/primitives/Options'
 import { informationsGeneralesFormOptions } from './informations-generales.form-data'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 

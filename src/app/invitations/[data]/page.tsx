@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-invitation.action'
 import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
 import { default as InvitationEnAttentePage } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttentePage'
@@ -11,7 +11,7 @@ import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/acc
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/refuser-une-invitation.key'
 import { Courriel, lienInvitation } from '@/features/equipe/domain'
 import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
-import type { EncodedState } from '@/libraries/etat-encode/encodeSerializableState'
+import type { EncodedState } from '@/libraries/etat-encode/encode-serializable-state'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {

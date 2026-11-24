@@ -1,4 +1,4 @@
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import type { OptionDEmployeuse } from '../../../../action/rechercher-employeuses.key'
 import type { EmployeuseDesActivites } from '../../../../domain'
 

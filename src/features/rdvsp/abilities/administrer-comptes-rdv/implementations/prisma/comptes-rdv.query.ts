@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { santeDuCompte } from '@/features/rdvsp/domain/compte/sante-compte'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import type { ComptesAdministres } from '../../domain/comptes-administres'

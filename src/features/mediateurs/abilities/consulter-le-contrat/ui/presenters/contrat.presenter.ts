@@ -1,5 +1,5 @@
 import { differenceInMonths } from 'date-fns'
-import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
+import { dateAsDayConventional } from '@/libraries/date/date-as-day'
 import type {
   Contrat,
   EcheanceDuContrat,

@@ -1,4 +1,4 @@
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import type { CoordinateurAChoisir } from '../../domain'
 
 export const optionDuCoordinateur = ({

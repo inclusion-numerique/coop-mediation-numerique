@@ -11,7 +11,7 @@ import {
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
+} from '@/libraries/nombre/format-number'
 
 type PieData = { label: string; count: number; proportion: number }
 

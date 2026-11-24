@@ -3,10 +3,10 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { formatDate } from '@/libraries/date/formatDate'
+import { formatDate } from '@/libraries/date/format-date'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '../../action/retirer-un-mediateur-du-lieu.key'
 import { ModaleDeRetraitDynamique } from '../components/ModaleDeRetraitDynamique'
 

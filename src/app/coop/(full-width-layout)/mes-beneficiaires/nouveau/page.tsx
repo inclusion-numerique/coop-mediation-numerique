@@ -5,7 +5,7 @@ import type { SaisieEnCours } from '@/features/beneficiaire/ui/forms/Beneficiair
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/libraries/etat-encode/encodeSerializableState'
+} from '@/libraries/etat-encode/encode-serializable-state'
 
 const PageCreerBeneficiaire = async ({
   searchParams,

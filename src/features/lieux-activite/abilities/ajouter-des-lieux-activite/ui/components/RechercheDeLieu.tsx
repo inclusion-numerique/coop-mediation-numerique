@@ -2,7 +2,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import type { ComboBoxProps } from '@/libraries/formulaire/fields-components/ComboBox'
 import { Input } from '@/libraries/formulaire/fields-components/Input'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { Options } from '@/libraries/ui/components/primitives/Options'
 import {
   LieuAAjouterOptions,
   type RechercheLieuAAjouter,

@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
+import { dateAsDayAndTime } from '@/libraries/date/date-as-day-and-time'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
+import { optionalNumberToString } from '@/libraries/nombre/format-number'
 import type { EmployeuseAffichee } from '../presenters/employeuse-affichee.presenter'
 
 export const EmployeuseTableRow = ({

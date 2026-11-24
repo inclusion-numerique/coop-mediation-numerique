@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { fusionnerDesLieuxAction } from '@/app/_actions/lieux-activite/fusionner-des-lieux.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.key'
 import { apercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/apercu-de-la-fusion.query'

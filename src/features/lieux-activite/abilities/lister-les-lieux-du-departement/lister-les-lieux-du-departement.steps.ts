@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Page, PageSize, Sort } from '@arckit/resultset'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { lieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/lieux-du-departement.query'
 import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/nombre-de-lieux-du-departement.query'
 

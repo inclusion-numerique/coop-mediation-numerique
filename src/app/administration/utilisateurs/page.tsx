@@ -2,7 +2,7 @@ import { rechercherDesCommunesAction } from '@/app/_actions/utilisateurs/recherc
 import { rechercherDesCoordinateursAction } from '@/app/_actions/utilisateurs/rechercher-des-coordinateurs.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
 import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/nom-de-l-employeuse.query'
 import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'

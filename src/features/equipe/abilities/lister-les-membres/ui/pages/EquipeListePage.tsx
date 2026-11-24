@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import { type LigneEquipe } from '../../../../domain'

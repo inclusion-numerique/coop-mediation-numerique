@@ -9,8 +9,8 @@ import {
 } from '@/features/rdvsp/domain/compte/sante-compte'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '../../action/prendre-rendez-vous.key'
 
 const PrendreRendezVousAvecBeneficiaireButton = ({

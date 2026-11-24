@@ -1,5 +1,5 @@
-import { addMutationLog } from '@/configuration/prisma/addMutationLog'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/mediateurs/implementations/prisma/synchroniser-la-personne.mutation'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'

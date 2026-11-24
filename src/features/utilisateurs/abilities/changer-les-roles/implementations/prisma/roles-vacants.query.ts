@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
 import type { Prisma } from '@/generated/prisma/client'

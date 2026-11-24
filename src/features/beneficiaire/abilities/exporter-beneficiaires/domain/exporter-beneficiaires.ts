@@ -10,7 +10,7 @@ import type { Notes } from '@/features/beneficiaire/domain/notes'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/add-export-metadata'
 import type { Telephone } from '@/libraries/telephone'
 
 export type BeneficiaireExportRow = {

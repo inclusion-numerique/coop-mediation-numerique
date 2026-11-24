@@ -4,12 +4,12 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain'
-import { addExportMetadata } from '@/libraries/tableur/addExportMetadata'
-import { addTitleRow } from '@/libraries/tableur/addTitleRow'
-import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
-import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
+import { addExportMetadata } from '@/libraries/tableur/add-export-metadata'
+import { addTitleRow } from '@/libraries/tableur/add-title-row'
+import { autosizeColumns } from '@/libraries/tableur/autosize-columns'
+import { setWorkbookMetadata } from '@/libraries/tableur/set-workbook-metadata'
 import { telephoneDisplayString } from '@/libraries/telephone'
-import { htmlToText } from '@/libraries/texte/htmlToText'
+import { htmlToText } from '@/libraries/texte/html-to-text'
 import type {
   BeneficiaireExportRow,
   ConstruireLeClasseurDesBeneficiaires,

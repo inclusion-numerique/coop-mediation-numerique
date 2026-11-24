@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { ficheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/implementations/prisma/fiche-utilisateur.query'
 import {

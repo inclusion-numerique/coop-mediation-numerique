@@ -1,8 +1,8 @@
 import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { formatInTimeZone } from 'date-fns-tz'
-import { htmlToText } from '@/libraries/texte/htmlToText'
-import { booleanToYesNoLabel } from '@/libraries/ui/components/Form/utils/yesNoBooleanOptions'
+import { htmlToText } from '@/libraries/texte/html-to-text'
+import { booleanToYesNoLabel } from '@/libraries/ui/components/form/utils/yes-no-boolean-options'
 import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import type { Equipement, Orientation } from '../../../../domain'
 import {

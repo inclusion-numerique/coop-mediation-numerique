@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { rechercherDesCommunesDuReseauAction } from '@/app/_actions/mon-reseau/rechercher-des-communes-du-reseau.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
 import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'

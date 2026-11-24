@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type {
   EmployeuseLue,
   Geocodage,
@@ -11,7 +11,7 @@ import {
   seedEmployeuseMain,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
 import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l-employeuse.query'
 

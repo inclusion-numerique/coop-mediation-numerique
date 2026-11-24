@@ -14,7 +14,7 @@ import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

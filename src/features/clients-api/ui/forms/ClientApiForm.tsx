@@ -8,8 +8,8 @@ import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import {
   ClientApiValidation,
   type ValeursDuClientApi,

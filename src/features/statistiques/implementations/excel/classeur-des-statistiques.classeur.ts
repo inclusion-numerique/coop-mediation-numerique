@@ -1,18 +1,18 @@
 import * as Excel from 'exceljs'
 import { Worksheet } from 'exceljs'
-import { numberToPercentage } from '@/libraries/nombre/formatNumber'
+import { numberToPercentage } from '@/libraries/nombre/format-number'
 import type {
   LabelAndCount,
   QuantifiedShare,
-} from '@/libraries/proportions/quantifiedShare'
+} from '@/libraries/proportions/quantified-share'
 import {
   type AuteurDExport,
   addExportMetadata,
-} from '@/libraries/tableur/addExportMetadata'
-import { addFilters } from '@/libraries/tableur/addFilters'
-import { addTitleRow } from '@/libraries/tableur/addTitleRow'
-import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
-import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
+} from '@/libraries/tableur/add-export-metadata'
+import { addFilters } from '@/libraries/tableur/add-filters'
+import { addTitleRow } from '@/libraries/tableur/add-title-row'
+import { autosizeColumns } from '@/libraries/tableur/autosize-columns'
+import { setWorkbookMetadata } from '@/libraries/tableur/set-workbook-metadata'
 
 const filtresDisponibles = [
   'Période',

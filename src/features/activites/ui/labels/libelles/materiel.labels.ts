@@ -1,4 +1,4 @@
-import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/components/form/utils/options'
 import { MATERIELS } from '../../../domain'
 
 export const materielValues = [...MATERIELS, 'Aucun'] as const

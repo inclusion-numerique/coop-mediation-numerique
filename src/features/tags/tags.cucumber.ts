@@ -1,6 +1,6 @@
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { CodeDepartement } from '@/libraries/insee'
 import {
   type Acteur,

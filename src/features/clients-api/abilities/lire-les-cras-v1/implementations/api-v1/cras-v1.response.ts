@@ -1,13 +1,13 @@
-import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
-import { cursorPageHref } from '@/libraries/json-api/CursorPagination'
+import { getServerBaseUrl } from '@/configuration/projet/base-url'
+import { cursorPageHref } from '@/libraries/json-api/cursor-pagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
-} from '@/libraries/json-api/JsonApiTypes'
+} from '@/libraries/json-api/json-api-types'
 import {
   type PaginationParCurseur,
   pageParCurseur,
-} from '@/libraries/json-api/pageParCurseur'
+} from '@/libraries/json-api/page-par-curseur'
 
 type CraV1Relationships = 'user'
 

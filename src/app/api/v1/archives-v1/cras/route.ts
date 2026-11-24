@@ -12,7 +12,7 @@ import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras
 import {
   JsonApiCursorPaginationQueryParamsValidation,
   prismaCursorPagination,
-} from '@/libraries/json-api/CursorPagination'
+} from '@/libraries/json-api/cursor-pagination'
 
 /**
  * @openapi

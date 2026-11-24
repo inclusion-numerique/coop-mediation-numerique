@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/enSerie'
+import { enSerie } from '@/libraries/fixtures/en-serie'
 import { output } from '@/libraries/fixtures/output'
 
 /**

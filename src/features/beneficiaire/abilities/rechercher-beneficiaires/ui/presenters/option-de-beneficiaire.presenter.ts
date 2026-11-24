@@ -1,7 +1,7 @@
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
 
 /**

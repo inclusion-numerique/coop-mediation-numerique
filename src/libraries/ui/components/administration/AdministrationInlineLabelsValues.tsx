@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { Fragment, ReactNode } from 'react'
-import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/only-defined-and-not-null'
 
 export type LabelAndValue = {
   label: ReactNode

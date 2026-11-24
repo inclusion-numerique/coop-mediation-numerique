@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import ConnexionErreurPage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/slots/ConnexionErreurPage.slot'
 
 export const metadata = {

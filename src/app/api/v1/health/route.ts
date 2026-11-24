@@ -6,7 +6,7 @@ import {
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
 import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api/implementations/api-v1/etat-de-l-api.response'
-import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
+import { NoQueryParamsValidation } from '@/libraries/json-api/api-v1-query-params'
 
 /**
  * @openapi

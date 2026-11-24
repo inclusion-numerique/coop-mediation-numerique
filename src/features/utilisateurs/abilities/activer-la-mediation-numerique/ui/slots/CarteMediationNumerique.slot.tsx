@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
 import Card from '@/libraries/ui/components/Card'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '../../action/activer-la-mediation-numerique.key'
 
 const ActivationModal = createModal({

@@ -1,6 +1,6 @@
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import {
   datesDonneesRecolteesEtMisesAJour,

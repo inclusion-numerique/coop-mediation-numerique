@@ -4,8 +4,8 @@ import classNames from 'classnames'
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
-import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
+} from '@/libraries/nombre/format-number'
+import type { QuantifiedShare } from '@/libraries/proportions/quantified-share'
 
 export const QuantifiedShareLegend = ({
   colors,

@@ -1,5 +1,5 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { formatDate } from '@/libraries/date/formatDate'
+import { formatDate } from '@/libraries/date/format-date'
 import type { RepriseExterne } from '../presenters/reprise-externe.presenter'
 import {
   BoutonDesDifferences,

@@ -11,8 +11,8 @@ import StructureAdministrativeCard from '@/features/employeuse/ui/components/Str
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { Options } from '@/libraries/ui/components/primitives/Options'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/renseigner-structure-employeuse.key'
 import {
   RenseignerStructureEmployeuseValidation,

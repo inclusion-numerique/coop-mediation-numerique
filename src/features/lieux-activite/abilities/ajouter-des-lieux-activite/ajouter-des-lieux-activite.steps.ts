@@ -17,7 +17,7 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type {
   LieuACreer,
   LieuCarto,

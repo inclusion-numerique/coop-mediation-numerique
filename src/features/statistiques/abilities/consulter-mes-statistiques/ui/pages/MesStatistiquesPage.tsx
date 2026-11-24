@@ -1,9 +1,9 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
+import { getUserDepartement } from '@/libraries/departement/get-user-departement'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import {

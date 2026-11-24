@@ -11,9 +11,9 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import {
   Options,
   type OptionsData,
-} from '@/libraries/ui/components/Primitives/Options'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+} from '@/libraries/ui/components/primitives/Options'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 import { AJOUTER_UN_MEMBRE_ACTION_KEY } from '../../action/ajouter-un-membre.key'
 import { RECHERCHER_DES_MEDIATEURS_A_AJOUTER_ACTION_KEY } from '../../action/rechercher-des-mediateurs-a-ajouter.key'
 import type { EquipeAComplementer, MediateurAAjouter } from '../../domain'

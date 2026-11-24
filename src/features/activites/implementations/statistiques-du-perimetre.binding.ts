@@ -4,7 +4,7 @@ import {
   type PerimetreDesStatistiques,
 } from '@/features/activites/domain'
 import { fenetreDe } from '@/features/activites/domain/fenetre-des-graphiques'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
 import type { RendezVousAuxStatuts } from './prisma/statistiques/criteres-des-statistiques.sql'
 import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
 

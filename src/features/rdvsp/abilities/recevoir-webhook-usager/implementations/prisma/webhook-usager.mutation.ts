@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { Prisma } from '@/generated/prisma/client'
 import { usagerFromDomain } from '../../../../implementations/prisma/entourage.transfer'
 import type {

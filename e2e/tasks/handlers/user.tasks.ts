@@ -1,5 +1,5 @@
 import * as uuid from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 
 export type CreateUserInput = Parameters<
   typeof prismaClient.user.create

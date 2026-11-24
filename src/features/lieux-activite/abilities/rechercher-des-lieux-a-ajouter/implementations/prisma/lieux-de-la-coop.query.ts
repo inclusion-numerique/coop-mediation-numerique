@@ -3,9 +3,9 @@ import {
   Siret,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Prisma } from '@/generated/prisma/client'
-import { toTitleCase } from '@/libraries/texte/toTitleCase'
+import { toTitleCase } from '@/libraries/texte/to-title-case'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'

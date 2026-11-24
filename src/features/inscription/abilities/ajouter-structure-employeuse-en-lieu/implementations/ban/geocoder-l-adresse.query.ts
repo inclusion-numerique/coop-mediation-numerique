@@ -1,5 +1,5 @@
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { siIndisponible } from '@/libraries/ban/apiAdresse'
+import { siIndisponible } from '@/libraries/ban/api-adresse'
 import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import type { Geocodage, GeocoderLAdresse } from '../../domain/ports'
 

@@ -9,7 +9,7 @@ import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
 
 export const GET = async (
   request: NextRequest,

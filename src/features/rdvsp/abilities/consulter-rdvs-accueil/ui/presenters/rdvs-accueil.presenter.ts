@@ -1,5 +1,5 @@
-import { dateAsDayFullWordsInTimezone } from '@/libraries/date/dateAsDay'
-import { dateAsTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
+import { dateAsDayFullWordsInTimezone } from '@/libraries/date/date-as-day'
+import { dateAsTimeInTimeZone } from '@/libraries/date/date-as-day-and-time'
 import { pluriel } from '@/libraries/pluriel'
 import type { RdvEnUneLigne } from '../../domain/donnees-accueil-rdv'
 

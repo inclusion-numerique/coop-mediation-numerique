@@ -1,5 +1,5 @@
-import { addMutationLog } from '@/configuration/prisma/addMutationLog'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { failure, type Result, success } from '@/libraries/result'
 import {

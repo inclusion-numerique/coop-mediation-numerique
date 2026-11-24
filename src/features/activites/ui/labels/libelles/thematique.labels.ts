@@ -26,7 +26,7 @@ import { UserStatsIcon } from '@/libraries/pictograms/user/UserStatsIcon'
 import { PairIcon } from '@/libraries/pictograms/work/PairIcon'
 import { ProfessionalIcon } from '@/libraries/pictograms/work/ProfessionalIcon'
 import { ScolarshipIcon } from '@/libraries/pictograms/work/ScolarshipIcon'
-import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/components/form/utils/options'
 import {
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_DE_MEDIATION,

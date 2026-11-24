@@ -15,8 +15,8 @@ import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer
 import { useAnalyseDeLImport } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/use-analyse-de-l-import'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { pluriel } from '@/libraries/pluriel'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 
 // L'action d'import est injectée par la route (concern croisé), l'UI reste
 // découplée de l'ability.

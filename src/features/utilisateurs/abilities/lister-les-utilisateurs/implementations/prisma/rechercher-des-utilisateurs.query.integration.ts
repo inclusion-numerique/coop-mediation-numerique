@@ -1,6 +1,6 @@
 import { Page, PageSize, Sort } from '@arckit/resultset'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { AUCUN_FILTRE, mediateurDe } from '@/features/utilisateurs/domain'
 import { rechercherDesUtilisateurs } from './rechercher-des-utilisateurs.query'
 

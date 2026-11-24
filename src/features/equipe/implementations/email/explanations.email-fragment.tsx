@@ -4,8 +4,8 @@ import {
   MjmlSection,
   MjmlText,
 } from '@faire/mjml-react'
-import { getServerBaseUrl } from '@/configuration/projet/baseUrl'
-import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
+import { getServerBaseUrl } from '@/configuration/projet/base-url'
+import { emailAssetUrl } from '@/libraries/emails/email-asset-url'
 import { brandColor } from '@/libraries/emails/styles'
 
 const Explanations = () => (

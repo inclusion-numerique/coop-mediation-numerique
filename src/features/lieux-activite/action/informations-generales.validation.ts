@@ -4,7 +4,7 @@ import {
   ComplementAdresseSaisi,
   NomDuLieuSaisi,
 } from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
-import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
+import { AdresseBanValidation } from '@/libraries/adresse/adresse-ban-validation'
 
 export const IdentiteLieuShape = {
   nom: NomDuLieuSaisi,

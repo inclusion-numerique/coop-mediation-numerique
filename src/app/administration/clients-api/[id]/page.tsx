@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { modifierUnClientApiAction } from '@/app/_actions/clients-api/modifier-un-client-api.action'
 import { renouvelerLeSecretAction } from '@/app/_actions/clients-api/renouveler-le-secret.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api/implementations/prisma/client-api.query'
 import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui/pages/ClientApiPage'

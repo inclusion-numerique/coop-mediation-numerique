@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 import CustomTooltip from './CustomTooltip'
 
 export type LegendeDesStatistiques<T extends object = object> = {

@@ -1,6 +1,6 @@
 import { Page, PageSize, Sort } from '@arckit/resultset'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { type Acteur, MediateurId } from '../../../../domain'
 import { listerLesTags } from './lister-les-tags.query'
 

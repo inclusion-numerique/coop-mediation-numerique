@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getServerUrl } from '@/configuration/projet/baseUrl'
+import { getServerUrl } from '@/configuration/projet/base-url'
 import { cheminDeRedirection } from '../../domain/retour-connexion'
 
 export const redirection = (

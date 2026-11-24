@@ -4,7 +4,7 @@ import { InnovationIcon } from '@/libraries/pictograms/digital/InnovationIcon'
 import { DocumentSignature } from '@/libraries/pictograms/document/DocumentSignature'
 import { CommunityIcon } from '@/libraries/pictograms/leisure/CommunityIcon'
 import { Compass } from '@/libraries/pictograms/map/Compass'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import type {
   Initiative,
   ThematiqueDAnimation,

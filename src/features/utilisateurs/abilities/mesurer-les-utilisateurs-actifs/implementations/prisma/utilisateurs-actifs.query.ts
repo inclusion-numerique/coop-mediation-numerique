@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { AUCUN_FILTRE, FiltreStatut } from '@/features/utilisateurs/domain'
 import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
 import { utilisateursWhere } from '@/features/utilisateurs/implementations/prisma/utilisateurs.where'

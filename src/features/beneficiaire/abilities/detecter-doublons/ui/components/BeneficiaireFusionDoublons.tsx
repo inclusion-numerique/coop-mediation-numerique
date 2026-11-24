@@ -8,11 +8,11 @@ import { type DetecterDoublons } from '@/features/beneficiaire/abilities/detecte
 import { type BeneficiaireDoublon } from '@/features/beneficiaire/abilities/detecter-doublons/domain/types'
 import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 import { pluriel } from '@/libraries/pluriel'
 import { telephoneDisplayString } from '@/libraries/telephone'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '../../action/fusionner-des-beneficiaires.key'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>

@@ -1,5 +1,5 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 import type { EmployeuseId } from './employeuse-id'
 
 type AdresseAGeocoder = {

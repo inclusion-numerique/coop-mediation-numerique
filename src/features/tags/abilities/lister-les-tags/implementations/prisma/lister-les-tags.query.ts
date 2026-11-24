@@ -1,5 +1,5 @@
 import type { Page, PageSize, Sort, SortDirection } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { Prisma } from '@/generated/prisma/client'
 import { type Acteur, Effectif } from '../../../../domain'
 import {

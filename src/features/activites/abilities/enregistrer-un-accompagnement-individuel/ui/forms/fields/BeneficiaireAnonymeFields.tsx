@@ -12,8 +12,8 @@ import type {
 } from '@/features/activites/ui/labels/libelles/profil.labels'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
+import { Options } from '@/libraries/ui/components/primitives/Options'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

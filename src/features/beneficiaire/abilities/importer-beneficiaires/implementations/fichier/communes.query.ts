@@ -1,7 +1,7 @@
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
 import { once } from 'lodash-es'
-import { staticFile } from '@/libraries/chemins/staticDirectory'
+import { staticFile } from '@/libraries/chemins/static-directory'
 
 export type Commune = {
   codeInsee: string

@@ -1,6 +1,6 @@
 import type { Worksheet } from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/add-export-metadata'
 import { classeurDesAccompagnements } from './classeur-des-accompagnements.classeur'
 
 const demandeur: AuteurDExport = {

@@ -1,7 +1,7 @@
 import { contactEmail } from '@/configuration/projet/config'
-import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { emailTransport } from '@/configuration/smtp/email-transport'
 import { expediteur } from '@/configuration/smtp/serveur'
-import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throw-on-send-mail-failure'
 import { compteSupprime } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/compte-supprime.email'
 import { compileMjml } from '@/libraries/emails/mjml'
 

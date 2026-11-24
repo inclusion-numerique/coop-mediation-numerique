@@ -5,7 +5,7 @@ import type { Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { SUPPRIMER_BENEFICIAIRES_ACTION_KEY } from '../../action/supprimer-beneficiaires.key'
 import { DeleteBeneficiaireModal } from '../components/DeleteBeneficiaireModal'
 

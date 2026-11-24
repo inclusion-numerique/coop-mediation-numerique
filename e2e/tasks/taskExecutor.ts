@@ -12,7 +12,7 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '@/libraries/etat-encode/encodeSerializableState'
+} from '@/libraries/etat-encode/encode-serializable-state'
 
 const taskExecutor = async () => {
   const task = process.argv[2] as TaskName

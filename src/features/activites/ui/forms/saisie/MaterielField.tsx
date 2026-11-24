@@ -4,7 +4,7 @@ import {
   type DefaultValues,
   withFieldGroup,
 } from '@/libraries/formulaire/use-app-form'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'materiel'> = {}
 

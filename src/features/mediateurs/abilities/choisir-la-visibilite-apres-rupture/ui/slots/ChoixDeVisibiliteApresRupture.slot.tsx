@@ -4,7 +4,7 @@ import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY } from '../../action/choisir-la-visibilite-apres-rupture.key'
 import type { reponsesApresRupture } from '../../domain/reponse-apres-rupture'
 

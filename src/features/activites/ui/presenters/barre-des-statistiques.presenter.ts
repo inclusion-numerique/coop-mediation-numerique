@@ -1,5 +1,5 @@
 import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import {
   filtresDesStatistiques,
   type ValeursDesStatistiques,

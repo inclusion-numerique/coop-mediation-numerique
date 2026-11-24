@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import { addMutationLog } from '@/configuration/prisma/addMutationLog'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import { type Result, success } from '@/libraries/result'
 import type {

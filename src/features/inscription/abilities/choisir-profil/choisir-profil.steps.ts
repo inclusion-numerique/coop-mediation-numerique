@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/decider-le-role'
 import { choisirProfilAvec } from '@/features/inscription/abilities/choisir-profil/implementations/choisir-profil.binding'
 import {

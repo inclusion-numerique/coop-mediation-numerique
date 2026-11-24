@@ -1,4 +1,4 @@
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 import { pluriel } from '@/libraries/pluriel'
 import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 import { StatistiqueAccompagnement } from './StatistiqueAccompagnement'

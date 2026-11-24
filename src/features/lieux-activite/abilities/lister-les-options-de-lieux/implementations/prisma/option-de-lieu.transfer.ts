@@ -1,4 +1,4 @@
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 
 export type LieuActiviteOption = SelectOption<
   string,

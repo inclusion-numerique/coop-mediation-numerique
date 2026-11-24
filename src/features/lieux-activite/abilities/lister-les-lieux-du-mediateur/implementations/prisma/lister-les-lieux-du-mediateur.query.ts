@@ -1,5 +1,5 @@
 import type { Sort } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Prisma } from '@/generated/prisma/client'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { RattachementId } from '../../../../domain/identifiants/rattachement-id'

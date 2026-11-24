@@ -1,7 +1,7 @@
 import { contactEmail } from '@/configuration/projet/config'
-import { emailTransport } from '@/configuration/smtp/emailTransport'
+import { emailTransport } from '@/configuration/smtp/email-transport'
 import { expediteur } from '@/configuration/smtp/serveur'
-import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
+import { throwOnSendMailFailure } from '@/configuration/smtp/throw-on-send-mail-failure'
 import { retraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/retrait-du-lieu.email'
 import { compileMjml } from '@/libraries/emails/mjml'
 

@@ -3,7 +3,7 @@ import { materielIcons } from '@/features/activites/ui/labels/libelles/materiel.
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
+} from '@/libraries/nombre/format-number'
 
 export const StatistiqueMateriel = ({
   label,

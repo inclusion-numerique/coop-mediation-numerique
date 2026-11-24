@@ -3,7 +3,7 @@
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { type CSSProperties, Fragment } from 'react'
-import { numberToPercentage } from '@/libraries/nombre/formatNumber'
+import { numberToPercentage } from '@/libraries/nombre/format-number'
 
 const ProgressBar = ({
   progress = [],

@@ -3,8 +3,8 @@ import {
   FiltreDeDatesValidation,
   IdsValidation,
 } from '@/features/clients-api/implementations/api-v1'
-import { JsonApiCursorPaginationQueryParamsValidation } from '@/libraries/json-api/CursorPagination'
-import type { PaginationParCurseur } from '@/libraries/json-api/pageParCurseur'
+import { JsonApiCursorPaginationQueryParamsValidation } from '@/libraries/json-api/cursor-pagination'
+import type { PaginationParCurseur } from '@/libraries/json-api/page-par-curseur'
 
 export const StructuresQueryParamsValidation =
   JsonApiCursorPaginationQueryParamsValidation.extend({

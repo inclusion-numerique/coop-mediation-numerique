@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Image from 'next/image'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 
 type ImageStatTileProps = {
   variant: 'image'

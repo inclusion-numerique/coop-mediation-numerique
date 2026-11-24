@@ -1,4 +1,4 @@
-import { getServerUrl } from '@/configuration/projet/baseUrl'
+import { getServerUrl } from '@/configuration/projet/base-url'
 import { MediateurId } from '../../domain'
 import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
 

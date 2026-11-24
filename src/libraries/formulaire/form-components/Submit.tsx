@@ -2,7 +2,7 @@ import Button, {
   ButtonProps as BaseButtonProps,
 } from '@codegouvfr/react-dsfr/Button'
 import { ReactNode, type RefAttributes } from 'react'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 
 type CustomButtonProps = BaseButtonProps.Common &
   (

@@ -5,8 +5,8 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Image from 'next/image'
 import { download } from '@/libraries/navigateur/download'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { numberToString } from '@/libraries/nombre/format-number'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 
 const ExportActiviteModal = createModal({
   id: 'export-activites',

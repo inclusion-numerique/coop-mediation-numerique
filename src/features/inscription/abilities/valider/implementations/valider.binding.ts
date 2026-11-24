@@ -1,4 +1,4 @@
-import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
 import type { UtilisateurId } from '@/features/inscription/domain'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import type {

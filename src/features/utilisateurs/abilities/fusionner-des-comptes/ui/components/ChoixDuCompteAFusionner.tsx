@@ -4,7 +4,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
 import { hrefDuCompteAFusionner } from '@/features/utilisateurs/ui/presenters/liens.presenter'
-import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { dateAsDay } from '@/libraries/date/date-as-day'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
@@ -12,7 +12,7 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import {
   Options,
   type OptionsData,
-} from '@/libraries/ui/components/Primitives/Options'
+} from '@/libraries/ui/components/primitives/Options'
 import { RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY } from '../../action/fusionner-des-comptes.key'
 import type { CompteTrouve } from '../../domain'
 

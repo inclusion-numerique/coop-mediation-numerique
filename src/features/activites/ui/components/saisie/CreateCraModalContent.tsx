@@ -3,7 +3,7 @@
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect } from 'react'
-import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { CalendarIcon } from '@/libraries/pictograms/digital/CalendarIcon'

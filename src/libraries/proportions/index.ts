@@ -2,4 +2,4 @@ export {
   allocatePercentages,
   allocatePercentagesFromRecords,
   computeProportion,
-} from './allocatePercentages'
+} from './allocate-percentages'

@@ -4,7 +4,7 @@ import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@/features/beneficiaire/ui/forms/BeneficiaireForm'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'

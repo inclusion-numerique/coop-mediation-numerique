@@ -1,8 +1,8 @@
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
-import { searchAdresses, siIndisponible } from '@/libraries/ban/apiAdresse'
-import { banFeatureToAdresseBanData } from '@/libraries/ban/banFeatureToAdresseBanData'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import { searchAdresses, siIndisponible } from '@/libraries/ban/api-adresse'
+import { banFeatureToAdresseBanData } from '@/libraries/ban/ban-feature-to-adresse-ban-data'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
+import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
 
 const loadSuggestions = async (
   input: string,

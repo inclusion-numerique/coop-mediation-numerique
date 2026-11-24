@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
 import { criteresDeLaListe } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/filtres/liste-des-lieux.filtre'
 

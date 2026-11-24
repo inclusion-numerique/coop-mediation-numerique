@@ -6,8 +6,8 @@ import {
 import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { BadgeAvecInfobulle } from '@/libraries/ui/components/BadgeAvecInfobulle'
-import { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
+import { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import { SelectedItemsData } from '@/libraries/ui/components/primitives/SelectedItems'
 
 const itemToKey = (item: { id: string }): string => item.id
 

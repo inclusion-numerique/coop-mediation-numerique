@@ -4,7 +4,7 @@ import {
   ComboBox as ComboBoxBase,
   type ComboBoxData as ComboBoxBaseData,
   type ComboBoxProps as ComboBoxBaseProps,
-} from '@/libraries/ui/components/Primitives/Form/ComboBox'
+} from '@/libraries/ui/components/primitives/form/ComboBox'
 import { useFieldContext } from '../form-context'
 
 export type ComboBoxData<TItem, TPayload = {}> = ComboBoxBaseData<

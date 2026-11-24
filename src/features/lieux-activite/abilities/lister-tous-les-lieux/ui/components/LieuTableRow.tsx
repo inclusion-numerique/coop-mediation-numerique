@@ -5,8 +5,8 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { lienDuLieuDansLaCartographie } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
-import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
-import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
+import { dateAsDayAndTime } from '@/libraries/date/date-as-day-and-time'
+import { optionalNumberToString } from '@/libraries/nombre/format-number'
 import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
 
 const estUnLieuDActivite = ({ _count }: LigneDeLaListe) =>

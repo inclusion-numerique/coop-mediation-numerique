@@ -3,7 +3,7 @@
 import SkipLinks from '@codegouvfr/react-dsfr/SkipLinks'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { defaultSkipLinks } from '@/libraries/liens-d-evitement/skipLinks'
+import { defaultSkipLinks } from '@/libraries/liens-d-evitement/skip-links'
 
 const SkipLinksPortal = ({
   links = defaultSkipLinks,

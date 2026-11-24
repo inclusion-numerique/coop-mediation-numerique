@@ -1,5 +1,5 @@
 import { type Prisma, Typologie } from '@/generated/prisma/browser'
-import { enSerie } from '@/libraries/fixtures/enSerie'
+import { enSerie } from '@/libraries/fixtures/en-serie'
 import { lieuInclusion } from './lieu-inclusion'
 
 export const structureEmployeuse = lieuInclusion({

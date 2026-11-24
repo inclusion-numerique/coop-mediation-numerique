@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { OrganisationId } from '../../../../domain/identifiants/organisation-id'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { StatutPresence } from '../../../../domain/rdv/statut-presence'

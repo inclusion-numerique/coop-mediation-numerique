@@ -5,7 +5,7 @@ import {
   type Sort,
   type SortDirection,
 } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'

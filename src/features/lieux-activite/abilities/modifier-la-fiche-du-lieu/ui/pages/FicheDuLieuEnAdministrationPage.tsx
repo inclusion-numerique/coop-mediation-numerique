@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { hrefDeFusionDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { EnteteDeLaFicheEnAdministration } from '../components/EnteteDeLaFicheEnAdministration'
 import { FicheDuLieuPage } from '../components/FicheDuLieuPage'

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '../../action/regler-la-visibilite-carto.key'
 
 export const MaVisibiliteCarto = ({ visible }: { visible: boolean }) => {

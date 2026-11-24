@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { RdvUser } from '@/generated/prisma/client'
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../domain/ports'
 

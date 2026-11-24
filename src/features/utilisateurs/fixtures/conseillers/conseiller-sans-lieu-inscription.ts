@@ -1,4 +1,4 @@
-import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
+import { previewBranchAuthFallbacks } from '@/configuration/projet/preview-branch-auth-fallbacks'
 import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 const conseillerSansLieuInscriptionEmail =

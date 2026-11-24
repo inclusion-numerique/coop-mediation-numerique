@@ -1,5 +1,5 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Prisma } from '@/generated/prisma/client'
 import { motsDe } from '@/libraries/texte/mots'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'

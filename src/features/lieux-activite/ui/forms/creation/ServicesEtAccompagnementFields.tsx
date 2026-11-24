@@ -7,8 +7,8 @@ import {
   serviceOptions,
 } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
-import { optionsWithEmptyValue } from '@/libraries/ui/components/Form/utils/options'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import { optionsWithEmptyValue } from '@/libraries/ui/components/form/utils/options'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const ServicesEtAccompagnementFields = withForm({

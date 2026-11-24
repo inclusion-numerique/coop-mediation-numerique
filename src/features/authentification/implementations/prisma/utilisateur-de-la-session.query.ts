@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { enregistrerLaDerniereVisite } from '@/features/authentification/implementations/prisma/derniere-visite.mutation'
 import { serializePrismaSessionUser } from '@/features/authentification/implementations/session/serialize-prisma-session-user.transfer'

@@ -1,4 +1,4 @@
-import { addMutationLog } from '@/configuration/prisma/addMutationLog'
+import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
 import type { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import type { PlanDeChangement } from '../../domain'
 

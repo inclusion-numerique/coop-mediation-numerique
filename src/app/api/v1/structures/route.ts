@@ -12,8 +12,8 @@ import {
 import { reponseDesStructures } from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.response'
 import { lieuInventorie } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/api/lieu-inventorie.transfer'
 import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/prisma/inventaire-des-lieux.query'
-import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
-import { curseurLu } from '@/libraries/json-api/pageParCurseur'
+import { prismaCursorPagination } from '@/libraries/json-api/cursor-pagination'
+import { curseurLu } from '@/libraries/json-api/page-par-curseur'
 
 /**
  * @openapi

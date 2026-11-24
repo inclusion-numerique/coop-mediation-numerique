@@ -2,7 +2,7 @@
 
 import { RechercheEnLigne } from '@/libraries/etat-d-url/filtres/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '../../../action/rechercher-des-tags.key'
 import { filtreDesTags } from '../../filtres/activites.filtre'
 

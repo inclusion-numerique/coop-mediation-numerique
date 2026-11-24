@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { tagsRappeles } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/tags-rappeles'
 import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
 import { coordinationsSemees } from '@/features/activites/activites.cucumber'

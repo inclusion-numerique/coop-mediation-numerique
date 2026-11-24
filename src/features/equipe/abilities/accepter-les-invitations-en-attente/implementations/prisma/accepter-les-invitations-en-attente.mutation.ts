@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 
 const estMediateur = (
   user: { email: string; mediateur: { id: string } | null } | null,

@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ActiviteId,

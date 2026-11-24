@@ -1,7 +1,7 @@
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
-import type { SelectedItemsData } from '@/libraries/ui/components/Primitives/SelectedItems'
+import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import type { SelectedItemsData } from '@/libraries/ui/components/primitives/SelectedItems'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '../../../action/rechercher-des-beneficiaires.key'
 import {
   type BeneficiaireDuCra,

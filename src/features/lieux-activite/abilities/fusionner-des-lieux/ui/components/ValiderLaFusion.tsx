@@ -5,7 +5,7 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '../../action/fusionner-des-lieux.key'
 
 const ValiderLaFusion = ({

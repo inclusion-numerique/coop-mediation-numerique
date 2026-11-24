@@ -1,6 +1,6 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import RattacherEmployeuseForm from '../forms/RattacherEmployeuseForm'
 

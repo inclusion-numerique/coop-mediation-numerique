@@ -13,7 +13,7 @@ import {
 import { useOnClickOutside } from 'usehooks-ts'
 import { hrefDeLExportDesBeneficiaires } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { download } from '@/libraries/navigateur/download'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 
 export const BeneficiairesMoreOptionsButton = () => {
   // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère

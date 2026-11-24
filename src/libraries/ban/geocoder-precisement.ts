@@ -1,6 +1,6 @@
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
-import { type Feature, searchAdresses } from '@/libraries/ban/apiAdresse'
-import { banFeatureToAdresseBanData } from '@/libraries/ban/banFeatureToAdresseBanData'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import { type Feature, searchAdresses } from '@/libraries/ban/api-adresse'
+import { banFeatureToAdresseBanData } from '@/libraries/ban/ban-feature-to-adresse-ban-data'
 
 /**
  * Les seuls champs nécessaires au géocodage : structures employeuses et lieux

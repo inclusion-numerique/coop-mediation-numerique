@@ -2,8 +2,8 @@ import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@/libraries/date/dateAsDayAndTime'
-import { dureeAsString } from '@/libraries/date/dureeAsString'
+} from '@/libraries/date/date-as-day-and-time'
+import { dureeAsString } from '@/libraries/date/duree-as-string'
 import { pluriel } from '@/libraries/pluriel'
 import { valeurDe } from '../../../../libraries/collections/valeur-de'
 import type {

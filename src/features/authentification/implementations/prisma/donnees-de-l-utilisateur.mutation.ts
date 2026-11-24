@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 import { telephoneEnregistrable } from '@/libraries/telephone'
 

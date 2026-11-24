@@ -1,6 +1,6 @@
 import type { CrasDeDemonstration } from '@/features/activites/fixtures/cras-de-demonstration'
 import type { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/enSerie'
+import { enSerie } from '@/libraries/fixtures/en-serie'
 
 export const enregistrerLesCras = async ({
   transaction,

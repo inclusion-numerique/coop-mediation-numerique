@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/supprimer-beneficiaires.mutation'
 import {
   nombreDeBeneficiairesAuDebutDuScenario,

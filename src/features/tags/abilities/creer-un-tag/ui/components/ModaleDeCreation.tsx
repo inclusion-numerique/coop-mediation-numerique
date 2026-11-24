@@ -7,10 +7,10 @@ import type { z } from 'zod'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { inject } from '@/libraries/nextjs/injection/client'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
-import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import { createDynamicModal } from '@/libraries/ui/components/modal/create-dynamic-modal'
+import { createToast } from '@/libraries/ui/toast/create-toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 import {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,
   NOM_DU_TAG_LONGUEUR_MAX,

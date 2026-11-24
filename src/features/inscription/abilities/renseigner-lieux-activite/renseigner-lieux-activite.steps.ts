@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { renseignerLieuxActiviteAvec } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/renseigner-lieux-activite.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {

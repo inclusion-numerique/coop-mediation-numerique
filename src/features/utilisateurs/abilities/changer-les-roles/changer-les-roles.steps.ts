@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { AuteurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { changerLesRolesAvec } from './implementations/changer-les-roles.binding'

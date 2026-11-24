@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Organisation } from '../../../../domain/organisation'
 import type { AppliquerPlanOrganisations } from '../../domain/synchroniser-organisations'
 

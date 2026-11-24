@@ -15,7 +15,7 @@ import {
 } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { VALIDER_ACTION_KEY } from '../../action/valider.key'
 
 const erreurValidation = () =>

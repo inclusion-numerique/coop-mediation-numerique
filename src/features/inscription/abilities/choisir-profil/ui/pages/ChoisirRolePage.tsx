@@ -20,7 +20,7 @@ import {
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 
 type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{

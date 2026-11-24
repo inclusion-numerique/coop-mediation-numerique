@@ -14,7 +14,7 @@ import {
 } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { isBrowser } from '@/libraries/navigateur/isBrowser'
+import { isBrowser } from '@/libraries/navigateur/is-browser'
 
 // Create zod validation so the file is required and of type File
 // And the file must be an xlsx file

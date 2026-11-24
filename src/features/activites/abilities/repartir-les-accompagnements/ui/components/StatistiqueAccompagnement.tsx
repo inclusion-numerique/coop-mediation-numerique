@@ -7,7 +7,7 @@ import {
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
+} from '@/libraries/nombre/format-number'
 
 export const StatistiqueAccompagnement = ({
   typeActivite,

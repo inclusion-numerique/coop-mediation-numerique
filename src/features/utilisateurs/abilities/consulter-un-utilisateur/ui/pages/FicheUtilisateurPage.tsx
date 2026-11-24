@@ -15,14 +15,14 @@ import {
   hrefDeLaFusion,
   hrefDeLUtilisateur,
 } from '@/features/utilisateurs/ui/presenters/liens.presenter'
-import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { dateAsDay } from '@/libraries/date/date-as-day'
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/libraries/date/dateAsDayAndTime'
+} from '@/libraries/date/date-as-day-and-time'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
+import { numberToString } from '@/libraries/nombre/format-number'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'

@@ -24,7 +24,7 @@ import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/libraries/etat-encode/encodeSerializableState'
+} from '@/libraries/etat-encode/encode-serializable-state'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

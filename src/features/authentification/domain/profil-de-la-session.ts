@@ -1,4 +1,4 @@
-import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
+import { getUserDepartement } from '@/libraries/departement/get-user-departement'
 import type { UtilisateurDeLaSession } from './utilisateur-de-la-session'
 
 export type ProfilDeLaSession = {

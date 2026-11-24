@@ -1,5 +1,5 @@
-import { addMutationLog } from '@/configuration/prisma/addMutationLog'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
 
 export const ouvrirLUsurpation = async ({

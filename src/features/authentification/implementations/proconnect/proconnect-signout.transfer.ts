@@ -1,4 +1,4 @@
-import { getServerUrl } from '@/configuration/projet/baseUrl'
+import { getServerUrl } from '@/configuration/projet/base-url'
 import { proConnectHostname } from './proconnect.client'
 
 const proconnectSignoutRedirectPath = '/deconnexion/callback'

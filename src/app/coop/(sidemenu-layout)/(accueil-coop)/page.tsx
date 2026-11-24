@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rafraichirAccueilRdvAction } from '@/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import {
   consulterLAccueil,
   selonLeProfil,

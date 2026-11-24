@@ -5,7 +5,7 @@ import { v4 } from 'uuid'
 import {
   extendedPrismaClient,
   prismaClient,
-} from '@/configuration/prisma/prismaClient'
+} from '@/configuration/prisma/prisma-client'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect-provider-id.client'
 

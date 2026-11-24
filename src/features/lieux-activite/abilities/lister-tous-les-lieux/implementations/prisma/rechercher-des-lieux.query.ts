@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { Prisma } from '@/generated/prisma/client'
 import { motsDe } from '@/libraries/texte/mots'
 import type { CriteresDeLaListe } from '../../domain/criteres-de-la-liste'

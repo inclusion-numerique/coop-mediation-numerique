@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Page, PageSize, Sort } from '@arckit/resultset'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import {
   AUCUN_FILTRE,
   type FiltresUtilisateurs,

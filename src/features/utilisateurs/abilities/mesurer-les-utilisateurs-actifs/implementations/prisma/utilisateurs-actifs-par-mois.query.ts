@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 
 type UtilisateursActifsRaw = {
   role: 'mediateurs' | 'conseillers' | 'coordinateurs'

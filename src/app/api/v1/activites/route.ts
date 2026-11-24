@@ -13,8 +13,8 @@ import {
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
 import { ActivitesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.params'
 import { reponseDesActivites } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.response'
-import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
-import { curseurLu } from '@/libraries/json-api/pageParCurseur'
+import { prismaCursorPagination } from '@/libraries/json-api/cursor-pagination'
+import { curseurLu } from '@/libraries/json-api/page-par-curseur'
 
 /**
  * @openapi

@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect-provider-id.client'
 import type { JetonsProconnect } from '../../domain'
 

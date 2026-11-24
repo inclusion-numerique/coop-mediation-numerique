@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { StatistiquesNationalesLayout } from '@/features/statistiques/ui/layouts/StatistiquesNationalesLayout'
 
 export const metadata = {

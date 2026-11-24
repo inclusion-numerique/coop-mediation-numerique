@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
 import { rattachementsSemes } from '@/features/mediateurs/mediateurs.cucumber'
 

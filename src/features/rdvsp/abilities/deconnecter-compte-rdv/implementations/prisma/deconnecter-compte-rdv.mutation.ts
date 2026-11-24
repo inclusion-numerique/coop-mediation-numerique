@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { failure, success } from '@/libraries/result'
 import {
   compteRdvFromDomain,

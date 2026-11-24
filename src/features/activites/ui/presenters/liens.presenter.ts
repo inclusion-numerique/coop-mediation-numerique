@@ -1,4 +1,4 @@
-import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
 
 export const hrefDeLActivite = (segmentDeType: string, id: string) =>
   `/coop/mes-activites/cra/${segmentDeType}/${id}` as const

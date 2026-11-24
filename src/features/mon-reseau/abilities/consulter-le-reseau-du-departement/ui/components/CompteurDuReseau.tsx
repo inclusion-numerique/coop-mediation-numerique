@@ -1,6 +1,6 @@
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 
 const CompteurDuReseau = ({

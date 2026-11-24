@@ -3,7 +3,7 @@
 import { useSelector } from '@tanstack/react-form'
 import { fraisAChargeOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const ModalitesAccesAuServiceFields = withForm({

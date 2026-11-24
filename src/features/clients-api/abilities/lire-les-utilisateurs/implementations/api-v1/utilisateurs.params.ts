@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { JsonApiCursorPaginationQueryParamsValidation } from '@/libraries/json-api/CursorPagination'
+import { JsonApiCursorPaginationQueryParamsValidation } from '@/libraries/json-api/cursor-pagination'
 
 export const UtilisateursQueryParamsValidation =
   JsonApiCursorPaginationQueryParamsValidation.extend({

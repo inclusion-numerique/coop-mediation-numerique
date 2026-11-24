@@ -1,5 +1,5 @@
 import { addDays, subYears } from 'date-fns'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import {
   AdresseCourriel,
   jalon,

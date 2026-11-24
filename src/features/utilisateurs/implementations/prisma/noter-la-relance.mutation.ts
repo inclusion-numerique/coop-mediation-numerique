@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import type { PhaseDeRelance, Relance, UtilisateurId } from '../../domain'
 import { relanceFromDomain } from './relance.transfer'
 

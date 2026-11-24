@@ -1,7 +1,7 @@
 import type { Page, PageSize, Paginated, Sort } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { Prisma } from '@/generated/prisma/client'
-import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
+import { orderItemsByIndexedValues } from '@/libraries/collections/order-items-by-indexed-values'
 import type { LieuEnListe } from '../../../../domain/lieu-en-liste'
 import type { ColonneDesLieux } from '../../../../domain/tri-des-lieux'
 import {

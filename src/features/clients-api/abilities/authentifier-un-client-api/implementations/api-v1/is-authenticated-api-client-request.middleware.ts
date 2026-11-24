@@ -7,7 +7,7 @@ import type {
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
-} from '@/libraries/json-api/apiV1Headers'
+} from '@/libraries/json-api/api-v1-headers'
 
 export const isAuthenticatedApiClientRequest = async (
   request: NextRequest,

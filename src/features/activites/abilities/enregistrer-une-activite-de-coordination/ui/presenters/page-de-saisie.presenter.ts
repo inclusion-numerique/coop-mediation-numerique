@@ -1,4 +1,4 @@
-import type { EncodedState } from '@/libraries/etat-encode/encodeSerializableState'
+import type { EncodedState } from '@/libraries/etat-encode/encode-serializable-state'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import {
   type ActiviteDeCoordination,

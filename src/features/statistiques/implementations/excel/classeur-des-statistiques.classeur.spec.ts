@@ -1,6 +1,6 @@
 import type { Workbook, Worksheet } from 'exceljs'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { numberToPercentage } from '@/libraries/nombre/formatNumber'
+import { numberToPercentage } from '@/libraries/nombre/format-number'
 import { computeProportion } from '@/libraries/proportions'
 import {
   classeurDesStatistiques,

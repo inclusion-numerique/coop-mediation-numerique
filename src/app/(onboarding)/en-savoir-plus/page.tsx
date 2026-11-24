@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { BienvenuePage } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/BienvenuePage'
 

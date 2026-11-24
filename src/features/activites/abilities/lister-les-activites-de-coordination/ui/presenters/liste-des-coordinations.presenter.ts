@@ -3,7 +3,7 @@ import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
-} from '@/libraries/date/dateAsDayAndTime'
+} from '@/libraries/date/date-as-day-and-time'
 import { pluriel } from '@/libraries/pluriel'
 import {
   type ActiviteDeCoordination,

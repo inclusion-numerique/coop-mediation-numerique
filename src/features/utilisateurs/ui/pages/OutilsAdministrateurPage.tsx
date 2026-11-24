@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import Card from '@/libraries/ui/components/Card'

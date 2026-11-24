@@ -1,5 +1,5 @@
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
 export const CguPage = () => (

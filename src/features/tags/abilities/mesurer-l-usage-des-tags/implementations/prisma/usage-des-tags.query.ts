@@ -1,5 +1,5 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { orderItemsByIndexedValues } from '@/libraries/collections/orderItemsByIndexedValues'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { orderItemsByIndexedValues } from '@/libraries/collections/order-items-by-indexed-values'
 import {
   DescriptionDuTag,
   Effectif,

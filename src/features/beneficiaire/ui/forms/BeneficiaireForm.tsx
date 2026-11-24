@@ -23,22 +23,22 @@ import {
   trancheAgeOptions,
 } from '@/features/beneficiaire/ui/labels/options-du-beneficiaire.labels'
 import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 import {
   CommuneComboBox,
   CommuneOptions,
 } from '@/libraries/adresse/CommuneComboBox'
 import { cheminInterne } from '@/libraries/chemin-interne'
-import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
+import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { adresseAvec } from '@/libraries/nextjs/route/adresse-avec'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@/libraries/ui/components/Form/RequiredFieldsDisclaimer'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import RequiredFieldsDisclaimer from '@/libraries/ui/components/form/RequiredFieldsDisclaimer'
+import { Options } from '@/libraries/ui/components/primitives/Options'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 
 export type SaisieEnCours = Readonly<Record<string, unknown>> & {
   readonly participants?: readonly unknown[]

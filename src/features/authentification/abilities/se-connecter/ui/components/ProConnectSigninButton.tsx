@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { Route } from 'next'
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
 
 const ProConnectSigninButton = ({
   className,

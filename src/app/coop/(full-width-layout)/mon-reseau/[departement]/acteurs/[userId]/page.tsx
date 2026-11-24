@@ -5,7 +5,7 @@ import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membr
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import {
   CoordinateurId as CoordinateurIdDesActivites,

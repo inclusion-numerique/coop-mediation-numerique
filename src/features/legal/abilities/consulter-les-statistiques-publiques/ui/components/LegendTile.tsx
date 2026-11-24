@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
+} from '@/libraries/nombre/format-number'
 
 export const LegendTile = ({
   value,

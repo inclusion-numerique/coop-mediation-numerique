@@ -1,4 +1,4 @@
-import { getServerUrl } from '@/configuration/projet/baseUrl'
+import { getServerUrl } from '@/configuration/projet/base-url'
 import { rdvServicePublicApiBinding } from '../../../implementations/rdv-service-public.binding'
 import { prendreRendezVous } from '../domain/prendre-rendez-vous'
 import { beneficiaireADemander } from './prisma/beneficiaire-a-demander.query'

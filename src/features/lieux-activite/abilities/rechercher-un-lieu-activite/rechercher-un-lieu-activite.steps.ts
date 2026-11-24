@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { type LieuActiviteTrouve } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/domain/index'
 import { rechercherUnLieuActivite } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/implementations/prisma/rechercher-un-lieu-activite.query'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'

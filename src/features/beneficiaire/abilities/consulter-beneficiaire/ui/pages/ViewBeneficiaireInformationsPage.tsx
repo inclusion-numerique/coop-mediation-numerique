@@ -7,7 +7,7 @@ import BeneficiairePageNavigationBar from '@/features/beneficiaire/abilities/con
 import BeneficiaireThematiques, {
   type ThematiqueAbordee,
 } from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireThematiques'
-import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { dateAsDay } from '@/libraries/date/date-as-day'
 
 export type BeneficiaireInformationsPageData = {
   beneficiaire: BeneficiaireInformations

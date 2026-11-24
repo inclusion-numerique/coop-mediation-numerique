@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { getServerUrl } from '@/configuration/projet/base-url'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { VerificationPage } from '@/features/authentification/abilities/se-connecter/ui/pages/VerificationPage'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
 

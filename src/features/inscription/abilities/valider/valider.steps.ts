@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { type ValiderInscriptionError } from '@/features/inscription/abilities/valider/domain/valider-inscription'
 import { validerAvec } from '@/features/inscription/abilities/valider/implementations/valider.binding'
 import { ProfilInscription } from '@/features/inscription/domain'

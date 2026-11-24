@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { AccessibilitePage } from '@/features/legal/ui/pages/AccessibilitePage'
 
 export const metadata: Metadata = {

@@ -4,7 +4,7 @@ import {
   totalDesStatutsSociaux,
   totalDesTranchesDAge,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes.form-data'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 
 const participantsAnonymesMax = 10_000
 const participantsAnonymesMaxLocaleString = numberToString(

@@ -1,7 +1,7 @@
-import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
+import { dateAsDayConventional } from '@/libraries/date/date-as-day'
 import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import { filtreDePeriode } from '@/libraries/etat-d-url/definition/filtre-de-periode'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre/format-number'
 
 export type PeriodeChoisie = {
   readonly du?: string

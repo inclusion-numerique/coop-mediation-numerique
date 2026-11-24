@@ -10,8 +10,8 @@ import { BadgeStatutCompte } from '@/features/utilisateurs/ui/components/BadgeSt
 import {
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/libraries/date/dateAsDayAndTime'
-import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
+} from '@/libraries/date/date-as-day-and-time'
+import { optionalNumberToString } from '@/libraries/nombre/format-number'
 import CopyToClipboardButton from '@/libraries/ui/components/CopyToClipboardButton'
 import type { ColonneTriable } from '../../domain/index'
 

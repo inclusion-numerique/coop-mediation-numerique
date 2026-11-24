@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { comptesRdv } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/comptes-rdv.query'
 import AdministrationRdvspPage from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspPage'

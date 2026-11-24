@@ -9,8 +9,8 @@ import {
   hrefDeLExportDesStatistiques,
 } from '@/features/statistiques/ui/presenters/liens.presenter'
 import { download } from '@/libraries/navigateur/download'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { numberToString } from '@/libraries/nombre/format-number'
+import { createToast } from '@/libraries/ui/toast/create-toast'
 import { useImpressionPrete } from './impression-prete'
 
 const ExportStatistiquesModal = createModal({

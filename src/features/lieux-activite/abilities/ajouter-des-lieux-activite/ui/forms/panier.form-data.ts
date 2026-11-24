@@ -3,11 +3,11 @@ import {
   adresseNonVerifiableMessage,
   CREER_A_LA_MAIN,
 } from '@/features/lieux-activite/ui/labels/adresse-non-verifiable.labels'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 import {
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
-} from '@/libraries/ban/apiAdresse'
+} from '@/libraries/ban/api-adresse'
 import { type geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuxAAjouterData } from '../../action/ajouter-des-lieux-activite.validation'

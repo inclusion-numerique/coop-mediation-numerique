@@ -10,7 +10,7 @@ import {
 import { PropsWithChildren, ReactNode } from 'react'
 import Footer from '@/libraries/emails/components/Footer'
 import Head from '@/libraries/emails/components/Head'
-import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
+import { emailAssetUrl } from '@/libraries/emails/email-asset-url'
 import { backgroundColor } from '@/libraries/emails/styles'
 
 /**

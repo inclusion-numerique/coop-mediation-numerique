@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'

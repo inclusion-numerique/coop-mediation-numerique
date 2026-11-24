@@ -1,4 +1,4 @@
-import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { dateAsDay } from '@/libraries/date/date-as-day'
 
 export const datesDonneesRecolteesEtMisesAJour = (
   {

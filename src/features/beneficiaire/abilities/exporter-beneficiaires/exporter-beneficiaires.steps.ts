@@ -7,7 +7,7 @@ import {
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
-import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur/add-export-metadata'
 
 const user: AuteurDExport = {
   nom: 'Médiatrice',

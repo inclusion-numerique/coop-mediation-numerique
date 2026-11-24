@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import SignoutButton from '../components/SignoutButton'
 
 export const DeconnexionPage = () => (

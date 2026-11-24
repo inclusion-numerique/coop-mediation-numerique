@@ -1,7 +1,7 @@
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
+} from '@/libraries/nombre/format-number'
 import { pluriel } from '@/libraries/pluriel'
 import { typeActivitePluralLabels } from '../../../../ui/labels/libelles/type-activite.labels'
 import type { RepartitionPresentee } from '../presenters/repartition.presenter'

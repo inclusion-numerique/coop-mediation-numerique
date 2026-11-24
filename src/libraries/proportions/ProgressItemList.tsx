@@ -5,8 +5,8 @@ import type { CSSProperties } from 'react'
 import {
   numberToPercentage,
   numberToString,
-} from '@/libraries/nombre/formatNumber'
-import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
+} from '@/libraries/nombre/format-number'
+import type { QuantifiedShare } from '@/libraries/proportions/quantified-share'
 import ProgressBar from './ProgressBar'
 
 export const ProgressItemList = ({

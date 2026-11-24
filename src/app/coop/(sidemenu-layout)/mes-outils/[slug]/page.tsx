@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,

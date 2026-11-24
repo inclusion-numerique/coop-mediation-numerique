@@ -4,7 +4,7 @@ import { ChoixEnLigne } from '@/libraries/etat-d-url/filtres/ChoixEnLigne'
 import { FiltresEnModale } from '@/libraries/etat-d-url/filtres/FiltresEnModale'
 import { RechercheEnLigne } from '@/libraries/etat-d-url/filtres/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '../../../action/rechercher-employeuses.key'
 import {
   filtreDeLaSource,

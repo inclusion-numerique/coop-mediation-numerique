@@ -1,5 +1,5 @@
 import { AccompagnementBarChart } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/AccompagnementBarChart'
-import type { LabelAndCount } from '@/libraries/proportions/quantifiedShare'
+import type { LabelAndCount } from '@/libraries/proportions/quantified-share'
 
 export const GraphiquesImprimes = ({
   accompagnementsParMois,

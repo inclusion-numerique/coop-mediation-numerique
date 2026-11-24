@@ -5,7 +5,7 @@ import type {
   IssueDAuthentification,
   PorteeApi,
 } from '@/features/clients-api/domain'
-import { apiV1AuthorizationScheme } from '@/libraries/json-api/apiV1Headers'
+import { apiV1AuthorizationScheme } from '@/libraries/json-api/api-v1-headers'
 
 const issueDeLaRequete = (
   request: NextRequest,

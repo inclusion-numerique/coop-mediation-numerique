@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet/metadata-title'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { compteRdvDetaille } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/compte-rdv-detaille.query'
 import { AdministrationRdvspUserPage } from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
