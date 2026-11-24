@@ -1,3 +1,5 @@
+'use client'
+
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
 import {
@@ -19,8 +21,6 @@ export type StatisticsLegend<T extends object = object> = {
   value?: string
   key: keyof T
 }
-
-;('use client')
 
 export type ChartSerie = {
   label: string
