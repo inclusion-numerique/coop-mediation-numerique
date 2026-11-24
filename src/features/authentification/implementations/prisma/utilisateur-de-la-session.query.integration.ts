@@ -1,8 +1,8 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { utilisateurDeLaSessionSelect } from '../prisma/utilisateur-de-la-session.query'
-import { serializePrismaSessionUser } from './serialize-prisma-session-user'
+import { serializePrismaSessionUser } from '../session/serialize-prisma-session-user'
+import { utilisateurDeLaSessionSelect } from './utilisateur-de-la-session.query'
 
 describe('le drapeau conseiller numérique de la session', () => {
   const conseiller = v4()
