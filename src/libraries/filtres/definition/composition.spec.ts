@@ -8,11 +8,20 @@ import { filtreDeRecherche } from './filtre-de-recherche'
 const filtres = composerLesFiltres(
   filtreDePeriode,
   filtreDeChoix({
+    titre: 'types',
     cle: 'types',
     choix: { individuel: 'Individuel', collectif: 'Collectif' },
   }),
-  filtreDeChoixUnique({ cle: 'source', choix: { v1: 'Import', v2: 'Coop' } }),
-  filtreDeRecherche({ cle: 'lieux', schema: z.string().regex(/^[a-z]+$/) }),
+  filtreDeChoixUnique({
+    titre: 'source',
+    cle: 'source',
+    choix: { v1: 'Import', v2: 'Coop' },
+  }),
+  filtreDeRecherche({
+    titre: 'lieux',
+    cle: 'lieux',
+    schema: z.string().regex(/^[a-z]+$/),
+  }),
 )
 
 const page = (parametres: Record<string, string>) => ({
@@ -49,6 +58,7 @@ describe('composition de filtres', () => {
     expect(
       composerLesFiltres(
         filtreDeChoix({
+          titre: 'types',
           cle: 'types',
           choix: { Individuel: 'Individuel' },
           dansLURL: { Individuel: 'individuel' },
@@ -60,6 +70,7 @@ describe('composition de filtres', () => {
   it('écrit les valeurs métier sous leur forme d’URL', () => {
     const filtresTraduits = composerLesFiltres(
       filtreDeChoix({
+        titre: 'types',
         cle: 'types',
         choix: { Individuel: 'Individuel' },
         dansLURL: { Individuel: 'individuel' },
@@ -100,14 +111,17 @@ describe('composition de filtres', () => {
       }),
     ).toStrictEqual([
       {
+        titre: 'types',
         libelle: 'Individuel',
         href: '/activites?types=collectif&lieux=a&lignes=20',
       },
       {
+        titre: 'types',
         libelle: 'Collectif',
         href: '/activites?types=individuel&lieux=a&lignes=20',
       },
       {
+        titre: 'lieux',
         libelle: 'Médiathèque',
         href: '/activites?types=individuel,collectif&lignes=20',
       },

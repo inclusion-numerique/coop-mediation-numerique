@@ -12,16 +12,22 @@ import { FiltresEnModale } from './FiltresEnModale'
 import { RechercheEnPopover } from './RechercheEnPopover'
 
 const filtreDuType = filtreDeChoix({
+  titre: 'types',
   cle: 'types',
   choix: { individuel: 'Individuel', collectif: 'Collectif' },
 })
 
 const filtreDeLaSource = filtreDeChoixUnique({
+  titre: 'source',
   cle: 'source',
   choix: { v1: 'Import', v2: 'Coop' },
 })
 
-const filtreDesLieux = filtreDeRecherche({ cle: 'lieux', schema: z.string() })
+const filtreDesLieux = filtreDeRecherche({
+  titre: 'lieux',
+  cle: 'lieux',
+  schema: z.string(),
+})
 
 const monter = (adresse: string, champ: ReactNode) => {
   const ecrites: UrlUpdateEvent[] = []
@@ -53,6 +59,7 @@ const choixDuType = (
 )
 
 const filtreDuStatut = filtreDeChoix({
+  titre: 'rdvs',
   cle: 'rdvs',
   choix: { seen: 'Honoré', noshow: 'Absence' },
 })

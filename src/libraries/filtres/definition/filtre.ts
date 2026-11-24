@@ -12,6 +12,7 @@ export type Etiquette<V> = {
 }
 
 export type Filtre<P extends ParserMap, V = Valeurs<P>> = {
+  readonly titre: string
   readonly parametres: P
   readonly etiquettes: (
     valeurs: V,
@@ -20,6 +21,7 @@ export type Filtre<P extends ParserMap, V = Valeurs<P>> = {
 }
 
 export type FiltreQuelconque = {
+  readonly titre: string
   readonly parametres: ParserMap
   readonly etiquettes: (
     valeurs: never,

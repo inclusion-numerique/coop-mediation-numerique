@@ -7,8 +7,12 @@ import { filtreDeRecherche } from '@/libraries/filtres/definition/filtre-de-rech
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import {
   type CriteresDesActivites,
+  type CriteresDesStatistiques,
   EmployeuseId,
+  FiltreDeDispositif,
+  Jour,
   LieuActiviteId,
+  MediateurId,
   SOURCES_DE_L_ACTIVITE,
   SourceDeLActivite,
   STATUTS_DE_RENDEZ_VOUS,
@@ -28,12 +32,14 @@ const { AideAuxDemarchesAdministratives: _, ...thematiquesDeMediation } =
   thematiquesNonAdministrativesLabels
 
 export const filtreDuTypeDActivite = filtreDeChoix({
+  titre: 'Type d’accompagnement',
   cle: 'types',
   choix: typeActiviteLabels,
   dansLURL: { Individuel: 'individuel', Collectif: 'collectif' },
 })
 
 export const filtreDuStatutDeRendezVous = filtreDeChoix({
+  titre: 'Statut du rendez-vous',
   cle: 'rdvs',
   choix: {
     AVenir: 'À venir',
@@ -54,16 +60,19 @@ export const filtreDuStatutDeRendezVous = filtreDeChoix({
 })
 
 export const filtreDesThematiquesDeMediation = filtreDeChoix({
+  titre: 'Thématiques non administratives',
   cle: 'thematiqueNonAdministratives',
   choix: thematiquesDeMediation,
 })
 
 export const filtreDesThematiquesAdministratives = filtreDeChoix({
+  titre: 'Thématiques administratives',
   cle: 'thematiqueAdministratives',
   choix: thematiquesAdministrativesLabels,
 })
 
 export const filtreDeLaSource = filtreDeChoixUnique({
+  titre: 'Source',
   cle: 'source',
   choix: {
     ImportV1: 'Espace Coop (V1)',
@@ -73,28 +82,49 @@ export const filtreDeLaSource = filtreDeChoixUnique({
 })
 
 export const filtreDesLieux = filtreDeRecherche({
+  titre: 'Lieux d’accompagnement',
   cle: 'lieux',
   schema: LieuActiviteId.schema,
 })
 
 export const filtreDesCommunes = filtreDeRecherche({
+  titre: 'Communes',
   cle: 'communes',
   schema: CodeInsee.schema,
 })
 
 export const filtreDesDepartements = filtreDeRecherche({
+  titre: 'Départements',
   cle: 'departements',
   schema: CodeDepartement.schema,
 })
 
 export const filtreDesTags = filtreDeRecherche({
+  titre: 'Tags',
   cle: 'tags',
   schema: TagId.schema,
 })
 
 export const filtreDesEmployeuses = filtreDeRecherche({
+  titre: 'Structures employeuses',
   cle: 'structuresEmployeuses',
   schema: z.coerce.number().pipe(EmployeuseId.schema),
+})
+
+export const filtreDesMediateurs = filtreDeRecherche({
+  titre: 'Médiateurs',
+  cle: 'mediateurs',
+  schema: MediateurId.schema,
+})
+
+export const filtreDuDispositif = filtreDeChoixUnique({
+  titre: 'Rôle',
+  cle: 'conseiller_numerique',
+  choix: {
+    ConseillersNumeriques: 'Conseillers numériques',
+    HorsDispositif: 'Médiateurs numériques',
+  },
+  dansLURL: { ConseillersNumeriques: '1', HorsDispositif: '0' },
 })
 
 type ValeursDesFiltres = {
@@ -110,6 +140,11 @@ type ValeursDesFiltres = {
   readonly departements?: readonly CodeDepartement[]
   readonly tags?: readonly TagId[]
   readonly structuresEmployeuses?: readonly EmployeuseId[]
+  readonly mediateurs?: readonly MediateurId[]
+  readonly conseiller_numerique?:
+    | 'ConseillersNumeriques'
+    | 'HorsDispositif'
+    | null
 }
 
 export const criteresDesFiltres = (
@@ -123,7 +158,7 @@ export const criteresDesFiltres = (
   statutsDeRendezVous: (valeurs.rdvs ?? []).map((statut) =>
     StatutDeRendezVous(statut),
   ),
-  mediateurs: [],
+  mediateurs: valeurs.mediateurs ?? [],
   beneficiaires: [],
   communes: valeurs.communes ?? [],
   departements: valeurs.departements ?? [],
@@ -135,10 +170,24 @@ export const criteresDesFiltres = (
   demarche: null,
   tags: valeurs.tags ?? [],
   employeuses: valeurs.structuresEmployeuses ?? [],
-  dispositif: null,
+  dispositif:
+    valeurs.conseiller_numerique === undefined ||
+    valeurs.conseiller_numerique === null
+      ? null
+      : FiltreDeDispositif(valeurs.conseiller_numerique),
   origine: null,
   source:
     valeurs.source === undefined || valeurs.source === null
       ? null
       : SourceDeLActivite(valeurs.source),
+})
+
+const jourDe = (date: Date | null): Jour | null =>
+  date === null ? null : Jour(date.toISOString().slice(0, 10))
+
+export const criteresDesStatistiquesDesFiltres = (
+  valeurs: ValeursDesFiltres,
+): CriteresDesStatistiques => ({
+  ...criteresDesFiltres(valeurs),
+  periode: { du: jourDe(valeurs.du), au: jourDe(valeurs.au) },
 })

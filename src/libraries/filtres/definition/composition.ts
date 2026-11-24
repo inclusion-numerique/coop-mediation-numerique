@@ -50,6 +50,7 @@ export type AdresseCourante = {
 }
 
 export type EtiquetteAffichee = {
+  readonly titre: string
   readonly libelle: string
   readonly href: string
 }
@@ -114,6 +115,7 @@ export const composerLesFiltres = <
     ): readonly EtiquetteAffichee[] =>
       liste.flatMap((filtre) =>
         etiquettesDe(filtre, valeurs, libelles).map(({ libelle, sans }) => ({
+          titre: filtre.titre,
           libelle,
           href: adresse(courante, { ...valeurs, ...sans } as never),
         })),

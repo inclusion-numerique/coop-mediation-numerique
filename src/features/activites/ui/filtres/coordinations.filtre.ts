@@ -6,6 +6,7 @@ import {
 } from '../../domain'
 
 export const filtreDuTypeDeCoordination = filtreDeChoix({
+  titre: 'Type de coordination',
   cle: 'types',
   choix: {
     Evenement: 'Évènement',

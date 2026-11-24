@@ -31,12 +31,15 @@ export type FiltreDeRecherche<C extends string, V = string> = Filtre<
 > & { readonly cle: C }
 
 export const filtreDeRecherche = <const C extends string, S extends z.ZodType>({
+  titre,
   cle,
   schema,
 }: {
+  titre: string
   cle: C
   schema: S
 }): FiltreDeRecherche<C, z.output<S>> => ({
+  titre,
   cle,
   parametres: {
     [cle]: parametresDeRecherche(parseurValide(schema)),

@@ -38,6 +38,7 @@ type ParametresDeChoixUnique<C extends string, V extends string> = Record<
 >
 
 type AvecChoix<C extends string, V extends string> = {
+  readonly titre: string
   readonly cle: C
   readonly choix: Readonly<Record<V, string>>
   readonly dansLURL?: Readonly<Record<V, string>>
@@ -56,10 +57,12 @@ export type FiltreDeChoixUnique<C extends string, V extends string> = Filtre<
   AvecChoix<C, V> & { readonly unique: true }
 
 export const filtreDeChoix = <const C extends string, const V extends string>({
+  titre,
   cle,
   choix,
   dansLURL,
 }: AvecChoix<C, V>): FiltreDeChoix<C, V> => ({
+  titre,
   cle,
   choix,
   unique: false,
@@ -79,10 +82,12 @@ export const filtreDeChoixUnique = <
   const C extends string,
   const V extends string,
 >({
+  titre,
   cle,
   choix,
   dansLURL,
 }: AvecChoix<C, V>): FiltreDeChoixUnique<C, V> => ({
+  titre,
   cle,
   choix,
   unique: true,
