@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
+import { hrefDeLUtilisateur } from '@/features/utilisateurs/ui/presenters/liens.presenter'
 import { colonnesDesUtilisateurs } from '../columns/utilisateurs.columns'
 
 export const UtilisateurTableRow = ({
@@ -14,7 +15,7 @@ export const UtilisateurTableRow = ({
       </td>
     ))}
     <td className="fr-p-0">
-      <Link href={`/administration/utilisateurs/${utilisateur.id}`}>
+      <Link href={hrefDeLUtilisateur(utilisateur.id)}>
         <span className="fr-sr-only">
           Voir la fiche de {utilisateur.nomAffiche}
         </span>

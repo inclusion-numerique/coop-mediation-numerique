@@ -20,6 +20,7 @@ import {
   statutSocialOptions,
   trancheAgeOptions,
 } from '@/features/beneficiaire/ui/forms/formulaire/beneficiaire-options'
+import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import {
   CommuneComboBox,
@@ -135,10 +136,7 @@ const BeneficiaireForm = ({
         router.push(
           routeConstruite(
             adresseAvec(
-              cheminInterne(
-                retour,
-                `/coop/mes-beneficiaires/${beneficiaire.id}`,
-              ),
+              cheminInterne(retour, hrefDuBeneficiaire(beneficiaire.id)),
               {
                 v: cra
                   ? encodeSerializableState(
@@ -181,7 +179,7 @@ const BeneficiaireForm = ({
   const backUrl = cheminInterne(
     retour,
     defaultValues.id
-      ? `/coop/mes-beneficiaires/${defaultValues.id}`
+      ? hrefDuBeneficiaire(defaultValues.id)
       : '/coop/mes-beneficiaires',
   )
 

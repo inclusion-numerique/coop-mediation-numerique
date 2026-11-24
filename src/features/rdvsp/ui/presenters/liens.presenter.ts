@@ -13,3 +13,9 @@ export const rdvServicePublicGettingStartedLink = `https://aide.rdv-service-publ
 export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/agenda`
 
 export const rdvSupportEmail = 'support@rdv-service-public.fr'
+
+export const hrefDuCompteRdvEnAdministration = (id: string | number) =>
+  `/administration/fonctionnalites/rdvsp/${id}` as const
+
+export const hrefDesRdvsDansLesActivites = (statuts: readonly string[]) =>
+  `/coop/mes-activites?rdvs=${statuts.join(',')}&voir-rdvs=1` as const

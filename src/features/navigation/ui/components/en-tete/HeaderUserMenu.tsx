@@ -11,6 +11,7 @@ import {
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import styles from '@/features/navigation/ui/components/en-tete/HeaderUserMenu.module.css'
+import { hrefDeLEquipe } from '@/features/navigation/ui/presenters/liens.presenter'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import type { UtilisateurDeLaNavigation } from '../../layouts/CoopShell'
 
@@ -149,7 +150,7 @@ export const HeaderUserMenu = ({
           <li>
             <Link
               className="fr-nav__link fr-display-block fr-border--bottom-0"
-              href={`/coop/mes-equipes/${mediateurCoordinations.at(0)?.coordinateur.id}`}
+              href={hrefDeLEquipe(mediateurCoordinations[0].coordinateur.id)}
               style={{ boxShadow: 'none' }}
             >
               <span
@@ -188,7 +189,7 @@ export const HeaderUserMenu = ({
               <Link
                 key={coordination.coordinateur.id}
                 className="fr-nav__link fr-display-block"
-                href={`/coop/mes-equipes/${coordination.coordinateur.id}`}
+                href={hrefDeLEquipe(coordination.coordinateur.id)}
                 style={{ boxShadow: 'none' }}
               >
                 <span className="fr-flex fr-align-items-center fr-width-full">

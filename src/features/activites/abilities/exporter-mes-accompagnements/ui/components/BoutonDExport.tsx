@@ -10,7 +10,10 @@ import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import type { ActivitesFiltersLabels } from '../../../../ui/labels/filtres/filtres.labels'
-import { cheminAvecRequete } from '../presenters/export.presenter'
+import {
+  cheminAvecRequete,
+  cheminDImpressionDesStatistiques,
+} from '../presenters/export.presenter'
 
 const ModaleDExport = createModal({
   id: 'export-des-accompagnements',
@@ -75,9 +78,7 @@ export const BoutonDExport = ({
 
   const imprimerLesStatistiques = () => {
     ModaleDExport.close()
-    router.push(
-      `/coop/mes-statistiques?print=true${requete === '' ? '' : `&${requete}`}`,
-    )
+    router.push(cheminDImpressionDesStatistiques(requete))
   }
 
   return (

@@ -10,6 +10,11 @@ import {
   mediateurDe,
 } from '@/features/utilisateurs/domain'
 import { BadgeStatutCompte } from '@/features/utilisateurs/ui/components/BadgeStatutCompte'
+import {
+  hrefDAjoutALEquipe,
+  hrefDeLaFusion,
+  hrefDeLUtilisateur,
+} from '@/features/utilisateurs/ui/presenters/liens.presenter'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import {
   dateAsDayAndTime,
@@ -132,7 +137,7 @@ export const FicheUtilisateurPage = ({
                   priority="tertiary"
                   size="small"
                   linkProps={{
-                    href: `/administration/utilisateurs/${fiche.id}/merge`,
+                    href: hrefDeLaFusion(fiche.id),
                   }}
                 >
                   Fusionner avec un autre utilisateur
@@ -219,7 +224,7 @@ export const FicheUtilisateurPage = ({
                         ({ coordinateurUtilisateurId, nom }) => (
                           <Link
                             key={coordinateurUtilisateurId}
-                            href={`/administration/utilisateurs/${coordinateurUtilisateurId}`}
+                            href={hrefDeLUtilisateur(coordinateurUtilisateurId)}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -260,7 +265,7 @@ export const FicheUtilisateurPage = ({
                     priority="secondary"
                     size="small"
                     linkProps={{
-                      href: `/administration/utilisateurs/${fiche.id}/equipe-coordonnee/ajouter`,
+                      href: hrefDAjoutALEquipe(fiche.id),
                     }}
                   >
                     Ajouter un membre

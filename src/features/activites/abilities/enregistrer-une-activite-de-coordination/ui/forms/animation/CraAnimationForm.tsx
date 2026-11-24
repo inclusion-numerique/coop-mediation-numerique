@@ -19,6 +19,7 @@ import {
   THEMATIQUE_ANIMATION_OPTIONS,
   TYPE_ANIMATION_OPTIONS,
 } from '@/features/activites/ui/labels/libelles/animation.labels'
+import { cheminDeLaSaisie } from '@/features/activites/ui/presenters/saisie/chemin-de-la-copie.presenter'
 import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
@@ -26,7 +27,6 @@ import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replaceRouteWithoutRerender'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { createToast } from '@/libraries/ui/toast/createToast'
@@ -55,9 +55,7 @@ const CraAnimationForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/animation?v=${encodeSerializableState(
-            formApi.state.values,
-          )}`,
+          cheminDeLaSaisie('animation', formApi.state.values),
         )
       },
     },

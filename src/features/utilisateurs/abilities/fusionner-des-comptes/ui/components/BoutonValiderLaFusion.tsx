@@ -4,6 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { hrefDeLUtilisateur } from '@/features/utilisateurs/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
@@ -43,7 +44,7 @@ export const BoutonValiderLaFusion = ({
         priority: 'success',
         message: `L’utilisateur ${source.nom} (${source.courriel}) a bien été fusionné avec ${cible.nom} (${cible.courriel})`,
       })
-      router.replace(`/administration/utilisateurs/${cible.id}`)
+      router.replace(hrefDeLUtilisateur(cible.id))
       router.refresh()
     })
 

@@ -23,9 +23,9 @@ import {
   trancheAgeLabels,
   tranchesAgeAffichees as trancheAgeValues,
 } from '@/features/activites/ui/labels/libelles/profil.labels'
+import { hrefDeCreationDuBeneficiaire } from '@/features/activites/ui/presenters/liens.presenter'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
 import { DefaultValues, withForm } from '@/libraries/formulaire/use-app-form'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { pluriel } from '@/libraries/pluriel'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
@@ -77,10 +77,10 @@ export const BeneficiairesAtelierFields = withForm({
     ) ?? { total: 0 }
 
     const onCreer = () => {
-      const creationUrl =
-        `/coop/mes-beneficiaires/nouveau?retour=${encodeURIComponent(
-          creerBeneficiaireRetourUrl,
-        )}&cra=${encodeSerializableState(form.state.values)}` as const
+      const creationUrl = hrefDeCreationDuBeneficiaire(
+        creerBeneficiaireRetourUrl,
+        form.state.values,
+      )
       router.push(creationUrl)
     }
 

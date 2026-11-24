@@ -106,3 +106,6 @@ export const classeurPresente = ({
   ),
   ...contenuDuClasseur(exportDes, fuseau),
 })
+
+export const cheminDImpressionDesStatistiques = (requete: string) =>
+  `/coop/mes-statistiques?print=true${requete === '' ? '' : (`&${requete}` as const)}` as const

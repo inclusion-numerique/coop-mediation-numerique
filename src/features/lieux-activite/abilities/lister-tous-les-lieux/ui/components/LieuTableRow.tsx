@@ -4,6 +4,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { getStructureCartographieLink } from '@/features/lieux-activite/domain/cartographie-nationale/liens'
+import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
 import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
 import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
@@ -79,7 +80,7 @@ export const LieuTableRow = ({ ligne }: { ligne: LigneDeLaListe }) => (
       {optionalNumberToString(ligne._count.mediateursEnActivite, null)}
     </td>
     <td className="fr-p-0">
-      <Link href={`/administration/lieux-activite/${ligne.id}/modifier`}>
+      <Link href={hrefDeModificationDuLieu(ligne.id)}>
         <span className="fr-sr-only">Modifier le lieu {ligne.nom}</span>
       </Link>
     </td>

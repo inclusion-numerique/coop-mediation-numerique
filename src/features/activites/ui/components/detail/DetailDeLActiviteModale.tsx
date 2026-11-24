@@ -7,6 +7,10 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, type ReactNode, useEffect, useState } from 'react'
+import {
+  hrefDeLActivite,
+  hrefDuBeneficiaire,
+} from '@/features/activites/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
@@ -97,7 +101,7 @@ const Beneficiaire = ({
         <div className="fr-flex fr-align-items-center">
           <span className="fr-icon-user-heart-line fr-icon--sm fr-mr-3v fr-text-mention--grey" />
           <Link
-            href={`/coop/mes-beneficiaires/${beneficiaire.id}?retour=${encodeURIComponent(retour)}`}
+            href={hrefDuBeneficiaire(beneficiaire.id, retour)}
             className="fr-link fr-text--sm fr-mb-0 fr-text--medium fr-link--underline-on-hover"
           >
             {beneficiaire.nom}&nbsp;·&nbsp;{beneficiaire.activites}
@@ -161,7 +165,7 @@ const Participants = ({
                 <Element key={suivi.id} className="fr-mb-0">
                   <Link
                     className="fr-link fr-link--underline-on-hover fr-text--sm fr-mb-0"
-                    href={`/coop/mes-beneficiaires/${suivi.id}?retour=${encodeURIComponent(retour)}`}
+                    href={hrefDuBeneficiaire(suivi.id, retour)}
                   >
                     {suivi.nom}
                   </Link>
@@ -240,7 +244,7 @@ export const DetailDeLActiviteModale = () => {
   if (detail === undefined) return null
 
   const retour = `${cheminCourant}${recherche ? `?${recherche}` : ''}`
-  const lienDuCra = `/coop/mes-activites/cra/${detail.segmentDeType}/${detail.id}`
+  const lienDuCra = hrefDeLActivite(detail.segmentDeType, detail.id)
 
   const supprimer = async () => {
     setEnCours(true)

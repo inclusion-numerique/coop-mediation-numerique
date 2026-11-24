@@ -1,4 +1,5 @@
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
+import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
@@ -24,7 +25,7 @@ export const FusionnerUnLieuPage = ({
         {
           label: nom,
           linkProps: {
-            href: `/administration/lieux-activite/${structureId}/modifier`,
+            href: hrefDeModificationDuLieu(structureId),
           },
         },
       ]}

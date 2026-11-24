@@ -3,6 +3,10 @@
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import {
+  hrefDeConnexion,
+  hrefDeLEquipe,
+} from '@/features/equipe/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import { createToast } from '@/libraries/ui/toast/createToast'
@@ -41,7 +45,7 @@ const ReponseAInvitation = ({
       priority: 'success',
       message: 'Vous avez accepté l’invitation',
     })
-    router.push(`/coop/mes-equipes/${coordinateurId}`)
+    router.push(hrefDeLEquipe(coordinateurId))
   }
 
   const refuser = async () => {
@@ -72,7 +76,7 @@ const ReponseAInvitation = ({
           : {
               children: 'Accepter l’invitation',
               linkProps: {
-                href: `/connexion?suivant=${encodeURIComponent(lien)}`,
+                href: hrefDeConnexion(lien),
               },
             },
         {

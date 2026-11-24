@@ -34,6 +34,7 @@ import {
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '@/features/activites/ui/labels/libelles/thematique.labels'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
+import { cheminDeLaSaisie } from '@/features/activites/ui/presenters/saisie/chemin-de-la-copie.presenter'
 import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
 import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
@@ -43,7 +44,6 @@ import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replaceRouteWithoutRerender'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { adresseAvec } from '@/libraries/parametres-d-url'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { yesNoBooleanOptions } from '@/libraries/ui/components/Form/utils/yesNoBooleanOptions'
 import { createToast } from '@/libraries/ui/toast/createToast'
@@ -73,9 +73,7 @@ const CraIndividuelForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(
-            formApi.state.values,
-          )}`,
+          cheminDeLaSaisie('individuel', formApi.state.values),
         )
       },
     },

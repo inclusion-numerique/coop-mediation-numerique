@@ -3,6 +3,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
+import { hrefDeLOutil } from '@/features/outils/ui/presenters/liens.presenter'
 import { Pictogram } from '@/libraries/pictograms/pictogram'
 
 export const CardOutil = ({
@@ -72,7 +73,7 @@ export const CardOutil = ({
           priority="tertiary no outline"
           size="small"
           title={`En savoir plus à propos de ${title}`}
-          linkProps={{ href: `/coop/mes-outils/${slug}` }}
+          linkProps={{ href: hrefDeLOutil(slug) }}
           iconId="fr-icon-information-line"
           children="En savoir plus"
           {...actionButton}

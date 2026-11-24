@@ -13,3 +13,6 @@ export const hrefDeLActeur = (
   ancre?: string,
 ) =>
   `${hrefDesActeurs(departement)}/${acteurId}${ancre === undefined ? '' : (`#${ancre}` as const)}` as const
+
+export const hrefDesStatistiquesDuMediateur = (mediateurId: string) =>
+  `/coop/mes-statistiques?mediateurs=${mediateurId}` as const

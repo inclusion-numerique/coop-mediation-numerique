@@ -8,6 +8,10 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { useEnregistrementDeLAnalyse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/analyse-de-l-import'
+import {
+  hrefDeLAnalyseDeLImport,
+  hrefDeLErreurDeLImport,
+} from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { isBrowser } from '@/libraries/navigateur/isBrowser'
@@ -57,9 +61,7 @@ const UploadBeneficiaireFileForm = () => {
         )
 
         if (!response.ok) {
-          router.push(
-            `/coop/mes-beneficiaires/importer/erreur?message=${encodeURIComponent(response.statusText)}`,
-          )
+          router.push(hrefDeLErreurDeLImport(response.statusText))
           return
         }
 
@@ -67,9 +69,7 @@ const UploadBeneficiaireFileForm = () => {
 
         enregistrerLAnalyse(analysisData)
 
-        router.push(
-          `/coop/mes-beneficiaires/importer/analyse/${analysisData.id}`,
-        )
+        router.push(hrefDeLAnalyseDeLImport(analysisData.id))
       } catch {
         router.push(`/coop/mes-beneficiaires/importer/erreur`)
       }

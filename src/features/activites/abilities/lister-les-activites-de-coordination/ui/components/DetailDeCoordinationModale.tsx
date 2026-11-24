@@ -3,6 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
+import { hrefDeLActivite } from '@/features/activites/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import { createToast } from '@/libraries/ui/toast/createToast'
@@ -55,7 +56,7 @@ export const DetailDeCoordinationModale = () => {
   if (detail == null) return null
 
   const retour = `?retour=${encodeURIComponent(`${cheminCourant}${recherche ? `?${recherche}` : ''}`)}`
-  const lienDuCra = `/coop/mes-activites/cra/${detail.segmentDeType}/${detail.id}`
+  const lienDuCra = hrefDeLActivite(detail.segmentDeType, detail.id)
 
   const supprimer = async () => {
     setEnCours(true)

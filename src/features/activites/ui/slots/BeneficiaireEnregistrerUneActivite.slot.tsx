@@ -2,7 +2,8 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { BeneficiaireCraData } from '@/features/activites/ui/forms/beneficiaire-du-cra.validation'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
+import { hrefDesAccompagnementsDuBeneficiaire } from '@/features/activites/ui/presenters/liens.presenter'
+import { cheminDeLaSaisie } from '@/features/activites/ui/presenters/saisie/chemin-de-la-copie.presenter'
 
 const BeneficiaireEnregistrerUneActivite = ({
   beneficiaire,
@@ -16,11 +17,13 @@ const BeneficiaireEnregistrerUneActivite = ({
   const craDefaultValues = {
     beneficiaire,
   }
-  const retour = `/coop/mes-beneficiaires/${beneficiaire.id}/accompagnements`
-
-  const createCraPath = `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(craDefaultValues)}${
-    retour ? `&retour=${retour}` : ''
-  }`
+  const createCraPath = cheminDeLaSaisie(
+    'individuel',
+    craDefaultValues,
+    beneficiaire.id == null
+      ? undefined
+      : hrefDesAccompagnementsDuBeneficiaire(beneficiaire.id),
+  )
 
   return (
     <div className="fr-flex fr-direction-column fr-flex-gap-2v">

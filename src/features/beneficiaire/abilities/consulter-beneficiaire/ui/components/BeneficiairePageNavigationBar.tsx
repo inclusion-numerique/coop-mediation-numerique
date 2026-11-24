@@ -1,4 +1,8 @@
 import Link from 'next/link'
+import {
+  hrefDesAccompagnements,
+  hrefDuBeneficiaire,
+} from '@/features/beneficiaire/ui/presenters/liens.presenter'
 
 const BeneficiairePageNavigationBar = ({
   accompagnementsCount,
@@ -15,7 +19,7 @@ const BeneficiairePageNavigationBar = ({
         <li className="fr-nav__item">
           <Link
             className="fr-nav__link fr-link--md"
-            href={`/coop/mes-beneficiaires/${beneficiaireId}`}
+            href={hrefDuBeneficiaire(beneficiaireId)}
             aria-current={current === 'informations' ? 'page' : undefined}
           >
             Informations
@@ -24,7 +28,7 @@ const BeneficiairePageNavigationBar = ({
         <li className="fr-nav__item">
           <Link
             className="fr-nav__link fr-link--md"
-            href={`/coop/mes-beneficiaires/${beneficiaireId}/accompagnements`}
+            href={hrefDesAccompagnements(beneficiaireId)}
             aria-current={current === 'accompagnements' ? 'page' : undefined}
           >
             Historique des activités&nbsp;·&nbsp;

@@ -2,6 +2,7 @@ import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import { hrefDeLaStructureEmployeuse } from '@/features/employeuse/ui/presenters/liens.presenter'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues, {
@@ -17,7 +18,7 @@ const informationsDeLaStructure = ({
     label: 'Id',
     value: (
       <Link
-        href={`/administration/structures-employeuses/${structure.id}`}
+        href={hrefDeLaStructureEmployeuse(structure.id)}
         target="_blank"
         rel="noreferrer"
       >

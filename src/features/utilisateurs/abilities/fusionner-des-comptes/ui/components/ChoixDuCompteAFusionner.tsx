@@ -3,6 +3,7 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
+import { hrefDuCompteAFusionner } from '@/features/utilisateurs/ui/presenters/liens.presenter'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
@@ -79,9 +80,7 @@ export const ChoixDuCompteAFusionner = ({
             <field.ComboBox
               isPending={enAttente}
               onSelect={({ id }) =>
-                router.push(
-                  `/administration/utilisateurs/${cibleId}/merge/${id}`,
-                )
+                router.push(hrefDuCompteAFusionner(cibleId, id))
               }
               {...compteComboBox(cibleId)}
             >

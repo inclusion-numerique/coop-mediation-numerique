@@ -3,6 +3,7 @@ import type { ModifierBeneficiaireView } from '@/features/beneficiaire/abilities
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@/features/beneficiaire/ui/forms/formulaire/BeneficiaireForm'
+import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
@@ -31,7 +32,7 @@ export const ModifierBeneficiairePage = ({
         },
         {
           label: displayName,
-          linkProps: { href: `/coop/mes-beneficiaires/${beneficiaireId}` },
+          linkProps: { href: hrefDuBeneficiaire(beneficiaireId) },
         },
       ]}
     />

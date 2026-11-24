@@ -1,3 +1,4 @@
+import { hrefDuCoordinateurEnAdministration } from '@/features/equipe/ui/presenters/liens.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
@@ -23,7 +24,7 @@ export const AjouterUnMembrePage = ({
         {
           label: equipe.nom,
           linkProps: {
-            href: `/administration/utilisateurs/${equipe.utilisateurId}`,
+            href: hrefDuCoordinateurEnAdministration(equipe.utilisateurId),
           },
         },
       ]}

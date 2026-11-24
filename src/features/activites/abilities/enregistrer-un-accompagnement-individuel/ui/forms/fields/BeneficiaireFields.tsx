@@ -7,10 +7,10 @@ import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
 } from '@/features/activites/ui/forms/saisie/beneficiaire-combo-box'
+import { hrefDeCreationDuBeneficiaire } from '@/features/activites/ui/presenters/liens.presenter'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 
@@ -51,10 +51,10 @@ export const BeneficiaireFields = withForm({
     const [isSearching, setIsSearching] = useState<boolean>(false)
 
     const onCreer = () => {
-      const creationUrl =
-        `/coop/mes-beneficiaires/nouveau?retour=${encodeURIComponent(
-          creerBeneficiaireRetourUrl,
-        )}&cra=${encodeSerializableState(form.state.values)}` as const
+      const creationUrl = hrefDeCreationDuBeneficiaire(
+        creerBeneficiaireRetourUrl,
+        form.state.values,
+      )
       router.push(creationUrl)
     }
 

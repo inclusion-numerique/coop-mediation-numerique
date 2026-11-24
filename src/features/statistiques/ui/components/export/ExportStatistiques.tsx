@@ -9,6 +9,10 @@ import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
+import {
+  hrefDeLExportDesAccompagnements,
+  hrefDeLExportDesStatistiques,
+} from '@/features/statistiques/ui/presenters/liens.presenter'
 import { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
@@ -80,17 +84,13 @@ export const ExportStatistiques = ({
 
   const onExportAccompagnementsXlsx = () =>
     exportXlsx(
-      publicExportId
-        ? `/coop/mes-activites/export/${publicExportId}`
-        : '/coop/mes-activites/export',
+      hrefDeLExportDesAccompagnements(publicExportId),
       `Le téléchargement de vos ${numberToString(nombreDAccompagnements)} accompagnements est en cours.`,
     )
 
   const onExportStatistiquesXlsx = () =>
     exportXlsx(
-      publicExportId
-        ? `/coop/mes-statistiques/export/${publicExportId}`
-        : '/coop/mes-statistiques/export',
+      hrefDeLExportDesStatistiques(publicExportId),
       'Le téléchargement de vos statistiques est en cours.',
     )
 

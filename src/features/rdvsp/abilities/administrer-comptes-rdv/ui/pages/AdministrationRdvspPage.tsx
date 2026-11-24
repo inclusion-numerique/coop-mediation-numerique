@@ -1,6 +1,7 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { statutIntegration } from '@/features/rdvsp/domain/compte/sante-compte'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/components/RdvServicePublicStatusTag'
+import { hrefDuCompteRdvEnAdministration } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
@@ -121,7 +122,7 @@ const AdministrationRdvspPage = async ({
                         <td>
                           <Button
                             linkProps={{
-                              href: `/administration/fonctionnalites/rdvsp/${id}`,
+                              href: hrefDuCompteRdvEnAdministration(id),
                             }}
                             size="small"
                             title="Détails sur l’integration RDVSP"

@@ -26,3 +26,12 @@ export const hrefDuLieuEnListe = ({
   adresse,
 }: Pick<LieuEnListe, 'id' | 'adresse'>) =>
   hrefDuLieu({ id, codeInsee: adresse?.code_insee ?? null })
+
+export const hrefDeModificationDuLieu = (id: string) =>
+  `/administration/lieux-activite/${id}/modifier` as const
+
+export const hrefDeFusionDuLieu = (id: string) =>
+  `/administration/lieux-activite/${id}/merge` as const
+
+export const hrefDuLieuAFusionner = (cibleId: string, id: string) =>
+  `${hrefDeFusionDuLieu(cibleId)}/${id}` as const

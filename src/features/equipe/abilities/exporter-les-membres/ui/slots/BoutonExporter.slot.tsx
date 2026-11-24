@@ -1,4 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
+import { hrefDeLExportDeLEquipe } from '@/features/equipe/ui/presenters/liens.presenter'
 
 const parametresExportes = ['recherche', 'statut', 'role', 'tri', 'ordre']
 
@@ -12,7 +13,7 @@ const lienDExport = (
       return valeur ? [[cle, valeur]] : []
     }),
   ).toString()
-  const chemin = `/coop/mes-equipes/${coordinateurId}/export`
+  const chemin = hrefDeLExportDeLEquipe(coordinateurId)
   return recherche ? `${chemin}?${recherche}` : chemin
 }
 

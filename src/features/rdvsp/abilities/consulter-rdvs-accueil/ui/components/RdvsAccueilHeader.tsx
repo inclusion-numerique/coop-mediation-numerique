@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { rdvStatusValues } from '@/features/rdvsp/ui/labels/statut-rdv.labels'
+import { hrefDesRdvsDansLesActivites } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 
@@ -37,7 +38,7 @@ const RdvsAccueilHeader = ({ isLoading }: { isLoading: boolean }) => (
     )}
     <Link
       className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-      href={`/coop/mes-activites?rdvs=${rdvStatusValues.join(',')}&voir-rdvs=1`}
+      href={hrefDesRdvsDansLesActivites(rdvStatusValues)}
     >
       Voir tous mes rendez-vous
     </Link>

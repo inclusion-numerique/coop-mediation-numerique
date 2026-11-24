@@ -1,3 +1,4 @@
+import { hrefDeLUtilisateur } from '@/features/utilisateurs/ui/presenters/liens.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
@@ -26,7 +27,7 @@ export const FusionPage = ({
         },
         {
           label: cible.nom,
-          linkProps: { href: `/administration/utilisateurs/${cible.id}` },
+          linkProps: { href: hrefDeLUtilisateur(cible.id) },
         },
       ]}
     />

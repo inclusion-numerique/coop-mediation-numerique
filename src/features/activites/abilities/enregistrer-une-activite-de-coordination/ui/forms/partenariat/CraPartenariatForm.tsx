@@ -19,6 +19,7 @@ import {
   NATURE_OPTIONS,
   TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS,
 } from '@/features/activites/ui/labels/libelles/partenariat.labels'
+import { cheminDeLaSaisie } from '@/features/activites/ui/presenters/saisie/chemin-de-la-copie.presenter'
 import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
@@ -26,7 +27,6 @@ import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replaceRouteWithoutRerender'
 import { inject } from '@/libraries/nextjs/injection/client'
-import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import { createToast } from '@/libraries/ui/toast/createToast'
 
@@ -56,9 +56,7 @@ const CraPartenariatForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/partenariat?v=${encodeSerializableState(
-            formApi.state.values,
-          )}`,
+          cheminDeLaSaisie('partenariat', formApi.state.values),
         )
       },
     },

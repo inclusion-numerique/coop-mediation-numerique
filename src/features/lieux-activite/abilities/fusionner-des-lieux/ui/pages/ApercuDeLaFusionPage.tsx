@@ -2,6 +2,7 @@ import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionne
 import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ApercuDeLaFusion'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
 import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ValiderLaFusion'
+import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { toTitleCase } from '@/libraries/texte/toTitleCase'
@@ -29,7 +30,7 @@ export const ApercuDeLaFusionPage = ({
         {
           label: nomAffiche(mergeData.mergeTarget.nom),
           linkProps: {
-            href: `/administration/lieux-activite/${structureId}/modifier`,
+            href: hrefDeModificationDuLieu(structureId),
           },
         },
       ]}

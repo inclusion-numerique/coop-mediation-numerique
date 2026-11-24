@@ -1,5 +1,6 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import type { LieuDuMediateurEnListe } from '../../domain'
@@ -29,7 +30,7 @@ export const LieuxDActiviteEnAdministration = ({
                 label: 'Id',
                 value: (
                   <Link
-                    href={`/administration/lieux-activite/${lieu.id}/modifier`}
+                    href={hrefDeModificationDuLieu(lieu.id)}
                     target="_blank"
                     rel="noreferrer"
                   >

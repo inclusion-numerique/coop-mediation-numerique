@@ -3,6 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
+import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '../../action/fusionner-des-lieux.key'
@@ -48,9 +49,7 @@ const ValiderLaFusion = ({
         message: `Le lieu d’activité "${sourceStructure.nom}" a été fusionné avec "${targetStructure.nom}"`,
       })
 
-      router.replace(
-        `/administration/lieux-activite/${targetStructure.id}/modifier`,
-      )
+      router.replace(hrefDeModificationDuLieu(targetStructure.id))
       router.refresh()
     } catch {
       echec()

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { hrefDeFusionDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
@@ -22,7 +23,7 @@ export const FicheDuLieuEnAdministrationPage = ({
     <SkipLinksPortal />
     <EnteteDeLaFicheEnAdministration
       nom={fiche.nom}
-      fusionHref={`/administration/lieux-activite/${lieuId}/merge`}
+      fusionHref={hrefDeFusionDuLieu(lieuId)}
     />
     <main
       id={contentId}

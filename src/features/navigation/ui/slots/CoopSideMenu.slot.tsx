@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import { contactEmail } from '@/configuration/projet/config'
 import styles from '@/features/navigation/ui/components/CoopSideMenu.module.css'
+import { hrefDesStatistiquesDeLaPeriode } from '@/features/navigation/ui/presenters/liens.presenter'
 import type { UtilisateurDeLaNavigation } from '../layouts/CoopShell'
 
 const onlyFor =
@@ -99,7 +100,7 @@ const CoopSideMenu = ({
         </>
       ),
       linkProps: {
-        href: `/coop/mes-statistiques?du=${firstDayOfThisYear}&au=${today}`,
+        href: hrefDesStatistiquesDeLaPeriode(firstDayOfThisYear, today),
       },
       isActive: pathname?.startsWith('/coop/mes-statistiques'),
     },
