@@ -1,7 +1,7 @@
 'use client'
 
 import type { MouseEventHandler } from 'react'
-import { DetailDeLActiviteDynamicModal } from '../../../../ui/components/detail/DetailDeLActiviteModale'
+import { DetailDeLActiviteDynamicModal } from '../../../../ui/components/DetailDeLActiviteModale'
 import type { LigneDuTableau } from '../presenters/mes-activites.presenter'
 
 export const OuvrirLeDetailDeLaLigne = ({ row }: { row: LigneDuTableau }) => {

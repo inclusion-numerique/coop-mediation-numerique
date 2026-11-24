@@ -3,7 +3,7 @@ import type { ActiviteConsultee } from '../../../../domain'
 import {
   type CarteDActivite,
   carteDActivite,
-} from '../../../../ui/presenters/carte/carte-d-activite.presenter'
+} from '../../../../ui/presenters/carte-d-activite.presenter'
 
 export type DerniereActivite = {
   readonly carte: CarteDActivite

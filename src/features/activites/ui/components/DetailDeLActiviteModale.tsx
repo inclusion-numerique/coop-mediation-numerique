@@ -16,11 +16,11 @@ import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVService
 import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
 import Stars from '@/libraries/ui/components/Stars'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '../../../action/supprimer-une-activite-de-mediation.key'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '../../action/supprimer-une-activite-de-mediation.key'
 import type {
   DetailDActivite,
   Rubrique,
-} from '../../presenters/detail/detail-de-l-activite.presenter'
+} from '../presenters/detail-de-l-activite.presenter'
 
 export const DetailDeLActiviteDynamicModal = createDynamicModal<
   DetailDActivite | undefined

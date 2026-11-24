@@ -5,7 +5,7 @@ import {
 } from '@/libraries/date/dateAsDayAndTime'
 import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
-import { valeurDe } from '../../../../../libraries/collections/valeur-de'
+import { valeurDe } from '../../../../libraries/collections/valeur-de'
 import type {
   AccompagnementIndividuel,
   ActiviteConsultee,
@@ -14,22 +14,22 @@ import type {
   AtelierCollectif,
   Commune,
   ParticipantsAnonymes,
-} from '../../../domain'
-import { autonomieStars } from '../../labels/libelles/autonomie.labels'
-import { materielLabels } from '../../labels/libelles/materiel.labels'
-import { niveauAtelierStars } from '../../labels/libelles/niveau-atelier.labels'
+} from '../../domain'
+import { autonomieStars } from '../labels/libelles/autonomie.labels'
+import { materielLabels } from '../labels/libelles/materiel.labels'
+import { niveauAtelierStars } from '../labels/libelles/niveau-atelier.labels'
 import {
   sexeLabels,
   statutSocialLabels,
   trancheAgeLabels,
-} from '../../labels/libelles/profil.labels'
+} from '../labels/libelles/profil.labels'
 import {
   apparenceDuStatut,
   type SeveriteDeBadge,
-} from '../../labels/libelles/statut-de-rendez-vous.labels'
-import { structuresRedirectionLabels } from '../../labels/libelles/structures-redirection.labels'
-import { thematiqueLabels } from '../../labels/libelles/thematique.labels'
-import { typeActiviteLabels } from '../../labels/libelles/type-activite.labels'
+} from '../labels/libelles/statut-de-rendez-vous.labels'
+import { structuresRedirectionLabels } from '../labels/libelles/structures-redirection.labels'
+import { thematiqueLabels } from '../labels/libelles/thematique.labels'
+import { typeActiviteLabels } from '../labels/libelles/type-activite.labels'
 
 export type Rubrique =
   | {

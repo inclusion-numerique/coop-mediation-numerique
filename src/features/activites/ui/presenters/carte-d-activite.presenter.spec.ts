@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  accompagnementSuivi,
-  atelierMixte,
-} from '../../../fixtures/consultation'
+import { accompagnementSuivi, atelierMixte } from '../../fixtures/consultation'
 import { carteDActivite } from './carte-d-activite.presenter'
 
 describe('carte d’une activité', () => {

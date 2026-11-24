@@ -1,4 +1,4 @@
-import CraAnimationForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/animation/CraAnimationForm'
+import CraAnimationForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/CraAnimationForm'
 import { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-animation.validation'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie/ModaleDeCreationDeTag'
 import type {

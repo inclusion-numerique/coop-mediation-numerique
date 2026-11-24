@@ -4,12 +4,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
+import { BeneficiairesAtelierFields } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/BeneficiairesAtelierFields'
 import {
   type CraCollectifData,
   CraCollectifValidation,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
-import { BeneficiairesAtelierFields } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/fields/BeneficiairesAtelierFields'
-import { NiveauAtelierField } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/fields/NiveauAtelierField'
+import { NiveauAtelierField } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/NiveauAtelierField'
 import { saisieDeLAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/saisie-du-formulaire.presenter'
 import { MaterielField } from '@/features/activites/ui/forms/saisie/MaterielField'
 import { RendezVousFields } from '@/features/activites/ui/forms/saisie/RendezVousFields'

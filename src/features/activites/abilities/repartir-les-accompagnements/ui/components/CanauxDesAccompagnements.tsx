@@ -1,4 +1,4 @@
-import { AccompagnementPieChart } from '@/features/activites/ui/components/graphiques/AccompagnementPieChart'
+import { AccompagnementPieChart } from '@/features/activites/ui/components/AccompagnementPieChart'
 import { canauxAccompagnementColors } from '@/features/activites/ui/labels/couleurs.labels'
 import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
 import type { RepartitionPresentee } from '../presenters/repartition.presenter'

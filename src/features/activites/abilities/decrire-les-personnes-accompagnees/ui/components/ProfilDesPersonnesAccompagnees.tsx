@@ -1,4 +1,4 @@
-import { AccompagnementPieChart } from '@/features/activites/ui/components/graphiques/AccompagnementPieChart'
+import { AccompagnementPieChart } from '@/features/activites/ui/components/AccompagnementPieChart'
 import {
   couleursDesStatuts,
   genresColors,

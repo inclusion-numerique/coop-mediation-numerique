@@ -1,13 +1,13 @@
 import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
-import { valeurDe } from '../../../../../libraries/collections/valeur-de'
-import type { ActiviteConsultee, ActiviteDeMediation } from '../../../domain'
-import { thematiqueLabels } from '../../labels/libelles/thematique.labels'
-import { typeActiviteLabels } from '../../labels/libelles/type-activite.labels'
+import { valeurDe } from '../../../../libraries/collections/valeur-de'
+import type { ActiviteConsultee, ActiviteDeMediation } from '../../domain'
+import { thematiqueLabels } from '../labels/libelles/thematique.labels'
+import { typeActiviteLabels } from '../labels/libelles/type-activite.labels'
 import {
   type DetailDActivite,
   detailDeLActivite,
-} from '../detail/detail-de-l-activite.presenter'
+} from './detail-de-l-activite.presenter'
 
 const THEMATIQUES_AFFICHEES = 2
 

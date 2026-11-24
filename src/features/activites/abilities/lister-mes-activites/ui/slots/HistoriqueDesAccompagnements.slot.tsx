@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
-import { DetailDeLActiviteModale } from '../../../../ui/components/detail/DetailDeLActiviteModale'
+import { DetailDeLActiviteModale } from '../../../../ui/components/DetailDeLActiviteModale'
 import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
 import {
   CarteDeRendezVous,

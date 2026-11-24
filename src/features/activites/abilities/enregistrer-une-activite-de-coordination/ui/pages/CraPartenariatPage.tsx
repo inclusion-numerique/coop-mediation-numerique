@@ -1,5 +1,5 @@
+import CraPartenariatForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/CraPartenariatForm'
 import { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-partenariat.validation'
-import CraPartenariatForm from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/partenariat/CraPartenariatForm'
 import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie/ModaleDeCreationDeTag'
 import type {
   Tag,

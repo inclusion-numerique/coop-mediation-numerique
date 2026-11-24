@@ -1,6 +1,6 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
-import { DetailDeLActiviteModale } from '../../../../ui/components/detail/DetailDeLActiviteModale'
+import { DetailDeLActiviteModale } from '../../../../ui/components/DetailDeLActiviteModale'
 import { ModaleDeSaisie } from '../../../../ui/components/saisie/ModaleDeSaisie'
 import type { DerniereActivite } from '../presenters/dernieres-activites.presenter'
 

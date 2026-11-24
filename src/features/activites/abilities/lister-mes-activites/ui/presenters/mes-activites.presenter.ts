@@ -18,11 +18,11 @@ import {
   carteDActivite,
   nombreDeParticipants,
   nomDuBeneficiaire,
-} from '../../../../ui/presenters/carte/carte-d-activite.presenter'
+} from '../../../../ui/presenters/carte-d-activite.presenter'
 import {
   type DetailDActivite,
   detailDeLActivite,
-} from '../../../../ui/presenters/detail/detail-de-l-activite.presenter'
+} from '../../../../ui/presenters/detail-de-l-activite.presenter'
 import {
   type CarteDeRendezVous,
   carteDeRendezVous,
