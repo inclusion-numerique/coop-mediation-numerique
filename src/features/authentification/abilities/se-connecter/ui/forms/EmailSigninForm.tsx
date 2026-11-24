@@ -48,7 +48,7 @@ export const EmailSigninForm = ({ callbackUrl }: { callbackUrl: Route }) => {
             iconId: 'fr-icon-account-circle-line',
             children: 'Se connecter',
             type: 'submit',
-            className: disabled ? 'fr-btn--loading' : undefined,
+            ...(disabled ? { className: 'fr-btn--loading' } : {}),
           },
         ]}
       />

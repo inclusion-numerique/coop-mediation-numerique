@@ -9,7 +9,7 @@ export const ConnexionPage = ({
   callbackUrl,
   connexion,
 }: {
-  error?: string
+  error?: string | undefined
   callbackUrl: Route
   connexion: MoyenDeConnexion
 }) => (

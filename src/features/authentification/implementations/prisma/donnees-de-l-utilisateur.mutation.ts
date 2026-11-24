@@ -24,7 +24,7 @@ export const enregistrerLesDonneesDeLUtilisateur =
           lastName,
           phone: telephoneEnregistrable(phone),
           name: `${firstName} ${lastName}`,
-          siret: siret ?? undefined,
+          ...(siret == null ? {} : { siret }),
           updated: new Date(),
         },
         where: {

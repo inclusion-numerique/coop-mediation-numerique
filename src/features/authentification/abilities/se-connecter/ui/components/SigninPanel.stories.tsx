@@ -17,7 +17,7 @@ export const Desktop: Story = {
   },
 }
 export const Mobile: Story = {
-  args: Desktop.args,
+  args: { ...Desktop.args },
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',

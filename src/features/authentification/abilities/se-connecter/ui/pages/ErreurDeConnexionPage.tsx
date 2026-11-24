@@ -4,7 +4,11 @@ import { connexionImpossibleMessage } from '@/features/authentification/abilitie
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
 
-export const ErreurDeConnexionPage = ({ error }: { error?: string }) => (
+export const ErreurDeConnexionPage = ({
+  error,
+}: {
+  error?: string | undefined
+}) => (
   <>
     <Breadcrumbs
       currentPage="Erreur"

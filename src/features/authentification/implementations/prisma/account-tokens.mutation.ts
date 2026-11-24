@@ -18,11 +18,11 @@ export const updateAccountTokens = async ({
   userId: string
   provider: string
   tokens: {
-    access_token?: string
-    refresh_token?: string
-    expires_in?: number
-    id_token?: string
-    scope?: string
+    access_token?: string | undefined
+    refresh_token?: string | undefined
+    expires_in?: number | undefined
+    id_token?: string | undefined
+    scope?: string | undefined
   }
 }) => {
   const expiresAt = computeExpiresAt(tokens.expires_in)
@@ -33,11 +33,15 @@ export const updateAccountTokens = async ({
       provider,
     },
     data: {
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      expires_at: expiresAt,
-      id_token: tokens.id_token,
-      scope: tokens.scope,
+      ...(tokens.access_token === undefined
+        ? {}
+        : { access_token: tokens.access_token }),
+      ...(tokens.refresh_token === undefined
+        ? {}
+        : { refresh_token: tokens.refresh_token }),
+      ...(expiresAt === undefined ? {} : { expires_at: expiresAt }),
+      ...(tokens.id_token === undefined ? {} : { id_token: tokens.id_token }),
+      ...(tokens.scope === undefined ? {} : { scope: tokens.scope }),
     },
   })
 }
