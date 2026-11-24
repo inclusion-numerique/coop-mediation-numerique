@@ -14,9 +14,9 @@ export const addresseFromParts = ({
   codePostal,
   commune,
 }: {
-  adresse?: string | null // Voie seule (ex. « 123 rue de la plage »)
-  commune?: string | null
-  codePostal?: string | null
+  adresse?: string | null | undefined // Voie seule (ex. « 123 rue de la plage »)
+  commune?: string | null | undefined
+  codePostal?: string | null | undefined
 }): string =>
   [adresse, [codePostal, commune].filter(Boolean).join(' ')]
     .filter(Boolean)
