@@ -116,7 +116,7 @@ export const idDeLAdresseMain = (resolved: ResolvedAdresseMain) =>
 export const insertAdresseMain = async (
   resolved: ResolvedAdresseMain,
 ): Promise<number> => {
-  const [created] = await prismaClient.$queryRaw<{ id: number }[]>`
+  const [created] = await prismaClient.$queryRaw<[{ id: number }]>`
     INSERT INTO main.adresse (code_postal, code_insee, nom_commune, nom_voie, code_ban, geom)
     VALUES (
       ${resolved.codePostal}, ${resolved.codeInsee}, ${resolved.nomCommune}, ${resolved.nomVoie},
