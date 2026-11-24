@@ -1,38 +1,11 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
-import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
-import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
 import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect'
-import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
-import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
-import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
-import {
-  mediateque,
-  semerLesLieuxDeDemonstration,
-  structureEmployeuse,
-} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
-import { conseillerNumerique } from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
-import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 
-const demonstration = {
-  employeuse: { structureCoopId: structureEmployeuse.id },
-  semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
-    mediateursDesPersonas,
-  ),
-  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
-    mediateursDesPersonas,
-  ),
-  semerLesCras: semerLesCrasDeDemonstration({
-    mediateurs: mediateursDesPersonas,
-    beneficiaires: referencesDesBeneficiaires,
-    lieux: { mediateque },
-  }),
-  semerLesCoordinations: semerLesCoordinationsDeDemonstration,
-}
+const MEDIATEUR = '93b7d259-61b0-4069-ae42-db887984777f'
+const CONSEILLER = '09d6e0af-56e7-43b8-a649-b7e9d3c70c51'
+const NOS_UTILISATEURS = [MEDIATEUR, CONSEILLER]
 
 const PROCONNECT_SIRET = '11111111111111'
 const OTHER_SIRET = '22222222222222'
@@ -76,12 +49,6 @@ describe('importStructureEmployeuseFromProConnect', () => {
   const state = { proconnectMainId: 0, otherMainId: 0 }
 
   beforeAll(async () => {
-    await semerLesLieuxDeDemonstration(prismaClient)
-    await semerLesEmployeusesDeDemonstration(prismaClient, {
-      structureEmployeuse,
-      mediateque,
-    })
-
     // Résidu d'un run précédent interrompu : la clé (siret, dénomination) est unique.
     await prismaClient.personneAffectationEmploiMain.deleteMany({
       where: {
@@ -112,26 +79,24 @@ describe('importStructureEmployeuseFromProConnect', () => {
     })
     state.proconnectMainId = proconnect.id
     state.otherMainId = other.id
+
+    await prismaClient.user.createMany({
+      data: NOS_UTILISATEURS.map((id) => ({
+        id,
+        email: `proconnect-${id}@integration.test`,
+      })),
+      skipDuplicates: true,
+    })
   })
 
-  // Nettoyage par appartenance à la personne de test, et non par structure : les fixtures lui
-  // posent aussi des affectations vers d'autres employeuses, qui empêchaient la suppression de la
-  // personne — et laissaient alors les employeuses de test derrière elles, faisant échouer le
-  // `beforeAll` du run suivant sur la clé (siret, dénomination).
   const nettoyerPersonnesDeTest = async () => {
-    const deNosPersonnes = {
-      personne: {
-        coopId: { in: [mediateurSansActivites.id, conseillerNumerique.id] },
-      },
-    }
+    const deNosPersonnes = { personne: { coopId: { in: NOS_UTILISATEURS } } }
     await prismaClient.contratMain.deleteMany({ where: deNosPersonnes })
     await prismaClient.personneAffectationEmploiMain.deleteMany({
       where: deNosPersonnes,
     })
     await prismaClient.personneMain.deleteMany({
-      where: {
-        coopId: { in: [mediateurSansActivites.id, conseillerNumerique.id] },
-      },
+      where: { coopId: { in: NOS_UTILISATEURS } },
     })
   }
 
@@ -147,50 +112,62 @@ describe('importStructureEmployeuseFromProConnect', () => {
     await prismaClient.structureAdministrativeMain.deleteMany({
       where: { id: { in: [state.proconnectMainId, state.otherMainId] } },
     })
+    await prismaClient.user.deleteMany({
+      where: { id: { in: NOS_UTILISATEURS } },
+    })
   })
 
   beforeEach(async () => {
-    await resetFixtureUser(mediateurSansActivites, demonstration, false)
-    // Personne + affectations réinitialisées entre chaque test (FK : affectations avant personne).
     await nettoyerPersonnesDeTest()
   })
 
   test('non-CN + SIRET : rattache à l’employeuse du SIRET fourni', async () => {
     const result = await importer({
-      userId: mediateurSansActivites.id,
+      userId: MEDIATEUR,
       siret: PROCONNECT_SIRET,
     })
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(false)
-    expect(await employeusesActivesDe(mediateurSansActivites.id)).toEqual([
+    expect(await employeusesActivesDe(MEDIATEUR)).toEqual([
       state.proconnectMainId,
     ])
   })
 
   test('conseiller numerique : no-op, aucun rattachement au SIRET fourni', async () => {
-    await resetFixtureUser(conseillerNumerique, demonstration, false)
+    await prismaClient.personneMain.create({
+      data: {
+        coopId: CONSEILLER,
+        affectationsEmploi: {
+          create: {
+            structureAdministrativeId: state.otherMainId,
+            source: 'idposte',
+            estActive: true,
+          },
+        },
+      },
+    })
 
     const result = await importer({
-      userId: conseillerNumerique.id,
+      userId: CONSEILLER,
       siret: PROCONNECT_SIRET,
     })
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(await employeusesActivesDe(conseillerNumerique.id)).not.toContain(
+    expect(await employeusesActivesDe(CONSEILLER)).not.toContain(
       state.proconnectMainId,
     )
   })
 
   test('aucun SIRET fourni : no-op', async () => {
     const result = await importer({
-      userId: mediateurSansActivites.id,
+      userId: MEDIATEUR,
       siret: null,
     })
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(await employeusesActivesDe(mediateurSansActivites.id)).toEqual([])
+    expect(await employeusesActivesDe(MEDIATEUR)).toEqual([])
   })
 })

@@ -1,42 +1,9 @@
 import { v4 } from 'uuid'
-import { afterEach, beforeAll, describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
-import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
-import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
-import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
-import { semerLesCoordinationsDeDemonstration } from '@/features/equipe/fixtures/semer-les-coordinations-de-demonstration'
-import { semerLesActivitesDuPersonaDansLesLieux } from '@/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration'
-import {
-  mediateque,
-  semerLesLieuxDeDemonstration,
-  structureEmployeuse,
-} from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
-import {
-  mediateurAvecActivite,
-  mediateurAvecActiviteMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/mediateur-avec-activite'
-import { resetFixtureUser } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 import { AdresseIndisponible } from '@/libraries/ban/apiAdresse'
 import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
-
-const demonstration = {
-  employeuse: { structureCoopId: structureEmployeuse.id },
-  semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
-    mediateursDesPersonas,
-  ),
-  semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
-    mediateursDesPersonas,
-  ),
-  semerLesCras: semerLesCrasDeDemonstration({
-    mediateurs: mediateursDesPersonas,
-    beneficiaires: referencesDesBeneficiaires,
-    lieux: { mediateque },
-  }),
-  semerLesCoordinations: semerLesCoordinationsDeDemonstration,
-}
 
 const evreux = {
   commune: 'Évreux',
@@ -45,7 +12,8 @@ const evreux = {
 }
 
 const rdvUserId = 990_101
-const mediateurId = mediateurAvecActiviteMediateurId
+const utilisateurId = '45661444-bbca-4961-9944-32cfa9695a4a'
+const mediateurId = '44aed6e1-ffcd-433c-8018-e50f5f554709'
 
 const usager: ExternalUserToMerge = {
   rdvUserId,
@@ -115,13 +83,20 @@ const seedLinkedBeneficiaire = (commune: {
 
 describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage commune', () => {
   beforeAll(async () => {
-    await semerLesLieuxDeDemonstration(prismaClient)
-    await semerLesEmployeusesDeDemonstration(prismaClient, {
-      structureEmployeuse,
-      mediateque,
+    await prismaClient.user.create({
+      data: {
+        id: utilisateurId,
+        email: `usager-externe-${utilisateurId}@integration.test`,
+        mediateur: { create: { id: mediateurId } },
+      },
     })
-    await resetFixtureUser(mediateurAvecActivite, demonstration, false)
-  }, 100_000)
+  })
+
+  afterAll(async () => {
+    await prismaClient.beneficiaire.deleteMany({ where: { mediateurId } })
+    await prismaClient.mediateur.delete({ where: { id: mediateurId } })
+    await prismaClient.user.delete({ where: { id: utilisateurId } })
+  })
 
   afterEach(async () => {
     await prismaClient.beneficiaire.deleteMany({
