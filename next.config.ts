@@ -20,7 +20,9 @@ export default withSentryConfig(nextConfig, {
   silent: false,
   tunnelRoute: '/monitoring',
   widenClientFileUpload: true,
-  authToken: environnementOutillage.SENTRY_CI_TOKEN,
+  ...(environnementOutillage.SENTRY_CI_TOKEN === undefined
+    ? {}
+    : { authToken: environnementOutillage.SENTRY_CI_TOKEN }),
   release: { create: environnementOutillage.SENTRY_ENABLE_RELEASE },
   sourcemaps: {
     disable: !environnementOutillage.SENTRY_ENABLE_RELEASE,
