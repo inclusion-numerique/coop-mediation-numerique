@@ -1,5 +1,6 @@
-import { DataTable, type DataTableUrlState } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table'
 import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
+import type { LiensDeLaListe } from '../filtres/liste-des-lieux.filtre'
 import { LieuTableRow } from './LieuTableRow'
 import { LieuxTableHead } from './LieuxTableHead'
 
@@ -7,18 +8,16 @@ const NOMBRE_DE_COLONNES = 10
 
 export const LieuxTable = ({
   lignes,
-  state,
-  baseHref,
+  colonnes,
 }: {
   lignes: readonly LigneDeLaListe[]
-  state: DataTableUrlState
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
 }) => (
   <DataTable
     className="fr-table--nowrap fr-width-full fr-mb-8v"
     tableClassName="fr-table--transparent"
   >
-    <LieuxTableHead state={state} baseHref={baseHref} />
+    <LieuxTableHead colonnes={colonnes} />
     <tbody>
       {lignes.map((ligne) => (
         <LieuTableRow key={ligne.id} ligne={ligne} />

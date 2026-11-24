@@ -1,3 +1,4 @@
+import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import { pluriel } from '@/libraries/pluriel'
@@ -5,24 +6,19 @@ import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
-import { LieuxPagination } from '../components/LieuxPagination'
 import { LieuxTable } from '../components/LieuxTable'
 import { RechercheDeLieux } from '../components/RechercheDeLieux'
 import {
-  type ListeDesLieuxSearchParams,
-  toDataTableUrlState,
-} from '../search-params/lister-tous-les-lieux.search-params'
-
-const baseHref = '/administration/lieux-activite'
+  type LiensDeLaListe,
+  paginationDesLieux,
+} from '../filtres/liste-des-lieux.filtre'
 
 export const LieuxPage = ({
-  totalCount,
-  searchResult,
-  searchParams,
+  lieux,
+  liens,
 }: {
-  totalCount: number
-  searchResult: PageDeLieux
-  searchParams: ListeDesLieuxSearchParams
+  lieux: PageDeLieux
+  liens: LiensDeLaListe
 }) => (
   <CoopPageContainer size="full">
     <SkipLinksPortal />
@@ -33,31 +29,23 @@ export const LieuxPage = ({
       </AdministrationTitle>
       <div className="fr-border-radius--8 fr-py-8v fr-px-10v fr-background-alt--blue-france fr-mb-6v fr-col-xl-7">
         <p className="fr-text--medium fr-mb-2v">
-          Rechercher dans la liste des lieux d’activité ({totalCount} au total)
+          Rechercher dans la liste des lieux d’activité ({lieux.totalCount} au
+          total)
         </p>
-        <RechercheDeLieux searchParams={searchParams} />
+        <RechercheDeLieux />
       </div>
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
         <span className="fr-text--semi-bold">
-          {searchResult.matchesCount}{' '}
+          {lieux.totalItems}{' '}
           {pluriel(
-            searchResult.matchesCount,
+            lieux.totalItems,
             'lieu d’activité trouvé',
             'lieux d’activité trouvés',
           )}
         </span>
       </div>
-      <LieuxTable
-        lignes={searchResult.structures}
-        state={toDataTableUrlState(searchParams)}
-        baseHref={baseHref}
-      />
-      <LieuxPagination
-        state={toDataTableUrlState(searchParams)}
-        baseHref={baseHref}
-        itemsCount={searchResult.matchesCount}
-        pageSize={searchResult.pageSize}
-      />
+      <LieuxTable lignes={lieux.items} colonnes={liens.colonnes} />
+      <PiedDeListe liens={liens.pages} pagination={paginationDesLieux} />
     </main>
   </CoopPageContainer>
 )

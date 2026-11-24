@@ -1,8 +1,8 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
-import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
-import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
+import { motsDe } from '@/libraries/texte/mots'
 import type { CriteresDeLaListe } from '../../domain/criteres-de-la-liste'
+import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'
 import { ordreDesLieux } from './tri-des-lieux'
 
@@ -23,21 +23,18 @@ const dansLesDeuxFiches = (part: string) => ({
   ],
 })
 
-export const rechercherDesLieux = async (criteres: CriteresDeLaListe) => {
-  const { take, skip } = takeAndSkipFromPage({
-    page: criteres.page,
-    pageSize: criteres.lignes,
-  })
-
+export const rechercherDesLieux = async (
+  criteres: CriteresDeLaListe,
+): Promise<PageDeLieux> => {
   const matchesWhere = {
     suppression: null,
-    AND: toQueryParts(criteres).map(dansLesDeuxFiches),
+    AND: motsDe(criteres.recherche).map(dansLesDeuxFiches),
   } satisfies Prisma.LieuInclusionWhereInput
 
   const structures = await lieuxPourLaListe({
     where: matchesWhere,
-    take,
-    skip,
+    take: criteres.pageSize,
+    skip: (criteres.page - 1) * criteres.pageSize,
     orderBy: ordreDesLieux(criteres.tri),
   })
 
@@ -48,10 +45,9 @@ export const rechercherDesLieux = async (criteres: CriteresDeLaListe) => {
 
   return {
     totalCount,
-    searchResult: {
-      structures,
-      matchesCount,
-      pageSize: take,
-    },
+    items: [...structures],
+    totalItems: matchesCount,
+    currentPage: criteres.page,
+    pageSize: criteres.pageSize,
   }
 }

@@ -2,11 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import {
   adresseAvec,
-  entierPositifLu,
   premiereValeur,
-  requeteAvec,
-  requeteConservant,
-  requeteDeRecherche,
   valeurLue,
   valeursLues,
 } from './parametres-d-url'
@@ -57,48 +53,5 @@ describe('paramètres d’URL', () => {
     expect(adresseAvec('/saisie', { retour: undefined, v: null })).toBe(
       '/saisie',
     )
-  })
-
-  it('lit un entier positif', () => {
-    expect(entierPositifLu('12', 1)).toBe(12)
-  })
-
-  it.each([undefined, '', 'abc', '12abc', '0', '-3', '1.5'])(
-    'prend la valeur par défaut pour %s',
-    (valeur) => {
-      expect(entierPositifLu(valeur, 7)).toBe(7)
-    },
-  )
-})
-
-describe("écriture de l'état d'URL", () => {
-  it('modifie la requête courante', () => {
-    expect(requeteAvec('du=1&page=2', { page: null, au: '3' })).toBe(
-      '?du=1&au=3',
-    )
-  })
-
-  it('garde une requête vide quand tout est retiré', () => {
-    expect(requeteAvec('page=2', { page: null })).toBe('?')
-  })
-
-  it('ne conserve que les paramètres choisis', () => {
-    expect(requeteConservant('a=1&b=2&c=3', ['a', 'c'])).toBe('?a=1&c=3')
-  })
-
-  it('garde une requête vide quand aucun paramètre choisi n’est présent', () => {
-    expect(requeteConservant('b=2', ['a'])).toBe('?')
-  })
-})
-
-describe('requête de recherche', () => {
-  it("pose la recherche sur l'état, sans les valeurs vides", () => {
-    expect(
-      requeteDeRecherche({ tri: 'nom', page: '', lignes: undefined }, 'jean'),
-    ).toBe('?tri=nom&recherche=jean')
-  })
-
-  it('retire une recherche vide', () => {
-    expect(requeteDeRecherche({ recherche: 'jean' }, '')).toBe('?')
   })
 })

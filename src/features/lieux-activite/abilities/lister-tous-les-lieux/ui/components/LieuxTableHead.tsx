@@ -1,69 +1,24 @@
-import {
-  type DataTableUrlState,
-  SortableColumnHeader,
-} from '@/libraries/data-table'
-import type { ColonneTriable } from '../../domain/criteres-de-la-liste'
-
-const EnTeteTriable = ({
-  label,
-  tri,
-  state,
-  baseHref,
-  isDefault,
-}: {
-  label: string
-  tri: ColonneTriable
-  state: DataTableUrlState
-  baseHref: string
-  isDefault?: boolean
-}) => (
-  <SortableColumnHeader
-    label={label}
-    tri={tri}
-    state={state}
-    baseHref={baseHref}
-    isDefault={isDefault}
-  />
-)
+import { EnTeteTriable } from '@/libraries/etat-d-url/EnTeteTriable'
+import type { LiensDeLaListe } from '../filtres/liste-des-lieux.filtre'
 
 export const LieuxTableHead = ({
-  state,
-  baseHref,
+  colonnes,
 }: {
-  state: DataTableUrlState
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
 }) => (
   <thead>
     <tr>
-      <EnTeteTriable
-        label="Nom"
-        tri="nom"
-        state={state}
-        baseHref={baseHref}
-        isDefault
-      />
+      <EnTeteTriable libelle="Nom" lien={colonnes.nom} />
       <th scope="col">Type</th>
       <th scope="col">Adresse</th>
       <th scope="col">SIRET</th>
       <th scope="col">Typologies</th>
       <th scope="col">Visible carto</th>
+      <EnTeteTriable libelle="Création" lien={colonnes.creation} />
+      <EnTeteTriable libelle="Modification" lien={colonnes.modification} />
       <EnTeteTriable
-        label="Création"
-        tri="creation"
-        state={state}
-        baseHref={baseHref}
-      />
-      <EnTeteTriable
-        label="Modification"
-        tri="modification"
-        state={state}
-        baseHref={baseHref}
-      />
-      <EnTeteTriable
-        label="Médiateurs en activité"
-        tri="mediateursEnActivite"
-        state={state}
-        baseHref={baseHref}
+        libelle="Médiateurs en activité"
+        lien={colonnes.mediateursEnActivite}
       />
       <th className="fr-sr-only">Modifier le lieu</th>
     </tr>

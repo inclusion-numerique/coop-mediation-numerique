@@ -14,13 +14,6 @@ export const valeurLue = <S extends z.ZodType>(
   return lue.success ? lue.data : null
 }
 
-const EntierPositif = z.coerce.number().int().positive()
-
-export const entierPositifLu = (
-  valeur: string | undefined,
-  parDefaut: number,
-): number => valeurLue(EntierPositif, valeur) ?? parDefaut
-
 export const valeursLues = <S extends z.ZodType>(
   schema: S,
   valeur: ValeurDeParametre,
@@ -53,34 +46,3 @@ export const adresseAvec = (
   const chaine = fusionnee(requete, parametres)
   return chaine === '' ? chemin : `${chemin}?${chaine}`
 }
-
-type RequeteCourante = string | { toString(): string }
-
-export const requeteAvec = (
-  requete: RequeteCourante,
-  parametres: Changements,
-): `?${string}` => `?${fusionnee(requete.toString(), parametres)}`
-
-export const requeteConservant = (
-  requete: RequeteCourante,
-  cles: readonly string[],
-): `?${string}` =>
-  `?${new URLSearchParams(
-    [...new URLSearchParams(requete.toString())].filter(([cle]) =>
-      cles.includes(cle),
-    ),
-  ).toString()}`
-
-export const requeteDeRecherche = (
-  etat: Readonly<Record<string, unknown>>,
-  recherche: string,
-): `?${string}` =>
-  requeteAvec(
-    '',
-    Object.fromEntries(
-      Object.entries({ ...etat, recherche }).map(([cle, valeur]) => [
-        cle,
-        typeof valeur === 'string' && valeur !== '' ? valeur : null,
-      ]),
-    ),
-  )

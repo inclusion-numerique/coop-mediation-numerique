@@ -1,11 +1,11 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
-import { LieuxPage } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/pages/LieuxPage'
 import {
   criteresDeLaListe,
-  type ListeDesLieuxSearchParams,
-} from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/search-params/lister-tous-les-lieux.search-params'
+  liensDeLaListe,
+} from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/filtres/liste-des-lieux.filtre'
+import { LieuxPage } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/pages/LieuxPage'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),
@@ -14,21 +14,13 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Page = async (props: {
-  searchParams: Promise<ListeDesLieuxSearchParams>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
   await authenticateAdmin()
-  const searchParams = await props.searchParams
-  const { totalCount, searchResult } = await rechercherDesLieux(
-    criteresDeLaListe(searchParams),
-  )
+  const parametres = await props.searchParams
+  const lieux = await rechercherDesLieux(criteresDeLaListe(parametres))
 
-  return (
-    <LieuxPage
-      totalCount={totalCount}
-      searchResult={searchResult}
-      searchParams={searchParams}
-    />
-  )
+  return <LieuxPage lieux={lieux} liens={liensDeLaListe(parametres, lieux)} />
 }
 
 export default Page

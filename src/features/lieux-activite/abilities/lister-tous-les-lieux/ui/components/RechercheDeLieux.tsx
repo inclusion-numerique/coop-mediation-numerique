@@ -1,28 +1,19 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useRouter } from 'next/navigation'
+import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
+import { useFiltre } from '@/libraries/etat-d-url/use-filtre'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { requeteDeRecherche } from '@/libraries/parametres-d-url'
-import type { ListeDesLieuxSearchParams } from '../search-params/lister-tous-les-lieux.search-params'
 
 const CHAMP = 'recherche'
 
-export const RechercheDeLieux = ({
-  searchParams = {},
-}: {
-  searchParams?: ListeDesLieuxSearchParams
-}) => {
-  const router = useRouter()
+export const RechercheDeLieux = () => {
+  const [{ recherche }, ecrire] = useFiltre(rechercheLibre.parametres)
 
   const form = useAppForm({
-    defaultValues: { recherche: searchParams.recherche ?? '' },
-    onSubmit: ({ value }) => {
-      router.push(requeteDeRecherche(searchParams, value.recherche), {
-        scroll: false,
-      })
-    },
+    defaultValues: { recherche },
+    onSubmit: ({ value }) => ecrire({ recherche: value.recherche.trim() }),
   })
 
   return (

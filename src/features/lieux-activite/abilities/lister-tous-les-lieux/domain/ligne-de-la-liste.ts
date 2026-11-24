@@ -1,3 +1,4 @@
+import type { Paginated } from '@arckit/resultset'
 export type LigneDeLaListe = {
   readonly id: string
   readonly nom: string
@@ -17,8 +18,6 @@ export type LigneDeLaListe = {
   }
 }
 
-export type PageDeLieux = {
-  readonly structures: readonly LigneDeLaListe[]
-  readonly matchesCount: number
-  readonly pageSize: number
+export type PageDeLieux = Paginated<LigneDeLaListe> & {
+  readonly totalCount: number
 }

@@ -1,3 +1,5 @@
+import type { Page, PageSize, Search, Sort } from '@arckit/resultset'
+
 export const COLONNES_TRIABLES = [
   'nom',
   'creation',
@@ -8,11 +10,8 @@ export const COLONNES_TRIABLES = [
 export type ColonneTriable = (typeof COLONNES_TRIABLES)[number]
 
 export type CriteresDeLaListe = {
-  readonly recherche?: string
-  readonly tri?: {
-    readonly colonne: ColonneTriable
-    readonly ordre: 'asc' | 'desc'
-  }
-  readonly page: number
-  readonly lignes: number
+  readonly recherche: Search
+  readonly tri: Sort<ColonneTriable>
+  readonly page: Page
+  readonly pageSize: PageSize
 }

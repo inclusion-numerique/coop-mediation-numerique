@@ -18,6 +18,7 @@ const triDesLieux: Readonly<
   ],
 }
 
-export const ordreDesLieux = (
-  tri: CriteresDeLaListe['tri'],
-): OrdreDesLieux[] => (tri ? triDesLieux[tri.colonne](tri.ordre) : [])
+export const ordreDesLieux = ({
+  field,
+  direction,
+}: CriteresDeLaListe['tri']): OrdreDesLieux[] => triDesLieux[field](direction)
