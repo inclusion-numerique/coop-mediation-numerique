@@ -6,7 +6,7 @@ import { output } from '@/libraries/console/output'
 import {
   optionalInfrastructureVariables,
   requiredInfrastructureVariables,
-} from './infrastructureVariables'
+} from './infrastructure-variables'
 
 const infrastructureVariablesFile = path.resolve(
   getDirname(import.meta.url),

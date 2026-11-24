@@ -44,7 +44,7 @@ import {
   seedPersonnesMain,
 } from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
 import { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/enSerie'
+import { enSerie } from '@/libraries/fixtures/en-serie'
 import { output } from '@/libraries/fixtures/output'
 
 export const deleteAll = async (transaction: Prisma.TransactionClient) => {

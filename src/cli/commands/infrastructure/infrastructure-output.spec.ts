@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { valuesOfTofuOutput } from './infrastructureOutput'
+import { valuesOfTofuOutput } from './infrastructure-output'
 
 describe('valuesOfTofuOutput', () => {
   it('keeps the value of each output of tofu output -json', () => {

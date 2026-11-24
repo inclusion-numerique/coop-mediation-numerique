@@ -4,7 +4,7 @@ import {
   branchSuffix,
   computeBranchNamespace,
   MAX_NAMESPACE_LENGTH,
-} from './branchNamespace'
+} from './branch-namespace'
 
 const previewDomain = 'coop-mediation-numerique.incubateur.anct.gouv.fr'
 

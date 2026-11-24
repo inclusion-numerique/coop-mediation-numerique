@@ -1,4 +1,4 @@
-import { computeBranchNamespace } from '@/cli/branchNamespace'
+import { computeBranchNamespace } from '@/cli/branch-namespace'
 
 export type RegistryTag = {
   readonly id: string

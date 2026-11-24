@@ -1,7 +1,7 @@
 import { Argument, Command } from '@commander-js/extra-typings'
-import { databasePasswordSecretName } from '@/cli/secrets/databasePasswordSecretName'
-import { deleteSecret } from '@/cli/secrets/deleteSecret'
-import { listSecrets } from '@/cli/secrets/listSecrets'
+import { databasePasswordSecretName } from '@/cli/secrets/database-password-secret-name'
+import { deleteSecret } from '@/cli/secrets/delete-secret'
+import { listSecrets } from '@/cli/secrets/list-secrets'
 import { output } from '@/libraries/console/output'
 
 export const deleteDatabaseSecret = new Command()

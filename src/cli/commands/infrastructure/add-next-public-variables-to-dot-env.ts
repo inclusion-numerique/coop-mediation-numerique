@@ -1,5 +1,5 @@
 import { Argument, Command, Option } from '@commander-js/extra-typings'
-import { appendEnvVariablesToDotEnvFile } from '@/cli/dotEnvFile'
+import { appendEnvVariablesToDotEnvFile } from '@/cli/dot-env-file'
 import { output } from '@/libraries/console/output'
 
 export const addNextPublicVariablesToDotEnv = new Command()

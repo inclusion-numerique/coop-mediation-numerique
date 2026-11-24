@@ -1,6 +1,6 @@
 import { AxiosError, AxiosHeaders } from 'axios'
 import { describe, expect, it } from 'vitest'
-import { meriteUneNouvelleTentative } from './getAvecNouvellesTentatives'
+import { meriteUneNouvelleTentative } from './get-avec-nouvelles-tentatives'
 
 const reponse = (status: number) =>
   new AxiosError('échec', 'ERR_BAD_RESPONSE', undefined, undefined, {

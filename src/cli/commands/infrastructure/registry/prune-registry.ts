@@ -9,14 +9,14 @@ import {
   type RegistryTag,
   retentionCount,
   tagsBeyondTheMostRecent,
-} from './registryRetention'
+} from './registry-retention'
 import {
   deleteImage,
   deleteTag,
   listImageTags,
   listWebAppImages,
   webAppImagePrefix,
-} from './scalewayRegistry'
+} from './scaleway-registry'
 
 const permanentBranches = ['main', 'dev']
 

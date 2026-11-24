@@ -1,9 +1,9 @@
 import { Command } from '@commander-js/extra-typings'
-import { assertDatabaseIsNotProduction } from '@/cli/fixtures/assertDatabaseTarget'
+import { assertDatabaseIsNotProduction } from '@/cli/fixtures/assert-database-target'
 import { deleteAll, seed } from '@/cli/fixtures/seeds'
 import { environnementOutillage } from '@/configuration/environnement/outillage'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { output } from '@/libraries/fixtures/output'
 
 const main = async (eraseAllData: boolean, confirmProduction?: string) => {

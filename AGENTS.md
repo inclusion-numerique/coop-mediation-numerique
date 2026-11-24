@@ -190,7 +190,7 @@ ADRs in `docs/decisions/` are written in French, in the [MADR](https://adr.githu
 ## Branch Conventions
 
 Prefix branches with: `build/`, `chore/`, `ci/`, `docs/`, `feat/`, `fix/`, `perf/`, `refactor/`, `revert/`, `style/` or `test/`; only these branches trigger the CI.
-Branch names can be of any length: a preview's namespace (see `src/cli/branchNamespace.ts`) is the first 7 characters of the branch slug followed by 6 letters derived from the whole branch name, 14 characters at most, the room left for the preview subdomain.
+Branch names can be of any length: a preview's namespace (see `src/cli/branch-namespace.ts`) is the first 7 characters of the branch slug followed by 6 letters derived from the whole branch name, 14 characters at most, the room left for the preview subdomain.
 
 ## Important Notes
 

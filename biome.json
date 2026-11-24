@@ -357,7 +357,7 @@
       "includes": [
         "src/configuration/environnement/**",
         "src/configuration/telemetry/instrument/cli.ts",
-        "src/cli/commands/infrastructure/createTfVarsFileFromEnvironment.ts",
+        "src/cli/commands/infrastructure/create-tf-vars-file-from-environment.ts",
         "prisma.config.ts",
         "prisma/**/prisma.config.ts",
         "vitest.config.ts",

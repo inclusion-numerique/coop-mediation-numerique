@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { computeBranchNamespace } from '@/cli/branchNamespace'
+import { computeBranchNamespace } from '@/cli/branch-namespace'
 import {
   imageNameForBranch,
   isProtectedImage,
   orphanImages,
   retentionCount,
   tagsBeyondTheMostRecent,
-} from './registryRetention'
+} from './registry-retention'
 
 const tag = (name: string, createdAt: string) => ({
   id: `id-${name}`,

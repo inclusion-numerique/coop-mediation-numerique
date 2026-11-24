@@ -1,6 +1,6 @@
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
-import { getAvecNouvellesTentatives } from '@/cli/getAvecNouvellesTentatives'
+import { getAvecNouvellesTentatives } from '@/cli/get-avec-nouvelles-tentatives'
 import { projectTitle } from '@/configuration/projet/config'
 import { output } from '@/libraries/console/output'
 
