@@ -12,7 +12,7 @@ export const adresseAvec = (
   adresse: string,
   parametres: Changements,
 ): string => {
-  const [chemin, requete = ''] = adresse.split('?')
+  const [chemin = '', requete = ''] = adresse.split('?')
   const chaine = fusionnee(requete, parametres)
   return chaine === '' ? chemin : `${chemin}?${chaine}`
 }
