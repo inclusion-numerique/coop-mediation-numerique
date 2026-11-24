@@ -1,5 +1,5 @@
 import { synchroniserLesRolesBrevo as synchroniser } from '../domain/synchroniser-les-roles-brevo'
-import { listeDeDiffusionPorts } from './brevo/liste-de-diffusion.ports'
+import { listeDeDiffusionPorts } from './brevo/liste-de-diffusion'
 import { inscritsDeLaListe } from './prisma/inscrits-de-la-liste.query'
 
 export const synchroniserLesRolesBrevo = synchroniser({
