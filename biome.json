@@ -277,6 +277,39 @@
       }
     },
     {
+      "includes": ["src/features/clients-api/abilities/*/*.steps.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/features/lieux-activite/*",
+                      "@/features/lieux-activite/*/**",
+                      "!@/features/lieux-activite/ui"
+                    ],
+                    "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
+                  },
+                  {
+                    "group": [
+                      "@/app/*",
+                      "@/app/**",
+                      "!@/app/api",
+                      "!@/app/api/v1/**"
+                    ],
+                    "message": "Les étapes d'un lecteur de l'API v1 appellent le gestionnaire de sa route pour en spécifier le contrat HTTP ; aucun autre point d'entrée."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "includes": ["src/features/lieux-activite/**"],
       "linter": {
         "rules": {
