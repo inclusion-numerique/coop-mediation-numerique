@@ -2,7 +2,7 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { retraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/retrait-du-lieu'
+import { retraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/retrait-du-lieu.email'
 import { compileMjml } from '@/libraries/emails/mjml'
 
 export const envoyerLeRetraitDuLieu = async ({

@@ -7,7 +7,7 @@ import {
   type ColonnesDuLieu,
   colonnesDuLieuDesSections,
   colonnesDuRegistreDesSections,
-} from './colonnes-par-section'
+} from './colonnes-par-section.select'
 
 const colonnesDeTracabilite = ({
   modification,

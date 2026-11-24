@@ -10,7 +10,7 @@ import {
   adresseDeLInscription,
   ficheDuRegistre,
   type InscriptionPourLaFiche,
-} from './fiche-du-registre'
+} from './fiche-du-registre.select'
 
 const adresseDuRegistre = {
   numeroVoie: 12,

@@ -4,7 +4,7 @@ import {
   ModifieParSource,
   SourceCartographie,
 } from '../../../domain/tracabilite'
-import type { InscriptionPourLaFiche } from './fiche-du-registre'
+import type { InscriptionPourLaFiche } from './fiche-du-registre.select'
 
 export const derniereModificationExterne = (
   inscription: Pick<

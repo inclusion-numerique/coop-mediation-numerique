@@ -11,7 +11,7 @@ import type {
 } from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
 import { renseignerLieuxActiviteAvec } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/renseigner-lieux-activite.binding'
 import { UtilisateurId } from '@/features/inscription/domain'
-import { structuresCartoParIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto'
+import { structuresCartoParIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto.query'
 import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/activites-en-cours.query'
 import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

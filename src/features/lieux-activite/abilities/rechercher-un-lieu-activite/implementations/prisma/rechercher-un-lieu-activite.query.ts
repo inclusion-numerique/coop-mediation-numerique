@@ -5,7 +5,7 @@ import { motsDe } from '@/libraries/texte/mots'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { NombreDActivites } from '../../../../domain/nombres'
-import { adresseDesColonnes } from '../../../../implementations/prisma/adresse-des-colonnes'
+import { adresseDesColonnes } from '../../../../implementations/prisma/adresse-des-colonnes.select'
 import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 import type { LieuActiviteTrouve } from '../../domain'
 

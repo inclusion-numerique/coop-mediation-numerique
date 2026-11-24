@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { champsDAffichage } from './champs-d-affichage'
-import type { InscriptionPourLaFiche } from './fiche-du-registre'
+import { champsDAffichage } from './champs-d-affichage.select'
+import type { InscriptionPourLaFiche } from './fiche-du-registre.select'
 
 const inscription = (
   surcharge: Partial<InscriptionPourLaFiche> = {},

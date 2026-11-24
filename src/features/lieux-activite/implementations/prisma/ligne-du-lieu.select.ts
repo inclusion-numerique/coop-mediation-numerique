@@ -11,7 +11,7 @@ import type {
   Service,
   Typologie,
 } from '@/generated/prisma/client'
-import type { InscriptionPourLaFiche } from './registre/fiche-du-registre'
+import type { InscriptionPourLaFiche } from './registre/fiche-du-registre.select'
 import type {
   DispositifProgrammeNationalCoop,
   FormationLabelCoop,
@@ -23,7 +23,7 @@ import type {
   PublicSpecifiquementAdresseCoop,
   ServiceCoop,
   TypologieCoop,
-} from './vocabulaire'
+} from './vocabulaire.transfer'
 
 type Ecart<Coop extends string, Colonne extends string> =
   | Exclude<Coop, Colonne>

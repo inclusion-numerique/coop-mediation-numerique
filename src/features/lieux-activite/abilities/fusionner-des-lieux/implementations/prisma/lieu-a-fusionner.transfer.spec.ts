@@ -9,7 +9,7 @@ import { IdentifiantCartographie } from '../../../../domain/cartographie-nationa
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { LieuAFusionner } from '../../domain'
-import type { LieuAFusionnerRow } from './lieu-a-fusionner'
+import type { LieuAFusionnerRow } from './lieu-a-fusionner.select'
 import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'
 
 const creation = new Date('2026-01-15T09:00:00.000Z')

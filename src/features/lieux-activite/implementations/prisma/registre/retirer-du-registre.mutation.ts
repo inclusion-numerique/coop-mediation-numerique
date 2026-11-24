@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { retraitCoop } from './signature-coop'
+import { retraitCoop } from '../../../domain/signature-coop'
 
 export const retirerDuRegistre = async (
   transaction: Prisma.TransactionClient,

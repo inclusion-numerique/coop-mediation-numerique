@@ -1,11 +1,11 @@
-export { champsDAffichage } from './champs-d-affichage'
+export { champsDAffichage } from './champs-d-affichage.select'
 export {
   colonnesRapporteesParLaCartographie,
   identiteDuLieu,
   toutesLesColonnes,
-} from './colonnes-a-ecrire'
+} from './colonnes-a-ecrire.select'
 
-export { aBougeDepuis, derniereEcriture } from './derniere-ecriture'
+export { aBougeDepuis, derniereEcriture } from './derniere-ecriture.transfer'
 export {
   ecrireAuRegistre,
   ecrireLeLieuAuRegistre,
@@ -13,7 +13,7 @@ export {
 export {
   adresseDeLInscription,
   inscriptionPourLaFiche,
-} from './fiche-du-registre'
+} from './fiche-du-registre.select'
 export {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,

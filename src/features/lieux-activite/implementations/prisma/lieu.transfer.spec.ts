@@ -48,7 +48,7 @@ import {
   SourceCartographie,
 } from '../../domain/tracabilite'
 import { lieuCoopToDomain, lieuFromDomain } from './lieu.transfer'
-import type { LigneDuLieuCoop } from './ligne-du-lieu'
+import type { LigneDuLieuCoop } from './ligne-du-lieu.select'
 
 const creation = new Date('2026-01-15T09:00:00Z')
 const modification = new Date('2026-08-20T14:30:00Z')

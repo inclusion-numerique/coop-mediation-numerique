@@ -22,9 +22,9 @@ import {
   presentationSaisie,
   urlSaisie,
 } from '../../../domain/saisie'
-import * as vocabulaire from '../vocabulaire'
-import { contactDuRegistre } from './contact-du-registre'
-import { voieDuRegistre } from './voie-du-registre'
+import { voieDuRegistre } from '../../../domain/voie-du-registre'
+import * as vocabulaire from '../vocabulaire.transfer'
+import { contactDuRegistre } from './contact-du-registre.transfer'
 
 export const inscriptionPourLaFiche = {
   select: {

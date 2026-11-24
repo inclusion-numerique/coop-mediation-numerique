@@ -25,7 +25,7 @@ import {
   colonnesRapporteesParLaCartographie,
   identiteDuLieu,
   toutesLesColonnes,
-} from './colonnes-a-ecrire'
+} from './colonnes-a-ecrire.select'
 import { lieuVersRegistre } from './lieu.transfer'
 
 const fiche: Fiche = {

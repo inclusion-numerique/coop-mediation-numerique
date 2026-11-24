@@ -1,4 +1,4 @@
-import { nonVide } from '../../../domain/saisie'
+import { nonVide } from './saisie'
 
 export const voieDuRegistre = ({
   numeroVoie,

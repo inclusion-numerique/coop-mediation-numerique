@@ -46,10 +46,10 @@ import {
   type Suppression,
   Supprime,
 } from '../../domain/tracabilite'
-import type { LigneDuLieu, LigneDuLieuCoop } from './ligne-du-lieu'
-import { ficheDuRegistre } from './registre/fiche-du-registre'
-import { derniereModificationExterne } from './registre/modification-du-registre'
-import * as vocabulaire from './vocabulaire'
+import type { LigneDuLieu, LigneDuLieuCoop } from './ligne-du-lieu.select'
+import { ficheDuRegistre } from './registre/fiche-du-registre.select'
+import { derniereModificationExterne } from './registre/modification-du-registre.transfer'
+import * as vocabulaire from './vocabulaire.transfer'
 
 const nonVide = (valeur: string | null): string | null =>
   valeur != null && valeur.trim() !== '' ? valeur : null

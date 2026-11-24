@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { lieuToDomain } from '../../../../implementations/prisma/lieu.transfer'
-import type { LigneDuLieu } from '../../../../implementations/prisma/ligne-du-lieu'
+import type { LigneDuLieu } from '../../../../implementations/prisma/ligne-du-lieu.select'
 import {
   aBougeDepuis,
   avecIdentifiantCarto,

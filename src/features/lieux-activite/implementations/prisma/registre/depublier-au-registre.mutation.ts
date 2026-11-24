@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { depublicationCoop } from './signature-coop'
+import { depublicationCoop } from '../../../domain/signature-coop'
 
 export const depublierAuRegistre = async (
   transaction: Prisma.TransactionClient,

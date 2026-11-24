@@ -1,7 +1,7 @@
 import {
   adresseDeLInscription,
   type InscriptionPourLaFiche,
-} from './fiche-du-registre'
+} from './fiche-du-registre.select'
 
 export type ChampsDAffichage = {
   readonly nom: InscriptionPourLaFiche['nom']

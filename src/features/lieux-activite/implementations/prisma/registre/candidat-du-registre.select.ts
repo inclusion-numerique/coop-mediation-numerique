@@ -1,6 +1,6 @@
 import type { LieuCandidat } from '@/features/lieux-activite/domain/lieu-identite'
 import type { Prisma } from '@/generated/prisma/client'
-import { voieDuRegistre } from './voie-du-registre'
+import { voieDuRegistre } from '../../../domain/voie-du-registre'
 
 export const inscriptionPourLaCorrelation = {
   select: {

@@ -4,7 +4,7 @@ import { motsDe } from '@/libraries/texte/mots'
 import type { CriteresDeLaListe } from '../../domain/criteres-de-la-liste'
 import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'
-import { ordreDesLieux } from './tri-des-lieux'
+import { ordreDesLieux } from './tri-des-lieux.order-by'
 
 const contient = (part: string) =>
   ({ contains: part, mode: 'insensitive' }) satisfies Prisma.StringFilter

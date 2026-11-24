@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { derniereModificationExterne } from './modification-du-registre'
+import { derniereModificationExterne } from './modification-du-registre.transfer'
 
 const modificationCoop = new Date('2026-09-01T10:00:00Z')
 const apres = new Date('2026-09-02T10:00:00Z')

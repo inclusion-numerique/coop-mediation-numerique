@@ -1,13 +1,13 @@
 import type { Prisma } from '@/generated/prisma/client'
 import type { Lieu } from '../../../domain/lieu'
+import { signatureCoop } from '../../../domain/signature-coop'
 import { lieuCoopToDomain } from '../lieu.transfer'
-import type { LigneDuLieuCoop } from '../ligne-du-lieu'
+import type { LigneDuLieuCoop } from '../ligne-du-lieu.select'
 import { adresseDuRegistre } from './adresse-du-registre.query'
-import type { ColonnesAEcrire } from './colonnes-a-ecrire'
+import type { ColonnesAEcrire } from './colonnes-a-ecrire.select'
 import { identifiantCartoRevendique } from './identifiant-carto-revendique.query'
 import { inscriptionVisee } from './inscription-visee.query'
 import { type ColonnesDuRegistre, lieuVersRegistre } from './lieu.transfer'
-import { signatureCoop } from './signature-coop'
 
 const signatureDuLieu = async (
   transaction: Prisma.TransactionClient,

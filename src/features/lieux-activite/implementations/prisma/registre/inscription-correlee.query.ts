@@ -5,7 +5,7 @@ import type { Lieu } from '../../../domain/lieu'
 import {
   candidatDuRegistre,
   inscriptionPourLaCorrelation,
-} from './candidat-du-registre'
+} from './candidat-du-registre.select'
 
 const auMemeEndroit = (codeInsee: string, codePostal: string) => ({
   structureCoopId: null,

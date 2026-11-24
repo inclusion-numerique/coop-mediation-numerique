@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { champsCommuns, type FusionApercue } from '../../domain'
-import { lieuAFusionnerInclude } from './lieu-a-fusionner'
+import { lieuAFusionnerInclude } from './lieu-a-fusionner.select'
 import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'
 
 const SANS_EMPLOYEUSE = {

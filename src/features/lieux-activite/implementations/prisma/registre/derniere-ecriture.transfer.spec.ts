@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { derniereEcriture, type HorodatagesDeSource } from './derniere-ecriture'
+import {
+  derniereEcriture,
+  type HorodatagesDeSource,
+} from './derniere-ecriture.transfer'
 
 const LE_1ER_JANVIER = new Date('2026-01-01T10:00:00Z')
 const LE_1ER_MARS = new Date('2026-03-01T10:00:00Z')

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   candidatDuRegistre,
   type InscriptionPourLaCorrelation,
-} from './candidat-du-registre'
+} from './candidat-du-registre.select'
 
 const inscription = (
   surcharge: Partial<InscriptionPourLaCorrelation> = {},

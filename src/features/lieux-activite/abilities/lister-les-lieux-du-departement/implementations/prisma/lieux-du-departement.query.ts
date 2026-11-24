@@ -7,7 +7,7 @@ import type { ColonneDesLieux } from '../../../../domain/tri-des-lieux'
 import {
   lieuEnListe,
   projectionDuLieuEnListe,
-} from '../../../../implementations/prisma/lieu-en-liste'
+} from '../../../../implementations/prisma/lieu-en-liste.select'
 import {
   DERNIERE_ECRITURE,
   JOINTURE_DE_L_INSCRIPTION,

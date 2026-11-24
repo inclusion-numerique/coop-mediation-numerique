@@ -22,7 +22,7 @@ import type {
   PublicSpecifiquementAdresseCoop,
   ServiceCoop,
   TypologieCoop,
-} from '../vocabulaire'
+} from '../vocabulaire.transfer'
 
 type Ecart<Coop extends string, Colonne extends string> =
   | Exclude<Coop, Colonne>

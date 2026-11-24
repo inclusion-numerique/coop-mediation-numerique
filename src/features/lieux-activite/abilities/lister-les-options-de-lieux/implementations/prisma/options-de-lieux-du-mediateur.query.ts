@@ -4,7 +4,7 @@ import {
   adresseComplete,
   type LieuActiviteOption,
   optionDeLieu,
-} from './option-de-lieu'
+} from './option-de-lieu.transfer'
 
 type LieuActiviteQueryResult = {
   id: string

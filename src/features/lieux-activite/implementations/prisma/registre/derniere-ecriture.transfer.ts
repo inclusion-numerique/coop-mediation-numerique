@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import type { InscriptionPourLaFiche } from './fiche-du-registre'
+import type { InscriptionPourLaFiche } from './fiche-du-registre.select'
 
 export type HorodatagesDeSource = Pick<
   InscriptionPourLaFiche,

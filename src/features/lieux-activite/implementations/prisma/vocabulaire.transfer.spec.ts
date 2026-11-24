@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import * as vocabulaire from './vocabulaire'
+import * as vocabulaire from './vocabulaire.transfer'
 
 type Pont<Coop extends string, Standard extends string> = {
   readonly table: Record<Coop, Standard>

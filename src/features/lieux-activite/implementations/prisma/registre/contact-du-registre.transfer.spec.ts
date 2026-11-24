@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { contactDuRegistre } from './contact-du-registre'
+import { contactDuRegistre } from './contact-du-registre.transfer'
 
 describe('le contact que le registre rend, relu depuis son jsonb', () => {
   it('lit le téléphone, les courriels et les sites web', () => {

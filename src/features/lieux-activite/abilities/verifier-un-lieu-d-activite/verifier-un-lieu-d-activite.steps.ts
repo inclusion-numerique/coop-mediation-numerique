@@ -5,7 +5,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { effacerDuRegistre } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { lieuUtilisablePar } from './implementations/prisma/lieu-utilisable-par'
+import { lieuUtilisablePar } from './implementations/prisma/lieu-utilisable-par.where'
 import { verifierUnLieuDActivite } from './implementations/prisma/verifier-un-lieu-d-activite.query'
 
 const contexte: {

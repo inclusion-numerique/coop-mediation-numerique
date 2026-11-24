@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { envoyerLeRetraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu'
+import { envoyerLeRetraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu.mutation'
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
