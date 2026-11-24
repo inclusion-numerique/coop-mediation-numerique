@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { dureeAsString } from '@/libraries/date/dureeAsString'
+import { dureeAsString } from '@/libraries/date/duree-as-string'
 
 describe('dureeAsString', () => {
   const cases = [

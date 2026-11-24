@@ -4,7 +4,7 @@ import {
   dateAsDayConventional,
   dateAsDayFullWordsInTimezone,
   dateAsDayWithHourInTimezone,
-} from '@/libraries/date/dateAsDay'
+} from '@/libraries/date/date-as-day'
 
 describe('dateAsDay', () => {
   it('formats date', () => {

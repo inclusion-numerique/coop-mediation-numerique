@@ -5,7 +5,7 @@ import {
   dateAsDayInTimeZone,
   dateAsTime,
   dateAsTimeInTimeZone,
-} from '@/libraries/date/dateAsDayAndTime'
+} from '@/libraries/date/date-as-day-and-time'
 
 describe('dateAsDayAndTime', () => {
   describe('dateAsDayAndTime', () => {

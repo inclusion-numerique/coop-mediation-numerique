@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { libelleCourtDuMois } from './monthShortLabels'
+import { libelleCourtDuMois } from './month-short-labels'
 
 describe('libellé court du mois', () => {
   it('nomme le mois à partir de son numéro', () => {

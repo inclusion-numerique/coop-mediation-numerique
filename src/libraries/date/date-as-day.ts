@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { dateFormatter } from '@/libraries/date/formatDate'
+import { dateFormatter } from '@/libraries/date/format-date'
 
 export const dateAsDay = dateFormatter('dd.MM.yyyy')
 
