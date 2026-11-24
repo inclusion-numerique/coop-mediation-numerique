@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createSlug } from '@/libraries/texte/createSlug'
+import { createSlug } from '@/libraries/texte/create-slug'
 
 describe('createSlug', () => {
   it('should create a simple slug', () => {

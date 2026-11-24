@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { toTitleCase } from './toTitleCase'
+import { toTitleCase } from './to-title-case'
 
 describe('toTitleCase', () => {
   it('returns null when the input is null', () => {
