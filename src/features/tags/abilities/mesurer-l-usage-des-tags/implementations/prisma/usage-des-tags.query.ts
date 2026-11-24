@@ -4,10 +4,12 @@ import {
   DescriptionDuTag,
   Effectif,
   NomDuTag,
-  PorteeDuTag,
+  TagId,
+  type TypeDePortee,
+} from '../../../../domain'
+import {
   type Proportion,
   proportion,
-  TagId,
   type TagLePlusUtilise,
   type UsageDesTags,
 } from '../../domain'
@@ -49,16 +51,14 @@ const porteeDepuisLaBase = ({
   mediateurId: string | null
   coordinateurId: string | null
   departement: string | null
-}): PorteeDuTag =>
-  PorteeDuTag(
-    equipe === true
-      ? 'Equipe'
-      : mediateurId || coordinateurId
-        ? 'Personnel'
-        : departement
-          ? 'Departemental'
-          : 'National',
-  )
+}): TypeDePortee =>
+  equipe === true
+    ? 'Equipe'
+    : mediateurId || coordinateurId
+      ? 'Personnel'
+      : departement
+        ? 'Departemental'
+        : 'National'
 
 const tagsLesPlusUtilises = async (): Promise<TagLePlusUtilise[]> => {
   const usages = await prismaClient.activitesTags.groupBy({

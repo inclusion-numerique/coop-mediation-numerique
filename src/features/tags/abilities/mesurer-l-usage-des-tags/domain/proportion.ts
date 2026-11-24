@@ -1,4 +1,4 @@
-import { Effectif } from './effectif'
+import { Effectif } from '../../../domain'
 import { Pourcentage } from './pourcentage'
 
 export type Proportion = {

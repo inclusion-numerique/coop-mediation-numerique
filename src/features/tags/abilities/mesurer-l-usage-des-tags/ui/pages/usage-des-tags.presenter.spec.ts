@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  DescriptionDuTag,
-  Effectif,
-  NomDuTag,
-  PorteeDuTag,
-  TagId,
-} from '../../domain'
+import { DescriptionDuTag, Effectif, NomDuTag, TagId } from '../../../../domain'
 import { tagsDeLaListe } from '../presenters/usage-des-tags.presenter'
 
 describe('tagsDeLaListe', () => {
@@ -15,7 +9,7 @@ describe('tagsDeLaListe', () => {
         {
           id: TagId('00000000-0000-4000-8000-000000000001'),
           nom: NomDuTag('Atelier'),
-          portee: PorteeDuTag('Equipe'),
+          portee: 'Equipe',
           description: null,
           utilisations: Effectif(4),
           accompagnements: Effectif(9),
@@ -47,7 +41,7 @@ describe('tagsDeLaListe', () => {
         {
           id: TagId('00000000-0000-4000-8000-000000000002'),
           nom: NomDuTag('Démarches'),
-          portee: PorteeDuTag('National'),
+          portee: 'National',
           description: DescriptionDuTag('Aide aux démarches'),
           utilisations: Effectif(1),
           accompagnements: Effectif(1),
