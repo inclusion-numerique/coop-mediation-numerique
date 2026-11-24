@@ -478,7 +478,12 @@ export const semerUnCompteDeListe = async (
   const personne =
     avecEmploi || compte.coordinateurDeclare || avecContrats
       ? await prismaClient.personneMain.create({
-          data: { coopId: userId, isCoordinateur: compte.coordinateurDeclare },
+          data: {
+            coopId: userId,
+            ...(compte.coordinateurDeclare === undefined
+              ? {}
+              : { isCoordinateur: compte.coordinateurDeclare }),
+          },
           select: { id: true },
         })
       : null

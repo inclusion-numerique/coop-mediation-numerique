@@ -38,10 +38,10 @@ export const criteresDExposition = ({
   conseiller_numerique_id_pg,
   dataspace_id,
 }: {
-  readonly soft_deleted?: Drapeau
-  readonly conseiller_numerique?: Drapeau
-  readonly conseiller_numerique_id_pg?: readonly string[]
-  readonly dataspace_id?: readonly string[]
+  readonly soft_deleted?: Drapeau | undefined
+  readonly conseiller_numerique?: Drapeau | undefined
+  readonly conseiller_numerique_id_pg?: readonly string[] | undefined
+  readonly dataspace_id?: readonly string[] | undefined
 }): CriteresDExposition => ({
   supprimes: supprimesSelon(soft_deleted),
   conseillersNumeriques: conseillersSelon(conseiller_numerique),

@@ -16,6 +16,13 @@ const suppressionSelon = (
   selection: keyof typeof filtresDeSuppression,
 ): Prisma.DateTimeNullableFilter | undefined => filtresDeSuppression[selection]
 
+const deletedSelon = (
+  selection: keyof typeof filtresDeSuppression,
+): Prisma.UserWhereInput => {
+  const deleted = suppressionSelon(selection)
+  return deleted === undefined ? {} : { deleted }
+}
+
 const conseillersSelon = (
   selection: CriteresDExposition['conseillersNumeriques'],
 ): Prisma.UserWhereInput =>
@@ -27,9 +34,7 @@ const exposeWhere = (criteres: CriteresDExposition): Prisma.UserWhereInput => ({
     { inscriptionValidee: { not: null } },
     { mediateur: { is: { activites: { some: {} } } } },
   ],
-  ...(suppressionSelon(criteres.supprimes) === undefined
-    ? {}
-    : { deleted: suppressionSelon(criteres.supprimes) }),
+  ...deletedSelon(criteres.supprimes),
   ...conseillersSelon(criteres.conseillersNumeriques),
   AND: [
     ...(criteres.identifiantsConseillerNumerique.length === 0
@@ -146,11 +151,14 @@ export const utilisateursExposes = async ({
       where,
       orderBy: [{ created: 'desc' }, { id: 'desc' }],
       take,
-      skip,
-      cursor:
-        cursor === null
-          ? undefined
-          : { created_id: { created: cursor.created, id: cursor.id } },
+      ...(skip === undefined ? {} : { skip }),
+      ...(cursor === null
+        ? {}
+        : {
+            cursor: {
+              created_id: { created: cursor.created, id: cursor.id },
+            },
+          }),
       select: exposeSelect(criteres),
     }),
     prismaClient.user.count({ where }),
