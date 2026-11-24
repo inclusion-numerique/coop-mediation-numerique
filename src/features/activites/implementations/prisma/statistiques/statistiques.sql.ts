@@ -2,7 +2,7 @@ import { Prisma } from '@/generated/prisma/client'
 import type {
   CriteresDesStatistiques,
   PerimetreDesStatistiques,
-} from '../../domain'
+} from '../../../domain'
 import {
   filtreDesStatistiques,
   type RendezVousAuxStatuts,

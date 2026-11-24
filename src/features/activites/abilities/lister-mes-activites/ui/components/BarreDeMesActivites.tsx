@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { BarreDeFiltres } from '@/libraries/etat-d-url/BarreDeFiltres'
-import { PeriodeEnPopover } from '@/libraries/etat-d-url/PeriodeEnPopover'
+import { BarreDeFiltres } from '@/libraries/etat-d-url/filtres/BarreDeFiltres'
+import { PeriodeEnPopover } from '@/libraries/etat-d-url/filtres/PeriodeEnPopover'
 import { FiltreDuLieuDesActivites } from '../../../../ui/components/filtres/FiltreDuLieuDesActivites'
 import { FiltreDuTypeDActivite } from '../../../../ui/components/filtres/FiltreDuTypeDActivite'
 import { PlusDeFiltresDesActivites } from '../../../../ui/components/filtres/PlusDeFiltresDesActivites'

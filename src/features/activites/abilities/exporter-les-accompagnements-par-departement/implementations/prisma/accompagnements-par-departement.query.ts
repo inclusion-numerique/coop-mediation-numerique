@@ -3,7 +3,7 @@ import { Prisma } from '@/generated/prisma/client'
 import { NomDepartement } from '@/libraries/departement'
 import { departements } from '@/libraries/departement/departements'
 import { CodeDepartement } from '@/libraries/insee'
-import { enPosteSql } from '../../../../implementations/prisma/conseiller-numerique-en-poste.sql'
+import { enPosteSql } from '../../../../implementations/prisma/statistiques/conseiller-numerique-en-poste.sql'
 import {
   type AccompagnementsDuDepartement,
   type Jour,

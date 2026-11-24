@@ -1,5 +1,5 @@
 import { Prisma } from '@/generated/prisma/client'
-import type { CoordinateurId } from '../../domain'
+import type { CoordinateurId } from '../../../domain'
 
 export const dansLaPeriodeDAppartenance = (
   coordinateurId: CoordinateurId | null,

@@ -5,7 +5,7 @@ import {
   NomDeCommune,
   NomDeStructure,
   type PerimetreDesActivites,
-} from '../../domain'
+} from '../../../domain'
 import { dansLaPeriodeDAppartenance } from './periode-d-appartenance.sql'
 
 export const employeusesDesActivites = ({

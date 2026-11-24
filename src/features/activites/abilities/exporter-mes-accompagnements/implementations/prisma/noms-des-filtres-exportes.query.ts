@@ -6,7 +6,7 @@ import type {
   TagDeLActivite,
   TagsUtilisables,
 } from '../../../../domain'
-import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/periode-d-appartenance.sql'
+import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/statistiques/periode-d-appartenance.sql'
 import {
   type Demandeur,
   mediateursAutorises,

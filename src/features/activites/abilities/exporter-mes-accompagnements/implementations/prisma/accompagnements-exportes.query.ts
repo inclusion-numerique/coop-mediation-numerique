@@ -5,9 +5,9 @@ import type {
   CriteresDesActivites,
   MediateurId,
 } from '../../../../domain'
-import { enPosteSql } from '../../../../implementations/prisma/conseiller-numerique-en-poste.sql'
 import { filtreDesActivites } from '../../../../implementations/prisma/criteres-des-activites.sql'
-import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/periode-d-appartenance.sql'
+import { enPosteSql } from '../../../../implementations/prisma/statistiques/conseiller-numerique-en-poste.sql'
+import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/statistiques/periode-d-appartenance.sql'
 import type { ActiviteExportee } from '../../domain'
 import {
   activiteExporteeDe,

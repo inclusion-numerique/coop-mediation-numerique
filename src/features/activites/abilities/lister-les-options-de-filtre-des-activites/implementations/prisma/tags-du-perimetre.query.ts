@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { PerimetreDesStatistiques } from '../../../../domain'
-import { dansLePerimetre } from '../../../../implementations/prisma/perimetre-des-statistiques.sql'
+import { dansLePerimetre } from '../../../../implementations/prisma/statistiques/perimetre-des-statistiques.sql'
 
 const TAGS_LES_PLUS_UTILISES = 10
 

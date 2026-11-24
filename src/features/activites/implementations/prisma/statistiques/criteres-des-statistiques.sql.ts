@@ -2,14 +2,14 @@ import { Prisma } from '@/generated/prisma/client'
 import type {
   CriteresDesStatistiques,
   STATUTS_DE_RENDEZ_VOUS,
-} from '../../domain'
+} from '../../../domain'
 import {
   conditionsCommunes,
   enBase,
   enConjonction,
   siDefini,
   siNonVide,
-} from './criteres-des-activites.sql'
+} from '../criteres-des-activites.sql'
 
 export type StatutDeRendezVousFourni =
   | 'unknown'

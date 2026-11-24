@@ -4,7 +4,7 @@ import type {
   THEMATIQUES_RECHERCHEES,
   TYPES_D_ACTIVITE,
 } from '../../domain'
-import { enPosteSql } from './conseiller-numerique-en-poste.sql'
+import { enPosteSql } from './statistiques/conseiller-numerique-en-poste.sql'
 
 const TYPE_EN_BASE: Readonly<
   Record<(typeof TYPES_D_ACTIVITE)[number], string>

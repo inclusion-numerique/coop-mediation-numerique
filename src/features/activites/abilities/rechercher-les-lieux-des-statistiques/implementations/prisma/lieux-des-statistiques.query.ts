@@ -9,7 +9,7 @@ import {
   NomDeStructure,
   type PerimetreDesStatistiques,
 } from '../../../../domain'
-import { dansLePerimetre } from '../../../../implementations/prisma/perimetre-des-statistiques.sql'
+import { dansLePerimetre } from '../../../../implementations/prisma/statistiques/perimetre-des-statistiques.sql'
 import type { GenreDeLieu, LieuDesStatistiques } from '../../domain'
 
 const LES_PLUS_UTILISES = 10

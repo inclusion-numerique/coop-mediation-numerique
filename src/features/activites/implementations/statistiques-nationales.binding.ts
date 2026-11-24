@@ -5,7 +5,7 @@ import {
 } from '@/features/activites/domain'
 import { fenetreDe } from '@/features/activites/domain/fenetre-des-graphiques'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
-import type { RendezVousAuxStatuts } from './prisma/criteres-des-statistiques.sql'
+import type { RendezVousAuxStatuts } from './prisma/statistiques/criteres-des-statistiques.sql'
 import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
 
 export const statistiquesNationalesEnCours = <E>(

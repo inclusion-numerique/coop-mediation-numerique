@@ -1,5 +1,5 @@
 import { Prisma } from '@/generated/prisma/client'
-import type { PerimetreDesStatistiques } from '../../domain'
+import type { PerimetreDesStatistiques } from '../../../domain'
 import { dansLaPeriodeDAppartenance } from './periode-d-appartenance.sql'
 
 export const dansLePerimetre = (

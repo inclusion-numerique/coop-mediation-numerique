@@ -17,7 +17,7 @@ import {
   MediateurId,
   type PerimetreDesStatistiques,
 } from './domain'
-import type { DemandeDeStatistiques } from './implementations/prisma/statistiques.sql'
+import type { DemandeDeStatistiques } from './implementations/prisma/statistiques/statistiques.sql'
 
 type Personne = {
   readonly userId: string

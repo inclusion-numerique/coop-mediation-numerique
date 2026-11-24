@@ -3,7 +3,7 @@ import { communeComptee, Effectif } from '../../../../domain'
 import {
   type DemandeDeStatistiques,
   personneAccompagnee,
-} from '../../../../implementations/prisma/statistiques.sql'
+} from '../../../../implementations/prisma/statistiques/statistiques.sql'
 import type { PersonnesParCommune } from '../../domain'
 import { premierCodePostal } from '../../domain/premier-code-postal'
 

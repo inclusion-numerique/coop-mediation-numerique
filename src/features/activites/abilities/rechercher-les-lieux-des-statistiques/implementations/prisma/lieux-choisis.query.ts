@@ -6,7 +6,7 @@ import {
   NomDeStructure,
   type PerimetreDesStatistiques,
 } from '../../../../domain'
-import { dansLePerimetre } from '../../../../implementations/prisma/perimetre-des-statistiques.sql'
+import { dansLePerimetre } from '../../../../implementations/prisma/statistiques/perimetre-des-statistiques.sql'
 import type { LieuDesStatistiques, LieuxChoisis } from '../../domain'
 
 const lieuxDActivite = async (

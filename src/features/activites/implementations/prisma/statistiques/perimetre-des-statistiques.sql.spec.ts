@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { CoordinateurId, MediateurId, PERIMETRE_NATIONAL } from '../../domain'
+import {
+  CoordinateurId,
+  MediateurId,
+  PERIMETRE_NATIONAL,
+} from '../../../domain'
 import { dansLePerimetre } from './perimetre-des-statistiques.sql'
 
 const MEDIATEUR = MediateurId('0b3c4f62-2d6a-4f6e-9a39-3a4c8f1d2e01')

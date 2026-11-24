@@ -4,7 +4,7 @@ import {
   activitesRetenues,
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
-} from '../../../../implementations/prisma/statistiques.sql'
+} from '../../../../implementations/prisma/statistiques/statistiques.sql'
 import type { AccompagnementsParCommune } from '../../domain'
 
 type Ligne = {

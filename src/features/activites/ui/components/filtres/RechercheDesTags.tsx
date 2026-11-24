@@ -1,6 +1,6 @@
 'use client'
 
-import { RechercheEnLigne } from '@/libraries/etat-d-url/RechercheEnLigne'
+import { RechercheEnLigne } from '@/libraries/etat-d-url/filtres/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '../../../action/rechercher-des-tags.key'

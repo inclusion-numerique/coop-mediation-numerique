@@ -1,4 +1,4 @@
-import { EnTeteTriable } from '@/libraries/etat-d-url/EnTeteTriable'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste/EnTeteTriable'
 import { listeDesActivites } from '../../../../ui/filtres/liste-des-activites.filtre'
 
 export const EnTeteDuTableauDeMesActivites = ({

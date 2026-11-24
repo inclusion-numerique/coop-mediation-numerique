@@ -1,6 +1,6 @@
 'use client'
 
-import { RechercheEnPopover } from '@/libraries/etat-d-url/RechercheEnPopover'
+import { RechercheEnPopover } from '@/libraries/etat-d-url/filtres/RechercheEnPopover'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { RECHERCHER_DES_MEDIATEURS_DES_ACTIVITES_KEY } from '../../../action/rechercher-des-mediateurs.key'

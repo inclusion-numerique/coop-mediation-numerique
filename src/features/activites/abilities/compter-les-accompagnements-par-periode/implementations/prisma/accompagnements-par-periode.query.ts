@@ -11,7 +11,7 @@ import {
   activitesRetenues,
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
-} from '../../../../implementations/prisma/statistiques.sql'
+} from '../../../../implementations/prisma/statistiques/statistiques.sql'
 import { type AccompagnementsParPeriode, Mois } from '../../domain'
 
 type Ligne = { readonly periode: string; readonly nombre: number }

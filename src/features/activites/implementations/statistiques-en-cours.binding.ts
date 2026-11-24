@@ -1,6 +1,6 @@
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
 import type { FenetreDesGraphiques } from '@/features/activites/domain/fenetre-des-graphiques'
-import type { DemandeDeStatistiques } from './prisma/statistiques.sql'
+import type { DemandeDeStatistiques } from './prisma/statistiques/statistiques.sql'
 
 export type DemandeDeStatistiquesFenetree = DemandeDeStatistiques & {
   readonly parJour: FenetreDesGraphiques

@@ -10,7 +10,7 @@ import {
 import {
   type DemandeDeStatistiques,
   personneAccompagnee,
-} from '../../../../implementations/prisma/statistiques.sql'
+} from '../../../../implementations/prisma/statistiques/statistiques.sql'
 import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base.transfer'
 import {
   AGE_AVANT_LA_TRANCHE_SUIVANTE,

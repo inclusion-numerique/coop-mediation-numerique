@@ -8,7 +8,7 @@ import {
   colonnesDeLEmployeuse,
   employeuseDesActivitesDe,
   employeusesDesActivites,
-} from '../../../../implementations/prisma/employeuses-des-activites.sql'
+} from '../../../../implementations/prisma/statistiques/employeuses-des-activites.sql'
 
 export const employeusesNommees = async ({
   perimetre,

@@ -1,6 +1,6 @@
 'use client'
 
-import { ChoixEnPopover } from '@/libraries/etat-d-url/ChoixEnPopover'
+import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres/ChoixEnPopover'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import {
   filtreDuStatutDeRendezVous,
