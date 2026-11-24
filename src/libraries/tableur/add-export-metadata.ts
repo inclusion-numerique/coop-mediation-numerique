@@ -1,5 +1,5 @@
 import type { Worksheet } from 'exceljs'
-import { addTitleRow } from './addTitleRow'
+import { addTitleRow } from './add-title-row'
 
 export type AuteurDExport = {
   readonly nom: string | null

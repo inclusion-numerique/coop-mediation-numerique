@@ -1,6 +1,6 @@
 import { Workbook } from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import { addFilters } from './addFilters'
+import { addFilters } from './add-filters'
 
 const availabelFilters = [
   { label: 'Rôles', type: 'roles' },
