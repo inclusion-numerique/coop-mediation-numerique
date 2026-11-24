@@ -34,7 +34,10 @@ export const seedEmployeuseMain = async (
   siret?: string,
 ): Promise<number> => {
   const { id } = await prismaClient.structureAdministrativeMain.create({
-    data: { denominationAntenne: nom, siret },
+    data: {
+      denominationAntenne: nom,
+      ...(siret === undefined ? {} : { siret }),
+    },
     select: { id: true },
   })
   tracked.employeuses.add(id)

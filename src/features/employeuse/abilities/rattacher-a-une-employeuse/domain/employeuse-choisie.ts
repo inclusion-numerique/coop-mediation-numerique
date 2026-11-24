@@ -57,7 +57,7 @@ const EmployeuseChoisieValidation = z.object(
     codePostal: z.string().trim(),
     codeInsee: z.string().trim(),
     // Portés par les résultats de recherche, sans emploi pour le rattachement.
-    id: z.string().nullish(),
+    id: z.string().nullable().exactOptional(),
     typologie: z
       .enum(
         Object.keys(typologiesStructure) as [
@@ -65,7 +65,8 @@ const EmployeuseChoisieValidation = z.object(
           ...TypologieStructure[],
         ],
       )
-      .nullish(),
+      .nullable()
+      .exactOptional(),
     source: z.enum(['database', 'api']),
   },
   {
