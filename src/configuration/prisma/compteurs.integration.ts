@@ -203,10 +203,13 @@ describe('compteurs tenus par la base', () => {
     })
 
     await prismaClient.accompagnement.deleteMany({
-      where: { activiteId, beneficiaireId: source },
+      where: {
+        activiteId,
+        ...(source === undefined ? {} : { beneficiaireId: source }),
+      },
     })
     await prismaClient.beneficiaire.update({
-      where: { id: source },
+      where: { id: source ?? '' },
       data: { suppression: new Date() },
     })
 

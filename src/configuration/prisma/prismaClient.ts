@@ -12,26 +12,28 @@ const createPrismaClient = () =>
       { connectionString: environnementServeur.DATABASE_URL },
       { userDefinedTypeParser: createEnumArrayTypeParser() },
     ),
-    log: debugLog
-      ? [
-          {
-            emit: 'stdout',
-            level: 'query',
-          },
-          {
-            emit: 'stdout',
-            level: 'error',
-          },
-          {
-            emit: 'stdout',
-            level: 'info',
-          },
-          {
-            emit: 'stdout',
-            level: 'warn',
-          },
-        ]
-      : undefined,
+    ...(debugLog
+      ? {
+          log: [
+            {
+              emit: 'stdout',
+              level: 'query',
+            },
+            {
+              emit: 'stdout',
+              level: 'error',
+            },
+            {
+              emit: 'stdout',
+              level: 'info',
+            },
+            {
+              emit: 'stdout',
+              level: 'warn',
+            },
+          ],
+        }
+      : {}),
   }).$extends(timestampExtension)
 
 // https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-articles/nextjs-prisma-client-dev-practices
