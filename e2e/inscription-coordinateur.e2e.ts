@@ -1,5 +1,5 @@
 import { coordinateurHorsDispositifInscription } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-hors-dispositif-inscription'
-import { executeInscriptionFlow } from './support/executeInscriptionFlow'
+import { executeInscriptionFlow } from './support/execute-inscription-flow'
 
 describe("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {

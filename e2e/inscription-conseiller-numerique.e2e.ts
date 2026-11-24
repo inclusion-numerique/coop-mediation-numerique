@@ -1,6 +1,6 @@
 import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/conseillers/conseiller-inscription-sans-contrat'
 import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/conseillers/conseiller-sans-lieu-inscription'
-import { executeInscriptionFlow } from './support/executeInscriptionFlow'
+import { executeInscriptionFlow } from './support/execute-inscription-flow'
 
 /**
  * Un conseiller numérique renseigne TOUJOURS ses lieux d'activité à l'inscription.

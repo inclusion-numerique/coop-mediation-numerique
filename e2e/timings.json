@@ -9,19 +9,19 @@
       "duration": 1000
     },
     {
-      "spec": "e2e/existingUserCanSigninAndSignout.e2e.ts",
+      "spec": "e2e/existing-user-can-signin-and-signout.e2e.ts",
       "duration": 19000
     },
     {
-      "spec": "e2e/importBeneficiaires.e2e.ts",
+      "spec": "e2e/import-beneficiaires.e2e.ts",
       "duration": 6000
     },
     {
-      "spec": "e2e/craCollectif.e2e.ts",
+      "spec": "e2e/cra-collectif.e2e.ts",
       "duration": 6000
     },
     {
-      "spec": "e2e/craIndividuel.e2e.ts",
+      "spec": "e2e/cra-individuel.e2e.ts",
       "duration": 5000
     },
     {
@@ -29,31 +29,31 @@
       "duration": 6000
     },
     {
-      "spec": "e2e/inscriptionConseillerNumerique.e2e.ts",
+      "spec": "e2e/inscription-conseiller-numerique.e2e.ts",
       "duration": 11000
     },
     {
-      "spec": "e2e/inscriptionCoordinateur.e2e.ts",
+      "spec": "e2e/inscription-coordinateur.e2e.ts",
       "duration": 5000
     },
     {
-      "spec": "e2e/inscriptionCoordinateurConseillerNumerique.e2e.ts",
+      "spec": "e2e/inscription-coordinateur-conseiller-numerique.e2e.ts",
       "duration": 5000
     },
     {
-      "spec": "e2e/inscriptionMediateur.e2e.ts",
+      "spec": "e2e/inscription-mediateur.e2e.ts",
       "duration": 8000
     },
     {
-      "spec": "e2e/inscriptionMediateurSansEmployeuse.e2e.ts",
+      "spec": "e2e/inscription-mediateur-sans-employeuse.e2e.ts",
       "duration": 9000
     },
     {
-      "spec": "e2e/inviterMembre.e2e.ts",
+      "spec": "e2e/inviter-membre.e2e.ts",
       "duration": 10000
     },
     {
-      "spec": "e2e/traiterInvitation.e2e.ts",
+      "spec": "e2e/traiter-invitation.e2e.ts",
       "duration": 20000
     },
     {

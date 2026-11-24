@@ -22,7 +22,7 @@ describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
     }).should('be.enabled')
 
     cy.get('input[type="file"][name="file"]').attachFile(
-      'import-beneficiaires_invalide.xlsx',
+      'import-beneficiaires-invalide.xlsx',
     )
     cy.findByRole('button', {
       name: 'Vérifier le fichier avant import',
@@ -59,7 +59,7 @@ describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
     )
 
     cy.get('input[type="file"][name="file"]').attachFile(
-      'import-beneficiaires_modele.xlsx',
+      'import-beneficiaires-modele.xlsx',
     )
 
     cy.findByRole('button', {

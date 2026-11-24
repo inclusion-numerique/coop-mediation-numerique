@@ -1,5 +1,5 @@
-import { createApiClient } from '@e2e/tasks/handlers/clientApi.tasks'
-import { createInvitation } from '@e2e/tasks/handlers/createInvitation'
+import { createApiClient } from '@e2e/tasks/handlers/client-api.tasks'
+import { createInvitation } from '@e2e/tasks/handlers/create-invitation'
 import { preparerLesPersonas } from '@e2e/tasks/handlers/personas.tasks'
 import {
   connectRdvAccountFor,

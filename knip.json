@@ -7,7 +7,7 @@
     "src/libraries/server-only-cli/index.ts",
     "src/**/*.{steps,cucumber}.ts",
     "e2e/proconnect-simule/serveur.ts",
-    "e2e/tasks/taskExecutor.ts"
+    "e2e/tasks/task-executor.ts"
   ],
   "project": ["src/**/*.{ts,tsx}!", "e2e/**/*.ts", "scripts/**/*.mjs"],
   "cypress": {

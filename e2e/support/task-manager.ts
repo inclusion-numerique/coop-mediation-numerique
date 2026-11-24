@@ -5,12 +5,12 @@ import {
   EncodedState,
   encodeSerializableState,
 } from '../../src/libraries/etat-encode/encode-serializable-state'
-import { logToFile } from './logToFile'
+import { logToFile } from './log-to-file'
 
 const dossierE2e = path.resolve(import.meta.dirname, '..')
 
 const executeTask = (task: string, input: unknown) => {
-  const taskCommand = `tsx ${dossierE2e}/tasks/taskExecutor.ts ${task} '${encodeSerializableState(input)}'`
+  const taskCommand = `tsx ${dossierE2e}/tasks/task-executor.ts ${task} '${encodeSerializableState(input)}'`
 
   logToFile({ task, input, taskCommand })
 

@@ -6,7 +6,7 @@
  * we need to execute.
  */
 
-import { logToFile } from '@e2e/support/logToFile'
+import { logToFile } from '@e2e/support/log-to-file'
 import { TaskName, tasks } from '@e2e/tasks/tasks'
 import {
   decodeSerializableState,

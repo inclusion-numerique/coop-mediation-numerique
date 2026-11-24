@@ -2,7 +2,7 @@ import { shouldBeOnCoopHomepage } from '@e2e/support/helpers'
 import { profilInscriptionLabels } from '@/features/inscription/domain'
 import { structureEmployeuse } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { mediateurSansEmployeuseInscription } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-employeuse-inscription'
-import { executeInscriptionFlow } from './support/executeInscriptionFlow'
+import { executeInscriptionFlow } from './support/execute-inscription-flow'
 
 /**
  * Seul parcours qui emprunte l'étape « renseigner votre structure employeuse » :
