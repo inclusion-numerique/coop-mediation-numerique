@@ -17,30 +17,36 @@ import Stars from '@/libraries/ui/components/Stars'
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
   isPending: boolean
-  isTiled?: boolean
+  isTiled?: boolean | undefined
   options: {
     label: ReactNode
     value: string
-    extra?: {
-      illustration?: string | Pictogram | ReactNode
-      disabled?: boolean
-      hintText?: ReactNode
-      stars?: number
-      maxStars?: number
-    }
-    nativeInputProps?: DetailedHTMLProps<
-      LabelHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >
+    extra?:
+      | {
+          illustration?: string | Pictogram | ReactNode | undefined
+          disabled?: boolean | undefined
+          hintText?: ReactNode | undefined
+          stars?: number | undefined
+          maxStars?: number | undefined
+        }
+      | undefined
+    nativeInputProps?:
+      | DetailedHTMLProps<
+          LabelHTMLAttributes<HTMLInputElement>,
+          HTMLInputElement
+        >
+      | undefined
   }[]
 }
 
 const Illustration = ({
   extra,
 }: {
-  extra?: {
-    illustration?: string | Pictogram | ReactNode
-  }
+  extra?:
+    | {
+        illustration?: string | Pictogram | ReactNode | undefined
+      }
+    | undefined
 }) => {
   const illustration = extra?.illustration
 
@@ -76,11 +82,12 @@ export const RadioButtons = ({
     useFieldContext<string>()
   const errors: Error[] = state.meta.errors
   const hasErrors = errors.length > 0 && state.meta.isTouched
+  const message = hasErrors ? errors[0]?.message : undefined
 
   return (
     <DsfrRadioButtons
-      state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
+      {...(hasErrors ? { state: 'error' as const } : {})}
+      {...(message === undefined ? {} : { stateRelatedMessage: message })}
       className={classNames(isTiled ? 'fr-radio-buttons' : '', className)}
       legend={<span className="fr-label fr-text--medium">{legend}</span>}
       classes={{
@@ -110,7 +117,9 @@ export const RadioButtons = ({
         ...(option.extra?.illustration != null
           ? { illustration: <Illustration extra={option.extra} /> }
           : {}),
-        hintText: option.extra?.hintText,
+        ...(option.extra?.hintText === undefined
+          ? {}
+          : { hintText: option.extra.hintText }),
         nativeInputProps: {
           value: option.value,
           checked: option.value === state.value,

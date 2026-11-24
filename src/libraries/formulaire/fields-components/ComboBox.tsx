@@ -21,7 +21,7 @@ export type ComboBoxProps<TItem, TPayload extends object> = ComboBoxBaseProps<
   isPending: boolean
   itemToKey: (item: TItem) => string
   resetValue?: Partial<TItem> | TItem[] | null
-  onSelect?: (item: TItem) => void
+  onSelect?: ((item: TItem) => void) | undefined
 }
 
 const getMultipleSelection = <TItem,>(state: {

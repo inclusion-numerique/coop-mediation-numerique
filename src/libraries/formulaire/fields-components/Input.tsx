@@ -7,7 +7,7 @@ import {
 
 export type InputProps = Omit<DsfrInputProps, 'name'> & {
   isPending: boolean
-  isConnected?: boolean
+  isConnected?: boolean | undefined
 }
 
 export const Input = ({
