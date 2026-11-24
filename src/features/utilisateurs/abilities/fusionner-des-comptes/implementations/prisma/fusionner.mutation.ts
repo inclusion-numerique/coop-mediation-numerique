@@ -10,18 +10,20 @@ const absentsDe =
   (valeur: string): boolean =>
     !presents.includes(valeur)
 
+const rolesDuCompte = (tx: Tx, id: string) =>
+  tx.user.findUniqueOrThrow({
+    where: { id },
+    select: {
+      mediateur: { select: { id: true } },
+      coordinateur: { select: { id: true } },
+    },
+  })
+
 const garantirLesRoles = async (tx: Tx, sourceId: string, cibleId: string) => {
-  const [source, cible] = await Promise.all(
-    [sourceId, cibleId].map((id) =>
-      tx.user.findUniqueOrThrow({
-        where: { id },
-        select: {
-          mediateur: { select: { id: true } },
-          coordinateur: { select: { id: true } },
-        },
-      }),
-    ),
-  )
+  const [source, cible] = await Promise.all([
+    rolesDuCompte(tx, sourceId),
+    rolesDuCompte(tx, cibleId),
+  ])
 
   if (source.mediateur !== null && cible.mediateur === null)
     await tx.mediateur.create({ data: { userId: cibleId } })
@@ -229,16 +231,18 @@ const fusionnerLesCoordinateurs = async (
   })
 }
 
+const personneDe = (tx: Tx, coopId: string) =>
+  tx.personneMain.findUnique({ where: { coopId }, select: { id: true } })
+
 const fusionnerLesPersonnes = async (
   tx: Tx,
   sourceId: string,
   cibleId: string,
 ) => {
-  const [personneSource, personneCible] = await Promise.all(
-    [sourceId, cibleId].map((coopId) =>
-      tx.personneMain.findUnique({ where: { coopId }, select: { id: true } }),
-    ),
-  )
+  const [personneSource, personneCible] = await Promise.all([
+    personneDe(tx, sourceId),
+    personneDe(tx, cibleId),
+  ])
 
   if (personneSource === null) return
 

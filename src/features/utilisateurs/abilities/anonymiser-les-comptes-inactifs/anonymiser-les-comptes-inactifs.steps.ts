@@ -15,8 +15,8 @@ import { noterLAvertissement } from './implementations/prisma/noter-l-avertissem
 const maintenant = new Date('2026-10-20T01:00:00.000Z')
 
 const date = (jour: string): Date => {
-  const [j, m, a] = jour.split('/').map(Number)
-  return new Date(Date.UTC(a, m - 1, j))
+  const [j, m, a] = jour.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
 }
 
 const etat: {

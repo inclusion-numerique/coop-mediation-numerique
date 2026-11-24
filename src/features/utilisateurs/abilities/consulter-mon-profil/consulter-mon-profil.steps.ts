@@ -34,8 +34,9 @@ const visibilites: Readonly<Record<string, boolean>> = {
 }
 
 const visible = (visibilite: string): boolean => {
-  assert.ok(visibilite in visibilites, `Visibilité inconnue : ${visibilite}`)
-  return visibilites[visibilite]
+  const valeur = visibilites[visibilite]
+  assert.ok(valeur !== undefined, `Visibilité inconnue : ${visibilite}`)
+  return valeur
 }
 
 const sansRole = { coordinateur: false, conseillerNumerique: false }
@@ -64,8 +65,9 @@ const identite = (): IdentiteDuProfil => {
 Given(
   'une personne qui consulte son profil en tant que {string}',
   (role: string) => {
-    assert.ok(role in roles, `Rôle inconnu : ${role}`)
-    consultation.profil = { ...roles[role], phone: null }
+    const roleDecrit = roles[role]
+    assert.ok(roleDecrit, `Rôle inconnu : ${role}`)
+    consultation.profil = { ...roleDecrit, phone: null }
   },
 )
 

@@ -89,19 +89,29 @@ Given('les comptes suivants dans la liste :', async (table: DataTable) => {
     .hashes()
     .reduce<Promise<Record<string, string>>>(async (precedents, ligne) => {
       const deja = await precedents
-      const { med, coord, role } = roleDe(ligne.role)
+      const {
+        prenom = '',
+        role: celluleRole = '',
+        cree = '',
+        inscrit = '',
+        supprime = '',
+        visite = '',
+        activite = '',
+        beneficiaire = '',
+      } = ligne
+      const { med, coord, role } = roleDe(celluleRole)
       const id = await semerUnCompteDeListe({
-        prenom: ligne.prenom,
+        prenom,
         marqueur: scenario.marqueur,
         role,
-        creeLe: ilYA(ligne.cree) ?? maintenant(),
-        inscritLe: ilYA(ligne.inscrit),
-        supprimeLe: ilYA(ligne.supprime),
-        derniereVisite: ilYA(ligne.visite),
+        creeLe: ilYA(cree) ?? maintenant(),
+        inscritLe: ilYA(inscrit),
+        supprimeLe: ilYA(supprime),
+        derniereVisite: ilYA(visite),
         mediateur: med
           ? {
-              derniereActivite: ilYA(ligne.activite),
-              dernierBeneficiaire: ilYA(ligne.beneficiaire),
+              derniereActivite: ilYA(activite),
+              dernierBeneficiaire: ilYA(beneficiaire),
             }
           : null,
         coordinateur: coord
@@ -111,7 +121,7 @@ Given('les comptes suivants dans la liste :', async (table: DataTable) => {
             }
           : null,
       })
-      return { ...deja, [ligne.prenom]: id }
+      return { ...deja, [prenom]: id }
     }, Promise.resolve({}))
 
   scenario.comptes = semes
