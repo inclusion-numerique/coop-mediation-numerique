@@ -3,8 +3,8 @@ import type { VisibiliteSurLaCartographie } from '../../domain'
 import {
   compteAffiche,
   lieuxDuDepartementAffiches,
-} from './acces-cartographie-nationale.presenter'
-import { lienDeLaCartographie } from './lien-de-la-cartographie.presenter'
+} from '../presenters/acces-cartographie-nationale.presenter'
+import { lienDeLaCartographie } from '../presenters/lien-de-la-cartographie.presenter'
 
 export const AccesCartographieNationale = ({
   departement,

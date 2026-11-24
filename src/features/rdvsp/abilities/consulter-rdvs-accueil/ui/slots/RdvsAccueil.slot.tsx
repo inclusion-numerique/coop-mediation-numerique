@@ -17,7 +17,7 @@ import {
   type StatutDuCompteur,
 } from '../components/BadgeDuCompteur'
 import RdvsAccueilHeader from '../components/RdvsAccueilHeader'
-import { phraseRdv } from './rdvs-accueil.presenter'
+import { phraseRdv } from '../presenters/rdvs-accueil.presenter'
 
 const Compteur = ({
   nombre,

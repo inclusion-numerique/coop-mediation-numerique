@@ -4,7 +4,7 @@ import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenter
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
 import type { LieuDuMediateurEnListe } from '../../domain'
-import { lieuEnAdministration } from './lieu-en-administration.presenter'
+import { lieuEnAdministration } from '../presenters/lieu-en-administration.presenter'
 
 export const LieuxDActiviteEnAdministration = ({
   lieux,

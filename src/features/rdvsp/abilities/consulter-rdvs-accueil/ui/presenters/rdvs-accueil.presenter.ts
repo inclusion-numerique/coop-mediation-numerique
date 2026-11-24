@@ -3,12 +3,6 @@ import { dateAsTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
 import { pluriel } from '@/libraries/pluriel'
 import type { RdvEnUneLigne } from '../../domain/donnees-accueil-rdv'
 
-/**
- * Qui l'on voit à ce rendez-vous. Un atelier collectif annonce un nombre, un
- * rendez-vous individuel une personne — et « anonyme » quand La Coop n'a pas
- * l'identité du participant, ce qui arrive tant que la synchronisation ne l'a
- * pas rapportée.
- */
 const libelleParticipants = (rdv: RdvEnUneLigne): string => {
   if (rdv.collectif) {
     return `${rdv.nombreParticipants} ${pluriel(

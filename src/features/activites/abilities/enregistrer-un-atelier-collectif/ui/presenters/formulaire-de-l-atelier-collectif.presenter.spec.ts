@@ -22,8 +22,8 @@ import {
 } from '../../../../domain'
 import { EnregistrerUnAtelierCollectifValidation } from '../../action/enregistrer-un-atelier-collectif.validation'
 import { CraCollectifValidation } from '../forms/cra-collectif.validation'
-import { saisieDeLAtelierCollectif } from '../forms/saisie-du-formulaire.presenter'
 import { formulaireDeLAtelierCollectif } from './formulaire-de-l-atelier-collectif.presenter'
+import { saisieDeLAtelierCollectif } from './saisie-du-formulaire.presenter'
 
 const instant = new Date('2026-11-10T09:00:00.000Z')
 

@@ -1,7 +1,7 @@
 import { Route } from 'next'
 import ProConnectSigninButton from '@/features/authentification/abilities/se-connecter/ui/components/ProConnectSigninButton'
 import { EmailSigninForm } from '@/features/authentification/abilities/se-connecter/ui/forms/EmailSigninForm'
-import { signinErrorMessage } from '@/features/authentification/abilities/se-connecter/ui/pages/erreur-de-connexion.labels'
+import { signinErrorMessage } from '@/features/authentification/abilities/se-connecter/ui/labels/erreur-de-connexion.labels'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
 

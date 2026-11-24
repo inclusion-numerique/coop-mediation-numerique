@@ -2,8 +2,8 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
 import { numberToString } from '@/libraries/nombre/formatNumber'
+import { infobulleDesAccompagnements } from '../presenters/accompagnements.presenter'
 import type { TagAffiche } from '../presenters/tag-affiche.presenter'
-import { infobulleDesAccompagnements } from './accompagnements.presenter'
 import { BadgeDePortee } from './BadgeDePortee'
 
 export const LigneDuTag = ({

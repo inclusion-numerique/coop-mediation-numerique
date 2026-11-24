@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   compteAffiche,
   lieuxDuDepartementAffiches,
-} from './acces-cartographie-nationale.presenter'
+} from '../presenters/acces-cartographie-nationale.presenter'
 
 describe('les comptes de lieux visibles sur la cartographie', () => {
   it.each([

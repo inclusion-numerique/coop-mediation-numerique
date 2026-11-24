@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { LigneEquipe } from '../../domain'
 import GererUneInvitation from '../components/GererUneInvitation'
-import { nomAffiche } from './membre.presenter'
+import { nomAffiche } from '../presenters/membre.presenter'
 
 type MembreAGerer = {
   mediateurId: string

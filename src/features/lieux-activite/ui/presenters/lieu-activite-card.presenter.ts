@@ -11,7 +11,7 @@ import { nomAffiche } from '../../domain/nom-affiche'
 import {
   type CartographyStatus,
   getCartographyStatus,
-} from '../presenters/statut-cartographie.presenter'
+} from './statut-cartographie.presenter'
 
 export type MiseAJourAffichee =
   | { readonly _tag: 'TropAncienne'; readonly texte: string }

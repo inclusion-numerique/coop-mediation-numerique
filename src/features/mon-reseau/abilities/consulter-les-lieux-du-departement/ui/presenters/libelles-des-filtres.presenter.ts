@@ -1,7 +1,7 @@
 import { pluriel } from '@/libraries/pluriel'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { EtiquetteDeFiltre } from '../../../../ui/search-params/filtres-du-reseau.search-params'
-import type { CriteresDesLieux } from '../../domain'
+import type { CriteresDesLieux } from '../../domain/index'
 
 export const etiquettesDesCommunes = (
   { communes }: CriteresDesLieux,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type Contrat, EcheanceDuContrat, TypeDeContrat } from '../../domain'
-import { contratAffiche } from './contrat.presenter'
+import { contratAffiche } from '../presenters/contrat.presenter'
 
 const contrat = (surcharge: Partial<Contrat>): Contrat => ({
   type: TypeDeContrat('CDD'),

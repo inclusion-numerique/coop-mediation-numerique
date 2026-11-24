@@ -1,5 +1,5 @@
 import { dateAsDay } from '@/libraries/date/dateAsDay'
-import type { LieuDuMediateurEnListe } from '../../domain'
+import type { LieuDuMediateurEnListe } from '../../domain/index'
 
 export type LieuEnAdministration = {
   readonly rattachement: string

@@ -6,7 +6,7 @@ import {
   PorteeDuTag,
   TagId,
 } from '../../domain'
-import { tagsDeLaListe } from './usage-des-tags.presenter'
+import { tagsDeLaListe } from '../presenters/usage-des-tags.presenter'
 
 describe('tagsDeLaListe', () => {
   it('présente un tag d’équipe sans description à la liste des tags', () => {

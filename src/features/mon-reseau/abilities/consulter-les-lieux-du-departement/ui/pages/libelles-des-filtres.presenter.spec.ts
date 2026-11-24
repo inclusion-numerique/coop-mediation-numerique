@@ -4,7 +4,7 @@ import {
   etiquettesDesCommunes,
   libelleDesResultats,
   parametresDeLURL,
-} from './libelles-des-filtres.presenter'
+} from '../presenters/libelles-des-filtres.presenter'
 
 describe('étiquettes des filtres de l’annuaire des lieux', () => {
   it('nomme chaque commune retenue', () => {

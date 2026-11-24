@@ -2,7 +2,10 @@ import type { ReactNode } from 'react'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import BoutonDeRetrait from '../components/BoutonDeRetrait'
-import { type DernierPassage, dateDuDernierPassage } from './retrait.presenter'
+import {
+  type DernierPassage,
+  dateDuDernierPassage,
+} from '../presenters/retrait.presenter'
 
 export type MediateurARetirer = {
   readonly rattachementId: string

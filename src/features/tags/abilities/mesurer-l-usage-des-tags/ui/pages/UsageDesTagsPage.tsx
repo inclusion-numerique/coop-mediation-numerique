@@ -7,7 +7,7 @@ import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
 import type { UsageDesTags } from '../../domain'
 import { CounterCard } from '../components/CounterCard'
-import { tagsDeLaListe } from './usage-des-tags.presenter'
+import { tagsDeLaListe } from '../presenters/usage-des-tags.presenter'
 
 export const UsageDesTagsPage = ({
   createursDeTagsUtilises,

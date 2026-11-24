@@ -1,6 +1,10 @@
 import { differenceInMonths } from 'date-fns'
 import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
-import type { Contrat, EcheanceDuContrat, TypeDeContrat } from '../../domain'
+import type {
+  Contrat,
+  EcheanceDuContrat,
+  TypeDeContrat,
+} from '../../domain/index'
 
 type BadgeDEcheance = {
   readonly libelle: string

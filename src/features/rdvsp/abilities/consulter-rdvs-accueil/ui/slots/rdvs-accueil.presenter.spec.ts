@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { StatutPresence } from '../../../../domain/statut-presence'
 import type { RdvEnUneLigne } from '../../domain/donnees-accueil-rdv'
-import { phraseRdv } from './rdvs-accueil.presenter'
+import { phraseRdv } from '../presenters/rdvs-accueil.presenter'
 
 const rdv = (surcharge: Partial<RdvEnUneLigne> = {}): RdvEnUneLigne => ({
   id: RdvId(1),

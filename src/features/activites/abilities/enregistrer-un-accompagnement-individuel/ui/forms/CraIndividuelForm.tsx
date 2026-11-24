@@ -15,7 +15,7 @@ import {
   isAnonyme,
 } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/BeneficiaireFields'
 import { OrientationFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/OrientationFields'
-import { saisieDeLAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/saisie-du-formulaire.presenter'
+import { saisieDeLAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/saisie-du-formulaire.presenter'
 import type { CommuneDuCra } from '@/features/activites/ui/forms/commune-du-cra.validation'
 import { MaterielField } from '@/features/activites/ui/forms/saisie/MaterielField'
 import { RendezVousFields } from '@/features/activites/ui/forms/saisie/RendezVousFields'

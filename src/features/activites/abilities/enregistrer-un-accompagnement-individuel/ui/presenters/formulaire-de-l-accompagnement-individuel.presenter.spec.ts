@@ -19,8 +19,8 @@ import {
 } from '../../../../domain'
 import { EnregistrerUnAccompagnementIndividuelValidation } from '../../action/enregistrer-un-accompagnement-individuel.validation'
 import { CraIndividuelValidation } from '../forms/cra-individuel.validation'
-import { saisieDeLAccompagnementIndividuel } from '../forms/saisie-du-formulaire.presenter'
 import { formulaireDeLAccompagnementIndividuel } from './formulaire-de-l-accompagnement-individuel.presenter'
+import { saisieDeLAccompagnementIndividuel } from './saisie-du-formulaire.presenter'
 
 const instant = new Date('2026-11-10T09:00:00.000Z')
 

@@ -21,7 +21,7 @@ import {
   etiquettesDesCommunes,
   libelleDesResultats,
   parametresDeLURL,
-} from './libelles-des-filtres.presenter'
+} from '../presenters/libelles-des-filtres.presenter'
 
 type LieuxTrouves = {
   readonly totalCount: number

@@ -1,4 +1,4 @@
-import type { TypeDePortee } from '../../../../domain'
+import type { TypeDePortee } from '../../../../domain/index'
 
 type TexteDeSuppression = {
   readonly titre: string

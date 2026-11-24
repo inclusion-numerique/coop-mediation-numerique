@@ -1,4 +1,4 @@
-import { type LigneEquipe, profilDe } from '../../domain'
+import { type LigneEquipe, profilDe } from '../../domain/index'
 
 export const nomAffiche = (ligne: LigneEquipe): string => {
   const profil = profilDe(ligne)

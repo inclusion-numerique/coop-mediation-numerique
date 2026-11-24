@@ -9,7 +9,7 @@ import { createToast } from '@/libraries/ui/toast/createToast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
 import { type TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { SUPPRIMER_UN_TAG_ACTION_KEY } from '../../action/supprimer-un-tag.key'
-import { texteDeSuppression } from './suppression.presenter'
+import { texteDeSuppression } from '../presenters/suppression.presenter'
 
 export const SuppressionDuTag = createDynamicModal<TagAffiche | null>({
   id: 'delete-tag-modal',

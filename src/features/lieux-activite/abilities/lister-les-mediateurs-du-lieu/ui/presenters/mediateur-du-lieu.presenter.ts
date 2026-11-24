@@ -1,5 +1,5 @@
 import { pluriel } from '@/libraries/pluriel'
-import type { DerniereActiviteIci, ProfilDuMediateur } from '../../domain'
+import type { DerniereActiviteIci, ProfilDuMediateur } from '../../domain/index'
 
 type Profil =
   | 'ConseillerNumerique'

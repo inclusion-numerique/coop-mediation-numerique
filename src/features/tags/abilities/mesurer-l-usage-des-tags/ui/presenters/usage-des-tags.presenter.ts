@@ -1,5 +1,5 @@
 import type { TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
-import type { TagLePlusUtilise } from '../../domain'
+import type { TagLePlusUtilise } from '../../domain/index'
 
 export type TagDeLaListe = {
   readonly tag: TagAffiche

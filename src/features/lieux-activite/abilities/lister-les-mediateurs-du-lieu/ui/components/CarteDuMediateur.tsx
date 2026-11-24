@@ -7,7 +7,7 @@ import {
   iconeDuProfil,
   libelleDesLieux,
   libelleDuProfil,
-} from './mediateur-du-lieu.presenter'
+} from '../presenters/mediateur-du-lieu.presenter'
 
 export const CarteDuMediateur = ({
   mediateur: {

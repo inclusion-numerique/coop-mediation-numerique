@@ -7,7 +7,7 @@ import { LieuId } from '../../domain/identifiants/lieu-id'
 import type { LieuEnListe } from '../../domain/lieu-en-liste'
 import { NombreDeMediateurs } from '../../domain/nombres'
 import { SourceCartographie } from '../../domain/tracabilite'
-import { carteDuLieu } from './lieu-activite-card.presenter'
+import { carteDuLieu } from '../presenters/lieu-activite-card.presenter'
 
 const maintenant = new Date('2026-11-09T12:00:00Z')
 const modifieLe = new Date('2026-10-01T12:00:00Z')

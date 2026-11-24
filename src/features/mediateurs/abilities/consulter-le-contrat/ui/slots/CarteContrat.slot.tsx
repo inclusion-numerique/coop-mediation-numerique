@@ -2,7 +2,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import Card from '@/libraries/ui/components/Card'
 import type { Contrat } from '../../domain'
-import { contratAffiche } from './contrat.presenter'
+import { contratAffiche } from '../presenters/contrat.presenter'
 
 export const CarteContrat = ({
   contrat,

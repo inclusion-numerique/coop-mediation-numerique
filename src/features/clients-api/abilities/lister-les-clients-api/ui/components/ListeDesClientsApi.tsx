@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { ClientApi } from '@/features/clients-api/domain'
-import { ligneDeClientApi } from './clients-api.presenter'
+import { ligneDeClientApi } from '../presenters/clients-api.presenter'
 
 export const ListeDesClientsApi = ({
   clients,

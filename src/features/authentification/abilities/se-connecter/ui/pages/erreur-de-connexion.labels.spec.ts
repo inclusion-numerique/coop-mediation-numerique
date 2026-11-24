@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { connexionImpossibleMessage } from './erreur-de-connexion.labels'
+import { connexionImpossibleMessage } from '../labels/erreur-de-connexion.labels'
 
 describe('connexionImpossibleMessage', () => {
   it('signale un lien de connexion qui n’est plus valide', () => {
