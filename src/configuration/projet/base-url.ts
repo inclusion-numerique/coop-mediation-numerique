@@ -1,7 +1,7 @@
 import type { Route } from 'next'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { cheminInterne } from '@/libraries/chemin-interne'
-import { isBrowser } from '@/libraries/navigateur/isBrowser'
+import { isBrowser } from '@/libraries/navigateur/is-browser'
 
 export type GetServerUrlOptions = {
   absolutePath?: boolean // Force absolute path including protocol and hostname instead of relative path

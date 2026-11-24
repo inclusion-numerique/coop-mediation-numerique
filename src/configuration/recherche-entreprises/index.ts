@@ -4,8 +4,8 @@ import {
   type RechercheApiEntrepriseRetryOptions,
   type RechercheApiResponse,
   rechercheApiEntreprise as rechercherSurLApi,
-} from '@/libraries/recherche-entreprises/rechercheApiEntreprise'
-import { rechercheApiEntrepriseSimulee } from './rechercheApiEntreprise.simulee'
+} from '@/libraries/recherche-entreprises/recherche-api-entreprise'
+import { rechercheApiEntrepriseSimulee } from './recherche-api-entreprise.simulee'
 
 export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,

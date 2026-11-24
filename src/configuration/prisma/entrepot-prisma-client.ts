@@ -1,6 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { createEnumArrayTypeParser } from '@/configuration/prisma/enumArrayTypeParser'
+import { createEnumArrayTypeParser } from '@/configuration/prisma/enum-array-type-parser'
 import { PrismaClient } from '@/generated/entrepot/client'
 
 // Second Prisma client pointing at the entrepôt (Dataspace) database. It is generated

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import { rechercheApiEntrepriseSimulee } from './rechercheApiEntreprise.simulee'
+import { previewBranchAuthFallbacks } from '@/configuration/projet/preview-branch-auth-fallbacks'
+import { rechercheApiEntrepriseSimulee } from './recherche-api-entreprise.simulee'
 
 describe('doublure e2e de la recherche d’entreprises', () => {
   it('résout le SIRET que portent les utilisateurs d’inscription', () => {

@@ -1,5 +1,5 @@
 import { instrument } from '@/configuration/telemetry/instrument/server'
-import { searchAdresse } from '@/libraries/ban/apiAdresse'
+import { searchAdresse } from '@/libraries/ban/api-adresse'
 
 const operation = {
   name: 'http.ban.search',
