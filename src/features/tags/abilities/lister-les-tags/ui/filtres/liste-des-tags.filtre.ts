@@ -5,10 +5,7 @@ import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
 import type { ColonneDesTags } from '../../domain'
 
 export const triDesTags = triParmi({
-  colonnes: {
-    nom: 'Nom',
-    visibilite: 'Visibilité',
-  } satisfies Record<ColonneDesTags, string>,
+  colonnes: ['nom', 'visibilite'] satisfies readonly ColonneDesTags[],
   parDefaut: Sort('nom', 'asc'),
 })
 

@@ -7,7 +7,7 @@ import { rechercheLibre } from './recherche-libre'
 import { triParmi } from './tri-parmi'
 
 const triDesLieux = triParmi({
-  colonnes: { nom: 'Nom', creation: 'Création' },
+  colonnes: ['nom', 'creation'],
   parDefaut: Sort('nom', 'asc'),
 })
 
@@ -148,7 +148,6 @@ describe('liens de tri', () => {
         'creation',
       ),
     ).toStrictEqual({
-      libelle: 'Création',
       href: '/lieux?tri=creation&ordre=desc&lignes=50',
       actif: true,
       ordre: 'desc',

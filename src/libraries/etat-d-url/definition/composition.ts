@@ -60,7 +60,6 @@ type PieceLueQuelconque = {
 type PieceQuelconque = FiltreQuelconque | PieceLueQuelconque
 
 export type LienDeTri = {
-  readonly libelle: string
   readonly href: string
   readonly actif: boolean
   readonly ordre: SortDirection
@@ -311,7 +310,6 @@ export const composerLEtat = <const Fs extends readonly PieceQuelconque[]>(
     const actif = valeurs.tri.field === colonne
     const ordre = actif ? oppose(valeurs.tri.direction) : 'asc'
     return {
-      libelle: tri?.colonnes[colonne] ?? colonne,
       href: adresse(courante, { tri: Sort(colonne, ordre) }),
       actif,
       ordre,
@@ -385,7 +383,7 @@ export const composerLEtat = <const Fs extends readonly PieceQuelconque[]>(
         valeurs: { readonly tri: Sort<string> },
       ) =>
         Object.fromEntries(
-          Object.keys(tri?.colonnes ?? {}).map((colonne) => [
+          (tri?.colonnes ?? []).map((colonne) => [
             colonne,
             lienDeTri(courante, valeurs, colonne),
           ]),

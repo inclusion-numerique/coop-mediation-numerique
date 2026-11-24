@@ -4,9 +4,11 @@ import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
 import type { LienDeTri } from './definition/composition'
 
 export const EnTeteTriable = ({
-  lien: { libelle, href, actif, ordre },
+  libelle,
+  lien: { href, actif, ordre },
   className,
 }: {
+  libelle: string
   lien: LienDeTri
   className?: string
 }) => {

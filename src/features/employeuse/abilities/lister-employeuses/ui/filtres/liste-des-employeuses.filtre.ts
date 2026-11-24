@@ -6,12 +6,12 @@ import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
 import type { ColonneDesEmployeuses } from '../../domain/lister-employeuses'
 
 const triDesEmployeuses = triParmi({
-  colonnes: {
-    nom: 'Nom',
-    emplois: 'Emplois',
-    creation: 'Création',
-    modification: 'Modification',
-  } satisfies Record<ColonneDesEmployeuses, string>,
+  colonnes: [
+    'nom',
+    'emplois',
+    'creation',
+    'modification',
+  ] satisfies readonly ColonneDesEmployeuses[],
   parDefaut: Sort('nom', 'asc'),
 })
 

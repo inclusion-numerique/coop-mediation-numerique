@@ -4,17 +4,14 @@ import type { PieceLue } from './piece'
 
 const SENS = ['asc', 'desc'] as const
 
-const parseurDeColonne = <C extends string>(
-  colonnes: Readonly<Record<C, string>>,
-) =>
+const parseurDeColonne = <C extends string>(colonnes: readonly C[]) =>
   createParser({
-    parse: (lue) =>
-      (Object.keys(colonnes) as C[]).find((colonne) => colonne === lue) ?? null,
+    parse: (lue) => colonnes.find((colonne) => colonne === lue) ?? null,
     serialize: (colonne: C) => colonne,
   })
 
 const parametresDuTri = <C extends string>(
-  colonnes: Readonly<Record<C, string>>,
+  colonnes: readonly C[],
   parDefaut: Sort<C>,
 ) => ({
   tri: parseurDeColonne(colonnes).withDefault(parDefaut.field),
@@ -26,7 +23,7 @@ export type TriParmi<C extends string> = PieceLue<
   { readonly tri: Sort<C> }
 > & {
   readonly _tag: 'Tri'
-  readonly colonnes: Readonly<Record<C, string>>
+  readonly colonnes: readonly C[]
   readonly parDefaut: Sort<C>
 }
 
@@ -34,7 +31,7 @@ export const triParmi = <const C extends string>({
   colonnes,
   parDefaut,
 }: {
-  colonnes: Readonly<Record<C, string>>
+  colonnes: readonly C[]
   parDefaut: Sort<NoInfer<C>>
 }): TriParmi<C> => ({
   _tag: 'Tri',

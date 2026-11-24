@@ -27,7 +27,7 @@ const derniereAdresse = (ecrites: UrlUpdateEvent[]) =>
     .then(() => ecrites.at(-1)?.queryString)
 
 const triDesTags = triParmi({
-  colonnes: { nom: 'Nom', utilisation: 'Utilisation' },
+  colonnes: ['nom', 'utilisation'],
   parDefaut: Sort('utilisation', 'desc'),
 })
 

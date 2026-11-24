@@ -9,12 +9,12 @@ export const EmployeusesTableHead = ({
 }) => (
   <thead>
     <tr>
-      {employeusesColumns.map((column) =>
-        'tri' in column ? (
-          <EnTeteTriable key={column.tri} lien={colonnes[column.tri]} />
+      {employeusesColumns.map(({ label, tri }) =>
+        tri ? (
+          <EnTeteTriable key={label} libelle={label} lien={colonnes[tri]} />
         ) : (
-          <th key={column.label} scope="col">
-            {column.label}
+          <th key={label} scope="col">
+            {label}
           </th>
         ),
       )}

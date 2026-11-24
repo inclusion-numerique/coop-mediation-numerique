@@ -16,7 +16,7 @@ export const ChoixDuTri = <C extends string>({
   options,
 }: {
   tri: {
-    readonly colonnes: Readonly<Record<C, string>>
+    readonly colonnes: readonly C[]
     readonly parDefaut: Sort<C>
   }
   options: readonly { readonly libelle: string; readonly tri: Sort<C> }[]
