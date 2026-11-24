@@ -25,12 +25,12 @@ import { profilPresente } from '@/features/activites/abilities/decrire-les-perso
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { criteresSurLaPeriode, Jour } from '@/features/activites/domain'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
   authenticateAdmin,
   authenticateUser,
-} from '@/features/authentification/implementations/session/authenticate-user'
+} from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'

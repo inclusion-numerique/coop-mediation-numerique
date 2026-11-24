@@ -53,7 +53,7 @@ import { RECHERCHER_DES_MEDIATEURS_DES_ACTIVITES_KEY } from '@/features/activite
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
 import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
 import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
 import {
   nombreDAccompagnements,
@@ -65,7 +65,7 @@ import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage/implementations/prisma/consulter-mes-liens-de-partage.query'

@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/creer-ou-fusionner-depuis-usager-externe.binding'
 import {
   CODE_AUTORISATION_MANQUANT,
@@ -14,7 +14,7 @@ import {
   motifDiagnostic,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
 import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/connecter-compte-rdv.binding'
-import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection'
+import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection.transfer'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
 import { synchroniserCompteAvec } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/synchroniser-compte-rdv.binding'
 import { synchroniserLesOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations.binding'

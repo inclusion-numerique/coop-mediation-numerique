@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
+import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations.classeur'
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
 import {
   criteresDesFiltresDeCoordination,
@@ -7,8 +7,8 @@ import {
 } from '@/features/activites/ui/filtres/coordinations.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
-import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

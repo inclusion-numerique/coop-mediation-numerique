@@ -24,7 +24,7 @@ import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
 import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
 import {
   source,
@@ -38,7 +38,7 @@ import { utilisateurDeLaSessionParId } from '@/features/authentification/impleme
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
-import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
+import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

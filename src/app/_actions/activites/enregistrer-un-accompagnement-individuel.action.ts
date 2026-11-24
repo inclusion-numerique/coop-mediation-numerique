@@ -12,10 +12,10 @@ import {
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
-import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite/implementations/prisma/lieu-utilisable-par'
+import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite/implementations/prisma/lieu-utilisable-par.where'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { rendezVousHonorePar } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/rendez-vous-honore-par.binding'
-import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

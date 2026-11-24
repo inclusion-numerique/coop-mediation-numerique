@@ -2,10 +2,10 @@ import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/analyse-de-l-import.binding'
-import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/excel/feuille-d-import'
+import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/excel/feuille-d-import.classeur'
 
 const tailleMaximaleDuFichier = 5 * 1024 * 1024
 

@@ -6,7 +6,7 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,
-} from '@/features/authentification/implementations/session/session-user'
+} from '@/features/authentification/implementations/session/session-user.query'
 import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/implementations/prisma/visibilite-sur-la-cartographie.query'
 import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui/slots/AccesCartographieNationale.slot'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
@@ -22,7 +22,7 @@ import {
 } from '@/features/outils/abilities/consulter-un-outil/ui/presenters/fiche-de-l-outil.presenter'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/action/deconnecter-compte-rdv.key'
-import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'
+import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/slots/RdvServicePublicAccess.slot'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/slots/RdvServicePublicMigrationNotice.slot'
