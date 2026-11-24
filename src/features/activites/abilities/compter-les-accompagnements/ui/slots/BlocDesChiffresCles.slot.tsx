@@ -7,8 +7,8 @@ export const BlocDesChiffresCles = async ({
   totaux,
 }: {
   totaux: TotauxPresentes | Promise<TotauxPresentes>
-  debut?: string
-  fin?: string
+  debut?: string | undefined
+  fin?: string | undefined
 }) => (
   <ChiffresClesDesAccompagnements
     totalCounts={await totaux}

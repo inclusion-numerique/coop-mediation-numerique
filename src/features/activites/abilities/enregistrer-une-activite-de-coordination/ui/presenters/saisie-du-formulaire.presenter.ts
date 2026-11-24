@@ -13,10 +13,10 @@ const communDu = ({
   tags,
   notes,
 }: {
-  readonly id?: string | null
+  readonly id?: string | null | undefined
   readonly date: string
   readonly tags: readonly { readonly id: string }[]
-  readonly notes?: string | null
+  readonly notes?: string | null | undefined
 }) => ({ id, date, tags: tags.map((tag) => tag.id), notes })
 
 export const saisieDeLAnimation = (formulaire: CraAnimationData): Saisie => ({

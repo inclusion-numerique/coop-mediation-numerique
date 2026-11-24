@@ -11,8 +11,8 @@ type ListCardProps<T extends ElementType> = {
   enlargeButton?: boolean
   enlargeLink?: boolean
   stacked?: boolean
-  firstOfStack?: boolean
-  lastOfStack?: boolean
+  firstOfStack?: boolean | undefined
+  lastOfStack?: boolean | undefined
   footer?: ReactNode
 } & ComponentPropsWithoutRef<T>
 

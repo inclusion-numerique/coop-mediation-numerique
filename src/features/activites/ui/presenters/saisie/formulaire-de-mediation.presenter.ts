@@ -45,7 +45,9 @@ const lieuDuFormulaire = (
           : {
               id: affichage.lieu.id,
               nom: affichage.lieu.nom,
-              adresse: affichage.lieu.adresse ?? undefined,
+              ...(affichage.lieu.adresse == null
+                ? {}
+                : { adresse: affichage.lieu.adresse }),
             },
       lieuCommuneData: undefined,
     }

@@ -277,9 +277,9 @@ export const DetailDeLActiviteModale = () => {
         </div>
       }
       className="modale-de-detail"
-      buttons={
-        confirmation
-          ? [
+      {...(confirmation
+        ? {
+            buttons: [
               {
                 title: 'Annuler',
                 priority: 'secondary',
@@ -302,9 +302,9 @@ export const DetailDeLActiviteModale = () => {
                   ),
                 },
               },
-            ]
-          : undefined
-      }
+            ],
+          }
+        : {})}
     >
       <hr className="fr-separator fr-separator-6v" />
       <p className="fr-width-full fr-text--lg fr-text--medium fr-mb-0">

@@ -17,7 +17,7 @@ type CraPartenariatPageProps = {
   coordinateurId: string
   initialTagsOptions: Tag[]
   visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const CraPartenariatPage = ({

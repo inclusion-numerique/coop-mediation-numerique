@@ -15,7 +15,10 @@ export const BarreDesStatistiques = ({
   actions,
 }: {
   barre: BarreDesStatistiquesPresentee
-  periode: { readonly debut?: Date; readonly fin?: Date }
+  periode: {
+    readonly debut?: Date | undefined
+    readonly fin?: Date | undefined
+  }
   coordinateur: boolean
   importsV1: boolean
   actions: ReactNode

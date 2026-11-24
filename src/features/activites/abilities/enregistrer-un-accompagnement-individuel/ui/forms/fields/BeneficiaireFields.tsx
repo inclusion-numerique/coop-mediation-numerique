@@ -23,12 +23,22 @@ const options = formOptions({
 })
 
 const isBeneficiaire = (field: {
-  state: { value?: { prenom?: string | null; nom?: string | null } | null }
+  state: {
+    value?:
+      | { prenom?: string | null | undefined; nom?: string | null | undefined }
+      | null
+      | undefined
+  }
 }): field is { state: { value: { prenom: string; nom: string } } } =>
   field.state.value?.prenom != null && field.state.value?.nom != null
 
 export const estAnonyme = (field: {
-  state: { value?: { prenom?: string | null; nom?: string | null } | null }
+  state: {
+    value?:
+      | { prenom?: string | null | undefined; nom?: string | null | undefined }
+      | null
+      | undefined
+  }
 }) => !isBeneficiaire(field)
 
 export const BeneficiaireFields = withForm({

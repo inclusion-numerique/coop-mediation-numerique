@@ -17,7 +17,7 @@ describe('période la plus large', () => {
   it('garde la seule période connue', () => {
     expect(
       periodeLaPlusLarge(
-        { first: undefined, last: undefined },
+        {},
         { first: date('2026-01-15'), last: date('2026-02-15') },
       ),
     ).toEqual({ first: date('2026-01-15'), last: date('2026-02-15') })

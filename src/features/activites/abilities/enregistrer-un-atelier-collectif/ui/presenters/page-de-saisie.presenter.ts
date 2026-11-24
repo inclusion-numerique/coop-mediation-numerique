@@ -64,7 +64,7 @@ export const saisieCollectiveAModifier = async ({
 export const cheminDeDuplicationCollective = async ({
   retour,
   ...demande
-}: ActiviteDemandee & { readonly retour?: string }) => {
+}: ActiviteDemandee & { readonly retour?: string | undefined }) => {
   const valeurs = await atelierAReprendre(demande)
   return valeurs === null
     ? null

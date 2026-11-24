@@ -192,7 +192,7 @@ const accompagnementSeme = ({
   prismaClient.activite
     .create({
       data: {
-        id,
+        ...(id === undefined ? {} : { id }),
         mediateurId,
         type: 'Individuel',
         typeLieu: 'ADistance',

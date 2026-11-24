@@ -92,9 +92,9 @@ export const DetailDeCoordinationModale = () => {
         </div>
       }
       className="modale-de-detail"
-      buttons={
-        confirmation
-          ? [
+      {...(confirmation
+        ? {
+            buttons: [
               {
                 title: 'Annuler',
                 priority: 'secondary',
@@ -115,9 +115,9 @@ export const DetailDeCoordinationModale = () => {
                     .className,
                 },
               },
-            ]
-          : undefined
-      }
+            ],
+          }
+        : {})}
     >
       <hr />
       {confirmation ? (

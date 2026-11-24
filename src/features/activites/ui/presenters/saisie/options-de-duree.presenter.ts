@@ -26,7 +26,7 @@ export const optionsDeDuree = ({
   incluse,
 }: {
   readonly dureesFrequentes: readonly number[]
-  readonly incluse?: string | null
+  readonly incluse?: string | null | undefined
 }) =>
   labelsToOptions(
     Object.fromEntries(

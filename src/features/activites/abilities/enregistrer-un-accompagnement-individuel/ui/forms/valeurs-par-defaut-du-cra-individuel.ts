@@ -4,9 +4,9 @@ import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 
 const communeDeResidence = (
   residence?: {
-    commune?: string
-    codePostal?: string
-    codeInsee?: string
+    commune?: string | undefined
+    codePostal?: string | undefined
+    codeInsee?: string | undefined
   } | null,
 ) =>
   residence?.commune && residence.codePostal && residence.codeInsee

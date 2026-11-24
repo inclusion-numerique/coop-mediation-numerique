@@ -293,24 +293,30 @@ const thematiqueIllustrations: Record<Thematique, Pictogram> = {
 
 export const thematiqueNonAdministrativesOptionsWithExtras = labelsToOptions(
   thematiquesNonAdministrativesLabels,
-).map(({ label, value }) => ({
-  label,
-  value,
-  hint: thematiquesInfo[value],
-  extra: {
-    tooltips: thematiqueHints[value],
-    illustration: thematiqueIllustrations[value],
-  },
-}))
+).map(({ label, value }) => {
+  const hint = thematiquesInfo[value]
+  return {
+    label,
+    value,
+    ...(hint === undefined ? {} : { hint }),
+    extra: {
+      tooltips: thematiqueHints[value],
+      illustration: thematiqueIllustrations[value],
+    },
+  }
+})
 
 export const thematiqueAdministrativesOptionsWithExtras = labelsToOptions(
   thematiquesAdministrativesLabels,
-).map(({ label, value }) => ({
-  label,
-  value,
-  hint: thematiquesInfo[value],
-  extra: {
-    tooltips: thematiqueHints[value],
-    illustration: thematiqueIllustrations[value],
-  },
-}))
+).map(({ label, value }) => {
+  const hint = thematiquesInfo[value]
+  return {
+    label,
+    value,
+    ...(hint === undefined ? {} : { hint }),
+    extra: {
+      tooltips: thematiqueHints[value],
+      illustration: thematiqueIllustrations[value],
+    },
+  }
+})

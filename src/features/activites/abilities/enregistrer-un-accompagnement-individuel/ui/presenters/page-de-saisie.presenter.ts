@@ -64,7 +64,7 @@ export const saisieIndividuelleAModifier = async ({
 export const cheminDeDuplicationIndividuelle = async ({
   retour,
   ...demande
-}: ActiviteDemandee & { readonly retour?: string }) => {
+}: ActiviteDemandee & { readonly retour?: string | undefined }) => {
   const valeurs = await accompagnementAReprendre(demande)
   return valeurs === null
     ? null

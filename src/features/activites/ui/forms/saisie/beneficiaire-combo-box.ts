@@ -11,13 +11,13 @@ import {
 const itemToKey = (item: { id: string }): string => item.id
 
 const idsDefinis = (beneficiaire?: {
-  id?: string
+  id?: string | undefined
 }): beneficiaire is {
   id: string
 } => beneficiaire?.id != null
 
 const loadSuggestions =
-  (selectionnes: readonly ({ id?: string } | undefined)[]) =>
+  (selectionnes: readonly ({ id?: string | undefined } | undefined)[]) =>
   async (query: string): Promise<{ items: BeneficiaireDuCra[] }> => {
     const resultat = await inject(RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY)({
       query,
@@ -37,7 +37,7 @@ const renderItem = ({ item }: { item: BeneficiaireDuCra }) =>
   `${item.prenom} ${item.nom}`
 
 export const BeneficiaireComboBox = (
-  selectionnes: readonly ({ id?: string } | undefined)[] = [],
+  selectionnes: readonly ({ id?: string | undefined } | undefined)[] = [],
 ): ComboBoxData<BeneficiaireDuCra> => ({
   itemToString,
   itemToKey,

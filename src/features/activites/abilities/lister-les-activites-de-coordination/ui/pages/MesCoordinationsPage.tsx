@@ -14,7 +14,7 @@ export const MesCoordinationsPage = ({
   pagination,
   lignesParPage,
 }: {
-  sousTitre?: string
+  sousTitre?: string | undefined
   barreDeFiltres: ReactNode
   liste: ListeDesCoordinations
   filtre: boolean

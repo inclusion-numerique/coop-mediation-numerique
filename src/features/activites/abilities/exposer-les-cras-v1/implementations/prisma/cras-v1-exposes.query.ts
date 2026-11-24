@@ -71,8 +71,8 @@ export const crasV1Exposes = async ({
     prismaClient.craConseillerNumeriqueV1.findMany({
       orderBy: [{ createdAt: 'desc' }],
       take,
-      skip,
-      cursor: creeLe === null ? undefined : { createdAt: creeLe },
+      ...(skip === undefined ? {} : { skip }),
+      ...(creeLe === null ? {} : { cursor: { createdAt: creeLe } }),
       select: craV1ExposeSelect,
     }),
     prismaClient.craConseillerNumeriqueV1.count(),

@@ -48,7 +48,7 @@ const CraCollectifForm = ({
   beneficiairesProposes: readonly BeneficiaireDuCra[]
   initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
-  retour?: string
+  retour?: string | undefined
 }) => {
   const router = useRouter()
 

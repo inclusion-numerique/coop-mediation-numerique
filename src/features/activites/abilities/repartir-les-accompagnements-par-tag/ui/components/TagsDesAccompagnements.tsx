@@ -17,7 +17,7 @@ export const TagsDesAccompagnements = ({
   pourImpression = false,
 }: {
   tags: ReturnType<typeof parTagPresentes>
-  pourImpression?: boolean
+  pourImpression?: boolean | undefined
 }) => (
   <ProgressItemList
     items={[...tags].sort(desc)}

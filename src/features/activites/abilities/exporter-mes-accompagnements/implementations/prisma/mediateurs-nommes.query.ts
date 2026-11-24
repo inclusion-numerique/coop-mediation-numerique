@@ -30,7 +30,9 @@ export const mediateursNommes = async ({
         select: { firstName: true, lastName: true, name: true, email: true },
       },
       coordinations: {
-        where: { coordinateurId: coordinateurId ?? undefined },
+        where: {
+          ...(coordinateurId === null ? {} : { coordinateurId }),
+        },
         select: { suppression: true },
       },
     },

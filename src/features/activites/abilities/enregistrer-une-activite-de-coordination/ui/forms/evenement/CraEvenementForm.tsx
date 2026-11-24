@@ -33,7 +33,7 @@ import { createToast } from '@/libraries/ui/toast/createToast'
 type CraEvenementFormProps = {
   defaultValues: DefaultValues<CraEvenementData> & { coordinateurId: string }
   initialTagsOptions: Tag[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const valueMatching =

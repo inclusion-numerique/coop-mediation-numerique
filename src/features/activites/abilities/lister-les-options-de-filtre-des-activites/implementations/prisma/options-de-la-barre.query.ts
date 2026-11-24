@@ -15,10 +15,14 @@ const plusTard = (a: Date | undefined, b: Date | undefined) =>
 export const periodeLaPlusLarge = (
   activites: PeriodeCouverte,
   rendezVous: PeriodeCouverte,
-): PeriodeCouverte => ({
-  first: plusTot(activites.first, rendezVous.first),
-  last: plusTard(activites.last, rendezVous.last),
-})
+): PeriodeCouverte => {
+  const first = plusTot(activites.first, rendezVous.first)
+  const last = plusTard(activites.last, rendezVous.last)
+  return {
+    ...(first === undefined ? {} : { first }),
+    ...(last === undefined ? {} : { last }),
+  }
+}
 
 export const optionsDesFiltres = async ({
   mediateurId,

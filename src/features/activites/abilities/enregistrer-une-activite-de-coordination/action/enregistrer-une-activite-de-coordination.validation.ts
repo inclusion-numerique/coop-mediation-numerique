@@ -139,10 +139,10 @@ const nomSaisi = (nom: string | null | undefined): NomDeLActivite | null =>
   NomDeLActivite.safe(nom ?? '')
 
 const communSaisi = (saisie: {
-  readonly id?: string | null
+  readonly id?: string | null | undefined
   readonly date: DateDActivite
   readonly tags: readonly string[]
-  readonly notes?: string | null
+  readonly notes?: string | null | undefined
 }) => ({
   id: saisie.id == null ? null : ActiviteDeCoordinationId(saisie.id),
   date: saisie.date,

@@ -13,7 +13,7 @@ const onlyNonAdministrativesThematiques = (thematique: Thematique) =>
 export const effacerLesDonneesAdministratives = <T>(
   data: T & {
     thematiques: Thematique[]
-    precisionsDemarche?: string | null
+    precisionsDemarche?: string | null | undefined
   },
 ) => {
   const { precisionsDemarche, ...rest } = data

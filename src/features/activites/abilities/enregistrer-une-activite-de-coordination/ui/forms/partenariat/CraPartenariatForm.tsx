@@ -33,7 +33,7 @@ import { createToast } from '@/libraries/ui/toast/createToast'
 type CraPartenariatFormProps = {
   defaultValues: DefaultValues<CraPartenariatData> & { coordinateurId: string }
   initialTagsOptions: Tag[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const valueMatching =
@@ -256,7 +256,7 @@ const CraPartenariatForm = ({
                 iconId="fr-icon-add-line"
                 className="fr-width-full fr-justify-content-center"
                 onClick={() => {
-                  field.pushValue({ nom: undefined, type: undefined })
+                  field.pushValue({})
                   form.validate('change')
                 }}
               >

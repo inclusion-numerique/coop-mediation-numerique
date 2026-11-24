@@ -13,7 +13,7 @@ export type Tag = {
 export const tagDuFormulaire = (tag: TagDuCra): Tag => ({
   id: tag.id,
   nom: tag.nom,
-  description: tag.description ?? undefined,
+  ...(tag.description == null ? {} : { description: tag.description }),
   badge: tag.badge,
 })
 

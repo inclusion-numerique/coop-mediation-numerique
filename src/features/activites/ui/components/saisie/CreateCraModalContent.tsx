@@ -57,7 +57,7 @@ const CreateCraModalContent = ({
     readonly participants?: DefaultValues<BeneficiaireCraData>[]
   }
   onClose: () => void
-  retour?: string
+  retour?: string | undefined
   isMediateur: boolean
   isCoordinateur: boolean
 }) => {

@@ -35,7 +35,7 @@ type CraAnimationFormProps = {
   defaultValues: DefaultValues<CraAnimationData> & { coordinateurId: string }
   dureeOptions: SelectOption[]
   initialTagsOptions: Tag[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const CraAnimationForm = ({

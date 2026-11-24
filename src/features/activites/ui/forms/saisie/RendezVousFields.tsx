@@ -54,7 +54,7 @@ export const RendezVousFields = withFieldGroup({
     onSelectLieuCommuneData,
     onSelectTypeLieuDomicile,
   }) => {
-    const resetDetailsFields = ({ value }: { value?: string }) => {
+    const resetDetailsFields = ({ value }: { value?: string | undefined }) => {
       if (shouldResetLieuCommuneData(value))
         group.setFieldValue('lieuCommuneData', null)
       if (shouldResetStructure(value))

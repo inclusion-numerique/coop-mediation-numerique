@@ -11,11 +11,12 @@ import { SelectedItemsData } from '@/libraries/ui/components/Primitives/Selected
 
 const itemToKey = (item: { id: string }): string => item.id
 
-const onlyDefinedIds = (tag?: { id?: string }): tag is { id: string } =>
-  tag?.id != null
+const onlyDefinedIds = (tag?: {
+  id?: string | undefined
+}): tag is { id: string } => tag?.id != null
 
 const loadSuggestions =
-  (selectedTags: ({ id?: string } | undefined)[]) =>
+  (selectedTags: ({ id?: string | undefined } | undefined)[]) =>
   async (input: string): Promise<{ items: Tag[] }> => {
     const resultat = await inject(RECHERCHER_DES_TAGS_DU_CRA_KEY)({
       recherche: input,
@@ -41,7 +42,7 @@ const renderItem = ({ item }: { item: Tag }) => (
 )
 
 export const TagComboBox = (
-  tags: ({ id?: string } | undefined)[] = [],
+  tags: ({ id?: string | undefined } | undefined)[] = [],
 ): ComboBoxData<Tag> => ({
   itemToString,
   loadSuggestions: loadSuggestions(tags),

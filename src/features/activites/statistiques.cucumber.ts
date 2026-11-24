@@ -136,8 +136,8 @@ const semerUnePersonne = async (
     data: {
       id: userId,
       email: `statistiques-${userId}@example.com`,
-      firstName,
-      lastName,
+      ...(firstName === undefined ? {} : { firstName }),
+      ...(lastName === undefined ? {} : { lastName }),
     },
   })
   const mediateurId = mediateur
@@ -206,7 +206,13 @@ const communeDuLieu = (cellule: string | undefined) => {
   const [lieuCommune, lieuCodePostal, lieuCodeInsee] = (cellule ?? '').split(
     ' ',
   )
-  return lieuCommune ? { lieuCommune, lieuCodePostal, lieuCodeInsee } : {}
+  return lieuCommune
+    ? {
+        lieuCommune,
+        ...(lieuCodePostal === undefined ? {} : { lieuCodePostal }),
+        ...(lieuCodeInsee === undefined ? {} : { lieuCodeInsee }),
+      }
+    : {}
 }
 
 const semerUneActivite = async (
@@ -286,8 +292,8 @@ const semerUneActivite = async (
               trancheAge: valeurDe(TrancheAge)(trancheAge),
               statutSocial: valeurDe(StatutSocial)(statutSocial),
               commune: residence || null,
-              communeCodePostal: residence ? codePostal : null,
-              communeCodeInsee: residence ? codeInsee : null,
+              communeCodePostal: residence ? (codePostal ?? null) : null,
+              communeCodeInsee: residence ? (codeInsee ?? null) : null,
             },
           },
         })),

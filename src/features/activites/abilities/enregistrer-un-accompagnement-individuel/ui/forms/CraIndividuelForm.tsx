@@ -60,7 +60,7 @@ const CraIndividuelForm = ({
   lieuxProposes: readonly LieuDuCra[]
   beneficiairesProposes: readonly BeneficiaireDuCra[]
   initialTagsOptions: Tag[]
-  retour?: string
+  retour?: string | undefined
   dureeOptions: SelectOption[]
 }) => {
   const router = useRouter()

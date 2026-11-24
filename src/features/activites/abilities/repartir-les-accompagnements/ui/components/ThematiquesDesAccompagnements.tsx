@@ -17,7 +17,7 @@ export const ThematiquesDesAccompagnements = ({
   pourImpression = false,
 }: {
   thematiques: RepartitionPresentee['thematiques']
-  pourImpression?: boolean
+  pourImpression?: boolean | undefined
 }) => (
   <ProgressItemList
     items={[...thematiques].sort(desc)}

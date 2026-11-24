@@ -13,8 +13,8 @@ export const criteresDExposition = ({
   creation,
   modification,
 }: {
-  readonly creation: { readonly depuis?: string }
-  readonly modification: { readonly depuis?: string }
+  readonly creation: { readonly depuis?: string | undefined }
+  readonly modification: { readonly depuis?: string | undefined }
 }): CriteresDExposition => ({
   creeesDepuis: horodatageDepuis(creation.depuis),
   modifieesDepuis: horodatageDepuis(modification.depuis),

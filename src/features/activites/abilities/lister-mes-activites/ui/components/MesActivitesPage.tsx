@@ -14,7 +14,7 @@ export const MesActivitesPage = ({
   children,
 }: {
   vue: 'liste' | 'tableau'
-  sousTitre?: string
+  sousTitre?: string | undefined
   vide?: boolean
   saisieDuStatutDesRendezVous: ReactNode
   children: ReactNode

@@ -142,7 +142,10 @@ Given(
   'une médiatrice {string} ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026',
   async (nom: string) => {
     const [firstName, lastName] = nom.split(' ')
-    contexte.moi = await semerUnMediateur({ firstName, lastName })
+    contexte.moi = await semerUnMediateur({
+      ...(firstName === undefined ? {} : { firstName }),
+      ...(lastName === undefined ? {} : { lastName }),
+    })
     contexte.demandeur = demandeurMediateur(contexte.moi)
     await semerMesAccompagnementsDeMars(contexte.moi)
   },
@@ -379,14 +382,14 @@ Then("l'export affiche la source des données", () => {
 After(async () => {
   const { userIds, coordinateurIds, employeuses } = contexte
   contexte.employeuses = {}
-  contexte.noms = undefined
+  delete contexte.noms
   contexte.recherches = []
   contexte.userIds = []
   contexte.coordinateurIds = []
-  contexte.moi = undefined
-  contexte.autre = undefined
-  contexte.demandeur = undefined
-  contexte.exporte = undefined
+  delete contexte.moi
+  delete contexte.autre
+  delete contexte.demandeur
+  delete contexte.exporte
   if (userIds.length === 0) return
   const mediateurIds = (
     await prismaClient.mediateur.findMany({

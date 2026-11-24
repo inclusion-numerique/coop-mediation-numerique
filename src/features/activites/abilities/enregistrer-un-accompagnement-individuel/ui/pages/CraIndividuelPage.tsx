@@ -24,7 +24,7 @@ type CraIndividuelPageData = {
   initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
   visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const CraIndividuelPage = ({

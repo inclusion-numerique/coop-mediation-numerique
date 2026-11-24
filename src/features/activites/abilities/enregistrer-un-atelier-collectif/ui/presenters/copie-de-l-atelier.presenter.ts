@@ -1,5 +1,5 @@
 type AtelierCopiable = {
-  readonly participantsAnonymes?: object | null
+  readonly participantsAnonymes?: object | null | undefined
   readonly [champ: string]: unknown
 }
 

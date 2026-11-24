@@ -81,7 +81,7 @@ export const AccompagnementBarChart = ({
           tickLine={false}
           axisLine={false}
           allowDecimals={false}
-          domain={isEmpty ? [0, 1] : undefined}
+          {...(isEmpty ? { domain: [0, 1] } : {})}
           tick={{ fontSize: 12 }}
           tickFormatter={(value) =>
             isEmpty

@@ -65,7 +65,7 @@ export const AccompagnementPieChart = ({
     <ResponsiveContainer
       width={size}
       height={half ? size / 2 + 10 : size}
-      className={className}
+      {...(className === undefined ? {} : { className })}
     >
       <PieChart>
         <Pie
@@ -84,9 +84,15 @@ export const AccompagnementPieChart = ({
           {isEmpty ? (
             <Cell fill="var(--blue-france-975-75)" />
           ) : (
-            data.map((item, index) => (
-              <Cell key={item.label} fill={colors[index % colors.length]} />
-            ))
+            data.map((item, index) => {
+              const fill = colors[index % colors.length]
+              return (
+                <Cell
+                  key={item.label}
+                  {...(fill === undefined ? {} : { fill })}
+                />
+              )
+            })
           )}
         </Pie>
         {!isEmpty && <Tooltip content={<CustomTooltip />} />}

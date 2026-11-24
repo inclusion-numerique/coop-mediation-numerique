@@ -24,7 +24,7 @@ type CraCollectifPageData = {
   beneficiairesProposes: readonly BeneficiaireTrouveParLeCra[]
   dureeOptions: SelectOption[]
   visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const CraCollectifPage = ({

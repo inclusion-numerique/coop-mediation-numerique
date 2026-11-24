@@ -63,8 +63,8 @@ export const optionsDeFiltreDesActivites = async ({
   })
   return {
     periodeCouverte: {
-      first: bornes._min.date ?? undefined,
-      last: bornes._max.date ?? undefined,
+      ...(bornes._min.date === null ? {} : { first: bornes._min.date }),
+      ...(bornes._max.date === null ? {} : { last: bornes._max.date }),
     },
     employeuses: employeuses.map((structure) => ({
       id: String(structure.id),

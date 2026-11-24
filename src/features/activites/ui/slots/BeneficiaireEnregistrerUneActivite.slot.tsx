@@ -29,7 +29,7 @@ const BeneficiaireEnregistrerUneActivite = ({
     <div className="fr-flex fr-direction-column fr-flex-gap-2v">
       <Button
         iconId="fr-icon-add-line"
-        size={size}
+        {...(size === undefined ? {} : { size })}
         linkProps={{
           href: createCraPath,
         }}

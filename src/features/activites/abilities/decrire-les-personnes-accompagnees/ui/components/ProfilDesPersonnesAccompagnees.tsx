@@ -18,7 +18,7 @@ const toProgress = ({
   proportion: number
 }) => ({
   label,
-  count,
+  ...(count === undefined ? {} : { count }),
   percentage: proportion,
 })
 

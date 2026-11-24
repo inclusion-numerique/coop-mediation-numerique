@@ -137,7 +137,7 @@ export const cheminDeDuplicationDeCoordination =
   async ({
     retour,
     ...demande
-  }: CoordinationDemandee & { readonly retour?: string }) => {
+  }: CoordinationDemandee & { readonly retour?: string | undefined }) => {
     const valeurs = await coordinationAReprendre(saisie, demande)
     return valeurs === null
       ? null

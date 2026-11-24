@@ -10,8 +10,8 @@ export const ChiffresClesDesAccompagnements = ({
   fin,
 }: {
   totalCounts: TotauxPresentes
-  debut?: string
-  fin?: string
+  debut?: string | undefined
+  fin?: string | undefined
 }) => (
   <div className="fr-flex fr-direction-column fr-flex-gap-6v fr-col-xl-4 fr-col-12">
     <div className="fr-px-8v fr-py-6v fr-border-radius--16 fr-background-alt--brown-caramel fr-width-full">

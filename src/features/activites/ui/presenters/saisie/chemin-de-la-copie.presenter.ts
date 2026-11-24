@@ -14,7 +14,7 @@ export type TypeDeSaisie =
 export const cheminDeLaCopie = <T>(
   type: TypeDeSaisie,
   valeurs: T,
-  retour?: string,
+  retour?: string | undefined,
 ) =>
   `/coop/mes-activites/cra/${type}?${
     retour ? `retour=${encodeURIComponent(retour)}&` : ''
@@ -23,7 +23,7 @@ export const cheminDeLaCopie = <T>(
 export const cheminDeLaSaisie = <T>(
   type: TypeDeSaisie,
   valeurs: T,
-  retour?: string,
+  retour?: string | undefined,
 ) =>
   `/coop/mes-activites/cra/${type}?v=${encodeSerializableState(valeurs)}${
     retour ? (`&retour=${encodeURIComponent(retour)}` as const) : ''

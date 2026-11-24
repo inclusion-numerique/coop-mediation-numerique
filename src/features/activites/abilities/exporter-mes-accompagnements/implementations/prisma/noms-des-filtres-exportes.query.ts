@@ -97,7 +97,9 @@ export const nomsDesFiltresExportes = async ({
     siFiltre(criteres.lieux, () =>
       lieuxDesActivites({
         mediateurIds: [...autorises],
-        mediateurId: demandeur.mediateurId ?? undefined,
+        ...(demandeur.mediateurId == null
+          ? {}
+          : { mediateurId: demandeur.mediateurId }),
         perimetreDesActivites: dansLaPeriodeDAppartenance(
           demandeur.coordinateurId,
         ),

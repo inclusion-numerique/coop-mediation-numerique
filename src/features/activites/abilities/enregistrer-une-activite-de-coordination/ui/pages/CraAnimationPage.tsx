@@ -19,7 +19,7 @@ type CraAnimationPageProps = {
   dureeOptions: SelectOption[]
   initialTagsOptions: Tag[]
   visibilitesDeTag: readonly VisibiliteDuTagDuCra[]
-  retour?: string
+  retour?: string | undefined
 }
 
 const CraAnimationPage = ({
