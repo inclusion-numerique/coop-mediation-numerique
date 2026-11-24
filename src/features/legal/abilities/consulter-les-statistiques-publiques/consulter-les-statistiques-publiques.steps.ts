@@ -6,7 +6,7 @@ import {
   semerUneActivite,
 } from '@/features/legal/legal.cucumber'
 import { lireLesAccompagnements } from './implementations/prisma/accompagnements.query'
-import { lireLesBeneficiaires } from './implementations/prisma/beneficiaires'
+import { lireLesBeneficiaires } from './implementations/prisma/beneficiaires.query'
 
 const relever = async () => {
   const [beneficiaires, accompagnements] = await Promise.all([

@@ -1,9 +1,9 @@
 import { unstable_cache } from 'next/cache'
 import type { MesureDesUtilisateursActifs } from '../../domain/ports'
 import { lireLesAccompagnements } from './accompagnements.query'
-import { lireLesBeneficiaires } from './beneficiaires'
+import { lireLesBeneficiaires } from './beneficiaires.query'
 import { suiviDesBeneficiaires } from './suivi-des-beneficiaires.query'
-import { lireLesUtilisateursActifs } from './utilisateurs-actifs'
+import { lireLesUtilisateursActifs } from './utilisateurs-actifs.query'
 
 const getStatistiquesPubliquesPageDataUncached = async (
   mesure: MesureDesUtilisateursActifs,
