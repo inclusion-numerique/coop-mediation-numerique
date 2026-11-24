@@ -376,6 +376,10 @@ const statistiquesDesActivites = statistiquesAvec({
  *         description: Indique si l'activité concerne une aide aux démarches administratives. '0' signifie que la thématique n'est pas présente, '1' signifie qu'elle est présente.
  *
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: données statistiques
  *         content:

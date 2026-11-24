@@ -194,6 +194,10 @@ export const revalidate = 0
  *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
  *         required: false
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: La liste des lieux d'inclusion numérique.
  *         content:

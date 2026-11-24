@@ -298,6 +298,10 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  *         required: false
  *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date-heure"
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste des activités
  *         content:

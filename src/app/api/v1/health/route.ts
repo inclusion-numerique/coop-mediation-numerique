@@ -17,6 +17,8 @@ import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
  *     tags:
  *       - Utilitaires
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
  *       200:
  *         description: API status message.
  *         content:

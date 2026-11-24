@@ -264,6 +264,10 @@ import {
  *         required: false
  *         description: curseur de pagination pour obtenir les éléments précédents
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste de cras v1
  *         content:

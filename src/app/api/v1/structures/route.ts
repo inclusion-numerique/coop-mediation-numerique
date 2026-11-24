@@ -298,6 +298,10 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  *         required: false
  *         description: "retourne les structures dont la dernière écriture, quelle qu'en soit la source, est supérieure ou égale à cette date-heure"
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste des structures
  *         content:
