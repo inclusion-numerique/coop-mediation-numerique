@@ -2,9 +2,15 @@ import Button, { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { JSX } from 'react'
 import { toast } from 'react-hot-toast'
-import styles from './Toaster.module.css'
 
 export type ToastPriority = 'info' | 'warning' | 'error' | 'success'
+
+const variantes: { [key in ToastPriority]: string } = {
+  info: 'notification--information',
+  warning: 'notification--avertissement',
+  error: 'notification--erreur',
+  success: 'notification--succes',
+}
 
 const icons: { [key in ToastPriority]: string } = {
   info: 'fr-icon-info-fill',
@@ -29,7 +35,7 @@ export const createToast = ({
       <div className="fr-no-print">
         <span>{message}</span>
         <Button
-          className={classNames('fr-ml-1w', styles.action)}
+          className="fr-ml-1w notification__action"
           priority="tertiary no outline"
           size="small"
           {...action}
@@ -40,8 +46,10 @@ export const createToast = ({
     ),
     {
       duration,
-      className: classNames(styles.toast, styles[priority]),
-      icon: <span className={classNames(styles.icon, icons[priority])} />,
+      className: classNames('notification', variantes[priority]),
+      icon: (
+        <span className={classNames('notification__icone', icons[priority])} />
+      ),
     },
   )
 }

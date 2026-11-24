@@ -1,4 +1,4 @@
-.toast {
+.notification {
   border-radius: 8px !important;
   box-shadow: 0 8px 24px -6px rgb(0 0 36 / 12%) !important;
   max-width: 480px !important;
@@ -10,17 +10,17 @@
   }
 }
 
-.icon {
+.notification__icone {
   color: inherit;
 }
 
-.action {
+.notification__action {
   background: transparent !important;
   color: inherit !important;
   text-decoration: underline;
 }
 
-.info {
+.notification--information {
   background-color: var(--background-contrast-info) !important;
 
   --hover: var(--background-contrast-info-hover);
@@ -28,12 +28,12 @@
 
   color: var(--text-default-info) !important;
 
-  .icon {
+  .notification__icone {
     color: var(--text-default-info) !important;
   }
 }
 
-.warning {
+.notification--avertissement {
   background-color: var(--background-contrast-warning) !important;
 
   --hover: var(--background-contrast-warning-hover);
@@ -41,12 +41,12 @@
 
   color: var(--text-default-warning) !important;
 
-  .icon {
+  .notification__icone {
     color: var(--text-default-warning) !important;
   }
 }
 
-.error {
+.notification--erreur {
   background-color: var(--background-contrast-error) !important;
 
   --hover: var(--background-contrast-error-hover);
@@ -54,12 +54,12 @@
 
   color: var(--text-default-error) !important;
 
-  .icon {
+  .notification__icone {
     color: var(--text-default-error) !important;
   }
 }
 
-.success {
+.notification--succes {
   background-color: var(--background-contrast-success) !important;
 
   --hover: var(--background-contrast-success-hover);
@@ -67,7 +67,7 @@
 
   color: var(--text-default-success) !important;
 
-  .icon {
+  .notification__icone {
     color: var(--text-default-success) !important;
   }
 }
