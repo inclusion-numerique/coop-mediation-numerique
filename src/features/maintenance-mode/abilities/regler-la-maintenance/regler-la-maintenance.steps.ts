@@ -32,7 +32,7 @@ const roleNomme = (nom: string): RoleDuCompte => {
 }
 
 After(async () => {
-  tentative.resultat = undefined
+  delete tentative.resultat
   await prismaClient.maintenance.deleteMany({ where: { createdBy: auteurId } })
 })
 
