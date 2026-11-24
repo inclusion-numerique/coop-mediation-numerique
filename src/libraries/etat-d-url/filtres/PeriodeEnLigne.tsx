@@ -4,7 +4,7 @@ import { useState } from 'react'
 import {
   type DateRange,
   DateRangePicker,
-} from '@/libraries/ui/components/primitives/calendar/DateRangePicker'
+} from '@/libraries/ui/primitives/calendar/DateRangePicker'
 import { filtreDePeriode } from '../definition/filtre-de-periode'
 import { jourLocal, jourUtc } from '../definition/jour'
 import { useChampDeFiltre } from './conteneur-de-filtres'

@@ -2,7 +2,7 @@ import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
 import { searchAdresses, siIndisponible } from '@/libraries/ban/api-adresse'
 import { banFeatureToAdresseBanData } from '@/libraries/ban/ban-feature-to-adresse-ban-data'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import type { OptionsData } from '@/libraries/ui/primitives/Options'
 
 const loadSuggestions = async (
   input: string,

@@ -1,7 +1,7 @@
 'use client'
 
 import { type ReactNode, useState } from 'react'
-import { Popover } from '@/libraries/ui/components/primitives/Popover'
+import { Popover } from '@/libraries/ui/primitives/Popover'
 import type { FiltreQuelconque } from '../definition/filtre'
 import { ChampsDeFiltres, useRegistreDeFiltres } from './conteneur-de-filtres'
 import { FilterFooter } from './FilterFooter'

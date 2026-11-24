@@ -10,7 +10,7 @@ import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skip-links'
 import BackButtonWithModal from '@/libraries/ui/components/BackButtonWithModal'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import RequiredFieldsDisclamer from '@/libraries/ui/components/form/RequiredFieldsDisclamer'
+import RequiredFieldsDisclamer from '@/libraries/ui/form/RequiredFieldsDisclamer'
 
 type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>

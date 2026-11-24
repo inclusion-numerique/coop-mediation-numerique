@@ -5,7 +5,7 @@ import {
   type DepartementDuReferentiel,
   departements,
 } from '@/libraries/departement/departements'
-import { ComboBox } from '@/libraries/ui/components/primitives/form/ComboBox'
+import { ComboBox } from '@/libraries/ui/primitives/form/ComboBox'
 import { hrefDuReseau } from '../../../../ui/presenters/liens.presenter'
 
 const itemToString = (departement: DepartementDuReferentiel | null): string =>

@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prisma-client'
 import { Prisma } from '@/generated/prisma/client'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
 
 type Commune = {
   readonly code_insee: string

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { FiltresEnPopover } from '@/libraries/etat-d-url/filtres/FiltresEnPopover'
 import { RechercheEnLigne } from '@/libraries/etat-d-url/filtres/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
 import {
   type GenreDuLieuRecherche,
   RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY,

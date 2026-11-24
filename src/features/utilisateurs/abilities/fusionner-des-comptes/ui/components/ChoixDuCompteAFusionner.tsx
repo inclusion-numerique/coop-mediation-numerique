@@ -9,10 +9,7 @@ import type { ComboBoxData } from '@/libraries/formulaire/fields-components/Comb
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
-import {
-  Options,
-  type OptionsData,
-} from '@/libraries/ui/components/primitives/Options'
+import { Options, type OptionsData } from '@/libraries/ui/primitives/Options'
 import { RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY } from '../../action/fusionner-des-comptes.key'
 import type { CompteTrouve } from '../../domain'
 

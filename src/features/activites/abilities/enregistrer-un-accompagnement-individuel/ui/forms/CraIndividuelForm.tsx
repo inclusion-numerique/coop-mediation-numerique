@@ -44,8 +44,8 @@ import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replace-route-without-rerender'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { adresseAvec } from '@/libraries/nextjs/route/adresse-avec'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
-import { yesNoBooleanOptions } from '@/libraries/ui/components/form/utils/yes-no-boolean-options'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { yesNoBooleanOptions } from '@/libraries/ui/form/utils/yes-no-boolean-options'
 import { createToast } from '@/libraries/ui/toast/create-toast'
 
 const CraIndividuelForm = ({

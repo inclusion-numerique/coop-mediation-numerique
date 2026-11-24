@@ -1,4 +1,4 @@
-import { labelsToOptions } from '@/libraries/ui/components/form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/form/utils/options'
 import type { GENRES, STATUTS_SOCIAUX, TRANCHES_D_AGE } from '../../../domain'
 
 export type Genre = (typeof GENRES)[number]

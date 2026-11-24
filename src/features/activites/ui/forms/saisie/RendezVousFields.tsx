@@ -22,9 +22,9 @@ import {
   type DefaultValues,
   withFieldGroup,
 } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { Options } from '@/libraries/ui/primitives/Options'
 
 const valeursDuGroupe: Pick<
   DefaultValues<CraData>,

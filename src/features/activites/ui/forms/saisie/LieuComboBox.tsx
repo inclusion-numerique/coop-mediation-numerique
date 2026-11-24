@@ -1,6 +1,6 @@
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import type { OptionsData } from '@/libraries/ui/primitives/Options'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '../../../action/rechercher-des-lieux.key'
 import {
   type LieuDuCra,

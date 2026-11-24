@@ -5,8 +5,8 @@ import type { ParserMap } from 'nuqs'
 import { useRef } from 'react'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { Options } from '@/libraries/ui/primitives/Options'
 import type { FiltreQuelconque } from '../definition/filtre'
 import {
   comboBoxDeRecherche,

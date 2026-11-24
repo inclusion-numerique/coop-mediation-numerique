@@ -5,7 +5,7 @@ import {
   type DefaultValues,
   withForm,
 } from '@/libraries/formulaire/use-app-form'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
 
 const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
 

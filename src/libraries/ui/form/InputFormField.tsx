@@ -6,7 +6,7 @@ import type {
   ReactNode,
 } from 'react'
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form'
-import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
 import { UiComponentProps } from '@/libraries/ui/utils/ui-component-props'
 
 type CommonProps<T extends FieldValues> = {

@@ -3,7 +3,7 @@ import { HouseIcon } from '@/libraries/pictograms/buildings/HouseIcon'
 import { SchoolIcon } from '@/libraries/pictograms/buildings/SchoolIcon'
 import { InternetIcon } from '@/libraries/pictograms/digital/InternetIcon'
 import { Pictogram } from '@/libraries/pictograms/pictogram'
-import { labelsToOptions } from '@/libraries/ui/components/form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/form/utils/options'
 import { TYPES_DE_LIEU } from '../../../domain'
 
 export const typeLieuValues = TYPES_DE_LIEU

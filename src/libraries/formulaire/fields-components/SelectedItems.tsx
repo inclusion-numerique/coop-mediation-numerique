@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import {
   SelectedItems as SelectedItemsBase,
   SelectedItemsProps as SelectedItemsBaseProps,
-} from '@/libraries/ui/components/primitives/SelectedItems'
+} from '@/libraries/ui/primitives/SelectedItems'
 import { useFieldContext } from '../form-context'
 
 export type SelectedItemProps<T> = Omit<SelectedItemsBaseProps<T>, 'values'>

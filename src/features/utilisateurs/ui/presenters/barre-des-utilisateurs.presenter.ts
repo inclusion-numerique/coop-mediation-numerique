@@ -3,7 +3,7 @@ import {
   type ValeursDesUtilisateurs,
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
-import type { SelectOption } from '@/libraries/ui/components/form/utils/options'
+import type { SelectOption } from '@/libraries/ui/form/utils/options'
 
 export type OptionsDesFiltres = {
   readonly employeuses: readonly SelectOption[]

@@ -1,13 +1,13 @@
 import { Editor } from '@tiptap/react'
 import classNames from 'classnames'
 import { MouseEventHandler, useState } from 'react'
-import { noop } from '@/libraries/ui/components/form/rich-text/noop'
-import RichTextLinkModalForm from '@/libraries/ui/components/form/rich-text/RichTextLinkModalForm'
+import { noop } from '@/libraries/ui/form/rich-text/noop'
+import RichTextLinkModalForm from '@/libraries/ui/form/rich-text/RichTextLinkModalForm'
 import {
   EditLinkOptions,
   isSelectionOkForLink,
   linkCommandHandler,
-} from '@/libraries/ui/components/form/rich-text/rich-text-link-feature'
+} from '@/libraries/ui/form/rich-text/rich-text-link-feature'
 
 const MenuButton = ({
   title,

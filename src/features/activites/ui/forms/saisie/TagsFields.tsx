@@ -11,7 +11,7 @@ import {
   type DefaultValues,
   withFieldGroup,
 } from '@/libraries/formulaire/use-app-form'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import { Options } from '@/libraries/ui/primitives/Options'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'tags'> = {}
 

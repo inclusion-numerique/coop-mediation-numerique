@@ -27,7 +27,7 @@ import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replace-route-without-rerender'
 import { inject } from '@/libraries/nextjs/injection/client'
-import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
+import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
 import { createToast } from '@/libraries/ui/toast/create-toast'
 
 type CraPartenariatFormProps = {

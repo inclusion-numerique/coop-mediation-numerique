@@ -35,9 +35,9 @@ import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { adresseAvec } from '@/libraries/nextjs/route/adresse-avec'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@/libraries/ui/components/form/RequiredFieldsDisclaimer'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
+import RequiredFieldsDisclaimer from '@/libraries/ui/form/RequiredFieldsDisclaimer'
+import { Options } from '@/libraries/ui/primitives/Options'
 import { createToast } from '@/libraries/ui/toast/create-toast'
 
 export type SaisieEnCours = Readonly<Record<string, unknown>> & {

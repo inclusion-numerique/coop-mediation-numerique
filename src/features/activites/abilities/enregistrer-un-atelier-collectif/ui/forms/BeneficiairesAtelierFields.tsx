@@ -28,7 +28,7 @@ import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisi
 import { DefaultValues, withForm } from '@/libraries/formulaire/use-app-form'
 import { pluriel } from '@/libraries/pluriel'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import { Options } from '@/libraries/ui/primitives/Options'
 
 const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
 

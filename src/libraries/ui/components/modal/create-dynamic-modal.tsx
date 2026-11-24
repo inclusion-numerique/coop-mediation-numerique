@@ -6,7 +6,7 @@ type DynamicModalState<T> = {
   setState: (state: T) => void
 }
 
-export const createDynamicModal = <T>({
+export const createDynamicModal = <T,>({
   id,
   isOpenedByDefault,
   initialState,
