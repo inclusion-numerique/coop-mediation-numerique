@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ClientApiId, NomDuClientApi } from '@/features/clients-api/domain'
-import { ligneDeClientApi } from '../presenters/clients-api.presenter'
+import { ligneDeClientApi } from './clients-api.presenter'
 
 const client = {
   id: ClientApiId('a1b2c3d4-0000-4000-8000-000000000001'),
