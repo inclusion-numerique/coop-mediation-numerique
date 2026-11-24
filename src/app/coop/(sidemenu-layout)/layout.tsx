@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModaleDeSaisie } from '@/features/activites/ui/components/saisie/modale-de-saisie'
+import { ModaleDeSaisie } from '@/features/activites/ui/components/saisie/ModaleDeSaisie'
 import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'

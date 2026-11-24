@@ -10,7 +10,7 @@ import {
   pageDeSaisieDeMediation,
 } from '../../../../ui/presenters/saisie/page-de-saisie-de-mediation.presenter'
 import type { CraCollectifData } from '../forms/cra-collectif.validation'
-import { craCollectifDefaultValues } from '../forms/valeurs-par-defaut-du-cra-collectif'
+import { craCollectifDefaultValues } from '../forms/valeurs-par-defaut-du-cra-collectif.form-data'
 import { copieDeLAtelier } from './copie-de-l-atelier.presenter'
 import { formulaireDeLAtelierCollectif } from './formulaire-de-l-atelier-collectif.presenter'
 

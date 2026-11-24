@@ -3,7 +3,7 @@ import {
   totalDesGenres,
   totalDesStatutsSociaux,
   totalDesTranchesDAge,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes.form-data'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 
 const participantsAnonymesMax = 10_000

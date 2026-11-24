@@ -4,7 +4,7 @@ import type { CraIndividuelData } from '@/features/activites/abilities/enregistr
 import {
   CommuneComboBox,
   CommuneOptions,
-} from '@/features/activites/ui/forms/saisie/commune-combo-box'
+} from '@/features/activites/ui/forms/saisie/commune-combo-box.form-options'
 import type {
   Genre,
   StatutSocial,

@@ -10,7 +10,7 @@ import {
   pageDeSaisieDeMediation,
 } from '../../../../ui/presenters/saisie/page-de-saisie-de-mediation.presenter'
 import type { CraIndividuelData } from '../forms/cra-individuel.validation'
-import { craIndividuelDefaultValues } from '../forms/valeurs-par-defaut-du-cra-individuel'
+import { craIndividuelDefaultValues } from '../forms/valeurs-par-defaut-du-cra-individuel.form-data'
 import { copieDeLAccompagnement } from './copie-de-l-accompagnement.presenter'
 import { formulaireDeLAccompagnementIndividuel } from './formulaire-de-l-accompagnement-individuel.presenter'
 

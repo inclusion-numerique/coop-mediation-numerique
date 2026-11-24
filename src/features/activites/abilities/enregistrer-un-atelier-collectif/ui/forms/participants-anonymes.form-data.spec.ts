@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   nombreDeGenresNonCommuniques,
   participantsAnonymesDefault,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes.form-data'
 import {
   GENRES,
   STATUTS_SOCIAUX,

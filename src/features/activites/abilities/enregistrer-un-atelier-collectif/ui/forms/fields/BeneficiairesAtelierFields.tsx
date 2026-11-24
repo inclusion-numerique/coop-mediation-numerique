@@ -9,12 +9,12 @@ import {
   nombreDeStatutsSociauxNonCommuniques,
   nombreDeTranchesDAgeNonCommuniquees,
   participantsAnonymesDefault,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
+} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes.form-data'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
   BeneficiaireSelectedItems,
-} from '@/features/activites/ui/forms/saisie/beneficiaire-combo-box'
+} from '@/features/activites/ui/forms/saisie/beneficiaire-combo-box.form-options'
 import {
   genreLabels,
   genresAffiches as genreValues,

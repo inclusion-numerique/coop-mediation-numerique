@@ -8,7 +8,7 @@ import {
 import {
   CommuneComboBox,
   CommuneOptions,
-} from '@/features/activites/ui/forms/saisie/commune-combo-box'
+} from '@/features/activites/ui/forms/saisie/commune-combo-box.form-options'
 import {
   LieuComboBox,
   LieuOptions,
