@@ -1,5 +1,6 @@
 import { NuqsTestingAdapter, type UrlUpdateEvent } from 'nuqs/adapters/testing'
 import type { ReactNode } from 'react'
+import { z } from 'zod'
 import { ChoixEnLigne } from './ChoixEnLigne'
 import { ChoixEnPopover } from './ChoixEnPopover'
 import {
@@ -20,7 +21,7 @@ const filtreDeLaSource = filtreDeChoixUnique({
   choix: { v1: 'Import', v2: 'Coop' },
 })
 
-const filtreDesLieux = filtreDeRecherche({ cle: 'lieux' })
+const filtreDesLieux = filtreDeRecherche({ cle: 'lieux', schema: z.string() })
 
 const monter = (adresse: string, champ: ReactNode) => {
   const ecrites: UrlUpdateEvent[] = []

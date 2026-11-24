@@ -1,14 +1,31 @@
-import { parseAsArrayOf, parseAsStringLiteral } from 'nuqs/server'
+import {
+  createParser,
+  parseAsArrayOf,
+  type SingleParserBuilder,
+} from 'nuqs/server'
 import type { Filtre } from './filtre'
 
 const valeursDe = <V extends string>(choix: Readonly<Record<V, string>>) =>
   Object.keys(choix) as V[]
 
-const parametresDeChoix = <V extends string>(valeurs: readonly V[]) =>
-  parseAsArrayOf(parseAsStringLiteral(valeurs)).withDefault([])
+const parseurDeValeur = <V extends string>(
+  choix: Readonly<Record<V, string>>,
+  dansLURL: Readonly<Record<V, string>> | undefined,
+): SingleParserBuilder<V> =>
+  createParser({
+    parse: (lue) =>
+      valeursDe(choix).find(
+        (valeur) => (dansLURL?.[valeur] ?? valeur) === lue,
+      ) ?? null,
+    serialize: (valeur) => dansLURL?.[valeur] ?? valeur,
+  })
 
-const parametreDeChoixUnique = <V extends string>(valeurs: readonly V[]) =>
-  parseAsStringLiteral(valeurs)
+const parametresDeChoix = <V extends string>(parseur: SingleParserBuilder<V>) =>
+  parseAsArrayOf(parseur).withDefault([])
+
+const parametreDeChoixUnique = <V extends string>(
+  parseur: SingleParserBuilder<V>,
+) => parseur
 
 type ParametresDeChoix<C extends string, V extends string> = Record<
   C,
@@ -23,6 +40,7 @@ type ParametresDeChoixUnique<C extends string, V extends string> = Record<
 type AvecChoix<C extends string, V extends string> = {
   readonly cle: C
   readonly choix: Readonly<Record<V, string>>
+  readonly dansLURL?: Readonly<Record<V, string>>
 }
 
 export type FiltreDeChoix<C extends string, V extends string> = Filtre<
@@ -40,12 +58,13 @@ export type FiltreDeChoixUnique<C extends string, V extends string> = Filtre<
 export const filtreDeChoix = <const C extends string, const V extends string>({
   cle,
   choix,
+  dansLURL,
 }: AvecChoix<C, V>): FiltreDeChoix<C, V> => ({
   cle,
   choix,
   unique: false,
   parametres: {
-    [cle]: parametresDeChoix(valeursDe(choix)),
+    [cle]: parametresDeChoix(parseurDeValeur(choix, dansLURL)),
   } as ParametresDeChoix<C, V>,
   etiquettes: (lues) =>
     lues[cle].map((valeur) => ({
@@ -62,12 +81,13 @@ export const filtreDeChoixUnique = <
 >({
   cle,
   choix,
+  dansLURL,
 }: AvecChoix<C, V>): FiltreDeChoixUnique<C, V> => ({
   cle,
   choix,
   unique: true,
   parametres: {
-    [cle]: parametreDeChoixUnique(valeursDe(choix)),
+    [cle]: parametreDeChoixUnique(parseurDeValeur(choix, dansLURL)),
   } as ParametresDeChoixUnique<C, V>,
   etiquettes: (lues) => {
     const valeur = lues[cle]

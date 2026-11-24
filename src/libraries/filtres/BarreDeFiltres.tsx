@@ -7,19 +7,24 @@ import type { EtiquetteAffichee } from './definition/composition'
 export const BarreDeFiltres = ({
   etiquettes,
   sansFiltres,
+  actions,
   children,
 }: {
   etiquettes: readonly EtiquetteAffichee[]
   sansFiltres: string
+  actions?: ReactNode
   children: ReactNode
 }) => (
   <>
-    <div className="fr-flex fr-align-items-start fr-flex-wrap fr-flex-gap-2v">
-      {children}
+    <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-6v">
+      <div className="fr-flex fr-align-items-start fr-flex-wrap fr-flex-gap-2v">
+        {children}
+      </div>
+      {actions}
     </div>
     {etiquettes.length > 0 && (
       <>
-        <div className="fr-flex fr-justify-content-space-between fr-mt-4v fr-mb-2v">
+        <div className="fr-flex fr-justify-content-space-between fr-mb-2v">
           <ul className="fr-tags-group">
             {etiquettes.map(({ libelle, href }) => (
               <li className="fr-line-height-1" key={href}>

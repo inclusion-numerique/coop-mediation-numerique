@@ -1,30 +1,51 @@
-import { parseAsArrayOf, parseAsString } from 'nuqs/server'
+import {
+  createParser,
+  parseAsArrayOf,
+  type SingleParserBuilder,
+} from 'nuqs/server'
+import type { z } from 'zod'
 import type { Filtre } from './filtre'
 
-const parametresDeRecherche = parseAsArrayOf(parseAsString).withDefault([])
+const parseurValide = <S extends z.ZodType>(
+  schema: S,
+): SingleParserBuilder<z.output<S>> =>
+  createParser({
+    parse: (lue) => {
+      const valide = schema.safeParse(lue)
+      return valide.success ? valide.data : null
+    },
+    serialize: (valeur) => String(valeur),
+  })
 
-type ParametresDeRecherche<C extends string> = Record<
+const parametresDeRecherche = <V>(parseur: SingleParserBuilder<V>) =>
+  parseAsArrayOf(parseur).withDefault([])
+
+type ParametresDeRecherche<C extends string, V> = Record<
   C,
-  typeof parametresDeRecherche
+  ReturnType<typeof parametresDeRecherche<V>>
 >
 
-export type FiltreDeRecherche<C extends string> = Filtre<
-  ParametresDeRecherche<C>,
-  Record<C, string[]>
+export type FiltreDeRecherche<C extends string, V = string> = Filtre<
+  ParametresDeRecherche<C, V>,
+  Record<C, V[]>
 > & { readonly cle: C }
 
-export const filtreDeRecherche = <const C extends string>({
+export const filtreDeRecherche = <const C extends string, S extends z.ZodType>({
   cle,
+  schema,
 }: {
   cle: C
-}): FiltreDeRecherche<C> => ({
+  schema: S
+}): FiltreDeRecherche<C, z.output<S>> => ({
   cle,
-  parametres: { [cle]: parametresDeRecherche } as ParametresDeRecherche<C>,
+  parametres: {
+    [cle]: parametresDeRecherche(parseurValide(schema)),
+  } as ParametresDeRecherche<C, z.output<S>>,
   etiquettes: (lues, libelles) =>
     lues[cle].map((valeur) => ({
-      libelle: libelles[cle]?.get(valeur) ?? valeur,
+      libelle: libelles[cle]?.get(String(valeur)) ?? String(valeur),
       sans: { [cle]: lues[cle].filter((autre) => autre !== valeur) } as Partial<
-        Record<C, string[]>
+        Record<C, z.output<S>[]>
       >,
     })),
 })

@@ -32,6 +32,14 @@ type ParametresComposes<Fs extends readonly unknown[]> = EnUn<
 > &
   ParserMap
 
+type SansIndex<T> = {
+  [K in keyof T as string extends K ? never : K]: T[K]
+}
+
+export type ValeursComposees<Fs extends readonly unknown[]> = SansIndex<
+  Valeurs<ParametresComposes<Fs>>
+>
+
 type ParametresBruts = Readonly<
   Record<string, string | readonly string[] | undefined>
 >
@@ -71,6 +79,7 @@ export const composerLesFiltres = <
     ...liste.map((filtre) => filtre.parametres),
   ) as ParametresComposes<Fs>
   const serialiser = createSerializer(parametres)
+  const lire = createLoader(parametres)
   const clesDesFiltres = Object.keys(parametres)
 
   const base = (
@@ -86,23 +95,27 @@ export const composerLesFiltres = <
 
   const adresse = (
     courante: AdresseCourante,
-    valeurs: Partial<Valeurs<ParametresComposes<Fs>>>,
-  ): string => serialiser(base(courante, false), valeurs)
+    valeurs: Partial<ValeursComposees<Fs>>,
+  ): string => serialiser(base(courante, false), valeurs as never)
 
   return {
     parametres,
-    charger: createLoader(parametres),
+    charger: (
+      lus: ParametresBruts | URLSearchParams | string,
+    ): ValeursComposees<Fs> => lire(lus as Record<string, string>),
     adresse,
     sansFiltres: (courante: AdresseCourante): string => base(courante, true),
+    requete: (valeurs: Partial<ValeursComposees<Fs>>): string =>
+      serialiser(valeurs as never).replace(/^\?/, ''),
     etiquettes: (
       courante: AdresseCourante,
-      valeurs: Valeurs<ParametresComposes<Fs>>,
+      valeurs: ValeursComposees<Fs>,
       libelles: Libelles = {},
     ): readonly EtiquetteAffichee[] =>
       liste.flatMap((filtre) =>
         etiquettesDe(filtre, valeurs, libelles).map(({ libelle, sans }) => ({
           libelle,
-          href: adresse(courante, { ...valeurs, ...sans }),
+          href: adresse(courante, { ...valeurs, ...sans } as never),
         })),
       ),
   }

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { z } from 'zod'
 import { composerLesFiltres } from './composition'
 import { filtreDeChoix, filtreDeChoixUnique } from './filtre-de-choix'
 import { filtreDePeriode } from './filtre-de-periode'
@@ -11,7 +12,7 @@ const filtres = composerLesFiltres(
     choix: { individuel: 'Individuel', collectif: 'Collectif' },
   }),
   filtreDeChoixUnique({ cle: 'source', choix: { v1: 'Import', v2: 'Coop' } }),
-  filtreDeRecherche({ cle: 'lieux' }),
+  filtreDeRecherche({ cle: 'lieux', schema: z.string().regex(/^[a-z]+$/) }),
 )
 
 const page = (parametres: Record<string, string>) => ({
@@ -38,6 +39,38 @@ describe('composition de filtres', () => {
     expect(filtres.charger('?types=individuel,inconnu').types).toStrictEqual([
       'individuel',
     ])
+  })
+
+  it('écarte un identifiant que le schéma refuse', () => {
+    expect(filtres.charger('?lieux=a,B2').lieux).toStrictEqual(['a'])
+  })
+
+  it('traduit les valeurs de l’URL en valeurs métier', () => {
+    expect(
+      composerLesFiltres(
+        filtreDeChoix({
+          cle: 'types',
+          choix: { Individuel: 'Individuel' },
+          dansLURL: { Individuel: 'individuel' },
+        }),
+      ).charger('?types=individuel,Individuel').types,
+    ).toStrictEqual(['Individuel'])
+  })
+
+  it('écrit les valeurs métier sous leur forme d’URL', () => {
+    const filtresTraduits = composerLesFiltres(
+      filtreDeChoix({
+        cle: 'types',
+        choix: { Individuel: 'Individuel' },
+        dansLURL: { Individuel: 'individuel' },
+      }),
+    )
+    expect(
+      filtresTraduits.adresse(
+        { chemin: '/a', parametres: {} },
+        { types: ['Individuel'] },
+      ),
+    ).toBe('/a?types=individuel')
   })
 
   it('ignore une valeur hors de la liste d’un choix unique', () => {
@@ -104,6 +137,11 @@ describe('composition de filtres', () => {
         page({ types: 'individuel', lignes: '20', page: '2' }),
       ),
     ).toBe('/activites?lignes=20')
+  })
+
+  it('rend la requête des seuls filtres', () => {
+    const parametres = { types: 'collectif', page: '2', lignes: '20' }
+    expect(filtres.requete(filtres.charger(parametres))).toBe('types=collectif')
   })
 
   it('construit l’adresse d’une autre page avec les mêmes filtres', () => {

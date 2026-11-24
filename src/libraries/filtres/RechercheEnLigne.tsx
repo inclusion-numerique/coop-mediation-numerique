@@ -14,7 +14,7 @@ import {
   type Rechercher,
 } from './combo-box-de-recherche'
 import { useChampDeFiltre } from './conteneur-de-filtres'
-import type { FiltreDeRecherche } from './definition/filtre-de-recherche'
+import type { FiltreQuelconque } from './definition/filtre'
 import { FilterSelection } from './FilterSelection'
 import { useFiltre } from './use-filtre'
 
@@ -28,7 +28,7 @@ export const RechercheEnLigne = ({
   suggestions = [],
   longueurMinimale = 3,
 }: {
-  filtre: FiltreDeRecherche<string>
+  filtre: FiltreQuelconque & { readonly cle: string }
   libelle: string
   placeholder: string
   selection: { singular: string; plural: string }
