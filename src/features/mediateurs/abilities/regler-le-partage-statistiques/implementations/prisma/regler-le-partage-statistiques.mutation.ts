@@ -8,7 +8,7 @@ import type {
   PerimetrePartage,
   Rattachements,
 } from '../../../../domain'
-import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire'
+import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire.query'
 import {
   type AucuneStatistiqueAPartager,
   type PerimetreNonRattache,

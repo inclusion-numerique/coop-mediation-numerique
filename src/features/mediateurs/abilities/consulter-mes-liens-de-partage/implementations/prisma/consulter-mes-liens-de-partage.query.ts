@@ -7,7 +7,7 @@ import {
   proprietairesPossibles,
   type Rattachements,
 } from '../../../../domain'
-import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire'
+import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire.query'
 
 const lienDuProprietaire = async (
   proprietaire: ProprietairePartage,
