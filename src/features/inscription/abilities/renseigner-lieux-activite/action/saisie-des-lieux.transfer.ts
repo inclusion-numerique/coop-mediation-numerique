@@ -12,7 +12,13 @@ const identite = ({
   nom,
   siret,
   structureCartographieNationaleId,
-}: LieuSoumis) => ({ nom, siret, structureCartographieNationaleId })
+}: LieuSoumis) => ({
+  nom,
+  ...(siret === undefined ? {} : { siret }),
+  ...(structureCartographieNationaleId === undefined
+    ? {}
+    : { structureCartographieNationaleId }),
+})
 
 /** L'adresse soumise, si la Base Adresse Nationale l'a reconnue. */
 const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null =>
@@ -55,7 +61,9 @@ export const depuisLaSaisie = (
             adresse: lieu.adresse,
             commune: lieu.commune,
             codePostal: lieu.codePostal,
-            codeInsee: lieu.codeInsee,
+            ...(lieu.codeInsee === undefined
+              ? {}
+              : { codeInsee: lieu.codeInsee }),
           },
         ])
 

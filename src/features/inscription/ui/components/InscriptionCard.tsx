@@ -14,10 +14,10 @@ const InscriptionCard = ({
 }: PropsWithChildren<{
   title: ReactNode
   titleClassName?: string
-  backHref?: string
+  backHref?: string | undefined
   nextStepTitle?: string
-  stepNumber?: number
-  totalSteps?: number
+  stepNumber?: number | undefined
+  totalSteps?: number | undefined
   subtitle?: ReactNode
 }>) => (
   <>

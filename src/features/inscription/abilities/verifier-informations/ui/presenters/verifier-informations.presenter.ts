@@ -81,9 +81,9 @@ export const donneesDeVerifierInformations = (
       : 'Non renseigné',
     name: user.name,
     email: user.email,
-    structureEmployeuse: employeuse
-      ? { ...employeuse, nom: employeuse.nom ?? '' }
-      : undefined,
+    ...(employeuse
+      ? { structureEmployeuse: { ...employeuse, nom: employeuse.nom ?? '' } }
+      : {}),
     backHref: cheminDeLEtape('choisir-role'),
     nextStepPath,
   }

@@ -112,7 +112,7 @@ Then('mon ancien lieu d’activité est retiré', async () => {
 })
 
 After(() => {
-  etat.ancienneActivite = undefined
-  etat.lieuRenseigne = undefined
+  delete etat.ancienneActivite
+  delete etat.lieuRenseigne
   etat.confies = []
 })

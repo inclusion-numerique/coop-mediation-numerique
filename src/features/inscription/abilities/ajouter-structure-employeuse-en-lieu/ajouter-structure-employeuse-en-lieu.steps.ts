@@ -157,7 +157,7 @@ Then('le lieu confié porte l’adresse de la Base Adresse Nationale', () => {
 
 After(() => {
   etat.geocodage = ADRESSE_RECONNUE_PAR_LA_BAN
-  etat.employeuse = undefined
+  delete etat.employeuse
   etat.refus = null
   etat.rattaches = []
   etat.detaches = []
