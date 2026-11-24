@@ -5,7 +5,7 @@ import { signaler } from '@/configuration/telemetry/error-reporter/server/signal
 const reponseDErreur = (error: unknown): Response => {
   if (error instanceof ZodError) {
     return NextResponse.json(
-      { error: error.issues[0].message },
+      { error: error.issues[0]?.message ?? error.message },
       { status: 400 },
     )
   }

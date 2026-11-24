@@ -21,8 +21,8 @@ export const nomUnique = (nom: string): NomDuClientApi =>
   NomDuClientApi(`${nom} ${execution}`)
 
 export const jour = (date: string): Date => {
-  const [j, m, a] = date.split('/').map(Number)
-  return new Date(Date.UTC(a, m - 1, j))
+  const [j, m, a] = date.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
 }
 
 export const portees = (liste: string): PorteeApi[] =>
