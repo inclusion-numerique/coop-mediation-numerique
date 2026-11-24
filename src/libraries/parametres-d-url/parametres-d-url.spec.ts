@@ -3,8 +3,6 @@ import { z } from 'zod'
 import {
   adresseAvec,
   entierPositifLu,
-  listeEnParametre,
-  listeSansLaValeur,
   premiereValeur,
   requeteAvec,
   requeteConservant,
@@ -74,26 +72,6 @@ describe('paramètres d’URL', () => {
 })
 
 describe("écriture de l'état d'URL", () => {
-  it('écrit une liste en valeurs séparées par des virgules', () => {
-    expect(listeEnParametre(['a', 'b'])).toBe('a,b')
-  })
-
-  it('retire le paramètre pour une liste vide', () => {
-    expect(listeEnParametre([])).toBeNull()
-  })
-
-  it("retire une valeur d'une liste", () => {
-    expect(listeSansLaValeur('a,b,c', 'b')).toBe('a,c')
-  })
-
-  it('retire le paramètre quand la liste se vide', () => {
-    expect(listeSansLaValeur('a', 'a')).toBeNull()
-  })
-
-  it("retire le paramètre d'une liste absente", () => {
-    expect(listeSansLaValeur(null, 'a')).toBeNull()
-  })
-
   it('modifie la requête courante', () => {
     expect(requeteAvec('du=1&page=2', { page: null, au: '3' })).toBe(
       '?du=1&au=3',

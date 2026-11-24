@@ -1,8 +1,6 @@
 export {
   adresseAvec,
   entierPositifLu,
-  listeEnParametre,
-  listeSansLaValeur,
   type Periode,
   premiereValeur,
   requeteAvec,

@@ -3,16 +3,12 @@ import {
   departementDuCode,
 } from '@/libraries/departement'
 import { failure, success } from '@/libraries/result'
-import {
-  type CommunesDesLieux,
-  criteresActeurs,
-  type ParametresDesActeurs,
-} from '../../domain'
+import { type CommunesDesLieux, type CriteresActeurs } from '../../domain'
 import { acteursDuDepartement } from '.'
 
 export const listerLesActeursDuDepartement = async (
   code: string,
-  parametres: ParametresDesActeurs,
+  criteres: CriteresActeurs,
   { communesDesLieux }: { communesDesLieux: CommunesDesLieux },
 ) => {
   const departement = departementDuCode(code)
@@ -20,7 +16,6 @@ export const listerLesActeursDuDepartement = async (
   if (!departement.success)
     return failure<DepartementInconnu>(departement.error)
 
-  const criteres = criteresActeurs(parametres)
   const [acteurs, { communesOptions: communes }] = await Promise.all([
     acteursDuDepartement(departement.data.code, criteres),
     communesDesLieux({ departementCode: departement.data.code }),

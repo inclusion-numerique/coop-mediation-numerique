@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesLieux, estFiltre } from './criteres-des-lieux'
+import { estFiltre } from '../../domain'
+import { criteresDesLieuxDuReseau } from './lieux-du-reseau.filtre'
 
 describe('critères de l’annuaire des lieux', () => {
   it('garde la recherche, les communes valides, le tri et la page', () => {
     expect(
-      criteresDesLieux({
+      criteresDesLieuxDuReseau({
         recherche: ' médiathèque ',
         communes: '15014,abc,2A004',
         tri: 'nomza',
@@ -21,7 +22,7 @@ describe('critères de l’annuaire des lieux', () => {
   })
 
   it('se replie sur la première page de 20 lieux sans critère', () => {
-    expect(criteresDesLieux({})).toEqual({
+    expect(criteresDesLieuxDuReseau({})).toEqual({
       recherche: null,
       communes: [],
       tri: 'nomaz',
@@ -31,13 +32,17 @@ describe('critères de l’annuaire des lieux', () => {
   })
 
   it('n’est filtré que par une recherche ou des communes', () => {
-    expect(estFiltre(criteresDesLieux({ tri: 'nomza', page: '3' }))).toBe(false)
-    expect(estFiltre(criteresDesLieux({ communes: '15014' }))).toBe(true)
+    expect(
+      estFiltre(criteresDesLieuxDuReseau({ tri: 'nomza', page: '3' })),
+    ).toBe(false)
+    expect(estFiltre(criteresDesLieuxDuReseau({ communes: '15014' }))).toBe(
+      true,
+    )
   })
 
   it('ne lit que la première valeur d’un paramètre répété', () => {
     expect(
-      criteresDesLieux({
+      criteresDesLieuxDuReseau({
         recherche: ['médiathèque', 'mairie'],
         tri: ['inconnu'],
       }),

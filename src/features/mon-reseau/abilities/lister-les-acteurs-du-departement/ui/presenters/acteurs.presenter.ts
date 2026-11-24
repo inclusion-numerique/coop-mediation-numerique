@@ -1,7 +1,5 @@
 import { pluriel } from '@/libraries/pluriel'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../../domain'
-import type { EtiquetteDeFiltre } from '../../../../ui/search-params/filtres-du-reseau.search-params'
 import type { CriteresActeurs, filtresDeRole } from '../../domain'
 
 type Role = (typeof filtresDeRole)[number]
@@ -41,31 +39,6 @@ export const libelleDesResultats = (total: number, filtre: boolean): string =>
     : filtre
       ? 'Aucun acteur ne correspond à votre recherche'
       : 'Aucun acteur référencé'
-
-export const etiquettesDesFiltres = (
-  { role, communes }: CriteresActeurs,
-  options: readonly SelectOption[],
-): readonly EtiquetteDeFiltre[] => {
-  const cleDuRole: Role | null = role
-  return [
-    ...(cleDuRole === null
-      ? []
-      : [
-          {
-            parametre: 'role',
-            valeur: cleDuRole,
-            libelle: LIBELLE_DU_ROLE[cleDuRole],
-          },
-        ]),
-    ...options
-      .filter(({ value }) => communes.some((commune) => commune === value))
-      .map(({ label, value }) => ({
-        parametre: 'communes',
-        valeur: value,
-        libelle: `Commune : ${label}`,
-      })),
-  ]
-}
 
 export const parametresDeLURL = ({
   recherche,

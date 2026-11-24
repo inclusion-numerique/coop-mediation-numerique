@@ -5,14 +5,13 @@ import {
 import { failure, success } from '@/libraries/result'
 import {
   type CommunesDesLieux,
-  criteresDesLieux,
+  type CriteresDesLieux,
   type LieuxDuDepartement,
-  type ParametresDesLieux,
 } from '.'
 
 export const consulterLesLieuxDuDepartement = async <Lieux>(
   code: string,
-  parametres: ParametresDesLieux,
+  criteres: CriteresDesLieux,
   {
     lieuxDuDepartement,
     communesDesLieux,
@@ -26,7 +25,6 @@ export const consulterLesLieuxDuDepartement = async <Lieux>(
   if (!departement.success)
     return failure<DepartementInconnu>(departement.error)
 
-  const criteres = criteresDesLieux(parametres)
   const { recherche, communes, tri, page, lignes } = criteres
   const [lieux, { communesOptions }] = await Promise.all([
     lieuxDuDepartement({

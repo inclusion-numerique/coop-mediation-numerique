@@ -1,19 +1,5 @@
 import { pluriel } from '@/libraries/pluriel'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { EtiquetteDeFiltre } from '../../../../ui/search-params/filtres-du-reseau.search-params'
 import type { CriteresDesLieux } from '../../domain/index'
-
-export const etiquettesDesCommunes = (
-  { communes }: CriteresDesLieux,
-  options: readonly SelectOption[],
-): readonly EtiquetteDeFiltre[] =>
-  options
-    .filter(({ value }) => communes.some((commune) => commune === value))
-    .map(({ label, value }) => ({
-      parametre: 'communes',
-      valeur: value,
-      libelle: `Commune : ${label}`,
-    }))
 
 export const libelleDesResultats = (total: number, filtre: boolean): string =>
   total > 0

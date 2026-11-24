@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { criteresActeurs, estFiltre } from './criteres-acteurs'
+import { estFiltre } from '../../domain'
+import { criteresDesActeursDuReseau } from './acteurs-du-reseau.filtre'
 
 describe('critères de l’annuaire des acteurs', () => {
   it('garde les critères valides', () => {
     expect(
-      criteresActeurs({
+      criteresDesActeursDuReseau({
         recherche: ' martin ',
         role: 'coordinateur',
         communes: '15014,abc',
@@ -23,7 +24,9 @@ describe('critères de l’annuaire des acteurs', () => {
   })
 
   it('écarte un rôle inconnu et se replie sur le tri alphabétique', () => {
-    expect(criteresActeurs({ role: 'administrateur', tri: 'age' })).toEqual({
+    expect(
+      criteresDesActeursDuReseau({ role: 'administrateur', tri: 'age' }),
+    ).toEqual({
       recherche: null,
       role: null,
       communes: [],
@@ -34,14 +37,17 @@ describe('critères de l’annuaire des acteurs', () => {
   })
 
   it('est filtré par une recherche, un rôle ou des communes', () => {
-    expect(estFiltre(criteresActeurs({ page: '2', tri: 'nomza' }))).toBe(false)
-    expect(estFiltre(criteresActeurs({ role: 'coordinateur' }))).toBe(true)
+    expect(
+      estFiltre(criteresDesActeursDuReseau({ page: '2', tri: 'nomza' })),
+    ).toBe(false)
+    expect(
+      estFiltre(criteresDesActeursDuReseau({ role: 'coordinateur' })),
+    ).toBe(true)
   })
 
   it('lit des communes passées en paramètres répétés', () => {
-    expect(criteresActeurs({ communes: ['15014', '15187'] }).communes).toEqual([
-      '15014',
-      '15187',
-    ])
+    expect(
+      criteresDesActeursDuReseau({ communes: ['15014', '15187'] }).communes,
+    ).toEqual(['15014', '15187'])
   })
 })

@@ -1,11 +1,20 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { rechercherDesCommunesDuReseauAction } from '@/app/_actions/mon-reseau/rechercher-des-communes-du-reseau.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
-import { type ParametresDesActeurs } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/domain/index'
 import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
+import {
+  criteresDesActeursDuReseau,
+  filtresDesActeursDuReseau,
+} from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui/filtres/acteurs-du-reseau.filtre'
 import { default as ActeursDuDepartementPage } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/ui/pages/ActeursDuDepartementPage'
+import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/action/rechercher-des-communes-du-reseau.key'
+import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
+import { barreDuReseau } from '@/features/mon-reseau/ui/presenters/barre-du-reseau.presenter'
+import { hrefDesActeurs } from '@/features/mon-reseau/ui/presenters/liens.presenter'
+import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
   title: metadataTitle('Annuaire des acteurs'),
@@ -16,21 +25,32 @@ const Page = async ({
   searchParams,
 }: {
   params: Promise<{ departement: string }>
-  searchParams: Promise<ParametresDesActeurs>
+  searchParams: Promise<ParametresDuReseau>
 }) => {
   await authenticateMediateurOrCoordinateur()
 
+  const { departement } = await params
+  const parametres = await searchParams
   const consultation = await listerLesActeursDuDepartement(
-    (await params).departement,
-    await searchParams,
+    departement,
+    criteresDesActeursDuReseau(parametres),
     { communesDesLieux },
   )
 
   return consultation.success ? (
-    <ActeursDuDepartementPage
-      {...consultation.data}
-      communes={[...consultation.data.communes]}
-    />
+    <ClientBinder
+      bind={RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY}
+      to={rechercherDesCommunesDuReseauAction.bind(null, departement)}
+    >
+      <ActeursDuDepartementPage
+        {...consultation.data}
+        barre={barreDuReseau({
+          filtres: filtresDesActeursDuReseau,
+          adresse: { chemin: hrefDesActeurs(departement), parametres },
+          communes: consultation.data.communes,
+        })}
+      />
+    </ClientBinder>
   ) : (
     notFound()
   )

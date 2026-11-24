@@ -6,19 +6,18 @@ import {
 } from '@/libraries/data-table'
 import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
+import { BarreDeFiltres } from '@/libraries/filtres/BarreDeFiltres'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
-import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
+import { FiltreDesCommunesDuReseau } from '../../../../ui/components/FiltreDesCommunesDuReseau'
+import type { BarreDuReseau } from '../../../../ui/presenters/barre-du-reseau.presenter'
 import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
 import { hrefDesLieux } from '../../../../ui/presenters/liens.presenter'
 import { type CriteresDesLieux, estFiltre } from '../../domain'
-import Filtres from '../components/Filtres'
 import {
-  etiquettesDesCommunes,
   libelleDesResultats,
   parametresDeLURL,
 } from '../presenters/libelles-des-filtres.presenter'
@@ -35,13 +34,13 @@ const LieuxDuDepartementPage = ({
   departement,
   criteres,
   lieux,
-  communes,
+  barre,
   listeDesLieux,
 }: {
   departement: Departement
   criteres: CriteresDesLieux
   lieux: LieuxTrouves
-  communes: SelectOption[]
+  barre: BarreDuReseau
   listeDesLieux: ReactNode
 }) => {
   const baseHref = hrefDesLieux(departement.code)
@@ -83,16 +82,14 @@ const LieuxDuDepartementPage = ({
               placeholder="Nom du lieu, adresse ou SIRET..."
               className="fr-flex-grow-1"
             />
-            <Filtres
-              key={`${departement.code}-${criteres.communes.join()}`}
-              communes={criteres.communes}
-              options={communes}
-            />
           </div>
 
-          <EtiquettesDeFiltres
-            etiquettes={etiquettesDesCommunes(criteres, communes)}
-          />
+          <BarreDeFiltres
+            etiquettes={barre.etiquettes}
+            sansFiltres={barre.sansFiltres}
+          >
+            <FiltreDesCommunesDuReseau {...barre.communes} />
+          </BarreDeFiltres>
 
           <hr className="fr-separator-1px" />
 

@@ -1,27 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesLieux } from '../../domain'
+import { criteresDesLieuxDuReseau } from '../filtres/lieux-du-reseau.filtre'
 import {
-  etiquettesDesCommunes,
   libelleDesResultats,
   parametresDeLURL,
 } from '../presenters/libelles-des-filtres.presenter'
 
 describe('étiquettes des filtres de l’annuaire des lieux', () => {
-  it('nomme chaque commune retenue', () => {
-    expect(
-      etiquettesDesCommunes(criteresDesLieux({ communes: '15014' }), [
-        { value: '15014', label: 'Aurillac · 15000' },
-        { value: '15187', label: 'Saint-Flour · 15100' },
-      ]),
-    ).toEqual([
-      {
-        parametre: 'communes',
-        valeur: '15014',
-        libelle: 'Commune : Aurillac · 15000',
-      },
-    ])
-  })
-
   it.each([
     [0, false, 'Aucun lieu référencé'],
     [0, true, 'Aucun lieu ne correspond à votre recherche'],
@@ -33,7 +17,9 @@ describe('étiquettes des filtres de l’annuaire des lieux', () => {
 
   it('remet les critères lus dans l’URL', () => {
     expect(
-      parametresDeLURL(criteresDesLieux({ communes: ['15014', '15187'] })),
+      parametresDeLURL(
+        criteresDesLieuxDuReseau({ communes: ['15014', '15187'] }),
+      ),
     ).toEqual({
       recherche: undefined,
       communes: '15014,15187',

@@ -4,9 +4,8 @@ import {
   coordinateurConseillerNumerique,
   mediateurHorsDispositif,
 } from '../../../../fixtures/domaine'
-import { criteresActeurs } from '../../domain'
+import { criteresDesActeursDuReseau } from '../filtres/acteurs-du-reseau.filtre'
 import {
-  etiquettesDesFiltres,
   groupesDActeurs,
   libelleDesResultats,
   parametresDeLURL,
@@ -44,25 +43,11 @@ describe('présentation de l’annuaire des acteurs', () => {
     expect(libelleDesResultats(total, filtre)).toBe(attendu)
   })
 
-  it('nomme le rôle et les communes retenus', () => {
-    expect(
-      etiquettesDesFiltres(
-        criteresActeurs({ role: 'coordinateur', communes: '15014' }),
-        [{ value: '15014', label: 'Aurillac · 15000' }],
-      ),
-    ).toEqual([
-      { parametre: 'role', valeur: 'coordinateur', libelle: 'Coordinateur' },
-      {
-        parametre: 'communes',
-        valeur: '15014',
-        libelle: 'Commune : Aurillac · 15000',
-      },
-    ])
-  })
-
   it('remet les critères lus dans l’URL', () => {
     expect(
-      parametresDeLURL(criteresActeurs({ role: 'coordinateur', page: '2' })),
+      parametresDeLURL(
+        criteresDesActeursDuReseau({ role: 'coordinateur', page: '2' }),
+      ),
     ).toEqual({
       recherche: undefined,
       role: 'coordinateur',

@@ -16,10 +16,5 @@ export {
   LignesParPage,
   NumeroDePage,
 } from './pagination'
-export {
-  communesLues,
-  premiereValeur,
-  type ValeurDeParametre,
-} from './parametres-de-recherche'
 export { profilAffiche } from './profil-affiche'
 export { Recherche } from './recherche'

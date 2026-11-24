@@ -5,14 +5,15 @@ import {
 } from '@/libraries/data-table'
 import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
+import { BarreDeFiltres } from '@/libraries/filtres/BarreDeFiltres'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../../domain'
 import { LIGNES_PAR_DEFAUT } from '../../../../domain'
-import { EtiquettesDeFiltres } from '../../../../ui/components/EtiquettesDeFiltres'
+import { FiltreDesCommunesDuReseau } from '../../../../ui/components/FiltreDesCommunesDuReseau'
+import type { BarreDuReseau } from '../../../../ui/presenters/barre-du-reseau.presenter'
 import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
 import { hrefDesActeurs } from '../../../../ui/presenters/liens.presenter'
 import {
@@ -21,9 +22,8 @@ import {
   type PageDActeurs,
 } from '../../domain'
 import { CarteDActeur } from '../components/CarteDActeur'
-import Filtres from '../components/Filtres'
+import { FiltreDuRoleDeLActeur } from '../components/FiltreDuRoleDeLActeur'
 import {
-  etiquettesDesFiltres,
   groupesDActeurs,
   libelleDesResultats,
   parametresDeLURL,
@@ -57,12 +57,12 @@ const ActeursDuDepartementPage = ({
   departement,
   criteres,
   acteurs,
-  communes,
+  barre,
 }: {
   departement: Departement
   criteres: CriteresActeurs
   acteurs: PageDActeurs
-  communes: SelectOption[]
+  barre: BarreDuReseau
 }) => {
   const baseHref = hrefDesActeurs(departement.code)
   const parametres = parametresDeLURL(criteres)
@@ -103,17 +103,15 @@ const ActeursDuDepartementPage = ({
               placeholder="Nom, prénom ou adresse mail..."
               className="fr-flex-grow-1"
             />
-            <Filtres
-              key={`${departement.code}-${criteres.communes.join()}-${criteres.role}`}
-              communes={criteres.communes}
-              role={criteres.role}
-              options={communes}
-            />
           </div>
 
-          <EtiquettesDeFiltres
-            etiquettes={etiquettesDesFiltres(criteres, communes)}
-          />
+          <BarreDeFiltres
+            etiquettes={barre.etiquettes}
+            sansFiltres={barre.sansFiltres}
+          >
+            <FiltreDesCommunesDuReseau {...barre.communes} />
+            <FiltreDuRoleDeLActeur />
+          </BarreDeFiltres>
 
           <hr className="fr-separator-1px" />
 

@@ -61,19 +61,6 @@ export const adresseAvec = (
 
 type RequeteCourante = string | { toString(): string }
 
-export const listeEnParametre = (valeurs: readonly string[]): string | null =>
-  valeurs.length > 0 ? valeurs.join(',') : null
-
-export const listeSansLaValeur = (
-  liste: string | null | undefined,
-  valeur: string,
-): string | null =>
-  listeEnParametre(
-    (liste ?? '')
-      .split(',')
-      .filter((restante) => restante !== '' && restante !== valeur),
-  )
-
 export const requeteAvec = (
   requete: RequeteCourante,
   parametres: Changements,

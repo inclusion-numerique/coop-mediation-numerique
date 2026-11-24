@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
+import { rechercherDesCommunesDuReseauAction } from '@/app/_actions/mon-reseau/rechercher-des-communes-du-reseau.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
@@ -9,8 +10,15 @@ import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activit
 import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/components/LieuActiviteCard'
 import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
-import { type ParametresDesLieux } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/index'
+import {
+  criteresDesLieuxDuReseau,
+  filtresDesLieuxDuReseau,
+} from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui/filtres/lieux-du-reseau.filtre'
 import { default as LieuxDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/ui/pages/LieuxDuDepartementPage'
+import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/action/rechercher-des-communes-du-reseau.key'
+import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
+import { barreDuReseau } from '@/features/mon-reseau/ui/presenters/barre-du-reseau.presenter'
+import { hrefDesLieux } from '@/features/mon-reseau/ui/presenters/liens.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
 export const metadata: Metadata = {
@@ -22,13 +30,15 @@ const Page = async ({
   searchParams,
 }: {
   params: Promise<{ departement: string }>
-  searchParams: Promise<ParametresDesLieux>
+  searchParams: Promise<ParametresDuReseau>
 }) => {
   await authenticateMediateurOrCoordinateur()
 
+  const { departement } = await params
+  const parametres = await searchParams
   const consultation = await consulterLesLieuxDuDepartement(
-    (await params).departement,
-    await searchParams,
+    departement,
+    criteresDesLieuxDuReseau(parametres),
     { lieuxDuDepartement, communesDesLieux },
   )
 
@@ -37,17 +47,26 @@ const Page = async ({
       bind={RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY}
       to={rechercherUnLieuActiviteAction}
     >
-      <LieuxDuDepartementPage
-        {...consultation.data}
-        communes={[...consultation.data.communes]}
-        listeDesLieux={consultation.data.lieux.lieux.map((lieu) => (
-          <LieuActiviteCard
-            key={lieu.id}
-            lieu={lieu}
-            href={hrefDuLieuEnListe(lieu)}
-          />
-        ))}
-      />
+      <ClientBinder
+        bind={RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY}
+        to={rechercherDesCommunesDuReseauAction.bind(null, departement)}
+      >
+        <LieuxDuDepartementPage
+          {...consultation.data}
+          barre={barreDuReseau({
+            filtres: filtresDesLieuxDuReseau,
+            adresse: { chemin: hrefDesLieux(departement), parametres },
+            communes: consultation.data.communes,
+          })}
+          listeDesLieux={consultation.data.lieux.lieux.map((lieu) => (
+            <LieuActiviteCard
+              key={lieu.id}
+              lieu={lieu}
+              href={hrefDuLieuEnListe(lieu)}
+            />
+          ))}
+        />
+      </ClientBinder>
     </ClientBinder>
   ) : (
     notFound()

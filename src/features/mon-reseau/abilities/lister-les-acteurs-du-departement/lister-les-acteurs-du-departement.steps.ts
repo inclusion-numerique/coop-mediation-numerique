@@ -6,6 +6,7 @@ import {
   semerUnActeur,
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+import { criteresDesActeursDuReseau } from './ui/filtres/acteurs-du-reseau.filtre'
 
 const communesDesLieux = async () => ({ communesOptions: [] })
 
@@ -52,10 +53,7 @@ const semerDansLeCantal = async ({
 const consulter = async (parametres: Record<string, string>) => {
   etat.consultation = await listerLesActeursDuDepartement(
     '15',
-    {
-      lignes: '100',
-      ...parametres,
-    },
+    criteresDesActeursDuReseau({ lignes: '100', ...parametres }),
     { communesDesLieux },
   )
 }
@@ -128,7 +126,7 @@ When(
   async (code: string) => {
     etat.consultation = await listerLesActeursDuDepartement(
       code,
-      {},
+      criteresDesActeursDuReseau({}),
       { communesDesLieux },
     )
   },
