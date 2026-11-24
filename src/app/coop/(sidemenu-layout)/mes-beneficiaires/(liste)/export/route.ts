@@ -31,7 +31,10 @@ export const GET = async (request: NextRequest) => {
 
   const workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
     mediateurId: MediateurId(user.mediateur.id),
-    filters: parsedQueryParams.data,
+    filters:
+      parsedQueryParams.data.recherche === undefined
+        ? {}
+        : { recherche: parsedQueryParams.data.recherche },
     auteur: auteurDeLExport(user),
   })
 
