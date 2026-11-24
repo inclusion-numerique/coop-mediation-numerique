@@ -1,4 +1,4 @@
-import { isBrowser } from '@/libraries/navigateur/isBrowser'
+import { isBrowser } from '@/libraries/navigateur/is-browser'
 
 // Define the event handler outside the function scope for reuse
 const handlePopState = (event: PopStateEvent) => {
