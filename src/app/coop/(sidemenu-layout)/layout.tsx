@@ -7,7 +7,7 @@ import Header from '@/features/navigation/ui/layouts/Header'
 import { MiseEnPageCoopAvecMenu } from '@/features/navigation/ui/layouts/MiseEnPageCoopAvecMenu'
 import CoopSideMenu from '@/features/navigation/ui/slots/CoopSideMenu.slot'
 import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
-import { statistiquesPageTitle } from '@/features/statistiques/ui/presenters/titre-des-statistiques.presenter'
+import { titreDesStatistiques } from '@/features/statistiques/ui/presenters/titre-des-statistiques.presenter'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
 const CoopSidemenuLayout = async ({
@@ -30,7 +30,7 @@ const CoopSidemenuLayout = async ({
       menu={
         <CoopSideMenu
           user={user}
-          titreDesStatistiques={statistiquesPageTitle(user)}
+          titreDesStatistiques={titreDesStatistiques(user)}
           saisieDUneActivite={CreateCraModalDefinition.id}
         />
       }

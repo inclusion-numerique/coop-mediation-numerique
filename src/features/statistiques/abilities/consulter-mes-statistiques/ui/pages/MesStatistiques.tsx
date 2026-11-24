@@ -12,7 +12,7 @@ import {
 } from '../../../../ui/components/export/ExportStatistiques'
 import { ImpressionPreteProvider } from '../../../../ui/components/impression-prete'
 import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
-import { statistiquesPageTitle } from '../../../../ui/presenters/titre-des-statistiques.presenter'
+import { titreDesStatistiques } from '../../../../ui/presenters/titre-des-statistiques.presenter'
 import { StatistiquesImpact } from '../components/StatistiquesImpact'
 
 export const MesStatistiques = ({
@@ -47,12 +47,12 @@ export const MesStatistiques = ({
   return (
     <ImpressionPreteProvider key={filtres.requete}>
       <CoopPageContainer size={56}>
-        <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
+        <CoopBreadcrumbs currentPage={titreDesStatistiques(user)} />
         <SkipLinksPortal />
         {impression}
         <main className="fr-no-print" id={contentId}>
           <h1 className="fr-text-title--blue-france fr-mb-5v">
-            {statistiquesPageTitle(user)}
+            {titreDesStatistiques(user)}
           </h1>
           {barreDeFiltres(
             <div className="fr-flex fr-flex-gap-2v">

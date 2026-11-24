@@ -39,7 +39,7 @@ import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-l
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { exportInterdit } from '@/features/statistiques/domain/export-interdit'
-import { buildStatistiquesWorksheet } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
+import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
@@ -133,7 +133,7 @@ export const GET = async (request: NextRequest) => {
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
   })
-  const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)
+  const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
   const filename = `coop-numerique_statistiques_${dateAsIsoDay(

@@ -243,7 +243,7 @@ const addStatistiquesCommuneResidenceBeneficiaires =
     worksheet.addRow([])
   }
 
-export type BuildStatistiquesWorksheetInput = {
+export type EntreeDuClasseurDesStatistiques = {
   auteur: AuteurDExport
   filters: Parameters<ReturnType<typeof addFilters>>[0]
   statistiques: StatistiquesDuClasseur
@@ -251,13 +251,13 @@ export type BuildStatistiquesWorksheetInput = {
   worksheetGenerationDate?: Date
 }
 
-export const buildStatistiquesWorksheet = ({
+export const classeurDesStatistiques = ({
   auteur,
   filters,
   statistiques,
   fuseau,
   worksheetGenerationDate = new Date(),
-}: BuildStatistiquesWorksheetInput): Excel.Workbook => {
+}: EntreeDuClasseurDesStatistiques): Excel.Workbook => {
   const workbook = new Excel.Workbook()
 
   setWorkbookMetadata(workbook)

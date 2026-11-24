@@ -3,8 +3,8 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { numberToPercentage } from '@/libraries/nombre/formatNumber'
 import { computeProportion } from '@/libraries/proportions'
 import {
-  type BuildStatistiquesWorksheetInput,
-  buildStatistiquesWorksheet,
+  classeurDesStatistiques,
+  type EntreeDuClasseurDesStatistiques,
 } from './classeur-des-statistiques'
 
 const DUREES = [
@@ -17,7 +17,7 @@ const DUREES = [
 const DATE = new Date('2024-09-11T17:42:00.000Z')
 
 const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
-  BuildStatistiquesWorksheetInput,
+  EntreeDuClasseurDesStatistiques,
   'filters'
 > = {
   worksheetGenerationDate: DATE,
@@ -280,7 +280,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
   },
 }
 
-const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInput =
+const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: EntreeDuClasseurDesStatistiques =
   {
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
     filters: [
@@ -359,7 +359,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
     ],
   }
 
-const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetInput =
+const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: EntreeDuClasseurDesStatistiques =
   {
     ...STATISTIQUES_WORKSHEET_INPUT_BASE,
     filters: [
@@ -524,7 +524,7 @@ describe('build statistiques worksheet for médiateur', () => {
   let worksheet: Worksheet
 
   beforeAll(() => {
-    workbook = buildStatistiquesWorksheet(
+    workbook = classeurDesStatistiques(
       STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR,
     )
     const generatedWorksheet = workbook.getWorksheet('Statistiques')
@@ -997,7 +997,7 @@ describe('build statistiques worksheet for coordinateur', () => {
   let worksheet: Worksheet
 
   beforeAll(() => {
-    workbook = buildStatistiquesWorksheet(
+    workbook = classeurDesStatistiques(
       STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR,
     )
     const generatedWorksheet = workbook.getWorksheet('Statistiques')
@@ -1018,7 +1018,7 @@ describe('build statistiques worksheet for coordinateur', () => {
 
 describe('heure du classeur des statistiques', () => {
   it('est donnée dans le fuseau de l’utilisateur', () => {
-    const feuille = buildStatistiquesWorksheet({
+    const feuille = classeurDesStatistiques({
       ...STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR,
       fuseau: 'America/Cayenne',
     }).getWorksheet('Statistiques')

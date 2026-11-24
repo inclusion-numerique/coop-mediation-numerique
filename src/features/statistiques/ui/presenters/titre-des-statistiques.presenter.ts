@@ -1,4 +1,4 @@
-export const statistiquesPageTitle = (user: {
+export const titreDesStatistiques = (user: {
   coordinateur: { id: string } | null
   mediateur: { id: string } | null
 }) =>

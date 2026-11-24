@@ -41,7 +41,7 @@ import { getSessionTokenFromNextRequestCookies } from '@/features/authentificati
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { buildStatistiquesWorksheet } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
+import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
@@ -129,7 +129,7 @@ export const GET = async (
   const perimetre = perimetreDeLUtilisateur(user)
   if (perimetre === null) return new Response('Not found', { status: 404 })
 
-  const workbook = buildStatistiquesWorksheet(
+  const workbook = classeurDesStatistiques(
     entreeDuClasseur({
       ...(await classeurDuPerimetre(
         perimetre,

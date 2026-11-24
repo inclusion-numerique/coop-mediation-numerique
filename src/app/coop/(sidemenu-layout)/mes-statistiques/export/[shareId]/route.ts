@@ -38,7 +38,7 @@ import { getSessionUserFromId } from '@/features/authentification/implementation
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
-import { buildStatistiquesWorksheet } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
+import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
@@ -131,7 +131,7 @@ export const GET = async (
     fuseau: user.timezone,
   })
 
-  const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)
+  const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
   const filename = `coop-numerique_statistiques_${dateAsIsoDay(
