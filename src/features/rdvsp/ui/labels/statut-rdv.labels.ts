@@ -1,4 +1,3 @@
-import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import type { statutsPresence } from '../../domain/statut-presence'
 
 /**
@@ -9,16 +8,6 @@ import type { statutsPresence } from '../../domain/statut-presence'
  */
 export type RdvStatus = (typeof statutsPresence)[number] | 'past'
 
-const rdvStatusLabels: {
-  [key in RdvStatus]: string
-} = {
-  unknown: 'À venir',
-  past: 'Passé',
-  seen: 'Honoré',
-  revoked: 'Annulé',
-  excused: 'Annulé par bénéficiaire',
-  noshow: 'Absence',
-}
 const rdvStatusPluralLabels: {
   [key in RdvStatus]: string
 } = {
@@ -29,8 +18,6 @@ const rdvStatusPluralLabels: {
   excused: 'Annulés par bénéficiaire',
   noshow: 'Absence',
 }
-
-export const rdvStatusOptions = labelsToOptions(rdvStatusLabels)
 
 export const rdvStatusValues = Object.keys(rdvStatusPluralLabels) as [
   RdvStatus,

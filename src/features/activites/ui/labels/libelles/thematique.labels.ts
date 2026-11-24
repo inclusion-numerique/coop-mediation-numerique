@@ -291,13 +291,6 @@ const thematiqueIllustrations: Record<Thematique, Pictogram> = {
   ...thematiquesAdministrativesIllustrations,
 }
 
-export const thematiqueNonAdministrativesOptions = labelsToOptions(
-  thematiquesNonAdministrativesLabels,
-).map(({ label, value }) => ({
-  label,
-  value,
-}))
-
 export const thematiqueNonAdministrativesOptionsWithExtras = labelsToOptions(
   thematiquesNonAdministrativesLabels,
 ).map(({ label, value }) => ({
@@ -308,13 +301,6 @@ export const thematiqueNonAdministrativesOptionsWithExtras = labelsToOptions(
     tooltips: thematiqueHints[value],
     illustration: thematiqueIllustrations[value],
   },
-}))
-
-export const thematiqueAdministrativesOptions = labelsToOptions(
-  thematiquesAdministrativesLabels,
-).map(({ label, value }) => ({
-  label,
-  value,
 }))
 
 export const thematiqueAdministrativesOptionsWithExtras = labelsToOptions(

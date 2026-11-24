@@ -1,8 +1,5 @@
 import { type Acteur, type Tag, TagId } from '../../../../domain'
-import {
-  lireLesTagsVisibles,
-  lireTousLesTagsVisibles,
-} from '../prisma/lire-les-tags-visibles.query'
+import { lireLesTagsVisibles } from '../prisma/lire-les-tags-visibles.query'
 
 export const tagsVisiblesPar =
   (acteur: Acteur) =>
@@ -14,7 +11,3 @@ export const tagsVisiblesPar =
         return tagId === null ? [] : [tagId]
       }),
     })
-
-export const tousLesTagsVisiblesPar = (
-  acteur: Acteur,
-): Promise<readonly Tag[]> => lireTousLesTagsVisibles({ acteur })

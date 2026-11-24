@@ -1,7 +1,6 @@
 import { Pictogram } from '@/libraries/pictograms/pictogram'
 import { SittingAtATableIcon } from '@/libraries/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@/libraries/pictograms/user/TeacherIcon'
-import { labelsToOptions } from '@/libraries/ui/components/Form/utils/options'
 import { TYPES_D_ACTIVITE } from '../../../domain'
 
 export const typeActiviteValues = TYPES_D_ACTIVITE
@@ -42,5 +41,3 @@ export const typeActivitePictograms: Record<TypeActivite, Pictogram> = {
   Individuel: SittingAtATableIcon,
   Collectif: TeacherIcon,
 }
-
-export const typeActiviteSlugOptions = labelsToOptions(typeActiviteSlugLabels)

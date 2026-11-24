@@ -15,21 +15,23 @@ import { autosizeColumns } from '@/libraries/tableur/autosizeColumns'
 import { setWorkbookMetadata } from '@/libraries/tableur/setWorkbookMetadata'
 
 const filtresDisponibles = [
-  { label: 'Période', type: 'periode' },
-  { label: 'Source', type: 'source' },
-  { label: 'Lieux d’accompagnement', type: 'lieux' },
-  { label: 'Communes', type: 'communes' },
-  { label: 'Départements', type: 'departements' },
-  { label: 'Type d’accompagnement', type: 'types' },
-  { label: 'Rôle', type: 'conseiller_numerique' },
-  {
-    label: 'Thématiques non administratives',
-    type: 'thematiqueNonAdministratives',
-  },
-  { label: 'Thématiques administratives', type: 'thematiqueAdministratives' },
-  { label: 'Tags', type: 'tags' },
-  { label: 'Médiateurs', type: 'mediateurs', masqueSiVide: true },
-]
+  'Période',
+  'Source',
+  'Lieux d’accompagnement',
+  'Communes',
+  'Départements',
+  'Type d’accompagnement',
+  'Rôle',
+  'Thématiques non administratives',
+  'Thématiques administratives',
+  'Tags',
+].map((label) => ({ label, type: label }))
+
+const filtresDesMediateurs = {
+  label: 'Médiateurs',
+  type: 'Médiateurs',
+  masqueSiVide: true,
+}
 
 type PartDuTotal = { total: number; proportion: number }
 
@@ -268,7 +270,7 @@ export const buildStatistiquesWorksheet = ({
     fuseau,
   })
   addTitleRow(worksheet)('Filtres')
-  addFilters(worksheet, filtresDisponibles)(filters)
+  addFilters(worksheet, [...filtresDisponibles, filtresDesMediateurs])(filters)
   worksheet.addRow([])
   addStatistiquesGenerales(worksheet)(statistiques)
   addStatistiquesActivites(worksheet)(statistiques)

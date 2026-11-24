@@ -1,40 +1,23 @@
-import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
-import { generateActivitesFiltersLabels } from '../labels/filtres.labels'
 
-type OptionsDesLibelles = Parameters<typeof generateActivitesFiltersLabels>[1]
+type EtiquetteDuFiltre = { readonly titre: string; readonly libelle: string }
 
-type OptionsDeLaPage = Omit<
-  OptionsDesLibelles,
-  'beneficiairesOptions' | 'mediateursOptions'
-> & {
-  readonly initialBeneficiairesOptions: OptionsDesLibelles['beneficiairesOptions']
-  readonly initialMediateursOptions: OptionsDesLibelles['mediateursOptions']
-}
-
-export const entreeDuClasseur = <Statistiques extends OptionsDeLaPage>({
+export const entreeDuClasseur = <Statistiques>({
   statistiques,
-  filters,
+  etiquettes,
   auteur,
   fuseau,
 }: {
   statistiques: Statistiques
-  filters: ActivitesFilters
+  etiquettes: readonly EtiquetteDuFiltre[]
   auteur: AuteurDExport
   fuseau: string
 }) => ({
   statistiques,
   auteur,
-  filters: generateActivitesFiltersLabels(filters, {
-    communesOptions: statistiques.communesOptions,
-    departementsOptions: statistiques.departementsOptions,
-    lieuxActiviteOptions: statistiques.lieuxActiviteOptions,
-    beneficiairesOptions: statistiques.initialBeneficiairesOptions,
-    mediateursOptions: statistiques.initialMediateursOptions,
-    structuresEmployeusesOptions: statistiques.structuresEmployeusesOptions,
-    tagsOptions: statistiques.tagsOptions,
-    activiteSourceOptions: statistiques.activiteSourceOptions,
-    vocabulaire: statistiques.vocabulaire,
-  }),
+  filters: etiquettes.map(({ titre, libelle }) => ({
+    type: titre,
+    label: libelle,
+  })),
   fuseau,
 })
