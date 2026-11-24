@@ -4,7 +4,7 @@ import {
   periodeDeMaintenance,
   periodeDeMaintenanceSelect,
   periodeEnCoursWhere,
-} from './periode-de-maintenance'
+} from './periode-de-maintenance.select'
 
 export const consulterLaMaintenance = async (): Promise<EtatDeMaintenance> => {
   const enCours = await prismaClient.maintenance.findFirst({
