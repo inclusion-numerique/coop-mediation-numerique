@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 
 export const withAdminRoute = async (
   _ctx: object,

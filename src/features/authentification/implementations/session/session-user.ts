@@ -3,11 +3,11 @@ import { cache } from 'react'
 import 'server-only'
 import { AuthenticationError } from '@/features/authentification/domain/errors'
 import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
   secureSessionCookie,
   sessionCookie,
 } from '@/features/authentification/implementations/session/session-token-from-cookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/session/session-user-from-session-token'
 
 const getSessionToken = async (): Promise<string | null> => {
   const allCookies = await cookies()

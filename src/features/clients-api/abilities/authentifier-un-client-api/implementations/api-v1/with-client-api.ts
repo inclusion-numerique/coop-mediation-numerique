@@ -1,16 +1,16 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { isAuthenticatedApiClientRequest } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1/is-authenticated-api-client-request'
-import type { ApiClientScope } from '@/generated/prisma/client'
+import type { PorteeApi } from '@/features/clients-api/domain'
 
-const estAuthentifie = (request: NextRequest, portees: ApiClientScope[]) =>
+const estAuthentifie = (request: NextRequest, portees: PorteeApi[]) =>
   isAuthenticatedApiClientRequest(request, portees).catch((error: unknown) => {
     signaler(error)
     return false
   })
 
 export const withClientApi =
-  (portees: ApiClientScope[]) =>
+  (portees: PorteeApi[]) =>
   async (
     _ctx: object,
     request: NextRequest,

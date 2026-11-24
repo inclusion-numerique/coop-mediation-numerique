@@ -1,5 +1,5 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type RattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain'
+import { estConseillerNumeriqueEnPoste } from '../prisma/conseiller-numerique-en-poste.query'
 
 export type ImportStructureEmployeuseFromProConnectResult = {
   success: boolean
@@ -36,23 +36,14 @@ export const importStructureEmployeuseFromProConnect =
       }
     }
 
-    const user = await prismaClient.user.findUnique({
-      where: { id: userId },
-      select: {
-        personneMain: {
-          select: {
-            conseillerNumeriqueEnPoste: { select: { personneId: true } },
-          },
-        },
-      },
-    })
+    const conseillerNumerique = await estConseillerNumeriqueEnPoste(userId)
 
-    if (!user) {
+    if (conseillerNumerique === null) {
       return { success: false, noOp: true, reason: 'User not found' }
     }
 
     // This import logic only applies to non-conseiller users.
-    if (user.personneMain?.conseillerNumeriqueEnPoste != null) {
+    if (conseillerNumerique) {
       return {
         success: true,
         noOp: true,

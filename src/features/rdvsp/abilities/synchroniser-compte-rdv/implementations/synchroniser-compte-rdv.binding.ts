@@ -1,23 +1,23 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { bilanVide } from '@/features/rdvsp/domain/compte/bilan-synchronisation'
 import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { EchecDeSynchronisation } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
 import { diagnosticErreur } from '@/features/rdvsp/domain/errors'
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/api/rdv-service-public.binding'
-import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import { success } from '@/libraries/result'
 import {
   type ReconcilierLesRdvsDuMediateur,
   type ReconcilierOrganisations,
   synchroniserCompteRdv,
 } from '../domain/synchroniser-compte-rdv'
+import { compteASynchroniser } from './prisma/compte-a-synchroniser.query'
 import { detacherOrganisations } from './prisma/detacher-organisations.mutation'
 import {
   cloturerJournal,
   echouerJournal,
   ouvrirJournal,
 } from './prisma/journal-synchronisation.mutation'
+import { noterLaSynchronisationReussie } from './prisma/synchronisation-reussie.mutation'
 import { noterLesWebhooksInvalides } from './prisma/webhooks-invalides.mutation'
 import { installWebhooks } from './webhook/installer-webhooks'
 
@@ -43,12 +43,7 @@ export const synchroniserCompteAvec =
     mediateurId?: string
     organisationIds?: number[]
   }): Promise<{ drift: number }> => {
-    const row = await prismaClient.rdvAccount.findUniqueOrThrow({
-      where: { id: compteId },
-      include: { organisations: { select: { organisationId: true } } },
-    })
-
-    const compte = compteRdvToDomain(row)
+    const compte = await compteASynchroniser(compteId)
 
     if (!estUtilisable(compte)) {
       return { drift: 0 }
@@ -111,15 +106,9 @@ export const synchroniserCompteAvec =
 
     const { organisationIdsSansWebhook } = resultat.data
 
-    await prismaClient.rdvAccount.update({
-      where: { id: compte.agentId },
-      data: {
-        lastSynced: new Date(),
-        error: null,
-        ...(organisationIdsSansWebhook === undefined
-          ? {}
-          : { invalidWebhookOrganisationIds: [...organisationIdsSansWebhook] }),
-      },
+    await noterLaSynchronisationReussie({
+      agentId: compte.agentId,
+      organisationIdsSansWebhook,
     })
 
     return { drift: resultat.data.derive }

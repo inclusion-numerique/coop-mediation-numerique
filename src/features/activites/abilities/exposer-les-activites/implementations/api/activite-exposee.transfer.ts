@@ -1,4 +1,8 @@
-import type { Genre, StatutSocial, TrancheAge } from '@/generated/prisma/client'
+import type {
+  GENRES,
+  STATUTS_SOCIAUX,
+  TRANCHES_D_AGE,
+} from '../../../../domain'
 import type { ActiviteExposee } from '../prisma/activites-exposees.query'
 import {
   autonomieApiValues,
@@ -9,6 +13,10 @@ import {
   typeActiviteApiValues,
   typeLieuApiValues,
 } from './valeurs-de-l-api'
+
+type Genre = (typeof GENRES)[number]
+type TrancheAge = (typeof TRANCHES_D_AGE)[number]
+type StatutSocial = (typeof STATUTS_SOCIAUX)[number]
 
 const genreApiValues = {
   Masculin: 'masculin',

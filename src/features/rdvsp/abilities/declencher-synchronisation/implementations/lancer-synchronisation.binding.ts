@@ -1,27 +1,20 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type {
   LancerSynchronisation,
   SynchroniserUnCompte,
 } from '../domain/declencher-synchronisation'
+import { compteDeLUtilisateur } from './prisma/compte-de-l-utilisateur.query'
 
 export const lancerSynchronisation =
   (synchroniserUnCompte: SynchroniserUnCompte): LancerSynchronisation =>
   async ({ utilisateurId, organisationIds }) => {
-    const utilisateur = await prismaClient.user.findUniqueOrThrow({
-      where: { id: utilisateurId },
-      select: {
-        mediateur: { select: { id: true } },
-        rdvAccount: { select: { id: true } },
-      },
-    })
+    const compte = await compteDeLUtilisateur(utilisateurId)
 
-    if (utilisateur.rdvAccount === null) {
+    if (compte === null) {
       return { derive: 0 }
     }
 
     const { drift } = await synchroniserUnCompte({
-      compteId: utilisateur.rdvAccount.id,
-      mediateurId: utilisateur.mediateur?.id,
+      ...compte,
       organisationIds:
         organisationIds === undefined ? undefined : [...organisationIds],
     })

@@ -7,7 +7,7 @@ import { GenreDeLieu } from '@/features/activites/abilities/rechercher-les-lieux
 import { rechercherLesLieuxDesStatistiques } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-des-statistiques.query'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
-import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
+import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'

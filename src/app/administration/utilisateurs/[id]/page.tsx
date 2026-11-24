@@ -25,11 +25,11 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { criteresDesStatistiques } from '@/features/activites/domain'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
+import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
   authenticateAdmin,
   authenticateUser,
 } from '@/features/authentification/implementations/session/authenticate-user'
-import { getSessionUserFromId } from '@/features/authentification/implementations/session/session-user-from-session-token'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
-import { ApiClientScope } from '@/generated/prisma/browser'
+import type { PorteeApi } from '@/features/clients-api/domain'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
@@ -8,7 +8,7 @@ import {
 
 export const isAuthenticatedApiClientRequest = async (
   request: NextRequest,
-  scopes: ApiClientScope[],
+  scopes: PorteeApi[],
 ) => {
   // Get api key from header
   const authorizationString = request.headers.get(apiV1AuthorizationHeader)

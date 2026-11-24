@@ -2,7 +2,7 @@ import type { SessionUser } from '@/features/authentification/domain/utilisateur
 import type {
   PrismaSessionUser,
   PrismaSessionUsupper,
-} from '@/features/authentification/implementations/session/session-user-from-session-token'
+} from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { splitMediateursCoordonnes } from './coordination-de-la-session'
 
 const emploisDeLaSession = (
