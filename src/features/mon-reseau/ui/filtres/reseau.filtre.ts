@@ -1,4 +1,4 @@
-import { filtreDeRecherche } from '@/libraries/filtres/definition/filtre-de-recherche'
+import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
 import { CodeInsee } from '@/libraries/insee'
 import { LignesParPage, NumeroDePage, Recherche } from '../../domain'
 

@@ -1,5 +1,5 @@
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
-import { filtreDeChoixUnique } from '@/libraries/filtres/definition/filtre-de-choix'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
+import { filtreDeChoixUnique } from '@/libraries/etat-d-url/definition/filtre-de-choix'
 import {
   etatDeLaListeDuReseau,
   filtreDesCommunesDuReseau,
@@ -15,7 +15,7 @@ export const filtreDuRoleDeLActeur = filtreDeChoixUnique({
   choix: LIBELLE_DU_ROLE,
 })
 
-export const filtresDesActeursDuReseau = composerLesFiltres(
+export const filtresDesActeursDuReseau = composerLEtat(
   filtreDesCommunesDuReseau,
   filtreDuRoleDeLActeur,
 )

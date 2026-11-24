@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { composerLesFiltres } from './composition'
+import { composerLEtat } from './composition'
 import { filtreDeChoix, filtreDeChoixUnique } from './filtre-de-choix'
 import { filtreDePeriode } from './filtre-de-periode'
 import { filtreDeRecherche } from './filtre-de-recherche'
 
-const filtres = composerLesFiltres(
+const filtres = composerLEtat(
   filtreDePeriode,
   filtreDeChoix({
     titre: 'types',
@@ -68,7 +68,7 @@ describe('composition de filtres', () => {
 
   it('traduit les valeurs de l’URL en valeurs métier', () => {
     expect(
-      composerLesFiltres(
+      composerLEtat(
         filtreDeChoix({
           titre: 'types',
           cle: 'types',
@@ -80,7 +80,7 @@ describe('composition de filtres', () => {
   })
 
   it('écrit les valeurs métier sous leur forme d’URL', () => {
-    const filtresTraduits = composerLesFiltres(
+    const filtresTraduits = composerLEtat(
       filtreDeChoix({
         titre: 'types',
         cle: 'types',

@@ -1,8 +1,8 @@
 import type {
   AdresseCourante,
   EtiquetteAffichee,
-} from '@/libraries/filtres/definition/composition'
-import type { Libelles } from '@/libraries/filtres/definition/filtre'
+} from '@/libraries/etat-d-url/definition/composition'
+import type { Libelles } from '@/libraries/etat-d-url/definition/filtre'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 const SUGGESTIONS = 10

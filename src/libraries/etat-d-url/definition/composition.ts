@@ -99,9 +99,7 @@ const requeteSans = (
       ),
   )
 
-export const composerLesFiltres = <
-  const Fs extends readonly FiltreQuelconque[],
->(
+export const composerLEtat = <const Fs extends readonly FiltreQuelconque[]>(
   ...filtres: [EnDouble<Fs>] extends [never]
     ? Fs
     : { [I in keyof Fs]: `Clé d’URL en double : ${EnDouble<Fs> & string}` }

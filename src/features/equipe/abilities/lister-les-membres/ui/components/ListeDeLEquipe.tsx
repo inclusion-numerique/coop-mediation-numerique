@@ -5,7 +5,7 @@ import {
   generatePageSizeSelectOptions,
   PaginationNavWithPageSizeSelect,
 } from '@/libraries/data-table'
-import { BarreDeFiltres } from '@/libraries/filtres/BarreDeFiltres'
+import { BarreDeFiltres } from '@/libraries/etat-d-url/BarreDeFiltres'
 import type { LigneEquipe } from '../../../../domain'
 import { filtresDeLEquipe } from '../../../../ui/filtres/equipe.filtre'
 import type { MembresDeLEquipe } from '../../domain'

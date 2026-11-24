@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { FiltresEnPopover } from '@/libraries/filtres/FiltresEnPopover'
-import { RechercheEnLigne } from '@/libraries/filtres/RechercheEnLigne'
+import { FiltresEnPopover } from '@/libraries/etat-d-url/FiltresEnPopover'
+import { RechercheEnLigne } from '@/libraries/etat-d-url/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import {

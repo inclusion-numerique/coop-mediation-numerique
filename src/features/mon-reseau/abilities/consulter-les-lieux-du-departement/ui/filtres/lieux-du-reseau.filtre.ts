@@ -1,4 +1,4 @@
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import {
   etatDeLaListeDuReseau,
   filtreDesCommunesDuReseau,
@@ -7,9 +7,7 @@ import {
 } from '../../../../ui/filtres/reseau.filtre'
 import { type CriteresDesLieux, TriDesLieuxAffiche } from '../../domain'
 
-export const filtresDesLieuxDuReseau = composerLesFiltres(
-  filtreDesCommunesDuReseau,
-)
+export const filtresDesLieuxDuReseau = composerLEtat(filtreDesCommunesDuReseau)
 
 export const criteresDesLieuxDuReseau = (
   parametres: ParametresDuReseau,

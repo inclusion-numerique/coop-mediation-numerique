@@ -1,5 +1,5 @@
 import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
-import type { AdresseCourante } from '@/libraries/filtres/definition/composition'
+import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
 import {
   type CriteresDesActivites,
   contenuDeLaChronologie,

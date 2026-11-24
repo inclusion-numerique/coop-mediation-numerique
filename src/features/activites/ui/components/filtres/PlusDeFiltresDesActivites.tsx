@@ -1,8 +1,8 @@
 'use client'
 
-import { ChoixEnLigne } from '@/libraries/filtres/ChoixEnLigne'
-import { FiltresEnModale } from '@/libraries/filtres/FiltresEnModale'
-import { RechercheEnLigne } from '@/libraries/filtres/RechercheEnLigne'
+import { ChoixEnLigne } from '@/libraries/etat-d-url/ChoixEnLigne'
+import { FiltresEnModale } from '@/libraries/etat-d-url/FiltresEnModale'
+import { RechercheEnLigne } from '@/libraries/etat-d-url/RechercheEnLigne'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '../../../action/rechercher-employeuses.key'

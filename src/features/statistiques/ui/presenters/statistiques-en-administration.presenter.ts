@@ -1,6 +1,6 @@
 import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
-import { filtreDePeriode } from '@/libraries/filtres/definition/filtre-de-periode'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
+import { filtreDePeriode } from '@/libraries/etat-d-url/definition/filtre-de-periode'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 
 export type PeriodeChoisie = {
@@ -8,7 +8,7 @@ export type PeriodeChoisie = {
   readonly au?: string
 }
 
-const filtresDeLaPeriode = composerLesFiltres(filtreDePeriode)
+const filtresDeLaPeriode = composerLEtat(filtreDePeriode)
 
 const jour = (date: Date | null): string | undefined =>
   date?.toISOString().slice(0, 10)

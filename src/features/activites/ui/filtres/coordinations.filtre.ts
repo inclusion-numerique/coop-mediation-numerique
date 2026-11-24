@@ -1,6 +1,6 @@
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
-import { filtreDeChoix } from '@/libraries/filtres/definition/filtre-de-choix'
-import { filtreDePeriode } from '@/libraries/filtres/definition/filtre-de-periode'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
+import { filtreDeChoix } from '@/libraries/etat-d-url/definition/filtre-de-choix'
+import { filtreDePeriode } from '@/libraries/etat-d-url/definition/filtre-de-periode'
 import {
   type CriteresDesCoordinations,
   type TagId,
@@ -33,7 +33,7 @@ export const criteresDesFiltresDeCoordination = (
   tags: valeurs.tags,
 })
 
-export const filtresDesCoordinations = composerLesFiltres(
+export const filtresDesCoordinations = composerLEtat(
   filtreDePeriode,
   filtreDuTypeDeCoordination,
   filtreDesTags,

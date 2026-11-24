@@ -5,7 +5,7 @@ import {
 } from '@/libraries/data-table'
 import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
-import { BarreDeFiltres } from '@/libraries/filtres/BarreDeFiltres'
+import { BarreDeFiltres } from '@/libraries/etat-d-url/BarreDeFiltres'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'

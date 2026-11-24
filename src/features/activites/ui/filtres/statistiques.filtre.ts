@@ -1,5 +1,5 @@
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
-import { filtreDePeriode } from '@/libraries/filtres/definition/filtre-de-periode'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
+import { filtreDePeriode } from '@/libraries/etat-d-url/definition/filtre-de-periode'
 import {
   filtreDeLaSource,
   filtreDesCommunes,
@@ -14,7 +14,7 @@ import {
   filtreDuTypeDActivite,
 } from './activites.filtre'
 
-export const filtresDesStatistiques = composerLesFiltres(
+export const filtresDesStatistiques = composerLEtat(
   filtreDePeriode,
   filtreDesMediateurs,
   filtreDesLieux,

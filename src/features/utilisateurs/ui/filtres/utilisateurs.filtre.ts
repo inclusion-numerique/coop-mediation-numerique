@@ -10,12 +10,12 @@ import {
   RoleFiltre,
   statutDuFiltre,
 } from '@/features/utilisateurs/domain'
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import {
   filtreDeChoix,
   filtreDeChoixUnique,
-} from '@/libraries/filtres/definition/filtre-de-choix'
-import { filtreDeRecherche } from '@/libraries/filtres/definition/filtre-de-recherche'
+} from '@/libraries/etat-d-url/definition/filtre-de-choix'
+import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { libelleDuStatut } from '../presenters/statut-compte.presenter'
 
@@ -92,7 +92,7 @@ export const filtreDesDepartements = filtreDeRecherche({
   schema: CodeDepartement.schema,
 })
 
-export const filtresDesUtilisateurs = composerLesFiltres(
+export const filtresDesUtilisateurs = composerLEtat(
   filtreDesRoles,
   filtreDuDispositif,
   filtreDuStatut,

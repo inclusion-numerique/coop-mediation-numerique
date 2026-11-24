@@ -7,11 +7,11 @@ import {
   RechercheDansLEquipe,
   TriEquipe,
 } from '@/features/equipe/domain'
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
+import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import {
   filtreDeChoix,
   filtreDeChoixUnique,
-} from '@/libraries/filtres/definition/filtre-de-choix'
+} from '@/libraries/etat-d-url/definition/filtre-de-choix'
 
 export const filtreDuStatutDuMembre = filtreDeChoix({
   titre: 'Statut',
@@ -33,7 +33,7 @@ export const filtreDuRoleDuMembre = filtreDeChoixUnique({
   },
 })
 
-export const filtresDeLEquipe = composerLesFiltres(
+export const filtresDeLEquipe = composerLEtat(
   filtreDuStatutDuMembre,
   filtreDuRoleDuMembre,
 )
