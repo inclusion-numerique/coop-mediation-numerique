@@ -11,7 +11,7 @@ import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
 } from '@/features/activites/domain'
-import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
+import { lectureDeLaPagination } from '@/features/activites/ui/filtres/liste-des-activites.filtre'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
@@ -47,7 +47,7 @@ const BeneficiaireAccompagnementsPage = async (props: {
     notFound()
   }
 
-  const pagination = paginationLue(parametres)
+  const { pagination } = lectureDeLaPagination(parametres)
 
   const chronologie = await listerLHistoriqueDUnBeneficiaire({
     mediateurId: MediateurDesActivites(user.mediateur.id),
@@ -96,7 +96,7 @@ const BeneficiaireAccompagnementsPage = async (props: {
                 total={
                   chronologie.total.activites + chronologie.total.rendezVous
                 }
-                lignesParPage={pagination.lignesParPage}
+                lignesParPage={pagination.pageSize}
                 adresse={`/coop/mes-beneficiaires/${beneficiaire.id}/accompagnements`}
                 parametres={parametresDePagination(parametres)}
                 saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}

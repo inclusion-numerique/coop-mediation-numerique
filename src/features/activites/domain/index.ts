@@ -40,17 +40,8 @@ export { CRITERES_VIDES } from './consultation/criteres-vides'
 export { FiltreDOrigine } from './consultation/filtre-d-origine'
 export { FiltreDeDemarche } from './consultation/filtre-de-demarche'
 export { FiltreDeDispositif } from './consultation/filtre-de-dispositif'
-export {
-  OrdreChronologique,
-  ordreChronologiqueLu,
-} from './consultation/ordre-chronologique'
-export {
-  LIGNES_PAR_DEFAUT,
-  LIGNES_PAR_PAGE,
-  LignesParPage,
-  NumeroDePage,
-  type Pagination,
-} from './consultation/pagination'
+export type { OrdreChronologique } from './consultation/ordre-chronologique'
+export type { Pagination } from './consultation/pagination'
 export {
   estAdministrative,
   THEMATIQUES_RECHERCHEES,

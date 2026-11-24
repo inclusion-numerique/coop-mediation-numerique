@@ -1,10 +1,10 @@
+import { Sort } from '@arckit/resultset'
 import {
   type BeneficiaireId,
   type ChronologieDesActivites,
   CRITERES_VIDES,
   contenuDeLaChronologie,
   type MediateurId,
-  OrdreChronologique,
   type Pagination,
   type RendezVousDuCompte,
 } from '../../../../domain'
@@ -31,7 +31,7 @@ export const listerLHistoriqueDUnBeneficiaire = ({
     mediateurId,
     criteres,
     pagination,
-    ordre: OrdreChronologique('PlusRecentes'),
+    ordre: Sort('date', 'desc'),
     contenu: contenuDeLaChronologie(criteres, compte),
     rendezVous,
     rendezVousLies,

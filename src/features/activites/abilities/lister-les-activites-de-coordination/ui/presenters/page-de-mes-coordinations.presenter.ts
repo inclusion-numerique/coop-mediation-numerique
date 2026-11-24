@@ -1,4 +1,4 @@
-import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
+import { lectureDeLaPagination } from '@/features/activites/ui/filtres/liste-des-activites.filtre'
 import {
   CoordinateurId,
   type CriteresDesCoordinations,
@@ -43,7 +43,7 @@ export const mesActivitesDeCoordination = async ({
   readonly aujourdhui?: Date
 }) => {
   const coordinateur = CoordinateurId(coordinateurId)
-  const pagination = paginationLue(parametres)
+  const { pagination } = lectureDeLaPagination(parametres)
 
   const [listees, options] = await Promise.all([
     lectures.activites({
@@ -66,7 +66,7 @@ export const mesActivitesDeCoordination = async ({
       }),
       filtre: estFiltre(criteres),
       pagination: parametresDeLaPagination(parametres),
-      lignesParPage: pagination.lignesParPage,
+      lignesParPage: pagination.pageSize,
     },
   }
 }

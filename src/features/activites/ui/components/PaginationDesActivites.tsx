@@ -1,12 +1,8 @@
+import { PiedDeListe } from '@/libraries/etat-d-url/PiedDeListe'
 import {
-  DEFAULT_PAGE_SIZE,
-  generatePageSizeSelectOptions,
-  PaginationNavWithPageSizeSelect,
-} from '@/libraries/data-table'
-import { LIGNES_PAR_PAGE } from '../../domain'
-import { etatDeLaTable } from '../search-params/etat-de-la-table.search-params'
-
-const optionsDeLignes = generatePageSizeSelectOptions([...LIGNES_PAR_PAGE])
+  listeDesActivites,
+  paginationDesActivites,
+} from '../filtres/liste-des-activites.filtre'
 
 export const PaginationDesActivites = ({
   adresse,
@@ -21,13 +17,16 @@ export const PaginationDesActivites = ({
   lignesParPage: number
   className?: string
 }) => (
-  <PaginationNavWithPageSizeSelect
+  <PiedDeListe
     className={className}
-    baseHref={adresse}
-    state={etatDeLaTable(parametres)}
-    itemsCount={total}
-    pageSize={lignesParPage}
-    defaultPageSize={DEFAULT_PAGE_SIZE}
-    pageSizeOptions={optionsDeLignes}
+    liens={listeDesActivites.pagination.liens(
+      { chemin: adresse, parametres },
+      {
+        totalItems: total,
+        currentPage: listeDesActivites.charger(parametres).pagination.page,
+        pageSize: lignesParPage,
+      },
+    )}
+    pagination={paginationDesActivites}
   />
 )

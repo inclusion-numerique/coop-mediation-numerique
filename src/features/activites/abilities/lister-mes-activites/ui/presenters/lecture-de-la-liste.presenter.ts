@@ -1,10 +1,9 @@
-import { paginationLue } from '@/features/activites/ui/search-params/pagination.search-params'
+import { lectureDeLaPagination } from '@/features/activites/ui/filtres/liste-des-activites.filtre'
 import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
 import {
   type CriteresDesActivites,
   contenuDeLaChronologie,
   estFiltreDesActivites,
-  ordreChronologiqueLu,
 } from '../../../../domain'
 import { filtresDesRendezVousDeLaListe } from '../filtres/rendez-vous-de-la-liste.filtre'
 
@@ -27,8 +26,7 @@ export const lectureDeLaListe = (
     filtree: estFiltreDesActivites(criteres),
     voirLesRdvs:
       filtresDesRendezVousDeLaListe.charger(parametres)['voir-rdvs'] !== null,
-    pagination: paginationLue(parametres),
-    ordre: ordreChronologiqueLu(parametres.ordre),
+    ...lectureDeLaPagination(parametres),
   }
 }
 

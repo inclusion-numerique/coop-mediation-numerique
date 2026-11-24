@@ -62,15 +62,10 @@ const statutFourni =
   (statut: K): StatutFourni =>
     table[statut]
 
-const SENS: Readonly<Record<'PlusRecentes' | 'PlusAnciennes', Prisma.Sql>> = {
-  PlusRecentes: Prisma.sql`DESC`,
-  PlusAnciennes: Prisma.sql`ASC`,
+const SENS: Readonly<Record<'asc' | 'desc', Prisma.Sql>> = {
+  desc: Prisma.sql`DESC`,
+  asc: Prisma.sql`ASC`,
 }
-
-const sensDe =
-  <K extends string>(table: Readonly<Record<K, Prisma.Sql>>) =>
-  (ordre: K): Prisma.Sql =>
-    table[ordre]
 
 const AUCUN_RENDEZ_VOUS = Prisma.sql`SELECT NULL::int AS id, NULL::timestamp AS moment, NULL::timestamp AS creation WHERE FALSE`
 
@@ -90,7 +85,7 @@ type Element = {
 export const listerMesActivites = async ({
   mediateurId,
   criteres,
-  pagination: { page, lignesParPage },
+  pagination: { page, pageSize },
   ordre,
   contenu,
   rendezVous,
@@ -104,7 +99,7 @@ export const listerMesActivites = async ({
   readonly rendezVous: RendezVousALister | null
   readonly rendezVousLies: RendezVousLies
 }): Promise<ChronologieDesActivites> => {
-  const sens = sensDe(SENS)(ordre)
+  const sens = SENS[ordre.direction]
   const activitesRetenues = Prisma.sql`
     SELECT act.id::text AS id, act.date AS moment, act.creation AS creation,
            act.accompagnements_count AS accompagnements
@@ -141,7 +136,7 @@ export const listerMesActivites = async ({
         SELECT 'RendezVous' AS nature, id, moment, creation FROM rendez_vous_retenus
       ) elements
       ORDER BY moment ${sens}, creation ${sens}, id ${sens}
-      LIMIT ${lignesParPage} OFFSET ${(page - 1) * lignesParPage}`,
+      LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize}`,
     prismaClient.$queryRaw<{ total: number; accompagnements: number }[]>`
       SELECT COUNT(*)::int AS total,
              COALESCE(SUM(accompagnements), 0)::int AS accompagnements
@@ -192,9 +187,7 @@ export const listerMesActivites = async ({
       rendezVous: Effectif(totalRendezVous),
       accompagnements: Effectif(activites?.accompagnements ?? 0),
     },
-    pages: Effectif(
-      Math.ceil((totalActivites + totalRendezVous) / lignesParPage),
-    ),
+    pages: Effectif(Math.ceil((totalActivites + totalRendezVous) / pageSize)),
   }
 }
 

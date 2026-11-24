@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { Page, PageSize } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type ActivitesDeCoordinationListees,
@@ -11,11 +12,7 @@ import {
   semerDesAnimationsDeJanvier,
   semerDesCoordinations,
 } from '@/features/activites/activites.cucumber'
-import {
-  CoordinateurId,
-  LignesParPage,
-  NumeroDePage,
-} from '@/features/activites/domain'
+import { CoordinateurId } from '@/features/activites/domain'
 import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
@@ -31,8 +28,8 @@ const lister = async (
     coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
     criteres: criteresDesCoordinationsDepuisLURL(parametres),
     pagination: {
-      page: NumeroDePage(page),
-      lignesParPage: LignesParPage(lignesParPage),
+      page: Page(page),
+      pageSize: PageSize(lignesParPage),
     },
   })
 }

@@ -1,5 +1,4 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { takeAndSkipFromPage } from '@/libraries/data-table/pagination/takeAndSkipFromPage'
 import {
   type CoordinateurId,
   type CriteresDesCoordinations,
@@ -16,7 +15,7 @@ import type { ActivitesDeCoordinationListees } from '../../domain'
 export const listerLesActivitesDeCoordination = async ({
   coordinateurId,
   criteres,
-  pagination: { page, lignesParPage },
+  pagination: { page, pageSize },
 }: {
   coordinateurId: CoordinateurId
   criteres: CriteresDesCoordinations
@@ -28,7 +27,8 @@ export const listerLesActivitesDeCoordination = async ({
     prismaClient.activiteCoordination.findMany({
       where,
       orderBy: [{ date: 'desc' }, { creation: 'desc' }],
-      ...takeAndSkipFromPage({ page, pageSize: lignesParPage }),
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       select: activiteDeCoordinationSelect,
     }),
   ])
@@ -36,6 +36,6 @@ export const listerLesActivitesDeCoordination = async ({
   return {
     activites: lignes.map(activiteDeCoordinationDe),
     total: Effectif(total),
-    pages: Effectif(Math.ceil(total / lignesParPage)),
+    pages: Effectif(Math.ceil(total / pageSize)),
   }
 }

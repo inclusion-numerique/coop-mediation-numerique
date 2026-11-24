@@ -85,7 +85,7 @@ export const maListeDActivites = ({
       decompte: decompteDeLaListe(lue, filtree),
       jours: joursDeLaListe(lue.elements, timezone),
       total: lue.total.activites + lue.total.rendezVous,
-      lignesParPage: pagination.lignesParPage,
+      lignesParPage: pagination.pageSize,
       aucuneActivite: lue.elements.length === 0 && !filtree,
     })),
     parametres: {
@@ -134,7 +134,7 @@ export const monTableauDActivites = ({
       decompte: titreDuDecompte(lue.total.activites, filtree),
       lignes: lignesDuTableau(lue, timezone),
       total: lue.total.activites + lue.total.rendezVous,
-      lignesParPage: pagination.lignesParPage,
+      lignesParPage: pagination.pageSize,
     })),
     parametres: {
       ...parametresDesFiltres,

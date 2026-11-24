@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { DataTable } from '@/libraries/data-table'
 import { Spinner } from '@/libraries/ui/components/Spinner'
 import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
-import { etatDeLaTable } from '../../../../ui/search-params/etat-de-la-table.search-params'
 import type { LigneDuTableau } from '../presenters/mes-activites.presenter'
 import { EnTeteDuTableauDeMesActivites } from './EnTeteDuTableauDeMesActivites'
 import { LigneDuTableauDeMesActivites } from './LigneDuTableauDeMesActivites'
@@ -31,8 +30,8 @@ const Contenu = async ({
       <p className="fr-text--bold fr-text--lg fr-my-6v">{decompte}</p>
       <DataTable className="fr-table--nowrap fr-width-full fr-mb-8v">
         <EnTeteDuTableauDeMesActivites
-          state={etatDeLaTable(parametres)}
-          baseHref={ADRESSE}
+          adresse={ADRESSE}
+          parametres={parametres}
         />
         <tbody>
           {lignes.map((ligne) => (
