@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { nouveauLieu } from './saisie-du-lieu.transfer'

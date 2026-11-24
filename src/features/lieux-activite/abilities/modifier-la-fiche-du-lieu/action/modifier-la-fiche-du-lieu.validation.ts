@@ -25,7 +25,7 @@ import {
   texteFacultatif,
 } from '@/features/lieux-activite/domain/regles-de-saisie'
 import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
-import { HorairesValidation } from '../../../domain/horaires.validation'
+import { HorairesValidation } from '../../../action/horaires.validation'
 
 export const InformationsGeneralesSaisie = z
   .object({

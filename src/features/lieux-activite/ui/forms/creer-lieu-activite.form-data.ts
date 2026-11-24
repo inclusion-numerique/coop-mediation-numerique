@@ -7,8 +7,8 @@ import type {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
-import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import type { HorairesSaisis } from '@/features/lieux-activite/domain/horaires.validation'
+import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import type { HorairesSaisis } from '@/features/lieux-activite/action/horaires.validation'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import type { FormationLabelPropose as FormationLabel } from '@/features/lieux-activite/domain/nomenclatures'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'

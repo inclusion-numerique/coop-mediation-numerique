@@ -13,7 +13,7 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
-import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
 import { BanId } from '../../../domain/identifiants/ban-id'

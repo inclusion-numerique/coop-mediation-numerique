@@ -8,7 +8,7 @@ import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lie
 import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
-} from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+} from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'

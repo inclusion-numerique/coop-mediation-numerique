@@ -7,7 +7,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
-import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { UserId } from '../../../domain/identifiants/utilisateur-id'
 import { nouveauLieu } from './saisie-du-lieu.transfer'

@@ -1,4 +1,4 @@
-import { HorairesValidation } from '@/features/lieux-activite/domain/horaires.validation'
+import { HorairesValidation } from '@/features/lieux-activite/action/horaires.validation'
 import {
   FicheAccesLibreSaisie,
   PriseRdvSaisie,
