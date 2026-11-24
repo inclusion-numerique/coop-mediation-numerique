@@ -3,6 +3,7 @@ import {
   type UseComboboxGetItemPropsOptions,
   type UseComboboxGetItemPropsReturnValue,
   type UseComboboxReturnValue,
+  type UseComboboxStateChangeTypes,
   useCombobox,
 } from 'downshift'
 import {
@@ -16,6 +17,13 @@ import {
   reponseRecue,
   saisieEnCours,
 } from './suggestions'
+
+const CHANGEMENTS_PAR_SELECTION: ReadonlySet<UseComboboxStateChangeTypes> =
+  new Set([
+    useCombobox.stateChangeTypes.ItemClick,
+    useCombobox.stateChangeTypes.InputKeyDownEnter,
+    useCombobox.stateChangeTypes.ControlledPropUpdatedSelectedItem,
+  ])
 
 export type ComboBoxData<TItem, TPayload = {}> = {
   itemToString: (item: TItem | null) => string
@@ -92,9 +100,12 @@ export const ComboBox = <TItem, TPayload extends object>({
   } = useCombobox({
     onInputValueChange: async ({
       inputValue,
+      type,
     }: {
       inputValue: string
+      type: UseComboboxStateChangeTypes
     }): Promise<void> => {
+      if (CHANGEMENTS_PAR_SELECTION.has(type)) return
       setEtat(saisieEnCours(inputValue, beforeLoadSuggestions?.(inputValue)))
       const { items: newItems, ...newPayload } =
         await loadSuggestions(inputValue)
