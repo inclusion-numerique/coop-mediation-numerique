@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { isAuthenticatedApiClientRequest } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1/is-authenticated-api-client-request'
+import { isAuthenticatedApiClientRequest } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1/is-authenticated-api-client-request.middleware'
 import type {
   IssueDAuthentification,
   PorteeApi,

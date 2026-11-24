@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { generateRandomSecret } from '@/features/clients-api/implementations/secret/generate-random-secret'
+import { generateRandomSecret } from '@/features/clients-api/implementations/secret/generate-random-secret.adapter'
 
 describe('generateRandomSecret', () => {
   it('should generate a random secret of the specified length', () => {

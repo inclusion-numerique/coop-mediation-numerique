@@ -2,4 +2,4 @@ export {
   type FiltreDeDates,
   FiltreDeDatesValidation,
   IdsValidation,
-} from './params'
+} from './filtres-communs.params'

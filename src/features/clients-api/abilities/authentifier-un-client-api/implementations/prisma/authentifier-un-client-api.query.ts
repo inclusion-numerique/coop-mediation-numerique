@@ -9,7 +9,7 @@ import {
   clientApiSelect,
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
-import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 
 export const authentifierUnClientApi = async ({
   clientApiId,

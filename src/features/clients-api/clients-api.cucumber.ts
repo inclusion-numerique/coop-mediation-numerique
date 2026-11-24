@@ -9,7 +9,7 @@ import {
   NomDuClientApi,
   PorteeApi,
 } from '@/features/clients-api/domain'
-import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { createTestApiV1Request } from '@/libraries/json-api/createTestApiV1Request'
 import { creerUnClientApi } from './abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
 

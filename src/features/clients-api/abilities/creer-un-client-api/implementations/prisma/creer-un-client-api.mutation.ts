@@ -10,7 +10,7 @@ import {
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
 import { nomDejaPris } from '@/features/clients-api/implementations/prisma/nom-deja-pris.query'
-import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret'
+import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 import { failure, type Result, success } from '@/libraries/result'
 
 export type ClientApiCree = {

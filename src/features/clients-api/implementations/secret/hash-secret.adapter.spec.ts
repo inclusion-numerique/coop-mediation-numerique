@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   hashSecret,
   verifySecret,
-} from '@/features/clients-api/implementations/secret/hash-secret'
+} from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 
 describe('hashSecret', () => {
   const plainSecret = 'uberSecret'
