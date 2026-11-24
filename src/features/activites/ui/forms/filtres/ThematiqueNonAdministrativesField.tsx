@@ -2,20 +2,6 @@ import { thematiqueNonAdministrativesOptions } from '@/features/activites/ui/lab
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 
-export const updateThematiqueNonAdministrativesParams =
-  (params: URLSearchParams) =>
-  (data: {
-    value: {
-      thematiqueNonAdministratives: string[]
-    }
-  }) =>
-    data.value.thematiqueNonAdministratives.length > 0
-      ? params.set(
-          'thematiqueNonAdministratives',
-          data.value.thematiqueNonAdministratives.join(','),
-        )
-      : params.delete('thematiqueNonAdministratives')
-
 export const ThematiqueNonAdministrativesFiled = withForm({
   ...plusDeFiltresFormOptions,
   props: {} as {

@@ -4,32 +4,24 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
-import {
-  SourcesField,
-  updateSourcesParams,
-} from '@/features/activites/ui/forms/filtres/SourceField'
+import { SourcesField } from '@/features/activites/ui/forms/filtres/SourceField'
 import type { StructureEmployeuse } from '@/features/activites/ui/forms/filtres/StructureEmployeuseComboBox'
-import {
-  StructuresEmployeusesField,
-  updateStructuresEmployeusesParams,
-} from '@/features/activites/ui/forms/filtres/StructuresEmployeusesField'
+import { StructuresEmployeusesField } from '@/features/activites/ui/forms/filtres/StructuresEmployeusesField'
 import {
   TagsField,
   tagToArray,
-  updateTagsParams,
 } from '@/features/activites/ui/forms/filtres/TagsField'
-import {
-  ThematiqueAdministrativesFiled,
-  updateThematiqueAdministrativesParams,
-} from '@/features/activites/ui/forms/filtres/ThematiqueAdministrativesField'
-import {
-  ThematiqueNonAdministrativesFiled,
-  updateThematiqueNonAdministrativesParams,
-} from '@/features/activites/ui/forms/filtres/ThematiqueNonAdministrativesField'
+import { ThematiqueAdministrativesFiled } from '@/features/activites/ui/forms/filtres/ThematiqueAdministrativesField'
+import { ThematiqueNonAdministrativesFiled } from '@/features/activites/ui/forms/filtres/ThematiqueNonAdministrativesField'
 import type { SourceDansLURL } from '@/features/activites/ui/labels/libelles/source-de-l-activite.labels'
 import type { OptionDeTag } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
+import {
+  plusDeFiltresEnParametres,
+  sansPlusDeFiltres,
+} from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { plusDeFiltresFormOptions } from '../../forms/plus-de-filtres.form-options'
 
 const MoreFiltersModal = createModal({
@@ -56,7 +48,6 @@ export const MoreMediateurFilters = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const activeFiltersCount =
     defaultValues.structuresEmployeuses.length +
@@ -65,8 +56,10 @@ export const MoreMediateurFilters = ({
     defaultValues.thematiqueAdministratives.length +
     (defaultValues.source ? 1 : 0)
 
-  const dismissModal = () => {
-    router.replace(`?${params}`, { scroll: false })
+  const dismissModal = (
+    parametres: Readonly<Record<string, string | null>>,
+  ) => {
+    router.replace(requeteAvec(searchParams, parametres), { scroll: false })
     MoreFiltersModal.close()
     form.reset()
   }
@@ -86,23 +79,11 @@ export const MoreMediateurFilters = ({
       tags: tagToArray([...tagsOptions])(defaultValues.tags),
     },
     onSubmit: (data) => {
-      updateStructuresEmployeusesParams(params)(data)
-      updateThematiqueAdministrativesParams(params)(data)
-      updateThematiqueNonAdministrativesParams(params)(data)
-      updateTagsParams(params)(data)
-      updateSourcesParams(params)(data)
-      dismissModal()
+      dismissModal(plusDeFiltresEnParametres(data.value))
     },
   })
 
-  const clearFilters = () => {
-    params.delete('structuresEmployeuses')
-    params.delete('thematiqueNonAdministratives')
-    params.delete('thematiqueAdministratives')
-    params.delete('tags')
-    params.delete('source')
-    dismissModal()
-  }
+  const clearFilters = () => dismissModal(sansPlusDeFiltres())
 
   return (
     <form.AppForm>

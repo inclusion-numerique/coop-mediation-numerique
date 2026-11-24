@@ -11,10 +11,13 @@ import type {
   FiltresDeLaListe,
   OptionDeMediateur,
 } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
-import { OptionDeBeneficiaire } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
+import {
+  CLES_CONSERVEES,
+  OptionDeBeneficiaire,
+  sansLeFiltre,
+} from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
+import { requeteAvec, requeteConservant } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-
-const queryParamsToKeep = ['voir-rdvs']
 
 export const FilterTags = ({
   filters,
@@ -39,7 +42,6 @@ export const FilterTags = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const filterLabelsToDisplay = generateActivitesFiltersLabels(filters, {
     communesOptions,
@@ -52,36 +54,16 @@ export const FilterTags = ({
     optionsDesSources,
   }).map(toLieuPrefix)
 
-  const handleRemoveFilter = (key: string, value: string | string[]) => {
-    if (key === 'rdvs' && value === 'tous') {
-      params.delete('rdvs')
-    }
-
-    if (Array.isArray(value)) {
-      value.map((param) => params.delete(param))
-      return router.replace(`?${params}`, { scroll: false })
-    }
-
-    const updatedValues = (params.get(key)?.split(',') ?? []).filter(
-      (v) => v !== value,
+  const handleRemoveFilter = (key: string, value: string | string[]) =>
+    router.replace(
+      requeteAvec(searchParams, sansLeFiltre(searchParams, key, value)),
+      { scroll: false },
     )
 
-    updatedValues.length > 0
-      ? params.set(key, updatedValues.join(','))
-      : params.delete(key)
-
-    router.replace(`?${params}`, { scroll: false })
-  }
-
-  const handleClearFilters = () => {
-    const newQueryParams = new URLSearchParams(
-      queryParamsToKeep.flatMap((paramToKeep) => {
-        const valeur = searchParams.get(paramToKeep)
-        return valeur === null ? [] : [[paramToKeep, valeur]]
-      }),
-    )
-    router.replace(`?${newQueryParams}`, { scroll: false })
-  }
+  const handleClearFilters = () =>
+    router.replace(requeteConservant(searchParams, CLES_CONSERVEES), {
+      scroll: false,
+    })
 
   return filterLabelsToDisplay.length > 0 ? (
     <>

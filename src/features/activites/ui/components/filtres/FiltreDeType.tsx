@@ -12,8 +12,10 @@ import {
   typeActiviteSlugOptions,
 } from '@/features/activites/ui/labels/libelles/type-activite.labels'
 import type { FiltresDeLaListe } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
+import { typesEnParametres } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 
@@ -26,7 +28,6 @@ export const ActiviteTypeFilter = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -41,27 +42,25 @@ export const ActiviteTypeFilter = ({
   const filtersCount = activiteTypes.length + rdvs.length
   const hasFilters = filtersCount > 0
 
-  const closePopover = (close: boolean = false) => {
+  const closePopover = (
+    close: boolean,
+    types: readonly string[],
+    statuts: readonly string[],
+  ) => {
     close && setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(searchParams, typesEnParametres(types, statuts)),
+      { scroll: false },
+    )
   }
 
-  const handleSubmit = (close: boolean = false) => {
-    activiteTypes.length > 0
-      ? params.set('types', activiteTypes.join(','))
-      : params.delete('types')
-
-    rdvs.length > 0 ? params.set('rdvs', rdvs.join(',')) : params.delete('rdvs')
-
-    closePopover(close)
-  }
+  const handleSubmit = (close: boolean = false) =>
+    closePopover(close, activiteTypes, rdvs)
 
   const handleClearFilters = () => {
     setActiviteTypes([])
     setRdvs([])
-    params.delete('types')
-    params.delete('rdvs')
-    closePopover(true)
+    closePopover(true, [], [])
   }
 
   const handleCheckTypeFilter = (option: ChangeEvent<HTMLInputElement>) => {

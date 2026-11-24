@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { requeteDeLExport } from './requete-de-l-export.presenter'
+import { requeteDeLExport } from './requete-de-l-export.search-params'
 
 describe("requête de l'export des coordinations", () => {
   it('ne transmet que la période, les types et les tags', () => {

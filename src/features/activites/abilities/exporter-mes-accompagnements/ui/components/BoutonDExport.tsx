@@ -10,10 +10,8 @@ import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import type { ActivitesFiltersLabels } from '../../../../ui/labels/filtres/filtres.labels'
-import {
-  cheminAvecRequete,
-  cheminDImpressionDesStatistiques,
-} from '../presenters/export.presenter'
+import { cheminDImpressionDesStatistiques } from '../presenters/export.presenter'
+import { cheminAvecRequete } from '../search-params/requete-de-l-export.search-params'
 
 const ModaleDExport = createModal({
   id: 'export-des-accompagnements',

@@ -3,10 +3,8 @@ import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDe
 import type { FiltresDeLaListe } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import { BoutonDExport } from '../components/BoutonDExport'
 import { BoutonDExportDesactive } from '../components/BoutonDExportDesactive'
-import {
-  libellesDeLExport,
-  requeteDeLExport,
-} from '../presenters/export.presenter'
+import { libellesDeLExport } from '../presenters/export.presenter'
+import { requeteDeLExport } from '../search-params/requete-de-l-export.search-params'
 
 type Proprietes = {
   filtres: FiltresDeLaListe

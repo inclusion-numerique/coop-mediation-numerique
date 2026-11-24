@@ -1,17 +1,6 @@
-import {
-  optionsDesSources,
-  SourceDansLURL,
-} from '@/features/activites/ui/labels/libelles/source-de-l-activite.labels'
+import { optionsDesSources } from '@/features/activites/ui/labels/libelles/source-de-l-activite.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
-
-export const updateSourcesParams =
-  (params: URLSearchParams) =>
-  (data: { value: { source?: SourceDansLURL } }) => {
-    data.value.source !== 'v1' && data.value.source !== 'v2'
-      ? params.delete('source')
-      : params.set('source', data.value.source)
-  }
 
 export const SourcesField = withForm({
   ...plusDeFiltresFormOptions,

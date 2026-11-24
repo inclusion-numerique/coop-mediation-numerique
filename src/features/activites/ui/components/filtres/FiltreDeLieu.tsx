@@ -4,18 +4,18 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRef, useState } from 'react'
+import { lieuxEnParametres } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { FilterSelection } from '@/libraries/filtres/FilterSelection'
 import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
-  resetPagination,
-  update,
 } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import {
   labelsToOptions,
   SelectOption,
@@ -61,7 +61,6 @@ export const LieuFilter = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
   const champRef = useRef<HTMLDivElement>(null)
@@ -122,33 +121,39 @@ export const LieuFilter = ({
     lieu: lieuxActiviteOptions.filter(availableOptionsIn(lieuxActivite)),
   }
 
-  const closePopover = (close: boolean = false) => {
+  const closePopover = (
+    close: boolean,
+    choix: {
+      readonly lieux: readonly SelectOption[]
+      readonly communes: readonly SelectOption[]
+      readonly departements: readonly SelectOption[]
+    },
+  ) => {
     form.setFieldValue('type', '')
     form.setFieldValue('valeur', null)
     close && setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(
+        searchParams,
+        lieuxEnParametres({
+          lieux: choix.lieux.map(({ value }) => value),
+          communes: choix.communes.map(({ value }) => value),
+          departements: choix.departements.map(({ value }) => value),
+        }),
+      ),
+      { scroll: false },
+    )
   }
 
-  const handleSubmit = (close: boolean = false) => {
-    update(params)('lieux', lieuxActivite)
-    update(params)('communes', communes)
-    update(params)('departements', departements)
-    resetPagination(params)
-
-    closePopover(close)
-  }
+  const handleSubmit = (close: boolean = false) =>
+    closePopover(close, { lieux: lieuxActivite, communes, departements })
 
   const handleClearFilters = () => {
     setCommunes([])
     setDepartements([])
     setLieuxActivite([])
 
-    update(params)('lieux', [])
-    update(params)('communes', [])
-    update(params)('departements', [])
-    resetPagination(params)
-
-    closePopover(true)
+    closePopover(true, { lieux: [], communes: [], departements: [] })
   }
 
   const handleSelectFilter = (option: SelectOption) => {

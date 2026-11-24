@@ -3,20 +3,6 @@ import { thematiqueAdministrativesOptions } from '@/features/activites/ui/labels
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 
-export const updateThematiqueAdministrativesParams =
-  (params: URLSearchParams) =>
-  (data: {
-    value: {
-      thematiqueAdministratives: string[]
-    }
-  }) =>
-    data.value.thematiqueAdministratives.length > 0
-      ? params.set(
-          'thematiqueAdministratives',
-          data.value.thematiqueAdministratives.join(','),
-        )
-      : params.delete('thematiqueAdministratives')
-
 export const ThematiqueAdministrativesFiled = withForm({
   ...plusDeFiltresFormOptions,
   props: {} as {

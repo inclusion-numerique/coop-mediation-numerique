@@ -3,9 +3,10 @@
 import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { periodeEnParametres } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import {
   type DateRange,
   DateRangePicker,
@@ -42,30 +43,21 @@ export const PeriodeFilter = ({
   }, [defaultValue])
 
   const applyFilters = (close = false) => {
-    const params = new URLSearchParams(searchParams.toString())
-
-    const debut = range?.from
-    const fin = range?.to
-    params.delete('du')
-    params.delete('au')
-    if (debut && fin) {
-      params.set('du', dateAsIsoDay(debut))
-      params.set('au', dateAsIsoDay(fin))
-    }
-
     if (close) {
       setIsOpen(false)
     }
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(
+      requeteAvec(searchParams, periodeEnParametres(range?.from, range?.to)),
+      { scroll: false },
+    )
   }
 
   const handleClearFilters = () => {
     setRange(undefined)
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete('du')
-    params.delete('au')
     setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, periodeEnParametres()), {
+      scroll: false,
+    })
   }
 
   const { from, to } = range ?? {}

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { cheminAvecRequete, requeteDeLExport } from './export.presenter'
+import {
+  cheminAvecRequete,
+  requeteDeLExport,
+} from './requete-de-l-export.search-params'
 
 describe('requête de l’export', () => {
   it('reprend les clés d’URL des filtres, listes jointes par des virgules', () => {

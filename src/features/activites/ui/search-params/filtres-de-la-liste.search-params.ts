@@ -1,5 +1,10 @@
 import { z } from 'zod'
-import { valeursLues } from '@/libraries/parametres-d-url'
+import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import {
+  listeEnParametre,
+  listeSansLaValeur,
+  valeursLues,
+} from '@/libraries/parametres-d-url'
 import {
   type CriteresDesActivites,
   parametresDesActivitesDe,
@@ -120,3 +125,85 @@ export type PeriodeCouverte = {
   readonly first: Date | undefined
   readonly last: Date | undefined
 }
+
+type Parametres = Readonly<Record<string, string | null>>
+
+export const CLES_CONSERVEES = ['voir-rdvs'] as const
+
+export const typesEnParametres = (
+  types: readonly string[],
+  rdvs: readonly string[],
+): Parametres => ({
+  types: listeEnParametre(types),
+  rdvs: listeEnParametre(rdvs),
+})
+
+export const periodeEnParametres = (du?: Date, au?: Date): Parametres =>
+  du && au
+    ? { du: dateAsIsoDay(du), au: dateAsIsoDay(au) }
+    : { du: null, au: null }
+
+export const lieuxEnParametres = ({
+  lieux,
+  communes,
+  departements,
+}: {
+  readonly lieux: readonly string[]
+  readonly communes: readonly string[]
+  readonly departements: readonly string[]
+}): Parametres => ({
+  lieux: listeEnParametre(lieux),
+  communes: listeEnParametre(communes),
+  departements: listeEnParametre(departements),
+  page: null,
+})
+
+const SOURCES_ADMISES: readonly string[] = ['v1', 'v2']
+
+export const plusDeFiltresEnParametres = (valeurs: {
+  readonly structuresEmployeuses?: readonly { readonly id: string }[]
+  readonly thematiqueNonAdministratives: readonly string[]
+  readonly thematiqueAdministratives: readonly string[]
+  readonly tags?: string | readonly string[]
+  readonly source?: string
+}): Parametres => ({
+  structuresEmployeuses: listeEnParametre(
+    (valeurs.structuresEmployeuses ?? []).map(({ id }) => id),
+  ),
+  thematiqueNonAdministratives: listeEnParametre(
+    valeurs.thematiqueNonAdministratives,
+  ),
+  thematiqueAdministratives: listeEnParametre(
+    valeurs.thematiqueAdministratives,
+  ),
+  tags: listeEnParametre(
+    valeurs.tags === undefined
+      ? []
+      : typeof valeurs.tags === 'string'
+        ? [valeurs.tags]
+        : valeurs.tags,
+  ),
+  source:
+    valeurs.source !== undefined && SOURCES_ADMISES.includes(valeurs.source)
+      ? valeurs.source
+      : null,
+})
+
+export const sansPlusDeFiltres = (): Parametres => ({
+  structuresEmployeuses: null,
+  thematiqueNonAdministratives: null,
+  thematiqueAdministratives: null,
+  tags: null,
+  source: null,
+})
+
+export const sansLeFiltre = (
+  requete: { get(cle: string): string | null },
+  cle: string,
+  valeur: string | readonly string[],
+): Parametres =>
+  typeof valeur === 'string'
+    ? cle === 'rdvs' && valeur === 'tous'
+      ? { rdvs: null }
+      : { [cle]: listeSansLaValeur(requete.get(cle), valeur) }
+    : Object.fromEntries(valeur.map((parametre) => [parametre, null]))
